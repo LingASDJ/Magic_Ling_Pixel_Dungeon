@@ -1,20 +1,25 @@
-# Shattered Pixel Dungeon
 
-A Roguelike RPG, with randomly generated levels, items, enemies, and traps! Based on the [source code of Pixel Dungeon](https://github.com/00-Evan/pixel-dungeon-gradle), by [Watabou](https://www.watabou.ru).
+# Magic Ling Pixel Dungeon
+[![](https://img.shields.io/badge/QQ%20Group-Join-brightgreen)](https://jq.qq.com/?_wv=1027&k=R7ZXeEQM)
 
-Shattered Pixel Dungeon currently compiles for Android, iOS and Desktop platforms. It is available from [Google Play](https://play.google.com/store/apps/details?id=com.shatteredpixel.shatteredpixeldungeon), [the App Store](https://apps.apple.com/app/shattered-pixel-dungeon/id1563121109), and right here on [GitHub](https://github.com/00-Evan/shattered-pixel-dungeon/releases).
+**ROGUELIKE RPG**, completely randomly generated dungeons! Based on [**Shattered Pixel Dungeon**](https://github.com/00-Evan/shattered-pixel-dungeon)'s open source.
 
-If you like this game, please consider [supporting me on Patreon](https://www.patreon.com/ShatteredPixel)!
+## Producers
 
-There is an official blog for this project at [ShatteredPixel.com](https://www.shatteredpixel.com).
+* **Planning**</br>
+JDSA Ling
+* **Program**</br>
+JDSA Ling & Tianscar
+* **Music**</br>
+Prohonor
+* **Artwork**</br>
+JDSA Ling, Tianscar, Daniel_Clan, REN, Leng Qunwei & Naiyazi
 
-The game also has a translation project hosted on [Transifex](https://www.transifex.com/shattered-pixel/shattered-pixel-dungeon/).
 
-Note that **this repository does not accept pull requests!** The code here is provided in hopes that others may find it useful for their own projects, not to allow community contribution. Issue reports of all kinds (bug reports, feature requests, etc.) are welcome.
+## Special Thanks
+[IntelliJ IDEA](https://zh.wikipedia.org/zh-hans/IntelliJ_IDEA) is an IDE that maximizes the productivity of developers in all aspects, and is suitable for JVM platform languages.
 
-If you'd like to work with the code, you can find the following guides in `/docs`:
-- [Compiling for Android.](docs/getting-started-android.md)
-    - **[If you plan to distribute on Google Play please read the end of this guide.](docs/getting-started-android.md#distributing-your-apk)**
-- [Compiling for desktop platforms.](docs/getting-started-desktop.md)
-- [Compiling for iOS.](docs/getting-started-ios.md)
-- [Recommended changes for making your own mod.](docs/recommended-changes.md)
+[<img src="core/src/main/assets/jetbrains-variant-3.png" width="200"/>](https://www.jetbrains.com/?from=mlpd)
+
+## LICENSE
+[**GPL-3.0**](https://github.com/AnsdoShip/Magic-Ling-Pixel-Dungeon-Ling/blob/main/LICENSE.txt) © **AnsdoShip Studio**
