@@ -37,7 +37,7 @@ import com.watabou.noosa.audio.Sample;
 public class LostBackpack extends Item {
 
 	{
-		image = ItemSpriteSheet.BACKPACK;
+		image = ItemSpriteSheet.LOSTBAG;
 
 		unique = true;
 	}

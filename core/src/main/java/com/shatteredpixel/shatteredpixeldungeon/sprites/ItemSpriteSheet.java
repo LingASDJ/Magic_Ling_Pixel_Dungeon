@@ -219,6 +219,7 @@ public class ItemSpriteSheet {
 	public static final int SPEAR           = WEP_TIER2+2;
 	public static final int QUARTERSTAFF    = WEP_TIER2+3;
 	public static final int DIRK            = WEP_TIER2+4;
+	public static final int	ENDDIED			= WEP_TIER2+5;
 	static{
 		assignItemRect(SHORTSWORD,      13, 13);
 		assignItemRect(HAND_AXE,        12, 14);
@@ -680,24 +681,93 @@ public class ItemSpriteSheet {
 	}
 
 	private static final int BAGS       =                                   xy(1, 31);  //16 slots
-	public static final int WATERSKIN   = BAGS+0;
-	public static final int BACKPACK    = BAGS+1;
-	public static final int POUCH       = BAGS+2;
-	public static final int HOLDER      = BAGS+3;
-	public static final int BANDOLIER   = BAGS+4;
-	public static final int HOLSTER     = BAGS+5;
-	public static final int VIAL        = BAGS+6;
+	public static final int VIAL        = BAGS+0;
+	public static final int POUCH       = BAGS+1;
+	public static final int HOLDER      = BAGS+2;
+	public static final int BANDOLIER   = BAGS+3;
+	public static final int HOLSTER     = BAGS+4;
+	public static final int MagicBlueSword      = BAGS+5;
+	public static final int BlackDog     = BAGS+6;
+	public static final int RedBloodMoon     = BAGS+7;
+	public static final int	DG1				= BAGS+8;
+	public static final int	DG2				= BAGS+9;
+	public static final int	DG3				= BAGS+10;
+	public static final int	DG4				= BAGS+11;
+	public static final int	DG5				= BAGS+12;
+	public static final int	DG6				= BAGS+13;
+	public static final int	DG7				= BAGS+14;
+	public static final int	DG8				= BAGS+15;
+	public static final int	DG9				= BAGS+16;
+	public static final int	DG10				= BAGS+17;
+	public static final int	DG11				= BAGS+18;
+	public static final int	DG12				= BAGS+19;
+	public static final int	DG13				= BAGS+20;
+	public static final int	DG14				= BAGS+21;
+	public static final int	DG15				= BAGS+22;
+	public static final int	DG16				= BAGS+23;
+	public static final int	DG17				= BAGS+24;
+	public static final int	DG18				= BAGS+25;
+	public static final int	DG19				= BAGS+26;
+	public static final int	DG20				= BAGS+27;
+	public static final int	DG21				= BAGS+28;
+	public static final int	DG22				= BAGS+29;
+	public static final int	DG23				= BAGS+30;
+	public static final int	DG24				= BAGS+31;
+	public static final int	DG25				= BAGS+32;
+	public static final int	DG26				= BAGS+33;
+	public static final int	ICEBOOKS				= BAGS+34;
+	public static final int	NOBOOKS				= BAGS+35;
+	public static final int	CLINGSHILED				= BAGS+36;
+	public static final int	GRRENSHILED				= BAGS+37;
+	/*依赖项*/
+	public static final int	NOTAS				= BAGS+38;
+	public static final int	TONASD				= BAGS+39;
+	/*依赖项*/
+	public static final int	BLUEDEVIAL				= BAGS+40;
+	public static final int	PINKDEVIAL				= BAGS+41;
+	public static final int	REDDEVIAL				= BAGS+42;
+	public static final int	REDDRAGON				= BAGS+43;
+	public static final int	DRAGONKINGHALOFIRE				= BAGS+44;
+	public static final int	ICEFISHSWORD				= BAGS+45;
+	public static final int	FIREFISHSWORD				= BAGS+46;
+	public static final int	SKELETONGOLD				= BAGS+47;
+
+	public static final int	ICEDVS				= BAGS+48;
+	public static final int	FIREDVS			= BAGS+49;
+	public static final int	DIEDVS				= BAGS+50;
+
+
+	public static final int	ANTILIGHT				= BAGS+51;
+	public static final int	BOOKBAG				= BAGS+52;
+	public static final int	BLACKBOOK		= BAGS+53;
+	public static final int	LOSTBAG				= BAGS+54;
 	static{
-		assignItemRect(WATERSKIN,   16, 14);
-		assignItemRect(BACKPACK,    16, 16);
+		assignItemRect(VIAL,        16, 16);
 		assignItemRect(POUCH,       14, 15);
 		assignItemRect(HOLDER,      16, 16);
 		assignItemRect(BANDOLIER,   15, 16);
 		assignItemRect(HOLSTER,     15, 16);
-		assignItemRect(VIAL,        12, 12);
+		assignItemRect(DRAGONKINGHALOFIRE, 12, 14);
+		assignItemRect(REDDRAGON, 14, 14);
 	}
 
-	                                                                                    //16 free slots
+	private static final int MAINBOOKINDEX    	 = xy(1, 37);  //16 slots
+	public static final int ICEBOOK=			MAINBOOKINDEX+1;
+	public static final int BREDBOOK=			MAINBOOKINDEX+2;
+	public static final int GREENBOOKS=			MAINBOOKINDEX+3;
+	public static final int YELLOWBOOKS=		MAINBOOKINDEX+4;
+	public static final int MOBBOOKS=			MAINBOOKINDEX+5;
+	public static final int MAGICGIRLBOOKS=		MAINBOOKINDEX+6;
+	public static final int NOKING=		MAINBOOKINDEX+7;
+	public static final int FIRELIYD=		MAINBOOKINDEX+8;
+	public static final int FBK=		MAINBOOKINDEX+9;
+
+	private static final int MAINPALYBOOKS     = xy(1, 40);
+	public static final int MONEYBOOKS=		MAINPALYBOOKS+1;
+	public static final int PINKBOOKS=		MAINPALYBOOKS+2;
+	public static final int DEBOOKS=		MAINPALYBOOKS+3;
+
+	//16 free slots                                                  //16 free slots
 
 	//for smaller 8x8 icons that often accompany an item sprite
 	public static class Icons {

@@ -21,6 +21,8 @@
 
 package com.watabou.noosa;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.layout;
+
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.glwrap.Quad;
@@ -190,5 +192,16 @@ public class Image extends Visual {
 		super.destroy();
 		if (buffer != null)
 			buffer.delete();
+	}
+
+	public Image setPos(float x, float y ) {
+		this.x = x;
+		this.y = y;
+		layout();
+
+		return this;
+	}
+
+	protected void layout() {
 	}
 }

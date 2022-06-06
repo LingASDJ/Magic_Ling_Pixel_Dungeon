@@ -49,8 +49,31 @@ public class Window extends Group implements Signal.Listener<KeyEvent> {
 	protected NinePatch chrome;
 
 	public static final int WHITE = 0xFFFFFF;
-	public static final int TITLE_COLOR = 0xFFFF44;
+	public static final int R_COLOR = 0xFF0000;
+	public static final int G_COLOR = 0x00FF00;
+	public static final int B_COLOR = 0x0000FF;
+	public static final int Pink_COLOR = 0xFF1493;
+	public static final int DeepPK_COLOR = 0xFF0000;
 	public static final int SHPX_COLOR = 0x33BB33;
+
+	public static final int TITLE_COLOR = 0x00FFFF;
+
+	public static final int MLPD_COLOR = 0x00FFFF;
+	public static final int BALCK_COLOR = 0x000000;
+
+	public static final int GDX_COLOR = 0xE44D3C;
+	public static final int SKYBULE_COLOR = 0x00FFFF;
+	public static final int CYELLOW = 0xFFFF00;
+	public static final int CPINK = 0xFF00FF;
+	public static final int CWHITE = 0xFFFFFF;
+	public static final int WATA_COLOR = 0x55AAFF;
+	public static final int ANSDO_COLOR = 0xFF0000;
+
+	public static final int RED_COLOR = 0xFF0000;
+	public static final int GREEN_COLOR = 0x00FF00;
+	public static final int BLUE_COLOR = 0x0000FF;
+	public static final int CBLACK = 0x000000;
+
 	
 	public Window() {
 		this( 0, 0, Chrome.get( Chrome.Type.WINDOW ) );

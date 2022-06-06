@@ -110,28 +110,29 @@ public class Assets {
 	}
 
 	public static class Music {
-		public static final String THEME_1      = "music/theme_1.ogg";
-		public static final String THEME_2      = "music/theme_2.ogg";
+		public static final String THEME      = "music/theme.ogg";
+		public static final String THEME_1      = "music/theme.ogg";
+		public static final String THEME_2      = "music/theme.ogg";
 
-		public static final String SEWERS_1     = "music/sewers_1.ogg";
-		public static final String SEWERS_2     = "music/sewers_2.ogg";
-		public static final String SEWERS_BOSS  = "music/sewers_boss.ogg";
+		public static final String SEWERS_1     = "music/Level1.ogg";
+		public static final String SEWERS_2     = "music/Level1.ogg";
+		public static final String SEWERS_BOSS  = "music/Boss1.ogg";
 
-		public static final String PRISON_1     = "music/prison_1.ogg";
-		public static final String PRISON_2     = "music/prison_2.ogg";
-		public static final String PRISON_BOSS  = "music/prison_boss.ogg";
+		public static final String PRISON_1     = "music/Level2.ogg";
+		public static final String PRISON_2     = "music/Level2.ogg";
+		public static final String PRISON_BOSS  = "music/Boss2.ogg";
 
-		public static final String CAVES_1      = "music/caves_1.ogg";
-		public static final String CAVES_2      = "music/caves_2.ogg";
-		public static final String CAVES_BOSS   = "music/caves_boss.ogg";
+		public static final String CAVES_1      = "music/Level3.ogg";
+		public static final String CAVES_2      = "music/Level3.ogg";
+		public static final String CAVES_BOSS   = "music/Boss3.ogg";
 
-		public static final String CITY_1       = "music/city_1.ogg";
-		public static final String CITY_2       = "music/city_2.ogg";
-		public static final String CITY_BOSS    = "music/city_boss.ogg";
+		public static final String CITY_1       = "music/Level4.ogg";
+		public static final String CITY_2       = "music/Level4.ogg";
+		public static final String CITY_BOSS    = "music/Boss4.ogg";
 
 		public static final String HALLS_1      = "music/halls_1.ogg";
 		public static final String HALLS_2      = "music/halls_2.ogg";
-		public static final String HALLS_BOSS   = "music/halls_boss.ogg";
+		public static final String HALLS_BOSS   = "music/Boss5.ogg";
 	}
 
 	public static class Sounds {
@@ -228,7 +229,14 @@ public class Assets {
 	}
 
 	public static class Sprites {
-		public static final String ITEMS        = "sprites/items.png";
+
+		//BOSS
+		public static final String FRAS	= "sprites/boss/FireMagicGirl.png";
+		public static final String NECROREDEX	= "sprites/boss/rednecromancer_ex.png";
+
+
+		//GENRAL
+		public static final String ITEMS        = "sprites/items/items.png";
 		public static final String ITEM_ICONS   = "sprites/item_icons.png";
 
 		public static final String WARRIOR  = "sprites/warrior.png";

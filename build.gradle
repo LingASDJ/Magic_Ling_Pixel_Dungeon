@@ -11,28 +11,27 @@ buildscript {
 allprojects {
 
     ext {
-        appName = 'Shattered Pixel Dungeon'
-        appPackageName = 'com.shatteredpixel.shatteredpixeldungeon'
+        appName = 'Magic Ling Pixel Dungeon'
+        appPackageName = 'com.ansdomagiclingpixeldungeon.ling'
 
-        appVersionCode = 628
-        appVersionName = '1.2.3'
+        appVersionCode =13030
+        appVersionName = '0.6.0.0-Beta1'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
-        appAndroidCompileSDK = 31
+        appAndroidCompileSDK = 30
         appAndroidMinSDK = 14
-        appAndroidTargetSDK = 31
+        appAndroidTargetSDK = 30
+
+        gdxControllersVersion = '2.2.1'
 
         gdxVersion = '1.10.0'
-        gdxControllersVersion = '2.2.1'
-        robovmVersion = '2.3.14'
     }
     version = appVersionName
 
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
 
 }
