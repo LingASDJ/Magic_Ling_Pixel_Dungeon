@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -31,7 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Camera;
-import com.watabou.noosa.audio.Music;
 
 public class BadgesScene extends PixelScene {
 
@@ -39,11 +37,6 @@ public class BadgesScene extends PixelScene {
 	public void create() {
 
 		super.create();
-
-		Music.INSTANCE.playTracks(
-				new String[]{Assets.Music.THEME_1, Assets.Music.THEME_2},
-				new float[]{1, 1},
-				false);
 
 		uiCamera.visible = false;
 

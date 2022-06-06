@@ -1,7 +1,7 @@
 buildscript {
     repositories {
-        google()
-        mavenCentral()
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven{ url 'https://maven.aliyun.com/repository/jcenter'}
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.0.4'
@@ -15,7 +15,7 @@ allprojects {
         appPackageName = 'com.ansdomagiclingpixeldungeon.ling'
 
         appVersionCode =13030
-        appVersionName = '0.6.0.0-Beta1'
+        appVersionName = '0.6.0.0-Beta9'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
@@ -30,8 +30,8 @@ allprojects {
     version = appVersionName
 
     repositories {
-        google()
-        mavenCentral()
+        maven{ url 'https://maven.aliyun.com/repository/google' }
+        maven{ url 'https://maven.aliyun.com/repository/jcenter'}
     }
 
 }
