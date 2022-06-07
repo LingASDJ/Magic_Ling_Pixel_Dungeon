@@ -36,6 +36,12 @@ public class ScrollPane extends Component {
 	protected static final int THUMB_COLOR		= 0xFF7b8073;
 	protected static final float THUMB_ALPHA	= 0.5f;
 
+	//Seems everyone's happy about the thumb bar just being there?
+	//Oh,That insteresting! Ling
+	public void disableThumb(){
+		thumb.visible = false;
+	}
+
 	protected PointerController controller;
 	protected Component content;
 	protected ColorBlock thumb;

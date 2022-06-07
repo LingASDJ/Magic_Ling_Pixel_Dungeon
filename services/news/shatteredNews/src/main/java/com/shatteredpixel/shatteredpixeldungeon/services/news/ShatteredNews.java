@@ -48,7 +48,7 @@ public class ShatteredNews extends NewsService {
 		if (preferHTTPS) {
 			httpGet.setUrl("https://lingasdj.github.io/MagicLingPixelDungeon_Sing/xml/news.xml");
 		} else {
-			httpGet.setUrl("http://lingasdj.github.io/MagicLingPixelDungeon_Sing/xml/news.xml");
+			httpGet.setUrl("https://lingasdj.github.io/MagicLingPixelDungeon_Sing/xml/news.xml");
 		}
 
 		Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {

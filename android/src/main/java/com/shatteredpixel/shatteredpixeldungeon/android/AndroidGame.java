@@ -33,14 +33,15 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidAudio;
 import com.badlogic.gdx.backends.android.AsynchronousAndroidAudio;
+import com.rohitss.uceh.UCEHandler;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.updates.UpdateImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.updates.Updates;
-import com.watabou.noosa.Game;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
+import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
 
 public class AndroidGame extends AndroidApplication {
@@ -84,10 +85,13 @@ public class AndroidGame extends AndroidApplication {
 			// this is the default prefs filename given to an android app (.xml is automatically added to it)
 			SPDSettings.set(instance.getPreferences("ShatteredPixelDungeon"));
 
+			UCEHandler.Builder builder = new UCEHandler.Builder(this);
+			builder.build();
+
 		} else {
 			instance = this;
 		}
-		
+
 		//set desired orientation (if it exists) before initializing the app.
 		if (SPDSettings.landscape() != null) {
 			instance.setRequestedOrientation( SPDSettings.landscape() ?

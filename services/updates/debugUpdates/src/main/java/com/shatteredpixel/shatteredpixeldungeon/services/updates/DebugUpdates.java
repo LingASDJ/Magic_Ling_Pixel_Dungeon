@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.services.updates;
 
 
 import com.watabou.noosa.Game;
-import com.watabou.utils.DeviceCompat;
 
 public class DebugUpdates extends UpdateService {
 
@@ -31,7 +30,7 @@ public class DebugUpdates extends UpdateService {
 
 	@Override
 	public boolean isUpdateable() {
-		return false; //turn on to debug update prompts
+		return true; //turn on to debug update prompts
 	}
 
 	@Override
@@ -49,9 +48,11 @@ public class DebugUpdates extends UpdateService {
 
 		debugUpdateInfo = new AvailableUpdateData();
 		debugUpdateInfo.versionCode = Game.versionCode+1;
-		debugUpdateInfo.URL = "http://www.google.com";
+		debugUpdateInfo.URL = "https://github.com/LingASDJ/MagicLing-Pixel-Dungeon/releases";
 
 		callback.onUpdateAvailable(debugUpdateInfo);
+
+
 
 	}
 
@@ -83,6 +84,6 @@ public class DebugUpdates extends UpdateService {
 
 	@Override
 	public void openReviewURI() {
-		Game.platform.openURI("https://www.google.com/");
+		//Game.platform.openURI("https://www.google.com/");
 	}
 }

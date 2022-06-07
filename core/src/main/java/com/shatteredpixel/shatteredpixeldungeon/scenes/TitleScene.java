@@ -415,7 +415,7 @@ public class TitleScene extends PixelScene {
 
 		@Override
 		protected void onClick() {
-			ShatteredPixelDungeon.switchNoFade(SupporterScene.class);
+			ShatteredPixelDungeon.switchNoFade(ThanksScene.class);
 		}
 	}
 

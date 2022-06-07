@@ -42,7 +42,6 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.ui.Component;
-import com.watabou.utils.DeviceCompat;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -280,7 +279,7 @@ public class NewsScene extends PixelScene {
 			date.scale.set(PixelScene.align(0.5f));
 			date.hardlight( 0x888888 );
 			date.measure();
-			add(date);
+			//add(date);
 		}
 
 		@Override
