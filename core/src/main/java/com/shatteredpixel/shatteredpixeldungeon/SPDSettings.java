@@ -56,6 +56,14 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_ZOOM			= "zoom";
 	public static final String KEY_BRIGHTNESS	= "brightness";
 	public static final String KEY_GRID 	    = "visual_grid";
+
+	private static final String KEY_DARK	= "dark_ui";
+	//暗色系统
+	private static final String KEY_SKIN	= "skin_ui";
+
+	private static final String KEY_PAGE	= "page_ui";
+
+	private static final String KEY_PCUI	= "pc_ui";
 	
 	public static void fullscreen( boolean value ) {
 		put( KEY_FULLSCREEN, value );
@@ -151,10 +159,6 @@ public class SPDSettings extends GameSettings {
 		return size;
 	}
 	
-	public static void quickSlots( int value ){ put( KEY_QUICKSLOTS, value ); }
-	
-	public static int quickSlots(){ return getInt( KEY_QUICKSLOTS, 4, 0, 4); }
-	
 	public static void flipToolbar( boolean value) {
 		put(KEY_FLIPTOOLBAR, value );
 	}
@@ -194,11 +198,7 @@ public class SPDSettings extends GameSettings {
 	public static void lastClass( int value ) {
 		put( KEY_LAST_CLASS, value );
 	}
-	
-	public static int lastClass() {
-		return getInt( KEY_LAST_CLASS, 0, 0, 3 );
-	}
-	
+
 	public static void challenges( int value ) {
 		put( KEY_CHALLENGES, value );
 	}
@@ -292,7 +292,7 @@ public class SPDSettings extends GameSettings {
 	
 	public static boolean systemFont(){
 		return getBoolean(KEY_SYSTEMFONT,
-				(language() == Languages.KOREAN || language() == Languages.CHINESE || language() == Languages.JAPANESE));
+				(language() == Languages.CHINESE || language() == Languages.JAPANESE));
 	}
 
 	//Connectivity
@@ -368,6 +368,39 @@ public class SPDSettings extends GameSettings {
 	
 	public static boolean windowMaximized(){
 		return getBoolean( KEY_WINDOW_MAXIMIZED, false );
+	}
+
+	public static void ClassUI(boolean value) {
+		put( KEY_DARK, value );
+	}
+
+	public static boolean ClassUI() {
+		return getBoolean(KEY_DARK, false);
+	}
+
+	public static void ClassSkin(boolean value) {
+		put( KEY_SKIN, value );
+	}
+
+	public static boolean ClassSkin() {
+		return getBoolean(KEY_SKIN, false);
+	}
+
+	public static boolean ClassPage() {
+		return getBoolean(KEY_PAGE, false);
+	}
+
+	public static void ClassPage(boolean value) {
+		put( KEY_PAGE, value );
+	}
+
+
+	public static boolean PCTestUI() {
+		return getBoolean(KEY_PCUI, false);
+	}
+
+	public static void PCTestUI(boolean value) {
+		put( KEY_PCUI, value );
 	}
 
 }

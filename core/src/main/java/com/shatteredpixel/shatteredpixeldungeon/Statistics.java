@@ -24,7 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon;
 import com.watabou.utils.Bundle;
 
 public class Statistics {
-	
+	public static int boss_enhance = 0;
 	public static int goldCollected;
 	public static int deepestFloor;
 	public static int enemiesSlain;
@@ -56,7 +56,7 @@ public class Statistics {
 		itemsCrafted    = 0;
 		piranhasKilled	= 0;
 		ankhsUsed		= 0;
-		
+		//boss_enhance = 0;
 		upgradesUsed    = 0;
 		sneakAttacks    = 0;
 		thrownAssists   = 0;

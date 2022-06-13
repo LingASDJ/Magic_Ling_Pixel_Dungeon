@@ -111,6 +111,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndStartGame;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
 import com.watabou.glwrap.Blending;
 import com.watabou.input.PointerEvent;
@@ -123,7 +124,6 @@ import com.watabou.noosa.NoosaScript;
 import com.watabou.noosa.NoosaScriptNoLighting;
 import com.watabou.noosa.SkinnedBlock;
 import com.watabou.noosa.Visual;
-import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.DeviceCompat;
@@ -1198,7 +1198,7 @@ public class GameScene extends PixelScene {
 				InterlevelScene.noStory = true;
 				GamesInProgress.selectedClass = Dungeon.hero.heroClass;
 				GamesInProgress.curSlot = GamesInProgress.firstEmpty();
-				ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
+				GameScene.show(new WndStartGame(GamesInProgress.firstEmpty()));
 			}
 
 			@Override
@@ -1210,11 +1210,10 @@ public class GameScene extends PixelScene {
 		restart.icon(Icons.get(Icons.ENTER));
 		restart.alpha(0);
 		restart.camera = uiCamera;
-		float offset = Camera.main.centerOffset.y;
 		restart.setSize(Math.max(80, restart.reqWidth()), 20);
 		restart.setPos(
 				align(uiCamera, (restart.camera.width - restart.width()) / 2),
-				align(uiCamera, (restart.camera.height - restart.height()) / 2 + restart.height()/2 + 16 - offset)
+				align(uiCamera, (restart.camera.height - restart.height()) / 2 + restart.height()/2 + 16)
 		);
 		scene.add(restart);
 
@@ -1236,11 +1235,42 @@ public class GameScene extends PixelScene {
 		menu.setSize(Math.max(80, menu.reqWidth()), 20);
 		menu.setPos(
 				align(uiCamera, (menu.camera.width - menu.width()) / 2),
-				restart.bottom() + 2
+				restart.bottom() + 10
 		);
 		scene.add(menu);
+
+		StyledButton info = new StyledButton(Chrome.Type.SCROLL, (new String[]{
+				Messages.get(GameScene.class,"died_1"),
+				Messages.get(GameScene.class,"died_2"),
+				Messages.get(GameScene.class,"died_3"),
+				Messages.get(GameScene.class,"died_4"),
+				Messages.get(GameScene.class,"died_5"),}[Random.Int(new String[]{
+				Messages.get(GameScene.class,"died_1"),
+				Messages.get(GameScene.class,"died_2"),
+				Messages.get(GameScene.class,"died_3"),
+				Messages.get(GameScene.class,"died_4"),
+				Messages.get(GameScene.class,"died_5"),}.length)]), 5){
+			@Override
+			protected void onClick() {
+				//GameScene.show(new WndGame());
+			}
+
+			@Override
+			public void update() {
+				alpha(gameOver.am);
+				super.update();
+			}
+		};
+		info.alpha(0);
+		info.camera = uiCamera;
+		info.setSize(Math.max(125, info.reqWidth()), 40);
+		info.setPos(
+				align(uiCamera, (info.camera.width - info.width()) / 2),
+				restart.bottom() - 120
+		);
+		scene.add(info);
 	}
-	
+
 	public static void bossSlain() {
 		if (Dungeon.hero.isAlive()) {
 			Banner bossSlain = new Banner( BannerSprites.get( BannerSprites.Type.BOSS_SLAIN ) );

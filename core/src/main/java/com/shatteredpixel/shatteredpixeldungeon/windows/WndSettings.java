@@ -65,6 +65,7 @@ public class WndSettings extends WndTabbed {
 	private DataTab     data;
 	private AudioTab    audio;
 	private LangsTab    langs;
+	private ExtendTab    extabs;
 
 	public static int last_index = 0;
 
@@ -160,6 +161,20 @@ public class WndSettings extends WndTabbed {
 
 		};
 		add( langsTab );
+
+		extabs = new ExtendTab();
+		extabs.setSize(width, 0);
+		height = Math.max(height, audio.height());
+		add( extabs );
+
+		add( new IconTab(Icons.get(Icons.CHANGES)){
+			@Override
+			protected void select(boolean value) {
+				super.select(value);
+				extabs.visible = extabs.active = value;
+				if (value) last_index = 5;
+			}
+		});
 
 		resize(width, (int)Math.ceil(height));
 
@@ -389,13 +404,14 @@ public class WndSettings extends WndTabbed {
 			//add slider for UI size only if device has enough space to support it
 			float wMin = Game.width / PixelScene.MIN_WIDTH_FULL;
 			float hMin = Game.height / PixelScene.MIN_HEIGHT_FULL;
+			Boolean landscape = SPDSettings.landscape();
 			if (Math.min(wMin, hMin) >= 2*Game.density){
 				optUISize = new OptionSlider(
 						Messages.get(this, "size"),
 						Messages.get(this, "mobile"),
 						Messages.get(this, "full"),
 						0,
-						2
+						1
 				) {
 					@Override
 					protected void onChange() {
@@ -571,6 +587,83 @@ public class WndSettings extends WndTabbed {
 			} else {
 				height = chkFont.bottom();
 			}
+		}
+
+	}
+
+	private static class ExtendTab extends Component {
+
+		RenderedTextBlock title;
+		ColorBlock sep1;
+		CheckBox ClassUI;
+		CheckBox ClassSkin;
+
+		@Override
+		protected void createChildren() {
+			title = PixelScene.renderTextBlock(Messages.get(this, "title"), 9);
+			title.hardlight(TITLE_COLOR);
+			add(title);
+
+			sep1 = new ColorBlock(1, 1, 0xFF000000);
+			add(sep1);
+
+			ClassUI = new CheckBox( Messages.get(this, "dark_ui") ) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					SPDSettings.ClassUI(checked());
+				}
+			};
+			ClassUI.checked(SPDSettings.ClassUI());
+			add(ClassUI);
+
+			ClassSkin = new CheckBox( Messages.get(this, "pc_ui") ) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					SPDSettings.PCTestUI(checked());
+				}
+			};
+			ClassSkin.checked(SPDSettings.PCTestUI());
+			add(ClassSkin);
+
+		}
+
+		@Override
+		protected void layout() {
+
+			float bottom = y;
+
+			title.setPos((width - title.width())/2, bottom + GAP);
+			sep1.size(width, 1);
+			sep1.y = title.bottom() + 2*GAP;
+
+			bottom = sep1.y + 1;
+
+			if (width > 200){
+				ClassUI.setRect(0, bottom, width/2-GAP/2, SLIDER_HEIGHT);
+				//横屏布局
+				if(Game.scene()!=null && Game.scene().getClass() == GameScene.class) {
+					ClassSkin.setRect(ClassUI.left(), ClassUI.bottom(), width-1, SLIDER_HEIGHT);
+				} else {
+					ClassSkin.setRect(ClassUI.left(), ClassUI.bottom(), width-1, SLIDER_HEIGHT);
+				}
+				//竖屏布局
+			} else {
+				//quickslots.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
+				ClassUI.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
+				//GameScene
+				if(Game.scene()!=null && Game.scene().getClass() == GameScene.class){
+					//quickslots.setRect(ClassUI.left(), ClassUI.bottom(), width  - GAP / 2, SLIDER_HEIGHT);
+					ClassSkin.setRect(0, ClassUI.bottom(), width-1, SLIDER_HEIGHT);
+				} else {
+					//quickslots.setRect(0, 9000 + GAP, width, SLIDER_HEIGHT);
+					ClassSkin.setRect(0, 9000 + GAP, width, SLIDER_HEIGHT);
+				}
+
+			}
+
+			height = ClassUI.bottom();
 		}
 
 	}
@@ -810,10 +903,8 @@ public class WndSettings extends WndTabbed {
 
 	private static class LangsTab extends Component{
 
-		final static int COLS_P = 3;
-		final static int COLS_L = 4;
-
-		final static int BTN_HEIGHT = 11;
+		final static int COLS_P = 1;
+		final static int COLS_L = 2;
 
 		RenderedTextBlock title;
 		ColorBlock sep1;
@@ -850,7 +941,7 @@ public class WndSettings extends WndTabbed {
 			add(txtLangName);
 
 			txtLangInfo = PixelScene.renderTextBlock(6);
-			if (currLang == Languages.ENGLISH) txtLangInfo.text("This is the source language, written by the developer.");
+			if (currLang == Languages.CHINESE) txtLangInfo.text("这是源语言，由开发者编写！");
 			else if (currLang.status() == Languages.Status.REVIEWED) txtLangInfo.text(Messages.get(this, "completed"));
 			else if (currLang.status() == Languages.Status.UNREVIEWED) txtLangInfo.text(Messages.get(this, "unreviewed"));
 			else if (currLang.status() == Languages.Status.INCOMPLETE) txtLangInfo.text(Messages.get(this, "unfinished"));
@@ -906,79 +997,70 @@ public class WndSettings extends WndTabbed {
 			txtTranifex.text(Messages.get(this, "transifex"));
 			add(txtTranifex);
 
-			if (currLang != Languages.ENGLISH) {
+			if (currLang != Languages.CHINESE) {
 				String credText = Messages.titleCase(Messages.get(this, "credits"));
 				btnCredits = new RedButton(credText, credText.length() > 9 ? 6 : 9) {
 					@Override
 					protected void onClick() {
 						super.onClick();
+						String creds = "";
+						String creds2 = "";
 						String[] reviewers = currLang.reviewers();
 						String[] translators = currLang.translators();
 
-						int totalCredits = 2*reviewers.length + translators.length;
-						int totalTokens = 2*totalCredits; //for spaces
+						ArrayList<String> total = new ArrayList<>();
+						total.addAll(Arrays.asList(reviewers));
+						total.addAll(Arrays.asList(reviewers));
+						total.addAll(Arrays.asList(translators));
+						int translatorIdx = reviewers.length;
 
-						//additional space for titles, and newline chars
-						if (reviewers.length > 0) totalTokens+=6;
-						totalTokens +=4;
+						//we have 2 columns in wide mode
+						boolean wide = (2 * reviewers.length + translators.length) > (PixelScene.landscape() ? 15 : 30);
 
-						String[] entries = new String[totalTokens];
-						int index = 0;
-						if (reviewers.length > 0){
-							entries[0] = "_";
-							entries[1] = Messages.titleCase(Messages.get(LangsTab.this, "reviewers"));
-							entries[2] = "_";
-							entries[3] = "\n";
-							index = 4;
-							for (int i = 0; i < reviewers.length; i++){
-								entries[index] = reviewers[i];
-								if (i < reviewers.length-1) entries[index] += ", ";
-								entries[index+1] = " ";
-								index += 2;
+						int i;
+						if (reviewers.length > 0) {
+							creds += Messages.titleCase(Messages.get(LangsTab.this, "reviewers"));
+							creds2 += "";
+							boolean col2 = false;
+							for (i = 0; i < total.size(); i++) {
+								if (i == translatorIdx){
+									creds += "\n\n" + Messages.titleCase(Messages.get(LangsTab.this, "translators"));
+									creds2 += "\n\n";
+									if (col2) creds2 += "\n";
+									col2 = false;
+								}
+								if (wide && col2) {
+									creds2 += "\n-" + total.get(i);
+								} else {
+									creds += "\n-" + total.get(i);
+								}
+								col2 = !col2 && wide;
 							}
-							entries[index] = "\n";
-							entries[index+1] = "\n";
-							index += 2;
 						}
 
-						entries[index] = "_";
-						entries[index+1] = Messages.titleCase(Messages.get(LangsTab.this, "translators"));
-						entries[index+2] = "_";
-						entries[index+3] = "\n";
-						index += 4;
+						Window credits = new Window(0, 0, 0, Chrome.get(Chrome.Type.TOAST));
 
-						//reviewers are also shown as translators
-						for (int i = 0; i < reviewers.length; i++){
-							entries[index] = reviewers[i];
-							if (i < reviewers.length-1 || translators.length > 0) entries[index] += ", ";
-							entries[index+1] = " ";
-							index += 2;
-						}
+						int w = wide ? 125 : 60;
 
-						for (int i = 0; i < translators.length; i++){
-							entries[index] = translators[i];
-							if (i < translators.length-1) entries[index] += ", ";
-							entries[index+1] = " ";
-							index += 2;
-						}
-
-						Window credits = new Window(0, 0, Chrome.get(Chrome.Type.TOAST));
-
-						int w = PixelScene.landscape() ? 120 : 80;
-						if (totalCredits >= 25) w *= 1.5f;
-
-						RenderedTextBlock title = PixelScene.renderTextBlock(9);
+						RenderedTextBlock title = PixelScene.renderTextBlock(6);
 						title.text(Messages.titleCase(Messages.get(LangsTab.this, "credits")), w);
-						title.hardlight(TITLE_COLOR);
+						title.hardlight(SHPX_COLOR);
 						title.setPos((w - title.width()) / 2, 0);
 						credits.add(title);
 
-						RenderedTextBlock text = PixelScene.renderTextBlock(7);
-						text.maxWidth(w);
-						text.tokens(entries);
-
-						text.setPos(0, title.bottom() + 4);
+						RenderedTextBlock text = PixelScene.renderTextBlock(5);
+						text.setHightlighting(false);
+						text.text(creds, 65);
+						text.setPos(0, title.bottom() + 2);
 						credits.add(text);
+
+						if (wide) {
+							RenderedTextBlock rightColumn = PixelScene.renderTextBlock(5);
+							rightColumn.setHightlighting(false);
+							rightColumn.text(creds2, 65);
+							rightColumn.setPos(65, title.bottom() + 6);
+							credits.add(rightColumn);
+						}
 
 						credits.resize(w, (int) text.bottom() + 2);
 						ShatteredPixelDungeon.scene().addToFront(credits);

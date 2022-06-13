@@ -31,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.watabou.utils.DeviceCompat;
 
 public class WndSupportPrompt extends Window {
 
@@ -48,7 +47,7 @@ public class WndSupportPrompt extends Window {
 
 		String message = Messages.get(WndSupportPrompt.class, "intro");
 		message += "\n\n" + Messages.get(SupporterScene.class, "patreon_msg");
-		if (Messages.lang() != Languages.ENGLISH) {
+		if (Messages.lang() != Languages.CHINESE) {
 			message += "\n" + Messages.get(SupporterScene.class, "patreon_english");
 		}
 		message += "\n- Evan";

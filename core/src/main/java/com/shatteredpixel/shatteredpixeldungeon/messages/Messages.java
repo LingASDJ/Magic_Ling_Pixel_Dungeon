@@ -106,7 +106,7 @@ public class Messages {
 		} else
 			key = k;
 
-		String value = getFromBundle(key.toLowerCase(Locale.ENGLISH));
+		String value = getFromBundle(key.toLowerCase(Locale.CHINESE));
 		if (value != null){
 			if (args.length > 0) return format(value, args);
 			else return value;
@@ -142,7 +142,7 @@ public class Messages {
 
 	public static String format( String format, Object...args ) {
 		try {
-			return String.format(Locale.ENGLISH, format, args);
+			return String.format(Locale.CHINESE, format, args);
 		} catch (IllegalFormatException e) {
 			ShatteredPixelDungeon.reportException( e );
 			return format;
@@ -165,11 +165,11 @@ public class Messages {
 
 	public static String titleCase( String str ){
 		//English capitalizes every word except for a few exceptions
-		if (lang == Languages.ENGLISH){
+		if (lang == Languages.CHINESE){
 			String result = "";
 			//split by any unicode space character
 			for (String word : str.split("(?<=\\p{Zs})")){
-				if (noCaps.contains(word.trim().toLowerCase(Locale.ENGLISH).replaceAll(":|[0-9]", ""))){
+				if (noCaps.contains(word.trim().toLowerCase(Locale.CHINESE).replaceAll(":|[0-9]", ""))){
 					result += word;
 				} else {
 					result += capitalize(word);

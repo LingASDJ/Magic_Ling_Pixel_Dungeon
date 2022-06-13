@@ -24,8 +24,10 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CircleArc;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -34,8 +36,8 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
+import com.watabou.gltextures.TextureCache;
 import com.watabou.input.GameAction;
-import com.watabou.input.KeyBindings;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
@@ -44,8 +46,6 @@ import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.ColorMath;
-
-import java.util.ArrayList;
 
 public class StatusPane extends Component {
 
@@ -64,6 +64,8 @@ public class StatusPane extends Component {
 	private Image hp;
 	private BitmapText hpText;
 	private Button heroInfoOnBar;
+	private Image hg;
+	private BitmapText hgText;
 
 	private Image exp;
 	private BitmapText expText;
@@ -77,6 +79,13 @@ public class StatusPane extends Component {
 
 	private BusyIndicator busy;
 	private CircleArc counter;
+
+	//Custom UI Left
+	public PageIndicator page;
+	public PageIndicatorB pageb;
+	public MainHandIndicator mainhand;
+	public BossSelectIndicator bossselect;
+	public JoinIndicator joinxxx;
 
 	private static String asset = Assets.Interfaces.STATUS;
 
@@ -131,9 +140,18 @@ public class StatusPane extends Component {
 		else        hp = new Image(asset, 0, 36, 50, 4);
 		add( hp );
 
+		if (large)  hg = new Image(asset, 0, 128, 128, 7);
+		else        hg = new Image(asset, 0, 45, 49, 4);
+		add( hg );
+
 		hpText = new BitmapText(PixelScene.pixelFont);
 		hpText.alpha(0.6f);
 		add(hpText);
+
+
+		hgText = new BitmapText(PixelScene.pixelFont);
+		hgText.alpha(0.6f);
+		add(hgText);
 
 		heroInfoOnBar = new Button(){
 			@Override
@@ -168,6 +186,21 @@ public class StatusPane extends Component {
 		counter = new CircleArc(18, 4.25f);
 		counter.color( 0x808080, true );
 		counter.show(this, busy.center(), 0f);
+
+		page=new PageIndicator();
+		add(page);
+
+		pageb=new PageIndicatorB();
+		add(pageb);
+
+		mainhand=new MainHandIndicator();
+		add(mainhand);
+
+		bossselect=new BossSelectIndicator();
+		add(bossselect);
+
+		joinxxx=new JoinIndicator();
+		add(joinxxx);
 	}
 
 	@Override
@@ -197,9 +230,16 @@ public class StatusPane extends Component {
 			hp.x = shieldedHP.x = rawShielding.x = x + 30;
 			hp.y = shieldedHP.y = rawShielding.y = y + 19;
 
-			hpText.x = hp.x + (128 - hpText.width())/2f;
+			hpText.x = hp.x + (125 - hpText.width())/2f;
 			hpText.y = hp.y + 1;
 			PixelScene.align(hpText);
+
+			hg.x= x + 30;
+			hg.y= y + 10;
+
+			hgText.x = x+80;
+			hgText.y = hg.y;
+			PixelScene.align(hgText);
 
 			expText.x = exp.x + (128 - expText.width())/2f;
 			expText.y = exp.y;
@@ -207,7 +247,7 @@ public class StatusPane extends Component {
 
 			heroInfoOnBar.setRect(heroInfo.right(), y + 19, 130, 20);
 
-			buffs.setPos( x + 31, y );
+			//buffs.setPos( x + 31, y );
 
 			busy.x = x + bg.width + 1;
 			busy.y = y + bg.height - 9;
@@ -215,6 +255,7 @@ public class StatusPane extends Component {
 			exp.x = x;
 			exp.y = y;
 
+			//
 			hp.x = shieldedHP.x = rawShielding.x = x + 30;
 			hp.y = shieldedHP.y = rawShielding.y = y + 3;
 
@@ -224,9 +265,18 @@ public class StatusPane extends Component {
 			hpText.y -= 0.001f; //prefer to be slightly higher
 			PixelScene.align(hpText);
 
+			hg.x = 30.0f;
+			hg.y = 8.0f;
+
+			hgText.scale.set(PixelScene.align(0.5f));
+			hgText.x = hg.x + 1;
+			hgText.y = hg.y + (hp.height - (hgText.baseLine()+hgText.scale.y))/2f;
+			hgText.y -= 0.001f; //prefer to be slightly higher
+			PixelScene.align(hgText);
+
 			heroInfoOnBar.setRect(heroInfo.right(), y, 50, 9);
 
-			buffs.setPos( x + 31, y + 9 );
+			buffs.setPos( x + 31, y + 12 );
 
 			busy.x = x + 1;
 			busy.y = y + 33;
@@ -240,10 +290,31 @@ public class StatusPane extends Component {
 	@Override
 	public void update() {
 		super.update();
-		
+
+		int maxHunger = (int) Hunger.STARVING;
 		int health = Dungeon.hero.HP;
 		int shield = Dungeon.hero.shielding();
 		int max = Dungeon.hero.HT;
+
+		if (SPDSettings.ClassUI()) {
+			bg.texture = TextureCache.get(Assets.Interfaces.STATUS_DARK);
+		} else {
+			bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
+		}
+
+		if (SPDSettings.ClassPage()) {
+			page.setPos(0, 40);
+			pageb.setPos(0, 9999);
+			mainhand.setPos(0, 51);
+			joinxxx.setPos(0, 78);
+			bossselect.setPos(0, 104);
+		} else {
+			page.setPos(0, 9999);
+			pageb.setPos(0, 40);
+			mainhand.setPos(0, 9999);
+			joinxxx.setPos(0, 9999);
+			bossselect.setPos(0, 9999);
+		}
 
 		if (!Dungeon.hero.isAlive()) {
 			avatar.tint(0x000000, 0.5f);
@@ -271,6 +342,16 @@ public class StatusPane extends Component {
 			hpText.text(health + "/" + max);
 		} else {
 			hpText.text(health + "+" + shield +  "/" + max);
+		}
+
+		Hunger hungerBuff = Dungeon.hero.buff(Hunger.class);
+		if (hungerBuff != null) {
+			int hunger = Math.max(0, maxHunger - hungerBuff.hunger());
+			hg.scale.x = (float) hunger / (float) maxHunger;
+			hgText.text(hunger + "/" + maxHunger);
+		}
+		else if (Dungeon.hero.isAlive()) {
+			hg.scale.x = 1.0f;
 		}
 
 		if (large) {

@@ -209,9 +209,6 @@ public class AndroidPlatformSupport extends PlatformSupport {
 				case JAPANESE:
 					typeFace = 0;
 					break;
-				case KOREAN:
-					typeFace = 1;
-					break;
 				case CHINESE:
 				default:
 					typeFace = 2;

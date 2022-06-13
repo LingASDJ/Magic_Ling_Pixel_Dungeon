@@ -66,8 +66,8 @@ public class PixelScene extends Scene {
 	//TODO maybe include another scale for mixed UI? might make it more accessible to mobile devices
 	// mixed UI has similar requirements to mobile landscape tbh... Maybe just merge them?
 	// mixed UI can possible be used on mobile portrait for tablets though.. Does that happen often?
-	public static final float MIN_WIDTH_FULL = 360;
-	public static final float MIN_HEIGHT_FULL = 200;
+	public static final float MIN_WIDTH_FULL = 260;
+	public static final float MIN_HEIGHT_FULL = 100;
 
 	public static int defaultZoom = 0;
 	public static int maxDefaultZoom = 0;
@@ -147,8 +147,8 @@ public class PixelScene extends Scene {
 			renderedTextPageSize = 1024;
 		}
 		//asian languages have many more unique characters, so increase texture size to anticipate that
-		if (Messages.lang() == Languages.KOREAN ||
-				Messages.lang() == Languages.CHINESE ||
+		if
+		(Messages.lang() == Languages.CHINESE ||
 				Messages.lang() == Languages.JAPANESE){
 			renderedTextPageSize *= 2;
 		}
