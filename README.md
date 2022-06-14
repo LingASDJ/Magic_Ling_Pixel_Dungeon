@@ -1,5 +1,7 @@
 
+
 # Magic Ling Pixel Dungeon Part 2-BetaA
+
 [![](https://img.shields.io/badge/QQ%20Group-Join-brightgreen)](https://jq.qq.com/?_wv=1027&k=R7ZXeEQM)
 
 ## Part 1 Link:
