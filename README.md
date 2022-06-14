@@ -3,7 +3,7 @@
 [![](https://img.shields.io/badge/QQ%20Group-Join-brightgreen)](https://jq.qq.com/?_wv=1027&k=R7ZXeEQM)
 
 ## Part 1 Link:
-> [Click Here](https://github.com/AnsdoShip/magic-ling-pixel-dungeon-part1)
+> [Part 1 Link Click Here](https://github.com/AnsdoShip/magic-ling-pixel-dungeon-part1)
 
 **ROGUELIKE RPG**, completely randomly generated dungeons! Based on [**Shattered Pixel Dungeon**](https://github.com/00-Evan/shattered-pixel-dungeon)'s open source.
 
