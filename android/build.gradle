@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion appAndroidCompileSDK
@@ -57,7 +58,7 @@ android {
 configurations { natives }
 
 dependencies {
-    implementation 'com.github.RohitSurwase.UCE-Handler:uce_handler:1.4'
+    implementation 'cat.ereza:customactivityoncrash:2.3.0'
     implementation project(':core')
 
     implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
@@ -71,6 +72,7 @@ dependencies {
     natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
     natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
     implementation "com.badlogicgames.gdx-controllers:gdx-controllers-android:$gdxControllersVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 // called every time gradle gets executed, takes the native dependencies of
@@ -96,4 +98,7 @@ task copyAndroidNatives() {
             }
         }
     }
+}
+repositories {
+    mavenCentral()
 }

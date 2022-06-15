@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">魔绫的像素地牢</string>
+    <string name="customactivityoncrash_error_activity_error_occurred_explanation">魔绫的像素地牢发生了意外的崩溃，\n\n请点击下方错误日志查看错误详情</string>
+    <string name="customactivityoncrash_error_activity_restart_app">重启应用程序</string>
+    <string name="customactivityoncrash_error_activity_close_app">退出应用程序</string>
+    <string name="customactivityoncrash_error_activity_error_details">错误日志</string>
+    <string name="customactivityoncrash_error_activity_error_details_title">错误日志</string>
+    <string name="customactivityoncrash_error_activity_error_details_close">关闭</string>
+    <string name="customactivityoncrash_error_activity_error_details_copy">复制错误日志</string>
+    <string name="customactivityoncrash_error_activity_error_details_copied">错误日志已经复制到你的剪贴板</string>
+    <string name="customactivityoncrash_error_activity_error_details_clipboard_label">错误信息</string>
+</resources>
