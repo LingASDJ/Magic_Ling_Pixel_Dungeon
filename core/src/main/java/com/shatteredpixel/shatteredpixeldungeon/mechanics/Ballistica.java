@@ -30,6 +30,8 @@ import java.util.List;
 
 public class Ballistica {
 
+    public static int distance;
+	public static int[] trace;
 	//note that the path is the FULL path of the projectile, including tiles after collision.
 	//make sure to generate a subPath for the common case of going source to collision.
 	public ArrayList<Integer> path = new ArrayList<>();
@@ -69,6 +71,9 @@ public class Ballistica {
 			collisionPos = from;
 			dist = 0;
 		}
+	}
+
+	public static void cast(int pos, int intValue, boolean b, boolean b1) {
 	}
 
 	private void build( int from, int to, boolean stopTarget, boolean stopChars, boolean stopTerrain, boolean ignoreSoftSolid ) {

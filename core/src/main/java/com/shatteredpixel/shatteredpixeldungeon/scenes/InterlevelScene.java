@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.LIGHTBLACK;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -449,6 +451,7 @@ public class InterlevelScene extends PixelScene {
 		Mob.holdAllies( Dungeon.level );
 
 		Level level;
+
 		if (Dungeon.level.locked) {
 			ArrayList<Item> preservedItems = Dungeon.level.getItemsToPreserveFromSealedResurrect();
 
@@ -457,10 +460,12 @@ public class InterlevelScene extends PixelScene {
 			level = Dungeon.newLevel();
 			Dungeon.hero.pos = level.randomRespawnCell(Dungeon.hero);
 
-			for (Item i : preservedItems){
-				level.drop(i, level.randomRespawnCell(null));
+			if(!Dungeon.isChallenged(LIGHTBLACK)) {
+				for (Item i : preservedItems) {
+					level.drop(i, level.randomRespawnCell(null));
+				}
+				level.drop(new LostBackpack(), level.randomRespawnCell(null));
 			}
-			level.drop(new LostBackpack(), level.randomRespawnCell(null));
 
 		} else {
 			level = Dungeon.level;

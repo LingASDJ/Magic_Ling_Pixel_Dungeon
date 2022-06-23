@@ -741,6 +741,11 @@ public class ItemSpriteSheet {
 	public static final int	BOOKBAG				= BAGS+52;
 	public static final int	BLACKBOOK		= BAGS+53;
 	public static final int	LOSTBAG				= BAGS+54;
+	public static final int	LANTERNA				= BAGS+55;
+	public static final int	LANTERNB				= BAGS+56;
+	public static final int	SKPOTION				= BAGS+57;
+	public static final int	SKNANO				= BAGS+58;
+
 	static{
 		assignItemRect(VIAL,        16, 16);
 		assignItemRect(POUCH,       14, 15);
@@ -749,6 +754,10 @@ public class ItemSpriteSheet {
 		assignItemRect(HOLSTER,     15, 16);
 		assignItemRect(DRAGONKINGHALOFIRE, 12, 14);
 		assignItemRect(REDDRAGON, 14, 14);
+		assignItemRect(LANTERNA, 10, 14);
+		assignItemRect(LANTERNB, 10, 14);
+		assignItemRect(SKPOTION, 12, 14);
+		assignItemRect(SKNANO, 15, 14);
 	}
 
 	private static final int MAINBOOKINDEX    	 = xy(1, 37);  //16 slots

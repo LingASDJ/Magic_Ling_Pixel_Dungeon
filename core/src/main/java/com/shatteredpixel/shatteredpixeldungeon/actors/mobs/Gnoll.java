@@ -21,14 +21,17 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
 import com.watabou.utils.Random;
 
 public class Gnoll extends Mob {
-	
-	{
+
+    public int gold;
+
+    {
 		spriteClass = GnollSprite.class;
 		
 		HP = HT = 12;
@@ -39,6 +42,16 @@ public class Gnoll extends Mob {
 		
 		loot = Gold.class;
 		lootChance = 0.5f;
+	}
+
+	@Override
+	public void die( Object cause ) {
+
+		super.die( cause );
+
+		if (gold > 0) {
+			Dungeon.level.drop( new Gold(gold), pos ).sprite.drop();
+		}
 	}
 	
 	@Override

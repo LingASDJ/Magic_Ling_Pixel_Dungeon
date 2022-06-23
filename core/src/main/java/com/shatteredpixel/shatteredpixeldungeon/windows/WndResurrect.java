@@ -21,14 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
-import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
@@ -44,14 +42,16 @@ public class WndResurrect extends Window {
 	private static final int WIDTH		= 120;
 	private static final int BTN_HEIGHT	= 20;
 	private static final float GAP		= 2;
-	private static final float BTN_GAP  = 10;
+	private static final float BTN_GAP  = 5;
 
-	private static final int BTN_SIZE	= 36;
+	private static final int BTN_SIZE	= 24;
 
 	public static Object instance;
 
 	private WndBlacksmith.ItemButton btnItem1;
 	private WndBlacksmith.ItemButton btnItem2;
+	private WndBlacksmith.ItemButton btnItem3;
+	private WndBlacksmith.ItemButton btnItem4;
 	private WndBlacksmith.ItemButton btnPressed;
 
 	RedButton btnContinue;
@@ -67,7 +67,7 @@ public class WndResurrect extends Window {
 		titlebar.label( Messages.titleCase(Messages.get(this, "title")) );
 		titlebar.setRect( 0, 0, WIDTH, 0 );
 		add( titlebar );
-		
+
 		RenderedTextBlock message = PixelScene.renderTextBlock(Messages.get(this, "message"), 6 );
 		message.maxWidth(WIDTH);
 		message.setPos(0, titlebar.bottom() + GAP);
@@ -80,8 +80,8 @@ public class WndResurrect extends Window {
 				GameScene.selectItem( itemSelector );
 			}
 		};
-		btnItem1.item(Dungeon.hero.belongings.weapon());
-		btnItem1.setRect( (WIDTH - BTN_GAP) / 2 - BTN_SIZE, message.bottom() + BTN_GAP, BTN_SIZE, BTN_SIZE );
+		btnItem1.item(hero.belongings.weapon());
+		btnItem1.setRect( (WIDTH - BTN_GAP) / 4 - BTN_SIZE, message.bottom() + BTN_GAP, BTN_SIZE, BTN_SIZE );
 		add( btnItem1 );
 
 		btnItem2 = new WndBlacksmith.ItemButton() {
@@ -91,9 +91,32 @@ public class WndResurrect extends Window {
 				GameScene.selectItem( itemSelector );
 			}
 		};
-		btnItem2.item(Dungeon.hero.belongings.armor());
+		btnItem2.item(hero.belongings.armor());
 		btnItem2.setRect( btnItem1.right() + BTN_GAP, btnItem1.top(), BTN_SIZE, BTN_SIZE );
 		add( btnItem2 );
+
+		btnItem3 = new WndBlacksmith.ItemButton() {
+			@Override
+			protected void onClick() {
+				btnPressed = btnItem3;
+				GameScene.selectItem( itemSelector );
+			}
+		};
+		btnItem3.item(hero.belongings.misc());
+		btnItem3.setRect( btnItem2.right() + BTN_GAP, btnItem2.top(), BTN_SIZE, BTN_SIZE );
+		add( btnItem3 );
+
+
+		btnItem4 = new WndBlacksmith.ItemButton() {
+			@Override
+			protected void onClick() {
+				btnPressed = btnItem4;
+				GameScene.selectItem( itemSelector );
+			}
+		};
+		btnItem4.item(hero.belongings.misc());
+		btnItem4.setRect( btnItem3.right() + BTN_GAP, btnItem3.top(), BTN_SIZE, BTN_SIZE );
+		add( btnItem4);
 		
 		btnContinue = new RedButton( Messages.get(this, "confirm") ) {
 			@Override
@@ -102,7 +125,7 @@ public class WndResurrect extends Window {
 				
 				Statistics.ankhsUsed++;
 
-				ankh.detach(Dungeon.hero.belongings.backpack);
+				ankh.detach(hero.belongings.backpack);
 
 				if (btnItem1.item != null){
 					btnItem1.item.keptThoughLostInvent = true;
@@ -110,7 +133,14 @@ public class WndResurrect extends Window {
 				if (btnItem2.item != null){
 					btnItem2.item.keptThoughLostInvent = true;
 				}
-				
+				if (btnItem3.item != null){
+					btnItem3.item.keptThoughLostInvent = true;
+				}
+				if (btnItem4.item != null){
+					btnItem4.item.keptThoughLostInvent = true;
+				}
+
+
 				InterlevelScene.mode = InterlevelScene.Mode.RESURRECT;
 				Game.switchScene( InterlevelScene.class );
 			}

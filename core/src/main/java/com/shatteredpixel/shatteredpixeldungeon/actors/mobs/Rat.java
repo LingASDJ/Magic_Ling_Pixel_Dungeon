@@ -21,6 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.LIGHTBLACK;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sanity.sanity;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
@@ -39,9 +43,23 @@ public class Rat extends Mob {
 		maxLvl = 5;
 	}
 
+	public int attackProc( Char enemy, int damage ) {
+		damage = super.attackProc( enemy, damage );
+		if(Dungeon.isChallenged(LIGHTBLACK)) {
+			if (Random.Int(5) == 1) {
+				sanity -= 1;
+				hero.sprite.showStatus( 0x808080, "1");
+			}
+		} else {
+			super.attackProc( enemy, damage );
+		}
+		return damage;
+	}
+
+
 	@Override
 	protected boolean act() {
-		if (Dungeon.level.heroFOV[pos] && Dungeon.hero.armorAbility instanceof Ratmogrify){
+		if (Dungeon.level.heroFOV[pos] && hero.armorAbility instanceof Ratmogrify){
 			alignment = Alignment.ALLY;
 			if (state == SLEEPING) state = WANDERING;
 		}

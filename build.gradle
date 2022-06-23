@@ -1,12 +1,10 @@
 buildscript {
-    ext.kotlin_version = '1.5.20'
     repositories {
         maven { url 'https://maven.aliyun.com/repository/google' }
         maven{ url 'https://maven.aliyun.com/repository/jcenter'}
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.0.4'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -34,7 +32,7 @@ allprojects {
     repositories {
         maven{ url 'https://maven.aliyun.com/repository/google' }
         maven{ url 'https://maven.aliyun.com/repository/jcenter'}
-        maven { url 'https://jitpack.io' }
+        //maven { url 'https://jitpack.io' }
     }
 
 }

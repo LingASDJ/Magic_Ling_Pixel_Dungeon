@@ -26,6 +26,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.DeviceCompat;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,8 +57,8 @@ public class GitHubUpdates extends UpdateService {
 		}
 
 		Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
-		httpGet.setUrl("https://api.github.com/repos/LingASDJ/MagicLing-Pixel-Dungeon/releases");
-		httpGet.setHeader("Acct", "application/vnd.github.v3+json");
+		httpGet.setUrl("https://api.github.com/repos/smujb/cursed-pixel-dungeon/releases");
+		httpGet.setHeader("Accept", "application/vnd.github.v3+json");
 
 		Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {
 			@Override
@@ -66,13 +67,15 @@ public class GitHubUpdates extends UpdateService {
 					Bundle latestRelease = null;
 					int latestVersionCode = Game.versionCode;
 
+					boolean includePrereleases = Game.version.toLowerCase().contains("beta") || DeviceCompat.isDebug();
+
 					for (Bundle b : Bundle.read( httpResponse.getResultAsStream() ).getBundleArray()){
 						Matcher m = versionCodePattern.matcher(b.getString("body"));
 
 						if (m.find()){
 							int releaseVersion = Integer.parseInt(m.group(1));
 							if (releaseVersion > latestVersionCode
-									&& (includeBetas || !b.getBoolean("prerelease"))){
+									&& (includePrereleases || !b.getBoolean("prerelease"))){
 								latestRelease = b;
 								latestVersionCode = releaseVersion;
 							}

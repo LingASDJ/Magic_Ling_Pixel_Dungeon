@@ -21,6 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
@@ -30,7 +33,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Alchemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AdrenalineSurge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AnkhInvulnerability;
@@ -59,7 +61,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.En
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -117,7 +118,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
@@ -152,11 +152,10 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class Hero extends Char {
-
+	public int shadeID;
 	{
 		actPriority = HERO_PRIO;
 		
@@ -591,7 +590,7 @@ public class Hero extends Char {
 			return true;
 		}
 
-		KindOfWeapon wep = Dungeon.hero.belongings.weapon();
+		KindOfWeapon wep = hero.belongings.weapon();
 
 		if (wep != null){
 			return wep.canReach(this, enemy.pos);
@@ -1730,9 +1729,9 @@ public class Hero extends Char {
 		Dungeon.observe();
 		GameScene.updateFog();
 				
-		Dungeon.hero.belongings.identify();
+		hero.belongings.identify();
 
-		int pos = Dungeon.hero.pos;
+		int pos = hero.pos;
 
 		ArrayList<Integer> passable = new ArrayList<>();
 		for (Integer ofs : PathFinder.NEIGHBOURS8) {
@@ -1743,7 +1742,7 @@ public class Hero extends Char {
 		}
 		Collections.shuffle( passable );
 
-		ArrayList<Item> items = new ArrayList<>(Dungeon.hero.belongings.backpack.items);
+		ArrayList<Item> items = new ArrayList<>(hero.belongings.backpack.items);
 		for (Integer cell : passable) {
 			if (items.isEmpty()) {
 				break;
@@ -1853,17 +1852,17 @@ public class Hero extends Char {
 				boolean hasKey = true;
 				if (door == Terrain.LOCKED_DOOR) {
 					hasKey = Notes.remove(new IronKey(Dungeon.depth));
-					if (hasKey) Level.set(doorCell, Terrain.DOOR);
+					if (hasKey) set(doorCell, Terrain.DOOR);
 				} else if (door == Terrain.CRYSTAL_DOOR) {
 					hasKey = Notes.remove(new CrystalKey(Dungeon.depth));
 					if (hasKey) {
-						Level.set(doorCell, Terrain.EMPTY);
+						set(doorCell, Terrain.EMPTY);
 						Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 						CellEmitter.get( doorCell ).start( Speck.factory( Speck.DISCOVER ), 0.025f, 20 );
 					}
 				} else {
 					hasKey = Notes.remove(new SkeletonKey(Dungeon.depth));
-					if (hasKey) Level.set(doorCell, Terrain.UNLOCKED_EXIT);
+					if (hasKey) set(doorCell, Terrain.UNLOCKED_EXIT);
 				}
 				
 				if (hasKey) {

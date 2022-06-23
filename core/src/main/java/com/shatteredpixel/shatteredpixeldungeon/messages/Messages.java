@@ -26,6 +26,7 @@ import com.badlogic.gdx.utils.I18NBundle;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,10 +99,15 @@ public class Messages {
 		return get(o.getClass(), k, args);
 	}
 
-	public static String get(Class c, String k, Object...args){
+	public static String get(Class c, String k, Object...args) {
+		return get(c, k, null, args);
+	}
+
+	private static String get(Class c, String k, String baseName, Object...args){
 		String key;
 		if (c != null){
-			key = c.getName().replace("com.shatteredpixel.shatteredpixeldungeon.", "");
+			key = c.getName();
+			key = key.replace("com.shatteredpixel.shatteredpixeldungeon.", "");
 			key += "." + k;
 		} else
 			key = k;
@@ -110,17 +116,24 @@ public class Messages {
 		if (value != null){
 			if (args.length > 0) return format(value, args);
 			else return value;
-		} else {
+		}  else {
+			//Use baseName so the missing string is clear what exactly needs replacing. Otherwise, it just says java.lang.Object.[key]
+			if (baseName == null) {
+				baseName = key;
+			}
 			//this is so child classes can inherit properties from their parents.
 			//in cases where text is commonly grabbed as a utility from classes that aren't mean to be instantiated
 			//(e.g. flavourbuff.dispTurns()) using .class directly is probably smarter to prevent unnecessary recursive calls.
 			if (c != null && c.getSuperclass() != null){
-				return get(c.getSuperclass(), k, args);
+				return get(c.getSuperclass(), k, baseName, args);
 			} else {
-				return "!!!NO TEXT FOUND!!!";
+				String name = "Ms: "+baseName;
+				GLog.w(name);
+				return name;
 			}
 		}
 	}
+
 
 	private static String getFromBundle(String key){
 		String result;

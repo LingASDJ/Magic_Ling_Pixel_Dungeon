@@ -41,7 +41,6 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
-import com.shatteredpixel.shatteredpixeldungeon.ui.InventoryPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
@@ -74,6 +73,7 @@ public class Item implements Bundlable {
 	public int icon = -1; //used as an identifier for items with randomized images
 	
 	public boolean stackable = false;
+	public int flasks;
 	protected int quantity = 1;
 	public boolean dropsDownHeap = false;
 	

@@ -268,4 +268,12 @@ public abstract class ChampionEnemy extends Buff {
 		}
 	}
 
+	public static class DeadSoulSX extends ChampionEnemy {
+
+		{
+			color = 0x808080;
+		}
+
+	}
+
 }

@@ -46,6 +46,12 @@
 			android:name=".AndroidGame"
 			android:screenOrientation="nosensor"
 			android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+				<data android:scheme="um.62aafe4488ccdf4b7e9b49ff" />
+			</intent-filter>
 		</activity>
 
 	</application>

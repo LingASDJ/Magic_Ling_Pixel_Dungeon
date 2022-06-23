@@ -30,7 +30,7 @@ public class DebugUpdates extends UpdateService {
 
 	@Override
 	public boolean isUpdateable() {
-		return false; //turn on to debug update prompts
+		return true; //turn on to debug update prompts
 	}
 
 	@Override
