@@ -126,24 +126,30 @@ public class CrystalPathRoom extends SpecialRoom {
 			Item item;
 			switch (i){
 				case 0: default:
-					item = new Gold(Random.NormalIntRange(5, 12));
+					item = new Gold(Random.NormalIntRange(80, 270));
 					break;
 				case 1:
 					item = Generator.random(Random.oneOf(
+							Generator.Category.STONE,
 							Generator.Category.SEED,
-							Generator.Category.STONE)
+							Generator.Category.SCROLL,
+							Generator.Category.FOOD)
 					);
 					break;
 				case 2:
 					item = Generator.random(Random.oneOf(
-							Generator.Category.POTION,
-							Generator.Category.SCROLL)
+							Generator.Category.WEP_T1,
+							Generator.Category.WEP_T3,
+							Generator.Category.WEP_T5,
+							Generator.Category.RING)
 					);
 					break;
 				case 3:
 					item = Generator.random(Random.oneOf(
-							Generator.Category.WEAPON,
-							Generator.Category.ARMOR)
+							Generator.Category.ARMOR,
+							Generator.Category.STONE,
+							Generator.Category.WAND,
+							Generator.Category.ARTIFACT)
 					);
 					break;
 			}

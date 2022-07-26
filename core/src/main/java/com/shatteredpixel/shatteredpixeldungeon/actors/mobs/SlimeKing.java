@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
@@ -278,19 +279,19 @@ public class SlimeKing extends Golem implements Callback {
         }
 
         Badges.validateBossSlain();
-        //Badges.KILLSLIMKING();
+        Badges.KILLSLIMKING();
         yell( Messages.get(this, "defeated") );
-        //for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
-        //    if (	mob instanceof Slime_Lg||
-        //            mob instanceof Slime_Qs||
-        //            mob instanceof Slime_Sn||
-        //            mob instanceof Slime_Sz||
-        //            mob instanceof Slime_Lt||
-        //            mob instanceof Slime_Red||
-        //            mob instanceof Slime_Orange) {
-        //        mob.die( cause );
-        //    }
-        //}
+        for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
+            if (	mob instanceof Slime_Lg||
+                    mob instanceof Slime_Qs||
+                    mob instanceof Slime_Sn||
+                    mob instanceof Slime_Sz||
+                    mob instanceof Slime_Lt||
+                    mob instanceof Slime_Red||
+                    mob instanceof Slime_Orange) {
+                mob.die( cause );
+            }
+        }
     }
 
     @Override
@@ -304,11 +305,11 @@ public class SlimeKing extends Golem implements Callback {
             enemySeen = enemyInFOV;
             //放风筝必死 恼
             //140血强制更新玩家血量为1 赋予燃烧 失明 流血 弱化
-            //if (++HP+1 >= 141){
-            //    hero.HP = 	1;
-            //    Buff.affect(hero, HalomethaneBurning.class).reignite(hero);
-            //    GLog.b( Messages.get(this, "cus") );
-            //}
+            if (++HP+1 >= 141){
+                hero.HP = 	1;
+                Buff.affect(hero, HalomethaneBurning.class).reignite(hero);
+                GLog.b( Messages.get(this, "cus") );
+            }
             if (!chainsUsed
                     && enemyInFOV
                     && !isCharmedBy( enemy )

@@ -40,7 +40,7 @@ public class GitHubUpdates extends UpdateService {
 
 	@Override
 	public boolean isUpdateable() {
-		return true;
+		return false;
 	}
 
 	@Override

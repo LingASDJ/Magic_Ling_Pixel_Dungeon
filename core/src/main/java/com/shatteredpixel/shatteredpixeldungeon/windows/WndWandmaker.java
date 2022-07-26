@@ -22,9 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
@@ -69,6 +69,7 @@ public class WndWandmaker extends Window {
 		String msg = "";
 		if (item instanceof CorpseDust){
 			msg = Messages.get(this, "dust");
+			Badges.GET_SC();
 		} else if (item instanceof Embers){
 			msg = Messages.get(this, "ember");
 		} else if (item instanceof Rotberry.Seed){

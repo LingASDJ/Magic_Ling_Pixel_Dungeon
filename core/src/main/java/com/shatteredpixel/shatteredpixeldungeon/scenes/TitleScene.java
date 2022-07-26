@@ -220,7 +220,7 @@ public class TitleScene extends PixelScene {
 		StyledButton btnAbout = new StyledButton(GREY_TR, Messages.get(this, "about")){
 			@Override
 			protected void onClick() {
-				ShatteredPixelDungeon.switchNoFade( AboutScene.class );
+				ShatteredPixelDungeon.switchNoFade( AboutSelectScene.class );
 			}
 		};
 		btnAbout.icon(new ItemSprite(ItemSpriteSheet.MAGICGIRLBOOKS, null));

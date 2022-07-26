@@ -21,54 +21,93 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.services.news;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.XmlReader;
 import com.watabou.noosa.Game;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DebugNews extends NewsService {
 
 	@Override
-	public void checkForArticles(boolean useMetered, boolean forceHTTPS, NewsResultCallback callback) {
+	public void checkForArticles(boolean useMetered, boolean preferHTTPS, NewsResultCallback callback) {
 
 		if (!useMetered && !Game.platform.connectedToUnmeteredNetwork()){
 			callback.onConnectionFailed();
 			return;
 		}
 
-		//turn on to test connection failure
-		if (false){
-			callback.onConnectionFailed();
-			return;
+		Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
+		if (preferHTTPS) {
+			httpGet.setUrl("https://lingasdj.github.io/MagicLingPixelDungeon_Sing/xml/news.xml");
+		} else {
+			httpGet.setUrl("https://lingasdj.github.io/MagicLingPixelDungeon_Sing/xml/news.xml");
 		}
 
-		boolean testUnread = false;
-		//start placing articles either at the current time (if testing unread count)
-		// or 10 days after 1st jan 1970
-		long startTime = testUnread ? Game.realTime : 10*1000*60*60*24;
+		Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {
+			@Override
+			public void handleHttpResponse(Net.HttpResponse httpResponse) {
+				ArrayList<NewsArticle> articles = new ArrayList<>();
+				XmlReader reader = new XmlReader();
+				XmlReader.Element xmlDoc = reader.parse(httpResponse.getResultAsStream());
 
-		ArrayList<NewsArticle> articles = new ArrayList<>();
-		for (int i = 0; i < 10; i++){
-			NewsArticle article = new NewsArticle();
-			article.title = "TEST ARTICLE " + i;
-			article.summary = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do " +
-					"eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim " +
-					"veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea " +
-					"commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit " +
-					"esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat " +
-					"non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-			// 10 to 1 days after Jan 1st 1970
-			article.date = new Date(startTime - (i)*1000*60*60*24);
+				SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
-			article.URL = "http://www.google.com";
+				for (XmlReader.Element xmlArticle : xmlDoc.getChildrenByName("entry")){
+					NewsArticle article = new NewsArticle();
+					article.title = xmlArticle.get("title");
+					try {
+						article.date = dateParser.parse(xmlArticle.get("published"));
+					} catch (ParseException e) {
+						Game.reportException(e);
+					}
+					article.summary = xmlArticle.get("summary");
+					article.URL = xmlArticle.getChildByName("link").getAttribute("href");
+					if (!preferHTTPS) {
+						article.URL = article.URL.replace("https://", "http://");
+					}
 
-			//debug icon!
-			article.icon = "sprites/spinner.png, 144, 0, 16, 16";
+					Pattern versionCodeMatcher = Pattern.compile("v[0-9]+");
+					try {
+						Array<XmlReader.Element> properties = xmlArticle.getChildrenByName("category");
+						for (XmlReader.Element prop : properties){
+							String propVal = prop.getAttribute("term");
+							if (propVal.startsWith("SHPD_ICON")){
+								Matcher m = versionCodeMatcher.matcher(propVal);
+								if (m.find()) {
+									int iconGameVer = Integer.parseInt(m.group().substring(1));
+									if (iconGameVer <= Game.versionCode) {
+										article.icon = propVal.substring(propVal.indexOf(": ") + 2);
+									}
+								}
+							}
+						}
+					} catch (Exception e){
+						article.icon = null;
+					}
 
-			articles.add(article);
-		}
+					articles.add(article);
+				}
+				callback.onArticlesFound(articles);
+			}
 
-		callback.onArticlesFound(articles);
+			@Override
+			public void failed(Throwable t) {
+				callback.onConnectionFailed();
+			}
 
+			@Override
+			public void cancelled() {
+				callback.onConnectionFailed();
+			}
+		});
 	}
+
 }

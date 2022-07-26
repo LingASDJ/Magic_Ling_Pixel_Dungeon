@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -362,7 +361,7 @@ public class RedNecromancer extends Mob {
             for (Mob mob : (Iterable<Mob>) Dungeon.level.mobs.clone()) {
                 if (mob instanceof RedNecromancer) {
                     mob.die(cause);
-                    Badges.KILL_DEATHRED();
+                    //Badges.KILL_DEATHRED();
                 }
             }
             super.die(cause);

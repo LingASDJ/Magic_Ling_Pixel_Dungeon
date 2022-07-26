@@ -632,17 +632,6 @@ public class WndSettings extends WndTabbed {
 			};
 			ClassUI.checked(SPDSettings.ClassUI());
 			add(ClassUI);
-
-			ClassSkin = new CheckBox( Messages.get(this, "pc_ui") ) {
-				@Override
-				protected void onClick() {
-					super.onClick();
-					SPDSettings.PCTestUI(checked());
-				}
-			};
-			ClassSkin.checked(SPDSettings.PCTestUI());
-			add(ClassSkin);
-
 		}
 
 		@Override
@@ -658,25 +647,10 @@ public class WndSettings extends WndTabbed {
 
 			if (width > 200){
 				ClassUI.setRect(0, bottom, width/2-GAP/2, SLIDER_HEIGHT);
-				//横屏布局
-				if(Game.scene()!=null && Game.scene().getClass() == GameScene.class) {
-					ClassSkin.setRect(ClassUI.left(), ClassUI.bottom(), width-1, SLIDER_HEIGHT);
-				} else {
-					ClassSkin.setRect(ClassUI.left(), ClassUI.bottom(), width-1, SLIDER_HEIGHT);
-				}
-				//竖屏布局
 			} else {
 				//quickslots.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
 				ClassUI.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
 				//GameScene
-				if(Game.scene()!=null && Game.scene().getClass() == GameScene.class){
-					//quickslots.setRect(ClassUI.left(), ClassUI.bottom(), width  - GAP / 2, SLIDER_HEIGHT);
-					ClassSkin.setRect(0, ClassUI.bottom(), width-1, SLIDER_HEIGHT);
-				} else {
-					//quickslots.setRect(0, 9000 + GAP, width, SLIDER_HEIGHT);
-					ClassSkin.setRect(0, 9000 + GAP, width, SLIDER_HEIGHT);
-				}
-
 			}
 
 			height = ClassUI.bottom();

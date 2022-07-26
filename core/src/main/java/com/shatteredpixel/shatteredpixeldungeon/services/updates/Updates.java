@@ -38,7 +38,7 @@ public class Updates {
 	private static final long CHECK_DELAY = 1000*60*60; //1 hour
 
 	public static boolean isUpdateable(){
-		return supportsUpdates() && service.isUpdateable();
+		return false;
 	}
 
 	public static boolean supportsBetaChannel(){

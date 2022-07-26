@@ -21,9 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CavesPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
@@ -57,6 +60,17 @@ public class CavesLevel extends RegularLevel {
 	{
 		color1 = 0x534f3e;
 		color2 = 0xb9d661;
+	}
+
+	//红龙的试炼
+	@Override
+	protected void createItems() {
+		if (Dungeon.isChallenged(RLPT)) {
+			super.createItems();
+		} else {
+			RedDragon.Quest.spawn(this);
+			super.createItems();
+		}
 	}
 
 	@Override

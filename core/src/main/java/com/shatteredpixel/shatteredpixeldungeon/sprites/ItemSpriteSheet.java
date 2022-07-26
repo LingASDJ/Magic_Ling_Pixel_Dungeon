@@ -359,15 +359,15 @@ public class ItemSpriteSheet {
 	public static final int ARMOR_ROGUE     = ARMOR+7;
 	public static final int ARMOR_HUNTRESS  = ARMOR+8;
 	static{
-		assignItemRect(ARMOR_CLOTH,     15, 12);
-		assignItemRect(ARMOR_LEATHER,   14, 13);
-		assignItemRect(ARMOR_MAIL,      14, 12);
-		assignItemRect(ARMOR_SCALE,     14, 11);
-		assignItemRect(ARMOR_PLATE,     12, 12);
-		assignItemRect(ARMOR_WARRIOR,   12, 12);
-		assignItemRect(ARMOR_MAGE,      15, 15);
-		assignItemRect(ARMOR_ROGUE,     14, 12);
-		assignItemRect(ARMOR_HUNTRESS,  13, 15);
+		assignItemRect(ARMOR_CLOTH,     14, 14);
+		assignItemRect(ARMOR_LEATHER,   15, 15);
+		assignItemRect(ARMOR_MAIL,      15, 15);
+		assignItemRect(ARMOR_SCALE,     16, 16);
+		assignItemRect(ARMOR_PLATE,     15, 15);
+		assignItemRect(ARMOR_WARRIOR,   16, 16);
+		assignItemRect(ARMOR_MAGE,      16, 16);
+		assignItemRect(ARMOR_ROGUE,     16, 16);
+		assignItemRect(ARMOR_HUNTRESS,  16, 16);
 	}
 
 	                                                                                    //16 free slots

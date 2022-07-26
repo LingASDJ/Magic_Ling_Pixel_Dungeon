@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2021 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -48,12 +47,11 @@ public class GameLog extends Component implements Signal.Listener<String> {
 
 		recreateLines();
 	}
-	
+
 	private static ArrayList<String> textsToAdd = new ArrayList<>();
-	
+
 	@Override
 	public synchronized void update() {
-		int maxLines = SPDSettings.interfaceSize() > 0 ? 5 : 3;
 		for (String text : textsToAdd){
 			if (length != entries.size()){
 				clear();
@@ -64,11 +62,19 @@ public class GameLog extends Component implements Signal.Listener<String> {
 				lastEntry = null;
 				continue;
 			}
-			
+
 			int color = CharSprite.DEFAULT;
 			if (text.startsWith( GLog.POSITIVE )) {
 				text = text.substring( GLog.POSITIVE.length() );
 				color = CharSprite.POSITIVE;
+			} else
+			if (text.startsWith( GLog.BLUETEXT )) {
+				text = text.substring( GLog.BLUETEXT.length() );
+				color = CharSprite.BLUETEXT;
+			} else
+			if (text.startsWith( GLog.PINKTEXT )) {
+				text = text.substring( GLog.PINKTEXT.length() );
+				color = CharSprite.PINKTEXT;
 			} else
 			if (text.startsWith( GLog.NEGATIVE )) {
 				text = text.substring( GLog.NEGATIVE.length() );
@@ -82,26 +88,26 @@ public class GameLog extends Component implements Signal.Listener<String> {
 				text = text.substring( GLog.HIGHLIGHT.length() );
 				color = CharSprite.NEUTRAL;
 			}
-			
-			if (lastEntry != null && color == lastColor && lastEntry.nLines < maxLines) {
-				
+
+			if (lastEntry != null && color == lastColor && lastEntry.nLines < MAX_LINES) {
+
 				String lastMessage = lastEntry.text();
 				lastEntry.text( lastMessage.length() == 0 ? text : lastMessage + " " + text );
-				
+
 				entries.get( entries.size() - 1 ).text = lastEntry.text();
-				
+
 			} else {
-				
+
 				lastEntry = PixelScene.renderTextBlock( text, 6 );
 				lastEntry.setHightlighting( false );
 				lastEntry.hardlight( color );
 				lastColor = color;
 				add( lastEntry );
-				
+
 				entries.add( new Entry( text, color ) );
-				
+
 			}
-			
+
 			if (length > 0) {
 				int nLines;
 				do {
@@ -109,28 +115,28 @@ public class GameLog extends Component implements Signal.Listener<String> {
 					for (int i = 0; i < length-1; i++) {
 						nLines += ((RenderedTextBlock) members.get(i)).nLines;
 					}
-					
-					if (nLines > maxLines) {
+
+					if (nLines > MAX_LINES) {
 						RenderedTextBlock r = ((RenderedTextBlock) members.get(0));
 						remove(r);
 						r.destroy();
-						
+
 						entries.remove( 0 );
 					}
-				} while (nLines > maxLines);
+				} while (nLines > MAX_LINES);
 				if (entries.isEmpty()) {
 					lastEntry = null;
 				}
 			}
 		}
-		
+
 		if (!textsToAdd.isEmpty()){
 			layout();
 			textsToAdd.clear();
 		}
 		super.update();
 	}
-	
+
 	private synchronized void recreateLines() {
 		for (Entry entry : entries) {
 			lastEntry = PixelScene.renderTextBlock( entry.text, 6 );
@@ -160,6 +166,12 @@ public class GameLog extends Component implements Signal.Listener<String> {
 		}
 	}
 
+	@Override
+	public void destroy() {
+		GLog.update.remove( this );
+		super.destroy();
+	}
+
 	private static class Entry {
 		public String text;
 		public int color;
@@ -171,6 +183,5 @@ public class GameLog extends Component implements Signal.Listener<String> {
 
 	public static void wipe() {
 		entries.clear();
-		textsToAdd.clear();
 	}
 }

@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
@@ -202,7 +203,7 @@ public class GameScene extends PixelScene {
 			return;
 		}
 
-		Dungeon.level.playLevelMusic();
+		BGMPlayer.playBGMWithDepth();
 
 		SPDSettings.lastClass(Dungeon.hero.heroClass.ordinal());
 		

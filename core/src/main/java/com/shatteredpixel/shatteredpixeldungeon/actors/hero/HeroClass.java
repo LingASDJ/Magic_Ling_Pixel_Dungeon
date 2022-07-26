@@ -44,6 +44,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.Smok
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
+import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.LevelTeleporter;
+import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.MobPlacer;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -52,20 +54,34 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.BrokenBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.DeepBloodBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.GrassKingBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.IceCityBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.NoKingMobBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.PotionOfLightningShiled;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLightningShiledX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonKingBreath;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.GoldBAo;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
@@ -73,27 +89,42 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfRoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFlock;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlueFuck;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfGodIce;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfScale;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BlackDog;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.GreenSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceSan;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SkyShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
+import com.shatteredpixel.shatteredpixeldungeon.plants.SkyBlueFireBloom;
 import com.watabou.utils.DeviceCompat;
 
 public enum HeroClass {
@@ -150,40 +181,37 @@ public enum HeroClass {
 			new MasterThievesArmband().quantity(1).identify().collect();
 			new Dart().quantity(1).identify().collect();
 
-			//new GreenSword().quantity(1).identify().collect();
-			//new SkyShield().quantity(1).identify().collect();
-			//new IceSan().quantity(1).identify().collect();
-			//new GoldBAo().quantity(9999).identify().collect();
-			//new WandOfScale().quantity(1).identify().collect();
-			//new WandOfGodIce().quantity(1).identify().collect();
-			//new PotionOfLightningShiledX().quantity(50).identify().collect();
-			//new LevelTeleporter().quantity(1).identify().collect();
-			//new MobPlacer().quantity(1).identify().collect();
-			//new BlackDog().quantity(1).identify().collect();
-			//new RedBloodMoon().quantity(1).identify().collect();
-			//new KingBag().quantity(1).identify().collect();
-			//new TomeOfMastery().quantity(1).identify().collect();
-			//new PotionOfLiquidFlameX().quantity(100).identify().collect();
-			//new LockSword().quantity(1).identify().collect();
-			//new YellowSunBooks().quantity(1).identify().collect();
-			//new BrokenBooks().quantity(1).identify().collect();
-			//new DeepBloodBooks().quantity(1).identify().collect();
-			//new BookBag().quantity(1).identify().collect();
-			//new HellFireBooks().quantity(1).identify().collect();
-			//new IceCityBooks().quantity(1).identify().collect();
-			//new MagicGirlBooks().quantity(1).identify().collect();
-			//new NoKingMobBooks().quantity(1).identify().collect();
-			//new GrassKingBooks().quantity(100).identify().collect();
-			//new AikeLaier.Seed().quantity(10).identify().collect();
-			//new IceFishSword().quantity(1).identify().collect();
-			//new FireFishSword().quantity(1).identify().collect();
-			//new EndingBlade().quantity(1).identify().collect();
-			//new PotionOfDragonKingBreath().quantity(1).identify().collect();
-			//new WandOfBlueFuck().quantity(1).identify().collect();
-			//new SkyBlueFireBloom.Seed().quantity(10).identify().collect();
-			//new PotionOfLightningShiled().quantity(42).collect();
-			//new StoneOfAffection().quantity(45).identify().collect();
-			//new ScrollOfRoseShiled().quantity(45).identify().collect();
+			new GreenSword().quantity(1).identify().collect();
+			new SkyShield().quantity(1).identify().collect();
+			new IceSan().quantity(1).identify().collect();
+			new GoldBAo().quantity(9999).identify().collect();
+			new WandOfScale().quantity(1).identify().collect();
+			new WandOfGodIce().quantity(1).identify().collect();
+			new PotionOfLightningShiledX().quantity(50).identify().collect();
+			new LevelTeleporter().quantity(1).identify().collect();
+			new MobPlacer().quantity(1).identify().collect();
+			new BlackDog().quantity(1).identify().collect();
+			new RedBloodMoon().quantity(1).identify().collect();
+			new KingBag().quantity(1).identify().collect();
+			new PotionOfLiquidFlameX().quantity(100).identify().collect();
+			new LockSword().quantity(1).identify().collect();
+			new YellowSunBooks().quantity(1).identify().collect();
+			new BrokenBooks().quantity(1).identify().collect();
+			new DeepBloodBooks().quantity(1).identify().collect();
+			new BookBag().quantity(1).identify().collect();
+			new IceCityBooks().quantity(1).identify().collect();
+			new MagicGirlBooks().quantity(1).identify().collect();
+			new NoKingMobBooks().quantity(1).identify().collect();
+			new GrassKingBooks().quantity(100).identify().collect();
+			new AikeLaier.Seed().quantity(10).identify().collect();
+			new IceFishSword().quantity(1).identify().collect();
+			new FireFishSword().quantity(1).identify().collect();
+			new EndingBlade().quantity(1).identify().collect();
+			new PotionOfDragonKingBreath().quantity(1).identify().collect();
+			new WandOfBlueFuck().quantity(1).identify().collect();
+			new SkyBlueFireBloom.Seed().quantity(10).identify().collect();
+			new PotionOfLightningShiled().quantity(42).collect();
+			new ScrollOfRoseShiled().quantity(45).identify().collect();
 			Dungeon.gold = 600000000;
 			hero.STR = 27;
 			hero.lvl = 31;
@@ -427,20 +455,20 @@ public enum HeroClass {
 				};
 		}
 	}
-	
+
 	public boolean isUnlocked(){
-		//always unlock on debug builds
-		if (DeviceCompat.isDebug()) return true;
-		
 		switch (this){
 			case WARRIOR: default:
 				return true;
 			case MAGE:
-				return Badges.isUnlocked(Badges.Badge.UNLOCK_MAGE);
+				return true;
 			case ROGUE:
-				return Badges.isUnlocked(Badges.Badge.UNLOCK_ROGUE);
+				return true;
 			case HUNTRESS:
-				return Badges.isUnlocked(Badges.Badge.UNLOCK_HUNTRESS);
+				return true;
+			case COMINGSOON:
+				return false;
+			//敬请期待
 		}
 	}
 	

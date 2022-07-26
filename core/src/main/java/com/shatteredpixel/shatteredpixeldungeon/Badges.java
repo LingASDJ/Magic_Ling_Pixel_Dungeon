@@ -73,7 +73,6 @@ public class Badges {
 		DEATH_FROM_GAS              ( 16 ),
 		DEATH_FROM_HUNGER           ( 17 ),
 		DEATH_FROM_FALLING          ( 18 ),
-		KILL_RED         			( 19 ),
 		KILL_ROTHEART         			( 20 ),
 		GET_SC        			( 21 ),
 		KILL_COLDELE        			( 22 ),
@@ -165,8 +164,7 @@ public class Badges {
 		NYZ_SHOP                    ( 117 ),
 
 		//rudy
-		FIREGIRL                    ( 128 ),
-		DM920                   	 ( 129 ),
+		SLIMEPR                  	 ( 129 ),
 		DRAWF_HEAD                    ( 130 ),
 		SPICEALBOSS 				 ( 131),
 		SBDJS				(132),
@@ -601,14 +599,6 @@ public class Badges {
 		validateYASD();
 	}
 
-	public static void KILL_DEATHRED() {
-		Badge badge = Badge.KILL_RED;
-		local.add( badge );
-		displayBadge( badge );
-
-		validateGOODMAKE();
-	}
-
 	public static void KILL_ROTHEART() {
 		Badge badge = Badge.KILL_ROTHEART;
 		local.add( badge );
@@ -646,8 +636,7 @@ public class Badges {
 	}
 
 	private static void validateGOODMAKE() {
-		if (global.contains( Badge.KILL_RED ) &&
-				global.contains( Badge.KILL_ROTHEART ) &&
+		if (global.contains( Badge.KILL_ROTHEART ) &&
 				global.contains( Badge.GET_SC ) &&
 				global.contains( Badge.KILL_COLDELE)) {
 

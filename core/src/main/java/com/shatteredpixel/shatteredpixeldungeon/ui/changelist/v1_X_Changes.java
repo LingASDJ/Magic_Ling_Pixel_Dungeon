@@ -45,34 +45,9 @@ import java.util.ArrayList;
 public class v1_X_Changes {
 
 	public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
-		add_Coming_Soon(changeInfos);
 		add_v1_2_Changes(changeInfos);
 		add_v1_1_Changes(changeInfos);
 		add_v1_0_Changes(changeInfos);
-	}
-
-	public static void add_Coming_Soon( ArrayList<ChangeInfo> changeInfos ) {
-
-		ChangeInfo changes = new ChangeInfo("Coming Soon", true, "");
-		changes.hardlight(0xCCCCCC);
-		changeInfos.add(changes);
-
-		changes.addButton( new ChangeButton(Icons.get(Icons.SHPX), "Overview",
-			"The next Shattered update will be v1.3.0! Like v1.2.0, I'm aiming for v1.3.0 to be an update that focused on a variety of smaller improvements and additions. In particular I want this to be a smaller and faster update so that I can respond to the reception the game gets after the Steam release. That being said, I do hope to fulfill some long-requested feature additions with v1.3.0!\n\n" +
-			"Ideally I'll be sharing more info on v1.3.0 sometime around the end of April or beginning of May."));
-
-		changes.addButton( new ChangeButton(Icons.get(Icons.RANKINGS), "Seeded runs!",
-			"The most significant addition in v1.3.0 will be support for custom seeded runs, and possibly the addition of dailies/weeklies as well! One thing worth noting is that this update will not include online leaderboards for daily/weekly runs due to technical limitations, but I will be open to adding them in the future."));
-
-		changes.addButton( new ChangeButton(Icons.get(Icons.DISPLAY_LAND), "UI/UX Improvements",
-			"I also plan to make more improvements to the game's UI/UX with an emphasis on Steam users. This won't be the core focus like it was in v1.3.0, but expect more interface improvements, tweaks based on feedback, and possibly some additions to help controller users better play with their more limited button count."));
-
-		changes.addButton( new ChangeButton(Icons.get(Icons.PREFS), Messages.get(ChangesScene.class, "misc"),
-			"v1.3.0 will also include a variety of miscellaneous adjustments. This will include balance tweaks to items and game mechanics, and maybe another item rework. I'd like to also include some more badges focused around more specific accomplishments!"));
-
-		changes.addButton( new ChangeButton(Icons.get(Icons.ENTER), "Technical Improvements",
-			"Finally, I also hope to make some behind the scenes technical improvements to the way the game handles loading and storing floors of the dungeon. I plan to use this functionality in the near future to give quests their own sub-levels!"));
-
 	}
 
 	public static void add_v1_2_Changes( ArrayList<ChangeInfo> changeInfos ) {

@@ -25,12 +25,15 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoBuff;
-import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
+import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.noosa.ui.Component;
 
@@ -101,25 +104,21 @@ public class BuffIndicator extends Component {
 	public static final int NOINV       = 53;
 	public static final int RANDOM = 54;
 	public static final int FIREDIED = 54;
-	public static final int BUTTER      = 55;
+	public static final int  ROSEBARRIER= 56;
+	public static final int HALOMETHANEBURNING    = 57;
 
-	public static final int HALOMETHANEBURNING = 56;
-	public static final int ROSEBARRIER    = 57;
-
-	public static final int SIZE	= 7;
+	public static final int SIZE_SMALL  = 7;
+	public static final int SIZE_LARGE  = 16;
 
 	private static BuffIndicator heroInstance;
 
-	private SmartTexture texture;
-	private TextureFilm film;
-
-	private LinkedHashMap<Buff, BuffIcon> buffIcons = new LinkedHashMap<>();
+	private LinkedHashMap<Buff, BuffButton> buffButtons = new LinkedHashMap<>();
 	private boolean needsRefresh;
 	private Char ch;
 
 	private boolean large = false;
 
-	public BuffIndicator(Char ch) {
+	public BuffIndicator( Char ch, boolean large ) {
 		super();
 
 		this.ch = ch;
@@ -136,12 +135,6 @@ public class BuffIndicator extends Component {
 		if (this == heroInstance) {
 			heroInstance = null;
 		}
-	}
-
-	@Override
-	protected void createChildren() {
-		texture = TextureCache.get( Assets.Interfaces.BUFFS_SMALL );
-		film = new TextureFilm( texture, SIZE, SIZE );
 	}
 
 	@Override
@@ -163,11 +156,13 @@ public class BuffIndicator extends Component {
 			}
 		}
 
+		int size = large ? SIZE_LARGE : SIZE_SMALL;
+
 		//remove any icons no longer present
-		for (Buff buff : buffIcons.keySet().toArray(new Buff[0])){
+		for (Buff buff : buffButtons.keySet().toArray(new Buff[0])){
 			if (!newBuffs.contains(buff)){
-				Image icon = buffIcons.get( buff ).icon;
-				icon.origin.set( SIZE / 2f );
+				Image icon = buffButtons.get( buff ).icon;
+				icon.originToCenter();
 				icon.alpha(0.6f);
 				add( icon );
 				add( new AlphaTweener( icon, 0, 0.6f ) {
@@ -183,73 +178,118 @@ public class BuffIndicator extends Component {
 					}
 				} );
 
-				buffIcons.get( buff ).destroy();
-				remove(buffIcons.get( buff ));
-				buffIcons.remove( buff );
+				buffButtons.get( buff ).destroy();
+				remove(buffButtons.get( buff ));
+				buffButtons.remove( buff );
 			}
 		}
 
 		//add new icons
 		for (Buff buff : newBuffs) {
-			if (!buffIcons.containsKey(buff)) {
-				BuffIcon icon = new BuffIcon( buff );
+			if (!buffButtons.containsKey(buff)) {
+				BuffButton icon = new BuffButton(buff, large);
 				add(icon);
-				buffIcons.put( buff, icon );
+				buffButtons.put( buff, icon );
 			}
 		}
 
 		//layout
 		int pos = 0;
-		for (BuffIcon icon : buffIcons.values()){
+		for (BuffButton icon : buffButtons.values()){
 			icon.updateIcon();
-			icon.setRect(x + pos * (SIZE + 2), y, 9, 12);
+			//button areas are slightly oversized, especially on small buttons
+			icon.setRect(x + pos * (size + (large ? 1 : 2)), y, size + (large ? 1 : 2), size + (large ? 0 : 5));
+			PixelScene.align(icon);
 			pos++;
 		}
 	}
 
-	private class BuffIcon extends Button {
+	private static class BuffButton extends IconButton {
 
 		private Buff buff;
 
-		public Image icon;
-		public Image grey;
+		private boolean large;
 
-		public BuffIcon( Buff buff ){
-			super();
+		public Image grey; //only for small
+		public BitmapText text; //only for large
+
+		//TODO for large buffs there is room to have text instead of fading
+		public BuffButton( Buff buff, boolean large ){
+			super( new BuffIcon(buff, large));
 			this.buff = buff;
+			this.large = large;
 
-			icon = new Image( texture );
-			icon.frame( film.get( buff.icon() ) );
-			add( icon );
+			bringToFront(grey);
+			bringToFront(text);
+		}
 
+		@Override
+		protected void createChildren() {
+			super.createChildren();
 			grey = new Image( TextureCache.createSolid(0xCC666666));
 			add( grey );
+
+			text = new BitmapText(PixelScene.pixelFont);
+			add( text );
 		}
 
 		public void updateIcon(){
-			icon.frame( film.get( buff.icon() ) );
-			buff.tintIcon(icon);
+			((BuffIcon)icon).refresh(buff);
 			//round up to the nearest pixel if <50% faded, otherwise round down
-			float fadeHeight = buff.iconFadePercent() * icon.height();
-			float zoom = (camera() != null) ? camera().zoom : 1;
-			if (fadeHeight < icon.height()/2f){
-				grey.scale.set( icon.width(), (float)Math.ceil(zoom*fadeHeight)/zoom);
-			} else {
-				grey.scale.set( icon.width(), (float)Math.floor(zoom*fadeHeight)/zoom);
+			if (!large) {
+				text.visible = false;
+				float fadeHeight = buff.iconFadePercent() * icon.height();
+				float zoom = (camera() != null) ? camera().zoom : 1;
+				if (fadeHeight < icon.height() / 2f) {
+					grey.scale.set(icon.width(), (float) Math.ceil(zoom * fadeHeight) / zoom);
+				} else {
+					grey.scale.set(icon.width(), (float) Math.floor(zoom * fadeHeight) / zoom);
+				}
+			} else if (!buff.iconTextDisplay().isEmpty()) {
+				grey.visible = false;
+				if (buff.type == Buff.buffType.POSITIVE)        text.hardlight(CharSprite.POSITIVE);
+				else if (buff.type == Buff.buffType.NEGATIVE)   text.hardlight(CharSprite.NEGATIVE);
+				text.alpha(0.6f);
+
+				text.text(buff.iconTextDisplay());
+				text.measure();
 			}
 		}
 
 		@Override
 		protected void layout() {
 			super.layout();
-			grey.x = icon.x = this.x+1;
-			grey.y = icon.y = this.y+2;
+			grey.x = icon.x = this.x + (large ? 0 : 1);
+			grey.y = icon.y = this.y + (large ? 0 : 2);
+
+			if (text.width > width()){
+				text.scale.set(PixelScene.align(0.5f));
+			} else {
+				text.scale.set(1f);
+			}
+			text.x = this.x + width() - text.width() - 1;
+			text.y = this.y + width() - text.baseLine() - 2;
 		}
 
 		@Override
 		protected void onClick() {
-			if (buff.icon() != NONE)
-				GameScene.show(new WndInfoBuff(buff));
+			if (buff.icon() != NONE) GameScene.show(new WndInfoBuff(buff));
+		}
+
+		@Override
+		protected void onPointerDown() {
+			//don't affect buff color
+			Sample.INSTANCE.play( Assets.Sounds.CLICK );
+		}
+
+		@Override
+		protected void onPointerUp() {
+			//don't affect buff color
+		}
+
+		@Override
+		protected String hoverText() {
+			return Messages.titleCase(buff.toString());
 		}
 	}
 

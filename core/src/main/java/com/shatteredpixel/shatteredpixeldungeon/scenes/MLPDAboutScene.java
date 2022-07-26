@@ -5,7 +5,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.input.PointerEvent;
@@ -24,7 +23,7 @@ public class MLPDAboutScene extends PixelScene {
 
     private static String TTL_ANSDO() { return Messages.get(MLPDAboutScene.class, "ttl_ansdo");}
 
-    private static String TXT_ANSDO() { return Messages.get(MLPDAboutScene.class, "txt_ansdo") + "\n冷群怪 & 奈亚子 & 被子";}
+    private static String TXT_ANSDO() { return Messages.get(MLPDAboutScene.class, "txt_ansdo") + "\n冷群怪 & 奈亚子 & Delicateloong";}
 
     private static String LNK_MLPD_SOURCE() { return "https://github.com/AnsdoShip/Magic-Ling-Pixel-Dungeon-Ling";}
     private static String TXT_MLPD_SOURCE() { return Messages.get(MLPDAboutScene.class,"github");}
@@ -39,7 +38,7 @@ public class MLPDAboutScene extends PixelScene {
         final float colTop = (Camera.main.height / 2) - (landscape() ? 30 : 90);
         final float colOffset = landscape() ? colWidth : 0;
 
-        Image ling = Icons.WAND_HOLSTER.get();
+        Image ling = new Image("Ling.png", 0, 0, 16, 16);
         ling.x = (colWidth - ling.width()) / 2;
         ling.y = colTop;
         align( ling );

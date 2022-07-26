@@ -51,7 +51,7 @@ public class WndInfoMob extends WndTitledMessage {
 		
 		public MobTitle( Mob mob ) {
 			
-			name = PixelScene.renderTextBlock( Messages.titleCase( mob.name() )+"("+mob.HP+"/"+mob.HT+")", 9 );
+			name = PixelScene.renderTextBlock( Messages.titleCase( mob.name() )+"("+mob.HP+"/"+mob.HT+")", 6 );
 			name.hardlight( TITLE_COLOR );
 			add( name );
 
@@ -72,7 +72,7 @@ public class WndInfoMob extends WndTitledMessage {
 			health.level(mob);
 			add( health );
 
-			buffs = new BuffIndicator(mob);
+			buffs = new BuffIndicator(mob,false);
 			add( buffs );
 		}
 		
@@ -95,8 +95,8 @@ public class WndInfoMob extends WndTitledMessage {
 			infoB.setRect(image.width() + GAP, info.bottom() + GAP, w, infoB.height());
 
 			buffs.setPos(
-				name.right() + GAP-1,
-				name.bottom() - BuffIndicator.SACRIFICE-2
+					name.right() + GAP-1,
+					name.bottom() - BuffIndicator.SIZE_SMALL-2
 			);
 
 			height = infoB.bottom();
