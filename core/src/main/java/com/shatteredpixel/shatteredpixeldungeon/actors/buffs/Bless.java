@@ -27,7 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 public class Bless extends FlavourBuff {
 	
 	public static final float DURATION	= 30f;
-	
+	public static final float GODSPOERF	= 6f;
 	{
 		type = buffType.POSITIVE;
 		announced = true;

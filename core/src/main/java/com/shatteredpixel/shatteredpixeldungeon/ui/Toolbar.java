@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTerrainTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuickBag;
+import com.watabou.gltextures.TextureCache;
 import com.watabou.input.GameAction;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
@@ -335,6 +336,7 @@ public class Toolbar extends Component {
 		if (instance != null) instance.layout();
 	}
 
+
 	@Override
 	public void update() {
 		super.update();
@@ -401,6 +403,16 @@ public class Toolbar extends Component {
 
 			base = new Image( Assets.Interfaces.TOOLBAR );
 			add( base );
+		}
+
+		@Override
+		public void update() {
+			super.update();
+			if (SPDSettings.ClassUI()) {
+				base.texture = TextureCache.get(Assets.Interfaces.TOOLBARDRAK);
+			} else {
+				base.texture = TextureCache.get(Assets.Interfaces.TOOLBAR);
+			}
 		}
 
 		@Override

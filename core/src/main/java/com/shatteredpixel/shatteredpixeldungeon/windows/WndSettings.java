@@ -54,7 +54,7 @@ import java.util.Locale;
 public class WndSettings extends WndTabbed {
 
 	private static final int WIDTH_P	    = 122;
-	private static final int WIDTH_L	    = 223;
+	private static final int WIDTH_L	    = 240;
 
 	private static final int SLIDER_HEIGHT	= 24;
 	private static final int BTN_HEIGHT	    = 18;
@@ -211,7 +211,7 @@ public class WndSettings extends WndTabbed {
 		ColorBlock sep2;
 		OptionSlider optBrightness;
 		OptionSlider optVisGrid;
-		OptionSlider optSplashScreen;
+
 		@Override
 		protected void createChildren() {
 			title = PixelScene.renderTextBlock(Messages.get(this, "title"), 9);
@@ -323,20 +323,6 @@ public class WndSettings extends WndTabbed {
 			optVisGrid.setSelectedValue(SPDSettings.visualGrid());
 			add(optVisGrid);
 
-			optSplashScreen = new OptionSlider(Messages.get(this, "splash_screen"),
-					Messages.get(this, "disable" ),
-					Messages.get( this, "full" ),
-					0, 1) {
-				@Override
-				protected void onChange() {
-					if (getSelectedValue() != SPDSettings.splashScreen()) {
-						SPDSettings.splashScreen(getSelectedValue());
-					}
-				}
-			};
-			optSplashScreen.setSelectedValue(SPDSettings.splashScreen());
-			add(optSplashScreen);
-
 		}
 
 		@Override
@@ -351,7 +337,11 @@ public class WndSettings extends WndTabbed {
 			bottom = sep1.y + 1;
 
 			if (width > 200 && chkSaver != null) {
-				chkFullscreen.setRect(0, bottom + GAP, width/2-1, BTN_HEIGHT);
+				if(DeviceCompat.isDesktop()){
+					chkFullscreen.setRect(0, bottom + GAP, width/2-1, BTN_HEIGHT);
+				} else {
+					chkFullscreen.setRect(999, bottom + GAP, width/2-1, BTN_HEIGHT);
+				}
 				chkSaver.setRect(chkFullscreen.right()+ GAP, bottom + GAP, width/2-1, BTN_HEIGHT);
 				bottom = chkFullscreen.bottom();
 			} else {
@@ -381,11 +371,11 @@ public class WndSettings extends WndTabbed {
 			if (width > 200){
 				optBrightness.setRect(0, bottom + GAP, width/2-GAP/2, SLIDER_HEIGHT);
 				optVisGrid.setRect(optBrightness.right() + GAP, optBrightness.top(), width/2-GAP/2, SLIDER_HEIGHT);
-				optSplashScreen.setRect(optVisGrid.right() + GAP, optVisGrid.top(), width/2-GAP/2, SLIDER_HEIGHT);
+				//optSplashScreen.setRect(optBrightness.left(), optBrightness.bottom(), width, SLIDER_HEIGHT);
 			} else {
 				optBrightness.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
 				optVisGrid.setRect(0, optBrightness.bottom() + GAP, width, SLIDER_HEIGHT);
-				optSplashScreen.setRect(0, optVisGrid.bottom() + GAP, width, SLIDER_HEIGHT);
+				//optSplashScreen.setRect(0, optVisGrid.bottom() + GAP, width, SLIDER_HEIGHT);
 			}
 
 			height = optVisGrid.bottom();
@@ -612,7 +602,7 @@ public class WndSettings extends WndTabbed {
 		RenderedTextBlock title;
 		ColorBlock sep1;
 		CheckBox ClassUI;
-		CheckBox ClassSkin;
+		OptionSlider optSplashScreen;
 
 		@Override
 		protected void createChildren() {
@@ -632,6 +622,20 @@ public class WndSettings extends WndTabbed {
 			};
 			ClassUI.checked(SPDSettings.ClassUI());
 			add(ClassUI);
+
+			optSplashScreen = new OptionSlider(Messages.get(this, "splash_screen"),
+					Messages.get(this, "disable" ),
+					Messages.get( this, "full" ),
+					0, 1) {
+				@Override
+				protected void onChange() {
+					if (getSelectedValue() != SPDSettings.splashScreen()) {
+						SPDSettings.splashScreen(getSelectedValue());
+					}
+				}
+			};
+			optSplashScreen.setSelectedValue(SPDSettings.splashScreen());
+			add(optSplashScreen);
 		}
 
 		@Override
@@ -646,10 +650,12 @@ public class WndSettings extends WndTabbed {
 			bottom = sep1.y + 1;
 
 			if (width > 200){
-				ClassUI.setRect(0, bottom, width/2-GAP/2, SLIDER_HEIGHT);
+				ClassUI.setRect(0, bottom, width, SLIDER_HEIGHT);
+				optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
 			} else {
 				//quickslots.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
 				ClassUI.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
+				optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
 				//GameScene
 			}
 

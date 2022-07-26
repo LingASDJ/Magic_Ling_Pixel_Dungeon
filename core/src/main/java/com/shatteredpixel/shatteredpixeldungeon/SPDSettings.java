@@ -396,10 +396,6 @@ public class SPDSettings extends GameSettings {
 		return getBoolean(KEY_DARK, false);
 	}
 
-	public static void ClassSkin(boolean value) {
-		put( KEY_SKIN, value );
-	}
-
 	public static boolean ClassSkin() {
 		return getBoolean(KEY_SKIN, false);
 	}
@@ -410,22 +406,5 @@ public class SPDSettings extends GameSettings {
 
 	public static void ClassPage(boolean value) {
 		put( KEY_PAGE, value );
-	}
-
-
-	public static boolean PCTestUI() {
-		return getBoolean(KEY_PCUI, false);
-	}
-
-	public static void PCTestUI(boolean value) {
-		put( KEY_PCUI, value );
-	}
-
-	public static boolean quickSwapper() {
-		return getBoolean(KEY_SWAP, false);
-	}
-
-	public static void quickSwapper(boolean value) {
-		put( KEY_SWAP, value );
 	}
 }

@@ -46,7 +46,7 @@ public class Bestiary {
 				case 1:
 					//3x rat, 1x snake
 					return new ArrayList<>(Arrays.asList(
-							Rat.class, Rat.class,
+							SlimePrincess.class, Rat.class,
 							Rat.class, OGPDZSLS.class, Snake.class,
 							Snake.class,Snake.class,Snake.class));
 				case 2:

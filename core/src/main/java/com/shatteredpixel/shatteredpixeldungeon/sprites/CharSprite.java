@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -161,23 +159,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		renderShadow = true;
 
 		//突变激素 粒子效果
-		if ((Dungeon.isChallenged(SBSG) && (ch instanceof Mob))){
-			switch (Random.Int(4)) {
-				case 0:
-				default:
-					this.add(State.ILLUMINATED);
-					break;
-				case 1:
-					this.add(State.CHILLED);
-					break;
-				case 2:
-					this.add(State.ROSESHIELDED);
-					break;
-				case 3:
-					this.add(State.MARKED);
-					break;
-			}
-		} else 	if (ch != Dungeon.hero) {
+		if (ch != Dungeon.hero) {
 			if (health == null) {
 				health = new CharHealthIndicator(ch);
 			} else {

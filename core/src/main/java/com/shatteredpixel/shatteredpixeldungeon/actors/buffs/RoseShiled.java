@@ -31,11 +31,15 @@ import com.watabou.noosa.Image;
 public class RoseShiled extends FlavourBuff {
 
     public static final float DURATION	= 70f;
-    public static final float SURATION	= 10f;
-    public static final float XURATION	= 3f;
+
     {
         type = buffType.POSITIVE;
         announced = true;
+    }
+
+    @Override
+    public String iconTextDisplay() {
+        return Integer.toString((int)DURATION);
     }
 
     @Override

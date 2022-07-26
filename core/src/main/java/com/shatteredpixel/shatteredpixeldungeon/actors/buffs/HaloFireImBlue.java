@@ -37,6 +37,11 @@ public class HaloFireImBlue extends Buff {
         announced = true;
     }
 
+    @Override
+    public String iconTextDisplay() {
+        return Integer.toString((int)left);
+    }
+
     public static final float DURATION	= 80f;
 
     public static final float SURATION	= 7f;

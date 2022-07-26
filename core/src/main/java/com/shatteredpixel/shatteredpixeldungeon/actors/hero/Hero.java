@@ -48,6 +48,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.DeadSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbueEX;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -56,6 +58,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Shadows;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
@@ -1815,6 +1818,34 @@ public class Hero extends Char {
 		boolean wasHighGrass = Dungeon.level.map[step] == Terrain.HIGH_GRASS;
 
 		super.move( step, travelling);
+
+		if (Dungeon.GodWaterLevel()&& Dungeon.level.water[pos]){
+			Buff.affect(hero, Barkskin.class).set( 2 + hero.lvl/4, 10 );
+			Buff.prolong(this, Bless.class, Bless.GODSPOERF);
+		}
+
+		//监狱之水 祝福效果
+		if (Dungeon.PrisonWaterLevel()&& Dungeon.level.water[pos]){
+			Buff.affect(hero, Barkskin.class).set( 2 + hero.lvl/4, 10 );
+			Buff.prolong(this, Bless.class,Bless.GODSPOERF);
+			Buff.affect(this, Haste.class, Haste.DURATION/20);
+			Buff.affect(this, Shadows.class, Shadows.DURATION/10f);
+		} else if(Dungeon.PrisonWaterLevel()&& !Dungeon.level.water[pos])
+			for (Buff buff : hero.buffs()) {
+				if (buff instanceof Shadows||buff instanceof Haste ) {
+					buff.detach();
+				}
+			}
+
+		//矿洞之水 祝福效果
+		if (Dungeon.ColdWaterLevel()&& Dungeon.level.water[pos]){
+			Buff.affect(this, FrostImbueEX.class, FrostImbueEX.DURATION*0.3f);
+		} else if(Dungeon.ColdWaterLevel()&& !Dungeon.level.water[pos])
+			for (Buff buff : hero.buffs()) {
+				if (buff instanceof FrostImbueEX) {
+					buff.detach();
+				}
+			}
 		
 		if (!flying && travelling) {
 			if (Dungeon.level.water[pos]) {

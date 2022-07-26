@@ -71,6 +71,11 @@ public class HalomethaneBurning extends Buff implements Hero.Doom {
     }
 
     @Override
+    public String iconTextDisplay() {
+        return Integer.toString((int)left);
+    }
+
+    @Override
     public void restoreFromBundle( Bundle bundle ) {
         super.restoreFromBundle(bundle);
         left = bundle.getFloat( LEFT );

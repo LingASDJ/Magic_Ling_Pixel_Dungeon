@@ -135,7 +135,7 @@ public class ChangesScene extends PixelScene {
 				@Override
 				public void onClick() {
 					NewChangesScene.changesSelected = 0;
-					NewChangesScene.fromChangesScene = true;
+					NewChangesScene.fromChangesScene = false;
 					ShatteredPixelDungeon.switchNoFade(NewChangesScene.class);
 				}
 			};

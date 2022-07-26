@@ -48,7 +48,7 @@ public class ThanksScene extends PixelScene {
 
         CreditsBlock mispd = new CreditsBlock(true, Window.TITLE_COLOR,
                 "Magic Ling Pixel Dungeon",
-                Icons.STAIRS.get(),
+                new Image("Ling.png", 0, 0, 16, 16),
                 "_Start to 2021-2-12_\n\nDev:_JDSA Ling_"
                 ,
                 null,

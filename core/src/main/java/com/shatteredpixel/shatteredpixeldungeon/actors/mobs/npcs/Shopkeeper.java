@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2021 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,78 +21,199 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MoloHR;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShopGuard;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShopGuardEye;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 public class Shopkeeper extends NPC {
 
 	{
 		spriteClass = ShopkeeperSprite.class;
-
+		properties.add(Property.BOSS);
 		properties.add(Property.IMMOVABLE);
 	}
-	
+	public static boolean seenBefore = false;
+
+	@Override
+	public boolean interact(Char c) {
+		if (c != hero) {
+			return true;
+		}
+		Game.runOnRenderThread(new Callback() {
+			@Override
+			public void call() {
+				sell();
+			}
+		});
+		return true;
+	}
+
+	@Override
+	public void storeInBundle(Bundle bundle) {
+		super.storeInBundle(bundle);
+	}
+
 	@Override
 	protected boolean act() {
-
-		if (Dungeon.level.heroFOV[pos]){
-			Notes.add(Notes.Landmark.SHOP);
+		if (!seenBefore && Dungeon.level.heroFOV[pos]) {
+			yell(Messages.get(this, "greetings", Dungeon.hero.name()));
+			seenBefore = true;
+			//Buff.affect(this, ChampionEnemy.AntiMagic.class);
+			//Buff.affect(this, ChampionEnemy.Halo.class);
+		} else if(seenBefore && !Dungeon.level.heroFOV[pos]) {
+			seenBefore = false;
+			yell(Messages.get(this, "goodbye", Dungeon.hero.name()));
 		}
-		
+		throwItem();
+
 		sprite.turnTo( pos, Dungeon.hero.pos );
 		spend( TICK );
-		return super.act();
+		return true;
 	}
-	
+
 	@Override
 	public void damage( int dmg, Object src ) {
-		flee();
 	}
-	
+
 	@Override
-	public void add( Buff buff ) {
-		flee();
+	public int defenseSkill( Char enemy ) {
+		return INFINITE_EVASION;
 	}
-	
+
+	/*
+		Buff.prolong(Dungeon.hero, Blindness.class, Blindness.DURATION * 4f);
+		GameScene.flash(0x80FFFFFF);
+		Buff.affect(hero, Burning.class).reignite(hero, 15f);
+		Dungeon.level.seal();
+		Mob moa = new MoloHR();
+		moa.pos = pos;
+		GameScene.add(moa);
+		yell(Messages.get(this, "arise"));
+		new ShopGuardEye().spawnAround(pos);
+		new ShopGuard().spawnAround(pos);
+		Buff.affect(moa, ChampionEnemy.Growing.class);
+		Buff.affect(moa, ChampionEnemy.Projecting.class);
+		Buff.affect(moa, ChampionEnemy.AntiMagic.class);
+		Buff.affect(moa, ChampionEnemy.Giant.class);
+		Buff.affect(moa, ChampionEnemy.Blessed.class);
+		Buff.affect(moa, ChampionEnemy.Halo.class);
+		for (Mob mob : Dungeon.level.mobs) {
+			switch (Random.Int(7)) {
+				case 0:
+				default:
+					Buff.affect(mob, ChampionEnemy.Blazing.class);
+					break;
+				case 1:
+					Buff.affect(mob, ChampionEnemy.Projecting.class);
+					break;
+				case 2:
+					Buff.affect(mob, ChampionEnemy.AntiMagic.class);
+					break;
+				case 3:
+					Buff.affect(mob, ChampionEnemy.Giant.class);
+					break;
+				case 4:
+					Buff.affect(mob, ChampionEnemy.Blessed.class);
+					break;
+				case 5:
+					Buff.affect(mob, ChampionEnemy.Growing.class);
+					break;
+				case 6:
+					Buff.affect(mob, ChampionEnemy.Halo.class);
+					break;
+			}
+		}
+		yell(Messages.get(this, "dead"));*/
+
 	public void flee() {
 		destroy();
-
-		Notes.remove(Notes.Landmark.SHOP);
-		
+		CellEmitter.get(pos).burst(ElmoParticle.FACTORY, 6);
+		Sample.INSTANCE.play(Assets.Sounds.ALERT);
+		Music.INSTANCE.play(Assets.RUN, true);
+		hero.sprite.burst(15597568, 9);
 		sprite.killAndErase();
-		CellEmitter.get( pos ).burst( ElmoParticle.FACTORY, 6 );
+		Buff.prolong(Dungeon.hero, Blindness.class, Blindness.DURATION * 4f);
+		GameScene.flash(0x80FFFFFF);
+		Buff.affect(hero, Burning.class).reignite(hero, 15f);
+		Dungeon.level.seal();
+		Mob moa = new MoloHR();
+		moa.pos = pos;
+		GameScene.add(moa);
+		yell(Messages.get(this, "arise"));
+		new ShopGuardEye().spawnAround(pos);
+		new ShopGuard().spawnAround(pos);
+		Buff.affect(moa, ChampionEnemy.Growing.class);
+		Buff.affect(moa, ChampionEnemy.Projecting.class);
+		Buff.affect(moa, ChampionEnemy.AntiMagic.class);
+		Buff.affect(moa, ChampionEnemy.Giant.class);
+		Buff.affect(moa, ChampionEnemy.Blessed.class);
+		Buff.affect(moa, ChampionEnemy.Halo.class);
+		for (Mob mob : Dungeon.level.mobs) {
+			switch (Random.Int(7)) {
+				case 0:
+				default:
+					Buff.affect(mob, ChampionEnemy.Blazing.class);
+					break;
+				case 1:
+					Buff.affect(mob, ChampionEnemy.Projecting.class);
+					break;
+				case 2:
+					Buff.affect(mob, ChampionEnemy.AntiMagic.class);
+					break;
+				case 3:
+					Buff.affect(mob, ChampionEnemy.Giant.class);
+					break;
+				case 4:
+					Buff.affect(mob, ChampionEnemy.Blessed.class);
+					break;
+				case 5:
+					Buff.affect(mob, ChampionEnemy.Growing.class);
+					break;
+				case 6:
+					Buff.affect(mob, ChampionEnemy.Halo.class);
+					break;
+			}
+		}
+		yell(Messages.get(this, "dead"));
 	}
-	
-	@Override
+	private DriedRose.GhostHero ghost = null;
 	public void destroy() {
 		super.destroy();
 		for (Heap heap: Dungeon.level.heaps.valueList()) {
 			if (heap.type == Heap.Type.FOR_SALE) {
 				CellEmitter.get( heap.pos ).burst( ElmoParticle.FACTORY, 4 );
-				if (heap.size() == 1) {
-					heap.destroy();
-				} else {
-					heap.items.remove(heap.size()-1);
-					heap.type = Heap.Type.HEAP;
-				}
+				heap.type = Heap.Type.HEAP;//Allow them to be picked up
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean reset() {
 		return true;
@@ -102,7 +223,7 @@ public class Shopkeeper extends NPC {
 	public static int sellPrice(Item item){
 		return item.value() * 5 * (Dungeon.depth / 5 + 1);
 	}
-	
+
 	public static WndBag sell() {
 		return GameScene.selectItem( itemSelector );
 	}
@@ -134,18 +255,4 @@ public class Shopkeeper extends NPC {
 			}
 		}
 	};
-
-	@Override
-	public boolean interact(Char c) {
-		if (c != Dungeon.hero) {
-			return true;
-		}
-		Game.runOnRenderThread(new Callback() {
-			@Override
-			public void call() {
-				sell();
-			}
-		});
-		return true;
-	}
 }

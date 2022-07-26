@@ -25,7 +25,7 @@ public class NewChangesScene extends PixelScene {
 
     public static int changesSelected = 0;
 
-    public static boolean fromChangesScene = false;
+    public static boolean fromChangesScene = true;
 
     @Override
     public void create() {
@@ -151,7 +151,7 @@ public class NewChangesScene extends PixelScene {
         };
 
         if (changesSelected != 0) btnBeta.textColor( 0xBBBBBB );
-        btnBeta.setRect(list.left()-4f, list.bottom(), 45, changesSelected == 0 ? 19 : 15);
+        btnBeta.setRect(list.left()-4f, list.bottom(), 46, changesSelected == 0 ? 19 : 15);
         addToBack(btnBeta);
 
         StyledButton btn0_8 = new StyledButton(Chrome.Type.TOAST, "0.5.X"){
@@ -165,7 +165,7 @@ public class NewChangesScene extends PixelScene {
             }
         };
         if (changesSelected != 1) btn0_8.textColor( 0xBBBBBB );
-        btn0_8.setRect(btnBeta.right()+1, list.bottom(), 45, changesSelected == 1 ? 19 : 15);
+        btn0_8.setRect(btnBeta.right()+1, list.bottom(), 47, changesSelected == 1 ? 19 : 15);
         addToBack(btn0_8);
 
         StyledButton btn0_7 = new StyledButton(Chrome.Type.TOAST, "0.0-0.4"){
@@ -179,7 +179,7 @@ public class NewChangesScene extends PixelScene {
             }
         };
         if (changesSelected != 2) btn0_7.textColor( 0xBBBBBB );
-        btn0_7.setRect(btn0_8.right() + 1, btn0_8.top(), 45, changesSelected == 2 ? 19 : 15);
+        btn0_7.setRect(btn0_8.right() + 1, btn0_8.top(), 46, changesSelected == 2 ? 19 : 15);
         addToBack(btn0_7);
 
         Archs archs = new Archs();

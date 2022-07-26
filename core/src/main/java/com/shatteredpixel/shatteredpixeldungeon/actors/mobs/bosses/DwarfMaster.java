@@ -1326,7 +1326,7 @@ public class DwarfMaster extends Boss {
             spend(TICK*15);
         }else if(wave == 3){
             yell(Messages.get(this, "wave_2"));
-            new Eye().spawnAround(pos);
+            new Eye().spawnAround();
             summonSubject(1, DwarfMaster.DKGhoul.class);
             summonSubject(2, DwarfMaster.DKWarlock.class);
             summonSubject(2, DwarfMaster.DKGhoul.class);

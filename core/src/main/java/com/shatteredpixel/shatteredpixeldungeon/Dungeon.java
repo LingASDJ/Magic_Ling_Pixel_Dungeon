@@ -501,6 +501,29 @@ public class Dungeon {
 		return result;
 	}
 
+	public static boolean NxhyshopOnLevel() {
+		return depth == 9 || depth == 18;
+	}
+
+	public static boolean NyzshopOnLevel() {
+		return depth == 12;
+	}
+
+	//圣域保护
+	public static boolean GodWaterLevel() {
+		return depth == 1 ||depth == 2||depth == 3||depth == 4;
+	}
+
+	//监狱保护
+	public static boolean PrisonWaterLevel() {
+		return depth == 6 ||depth == 7||depth == 8||depth == 9;
+	}
+
+	//冰雪祝福
+	public static boolean ColdWaterLevel() {
+		return depth == 11 ||depth == 12||depth == 13||depth == 14;
+	}
+
 	public static boolean shopOnLevel() {
 		return depth == 6 || depth == 11 || depth == 16;
 	}

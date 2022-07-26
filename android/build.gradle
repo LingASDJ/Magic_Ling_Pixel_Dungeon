@@ -57,7 +57,7 @@ android {
 configurations { natives }
 
 dependencies {
-    implementation 'cat.ereza:customactivityoncrash:2.3.0'
+    implementation 'com.github.RohitSurwase.UCE-Handler:uce_handler:1.4'
     implementation project(':core')
 
     implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"

@@ -138,6 +138,14 @@ public class WndChallenges extends Window {
 			cb.checked((checked & Challenges.MASKS[i]) != 0);
 			cb.active = editable;
 
+			//暂时禁用
+			if(Challenges.NAME_IDS[i].equals("light&black")||Challenges.NAME_IDS[i].equals("exsg")||Challenges.NAME_IDS[i].equals("boss")||Challenges.NAME_IDS[i].equals("aquaphobia")){
+				cb.active = false;
+				cb.checked(false);
+				cb.alpha(0.5f);
+			}
+
+
 			if (i > 0) {
 				pos += GAP;
 			}

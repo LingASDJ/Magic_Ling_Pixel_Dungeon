@@ -97,9 +97,10 @@ public class Assets {
 		public static final String LOCKED   = "interfaces/locked_badge.png";
 
 		public static final String CHROME   = "interfaces/chrome.png";
+		public static final String CHROME_DARK   = "interfaces/chrome_normal.png";
 		public static final String ICONS    = "interfaces/icons.png";
 		public static final String STATUS   = "interfaces/status_pane.png";
-
+		public static final String TOOLBARDRAK	= "interfaces/toolbar_normal.png";
 		public static final String STATUS_DARK   = "interfaces/status_pane_normal.png";
 
 		public static final String MENU     = "interfaces/menu_pane.png";
@@ -112,7 +113,7 @@ public class Assets {
 
 		public static final String LOADING_SEWERS   = "interfaces/loading_sewers.png";
 		public static final String LOADING_PRISON   = "interfaces/loading_prison.png";
-		public static final String LOADING_CAVES    = "interfaces/loading_caves.png";
+		public static final String LOADING_COLD    = "interfaces/loading_cold.png";
 		public static final String LOADING_CITY     = "interfaces/loading_city.png";
 		public static final String LOADING_HALLS    = "interfaces/loading_halls.png";
 
@@ -121,7 +122,7 @@ public class Assets {
 
 		public static final String TALENT_ICONS  = "interfaces/talent_icons.png";
 		public static final String TALENT_BUTTON = "interfaces/talent_button.png";
-
+		public static final String TALENT_BUTTON_DARK = "interfaces/talent_button_dark.png";
 		public static final String HERO_ICONS   = "interfaces/hero_icons.png";
 	}
 
