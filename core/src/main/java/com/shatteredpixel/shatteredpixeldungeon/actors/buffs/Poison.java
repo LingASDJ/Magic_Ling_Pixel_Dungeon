@@ -34,7 +34,7 @@ import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
 public class Poison extends Buff implements Hero.Doom {
-	
+	public static final float DURATION = 4f;
 	protected float left;
 	
 	private static final String LEFT	= "left";

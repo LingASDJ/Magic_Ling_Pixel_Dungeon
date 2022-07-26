@@ -28,14 +28,14 @@ import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sanity.sanit
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SlimePrincessSprite;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 public class Rat extends Mob {
 
 	{
-		spriteClass = RatSprite.class;
+		spriteClass = SlimePrincessSprite.class;
 		
 		HP = HT = 8;
 		defenseSkill = 2;

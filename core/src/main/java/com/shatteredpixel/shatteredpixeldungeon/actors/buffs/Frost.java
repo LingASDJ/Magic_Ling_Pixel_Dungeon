@@ -39,7 +39,9 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class Frost extends FlavourBuff {
-
+	public static float duration( Char ch ) {
+		return DURATION;
+	}
 	public static final float DURATION	= 10f;
 
 	{

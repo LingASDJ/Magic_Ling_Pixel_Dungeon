@@ -32,6 +32,8 @@ public class Statistics {
 	public static int itemsCrafted;
 	public static int piranhasKilled;
 	public static int ankhsUsed;
+	public static int spawnersIce;
+	public static int naiyaziCollected;
 	
 	//used for hero unlock badges
 	public static int upgradesUsed;

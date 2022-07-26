@@ -79,7 +79,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 
 public abstract class Mob extends Char {
-
+	public float scaleFactor = 1f;
 	{
 		actPriority = MOB_PRIO;
 		
@@ -176,6 +176,19 @@ public abstract class Mob extends Char {
 		
 		boolean justAlerted = alerted;
 		alerted = false;
+
+		if (Dungeon.isChallenged(Challenges.SBSG) && scaleFactor == 1f && !properties().contains(Property.NOBIG)&&!properties().contains(Property.BOSS)){
+			scaleFactor = Random.Float(1f, 1.8f);
+			HP = HT = (int) (HT * scaleFactor);
+			if (scaleFactor >= 1.15f){
+				HP = HT = (int) (HT * 1.15f);
+			}else if (scaleFactor >= 1.4f) {
+				HP = HT = (int) (HT * 1.4f);
+			}
+			sprite.linkVisuals(this);
+			sprite.link(this);
+
+		}
 		
 		if (justAlerted){
 			sprite.showAlert();

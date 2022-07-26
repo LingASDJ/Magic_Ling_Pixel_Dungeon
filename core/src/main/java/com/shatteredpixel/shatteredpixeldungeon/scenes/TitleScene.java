@@ -17,6 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite_EX;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
+import com.shatteredpixel.shatteredpixeldungeon.ui.EndButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -31,6 +32,7 @@ import com.watabou.noosa.audio.Music;
 import com.watabou.utils.ColorMath;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.GameMath;
+import com.watabou.utils.Point;
 
 import java.util.Date;
 
@@ -264,6 +266,13 @@ public class TitleScene extends PixelScene {
 		version.x = w - version.width() - 4;
 		version.y = h - version.height() - 2;
 		add( version );
+
+		Point p = SPDSettings.windowResolution();
+		if ( p.x >= 640 && p.y >= 480) {
+			EndButton btnExit = new EndButton();
+			btnExit.setPos( w - btnExit.width(), 0 );
+			add( btnExit );
+		}
 
 		fadeIn();
 	}

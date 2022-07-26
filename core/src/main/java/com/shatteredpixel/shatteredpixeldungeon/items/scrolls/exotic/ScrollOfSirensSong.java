@@ -30,7 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonsBreath;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -123,8 +122,8 @@ public class ScrollOfSirensSong extends ExoticScroll {
 
 		@Override
 		public void fx(boolean on) {
-			if (on) target.sprite.add(CharSprite.State.HEARTS);
-			else    target.sprite.remove(CharSprite.State.HEARTS);
+			if (on) target.sprite.add(CharSprite.State.PARALYSED);
+			else    target.sprite.remove(CharSprite.State.PARALYSED);
 		}
 
 		@Override

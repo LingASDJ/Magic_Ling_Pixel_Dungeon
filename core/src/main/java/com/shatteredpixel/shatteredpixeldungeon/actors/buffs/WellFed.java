@@ -33,6 +33,12 @@ public class WellFed extends Buff {
 		type = buffType.POSITIVE;
 		announced = true;
 	}
+
+	public void resetload(){
+		//heals one HP every 18 turns for 450 turns
+		//25 HP healed in total
+		left = (int)Hunger.STARVINGR;
+	}
 	
 	int left;
 	

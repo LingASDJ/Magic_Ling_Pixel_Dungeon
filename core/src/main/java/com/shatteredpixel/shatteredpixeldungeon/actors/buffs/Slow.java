@@ -26,7 +26,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 
 public class Slow extends FlavourBuff {
-
+	public void set(float duration) {
+	}
 	{
 		type = buffType.NEGATIVE;
 		announced = true;

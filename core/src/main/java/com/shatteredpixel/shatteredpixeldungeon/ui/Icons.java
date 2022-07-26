@@ -115,7 +115,7 @@ public enum Icons {
 	public Image get() {
 		return get( this );
 	}
-	
+
 	public static Image get( Icons type ) {
 		Image icon = new Image( Assets.Interfaces.ICONS );
 		switch (type) {
@@ -316,7 +316,7 @@ public enum Icons {
 			case CHAL_COUNT:
 				icon.frame( icon.texture.uvRectBySize( 48, 72, 7, 7 ) );
 				break;
-		
+
 			case LIBGDX:
 				icon.frame( icon.texture.uvRectBySize( 0, 96, 16, 13 ) );
 				break;
@@ -352,19 +352,21 @@ public enum Icons {
 		}
 		return icon;
 	}
-	
+
 	public static Image get( HeroClass cl ) {
 		switch (cl) {
-		case WARRIOR:
-			return get( WARRIOR );
-		case MAGE:
-			return get( MAGE );
-		case ROGUE:
-			return get( ROGUE );
-		case HUNTRESS:
-			return get( HUNTRESS );
-		default:
-			return null;
+			case WARRIOR:
+				return get( WARRIOR );
+			case MAGE:
+				return get( MAGE );
+			case ROGUE:
+				return get( ROGUE );
+			case HUNTRESS:
+				return get( HUNTRESS );
+			case COMINGSOON:
+				return get( HUNTRESS );
+			default:
+				return null;
 		}
 	}
 

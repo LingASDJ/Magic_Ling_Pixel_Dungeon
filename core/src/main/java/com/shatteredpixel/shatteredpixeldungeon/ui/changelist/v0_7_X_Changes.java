@@ -212,7 +212,7 @@ public class v0_7_X_Changes {
 		changes.hardlight( CharSprite.WARNING );
 		changeInfos.add(changes);
 
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.EXOTIC_BERKANAN), "Ally AI improvements",
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.EXOTIC_SILVER), "Ally AI improvements",
 				"Allies which follow the player are now considered to be 'intelligent', and have the following improved behaviours:\n" +
 				"_-_ Intelligent allies will not attack enemies which are asleep, or which haven't noticed the player yet.\n" +
 				"_-_ Intelligent allies will follow the hero through stairs so long as they are near to them.\n\n" +
@@ -775,7 +775,7 @@ public class v0_7_X_Changes {
 				"Mix a potion and any two seeds to create an exotic potion with unique effects.\n\n" +
 				"Exotic Potions are only available through alchemy, or by transmuting a regular potion."));
 		
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.EXOTIC_ISAZ, null), "Exotic Scrolls",
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.EXOTIC_AMBER, null), "Exotic Scrolls",
 				"Added 12 new scrolls which can be created through alchemy!\n\n" +
 				"Mix a scroll and any two runestones to create an exotic scroll with unique effects.\n\n" +
 				"Exotic Scrolls are only available through alchemy, or by transmuting a regular scroll."));

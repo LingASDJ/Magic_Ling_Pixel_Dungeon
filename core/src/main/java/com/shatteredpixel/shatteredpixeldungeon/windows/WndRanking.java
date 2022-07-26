@@ -123,7 +123,7 @@ public class WndRanking extends WndTabbed {
 	private void createControls() {
 		
 		Icons[] icons =
-			{Icons.RANKINGS, Icons.BACKPACK_LRG, Icons.BADGES};
+			{Icons.RANKINGS, Icons.BADGES};
 		Group[] pages =
 			{new StatsTab(), new ItemsTab(), new BadgesTab()};
 		

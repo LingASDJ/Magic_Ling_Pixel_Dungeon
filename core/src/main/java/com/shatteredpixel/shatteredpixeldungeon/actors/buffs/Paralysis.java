@@ -30,7 +30,8 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 public class Paralysis extends FlavourBuff {
-
+	public void set(float duration) {
+	}
 	public static final float DURATION	= 10f;
 
 	{

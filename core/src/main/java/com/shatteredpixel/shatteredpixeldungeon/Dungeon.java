@@ -81,7 +81,22 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class Dungeon {
-
+	public static int cycle;
+	public static int escalatingDepth() {
+		switch (cycle) {
+			case 0:
+				return depth;
+			case 1:
+				return (int) (depth * 1.4f + 31);
+			case 2:
+				return depth * 5 + 200;
+			case 3:
+				return depth * 50 + 2500;
+			case 4:
+				return depth * 100 + 4300;
+		}
+		return depth;
+	}
 	//enum of items which have limited spawns, records how many have spawned
 	//could all be their own separate numbers, but this allows iterating, much nicer for bundling/initializing.
 	public static enum LimitedDrops {

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2021 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -37,30 +38,64 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EyeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class Eye extends Mob {
-	
+
 	{
 		spriteClass = EyeSprite.class;
-		
+
 		HP = HT = 100;
 		defenseSkill = 20;
 		viewDistance = Light.DISTANCE;
-		
+
 		EXP = 13;
 		maxLvl = 26;
-		
+
 		flying = true;
 
 		HUNTING = new Hunting();
-		
+
 		loot = new Dewdrop();
 		lootChance = 1f;
 
 		properties.add(Property.DEMONIC);
+	}
+
+	public static void spawnAround( int pos ) {
+		for (int n : PathFinder.NEIGHBOURS4) {
+			spawnAt( pos + n );
+		}
+	}
+
+	public void adjustStats( int level ) {
+		this.level = level;
+		defenseSkill = attackSkill( null ) * 5;
+		enemySeen = true;
+	}
+	private int level;
+	private static final float SPAWN_DELAY	= 2f;
+	public static Eye spawnAt( int pos ) {
+		if (!Dungeon.level.solid[pos] && Actor.findChar( pos ) == null) {
+
+			Eye w = new Eye();
+			w.adjustStats( Dungeon.depth );
+			w.pos = pos;
+			w.state = w.HUNTING;
+			GameScene.add( w, SPAWN_DELAY );
+
+			w.sprite.alpha( 0 );
+			w.sprite.parent.add( new AlphaTweener( w.sprite, 1, 0.5f ) );
+
+			w.sprite.emitter().burst( ShadowParticle.CURSE, 5 );
+
+			return w;
+		} else {
+			return null;
+		}
 	}
 
 	@Override
@@ -72,12 +107,12 @@ public class Eye extends Mob {
 	public int attackSkill( Char target ) {
 		return 30;
 	}
-	
+
 	@Override
 	public int drRoll() {
 		return Random.NormalIntRange(0, 10);
 	}
-	
+
 	private Ballistica beam;
 	private int beamTarget = -1;
 	private int beamCooldown;
@@ -128,7 +163,7 @@ public class Eye extends Mob {
 		} else {
 
 			spend( attackDelay() );
-			
+
 			beam = new Ballistica(pos, beamTarget, Ballistica.STOP_SOLID);
 			if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[beam.collisionPos] ) {
 				sprite.zap( beam.collisionPos );
@@ -147,7 +182,7 @@ public class Eye extends Mob {
 		if (beamCharged) dmg /= 4;
 		super.damage(dmg, src);
 	}
-	
+
 	//used so resistances can differentiate between melee and magical attacks
 	public static class DeathGaze{}
 
@@ -251,7 +286,7 @@ public class Eye extends Mob {
 	{
 		resistances.add( WandOfDisintegration.class );
 	}
-	
+
 	{
 		//immunities.add( Terror.class );
 	}

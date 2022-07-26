@@ -24,10 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gnoll;
-import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
@@ -50,7 +47,7 @@ public class Sanity extends Buff {
     {
         type = buffType.POSITIVE;
     }
-
+    public int pos;
     public static int sanity = 0;
     private int interval = 1;
 
@@ -75,7 +72,7 @@ public class Sanity extends Buff {
                         GLog.w(Messages.get(Sanity.class,"bad"));
                     }
                 } else if (sanity >= 120) {
-                        sanity -= Dungeon.depth/5+2;
+                    sanity -= Dungeon.depth/5+2;
                     if(sanity == 119) {
                         //GLog.n("我在干什么……邪恶的灵魂正在蚕食你……");
                         GLog.n(Messages.get(Sanity.class,"tobad"));
@@ -87,19 +84,6 @@ public class Sanity extends Buff {
                         target.die(this);
                         //GLog.n("你彻底失去理智了……你的灵魂彻底裂开了……");
                         GLog.n(Messages.get(Sanity.class,"diedsoul"));
-                        Gnoll s = new Gnoll();
-                        s.pos = Dungeon.hero.pos;
-                        s.gold = Dungeon.gold;
-                        Dungeon.gold = 0;
-                        s.state = s.SLEEPING;
-                        GameScene.add(s);
-                        Buff.affect(s, ChampionEnemy.DeadSoulSX.class);
-                        LostBackpack d = new LostBackpack();
-                        DeadSoul p = Buff.affect(s, DeadSoul.class);
-                        if (p.target == s){
-                            p.stick(d);
-                        }
-                        GameScene.flash(0x80FF0000);
                     }
                 }
             } else {

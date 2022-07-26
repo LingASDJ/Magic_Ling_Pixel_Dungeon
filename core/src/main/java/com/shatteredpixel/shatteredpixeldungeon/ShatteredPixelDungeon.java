@@ -23,16 +23,20 @@ package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GoScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.WelcomeScene;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.PlatformSupport;
 
 public class ShatteredPixelDungeon extends Game {
+
+	private static String log = "";
+	public static void appendLog(String string) {
+		log += "\n\n" + string;
+	}
 
 	//variable constants for specific older versions of shattered, used for data conversion
 	//versions older than v0.9.2b are no longer supported, and data from them is ignored
@@ -44,7 +48,7 @@ public class ShatteredPixelDungeon extends Game {
 	public static final int v1_2_0   = 609;
 	
 	public ShatteredPixelDungeon( PlatformSupport platform ) {
-		super( sceneClass == null ? WelcomeScene.class : sceneClass, platform );
+		super( sceneClass == null ? GoScene.class : sceneClass, platform );
 
 		//v1.2.0
 		com.watabou.utils.Bundle.addAlias(
@@ -162,12 +166,10 @@ public class ShatteredPixelDungeon extends Game {
 
 	@Override
 	public void finish() {
-		if (!DeviceCompat.isiOS()) {
-			super.finish();
-		} else {
+
 			//can't exit on iOS (Apple guidelines), so just go to title screen
 			switchScene(TitleScene.class);
-		}
+
 	}
 
 	public static void switchNoFade(Class<? extends PixelScene> c){
@@ -178,7 +180,16 @@ public class ShatteredPixelDungeon extends Game {
 		PixelScene.noFade = true;
 		switchScene( c, callback );
 	}
-	
+
+	public static void switchForceFade(Class<? extends PixelScene> c){
+		switchForceFade(c, null);
+	}
+
+	public static void switchForceFade(Class<? extends PixelScene> c, SceneChangeCallback callback) {
+		PixelScene.forceFade = true;
+		switchScene( c, callback );
+	}
+
 	public static void seamlessResetScene(SceneChangeCallback callback) {
 		if (scene() instanceof PixelScene){
 			((PixelScene) scene()).saveWindows();
@@ -187,11 +198,10 @@ public class ShatteredPixelDungeon extends Game {
 			resetScene();
 		}
 	}
-	
+
 	public static void seamlessResetScene(){
 		seamlessResetScene(null);
 	}
-	
 	@Override
 	protected void switchScene() {
 		super.switchScene();

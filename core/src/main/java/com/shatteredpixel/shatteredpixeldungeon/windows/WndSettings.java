@@ -211,7 +211,7 @@ public class WndSettings extends WndTabbed {
 		ColorBlock sep2;
 		OptionSlider optBrightness;
 		OptionSlider optVisGrid;
-
+		OptionSlider optSplashScreen;
 		@Override
 		protected void createChildren() {
 			title = PixelScene.renderTextBlock(Messages.get(this, "title"), 9);
@@ -314,7 +314,7 @@ public class WndSettings extends WndTabbed {
 			add(optBrightness);
 
 			optVisGrid = new OptionSlider(Messages.get(this, "visual_grid"),
-					Messages.get(this, "off"), Messages.get(this, "high"), -1, 2) {
+					Messages.get(this, "off"), Messages.get(this, "high"), -1, 1) {
 				@Override
 				protected void onChange() {
 					SPDSettings.visualGrid(getSelectedValue());
@@ -322,6 +322,20 @@ public class WndSettings extends WndTabbed {
 			};
 			optVisGrid.setSelectedValue(SPDSettings.visualGrid());
 			add(optVisGrid);
+
+			optSplashScreen = new OptionSlider(Messages.get(this, "splash_screen"),
+					Messages.get(this, "disable" ),
+					Messages.get( this, "full" ),
+					0, 1) {
+				@Override
+				protected void onChange() {
+					if (getSelectedValue() != SPDSettings.splashScreen()) {
+						SPDSettings.splashScreen(getSelectedValue());
+					}
+				}
+			};
+			optSplashScreen.setSelectedValue(SPDSettings.splashScreen());
+			add(optSplashScreen);
 
 		}
 
@@ -367,9 +381,11 @@ public class WndSettings extends WndTabbed {
 			if (width > 200){
 				optBrightness.setRect(0, bottom + GAP, width/2-GAP/2, SLIDER_HEIGHT);
 				optVisGrid.setRect(optBrightness.right() + GAP, optBrightness.top(), width/2-GAP/2, SLIDER_HEIGHT);
+				optSplashScreen.setRect(optVisGrid.right() + GAP, optVisGrid.top(), width/2-GAP/2, SLIDER_HEIGHT);
 			} else {
 				optBrightness.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
 				optVisGrid.setRect(0, optBrightness.bottom() + GAP, width, SLIDER_HEIGHT);
+				optSplashScreen.setRect(0, optVisGrid.bottom() + GAP, width, SLIDER_HEIGHT);
 			}
 
 			height = optVisGrid.bottom();
@@ -782,6 +798,7 @@ public class WndSettings extends WndTabbed {
 		CheckBox chkMuteSFX;
 		ColorBlock sep3;
 		CheckBox chkIgnoreSilent;
+
 
 		@Override
 		protected void createChildren() {

@@ -23,7 +23,13 @@ package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
@@ -60,6 +66,21 @@ public abstract class DamageWand extends Wand{
 			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG, 0.75f, 1.2f);
 		}
 		return dmg;
+	}
+
+	//TODO some naming issues here. Consider renaming this method and externalizing char awareness buff
+	protected static void processSoulMark(Char target, int wandLevel){
+		if (Dungeon.hero.hasTalent(Talent.ARCANE_VISION)) {
+			int dur = 5 + 5*Dungeon.hero.pointsInTalent(Talent.ARCANE_VISION);
+			Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class, dur).charID = target.id();
+		}
+
+		if (target != Dungeon.hero &&
+				Dungeon.hero.subClass == HeroSubClass.WARLOCK &&
+				//standard 1 - 0.92^x chance, plus 7%. Starts at 15%
+				Random.Float() > (Math.pow(0.92f, (wandLevel)+1) - 0.07f)){
+			SoulMark.prolong(target, SoulMark.class, SoulMark.DURATION + wandLevel);
+		}
 	}
 
 	@Override

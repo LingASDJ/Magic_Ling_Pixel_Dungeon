@@ -488,7 +488,11 @@ public class InterlevelScene extends PixelScene {
 				level.map[Dungeon.hero.pos] = Terrain.GRASS;
 			}
 			Dungeon.hero.resurrect();
-			level.drop(new LostBackpack(), invPos);
+
+			//非光与影死亡掉落遗物
+			if(!Dungeon.isChallenged(LIGHTBLACK)) {
+				level.drop(new LostBackpack(), invPos);
+			}
 		}
 
 		Dungeon.switchLevel( level, Dungeon.hero.pos );

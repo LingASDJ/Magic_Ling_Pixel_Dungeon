@@ -92,7 +92,6 @@ public class BadgesList extends ScrollPane {
 			
 			this.badge = badge;
 			icon.copy( BadgeBanner.image( badge.image ));
-			label.text( badge.title() );
 		}
 		
 		@Override

@@ -151,11 +151,6 @@ public class BadgesGrid extends Component {
 			Sample.INSTANCE.play( Assets.Sounds.CLICK, 0.7f, 0.7f, 1.2f );
 			Game.scene().add( new WndBadge( badge, unlocked ) );
 		}
-
-		@Override
-		protected String hoverText() {
-			return badge.title();
-		}
 	}
 
 }

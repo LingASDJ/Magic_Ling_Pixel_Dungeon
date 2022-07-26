@@ -21,6 +21,8 @@
 
 package com.watabou.utils;
 
+import static com.watabou.utils.DeviceCompat.isDebug;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -33,7 +35,9 @@ import java.util.HashMap;
 public abstract class PlatformSupport {
 	
 	public abstract void updateDisplaySize();
-	
+	public void logd( String message ) {
+		if (isDebug()) Gdx.app.log("DEBUG", message);
+	}
 	public abstract void updateSystemUI();
 
 	public abstract boolean connectedToUnmeteredNetwork();

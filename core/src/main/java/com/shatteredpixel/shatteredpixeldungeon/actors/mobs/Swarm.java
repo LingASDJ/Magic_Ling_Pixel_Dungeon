@@ -51,7 +51,7 @@ public class Swarm extends Mob {
 		maxLvl = 9;
 		
 		flying = true;
-
+		properties.add(Property.NOBIG);
 		loot = new PotionOfHealing();
 		lootChance = 0.1667f; //by default, see lootChance()
 	}

@@ -25,6 +25,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WraithSprite;
 import com.watabou.noosa.tweeners.AlphaTweener;
@@ -35,13 +37,14 @@ import com.watabou.utils.Random;
 public class Wraith extends Mob {
 
 	private static final float SPAWN_DELAY	= 2f;
-	
-	private int level;
+    public int gold;
+
+    private int level;
 	
 	{
 		spriteClass = WraithSprite.class;
 		
-		HP = HT = 1;
+		HP = HT = 20;
 		EXP = 0;
 
 		maxLvl = -2;
@@ -49,6 +52,17 @@ public class Wraith extends Mob {
 		flying = true;
 
 		properties.add(Property.UNDEAD);
+	}
+
+	@Override
+	public void die( Object cause ) {
+
+		super.die( cause );
+		if (gold > 0) {
+			Dungeon.level.drop( new Gold(gold), pos ).sprite.drop();
+			Dungeon.level.drop( new LostBackpack(), pos).sprite.drop( pos );
+		}
+
 	}
 	
 	private static final String LEVEL = "level";

@@ -62,21 +62,23 @@ public class Notes {
 			bundle.put( DEPTH, depth );
 		}
 	}
-	
+
 	public enum Landmark {
 		WELL_OF_HEALTH,
 		WELL_OF_AWARENESS,
 		WELL_OF_TRANSMUTATION,
 		ALCHEMY,
 		GARDEN,
+		SHOP2,
 		STATUE,
 		SHOP,
-		
+
 		GHOST,
+		REDAGRON,
 		WANDMAKER,
 		TROLL,
 		IMP;
-		
+
 		public String desc() {
 			return Messages.get(this, name());
 		}

@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.LIGHTBLACK;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
 
@@ -42,7 +43,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.DeadSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
@@ -61,6 +64,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.En
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -89,6 +93,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesi
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.BlackKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
@@ -160,6 +165,10 @@ public class Hero extends Char {
 		actPriority = HERO_PRIO;
 		
 		alignment = Alignment.ALLY;
+	}
+
+	public ArrayList<Mob> visibleEnemiesList() {
+		return visibleEnemies;
 	}
 	
 	public static final int MAX_LEVEL = 30;
@@ -918,16 +927,17 @@ public class Hero extends Char {
 			
 			Heap heap = Dungeon.level.heaps.get( dst );
 			if (heap != null && (heap.type != Type.HEAP && heap.type != Type.FOR_SALE)) {
-				
-				if ((heap.type == Type.LOCKED_CHEST && Notes.keyCount(new GoldenKey(Dungeon.depth)) < 1)
-					|| (heap.type == Type.CRYSTAL_CHEST && Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1)){
 
-						GLog.w( Messages.get(this, "locked_chest") );
-						ready();
-						return false;
+				if ((heap.type == Type.LOCKED_CHEST && Notes.keyCount(new GoldenKey(Dungeon.depth)) < 1)
+						|| (heap.type == Type.CRYSTAL_CHEST && Notes.keyCount(new CrystalKey(Dungeon.depth))  < 1 || (heap.type == Type.BLACK && Notes.keyCount(new BlackKey(Dungeon.depth)) < 1))){
+
+					GLog.w( Messages.get(this, "locked_chest") );
+					ready();
+					return false;
 
 				}
-				
+
+
 				switch (heap.type) {
 				case TOMB:
 					Sample.INSTANCE.play( Assets.Sounds.TOMB );
@@ -1655,7 +1665,17 @@ public class Hero extends Char {
 				ankh = i;
 			}
 		}
-
+		if(Dungeon.isChallenged(LIGHTBLACK)){
+			Wraith s = new Wraith();
+			s.pos = Dungeon.hero.pos;
+			s.gold = Dungeon.gold;
+			Dungeon.gold = 0;
+			s.state = s.SLEEPING;
+			GameScene.add(s);
+			Buff.affect(s, ChampionEnemy.DeadSoulSX.class);
+			Buff.affect(s, DeadSoul.class);
+			GameScene.flash(0x80FF0000);
+		}
 		if (ankh != null) {
 			interrupt();
 			resting = false;
@@ -1705,7 +1725,6 @@ public class Hero extends Char {
 	}
 	
 	public static void reallyDie( Object cause ) {
-		
 		int length = Dungeon.level.length();
 		int[] map = Dungeon.level.map;
 		boolean[] visited = Dungeon.level.visited;

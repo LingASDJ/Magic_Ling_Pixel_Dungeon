@@ -44,15 +44,27 @@ public class WndInfoMob extends WndTitledMessage {
 		
 		private CharSprite image;
 		private RenderedTextBlock name;
+		private RenderedTextBlock info;
+		private RenderedTextBlock infoB;
 		private HealthBar health;
 		private BuffIndicator buffs;
 		
 		public MobTitle( Mob mob ) {
 			
-			name = PixelScene.renderTextBlock( Messages.titleCase( mob.name() ), 9 );
+			name = PixelScene.renderTextBlock( Messages.titleCase( mob.name() )+"("+mob.HP+"/"+mob.HT+")", 9 );
 			name.hardlight( TITLE_COLOR );
 			add( name );
-			
+
+			info =
+					PixelScene.renderTextBlock( Messages.get( WndInfoMob.class,"dsinfo" )+mob.defenseSkill+"|"+Messages.get( WndInfoMob.class,"maxinfo" )+mob.maxLvl+"|"+Messages.get( WndInfoMob.class,"getexp" )+mob.EXP, 5 );
+			info.hardlight( 0xffff00);
+			add( info );
+
+			infoB =
+					PixelScene.renderTextBlock( Messages.get( WndInfoMob.class,"itm" )+ mob.lootChance()+"|"+Messages.get( WndInfoMob.class,"getdmg" )+mob.damageRoll()+"|"+Messages.get( WndInfoMob.class,"shield" )+mob.drRoll(), 5 );
+			infoB.hardlight( 0xffff00);
+			add( infoB );
+
 			image = mob.sprite();
 			add( image );
 
@@ -60,7 +72,7 @@ public class WndInfoMob extends WndTitledMessage {
 			health.level(mob);
 			add( health );
 
-			buffs = new BuffIndicator( mob, false );
+			buffs = new BuffIndicator(mob);
 			add( buffs );
 		}
 		
@@ -78,12 +90,17 @@ public class WndInfoMob extends WndTitledMessage {
 
 			health.setRect(image.width() + GAP, name.bottom() + GAP, w, health.height());
 
+			info.setRect(image.width() + GAP, health.bottom() + GAP, w, info.height());
+
+			infoB.setRect(image.width() + GAP, info.bottom() + GAP, w, infoB.height());
+
 			buffs.setPos(
 				name.right() + GAP-1,
-				name.bottom() - BuffIndicator.SIZE_SMALL-2
+				name.bottom() - BuffIndicator.SACRIFICE-2
 			);
 
-			height = health.bottom();
+			height = infoB.bottom();
+
 		}
 	}
 }

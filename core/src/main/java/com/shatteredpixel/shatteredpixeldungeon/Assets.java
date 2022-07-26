@@ -22,6 +22,24 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 public class Assets {
+	public static final String BGM_1 = "music/Level1.ogg";
+	public static final String BGM_2 = "music/Level2.ogg";
+	public static final String BGM_3 = "music/Level3.ogg";
+	public static final String BGM_4 = "music/Level4.ogg";
+	public static final String BGM_5 = "music/Level5.ogg";
+	public static final String BGM_0 = "music/Level0.ogg";
+	public static final String DEATHA	= "sounds/death.mp3";
+	public static final String TOWN = "music/town.ogg";
+	public static final String BGM_BOSSA = "music/Boss1.ogg";
+	public static final String BGM_BOSSB = "music/Boss2.ogg";
+	public static final String BGM_BOSSC = "music/Boss3.ogg";
+	public static final String BGM_BOSSC3 = "music/Ice.ogg";
+	public static final String BGM_BOSSD = "music/Boss4.ogg";
+	public static final String BGM_BOSSD2 = "music/DwarfMaster.ogg";
+	public static final String BGM_BOSSE = "music/Boss5.ogg";
+	public static final String BGM_BOSSE3 = "music/Yogdead.ogg";
+	public static final String RUN = "music/Run.ogg";
+	public static final String NYZSHOP = "music/nyzshop2.ogg";
 
 	public static class Effects {
 		public static final String EFFECTS      = "effects/effects.png";
@@ -55,6 +73,14 @@ public class Assets {
 		public static final String CAVES_BOSS       = "environment/custom_tiles/caves_boss.png";
 		public static final String CITY_BOSS        = "environment/custom_tiles/city_boss.png";
 		public static final String HALLS_SP         = "environment/custom_tiles/halls_special.png";
+
+		public static final String TILES_COLD	= "environment/Reload.png";
+		public static final String TILES_DIED	= "environment/tiles_died.png";
+
+		public static final String WATER_COLD= "environment/water-1.png";
+		public static final String PRISON_EXIT_OLD  = "environment/custom_tiles/prison_exit_old.png";
+		public static final String PRISON_EXIT_NEW  = "environment/custom_tiles/prison_exit_new.png";
+		public static final String P_BOSS       = "environment/custom_tiles/p_boss.png";
 	}
 	
 	//TODO include other font assets here? Some are platform specific though...
@@ -114,6 +140,8 @@ public class Assets {
 
 	public static class Music {
 		public static final String THEME      = "music/theme.ogg";
+		public static final String GO      = "music/Open.ogg";
+		public static final String SHOP      = "music/shop.ogg";
 		public static final String THEME_1      = "music/theme.ogg";
 		public static final String THEME_2      = "music/theme.ogg";
 
@@ -136,6 +164,12 @@ public class Assets {
 		public static final String HALLS_1      = "music/halls_1.ogg";
 		public static final String HALLS_2      = "music/halls_2.ogg";
 		public static final String HALLS_BOSS   = "music/Boss5.ogg";
+
+		public static final String GAME		= "music/game.ogg";
+		public static final String SURFACE	= "music/surface.ogg";
+		public static final String NBPL	= "music/nbpl.ogg";
+		public static final String RENSHOP	= "music/RENSHOP.ogg";
+		public static final String Dragon	= "music/dragon.ogg";
 	}
 
 	public static class Sounds {
@@ -208,6 +242,7 @@ public class Assets {
 		public static final String CHAINS   = "sounds/chains.mp3";
 		public static final String SCAN     = "sounds/scan.mp3";
 		public static final String SHEEP    = "sounds/sheep.mp3";
+		public static final String ANSDOSHIP    = "sounds/ansdoship.mp3";
 
 		public static final String[] all = new String[]{
 				CLICK, BADGE, GOLD,
@@ -220,7 +255,7 @@ public class Assets {
 				DESCEND, EAT, READ, LULLABY, DRINK, SHATTER, ZAP, LIGHTNING, LEVELUP, DEATH,
 				CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
 				TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
-				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP
+				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, ANSDOSHIP
 		};
 	}
 
@@ -229,6 +264,8 @@ public class Assets {
 		public static final String MAGE     = "splashes/mage.jpg";
 		public static final String ROGUE    = "splashes/rogue.jpg";
 		public static final String HUNTRESS = "splashes/huntress.jpg";
+		public static final String GDX = "splashes/gdx.png";
+		public static final String ANSDOSHIP = "splashes/ansdoship.png";
 	}
 
 	public static class Sprites {
@@ -236,6 +273,7 @@ public class Assets {
 		//BOSS
 		public static final String FRAS	= "sprites/boss/FireMagicGirl.png";
 		public static final String NECROREDEX	= "sprites/boss/rednecromancer_ex.png";
+		public static final String SLIMEPRINCESS	= "sprites/boss/SlimePrincess.png";
 
 		public static final String ITEMS	    = "sprites/items/items.png";
 		public static final String ITEM_ICONS   = "sprites/item_icons.png";

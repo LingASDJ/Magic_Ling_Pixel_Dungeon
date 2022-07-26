@@ -275,7 +275,7 @@ public class PixelScene extends Scene {
 	public static void align( Component c ){
 		c.setPos(align(c.left()), align(c.top()));
 	}
-
+	public static boolean forceFade = false;
 	public static boolean noFade = false;
 	protected void fadeIn() {
 		if (noFade) {

@@ -8,6 +8,6 @@
     <string name="customactivityoncrash_error_activity_error_details_close">Close</string>
     <string name="customactivityoncrash_error_activity_error_details_copy">Copy to clipboard</string>
     <string name="customactivityoncrash_error_activity_error_details_copied">Copied to clipboard</string>
-    <string name="reload">Reload</string>
-    <string name="died">diefdsa</string>
+    <string name="customactivityoncrash_error_activity_error_details_reload">Reload</string>
+    <string name="customactivityoncrash_error_activity_error_details_died">diefdsa</string>
 </resources>

@@ -90,7 +90,7 @@ public class KingsCrown extends Item {
 
 		detach(hero.belongings.backpack);
 
-		hero.sprite.emitter().burst( Speck.factory( Speck.CROWN), 12 );
+		hero.sprite.emitter().burst( Speck.factory( Speck.STAR), 12 );
 		hero.spend(Actor.TICK);
 		hero.busy();
 

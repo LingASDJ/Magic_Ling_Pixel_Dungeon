@@ -51,9 +51,9 @@ public class Toolbar extends Component {
 	private Tool btnSearch;
 	private Tool btnInventory;
 	private QuickslotTool[] btnQuick;
-	
+
 	private PickedUpItem pickedUp;
-	
+
 	private boolean lastEnabled = true;
 	public boolean examining = false;
 
@@ -64,7 +64,7 @@ public class Toolbar extends Component {
 		GROUP,
 		CENTER
 	}
-	
+
 	public Toolbar() {
 		super();
 
@@ -72,7 +72,7 @@ public class Toolbar extends Component {
 
 		height = btnInventory.height();
 	}
-	
+
 	@Override
 	protected void createChildren() {
 
@@ -85,7 +85,7 @@ public class Toolbar extends Component {
 		for (int i = 0; i < quickSlots; i++){
 			add( btnQuick[i] = new QuickslotTool(64, 0, 22, 24, i) );
 		}
-		
+
 		add(btnWait = new Tool(24, 0, 20, 26) {
 			@Override
 			protected void onClick() {
@@ -94,7 +94,7 @@ public class Toolbar extends Component {
 					Dungeon.hero.rest(false);
 				}
 			}
-			
+
 			@Override
 			public GameAction keyAction() {
 				return SPDAction.WAIT;
@@ -129,7 +129,7 @@ public class Toolbar extends Component {
 				else				return null;
 			}
 		});
-		
+
 		add(btnSearch = new Tool(44, 0, 20, 26) {
 			@Override
 			protected void onClick() {
@@ -143,7 +143,7 @@ public class Toolbar extends Component {
 					}
 				}
 			}
-			
+
 			@Override
 			public GameAction keyAction() {
 				return SPDAction.EXAMINE;
@@ -153,14 +153,14 @@ public class Toolbar extends Component {
 			protected String hoverText() {
 				return Messages.titleCase(Messages.get(WndKeyBindings.class, "examine"));
 			}
-			
+
 			@Override
 			protected boolean onLongClick() {
 				Dungeon.hero.search(true);
 				return true;
 			}
 		});
-		
+
 		add(btnInventory = new Tool(0, 0, 24, 26) {
 			private CurrencyIndicator ind;
 
@@ -178,7 +178,7 @@ public class Toolbar extends Component {
 					}
 				}
 			}
-			
+
 			@Override
 			public GameAction keyAction() {
 				return SPDAction.INVENTORY;
@@ -188,7 +188,7 @@ public class Toolbar extends Component {
 			protected String hoverText() {
 				return Messages.titleCase(Messages.get(WndKeyBindings.class, "inventory"));
 			}
-			
+
 			@Override
 			protected boolean onLongClick() {
 				GameScene.show(new WndQuickBag(null));
@@ -221,7 +221,7 @@ public class Toolbar extends Component {
 
 		add(pickedUp = new PickedUpItem());
 	}
-	
+
 	@Override
 	protected void layout() {
 
@@ -253,7 +253,7 @@ public class Toolbar extends Component {
 
 		for(int i = 0; i < btnQuick.length; i++) {
 			if (i == 0 && !SPDSettings.flipToolbar() ||
-				i == btnQuick.length-1 && SPDSettings.flipToolbar()){
+					i == btnQuick.length-1 && SPDSettings.flipToolbar()){
 				btnQuick[i].border(0, 2);
 				btnQuick[i].frame(106, 0, 19, 24);
 			} else if (i == 0 && SPDSettings.flipToolbar() ||
@@ -277,7 +277,7 @@ public class Toolbar extends Component {
 				for (int i = 1; i < btnQuick.length; i++) {
 					btnQuick[i].setPos(btnQuick[i-1].left() - btnQuick[i].width(), y + 2);
 				}
-				
+
 				//center the quickslots if they
 				if (btnQuick[btnQuick.length-1].left() < btnSearch.right()){
 					float diff = Math.round(btnSearch.right() - btnQuick[btnQuick.length-1].left())/2;
@@ -285,7 +285,7 @@ public class Toolbar extends Component {
 						btnQuick[i].setPos( btnQuick[i].left()+diff, btnQuick[i].top() );
 					}
 				}
-				
+
 				break;
 
 			//center = group but.. well.. centered, so all we need to do is pre-emptively set the right side further in.
@@ -305,14 +305,14 @@ public class Toolbar extends Component {
 				for (int i = 1; i < btnQuick.length; i++) {
 					btnQuick[i].setPos(btnQuick[i-1].left() - btnQuick[i].width(), y + 2);
 				}
-				
+
 				if (btnQuick[btnQuick.length-1].left() < 0){
 					float diff = -Math.round(btnQuick[btnQuick.length-1].left())/2;
 					for( int i = 0; i < btnQuick.length; i++){
 						btnQuick[i].setPos( btnQuick[i].left()+diff, btnQuick[i].top() );
 					}
 				}
-				
+
 				break;
 		}
 		right = width;
@@ -334,33 +334,33 @@ public class Toolbar extends Component {
 	public static void updateLayout(){
 		if (instance != null) instance.layout();
 	}
-	
+
 	@Override
 	public void update() {
 		super.update();
-		
+
 		if (lastEnabled != (Dungeon.hero.ready && Dungeon.hero.isAlive())) {
 			lastEnabled = (Dungeon.hero.ready && Dungeon.hero.isAlive());
-			
+
 			for (Gizmo tool : members.toArray(new Gizmo[0])) {
 				if (tool instanceof Tool) {
 					((Tool)tool).enable( lastEnabled );
 				}
 			}
 		}
-		
+
 		if (!Dungeon.hero.isAlive()) {
 			btnInventory.enable(true);
 		}
 	}
-	
+
 	public void pickup( Item item, int cell ) {
 		pickedUp.reset( item,
-			cell,
-			btnInventory.centerX(),
-			btnInventory.centerY());
+				cell,
+				btnInventory.centerX(),
+				btnInventory.centerY());
 	}
-	
+
 	private static CellSelector.Listener informer = new CellSelector.Listener() {
 		@Override
 		public void onSelect( Integer cell ) {
@@ -372,15 +372,15 @@ public class Toolbar extends Component {
 			return Messages.get(Toolbar.class, "examine_prompt");
 		}
 	};
-	
+
 	public static class Tool extends Button {
-		
+
 		private static final int BGCOLOR = 0x7B8073;
-		
+
 		private Image base;
 
 
-		
+
 		public Tool( int x, int y, int width, int height ) {
 			super();
 
@@ -394,28 +394,28 @@ public class Toolbar extends Component {
 			this.width = width;
 			this.height = height;
 		}
-		
+
 		@Override
 		protected void createChildren() {
 			super.createChildren();
-			
+
 			base = new Image( Assets.Interfaces.TOOLBAR );
 			add( base );
 		}
-		
+
 		@Override
 		protected void layout() {
 			super.layout();
-			
+
 			base.x = x;
 			base.y = y;
 		}
-		
+
 		@Override
 		protected void onPointerDown() {
 			base.brightness( 1.4f );
 		}
-		
+
 		@Override
 		protected void onPointerUp() {
 			if (active) {
@@ -424,7 +424,7 @@ public class Toolbar extends Component {
 				base.tint( BGCOLOR, 0.7f );
 			}
 		}
-		
+
 		public void enable( boolean value ) {
 			if (value != active) {
 				if (value) {
@@ -436,13 +436,13 @@ public class Toolbar extends Component {
 			}
 		}
 	}
-	
+
 	private static class QuickslotTool extends Tool {
-		
+
 		private QuickSlotButton slot;
 		private int borderLeft = 2;
 		private int borderRight = 2;
-		
+
 		public QuickslotTool( int x, int y, int width, int height, int slotNum ) {
 			super( x, y, width, height );
 
@@ -455,77 +455,77 @@ public class Toolbar extends Component {
 			borderRight = right;
 			layout();
 		}
-		
+
 		@Override
 		protected void layout() {
 			super.layout();
 			slot.setRect( x, y, width, height );
 			slot.slotMargins(borderLeft, 2, borderRight, 2);
 		}
-		
+
 		@Override
 		public void enable( boolean value ) {
 			super.enable( value );
 			slot.enable( value );
 		}
 	}
-	
+
 	public static class PickedUpItem extends ItemSprite {
-		
+
 		private static final float DURATION = 0.5f;
-		
+
 		private float startScale;
 		private float startX, startY;
 		private float endX, endY;
 		private float left;
-		
+
 		public PickedUpItem() {
 			super();
-			
+
 			originToCenter();
-			
+
 			active =
-			visible =
-				false;
+					visible =
+							false;
 		}
-		
+
 		public void reset( Item item, int cell, float endX, float endY ) {
 			view( item );
-			
+
 			active =
-			visible =
-				true;
-			
+					visible =
+							true;
+
 			PointF tile = DungeonTerrainTilemap.raisedTileCenterToWorld(cell);
 			Point screen = Camera.main.cameraToScreen(tile.x, tile.y);
 			PointF start = camera().screenToCamera(screen.x, screen.y);
-			
+
 			x = this.startX = start.x - width() / 2;
 			y = this.startY = start.y - width() / 2;
-			
+
 			this.endX = endX - width() / 2;
 			this.endY = endY - width() / 2;
 			left = DURATION;
-			
+
 			scale.set( startScale = Camera.main.zoom / camera().zoom );
-			
+
 		}
-		
+
 		@Override
 		public void update() {
 			super.update();
-			
+
 			if ((left -= Game.elapsed) <= 0) {
-				
+
 				visible =
-				active =
-					false;
+						active =
+								false;
 				if (emitter != null) emitter.on = false;
-				
+
 			} else {
 				float p = left / DURATION;
 				scale.set( startScale * (float)Math.sqrt( p ) );
-				
+
 				x = startX*p + endX*(1-p);
 				y = startY*p + endY*(1-p);
 			}

@@ -38,6 +38,11 @@ public class SPDSettings extends GameSettings {
 	//Version info
 	
 	public static final String KEY_VERSION      = "version";
+
+	private static final String DEBUG_REPORT  = "debug_report";
+	public static boolean debugReport() {
+		return getBoolean(DEBUG_REPORT,false);
+	}
 	
 	public static void version( int value)  {
 		put( KEY_VERSION, value );
@@ -56,6 +61,17 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_ZOOM			= "zoom";
 	public static final String KEY_BRIGHTNESS	= "brightness";
 	public static final String KEY_GRID 	    = "visual_grid";
+	public static final String KEY_SPLASH_SCREEN= "splash_screen";
+
+	//瀑布系统
+	public static void splashScreen( int value ) {
+		put( KEY_SPLASH_SCREEN, value );
+	}
+
+	public static int splashScreen() {
+		return getInt( KEY_SPLASH_SCREEN, 1 );
+	}
+
 
 	private static final String KEY_DARK	= "dark_ui";
 	//暗色系统
@@ -64,6 +80,8 @@ public class SPDSettings extends GameSettings {
 	private static final String KEY_PAGE	= "page_ui";
 
 	private static final String KEY_PCUI	= "pc_ui";
+
+	private static final String KEY_SWAP	= "quickswap";
 	
 	public static void fullscreen( boolean value ) {
 		put( KEY_FULLSCREEN, value );
@@ -403,4 +421,11 @@ public class SPDSettings extends GameSettings {
 		put( KEY_PCUI, value );
 	}
 
+	public static boolean quickSwapper() {
+		return getBoolean(KEY_SWAP, false);
+	}
+
+	public static void quickSwapper(boolean value) {
+		put( KEY_SWAP, value );
+	}
 }
