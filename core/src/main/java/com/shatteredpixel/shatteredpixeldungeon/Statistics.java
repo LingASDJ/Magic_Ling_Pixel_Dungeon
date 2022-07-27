@@ -34,7 +34,7 @@ public class Statistics {
 	public static int ankhsUsed;
 	public static int spawnersIce;
 	public static int naiyaziCollected;
-	
+	public static boolean isCustomSeed = false;
 	//used for hero unlock badges
 	public static int upgradesUsed;
 	public static int sneakAttacks;

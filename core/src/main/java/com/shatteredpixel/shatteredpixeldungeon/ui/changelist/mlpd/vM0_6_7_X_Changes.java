@@ -1,5 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
@@ -21,12 +25,39 @@ public class vM0_6_7_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton((new Image("Ling.png", 0, 0, 16, 16)), ("开发者的话"),
+                ("你好，这里是绫。如你所见，这是全新的魔绫像素地牢，她已经步入了破碎1.2" +
+                        ".3的版本。\n\n至此，魔绫像素地牢以后将针对于此破碎底层进行更新。今后不会继续同步底层破碎版本。\n\n" +
+                        "同时，本次更新后，后续应该还有几个补丁版。很高兴一路以来有那么多的朋友，非常谢谢你们的支持。\n\n现在，旅途才刚刚开始，魔绫下半段，将会更加精彩。\n" +
+                        "在这之前，就让我们继续在上半段的魔绫里面探索前进吧。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("新挑战:空洞旅程"),
+                ("开启本挑战将会在开局获得240点理智，在_没有光芒下_和_部分怪物的近战_将会使你理智降低。详情查看下表:\n" +
+                        "-棕色老鼠:20%概率(-1理智/每回合)\n-黑色怨灵:10%概率(-3理智/每回合)\n-火把猎人:40%概率(-1理智/每回合)\n-矮人术士:15%概率" +
+                        "(-5理智/每回合)\n-寒冰老鼠:25%概率(-2理智/每回合)\n-DM200:10%概率(-7理智/每回合)\n-矮人武僧:30%的概率(-3理智/每回合)" +
+                        "\n-没有光芒Buff的情况下:-1/每回合\n\n_理智回复策略_:\n-_1_:存在光芒的情况下以:[(+1理智+楼层深度/10)/每回合]" +
+                        "(举例:20层没有光芒的情况下,1+20/10=3(+3智/每回合)\n-_2_.商人售卖信仰药水，喝下去追加40回合理智\n-_3_.击败敌人可以获得敌人的灵魂," +
+                        "灵魂到一定数量可以使提灯可以再次点亮道路。灵魂也可以缓慢回复理智。(50灵魂=1理智回复)\n\n尚未制作完成，敬请期待")));
+
         changes = new ChangeInfo("改动", false, null);
         changes.hardlight(Window.SKYBULE_COLOR);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), (Messages.get(ChangesScene.class, "bugfixes")),
+                Messages.get(vM0_6_7_X_Changes.class, "bug_06X20")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG24), ("极度秘卷"),
+                ("原炎魔秘卷，现在重做。具体请游戏里面自行探索。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.INFO), ("快捷栏调整"),
+                ("快捷栏使用说明:\n-1.请最好根据自己的分辨率进行调整，避免出现快捷栏叠加情况\n-2.由于技术问题，快捷栏仅在游戏中才可以设置\n-3.最多支持12个快捷栏，玩得高兴！！！")));
+
         changes.addButton(new ChangeButton(Icons.get(Icons.CHANGES), ("重大更新"),
-                ("魔绫现已更新底层到破碎123版本！")));
+                ("魔绫现已更新底层到破碎V1.2.3版本!")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("新挑战和部分挑战改动"),
                 ("部分挑战进行重新调整，同时追加全新挑战，欢迎前来探索\n\n注意：部分挑战尚未完成，请等待后续版本")));
@@ -37,20 +68,32 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("UI优化改动"),
                 ("魔绫已经对UI优化改动进行大规模调整，欢迎前来体验")));
 
-        changes.addButton(new ChangeButton((new Image("Ling.png", 0, 0, 16, 16)), ("开发者的话"),
-                ("你好，这里是绫。如你所见，这是全新的魔绫像素地牢，她已经步入了破碎1.2" +
-                        ".3的版本。\n\n至此，魔绫像素地牢以后将针对于此破碎底层进行更新。今后不会继续同步底层破碎版本。\n\n" +
-                        "同时，本次更新后，后续应该还有几个补丁版。很高兴一路以来有那么多的朋友，非常谢谢你们的支持。\n\n现在，旅途才刚刚开始，魔绫下半段，将会更加精彩。\n" +
-                        "在这之前，就让我们继续在上半段的魔绫里面探索前进吧。")));
-
         changes = new ChangeInfo("调整", false, null);
-        changes.hardlight(Window.GREEN_COLOR);
+        changes.hardlight(Window.CYELLOW);
         changeInfos.add(changes);
+
+        changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 80, 16, 16 ), "水晶十字房加强",
+                "水晶十字房间改动说明：\n" +
+                        "第一个房间：概率在80-270范围给予金币\n" +
+                        "第二个房间：概率在符石，种子，卷轴，食物中随机抽取\n" +
+                        "第三个房间：概率在1，3，5阶武器，戒指中随机抽取\n" +
+                        "第四个房间：概率在护甲，符石，法杖，神器中随机抽取"));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FIREFISHSWORD), ("尚方宝剑特效重写"),
                 ("优化了尚方宝剑特效，并最大程度上进行了处理")));
 
+        changes = new ChangeInfo("移除", false, null);
+        changes.hardlight(Window.RED_COLOR);
+        changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(new FlameBoiSprite(), ("火焰机器人"),
+                ("移除火焰机器人在常规局的出现，仅出现在支离破碎的精英怪概率里面")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG1), ("炸弹匕首"),
+                ("移除炸弹匕首，它实在没有太大的用处。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BlackDog), ("黑狗爪"),
+                ("移除黑狗爪，它已不再有当年的威风")));
 
     }
 }

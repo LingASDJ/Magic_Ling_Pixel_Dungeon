@@ -45,7 +45,7 @@ public class ShatteredPixelDungeon extends Game {
 
 	public static final int v1_0_3   = 574;
 	public static final int v1_1_2   = 587;
-	public static final int v1_2_0   = 609;
+	public static final int v1_2_0   = 619;
 	
 	public ShatteredPixelDungeon( PlatformSupport platform ) {
 		super( sceneClass == null ? GoScene.class : sceneClass, platform );
@@ -101,7 +101,7 @@ public class ShatteredPixelDungeon extends Game {
 				com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel.ExitVisualWalls.class,
 				"com.shatteredpixel.shatteredpixeldungeon.levels.NewPrisonBossLevel$exitVisualWalls" );
 		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300.class,
+				com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM300.class,
 				"com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM300" );
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel.class,

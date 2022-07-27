@@ -20,7 +20,7 @@ public class Constants {
     //############################## UI STUFF ##############################
     //
 
-    public static final int MAX_QUICKSLOTS = 9;
+    public static final int MAX_QUICKSLOTS = 12;
     public static final int MIN_QUICKSLOTS = 3;
 
     public static boolean gameIsAndroid(){

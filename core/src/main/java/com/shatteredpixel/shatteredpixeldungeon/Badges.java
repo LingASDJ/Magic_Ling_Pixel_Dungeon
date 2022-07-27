@@ -76,7 +76,7 @@ public class Badges {
 		KILL_ROTHEART         			( 20 ),
 		GET_SC        			( 21 ),
 		KILL_COLDELE        			( 22 ),
-		DEATH_GOOD        			( 23 ),
+
 		HALOFIRE_DIED					( 24 ),
 
 		//silver
@@ -621,12 +621,6 @@ public class Badges {
 		displayBadge( badge );
 
 		validateGOODMAKE();
-	}
-
-	public static void DEATH_GOOD() {
-		Badge badge = Badge.DEATH_GOOD;
-		local.add( badge );
-		displayBadge( badge );
 	}
 
 	public static void HALOFIRE_DIED() {

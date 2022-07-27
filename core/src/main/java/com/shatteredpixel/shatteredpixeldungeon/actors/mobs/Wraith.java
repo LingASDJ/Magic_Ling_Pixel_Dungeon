@@ -25,8 +25,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
-import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WraithSprite;
 import com.watabou.noosa.tweeners.AlphaTweener;
@@ -44,7 +42,7 @@ public class Wraith extends Mob {
 	{
 		spriteClass = WraithSprite.class;
 		
-		HP = HT = 20;
+		HP = HT = 1;
 		EXP = 0;
 
 		maxLvl = -2;
@@ -58,10 +56,10 @@ public class Wraith extends Mob {
 	public void die( Object cause ) {
 
 		super.die( cause );
-		if (gold > 0) {
-			Dungeon.level.drop( new Gold(gold), pos ).sprite.drop();
-			Dungeon.level.drop( new LostBackpack(), pos).sprite.drop( pos );
-		}
+		//if (gold > 0) {
+		//	Dungeon.level.drop( new Gold(gold), pos ).sprite.drop();
+		//	Dungeon.level.drop( new LostBackpack(), pos).sprite.drop( pos );
+		//}
 
 	}
 	

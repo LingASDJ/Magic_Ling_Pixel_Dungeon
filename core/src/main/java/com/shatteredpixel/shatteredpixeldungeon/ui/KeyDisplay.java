@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ public class KeyDisplay extends Visual {
 	private FloatBuffer quads;
 	private Vertexbuffer buffer;
 
-	private SmartTexture tx = TextureCache.get(Assets.Interfaces.MENU);
+	private SmartTexture tx = TextureCache.get(Assets.Interfaces.MENU_BTN);
 
 	private boolean dirty = true;
 	private int[] keys;
@@ -214,6 +214,13 @@ public class KeyDisplay extends Visual {
 
 		dirty = false;
 
+	}
+
+	@Override
+	public void destroy() {
+		super.destroy();
+		if (buffer != null)
+			buffer.delete();
 	}
 
 }

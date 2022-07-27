@@ -43,13 +43,25 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.BrokenBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.DeepBloodBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.GrassKingBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.IceCityBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.NoKingMobBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.DeYiZiBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.MoneyMoreBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.PinkRandomBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHaste;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLevitation;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLightningShiledX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
@@ -93,9 +105,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BlackDog;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dairikyan;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dirk;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive;
@@ -103,11 +118,15 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greataxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.GreenSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Mace;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
@@ -134,7 +153,9 @@ public enum Catalog {
 	RINGS,
 	ARTIFACTS,
 	POTIONS,
-	SCROLLS;
+	SCROLLS,
+	BOOKS,
+	PLAYBOOKS;
 	
 	private LinkedHashMap<Class<? extends Item>, Boolean> seen = new LinkedHashMap<>();
 	
@@ -179,6 +200,13 @@ public enum Catalog {
 		WEAPONS.seen.put( Greataxe.class,                   false);
 		WEAPONS.seen.put( Greatshield.class,                false);
 		WEAPONS.seen.put( Gauntlet.class,                   false);
+		WEAPONS.seen.put( GreenSword.class,                 false);
+		WEAPONS.seen.put( LockSword.class,                  false);
+		WEAPONS.seen.put( RedBloodMoon.class,               false);
+		WEAPONS.seen.put( Dairikyan.class,                  false);
+		WEAPONS.seen.put( BlackDog.class,                   false);
+		WEAPONS.seen.put( IceFishSword.class,                   false);
+		WEAPONS.seen.put( FireFishSword.class,                   false);
 	
 		ARMOR.seen.put( ClothArmor.class,                   false);
 		ARMOR.seen.put( LeatherArmor.class,                 false);
@@ -229,7 +257,7 @@ public enum Catalog {
 		ARTIFACTS.seen.put( TalismanOfForesight.class,      false);
 		ARTIFACTS.seen.put( TimekeepersHourglass.class,     false);
 		ARTIFACTS.seen.put( UnstableSpellbook.class,        false);
-	
+
 		POTIONS.seen.put( PotionOfHealing.class,            false);
 		POTIONS.seen.put( PotionOfStrength.class,           false);
 		POTIONS.seen.put( PotionOfLiquidFlame.class,        false);
@@ -242,6 +270,8 @@ public enum Catalog {
 		POTIONS.seen.put( PotionOfInvisibility.class,       false);
 		POTIONS.seen.put( PotionOfExperience.class,         false);
 		POTIONS.seen.put( PotionOfHaste.class,              false);
+		POTIONS.seen.put( PotionOfLiquidFlameX.class,       false);
+		POTIONS.seen.put( PotionOfLightningShiledX.class,       false);
 	
 		SCROLLS.seen.put( ScrollOfIdentify.class,           false);
 		SCROLLS.seen.put( ScrollOfUpgrade.class,            false);
@@ -255,6 +285,18 @@ public enum Catalog {
 		SCROLLS.seen.put( ScrollOfRage.class,               false);
 		SCROLLS.seen.put( ScrollOfRetribution.class,        false);
 		SCROLLS.seen.put( ScrollOfTransmutation.class,      false);
+
+		BOOKS.seen.put( IceCityBooks.class,           	false);
+		BOOKS.seen.put( DeepBloodBooks.class,           false);
+		BOOKS.seen.put( GrassKingBooks.class,           false);
+		BOOKS.seen.put( YellowSunBooks.class,           false);
+		BOOKS.seen.put( MagicGirlBooks.class,           false);
+		BOOKS.seen.put( NoKingMobBooks.class,           false);
+		BOOKS.seen.put( BrokenBooks.class,           false);
+
+		PLAYBOOKS.seen.put( MoneyMoreBooks.class,          	 true);
+		PLAYBOOKS.seen.put( PinkRandomBooks.class,           true);
+		PLAYBOOKS.seen.put( DeYiZiBooks.class,          	 true);
 	}
 	
 	public static LinkedHashMap<Catalog, Badges.Badge> catalogBadges = new LinkedHashMap<>();

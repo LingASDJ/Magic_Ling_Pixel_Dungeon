@@ -115,7 +115,7 @@ public class PixelScene extends Scene {
 		defaultZoom = SPDSettings.scale();
 
 		if (defaultZoom < Math.ceil( Game.density * 2 ) || defaultZoom > maxDefaultZoom){
-			defaultZoom = (int)GameMath.gate(2, (int)Math.ceil( Game.density * scaleFactor ), maxDefaultZoom);
+			defaultZoom = (int)GameMath.gate(2, (int)Math.ceil( Game.density * 2.5 ), maxDefaultZoom);
 
 			if (SPDSettings.interfaceSize() > 0 && defaultZoom < (maxDefaultZoom+1)/2){
 				defaultZoom = (maxDefaultZoom+1)/2;

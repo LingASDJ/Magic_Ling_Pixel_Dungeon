@@ -96,7 +96,6 @@ public class WndChallenges extends Window {
 		final int happy_mode =14;
 		final int Test_Debug = 15;
 		boolean isCustom = false;
-		//boolean isCustom = false;
 		float pos = 0;
 
 		for (int i = 0; i < Challenges.NAME_IDS.length; i++) {
@@ -138,12 +137,20 @@ public class WndChallenges extends Window {
 			cb.checked((checked & Challenges.MASKS[i]) != 0);
 			cb.active = editable;
 
-			//暂时禁用
+			//Disable
 			if(Challenges.NAME_IDS[i].equals("light&black")||Challenges.NAME_IDS[i].equals("exsg")||Challenges.NAME_IDS[i].equals("boss")||Challenges.NAME_IDS[i].equals("aquaphobia")){
 				cb.active = false;
 				cb.checked(false);
 				cb.alpha(0.5f);
 			}
+
+			//if(Challenges.NAME_IDS[i].equals("no_food") && cb.active == editable){
+			//	if(boxes.get( 12 ).checked()){
+			//		cb.active = false;
+			//		cb.checked(false);
+			//		cb.alpha(0.5f);
+			//	}
+			//}
 
 
 			if (i > 0) {

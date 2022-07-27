@@ -21,7 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -458,6 +461,10 @@ public class YogDzewa extends Mob {
 			if (mob instanceof Larva || mob instanceof RipperDemon) {
 				mob.die( cause );
 			}
+		}
+
+		if(Dungeon.isChallenged(RLPT)){
+			Badges.GOODRLPT();
 		}
 
 		updateVisibility(Dungeon.level);

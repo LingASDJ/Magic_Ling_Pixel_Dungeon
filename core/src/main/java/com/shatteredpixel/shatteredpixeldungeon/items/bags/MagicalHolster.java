@@ -46,7 +46,7 @@ public class MagicalHolster extends Bag {
 	}
 
 	public int capacity(){
-		return 19;
+		return 34; // default container size
 	}
 	
 	@Override

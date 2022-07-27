@@ -30,7 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 public class Degrade extends FlavourBuff {
 
 	public static final float DURATION = 30f;
-	
+	public static final float ADURATION = 5f;
 	{
 		type = buffType.NEGATIVE;
 		announced = true;

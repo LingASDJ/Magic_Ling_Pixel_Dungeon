@@ -55,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.BrokenBooks;
@@ -72,6 +73,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLightningShiledX;
@@ -82,10 +84,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonKingBreath;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GoldBAo;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTerror;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy;
@@ -124,8 +128,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
-import com.shatteredpixel.shatteredpixeldungeon.plants.SkyBlueFireBloom;
-import com.watabou.utils.DeviceCompat;
 
 public enum HeroClass {
 
@@ -143,6 +145,10 @@ public enum HeroClass {
 	}
 
 	public void initHero( Hero hero ) {
+
+		if (Dungeon.isChallenged(Challenges.RLPT)) {
+			new Ankh().quantity(1).identify().collect();
+		}
 
 		if (Dungeon.isChallenged(Challenges.PRO)){
 			new FrozenCarpaccio().quantity(11).identify().collect();
@@ -208,10 +214,12 @@ public enum HeroClass {
 			new FireFishSword().quantity(1).identify().collect();
 			new EndingBlade().quantity(1).identify().collect();
 			new PotionOfDragonKingBreath().quantity(1).identify().collect();
+			new PotionOfFrost().quantity(100).identify().collect();
 			new WandOfBlueFuck().quantity(1).identify().collect();
-			new SkyBlueFireBloom.Seed().quantity(10).identify().collect();
+			new ScrollOfFlameCursed().quantity(10).identify().collect();
 			new PotionOfLightningShiled().quantity(42).collect();
 			new ScrollOfRoseShiled().quantity(45).identify().collect();
+			new ScrollOfTerror().quantity(45).identify().collect();
 			Dungeon.gold = 600000000;
 			hero.STR = 27;
 			hero.lvl = 31;
@@ -227,13 +235,19 @@ public enum HeroClass {
 		if (!Challenges.isItemBlocked(i)) hero.belongings.armor = (ClothArmor)i;
 
 		i = new Food();
+
+		new HerbBag().quantity(1).identify().collect();
+		new PotionOfHealing().quantity(3).identify().collect();
+
+		new ScrollOfUpgrade().quantity(1).identify().collect();
+		//new IndexBooks().quantity(1).identify().collect();
 		if (!Challenges.isItemBlocked(i)) i.collect();
+
+		new ScrollOfIdentify().identify();
 
 		new VelvetPouch().collect();
 		Dungeon.LimitedDrops.VELVET_POUCH.drop();
-		if (DeviceCompat.isDebug()){
-			new MeatPie().quantity(100).identify().collect();
-		}
+
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
 
@@ -482,6 +496,8 @@ public enum HeroClass {
 				return Messages.get(HeroClass.class, "rogue_unlock");
 			case HUNTRESS:
 				return Messages.get(HeroClass.class, "huntress_unlock");
+			case COMINGSOON:
+				return Messages.get(HeroClass.class, "slime_unlock");
 		}
 	}
 

@@ -42,7 +42,7 @@ public class PotionBandolier extends Bag {
 	}
 
 	public int capacity(){
-		return 19;
+		return 35; // default container size
 	}
 
 	@Override

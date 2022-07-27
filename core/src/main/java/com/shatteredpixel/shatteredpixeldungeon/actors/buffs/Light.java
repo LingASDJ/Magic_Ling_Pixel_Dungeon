@@ -23,49 +23,37 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 public class Light extends FlavourBuff {
-	private static final float DELAY = 5.0f;
-	public static final int DISTANCE = 6;
-	public static final float DURATION = 300.0f;
 
-	public Light() {
-		this.type = Buff.buffType.POSITIVE;
+	{
+		type = buffType.POSITIVE;
 	}
 
-	public boolean attachTo(Char target) {
-		if (!Light.super.attachTo(target)) {
+	public static final float DURATION	= 250f;
+	public static final int DISTANCE	= 6;
+
+	@Override
+	public boolean attachTo( Char target ) {
+		if (super.attachTo( target )) {
+			if (Dungeon.level != null) {
+				target.viewDistance = Math.max( Dungeon.level.viewDistance, DISTANCE );
+				Dungeon.observe();
+			}
+			return true;
+		} else {
 			return false;
 		}
-		if (Dungeon.level == null) {
-			return true;
-		}
-		target.viewDistance = Math.max(Dungeon.level.viewDistance, 6);
-		Dungeon.observe();
-		return true;
 	}
 
-	public boolean act() {
-		OilLantern lantern = Dungeon.hero.belongings.getItem(OilLantern.class);
-		if (lantern == null || !lantern.isActivated() || lantern.getCharge() <= 0) {
-			assert lantern != null;
-			lantern.deactivate(Dungeon.hero, false);
-			detach();
-			return true;
-		}
-		lantern.spendCharge();
-		spend(DELAY);
-		return true;
-	}
-
+	@Override
 	public void detach() {
-		this.target.viewDistance = Dungeon.level.viewDistance;
+		target.viewDistance = Dungeon.level.viewDistance;
 		Dungeon.observe();
-		Light.super.detach();
+		super.detach();
 	}
 
 	public void weaken( int amount ){
@@ -77,18 +65,23 @@ public class Light extends FlavourBuff {
 		return BuffIndicator.LIGHT;
 	}
 
-	public void fx(boolean on) {
-		if (on) {
-			this.target.sprite.add(CharSprite.State.ILLUMINATED);
-		} else {
-			this.target.sprite.remove(CharSprite.State.ILLUMINATED);
-		}
+	@Override
+	public float iconFadePercent() {
+		return Math.max(0, (DURATION - visualcooldown()) / DURATION);
 	}
 
+	@Override
+	public void fx(boolean on) {
+		if (on) target.sprite.add(CharSprite.State.ILLUMINATED);
+		else target.sprite.remove(CharSprite.State.ILLUMINATED);
+	}
+
+	@Override
 	public String toString() {
 		return Messages.get(this, "name");
 	}
 
+	@Override
 	public String desc() {
 		return Messages.get(this, "desc", dispTurns());
 	}

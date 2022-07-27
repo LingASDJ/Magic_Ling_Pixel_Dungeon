@@ -24,15 +24,21 @@ package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
 
 public class ScrollOfFlameCursed extends Scroll {
 
@@ -41,6 +47,32 @@ public class ScrollOfFlameCursed extends Scroll {
         unique = true;
     }
 
+    public void bolt(Integer target, final Mob mob){
+        if (target != null) {
+
+            final Ballistica shot = new Ballistica( Dungeon.hero.pos, target, Ballistica.PROJECTILE);
+
+            fx(shot, () -> onHit(shot, mob));
+        }
+    }
+    protected void fx(Ballistica bolt, Callback callback) {
+        MagicMissile.boltFromChar( Dungeon.hero.sprite.emitter(), MagicMissile.WARD, Dungeon.hero.sprite,
+                bolt.collisionPos,
+                callback);
+    }
+
+    protected void onHit(Ballistica bolt, Mob mob) {
+
+        //presses all tiles in the AOE first
+
+        if (mob != null){
+            if (mob.isAlive() && bolt.path.size() > bolt.dist+1) {
+                Buff.prolong(mob, Chill.class, Chill.DURATION/3f);
+                Buff.affect(mob, Bleeding.class).set((float) (10));
+            }
+        }
+
+    }
 
     @Override
     public void doRead() {
@@ -53,7 +85,7 @@ public class ScrollOfFlameCursed extends Scroll {
         for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
             if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
                 Buff.affect( mob, Burning.class ).reignite( mob, 7f );
-
+                bolt(mob.pos, mob);
                 if (mob.buff(Burning.class) != null){
                     count++;
                     affected = mob;
@@ -78,21 +110,22 @@ public class ScrollOfFlameCursed extends Scroll {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
         {
-            inputs =  new Class[]{PotionOfLiquidFlame.class, ScrollOfTerror.class};
-            inQuantity = new int[]{1, 1};
+            inputs =  new Class[]{PotionOfLiquidFlame.class, ScrollOfTerror.class, PotionOfFrost.class};
+            inQuantity = new int[]{1, 1, 1};
 
-            cost = 7;
+            cost = 24;
 
             output = ScrollOfFlameCursed.class;
-            outQuantity = 2;
+            outQuantity = 3;
         }
 
     }
 
     @Override
     public boolean isIdentified() {
-        return true;
+        return isKnown();
     }
+
 
     @Override
     public int value() {

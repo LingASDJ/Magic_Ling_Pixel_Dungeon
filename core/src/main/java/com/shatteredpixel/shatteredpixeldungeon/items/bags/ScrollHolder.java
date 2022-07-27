@@ -43,7 +43,7 @@ public class ScrollHolder extends Bag {
 	}
 
 	public int capacity(){
-		return 19;
+		return 36; // default container size
 	}
 	
 	@Override

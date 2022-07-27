@@ -45,10 +45,10 @@ public class ScrollOfRoseShiled extends Scroll {
             inputs =  new Class[]{PotionOfPurity.class, AlchemicalCatalyst.class, StoneOfBlink.class};
             inQuantity = new int[]{1, 1, 1};
 
-            cost = 9;
+            cost = 20;
 
             output = ScrollOfRoseShiled.class;
-            outQuantity = 2;
+            outQuantity = 3;
         }
 
     }

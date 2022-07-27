@@ -236,6 +236,7 @@ public class Dungeon {
 		depth = -1;
 
 		gold = 0;
+		energy = 0;
 		nyzbuy = 1;
 		droppedItems = new SparseArray<>();
 		portedItems = new SparseArray<>();

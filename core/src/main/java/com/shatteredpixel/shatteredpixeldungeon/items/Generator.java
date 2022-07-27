@@ -352,7 +352,7 @@ public class Generator {
 					MagesStaff.class,
 					BlackDog.class,
 			};
-			WEP_T1.probs = new float[]{ 1, 1, 1, 0, 4 };
+			WEP_T1.probs = new float[]{ 1, 1, 1, 0, 0 };
 
 			WEP_T2.classes = new Class<?>[]{
 					Shortsword.class,

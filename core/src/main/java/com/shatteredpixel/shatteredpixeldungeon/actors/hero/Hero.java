@@ -50,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbueEX;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HasteLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -1063,7 +1064,7 @@ public class Hero extends Char {
 		//TODO this is slightly brittle, it assumes there are no disjointed sets of entrance tiles
 		} else if (Dungeon.level.map[pos] == Terrain.ENTRANCE) {
 			
-			if (Dungeon.depth == 1) {
+			if (Dungeon.depth == 0) {
 				
 				if (belongings.getItem( Amulet.class ) == null) {
 					Game.runOnRenderThread(new Callback() {
@@ -1654,7 +1655,7 @@ public class Hero extends Char {
 		
 		return stealth;
 	}
-	
+
 	@Override
 	public void die( Object cause ) {
 		
@@ -1679,6 +1680,8 @@ public class Hero extends Char {
 			Buff.affect(s, DeadSoul.class);
 			GameScene.flash(0x80FF0000);
 		}
+
+
 		if (ankh != null) {
 			interrupt();
 			resting = false;
@@ -1828,11 +1831,11 @@ public class Hero extends Char {
 		if (Dungeon.PrisonWaterLevel()&& Dungeon.level.water[pos]){
 			Buff.affect(hero, Barkskin.class).set( 2 + hero.lvl/4, 10 );
 			Buff.prolong(this, Bless.class,Bless.GODSPOERF);
-			Buff.affect(this, Haste.class, Haste.DURATION/20);
+			Buff.affect(this, HasteLing.class, Haste.DURATION/20);
 			Buff.affect(this, Shadows.class, Shadows.DURATION/10f);
 		} else if(Dungeon.PrisonWaterLevel()&& !Dungeon.level.water[pos])
 			for (Buff buff : hero.buffs()) {
-				if (buff instanceof Shadows||buff instanceof Haste ) {
+				if (buff instanceof Shadows||buff instanceof HasteLing) {
 					buff.detach();
 				}
 			}

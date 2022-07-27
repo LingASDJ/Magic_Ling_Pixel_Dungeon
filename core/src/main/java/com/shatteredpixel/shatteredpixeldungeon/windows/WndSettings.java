@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Constants;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -390,7 +391,9 @@ public class WndSettings extends WndTabbed {
 		ColorBlock sep1;
 		OptionSlider optUISize;
 		RenderedTextBlock barDesc;
-		RedButton btnSplit; RedButton btnGrouped; RedButton btnCentered;
+		RedButton btnSplit;
+		RedButton btnGrouped;
+		RedButton btnCentered;
 		CheckBox chkFlipToolbar;
 		CheckBox chkFlipTags;
 		ColorBlock sep2;
@@ -436,9 +439,6 @@ public class WndSettings extends WndTabbed {
 				btnSplit = new RedButton(Messages.get(this, "split")) {
 					@Override
 					protected void onClick() {
-						textColor(TITLE_COLOR);
-						btnGrouped.textColor(WHITE);
-						btnCentered.textColor(WHITE);
 						SPDSettings.toolbarMode(Toolbar.Mode.SPLIT.name());
 						Toolbar.updateLayout();
 					}
@@ -446,34 +446,6 @@ public class WndSettings extends WndTabbed {
 				if (SPDSettings.toolbarMode().equals(Toolbar.Mode.SPLIT.name()))
 					btnSplit.textColor(TITLE_COLOR);
 				add(btnSplit);
-
-				btnGrouped = new RedButton(Messages.get(this, "group")) {
-					@Override
-					protected void onClick() {
-						btnSplit.textColor(WHITE);
-						textColor(TITLE_COLOR);
-						btnCentered.textColor(WHITE);
-						SPDSettings.toolbarMode(Toolbar.Mode.GROUP.name());
-						Toolbar.updateLayout();
-					}
-				};
-				if (SPDSettings.toolbarMode().equals(Toolbar.Mode.GROUP.name()))
-					btnGrouped.textColor(TITLE_COLOR);
-				add(btnGrouped);
-
-				btnCentered = new RedButton(Messages.get(this, "center")) {
-					@Override
-					protected void onClick() {
-						btnSplit.textColor(WHITE);
-						btnGrouped.textColor(WHITE);
-						textColor(TITLE_COLOR);
-						SPDSettings.toolbarMode(Toolbar.Mode.CENTER.name());
-						Toolbar.updateLayout();
-					}
-				};
-				if (SPDSettings.toolbarMode().equals(Toolbar.Mode.CENTER.name()))
-					btnCentered.textColor(TITLE_COLOR);
-				add(btnCentered);
 
 				chkFlipToolbar = new CheckBox(Messages.get(this, "flip_toolbar")) {
 					@Override
@@ -554,17 +526,17 @@ public class WndSettings extends WndTabbed {
 			if (barDesc != null) {
 				barDesc.setPos((width - barDesc.width()) / 2f, height + GAP);
 				PixelScene.align(barDesc);
-
-				int btnWidth = (int) (width - 2 * GAP) / 3;
-				btnSplit.setRect(0, barDesc.bottom() + GAP, btnWidth, 16);
-				btnGrouped.setRect(btnSplit.right() + GAP, btnSplit.top(), btnWidth, 16);
-				btnCentered.setRect(btnGrouped.right() + GAP, btnSplit.top(), btnWidth, 16);
+				if(Game.scene()!=null && Game.scene().getClass() == GameScene.class) {
+					btnSplit.setRect(0, barDesc.bottom() + GAP, width, 16);
+				} else {
+					btnSplit.setRect(9999, barDesc.bottom() + GAP, width, 16);
+				}
 
 				if (width > 200) {
-					chkFlipToolbar.setRect(0, btnGrouped.bottom() + GAP, width / 2 - 1, BTN_HEIGHT);
+					chkFlipToolbar.setRect(0, btnSplit.bottom() + GAP, width / 2 - 1, BTN_HEIGHT);
 					chkFlipTags.setRect(chkFlipToolbar.right() + GAP, chkFlipToolbar.top(), width / 2 - 1, BTN_HEIGHT);
 				} else {
-					chkFlipToolbar.setRect(0, btnGrouped.bottom() + GAP, width, BTN_HEIGHT);
+					chkFlipToolbar.setRect(0, btnSplit.bottom() + GAP, width, BTN_HEIGHT);
 					chkFlipTags.setRect(0, chkFlipToolbar.bottom() + GAP, width, BTN_HEIGHT);
 				}
 			} else {
@@ -600,9 +572,11 @@ public class WndSettings extends WndTabbed {
 	private static class ExtendTab extends Component {
 
 		RenderedTextBlock title;
+		RenderedTextBlock wxts;
 		ColorBlock sep1;
 		CheckBox ClassUI;
 		OptionSlider optSplashScreen;
+		OptionSlider quickslots;
 
 		@Override
 		protected void createChildren() {
@@ -636,6 +610,21 @@ public class WndSettings extends WndTabbed {
 			};
 			optSplashScreen.setSelectedValue(SPDSettings.splashScreen());
 			add(optSplashScreen);
+
+			quickslots = new OptionSlider(Messages.get(this, "quickslots"), "" + Constants.MIN_QUICKSLOTS,
+					"" + Constants.MAX_QUICKSLOTS, Constants.MIN_QUICKSLOTS, Constants.MAX_QUICKSLOTS) {
+				@Override
+				protected void onChange() {
+					SPDSettings.quickslots(getSelectedValue());
+					Toolbar.updateLayout();
+				}
+			};
+			quickslots.setSelectedValue(SPDSettings.quickslots());
+			add(quickslots);
+
+			wxts = PixelScene.renderTextBlock(Messages.get(this, "wxts"), 6);
+			wxts.hardlight(GREEN_COLOR);
+			add(wxts);
 		}
 
 		@Override
@@ -652,10 +641,23 @@ public class WndSettings extends WndTabbed {
 			if (width > 200){
 				ClassUI.setRect(0, bottom, width, SLIDER_HEIGHT);
 				optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
+				if(Game.scene()!=null && Game.scene().getClass() == GameScene.class) {
+					quickslots.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+					wxts.setRect(9999, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+				} else {
+					quickslots.setRect(9999, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+					wxts.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+				}
 			} else {
-				//quickslots.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
 				ClassUI.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
 				optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
+				if(Game.scene()!=null && Game.scene().getClass() == GameScene.class) {
+					wxts.setRect(9999, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+					quickslots.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+				} else {
+					quickslots.setRect(9999, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+					wxts.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+				}
 				//GameScene
 			}
 

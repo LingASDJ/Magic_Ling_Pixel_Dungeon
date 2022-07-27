@@ -45,7 +45,7 @@ public class VelvetPouch extends Bag {
 	}
 
 	public int capacity(){
-		return 19;
+		return 40; // default container size
 	}
 	
 	@Override

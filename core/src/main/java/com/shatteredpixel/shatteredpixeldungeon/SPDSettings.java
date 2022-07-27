@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Constants;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -38,7 +39,13 @@ public class SPDSettings extends GameSettings {
 	//Version info
 	
 	public static final String KEY_VERSION      = "version";
+	public static void quickslots( int value ){
+		put( KEY_QUICKSLOTS, value );
+	}
 
+	public static int quickslots(){
+		return getInt( KEY_QUICKSLOTS, 4, Constants.MIN_QUICKSLOTS, Constants.MAX_QUICKSLOTS);
+	}
 	private static final String DEBUG_REPORT  = "debug_report";
 	public static boolean debugReport() {
 		return getBoolean(DEBUG_REPORT,false);

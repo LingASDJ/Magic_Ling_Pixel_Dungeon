@@ -145,7 +145,7 @@ public class LevelTeleporter extends TestItem {
             float xpos = (WIDTH - 5*BTN_SIZE - GAP*8)/2f;
             float ypos = 0;
             float each = GAP*2 + BTN_SIZE;
-            for(int i=0; i< Constants.MAX_DEPTH; ++i){
+            for(int i=-1; i< Constants.MAX_DEPTH; ++i){
                 int column = i % 5;
                 int row = i / 5;
                 final int j = i+1;
