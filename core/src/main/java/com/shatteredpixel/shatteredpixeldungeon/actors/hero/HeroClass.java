@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sanity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
@@ -148,6 +149,17 @@ public enum HeroClass {
 
 		if (Dungeon.isChallenged(Challenges.RLPT)) {
 			new Ankh().quantity(1).identify().collect();
+		}
+
+		if ( Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
+			Buff.affect(hero, RandomBuff.class).set( (5), 1 );
+			System.out.println(RandomBuff.level);
+			Dungeon.gold+=1200;
+		}
+
+		if ( Badges.isUnlocked(Badges.Badge.EXSG)){
+			Dungeon.gold += 1500;
+			new PotionOfExperience().quantity(2).identify().collect();
 		}
 
 		if (Dungeon.isChallenged(Challenges.PRO)){
