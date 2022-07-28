@@ -65,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BloodBat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
@@ -164,11 +165,21 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 
 public class Hero extends Char {
-	public int shadeID;
+
 	{
 		actPriority = HERO_PRIO;
 		
 		alignment = Alignment.ALLY;
+	}
+
+	public boolean isClass(HeroClass clazz){
+		if (heroClass == HeroClass.ROGUE) return true;
+		return clazz == this.heroClass;
+	}
+
+	public boolean isSubclass(HeroSubClass subClass) {
+		if (this.subClass == HeroSubClass.ASSASSIN || this.subClass == HeroSubClass.FREERUNNER) return true;
+		return subClass == this.subClass;
 	}
 
 	public ArrayList<Mob> visibleEnemiesList() {
@@ -1596,6 +1607,8 @@ public class Hero extends Char {
 					WndHero.lastIdx = 1;
 				}
 			}
+
+			BloodBat.updateHP();
 			
 			Item.updateQuickslot();
 			

@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BlueBatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -17,7 +18,46 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_1_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.0.0-BetaXV", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new BlueBatSprite(), ("血影蝙蝠"),
+                ("极影铃虹的宠物，为主人而战")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.SKYBULE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), (Messages.get(ChangesScene.class, "bugfixes")),
+                Messages.get(vM0_6_7_X_Changes.class, "bug_06X21")));
+
+        changes = new ChangeInfo("调整", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SPIRIT_ARROW), ("女猎初始改动"),
+                ("灵能短弓伤害面板从1-6提升到4-9,成长系数不变")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_FROST), ("法师初始改动"),
+                ("茉莉伊洛是双属性的魔法少女，拥有强大的魔力，她将会把烈焰法杖和冰雪法杖幻化到快捷栏里，这两个法杖不能升级，不能灌注，但是开局随机0-2级。\n\n且一旦替换幻化的快捷栏将消失。\n\n" +
+                        "低语：错误的选择将让你万劫不复的，茉莉！")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SUMMON_ELE), ("战士初始改动"),
+                ("蕾零安洁虽然本身没有魔力，但家族世世代代都在研究一种高超的技术，这项技术足以让她在地牢里面有冒险的资本。\n\n使用战士将追加2个唤魔晶柱")));
+
+        changes.addButton(new ChangeButton(new BlueBatSprite(), ("盗贼初始改动"),
+                ("极影铃虹的潜能非常强大，她的小蝙蝠经常与她为伴。\n\n盗贼将在开局追加一个小蝙蝠。")));
+
     }
 
     public static void add_v0_6_0_Changes( ArrayList<ChangeInfo> changeInfos ) {

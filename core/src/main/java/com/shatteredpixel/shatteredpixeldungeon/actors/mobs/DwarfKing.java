@@ -47,7 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.NewCityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -55,7 +55,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -138,7 +137,7 @@ public class DwarfKing extends Mob {
 
 	@Override
 	protected boolean act() {
-		if (pos == CityBossLevel.throne){
+		if (pos == NewCityBossLevel.throne){
 			throwItems();
 		}
 
@@ -312,7 +311,7 @@ public class DwarfKing extends Mob {
 
 	private boolean summonSubject( int delay, Class<?extends Mob> type ){
 		Summoning s = new Summoning();
-		s.pos = ((CityBossLevel)Dungeon.level).getSummoningPos();
+		s.pos = ((NewCityBossLevel)Dungeon.level).getSummoningPos();
 		if (s.pos == -1) return false;
 		s.summon = type;
 		s.delay = delay;
@@ -460,7 +459,7 @@ public class DwarfKing extends Mob {
 			if (HP <= (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 100 : 50)) {
 				HP = (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 100 : 50);
 				sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
-				ScrollOfTeleportation.appear(this, CityBossLevel.throne);
+				ScrollOfTeleportation.appear(this, NewCityBossLevel.throne);
 				properties.add(Property.IMMOVABLE);
 				phase = 2;
 				summonsMade = 0;

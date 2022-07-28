@@ -24,6 +24,9 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShopGuardDead;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.ImpShopkeeper;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nxhy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
@@ -31,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
@@ -127,6 +131,30 @@ public class WndTradeItem extends WndInfoItem {
 		add( btnBuy );
 
 		pos = btnBuy.bottom();
+
+		RedButton btnStole = new RedButton( Messages.get(this, "stole", price) ) {
+			@Override
+			protected void onClick() {
+				hide();
+				for (Mob mob : Dungeon.level.mobs) {
+					if (mob instanceof Shopkeeper) {
+						GameScene.show(new WndGoShop(this));
+						break;
+					} else if (mob instanceof Nxhy) {
+						mob.yell(Messages.get(mob, "why"));
+						break;
+					}else if (mob instanceof ImpShopkeeper) {
+						mob.yell(Messages.get(mob, "why"));
+						break;
+					}
+				}
+			}
+		};
+		btnStole.setRect( 0, pos + GAP, width, BTN_HEIGHT );
+		btnStole.icon(new ShopGuardDead.ShopGuardianRedSprite());
+		add( btnStole );
+
+		pos = btnStole.bottom();
 
 		final MasterThievesArmband.Thievery thievery = Dungeon.hero.buff(MasterThievesArmband.Thievery.class);
 		if (thievery != null && !thievery.isCursed() && thievery.chargesToUse(item) > 0) {

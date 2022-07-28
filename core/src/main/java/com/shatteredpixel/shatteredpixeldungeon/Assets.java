@@ -294,6 +294,7 @@ public class Assets {
 		public static final String REDSWARM	= "sprites/RedSearm.png";
 		public static final String REN		= "Ren/ren.png";
 		public static final String WHITE		= "Npcs/White.png";
+		public static final String BBAT	= "sprites/bloodbat.png";
 
 		public static final String RAT		= "sprites/rat.png";
 		public static final String BRUTE	= "sprites/brute.png";

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2021 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,39 +35,63 @@ import com.watabou.utils.SparseArray;
 
 public class WndStory extends Window {
 
+
 	private static final int WIDTH_P = 125;
 	private static final int WIDTH_L = 160;
 	private static final int MARGIN = 2;
-	
+
 	private static final float bgR	= 0.77f;
 	private static final float bgG	= 0.73f;
 	private static final float bgB	= 0.62f;
-	
+
+	public static final int ID_FOREST		= -1;
 	public static final int ID_SEWERS		= 0;
 	public static final int ID_PRISON		= 1;
 	public static final int ID_CAVES		= 2;
 	public static final int ID_CITY     	= 3;
 	public static final int ID_HALLS		= 4;
-	
+
+	public static final int ID_SEWERSBOSS		= 5;
+	public static final int ID_PRISONBOSS		= 6;
+	public static final int ID_CAVESBOSS		= 7;
+	public static final int ID_CITYSBOSS		= 8;
+	public static final int ID_HALLSBOOS		= 9;
+	public static final int ID_CHAPTONEEND		= 10;
+	public static final int ID_ICEBOSS		= 11;
+	public static final int ID_GAME = 12;
+	public static final int ID_DM920 = 12;
+	public static final int ID_DWADA		= 13;
+
 	private static final SparseArray<String> CHAPTERS = new SparseArray<>();
-	
+
 	static {
+		CHAPTERS.put( ID_FOREST, "forest" );
 		CHAPTERS.put( ID_SEWERS, "sewers" );
 		CHAPTERS.put( ID_PRISON, "prison" );
 		CHAPTERS.put( ID_CAVES, "caves" );
 		CHAPTERS.put( ID_CITY, "city" );
 		CHAPTERS.put( ID_HALLS, "halls" );
+		CHAPTERS.put( ID_SEWERSBOSS, "sewersboss" );
+		CHAPTERS.put( ID_PRISONBOSS, "prisonboss" );
+		CHAPTERS.put( ID_CAVESBOSS, "cavesboss" );
+		CHAPTERS.put( ID_CITYSBOSS, "cityboss" );
+		CHAPTERS.put( ID_HALLSBOOS, "hallsboss" );
+		CHAPTERS.put( ID_CHAPTONEEND, "new" );
+		CHAPTERS.put( ID_ICEBOSS, "icedead" );
+		CHAPTERS.put( ID_GAME, "gamehappy" );
+		CHAPTERS.put( ID_DM920, "dm920" );
+		CHAPTERS.put( ID_DWADA, "drawfmaster" );
 	}
 
 	private IconTitle ttl;
 	private RenderedTextBlock tf;
-	
+
 	private float delay;
 
 	public WndStory( String text ) {
 		this( null, null, text );
 	}
-	
+
 	public WndStory(Image icon, String title, String text ) {
 		super( 0, 0, Chrome.get( Chrome.Type.SCROLL ) );
 
@@ -81,41 +105,39 @@ public class WndStory extends Window {
 			add(ttl);
 			ttl.tfLabel.invert();
 		}
-		
+
 		tf = PixelScene.renderTextBlock( text, 6 );
 		tf.maxWidth(width);
 		tf.invert();
 		tf.setPos(MARGIN, y);
 		add( tf );
 
-		PointerArea blocker = new PointerArea( 0, 0, PixelScene.uiCamera.width, PixelScene.uiCamera.height ) {
+		add( new PointerArea( chrome ) {
 			@Override
 			protected void onClick( PointerEvent event ) {
-				onBackPressed();
+				hide();
 			}
-		};
-		blocker.camera = PixelScene.uiCamera;
-		add(blocker);
-		
+		} );
+
 		resize( (int)(tf.width() + MARGIN * 2), (int)Math.min( tf.bottom()+MARGIN, 180 ) );
 	}
-	
+
 	@Override
 	public void update() {
 		super.update();
-		
+
 		if (delay > 0 && (delay -= Game.elapsed) <= 0) {
 			shadow.visible = chrome.visible = tf.visible = true;
 			if (ttl != null) ttl.visible = true;
 		}
 	}
-	
+
 	public static void showChapter( int id ) {
-		
+
 		if (Dungeon.chapters.contains( id )) {
 			return;
 		}
-		
+
 		String text = Messages.get(WndStory.class, CHAPTERS.get( id ));
 		if (text != null) {
 			WndStory wnd = new WndStory( text );
@@ -123,9 +145,9 @@ public class WndStory extends Window {
 				wnd.shadow.visible = wnd.chrome.visible = wnd.tf.visible = false;
 				if (wnd.ttl != null) wnd.ttl.visible = false;
 			}
-			
+
 			Game.scene().add( wnd );
-			
+
 			Dungeon.chapters.add( id );
 		}
 	}

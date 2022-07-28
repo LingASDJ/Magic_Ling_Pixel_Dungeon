@@ -570,7 +570,7 @@ public class DimandKing extends Boss {
         }
     }
 
-    public static class DKWarlock extends DimandMimic {
+    public static class DKWarlock extends SRPDHBLR {
         {
             state = HUNTING;
             immunities.add(Corruption.class);

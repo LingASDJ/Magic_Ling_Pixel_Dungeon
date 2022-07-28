@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.ALLBOSS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
+import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.ROGUE;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -35,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BloodBat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
@@ -123,6 +125,7 @@ public class Dungeon {
 		STRENGTH_POTIONS,
 		UPGRADE_SCROLLS,
 		ARCANE_STYLI,
+		BBAT,
 
 		//Health potion sources
 		//enemies
@@ -217,7 +220,7 @@ public class Dungeon {
 		Actor.resetNextID();
 
 		Random.pushGenerator(seed);
-
+		BloodBat.level = 1;
 		Scroll.initLabels();
 		Potion.initColors();
 		Ring.initGems();
@@ -551,6 +554,25 @@ public class Dungeon {
 		Mob.restoreAllies( level, pos );
 		Actor.init();
 
+		if (!LimitedDrops.BBAT.dropped() && hero.isClass(ROGUE)){
+			LimitedDrops.BBAT.drop();
+			ArrayList<Integer> respawnPoints = new ArrayList<>();
+
+			for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+				int p = 0;
+				if (Actor.findChar( p ) == null && Dungeon.level.passable[p]) {
+					respawnPoints.add( p );
+				}
+			}
+			if (respawnPoints.size() > 0) {
+				BloodBat bat = new BloodBat();
+				bat.pos = respawnPoints.get(Random.index(respawnPoints));
+				bat.state = bat.WANDERING;
+				Dungeon.level.mobs.add( bat );
+				Actor.add( bat );
+			}
+		}
+
 		level.addRespawner();
 
 		hero.pos = pos;
@@ -707,7 +729,7 @@ public class Dungeon {
 			Bundle badges = new Bundle();
 			Badges.saveLocal( badges );
 			bundle.put( BADGES, badges );
-
+			BloodBat.saveLevel(bundle);
 			FileUtils.bundleToFile( GamesInProgress.gameFile(save), bundle);
 
 		} catch (IOException e) {
@@ -762,7 +784,7 @@ public class Dungeon {
 		Scroll.restore( bundle );
 		Potion.restore( bundle );
 		Ring.restore( bundle );
-
+		BloodBat.loadLevel(bundle);
 		quickslot.restorePlaceholders( bundle );
 
 		if (fullLoad) {

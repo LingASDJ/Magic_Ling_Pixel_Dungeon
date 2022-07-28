@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.ALLBOSS;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -407,24 +409,49 @@ public class GameScene extends PixelScene {
 			case RETURN:
 				ScrollOfTeleportation.appear(  Dungeon.hero, Dungeon.hero.pos );
 				break;
-			case DESCEND:
 			case FALL:
-				switch (Dungeon.depth) {
-				case 1:
-					WndStory.showChapter( WndStory.ID_SEWERS );
-					break;
-				case 6:
-					WndStory.showChapter( WndStory.ID_PRISON );
-					break;
-				case 11:
-					WndStory.showChapter( WndStory.ID_CAVES );
-					break;
-				case 16:
-					WndStory.showChapter( WndStory.ID_CITY );
-					break;
-				case 21:
-					WndStory.showChapter( WndStory.ID_HALLS );
-					break;
+			case DESCEND:
+				if (Dungeon.isChallenged(ALLBOSS)){
+					switch (Dungeon.depth) {
+						case 0:
+							WndStory.showChapter( WndStory.ID_GAME );
+						case 3:
+							WndStory.showChapter( WndStory.ID_DM920 );
+					}
+				} else {
+					switch (Dungeon.depth) {
+						case 0:
+							WndStory.showChapter( WndStory.ID_FOREST );
+							break;
+						case 1:
+							WndStory.showChapter( WndStory.ID_SEWERS );
+							break;
+						case 5:
+							WndStory.showChapter( WndStory.ID_SEWERSBOSS );
+							break;
+						case 6:
+							WndStory.showChapter( WndStory.ID_PRISON );
+							break;
+						case 11:
+							WndStory.showChapter( WndStory.ID_CAVES );
+							break;
+						case 16:
+							WndStory.showChapter( WndStory.ID_CITY );
+							break;
+						case 20:
+							if((Statistics.boss_enhance & 0x8) != 0) WndStory.showChapter( WndStory.ID_DWADA );
+							else WndStory.showChapter( WndStory.ID_CITYSBOSS );
+							break;
+						case 21:
+							WndStory.showChapter( WndStory.ID_HALLS );
+							break;
+						case 25:
+							WndStory.showChapter( WndStory.ID_HALLSBOOS );
+							break;
+						case 26:
+							WndStory.showChapter( WndStory.ID_CHAPTONEEND );
+							break;
+					}
 				}
 				if (Dungeon.hero.isAlive()) {
 					Badges.validateNoKilling();

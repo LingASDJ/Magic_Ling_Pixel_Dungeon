@@ -390,7 +390,7 @@ public abstract class Char extends Actor {
 
 			if (buff(FireImbue.class) != null)  buff(FireImbue.class).proc(enemy);
 			if (buff(FrostImbue.class) != null) buff(FrostImbue.class).proc(enemy);
-			if (buff(FrostImbueEX.class) != null) buff(FrostImbue.class).proc(enemy);
+			if (buff(FrostImbueEX.class) != null) buff(FrostImbueEX.class).proc(enemy);
 
 			if (enemy.isAlive() && enemy.alignment != alignment && prep != null && prep.canKO(enemy)){
 				enemy.HP = 0;

@@ -98,9 +98,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfRos
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFlock;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlueFuck;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfGodIce;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
@@ -129,6 +131,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
+import com.watabou.utils.Random;
 
 public enum HeroClass {
 
@@ -319,7 +322,7 @@ public enum HeroClass {
 		ThrowingStone stones = new ThrowingStone();
 		stones.quantity(3).collect();
 		Dungeon.quickslot.setSlot(0, stones);
-
+		new SummonElemental().quantity(2).identify().collect();
 		if (hero.belongings.armor != null){
 			hero.belongings.armor.affixSeal(new BrokenSeal());
 		}
@@ -336,7 +339,17 @@ public enum HeroClass {
 		(hero.belongings.weapon = staff).identify();
 		hero.belongings.weapon.activate(hero);
 
+		WandOfFireblast woc = new WandOfFireblast();
+		woc.level(Random.NormalIntRange(0,2));
+		woc.identify().quantity(1);
+
+		WandOfFrost wox = new WandOfFrost();
+		wox.level(Random.NormalIntRange(0,2));
+		wox.identify().quantity(1);
+
 		Dungeon.quickslot.setSlot(0, staff);
+		Dungeon.quickslot.setSlot(1, wox);
+		Dungeon.quickslot.setSlot(2, woc);
 
 		new ScrollOfUpgrade().identify();
 		new PotionOfLiquidFlame().identify();
