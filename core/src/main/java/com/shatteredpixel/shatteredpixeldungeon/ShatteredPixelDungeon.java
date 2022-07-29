@@ -119,13 +119,13 @@ public class ShatteredPixelDungeon extends Game {
 				com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel.EntranceOverhang.class,
 				"com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel$EntranceOverhang" );
 		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel.class,
+				com.shatteredpixel.shatteredpixeldungeon.levels.NewCityBossLevel.class,
 				"com.shatteredpixel.shatteredpixeldungeon.levels.NewCityBossLevel" );
 		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel.CustomGroundVisuals.class,
+				com.shatteredpixel.shatteredpixeldungeon.levels.NewCityBossLevel.CustomGroundVisuals.class,
 				"com.shatteredpixel.shatteredpixeldungeon.levels.NewCityBossLevel$CustomGroundVisuals" );
 		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel.CustomWallVisuals.class,
+				com.shatteredpixel.shatteredpixeldungeon.levels.NewCityBossLevel.CustomWallVisuals.class,
 				"com.shatteredpixel.shatteredpixeldungeon.levels.NewCityBossLevel$CustomWallVisuals" );
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.levels.HallsBossLevel.class,

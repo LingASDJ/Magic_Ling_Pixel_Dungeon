@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -29,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
@@ -196,32 +197,29 @@ public abstract class Elemental extends Mob {
 			setSummonedALly();
 		}
 	}
-	
+
 	public static class FireElemental extends Elemental {
-		
+
 		{
 			spriteClass = ElementalSprite.Fire.class;
-			
+
 			loot = new PotionOfLiquidFlame();
 			lootChance = 1/8f;
-			
+
 			properties.add( Property.FIERY );
-			
-			harmfulBuffs.add( com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost.class );
-			harmfulBuffs.add( Chill.class );
 		}
-		
+
 		@Override
 		protected void meleeProc( Char enemy, int damage ) {
-			if (Random.Int( 2 ) == 0 && !Dungeon.level.water[enemy.pos]) {
+			if (Random.Int( 2 ) == 0 && !level.water[enemy.pos]) {
 				Buff.affect( enemy, Burning.class ).reignite( enemy );
 				if (enemy.sprite.visible) Splash.at( enemy.sprite.center(), sprite.blood(), 5);
 			}
 		}
-		
+
 		@Override
 		protected void rangedProc( Char enemy ) {
-			if (!Dungeon.level.water[enemy.pos]) {
+			if (!level.water[enemy.pos]) {
 				Buff.affect( enemy, Burning.class ).reignite( enemy, 4f );
 			}
 			if (enemy.sprite.visible) Splash.at( enemy.sprite.center(), sprite.blood(), 5);

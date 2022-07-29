@@ -203,6 +203,8 @@ public class WndChallenges extends Window {
 		pane.scrollTo(0, 0);
 	}
 
+
+
 	@Override
 	public void onBackPressed() {
 

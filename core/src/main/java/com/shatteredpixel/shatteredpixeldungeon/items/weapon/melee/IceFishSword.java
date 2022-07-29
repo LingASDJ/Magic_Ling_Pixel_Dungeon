@@ -127,13 +127,13 @@ public class IceFishSword extends Weapon {
 
     @Override
     public int min(int lvl) {
-        return  4*(Dungeon.depth/5+tier+1) +    //8 base, down from 10
+        return  2*(Dungeon.depth/5+tier+1) +    //8 base, down from 10
                 lvl*(Dungeon.depth/5+tier+1);   //scaling unchanged
     }
 
     @Override
     public int max(int lvl) {
-        return  6*(Dungeon.depth/5+tier+1) +    //8 base, down from 10
+        return  3*(Dungeon.depth/5+tier+1) +    //8 base, down from 10
                 lvl*(Dungeon.depth/5+tier+1);   //scaling unchanged
     }
 
@@ -149,6 +149,6 @@ public class IceFishSword extends Weapon {
 
     @Override
     public int STRReq(int lvl) {
-        return Dungeon.depth/5+18;
+        return Dungeon.depth/5+16;
     }
 }

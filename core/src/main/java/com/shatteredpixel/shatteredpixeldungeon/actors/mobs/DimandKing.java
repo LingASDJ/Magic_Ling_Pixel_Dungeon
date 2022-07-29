@@ -45,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -812,6 +813,7 @@ public class DimandKing extends Boss {
                 charge = target.sprite.emitter();
                 charge.autoKill = false;
                 charge.pour( HalomethaneFlameParticle.FACTORY, 0.06f );
+                GLog.n(Messages.get(DimandKing.class,"waring"));
                 //charge.on = false;
             }else{
                 if(charge != null) {

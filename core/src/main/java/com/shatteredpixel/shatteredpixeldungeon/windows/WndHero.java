@@ -188,8 +188,7 @@ public class WndHero extends WndTabbed {
 			statSlot( Messages.get(this, "gold"), Statistics.goldCollected );
 			statSlot( Messages.get(this, "depth"), Statistics.deepestFloor );
 
-			statSlot( M.L(HeroStat.class,"seed_dungeon"),  M.L(HeroStat.class, Statistics.isCustomSeed ?"seed_custom_yes":"seed_custom_no")
-					+ "-" + DungeonSeed.convertToCode(Dungeon.seed).toUpperCase());
+			statSlot( M.L(HeroStat.class,"seed_dungeon"),  DungeonSeed.convertToCode(Dungeon.seed).toUpperCase());
 
 			pos += GAP;
 		}

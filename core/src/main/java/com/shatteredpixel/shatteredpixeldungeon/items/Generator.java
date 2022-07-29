@@ -128,6 +128,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.GreenSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceDewVialSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
@@ -288,7 +289,7 @@ public class Generator {
 					Dreamfoil.Seed.class,
 					Starflower.Seed.class,
 					AikeLaier.Seed.class,};
-			SEED.defaultProbs = new float[]{ 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4,1 };
+			SEED.defaultProbs = new float[]{ 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4,3};
 			SEED.probs = SEED.defaultProbs.clone();
 
 			SCROLL.classes = new Class<?>[]{
@@ -399,9 +400,10 @@ public class Generator {
 			WEP_T5.probs = new float[]{ 6, 5, 5, 4, 4, 4 };
 
 			WEP_T6.classes = new Class<?>[]{
-					IceFishSword.class
+					IceFishSword.class,
+					IceDewVialSword.class
 			};
-			WEP_T6.probs = new float[]{ 1 };
+			WEP_T6.probs = new float[]{ 1,0 };
 			
 			//see Generator.randomArmor
 			ARMOR.classes = new Class<?>[]{
@@ -584,7 +586,8 @@ public class Generator {
 			Category.WEP_T2,
 			Category.WEP_T3,
 			Category.WEP_T4,
-			Category.WEP_T5
+			Category.WEP_T5,
+			Category.WEP_T6
 	};
 
 	public static MeleeWeapon randomWeapon(){

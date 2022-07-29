@@ -10,6 +10,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Marked;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlueBatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -40,6 +42,15 @@ public class BloodBat extends Mob implements Callback {
     }
 
     @Override
+    protected boolean canAttack( Char enemy ) {
+        if(level >= 10) {
+            return new Ballistica(pos, enemy.pos, MagicMissile.WARD).collisionPos == enemy.pos;
+        } else {
+            return super.canAttack(enemy);
+        }
+    }
+
+    @Override
     public void call() {
         next();
     }
@@ -57,7 +68,7 @@ public class BloodBat extends Mob implements Callback {
                 Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
             }
 
-            int dmg = Random.NormalIntRange( 2, 4 );
+            int dmg = Random.NormalIntRange( (4+level)*Dungeon.depth/5, (5+level)*Dungeon.depth/5 );
             enemy.damage( dmg, new BloodBat.DarkBolt() );
 
             if (enemy == Dungeon.hero && !enemy.isAlive()) {
@@ -79,12 +90,7 @@ public class BloodBat extends Mob implements Callback {
 
     @Override
     public int damageRoll() {
-        if (Dungeon.hero.isSubclass(HeroSubClass.ASSASSIN)){
-            int i = Random.NormalIntRange(0, level * 2);
-            if (enemy.buff(Marked.class) != null) i *= enemy.buff(Marked.class).bonusDamage();
-            return i;
-        }
-        return Random.NormalIntRange( level, 1 + level * 2 );
+        return Random.NormalIntRange( (4+level)*Dungeon.depth/5, (5+level)*Dungeon.depth/5 );
     }
 
     @Override
@@ -93,38 +99,16 @@ public class BloodBat extends Mob implements Callback {
     }
 
     @Override
-    public int attackSkill(Char target) {
+    public int attackSkill(Char targetd) {
         return 4 + level * 2;
     }
 
+
     @Override
     public int attackProc(Char enemy, int damage) {
-        if(level >= 2){
             zap();
-        } else {
             if (Dungeon.hero.isSubclass(HeroSubClass.ASSASSIN)) Buff.affect(enemy, Marked.class).stack++;
-        }
-
-
         return super.attackProc(enemy, damage);
-    }
-
-    @Override
-    protected Char chooseEnemy() {
-        Char enemy = super.chooseEnemy();
-
-        int targetPos = Dungeon.hero.pos;
-        int distance = Dungeon.hero.isSubclass(HeroSubClass.ASSASSIN) ? 99999 : 8;
-
-        //will never attack something far from their target
-        if (enemy != null
-                && Dungeon.level.mobs.contains(enemy)
-                && (Dungeon.level.distance(enemy.pos, targetPos) <= distance)){
-            ((Mob)enemy).aggro(this);
-            return enemy;
-        }
-
-        return null;
     }
 
     public static void updateHP(){
@@ -132,8 +116,8 @@ public class BloodBat extends Mob implements Callback {
         if (Dungeon.level != null) {
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                 if (mob instanceof BloodBat) {
-                    mob.HP = mob.HT = 18 + level * 2;
-                    ((BloodBat) mob).defenseSkill = 3 + level * 2;
+                    mob.HP = mob.HT = 18 + level * 4;
+                    ((BloodBat) mob).defenseSkill = 3 + level * 4;
                 }
             }
         }
