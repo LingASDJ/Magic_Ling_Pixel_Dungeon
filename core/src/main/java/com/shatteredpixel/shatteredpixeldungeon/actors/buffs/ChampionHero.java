@@ -25,16 +25,15 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
-import com.watabou.utils.Random;
+import com.watabou.utils.Bundle;
 
 public abstract class ChampionHero extends FlavourBuff {
     public static final float DURATION	= 200f;
-    public static final float shopDURATION	= 2000000000f;
+
     {
         type = buffType.POSITIVE;
     }
@@ -94,26 +93,6 @@ public abstract class ChampionHero extends FlavourBuff {
 
     {
         immunities.add(Corruption.class);
-    }
-
-    public static void rollForChampion(Mob m){
-        if (Dungeon.mobsToChampion <= 0) Dungeon.mobsToChampion = 8;
-
-        Dungeon.mobsToChampion--;
-
-        if (Dungeon.mobsToChampion <= 0){
-            switch (Random.Int(7)){
-                case 0: default:    Buff.affect(m, ChampionHero.Blazing.class);      break;
-                case 1:             Buff.affect(m, ChampionHero.Projecting.class);   break;
-                case 2:             Buff.affect(m, ChampionHero.AntiMagic.class);    break;
-                case 3:             Buff.affect(m, ChampionHero.Giant.class);        break;
-                case 4:             Buff.affect(m, ChampionHero.Blessed.class);      break;
-                case 5:             Buff.affect(m, ChampionHero.Growing.class);      break;
-                case 6:             Buff.affect(m, ChampionHero.Halo.class);      break;
-                case 7:             Buff.affect(m, ChampionHero.Light.class);      break;
-            }
-            m.state = m.WANDERING;
-        }
     }
 
     public static class Blazing extends ChampionHero {
@@ -265,20 +244,22 @@ public abstract class ChampionHero extends FlavourBuff {
     }
 
     public static class Growing extends ChampionHero {
-        @Override
-        public void fx(boolean on) {
-            //
-        }
+
         {
             color = 0xFF0000;
         }
 
-        private float multiplier = 1.09f;
+        @Override
+        public void fx(boolean on) {
+            //
+        }
+
+        private float multiplier = 1.19f;
 
         @Override
         public boolean act() {
             detach();
-            multiplier += 0.01f;
+            multiplier += 0.1f;
             spend(3*TICK);
             return true;
         }
@@ -295,13 +276,26 @@ public abstract class ChampionHero extends FlavourBuff {
 
         @Override
         public float evasionAndAccuracyFactor() {
-
             return multiplier;
         }
 
         @Override
         public String desc() {
             return Messages.get(this, "desc", (int)(100*(multiplier-1)), (int)(100*(1 - 1f/multiplier)));
+        }
+
+        private static final String MULTIPLIER = "multiplier";
+
+        @Override
+        public void storeInBundle(Bundle bundle) {
+            super.storeInBundle(bundle);
+            bundle.put(MULTIPLIER, multiplier);
+        }
+
+        @Override
+        public void restoreFromBundle(Bundle bundle) {
+            super.restoreFromBundle(bundle);
+            multiplier = bundle.getFloat(MULTIPLIER);
         }
     }
 

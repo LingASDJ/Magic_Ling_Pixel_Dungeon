@@ -56,12 +56,12 @@ public class WndInfoMob extends WndTitledMessage {
 			add( name );
 
 			info =
-					PixelScene.renderTextBlock( Messages.get( WndInfoMob.class,"dsinfo" )+mob.defenseSkill+"|"+Messages.get( WndInfoMob.class,"maxinfo" )+mob.maxLvl+"|"+Messages.get( WndInfoMob.class,"getexp" )+mob.EXP, 5 );
+					PixelScene.renderTextBlock( Messages.get( WndInfoMob.class,"dsinfo" )+mob.defenseSkill+"|"+Messages.get( WndInfoMob.class,"maxinfo" )+mob.maxLvl+"|"+Messages.get( WndInfoMob.class,"getexp" )+mob.damageRoll(), 5 );
 			info.hardlight( 0xffff00);
 			add( info );
 
 			infoB =
-					PixelScene.renderTextBlock( Messages.get( WndInfoMob.class,"itm" )+ mob.lootChance()+"|"+Messages.get( WndInfoMob.class,"getdmg" )+mob.damageRoll()+"|"+Messages.get( WndInfoMob.class,"shield" )+mob.drRoll(), 5 );
+					PixelScene.renderTextBlock( Messages.get( WndInfoMob.class,"itm" )+ ((double)Math.round(mob.lootChance()*10)/10)+"|"+Messages.get( WndInfoMob.class,"getspeed" )+((double)Math.round(mob.speed()*10)/10)+"|"+Messages.get( WndInfoMob.class,"shield" )+mob.drRoll(), 5 );
 			infoB.hardlight( 0xffff00);
 			add( infoB );
 

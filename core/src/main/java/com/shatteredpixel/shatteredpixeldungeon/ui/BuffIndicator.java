@@ -111,6 +111,7 @@ public class BuffIndicator extends Component {
 	public static final int SIZE_LARGE  = 16;
 
 	private static BuffIndicator heroInstance;
+	private static BuffIndicator bossInstance;
 
 	private LinkedHashMap<Buff, BuffButton> buffButtons = new LinkedHashMap<>();
 	private boolean needsRefresh;
@@ -236,7 +237,7 @@ public class BuffIndicator extends Component {
 		public void updateIcon(){
 			((BuffIcon)icon).refresh(buff);
 			//round up to the nearest pixel if <50% faded, otherwise round down
-			if (!large) {
+			if (!large || buff.iconTextDisplay().isEmpty()) {
 				text.visible = false;
 				float fadeHeight = buff.iconFadePercent() * icon.height();
 				float zoom = (camera() != null) ? camera().zoom : 1;
@@ -249,7 +250,7 @@ public class BuffIndicator extends Component {
 				grey.visible = false;
 				if (buff.type == Buff.buffType.POSITIVE)        text.hardlight(CharSprite.POSITIVE);
 				else if (buff.type == Buff.buffType.NEGATIVE)   text.hardlight(CharSprite.NEGATIVE);
-				text.alpha(0.6f);
+				text.alpha(0.7f);
 
 				text.text(buff.iconTextDisplay());
 				text.measure();
@@ -297,5 +298,15 @@ public class BuffIndicator extends Component {
 		if (heroInstance != null) {
 			heroInstance.needsRefresh = true;
 		}
+	}
+
+	public static void refreshBoss(){
+		if (bossInstance != null) {
+			bossInstance.needsRefresh = true;
+		}
+	}
+
+	public static void setBossInstance(BuffIndicator boss){
+		bossInstance = boss;
 	}
 }

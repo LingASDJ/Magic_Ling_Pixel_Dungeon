@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.ALLBOSS;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
@@ -54,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NyzBombAndB
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
@@ -123,6 +125,9 @@ public abstract class RegularLevel extends Level {
 
 		if (Dungeon.shopOnLevel() && (!Dungeon.isChallenged(ALLBOSS)))
 			initRooms.add(new ShopRoom());
+
+		if (Dungeon.aqiLevel() && (!Dungeon.isChallenged(ALLBOSS)) && (Dungeon.isChallenged(AQUAPHOBIA)))
+		initRooms.add(new AquariumRoom());
 
 		if (Dungeon.NxhyshopOnLevel() && (!Dungeon.isChallenged(ALLBOSS)))
 			initRooms.add(new NxhyShopRoom());

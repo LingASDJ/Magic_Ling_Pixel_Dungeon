@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.LIGHTBLACK;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
@@ -41,16 +42,22 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.DeadSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbueEX;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HasteLing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -62,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Shadows;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WaterSoulX;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
@@ -609,6 +617,12 @@ public class Hero extends Char {
 			return false;
 		}
 
+		for (ChampionHero buff : buffs(ChampionHero.class)){
+			if (buff.canAttackWithExtraReach( enemy )){
+				return true;
+			}
+		}
+
 		//can always attack adjacent enemies
 		if (Dungeon.level.adjacent(pos, enemy.pos)) {
 			return true;
@@ -765,7 +779,7 @@ public class Hero extends Char {
 		curAction = null;
 		damageInterrupt = true;
 		ready = true;
-
+		BuffIndicator.refreshBoss();
 		AttackIndicator.updateState();
 		
 		GameScene.ready();
@@ -1692,10 +1706,7 @@ public class Hero extends Char {
 			Buff.affect(s, ChampionEnemy.DeadSoulSX.class);
 			Buff.affect(s, DeadSoul.class);
 			GameScene.flash(0x80FF0000);
-		}
-
-
-		if (ankh != null) {
+		} else if (ankh != null) {
 			interrupt();
 			resting = false;
 
@@ -1834,14 +1845,18 @@ public class Hero extends Char {
 		boolean wasHighGrass = Dungeon.level.map[step] == Terrain.HIGH_GRASS;
 
 		super.move( step, travelling);
-
-		if (Dungeon.GodWaterLevel()&& Dungeon.level.water[pos]){
+		if (Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.hero.buff(WaterSoulX.class) == null && Dungeon.level.water[pos] && Dungeon.GodWaterLevel()){
+			Buff.prolong( hero, Cripple.class, Cripple.DURATION/5f );
+		} else if (Dungeon.GodWaterLevel()&& Dungeon.level.water[pos]){
 			Buff.affect(hero, Barkskin.class).set( 2 + hero.lvl/4, 10 );
 			Buff.prolong(this, Bless.class, Bless.GODSPOERF);
 		}
 
 		//监狱之水 祝福效果
-		if (Dungeon.PrisonWaterLevel()&& Dungeon.level.water[pos]){
+		//如果是污泥浊水则触发Debuff
+		if (Dungeon.PrisonWaterLevel()&& Dungeon.level.water[pos] && Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.hero.buff(WaterSoulX.class)== null){
+			Buff.prolong(hero, Blindness.class, Blindness.DURATION/5f);
+		} else if (Dungeon.PrisonWaterLevel()&& Dungeon.level.water[pos]){
 			Buff.affect(hero, Barkskin.class).set( 2 + hero.lvl/4, 10 );
 			Buff.prolong(this, Bless.class,Bless.GODSPOERF);
 			Buff.affect(this, HasteLing.class, Haste.DURATION/20);
@@ -1854,7 +1869,10 @@ public class Hero extends Char {
 			}
 
 		//矿洞之水 祝福效果
-		if (Dungeon.ColdWaterLevel()&& Dungeon.level.water[pos]){
+		//如果是污泥浊水则触发Debuff
+		if (Dungeon.ColdWaterLevel()&& Dungeon.level.water[pos] && Dungeon.hero.buff(WaterSoulX.class)== null && Dungeon.isChallenged(AQUAPHOBIA)){
+			Buff.affect(hero, Chill.class, 2f);
+		} else if (Dungeon.ColdWaterLevel()&& Dungeon.level.water[pos]){
 			Buff.affect(this, FrostImbueEX.class, FrostImbueEX.DURATION*0.3f);
 		} else if(Dungeon.ColdWaterLevel()&& !Dungeon.level.water[pos])
 			for (Buff buff : hero.buffs()) {
@@ -1862,6 +1880,14 @@ public class Hero extends Char {
 					buff.detach();
 				}
 			}
+
+		//矮人层
+		if (Dungeon.DiedWaterLevel()&& Dungeon.level.water[pos] && Dungeon.hero.buff(WaterSoulX.class)== null && Dungeon.isChallenged(AQUAPHOBIA)){
+			Buff.prolong(hero, Chill.class, 2f);
+			Buff.prolong(hero, Blindness.class, Blindness.DURATION/5f);
+			Buff.prolong( hero, Cripple.class, Cripple.DURATION/5f );
+			Buff.prolong( hero, Hex.class, Hex.DURATION/10f );
+		}
 		
 		if (!flying && travelling) {
 			if (Dungeon.level.water[pos]) {
@@ -1950,7 +1976,9 @@ public class Hero extends Char {
 					hasKey = Notes.remove(new GoldenKey(Dungeon.depth));
 				} else if (heap.type == Type.CRYSTAL_CHEST){
 					hasKey = Notes.remove(new CrystalKey(Dungeon.depth));
-				}
+				} else if (heap.type == Type.BLACK) {
+				hasKey = Notes.remove(new BlackKey(Dungeon.depth));
+			}
 				
 				if (hasKey) {
 					GameScene.updateKeyDisplay();
@@ -1967,9 +1995,10 @@ public class Hero extends Char {
 
 	@Override
 	public boolean isImmune(Class effect) {
-		if (effect == Burning.class
-				&& belongings.armor() != null
-				&& belongings.armor().hasGlyph(Brimstone.class, this)){
+		if (effect == Burning.class && belongings.armor() != null && belongings.armor().hasGlyph(Brimstone.class, this)){
+			return true;
+		}
+		if (effect == HalomethaneBurning.class && belongings.armor() != null && belongings.armor().hasGlyph(Brimstone.class, this)){
 			return true;
 		}
 		return super.isImmune(effect);
@@ -2129,7 +2158,7 @@ public class Hero extends Char {
 		MagicalHolster holster = belongings.getItem(MagicalHolster.class);
 
 		Buff.affect(this, LostInventory.class);
-		Buff.affect(this, Invisibility.class, 3f);
+		Buff.affect(this, Invisibility.class, 10f);
 		//lost inventory is dropped in interlevelscene
 
 		//activate items that persist after lost inventory

@@ -104,19 +104,19 @@ public class ShatteredPixelDungeon extends Game {
 				com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM300.class,
 				"com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM300" );
 		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel.class,
+				com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel.class,
 				"com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel" );
 		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel.PylonEnergy.class,
+				com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel.PylonEnergy.class,
 				"com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel$PylonEnergy" );
 		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel.ArenaVisuals.class,
+				com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel.ArenaVisuals.class,
 				"com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel$ArenaVisuals" );
 		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel.CityEntrance.class,
+				com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel.CityEntrance.class,
 				"com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel$CityEntrance" );
 		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel.EntranceOverhang.class,
+				com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel.EntranceOverhang.class,
 				"com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel$EntranceOverhang" );
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.levels.NewCityBossLevel.class,

@@ -50,7 +50,7 @@ public class DwarfMasterBossLevel extends Level {
     private static final int HEIGHT = 38;
 
     public static final int CENTER = 18 + WIDTH * 17;
-    private static final int EXIT = 18 + WIDTH * 2;
+
     private static final int ENTRANCE = 18 + WIDTH * 31;
 
     @Override

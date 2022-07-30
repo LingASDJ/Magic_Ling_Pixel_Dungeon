@@ -21,6 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
+import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.CYELLOW;
+import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.GREEN_COLOR;
+import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.RED_COLOR;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -31,12 +35,12 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndGame;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndJournal;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
+import com.watabou.glwrap.Blending;
 import com.watabou.input.GameAction;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Game;
@@ -110,9 +114,37 @@ public class MenuPane extends Component {
 			challengeIcon = Icons.get(Icons.CHAL_COUNT);
 			add(challengeIcon);
 
-			challengeText = new BitmapText( Integer.toString( Challenges.activeChallenges() ), PixelScene.pixelFont);
-			challengeText.hardlight( 0xCACFC2 );
+			challengeText = new BitmapText( Integer.toString( Challenges.activeChallenges() ), PixelScene.pixelFont)			{
+				private float time;
+				@Override
+				public void update() {
+					super.update();
+					am = 1f + 0.01f*Math.max(0f, (float)Math.sin( time += Game.elapsed/1 ));
+					time += Game.elapsed / 3.5f;
+					float r = 0.33f+0.57f*Math.max(0f, (float)Math.sin( time));
+					float g = 0.53f+0.57f*Math.max(0f, (float)Math.sin( time + 2*Math.PI/3 ));
+					float b = 0.63f+0.57f*Math.max(0f, (float)Math.sin( time + 4*Math.PI/3 ));
+					if (Challenges.activeChallenges() >= 12) {
+						challengeText.hardlight(r,g,b);
+						if (time >= 2f * Math.PI) time = 0;
+					} else if (Challenges.activeChallenges() > 9) {
+						challengeText.hardlight(RED_COLOR);
+					} else if (Challenges.activeChallenges() > 6 && Challenges.activeChallenges() < 9){
+						challengeText.hardlight(CYELLOW);
+					} else {
+						challengeText.hardlight(GREEN_COLOR);
+					}
+				}
+
+				@Override
+				public void draw() {
+					Blending.setLightMode();
+					super.draw();
+					Blending.setNormalMode();
+				}
+			};
 			challengeText.measure();
+			challengeText.alpha(1f);
 			add( challengeText );
 
 			challengeButton = new Button(){

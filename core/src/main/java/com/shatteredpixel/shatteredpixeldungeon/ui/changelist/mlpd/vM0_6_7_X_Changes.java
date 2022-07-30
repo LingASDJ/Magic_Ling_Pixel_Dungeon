@@ -18,9 +18,71 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_4_Changes(changeInfos);
+        add_v0_6_3_Changes(changeInfos);
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_4_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta19", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BUFFS), ("Boss血量优化"),
+                ("现在Boss不仅会显示血量数值，还会实时显示Boss获得的Buff状态条")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("怪物面板属性优化"),
+                ("现在怪物面板移除了可获得经验并改为上次伤害，并追加移速。且小数点精确到一位。")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.SKYBULE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), (Messages.get(ChangesScene.class, "bugfixes")),
+                Messages.get(vM0_6_7_X_Changes.class, "bug_06X24")));
+
+        changes = new ChangeInfo("调整", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new BlueBatSprite(), ("小血影改动"),
+                ("-小血影在主人15级后将会开启远程攻击\n\n" +
+                        "-伤害削弱20%，但血量提升20%")));
+
+    }
+
+    public static void add_v0_6_3_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.0.0-BetaXVIII", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("新挑战:污泥浊水"),
+                ("1-4层 给予1回合残废\n" +
+                        "6-9层 给予1回合失明\n" +
+                        "11-14层 给予2回合冻伤\n" +
+                        "16-19层 给予 上面的全部效果附加幻惑3回合\n" +
+                        "\n" +
+                        "应对策略：\n" +
+                        "1.玩家开局获得x4水灵药剂，可获得40回合免疫\n" +
+                        "2.制作生石灰来将水蒸发，制作水灵药剂来免疫效果。\n\n" +
+                        "挑战开启期间4,8,13,18层将会追加一个食人鱼池子,并且食人鱼属性大幅度下降。")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.SKYBULE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), (Messages.get(ChangesScene.class, "bugfixes")),
+                Messages.get(vM0_6_7_X_Changes.class, "bug_06X23")));
     }
 
     public static void add_v0_6_2_Changes( ArrayList<ChangeInfo> changeInfos ) {
@@ -70,7 +132,9 @@ public class vM0_6_7_X_Changes {
                 ("灵能短弓伤害面板从1-6提升到4-9,成长系数不变")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_FROST), ("法师初始改动"),
-                ("茉莉伊洛是双属性的魔法少女，拥有强大的魔力，她将会把烈焰法杖和冰雪法杖幻化到快捷栏里，这两个法杖不能升级，不能灌注，但是开局随机0-2级。\n\n且一旦替换幻化的快捷栏将消失。\n\n" +
+                ("茉莉伊洛是双属性的魔法少女，拥有强大的魔力，她将会把烈焰法杖和冰雪法杖幻化到快捷栏里，但是这两个法杖受地牢魔力影响，不能升级，不能灌注，但是开局固定3级。\n\n" +
+                        "且一旦替换幻化的快捷栏或者退出游戏重新进入将消失。\n" +
+                        "\n" +
                         "低语：错误的选择将让你万劫不复的，茉莉！")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SUMMON_ELE), ("战士初始改动"),

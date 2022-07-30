@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
@@ -116,6 +117,12 @@ public abstract class Char extends Actor {
 	public int pos = 0;
 	
 	public CharSprite sprite;
+
+	public float attackDelay() {
+		float delay = TICK;
+		if(buff(Adrenaline.class) != null) delay /= 1.5f;
+		return delay;
+	}
 	
 	public int HT;
 	public int HP;
@@ -462,11 +469,19 @@ public abstract class Char extends Actor {
 		for (ChampionEnemy buff : attacker.buffs(ChampionEnemy.class)){
 			acuRoll *= buff.evasionAndAccuracyFactor();
 		}
+
+		for (ChampionHero buff : attacker.buffs(ChampionHero.class)){
+			acuRoll *= buff.evasionAndAccuracyFactor();
+		}
 		
 		float defRoll = Random.Float( defStat );
 		if (defender.buff(Bless.class) != null) defRoll *= 1.25f;
 		if (defender.buff(  Hex.class) != null) defRoll *= 0.8f;
 		for (ChampionEnemy buff : defender.buffs(ChampionEnemy.class)){
+			defRoll *= buff.evasionAndAccuracyFactor();
+		}
+
+		for (ChampionHero buff : defender.buffs(ChampionHero.class)){
 			defRoll *= buff.evasionAndAccuracyFactor();
 		}
 		
@@ -501,6 +516,10 @@ public abstract class Char extends Actor {
 			damage *= 0.67f;
 		}
 		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
+			damage *= buff.meleeDamageFactor();
+			buff.onAttackProc( enemy );
+		}
+		for (ChampionHero buff : buffs(ChampionHero.class)){
 			damage *= buff.meleeDamageFactor();
 			buff.onAttackProc( enemy );
 		}
@@ -555,6 +574,10 @@ public abstract class Char extends Actor {
 		}
 
 		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
+			dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
+		}
+
+		for (ChampionHero buff : buffs(ChampionHero.class)){
 			dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
 		}
 

@@ -210,13 +210,13 @@ public class Bestiary {
 			case 8:
 				return new ArrayList<>(Arrays.asList(Skeleton.class,
 						Skeleton.class,
-						Thief.class, Shaman.random(),BrownBat.class,BrownBat.class,
+						Thief.class, Shaman.random(),BrownBat.class,SpectralNecromancer.class,
 						Shaman.random(), Guard.class, SRPDHBLR.class,Necromancer.class,
-						Necromancer.class,BrownBat.class));
+						SpectralNecromancer.class,BrownBat.class));
 			case 9:
 				return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
 						Thief.class,Thief.class,BrownBat.class,
-						BrownBat.class,Necromancer.class,Necromancer.class,
+						BrownBat.class,SpectralNecromancer.class,SpectralNecromancer.class,
 						DM100.class,BrownBat.class, BlackHost.class,KagenoNusujin.class));
 
 			case 10:

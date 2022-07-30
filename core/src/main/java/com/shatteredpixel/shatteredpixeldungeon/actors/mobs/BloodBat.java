@@ -8,7 +8,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Marked;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -16,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlueBatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
@@ -33,7 +33,7 @@ public class BloodBat extends Mob implements Callback {
         alignment = Alignment.ALLY;
         WANDERING = new Wandering();
         intelligentAlly = true;
-        maxLvl = -30;
+        maxLvl = 0;
     }
 
     public void onZapComplete() {
@@ -43,7 +43,7 @@ public class BloodBat extends Mob implements Callback {
 
     @Override
     protected boolean canAttack( Char enemy ) {
-        if(level >= 10) {
+        if(Dungeon.hero.lvl >= 15) {
             return new Ballistica(pos, enemy.pos, MagicMissile.WARD).collisionPos == enemy.pos;
         } else {
             return super.canAttack(enemy);
@@ -90,7 +90,7 @@ public class BloodBat extends Mob implements Callback {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( (4+level)*Dungeon.depth/5, (5+level)*Dungeon.depth/5 );
+        return Random.NormalIntRange( (2+level)*Dungeon.depth/5, (4+level)*Dungeon.depth/5 );
     }
 
     @Override
@@ -106,8 +106,7 @@ public class BloodBat extends Mob implements Callback {
 
     @Override
     public int attackProc(Char enemy, int damage) {
-            zap();
-            if (Dungeon.hero.isSubclass(HeroSubClass.ASSASSIN)) Buff.affect(enemy, Marked.class).stack++;
+        zap();
         return super.attackProc(enemy, damage);
     }
 
@@ -116,7 +115,7 @@ public class BloodBat extends Mob implements Callback {
         if (Dungeon.level != null) {
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                 if (mob instanceof BloodBat) {
-                    mob.HP = mob.HT = 18 + level * 4;
+                    mob.HP = mob.HT = 18 + level * 8;
                     ((BloodBat) mob).defenseSkill = 3 + level * 4;
                 }
             }
@@ -132,7 +131,7 @@ public class BloodBat extends Mob implements Callback {
     @Override
     public void die(Object cause) {
         super.die(cause);
-        Buff.affect(Dungeon.hero, BloodBatRecharge.class, 800f);
+        Buff.affect(Dungeon.hero, BloodBatRecharge.class, 800f/((Dungeon.hero.lvl/5f)*5));
     }
 
     private class Wandering extends Mob.Wandering {
@@ -188,11 +187,18 @@ public class BloodBat extends Mob implements Callback {
 
     public static class BloodBatRecharge extends FlavourBuff {
 
-        public static final float DURATION = 800f;
+        public static final float DURATION = 400f;
 
         {
             type = buffType.NEGATIVE;
             announced = true;
+        }
+
+        @Override
+        public boolean act() {
+
+            detach();
+            return true;
         }
 
         @Override
@@ -202,7 +208,7 @@ public class BloodBat extends Mob implements Callback {
 
         @Override
         public void tintIcon(Image icon) {
-            icon.tint(0, 0, 0, 0.05f);
+            icon.hardlight(Window.Pink_COLOR);
         }
 
         @Override

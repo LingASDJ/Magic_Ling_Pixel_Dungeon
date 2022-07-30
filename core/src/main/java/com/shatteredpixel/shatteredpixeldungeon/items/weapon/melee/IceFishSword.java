@@ -36,6 +36,7 @@ public class IceFishSword extends Weapon {
         return upgrade(false);
     }
 
+
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
         {

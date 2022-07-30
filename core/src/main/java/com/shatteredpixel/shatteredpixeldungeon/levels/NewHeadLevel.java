@@ -62,54 +62,6 @@ public class NewHeadLevel extends Level {
         color2 = 12179041;
     }
 
-    private int mapToTerrain(int var1) {
-        if (var1 == 1 || var1 == 2 || var1 == 3) {
-            return 29;
-        }
-        if (var1 != 4) {
-            if (var1 == 16) {
-                return 7;
-            }
-            if (var1 == 17) {
-                return 8;
-            }
-            switch (var1) {
-                case -2147483644:
-                    break;
-                case -2147483584:
-                case 64:
-                case 190:
-                    return 4;
-                case -2147483550:
-                case 98:
-                    return 25;
-                case -2147483524:
-                case 124:
-                case 140:
-                    return 27;
-                case 4:
-                    return 14;
-                case 69:
-                    return 12;
-                case 80:
-                    return 5;
-                case 85:
-                    return 11;
-                case 96:
-                    return 23;
-                case 120:
-                    return 20;
-                case 123:
-                    return 29;
-                case 161:
-                    return 12;
-                default:
-                    return 1;
-            }
-        }
-        return 14;
-    }
-
     protected boolean build() {
         setSize(16, 24);
         this.exit = (this.width * 18 + 18);

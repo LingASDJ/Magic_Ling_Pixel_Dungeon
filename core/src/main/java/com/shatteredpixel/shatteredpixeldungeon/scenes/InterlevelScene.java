@@ -176,7 +176,7 @@ public class InterlevelScene extends PixelScene {
 			fadeTime += 0.9f; //adds 1 second total
 			//speed up transition when debugging
 		} else if (DeviceCompat.isDebug()){
-			fadeTime = 0.7f;
+			fadeTime = 0.1f;
 		}
 
 		SkinnedBlock bg = new SkinnedBlock(Camera.main.width, Camera.main.height, loadingAsset ){
@@ -487,7 +487,7 @@ public class InterlevelScene extends PixelScene {
 			int invPos = Dungeon.hero.pos;
 			int tries = 0;
 			do {
-				Dungeon.hero.pos = level.randomRespawnCell(Dungeon.hero);
+				Dungeon.hero.pos = level.exit;
 				tries++;
 
 				//prevents spawning on traps or plants, prefers farther locations first

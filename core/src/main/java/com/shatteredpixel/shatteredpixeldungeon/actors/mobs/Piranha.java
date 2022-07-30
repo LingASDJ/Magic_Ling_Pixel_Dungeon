@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
+
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -57,9 +59,13 @@ public class Piranha extends Mob {
 	
 	public Piranha() {
 		super();
-		
-		HP = HT = 10 + Dungeon.depth * 5;
-		defenseSkill = 10 + Dungeon.depth * 2;
+		if (Dungeon.isChallenged(AQUAPHOBIA)) {
+			HP = HT = 6 + Dungeon.depth/5;
+			defenseSkill = 6 + Dungeon.depth/5;
+		} else {
+			HP = HT = 10 + Dungeon.depth * 5;
+			defenseSkill = 10 + Dungeon.depth * 2;
+		}
 	}
 	
 	@Override

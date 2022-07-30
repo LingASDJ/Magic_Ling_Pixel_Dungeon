@@ -80,6 +80,6 @@ public class RedDragonSprite extends MobSprite {
 
     public void link(Char var1) {
         super.link(var1);
-        this.add(State.SHIELDED);
+        this.add(State.ROSESHIELDED);
     }
 }

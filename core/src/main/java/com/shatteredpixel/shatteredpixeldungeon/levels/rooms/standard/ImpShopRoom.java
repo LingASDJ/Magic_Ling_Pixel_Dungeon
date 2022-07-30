@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2021 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,10 +21,31 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.ImpShopkeeper;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.MerchantsBeacon;
+import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
+import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -32,6 +53,9 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Point;
+import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 //shops probably shouldn't extend special room, because of cases like this.
 public class ImpShopRoom extends ShopRoom {
@@ -70,6 +94,173 @@ public class ImpShopRoom extends ShopRoom {
 			impSpawned = false;
 		}
 
+	}
+	private ArrayList<Item> itemsToSpawn;
+	@Override
+	protected void placeItems( Level level ){
+
+		if (itemsToSpawn == null){
+			itemsToSpawn = generateItems();
+		}
+
+		Point itemPlacement = new Point(entrance());
+		if (itemPlacement.y == top){
+			itemPlacement.y++;
+		} else if (itemPlacement.y == bottom) {
+			itemPlacement.y--;
+		} else if (itemPlacement.x == left){
+			itemPlacement.x++;
+		} else {
+			itemPlacement.x--;
+		}
+
+		for (Item item : itemsToSpawn) {
+
+			if (itemPlacement.x == left+1 && itemPlacement.y != top+1){
+				itemPlacement.y--;
+			} else if (itemPlacement.y == top+1 && itemPlacement.x != right-1){
+				itemPlacement.x++;
+			} else if (itemPlacement.x == right-1 && itemPlacement.y != bottom-1){
+				itemPlacement.y++;
+			} else {
+				itemPlacement.x--;
+			}
+
+			int cell = level.pointToCell(itemPlacement);
+
+			if (level.heaps.get( cell ) != null) {
+				do {
+					cell = level.pointToCell(random());
+				} while (level.heaps.get( cell ) != null || level.findMob( cell ) != null);
+			}
+
+			level.drop( item, cell ).type = Heap.Type.FOR_SALE;
+		}
+
+	}
+
+	protected static ArrayList<Item> generateItems() {
+
+		ArrayList<Item> itemsToSpawn = new ArrayList<>();
+
+		MeleeWeapon w;
+		switch (Dungeon.depth) {
+			case 6: default:
+				w = (MeleeWeapon) Generator.random(Generator.wepTiers[1]);
+				itemsToSpawn.add( Generator.random(Generator.misTiers[1]).quantity(2).identify() );
+				itemsToSpawn.add( new LeatherArmor().identify() );
+				break;
+
+			case 11:
+				w = (MeleeWeapon) Generator.random(Generator.wepTiers[2]);
+				itemsToSpawn.add( Generator.random(Generator.misTiers[2]).quantity(2).identify() );
+				itemsToSpawn.add( new MailArmor().identify() );
+				break;
+
+			case 16:
+				w = (MeleeWeapon) Generator.random(Generator.wepTiers[3]);
+				itemsToSpawn.add( Generator.random(Generator.misTiers[3]).quantity(2).identify() );
+				itemsToSpawn.add( new ScaleArmor().identify() );
+				break;
+
+			case 20: case 21:
+				itemsToSpawn.add( new Torch() );
+				itemsToSpawn.add(Generator.randomUsingDefaults(Generator.Category.POTION));
+				itemsToSpawn.add(Generator.randomUsingDefaults(Generator.Category.WAND));
+				break;
+		}
+
+		itemsToSpawn.add( TippedDart.randomTipped(2) );
+
+		itemsToSpawn.add( new MerchantsBeacon() );
+
+
+		itemsToSpawn.add(ChooseBag(Dungeon.hero.belongings));
+
+
+		itemsToSpawn.add( new PotionOfHealing() );
+		itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.POTION ) );
+
+		itemsToSpawn.add( new ScrollOfIdentify() );
+		itemsToSpawn.add( new ScrollOfRemoveCurse() );
+
+		for (int i=0; i < 2; i++)
+			itemsToSpawn.add( Random.Int(2) == 0 ?
+					Generator.randomUsingDefaults( Generator.Category.POTION ) :
+					Generator.randomUsingDefaults( Generator.Category.SCROLL ) );
+
+
+		itemsToSpawn.add( new SmallRation() );
+		itemsToSpawn.add( new SmallRation() );
+
+		switch (Random.Int(4)){
+			case 0:
+				itemsToSpawn.add( new Bomb() );
+				break;
+			case 1:
+			case 2:
+				itemsToSpawn.add( new Bomb.DoubleBomb() );
+				break;
+			case 3:
+				itemsToSpawn.add( new Honeypot() );
+				break;
+		}
+
+		itemsToSpawn.add( new Ankh() );
+		itemsToSpawn.add( new StoneOfAugmentation() );
+
+		TimekeepersHourglass hourglass = Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);
+		if (hourglass != null && hourglass.isIdentified() && !hourglass.cursed){
+			int bags = 0;
+			//creates the given float percent of the remaining bags to be dropped.
+			//this way players who get the hourglass late can still max it, usually.
+			switch (Dungeon.depth) {
+				case 6:
+					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.20f ); break;
+				case 11:
+					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.25f ); break;
+				case 16:
+					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.50f ); break;
+				case 20: case 21:
+					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.80f ); break;
+			}
+
+			for(int i = 1; i <= bags; i++){
+				itemsToSpawn.add( new TimekeepersHourglass.sandBag());
+				hourglass.sandBags ++;
+			}
+		}
+
+		Item rare;
+		switch (Random.Int(10)){
+			case 0:
+				rare = Generator.random( Generator.Category.WAND );
+				rare.level( 0 );
+				break;
+			case 1:
+				rare = Generator.random(Generator.Category.RING);
+				rare.level( 0 );
+				break;
+			case 2:
+				rare = Generator.random( Generator.Category.ARTIFACT );
+				break;
+			default:
+				rare = new Stylus();
+		}
+		rare.cursed = false;
+		rare.cursedKnown = true;
+		itemsToSpawn.add( rare );
+
+		//hard limit is 63 items + 1 shopkeeper, as shops can't be bigger than 8x8=64 internally
+		if (itemsToSpawn.size() > 63)
+			throw new RuntimeException("Shop attempted to carry more than 63 items!");
+
+		//use a new generator here to prevent items in shop stock affecting levelgen RNG (e.g. sandbags)
+		Random.pushGenerator(Random.Long());
+		Random.shuffle(itemsToSpawn);
+		Random.popGenerator();
+
+		return itemsToSpawn;
 	}
 
 	@Override

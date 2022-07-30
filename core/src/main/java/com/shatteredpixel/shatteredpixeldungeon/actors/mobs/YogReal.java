@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
@@ -74,8 +75,8 @@ public class YogReal extends Boss {
         initProperty();
         initBaseStatus(0, 0, 1, 0, 1200, 0, 0);
         initStatus(500);
-        HP=1200;
-        HT=1200;
+        HP=800;
+        HT=800;
         spriteClass = YogSprite.class;
         properties.add(Property.IMMOVABLE);
         properties.add(Property.DEMONIC);
@@ -421,7 +422,7 @@ public class YogReal extends Boss {
         int preHP = HP;
         super.damage(damage, src);
         int postHP = HP;
-        int threshold = 1200-300*phase;
+        int threshold = 800-200*phase;
         if(preHP > threshold && postHP<=threshold){
             HP = threshold;
             ++phase;
@@ -433,7 +434,7 @@ public class YogReal extends Boss {
             summonCD -= dmgTaken / 8f + 1f;
         }
 
-        if(HP<=600){
+        if(HP<=200){
             BossHealthBar.bleed(true);
         }
 
@@ -473,7 +474,9 @@ public class YogReal extends Boss {
     @Override
     public void die( Object cause ) {
         GameScene.flash(0x80FFFFFF);
-
+        actScanning();
+        actSummon();
+        actDestroy();
         for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
             if (mob instanceof Larva
                     || mob instanceof RipperDemon
@@ -487,12 +490,18 @@ public class YogReal extends Boss {
             Badges.GOODRLPT();
         }
 
+
+
         if(Dungeon.isChallenged(SBSG)){
             Badges.BIGX();
         }
 
         if(Dungeon.isChallenged(EXSG)){
             Badges.EXSG();
+        }
+
+        if(Dungeon.isChallenged(AQUAPHOBIA)){
+            Badges.CLEARWATER();
         }
 
         Dungeon.level.viewDistance = 4;
@@ -555,7 +564,7 @@ public class YogReal extends Boss {
         regularSummons.clear();
         Collections.addAll(regularSummons, b.getClassArray("REGULAR_SUMMONS"));
         if(phase>0) BossHealthBar.assignBoss(this);
-        if (HP < 600) BossHealthBar.bleed(true);
+        if (HP < 200) BossHealthBar.bleed(true);
     }
 
 
@@ -603,7 +612,7 @@ public class YogReal extends Boss {
     }
 
     //used so death to yog's ripper demons have their own rankings description and are more aggro
-    public static class YogRealRipper extends Ice_Scorpio {
+    public static class YogRealRipper extends BlackHost {
         {
             maxLvl = -999;
             viewDistance = 8;

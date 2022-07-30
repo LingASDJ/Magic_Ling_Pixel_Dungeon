@@ -21,7 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -466,6 +469,20 @@ public class YogDzewa extends Mob {
 		if(Dungeon.isChallenged(RLPT)){
 			Badges.GOODRLPT();
 		}
+
+		if(Dungeon.isChallenged(AQUAPHOBIA)){
+			Badges.CLEARWATER();
+		}
+
+		if(Dungeon.isChallenged(SBSG)){
+			Badges.BIGX();
+		}
+
+		if(Dungeon.isChallenged(EXSG)){
+			Badges.EXSG();
+		}
+
+
 
 		updateVisibility(Dungeon.level);
 

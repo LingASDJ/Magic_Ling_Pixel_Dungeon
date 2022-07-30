@@ -177,6 +177,14 @@ public class WndResurrect extends Window {
 					}
 				}
 
+				if (btnItem3.item == btnItem4.item){
+					if (btnPressed == btnItem3){
+						btnItem4.clear();
+					} else {
+						btnItem3.clear();
+					}
+				}
+
 			}
 		}
 	};

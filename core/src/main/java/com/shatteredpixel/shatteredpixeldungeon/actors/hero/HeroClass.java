@@ -83,6 +83,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlam
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonKingBreath;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GoldBAo;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
@@ -131,7 +132,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
-import com.watabou.utils.Random;
 
 public enum HeroClass {
 
@@ -154,6 +154,10 @@ public enum HeroClass {
 			new Ankh().quantity(1).identify().collect();
 		}
 
+		if (Dungeon.isChallenged(Challenges.AQUAPHOBIA)) {
+			new WaterSoul().quantity(4).identify().collect();
+		}
+
 		if ( Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
 			Buff.affect(hero, RandomBuff.class).set( (5), 1 );
 			System.out.println(RandomBuff.level);
@@ -167,7 +171,7 @@ public enum HeroClass {
 
 		if (Dungeon.isChallenged(Challenges.PRO)){
 			new FrozenCarpaccio().quantity(11).identify().collect();
-
+			new FireFishSword().quantity(1).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
 			new PotionOfPurity().quantity(45).identify().collect();
 
@@ -340,11 +344,11 @@ public enum HeroClass {
 		hero.belongings.weapon.activate(hero);
 
 		WandOfFireblast woc = new WandOfFireblast();
-		woc.level(Random.NormalIntRange(0,2));
+		woc.level(3);
 		woc.identify().quantity(1);
 
 		WandOfFrost wox = new WandOfFrost();
-		wox.level(Random.NormalIntRange(0,2));
+		wox.level(3);
 		wox.identify().quantity(1);
 
 		Dungeon.quickslot.setSlot(0, staff);

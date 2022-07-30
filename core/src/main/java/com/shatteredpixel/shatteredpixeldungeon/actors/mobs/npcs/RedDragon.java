@@ -243,13 +243,10 @@ public class RedDragon extends NPC {
 
         public static void reset() {
             spawned = false;
-
             weapon = null;
             armor = null;
             enchant = null;
             glyph = null;
-            food =null;
-            scrolls =null;
         }
 
         private static final String NODE		= "sads";

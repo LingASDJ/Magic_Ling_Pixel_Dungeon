@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.ALLBOSS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -108,7 +109,7 @@ public class Badges {
 		BOSS_SLAIN_1_ALL_CLASSES    ( 53, true ),
 		GAMES_PLAYED_1              ( 54, true ),
 		GODD_MAKE					( 82 ),
-
+		CLEAR_WATER					( 83 ),
 		//gold
 		PIRANHAS                    ( 64 ),
 		//these names are a bit outdated, but it doesn't really matter.
@@ -161,13 +162,15 @@ public class Badges {
 		GAMES_PLAYED_4              ( 112, true ),
 		CHAMPION_2                  ( 113 ),
 		CHAMPION_3                  ( 114 ),
+		CHAMPION_4                  ( 115 ),
+		CHAMPION_5                  ( 116 ),
 		NYZ_SHOP                    ( 117 ),
 
 		//rudy
 		SLIMEPR                  	 ( 129 ),
 		DRAWF_HEAD                    ( 130 ),
 		SPICEALBOSS 				 ( 131),
-		SBDJS				(132),
+
 		KILL_MG			(133),
 		BIG_X				(134),
 		EXSG                (135);
@@ -900,6 +903,10 @@ public class Badges {
 		displayBadge( Badge.KILL_DM720 );
 	}
 
+	public static void CLEARWATER() {
+		displayBadge( Badge.CLEAR_WATER );
+	}
+
 	public static void KILLDWARF() {
 		displayBadge( Badge.DRAWF_HEAD );
 	}
@@ -919,32 +926,31 @@ public class Badges {
 		displayBadge( Badge.RLPT );
 	}
 
-	//上半段结束
-	public static void UP_PALF() {
-		displayBadge( Badge.SBDJS );
-	}
-
 
 	public static void validateChampion( int challenges ) {
 		if (challenges == 0) return;
 		Badge badge = null;
-		if (challenges >= 1 && (!(Dungeon.isChallenged(PRO)))) {
+		if (challenges >= 1 && !(Dungeon.isChallenged(PRO))||!(Dungeon.isChallenged(ALLBOSS))) {
 			badge = Badge.CHAMPION_1;
 		}
-		if (challenges >= 3 && (!(Dungeon.isChallenged(PRO)))){
-			if (!global.contains(badge)){
-				global.add(badge);
-				saveNeeded = true;
-			}
+		if (challenges >= 3 && !(Dungeon.isChallenged(PRO))||!(Dungeon.isChallenged(ALLBOSS))){
+			addGlobal(badge);
 			badge = Badge.CHAMPION_2;
 		}
-		if (challenges >= 6 && (!(Dungeon.isChallenged(PRO)))){
-			if (!global.contains(badge)){
-				global.add(badge);
-				saveNeeded = true;
-			}
+		if (challenges >= 6 && !(Dungeon.isChallenged(PRO))||!(Dungeon.isChallenged(ALLBOSS))){
+			addGlobal(badge);
 			badge = Badge.CHAMPION_3;
 		}
+		if (challenges >= 8 && !(Dungeon.isChallenged(PRO))||!(Dungeon.isChallenged(ALLBOSS))){
+			addGlobal(badge);
+			badge = Badge.CHAMPION_4;
+		}
+		if (challenges >= 10 && !(Dungeon.isChallenged(PRO))||!(Dungeon.isChallenged(ALLBOSS))){
+			addGlobal(badge);
+			badge = Badge.CHAMPION_5;
+		}
+		local.add(badge);
+		displayBadge( badge );
 	}
 
 	private static void displayBadge( Badge badge ) {
@@ -1023,7 +1029,7 @@ public class Badges {
 			{Badge.ITEMS_CRAFTED_1, Badge.ITEMS_CRAFTED_2, Badge.ITEMS_CRAFTED_3, Badge.ITEMS_CRAFTED_4},
 			{Badge.BOSS_SLAIN_1, Badge.BOSS_SLAIN_2, Badge.BOSS_SLAIN_3, Badge.BOSS_SLAIN_4},
 			{Badge.GAMES_PLAYED_1, Badge.GAMES_PLAYED_2, Badge.GAMES_PLAYED_3, Badge.GAMES_PLAYED_4},
-			{Badge.CHAMPION_1, Badge.CHAMPION_2, Badge.CHAMPION_3}
+			{Badge.CHAMPION_1, Badge.CHAMPION_2, Badge.CHAMPION_3,Badge.CHAMPION_4,Badge.CHAMPION_5}
 	};
 
 	private static final Badge[][] metaBadgeReplacements = new Badge[][]{
@@ -1053,7 +1059,7 @@ public class Badges {
 		leaveBest( badges, Badge.FOOD_EATEN_1, Badge.FOOD_EATEN_2, Badge.FOOD_EATEN_3, Badge.FOOD_EATEN_4 );
 		leaveBest( badges, Badge.ITEM_LEVEL_1, Badge.ITEM_LEVEL_2, Badge.ITEM_LEVEL_3, Badge.ITEM_LEVEL_4 );
 		leaveBest( badges, Badge.GAMES_PLAYED_1, Badge.GAMES_PLAYED_2, Badge.GAMES_PLAYED_3, Badge.GAMES_PLAYED_4 );
-		leaveBest( badges, Badge.CHAMPION_1, Badge.CHAMPION_2, Badge.CHAMPION_3 );
+		leaveBest( badges, Badge.CHAMPION_1, Badge.CHAMPION_2, Badge.CHAMPION_3,Badge.CHAMPION_4,Badge.CHAMPION_5 );
 
 		for (Badge[] tierReplace : tierBadgeReplacements){
 			leaveBest( badges, tierReplace );

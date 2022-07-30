@@ -434,14 +434,13 @@ public class Dungeon {
 					break;
 				case 15:
 					if((Statistics.boss_enhance & 0x4) != 0) level = new CavesGirlDeadLevel();
-
 					else
 						switch (Random.NormalIntRange(1,7)) {
-							case 1:case 2:case 3:
+							case 1:case 2:case 3: case 4: case 5:
 							default:
 								level = new NewCavesBossLevel();
 								break;
-							case 4:case 5:
+							case 6:case 7:
 								level = new CaveTwoBossLevel();
 								break;
 						}
@@ -528,8 +527,17 @@ public class Dungeon {
 		return depth == 11 ||depth == 12||depth == 13||depth == 14;
 	}
 
+	public static boolean DiedWaterLevel() {
+		return depth == 16 ||depth == 17||depth == 18||depth == 19;
+	}
+
+
 	public static boolean shopOnLevel() {
 		return depth == 6 || depth == 11 || depth == 16;
+	}
+
+	public static boolean aqiLevel() {
+		return depth == 4 || depth == 8 || depth == 13 || depth == 18;
 	}
 
 	public static boolean bossLevel() {
@@ -711,6 +719,7 @@ public class Dungeon {
 			Wandmaker	.Quest.storeInBundle( quests );
 			Blacksmith	.Quest.storeInBundle( quests );
 			Imp			.Quest.storeInBundle( quests );
+			RedDragon	.Quest.storeInBundle( quests );
 			bundle.put( QUESTS, quests );
 
 			SpecialRoom.storeRoomsInBundle( bundle );
@@ -802,11 +811,13 @@ public class Dungeon {
 			Bundle quests = bundle.getBundle( QUESTS );
 			if (!quests.isNull()) {
 				Ghost.Quest.restoreFromBundle( quests );
+				RedDragon.Quest.restoreFromBundle( quests );
 				Wandmaker.Quest.restoreFromBundle( quests );
 				Blacksmith.Quest.restoreFromBundle( quests );
 				Imp.Quest.restoreFromBundle( quests );
 			} else {
 				Ghost.Quest.reset();
+				RedDragon.Quest.reset();
 				Wandmaker.Quest.reset();
 				Blacksmith.Quest.reset();
 				Imp.Quest.reset();

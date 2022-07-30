@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2021 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,22 +21,28 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper.sell;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
+import com.watabou.noosa.Game;
+import com.watabou.utils.Callback;
 
-public class ImpShopkeeper extends Shopkeeper {
+public class ImpShopkeeper extends NPC {
 
 	{
 		spriteClass = ImpSprite.class;
 	}
-	
+
 	private boolean seenBefore = false;
-	
+
 	@Override
 	protected boolean act() {
 
@@ -44,11 +50,35 @@ public class ImpShopkeeper extends Shopkeeper {
 			yell( Messages.get(this, "greetings", Dungeon.hero.name() ) );
 			seenBefore = true;
 		}
-		
+
 		return super.act();
 	}
-	
+
 	@Override
+	public boolean interact(Char c) {
+		if (c != Dungeon.hero) {
+			return true;
+		}
+		Game.runOnRenderThread(new Callback() {
+			@Override
+			public void call() {
+				sell();
+			}
+		});
+		return true;
+	}
+
+	@Override
+	public void damage( int dmg, Object src ) {
+		//flee();
+	}
+
+	@Override
+	public void add( Buff buff ) {
+		//lee();
+	}
+
+
 	public void flee() {
 		for (Heap heap: Dungeon.level.heaps.valueList()) {
 			if (heap.type == Heap.Type.FOR_SALE) {
@@ -56,9 +86,9 @@ public class ImpShopkeeper extends Shopkeeper {
 				heap.destroy();
 			}
 		}
-		
+
 		destroy();
-		
+
 		sprite.emitter().burst( Speck.factory( Speck.WOOL ), 15 );
 		sprite.killAndErase();
 	}

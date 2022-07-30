@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.ALLBOSS;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
@@ -182,12 +183,12 @@ public abstract class Mob extends Char {
 		alerted = false;
 
 		if (Dungeon.isChallenged(Challenges.SBSG) && scaleFactor == 1f && !properties().contains(Property.NOBIG)&&!properties().contains(Property.BOSS)){
-			scaleFactor = Random.Float(0.5f, 1.4f);
+			scaleFactor = Random.Float(0.7f, 1.4f);
 			HP = HT = (int) (HT * scaleFactor);
-			if (scaleFactor >= 1.15f){
-				HP = HT = (int) (HT * 1.15f);
-			}else if (scaleFactor >= 0.8f) {
-				HP = HT = (int) (HT * 0.8f);
+			if (scaleFactor >= 1.25f){
+				HP = HT = (int) (HT * 1.25f);
+			}else if (scaleFactor >= 1f) {
+				HP = HT = (int) (HT * 1f);
 			}
 			sprite.linkVisuals(this);
 			sprite.link(this);
@@ -220,6 +221,7 @@ public abstract class Mob extends Char {
 	
 	//FIXME this is sort of a band-aid correction for allies needing more intelligent behaviour
 	protected boolean intelligentAlly = false;
+
 	
 	protected Char chooseEnemy() {
 
@@ -555,11 +557,17 @@ public abstract class Mob extends Char {
 				|| Dungeon.hero.buff(Swiftthistle.TimeBubble.class) != null)
 			sprite.add( CharSprite.State.PARALYSED );
 	}
-	
+
 	public float attackDelay() {
 		float delay = 1f;
 		if ( buff(Adrenaline.class) != null) delay /= 1.5f;
-		return delay;
+		return super.attackDelay()*(Dungeon.isChallenged(Challenges.SBSG) ? (0.8f * scaleFactor) :  delay);
+	}
+
+	@Override
+	public int attackProc(Char enemy, int damage) {
+		return super.attackProc(enemy,
+				(int) (damage*(Dungeon.isChallenged(Challenges.SBSG) ? (1.4f * scaleFactor) : 1)));
 	}
 	
 	protected boolean doAttack( Char enemy ) {
@@ -581,16 +589,21 @@ public abstract class Mob extends Char {
 		spend( attackDelay() );
 		super.onAttackComplete();
 	}
-	
+
 	@Override
 	public int defenseSkill( Char enemy ) {
 		if ( !surprisedBy(enemy)
 				&& paralysed == 0
-				&& !(alignment == Alignment.ALLY && enemy == Dungeon.hero)) {
-			return this.defenseSkill;
+				&& !(alignment == Alignment.ALLY && enemy == hero)) {
+			return (int) (this.defenseSkill/(Dungeon.isChallenged(Challenges.SBSG) ? (0.8f * scaleFactor) : 1));
 		} else {
 			return 0;
 		}
+	}
+
+	@Override
+	public float speed() {
+		return super.speed()/(Dungeon.isChallenged(Challenges.SBSG) ? (0.8f * scaleFactor) : 1);
 	}
 	
 	protected boolean hitWithRanged = false;

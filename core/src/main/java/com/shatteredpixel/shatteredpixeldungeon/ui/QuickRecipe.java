@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfNoWater;
@@ -56,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHo
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
@@ -76,7 +78,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlueFuck;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
@@ -312,6 +314,10 @@ public class QuickRecipe extends Component {
 						new ArrayList<Item>(Arrays.asList(new AikeLaier.Seed(), new Food(),
 								new FrozenCarpaccio())),
 						new LightFood()));
+				result.add(new QuickRecipe( new WaterSoul.Recipe(),
+						new ArrayList<Item>(Arrays.asList(new PotionOfHealing(), new FrozenCarpaccio()
+								)),
+						new WaterSoul().quantity(2)));
 				result.add(new QuickRecipe( new PotionOfNoWater.Recipe(),
 						new ArrayList<Item>(Arrays.asList(new Blindweed.Seed(), new Firebloom.Seed())),
 						new PotionOfNoWater()));
@@ -347,7 +353,7 @@ public class QuickRecipe extends Component {
 						new ScrollOfFlameCursed().quantity(3)));
 				result.add(new QuickRecipe( new ScrollOfRoseShiled.Recipe(),
 						new ArrayList<Item>(Arrays.asList(new PotionOfPurity(), new  AlchemicalCatalyst(),
-								new StoneOfAugmentation())),
+								new StoneOfBlink())),
 						new ScrollOfRoseShiled().quantity(3)));
 				result.add(new QuickRecipe( new WandOfBlueFuck.Recipe(),
 						new ArrayList<Item>(Arrays.asList(new PotionOfLiquidFlameX(), new ScrollOfFlameCursed(),
