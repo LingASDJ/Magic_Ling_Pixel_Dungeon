@@ -55,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
@@ -202,7 +203,7 @@ public enum HeroClass {
 			new ScrollOfMysticalEnergy().quantity(1).identify().collect();
 			new AquaBlast().quantity(1).identify().collect();
 
-			new WandOfCorruption().quantity(1).identify().collect();
+			new WandOfCorruption().quantity(1/0).identify().collect();
 			new MasterThievesArmband().quantity(1).identify().collect();
 			new Dart().quantity(1).identify().collect();
 
@@ -239,6 +240,7 @@ public enum HeroClass {
 			new PotionOfLightningShiled().quantity(42).collect();
 			new ScrollOfRoseShiled().quantity(45).identify().collect();
 			new ScrollOfTerror().quantity(45).identify().collect();
+			new WraithAmulet().quantity(1).identify().collect();
 			Dungeon.gold = 600000000;
 			hero.STR = 27;
 			hero.lvl = 31;

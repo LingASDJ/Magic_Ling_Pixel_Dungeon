@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -180,6 +181,7 @@ public class Hero extends Char {
 		alignment = Alignment.ALLY;
 	}
 
+
 	public boolean isClass(HeroClass clazz){
 		if (heroClass == HeroClass.ROGUE) return true;
 		return clazz == this.heroClass;
@@ -201,7 +203,7 @@ public class Hero extends Char {
 	private static final float TIME_TO_REST		    = 1f;
 	private static final float TIME_TO_SEARCH	    = 2f;
 	private static final float HUNGER_FOR_SEARCH	= 6f;
-	
+
 	public HeroClass heroClass = HeroClass.ROGUE;
 	public HeroSubClass subClass = HeroSubClass.NONE;
 	public ArmorAbility armorAbility = null;
@@ -225,7 +227,7 @@ public class Hero extends Char {
 	public int STR;
 	
 	public float awareness;
-	
+
 	public int lvl = 1;
 	public int exp = 0;
 	
@@ -302,7 +304,7 @@ public class Hero extends Char {
 		bundle.put( SUBCLASS, subClass );
 		bundle.put( ABILITY, armorAbility );
 		Talent.storeTalentsInBundle( bundle, this );
-		
+
 		bundle.put( ATTACK, attackSkill );
 		bundle.put( DEFENSE, defenseSkill );
 		
@@ -410,9 +412,14 @@ public class Hero extends Char {
 		return subClass == null || subClass == HeroSubClass.NONE ? heroClass.title() : subClass.title();
 	}
 
+	public static String customname = SPDSettings.customSeed();
 	@Override
 	public String name(){
-		return className();
+		if (customname == null) {
+			return className();
+		} else {
+			return SPDSettings.customSeed();
+		}
 	}
 
 	@Override

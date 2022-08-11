@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -80,7 +82,7 @@ public class NewDM300 extends Mob {
 	{
 		spriteClass = DM300Sprite.class;
 
-		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 400 : 300;
+		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 480 : 300;
 		EXP = 30;
 		defenseSkill = 15;
 
@@ -151,7 +153,7 @@ public class NewDM300 extends Mob {
 
 		if (turnsSinceLastAbility != -1){
 			BossHealthBar.assignBoss(this);
-			if (!supercharged && pylonsActivated == totalPylonsToActivate()) BossHealthBar.bleed(true);
+			if (!supercharged && pylonsActivated == 4) BossHealthBar.bleed(true);
 		}
 	}
 
@@ -448,26 +450,17 @@ public class NewDM300 extends Mob {
 
 		int dmgTaken = preHP - HP;
 		if (dmgTaken > 0) {
-			LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+			LockedFloor lock = hero.buff(LockedFloor.class);
 			if (lock != null && !isImmune(src.getClass())) lock.addTime(dmgTaken*1.5f);
 		}
 
-		int threshold;
-		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
-			threshold = HT / 4 * (3 - pylonsActivated);
-		} else {
-			threshold = HT / 3 * (2 - pylonsActivated);
-		}
+		int threshold = HT/4 * (4- pylonsActivated);
 
 		if (HP < threshold){
 			HP = threshold;
 			supercharge();
 		}
 
-	}
-
-	public int totalPylonsToActivate(){
-		return Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 3 : 2;
 	}
 
 	@Override
@@ -501,7 +494,7 @@ public class NewDM300 extends Mob {
 		supercharged = false;
 		((DM300Sprite)sprite).updateChargeState(false);
 
-		if (pylonsActivated < totalPylonsToActivate()){
+		if (pylonsActivated < 4){
 			yell(Messages.get(this, "charge_lost"));
 		} else {
 			yell(Messages.get(this, "pylons_destroyed"));
@@ -511,7 +504,7 @@ public class NewDM300 extends Mob {
 
 	@Override
 	public boolean isAlive() {
-		return super.isAlive() || pylonsActivated < totalPylonsToActivate();
+		return super.isAlive() || pylonsActivated < 4;
 	}
 
 	@Override

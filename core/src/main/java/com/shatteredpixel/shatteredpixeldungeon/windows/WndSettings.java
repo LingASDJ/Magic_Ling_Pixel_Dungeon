@@ -643,19 +643,19 @@ public class WndSettings extends WndTabbed {
 				optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
 				if(Game.scene()!=null && Game.scene().getClass() == GameScene.class) {
 					quickslots.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
-					wxts.setRect(9999, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+					wxts.visible = false;
 				} else {
-					quickslots.setRect(9999, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+					quickslots.visible = false;
 					wxts.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
 				}
 			} else {
 				ClassUI.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
 				optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
 				if(Game.scene()!=null && Game.scene().getClass() == GameScene.class) {
-					wxts.setRect(9999, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+					wxts.visible = false;
 					quickslots.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
 				} else {
-					quickslots.setRect(9999, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+					quickslots.visible = false;
 					wxts.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
 				}
 				//GameScene
@@ -674,6 +674,7 @@ public class WndSettings extends WndTabbed {
 		CheckBox chkUpdates;
 		CheckBox chkBetas;
 		CheckBox chkWifi;
+		CheckBox chkFireBase;
 
 		@Override
 		protected void createChildren() {
@@ -732,6 +733,33 @@ public class WndSettings extends WndTabbed {
 				chkWifi.checked(SPDSettings.WiFi());
 				add(chkWifi);
 			}
+
+			chkFireBase = new CheckBox(Messages.get(this, "firebase")) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					if (checked()) {
+						checked(!checked());
+						ShatteredPixelDungeon.scene().add(new WndOptions(Icons.get(Icons.DATA),
+								Messages.get(DisplayTab.class, "firebase_active"),
+								Messages.get(DisplayTab.class, "firebase_desc"),
+								Messages.get(DisplayTab.class, "okay"),
+								Messages.get(DisplayTab.class, "cancel")) {
+							@Override
+							protected void onSelect(int index) {
+								if (index == 0) {
+									checked(!checked());
+									SPDSettings.firebase(checked());
+								}
+							}
+						});
+					} else {
+						SPDSettings.firebase(checked());
+					}
+				}
+			};
+			chkFireBase.checked( SPDSettings.firebase() );
+			add( chkFireBase );
 		}
 
 		@Override
@@ -741,17 +769,16 @@ public class WndSettings extends WndTabbed {
 			sep1.y = title.bottom() + 2*GAP;
 
 			float pos;
-			if (width > 200 && chkUpdates != null){
+
+			if (width > 200 && chkFireBase != null){
 				chkNews.setRect(0, sep1.y + 1 + GAP, width/2-1, BTN_HEIGHT);
-				chkUpdates.setRect(chkNews.right() + GAP, chkNews.top(), width/2-1, BTN_HEIGHT);
-				pos = chkUpdates.bottom();
+				//chkUpdates.setRect(chkNews.right() + GAP, chkNews.top(), width/2-1, BTN_HEIGHT);
+				chkFireBase.setRect(chkNews.right() + GAP, chkNews.top(), width/2-1, BTN_HEIGHT);
+				pos = chkFireBase.bottom();
 			} else {
 				chkNews.setRect(0, sep1.y + 1 + GAP, width, BTN_HEIGHT);
+				chkFireBase.setRect(0, chkNews.bottom() + GAP, width, BTN_HEIGHT);
 				pos = chkNews.bottom();
-				if (chkUpdates != null) {
-					chkUpdates.setRect(0, chkNews.bottom() + GAP, width, BTN_HEIGHT);
-					pos = chkUpdates.bottom();
-				}
 			}
 
 			if (chkBetas != null){

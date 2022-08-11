@@ -101,6 +101,9 @@ public class Dungeon {
 	public static int cycle;
 	public static int depth;
 	public static int gold;
+
+	public static String customSeedText = "";
+
 	public static int nyzbuy;
 	public static int boss;
 	public static int escalatingDepth() {
@@ -208,6 +211,8 @@ public class Dungeon {
 	public static long seed;
 
 	public static void init() {
+
+
 
 		version = Game.versionCode;
 		challenges = SPDSettings.challenges();
@@ -678,12 +683,17 @@ public class Dungeon {
 	private static final String QUESTS		= "quests";
 	private static final String BADGES		= "badges";
 
+	private static final String CUSTOM_NAME	= "custom_name";
+
 	public static void saveGame( int save ) {
 		try {
 			Bundle bundle = new Bundle();
 
 			version = Game.versionCode;
 			bundle.put( VERSION, version );
+
+			bundle.put( CUSTOM_NAME, customSeedText );
+
 			bundle.put( SEED, seed );
 			bundle.put( CHALLENGES, challenges );
 			bundle.put( MOBS_TO_CHAMPION, mobsToChampion );
@@ -761,7 +771,7 @@ public class Dungeon {
 			saveGame( GamesInProgress.curSlot );
 			saveLevel( GamesInProgress.curSlot );
 
-			GamesInProgress.set( GamesInProgress.curSlot, depth, challenges, hero );
+			GamesInProgress.set( GamesInProgress.curSlot, depth, challenges, seed, customSeedText, hero );
 
 		}
 	}

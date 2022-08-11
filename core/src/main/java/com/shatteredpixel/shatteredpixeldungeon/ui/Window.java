@@ -214,7 +214,7 @@ public class Window extends Group implements Signal.Listener<KeyEvent> {
 		return new Point(xOffset, yOffset);
 	}
 
-	public final void offset( Point offset ){
+	public final void offset(Point offset ){
 		offset(offset.x, offset.y);
 	}
 

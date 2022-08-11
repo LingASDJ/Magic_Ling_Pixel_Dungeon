@@ -104,7 +104,7 @@ public class v0_6_X_Changes {
 				"_-_ Bulk curse makes armor large, slowing movement through doorways.\n" +
 				"_-_ Overgrowth curse causes random plant effects when you are struck."));
 		
-		changes.addButton( new ChangeButton(BadgeBanner.image(Badges.Badge.CHAMPION_3.image), "New and Changed Badges",
+		changes.addButton( new ChangeButton(BadgeBanner.image(Badges.Badge.CHAMPION_3X.image), "New and Changed Badges",
 				"_-_ Added badges for winning with 3 challenges at once and 6 challenges at once.\n\n" +
 				"_-_ 'Death by glyph' badge is now 'death by deferred damage'.\n\n" +
 				"_-_ Removed rare monster slayer badge."));

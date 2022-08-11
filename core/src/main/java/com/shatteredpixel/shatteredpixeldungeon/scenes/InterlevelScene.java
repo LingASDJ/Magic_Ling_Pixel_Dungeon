@@ -26,7 +26,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -176,7 +175,7 @@ public class InterlevelScene extends PixelScene {
 			fadeTime += 0.9f; //adds 1 second total
 			//speed up transition when debugging
 		} else if (DeviceCompat.isDebug()){
-			fadeTime = 0.7f;
+			fadeTime = 0.1f;
 		}
 
 		SkinnedBlock bg = new SkinnedBlock(Camera.main.width, Camera.main.height, loadingAsset ){
@@ -354,11 +353,9 @@ public class InterlevelScene extends PixelScene {
 						s += "\n";
 						s += t.toString();
 					}
-					ShatteredPixelDungeon.reportException(
-							new RuntimeException("waited more than 10 seconds on levelgen. " +
+					throw new RuntimeException(Messages.get(TitleScene.class,"spawnerror") +
 									"Seed:" + Dungeon.seed + " depth:" + Dungeon.depth + " trace:" +
-									s)
-					);
+									s);
 				}
 				break;
 		}

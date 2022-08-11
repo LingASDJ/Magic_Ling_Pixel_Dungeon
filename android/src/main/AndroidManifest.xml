@@ -53,6 +53,9 @@
 				<data android:scheme="um.62aafe4488ccdf4b7e9b49ff" />
 			</intent-filter>
 		</activity>
+		<meta-data
+			android:name="firebase_crashlytics_collection_enabled"
+			android:value="false" />
 
 	</application>
 

@@ -33,7 +33,8 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidAudio;
 import com.badlogic.gdx.backends.android.AsynchronousAndroidAudio;
-import com.rohitss.uceh.UCEHandler;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
@@ -47,7 +48,7 @@ import com.watabou.utils.FileUtils;
 public class AndroidGame extends AndroidApplication {
 	
 	public static AndroidApplication instance;
-	
+	private FirebaseAnalytics mFirebaseAnalytics;
 	private static AndroidPlatformSupport support;
 	
 	@Override
@@ -85,8 +86,14 @@ public class AndroidGame extends AndroidApplication {
 			// this is the default prefs filename given to an android app (.xml is automatically added to it)
 			SPDSettings.set(instance.getPreferences("ShatteredPixelDungeon"));
 
-			UCEHandler.Builder builder = new UCEHandler.Builder(this);
-			builder.build();
+			//UCEHandler.Builder builder = new UCEHandler.Builder(this);
+			//builder.build();
+			mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+			if (SPDSettings.firebase()){
+				FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
+			}
+			FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
 
 		} else {
 			instance = this;

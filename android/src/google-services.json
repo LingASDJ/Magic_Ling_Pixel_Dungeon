@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "352691001887",
+    "project_id": "magic-ling-pixel-dungeon",
+    "storage_bucket": "magic-ling-pixel-dungeon.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:352691001887:android:c9e419b794f309eae8d32a",
+        "android_client_info": {
+          "package_name": "com.ansdomagiclingpixeldungeon.ling.indev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "352691001887-krfrqeg524uuat6ie4hsgs5vjvsp3hru.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9mI7GUoXZg0MWTF4Pc0HuJiWcw5dkMI4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "352691001887-krfrqeg524uuat6ie4hsgs5vjvsp3hru.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -37,12 +37,13 @@ import java.util.Locale;
 public class SPDSettings extends GameSettings {
 	
 	//Version info
-	
+	public static final String KEY_AUTH_KEY	= "net_auth_key";
 	public static final String KEY_VERSION      = "version";
+	public static String DEFAULT_KEY = "debug";
 	public static void quickslots( int value ){
 		put( KEY_QUICKSLOTS, value );
 	}
-
+	public static String auth_key() { return getString(KEY_AUTH_KEY, DEFAULT_KEY); }
 	public static int quickslots(){
 		return getInt( KEY_QUICKSLOTS, 4, Constants.MIN_QUICKSLOTS, Constants.MAX_QUICKSLOTS);
 	}
@@ -58,17 +59,27 @@ public class SPDSettings extends GameSettings {
 	public static int version() {
 		return getInt( KEY_VERSION, 0 );
 	}
-	
+
 	//Graphics
+
+	public static void customSeed( String value ){
+		put( KEY_CUSTOM_SEED, value );
+	}
+
+	public static String customSeed() {
+		return getString( KEY_CUSTOM_SEED, "", 20);
+	}
 	
 	public static final String KEY_FULLSCREEN	= "fullscreen";
 	public static final String KEY_LANDSCAPE	= "landscape";
 	public static final String KEY_POWER_SAVER 	= "power_saver";
+	public static final String KEY_FIRE_BASE    = "fire_base";
 	public static final String KEY_SCALE		= "scale";
 	public static final String KEY_ZOOM			= "zoom";
 	public static final String KEY_BRIGHTNESS	= "brightness";
 	public static final String KEY_GRID 	    = "visual_grid";
 	public static final String KEY_SPLASH_SCREEN= "splash_screen";
+	public static final String KEY_CUSTOM_SEED	= "custom_seed";
 
 	//瀑布系统
 	public static void splashScreen( int value ) {
@@ -122,6 +133,15 @@ public class SPDSettings extends GameSettings {
 	
 	public static boolean powerSaver(){
 		return getBoolean( KEY_POWER_SAVER, false );
+	}
+
+	public static void firebase( boolean value ){
+		put( KEY_FIRE_BASE, value );
+		((ShatteredPixelDungeon)ShatteredPixelDungeon.instance).updateDisplaySize();
+	}
+
+	public static boolean firebase(){
+		return getBoolean( KEY_FIRE_BASE, false );
 	}
 	
 	public static void scale( int value ) {

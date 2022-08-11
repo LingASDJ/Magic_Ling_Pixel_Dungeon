@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -31,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.IntroScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -41,18 +43,154 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.DeviceCompat;
+
+import java.util.ArrayList;
 
 public class WndStartGame extends Window {
 
 	private static final int WIDTH    = 120;
 	private static final int HEIGHT   = 160;
 
+	private static class GameOptions extends Component {
+
+		private NinePatch bg;
+
+		private ArrayList<StyledButton> buttons;
+		private ArrayList<ColorBlock> spacers;
+
+		@Override
+		protected void createChildren() {
+
+			bg = Chrome.get(Chrome.Type.GREY_BUTTON_TR);
+			add(bg);
+
+			buttons = new ArrayList<>();
+			spacers = new ArrayList<>();
+			if (DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY)){
+				StyledButton seedButton = new StyledButton(Chrome.Type.RED_BUTTON, Messages.get(HeroSelectScene.class,
+						"custom_seed"), 6){
+					@Override
+					protected void onClick() {
+						Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextInput(Messages.get(WndTextInput.class,"enter_name"),
+								SPDSettings.customSeed(), 20,
+								false, Messages.get(WndTextInput.class,"yes"), Messages.get(WndTextInput.class,"no")){
+							@Override
+							public void onSelect(boolean positive, String text) {
+								if(positive){
+									SPDSettings.customSeed(text);
+								}
+							}
+						}));
+					}
+				};
+				seedButton.leftJustify = true;
+				seedButton.icon(new ItemSprite(ItemSpriteSheet.MASTERY, null));
+				if (!SPDSettings.customSeed().isEmpty()) seedButton.icon().hardlight(1f, 1.5f, 0.67f);;
+				buttons.add(seedButton);
+				add(seedButton);
+
+				StyledButton challengeButton = new StyledButton(Chrome.Type.RED_BUTTON, Messages.get(WndChallenges.class,
+						"title"), 5){
+					@Override
+					protected void onClick() {
+						ShatteredPixelDungeon.scene().addToFront(new WndChallenges(SPDSettings.challenges(), true) {
+							public void onBackPressed() {
+								super.onBackPressed();
+								icon(new ItemSprite(SPDSettings.challenges() > 0 ? ItemSpriteSheet.ARTIFACT_CHALICE3 :
+										ItemSpriteSheet.ARTIFACT_CHALICE1));
+							}
+						} );
+					}
+				};
+				challengeButton.leftJustify = true;
+				challengeButton.icon(new ItemSprite(SPDSettings.challenges() > 0 ? ItemSpriteSheet.ARTIFACT_CHALICE3 :
+						ItemSpriteSheet.ARTIFACT_CHALICE1));
+				add(challengeButton);
+				buttons.add(challengeButton);
+
+				StyledButton hardButton = new StyledButton(Chrome.Type.RED_BUTTON, Messages.get(WndStartGame.class,
+						"hard"), 5){
+					@Override
+					protected void onClick() {
+						ShatteredPixelDungeon.scene().addToFront(new WndChallenges(SPDSettings.challenges(), true) {
+							public void onBackPressed() {
+								super.onBackPressed();
+								icon(Icons.get(SPDSettings.challenges() > 0 ? Icons.CHALLENGE_ON : Icons.CHALLENGE_OFF));
+							}
+						} );
+					}
+				};
+				hardButton.leftJustify = true;
+				hardButton.active = false;
+				hardButton.icon(new ItemSprite(ItemSpriteSheet.ARTIFACT_HOURGLASS, null));
+				hardButton.alpha(0.5f);
+				add(hardButton);
+				buttons.add(hardButton);
+
+				StyledButton csbutton = new StyledButton(Chrome.Type.RED_BUTTON, Messages.get(WndStartGame.class,
+						"news"), 5){
+					@Override
+					protected void onClick() {
+						ShatteredPixelDungeon.scene().addToFront(new WndChallenges(SPDSettings.challenges(), true) {
+							public void onBackPressed() {
+								super.onBackPressed();
+								icon(Icons.get(SPDSettings.challenges() > 0 ? Icons.CHALLENGE_ON : Icons.CHALLENGE_OFF));
+							}
+						} );
+					}
+				};
+				csbutton.leftJustify = true;
+				csbutton.active = false;
+				csbutton.icon(new ItemSprite(ItemSpriteSheet.ARTIFACT_SPELLBOOK, null));
+				csbutton.alpha(0.5f);
+				add(csbutton);
+				buttons.add(csbutton);
+			}
+		}
+		
+		
+
+		@Override
+		protected void layout() {
+			super.layout();
+
+			bg.x = x;
+			bg.y = y;
+
+			int width = 0;
+			for (StyledButton btn : buttons){
+				if (width < btn.reqWidth()) width = (int)btn.reqWidth();
+			}
+			width += bg.marginHor();
+
+			int top = (int)y + bg.marginTop() - 1;
+			int i = 0;
+			for (StyledButton btn : buttons){
+				btn.setRect(x+bg.marginLeft(), top, width - bg.marginHor(), 16);
+				top = (int)btn.bottom();
+				if (i < spacers.size()) {
+					spacers.get(i).size(btn.width(), 1);
+					spacers.get(i).x = btn.left();
+					spacers.get(i).y = PixelScene.align(btn.bottom()-0.5f);
+					i++;
+				}
+			}
+
+			this.width = width;
+			this.height = top+bg.marginBottom()-y-1;
+			bg.size(this.width, this.height);
+
+		}
+	}
+	private GameOptions optionsPane;
 	public WndStartGame(final int slot){
 
 		Badges.loadGlobal();
@@ -116,38 +254,21 @@ public class WndStartGame extends Window {
 		start.setRect(0, HEIGHT - 20, WIDTH, 20);
 		add(start);
 
-		if (DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_1)){
-			IconButton challengeButton = new IconButton(
-					Icons.get( SPDSettings.challenges() > 0 ? Icons.CHALLENGE_ON :Icons.CHALLENGE_OFF)){
-				@Override
-				protected void onClick() {
-					ShatteredPixelDungeon.scene().addToFront(new WndChallenges(SPDSettings.challenges(), true) {
-						public void onBackPressed() {
-							super.onBackPressed();
-							if (parent != null) {
-								icon(Icons.get(SPDSettings.challenges() > 0 ?
-										Icons.CHALLENGE_ON : Icons.CHALLENGE_OFF));
-							}
-						}
-					} );
-				}
 
-				@Override
-				public void update() {
-					if( !visible && GamesInProgress.selectedClass != null){
-						visible = true;
-					}
-					super.update();
-				}
-			};
-			challengeButton.setRect(WIDTH - 20, HEIGHT - 20, 20, 20);
-			challengeButton.visible = false;
-			add(challengeButton);
 
-		} else {
-			Dungeon.challenges = 0;
-			SPDSettings.challenges(0);
-		}
+		optionsPane = new GameOptions(){
+			public void update() {
+				if( !visible && GamesInProgress.selectedClass != null){
+					visible = true;
+				}
+				super.update();
+			}
+		};
+		optionsPane.layout();
+
+		optionsPane.setRect(WIDTH-50, HEIGHT-120, 20, 20);
+		optionsPane.visible = false;
+		add(optionsPane);
 
 		resize(WIDTH, HEIGHT);
 
@@ -285,6 +406,24 @@ public class WndStartGame extends Window {
 			Telnetsc.setSize(BTN_SIZE, BTN_SIZE);
 			add(Telnetsc);
 
+		 	/*Rename = new IconButton(
+					Icons.get( Icons.INFO)){
+				@Override
+				protected void onClick() {
+				}
+
+				@Override
+				public void update() {
+					if( !visible && GamesInProgress.selectedClass != null){
+						visible = true;
+					}
+					super.update();
+				}
+			};
+			Rename.setSize(BTN_SIZE, BTN_SIZE);
+			Rename.visible = false;
+			add(Rename);*/
+
 			name = PixelScene.renderTextBlock(12);
 			add(name);
 
@@ -295,21 +434,30 @@ public class WndStartGame extends Window {
 		protected void layout() {
 			super.layout();
 
-			avatar.x = x;
+			avatar.x = x-15;
 			avatar.y = y + (height - avatar.height() - name.height() - 4)/2f;
 			PixelScene.align(avatar);
 
 			name.setPos(
-					x + (avatar.width() - name.width())/2f,
+					x-10 + (avatar.width() - name.width())/2f,
 					avatar.y + avatar.height() + 3
 			);
 			PixelScene.align(name);
 
-			heroItem.setPos(x + width - BTN_SIZE, y);
-			heroLoadout.setPos(x + width - BTN_SIZE, heroItem.bottom());
-			heroMisc.setPos(x + width - BTN_SIZE, heroLoadout.bottom());
-			heroSubclass.setPos(x + width - BTN_SIZE, heroMisc.bottom());
-			Telnetsc.setPos(x + width - BTN_SIZE, heroSubclass.bottom());
+			heroItem.setPos(0 + (name.width()/60f),
+					name.y + name.height() + 3);
+
+			heroLoadout.setPos(25 + (name.width()/60f),
+					name.y + name.height() + 3);
+
+			heroMisc.setPos(50 + (name.width()/60f),
+					name.y + name.height() + 3);
+
+			heroSubclass.setPos(75 + (name.width()/60f),
+					name.y + name.height() + 3);
+
+			Telnetsc.setPos(100 + (name.width()/60f),
+					name.y + name.height() + 3);;
 		}
 
 		@Override

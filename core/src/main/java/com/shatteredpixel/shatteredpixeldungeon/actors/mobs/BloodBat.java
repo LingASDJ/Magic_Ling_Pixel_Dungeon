@@ -28,7 +28,7 @@ public class BloodBat extends Mob implements Callback {
     {
         HP = HT = 20;
         defenseSkill = 7;
-        baseSpeed = 1.5f;
+        baseSpeed = 2.5f;
         spriteClass = BlueBatSprite.class;
         alignment = Alignment.ALLY;
         WANDERING = new Wandering();

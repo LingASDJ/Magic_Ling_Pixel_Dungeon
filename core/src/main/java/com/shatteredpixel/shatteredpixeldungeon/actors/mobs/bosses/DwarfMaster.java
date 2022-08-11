@@ -1208,7 +1208,7 @@ public class DwarfMaster extends Boss {
             int bestPos = pos;
 
             Ballistica trajectory = new Ballistica(enemy.pos, pos, Ballistica.STOP_TARGET);
-            int targetCell = trajectory.path.get(trajectory.dist+1);
+            int targetCell = trajectory.path.get(trajectory.dist);
             //if the position opposite the direction of the hero is open, go there
             if (Actor.findChar(targetCell) == null && !Dungeon.level.solid[targetCell]){
                 bestPos = targetCell;
@@ -1326,7 +1326,7 @@ public class DwarfMaster extends Boss {
             spend(TICK*15);
         }else if(wave == 3){
             yell(Messages.get(this, "wave_2"));
-            new Eye().spawnAround();
+            Eye.spawnAround(pos);
             summonSubject(1, DwarfMaster.DKGhoul.class);
             summonSubject(2, DwarfMaster.DKWarlock.class);
             summonSubject(2, DwarfMaster.DKGhoul.class);

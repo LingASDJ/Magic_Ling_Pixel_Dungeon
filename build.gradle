@@ -5,6 +5,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.0.4'
+        classpath 'com.google.gms:google-services:4.3.13'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.1'
     }
 }
 
@@ -20,7 +22,7 @@ allprojects {
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
         appAndroidCompileSDK = 30
-        appAndroidMinSDK = 14
+        appAndroidMinSDK = 19
         appAndroidTargetSDK = 30
 
         gdxControllersVersion = '2.2.1'
