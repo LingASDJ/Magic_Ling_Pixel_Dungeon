@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Bundle;
 
 public class TestBatLock extends Buff {
@@ -78,11 +77,5 @@ public class TestBatLock extends Buff {
         interval = bundle.getInt( INTERVAL );
         level = bundle.getInt( LEVEL );
     }
-
-    @Override
-    public int icon() {
-        return BuffIndicator.CORRUPT;
-    }
-
 
 }
