@@ -31,18 +31,9 @@ public class LightDart extends TippedDart {
                         Buff.affect(defender, ChampionEnemy.Projecting.class);
                         break;
                     case 2:
-                        Buff.affect(defender, ChampionEnemy.AntiMagic.class);
-                        break;
-                    case 3:
-                        Buff.affect(defender, ChampionEnemy.Giant.class);
-                        break;
-                    case 4:
                         Buff.affect(defender, ChampionEnemy.Blessed.class);
                         break;
-                    case 5:
-                        Buff.affect(defender, ChampionEnemy.Growing.class);
-                        break;
-                    case 6:
+                    case 3:
                         Buff.affect(defender, ChampionEnemy.Halo.class);
                         break;
                 }

@@ -30,7 +30,6 @@ public class UpdateImpl {
 	public static UpdateService getUpdateService(){
 		return updateChecker;
 	}
-
 	public static boolean supportsUpdates(){
 		return Game.version.contains("INDEV");
 	}

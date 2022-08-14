@@ -58,18 +58,16 @@ public class IceSan extends MeleeWeapon {
     public void bolt(Integer target, final Mob mob){
         if (target != null) {
 
-            final Ballistica shot = new Ballistica( curUser.pos, target, Ballistica.PROJECTILE);
+            final Ballistica shot = new Ballistica( Dungeon.hero.pos, target, Ballistica.PROJECTILE);
 
-            fx(shot, new Callback() {
-                public void call() {
-                    onHit(shot, mob);
-                }
-            });
+            fx(shot, () -> onHit(shot, mob));
         }
     }
 
     protected void fx(Ballistica bolt, Callback callback) {
-        MagicMissile.boltFromChar( curUser.sprite.parent, MagicMissile.WARD, curUser.sprite, bolt.collisionPos, callback);
+        MagicMissile.boltFromChar( Dungeon.hero.sprite.emitter(), MagicMissile.WARD, Dungeon.hero.sprite,
+                bolt.collisionPos,
+                callback);
     }
 
     protected void onHit(Ballistica bolt, Mob mob) {

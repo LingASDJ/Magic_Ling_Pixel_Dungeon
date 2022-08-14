@@ -32,7 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BlackHost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -1326,7 +1325,7 @@ public class DwarfMaster extends Boss {
             spend(TICK*15);
         }else if(wave == 3){
             yell(Messages.get(this, "wave_2"));
-            Eye.spawnAround(pos);
+            //Eye.spawnAround(pos);
             summonSubject(1, DwarfMaster.DKGhoul.class);
             summonSubject(2, DwarfMaster.DKWarlock.class);
             summonSubject(2, DwarfMaster.DKGhoul.class);
@@ -1610,8 +1609,7 @@ public class DwarfMaster extends Boss {
             if (	mob instanceof DwarfMaster.DKMonk ||
                     mob instanceof DwarfMaster.DKGhoul ||
                     mob instanceof DwarfMaster.DKWarlock||
-                    mob instanceof GnollShiled ||
-                    mob instanceof Eye || mob instanceof RedMurderer) {
+                    mob instanceof GnollShiled || mob instanceof RedMurderer) {
                 mob.die( cause );
             }
         }

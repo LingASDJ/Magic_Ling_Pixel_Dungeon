@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -165,15 +166,23 @@ public class WndRanking extends WndTabbed {
 		public StatsTab() {
 			super();
 
-			String heroClass = Dungeon.hero.className();
-
+			String name = Dungeon.hero.className();
 			IconTitle title = new IconTitle();
-			title.icon( HeroSprite.avatar( Dungeon.hero.heroClass, Dungeon.hero.tier() ) );
-			title.label( Messages.get(this, "title", Dungeon.hero.lvl, heroClass ).toUpperCase( Locale.ENGLISH ) );
-			title.color(Window.TITLE_COLOR);
-			title.setRect( 0, 0, WIDTH, 0 );
-			add( title );
+			Hero var4 = Dungeon.hero;
+			title.icon(HeroSprite.avatar(var4.heroClass, var4.tier()));
+			if (Dungeon.hero.name().equals(Dungeon.hero.className())) {
+				title.label(Messages.get(this, "title", Dungeon.hero.lvl, name).toUpperCase(Locale.ENGLISH));
+			} else {
+				StringBuilder csname = new StringBuilder();
+				csname.append(Dungeon.hero.name());
+				csname.append("\n");
+				csname.append(Messages.get(this, "title", Dungeon.hero.lvl, name).toUpperCase(Locale.ENGLISH));
+				title.label(csname.toString());
+			}
 
+			title.color(16777028);
+			title.setRect(0.0F, 0.0F, 115.0F, 0.0F);
+			this.add(title);
 			float pos = title.bottom() + GAP;
 
 			RedButton btnTalents = new RedButton( Messages.get(this, "talents") ){

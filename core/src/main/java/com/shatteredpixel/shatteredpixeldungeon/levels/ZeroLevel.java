@@ -177,7 +177,7 @@ public class ZeroLevel extends Level {
     }
 
     public String tilesTex() {
-        return Assets.Environment.TILES_SEWERS;
+        return Assets.Environment.TILES_COLD;
     }
 
     public String waterTex() {

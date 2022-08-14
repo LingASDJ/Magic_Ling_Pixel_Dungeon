@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -8,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestBatLock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -34,6 +37,7 @@ public class BloodBat extends Mob implements Callback {
         WANDERING = new Wandering();
         intelligentAlly = true;
         maxLvl = 0;
+        flying = true;
     }
 
     public void onZapComplete() {
@@ -106,8 +110,29 @@ public class BloodBat extends Mob implements Callback {
 
     @Override
     public int attackProc(Char enemy, int damage) {
-        zap();
+        if(Dungeon.hero.lvl == 15) {
+            zap();
+        }
         return super.attackProc(enemy, damage);
+
+    }
+
+    @Override
+    protected Char chooseEnemy() {
+        Char enemy = super.chooseEnemy();
+
+        int targetPos = Dungeon.hero.pos;
+        int distance = Dungeon.hero.isSubclass(HeroSubClass.ASSASSIN) ? 99999 : 8;
+
+        //will never attack something far from their target
+        if (enemy != null
+                && Dungeon.level.mobs.contains(enemy)
+                && (Dungeon.level.distance(enemy.pos, targetPos) <= distance)){
+            ((Mob)enemy).aggro(this);
+            return enemy;
+        }
+
+        return null;
     }
 
     public static void updateHP(){
@@ -115,7 +140,7 @@ public class BloodBat extends Mob implements Callback {
         if (Dungeon.level != null) {
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                 if (mob instanceof BloodBat) {
-                    mob.HP = mob.HT = 18 + level * 8;
+                    mob.HP = mob.HT = 18 + level * 2;
                     ((BloodBat) mob).defenseSkill = 3 + level * 4;
                 }
             }
@@ -131,7 +156,22 @@ public class BloodBat extends Mob implements Callback {
     @Override
     public void die(Object cause) {
         super.die(cause);
-        Buff.affect(Dungeon.hero, BloodBatRecharge.class, 800f/((Dungeon.hero.lvl/5f)*5));
+        if(Dungeon.hero.lvl >= 25) {
+            Buff.affect(Dungeon.hero, BloodBatRecharge.class, 300f);
+        } else if(Dungeon.hero.lvl >= 20) {
+            Buff.affect(Dungeon.hero, BloodBatRecharge.class, 350f);
+        } else if(Dungeon.hero.lvl >= 15) {
+            Buff.affect(Dungeon.hero, BloodBatRecharge.class, 400f);
+        } else if(Dungeon.hero.lvl >= 10) {
+            Buff.affect(Dungeon.hero, BloodBatRecharge.class, 600f);
+        } else {
+            Buff.affect(Dungeon.hero, BloodBatRecharge.class, 800f);
+        }
+        for (Buff buff : hero.buffs()) {
+            if (buff instanceof TestBatLock) {
+                buff.detach();
+            }
+        }
     }
 
     private class Wandering extends Mob.Wandering {
@@ -187,7 +227,7 @@ public class BloodBat extends Mob implements Callback {
 
     public static class BloodBatRecharge extends FlavourBuff {
 
-        public static final float DURATION = 400f;
+        public static final float DURATION = 800f;
 
         {
             type = buffType.NEGATIVE;

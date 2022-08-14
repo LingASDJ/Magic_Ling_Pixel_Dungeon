@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.services.updates;
 
+import com.watabou.noosa.Game;
+
 public class UpdateImpl {
 
 	private static UpdateService updateChecker = new GitHubUpdates();
@@ -29,8 +31,5 @@ public class UpdateImpl {
 		return updateChecker;
 	}
 
-	public static boolean supportsUpdates(){
-		return true;
-	}
 
 }

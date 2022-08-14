@@ -38,7 +38,7 @@ public class WndTextInput extends Window {
 
 	protected TextInput textBox;
 
-	public WndTextInput(final String title, final String body, final int maxLength,
+	public WndTextInput(String custom_name, final String title, final String body, String s, final int maxLength,
 						final boolean multiLine, final String posTxt, final String negTxt) {
 		super();
 
@@ -61,9 +61,9 @@ public class WndTextInput extends Window {
 		float pos = 2;
 
 		if (title != null) {
-			final RenderedTextBlock txtTitle = PixelScene.renderTextBlock(title, 9);
+			final RenderedTextBlock txtTitle = PixelScene.renderTextBlock(title, 7);
 			txtTitle.maxWidth(width);
-			txtTitle.hardlight(Window.TITLE_COLOR);
+			//txtTitle.hardlight(Window.TITLE_COLOR);
 			txtTitle.setPos((width - txtTitle.width()) / 2, 2);
 			add(txtTitle);
 
@@ -88,6 +88,7 @@ public class WndTextInput extends Window {
 				hide();
 			}
 		};
+
 		textBox.setMaxLength(maxLength);
 
 		//sets different height depending on whether this is a single or multi line input.

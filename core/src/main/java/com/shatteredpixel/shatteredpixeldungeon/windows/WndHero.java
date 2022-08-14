@@ -145,10 +145,13 @@ public class WndHero extends WndTabbed {
 
 			IconTitle title = new IconTitle();
 			title.icon( HeroSprite.avatar(hero.heroClass, hero.tier()) );
-			if (hero.name().equals(hero.className()))
-				title.label( Messages.get(this, "title", hero.lvl, hero.className() ).toUpperCase( Locale.ENGLISH ) );
-			else
-				title.label((hero.name() + "\n" + Messages.get(this, "title", hero.lvl, hero.className())).toUpperCase(Locale.ENGLISH));
+			if (hero.name().equals(hero.className())) {
+				title.label(Messages.get(this, "title", Integer.valueOf(hero.lvl), hero.className()).toUpperCase(Locale.ENGLISH));
+			} else {
+				title.label((hero.name() + "\n" + Messages.get(this, "title", Integer.valueOf(hero.lvl),
+						hero.className())).toUpperCase(Locale.ENGLISH));
+			}
+
 			title.color(Window.TITLE_COLOR);
 			title.setRect( 0, 0, WIDTH-16, 0 );
 			add(title);

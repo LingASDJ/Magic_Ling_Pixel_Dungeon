@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.ALLBOSS;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -411,14 +409,12 @@ public class GameScene extends PixelScene {
 				break;
 			case FALL:
 			case DESCEND:
-				if (Dungeon.isChallenged(ALLBOSS)){
-					switch (Dungeon.depth) {
-						case 0:
-							WndStory.showChapter( WndStory.ID_GAME );
-						case 3:
-							WndStory.showChapter( WndStory.ID_DM920 );
-					}
-				} else {
+				//if (SPDSettings.BossRush()){
+				//	switch (Dungeon.depth) {
+				//		case 0:
+				//			WndStory.showChapter( WndStory.ID_GAME );
+				//	}
+				//} else {
 					switch (Dungeon.depth) {
 						case 0:
 							WndStory.showChapter( WndStory.ID_FOREST );
@@ -452,7 +448,6 @@ public class GameScene extends PixelScene {
 							WndStory.showChapter( WndStory.ID_CHAPTONEEND );
 							break;
 					}
-				}
 				if (Dungeon.hero.isAlive()) {
 					Badges.validateNoKilling();
 				}

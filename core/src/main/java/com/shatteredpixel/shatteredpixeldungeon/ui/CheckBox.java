@@ -25,7 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 
 public class CheckBox extends RedButton {
 
-	private boolean checked = false;
+	public boolean checked = false;
 	
 	public CheckBox( String label ) {
 		super( label );

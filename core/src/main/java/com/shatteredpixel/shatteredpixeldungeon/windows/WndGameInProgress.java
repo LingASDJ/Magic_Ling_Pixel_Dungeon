@@ -55,8 +55,8 @@ public class WndGameInProgress extends Window {
 	public WndGameInProgress(final int slot){
 		
 		final GamesInProgress.Info info = GamesInProgress.check(slot);
-		
 		String className = null;
+		assert info != null;
 		if (info.subClass != HeroSubClass.NONE){
 			className = info.subClass.title();
 		} else {
@@ -65,7 +65,18 @@ public class WndGameInProgress extends Window {
 		
 		IconTitle title = new IconTitle();
 		title.icon( HeroSprite.avatar(info.heroClass, info.armorTier) );
-		title.label((Messages.get(this, "title", info.level, className)).toUpperCase(Locale.ENGLISH));
+
+		if (info.name.equals("")) {
+			title.label(Messages.get(this, "title", info.level, className.toUpperCase(Locale.ENGLISH)));
+		} else {
+			StringBuilder csname = new StringBuilder();
+			csname.append(info.name);
+			csname.append("\n");
+			csname.append(Messages.get(this, "title",info.level, className));
+			title.label(csname.toString().toUpperCase(Locale.ENGLISH));
+		}
+
+
 		title.color(Window.TITLE_COLOR);
 		title.setRect( 0, 0, WIDTH, 0 );
 		add(title);

@@ -24,10 +24,10 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CavesPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.Game;
@@ -36,20 +36,12 @@ import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
-import java.util.ArrayList;
-
 public class ItemLevel extends RegularLevel {
 
     {
         color1 = 0x534f3e;
         color2 = 0xb9d661;
     }
-
-    @Override
-    protected ArrayList<Room> initRooms() {
-        return Blacksmith.Quest.spawn(super.initRooms());
-    }
-
 
     @Override
     protected int standardRooms(boolean forceMax) {
@@ -65,10 +57,19 @@ public class ItemLevel extends RegularLevel {
         return 1+Random.chances(new float[]{1,1,1});
     }
 
-    //红龙的试炼
     @Override
     protected void createItems() {
-        super.createItems();
+        if (Dungeon.depth == 1) {
+            addItemToSpawn(new Gold(100));
+            super.createItems();
+        }
+        if (Dungeon.depth == 3) {
+            addItemToSpawn(new PotionOfStrength());
+            addItemToSpawn(new PotionOfStrength());
+            addItemToSpawn(new PotionOfStrength());
+            super.createItems();
+        }
+
     }
 
     @Override

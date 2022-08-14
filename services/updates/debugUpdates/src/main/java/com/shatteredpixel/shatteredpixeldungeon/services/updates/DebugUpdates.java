@@ -52,8 +52,6 @@ public class DebugUpdates extends UpdateService {
 
 		callback.onUpdateAvailable(debugUpdateInfo);
 
-
-
 	}
 
 	@Override

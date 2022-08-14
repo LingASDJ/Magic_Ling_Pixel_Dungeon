@@ -62,14 +62,16 @@ public class SPDSettings extends GameSettings {
 
 	//Graphics
 
-	public static void customSeed( String value ){
-		put( KEY_CUSTOM_SEED, value );
+	public static String heroName() {
+		return !Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_1) ? "" : GameSettings.getString("name", "", 20);
 	}
 
-	public static String customSeed() {
-		return getString( KEY_CUSTOM_SEED, "", 20);
+	public static void heroName(String str) {
+		GameSettings.put("name", str);
 	}
-	
+
+
+
 	public static final String KEY_FULLSCREEN	= "fullscreen";
 	public static final String KEY_LANDSCAPE	= "landscape";
 	public static final String KEY_POWER_SAVER 	= "power_saver";
@@ -79,7 +81,8 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_BRIGHTNESS	= "brightness";
 	public static final String KEY_GRID 	    = "visual_grid";
 	public static final String KEY_SPLASH_SCREEN= "splash_screen";
-	public static final String KEY_CUSTOM_SEED	= "custom_seed";
+
+	public static final String BossRush	= "bossrush";
 
 	//瀑布系统
 	public static void splashScreen( int value ) {
@@ -228,6 +231,9 @@ public class SPDSettings extends GameSettings {
 	
 	public static final String KEY_LAST_CLASS	= "last_class";
 	public static final String KEY_CHALLENGES	= "challenges";
+
+	public static final String KEY_DLC	= "dlc";
+
 	public static final String KEY_INTRO		= "intro";
 
 	public static final String KEY_SUPPORT_NAGGED= "support_nagged";
@@ -250,6 +256,14 @@ public class SPDSettings extends GameSettings {
 	
 	public static int challenges() {
 		return getInt( KEY_CHALLENGES, 0, 0, Challenges.MAX_VALUE );
+	}
+
+	public static void dlc( int value ) {
+		put( KEY_DLC, value );
+	}
+
+	public static int dlc() {
+		return getInt( KEY_DLC, 0, 0, Challenges.MAX_VALUE );
 	}
 
 	public static void supportNagged( boolean value ) {

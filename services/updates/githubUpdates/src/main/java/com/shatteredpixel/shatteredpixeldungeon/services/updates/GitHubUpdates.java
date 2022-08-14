@@ -1,24 +1,3 @@
-/*
- * Pixel Dungeon
- * Copyright (C) 2012-2015 Oleg Dolya
- *
- * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 package com.shatteredpixel.shatteredpixeldungeon.services.updates;
 
 
@@ -26,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.DeviceCompat;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,7 +18,7 @@ public class GitHubUpdates extends UpdateService {
 
 	@Override
 	public boolean isUpdateable() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -57,7 +35,7 @@ public class GitHubUpdates extends UpdateService {
 		}
 
 		Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
-		httpGet.setUrl("https://api.github.com/repos/smujb/cursed-pixel-dungeon/releases");
+		httpGet.setUrl("https://api.github.com/repos/00-Evan/shattered-pixel-dungeon/releases");
 		httpGet.setHeader("Accept", "application/vnd.github.v3+json");
 
 		Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {
@@ -67,15 +45,13 @@ public class GitHubUpdates extends UpdateService {
 					Bundle latestRelease = null;
 					int latestVersionCode = Game.versionCode;
 
-					boolean includePrereleases = Game.version.toLowerCase().contains("beta") || DeviceCompat.isDebug();
-
 					for (Bundle b : Bundle.read( httpResponse.getResultAsStream() ).getBundleArray()){
 						Matcher m = versionCodePattern.matcher(b.getString("body"));
 
 						if (m.find()){
 							int releaseVersion = Integer.parseInt(m.group(1));
 							if (releaseVersion > latestVersionCode
-									&& (includePrereleases || !b.getBoolean("prerelease"))){
+									&& (includeBetas || !b.getBoolean("prerelease"))){
 								latestRelease = b;
 								latestVersionCode = releaseVersion;
 							}

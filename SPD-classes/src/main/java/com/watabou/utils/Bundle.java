@@ -44,6 +44,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -137,26 +138,26 @@ public class Bundle {
 		return new Bundle( data.optJSONObject( key ) );
 	}
 
+
 	private Bundlable get() {
-		if (data == null) return null;
-
-		String clName = getString( CLASS_NAME );
-		if (aliases.containsKey( clName )) {
-			clName = aliases.get( clName );
+		Bundlable bundlable;
+		if (this.data == null) {
+			return null;
 		}
-
-		Class<?> cl = Reflection.forName( clName );
-		//Skip none-static inner classes as they can't be instantiated through bundle restoring
-		//Classes which make use of none-static inner classes must manage instantiation manually
-		if (cl != null && (!Reflection.isMemberClass(cl) || Reflection.isStatic(cl))) {
-			Bundlable object = (Bundlable) Reflection.newInstance(cl);
-			if (object != null) {
-				object.restoreFromBundle(this);
-				return object;
-			}
+		String string = getString("__className");
+		String str = string;
+		if (aliases.containsKey(string)) {
+			str = aliases.get(string);
 		}
-
-		return null;
+		Class forName = Reflection.forName(str);
+		if (forName == null) {
+			return null;
+		}
+		if ((Reflection.isMemberClass(forName) && !Reflection.isStatic(forName)) || (bundlable = (Bundlable) Reflection.newInstance(forName)) == null) {
+			return null;
+		}
+		bundlable.restoreFromBundle(this);
+		return bundlable;
 	}
 
 	public Bundlable get( String key ) {
@@ -554,5 +555,7 @@ public class Bundle {
 	public static void addAlias( Class<?> cl, String alias ) {
 		aliases.put( alias, cl.getName() );
 	}
-	
+
+	public void put(int var4, LinkedHashMap var5) {
+	}
 }

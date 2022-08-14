@@ -122,7 +122,7 @@ public class GamesInProgress {
 	}
 
 	public static void set(int slot, int depth, int challenges,
-						   long seed, String customSeedText, Hero hero) {
+	                       Hero hero) {
 		Info info = new Info();
 		info.slot = slot;
 		
@@ -143,6 +143,8 @@ public class GamesInProgress {
 		info.goldCollected = Statistics.goldCollected;
 		info.maxDepth = Statistics.deepestFloor;
 
+		info.name = hero.name().equals(hero.className()) ? "" : hero.name();
+
 		slotStates.put( slot, info );
 	}
 	
@@ -160,7 +162,7 @@ public class GamesInProgress {
 		public int depth;
 		public int version;
 		public int challenges;
-		
+		public String name;
 		public int level;
 		public int str;
 		public int strBonus;

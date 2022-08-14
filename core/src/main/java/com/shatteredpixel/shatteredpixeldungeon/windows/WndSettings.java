@@ -31,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
-import com.shatteredpixel.shatteredpixeldungeon.services.updates.Updates;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
 import com.shatteredpixel.shatteredpixeldungeon.ui.GameLog;
@@ -288,6 +287,9 @@ public class WndSettings extends WndTabbed {
 				Boolean landscape = SPDSettings.landscape();
 				if (landscape == null){
 					landscape = Game.width > Game.height;
+				} else {
+					SPDSettings.toolbarMode(Toolbar.Mode.SPLIT.name());
+					Toolbar.updateLayout();
 				}
 				Boolean finalLandscape = landscape;
 				btnOrientation = new RedButton(finalLandscape ?
@@ -392,8 +394,6 @@ public class WndSettings extends WndTabbed {
 		OptionSlider optUISize;
 		RenderedTextBlock barDesc;
 		RedButton btnSplit;
-		RedButton btnGrouped;
-		RedButton btnCentered;
 		CheckBox chkFlipToolbar;
 		CheckBox chkFlipTags;
 		ColorBlock sep2;
@@ -529,7 +529,7 @@ public class WndSettings extends WndTabbed {
 				if(Game.scene()!=null && Game.scene().getClass() == GameScene.class) {
 					btnSplit.setRect(0, barDesc.bottom() + GAP, width, 16);
 				} else {
-					btnSplit.setRect(9999, barDesc.bottom() + GAP, width, 16);
+					btnSplit.setRect(500, barDesc.bottom() + GAP, width, 16);
 				}
 
 				if (width > 200) {
@@ -671,7 +671,6 @@ public class WndSettings extends WndTabbed {
 		RenderedTextBlock title;
 		ColorBlock sep1;
 		CheckBox chkNews;
-		CheckBox chkUpdates;
 		CheckBox chkBetas;
 		CheckBox chkWifi;
 		CheckBox chkFireBase;
@@ -695,32 +694,6 @@ public class WndSettings extends WndTabbed {
 			};
 			chkNews.checked(SPDSettings.news());
 			add(chkNews);
-
-			if (Updates.supportsUpdates() && Updates.isUpdateable()) {
-				chkUpdates = new CheckBox(Messages.get(this, "updates")) {
-					@Override
-					protected void onClick() {
-						super.onClick();
-						SPDSettings.updates(checked());
-						Updates.clearUpdate();
-					}
-				};
-				chkUpdates.checked(SPDSettings.updates());
-				add(chkUpdates);
-
-				if (Updates.supportsBetaChannel()){
-					chkBetas = new CheckBox(Messages.get(this, "betas")) {
-						@Override
-						protected void onClick() {
-							super.onClick();
-							SPDSettings.updates(checked());
-							Updates.clearUpdate();
-						}
-					};
-					chkBetas.checked(SPDSettings.betas());
-					add(chkBetas);
-				}
-			}
 
 			if (!DeviceCompat.isDesktop()){
 				chkWifi = new CheckBox(Messages.get(this, "wifi")){
@@ -774,10 +747,14 @@ public class WndSettings extends WndTabbed {
 				chkNews.setRect(0, sep1.y + 1 + GAP, width/2-1, BTN_HEIGHT);
 				//chkUpdates.setRect(chkNews.right() + GAP, chkNews.top(), width/2-1, BTN_HEIGHT);
 				chkFireBase.setRect(chkNews.right() + GAP, chkNews.top(), width/2-1, BTN_HEIGHT);
+				chkFireBase.visible = false;
+				chkFireBase.active = false;
 				pos = chkFireBase.bottom();
 			} else {
 				chkNews.setRect(0, sep1.y + 1 + GAP, width, BTN_HEIGHT);
 				chkFireBase.setRect(0, chkNews.bottom() + GAP, width, BTN_HEIGHT);
+				chkFireBase.visible = false;
+				chkFireBase.active = false;
 				pos = chkNews.bottom();
 			}
 

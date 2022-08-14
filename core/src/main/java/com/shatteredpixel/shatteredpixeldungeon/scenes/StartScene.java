@@ -130,7 +130,7 @@ public class StartScene extends PixelScene {
 		
 		private int slot;
 		private boolean newGame;
-		
+
 		@Override
 		protected void createChildren() {
 			super.createChildren();
@@ -144,6 +144,7 @@ public class StartScene extends PixelScene {
 		
 		public void set( int slot ){
 			this.slot = slot;
+
 			GamesInProgress.Info info = GamesInProgress.check(slot);
 			newGame = info == null;
 			if (newGame){
@@ -162,7 +163,13 @@ public class StartScene extends PixelScene {
 					level = null;
 				}
 			} else {
-				
+				HeroSubClass var4 = info.subClass;
+				if (var4 != HeroSubClass.NONE) {
+					this.name.text(Messages.titleCase(var4.title()));
+				} else {
+					this.name.text(Messages.titleCase(info.heroClass.title()));
+				}
+
 				if (info.subClass != HeroSubClass.NONE){
 					name.text(Messages.titleCase(info.subClass.title()));
 				} else {

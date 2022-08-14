@@ -269,6 +269,7 @@ public class YogReal extends Boss {
             candidates[n]=prev;
         }
 
+
         for(int i=0;i<phase-1;++i) {
             YogRealFirst fist = (YogRealFirst) Reflection.newInstance(fistSummons.remove(0));
             fist.pos = pos + candidates[i];

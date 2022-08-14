@@ -35,6 +35,8 @@ import java.util.HashSet;
 public abstract class Actor implements Bundlable {
 	
 	public static final float TICK	= 1f;
+    protected Bundle upgrades;
+	protected Bundle crafted;
 
 	private float time;
 

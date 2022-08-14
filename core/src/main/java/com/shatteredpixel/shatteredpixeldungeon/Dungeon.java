@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.ALLBOSS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.ROGUE;
 
@@ -59,12 +58,10 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.CaveTwoBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesGirlDeadLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.DM920BossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DimandKingLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DwarfMasterBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HallsLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.ItemLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LastLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel;
@@ -101,9 +98,6 @@ public class Dungeon {
 	public static int cycle;
 	public static int depth;
 	public static int gold;
-
-	public static String customSeedText = "";
-
 	public static int nyzbuy;
 	public static int boss;
 	public static int escalatingDepth() {
@@ -212,8 +206,6 @@ public class Dungeon {
 
 	public static void init() {
 
-
-
 		version = Game.versionCode;
 		challenges = SPDSettings.challenges();
 		mobsToChampion = -1;
@@ -225,7 +217,9 @@ public class Dungeon {
 		Actor.resetNextID();
 
 		Random.pushGenerator(seed);
+
 		BloodBat.level = 1;
+
 		Scroll.initLabels();
 		Potion.initColors();
 		Ring.initGems();
@@ -289,26 +283,59 @@ public class Dungeon {
 		}
 
 		Level level;
-		if (Dungeon.isChallenged(ALLBOSS)) {
-			//Boss Rush
-			switch (depth) {
-				//case 0:
-				//	level = new ZeroLevel();
-				//	break;
-				case 1:
-					level = new ItemLevel();
-					break;
-				case 2:
-					level = new SewerBossLevel();
-					break;
-				case 13:
-					level = new DM920BossLevel();
-					break;
-				default:
-					level = new DeadEndLevel();
-					Statistics.deepestFloor--;
-			}
-		} else if (Dungeon.isChallenged(RLPT)) {
+		//if (SPDSettings.BossRush()) {
+		//	switch (depth) {
+		//		case 0:
+		//		level = new ZeroLevel();
+		//		break;
+		//		case 1: case 3: case 5:case 7:case 9:case 11:case 14:case 15:
+		//			level = new ItemLevel();
+		//			break;
+		//		case 2:
+		//			level = new SewerBossLevel();
+		//			break;
+		//		case 4:
+		//			level = new SLMKingLevel();
+		//			break;
+		//		case 6:
+		//			level = new PrisonBossLevel();
+		//			break;
+		//		case 8:
+		//			level = new DimandKingLevel();
+		//			break;
+		//		case 10:
+		//			level = new NewCavesBossLevel();
+		//			break;
+		//		case 12:
+		//			level = new CaveTwoBossLevel();
+		//			break;
+		//		case 13:
+		//			level = new CavesGirlDeadLevel();
+		//			break;
+		//		case 16:
+		//			level = new NewCityBossLevel();
+		//			break;
+		//		case 17:
+		//			level = new DwarfMasterBossLevel();
+		//			break;
+		//		case 18:case 19:case 20:case 21:
+		//			level = new HallsLevel();
+		//			break;
+		//		case 22:
+		//			level = new HallsBossLevel();
+		//			break;
+		//		case 23:
+		//			level = new YogGodHardBossLevel();
+		//			break;
+		//		case 24:
+		//			level = new LastLevel();
+		//			break;
+		//		default:
+		//			level = new DeadEndLevel();
+		//			Statistics.deepestFloor--;
+		//	}
+		//} else
+		 if (Dungeon.isChallenged(RLPT)) {
 			switch (depth) {
 				case 0:
 					level = new ZeroLevel();
@@ -536,7 +563,6 @@ public class Dungeon {
 		return depth == 16 ||depth == 17||depth == 18||depth == 19;
 	}
 
-
 	public static boolean shopOnLevel() {
 		return depth == 6 || depth == 11 || depth == 16;
 	}
@@ -683,17 +709,12 @@ public class Dungeon {
 	private static final String QUESTS		= "quests";
 	private static final String BADGES		= "badges";
 
-	private static final String CUSTOM_NAME	= "custom_name";
-
 	public static void saveGame( int save ) {
 		try {
 			Bundle bundle = new Bundle();
 
 			version = Game.versionCode;
 			bundle.put( VERSION, version );
-
-			bundle.put( CUSTOM_NAME, customSeedText );
-
 			bundle.put( SEED, seed );
 			bundle.put( CHALLENGES, challenges );
 			bundle.put( MOBS_TO_CHAMPION, mobsToChampion );
@@ -771,7 +792,7 @@ public class Dungeon {
 			saveGame( GamesInProgress.curSlot );
 			saveLevel( GamesInProgress.curSlot );
 
-			GamesInProgress.set( GamesInProgress.curSlot, depth, challenges, seed, customSeedText, hero );
+			GamesInProgress.set( GamesInProgress.curSlot, depth, challenges, hero );
 
 		}
 	}

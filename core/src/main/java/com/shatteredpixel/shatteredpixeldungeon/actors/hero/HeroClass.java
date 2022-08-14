@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sanity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
@@ -133,6 +134,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
+import com.watabou.utils.Random;
 
 public enum HeroClass {
 
@@ -175,7 +177,7 @@ public enum HeroClass {
 			new FireFishSword().quantity(1).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
 			new PotionOfPurity().quantity(45).identify().collect();
-
+			Buff.affect(hero, ChampionHero.AntiMagic.class, 1234567890f);
 			new AlchemicalCatalyst().quantity(45).identify().collect();
 
 			new ScrollOfIdentify().quantity(45).identify().collect();
@@ -203,7 +205,7 @@ public enum HeroClass {
 			new ScrollOfMysticalEnergy().quantity(1).identify().collect();
 			new AquaBlast().quantity(1).identify().collect();
 
-			new WandOfCorruption().quantity(1/0).identify().collect();
+			new WandOfCorruption().quantity(1).identify().collect();
 			new MasterThievesArmband().quantity(1).identify().collect();
 			new Dart().quantity(1).identify().collect();
 
@@ -243,7 +245,7 @@ public enum HeroClass {
 			new WraithAmulet().quantity(1).identify().collect();
 			Dungeon.gold = 600000000;
 			hero.STR = 27;
-			hero.lvl = 31;
+			hero.lvl = 30;
 			hero.exp = -123456789;
 			hero.HP = 	123456789;
 			hero.HT = 	123456789;
@@ -346,12 +348,12 @@ public enum HeroClass {
 		hero.belongings.weapon.activate(hero);
 
 		WandOfFireblast woc = new WandOfFireblast();
-		woc.level(3);
-		woc.identify().quantity(1);
+		woc.level(Random.NormalIntRange(1,3));
+		woc.identify().quantity(1).collect();
 
 		WandOfFrost wox = new WandOfFrost();
-		wox.level(3);
-		wox.identify().quantity(1);
+		wox.level(Random.NormalIntRange(1,3));
+		wox.identify().quantity(1).collect();
 
 		Dungeon.quickslot.setSlot(0, staff);
 		Dungeon.quickslot.setSlot(1, wox);

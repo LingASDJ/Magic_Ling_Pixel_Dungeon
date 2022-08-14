@@ -25,7 +25,7 @@ public class AikeLaier extends Plant {
 
         if (ch != null) {
             if (ch instanceof Mob) {
-                switch (Random.Int(7)) {
+                switch (Random.Int(4)) {
                     case 0:
                     default:
                         Buff.affect(ch, ChampionEnemy.Blazing.class);
@@ -34,18 +34,9 @@ public class AikeLaier extends Plant {
                         Buff.affect(ch, ChampionEnemy.Projecting.class);
                         break;
                     case 2:
-                        Buff.affect(ch, ChampionEnemy.AntiMagic.class);
-                        break;
-                    case 3:
-                        Buff.affect(ch, ChampionEnemy.Giant.class);
-                        break;
-                    case 4:
                         Buff.affect(ch, ChampionEnemy.Blessed.class);
                         break;
-                    case 5:
-                        Buff.affect(ch, ChampionEnemy.Growing.class);
-                        break;
-                    case 6:
+                    case 3:
                         Buff.affect(ch, ChampionEnemy.Halo.class);
                         break;
                 }

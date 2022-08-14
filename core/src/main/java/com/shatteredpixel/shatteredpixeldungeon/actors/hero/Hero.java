@@ -218,6 +218,8 @@ public class Hero extends Char {
 	public HeroAction curAction = null;
 	public HeroAction lastAction = null;
 
+	private String name = SPDSettings.heroName();
+
 	private Char enemy;
 	
 	public boolean resting = false;
@@ -307,13 +309,15 @@ public class Hero extends Char {
 
 		bundle.put( ATTACK, attackSkill );
 		bundle.put( DEFENSE, defenseSkill );
-		
 		bundle.put( STRENGTH, STR );
 		
 		bundle.put( LEVEL, lvl );
 		bundle.put( EXPERIENCE, exp );
-		
 		bundle.put( HTBOOST, HTBoost );
+
+		if (!this.name.equals("")) {
+			bundle.put("name", this.name);
+		}
 
 		belongings.storeInBundle( bundle );
 	}
@@ -338,6 +342,49 @@ public class Hero extends Char {
 		
 		STR = bundle.getInt( STRENGTH );
 
+		String name;
+		if (bundle.contains("name")) {
+			name = bundle.getString("name");
+		} else {
+			name = "";
+		}
+
+		//This Custom Name Logic
+		this.name = name;
+		int csname;
+		if (bundle.contains("up_names")) {
+			String[] unames = bundle.getStringArray("up_names");
+			int[] csname2 = bundle.getIntArray("up_vals");
+
+			for(csname = 0; csname < unames.length && csname < csname2.length; ++csname) {
+				this.upgrades.put(unames[csname], csname2[csname]);
+			}
+		}
+
+		//May Be Working
+		for(csname = 1; csname <= 5; ++csname) {
+			StringBuilder str = new StringBuilder();
+			str.append("craft_names_");
+			str.append(csname);
+			if (bundle.contains(str.toString())) {
+				str = new StringBuilder();
+				str.append("craft_names_");
+				str.append(csname);
+				String[] enus = bundle.getStringArray(str.toString());
+				StringBuilder pre = new StringBuilder();
+				pre.append("craft_vals_");
+				pre.append(csname);
+				int[] trys = bundle.getIntArray(pre.toString());
+				LinkedHashMap lname = new LinkedHashMap();
+
+				for(int lisx = 0; lisx < enus.length && lisx < trys.length; ++lisx) {
+					lname.put(enus[lisx], trys[lisx]);
+				}
+
+				this.crafted.put(csname, lname);
+			}
+		}
+
 		belongings.restoreFromBundle( bundle );
 	}
 	
@@ -351,6 +398,7 @@ public class Hero extends Char {
 		info.heroClass = bundle.getEnum( CLASS, HeroClass.class );
 		info.subClass = bundle.getEnum( SUBCLASS, HeroSubClass.class );
 		Belongings.preview( info, bundle );
+		info.name = bundle.contains("name") ? bundle.getString("name") : "";
 	}
 
 	public boolean hasTalent( Talent talent ){
@@ -407,19 +455,16 @@ public class Hero extends Char {
 			return 0;
 		}
 	}
-	
+
 	public String className() {
-		return subClass == null || subClass == HeroSubClass.NONE ? heroClass.title() : subClass.title();
+		HeroSubClass heroSubClass = this.subClass;
+		return (heroSubClass == null || heroSubClass == HeroSubClass.NONE) ? this.heroClass.title() : heroSubClass.title();
 	}
 
-	public static String customname = SPDSettings.customSeed();
+
 	@Override
-	public String name(){
-		if (customname == null) {
-			return className();
-		} else {
-			return SPDSettings.customSeed();
-		}
+	public String name() {
+		return this.name.equals("") ? className() : this.name;
 	}
 
 	@Override

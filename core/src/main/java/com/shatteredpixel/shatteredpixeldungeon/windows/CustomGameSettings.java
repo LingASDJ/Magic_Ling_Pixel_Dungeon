@@ -12,5 +12,15 @@ public class CustomGameSettings extends GameSettings {
         return getString("seed_string_input_val", "");
     }
 
+    public static void putnameString(String str){
+        put("name_string_input_val", str);
+    }
 
+    public static String getnameString(){
+        return getString("name_string_input_val", "");
+    }
+
+
+    public static void getnameString(String text) {
+    }
 }

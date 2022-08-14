@@ -304,16 +304,16 @@ public class StatusPane extends Component {
 
 		if (SPDSettings.ClassPage()) {
 			page.setPos(0, 40);
-			pageb.visible = false;
+			pageb.setPos(0, 500);
 			mainhand.setPos(0, 51);
 			joinxxx.setPos(0, 78);
 			bossselect.setPos(0, 104);
 		} else {
-			page.visible = false;
+			page.setPos(0, 500);
 			pageb.setPos(0, 40);
-			mainhand.visible = false;
-			joinxxx.visible = false;
-			bossselect.visible = false;
+			mainhand.setPos(0, 500);
+			joinxxx.setPos(0, 500);
+			bossselect.setPos(0, 500);
 		}
 
 		if (!Dungeon.hero.isAlive()) {

@@ -93,7 +93,7 @@ public class AndroidGame extends AndroidApplication {
 			if (SPDSettings.firebase()){
 				FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
 			}
-			FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
+			FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
 
 		} else {
 			instance = this;

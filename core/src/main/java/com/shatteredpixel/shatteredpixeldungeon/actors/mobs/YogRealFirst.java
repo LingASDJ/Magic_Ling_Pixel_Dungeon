@@ -74,10 +74,13 @@ public abstract class YogRealFirst extends Mob {
     @Override
     protected boolean act() {
         if (paralysed <= 0 && rangedCooldown > 0) rangedCooldown--;
-        boolean beckon = false;
-        if(enemy==null) beckon=true;
-        else if(fieldOfView[enemy.pos]) beckon=true;
-        if(beckon) beckon(Dungeon.hero.pos);
+
+        if (Dungeon.hero.invisible <= 0 && state == WANDERING){
+            beckon(Dungeon.hero.pos);
+            state = HUNTING;
+            enemy = Dungeon.hero;
+        }
+
         return super.act();
     }
 

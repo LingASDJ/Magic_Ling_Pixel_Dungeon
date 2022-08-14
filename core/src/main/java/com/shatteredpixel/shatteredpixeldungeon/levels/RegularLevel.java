@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.ALLBOSS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
@@ -123,16 +122,16 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(s);
 		}
 
-		if (Dungeon.shopOnLevel() && (!Dungeon.isChallenged(ALLBOSS)))
+		if (Dungeon.shopOnLevel())
 			initRooms.add(new ShopRoom());
 
-		if (Dungeon.aqiLevel() && (!Dungeon.isChallenged(ALLBOSS)) && (Dungeon.isChallenged(AQUAPHOBIA)))
+		if (Dungeon.aqiLevel() && (Dungeon.isChallenged(AQUAPHOBIA)))
 		initRooms.add(new AquariumRoom());
 
-		if (Dungeon.NxhyshopOnLevel() && (!Dungeon.isChallenged(ALLBOSS)))
+		if (Dungeon.NxhyshopOnLevel())
 			initRooms.add(new NxhyShopRoom());
 
-		if (Dungeon.NyzshopOnLevel() && (!Dungeon.isChallenged(ALLBOSS))) {
+		if (Dungeon.NyzshopOnLevel()) {
 			Buff.affect(hero, RandomBuff.class).set( (3 + Random.Int(9)+hero.STR/6+hero.HP/30)/Random.Int(1,2)+5, 1 );
 			initRooms.add(new NyzBombAndBooksRoom());
 		}
