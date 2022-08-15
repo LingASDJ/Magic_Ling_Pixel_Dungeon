@@ -90,8 +90,10 @@ public class WndStartGame extends Window {
 							}
 						} );
 					}
-				};
 
+				};
+				chkSaver.active = false;
+				chkSaver.alpha(0.5f);
 				chkSaver.icon(new ItemSprite(ItemSpriteSheet.DG26, null));
 				add( chkSaver );
 				buttons.add(chkSaver);
@@ -102,7 +104,7 @@ public class WndStartGame extends Window {
 					public void onClick() {
 						if(Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_1)){
 							Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextInput(Messages.get(WndStartGame.class,"custom_name"),
-									Messages.get(WndStartGame.class, "custom_name_desc")+SPDSettings.heroName(),null, SPDSettings.heroName(), 20,
+									Messages.get(WndStartGame.class, "custom_name_desc")+SPDSettings.heroName(),null, 20,
 									false, Messages.get(WndStartGame.class,"custom_name_set"),
 									Messages.get(WndStartGame.class,"custom_name_clear")){
 								@Override
@@ -311,16 +313,15 @@ public class WndStartGame extends Window {
 			public void update() {
 				if( !visible && GamesInProgress.selectedClass != null){
 					visible = true;
+					optionsPane.setRect(WIDTH-50, HEIGHT-120, 20, 20);
 				}
 				super.update();
 			}
 		};
 		optionsPane.layout();
-
-		optionsPane.setRect(WIDTH-50, HEIGHT-120, 20, 20);
 		optionsPane.visible = false;
 		add(optionsPane);
-
+		optionsPane.setRect(WIDTH-500, HEIGHT-1200, 20, 20);
 		resize(WIDTH, HEIGHT);
 
 	}

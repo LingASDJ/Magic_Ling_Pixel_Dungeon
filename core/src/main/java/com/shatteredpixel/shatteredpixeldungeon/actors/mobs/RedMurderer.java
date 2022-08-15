@@ -43,7 +43,7 @@ import com.watabou.utils.Random;
 public class RedMurderer extends Mob {
 
     public Item item;
-    public static int Money = 0;
+
     {
         spriteClass = MurdererSprite.RedMuderer.class;
 
@@ -227,8 +227,6 @@ public class RedMurderer extends Mob {
                     }
 
                     if (item != null){
-                        Money++;
-                        System.out.println("测试"+Money);
                         GLog.n( Messages.get(RedMurderer.class, "escapes", item.name()));
                     }
 

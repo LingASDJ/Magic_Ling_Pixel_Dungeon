@@ -34,7 +34,7 @@ public class FireBallMobSprite extends MobSprite {
 
         TextureFilm frames = new TextureFilm( texture, 10, 14 );
 
-        idle = new Animation( 8, true );
+        idle = new Animation( 14, true );
         idle.frames( frames, 0, 1, 2, 3,0, 1, 2, 3,0, 1, 2 ,0, 1, 2, 3 );
 
         run = new Animation( 6, true );

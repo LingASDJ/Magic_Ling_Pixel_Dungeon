@@ -12,13 +12,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireBallMobSpriteKB;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -31,8 +31,8 @@ public class RandomBlueFire extends Mob {
     public float lifespan;
     public RandomBlueFire() {
         this.spriteClass = FireBallMobSpriteKB.class;
-        this.HT = 300;
-        this.HP = 300;
+        this.HT = 75;
+        this.HP = 75;
         this.defenseSkill = 10;
         this.EXP = 15;
         this.loot = new PotionOfLiquidFlameX();
@@ -48,7 +48,6 @@ public class RandomBlueFire extends Mob {
     @Override
     public void notice() {
         super.notice();
-        BossHealthBar.assignBoss(this);
         yell( Messages.get(this, "notice") );
     }
 
@@ -100,18 +99,27 @@ public class RandomBlueFire extends Mob {
         return var3;
     }
 
+    @Override
     public int damageRoll() {
-        return Random.NormalIntRange(7, 12);
+        return Random.NormalIntRange( 10, 20 );
     }
 
     public void die(Object var1) {
         Dungeon.level.drop( new PotionOfLiquidFlameX(), pos ).sprite.drop();
         Dungeon.level.drop( new PotionOfLiquidFlameX(), pos ).sprite.drop();
+        Dungeon.level.drop( new PotionOfHealing(), pos ).sprite.drop();
+        Dungeon.level.drop( new PotionOfHealing(), pos ).sprite.drop();
         super.die(var1);
         if (var1 != Chasm.class) {
             int var2 = Random.Int(this.deathCurse.length);
-            this.sprite.showStatus(16711680, this.deathCurse[var2], new Object[0]);
+            this.sprite.showStatus(16711680, this.deathCurse[var2]);
         }
+        for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
+            if (	mob instanceof FlameC01) {
+                mob.die( var1 );
+            }
+        }
+        yell( Messages.get(this, "died") );
     }
 
     protected boolean getCloser(int var1) {

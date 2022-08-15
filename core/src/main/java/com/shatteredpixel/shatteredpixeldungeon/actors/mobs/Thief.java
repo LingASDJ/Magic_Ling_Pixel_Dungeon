@@ -183,7 +183,7 @@ public class Thief extends Mob {
 		return desc;
 	}
 	
-	private class Wandering extends Mob.Wandering {
+	public class Wandering extends Mob.Wandering {
 		
 		@Override
 		public boolean act(boolean enemyInFOV, boolean justAlerted) {
@@ -198,7 +198,7 @@ public class Thief extends Mob {
 		}
 	}
 
-	private class Fleeing extends Mob.Fleeing {
+	public class Fleeing extends Mob.Fleeing {
 		@Override
 		protected void nowhereToRun() {
 			if (buff( Terror.class ) == null

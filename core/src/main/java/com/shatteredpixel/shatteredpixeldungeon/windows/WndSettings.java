@@ -287,9 +287,6 @@ public class WndSettings extends WndTabbed {
 				Boolean landscape = SPDSettings.landscape();
 				if (landscape == null){
 					landscape = Game.width > Game.height;
-				} else {
-					SPDSettings.toolbarMode(Toolbar.Mode.SPLIT.name());
-					Toolbar.updateLayout();
 				}
 				Boolean finalLandscape = landscape;
 				btnOrientation = new RedButton(finalLandscape ?

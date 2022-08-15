@@ -36,7 +36,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
@@ -47,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SlimeKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
@@ -54,12 +54,10 @@ import com.watabou.utils.Random;
 
 public class SlimeKing extends Golem implements Callback {
 
-    private static final String COMBO = "combo";
-    private String[] attackCurse = {"雕虫小技", "班门弄斧",
+    private final String[] attackCurse = {"雕虫小技", "班门弄斧",
             "GAMEOVER"};
     private int combo = 0;
     private static final float TIME_TO_ZAP	= 0.5f;
-    private String[] deathCurse = {"一无所知的蠢货！"};
 
     {
         HP =100;
@@ -131,7 +129,7 @@ public class SlimeKing extends Golem implements Callback {
     @Override
     public int attackProc(Char enemy, int damage) {
         if (Random.Int(0, 10) > 7) {
-            this.sprite.showStatus(0x009999, this.attackCurse[Random.Int(this.attackCurse.length)], new Object[0]);
+            this.sprite.showStatus(0x009999, this.attackCurse[Random.Int(this.attackCurse.length)]);
         }
         int damage2 = SlimeKing.super.attackProc(enemy, this.combo + damage);
         this.combo++;
@@ -148,24 +146,6 @@ public class SlimeKing extends Golem implements Callback {
     @Override
     public int drRoll() {
         return Random.NormalIntRange(5, 2);
-    }
-
-    private int delay = 0;
-
-    private boolean canTryToSummon() {
-
-        int ratCount = 0;
-        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-
-            if (mob instanceof Rat){
-                ratCount++;
-            }
-        }
-        if (ratCount < 3 && delay <= 0) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     private boolean chainsUsed = false;
@@ -197,7 +177,6 @@ public class SlimeKing extends Golem implements Callback {
 
                 if (sprite.visible) {
                     yell(Messages.get(this, "scorpion"));
-                    //summon();
                     new Item().throwSound();
                     Sample.INSTANCE.play(Assets.Sounds.CHAINS);
                     sprite.parent.add(new Chains(sprite.center(), enemy.sprite.center(), new Callback() {
@@ -215,7 +194,7 @@ public class SlimeKing extends Golem implements Callback {
                 }
             }
         }
-        //chainsUsed = true;
+        chainsUsed = true;
         return true;
     }
 
@@ -229,7 +208,6 @@ public class SlimeKing extends Golem implements Callback {
             GameScene.updateFog();
         }
     }
-    private int var2;
 
 
     public void move( int step ) {
@@ -237,21 +215,11 @@ public class SlimeKing extends Golem implements Callback {
         super.move( step );
     }
 
-    private void summon() {
-
-        delay = 8;
-
-        sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
-        Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
-
-        yell( Messages.get(this, "arise") );
-    }
-
     @Override
     public void notice() {
         super.notice();
         BossHealthBar.assignBoss(this);
-        //Music.INSTANCE.play(Assets.BGM_BOSSA, true);
+        Music.INSTANCE.play(Assets.BGM_BOSSA, true);
         yell( Messages.get(this, "notice") );
         //summon();
     }

@@ -33,7 +33,6 @@ import com.watabou.utils.Bundle;
 public class Sanity extends Buff {
 
     @Override
-    //改变buff样子
     public int icon() {
         if(sanity >= 180) {
             return BuffIndicator.BLESS;
@@ -65,7 +64,6 @@ public class Sanity extends Buff {
             //San值检测系统 V1
             if ( (hero.buff(Light.class)==null) ) {
                 if (sanity >= 180) {
-                    //-1-(1/10)+2=-1-0.1+2=0
                     sanity -= Dungeon.depth/5+1;
                     if(sanity == 179) {
                         GLog.w(Messages.get(Sanity.class,"bad"));
@@ -73,7 +71,6 @@ public class Sanity extends Buff {
                 } else if (sanity >= 120) {
                     sanity -= Dungeon.depth/5+2;
                     if(sanity == 119) {
-                        //GLog.n("我在干什么……邪恶的灵魂正在蚕食你……");
                         GLog.n(Messages.get(Sanity.class,"tobad"));
                     }
                 } else {
@@ -97,7 +94,6 @@ public class Sanity extends Buff {
     }
 
     public void set( int value, int time ) {
-        //decide whether to override, preferring high value + low interval
         if (Math.sqrt(interval)*sanity <= Math.sqrt(time)*value) {
             sanity = value;
             interval = time;

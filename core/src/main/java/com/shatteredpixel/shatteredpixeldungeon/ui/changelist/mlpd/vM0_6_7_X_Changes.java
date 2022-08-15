@@ -7,6 +7,9 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.BlueBatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.KagenoNusujinSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WFSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ChangeButton;
@@ -18,11 +21,45 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_5_Changes(changeInfos);
         add_v0_6_4_Changes(changeInfos);
         add_v0_6_3_Changes(changeInfos);
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_5_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta20.(1-6)", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.INFO), ("其他说明"),
+                ("1.圣境密林层贴图更新\n2.监狱BGM正式实装")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.RENAME_ON), ("重命名系统"),
+                ("为你中意的英雄进行自定义重命名吧,击败第一大层的任意Boss解锁\n" +
+                        "为你中意的装备进行自定义重命名吧，解锁条件同上所述。")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.SKYBULE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new SRPDHBLRTT(), ("赏金猎人"),
+                ("伤害下调至9-12")));
+
+        changes.addButton(new ChangeButton(new KagenoNusujinSprite(), ("影子盗贼"),
+                ("AI逻辑改变")));
+
+        changes.addButton(new ChangeButton(new WFSprite(), ("法师初始改动"),
+                ("茉莉伊洛是双属性的魔法少女，拥有强大的魔力，她将会把烈焰法杖和冰雪法杖进行随机化作为初始法杖")));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), (Messages.get(ChangesScene.class, "bugfixes")),
+                Messages.get(vM0_6_7_X_Changes.class, "bug_06X25")));
     }
 
     public static void add_v0_6_4_Changes( ArrayList<ChangeInfo> changeInfos ) {

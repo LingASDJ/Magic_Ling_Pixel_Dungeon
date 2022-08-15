@@ -76,6 +76,7 @@ public class Assets {
 
 		public static final String TILES_COLD	= "environment/Reload.png";
 		public static final String TILES_DIED	= "environment/tiles_died.png";
+		public static final String TILES_GOLD	= "environment/tiles_gold.png";
 
 		public static final String WATER_COLD= "environment/water-1.png";
 		public static final String PRISON_EXIT_OLD  = "environment/custom_tiles/prison_exit_old.png";
@@ -277,6 +278,7 @@ public class Assets {
 		public static final String SLIMEPRINCESS	= "sprites/boss/SlimePrincess.png";
 
 		public static final String ITEMS	    = "sprites/items/items.png";
+		public static final String WFS	    = "sprites/items/wf.png";
 		public static final String ITEM_ICONS   = "sprites/item_icons.png";
 
 		public static final String MGAS	= "sprites/icemagicgirl.png";

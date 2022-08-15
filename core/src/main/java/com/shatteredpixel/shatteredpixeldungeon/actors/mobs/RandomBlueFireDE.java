@@ -21,16 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireBallMobSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Random;
 
 public class RandomBlueFireDE extends Mob {
@@ -40,31 +36,12 @@ public class RandomBlueFireDE extends Mob {
     private String[] deathCurse = {"没有任何的悲哀可以给我，你彻底激怒我了！"};
     public RandomBlueFireDE() {
         this.spriteClass = FireBallMobSprite.class;
-        this.HT = 200;
-        this.HP = 200;
+        this.HT = 40;
+        this.HP = 40;
         this.defenseSkill = 4;
         this.EXP = 7;
         this.maxLvl = 15;
         this.state = this.SLEEPING;
-    }
-
-    @Override
-    public boolean act() {
-
-        if (Dungeon.level.water[pos] && HP < HT) {
-            if (Dungeon.level.heroFOV[pos] ){
-                sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
-            }
-
-            HP++;
-            Music.INSTANCE.play(Assets.BGM_BOSSA, true);
-        }
-
-        if (state != SLEEPING){
-            Dungeon.level.seal();
-        }
-
-        return super.act();
     }
 
     @Override
@@ -74,45 +51,35 @@ public class RandomBlueFireDE extends Mob {
 		if (HP <= HT / 2) {
 			destroy();
 			Mob mob = new RandomBlueFire();
-			mob.HP = mob.HT / 2;
+			mob.HP = mob.HT;
 			mob.pos = pos;
 			GameScene.add(mob);
             new FlameC01().spawnAround(pos);
-            Music.INSTANCE.play(Assets.BGM_BOSSD, true);
             GLog.n( Messages.get(this, "fuck") );
 		}
     }
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 1, 2 );
+        return Random.NormalIntRange( 5, 12 );
     }
 
-    public int attackProc(Char enemy, int damage) {
-        if (Random.Int(0, 10) > 7) {
-            this.sprite.showStatus(16711680, this.attackCurse[Random.Int(this.attackCurse.length)], new Object[0]);
-        }
-        int damage2 = RandomBlueFireDE.super.attackProc(enemy, this.combo + damage);
-        this.combo++;
-        return damage2;
+    public int attackProc( Char enemy, int damage ) {
+        this.sprite.showStatus(16711680, this.attackCurse[Random.Int(this.attackCurse.length)]);
+        super.attackProc( enemy, damage );
+        return damage;
     }
 
     public void die(Object cause) {
         RandomBlueFireDE.super.die(cause);
         if (cause != Chasm.class) {
             this.sprite.showStatus(16711680, this.deathCurse[Random.Int(this.deathCurse.length)], new Object[0]);
-
         }
     }
 
     @Override
     public int attackSkill( Char target ) {
         return 8;
-    }
-
-    @Override
-    public int drRoll() {
-        return Random.NormalIntRange(0, 1);
     }
 }
 

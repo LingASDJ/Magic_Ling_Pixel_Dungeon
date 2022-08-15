@@ -43,7 +43,7 @@ public class SPDSettings extends GameSettings {
 	public static void quickslots( int value ){
 		put( KEY_QUICKSLOTS, value );
 	}
-	public static String auth_key() { return getString(KEY_AUTH_KEY, DEFAULT_KEY); }
+
 	public static int quickslots(){
 		return getInt( KEY_QUICKSLOTS, 4, Constants.MIN_QUICKSLOTS, Constants.MAX_QUICKSLOTS);
 	}

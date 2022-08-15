@@ -109,7 +109,7 @@ public class FlameC01 extends Mob {
         spriteClass = FlameC01Sprite.class;
         properties.add(Property.INORGANIC);
         properties.add(Property.FIERY);
-        HP = HT = 120;
+        HP = HT = 40;
         defenseSkill = 23;
 
         EXP = 10;

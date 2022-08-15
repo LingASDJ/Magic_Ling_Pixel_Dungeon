@@ -38,7 +38,7 @@ public class BlackHost extends Mob {
     }
 
     public int damageRoll() {
-        return Random.NormalIntRange(6, 19);
+        return Random.NormalIntRange(6, 12);
     }
 
     public int drRoll() {

@@ -348,7 +348,6 @@ public enum HeroClass {
 		hero.belongings.weapon.activate(hero);
 
 		WandOfFireblast woc = new WandOfFireblast();
-		woc.level(Random.NormalIntRange(1,3));
 		woc.identify().quantity(1).collect();
 
 		WandOfFrost wox = new WandOfFrost();

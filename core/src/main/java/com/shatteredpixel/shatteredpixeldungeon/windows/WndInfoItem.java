@@ -21,106 +21,81 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.ui.ItemSlot;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 
 public class WndInfoItem extends Window {
-	
-	private static final float GAP	= 2;
-
-	private static final int WIDTH_MIN = 120;
-	private static final int WIDTH_MAX = 220;
-
-	//only one WndInfoItem can appear at a time
 	private static WndInfoItem INSTANCE;
 
-	public WndInfoItem( Heap heap ) {
-
-		super();
-
-		if (INSTANCE != null){
-			INSTANCE.hide();
+	public WndInfoItem(Heap heap) {
+		WndInfoItem wndInfoItem = INSTANCE;
+		if (wndInfoItem != null) {
+			wndInfoItem.hide();
 		}
 		INSTANCE = this;
-
 		if (heap.type == Heap.Type.HEAP) {
-			fillFields( heap.peek() );
-
+			fillFields(heap.peek());
 		} else {
-			fillFields( heap );
-
+			fillFields(heap);
 		}
 	}
-	
-	public WndInfoItem( Item item ) {
-		super();
 
-		if (INSTANCE != null){
-			INSTANCE.hide();
+	public WndInfoItem(Item item) {
+		WndInfoItem wndInfoItem = INSTANCE;
+		if (wndInfoItem != null) {
+			wndInfoItem.hide();
 		}
 		INSTANCE = this;
-		
-		fillFields( item );
+		fillFields(item);
+	}
+
+	private void fillFields(Heap heap) {
+		IconTitle iconTitle = new IconTitle(heap);
+		iconTitle.color(16777028);
+		layoutFields(null, iconTitle, PixelScene.renderTextBlock(heap.info(), 6));
+	}
+
+	private void fillFields(Item item) {
+		int color;
+		if ((!(item instanceof EquipableItem) || ((EquipableItem) item).customName.equals("")) && (!(item instanceof Wand) || ((Wand) item).customName.equals(""))) {
+			color = Window.SKYBULE_COLOR;
+		} else {
+			color = Window.CYELLOW;
+		}
+		IconTitle iconTitle = new IconTitle(item);
+		iconTitle.color(color);
+		layoutFields(item, iconTitle, PixelScene.renderTextBlock(item.info(), 6));
+	}
+
+	private void layoutFields(Item item, IconTitle iconTitle, RenderedTextBlock renderedTextBlock) {
+		int i = 120;
+		renderedTextBlock.maxWidth(120);
+		while (PixelScene.landscape() && renderedTextBlock.height() > 100.0f && i < 220) {
+			i += 20;
+			renderedTextBlock.maxWidth(i);
+		}
+		if (!Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_1) || !(this instanceof WndUseItem) || (!(item instanceof EquipableItem) && !(item instanceof Wand))) {
+			iconTitle.setRect(0.0f, 0.0f, (float) i, 0.0f);
+		} else {
+			iconTitle.setRect(0.0f, 0.0f, (float) (i - 16), 0.0f);
+		}
+		add(iconTitle);
+		renderedTextBlock.setPos(iconTitle.left(), iconTitle.bottom() + 2.0f);
+		add(renderedTextBlock);
+		resize(i, (int) (renderedTextBlock.bottom() + 2.0f));
 	}
 
 	@Override
 	public void hide() {
 		super.hide();
-		if (INSTANCE == this){
+		if (INSTANCE == this) {
 			INSTANCE = null;
 		}
-	}
-
-	private void fillFields(Heap heap ) {
-		
-		IconTitle titlebar = new IconTitle( heap );
-		titlebar.color( TITLE_COLOR );
-		
-		RenderedTextBlock txtInfo = PixelScene.renderTextBlock( heap.info(), 6 );
-
-		layoutFields(titlebar, txtInfo);
-	}
-	
-	private void fillFields( Item item ) {
-		
-		int color = TITLE_COLOR;
-		if (item.levelKnown && item.level() > 0) {
-			color = ItemSlot.UPGRADED;
-		} else if (item.levelKnown && item.level() < 0) {
-			color = ItemSlot.DEGRADED;
-		}
-
-		IconTitle titlebar = new IconTitle( item );
-		titlebar.color( color );
-		
-		RenderedTextBlock txtInfo = PixelScene.renderTextBlock( item.info(), 6 );
-		
-		layoutFields(titlebar, txtInfo);
-	}
-
-	private void layoutFields(IconTitle title, RenderedTextBlock info){
-		int width = WIDTH_MIN;
-
-		info.maxWidth(width);
-
-		//window can go out of the screen on landscape, so widen it as appropriate
-		while (PixelScene.landscape()
-				&& info.height() > 100
-				&& width < WIDTH_MAX){
-			width += 20;
-			info.maxWidth(width);
-		}
-
-		title.setRect( 0, 0, width, 0 );
-		add( title );
-
-		info.setPos(title.left(), title.bottom() + GAP);
-		add( info );
-
-		resize( width, (int)(info.bottom() + 2) );
 	}
 }

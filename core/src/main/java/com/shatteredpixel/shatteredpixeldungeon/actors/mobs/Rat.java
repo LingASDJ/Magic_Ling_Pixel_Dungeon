@@ -48,6 +48,7 @@ public class Rat extends Mob {
 		if(Dungeon.isChallenged(LIGHTBLACK)) {
 			if (Random.Int(5) == 1) {
 				sanity -= 1;
+				//扣除理智-1
 				hero.sprite.showStatus( 0x808080, "1");
 			}
 		} else {
