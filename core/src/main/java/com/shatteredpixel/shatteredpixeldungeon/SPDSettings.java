@@ -47,6 +47,15 @@ public class SPDSettings extends GameSettings {
 	public static int quickslots(){
 		return getInt( KEY_QUICKSLOTS, 4, Constants.MIN_QUICKSLOTS, Constants.MAX_QUICKSLOTS);
 	}
+
+	public static void level3boss( int value ){
+		put( KEY_L3BOSS, value );
+	}
+
+	public static int level3boss(){
+		return getInt( KEY_L3BOSS, 1, 1, 3);
+	}
+
 	private static final String DEBUG_REPORT  = "debug_report";
 	public static boolean debugReport() {
 		return getBoolean(DEBUG_REPORT,false);
@@ -185,6 +194,7 @@ public class SPDSettings extends GameSettings {
 
 	public static final String KEY_UI_SIZE 	    = "full_ui";
 	public static final String KEY_QUICKSLOTS	= "quickslots";
+	public static final String KEY_L3BOSS	= "bossl3";
 	public static final String KEY_FLIPTOOLBAR	= "flipped_ui";
 	public static final String KEY_FLIPTAGS 	= "flip_tags";
 	public static final String KEY_BARMODE		= "toolbar_mode";

@@ -61,6 +61,7 @@ import com.watabou.utils.Random;
 import com.watabou.utils.Rect;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class CaveTwoBossLevel extends Level {
 
@@ -272,7 +273,7 @@ public class CaveTwoBossLevel extends Level {
         NewDM720 boss = new NewDM720();
         boss.state = boss.WANDERING;
         do {
-            boss.pos = pointToCell(Random.element(mainArena.getPoints()));
+            boss.pos = pointToCell(Objects.requireNonNull(Random.element(mainArena.getPoints())));
         } while (!openSpace[boss.pos] || map[boss.pos] == Terrain.EMPTY);
         GameScene.add( boss );
 
@@ -282,7 +283,7 @@ public class CaveTwoBossLevel extends Level {
     public void unseal() {
         super.unseal();
 
-        //blobs.get(PylonEnergy.class).fullyClear();
+        blobs.get(PylonEnergy.class).fullyClear();
 
         set( entrance, Terrain.ENTRANCE );
         int i = 14 + 13*width();

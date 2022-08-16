@@ -385,17 +385,13 @@ public class Dungeon {
 					}
 					break;
 				case 15:
-					if((Statistics.boss_enhance & 0x4) != 0) level = new CavesGirlDeadLevel();
-					else
-						switch (Random.NormalIntRange(1,7)) {
-							case 1:case 2:case 3:
-							default:
-								level = new NewCavesBossLevel();
-								break;
-							case 4:case 5:
-								level = new CaveTwoBossLevel();
-								break;
-						}
+					if (SPDSettings.level3boss()==3){
+						level = new CavesGirlDeadLevel();
+					} else if (SPDSettings.level3boss()==2){
+						level = new CaveTwoBossLevel();
+					} else {
+						level = new NewCavesBossLevel();
+					}
 					break;
 				case 16:
 				case 17:
@@ -465,17 +461,13 @@ public class Dungeon {
 					level = new CavesLevel();
 					break;
 				case 15:
-					if((Statistics.boss_enhance & 0x4) != 0) level = new CavesGirlDeadLevel();
-					else
-						switch (Random.NormalIntRange(1,7)) {
-							case 1:case 2:case 3: case 4: case 5:
-							default:
-								level = new NewCavesBossLevel();
-								break;
-							case 6:case 7:
-								level = new CaveTwoBossLevel();
-								break;
-						}
+					if (SPDSettings.level3boss()==3){
+						level = new CavesGirlDeadLevel();
+					} else if (SPDSettings.level3boss()==2){
+						level = new CaveTwoBossLevel();
+					} else {
+						level = new NewCavesBossLevel();
+					}
 					break;
 				case 16:
 				case 17:
