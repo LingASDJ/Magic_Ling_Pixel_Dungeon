@@ -25,8 +25,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShopGuardDead;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.ImpShopkeeper;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nxhy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
@@ -140,12 +138,6 @@ public class WndTradeItem extends WndInfoItem {
 					if (mob instanceof Shopkeeper) {
 						GameScene.show(new WndGoShop(this));
 						break;
-					} else if (mob instanceof Nxhy) {
-						mob.yell(Messages.get(mob, "why"));
-						break;
-					}else if (mob instanceof ImpShopkeeper) {
-						mob.yell(Messages.get(mob, "why"));
-						break;
 					}
 				}
 			}
@@ -153,8 +145,14 @@ public class WndTradeItem extends WndInfoItem {
 		btnStole.setRect( 0, pos + GAP, width, BTN_HEIGHT );
 		btnStole.icon(new ShopGuardDead.ShopGuardianRedSprite());
 		add( btnStole );
+		for (Mob mob : Dungeon.level.mobs) {
+			if (mob instanceof Shopkeeper) {
+				pos = btnStole.bottom();
+			} else {
+				pos = btnBuy.bottom();
+			}
+		}
 
-		pos = btnStole.bottom();
 
 		final MasterThievesArmband.Thievery thievery = Dungeon.hero.buff(MasterThievesArmband.Thievery.class);
 		if (thievery != null && !thievery.isCursed() && thievery.chargesToUse(item) > 0) {

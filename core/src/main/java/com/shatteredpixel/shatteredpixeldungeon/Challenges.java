@@ -46,9 +46,6 @@ public class Challenges {
 	public static final int NO_SCROLLS = 64;
 	public static final int AQUAPHOBIA = 128;
 	public static final int CHAMPION_ENEMIES = 256;
-	//public static final int NO_GOLD = 512;
-	//public static final int JGSF = 1024;
-	//public static final int LYSL = 2048;
 	public static final int RLPT = 512;
 
 	//public static final int BOSS = 8192;
@@ -56,13 +53,9 @@ public class Challenges {
 	public static final int EXSG = 2048;
 	public static final int STRONGER_BOSSES 	= 4096;
 	public static final int LIGHTBLACK 	= 8192;
+	public static final int PRO = 16384;
 
-	public static final int ALLBOSS = 16384;
-
-	public static final int PRO = 32768;
-
-
-	public static final int MAX_VALUE = 65536;
+	public static final int MAX_VALUE = 32768;
 
 	public static final String[] NAME_IDS = {
 			"no_food",
@@ -74,22 +67,17 @@ public class Challenges {
 			"no_scrolls",
 			"aquaphobia",
 			"champion_enemies",
-			//"no_gold",
-			//"jgsf",
-			//"lysl",
 			"rlpt",
-			//
 			"sbsg",
 			"exsg",
 			"stronger_bosses",
 			"light&black",
-			"boss",
 			"pro",
 	};
 
 	public static final int[] MASKS = {
 			NO_FOOD, NO_ARMOR, NO_HEALING, NO_HERBALISM, SWARM_INTELLIGENCE, DARKNESS, NO_SCROLLS
-			, AQUAPHOBIA, CHAMPION_ENEMIES,RLPT,SBSG,EXSG,STRONGER_BOSSES,LIGHTBLACK,ALLBOSS,PRO,
+			, AQUAPHOBIA, CHAMPION_ENEMIES,RLPT,SBSG,EXSG,STRONGER_BOSSES,LIGHTBLACK,PRO,
 	};
 	public String name;
 

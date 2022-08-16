@@ -93,8 +93,7 @@ public class WndChallenges extends Window {
 		final int normal_mode = 0;
 		final int hard_mode = 7;
 		final int warning_mode =9;
-		final int happy_mode =14;
-		final int Test_Debug = 15;
+		final int Test_Debug = 14;
 		boolean isCustom = false;
 		float pos = 0;
 
@@ -102,7 +101,7 @@ public class WndChallenges extends Window {
 
 			final String challenge = Challenges.NAME_IDS[i];
 
-			if(i==normal_mode || i==hard_mode || i==warning_mode || i==happy_mode|| i==Test_Debug){
+			if(i==normal_mode || i==hard_mode || i==warning_mode || i==Test_Debug){
 				RenderedTextBlock block = PixelScene.renderTextBlock(10);
 				switch (i){
 					case normal_mode:
@@ -116,10 +115,6 @@ public class WndChallenges extends Window {
 					case warning_mode:
 						block.text(Messages.get(Challenges.class, "warning"));
 						block.hardlight(0xFF0000);
-						break;
-					case happy_mode:
-						block.text(Messages.get(Challenges.class, "happy"));
-						block.hardlight(0xFF00FF);
 						break;
 					case Test_Debug:
 						block.text(Messages.get(Challenges.class, "test"));
@@ -138,7 +133,7 @@ public class WndChallenges extends Window {
 			cb.active = editable;
 
 			//Disable
-			if(Challenges.NAME_IDS[i].equals("light&black")||Challenges.NAME_IDS[i].equals("exsg")||Challenges.NAME_IDS[i].equals("boss")){
+			if(Challenges.NAME_IDS[i].equals("exsg")){
 				cb.active = false;
 				cb.checked(false);
 				cb.alpha(0.5f);

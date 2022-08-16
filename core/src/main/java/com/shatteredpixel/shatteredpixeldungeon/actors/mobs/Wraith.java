@@ -35,7 +35,7 @@ import com.watabou.utils.Random;
 public class Wraith extends Mob {
 
 	private static final float SPAWN_DELAY	= 2f;
-    public int gold;
+
 
     private int level;
 	
@@ -52,16 +52,7 @@ public class Wraith extends Mob {
 		properties.add(Property.UNDEAD);
 	}
 
-	@Override
-	public void die( Object cause ) {
 
-		super.die( cause );
-		//if (gold > 0) {
-		//	Dungeon.level.drop( new Gold(gold), pos ).sprite.drop();
-		//	Dungeon.level.drop( new LostBackpack(), pos).sprite.drop( pos );
-		//}
-
-	}
 	
 	private static final String LEVEL = "level";
 	

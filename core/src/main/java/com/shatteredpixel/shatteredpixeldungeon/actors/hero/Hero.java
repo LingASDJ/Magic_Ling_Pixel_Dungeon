@@ -78,7 +78,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BloodBat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -1749,7 +1749,7 @@ public class Hero extends Char {
 			}
 		}
 		if(Dungeon.isChallenged(LIGHTBLACK)){
-			Wraith s = new Wraith();
+			BlackSoul s = new BlackSoul();
 			s.pos = Dungeon.hero.pos;
 			s.gold = Dungeon.gold;
 			Dungeon.gold = 0;
@@ -1758,7 +1758,8 @@ public class Hero extends Char {
 			Buff.affect(s, ChampionEnemy.DeadSoulSX.class);
 			Buff.affect(s, DeadSoul.class);
 			GameScene.flash(0x80FF0000);
-		} else if (ankh != null) {
+		}
+		if (ankh != null) {
 			interrupt();
 			resting = false;
 
