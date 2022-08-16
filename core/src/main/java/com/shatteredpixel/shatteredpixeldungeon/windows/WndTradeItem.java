@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.shopOnLevel;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -145,12 +147,10 @@ public class WndTradeItem extends WndInfoItem {
 		btnStole.setRect( 0, pos + GAP, width, BTN_HEIGHT );
 		btnStole.icon(new ShopGuardDead.ShopGuardianRedSprite());
 		add( btnStole );
-		for (Mob mob : Dungeon.level.mobs) {
-			if (mob instanceof Shopkeeper) {
-				pos = btnStole.bottom();
-			} else {
-				pos = btnBuy.bottom();
-			}
+		if(shopOnLevel()){
+			pos = btnStole.bottom();
+		} else {
+			pos = btnBuy.bottom()-4;
 		}
 
 

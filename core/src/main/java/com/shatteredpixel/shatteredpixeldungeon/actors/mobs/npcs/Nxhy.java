@@ -43,12 +43,12 @@ public class Nxhy extends NPC {
 
     @Override
     public void damage( int dmg, Object src ) {
-        //flee();
+        flee();
     }
 
     @Override
     public void add( Buff buff ) {
-        //lee();
+        flee();
     }
 
 
