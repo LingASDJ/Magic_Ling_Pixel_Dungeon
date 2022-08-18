@@ -22,3 +22,6 @@ core/src/main/assets/messages/actors/actors - 副本.txt
 core/src/main/assets/messages/items/items - 副本.txt
 replay_pid14552.log
 hs_err_pid14552.log
+android/src/google-services.json
+android/src/debug/google-services.json
+android/google-services.json
