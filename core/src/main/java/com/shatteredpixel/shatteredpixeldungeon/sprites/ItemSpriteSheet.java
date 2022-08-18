@@ -740,6 +740,7 @@ public class ItemSpriteSheet {
 	public static final int	SKPOTION				= BAGS+57;
 	public static final int	SKNANO				= BAGS+58;
 	public static final int	WATERSOUL				= BAGS+59;
+	public static final int	WRALIPS				= BAGS+60;
 
 	static{
 		assignItemRect(VIAL,        16, 16);
@@ -754,6 +755,7 @@ public class ItemSpriteSheet {
 		assignItemRect(SKPOTION, 12, 14);
 		assignItemRect(SKNANO, 15, 14);
 		assignItemRect(WATERSOUL, 14, 14);
+		assignItemRect(WRALIPS, 16, 16);
 	}
 
 	private static final int MAINBOOKINDEX    	 = xy(1, 37);  //16 slots

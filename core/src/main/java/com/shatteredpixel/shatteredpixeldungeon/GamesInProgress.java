@@ -158,7 +158,7 @@ public class GamesInProgress {
 	
 	public static class Info {
 		public int slot;
-		
+
 		public int depth;
 		public int version;
 		public int challenges;

@@ -219,7 +219,6 @@ public abstract class Char extends Actor {
 			GameScene.updateFog();
 			return true;
 		}
-
 		//can't swap places if one char has restricted movement
 		if (rooted || c.rooted || buff(Vertigo.class) != null || c.buff(Vertigo.class) != null){
 			return true;
