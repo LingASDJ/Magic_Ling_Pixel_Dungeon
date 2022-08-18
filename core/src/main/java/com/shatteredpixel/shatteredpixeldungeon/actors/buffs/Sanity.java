@@ -66,6 +66,7 @@ public class Sanity extends Buff {
                 if (sanity >= 180) {
                     sanity -= Dungeon.depth/5+1;
                     if(sanity == 179) {
+                        //GLog.w("我感到身体十分的沉重……奇怪的话语在你耳边环绕……");
                         GLog.w(Messages.get(Sanity.class,"bad"));
                     }
                 } else if (sanity >= 120) {
@@ -78,6 +79,7 @@ public class Sanity extends Buff {
                     if(--sanity-(Dungeon.depth/5) == 0){
                         detach();
                         target.die(this);
+                        //GLog.n("你彻底失去理智了……你的灵魂彻底裂开了……");
                         GLog.n(Messages.get(Sanity.class,"diedsoul"));
                     }
                 }

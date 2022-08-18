@@ -27,12 +27,12 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.GoldBAo;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlueFuck;
@@ -514,7 +514,7 @@ public class DimandKing extends Boss {
         Ankh ankh = new Ankh();
         ankh.bless();
         Dungeon.level.drop(new Ankh(), dropPos).sprite.drop(pos);
-        Dungeon.level.drop(new Gold().quantity(Random.Int(2200, 5500)), pos).sprite.drop();
+        Dungeon.level.drop(new GoldBAo().quantity(1),  dropPos).sprite.drop(pos);
         Badges.validateBossSlain();
 
         Dungeon.level.unseal();

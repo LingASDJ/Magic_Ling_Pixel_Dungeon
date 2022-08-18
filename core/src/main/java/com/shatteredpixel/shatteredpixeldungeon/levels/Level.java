@@ -181,24 +181,6 @@ public abstract class Level implements Bundlable {
 	private static final String BLOBS		= "blobs";
 	private static final String FEELING		= "feeling";
 
-	public static int distancex(int a, int b) {
-		int ax = a % getWidth();
-		int ay = a / getWidth();
-		int bx = b % getWidth();
-		int by = b / getWidth();
-		return Math.max(Math.abs(ax - bx), Math.abs(ay - by));
-	}
-
-	public static final int WIDTHX = 48;
-	public static final int HEIGHTX = 48;
-	public static int getWidth() {
-		return WIDTHX;
-	}
-	public static boolean[] fieldOfView = new boolean[getLength()];
-	public static int getLength() {
-		return 48*48;
-	}
-
 	public void create() {
 
 		Random.pushGenerator( Dungeon.seedCurDepth() );

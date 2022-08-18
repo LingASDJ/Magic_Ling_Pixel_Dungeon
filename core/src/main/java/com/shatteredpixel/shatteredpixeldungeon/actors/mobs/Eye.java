@@ -65,10 +65,9 @@ public class Eye extends Mob {
 		properties.add(Property.DEMONIC);
 	}
 
-	public static void spawnAround(int pos) {
+	public static void spawnAround() {
 		for (int n : PathFinder.NEIGHBOURS4) {
-			int cell = pos + n;
-			spawnAt( Random.Int(Dungeon.level.length()) + cell );
+			spawnAt( Random.Int(Dungeon.level.length()) + n );
 		}
 	}
 

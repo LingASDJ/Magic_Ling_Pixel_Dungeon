@@ -102,7 +102,7 @@ public abstract class ChampionHero extends FlavourBuff {
         }
         @Override
         public void fx(boolean on) {
-            //解决光斑问题
+            //
         }
         @Override
         public void onAttackProc(Char hero) {
