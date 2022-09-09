@@ -29,6 +29,8 @@ public class NewsArticle {
 	public Date date;
 	public String summary;
 
+	public int ling;
+
 	public String URL;
 
 	//the icon is stored as a string here so it can be decoded to an image later

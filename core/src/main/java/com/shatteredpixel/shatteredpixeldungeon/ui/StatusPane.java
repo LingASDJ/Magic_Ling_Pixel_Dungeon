@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.LIGHTBLACK;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
@@ -28,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PureSoul;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CircleArc;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -65,7 +68,11 @@ public class StatusPane extends Component {
 	private BitmapText hpText;
 	private Button heroInfoOnBar;
 	private Image hg;
+
+	private Image puresoul;
 	private BitmapText hgText;
+
+	private BitmapText puresoulText;
 
 	private Image exp;
 	private BitmapText expText;
@@ -144,6 +151,10 @@ public class StatusPane extends Component {
 		else        hg = new Image(asset, 0, 45, 49, 4);
 		add( hg );
 
+		if (large)  puresoul = new Image(asset, 0, 128, 128, 7);
+		else        puresoul = new Image(asset, 0, 49, 52, 4);
+		add( puresoul );
+
 		hpText = new BitmapText(PixelScene.pixelFont);
 		hpText.alpha(0.6f);
 		add(hpText);
@@ -152,6 +163,11 @@ public class StatusPane extends Component {
 		hgText = new BitmapText(PixelScene.pixelFont);
 		hgText.alpha(0.6f);
 		add(hgText);
+
+
+		puresoulText = new BitmapText(PixelScene.pixelFont);
+		puresoulText.alpha(0.6f);
+		add(puresoulText);
 
 		heroInfoOnBar = new Button(){
 			@Override
@@ -202,6 +218,8 @@ public class StatusPane extends Component {
 		joinxxx=new JoinIndicator();
 		add(joinxxx);
 	}
+
+
 
 	@Override
 	protected void layout() {
@@ -274,9 +292,25 @@ public class StatusPane extends Component {
 			hgText.y -= 0.001f; //prefer to be slightly higher
 			PixelScene.align(hgText);
 
+			puresoulText.scale.set(PixelScene.align(0.5f));
+			puresoulText.x = 31f;
+			puresoulText.y = 13f + (hg.height - (puresoulText.baseLine()+puresoulText.scale.y))/2f;
+			puresoulText.y -= 0.001f; //prefer to be slightly higher
+			PixelScene.align(puresoulText);
+
 			heroInfoOnBar.setRect(heroInfo.right(), y, 50, 9);
 
-			buffs.setPos( x + 31, y + 12 );
+			if(Dungeon.isChallenged(LIGHTBLACK)){
+				puresoul.x= 30.0f;
+				puresoul.y= 13.0f;
+				buffs.setPos( x + 36, y + 20 );
+			} else {
+				puresoul.x= 500f;
+				puresoul.y= 500f;
+				buffs.setPos( x + 31, y + 12 );
+			}
+
+
 
 			busy.x = x + 1;
 			busy.y = y + 33;
@@ -295,8 +329,16 @@ public class StatusPane extends Component {
 		int health = Dungeon.hero.HP;
 		int shield = Dungeon.hero.shielding();
 		int max = Dungeon.hero.HT;
+		int maxSoul = (int) PureSoul.PURESOULBASE;
 
-		if (SPDSettings.ClassUI()) {
+		//检查为光与影使用黑色模块
+		if(Dungeon.isChallenged(LIGHTBLACK)){
+			if (SPDSettings.ClassUI()) {
+				bg.texture = TextureCache.get(Assets.Interfaces.STATUSSOUL_DARK);
+			} else {
+				bg.texture = TextureCache.get(Assets.Interfaces.STATUSSOUL);
+			}
+		} else if (SPDSettings.ClassUI()) {
 			bg.texture = TextureCache.get(Assets.Interfaces.STATUS_DARK);
 		} else {
 			bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
@@ -352,6 +394,17 @@ public class StatusPane extends Component {
 		}
 		else if (Dungeon.hero.isAlive()) {
 			hg.scale.x = 1.0f;
+		}
+
+		PureSoul PureSoulBuff = Dungeon.hero.buff(PureSoul.class);
+		if (PureSoulBuff != null) {
+			int sanity = Math.max(0, maxSoul - PureSoulBuff.soul());
+			puresoul.scale.x = (float) sanity / (float) maxSoul;
+			//puresoul.scale.x = 1.0f;
+			puresoulText.text(sanity + "/" + maxSoul);
+		}
+		else if (Dungeon.hero.isAlive()) {
+			puresoul.scale.x = 1.0f;
 		}
 
 		if (large) {

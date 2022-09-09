@@ -1,23 +1,24 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cost;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Camera;
+import com.watabou.noosa.Game;
 
 public class WndGoShop extends Window {
     private static final int WIDTH		= 120;
     private static final int BTN_SIZE	= 32;
     private static final int BTN_GAP	= 5;
     private static final int GAP		= 4;
-    int w = Camera.main.width;
 
     public WndGoShop(RedButton callback) {
         IconTitle titlebar = new IconTitle();
@@ -35,13 +36,9 @@ public class WndGoShop extends Window {
             @Override
             protected void onClick() {
                 hide();
-                for (Mob mob : Dungeon.level.mobs) {
-                    if ( mob instanceof Shopkeeper) {
-                        mob.yell(Messages.get(mob, "thief"));
-                        ((Shopkeeper) mob).flee();
-                        break;
-                    }
-                }
+                InterlevelScene.mode = InterlevelScene.Mode.EXBOSS;
+                Buff.affect(hero, Cost.class).set( (6), 1 );
+				Game.switchScene(InterlevelScene.class);
             }
         };
         btnBuy.setRect( (WIDTH - BTN_GAP) / 2 - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE, BTN_SIZE );

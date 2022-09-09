@@ -47,8 +47,6 @@ public class FireGhostDead extends Mob implements Callback {
 
     private static final float TIME_TO_ZAP	= 1f;
 
-
-
     {
         spriteClass = FireGhostDeadSprite.class;
 

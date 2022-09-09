@@ -43,6 +43,7 @@ public class Rat extends Mob {
 		maxLvl = 5;
 	}
 
+	@Override
 	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
 		if(Dungeon.isChallenged(LIGHTBLACK)) {

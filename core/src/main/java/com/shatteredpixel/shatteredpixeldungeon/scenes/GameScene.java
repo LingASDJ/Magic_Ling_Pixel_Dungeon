@@ -512,6 +512,10 @@ public class GameScene extends PixelScene {
 			case ASCEND:
 				Camera.main.snapTo(hero.center().x, hero.center().y + DungeonTilemap.SIZE * (defaultZoom/Camera.main.zoom));
 				break;
+			case EXBOSS:
+				Camera.main.snapTo(hero.center().x/2,
+						hero.center().y/4 + DungeonTilemap.SIZE * (defaultZoom/Camera.main.zoom));
+				break;
 			default:
 				Camera.main.snapTo(hero.center().x, hero.center().y);
 		}
@@ -520,7 +524,11 @@ public class GameScene extends PixelScene {
 		if (InterlevelScene.mode != InterlevelScene.Mode.NONE) {
 			if (Dungeon.depth == Statistics.deepestFloor
 					&& (InterlevelScene.mode == InterlevelScene.Mode.DESCEND || InterlevelScene.mode == InterlevelScene.Mode.FALL)) {
-				GLog.h(Messages.get(this, "descend"), Dungeon.depth);
+				if(Dungeon.depth < 0) {
+					GLog.h(Messages.get(this, "snowcynon"), Dungeon.depth);
+				} else {
+					GLog.h(Messages.get(this, "descend"), Dungeon.depth);
+				}
 				Sample.INSTANCE.play(Assets.Sounds.DESCEND);
 				if(Dungeon.sbbossLevel()){
 					tell(Messages.get(Slyl.class, "tips"));
@@ -553,7 +561,12 @@ public class GameScene extends PixelScene {
 			} else if (InterlevelScene.mode == InterlevelScene.Mode.RESURRECT) {
 				GLog.h(Messages.get(this, "resurrect"), Dungeon.depth);
 			} else {
-				GLog.h(Messages.get(this, "return"), Dungeon.depth);
+				if(Dungeon.depth < 0) {
+					GLog.h(Messages.get(this, "snowcynon"), Dungeon.depth);
+				} else {
+					GLog.h(Messages.get(this, "return"), Dungeon.depth);
+				}
+
 			}
 
 			if (Dungeon.hero.hasTalent(Talent.ROGUES_FORESIGHT)

@@ -8,7 +8,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PoisonDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TeleportationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KagenoNusujinSprite;
@@ -33,11 +32,11 @@ public class KagenoNusujin extends Thief {
             TeleportationTrap var4 = new TeleportationTrap();
             var4.pos = super.pos;
             var4.activate();
-            if (steal( (Hero)enemy )) {
+            if(Random.NormalIntRange(1,10)>6) {
                 state = FLEEING;
-                Buff.affect( this, Bleeding.class ).set( 20f );
+                Buff.affect(this, Bleeding.class).set(20f);
             }
-        } else {
+            } else {
             var3 = var2 +4;
             PoisonDartTrap var4 = new PoisonDartTrap();
             var4.pos = super.pos;

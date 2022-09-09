@@ -50,8 +50,11 @@ public class WndInfoMob extends WndTitledMessage {
 		private BuffIndicator buffs;
 		
 		public MobTitle( Mob mob ) {
-			
-			name = PixelScene.renderTextBlock( Messages.titleCase( mob.name() )+"("+mob.HP+"/"+mob.HT+")", 6 );
+			if(mob.HT == 114514) {
+				name = PixelScene.renderTextBlock(Messages.titleCase("??????"),6);
+			} else {
+				name = PixelScene.renderTextBlock(Messages.titleCase(mob.name()) + "(" + mob.HP + "/" + mob.HT + ")", 6);
+			}
 			name.hardlight( TITLE_COLOR );
 			add( name );
 

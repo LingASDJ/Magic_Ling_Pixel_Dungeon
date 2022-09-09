@@ -28,7 +28,7 @@ public class Assets {
 	public static final String BGM_4 = "music/Level4.ogg";
 	public static final String BGM_5 = "music/Level5.ogg";
 	public static final String BGM_0 = "music/Level0.ogg";
-	public static final String DEATHA	= "sounds/death.mp3";
+	public static final String SNOWCYON	= "music/SnowCyon.ogg";
 	public static final String TOWN = "music/town.ogg";
 	public static final String BGM_BOSSA = "music/Boss1.ogg";
 	public static final String BGM_BOSSB = "music/Boss2.ogg";
@@ -38,6 +38,7 @@ public class Assets {
 	public static final String BGM_BOSSD2 = "music/DwarfMaster.ogg";
 	public static final String BGM_BOSSE = "music/Boss5.ogg";
 	public static final String BGM_BOSSE3 = "music/Yogdead.ogg";
+	public static final String BGM_FRBOSS = "music/SnowLing.ogg";
 	public static final String RUN = "music/Run.ogg";
 	public static final String NYZSHOP = "music/nyzshop2.ogg";
 
@@ -103,7 +104,8 @@ public class Assets {
 		public static final String STATUS   = "interfaces/status_pane.png";
 		public static final String TOOLBARDRAK	= "interfaces/toolbar_normal.png";
 		public static final String STATUS_DARK   = "interfaces/status_pane_normal.png";
-
+		public static final String STATUSSOUL   = "interfaces/status_pane-puresoul.png";
+		public static final String STATUSSOUL_DARK   = "interfaces/status_pane-puresoul_dark.png";
 		public static final String MENU     = "interfaces/menu_pane.png";
 		public static final String MENU_BTN = "interfaces/menu_button.png";
 		public static final String TOOLBAR  = "interfaces/toolbar.png";
@@ -272,10 +274,15 @@ public class Assets {
 
 	public static class Sprites {
 
+		//NPCS
+		public static final String KEEPERKING	= "sprites/npc/ShopKing.png";
+
 		//BOSS
+		public static final String CRID	= "sprites/boss/ColdGuard.png";
 		public static final String FRAS	= "sprites/boss/FireMagicGirl.png";
 		public static final String NECROREDEX	= "sprites/boss/rednecromancer_ex.png";
 		public static final String SLIMEPRINCESS	= "sprites/boss/SlimePrincess.png";
+		public static final String ICEALICE	= "sprites/boss/IceFireCrstal.png";
 
 		public static final String ITEMS	    = "sprites/items/items.png";
 		public static final String WFS	    = "sprites/items/wf.png";

@@ -32,6 +32,8 @@ import com.watabou.utils.Bundle;
 
 public class Sanity extends Buff {
 
+
+
     @Override
     public int icon() {
         if(sanity >= 180) {

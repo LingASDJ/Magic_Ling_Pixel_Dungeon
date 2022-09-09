@@ -51,7 +51,7 @@ public class RenderedTextBlock extends Component {
 	private int BlueColor = Window.B_COLOR;
 	private int PinkColor = Window.Pink_COLOR;
 	private int DeepColor = Window.DeepPK_COLOR;
-
+	private int BLACKColor = Window.CBLACK;
 
 	private boolean highlightingEnabled = true;
 	private boolean RedEnabled = true;
@@ -59,6 +59,7 @@ public class RenderedTextBlock extends Component {
 	private boolean BlueEnabled = true;
 	private boolean PinkEnabled = true;
 	private boolean DeepEnabled = true;
+	private boolean BlackEnabled = true;
 
 	public static final int LEFT_ALIGN = 1;
 	public static final int CENTER_ALIGN = 2;
@@ -118,6 +119,7 @@ public class RenderedTextBlock extends Component {
 		boolean Bluehighlighting = false;
 		boolean Pinkhighlighting = false;
 		boolean Deeppinkhighlighting = false;
+		boolean Blackhighlighting = false;
 		for (String str : tokens){
 
 
@@ -142,8 +144,8 @@ public class RenderedTextBlock extends Component {
 				Pinkhighlighting = !Pinkhighlighting;
 			} else if(str.equals("Π") && DeepEnabled){
 				Deeppinkhighlighting = !Deeppinkhighlighting;
-			/*} else if(str.equals("Σ") && PinkEnabled){
-				Blackhighlighting = !Blackhighlighting;*/
+			} else if(str.equals("✦") && BlackEnabled){
+				Blackhighlighting = !Blackhighlighting;
 			} else if (str.equals("\n")){
 				words.add(NEWLINE);
 			} else if (str.equals(" ")) {
@@ -159,6 +161,7 @@ public class RenderedTextBlock extends Component {
 				else if (Bluehighlighting) word.hardlight(BlueColor);
 				else if (Pinkhighlighting) word.hardlight(PinkColor);
 				else if (Deeppinkhighlighting) word.hardlight(DeepColor);
+				else if (Blackhighlighting) word.hardlight(BLACKColor);
 				word.scale.set(zoom);
 
 				words.add(word);

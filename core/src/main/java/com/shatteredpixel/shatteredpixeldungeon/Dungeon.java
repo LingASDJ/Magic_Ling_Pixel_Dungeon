@@ -28,10 +28,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
@@ -64,6 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.DwarfMasterBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HallsLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LastLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.LinkLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewCityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewHallsBossLevel;
@@ -72,6 +75,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SLMKingLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.YogGodHardBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ZeroLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
@@ -100,6 +104,51 @@ public class Dungeon {
 	public static int gold;
 	public static int nyzbuy;
 	public static int boss;
+
+	//雪凛峡谷A
+	public static Level ColdFlowerCanyon(){
+
+
+		Dungeon.level = null;
+		Actor.clear();
+
+		depth = -5;
+
+		if (depth > Statistics.realdeepestFloor) {
+			Statistics.realdeepestFloor = depth;}
+
+		Level level;
+		level = new LinkLevel();
+
+		level.create();
+
+		Statistics.qualifiedForNoKilling = !bossLevel();
+
+		return level;
+	}
+
+	//雪凛峡谷B
+	public static Level ColdFlowerCanyonDie(){
+
+
+		Dungeon.level = null;
+		Actor.clear();
+
+		depth = -15;
+
+		if (depth > Statistics.realdeepestFloor) {
+			Statistics.realdeepestFloor = depth;}
+
+		Level level;
+		level = new ShopBossLevel();
+
+		level.create();
+
+		Statistics.qualifiedForNoKilling = !bossLevel();
+
+		return level;
+	}
+
 	public static int escalatingDepth() {
 		switch (cycle) {
 			case 0:
@@ -338,7 +387,7 @@ public class Dungeon {
 		 if (Dungeon.isChallenged(RLPT)) {
 			switch (depth) {
 				case 0:
-					level = new ZeroLevel();
+					level = new ShopBossLevel();
 					break;
 				case 1:
 				case 2:
@@ -408,7 +457,11 @@ public class Dungeon {
 					}
 					break;
 				case 20:
-					if((Statistics.boss_enhance & 0x8) != 0) level = new DwarfMasterBossLevel();
+					if((Statistics.boss_enhance & 0x8) != 0) {
+						Buff.affect(hero, TestDwarfMasterLock.class).set((1), 1);
+						level = new DwarfMasterBossLevel();
+						break;
+					}
 					else level = new NewCityBossLevel();
 					break;
 				case 21:
@@ -476,7 +529,11 @@ public class Dungeon {
 					level = new CityLevel();
 					break;
 				case 20:
-					if((Statistics.boss_enhance & 0x8) != 0) level = new DwarfMasterBossLevel();
+					if((Statistics.boss_enhance & 0x8) != 0) {
+						Buff.affect(hero, TestDwarfMasterLock.class).set((1), 1);
+						level = new DwarfMasterBossLevel();
+						break;
+					}
 					else level = new NewCityBossLevel();
 					break;
 				case 21:
@@ -572,7 +629,7 @@ public class Dungeon {
 	}
 
 	public static boolean bossLevel( int depth ) {
-		return depth == 5 || depth == 10 || depth == 15 || depth == 20 || depth == 25;
+		return depth == 5 || depth == 10 || depth == 15 || depth == 20 || depth == 25|| depth == -15;
 	}
 
 	public static void switchLevel( final Level level, int pos ) {

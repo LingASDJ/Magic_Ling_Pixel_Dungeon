@@ -21,7 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -38,7 +40,7 @@ public class Pasty extends Food {
 	//TODO: probably should externalize this if I want to add any more festive stuff.
 	private enum Holiday{
 		NONE,
-		EASTER, //TBD
+		ZQJ, //TBD
 		HWEEN,//2nd week of october though first day of november
 		XMAS //3rd week of december through first week of january
 	}
@@ -55,13 +57,20 @@ public class Pasty extends Food {
 				if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
 					holiday = Holiday.XMAS;
 				break;
-			case Calendar.OCTOBER:
-				if (calendar.get(Calendar.WEEK_OF_MONTH) >= 2)
-					holiday = Holiday.HWEEN;
+			//2022 9.10-10.1
+			case Calendar.SEPTEMBER:
+				if (calendar.get(Calendar.DAY_OF_MONTH) >= 10 ){
+					holiday = Holiday.ZQJ;
+				} else {
+					holiday = Holiday.NONE;
+				}
 				break;
-			case Calendar.NOVEMBER:
-				if (calendar.get(Calendar.DAY_OF_MONTH) == 1)
-					holiday = Holiday.HWEEN;
+			case Calendar.OCTOBER:
+				if (calendar.get(Calendar.DAY_OF_MONTH) == 1 ){
+					holiday = Holiday.ZQJ;
+				} else {
+					holiday = Holiday.NONE;
+				}
 				break;
 			case Calendar.DECEMBER:
 				if (calendar.get(Calendar.WEEK_OF_MONTH) >= 3)
@@ -91,6 +100,9 @@ public class Pasty extends Food {
 			case XMAS:
 				image = ItemSpriteSheet.CANDY_CANE;
 				break;
+			case ZQJ:
+				image = ItemSpriteSheet.DG1;
+				break;
 		}
 	}
 	
@@ -110,6 +122,10 @@ public class Pasty extends Food {
 				Buff.affect( hero, Recharging.class, 2f ); //half of a charge
 				ScrollOfRecharging.charge( hero );
 				break;
+			case ZQJ:
+				Buff.affect(hero, Healing.class).setHeal(10, 0f, 6);
+				ScrollOfRecharging.charge( hero );
+				break;
 		}
 	}
 
@@ -122,6 +138,8 @@ public class Pasty extends Food {
 				return Messages.get(this, "pie");
 			case XMAS:
 				return Messages.get(this, "cane");
+			case ZQJ:
+				return Messages.get(this, "moon");
 		}
 	}
 
@@ -134,6 +152,8 @@ public class Pasty extends Food {
 				return Messages.get(this, "pie_desc");
 			case XMAS:
 				return Messages.get(this, "cane_desc");
+			case ZQJ:
+				return Messages.get(this, "moon_desc", Dungeon.hero.name());
 		}
 	}
 	

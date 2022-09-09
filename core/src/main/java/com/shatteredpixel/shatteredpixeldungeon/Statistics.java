@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon;
 import com.watabou.utils.Bundle;
 
 public class Statistics {
+	public static int realdeepestFloor;
 	public static int boss_enhance = 0;
 	public static int goldCollected;
 	public static int deepestFloor;
@@ -62,7 +63,7 @@ public class Statistics {
 		upgradesUsed    = 0;
 		sneakAttacks    = 0;
 		thrownAssists   = 0;
-
+		realdeepestFloor = 0;
 		spawnersAlive   = 0;
 		
 		duration	= 0;
@@ -92,6 +93,8 @@ public class Statistics {
 	private static final String NO_KILLING_QUALIFIED	= "qualifiedForNoKilling";
 	
 	private static final String AMULET		= "amuletObtained";
+
+	private static final String EXLEVEL = "Exlevel";
 	
 	public static void storeInBundle( Bundle bundle ) {
 		bundle.put( GOLD,		goldCollected );
@@ -101,7 +104,7 @@ public class Statistics {
 		bundle.put( ALCHEMY,    itemsCrafted );
 		bundle.put( PIRANHAS,	piranhasKilled );
 		bundle.put( ANKHS,		ankhsUsed );
-		
+		bundle.put(EXLEVEL, realdeepestFloor);
 		bundle.put( UPGRADES,   upgradesUsed );
 		bundle.put( SNEAKS,		sneakAttacks );
 		bundle.put( THROWN,		thrownAssists );
@@ -123,7 +126,7 @@ public class Statistics {
 		itemsCrafted    = bundle.getInt( ALCHEMY );
 		piranhasKilled	= bundle.getInt( PIRANHAS );
 		ankhsUsed		= bundle.getInt( ANKHS );
-		
+		realdeepestFloor = bundle.getInt(EXLEVEL);
 		upgradesUsed    = bundle.getInt( UPGRADES );
 		sneakAttacks    = bundle.getInt( SNEAKS );
 		thrownAssists   = bundle.getInt( THROWN );

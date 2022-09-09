@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfMaster;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
@@ -17,11 +18,11 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
@@ -38,6 +39,7 @@ import com.watabou.utils.Random;
 import com.watabou.utils.Rect;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class DwarfMasterBossLevel extends Level {
@@ -192,15 +194,18 @@ public class DwarfMasterBossLevel extends Level {
         w.identify();
         drop(w, 20 + WIDTH * 34).type = Heap.Type.LOCKED_CHEST;
 
-        Ring mw2 = (Ring) Generator.random(Generator.Category.RING);
+        Ring mw2;
+        do {
+            mw2 = (Ring) Generator.random(Generator.Category.RING);
+        }while(Challenges.isItemBlocked(w));
         mw2.level(2);
         mw2.cursed = false;
         mw2.identify();
         drop(mw2, 16 + WIDTH * 36).type = Heap.Type.CRYSTAL_CHEST;
 
-        Artifact w3;
+        Weapon w3;
         do {
-            w3 = (Artifact) Generator.random(Generator.Category.ARTIFACT);
+            w3 = (Weapon) Generator.random(Generator.Category.WEP_T4);
         }while(Challenges.isItemBlocked(w));
         w3.level(2);
         w3.cursed = false;
@@ -300,11 +305,38 @@ public class DwarfMasterBossLevel extends Level {
     public void occupyCell( Char ch ) {
         super.occupyCell(ch);
 
-        if (map[entrance] == Terrain.CHASM && map[exit] != Terrain.EXIT
-                && ch == Dungeon.hero && (Dungeon.level.distance(ch.pos, entrance) >= 0)) {
+        if (map[entrance] == Terrain.ENTRANCE && map[exit] != Terrain.EXIT
+                && ch == Dungeon.hero && (Dungeon.level.distance(ch.pos, entrance) >= 0)&&Dungeon.hero.buff(TestDwarfMasterLock.class) != null) {
             seal();
             CellEmitter.get( entrance ).start( FlameParticle.FACTORY, 0.1f, 10 );
         }
+
+        if(ch == Dungeon.hero){
+            if(MAIN_PORTAL.containsKey(ch.pos)) {
+                ScrollOfTeleportation.appear(ch, IF_MAIN_PORTAL.get(ch.pos));
+                Dungeon.hero.interrupt();
+                Dungeon.observe();
+                GameScene.updateFog();
+            }
+        }
+    }
+
+    private static final HashMap<Integer, Integer> IF_MAIN_PORTAL = new HashMap<>(4);
+    {
+        IF_MAIN_PORTAL.put(26 + WIDTH * 25, WIDTH*31 + 18);
+        IF_MAIN_PORTAL.put(31 + WIDTH * 6, WIDTH*31 + 18);
+        IF_MAIN_PORTAL.put(6 + WIDTH * 6, WIDTH*31 + 18);
+        IF_MAIN_PORTAL.put(12 + WIDTH * 23, WIDTH*31 + 18);
+        IF_MAIN_PORTAL.put(26 + WIDTH * 31, WIDTH*31 + 18);
+    }
+
+    private static final HashMap<Integer, Integer> MAIN_PORTAL = new HashMap<>(4);
+    {
+        MAIN_PORTAL.put(26 + WIDTH * 25, WIDTH*31 + 18);
+        MAIN_PORTAL.put(31 + WIDTH * 6, WIDTH*31 + 18);
+        MAIN_PORTAL.put(6 + WIDTH * 6, WIDTH*31 + 18);
+        MAIN_PORTAL.put(12 + WIDTH * 23, WIDTH*31 + 18);
+        MAIN_PORTAL.put(26 + WIDTH * 31, WIDTH*31 + 18);
     }
 
     @Override
@@ -346,6 +378,8 @@ public class DwarfMasterBossLevel extends Level {
                 return M.L(CityLevel.class, "high_grass_name");
             case Terrain.STATUE:
                 return M.L(CityLevel.class, "statue_name");
+            case Terrain.WELL:
+                return M.L(DwarfMasterBossLevel.class, "well_name");
             default:
                 return super.tileName(tile);
         }
@@ -361,11 +395,15 @@ public class DwarfMasterBossLevel extends Level {
                 return M.L(CityLevel.class, "statue_desc");
             case Terrain.BOOKSHELF:
                 return M.L(CityLevel.class, "bookshelf_desc");
+            case Terrain.WELL:
+                return M.L(DwarfMasterBossLevel.class, "well_desc");
             default:
                 return super.tileDesc(tile);
         }
     }
 
+    //Fixed
+    private static final int T = Terrain.WELL;
 
     private static final int A = WALL;
     private static final int R = Terrain.BOOKSHELF;
@@ -377,7 +415,7 @@ public class DwarfMasterBossLevel extends Level {
     private static final int P = Terrain.STATUE_SP;
     private static final int J = Terrain.PEDESTAL;
     private static final int O = Terrain.STATUE;
-    private static final int N = Terrain.CHASM;
+    private static final int N = Terrain.ENTRANCE;
     private static final int D = Terrain.LOCKED_EXIT;
 
     private static final int[] codedMap = new int[]{
@@ -387,7 +425,7 @@ public class DwarfMasterBossLevel extends Level {
             A,R,A,R,R,R,R,R,R,R,R,R,R,R,R,R,R,X,L,L,X,R,R,R,R,R,R,R,R,R,R,R,R,R,R,A,R,A,
             A,R,A,R,L,L,L,L,L,L,L,R,R,R,R,A,A,A,B,B,A,A,A,R,R,R,R,L,L,L,L,L,L,L,R,A,R,A,
             A,R,A,R,L,L,L,L,L,L,R,R,A,A,A,A,L,L,L,L,L,L,A,A,A,A,R,R,L,L,L,L,L,L,R,A,R,A,
-            A,R,A,R,L,L,L,L,R,R,R,A,A,L,L,L,L,L,L,L,L,L,L,L,L,A,A,R,R,R,L,L,L,L,R,A,R,A,
+            A,R,A,R,L,L,T,L,R,R,R,A,A,L,L,L,L,L,L,L,L,L,L,L,L,A,A,R,R,R,L,T,L,L,R,A,R,A,
             A,R,A,R,L,L,L,R,R,A,A,A,L,P,L,L,L,L,L,L,L,L,L,L,P,L,A,A,A,R,R,L,L,L,R,A,R,A,
             A,R,A,R,L,L,R,R,A,A,L,L,L,L,S,S,S,S,S,S,S,S,S,S,L,L,L,L,A,A,R,L,L,L,R,A,R,A,
             A,R,A,R,L,L,R,A,A,L,L,L,L,L,S,F,F,F,F,F,F,F,F,S,L,L,L,L,L,A,R,R,L,L,R,A,R,A,
@@ -404,15 +442,15 @@ public class DwarfMasterBossLevel extends Level {
             A,R,A,A,A,A,L,L,L,L,A,A,A,A,A,L,L,S,L,L,S,L,L,A,A,A,A,A,L,L,L,L,A,A,A,A,R,A,
             A,R,A,A,A,A,L,L,L,L,L,L,L,L,L,L,S,L,L,L,L,S,L,L,L,L,L,L,L,L,L,L,A,A,A,A,R,A,
             A,R,A,A,A,A,A,A,A,A,A,A,A,A,J,S,L,L,L,L,L,L,S,J,A,A,A,A,A,A,A,X,A,A,A,A,A,A,
-            A,R,L,L,L,L,L,L,L,L,L,L,L,A,S,A,L,A,S,S,A,L,A,S,A,L,L,L,L,L,L,L,L,L,L,L,A,A,
+            A,R,L,L,L,L,L,L,L,L,L,L,T,A,S,A,L,A,S,S,A,L,A,S,A,L,L,L,L,L,L,L,L,L,L,L,A,A,
             A,R,L,L,L,L,L,L,L,L,L,L,L,A,S,A,S,A,S,S,A,S,A,S,A,L,L,L,L,L,L,L,L,L,L,L,A,A,
-            A,R,L,L,L,L,L,L,L,L,L,L,L,A,S,A,S,A,S,S,A,S,A,S,A,L,L,L,L,L,L,L,L,L,L,L,R,A,
+            A,R,L,L,L,L,L,L,L,L,L,L,L,A,S,A,S,A,S,S,A,S,A,S,A,L,T,L,L,L,L,L,L,L,L,L,R,A,
             A,R,L,L,L,L,L,L,L,L,L,L,L,A,S,A,S,A,S,S,A,S,A,S,A,A,A,A,A,A,A,A,A,A,A,A,R,A,
             A,R,L,L,L,L,L,L,L,L,L,L,L,A,S,A,S,A,S,S,A,S,A,S,A,A,A,A,A,A,A,A,A,A,R,R,R,A,
-            A,R,L,L,L,L,L,L,L,L,L,L,L,A,S,S,S,S,S,S,S,S,S,S,A,A,A,A,A,A,A,A,A,A,X,A,A,A,
+            A,R,L,L,L,L,L,L,L,L,L,L,L,A,S,S,S,S,S,S,S,S,S,S,A,A,A,A,A,A,A,A,A,A,R,A,A,A,
             A,R,L,L,L,L,L,L,L,L,L,L,L,A,L,L,L,L,L,L,L,L,L,L,A,L,L,L,L,L,L,L,L,L,L,L,A,A,
             A,R,L,L,L,L,L,L,L,L,L,L,L,A,L,L,L,L,L,L,L,L,L,L,A,L,L,L,L,L,L,L,L,L,L,L,A,A,
-            A,R,L,L,L,L,L,L,L,L,L,L,L,A,A,A,L,L,N,L,L,L,A,A,A,L,L,L,L,L,L,L,L,L,L,L,A,A,
+            A,R,L,L,L,L,L,L,L,L,L,L,L,A,A,A,L,L,N,L,L,L,A,A,A,L,T,L,L,L,L,L,L,L,L,L,A,A,
             A,R,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,X,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
             A,R,A,A,A,A,A,A,A,A,A,A,A,A,A,A,S,S,S,S,S,S,A,A,A,A,A,A,A,A,A,A,A,A,A,A,R,A,
             A,R,A,A,A,A,A,A,A,A,A,A,A,A,A,A,S,S,S,S,S,S,A,A,A,A,A,A,A,A,A,A,A,A,A,A,R,A,

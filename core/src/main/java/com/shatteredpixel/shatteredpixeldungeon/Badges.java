@@ -166,6 +166,7 @@ public class Badges {
 		NYZ_SHOP                    ( 117 ),
 
 		//rudy
+		FIREGIRL                 	 ( 128 ),
 		SLIMEPR                  	 ( 129 ),
 		DRAWF_HEAD                    ( 130 ),
 		SPICEALBOSS 				 ( 131),
@@ -908,6 +909,10 @@ public class Badges {
 
 	public static void KILLDWARF() {
 		displayBadge( Badge.DRAWF_HEAD );
+	}
+
+	public static void KILLFIREGIRL() {
+		displayBadge( Badge.FIREGIRL );
 	}
 
 	public static void KILLMG() {

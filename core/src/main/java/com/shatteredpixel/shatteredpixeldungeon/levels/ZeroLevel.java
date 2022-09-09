@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.obSir;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 
 public class ZeroLevel extends Level {
     private static final int SIZE = 5;
@@ -119,8 +120,8 @@ public class ZeroLevel extends Level {
         drop( new Stylus(), this.width * 19 + 20  );
 
         drop( ( Generator.randomUsingDefaults( Generator.Category.STONE ) ), this.width * 16 + 19 );
-        drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), this.width * 20 + 19 );
-
+        //drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), this.width * 20 + 19 );
+        drop( new Pasty(), this.width * 20 + 19  );
         if ( Badges.isUnlocked(Badges.Badge.GODD_MAKE)){
             drop( ( Generator.randomUsingDefaults( Generator.Category.RING ) ), this.width * 17 + 18 );
         }

@@ -12,6 +12,7 @@ public class BGMPlayer {
             }
         }
         int d = Dungeon.depth;
+
         if (d == -1) {
             Music.INSTANCE.play(Assets.TOWN, true);
         }else if (d == 0) {
@@ -26,6 +27,8 @@ public class BGMPlayer {
             Music.INSTANCE.play(Assets.BGM_4, true);
         } else if (d > 20 && d <= 26) {
             Music.INSTANCE.play(Assets.BGM_5, true);
+        } else if (d ==-5||d ==-15) {
+            Music.INSTANCE.play(Assets.SNOWCYON, true);
         } else
             //default
             Music.INSTANCE.play(Assets.Music.THEME, true);
@@ -56,7 +59,8 @@ public class BGMPlayer {
         } else if (Dungeon.bossLevel() && t == 15 && Statistics.spawnersIce > 0) {
             Music.INSTANCE.play(Assets.BGM_BOSSC3, true);
         } else if (Dungeon.bossLevel() && t == 15) {
-            Music.INSTANCE.play(Assets.BGM_BOSSC, true);
+            if(SPDSettings.level3boss()==3)  Music.INSTANCE.play(Assets.BGM_BOSSC3, true);
+            else Music.INSTANCE.play(Assets.BGM_BOSSC, true);
         } else if (Dungeon.bossLevel() && t == 20) {
             if((Statistics.boss_enhance & 0x8) != 0)  Music.INSTANCE.play(Assets.BGM_BOSSD2, true);
             else  Music.INSTANCE.play(Assets.BGM_BOSSD, true);
@@ -64,6 +68,8 @@ public class BGMPlayer {
             Music.INSTANCE.play(Assets.BGM_BOSSE3, true);
         }else if (Dungeon.bossLevel() && t == 25){
             Music.INSTANCE.play(Assets.BGM_BOSSE, true);
+        } else if (Dungeon.bossLevel() && t == -15) {
+            Music.INSTANCE.play(Assets.BGM_FRBOSS, true);
         }
     }
 }

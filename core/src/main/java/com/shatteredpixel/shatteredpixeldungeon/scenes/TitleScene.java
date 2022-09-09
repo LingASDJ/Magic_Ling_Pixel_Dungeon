@@ -11,7 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.updates.Updates;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdGuardSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SlimePrincessSprite;
@@ -287,7 +287,7 @@ public class TitleScene extends PixelScene {
 	}
 
 	private void placeTorch3( float x, float y ) {
-		Image fb = (new DiedMonkLoaderSprite());
+		Image fb = (new ColdGuardSprite());
 		fb.setPos( x, y );
 		add( fb );
 	}

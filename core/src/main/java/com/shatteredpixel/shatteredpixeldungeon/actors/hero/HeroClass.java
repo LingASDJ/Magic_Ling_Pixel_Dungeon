@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PureSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sanity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
@@ -54,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
@@ -241,6 +243,7 @@ public enum HeroClass {
 			new PotionOfLightningShiled().quantity(42).collect();
 			new ScrollOfRoseShiled().quantity(45).identify().collect();
 			new ScrollOfTerror().quantity(45).identify().collect();
+			new DriedRose().quantity(1).identify().collect();
 			Dungeon.gold = 600000000;
 			hero.STR = 27;
 			hero.lvl = 30;
@@ -274,6 +277,7 @@ public enum HeroClass {
 
 		if(Dungeon.isChallenged(LIGHTBLACK)){
 			Buff.affect(hero, Sanity.class).set( (240), 1 );
+			Buff.affect(hero, PureSoul.class).set( 20, 20 );
 			new OilLantern().quantity(1).identify().collect();
 			new OilPotion().quantity(100).identify().collect();
 			new Ankh().quantity(1).identify().collect();

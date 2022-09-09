@@ -28,7 +28,6 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public abstract class NPC extends Mob {
-
 	{
 		HP = HT = 1;
 		EXP = 0;

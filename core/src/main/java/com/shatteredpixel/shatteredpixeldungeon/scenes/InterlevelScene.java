@@ -72,7 +72,7 @@ public class InterlevelScene extends PixelScene {
 	private static float fadeTime;
 
 	public enum Mode {
-		DESCEND, ASCEND, CONTINUE, RESURRECT, RETURN, FALL, RESET, NONE,KO,GOBACK
+		DESCEND, ASCEND, CONTINUE, RESURRECT, RETURN, FALL, RESET, NONE,EXBOSS,GOBACK,FRGIRLBOSS,
 	}
 	public static Mode mode;
 
@@ -83,7 +83,7 @@ public class InterlevelScene extends PixelScene {
 
 	public static boolean fallIntoPit;
 
-	private static final int NUM_TIPS = 32;
+	private static final int NUM_TIPS = 36;
 
 	private static ArrayList<Integer> tipset;
 	private RenderedTextBlock tip;
@@ -136,6 +136,7 @@ public class InterlevelScene extends PixelScene {
 				scrollSpeed = 5;
 				break;
 			case DESCEND:
+			case FRGIRLBOSS:
 				if (Dungeon.hero == null){
 					loadingDepth = 1;
 					fadeTime = SLOW_FADE;
@@ -162,6 +163,10 @@ public class InterlevelScene extends PixelScene {
 			case RETURN:
 				loadingDepth = returnDepth;
 				scrollSpeed = returnDepth > Dungeon.depth ? 15 : -15;
+				break;
+			case EXBOSS:
+				scrollSpeed = -25;
+				loadingDepth = returnDepth;
 				break;
 		}
 		if (loadingDepth == 1)         	loadingAsset = Assets.Interfaces.LOADING_COLD;
@@ -273,11 +278,13 @@ public class InterlevelScene extends PixelScene {
 							case RESET:
 								reset();
 								break;
-							case KO:
-								reset();
-								returnTx();
-								resurrect();
+							case EXBOSS:
+								exboss(1);
 								break;
+							case FRGIRLBOSS:
+								exboss(2);
+								break;
+
 						}
 
 					} catch (Exception e) {
@@ -509,6 +516,7 @@ public class InterlevelScene extends PixelScene {
 		Dungeon.switchLevel( level, Dungeon.hero.pos );
 	}
 
+
 	private void reset() throws IOException {
 
 		Mob.holdAllies( Dungeon.level );
@@ -523,5 +531,24 @@ public class InterlevelScene extends PixelScene {
 	@Override
 	protected void onBackPressed() {
 		//Do nothing
+	}
+
+	private void exboss(int branch) throws IOException {
+
+		Actor.fixTime();
+		Dungeon.saveLevel(GamesInProgress.curSlot);
+
+		Level level;
+		switch(branch){
+			case 1:
+				level=Dungeon.ColdFlowerCanyon();
+				break;
+			case 2:
+				level=Dungeon.ColdFlowerCanyonDie();
+				break;
+			default:
+				level = Dungeon.newLevel();
+		}
+		Dungeon.switchLevel(level, level.entrance);
 	}
 }

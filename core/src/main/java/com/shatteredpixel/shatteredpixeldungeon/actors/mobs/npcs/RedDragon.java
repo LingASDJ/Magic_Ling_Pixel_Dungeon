@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.items.Generator.randomArtifact;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -234,6 +235,7 @@ public class RedDragon extends NPC {
         private static int depth;
 
         public static Ring weapon;
+        public static Ring RingT;
         public static Artifact armor;
         public static Armor food;
         public static ExoticScroll scrolls;
@@ -247,6 +249,7 @@ public class RedDragon extends NPC {
             armor = null;
             enchant = null;
             glyph = null;
+            RingT = null;
         }
 
         private static final String NODE		= "sads";
@@ -343,8 +346,13 @@ public class RedDragon extends NPC {
                     case 4: food = new ScaleArmor();   break;
                     case 5: food = new PlateArmor();   break;
                 }
-                //50%:tier2, 30%:tier3, 15%:tier4, 5%:tier5
-                armor = (Artifact)Generator.random( Generator.Category.ARTIFACT );
+
+                //TODO Fixed Ring Spawn;
+                if(randomArtifact() != null){
+                    armor = (Artifact)Generator.random( Generator.Category.ARTIFACT );
+                } else {
+                    RingT = (Ring)Generator.random(Generator.Category.RING);
+                }
 
                 switch (Random.chances(new float[]{0, 0, 10, 6, 3, 1})){
                     default:

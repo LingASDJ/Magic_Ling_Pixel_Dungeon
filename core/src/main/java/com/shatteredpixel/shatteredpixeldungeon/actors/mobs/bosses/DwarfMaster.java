@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Timer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -108,7 +109,7 @@ import java.util.HashSet;
 public class DwarfMaster extends Boss {
     {
         initProperty();
-        initBaseStatus(3, 8, 14, 10, 500, 0, 2);
+        initBaseStatus(3, 8, 14, 10, 800, 0, 2);
         initStatus(20);
 
         properties.add(Property.FIERY);
@@ -599,7 +600,7 @@ public class DwarfMaster extends Boss {
     @Override
     public void damage(int dmg, Object src) {
 
-        if (HP > 199 && HP <= 500 && dmg >= 9){
+        if (HP > 299 && HP <= 500 && dmg >= 9){
             dmg = 15+ (int)(Math.sqrt(8*(dmg - 4) + 1) - 1)/2;
         } else  {
             super.damage(dmg, src);
@@ -630,8 +631,8 @@ public class DwarfMaster extends Boss {
             int dmgTaken = preHP - HP;
             abilityCooldown -= dmgTaken/8f;
             summonCooldown -= dmgTaken/8f;
-            if (HP <= 200) {
-                HP = 200;
+            if (HP <= 400) {
+                HP = 400;
                 sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
                 ScrollOfTeleportation.appear(this, DwarfMasterBossLevel.throne);
                 properties.add(Property.IMMOVABLE);
@@ -1614,8 +1615,14 @@ public class DwarfMaster extends Boss {
             }
         }
 
+        for (Buff buff : hero.buffs()) {
+            if (buff instanceof TestDwarfMasterLock) {
+                buff.detach();
+            }
+        }
+
         GameScene.bossSlain();
-        Dungeon.level.drop( new IronKey( Dungeon.depth ).quantity(5), pos ).sprite.drop();
+        Dungeon.level.drop( new IronKey( Dungeon.depth ).quantity(4), pos ).sprite.drop();
         Dungeon.level.drop( new GoldenKey( Dungeon.depth ).quantity(3), pos ).sprite.drop();
         Dungeon.level.drop( new CrystalKey( Dungeon.depth ).quantity(2), pos ).sprite.drop();
         Dungeon.level.drop( new BlackKey( Dungeon.depth ).quantity(3), pos ).sprite.drop();

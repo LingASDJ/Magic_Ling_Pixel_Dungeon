@@ -1,11 +1,27 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrystalDiedTower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.FireMagicDied;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDied;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class ShopBossLevel extends Level {
 
@@ -15,10 +31,142 @@ public class ShopBossLevel extends Level {
     private static final int G = Terrain.EMPTY;
     private static final int S = Terrain.CHASM;
     private static final int R = Terrain.EMPTY_SP;
-    private static final int J = Terrain.WELL;
+    private static final int J = Terrain.PEDESTAL;
     private static final int K = Terrain.ALCHEMY;
     private static final int D = Terrain.STATUE;
-    private static final int H = Terrain.PEDESTAL;
+    private static final int H = Terrain.WELL;
+
+    //portals. (from, to).
+
+    private static final int WIDTH = 35;
+    private static final int HEIGHT = 35;
+
+    @Override
+    protected void createMobs() {
+
+        NullDied csp = new NullDied();
+        csp.pos = WIDTH * 17 + 17;
+        mobs.add(csp);
+
+    }
+
+    @Override
+    public void seal() {
+        super.seal();
+
+        for (int i : CryStalPosition) {
+            CrystalDiedTower csp = new CrystalDiedTower();
+            csp.pos = i;
+            GameScene.add(csp);
+        }
+
+        //activateAll();
+        FireMagicDied boss = new FireMagicDied();
+        boss.pos = WIDTH*17 + 17;
+        GameScene.add(boss);
+
+        GLog.p(Messages.get(FireMagicDied.class,"go", hero.name()));
+        Sample.INSTANCE.play(Assets.Sounds.DEATH);
+    }
+
+    public static int[] CryStalPosition = new int[]{
+            WIDTH*22 + 17,
+            WIDTH*12 + 17,
+            WIDTH*17 + 12,
+            WIDTH*17 + 22,
+    };
+
+    @Override
+    public void occupyCell( Char ch ) {
+        super.occupyCell( ch );
+
+        if (map[entrance] == Terrain.ENTRANCE && map[exit] != Terrain.EXIT
+                && ch == hero && Dungeon.level.distance(ch.pos, entrance) >= 2) {
+            seal();
+        }
+
+        if(ch == hero){
+            //指定区域
+            if(MAIN_PORTAL.containsKey(ch.pos)) {
+                ScrollOfTeleportation.appear(ch, IF_MAIN_PORTAL.get(ch.pos));
+                //传送目标区域
+                hero.interrupt();
+                Dungeon.observe();
+                GameScene.updateFog();
+            }
+        }
+    }
+
+    private Mob getKing(){
+        for (Mob m : mobs){
+            if (m instanceof FireMagicDied) return m;
+        }
+        return null;
+    }
+    //四个基座
+    private static final int[] pedestals = new int[4];
+    public int getSummoningPos(){
+        Mob king = getKing();
+        HashSet<FireMagicDied.Summoning> summons = king.buffs(FireMagicDied.Summoning.class);
+        ArrayList<Integer> positions = new ArrayList<>();
+        for (int pedestal : pedestals) {
+            boolean clear = true;
+            for (FireMagicDied.Summoning s : summons) {
+                if (s.getPos() == pedestal) {
+                    clear = false;
+                    break;
+                }
+            }
+            if (clear) {
+                positions.add(pedestal);
+            }
+        }
+        if (positions.isEmpty()){
+            return -1;
+        } else {
+            return Random.element(positions);
+        }
+    }
+
+    public static final int thronex;
+
+    //常量基座调用
+    static {
+        thronex = 1 + WIDTH* 17;
+    }
+
+    public static final int throne;
+
+    //常量基座调用
+    static {
+        throne =  WIDTH*25 + 17;
+    }
+
+    public static final int throneling;
+
+    //常量基座调用
+    static {
+        throneling =  WIDTH*17 + 17;
+    }
+
+    private static final HashMap<Integer, Integer> MAIN_PORTAL = new HashMap<>(4);
+    {
+        MAIN_PORTAL.put(10+10*WIDTH, 3+5*WIDTH);
+        MAIN_PORTAL.put(3+5*WIDTH, throne);
+
+        MAIN_PORTAL.put(10+24*WIDTH, 2+32*WIDTH);
+        MAIN_PORTAL.put(1+33*WIDTH, throne);
+    }
+
+    private static final HashMap<Integer, Integer> IF_MAIN_PORTAL = new HashMap<>(4);
+    {
+        IF_MAIN_PORTAL.put(10+10*WIDTH, 3+5*WIDTH);
+        MAIN_PORTAL.put(3+5*WIDTH, throne);
+
+        IF_MAIN_PORTAL.put(10+24*WIDTH, 2+32*WIDTH);
+        IF_MAIN_PORTAL.put(1+33*WIDTH, throne);
+    }
+
 
     private static final int[] code_map = {
             W,W,W,W,W,W,W,W,W,W,W,W,S,S,S,S,S,S,S,S,S,S,S,W,W,W,W,W,W,W,W,W,W,W,W,
@@ -64,24 +212,31 @@ public class ShopBossLevel extends Level {
     }
 
     protected boolean build() {
-        setSize(35, 35);
+        setSize(WIDTH, HEIGHT);
         map = code_map.clone();
 
-        this.entrance = (this.width * 25) + 17;
+        this.entrance = WIDTH*25 + 17;
         exit = 0;
         return true;
     }
 
     protected void createItems() {
-        //
     }
+
+    static {
+        pedestals[0] = 10 + WIDTH * 10;
+
+        pedestals[1] = 14 + WIDTH * 14;
+
+        pedestals[2] = 14 + WIDTH * 22;
+
+        pedestals[3] = 23 + WIDTH * 22;
+
+    }
+
 
     public Mob createMob() {
         return null;
-    }
-
-    protected void createMobs() {
-        //
     }
 
     public int randomRespawnCell() {

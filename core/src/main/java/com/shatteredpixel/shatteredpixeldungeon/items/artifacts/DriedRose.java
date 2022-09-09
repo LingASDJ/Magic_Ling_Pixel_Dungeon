@@ -792,6 +792,9 @@ public class DriedRose extends Artifact {
 				case 4: default:
 					yell( Messages.get( this, "seen_yog_" + Random.IntRange(1, 3) ));
 					break;
+				case -15:
+					yell( Messages.get( this, "seen_frgirl_" + Random.IntRange(1, 3) ));
+					break;
 			}
 			Sample.INSTANCE.play( Assets.Sounds.GHOST );
 		}

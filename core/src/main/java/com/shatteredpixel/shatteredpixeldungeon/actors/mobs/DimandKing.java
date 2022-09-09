@@ -945,7 +945,7 @@ public class DimandKing extends Boss {
         }
         @Override
         public boolean attachTo(Char target){
-            target.sprite.showStatus(0x00FF00, Messages.get(DimandKing.class, "str_empower"));
+            GLog.n(Messages.get(DimandKing.class, "str_empower"));
             return super.attachTo(target);
         }
     }

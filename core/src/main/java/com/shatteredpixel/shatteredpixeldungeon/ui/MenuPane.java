@@ -81,10 +81,14 @@ public class MenuPane extends Component {
 		depthIcon = Icons.get(Dungeon.level.feeling);
 		add(depthIcon);
 
-		depthText = new BitmapText( Integer.toString( Dungeon.depth ), PixelScene.pixelFont);
+		if(Dungeon.depth < 0){
+			depthText = new BitmapText( "S", PixelScene.pixelFont);
+		} else {
+			depthText = new BitmapText(Integer.toString(Dungeon.depth), PixelScene.pixelFont);
+		}
 		depthText.hardlight( 0xCACFC2 );
 		depthText.measure();
-		add( depthText );
+		add(depthText);
 
 		depthButton = new Button(){
 			@Override
