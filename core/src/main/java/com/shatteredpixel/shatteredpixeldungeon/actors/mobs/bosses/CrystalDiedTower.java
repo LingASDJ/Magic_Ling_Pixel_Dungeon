@@ -20,7 +20,7 @@ public class CrystalDiedTower extends Mob {
     {
         spriteClass = IceStalSprites.class;
 
-        HP = HT = 150;
+        HP = HT = 1;
 
         properties.add(Property.MINIBOSS);
         properties.add(Property.INORGANIC);
@@ -28,6 +28,14 @@ public class CrystalDiedTower extends Mob {
         properties.add(Property.IMMOVABLE);
 
         state = HUNTING;
+    }
+
+    @Override
+    public void damage( int dmg, Object src ) {
+    }
+
+    @Override
+    public void add( Buff buff ) {
     }
 
     protected enum State{

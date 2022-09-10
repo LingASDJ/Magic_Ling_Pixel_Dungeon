@@ -1748,7 +1748,8 @@ public class Hero extends Char {
 				ankh = i;
 			}
 		}
-		if(Dungeon.isChallenged(LIGHTBLACK)){
+
+		if(Dungeon.isChallenged(LIGHTBLACK)) {
 			BlackSoul s = new BlackSoul();
 			s.pos = Dungeon.hero.pos;
 			s.gold = Dungeon.gold;
@@ -1759,7 +1760,9 @@ public class Hero extends Char {
 			Buff.affect(s, DeadSoul.class);
 			GameScene.flash(0x80FF0000);
 		}
-		if (ankh != null) {
+		if(Statistics.fireGirlnoshopping){
+			reallyDie( cause );
+		} else if (ankh != null) {
 			interrupt();
 			resting = false;
 

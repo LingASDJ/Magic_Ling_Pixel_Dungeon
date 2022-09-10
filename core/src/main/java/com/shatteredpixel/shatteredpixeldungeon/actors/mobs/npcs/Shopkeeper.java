@@ -23,17 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MoloHR;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShopGuard;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShopGuardEye;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -46,11 +37,8 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Music;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
 public class Shopkeeper extends NPC {
 
@@ -155,53 +143,8 @@ public class Shopkeeper extends NPC {
 	public void flee() {
 		destroy();
 		CellEmitter.get(pos).burst(ElmoParticle.FACTORY, 6);
-		Sample.INSTANCE.play(Assets.Sounds.ALERT);
-		Music.INSTANCE.play(Assets.RUN, true);
 		hero.sprite.burst(15597568, 9);
 		sprite.killAndErase();
-		Buff.prolong(Dungeon.hero, Blindness.class, Blindness.DURATION * 4f);
-		GameScene.flash(0x80FFFFFF);
-		Buff.affect(hero, Burning.class).reignite(hero, 15f);
-		Dungeon.level.seal();
-		Mob moa = new MoloHR();
-		moa.pos = pos;
-		GameScene.add(moa);
-		yell(Messages.get(this, "arise"));
-		new ShopGuardEye().spawnAround(pos);
-		new ShopGuard().spawnAround(pos);
-		Buff.affect(moa, ChampionEnemy.Growing.class);
-		Buff.affect(moa, ChampionEnemy.Projecting.class);
-		Buff.affect(moa, ChampionEnemy.AntiMagic.class);
-		Buff.affect(moa, ChampionEnemy.Giant.class);
-		Buff.affect(moa, ChampionEnemy.Blessed.class);
-		Buff.affect(moa, ChampionEnemy.Halo.class);
-		for (Mob mob : Dungeon.level.mobs) {
-			switch (Random.Int(7)) {
-				case 0:
-				default:
-					Buff.affect(mob, ChampionEnemy.Blazing.class);
-					break;
-				case 1:
-					Buff.affect(mob, ChampionEnemy.Projecting.class);
-					break;
-				case 2:
-					Buff.affect(mob, ChampionEnemy.AntiMagic.class);
-					break;
-				case 3:
-					Buff.affect(mob, ChampionEnemy.Giant.class);
-					break;
-				case 4:
-					Buff.affect(mob, ChampionEnemy.Blessed.class);
-					break;
-				case 5:
-					Buff.affect(mob, ChampionEnemy.Growing.class);
-					break;
-				case 6:
-					Buff.affect(mob, ChampionEnemy.Halo.class);
-					break;
-			}
-		}
-		yell(Messages.get(this, "dead"));
 	}
 	private DriedRose.GhostHero ghost = null;
 	public void destroy() {

@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlueBatSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdGuardSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_7_Changes(changeInfos);
         add_v0_6_6_Changes(changeInfos);
         add_v0_6_5_Changes(changeInfos);
         add_v0_6_4_Changes(changeInfos);
@@ -29,6 +31,32 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_7_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta20.785", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ColdGuardSprite(), ("全新区域：雪凛峡谷"),
+                ("在雪凛峡谷中寻找300年前的支离破碎的线索……\n\n全新商店抢劫系统：V6.0")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG1), ("月饼"),
+                ("限时食物：9-10到10.1，中秋节特供")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.INFO), ("杂项改动"),
+                ("-NPC对话文本改变\n-部分BGM升级更新")));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), (Messages.get(ChangesScene.class, "bugfixes")),
+                Messages.get(vM0_6_7_X_Changes.class, "bug_06X28")));
     }
 
     public static void add_v0_6_6_Changes( ArrayList<ChangeInfo> changeInfos ) {
@@ -276,9 +304,6 @@ public class vM0_6_7_X_Changes {
 
         changes.addButton(new ChangeButton(new FlameBoiSprite(), ("火焰机器人"),
                 ("移除火焰机器人在常规局的出现，仅出现在支离破碎的精英怪概率里面")));
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG1), ("炸弹匕首"),
-                ("移除炸弹匕首，它实在没有太大的用处。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BlackDog), ("黑狗爪"),
                 ("移除黑狗爪，它已不再有当年的威风")));

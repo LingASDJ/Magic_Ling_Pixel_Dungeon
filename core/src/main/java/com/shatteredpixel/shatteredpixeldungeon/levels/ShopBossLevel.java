@@ -11,7 +11,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrystalDiedTower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.FireMagicDied;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.FireMagicDiedNPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDied;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDiedTO;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -60,10 +62,11 @@ public class ShopBossLevel extends Level {
             GameScene.add(csp);
         }
 
-        //activateAll();
         FireMagicDied boss = new FireMagicDied();
         boss.pos = WIDTH*17 + 17;
         GameScene.add(boss);
+
+        //activateAll();
 
         GLog.p(Messages.get(FireMagicDied.class,"go", hero.name()));
         Sample.INSTANCE.play(Assets.Sounds.DEATH);
@@ -75,6 +78,18 @@ public class ShopBossLevel extends Level {
             WIDTH*17 + 12,
             WIDTH*17 + 22,
     };
+
+    @Override
+    public void unseal() {
+        super.unseal();
+        FireMagicDiedNPC boss = new FireMagicDiedNPC();
+        boss.pos = WIDTH*17 + 17;
+        GameScene.add(boss);
+
+        NullDiedTO bossx = new NullDiedTO();
+        bossx.pos = WIDTH*15 + 17;
+        GameScene.add(bossx);
+    }
 
     @Override
     public void occupyCell( Char ch ) {
@@ -151,20 +166,32 @@ public class ShopBossLevel extends Level {
 
     private static final HashMap<Integer, Integer> MAIN_PORTAL = new HashMap<>(4);
     {
-        MAIN_PORTAL.put(10+10*WIDTH, 3+5*WIDTH);
-        MAIN_PORTAL.put(3+5*WIDTH, throne);
+        MAIN_PORTAL.put(10+10*WIDTH, 2+2*WIDTH);
+        MAIN_PORTAL.put(1+WIDTH, throne);
+
+        MAIN_PORTAL.put(24+10*WIDTH, 32+2*WIDTH);
+        MAIN_PORTAL.put(33+WIDTH, throne);
 
         MAIN_PORTAL.put(10+24*WIDTH, 2+32*WIDTH);
         MAIN_PORTAL.put(1+33*WIDTH, throne);
+
+        MAIN_PORTAL.put(24+24*WIDTH, 32+32*WIDTH);
+        MAIN_PORTAL.put(33+33*WIDTH, throne);
     }
 
     private static final HashMap<Integer, Integer> IF_MAIN_PORTAL = new HashMap<>(4);
     {
-        IF_MAIN_PORTAL.put(10+10*WIDTH, 3+5*WIDTH);
-        MAIN_PORTAL.put(3+5*WIDTH, throne);
+        IF_MAIN_PORTAL.put(10+10*WIDTH, 2+2*WIDTH);
+        IF_MAIN_PORTAL.put(1+WIDTH, throne);
+
+        IF_MAIN_PORTAL.put(24+10*WIDTH, 32+2*WIDTH);
+        IF_MAIN_PORTAL.put(33+WIDTH, throne);
 
         IF_MAIN_PORTAL.put(10+24*WIDTH, 2+32*WIDTH);
         IF_MAIN_PORTAL.put(1+33*WIDTH, throne);
+
+        IF_MAIN_PORTAL.put(24+24*WIDTH, 32+32*WIDTH);
+        IF_MAIN_PORTAL.put(33+33*WIDTH, throne);
     }
 
 
@@ -181,17 +208,17 @@ public class ShopBossLevel extends Level {
             W,P,P,P,R,P,R,P,P,W,W,P,P,R,P,P,P,R,P,P,P,R,P,P,W,W,P,P,R,P,R,P,P,P,W,
             W,W,W,W,W,W,W,W,W,W,J,P,R,P,P,P,P,R,P,P,P,P,R,P,J,W,W,W,W,W,W,W,W,W,W,
             W,W,P,P,P,P,P,P,P,P,P,R,R,R,R,R,R,R,R,R,R,R,R,R,P,P,P,P,P,P,P,P,P,W,W,
-            S,W,W,P,P,P,P,P,P,P,R,R,R,D,G,G,G,H,X,X,X,X,R,R,R,P,P,P,P,P,P,P,W,W,S,
-            S,S,W,W,P,P,P,P,P,R,P,R,X,R,G,G,G,R,X,X,X,R,D,R,P,R,P,P,P,P,P,W,W,S,S,
-            S,S,S,W,W,P,P,P,R,P,P,R,X,X,R,G,G,R,X,X,R,G,G,R,P,P,R,P,P,P,W,W,S,S,S,
-            S,S,S,S,W,W,P,R,P,P,P,R,X,X,X,R,D,R,X,R,G,G,G,R,P,P,P,R,P,W,W,S,S,S,S,
-            S,S,S,S,S,W,W,P,P,P,P,R,X,X,X,X,R,R,R,D,G,G,G,R,P,P,P,P,W,W,S,S,S,S,S,
-            S,S,S,S,S,S,W,W,R,R,R,R,H,R,R,R,R,R,R,R,R,R,H,R,R,R,R,W,W,S,S,S,S,S,S,
-            S,S,S,S,S,W,W,P,P,P,P,R,G,G,G,D,R,R,R,X,X,X,X,R,P,P,P,P,W,W,S,S,S,S,S,
-            S,S,S,S,W,W,P,R,P,P,P,R,G,G,G,R,X,R,D,R,X,X,X,R,P,P,P,R,P,W,W,S,S,S,S,
-            S,S,S,W,W,P,P,P,R,P,P,R,G,G,R,X,X,R,G,G,R,X,X,R,P,P,R,P,P,P,W,W,S,S,S,
-            S,S,W,W,P,P,P,P,P,R,P,R,D,R,X,X,X,R,G,G,G,R,X,R,P,R,P,P,P,P,P,W,W,S,S,
-            S,W,W,P,P,P,P,P,P,P,R,R,R,X,X,X,X,H,G,G,G,D,R,R,R,P,P,P,P,P,P,P,W,W,S,
+            S,W,W,P,P,P,P,P,P,P,R,R,G,D,G,G,G,H,X,X,X,X,G,R,R,P,P,P,P,P,P,P,W,W,S,
+            S,S,W,W,P,P,P,P,P,R,P,R,X,G,G,G,G,R,X,X,X,G,D,R,P,R,P,P,P,P,P,W,W,S,S,
+            S,S,S,W,W,P,P,P,R,P,P,R,X,X,G,G,G,R,X,X,G,G,G,R,P,P,R,P,P,P,W,W,S,S,S,
+            S,S,S,S,W,W,P,R,P,P,P,R,X,X,X,G,D,R,X,G,G,G,G,R,P,P,P,R,P,W,W,S,S,S,S,
+            S,S,S,S,S,W,W,P,P,P,P,R,X,X,X,X,G,R,G,D,G,G,G,R,P,P,P,P,W,W,S,S,S,S,S,
+            S,S,S,S,S,S,W,W,R,R,R,R,H,R,R,R,R,G,R,R,R,R,H,R,R,R,R,W,W,S,S,S,S,S,S,
+            S,S,S,S,S,W,W,P,P,P,P,R,G,G,G,D,G,R,G,X,X,X,X,R,P,P,P,P,W,W,S,S,S,S,S,
+            S,S,S,S,W,W,P,R,P,P,P,R,G,G,G,G,X,R,D,G,X,X,X,R,P,P,P,R,P,W,W,S,S,S,S,
+            S,S,S,W,W,P,P,P,R,P,P,R,G,G,G,X,X,R,G,G,G,X,X,R,P,P,R,P,P,P,W,W,S,S,S,
+            S,S,W,W,P,P,P,P,P,R,P,R,D,G,X,X,X,R,G,G,G,G,X,R,P,R,P,P,P,P,P,W,W,S,S,
+            S,W,W,P,P,P,P,P,P,P,R,R,G,X,X,X,X,H,G,G,G,D,G,R,R,P,P,P,P,P,P,P,W,W,S,
             W,W,P,P,P,P,P,P,P,P,P,R,R,R,R,R,R,R,R,R,R,R,R,R,P,P,P,P,P,P,P,P,P,W,W,
             W,W,W,W,W,W,W,W,W,W,J,P,R,P,P,P,P,R,P,P,P,P,R,P,J,W,W,W,W,W,W,W,W,W,W,
             W,P,R,P,P,P,P,P,R,W,W,P,P,R,P,P,P,R,P,P,P,R,P,P,W,W,R,P,P,P,P,P,R,P,W,
@@ -226,14 +253,12 @@ public class ShopBossLevel extends Level {
     static {
         pedestals[0] = 10 + WIDTH * 10;
 
-        pedestals[1] = 14 + WIDTH * 14;
+        pedestals[1] = 24  + WIDTH * 10;
 
-        pedestals[2] = 14 + WIDTH * 22;
+        pedestals[2] = 10 + WIDTH * 24;
 
-        pedestals[3] = 23 + WIDTH * 22;
-
+        pedestals[3] = 32 + WIDTH * 32;
     }
-
 
     public Mob createMob() {
         return null;

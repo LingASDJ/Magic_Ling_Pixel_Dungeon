@@ -1,6 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
@@ -13,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Null;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.ShopKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.ShopKing_Two;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.BackGoKey;
 
 public class LinkLevel  extends Level {
 
@@ -78,14 +78,15 @@ public class LinkLevel  extends Level {
         setSize(WIDTH, HEIGHT);
         map = code_map.clone();
 
-        this.entrance = WIDTH*22 + 17;
+        this.entrance = WIDTH*28 + 22;
         exit = 0;
         return true;
     }
 
     @Override
     protected void createItems() {
-        drop( new IronKey(depth), this.width  + 22  );
+        drop( new BackGoKey(), this.width  + 1  );
+        drop( new IronKey(-5), this.width  + 22  );
     }
 
     @Override

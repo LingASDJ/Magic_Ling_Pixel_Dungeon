@@ -49,6 +49,10 @@ public class Statistics {
 	public static boolean completedWithNoKilling = false;
 	
 	public static boolean amuletObtained = false;
+
+	public static boolean fireGirlnoshopping = false;
+
+	public static boolean deadshoppingdied = false;
 	
 	public static void reset() {
 		
@@ -71,6 +75,10 @@ public class Statistics {
 		qualifiedForNoKilling = false;
 		
 		amuletObtained = false;
+
+		fireGirlnoshopping = false;
+
+		deadshoppingdied = false;
 		
 	}
 	
@@ -94,6 +102,11 @@ public class Statistics {
 	
 	private static final String AMULET		= "amuletObtained";
 
+	//浊焰契约
+	private static final String NOSHOPPING		= "fireGirlnoshopping";
+
+	private static final String SHOPPINGDIED		= "deadshoppingdied";
+
 	private static final String EXLEVEL = "Exlevel";
 	
 	public static void storeInBundle( Bundle bundle ) {
@@ -116,6 +129,10 @@ public class Statistics {
 		bundle.put(NO_KILLING_QUALIFIED, qualifiedForNoKilling);
 		
 		bundle.put( AMULET,		amuletObtained );
+
+		bundle.put( NOSHOPPING,	fireGirlnoshopping );
+
+		bundle.put( SHOPPINGDIED, deadshoppingdied );
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
@@ -138,6 +155,9 @@ public class Statistics {
 		qualifiedForNoKilling = bundle.getBoolean( NO_KILLING_QUALIFIED );
 		
 		amuletObtained	= bundle.getBoolean( AMULET );
+
+		fireGirlnoshopping	= bundle.getBoolean( NOSHOPPING );
+		deadshoppingdied = bundle.getBoolean( SHOPPINGDIED );
 	}
 	
 	public static void preview( GamesInProgress.Info info, Bundle bundle ){

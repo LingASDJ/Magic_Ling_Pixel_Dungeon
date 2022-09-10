@@ -39,7 +39,6 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
@@ -97,7 +96,9 @@ public class EtherealChains extends Artifact {
 			} else if (cursed) {
 				GLog.w( Messages.get(this, "cursed") );
 				usesTargeting = false;
-
+			} else if (Dungeon.depth < 0) {
+				GLog.w( Messages.get(this, "strmagic") );
+				usesTargeting = false;
 			} else {
 				usesTargeting = true;
 				GameScene.selectCell(caster);

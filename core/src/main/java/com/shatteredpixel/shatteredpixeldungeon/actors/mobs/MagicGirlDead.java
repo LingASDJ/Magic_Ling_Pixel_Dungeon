@@ -155,7 +155,7 @@ public class MagicGirlDead extends Boss {
         for (Buff buff : hero.buffs()) {
             if (buff instanceof RoseShiled) {
                 buff.detach();
-                GLog.b("玫瑰结界的创始人是翼绫，你怎么敢用她的技能?/kill @e[type=RoseShiled] enemy!");
+                GLog.b("玫瑰结界的创始人是翼绫，你怎么敢用她的技能?");
             }
             if (buff instanceof HaloFireImBlue ||buff instanceof FireImbue) {
                 buff.detach();

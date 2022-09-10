@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.shopOnLevel;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShopGuardDead;
@@ -35,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FireMagicGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
@@ -132,7 +134,8 @@ public class WndTradeItem extends WndInfoItem {
 
 		pos = btnBuy.bottom();
 
-		RedButton btnStole = new RedButton( Messages.get(this, "stole", price) ) {
+		RedButton btnStole = new RedButton( Statistics.fireGirlnoshopping ? Messages.get(this,
+				"oks"):Messages.get(this, "stole", price) ) {
 			@Override
 			protected void onClick() {
 				hide();
@@ -145,7 +148,7 @@ public class WndTradeItem extends WndInfoItem {
 			}
 		};
 		btnStole.setRect( 0, pos + GAP, width, BTN_HEIGHT );
-		btnStole.icon(new ShopGuardDead.ShopGuardianRedSprite());
+		btnStole.icon(Statistics.fireGirlnoshopping ? new FireMagicGirlSprite() :new ShopGuardDead.ShopGuardianRedSprite());
 		add( btnStole );
 		if(shopOnLevel()){
 			pos = btnStole.bottom();

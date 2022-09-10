@@ -132,13 +132,12 @@ public class WndChallenges extends Window {
 			cb.checked((checked & Challenges.MASKS[i]) != 0);
 			cb.active = editable;
 
-			//if(Challenges.NAME_IDS[i].equals("no_food") && cb.active == editable){
-			//	if(boxes.get( 12 ).checked()){
-			//		cb.active = false;
-			//		cb.checked(false);
-			//		cb.alpha(0.5f);
-			//	}
-			//}
+			//Disable
+			if(Challenges.NAME_IDS[i].equals("light&black")||Challenges.NAME_IDS[i].equals("exsg")||Challenges.NAME_IDS[i].equals("boss")){
+				cb.active = false;
+				cb.checked(false);
+				cb.alpha(0.5f);
+			}
 
 
 			if (i > 0) {
