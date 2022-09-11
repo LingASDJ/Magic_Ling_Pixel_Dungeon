@@ -134,7 +134,8 @@ public class WndTradeItem extends WndInfoItem {
 
 		pos = btnBuy.bottom();
 
-		RedButton btnStole = new RedButton( Statistics.fireGirlnoshopping ? Messages.get(this,
+		RedButton btnStole = new RedButton( Statistics.fireGirlnoshopping && !Statistics.deadshoppingdied ?
+				Messages.get(this,
 				"oks"):Messages.get(this, "stole", price) ) {
 			@Override
 			protected void onClick() {
@@ -148,7 +149,8 @@ public class WndTradeItem extends WndInfoItem {
 			}
 		};
 		btnStole.setRect( 0, pos + GAP, width, BTN_HEIGHT );
-		btnStole.icon(Statistics.fireGirlnoshopping ? new FireMagicGirlSprite() :new ShopGuardDead.ShopGuardianRedSprite());
+		btnStole.icon(Statistics.fireGirlnoshopping && !Statistics.deadshoppingdied ? new FireMagicGirlSprite() :
+				new ShopGuardDead.ShopGuardianRedSprite());
 		add( btnStole );
 		if(shopOnLevel()){
 			pos = btnStole.bottom();

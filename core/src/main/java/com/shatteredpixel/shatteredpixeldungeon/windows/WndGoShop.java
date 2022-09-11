@@ -30,30 +30,29 @@ public class WndGoShop extends Window {
         titlebar.icon(new ShopkeeperSprite());
         titlebar.label(Messages.get(this, "szo"));
         add(titlebar);
-        RenderedTextBlock message = PixelScene.renderTextBlock(Statistics.fireGirlnoshopping ? Messages.get(this,
+        RenderedTextBlock message = PixelScene.renderTextBlock(Statistics.fireGirlnoshopping && !Statistics.deadshoppingdied ? Messages.get(this,
                 "ots"):(Messages.get(this, "ary")), 6);
         message.maxWidth(WIDTH);
 
         message.setPos(0, titlebar.bottom() + GAP);
         add(message);
 
-        RedButton btnBuy = new RedButton( Statistics.fireGirlnoshopping ? Messages.get(this, "ok"):Messages.get(this
+        RedButton btnBuy = new RedButton( Statistics.fireGirlnoshopping && !Statistics.deadshoppingdied ?
+                Messages.get(this, "ok"):Messages.get(this
                 , "yes") ) {
             @Override
             protected void onClick() {
                 hide();
-                if(Statistics.fireGirlnoshopping){
+                if(Statistics.deadshoppingdied) {
+                    GLog.n(Messages.get(WndGoShop.class, "bad", Dungeon.hero.name()));
+                }else if(Statistics.fireGirlnoshopping){
                     //GLog.n(Messages.get(WndGoShop.class, "bad", Dungeon.hero.name()));
                     for (Mob mob : Dungeon.level.mobs) {
                         if (mob instanceof Shopkeeper) {
                             ((Shopkeeper) mob).flee();
                             break;
                         }
-                    }
                 }
-
-                if(Statistics.deadshoppingdied){
-                    //GLog.n(Messages.get(WndGoShop.class, "bad", Dungeon.hero.name()));
                 } else {
                     InterlevelScene.mode = InterlevelScene.Mode.EXBOSS;
                     Buff.affect(hero, Cost.class).set((6), 1);

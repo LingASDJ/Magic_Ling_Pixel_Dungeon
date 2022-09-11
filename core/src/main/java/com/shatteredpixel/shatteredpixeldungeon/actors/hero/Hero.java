@@ -1760,8 +1760,9 @@ public class Hero extends Char {
 			Buff.affect(s, DeadSoul.class);
 			GameScene.flash(0x80FF0000);
 		}
-		if(Statistics.fireGirlnoshopping){
+		if(Statistics.fireGirlnoshopping && Dungeon.depth < 0){
 			reallyDie( cause );
+			GLog.n(Messages.get(this,"died"));
 		} else if (ankh != null) {
 			interrupt();
 			resting = false;

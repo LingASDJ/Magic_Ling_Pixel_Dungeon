@@ -21,14 +21,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShopLimitLock;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BlackHost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdGurad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FireGhost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MolotovHuntsman;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDHBLR;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDICLRPRO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogReal;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.BallisticaReal;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.timing.VirtualActor;
@@ -45,9 +45,14 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ScanningBeam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.BackGoKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -104,7 +109,7 @@ public class FireMagicDied extends Mob implements Callback {
 
     @Override
     public boolean isInvulnerable(Class effect) {
-        return phase == 2 && effect != FireMagicDied.KingDamager.class;
+        return phase == 3 && effect != FireMagicDied.KingDamager.class;
     }
 
     @Override
@@ -408,7 +413,7 @@ public class FireMagicDied extends Mob implements Callback {
 
         } else if (phase == 2){
             if (summonSubject(2)) summonsMade++;
-        } else if (phase == 3 && buffs(DwarfMaster.Summoning.class).size() < 4){
+        } else if (phase == 3 && buffs(FireMagicDied.Summoning.class).size() < 4){
             actPhaseTwoSummon();
             return true;
         }
@@ -466,8 +471,6 @@ public class FireMagicDied extends Mob implements Callback {
         abilityCooldown = bundle.getFloat( ABILITY_CD );
         lastAbility = bundle.getInt( LAST_ABILITY );
         wave = bundle.getInt("wavePhase2");
-
-        if (phase == 3) properties.add(Property.IMMOVABLE);
     }
 
     @Override
@@ -554,16 +557,23 @@ public class FireMagicDied extends Mob implements Callback {
     @Override
     public int attackProc( Char enemy, int damage ) {
         damage = super.attackProc( enemy, damage );
-        if(HP > 400){
+        if(HP > 450){
             if (Random.Int( 3 ) == 0) {
                 Buff.affect( hero, HalomethaneBurning.class ).reignite( hero, 7f );
                 enemy.sprite.burst( 0x000000, 5 );
             }
-        } else {
+        } else if (HP > 400) {
             if (Random.NormalFloat( 2, 20 ) == 4) {
                 GLog.n( Messages.get(FireMagicDied.class, "died_kill",Dungeon.hero.name()) );
             }
             zap();
+        } else {
+            zap();
+            //doYogLasers();
+            if (Random.Int( 3 ) == 0) {
+                Buff.affect( hero, HalomethaneBurning.class ).reignite( hero, 24f );
+                enemy.sprite.burst( 0x000000, 5 );
+            }
         }
 
 
@@ -661,11 +671,12 @@ public class FireMagicDied extends Mob implements Callback {
             int dmgTaken = preHP - HP;
             abilityCooldown -= dmgTaken/8f;
             summonCooldown -= dmgTaken/8f;
-            if (HP <= 400 && phase == 1) {
+            if (HP <= 300) {
                 for (int i : CryStalPosition) {
                     Buff.append(hero, BeamTowerAdbility.class).towerPos = i;
                 }
-                ScrollOfTeleportation.appear(this, ShopBossLevel.thronex);
+                //properties.add(Property.IMMOVABLE);
+                ScrollOfTeleportation.appear(this, ShopBossLevel.throneling);
                 sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
                 Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
                 phase = 2;
@@ -678,25 +689,22 @@ public class FireMagicDied extends Mob implements Callback {
                 Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);
                 beamCD = 40 + 8 - (phase == 10 ? 38 : 0);
                 sprite.showStatus(0xff0000, Messages.get(this, "dead"));
+                sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
+                Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(12*25);
             }
-        } else if (phase == 2 && shielding() == 0 && HP <= 300) {
+        } else if (phase == 2 && shielding() == 0 && HP <= 100) {
             actPhaseTwoSummon();
             yell(  Messages.get(this, "enraged", Dungeon.hero.name()) );
-            Buff.detach(this, DwarfMaster.SacrificeSubjectListener.class);
+            //Buff.detach(this, FireMagicDied.SacrificeSubjectListener.class);
             for (Buff buff : hero.buffs()) {
                 if (buff instanceof FireMagicDied.KingDamager) {
                     buff.detach();
                 }
             }
-            properties.remove(Property.IMMOVABLE);
             actScanning();
-            sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
-            ScrollOfTeleportation.appear(this, ShopBossLevel.throneling);
-            properties.add(Property.IMMOVABLE);
             phase = 3;
             summonsMade = 0;
             sprite.idle();
-            Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(12*25);
             Char enemy = (this.enemy == null ? Dungeon.hero : this.enemy);
             int w = Dungeon.level.width();
             int dx = enemy.pos % w - pos % w;
@@ -714,6 +722,7 @@ public class FireMagicDied extends Mob implements Callback {
         for(Mob m: Dungeon.level.mobs.toArray(new Mob[0])){
             if(m instanceof FireMagicDied && HP < 50){
                 m.die(this);
+                GameScene.flash(0x80FFFFFF);
             }
         }
     }
@@ -723,10 +732,19 @@ public class FireMagicDied extends Mob implements Callback {
 
         super.die( cause );
         Dungeon.level.drop(new BackGoKey().quantity(1).identify(), pos).sprite.drop();
+        Dungeon.level.drop(new ScrollOfMagicMapping().quantity(1).identify(), pos).sprite.drop();
+        Dungeon.level.drop(new ScrollOfUpgrade().quantity(3).identify(), pos).sprite.drop();
+
+        Dungeon.level.drop(new Gold().quantity(5000), pos).sprite.drop();
+
+        Ankh woc = new Ankh();
+        woc.blessed = true;
+        woc.identify();
+
         Dungeon.level.unseal();
         Buff.affect(hero, ShopLimitLock.class).set((1), 1);
         for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
-            if (mob instanceof FireMagicDied.ColdGuradA ||  mob instanceof MolotovHuntsman ||mob instanceof Skeleton||mob instanceof CrystalDiedTower||mob instanceof DM100) {
+            if (mob instanceof FireMagicDied.ColdGuradA ||  mob instanceof SRPDICLRPRO ||mob instanceof Skeleton||mob instanceof CrystalDiedTower||mob instanceof DM100|| mob instanceof BlackHost|| mob instanceof Warlock|| mob instanceof Monk) {
                 mob.die( cause );
             }
         }
@@ -938,7 +956,7 @@ public class FireMagicDied extends Mob implements Callback {
                     }
                 } else {
                     if (((FireMagicDied)target).phase == 2 && HP > 300){
-                        target.damage(20, new FireMagicDied.KingDamager());
+                        target.damage(10, new FireMagicDied.KingDamager());
                     }
                 }
 
@@ -1067,7 +1085,7 @@ public class FireMagicDied extends Mob implements Callback {
             summonSubject(5, FireMagicDied.ColdGuradA.class);
             summonSubject(2, FireMagicDied.ColdGuradA.class);
             summonSubject(5, DM100.class);
-            summonSubject(7, SRPDHBLR.class);
+            summonSubject(7, SRPDICLRPRO.class);
             ++wave;
             spend(TICK*14);
         }else if(wave == 5){
@@ -1087,25 +1105,39 @@ public class FireMagicDied extends Mob implements Callback {
             Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);
             beamCD = 20 + 8 - (phase == 5 ? 19 : 0);
             ++wave;
-            spend(TICK*13);
-        }else if(wave == 6){
-            summonSubject(3, FireMagicDied.ColdGuradA.class);
-            summonSubject(3, FireMagicDied.ColdGuradA.class);
-            summonSubject(3, FireMagicDied.ColdGuradB.class);
-            summonSubject(3, FireMagicDied.ColdGuradB.class);
-            summonSubject(2, FireMagicDied.ColdGuradC.class);
-            ++wave;
-            spend(TICK*12);
+            spend(TICK*100000);
         }else{
-            //only need to kill one.
-            summonSubject(3, FireMagicDied.ColdGuradA.class);
-            spend(TICK);
+            spend(TICK*100000);
+        }
+    }
+
+    //第四阶段
+    @Override
+    public void move(int step) {
+
+        super.move(step);
+
+        Camera.main.shake(  1, 0.25f );
+        if(HP < 250) {
+            if (Dungeon.level.map[step] == Terrain.WATER && state == HUNTING) {
+                Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(50);
+
+                if (Dungeon.level.water[pos] && HP < HT) {
+                    if (Dungeon.level.heroFOV[pos]) {
+                        sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
+                    }
+                    if (HP * 2 == HT) {
+                        BossHealthBar.bleed(false);
+                    }
+                    HP++;
+                }
+            }
         }
     }
 
 
     //亡魂显现
-    public static class ColdGuradA extends FireGhost {
+    public static class ColdGuradA extends ColdGurad {
         {
             state = HUNTING;
             immunities.add(Corruption.class);
@@ -1169,6 +1201,8 @@ public class FireMagicDied extends Mob implements Callback {
     public static class ColdGuradC extends SRPDICLRPRO {
         {
             state = HUNTING;
+            this.HT = 40;
+            this.HP = 40;
             immunities.add(Corruption.class);
             resistances.add(Amok.class);
             lootChance=0f;
@@ -1204,7 +1238,7 @@ public class FireMagicDied extends Mob implements Callback {
             super.detach();
             for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
                         if (m instanceof FireMagicDied ){
-                            m.damage(20, this);
+                            m.damage(10, this);
                         }
                     }
             }

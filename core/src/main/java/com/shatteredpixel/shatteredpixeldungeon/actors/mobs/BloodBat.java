@@ -94,7 +94,7 @@ public class BloodBat extends Mob implements Callback {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( (2+level)*Dungeon.depth/5, (4+level)*Dungeon.depth/5 );
+        return Random.NormalIntRange( (2*Dungeon.depth/5), 4*Dungeon.depth/5 );
     }
 
     @Override
@@ -140,7 +140,7 @@ public class BloodBat extends Mob implements Callback {
         if (Dungeon.level != null) {
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                 if (mob instanceof BloodBat) {
-                    mob.HP = mob.HT = 18 + level * 2;
+                    mob.HP = mob.HT = 14 + level * 2;
                     ((BloodBat) mob).defenseSkill = 3 + level * 4;
                 }
             }
@@ -159,11 +159,11 @@ public class BloodBat extends Mob implements Callback {
         if(Dungeon.hero.lvl >= 25) {
             Buff.affect(Dungeon.hero, BloodBatRecharge.class, 300f);
         } else if(Dungeon.hero.lvl >= 20) {
-            Buff.affect(Dungeon.hero, BloodBatRecharge.class, 350f);
+            Buff.affect(Dungeon.hero, BloodBatRecharge.class, 550f);
         } else if(Dungeon.hero.lvl >= 15) {
-            Buff.affect(Dungeon.hero, BloodBatRecharge.class, 400f);
-        } else if(Dungeon.hero.lvl >= 10) {
             Buff.affect(Dungeon.hero, BloodBatRecharge.class, 600f);
+        } else if(Dungeon.hero.lvl >= 10) {
+            Buff.affect(Dungeon.hero, BloodBatRecharge.class, 700f);
         } else {
             Buff.affect(Dungeon.hero, BloodBatRecharge.class, 800f);
         }

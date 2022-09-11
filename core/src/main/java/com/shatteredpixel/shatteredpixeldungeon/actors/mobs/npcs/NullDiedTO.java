@@ -8,16 +8,15 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SnowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Firebomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.FrostBomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.LightFood;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHaste;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -63,36 +62,66 @@ public class NullDiedTO extends NTNPC {
         sprite.turnTo( pos, Dungeon.hero.pos );
         spend( TICK );
 
+        shop1 = Generator.randomUsingDefaults( Generator.Category.SCROLL );
+        shop2 = Generator.randomUsingDefaults( Generator.Category.STONE);
+        shop3 = Generator.randomUsingDefaults( Generator.Category.WAND);
+        shop4 = Generator.randomUsingDefaults( Generator.Category.ARTIFACT);
         shop6 = Generator.randomUsingDefaults( Generator.Category.ARMOR );
         shop5 = Generator.randomUsingDefaults( Generator.Category.RING );
-        shop4 = new MeatPie();
-        shop3 = new Pasty();
-        shop2 = new ScrollOfIdentify();
-        shop1 = new PotionOfHealing();
 
-        shop7 = new PotionOfHaste();
-        shop8 = new ScrollOfRemoveCurse();
-        shop9 = Generator.randomUsingDefaults( Generator.Category.WEP_T5 );
-        shop10 = Generator.randomUsingDefaults( Generator.Category.WEP_T3 );
-        shop11 = (Bomb) new Firebomb().quantity(1);
-        shop12 = (Bomb) new FrostBomb().quantity(1);
+        shop7 =  Generator.randomUsingDefaults( Generator.Category.WEP_T1 );
+        shop8 =  Generator.randomUsingDefaults( Generator.Category.WEP_T2 );
+        shop9 =  Generator.randomUsingDefaults( Generator.Category.WEP_T3 );
+        shop10 = Generator.randomUsingDefaults( Generator.Category.WEP_T4 );
+        shop11 = Generator.randomUsingDefaults( Generator.Category.WEP_T5 );
+        shop12 = Generator.randomUsingDefaults( Generator.Category.WEP_T6 );
+
+        shop13 = new PotionOfFrost().quantity(1).identify();
+        shop14 = new PotionOfLiquidFlame().quantity(1).identify();
+        shop15 = new MeatPie();
+        shop16 = new LightFood();
+        shop17 = new ScrollOfIdentify();
+        shop18 = new PotionOfHealing();
+
+        shop19 = new PotionOfHaste();
+        shop20 = new ScrollOfRemoveCurse();
+        shop21 = new Pasty().quantity(1).identify();
+        shop22 = new ScrollOfRemoveCurse().quantity(1).identify();
+        shop23 = new Firebomb().quantity(1);
+        shop24 = new FrostBomb().quantity(1);
+
+
         throwItem();
         return NullDiedTO.super.act();
     }
 
-    public static Potion shop1;
-    public static Scroll shop2;
-    public static Food shop3;
-    public static Food shop4;
+    public static Item shop1;
+    public static Item shop2;
+    public static Item shop3;
+    public static Item shop4;
     public static Item shop5;
     public static Item shop6;
 
-    public static Potion shop7;
-    public static Scroll shop8;
+    public static Item shop7;
+    public static Item shop8;
     public static Item shop9;
     public static Item shop10;
-    public static Bomb shop11;
-    public static Bomb shop12;
+    public static Item shop11;
+    public static Item shop12;
+
+    public static Item shop13;
+    public static Item shop14;
+    public static Item shop15;
+    public static Item shop16;
+    public static Item shop17;
+    public static Item shop18;
+
+    public static Item shop19;
+    public static Item shop20;
+    public static Item shop21;
+    public static Item shop22;
+    public static Item shop23;
+    public static Item shop24;
 
     @Override
     public boolean interact(Char c) {

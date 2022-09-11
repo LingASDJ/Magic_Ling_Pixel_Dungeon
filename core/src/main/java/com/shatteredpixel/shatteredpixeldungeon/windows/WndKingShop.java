@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReloadShop;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReloadShopTwo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDiedTO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -95,7 +96,55 @@ public class WndKingShop extends Window {
         bomb6.setRect( bomb5.right() + BTN_GAP, bomb5.top(), BTN_SIZE, BTN_SIZE );
         add(bomb6);
 
-        StyledButton btnSite = new StyledButton(Chrome.Type.WINDOW, Messages.get(this,"sellmod")){
+        WndKingShop.RewardButton2 x1 = new WndKingShop.RewardButton2( NullDiedTO.shop13 );
+        x1.setRect( bomb1.left() , bomb1.bottom(), BTN_SIZE, BTN_SIZE );
+        add(x1);
+
+        WndKingShop.RewardButton2 x2 = new WndKingShop.RewardButton2( NullDiedTO.shop14 );
+        x2.setRect( x1.right()+ BTN_GAP , x1.top(), BTN_SIZE, BTN_SIZE );
+        add(x2);
+
+        WndKingShop.RewardButton2 x3 = new WndKingShop.RewardButton2( NullDiedTO.shop15);
+        x3.setRect( x2.right()+ BTN_GAP , x2.top(), BTN_SIZE, BTN_SIZE );
+        add(x3);
+
+        WndKingShop.RewardButton2 x4 = new WndKingShop.RewardButton2( NullDiedTO.shop16);
+        x4.setRect( x3.right()+ BTN_GAP , x3.top(), BTN_SIZE, BTN_SIZE );
+        add(x4);
+
+        WndKingShop.RewardButton2 x5 = new WndKingShop.RewardButton2( NullDiedTO.shop17 );
+        x5.setRect( x4.right()+ BTN_GAP , x4.top(), BTN_SIZE, BTN_SIZE );
+        add(x5);
+
+        WndKingShop.RewardButton2 x6 = new WndKingShop.RewardButton2( NullDiedTO.shop18);
+        x6.setRect( x5.right() + BTN_GAP, x5.top(), BTN_SIZE, BTN_SIZE );
+        add(x6);
+
+        WndKingShop.RewardButton2 s1 = new WndKingShop.RewardButton2( NullDiedTO.shop19 );
+        s1.setRect( x1.left() , x1.bottom(), BTN_SIZE, BTN_SIZE );
+        add(s1);
+
+        WndKingShop.RewardButton2 s2 = new WndKingShop.RewardButton2( NullDiedTO.shop20 );
+        s2.setRect( s1.right()+ BTN_GAP , s1.top(), BTN_SIZE, BTN_SIZE );
+        add(s2);
+
+        WndKingShop.RewardButton2 s3 = new WndKingShop.RewardButton2( NullDiedTO.shop21);
+        s3.setRect( s2.right()+ BTN_GAP , s2.top(), BTN_SIZE, BTN_SIZE );
+        add(s3);
+
+        WndKingShop.RewardButton2 s4 = new WndKingShop.RewardButton2( NullDiedTO.shop22);
+        s4.setRect( s3.right()+ BTN_GAP , s3.top(), BTN_SIZE, BTN_SIZE );
+        add(s4);
+
+        WndKingShop.RewardButton2 s5 = new WndKingShop.RewardButton2( NullDiedTO.shop23 );
+        s5.setRect( s4.right()+ BTN_GAP , s4.top(), BTN_SIZE, BTN_SIZE );
+        add(s5);
+
+        WndKingShop.RewardButton2 s6 = new WndKingShop.RewardButton2( NullDiedTO.shop24);
+        s6.setRect( s5.right() + BTN_GAP, s5.top(), BTN_SIZE, BTN_SIZE );
+        add(s6);
+
+        StyledButton btnSite = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this,"sellmod"),6){
             @Override
             protected void onClick() {
                 super.onClick();
@@ -107,12 +156,29 @@ public class WndKingShop extends Window {
                 });
             }
         };
-        btnSite.icon(Icons.get(Icons.GOLD));
         btnSite.textColor(Window.CYELLOW);
-        btnSite.setRect(56,-2, 65, 20 );
+        btnSite.setRect(60,-2, 20, 20 );
         add(btnSite);
 
-        resize(WIDTH, (int) bomb6.bottom());
+        StyledButton btnReload = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this,"reloadshop"),6){
+            @Override
+            protected void onClick() {
+                super.onClick();
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        hide();
+                        Buff.prolong( hero, ReloadShopTwo.class, 1f);
+                    }
+                });
+            }
+        };
+        btnReload.textColor(Window.CYELLOW);
+        btnReload.icon(Icons.get(Icons.CHANGES));
+        btnReload.setRect(80,-2, 40, 20 );
+        add(btnReload);
+
+        resize(WIDTH, (int) s6.bottom());
     }
 
     public static WndBag sell() {
@@ -177,8 +243,8 @@ public class WndKingShop extends Window {
             RedButton btnConfirm = new RedButton(Messages.get(WndKingShop.class, "buy")){
                 @Override
                 protected void onClick() {
-                    if(Dungeon.gold > 200) {
-                        Dungeon.gold-=200;
+                    if(Dungeon.gold >500) {
+                        Dungeon.gold-=500;
                         WndKingShop.this.selectReward( item );
                         if (RandomBuff.level-- >= 0) {
                         }
@@ -216,8 +282,8 @@ public class WndKingShop extends Window {
             RedButton btnConfirm = new RedButton(Messages.get(WndKingShop.class, "buy")){
                 @Override
                 protected void onClick() {
-                    if(Dungeon.gold > 200) {
-                        Dungeon.gold-=200;
+                    if(Dungeon.gold > 500) {
+                        Dungeon.gold-=500;
                         Buff.prolong( hero, ReloadShop.class, 1f);
                         WndKingShop.this.selectReward( item );
                         if (RandomBuff.level-- >= 0) {

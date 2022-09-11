@@ -167,7 +167,7 @@ public class Badges {
 
 		//rudy
 		FIREGIRL                 	 ( 128 ),
-		SLIMEPR                  	 ( 129 ),
+		//SLIMEPR                  	 ( 129 ),
 		DRAWF_HEAD                    ( 130 ),
 		SPICEALBOSS 				 ( 131),
 
@@ -642,6 +642,16 @@ public class Badges {
 		}
 	}
 
+	private static void validateAMZ() {
+		if (global.contains( Badge.KILL_SLMKING ) &&
+				global.contains( Badge.KILL_DM720 ) &&
+				global.contains( Badge.KILL_MG) && global.contains( Badge.FIREGIRL) && global.contains( Badge.DRAWF_HEAD)) {
+
+			Badge badge = Badge.GODD_MAKE;
+			displayBadge( badge );
+		}
+	}
+
 	private static void validateYASD() {
 		if (global.contains( Badge.DEATH_FROM_FIRE ) &&
 				global.contains( Badge.DEATH_FROM_POISON ) &&
@@ -897,10 +907,12 @@ public class Badges {
 
 	public static void KILLSLIMKING() {
 		displayBadge( Badge.KILL_SLMKING );
+		validateAMZ();
 	}
 
 	public static void KILLSDM720() {
 		displayBadge( Badge.KILL_DM720 );
+		validateAMZ();
 	}
 
 	public static void CLEARWATER() {
@@ -909,14 +921,17 @@ public class Badges {
 
 	public static void KILLDWARF() {
 		displayBadge( Badge.DRAWF_HEAD );
+		validateAMZ();
 	}
 
 	public static void KILLFIREGIRL() {
 		displayBadge( Badge.FIREGIRL );
+		validateAMZ();
 	}
 
 	public static void KILLMG() {
 		displayBadge( Badge.KILL_MG );
+		validateAMZ();
 	}
 
 	public static void BIGX() {
