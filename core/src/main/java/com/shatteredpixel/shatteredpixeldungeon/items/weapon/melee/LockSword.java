@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Bundle;
 
@@ -29,6 +30,10 @@ public class LockSword extends MeleeWeapon {
             super.image = ItemSpriteSheet.DG5;
         }
 
+    }
+
+    public String desc() {
+        return Messages.get(this, "desc")+"_"+lvl+"_";
     }
 
     public int image() {

@@ -54,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
@@ -85,7 +86,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLightningS
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonKingBreath;
@@ -119,7 +119,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BlackDog;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.GreenSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
@@ -180,7 +179,7 @@ public enum HeroClass {
 			new FireFishSword().quantity(1).identify().collect();
 			new LaserPython().quantity(100).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
-			new PotionOfPurity().quantity(45).identify().collect();
+			new LockSword().quantity(1).identify().collect();
 			Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);
 			new AlchemicalCatalyst().quantity(45).identify().collect();
 			new EtherealChains().quantity(1).identify().collect();
@@ -188,7 +187,7 @@ public enum HeroClass {
 			new ScrollOfTransmutation().quantity(45).identify().collect();
 			new BeaconOfReturning().quantity(11).identify().collect();
 			new WarHammer().quantity(1).identify().collect();
-			new Gauntlet().quantity(1).identify().collect();
+			new ChaliceOfBlood().quantity(1).identify().collect();
 			new Firebloom.Seed().quantity(50).identify().collect();
 			new Blindweed.Seed().quantity(50).identify().collect();
 			new StoneOfFlock().quantity(50).identify().collect();
@@ -226,7 +225,6 @@ public enum HeroClass {
 			new RedBloodMoon().quantity(1).identify().collect();
 			new KingBag().quantity(1).identify().collect();
 			new PotionOfLiquidFlameX().quantity(100).identify().collect();
-			new LockSword().quantity(1).identify().collect();
 			new YellowSunBooks().quantity(1).identify().collect();
 			new BrokenBooks().quantity(1).identify().collect();
 			new DeepBloodBooks().quantity(1).identify().collect();
@@ -262,6 +260,9 @@ public enum HeroClass {
 		if (!Challenges.isItemBlocked(i)) hero.belongings.armor = (ClothArmor)i;
 
 		i = new Food();
+
+		//new EndingBlade().quantity(1).identify().collect();
+		//new ChaliceOfBlood().quantity(1).identify().collect();
 
 		new HerbBag().quantity(1).identify().collect();
 		new PotionOfHealing().quantity(3).identify().collect();

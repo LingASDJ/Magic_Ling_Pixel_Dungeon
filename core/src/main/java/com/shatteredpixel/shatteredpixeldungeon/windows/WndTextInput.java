@@ -74,13 +74,14 @@ public class WndTextInput extends Window {
 			final RenderedTextBlock txtBody = PixelScene.renderTextBlock(body, 6);
 			txtBody.maxWidth(width);
 			txtBody.setPos(0, pos);
+
 			add(txtBody);
 
 			pos = txtBody.bottom() + 2 * MARGIN;
 		}
 
 		int textSize = (int)PixelScene.uiCamera.zoom * (multiLine ? 6 : 9);
-		textBox = new TextInput(Chrome.get(Chrome.Type.TOAST_WHITE), multiLine, textSize){
+		textBox = new TextInput(Chrome.get(Chrome.Type.SCROLL), multiLine, textSize){
 			@Override
 			public void enterPressed() {
 				//triggers positive action on enter pressed, only with non-multiline though.
@@ -96,7 +97,7 @@ public class WndTextInput extends Window {
 		if (multiLine) {
 			inputHeight = 64; //~8 lines of text
 		} else {
-			inputHeight = 16;
+			inputHeight = 36;
 		}
 		add(textBox);
 		textBox.setRect(MARGIN, pos, width-2*MARGIN, inputHeight);

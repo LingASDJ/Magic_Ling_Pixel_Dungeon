@@ -5,6 +5,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.LaserPython;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -17,6 +22,7 @@ public class EndingBlade extends Weapon {
         image = ItemSpriteSheet.ENDDIED;
         tier = 4;
         cursed = true;
+        enchant(Enchantment.randomCurse());
     }
 
     //三大基础静态固定字节
@@ -44,21 +50,24 @@ public class EndingBlade extends Weapon {
     private boolean firstx=true;
 
     private static final String FIRST = "first";
+    private static final String INTRPS = "intrps";
 
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(FIRST, firstx);
+        bundle.put(INTRPS, fireenergy);
     }
 
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         firstx = bundle.getBoolean(FIRST);
+        fireenergy = bundle.getInt(INTRPS);
     }
 
     public String desc() {
-        return Messages.get(this, "desc")+"\n\n"+fireenergy;
+        return Messages.get(this, "desc")+"_"+fireenergy+"_";
     }
 
     //每100点浊焰能量自动升级
@@ -96,24 +105,49 @@ public class EndingBlade extends Weapon {
 
     @Override
     public int STRReq(int C) {
-        return 15+level;
+        return 15+fireenergy/100;
     }
 
     public int proc(Char attacker, Char defender, int damage ) {
         //常规加+1浊焰能量
-        ++this.fireenergy;
+        ++fireenergy;
+        int dmg;
         if(level >= 10){
             fireenergy += 0;
             //武器最高级
         } else if(defender.properties().contains(Char.Property.BOSS) && defender.HP <= damage){
             //目标Boss血量小于实际伤害判定为死亡,+20浊焰能量
-            this.fireenergy+=20;
+            fireenergy+=20;
         } else if(defender.properties().contains(Char.Property.MINIBOSS) && defender.HP <= damage){
             //目标迷你Boss血量小于实际伤害判定为死亡,+10浊焰能量
-            this.fireenergy+=10;
+            fireenergy+=10;
         } else if (defender.HP <= damage){
             //目标血量小于实际伤害判定为死亡,+5浊焰能量
-            this.fireenergy+=5;
+            fireenergy+=5;
+        }
+
+        /*
+         * 10级 死神附魔
+         * 8级  紊乱附魔
+         * 6级  电击附魔
+         * 4级  烈焰附魔
+         * 2级  恒动附魔
+         */
+        if(level>= 10){
+            dmg = (new Grim()).proc(this, attacker, defender, damage) + 5;
+            damage = dmg;
+        } else if (level>= 8) {
+            dmg = (new Unstable()).proc(this, attacker, defender, damage) + 4;
+            damage = dmg;
+        } else if (level>= 6){
+            dmg = (new Shocking()).proc(this, attacker, defender, damage) + 3;
+            damage = dmg;
+        } else if (level>= 4){
+            dmg = (new Blazing()).proc(this, attacker, defender, damage) + 2;
+            damage = dmg;
+        } else if (level>= 2){
+            dmg = (new Kinetic()).proc(this, attacker, defender, damage) + 1;
+            damage = dmg;
         }
 
         return super.proc(attacker, defender, damage);
@@ -175,11 +209,15 @@ public class EndingBlade extends Weapon {
 
     @Override
     public int min(int lvl) {
-        return 10;
+        return 10+(lvl*2)*(Dungeon.hero.lvl/10);
+        //10+20x3=70
     }
 
     @Override
     public int max(int lvl) {
-        return 15;
+        return 15+(lvl*3)*(Dungeon.hero.lvl/10);
+        //15+30x3=15+90=105
     }
+
+    //Max 70~105
 }

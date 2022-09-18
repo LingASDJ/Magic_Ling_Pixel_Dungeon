@@ -225,7 +225,7 @@ public class Toolbar extends Component {
 
 	@Override
 	protected void layout() {
-		final int maxHorizontalQuickslots = PixelScene.landscape() ? 5 : 3;
+		final int maxHorizontalQuickslots = PixelScene.landscape() ? 12 : 3;
 		float right = width;
 		if (SPDSettings.interfaceSize() > 0){
 			btnInventory.setPos(right - btnInventory.width(), y);

@@ -167,8 +167,8 @@ public class ChaliceOfBlood extends Artifact {
 				desc += Messages.get(this, "desc_2");
 			else
 				desc += Messages.get(this, "desc_3");
-		}
-
+			}
+				desc += Messages.get(this, "desc_4")+"_"+3*(level()*level())+"_"+Messages.get(this, "desc_5");
 		return desc;
 	}
 

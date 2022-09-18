@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -43,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
@@ -67,7 +70,7 @@ public class Ghost extends NPC {
 	@Override
 	protected boolean act() {
 		if (Quest.processed()) {
-			target = Dungeon.hero.pos;
+			target = hero.pos;
 		}
 		if (Dungeon.level.heroFOV[pos] && !Quest.completed()){
 			Notes.add( Notes.Landmark.GHOST );
@@ -109,7 +112,7 @@ public class Ghost extends NPC {
 		
 		Sample.INSTANCE.play( Assets.Sounds.GHOST );
 
-		if (c != Dungeon.hero){
+		if (c != hero){
 			return super.interact(c);
 		}
 		
@@ -164,13 +167,13 @@ public class Ghost extends NPC {
 			switch (Quest.type){
 				case 1: default:
 					questBoss = new FetidRat();
-					txt_quest = Messages.get(this, "rat_1", Dungeon.hero.name()); break;
+					txt_quest = Messages.get(this, "rat_1", hero.name()); break;
 				case 2:
 					questBoss = new GnollTrickster();
-					txt_quest = Messages.get(this, "gnoll_1", Dungeon.hero.name()); break;
+					txt_quest = Messages.get(this, "gnoll_1", hero.name()); break;
 				case 3:
 					questBoss = new GreatCrab();
-					txt_quest = Messages.get(this, "crab_1", Dungeon.hero.name()); break;
+					txt_quest = Messages.get(this, "crab_1", hero.name()); break;
 			}
 
 			questBoss.pos = Dungeon.level.randomRespawnCell( this );
@@ -310,17 +313,24 @@ public class Ghost extends NPC {
 				Generator.Category c = Generator.wepTiers[wepTier - 1];
 				weapon = (MeleeWeapon) Reflection.newInstance(c.classes[Random.chances(c.probs)]);
 
-				//50%:+0, 30%:+1, 15%:+2, 5%:+3
+				//30%:+0, 25%:+1, 15%:+2, 10%:+3, 15%:+4, 5%+5
 				float itemLevelRoll = Random.Float();
 				int itemLevel;
-				if (itemLevelRoll < 0.5f){
+				if (itemLevelRoll < 0.1f){
 					itemLevel = 0;
-				} else if (itemLevelRoll < 0.8f){
+				} else if (itemLevelRoll < 0.75f){
 					itemLevel = 1;
-				} else if (itemLevelRoll < 0.95f){
+				} else if (itemLevelRoll < 0.85f){
 					itemLevel = 2;
-				} else {
+				} else if (itemLevelRoll < 0.90f) {
 					itemLevel = 3;
+					hero.sprite.showStatus( CharSprite.NEGATIVE, "+3!!!" );
+				} else if (itemLevelRoll < 0.95f){
+					hero.sprite.showStatus( CharSprite.POSITIVE, "+5!!!" );
+					itemLevel = 5;
+				} else {
+					itemLevel = 4;
+					hero.sprite.showStatus( CharSprite.WARNING, "+4!!!" );
 				}
 				weapon.upgrade(itemLevel);
 				armor.upgrade(itemLevel);

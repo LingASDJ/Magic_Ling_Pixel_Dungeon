@@ -53,7 +53,7 @@ public class ThanksScene extends PixelScene {
                 ,
                 null,
                 null);
-        mispd.setRect((w - fullWidth)/2f, 120, 120, 0);
+        mispd.setRect((Camera.main.width - colWidth)/2f-10, 120, colWidth+20, 0);
         content.add(mispd);
 
         //*** Musics Used ***
@@ -65,7 +65,7 @@ public class ThanksScene extends PixelScene {
                 ,
                 null,
                 null);
-        musicUsed.setRect((w - fullWidth)/2f, mispd.bottom()+6, 120, 0);
+        musicUsed.setRect((Camera.main.width - colWidth)/2f-10, mispd.bottom()+6, colWidth+20, 0);
         content.add(musicUsed);
 
         CreditsBlock ptr = new CreditsBlock(true, 0x39aae5,
@@ -74,7 +74,7 @@ public class ThanksScene extends PixelScene {
                 "Developed by: _Jinkeloid_",
                 null,
                 null);
-        ptr.setRect((w - fullWidth)/2f, musicUsed.bottom()+6, 120, 0);
+        ptr.setRect((Camera.main.width - colWidth)/2f-10, musicUsed.bottom()+6, colWidth+20, 0);
         content.add(ptr);
         //*** Special Thanks ***
 
@@ -84,7 +84,7 @@ public class ThanksScene extends PixelScene {
                 null,
                 null,
                 null);
-        specialThanks.setRect((w - fullWidth)/2f, ptr.bottom()+6, 120, 0);
+        specialThanks.setRect((Camera.main.width - colWidth)/2f-10, ptr.bottom()+6, colWidth+20, 0);
         content.add(specialThanks);
 
         CreditsBlock specialThanksB = new CreditsBlock(true, 0xbe8e6e,
@@ -93,7 +93,7 @@ public class ThanksScene extends PixelScene {
                 null,
                 null,
                 null);
-        specialThanksB.setRect((w - fullWidth)/2f, specialThanks.bottom()+6, 120, 0);
+        specialThanksB.setRect((Camera.main.width - colWidth)/2f-10, specialThanks.bottom()+6, colWidth+20, 0);
         content.add(specialThanksB);
 
         //*** Shattered Pixel Dungeon Credits ***
@@ -104,7 +104,7 @@ public class ThanksScene extends PixelScene {
                 "Developed by: _Evan Debenham_\nBased on Pixel Dungeon's open source",
                 null,
                 null);
-        shpx.setRect((w - fullWidth)/2f, specialThanksB.bottom()+6, 120, 0);
+        shpx.setRect((Camera.main.width - colWidth)/2f-10, specialThanksB.bottom()+6, colWidth+20, 0);
         content.add(shpx);
 
         addLine(shpx.top() - 4, content);
@@ -158,9 +158,9 @@ public class ThanksScene extends PixelScene {
                 "加入碳化总群",
                 "https://jq.qq.com/?_wv=1027&k=6jAlnlNL");
         if (landscape()){
-            evan.setRect(shpx.left(), reddragon.bottom() + 8, colWidth, 0);
+            evan.setRect((Camera.main.width - colWidth)/2f-10, reddragon.bottom() + 8, colWidth+20, 0);
         } else {
-            evan.setRect(shpx.left(), reddragon.bottom() + 8, colWidth, 0);
+            evan.setRect((Camera.main.width - colWidth)/2f-10, reddragon.bottom() + 8, colWidth+20, 0);
         }
         content.add(evan);
 
@@ -173,9 +173,9 @@ public class ThanksScene extends PixelScene {
                 null,
                 null);
         if (landscape()){
-            wata.setRect(shpx.left(), evan.bottom() + 8, colWidth, 0);
+            wata.setRect((Camera.main.width - colWidth)/2f-10, evan.bottom() + 8, colWidth+20, 0);
         } else {
-            wata.setRect(shpx.left(), evan.bottom() + 8, colWidth, 0);
+            wata.setRect((Camera.main.width - colWidth)/2f-10, evan.bottom() + 8, colWidth+20, 0);
         }
         content.add(wata);
 
@@ -187,9 +187,9 @@ public class ThanksScene extends PixelScene {
                 "加入QQ魔绫开发总群",
                 "https://jq.qq.com/?_wv=1027&k=wzMjU0f7");
         if (landscape()){
-            wata2.setRect(shpx.left(), wata.bottom() + 20, colWidth, 0);
+            wata2.setRect((Camera.main.width - colWidth)/2f-10, wata.bottom() + 20, colWidth+20, 0);
         } else {
-            wata2.setRect(shpx.left(), wata.bottom() + 20, colWidth, 0);
+            wata2.setRect((Camera.main.width - colWidth)/2f-10, wata.bottom() + 20, colWidth+20, 0);
         }
         content.add(wata2);
 
@@ -203,9 +203,9 @@ public class ThanksScene extends PixelScene {
                 "Pixel Dungeon Discord Server",
                 "https://discord.gg/47bguQtcwZ");
         if (landscape()){
-            wata3.setRect(shpx.left(), wata2.bottom() + 18, colWidth, 0);
+            wata3.setRect((Camera.main.width - colWidth)/2f-10, wata2.bottom() + 18, colWidth+20, 0);
         } else {
-            wata3.setRect(shpx.left(), wata2.bottom() + 18, colWidth, 0);
+            wata3.setRect((Camera.main.width - colWidth)/2f-10, wata2.bottom() + 18, colWidth+20, 0);
         }
         content.add(wata3);
 
