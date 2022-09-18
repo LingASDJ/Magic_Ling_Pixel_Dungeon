@@ -21,17 +21,32 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
+
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class StewedMeat extends Food {
-	
+
+
+	@Override
+	protected void satisfy( Hero hero ) {
+		if (Dungeon.isChallenged(Challenges.EXSG)) {
+			hero.earnExp( hero.maxExp(), getClass() );
+		}
+	}
 	{
 		image = ItemSpriteSheet.STEWED;
 		energy = Hunger.HUNGRY/2f;
 	}
-	
+
 	@Override
 	public int value() {
 		return 8 * quantity;
@@ -75,5 +90,9 @@ public class StewedMeat extends Food {
 			outQuantity = 3;
 		}
 	}
-
+	@Override
+	public String desc() {
+		//三元一次逻辑运算
+		return Dungeon.isChallenged(EXSG) ? Messages.get(this, "descx") : Messages.get(this, "desc");
+	}
 }

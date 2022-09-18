@@ -21,12 +21,20 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
+
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WellFed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 import java.util.ArrayList;
 
@@ -39,6 +47,12 @@ public class MeatPie extends Food {
 	
 	@Override
 	protected void satisfy(Hero hero) {
+		if (Dungeon.isChallenged(Challenges.EXSG)){
+			Buff.prolong( hero, Haste.class, 8f);
+			hero.STR++;
+			hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
+			GLog.p(Messages.get(this, "eat_msg_2"));
+		}
 		super.satisfy( hero );
 		Buff.affect(hero, WellFed.class).reset();
 	}
@@ -94,5 +108,10 @@ public class MeatPie extends Food {
 		public Item sampleOutput(ArrayList<Item> ingredients) {
 			return new MeatPie();
 		}
+	}
+	@Override
+	public String desc() {
+		//三元一次逻辑运算
+		return Dungeon.isChallenged(EXSG) ? Messages.get(this, "descx") : Messages.get(this, "desc");
 	}
 }

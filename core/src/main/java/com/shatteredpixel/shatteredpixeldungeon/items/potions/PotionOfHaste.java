@@ -21,7 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.potions;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
+
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -37,13 +42,23 @@ public class PotionOfHaste extends Potion {
 	@Override
 	public void apply(Hero hero) {
 		identify();
-		
-		GLog.w( Messages.get(this, "energetic") );
-		Buff.prolong( hero, Haste.class, Haste.DURATION);
+		if(Dungeon.isChallenged(EXSG)){
+			GLog.w( Messages.get(this, "energeticx") );
+			Cripple.prolong(hero, Cripple.class, 8f);
+		}
+		else{
+			GLog.w( Messages.get(this, "energetic") );
+			Buff.prolong( hero, Haste.class, Haste.DURATION);
+		}
 	}
 	
 	@Override
 	public int value() {
 		return isKnown() ? 40 * quantity : super.value();
+	}
+	@Override
+	public String desc() {
+		//三元一次逻辑运算
+		return Dungeon.isChallenged(Challenges.EXSG) ? Messages.get(this, "descx") : Messages.get(this, "desc");
 	}
 }

@@ -21,18 +21,52 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
+
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
 
 public class SmallRation extends Food {
+
+
+	@Override
+	protected void satisfy( Hero hero ){
+		if (Dungeon.isChallenged(Challenges.EXSG)){
+			Buff.prolong( hero, Haste.class, 8f);
+		}
+
+		if (Dungeon.isChallenged(Challenges.NO_FOOD)){
+			Buff.affect(hero, Hunger.class).satisfy(energy/3f);
+		} else {
+			Buff.affect(hero, Hunger.class).satisfy(energy);
+		}
+	}
 
 	{
 		image = ItemSpriteSheet.OVERPRICED;
 		energy = Hunger.HUNGRY/2f;
 	}
-	
+
 	@Override
 	public int value() {
 		return 10 * quantity;
+	}
+	@Override
+	public String desc() {
+		//三元一次逻辑运算
+		return Dungeon.isChallenged(EXSG) ? Messages.get(this, "descx") : Messages.get(this, "desc");
 	}
 }

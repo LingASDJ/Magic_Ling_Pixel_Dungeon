@@ -21,11 +21,18 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
+
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -42,7 +49,17 @@ public class FrozenCarpaccio extends Food {
 	
 	@Override
 	protected void satisfy(Hero hero) {
+		if (Dungeon.isChallenged(Challenges.EXSG)) {
+			if (Dungeon.isChallenged(Challenges.NO_HEALING)){
+				PotionOfHealing.pharmacophobiaProc(hero);
+			} else {
+				//~75% of a potion of healing
+				Buff.affect(hero, Barrier.class).setShield((int) (0.6f * hero.HT + 10));
+				Talent.onHealingPotionUsed( hero );
+			}
+		}
 		super.satisfy(hero);
+
 		effect(hero);
 	}
 	
@@ -78,5 +95,10 @@ public class FrozenCarpaccio extends Food {
 		FrozenCarpaccio result = new FrozenCarpaccio();
 		result.quantity = ingredient.quantity();
 		return result;
+	}
+	@Override
+	public String desc() {
+		//三元一次逻辑运算
+		return Dungeon.isChallenged(EXSG) ? Messages.get(this, "descx") : Messages.get(this, "desc");
 	}
 }
