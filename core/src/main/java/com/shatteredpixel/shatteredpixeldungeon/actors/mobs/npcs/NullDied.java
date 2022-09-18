@@ -33,7 +33,7 @@ public class NullDied extends NTNPC {
     public void flee() {
         destroy();
         Dungeon.level.seal();
-        GameScene.flash(0x8000FFFF);
+        GameScene.flash(0x80FF0000);
         sprite.killAndErase();
         CellEmitter.get( pos ).burst(SnowParticle.FACTORY, 6 );
         CellEmitter.get( pos ).burst(EnergyParticle.FACTORY, 6 );

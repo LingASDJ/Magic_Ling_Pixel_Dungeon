@@ -146,7 +146,7 @@ public class CloakOfShadows extends Artifact {
 							BloodBat bat = new BloodBat();
 							bat.pos = respawnPoints.get(Random.index( respawnPoints ));
 							bat.HP = bat.HT = 18 + BloodBat.level * 2;
-							((BloodBat) bat).defenseSkill = 4 + BloodBat.level*2;
+							bat.defenseSkill = 4 + BloodBat.level*2;
 							bat.state = bat.WANDERING;
 							GameScene.add(bat);
 							bat.sprite.emitter().burst(Speck.factory(Speck.STAR), 10);

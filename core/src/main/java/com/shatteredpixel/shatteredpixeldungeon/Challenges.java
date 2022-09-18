@@ -71,13 +71,13 @@ public class Challenges {
 			"sbsg",
 			"exsg",
 			"stronger_bosses",
-			"light&black",
+			//"light&black",
 			"pro",
 	};
 
 	public static final int[] MASKS = {
 			NO_FOOD, NO_ARMOR, NO_HEALING, NO_HERBALISM, SWARM_INTELLIGENCE, DARKNESS, NO_SCROLLS
-			, AQUAPHOBIA, CHAMPION_ENEMIES,RLPT,SBSG,EXSG,STRONGER_BOSSES,LIGHTBLACK,PRO,
+			, AQUAPHOBIA, CHAMPION_ENEMIES,RLPT,SBSG,EXSG,STRONGER_BOSSES,PRO,
 	};
 	public String name;
 

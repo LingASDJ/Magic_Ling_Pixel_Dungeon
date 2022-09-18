@@ -129,7 +129,7 @@ public class RenderedTextBlock extends Component {
 			Θ = 蓝色
 			Ξ = 粉色
 			Π = 紫色
-			Σ = 黑色
+			✦ = 黑色
 			_ = 青色 */
 
 			if (str.equals("_") && highlightingEnabled){

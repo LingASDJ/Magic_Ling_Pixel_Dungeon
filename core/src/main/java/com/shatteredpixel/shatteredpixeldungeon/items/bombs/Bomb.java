@@ -61,7 +61,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class Bomb extends Item {
-	
+
 	{
 		image = ItemSpriteSheet.BOMB;
 
@@ -74,7 +74,7 @@ public class Bomb extends Item {
 	public Fuse fuse;
 
 	//FIXME using a static variable for this is kinda gross, should be a better way
-	private static boolean lightingFuse = false;
+	protected static boolean lightingFuse = false;
 
 	private static final String AC_LIGHTTHROW = "LIGHTTHROW";
 

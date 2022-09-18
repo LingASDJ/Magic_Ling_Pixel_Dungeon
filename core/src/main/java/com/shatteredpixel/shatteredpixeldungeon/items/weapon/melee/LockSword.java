@@ -13,7 +13,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 
 public class LockSword extends MeleeWeapon {
@@ -34,7 +33,7 @@ public class LockSword extends MeleeWeapon {
 
     public int image() {
         if (this.level() == 3 && Dungeon.hero.buff(RandomBuff.class) != null){
-            GLog.n("谢谢你为我升级……");
+            //GLog.n("谢谢你为我升级……");
             for (Buff buff : hero.buffs()) {
                 if (buff instanceof RandomBuff) {
                     buff.detach();

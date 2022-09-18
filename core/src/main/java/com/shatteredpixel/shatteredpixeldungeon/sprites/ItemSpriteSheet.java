@@ -433,6 +433,7 @@ public class ItemSpriteSheet {
 	public static final int ARTIFACT_ROSE1      = ARTIFACTS+20;
 	public static final int ARTIFACT_ROSE2      = ARTIFACTS+21;
 	public static final int ARTIFACT_ROSE3      = ARTIFACTS+22;
+	public static final int Gold_Iron       = ARTIFACTS+23;
 	static{
 		assignItemRect(ARTIFACT_CLOAK,      9,  15);
 		assignItemRect(ARTIFACT_ARMBAND,    16, 13);
@@ -457,6 +458,7 @@ public class ItemSpriteSheet {
 		assignItemRect(ARTIFACT_ROSE1,      14, 14);
 		assignItemRect(ARTIFACT_ROSE2,      14, 14);
 		assignItemRect(ARTIFACT_ROSE3,      14, 14);
+		assignItemRect(Gold_Iron,           16, 16);
 	}
 
 	                                                                                    //16 free slots
@@ -768,6 +770,7 @@ public class ItemSpriteSheet {
 	public static final int NOKING=		MAINBOOKINDEX+7;
 	public static final int FIRELIYD=		MAINBOOKINDEX+8;
 	public static final int FBK=		MAINBOOKINDEX+9;
+	public static final int LASERPYTHON=		MAINBOOKINDEX+10;
 
 	private static final int MAINPALYBOOKS     = xy(1, 40);
 	public static final int MONEYBOOKS=		MAINPALYBOOKS+1;

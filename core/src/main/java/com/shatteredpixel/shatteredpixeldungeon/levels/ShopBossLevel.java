@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrystalDiedTower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.FireMagicDied;
@@ -273,11 +274,19 @@ public class ShopBossLevel extends Level {
     }
 
     public String tilesTex() {
-        return Assets.Environment.TILES_COLD;
+        if (Dungeon.hero.buff(LockedFloor.class)!=null) {
+            return Assets.Environment.TILES_DIED;
+        } else {
+            return Assets.Environment.TILES_COLD;
+        }
     }
 
     public String waterTex() {
-        return Assets.Environment.WATER_COLD;
+        if (Dungeon.hero.buff(LockedFloor.class)!=null) {
+            return Assets.Environment.WATER_HALLS;
+        } else {
+            return Assets.Environment.WATER_COLD;
+        }
     }
 
 }

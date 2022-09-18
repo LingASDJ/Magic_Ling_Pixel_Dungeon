@@ -387,7 +387,7 @@ public class Dungeon {
 		 if (Dungeon.isChallenged(RLPT)) {
 			switch (depth) {
 				case 0:
-					level = new ShopBossLevel();
+					level = new ZeroLevel();
 					break;
 				case 1:
 				case 2:

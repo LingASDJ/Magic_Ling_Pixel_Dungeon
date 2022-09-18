@@ -21,7 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -32,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -49,7 +51,7 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 	}
 
 	public static boolean uncursable( Item item ){
-		if (item.isEquipped(Dungeon.hero) && Dungeon.hero.buff(Degrade.class) != null) {
+		if (item.isEquipped(hero) && hero.buff(Degrade.class) != null) {
 			return true;
 		} if ((item instanceof EquipableItem || item instanceof Wand) && ((!item.isIdentified() && !item.cursedKnown) || item.cursed)){
 			return true;
@@ -64,7 +66,12 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 
 	@Override
 	protected void onItemSelected(Item item) {
-		new Flare( 6, 32 ).show( curUser.sprite, 2f ) ;
+
+		if(item instanceof EndingBlade) {
+			new Flare( 6, 32 ).color( 0xff0000, true ).show( curUser.sprite, 2f );
+		} else {
+			new Flare(6, 32).show(curUser.sprite, 2f);
+		}
 
 		boolean procced = uncurse( curUser, item );
 
@@ -75,6 +82,8 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 
 		if (procced) {
 			GLog.p( Messages.get(this, "cleansed") );
+		} else if(item instanceof EndingBlade) {
+			GLog.n(Messages.get(ScrollOfRemoveCurse.class, "strmagic"));
 		} else {
 			GLog.i( Messages.get(this, "not_cleansed") );
 		}
@@ -86,9 +95,13 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 		for (Item item : items) {
 			if (item != null) {
 				item.cursedKnown = true;
-				if (item.cursed) {
-					procced = true;
-					item.cursed = false;
+				if (item instanceof EndingBlade) {
+						item.cursed = true;
+				} else {
+					if (item.cursed) {
+						procced = true;
+						item.cursed = false;
+					}
 				}
 			}
 			if (item instanceof Weapon){
@@ -109,7 +122,7 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 				((Wand) item).updateLevel();
 			}
 		}
-		
+
 		if (procced && hero != null) {
 			hero.sprite.emitter().start( ShadowParticle.UP, 0.05f, 10 );
 			hero.updateHT( false ); //for ring of might

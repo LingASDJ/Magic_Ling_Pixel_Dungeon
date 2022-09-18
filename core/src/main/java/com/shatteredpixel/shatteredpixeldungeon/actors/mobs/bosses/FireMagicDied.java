@@ -6,6 +6,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.CryS
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
@@ -21,9 +22,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShopLimitLock;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BlackHost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdGurad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDICLRPRO;
@@ -40,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
@@ -62,6 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
@@ -217,6 +222,12 @@ public class FireMagicDied extends Mob implements Callback {
     private int beamCD = 23;
     private float summonCooldown = 0;
     private float abilityCooldown = 6;
+
+    private static final int MIN_ABILITY_CD = 7;
+    private static final int MAX_ABILITY_CD = 12;
+    private ArrayList<Integer> targetedCells = new ArrayList<>();
+    private int lastHeroPos;
+
     private static final int MIN_COOLDOWN = 7;
     private static final int MAX_COOLDOWN = 11;
     private int summonsMade = 0;
@@ -345,7 +356,22 @@ public class FireMagicDied extends Mob implements Callback {
 
     @Override
     public boolean act() {
-        if (phase == 1 && HP <= 400) {
+        if (phase == 1 && HP <= 350) {
+            doYogLasers();
+            actScanning();
+            if (Dungeon.level.water[pos] && HP < HT) {
+                HP += healInc;
+
+                if (Dungeon.level.heroFOV[pos]) {
+                    sprite.emitter().burst(Speck.factory(Speck.HEALING), healInc);
+                }
+                if (HP * 2 > HT) {
+                    BossHealthBar.bleed(false);
+                    ((FireMagicGirlSprite) sprite).spray(false);
+                    HP = Math.min(HP, HT);
+                }
+            }
+        }else if (phase == 2 && HP <= 300) {
 
             if (summonCooldown <= 0 && summonSubject(3)){
                 summonsMade++;
@@ -411,9 +437,9 @@ public class FireMagicDied extends Mob implements Callback {
                 abilityCooldown--;
             }
 
-        } else if (phase == 2){
+        } else if (phase == 3){
             if (summonSubject(2)) summonsMade++;
-        } else if (phase == 3 && buffs(FireMagicDied.Summoning.class).size() < 4){
+        } else if (phase == 4 && buffs(FireMagicDied.Summoning.class).size() < 4){
             actPhaseTwoSummon();
             return true;
         }
@@ -437,40 +463,39 @@ public class FireMagicDied extends Mob implements Callback {
         return super.act();
     }
     private static final String PHASE = "phase";
+    private static final String ABILITY_CD = "ability_cd";
+    private static final String SUMMON_CD = "summon_cd";
     private static final String SUMMONS_MADE = "summons_made";
     private int wave=0;
+    private static final String TARGETED_CELLS = "targeted_cells";
 
-    private static final String SUMMON_CD = "summon_cd";
-    private static final String ABILITY_CD = "ability_cd";
-    private static final String LAST_ABILITY = "last_ability";
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
-        bundle.put( PHASE, phase );
-        bundle.put( SUMMONS_MADE, summonsMade );
-        bundle.put( SUMMON_CD, summonCooldown );
-        bundle.put( ABILITY_CD, abilityCooldown );
-        bundle.put( LAST_ABILITY, lastAbility );
-        bundle.put("wavePhase2", wave);
-        pumpedUp = bundle.getInt( PUMPEDUP );
-        if (state != SLEEPING) BossHealthBar.assignBoss(this);
-        if ((HP*2 <= HT)) BossHealthBar.bleed(true);
+        bundle.put(PHASE, phase);
 
-        //if check is for pre-0.9.3 saves
-        healInc = bundle.getInt(HEALINC);
-        bundle.put( PUMPEDUP , pumpedUp );
-        bundle.put( HEALINC, healInc );
+        bundle.put(ABILITY_CD, abilityCooldown);
+        bundle.put(SUMMON_CD, summonCooldown);
+
+        int[] bundleArr = new int[targetedCells.size()];
+        for (int i = 0; i < targetedCells.size(); i++){
+            bundleArr[i] = targetedCells.get(i);
+        }
+        bundle.put(TARGETED_CELLS, bundleArr);
     }
 
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
-        phase = bundle.getInt( PHASE );
-        summonsMade = bundle.getInt( SUMMONS_MADE );
-        summonCooldown = bundle.getFloat( SUMMON_CD );
-        abilityCooldown = bundle.getFloat( ABILITY_CD );
-        lastAbility = bundle.getInt( LAST_ABILITY );
-        wave = bundle.getInt("wavePhase2");
+        phase = bundle.getInt(PHASE);
+        if (phase != 0) BossHealthBar.assignBoss(this);
+
+        abilityCooldown = bundle.getFloat(ABILITY_CD);
+        summonCooldown = bundle.getFloat(SUMMON_CD);
+
+        for (int i : bundle.getIntArray(TARGETED_CELLS)){
+            targetedCells.add(i);
+        }
     }
 
     @Override
@@ -677,6 +702,7 @@ public class FireMagicDied extends Mob implements Callback {
                 }
                 //properties.add(Property.IMMOVABLE);
                 ScrollOfTeleportation.appear(this, ShopBossLevel.throneling);
+                doYogLasers();
                 sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
                 Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
                 phase = 2;
@@ -715,7 +741,8 @@ public class FireMagicDied extends Mob implements Callback {
             beamCD = 40 + 8 - (phase == 10 ? 38 : 0);
             sprite.showStatus(0xff0000, Messages.get(this, "dead"));
 
-        } else if (phase == 3 && preHP > 50 && HP <= 50){
+        } else if (phase == 3 && preHP > 80 && HP <= 80){
+            doYogLasers();
             yell( Messages.get(this, "losing") );
         }
 
@@ -766,6 +793,7 @@ public class FireMagicDied extends Mob implements Callback {
     public void notice() {
         super.notice();
         BossHealthBar.assignBoss(this);
+        ShatteredPixelDungeon.seamlessResetScene();
         Music.INSTANCE.play(Assets.BGM_FRBOSS, true);
         yell( Messages.get(this, "notice") );
         //summon();
@@ -1111,7 +1139,73 @@ public class FireMagicDied extends Mob implements Callback {
         }
     }
 
-    //第四阶段
+    //Next Level 4
+    public void doYogLasers(){
+        boolean terrainAffected = false;
+        HashSet<Char> affected = new HashSet<>();
+        //delay fire on a rooted hero
+        if (!enemy.rooted) {
+            for (int i : targetedCells) {
+                Ballistica b = new Ballistica(i, lastHeroPos, Ballistica.WONT_STOP);
+                //shoot beams
+                sprite.parent.add(new Beam.DeathRayS(DungeonTilemap.raisedTileCenterToWorld(i),
+                        DungeonTilemap.raisedTileCenterToWorld(b.collisionPos)));
+                for (int p : b.path) {
+                    Char ch = Actor.findChar(p);
+                    if (ch != null && (ch.alignment != alignment || ch instanceof Bee)) {
+                        affected.add(ch);
+                    }
+                    if (Dungeon.level.flamable[p]) {
+                        Dungeon.level.destroy(p);
+                        GameScene.updateMap(p);
+                        terrainAffected = true;
+                    }
+                }
+            }
+            if (terrainAffected) {
+                Dungeon.observe();
+            }
+            for (Char ch : affected) {
+                ch.damage(Random.NormalIntRange(60, 121), new Eye.DeathGaze());
+
+                if (Dungeon.level.heroFOV[pos]) {
+                    ch.sprite.flash();
+                    CellEmitter.center(pos).burst(Speck.factory(Speck.COIN), Random.IntRange(2, 3));
+                }
+                if (!ch.isAlive() && ch == Dungeon.hero) {
+                    Dungeon.fail(getClass());
+                    GLog.n(Messages.get(Char.class, "kill", name()));
+                }
+            }
+            targetedCells.clear();
+        }
+
+        if (abilityCooldown <= 0 && HP < HT*0.8f){
+            lastHeroPos = enemy.pos;
+
+            int beams = (int) (4 + (HP * 1.0f / HT)*4);
+            for (int i = 0; i < beams; i++){
+                int randompos = Random.Int(Dungeon.level.width()) + Dungeon.level.width()*2;
+                targetedCells.add(randompos);
+            }
+
+            for (int i : targetedCells){
+                Ballistica b = new Ballistica(i, Dungeon.hero.pos, Ballistica.WONT_STOP);
+                for (int p : b.path){
+                    Game.scene().addToFront(new TargetedCell(p, 0xFF0000));
+                }
+            }
+
+            spend(TICK*1.5f);
+            Dungeon.hero.interrupt();
+
+            abilityCooldown += Random.NormalFloat(MIN_ABILITY_CD - 2*(1 - (HP * 1f / HT)), MAX_ABILITY_CD - 5*(1 - (HP * 1f / HT)));
+        } else {
+            spend(TICK);
+        }
+        if (abilityCooldown > 0) abilityCooldown--;
+    }
+
     @Override
     public void move(int step) {
 
@@ -1237,11 +1331,11 @@ public class FireMagicDied extends Mob implements Callback {
         public void detach() {
             super.detach();
             for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
-                        if (m instanceof FireMagicDied ){
-                            m.damage(10, this);
-                        }
-                    }
+                if (m instanceof FireMagicDied ){
+                    m.damage(10, this);
+                }
             }
+        }
     }
 
 }

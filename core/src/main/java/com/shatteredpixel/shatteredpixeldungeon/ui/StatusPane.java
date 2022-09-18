@@ -267,6 +267,9 @@ public class StatusPane extends Component {
 
 			//buffs.setPos( x + 31, y );
 
+			//下半段
+			puresoul.visible = false;
+
 			busy.x = x + bg.width + 1;
 			busy.y = y + bg.height - 9;
 		} else {

@@ -27,8 +27,10 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CrossTownProc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrossDiedTower;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.FeatherFall;
@@ -70,6 +72,16 @@ public class Chasm implements Hero.Doom {
 								if (index == 0) {
 									if (Dungeon.hero.pos == heroPos) {
 										jumpConfirmed = true;
+										for (Buff buff : hero.buffs()) {
+											if (buff instanceof CrossTownProc) {
+												buff.detach();
+											}
+										}
+										for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
+											if (mob instanceof CrossDiedTower) {
+												mob.die( true );
+											}
+										}
 										hero.resume();
 									}
 								}
