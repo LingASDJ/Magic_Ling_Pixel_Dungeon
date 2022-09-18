@@ -21,7 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.potions;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
+
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -31,25 +35,43 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 public class PotionOfMindVision extends Potion {
 
-	{
-		icon = ItemSpriteSheet.Icons.POTION_MINDVIS;
-	}
+    {
+        icon = ItemSpriteSheet.Icons.POTION_MINDVIS;
+    }
 
-	@Override
-	public void apply( Hero hero ) {
-		identify();
-		Buff.affect( hero, MindVision.class, MindVision.DURATION );
-		Dungeon.observe();
-		
-		if (Dungeon.level.mobs.size() > 0) {
-			GLog.i( Messages.get(this, "see_mobs") );
-		} else {
-			GLog.i( Messages.get(this, "see_none") );
-		}
-	}
-	
-	@Override
-	public int value() {
-		return isKnown() ? 30 * quantity : super.value();
-	}
+    @Override
+    public void apply(Hero hero) {
+        identify();
+
+        if (Dungeon.isChallenged(EXSG)) {
+            if (Dungeon.level.mobs.size() > 0) {
+                GLog.i(Messages.get(this, "can't_see_mobs"));
+
+            } else {
+                GLog.i(Messages.get(this, "cant'see_none"));
+            }
+            Buff.affect(hero, Blindness.class, 5f);
+        } else {
+            Buff.affect(hero, MindVision.class, MindVision.DURATION);
+            Dungeon.observe();
+            if (Dungeon.level.mobs.size() > 0) {
+                GLog.i(Messages.get(this, "see_mobs"));
+            } else {
+                GLog.i(Messages.get(this, "see_none"));
+            }
+        }
+    }
+
+
+    @Override
+    public int value() {
+        return isKnown() ? 30 * quantity : super.value();
+    }
+
+    @Override
+    public String desc() {
+        //三元一次逻辑运算
+        return Dungeon.isChallenged(Challenges.EXSG) ? Messages.get(this, "descx") : Messages.get(this, "desc");
+    }
+
 }
