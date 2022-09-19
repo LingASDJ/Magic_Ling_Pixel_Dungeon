@@ -109,9 +109,7 @@ public class SPDSettings extends GameSettings {
 
 	private static final String KEY_PAGE	= "page_ui";
 
-	private static final String KEY_PCUI	= "pc_ui";
-
-	private static final String KEY_SWAP	= "quickswap";
+	private static final String HelpSettings	= "helpsettings";
 	
 	public static void fullscreen( boolean value ) {
 		put( KEY_FULLSCREEN, value );
@@ -445,6 +443,14 @@ public class SPDSettings extends GameSettings {
 
 	public static boolean ClassUI() {
 		return getBoolean(KEY_DARK, false);
+	}
+
+	public static void HelpSettings(boolean value) {
+		put( HelpSettings, value );
+	}
+
+	public static boolean HelpSettings() {
+		return getBoolean(HelpSettings, false);
 	}
 
 	public static boolean ClassSkin() {

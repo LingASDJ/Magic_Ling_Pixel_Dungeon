@@ -686,6 +686,9 @@ public class Dungeon {
 
 		hero.curAction = hero.lastAction = null;
 
+		//SPD
+		LevelSwitchListener.onLevelSwitch();
+
 		observe();
 		try {
 			saveAll();

@@ -21,11 +21,15 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -36,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
@@ -50,12 +55,13 @@ import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class WndHero extends WndTabbed {
-	
+
 	private static final int WIDTH		= 130;
 	private static final int HEIGHT		= 120;
-	
+
 	private StatsTab stats;
 	private TalentsTab talents;
 	private BuffsTab buffs;
@@ -63,11 +69,11 @@ public class WndHero extends WndTabbed {
 	public static int lastIdx = 0;
 
 	public WndHero() {
-		
+
 		super();
-		
+
 		resize( WIDTH, HEIGHT );
-		
+
 		stats = new StatsTab();
 		add( stats );
 
@@ -79,7 +85,7 @@ public class WndHero extends WndTabbed {
 		add( buffs );
 		buffs.setRect(0, 0, WIDTH, HEIGHT);
 		buffs.setupList();
-		
+
 		add( new IconTab( Icons.get(Icons.RANKINGS) ) {
 			protected void select( boolean value ) {
 				super.select( value );
@@ -125,11 +131,11 @@ public class WndHero extends WndTabbed {
 	}
 
 	private class StatsTab extends Group {
-		
-		private static final int GAP = 6;
-		
+
+		private static final int GAP = 4;
+
 		private float pos;
-		
+
 		public StatsTab() {
 			initialize();
 		}
@@ -140,18 +146,15 @@ public class WndHero extends WndTabbed {
 				if (g != null) g.destroy();
 			}
 			clear();
-			
+
 			Hero hero = Dungeon.hero;
 
 			IconTitle title = new IconTitle();
 			title.icon( HeroSprite.avatar(hero.heroClass, hero.tier()) );
-			if (hero.name().equals(hero.className())) {
-				title.label(Messages.get(this, "title", Integer.valueOf(hero.lvl), hero.className()).toUpperCase(Locale.ENGLISH));
-			} else {
-				title.label((hero.name() + "\n" + Messages.get(this, "title", Integer.valueOf(hero.lvl),
-						hero.className())).toUpperCase(Locale.ENGLISH));
-			}
-
+			if (hero.name().equals(hero.className()))
+				title.label( Messages.get(this, "title", hero.lvl, hero.className() ).toUpperCase( Locale.ENGLISH ) );
+			else
+				title.label((hero.name() + "\n" + Messages.get(this, "title", hero.lvl, hero.className())).toUpperCase(Locale.ENGLISH));
 			title.color(Window.TITLE_COLOR);
 			title.setRect( 0, 0, WIDTH-16, 0 );
 			add(title);
@@ -176,7 +179,7 @@ public class WndHero extends WndTabbed {
 			infoButton.setRect(title.right(), 0, 16, 16);
 			add(infoButton);
 
-			pos = title.bottom() + 2*GAP;
+			pos = title.bottom() + GAP;
 
 			int strBonus = hero.STR() - hero.STR;
 			if (strBonus > 0)           statSlot( Messages.get(this, "str"), hero.STR + " + " + strBonus );
@@ -190,32 +193,118 @@ public class WndHero extends WndTabbed {
 
 			statSlot( Messages.get(this, "gold"), Statistics.goldCollected );
 			statSlot( Messages.get(this, "depth"), Statistics.deepestFloor );
-
-			statSlot( M.L(HeroStat.class,"seed_dungeon"),  DungeonSeed.convertToCode(Dungeon.seed).toUpperCase());
+			statSlot( Messages.get(HeroStat.class, "seed_dungeon"), DungeonSeed.convertToCode(Dungeon.seed) );
 
 			pos += GAP;
+
+			Hunger hunger = Dungeon.hero.buff(Hunger.class);
+			String hunger_str = "null";
+			if(hunger != null){
+				hunger_str = hunger.hunger() + "/" + Hunger.STARVING;
+			}
+			statSlot( M.L(HeroStat.class, "hunger"), hunger_str);
+
+			pos += GAP;
+
+			RedButton buttonItem = new RedButton(M.L(HeroStat.class, "item_enter"), 8){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					GameScene.show(new StatsTab.WndTreasureGenerated());
+				}
+			};
+			add(buttonItem);
+			buttonItem.setRect(2, pos, WIDTH - 4, 16);
+			if(HelpSettings()){
+				buttonItem.active = true;
+			} else {
+				buttonItem.active = false;
+				buttonItem.visible = false;
+			}
+
 		}
 
 		private void statSlot( String label, String value ) {
-			
-			RenderedTextBlock txt = PixelScene.renderTextBlock( label, 8 );
+
+			RenderedTextBlock txt = PixelScene.renderTextBlock( label, 7 );
 			txt.setPos(0, pos);
 			add( txt );
-			
-			txt = PixelScene.renderTextBlock( value, 8 );
-			txt.setPos(WIDTH * 0.6f, pos);
+
+			txt = PixelScene.renderTextBlock( value, 7 );
+			txt.setPos(WIDTH * 0.5f, pos);
 			PixelScene.align(txt);
 			add( txt );
-			
+
 			pos += GAP + txt.height();
 		}
-		
+
 		private void statSlot( String label, int value ) {
 			statSlot( label, Integer.toString( value ) );
 		}
-		
+
 		public float height() {
 			return pos;
+		}
+
+		private class WndTreasureGenerated extends Window{
+			private static final int WIDTH = 120;
+			private static final int HEIGHT = 144;
+
+			public WndTreasureGenerated(){
+				super();
+				resize(WIDTH, HEIGHT);
+				ScrollPane pane = new ScrollPane(new Component());
+				Component content = pane.content();
+				this.add(pane);
+				pane.setRect(0,0,WIDTH, HEIGHT);
+
+				GameTracker gmt = Dungeon.hero.buff(GameTracker.class);
+				if(gmt != null){
+					String allInfo = gmt.itemInfo();
+					String[] result = allInfo.split("\n");
+					float pos = 2;
+					for(String info: result){
+						if(info.contains("dungeon_depth")){
+							pos += 4;
+							RenderedTextBlock depthText = PixelScene.renderTextBlock(info.replace("dungeon_depth: ", M.L(HeroStat.class, "item_wnd_depth")), 8);
+							depthText.maxWidth(WIDTH);
+							depthText.hardlight(0xFFFF00);
+							content.add(depthText);
+							depthText.setPos(0, pos);
+							pos += 8;
+						}else{
+							pos += 1;
+							info = info.replace("MIMIC_HOLD", M.L(HeroStat.class, "item_wnd_mimic"));
+							info = info.replace("QUEST_REWARD", M.L(HeroStat.class, "item_wnd_reward"));
+							info = info.replace("CURSED", M.L(HeroStat.class, "item_wnd_cursed"));
+							RenderedTextBlock itemText = PixelScene.renderTextBlock(info, 6);
+							itemText.maxWidth(WIDTH);
+							content.add(itemText);
+							itemText.setPos(0, pos);
+							pos += 6;
+							String level = Pattern.compile("[^0-9]").matcher(info).replaceAll("").trim();
+							try{
+								int lvl = Integer.parseInt(level);
+								if(lvl == 1){
+									itemText.hardlight(0x57FAFF);
+								}else if(lvl == 2){
+									itemText.hardlight(0xA000A0);
+								}else if(lvl == 3){
+									itemText.hardlight(0xFFB700);
+								}else if(lvl >= 4) {
+									itemText.hardlight(Window.Pink_COLOR);
+								}
+							}catch (Exception e){
+
+							}
+
+
+						}
+					}
+					content.setSize(WIDTH, pos + 2);
+				}
+				pane.scrollTo(0, 0);
+			}
 		}
 	}
 

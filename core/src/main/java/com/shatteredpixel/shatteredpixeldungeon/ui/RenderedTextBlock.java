@@ -337,4 +337,7 @@ public class RenderedTextBlock extends Component {
 			}
 		}
 	}
+
+    protected void hardlight(float r, float g, float b) {
+    }
 }

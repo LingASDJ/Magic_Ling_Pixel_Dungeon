@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CrossDiedSprites;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
 import com.shatteredpixel.shatteredpixeldungeon.ui.GameLog;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
@@ -66,6 +67,7 @@ public class WndSettings extends WndTabbed {
 	private AudioTab    audio;
 	private LangsTab    langs;
 	private ExtendTab    extabs;
+	private HelpTab    helps;
 
 	public static int last_index = 0;
 
@@ -173,6 +175,20 @@ public class WndSettings extends WndTabbed {
 				super.select(value);
 				extabs.visible = extabs.active = value;
 				if (value) last_index = 5;
+			}
+		});
+
+		helps = new HelpTab();
+		helps.setSize(width, 0);
+		height = Math.max(height, audio.height());
+		add( helps );
+
+		add( new IconTab(new CrossDiedSprites()){
+			@Override
+			protected void select(boolean value) {
+				super.select(value);
+				helps.visible = helps.active = value;
+				if (value) last_index = 6;
 			}
 		});
 
@@ -659,6 +675,54 @@ public class WndSettings extends WndTabbed {
 			}
 
 			height = ClassUI.bottom();
+		}
+
+	}
+
+	private static class HelpTab extends Component {
+
+		RenderedTextBlock title;
+		ColorBlock sep1;
+		CheckBox LockFing;
+
+		@Override
+		protected void createChildren() {
+			title = PixelScene.renderTextBlock(Messages.get(this, "title"), 9);
+			title.hardlight(TITLE_COLOR);
+			add(title);
+
+			sep1 = new ColorBlock(1, 1, 0xFF000000);
+			add(sep1);
+
+			LockFing = new CheckBox( Messages.get(this, "helpsettings") ) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					SPDSettings.HelpSettings(checked());
+				}
+			};
+			LockFing.checked(SPDSettings.HelpSettings());
+			add(LockFing);
+		}
+
+		@Override
+		protected void layout() {
+
+			float bottom = y;
+
+			title.setPos((width - title.width())/2, bottom + GAP);
+			sep1.size(width, 1);
+			sep1.y = title.bottom() + 2*GAP;
+
+			bottom = sep1.y + 1;
+
+			if (width > 200){
+				LockFing.setRect(0, bottom, width, SLIDER_HEIGHT);
+			} else {
+				LockFing.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
+			}
+
+			height = LockFing.bottom();
 		}
 
 	}

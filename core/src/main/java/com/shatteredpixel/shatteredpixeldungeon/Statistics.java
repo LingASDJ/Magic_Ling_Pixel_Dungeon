@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.watabou.utils.Bundle;
+import com.watabou.utils.SparseArray;
 
 public class Statistics {
 	public static int realdeepestFloor;
@@ -53,6 +54,15 @@ public class Statistics {
 	public static boolean fireGirlnoshopping = false;
 
 	public static boolean deadshoppingdied = false;
+
+	//Directly add float time will cause accuracy lose and stop timing if time is long enough
+	//so use long to record seconds, float to count sub-seconds.
+	//SPD-V1.3.2-ITEM SPAWN CODE
+	public static long real_seconds = 0;
+	public static float second_elapsed = 0;
+	public static float turnsPassed = 0f;
+
+	public static SparseArray<Boolean> floorsExplored = new SparseArray<>();
 	
 	public static void reset() {
 		
@@ -79,6 +89,10 @@ public class Statistics {
 		fireGirlnoshopping = false;
 
 		deadshoppingdied = false;
+
+		second_elapsed = 0f;
+		real_seconds = 0;
+		turnsPassed = 0f;
 		
 	}
 	
@@ -108,7 +122,7 @@ public class Statistics {
 	private static final String SHOPPINGDIED		= "deadshoppingdied";
 
 	private static final String EXLEVEL = "Exlevel";
-	
+
 	public static void storeInBundle( Bundle bundle ) {
 		bundle.put( GOLD,		goldCollected );
 		bundle.put( DEEPEST,	deepestFloor );
@@ -133,6 +147,11 @@ public class Statistics {
 		bundle.put( NOSHOPPING,	fireGirlnoshopping );
 
 		bundle.put( SHOPPINGDIED, deadshoppingdied );
+
+		//SPD
+		bundle.put("real_time_passed", second_elapsed);
+		bundle.put("real_seconds_passed", real_seconds);
+		bundle.put("turns_passed", turnsPassed);
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
@@ -158,6 +177,11 @@ public class Statistics {
 
 		fireGirlnoshopping	= bundle.getBoolean( NOSHOPPING );
 		deadshoppingdied = bundle.getBoolean( SHOPPINGDIED );
+
+		//SPD
+		second_elapsed = bundle.getFloat("real_time_passed");
+		real_seconds =   bundle.getLong("real_seconds_passed");
+		turnsPassed =    bundle.getFloat("turns_passed");
 	}
 	
 	public static void preview( GamesInProgress.Info info, Bundle bundle ){

@@ -110,6 +110,10 @@ public abstract class Level implements Bundlable {
 		SECRETS
 	}
 
+	public boolean isLevelExplored( int depth ){
+		return false;
+	}
+
 	protected int width;
 	protected int height;
 	protected int length;

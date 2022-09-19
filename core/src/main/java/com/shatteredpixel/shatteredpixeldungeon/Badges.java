@@ -109,6 +109,7 @@ public class Badges {
 		GAMES_PLAYED_1              ( 54, true ),
 		GODD_MAKE					( 82 ),
 		CLEAR_WATER					( 83 ),
+		GHOSTDAGE					( 84 ),
 		//gold
 		PIRANHAS                    ( 64 ),
 		//these names are a bit outdated, but it doesn't really matter.
