@@ -8,7 +8,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
@@ -16,10 +15,8 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -37,11 +34,12 @@ public class GoldIron extends Artifact {
         charge = 5+level();
         partialCharge = 0;
         chargeCap = 5+level();
-
-        defaultAction = AC_ACTIVATE;
     }
 
-    public static final String AC_ACTIVATE = "ACTIVATE";
+    public static final String AC_STONETOGOLD = "stonegold";
+    public static final String AC_ONEDINGYI = "onedingyi";
+    public static final String AC_CONDONTXA = "condontxa";
+
 
     //keeps track of generated sandbags.
     public int sandBags = 0;
@@ -50,7 +48,9 @@ public class GoldIron extends Artifact {
     public ArrayList<String> actions(Hero hero ) {
         ArrayList<String> actions = super.actions( hero );
         if (isEquipped( hero ) && !cursed && (charge > 0 || activeBuff != null)) {
-            actions.add(AC_ACTIVATE);
+            actions.add(AC_STONETOGOLD);
+            actions.add(AC_ONEDINGYI);
+            actions.add(AC_CONDONTXA);
         }
         return actions;
     }
@@ -60,46 +60,12 @@ public class GoldIron extends Artifact {
 
         super.execute(hero, action);
 
-        if (action.equals(AC_ACTIVATE)){
+        if (action.equals(AC_STONETOGOLD)){
 
-            if (!isEquipped( hero ))        GLog.i( Messages.get(Artifact.class, "need_to_equip") );
-            else if (activeBuff != null) {
-                if (activeBuff instanceof GoldIron.timeStasis) { //do nothing
-                } else {
-                    activeBuff.detach();
-                    GLog.i( Messages.get(this, "deactivate") );
-                }
-            } else if (charge <= 0)         GLog.i( Messages.get(this, "no_charge") );
-            else if (cursed)                GLog.i( Messages.get(this, "cursed") );
-            else GameScene.show(
-                        new WndOptions(new ItemSprite(this),
-                                Messages.titleCase(name()),
-                                Messages.get(this, "prompt"),
-                                Messages.get(this, "stasis"),
-                                Messages.get(this, "freeze")) {
-                            @Override
-                            protected void onSelect(int index) {
-                                if (index == 0) {
-                                    GLog.i( Messages.get(GoldIron.class, "onstasis") );
-                                    GameScene.flash(0x80FFFFFF);
-                                    Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+        }  else if (action.equals(AC_ONEDINGYI)) {
 
-                                    activeBuff = new GoldIron.timeStasis();
-                                    Talent.onArtifactUsed(Dungeon.hero);
-                                    activeBuff.attachTo(Dungeon.hero);
-                                } else if (index == 1) {
-                                    GLog.i( Messages.get(GoldIron.class, "onfreeze") );
-                                    GameScene.flash(0x80FFFFFF);
-                                    Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+        } else if (action.equals(AC_CONDONTXA)) {
 
-                                    activeBuff = new GoldIron.timeFreeze();
-                                    Talent.onArtifactUsed(Dungeon.hero);
-                                    activeBuff.attachTo(Dungeon.hero);
-                                    ((GoldIron.timeFreeze)activeBuff).processTime(0f);
-                                }
-                            }
-                        }
-                );
         }
     }
 

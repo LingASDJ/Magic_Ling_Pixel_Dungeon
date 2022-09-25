@@ -55,6 +55,12 @@ public class Statistics {
 
 	public static boolean deadshoppingdied = false;
 
+	public static boolean wangzheguilai = false;
+
+	public static boolean endingbald = false;
+
+	public static int dageCollected;
+
 	//Directly add float time will cause accuracy lose and stop timing if time is long enough
 	//so use long to record seconds, float to count sub-seconds.
 	//SPD-V1.3.2-ITEM SPAWN CODE
@@ -89,6 +95,8 @@ public class Statistics {
 		fireGirlnoshopping = false;
 
 		deadshoppingdied = false;
+		wangzheguilai = false;
+		endingbald = false;
 
 		second_elapsed = 0f;
 		real_seconds = 0;
@@ -121,6 +129,10 @@ public class Statistics {
 
 	private static final String SHOPPINGDIED		= "deadshoppingdied";
 
+	private static final String WZGL		= "wangzheguilai";
+
+	private static final String ENBR		= "endingbald";
+
 	private static final String EXLEVEL = "Exlevel";
 
 	public static void storeInBundle( Bundle bundle ) {
@@ -147,6 +159,8 @@ public class Statistics {
 		bundle.put( NOSHOPPING,	fireGirlnoshopping );
 
 		bundle.put( SHOPPINGDIED, deadshoppingdied );
+
+		bundle.put( WZGL, wangzheguilai );
 
 		//SPD
 		bundle.put("real_time_passed", second_elapsed);
@@ -177,6 +191,8 @@ public class Statistics {
 
 		fireGirlnoshopping	= bundle.getBoolean( NOSHOPPING );
 		deadshoppingdied = bundle.getBoolean( SHOPPINGDIED );
+
+		wangzheguilai = bundle.getBoolean( WZGL );
 
 		//SPD
 		second_elapsed = bundle.getFloat("real_time_passed");

@@ -144,7 +144,8 @@ public class WndTextInput extends Window {
 
 	}
 
-	@Override
+
+    @Override
 	public void offset(int xOffset, int yOffset) {
 		super.offset(xOffset, yOffset);
 		if (textBox != null){

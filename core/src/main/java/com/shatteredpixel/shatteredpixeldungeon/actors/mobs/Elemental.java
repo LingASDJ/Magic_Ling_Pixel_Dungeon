@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
@@ -33,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
@@ -40,12 +42,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ElementalSprite;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -218,6 +222,27 @@ public abstract class Elemental extends Mob {
 		}
 
 		@Override
+		public void die(Object cause) {
+			super.die(cause);
+			//机会
+			int blobs = Random.chances(new float[]{0, 1, 0, 1, 0});
+
+			if(!Statistics.endingbald) {
+				for (int i = 0; i < blobs; i++) {
+					int ofs;
+					do {
+						ofs = PathFinder.NEIGHBOURS8[Random.NormalIntRange(1,1)];
+					} while (!Dungeon.level.passable[pos + ofs]);
+					Dungeon.level.drop(new EndingBlade(), pos + ofs).sprite.drop(pos);
+					Badges.ENDDIED();
+					Statistics.endingbald = true;
+				}
+			} else {
+				Dungeon.level.drop(new Gold().quantity(Random.Int(90, 120)), pos).sprite.drop();
+			}
+		}
+
+		@Override
 		protected void rangedProc( Char enemy ) {
 			if (!level.water[enemy.pos]) {
 				Buff.affect( enemy, Burning.class ).reignite( enemy, 4f );
@@ -249,6 +274,9 @@ public abstract class Elemental extends Mob {
 		public void die(Object cause) {
 			super.die(cause);
 			if (alignment == Alignment.ENEMY) Dungeon.level.drop( new Embers(), pos ).sprite.drop();
+
+			//机会
+
 			Badges.KILL_COLDELE();
 		}
 

@@ -14,7 +14,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.Brew;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
@@ -88,6 +90,8 @@ public class GameTracker extends Buff {
                 if(m instanceof RedDragon){
                     appendDesc(RedDragon.Quest.weapon, info, "QUEST_REWARD");
                     appendDesc(RedDragon.Quest.armor, info, "QUEST_REWARD");
+                    appendDesc(RedDragon.Quest.food, info, "QUEST_REWARD");
+                    appendDesc(RedDragon.Quest.scrolls, info, "QUEST_REWARD");
                 }
                 if(m instanceof Imp){
                     appendDesc(Imp.Quest.reward, info, "QUEST_REWARD");
@@ -101,12 +105,12 @@ public class GameTracker extends Buff {
         if(item != null) {
             if (
                     ((item instanceof Weapon || item instanceof Armor) && item.level() > 0)
-                            || (item instanceof Ring || item instanceof Wand || item instanceof Artifact)
+                            || (item instanceof Ring || item instanceof Wand || item instanceof Artifact || item instanceof ExoticScroll|| item instanceof Brew)
             ) {
                 String name = item.trueName();
                 int index = name.indexOf('+');
                 if(index > 0){
-                    name = name.substring(0, index - 3);
+                    name = name.substring(0, index - 1);
                 }
                 info.append(prefix).append(name).append('+').append(item.level()).append(item.cursed ? "  CURSED\n" : "\n");
             }

@@ -50,7 +50,7 @@ public class AndroidGame extends AndroidApplication {
 	public static AndroidApplication instance;
 	private FirebaseAnalytics mFirebaseAnalytics;
 	private static AndroidPlatformSupport support;
-	
+
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -88,11 +88,11 @@ public class AndroidGame extends AndroidApplication {
 
 			//UCEHandler.Builder builder = new UCEHandler.Builder(this);
 			//builder.build();
+
 			mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
-			if (SPDSettings.firebase()){
-				FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
-			}
+			FirebaseCrashlytics.getInstance().setUserId(SPDSettings.customSeed());
+
 			FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
 
 		} else {
@@ -101,20 +101,21 @@ public class AndroidGame extends AndroidApplication {
 
 		//set desired orientation (if it exists) before initializing the app.
 		if (SPDSettings.landscape() != null) {
-			instance.setRequestedOrientation( SPDSettings.landscape() ?
+			instance.setRequestedOrientation(Boolean.TRUE.equals(SPDSettings.landscape()) ?
 					ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE :
 					ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT );
 		}
 		
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.depth = 0;
-		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-			//use rgb565 on ICS devices for better performance
-			config.r = 5;
-			config.g = 6;
-			config.b = 5;
-		}
-		
+
+//		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+//			//use rgb565 on ICS devices for better performance
+//			config.r = 5;
+//			config.g = 6;
+//			config.b = 5;
+//		}
+
 		config.useCompass = false;
 		config.useAccelerometer = false;
 		

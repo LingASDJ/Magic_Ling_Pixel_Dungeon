@@ -37,9 +37,19 @@ import java.util.Locale;
 public class SPDSettings extends GameSettings {
 	
 	//Version info
-	public static final String KEY_AUTH_KEY	= "net_auth_key";
+	public static final String KEY_CUSTOM_SEED	= "Your_Key";
+	public static final String KEY_CUSTOM_LING	= "Your_Key";
+
+	public static void customSeed( String value ){
+		put( KEY_CUSTOM_SEED, value );
+	}
+
+	public static String customSeed() {
+		return getString( KEY_CUSTOM_SEED, KEY_CUSTOM_LING, 20);
+	}
+
 	public static final String KEY_VERSION      = "version";
-	public static String DEFAULT_KEY = "debug";
+
 	public static void quickslots( int value ){
 		put( KEY_QUICKSLOTS, value );
 	}

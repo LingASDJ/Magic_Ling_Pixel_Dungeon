@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -40,7 +38,7 @@ public class Gauntlet extends MeleeWeapon {
 		hitSound = Assets.Sounds.HIT_CRUSH;
 		hitSoundPitch = 1.2f;
 
-		tier = 5;
+		tier = 3;
 		DLY = 0.25f; //2x speed
 	}
 
@@ -64,7 +62,7 @@ public class Gauntlet extends MeleeWeapon {
 				return max(buffedLvl());
 			case 1:
 				Buff.affect(defender, Burning.class).reignite(defender);
-				Buff.affect(hero, Cripple.class, Degrade.ADURATION);
+				Buff.affect(attacker, Cripple.class, Degrade.ADURATION);
 				return super.proc(attacker, defender, damage);
 		}
 	}

@@ -110,6 +110,7 @@ public class Badges {
 		GODD_MAKE					( 82 ),
 		CLEAR_WATER					( 83 ),
 		GHOSTDAGE					( 84 ),
+		ENDIED					( 85 ),
 		//gold
 		PIRANHAS                    ( 64 ),
 		//these names are a bit outdated, but it doesn't really matter.
@@ -165,6 +166,7 @@ public class Badges {
 		CHAMPION_4X                  ( 115 ),
 		CHAMPION_5X                  ( 116 ),
 		NYZ_SHOP                    ( 117 ),
+		DAGETO                    ( 118 ),
 
 		//rudy
 		FIREGIRL                 	 ( 128 ),
@@ -380,6 +382,21 @@ public class Badges {
 		displayBadge( badge );
 	}
 
+	public static void GhostDageCollected() {
+		Badge badge = null;
+
+		if (!local.contains( Badge.GHOSTDAGE ) && Statistics.naiyaziCollected == 1) {
+			badge = Badge.GHOSTDAGE;
+			local.add( badge );
+		}
+		if (!local.contains( Badge.DAGETO ) && Statistics.naiyaziCollected >= 2) {
+			addGlobal(badge);
+			badge = Badge.DAGETO;
+		}
+		local.add(badge);
+		displayBadge( badge );
+	}
+
 	public static void validateLevelReached() {
 		Badge badge = null;
 
@@ -549,6 +566,14 @@ public class Badges {
 
 	public static void validateDeathFromFire() {
 		Badge badge = Badge.DEATH_FROM_FIRE;
+		local.add( badge );
+		displayBadge( badge );
+
+		validateYASD();
+	}
+
+	public static void ENDDIED() {
+		Badge badge = Badge.ENDIED;
 		local.add( badge );
 		displayBadge( badge );
 

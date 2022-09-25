@@ -22,11 +22,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShopLimitLock;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BlackHost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdGurad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDICLRPRO;
@@ -43,7 +41,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
@@ -56,7 +53,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMappi
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -66,7 +62,6 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
-import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
@@ -357,7 +352,6 @@ public class FireMagicDied extends Mob implements Callback {
     @Override
     public boolean act() {
         if (phase == 1 && HP <= 350) {
-            doYogLasers();
             actScanning();
             if (Dungeon.level.water[pos] && HP < HT) {
                 HP += healInc;
@@ -549,7 +543,7 @@ public class FireMagicDied extends Mob implements Callback {
                 Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
             }
 
-            int dmg = Random.NormalIntRange( 12, 18 );
+            int dmg = Random.NormalIntRange( 2, 4 );
 
             for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
                 if(Random.NormalIntRange(0,9)<4) {
@@ -690,8 +684,6 @@ public class FireMagicDied extends Mob implements Callback {
         LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
         if (lock != null) lock.addTime(dmg*2);
 
-        super.damage(dmg, src);
-
         if (phase == 1) {
             int dmgTaken = preHP - HP;
             abilityCooldown -= dmgTaken/8f;
@@ -702,7 +694,7 @@ public class FireMagicDied extends Mob implements Callback {
                 }
                 //properties.add(Property.IMMOVABLE);
                 ScrollOfTeleportation.appear(this, ShopBossLevel.throneling);
-                doYogLasers();
+                //doYogLasers();
                 sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
                 Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
                 phase = 2;
@@ -742,7 +734,6 @@ public class FireMagicDied extends Mob implements Callback {
             sprite.showStatus(0xff0000, Messages.get(this, "dead"));
 
         } else if (phase == 3 && preHP > 80 && HP <= 80){
-            doYogLasers();
             yell( Messages.get(this, "losing") );
         }
 
@@ -752,12 +743,15 @@ public class FireMagicDied extends Mob implements Callback {
                 GameScene.flash(0x80FFFFFF);
             }
         }
+        super.damage(dmg, src);
     }
 
     @Override
     public void die( Object cause ) {
 
         super.die( cause );
+        ShatteredPixelDungeon.seamlessResetScene();
+
         Dungeon.level.drop(new BackGoKey().quantity(1).identify(), pos).sprite.drop();
         Dungeon.level.drop(new ScrollOfMagicMapping().quantity(1).identify(), pos).sprite.drop();
         Dungeon.level.drop(new ScrollOfUpgrade().quantity(3).identify(), pos).sprite.drop();
@@ -984,7 +978,7 @@ public class FireMagicDied extends Mob implements Callback {
                     }
                 } else {
                     if (((FireMagicDied)target).phase == 2 && HP > 300){
-                        target.damage(10, new FireMagicDied.KingDamager());
+                        target.damage(30, new FireMagicDied.KingDamager());
                     }
                 }
 
@@ -1139,97 +1133,6 @@ public class FireMagicDied extends Mob implements Callback {
         }
     }
 
-    //Next Level 4
-    public void doYogLasers(){
-        boolean terrainAffected = false;
-        HashSet<Char> affected = new HashSet<>();
-        //delay fire on a rooted hero
-        if (!enemy.rooted) {
-            for (int i : targetedCells) {
-                Ballistica b = new Ballistica(i, lastHeroPos, Ballistica.WONT_STOP);
-                //shoot beams
-                sprite.parent.add(new Beam.DeathRayS(DungeonTilemap.raisedTileCenterToWorld(i),
-                        DungeonTilemap.raisedTileCenterToWorld(b.collisionPos)));
-                for (int p : b.path) {
-                    Char ch = Actor.findChar(p);
-                    if (ch != null && (ch.alignment != alignment || ch instanceof Bee)) {
-                        affected.add(ch);
-                    }
-                    if (Dungeon.level.flamable[p]) {
-                        Dungeon.level.destroy(p);
-                        GameScene.updateMap(p);
-                        terrainAffected = true;
-                    }
-                }
-            }
-            if (terrainAffected) {
-                Dungeon.observe();
-            }
-            for (Char ch : affected) {
-                ch.damage(Random.NormalIntRange(60, 121), new Eye.DeathGaze());
-
-                if (Dungeon.level.heroFOV[pos]) {
-                    ch.sprite.flash();
-                    CellEmitter.center(pos).burst(Speck.factory(Speck.COIN), Random.IntRange(2, 3));
-                }
-                if (!ch.isAlive() && ch == Dungeon.hero) {
-                    Dungeon.fail(getClass());
-                    GLog.n(Messages.get(Char.class, "kill", name()));
-                }
-            }
-            targetedCells.clear();
-        }
-
-        if (abilityCooldown <= 0 && HP < HT*0.8f){
-            lastHeroPos = enemy.pos;
-
-            int beams = (int) (4 + (HP * 1.0f / HT)*4);
-            for (int i = 0; i < beams; i++){
-                int randompos = Random.Int(Dungeon.level.width()) + Dungeon.level.width()*2;
-                targetedCells.add(randompos);
-            }
-
-            for (int i : targetedCells){
-                Ballistica b = new Ballistica(i, Dungeon.hero.pos, Ballistica.WONT_STOP);
-                for (int p : b.path){
-                    Game.scene().addToFront(new TargetedCell(p, 0xFF0000));
-                }
-            }
-
-            spend(TICK*1.5f);
-            Dungeon.hero.interrupt();
-
-            abilityCooldown += Random.NormalFloat(MIN_ABILITY_CD - 2*(1 - (HP * 1f / HT)), MAX_ABILITY_CD - 5*(1 - (HP * 1f / HT)));
-        } else {
-            spend(TICK);
-        }
-        if (abilityCooldown > 0) abilityCooldown--;
-    }
-
-    @Override
-    public void move(int step) {
-
-        super.move(step);
-
-        Camera.main.shake(  1, 0.25f );
-        if(HP < 250) {
-            if (Dungeon.level.map[step] == Terrain.WATER && state == HUNTING) {
-                Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(50);
-
-                if (Dungeon.level.water[pos] && HP < HT) {
-                    if (Dungeon.level.heroFOV[pos]) {
-                        sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
-                    }
-                    if (HP * 2 == HT) {
-                        BossHealthBar.bleed(false);
-                    }
-                    HP++;
-                }
-            }
-        }
-    }
-
-
     //亡魂显现
     public static class ColdGuradA extends ColdGurad {
         {
@@ -1332,7 +1235,7 @@ public class FireMagicDied extends Mob implements Callback {
             super.detach();
             for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
                 if (m instanceof FireMagicDied ){
-                    m.damage(10, this);
+                    m.damage(30, this);
                 }
             }
         }

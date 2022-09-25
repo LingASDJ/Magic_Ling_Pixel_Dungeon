@@ -3,51 +3,32 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ScrollEmpower;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.BallisticaReal;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.LaserPython;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
@@ -67,12 +48,9 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
-import com.watabou.utils.Point;
-import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class EndingBlade extends Weapon {
 
@@ -134,7 +112,9 @@ public class EndingBlade extends Weapon {
     //每100点浊焰能量自动升级
     @Override
     public int level() {
-        return fireenergy/100;
+        int level = Dungeon.hero == null ? 0 : fireenergy/100;
+        if (Dungeon.hero == null) level += 1;
+        return level;
     }
     private int TIME_TO_DIED = 0;
     public void execute( Hero hero, String action ) {
@@ -142,14 +122,14 @@ public class EndingBlade extends Weapon {
 
             switch (action) {
                 case AC_LASERCRYSTAL:
-                    if(level >= 4 && firstx){
+                    if(level >= 3 && firstx){
                         firstx = false;
                         new LaserPython().quantity(1).identify().collect();
                         GLog.n("你突然感觉你的背包鼓鼓的……");
                     } else if(!firstx) {
                         GLog.n("你尚未使用激光晶柱，无法继续使用");
                     } else {
-                        GLog.n("等级不足");
+                        GLog.n("等级不足，需求等级为3");
                     }
                     break;
                 case AC_DIEDGHOST:
@@ -157,15 +137,37 @@ public class EndingBlade extends Weapon {
                         curUser = hero;
                         curItem = this;
                         GameScene.selectCell(zapper);
-                        TIME_TO_DIED = 20;
                     } else if (TIME_TO_DIED != 0) {
-                        GLog.n("道具正在冷却");
+                        GLog.n("技能正在冷却");
                     } else {
-                        GLog.n("等级不足");
+                        GLog.n("等级不足,需求等级为5");
                     }
                     break;
                 case AC_HEALRESET:
-                    GLog.w("3");
+                    if(level >= 7 && 0.30f >= (float)(hero.HP/hero.HT) && !Statistics.wangzheguilai) {
+                        //0.30f >= (float)(hero.HP/hero.HT)
+                        PotionOfHealing.cure( hero );
+                        hero.belongings.uncurseEquipped();
+                        hero.buff( Hunger.class ).satisfy( Hunger.STARVING );
+                        hero.HP = hero.HT;
+                        hero.sprite.emitter().start( Speck.factory( Speck.HEALING ), 0.4f, 4 );
+                        CellEmitter.get( hero.pos ).start( ShaftParticle.FACTORY, 0.2f, 3 );
+                        Dungeon.hero.interrupt();
+                        GLog.p( Messages.get(this, "procced") );
+                        Statistics.wangzheguilai = true;
+                        cursed = false;
+                        for(Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                            if (!(mob instanceof NPC) ) {
+                                mob.damage( Random.NormalIntRange( 30*(level/5), 50*(level/5) ), new Eye.DeathGaze() );
+                            }
+                        }
+                    } else if(Statistics.wangzheguilai) {
+                        GLog.n("你本局已经使用千里追魂，无法再次使用。");
+                    } else if(level < 7) {
+                        GLog.n("你的等级尚未达到7级以上，打败更多的怪物，鲜血会让你的武器变得更强……");
+                    } else if(0.30f <= (float)(hero.HP/hero.HT)) {
+                        GLog.n("你的血量尚未低于30%，无法使用");
+                    }
                     break;
             }
     }
@@ -311,21 +313,7 @@ public class EndingBlade extends Weapon {
         curUser.spendAndNext( TIME_TO_ZAP );
     }
 
-    protected int nReflections(int level){
-        //return Math.min(2+level/3, 5);
-        return 5;
-    }
-
-    protected float reflectionDamageFactor(int reflections){
-        return 1f+0.1f*reflections*reflections;
-    }
-
     public void onZap( Ballistica beam ) {
-        int count = 0;
-        for(BallisticaReal b: beams){
-            onZapX(b, count);
-            ++count;
-        }
         Char ch = Actor.findChar(beam.collisionPos);
 
         if (ch != null){
@@ -336,101 +324,10 @@ public class EndingBlade extends Weapon {
 
             Mob enemy = (Mob) ch;
 
-            float corruptingPower = 3 + buffedLvl()/2f;
+            AllyBuff.affectAndLoot(enemy, curUser, Corruption.class);
+            TIME_TO_DIED = 30;
 
-            //base enemy resistance is usually based on their exp, but in special cases it is based on other criteria
-            float enemyResist = 1 + enemy.EXP;
-            if (ch instanceof Mimic || ch instanceof Statue){
-                enemyResist = 1 + Dungeon.depth;
-            } else if (ch instanceof Piranha || ch instanceof Bee) {
-                enemyResist = 1 + Dungeon.depth/2f;
-            } else if (ch instanceof Wraith) {
-                //divide by 5 as wraiths are always at full HP and are therefore ~5x harder to corrupt
-                enemyResist = (1f + Dungeon.depth/3f) / 5f;
-            } else if (ch instanceof Swarm){
-                //child swarms don't give exp, so we force this here.
-                enemyResist = 1 + 3;
-            }
-
-            //100% health: 5x resist   75%: 3.25x resist   50%: 2x resist   25%: 1.25x resist
-            enemyResist *= 1 + 4*Math.pow(enemy.HP/(float)enemy.HT, 2);
-
-            //debuffs placed on the enemy reduce their resistance
-            for (Buff buff : enemy.buffs()){
-                if (MAJOR_DEBUFFS.containsKey(buff.getClass()))         enemyResist *= (1f-MAJOR_DEBUFF_WEAKEN);
-                else if (MINOR_DEBUFFS.containsKey(buff.getClass()))    enemyResist *= (1f-MINOR_DEBUFF_WEAKEN);
-                else if (buff.type == Buff.buffType.NEGATIVE)           enemyResist *= (1f-MINOR_DEBUFF_WEAKEN);
-            }
-
-            //cannot re-corrupt or doom an enemy, so give them a major debuff instead
-            if(enemy.buff(Corruption.class) != null || enemy.buff(Doom.class) != null){
-                corruptingPower = enemyResist - 0.001f;
-            }
-
-            if (corruptingPower > enemyResist){
-                corruptEnemy( enemy );
-            } else {
-                float debuffChance = corruptingPower / enemyResist;
-                if (Random.Float() < debuffChance){
-                    debuffEnemy( enemy, MAJOR_DEBUFFS);
-                } else {
-                    debuffEnemy( enemy, MINOR_DEBUFFS);
-                }
-            }
-
-            wandProc(ch, chargesPerCast());
             Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, 0.8f * Random.Float(0.87f, 1.15f) );
-        }
-    }
-
-    public void onZapX(BallisticaReal beam,int reflection) {
-        int level = buffedLvl();
-
-        int maxDistance = beam.dist;
-
-        ArrayList<Char> chars = new ArrayList<>();
-
-        for (int c : beam.subPath((reflection>0?0:1), maxDistance)) {
-            //prevent self_damage
-            if(c==beam.sourceI && c==curUser.pos) continue;
-
-            Char ch;
-            if ((ch = Actor.findChar( c )) != null) {
-
-                chars.add( ch );
-            }
-
-            if (Dungeon.level.flamable[c]) {
-                Dungeon.level.destroy( c );
-                GameScene.updateMap( c );
-
-            }
-
-            CellEmitter.center( c ).burst( PurpleParticle.BURST, Random.IntRange( 1, 2 ) );
-
-        }
-
-
-        Dungeon.observe();
-
-        boolean alive = curUser.isAlive();
-
-        int lvl = level;
-        for (Char ch : chars) {
-            wandProc(ch, chargesPerCast());
-            int damage = Math.round(2*reflectionDamageFactor(reflection));
-            if(!ch.equals(curUser)) {
-                ch.damage(damage, this);
-            }else{
-                ch.damage(damage/6, this);
-            }
-            ch.sprite.centerEmitter().burst( PurpleParticle.BURST, Random.IntRange( 1, 2 ) );
-            ch.sprite.flash();
-        }
-
-        if (!curUser.isAlive() && alive) {
-            Dungeon.fail( getClass() );
-            GLog.n(Messages.get(this, "ondeath"));
         }
     }
 
@@ -457,72 +354,6 @@ public class EndingBlade extends Weapon {
         }
     }
 
-    private static final float MINOR_DEBUFF_WEAKEN = 1/4f;
-    private static final HashMap<Class<? extends Buff>, Float> MINOR_DEBUFFS = new HashMap<>();
-    static{
-        MINOR_DEBUFFS.put(Weakness.class,       2f);
-        MINOR_DEBUFFS.put(Corruption.class,     2f);
-        MINOR_DEBUFFS.put(Cripple.class,        1f);
-        MINOR_DEBUFFS.put(Blindness.class,      1f);
-        MINOR_DEBUFFS.put(Terror.class,         1f);
-
-        MINOR_DEBUFFS.put(Chill.class,          0f);
-        MINOR_DEBUFFS.put(Ooze.class,           0f);
-        MINOR_DEBUFFS.put(Corruption.class,          4f);
-        MINOR_DEBUFFS.put(Vertigo.class,        0f);
-        MINOR_DEBUFFS.put(Drowsy.class,         0f);
-        MINOR_DEBUFFS.put(Corruption.class,       10f);
-        MINOR_DEBUFFS.put(Burning.class,        0f);
-        MINOR_DEBUFFS.put(Poison.class,         0f);
-    }
-
-    private static final float MAJOR_DEBUFF_WEAKEN = 1/2f;
-    private static final HashMap<Class<? extends Buff>, Float> MAJOR_DEBUFFS = new HashMap<>();
-    static{
-        MAJOR_DEBUFFS.put(Corruption.class,           3f);
-        MAJOR_DEBUFFS.put(Slow.class,           2f);
-        MAJOR_DEBUFFS.put(Hex.class,            2f);
-        MAJOR_DEBUFFS.put(Paralysis.class,      1f);
-
-        MAJOR_DEBUFFS.put(Corruption.class,          0f);
-        MAJOR_DEBUFFS.put(Corruption.class,          0f);
-        MAJOR_DEBUFFS.put(MagicalSleep.class,   0f);
-        MAJOR_DEBUFFS.put(SoulMark.class,       0f);
-        MAJOR_DEBUFFS.put(Corrosion.class,      0f);
-        MAJOR_DEBUFFS.put(Frost.class,          0f);
-        MAJOR_DEBUFFS.put(Doom.class,           0f);
-    }
-
-
-
-    private void debuffEnemy( Mob enemy, HashMap<Class<? extends Buff>, Float> category ){
-
-        //do not consider buffs which are already assigned, or that the enemy is immune to.
-        HashMap<Class<? extends Buff>, Float> debuffs = new HashMap<>(category);
-        for (Buff existing : enemy.buffs()){
-            if (debuffs.containsKey(existing.getClass())) {
-                debuffs.put(existing.getClass(), 0f);
-            }
-        }
-        for (Class<?extends Buff> toAssign : debuffs.keySet()){
-            if (debuffs.get(toAssign) > 0 && enemy.isImmune(toAssign)){
-                debuffs.put(toAssign, 0f);
-            }
-        }
-
-        //all buffs with a > 0 chance are flavor buffs
-        Class<?extends FlavourBuff> debuffCls = (Class<? extends FlavourBuff>) Random.chances(debuffs);
-
-        if (debuffCls != null){
-            Buff.append(enemy, debuffCls, 6 + buffedLvl()*3);
-        } else {
-            //if no debuff can be applied (all are present), then go up one tier
-            if (category == MINOR_DEBUFFS)          debuffEnemy( enemy, MAJOR_DEBUFFS);
-            else if (category == MAJOR_DEBUFFS)     corruptEnemy( enemy );
-        }
-    }
-
-
     private void corruptEnemy( Mob enemy ){
         //cannot re-corrupt or doom an enemy, so give them a major debuff instead
         if(enemy.buff(Corruption.class) != null || enemy.buff(Doom.class) != null){
@@ -539,9 +370,6 @@ public class EndingBlade extends Weapon {
         }
     }
 
-    protected static ArrayList<PointF> fxS = new ArrayList<>();
-    protected static ArrayList<PointF> fxE = new ArrayList<>();
-
     public void fxs(Ballistica beam, Callback callback) {
         MagicMissile.boltFromChar( curUser.sprite.parent,
                 MagicMissile.SHADOW,
@@ -549,128 +377,8 @@ public class EndingBlade extends Weapon {
                 beam.collisionPos,
                 callback);
         Sample.INSTANCE.play( Assets.Sounds.ZAP );
-        buildBeams(beam);
-        int size = fxE.size();
-        for(int i=0;i<size;++i){
-            //Point p = Dungeon.level.cellToPoint(fxE.get(i));
-            //GLog.i("(%d, %d)", p.x, p.y);
-            curUser.sprite.parent.add(new Beam.DeathRayS(BallisticaReal.raisedPointToScreen(fxS.get(i)),
-                    BallisticaReal.raisedPointToScreen(fxE.get(i)) ));
-        }
+        //buildBeams(beam);
         callback.call();
-    }
-    protected static ArrayList<BallisticaReal> beams = new ArrayList<>();
-    protected static ArrayList<Float> offset_1 = new ArrayList<>();
-    protected void buildOffsetArray(int level){
-        offset_1.clear();
-        float offPerStep = 45f* (1.9f+level) / (1.9f+level*3f);
-        int maxDSB;
-        if(level>7){maxDSB = 0;}
-        else if(level>3){maxDSB = 0;}
-        else{maxDSB = 0;}
-        //offset_1.add(0f);
-        if(maxDSB>0) {
-            for (int i = -maxDSB; i < maxDSB + 1; ++i) {
-                offset_1.add(i * offPerStep / maxDSB);
-            }
-        }else{
-            offset_1.add(0f);
-        }
-
-        // if(level<9) return base_3;
-        //else return base_4;
-    }
-
-    protected PointF pointToF(Point p){
-        return new PointF(p.x, p.y);
-    }
-
-    protected void addBeam(BallisticaReal beam){
-        beams.add(beam);
-        fxS.add(beam.sourceF);
-        fxE.add(beam.collisionF);
-    }
-
-    protected void buildBeams(Ballistica beam){
-        fxS.clear();
-        fxE.clear();
-        beams.clear();
-        buildOffsetArray(this.level());
-        //addBeam(new Ballistica(beam.sourcePos, beam.collisionPos, Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID));
-        float angle = PointF.angle(new PointF(pointToF(Dungeon.level.cellToPoint(beam.sourcePos))),
-                new PointF(pointToF(Dungeon.level.cellToPoint(beam.collisionPos))));
-        angle /= PointF.G2R;
-        if(angle<0f) angle += 360f;
-        //GLog.i("%f,", angle);
-        int scatter = offset_1.size();
-        for(int i=0;i<scatter;++i){
-            addBeam(new BallisticaReal(beam.sourcePos, angle + offset_1.get(i), 20, BallisticaReal.STOP_SOLID | BallisticaReal.IGNORE_SOFT_SOLID));
-        }
-        int maxRf = nReflections(this.level());
-        for(int ref = 0; ref < maxRf; ++ref) {
-            for (int i = 0; i < scatter; ++i) {
-                BallisticaReal br = new BallisticaReal(fxE.get(i+ref*scatter), reflectAngle(fxS.get(i+ref*scatter), fxE.get(i+ref*scatter)), 20, BallisticaReal.STOP_SOLID | BallisticaReal.IGNORE_SOFT_SOLID);
-                addBeam(br);
-            }
-        }
-
-    }
-
-    protected float horizontalReflectAngle(float angle){
-        angle = angle%360f;
-        return 360f-angle;
-    }
-
-    protected float verticalReflectAngle(float angle){
-        angle = angle%360f;
-        if(angle<180f) angle=180f-angle;
-        else angle = 540f-angle;
-        return angle;
-    }
-
-    protected float reflectAngle(PointF s, PointF e){
-        //PointF realPoint = nextPF(s,e);
-        float angle = PointF.angle(s,e)/PointF.G2R;
-        if(angle<0f) angle+= 360f;
-        float dx = e.x - s.x;
-        float dy = e.y - s.y;
-        boolean up = dy>0;
-        boolean right = dx>0;
-        boolean horizontalWall = false;
-        boolean verticalWall = false;
-
-        int xTile=(int)e.x;
-        if(e.x-(int)e.x<1e-5 && right){
-            xTile-=1;
-        }
-        int yTile=(int)e.y;
-        if(e.y-(int)e.y<1e-5 && up){
-            yTile-=1;
-        }
-        final int[] neigh = new int[]{-1, 1, -Dungeon.level.width(), Dungeon.level.width()};
-        boolean[] isWall = new boolean[4];
-        for(int i=0; i<4; ++i){
-            isWall[i]=Dungeon.level.solid[xTile+yTile*Dungeon.level.width()+neigh[i]];
-        }
-        if(e.x-(int)e.x<1e-5){
-            verticalWall = (right && isWall[1]) || (!right && isWall[0]);
-        }
-        if(e.y-(int)e.y<1e-5){
-            horizontalWall = (up && isWall[3]) || (!up && isWall[2]);
-        }
-
-        if(horizontalWall != verticalWall){
-            if(horizontalWall) return horizontalReflectAngle(angle);
-            else return verticalReflectAngle(angle);
-        }else if(horizontalWall && verticalWall){
-            if(Math.abs(dx)<Math.abs(dy)){
-                return horizontalReflectAngle(angle);
-            }else{
-                return verticalReflectAngle(angle);
-            }
-        }else{
-            return angle;
-        }
     }
 
     @Override
@@ -687,7 +395,8 @@ public class EndingBlade extends Weapon {
         if(TIME_TO_DIED != 0){
             TIME_TO_DIED--;
         }
-
+            //fixme
+            //todo
         if(level >= 10){
             fireenergy += 0;
             //武器最高级

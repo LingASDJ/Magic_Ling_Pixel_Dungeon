@@ -365,6 +365,7 @@ public class Generator {
 			WEP_T2.probs = new float[]{ 6, 5, 5, 4, 4 };
 
 			WEP_T3.classes = new Class<?>[]{
+					Gauntlet.class,
 					Sword.class,
 					Mace.class,
 					Scimitar.class,
@@ -374,9 +375,9 @@ public class Generator {
 					SkyShield.class,
 					Dairikyan.class,
 					GreenSword.class,
-					LockSword.class,
+
 			};
-			WEP_T3.probs = new float[]{ 6, 5, 5, 4, 0, 4 ,3,8,0,7};
+			WEP_T3.probs = new float[]{ 1, 5, 5, 4, 0, 4 ,3,8,0,4};
 
 			WEP_T4.classes = new Class<?>[]{
 					Longsword.class,
@@ -390,12 +391,13 @@ public class Generator {
 			WEP_T4.probs = new float[]{ 6, 5, 5, 4, 4, 4, 3 };
 
 			WEP_T5.classes = new Class<?>[]{
+					LockSword.class,
 					Greatsword.class,
 					WarHammer.class,
 					Glaive.class,
 					Greataxe.class,
-					Greatshield.class,
-					Gauntlet.class
+					Greatshield.class
+
 			};
 			WEP_T5.probs = new float[]{ 6, 5, 5, 4, 4, 4 };
 

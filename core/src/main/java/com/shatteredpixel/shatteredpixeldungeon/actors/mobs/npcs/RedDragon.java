@@ -35,11 +35,12 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.Brew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAffection;
@@ -237,7 +238,7 @@ public class RedDragon extends NPC {
         public static Ring weapon;
         public static Ring RingT;
         public static Artifact armor;
-        public static Armor food;
+        public static Brew food;
         public static ExoticScroll scrolls;
 
         public static Weapon.Enchantment enchant;
@@ -308,7 +309,7 @@ public class RedDragon extends NPC {
 
                 weapon	= (Ring)node.get( WEAPON );
                 armor	= (Artifact) node.get( ARMOR );
-                food	= (Armor) node.get( FOOD );
+                food	= (Brew) node.get( FOOD );
                 scrolls	= (ExoticScroll) node.get( SCROLLS );
 
                 if (node.contains(ENCHANT)) {
@@ -341,10 +342,10 @@ public class RedDragon extends NPC {
                 //5
                 switch (Random.chances(new float[]{0, 0, 10, 6, 3, 1})){
                     default:
-                    case 2: food = new LeatherArmor(); break;
-                    case 3: food = new MailArmor();    break;
-                    case 4: food = new ScaleArmor();   break;
-                    case 5: food = new PlateArmor();   break;
+                    case 2: food = new BlizzardBrew(); break;
+                    case 3: food = new CausticBrew();    break;
+                    case 4: food = new InfernalBrew();   break;
+                    case 5: food = new ShockingBrew();   break;
                 }
 
                 //TODO Fixed Ring Spawn;

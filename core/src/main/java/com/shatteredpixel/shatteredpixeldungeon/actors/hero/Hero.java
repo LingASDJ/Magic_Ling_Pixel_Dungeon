@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.LIGHTBLACK;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -376,7 +377,7 @@ public class Hero extends Char {
 				pre.append("craft_vals_");
 				pre.append(csname);
 				int[] trys = bundle.getIntArray(pre.toString());
-				LinkedHashMap lname = new LinkedHashMap();
+				LinkedHashMap<String, Integer> lname = new LinkedHashMap<String, Integer>();
 
 				for(int lisx = 0; lisx < enus.length && lisx < trys.length; ++lisx) {
 					lname.put(enus[lisx], trys[lisx]);
@@ -495,7 +496,13 @@ public class Hero extends Char {
 		}
 		Buff.affect( this, Regeneration.class );
 		Buff.affect( this, Hunger.class );
-		Buff.affect(this, GameTracker.class);
+
+
+		if(HelpSettings()) {
+			Buff.affect(this, GameTracker.class);
+		} {
+			//Do Stauff
+		}
 	}
 	
 	public int tier() {

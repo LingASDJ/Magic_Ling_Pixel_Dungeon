@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.watabou.utils.DeviceCompat.isAndroid;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -270,7 +272,7 @@ public class WndSettings extends WndTabbed {
 				add(optScale);
 			}
 
-			if (DeviceCompat.isAndroid() && PixelScene.maxScreenZoom >= 2) {
+			if (isAndroid() && PixelScene.maxScreenZoom >= 2) {
 				chkSaver = new CheckBox(Messages.get(this, "saver")) {
 					@Override
 					protected void onClick() {
@@ -299,7 +301,7 @@ public class WndSettings extends WndTabbed {
 				add( chkSaver );
 			}
 
-			if (DeviceCompat.isAndroid()) {
+			if (isAndroid()) {
 				Boolean landscape = SPDSettings.landscape();
 				if (landscape == null){
 					landscape = Game.width > Game.height;
@@ -685,6 +687,8 @@ public class WndSettings extends WndTabbed {
 		ColorBlock sep1;
 		CheckBox LockFing;
 
+		RedButton ResetButton;
+
 		@Override
 		protected void createChildren() {
 			title = PixelScene.renderTextBlock(Messages.get(this, "title"), 9);
@@ -703,6 +707,17 @@ public class WndSettings extends WndTabbed {
 			};
 			LockFing.checked(SPDSettings.HelpSettings());
 			add(LockFing);
+
+			ResetButton = new RedButton(Messages.get(this, "reset")) {
+				@Override
+				protected void onClick() {
+					WndStartGame.showKeyInput();
+				}
+			};
+			if(isAndroid()) {
+				add(ResetButton);
+			}
+
 		}
 
 		@Override
@@ -718,8 +733,10 @@ public class WndSettings extends WndTabbed {
 
 			if (width > 200){
 				LockFing.setRect(0, bottom, width, SLIDER_HEIGHT);
+				ResetButton.setRect(0, LockFing.bottom() + GAP, width, SLIDER_HEIGHT);
 			} else {
 				LockFing.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
+				ResetButton.setRect(0, LockFing.bottom() + GAP, width, SLIDER_HEIGHT);
 			}
 
 			height = LockFing.bottom();

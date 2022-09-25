@@ -33,6 +33,11 @@ import com.watabou.utils.PlatformSupport;
 
 public class ShatteredPixelDungeon extends Game {
 
+	public TitleScene net;
+	public static TitleScene net(){
+		return ((ShatteredPixelDungeon)instance).net;
+	}
+
 	private static String log = "";
 	public static void appendLog(String string) {
 		log += "\n\n" + string;

@@ -26,6 +26,17 @@ import com.watabou.utils.Random;
 //This class defines the parameters for seeds in ShatteredPD and contains a few convenience methods
 public class DungeonSeed {
 
+	//USER NAME QQ
+	public static String formatText( String inputText ){
+		try {
+			//if the seed matches a code, then just convert it to using the code system
+			return convertToCode(convertFromCode(inputText));
+		} catch (IllegalArgumentException e){
+			//otherwise just return the input text
+			return inputText;
+		}
+	}
+
 	private static long TOTAL_SEEDS = 5429503678976L; //26^9 possible seeds
 
 	public static long randomSeed(){

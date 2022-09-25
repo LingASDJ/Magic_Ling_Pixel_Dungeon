@@ -21,7 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.KEY_CUSTOM_LING;
+import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.KEY_CUSTOM_SEED;
 import static com.shatteredpixel.shatteredpixeldungeon.ui.Icons.RENAME_OFF;
+import static com.watabou.utils.DeviceCompat.isAndroid;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -46,6 +49,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
@@ -56,6 +61,23 @@ import com.watabou.utils.DeviceCompat;
 import java.util.ArrayList;
 
 public class WndStartGame extends Window {
+
+	public static void showKeyInput(){
+		Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextInput(Messages.get(WndTextInput.class,"enter_key"), Messages.get(WndGame.class,
+				"dialog_user"), SPDSettings.customSeed(), 10, false, Messages.get(WndTextInput.class,"yes"),
+				Messages.get(WndTextInput.class,"no")){
+			@Override
+			public void onSelect(boolean positive, String text) {
+				text = DungeonSeed.formatText(text);
+				if(positive) {
+					SPDSettings.customSeed(text);
+					//抛出一个问题，保证初始化成功
+					throw new RuntimeException("成功，信息已录入");
+				}
+			}
+		}));
+	}
+
 
 	private static final int WIDTH    = 120;
 	private static final int HEIGHT   = 160;
@@ -252,11 +274,15 @@ public class WndStartGame extends Window {
 				ActionIndicator.action = null;
 				InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
 
-				if (SPDSettings.intro()) {
+				//匹配两个值以及为安卓才显示
+				if(SPDSettings.customSeed().equals(KEY_CUSTOM_LING) && SPDSettings.customSeed().equals(KEY_CUSTOM_SEED) && isAndroid()){
+					WndStartGame.showKeyInput();
+				} else if (SPDSettings.intro()) {
 					SPDSettings.intro( false );
 					Game.switchScene( IntroScene.class );
 				} else {
 					Game.switchScene( InterlevelScene.class );
+					GLog.n(SPDSettings.customSeed());
 				}
 			}
 

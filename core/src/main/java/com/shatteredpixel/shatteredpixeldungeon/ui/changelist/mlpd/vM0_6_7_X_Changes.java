@@ -7,9 +7,11 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.BlueBatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdGuardSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KagenoNusujinSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WFSprite;
@@ -24,6 +26,8 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_10_Changes(changeInfos);
+        add_v0_6_9_Changes(changeInfos);
         add_v0_6_8_Changes(changeInfos);
         add_v0_6_7_Changes(changeInfos);
         add_v0_6_6_Changes(changeInfos);
@@ -33,6 +37,64 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_10_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta21-p1.2", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ENDDIED), ("彩蛋武器：终焉"),
+                ("正式实装，击败火元素概率掉落")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), (Messages.get(ChangesScene.class, "bugfixes")),
+                Messages.get(vM0_6_7_X_Changes.class, "bug_06X30")));
+
+    }
+
+    public static void add_v0_6_9_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta21-p1", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ENDDIED), ("彩蛋武器：终焉"),
+                ("在命运的尽头，亦或者是命运的起点")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GAUNTLETS), ("碧灰双刃"),
+                ("武器降级到3阶")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), ("钥匙剑"),
+                ("武器提格到5阶，进行了一定的重做")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new MimicSprite.Dimand(), ("钻石宝箱王"),
+                ("在梦魇Boss中出现新的技能")));
+
+        changes.addButton(new ChangeButton(new GhostSprite(), ("幽灵奖励改变"),
+                ("幽灵现在更能出现+3，以及+4，+5品种的武器或护甲")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHANGES), ("药水癔症"),
+                ("暂时为以前的样子，后续会改善")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.INFO), ("杂项改动"),
+                ("1.部分物品的显示逻辑更新\n2.用户ID系统\n3.调整红龙之王的奖励\n4.修复了一系列的Bug")));
+
+
     }
 
     public static void add_v0_6_8_Changes( ArrayList<ChangeInfo> changeInfos ) {
@@ -50,12 +112,6 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(new ShopkKingSprite(), ("商人领主商店终端"),
                 ("交易使人快乐")));
 
-        changes = new ChangeInfo("改动", false, null);
-        changes.hardlight(Window.GREEN_COLOR);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), (Messages.get(ChangesScene.class, "bugfixes")),
-                Messages.get(vM0_6_7_X_Changes.class, "bug_06X29")));
     }
 
     public static void add_v0_6_7_Changes( ArrayList<ChangeInfo> changeInfos ) {

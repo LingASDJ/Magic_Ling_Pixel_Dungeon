@@ -24,7 +24,9 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FetidRat;
@@ -327,10 +329,18 @@ public class Ghost extends NPC {
 					hero.sprite.showStatus( CharSprite.NEGATIVE, "+3!!!" );
 				} else if (itemLevelRoll < 0.95f){
 					hero.sprite.showStatus( CharSprite.POSITIVE, "+5!!!" );
+					if(( !Badges.isUnlocked(Badges.Badge.DAGETO))) {
+						Statistics.dageCollected = 2;
+						Badges.GhostDageCollected();
+					}
 					itemLevel = 5;
 				} else {
 					itemLevel = 4;
 					hero.sprite.showStatus( CharSprite.WARNING, "+4!!!" );
+					if(( !Badges.isUnlocked(Badges.Badge.GHOSTDAGE))) {
+						Statistics.dageCollected = 1;
+						Badges.GhostDageCollected();
+					}
 				}
 				weapon.upgrade(itemLevel);
 				armor.upgrade(itemLevel);
