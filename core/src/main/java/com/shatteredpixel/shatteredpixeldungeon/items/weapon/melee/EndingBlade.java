@@ -113,7 +113,9 @@ public class EndingBlade extends Weapon {
     @Override
     public int level() {
         int level = Dungeon.hero == null ? 0 : fireenergy/100;
-        if (Dungeon.hero == null) level += 1;
+        if (Dungeon.hero == null){
+            level += 1;
+        }
         return level;
     }
     private int TIME_TO_DIED = 0;
@@ -165,7 +167,7 @@ public class EndingBlade extends Weapon {
                         GLog.n("你本局已经使用千里追魂，无法再次使用。");
                     } else if(level < 7) {
                         GLog.n("你的等级尚未达到7级以上，打败更多的怪物，鲜血会让你的武器变得更强……");
-                    } else if(0.30f <= (float)(hero.HP/hero.HT)) {
+                    } else if(0.30f >= (float)(hero.HP/hero.HT)) {
                         GLog.n("你的血量尚未低于30%，无法使用");
                     }
                     break;

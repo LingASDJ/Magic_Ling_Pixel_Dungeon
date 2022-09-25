@@ -49,7 +49,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ElementalSprite;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -224,19 +223,11 @@ public abstract class Elemental extends Mob {
 		@Override
 		public void die(Object cause) {
 			super.die(cause);
-			//机会
-			int blobs = Random.chances(new float[]{0, 1, 0, 1, 0});
 
 			if(!Statistics.endingbald) {
-				for (int i = 0; i < blobs; i++) {
-					int ofs;
-					do {
-						ofs = PathFinder.NEIGHBOURS8[Random.NormalIntRange(1,1)];
-					} while (!Dungeon.level.passable[pos + ofs]);
-					Dungeon.level.drop(new EndingBlade(), pos + ofs).sprite.drop(pos);
+				Dungeon.level.drop(new EndingBlade(), pos).sprite.drop();
 					Badges.ENDDIED();
 					Statistics.endingbald = true;
-				}
 			} else {
 				Dungeon.level.drop(new Gold().quantity(Random.Int(90, 120)), pos).sprite.drop();
 			}

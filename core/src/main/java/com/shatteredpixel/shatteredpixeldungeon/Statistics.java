@@ -162,6 +162,8 @@ public class Statistics {
 
 		bundle.put( WZGL, wangzheguilai );
 
+		bundle.put( ENBR, endingbald );
+
 		//SPD
 		bundle.put("real_time_passed", second_elapsed);
 		bundle.put("real_seconds_passed", real_seconds);
@@ -193,6 +195,8 @@ public class Statistics {
 		deadshoppingdied = bundle.getBoolean( SHOPPINGDIED );
 
 		wangzheguilai = bundle.getBoolean( WZGL );
+
+		endingbald = bundle.getBoolean( ENBR );
 
 		//SPD
 		second_elapsed = bundle.getFloat("real_time_passed");
