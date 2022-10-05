@@ -2,16 +2,17 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.CryStalPosition;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.TRUEPosition;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BeamTowerAdbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
@@ -107,10 +108,10 @@ public class FireMagicDied extends Mob implements Callback {
         }
     }
 
-    @Override
-    public boolean isInvulnerable(Class effect) {
-        return phase == 3 && effect != FireMagicDied.KingDamager.class;
-    }
+//    @Override
+//    public boolean isInvulnerable(Class effect) {
+//        return phase == 3 && effect != FireMagicDied.KingDamager.class;
+//    }
 
     @Override
     public int attackSkill( Char target ) {
@@ -437,7 +438,7 @@ public class FireMagicDied extends Mob implements Callback {
             actPhaseTwoSummon();
             return true;
         }
-        actScanning();
+        //actScanning();
         if (Dungeon.level.water[pos] && HP < HT) {
             HP += healInc;
 
@@ -660,12 +661,15 @@ public class FireMagicDied extends Mob implements Callback {
     }
 
     @Override
-    protected boolean getCloser( int target ) {
-        if (pumpedUp != 0) {
-            pumpedUp = 0;
-            sprite.idle();
+    protected boolean getCloser(int target) {
+        this.pumpedUp = 0;
+        if (this.state != this.HUNTING) {
+            return FireMagicDied.super.getCloser(target);
         }
-        return super.getCloser( target );
+        if (!this.enemySeen || !getFurther(target)) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -710,10 +714,20 @@ public class FireMagicDied extends Mob implements Callback {
                 sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
                 Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(12*25);
             }
-        } else if (phase == 2 && shielding() == 0 && HP <= 100) {
+        } else if (phase == 2 && shielding() == 0 && HP <= 200) {
             actPhaseTwoSummon();
-            yell(  Messages.get(this, "enraged", Dungeon.hero.name()) );
-            //Buff.detach(this, FireMagicDied.SacrificeSubjectListener.class);
+            yell(  Messages.get(this, "enraged" ));
+            GLog.n(  Messages.get(this, "xslx") );
+
+            //T3 阶段
+            CrystalLingTower abc = new CrystalLingTower();
+            abc.pos = TRUEPosition;
+            GameScene.add(abc);
+
+            Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(1000);
+
+            Buff.append(hero, BeamTowerAdbility.class).towerPos = TRUEPosition;
+
             for (Buff buff : hero.buffs()) {
                 if (buff instanceof FireMagicDied.KingDamager) {
                     buff.detach();
@@ -732,7 +746,22 @@ public class FireMagicDied extends Mob implements Callback {
             Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);
             beamCD = 40 + 8 - (phase == 10 ? 38 : 0);
             sprite.showStatus(0xff0000, Messages.get(this, "dead"));
-
+            switch (Random.Int(7)){
+                case 0: default:    Buff.affect(this, ChampionEnemy.Blazing.class);
+                break;
+                case 1:             Buff.affect(this, ChampionEnemy.Projecting.class);
+                break;
+                case 2:             Buff.affect(this, ChampionEnemy.AntiMagic.class);
+                break;
+                case 3:             Buff.affect(this, ChampionEnemy.Giant.class);
+                break;
+                case 4:             Buff.affect(this, ChampionEnemy.Blessed.class);
+                break;
+                case 5:             Buff.affect(this, ChampionEnemy.Growing.class);
+                break;
+                case 6:             Buff.affect(this, ChampionEnemy.Halo.class);
+                break;
+            }
         } else if (phase == 3 && preHP > 80 && HP <= 80){
             yell( Messages.get(this, "losing") );
         }
@@ -750,7 +779,6 @@ public class FireMagicDied extends Mob implements Callback {
     public void die( Object cause ) {
 
         super.die( cause );
-        ShatteredPixelDungeon.seamlessResetScene();
 
         Dungeon.level.drop(new BackGoKey().quantity(1).identify(), pos).sprite.drop();
         Dungeon.level.drop(new ScrollOfMagicMapping().quantity(1).identify(), pos).sprite.drop();
@@ -763,9 +791,11 @@ public class FireMagicDied extends Mob implements Callback {
         woc.identify();
 
         Dungeon.level.unseal();
+
         Buff.affect(hero, ShopLimitLock.class).set((1), 1);
-        for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
-            if (mob instanceof FireMagicDied.ColdGuradA ||  mob instanceof SRPDICLRPRO ||mob instanceof Skeleton||mob instanceof CrystalDiedTower||mob instanceof DM100|| mob instanceof BlackHost|| mob instanceof Warlock|| mob instanceof Monk) {
+
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (mob instanceof FireMagicDied.ColdGuradA ||  mob instanceof SRPDICLRPRO ||mob instanceof Skeleton||mob instanceof DM100|| mob instanceof BlackHost|| mob instanceof Warlock|| mob instanceof Monk|| mob instanceof CrystalDiedTower) {
                 mob.die( cause );
             }
         }
@@ -787,7 +817,7 @@ public class FireMagicDied extends Mob implements Callback {
     public void notice() {
         super.notice();
         BossHealthBar.assignBoss(this);
-        ShatteredPixelDungeon.seamlessResetScene();
+
         Music.INSTANCE.play(Assets.BGM_FRBOSS, true);
         yell( Messages.get(this, "notice") );
         //summon();

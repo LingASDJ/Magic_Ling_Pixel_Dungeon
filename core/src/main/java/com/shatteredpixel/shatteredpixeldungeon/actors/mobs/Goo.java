@@ -46,7 +46,7 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class Goo extends Mob {
-
+		
 	{
 		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 120 : 100;
 		EXP = 10;

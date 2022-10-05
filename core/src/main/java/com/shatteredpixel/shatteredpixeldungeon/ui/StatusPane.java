@@ -21,7 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.LIGHTBLACK;
+import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.ClassPage;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -30,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PureSoul;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CircleArc;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -72,8 +72,6 @@ public class StatusPane extends Component {
 	private Image puresoul;
 	private BitmapText hgText;
 
-	private BitmapText puresoulText;
-
 	private Image exp;
 	private BitmapText expText;
 
@@ -93,6 +91,7 @@ public class StatusPane extends Component {
 	public MainHandIndicator mainhand;
 	public BossSelectIndicator bossselect;
 	public JoinIndicator joinxxx;
+	public LanterFireCator lanter;
 
 	private static String asset = Assets.Interfaces.STATUS;
 
@@ -151,8 +150,7 @@ public class StatusPane extends Component {
 		else        hg = new Image(asset, 0, 45, 49, 4);
 		add( hg );
 
-		if (large)  puresoul = new Image(asset, 0, 128, 128, 7);
-		else        puresoul = new Image(asset, 0, 49, 52, 4);
+	 	puresoul = new Image(Assets.Interfaces.LANTERLING);
 		add( puresoul );
 
 		hpText = new BitmapText(PixelScene.pixelFont);
@@ -163,11 +161,6 @@ public class StatusPane extends Component {
 		hgText = new BitmapText(PixelScene.pixelFont);
 		hgText.alpha(0.6f);
 		add(hgText);
-
-
-		puresoulText = new BitmapText(PixelScene.pixelFont);
-		puresoulText.alpha(0.6f);
-		add(puresoulText);
 
 		heroInfoOnBar = new Button(){
 			@Override
@@ -217,6 +210,9 @@ public class StatusPane extends Component {
 
 		joinxxx=new JoinIndicator();
 		add(joinxxx);
+
+		lanter=new LanterFireCator();
+		add(lanter);
 	}
 
 
@@ -265,10 +261,11 @@ public class StatusPane extends Component {
 
 			heroInfoOnBar.setRect(heroInfo.right(), y + 19, 130, 20);
 
-			//buffs.setPos( x + 31, y );
 
-			//下半段
-			puresoul.visible = false;
+//			buffs.setPos( x + 31, y +15 );
+
+//			//下半段
+//			puresoul.visible = true;
 
 			busy.x = x + bg.width + 1;
 			busy.y = y + bg.height - 9;
@@ -295,28 +292,24 @@ public class StatusPane extends Component {
 			hgText.y -= 0.001f; //prefer to be slightly higher
 			PixelScene.align(hgText);
 
-			puresoulText.scale.set(PixelScene.align(0.5f));
-			puresoulText.x = 31f;
-			puresoulText.y = 13f + (hg.height - (puresoulText.baseLine()+puresoulText.scale.y))/2f;
-			puresoulText.y -= 0.001f; //prefer to be slightly higher
-			PixelScene.align(puresoulText);
+//			puresoulText.scale.set(PixelScene.align(0.5f));
+//			puresoulText.x = 31f;
+//			puresoulText.y = 13f + (hg.height - (puresoulText.baseLine()+puresoulText.scale.y))/2f;
+//			puresoulText.y -= 0.001f; //prefer to be slightly higher
+//			PixelScene.align(puresoulText);
 
 			heroInfoOnBar.setRect(heroInfo.right(), y, 50, 9);
 
-			if(Dungeon.isChallenged(LIGHTBLACK)){
-				puresoul.x= 30.0f;
-				puresoul.y= 13.0f;
-				buffs.setPos( x + 36, y + 20 );
-			} else {
-				puresoul.x= 500f;
-				puresoul.y= 500f;
-				buffs.setPos( x + 31, y + 12 );
-			}
+			puresoul.x= 1.0f;
+			puresoul.y= 142.0f;
+			puresoul.visible = false; //
 
-
+			buffs.setPos( x + 31, y + 12 );
 
 			busy.x = x + 1;
 			busy.y = y + 33;
+
+			lanter.setPos(0, 500);
 		}
 
 		counter.point(busy.center());
@@ -329,37 +322,64 @@ public class StatusPane extends Component {
 		super.update();
 
 		int maxHunger = (int) Hunger.STARVING;
+		int maxPureSole = Dungeon.hero.lanterfire;
 		int health = Dungeon.hero.HP;
 		int shield = Dungeon.hero.shielding();
 		int max = Dungeon.hero.HT;
-		int maxSoul = (int) PureSoul.PURESOULBASE;
+		int mtPureSole = 100;
 
 		//检查为光与影使用黑色模块
-		if(Dungeon.isChallenged(LIGHTBLACK)){
-			if (SPDSettings.ClassUI()) {
-				bg.texture = TextureCache.get(Assets.Interfaces.STATUSSOUL_DARK);
-			} else {
-				bg.texture = TextureCache.get(Assets.Interfaces.STATUSSOUL);
-			}
-		} else if (SPDSettings.ClassUI()) {
+//		int chCount = 0;
+//		for (int ch : Challenges.MASKS){
+//			if ((Dungeon.challenges & ch) != 0) chCount++;
+//		}
+//
+//		if(chCount >= 3 && !Dungeon.isChallenged(PRO) && lanterfireactive){
+//			if (SPDSettings.ClassUI()) {
+//				bg.texture = TextureCache.get(Assets.Interfaces.STATUSSOUL_DARK);
+//			} else {
+//				bg.texture = TextureCache.get(Assets.Interfaces.STATUSSOUL);
+//			}
+//		} else
+		if (SPDSettings.ClassUI()) {
 			bg.texture = TextureCache.get(Assets.Interfaces.STATUS_DARK);
 		} else {
 			bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
 		}
 
-		if (SPDSettings.ClassPage()) {
+		if (ClassPage()) {
 			page.setPos(0, 40);
 			pageb.setPos(0, 500);
 			mainhand.setPos(0, 51);
 			joinxxx.setPos(0, 78);
 			bossselect.setPos(0, 104);
+
+			if(lanterfireactive){
+				lanter.setPos(0, 500);
+				puresoul.visible = false;
+			}
+
 		} else {
 			page.setPos(0, 500);
 			pageb.setPos(0, 40);
 			mainhand.setPos(0, 500);
 			joinxxx.setPos(0, 500);
 			bossselect.setPos(0, 500);
+
+			//TODO 灯火前行
+			if(lanterfireactive){
+				lanter.setPos(0, 75);
+				lanter.visible = true;
+				lanter.active  = true;
+				puresoul.visible =true;
+				puresoul.x= 1.0f;
+				puresoul.y= 142.0f;
+			}
+
+
 		}
+
+
 
 		if (!Dungeon.hero.isAlive()) {
 			avatar.tint(0x000000, 0.5f);
@@ -376,6 +396,12 @@ public class StatusPane extends Component {
 
 		hp.scale.x = Math.max( 0, (health-shield)/(float)max);
 		shieldedHP.scale.x = health/(float)max;
+
+		if(lanterfireactive) {
+			puresoul.scale.y = -Math.max( 0, (maxPureSole)/(float)mtPureSole);
+		} else {
+			puresoul.scale.y = -1.0f;
+		}
 
 		if (shield > health) {
 			rawShielding.scale.x = shield / (float) max;
@@ -397,17 +423,6 @@ public class StatusPane extends Component {
 		}
 		else if (Dungeon.hero.isAlive()) {
 			hg.scale.x = 1.0f;
-		}
-
-		PureSoul PureSoulBuff = Dungeon.hero.buff(PureSoul.class);
-		if (PureSoulBuff != null) {
-			int sanity = Math.max(0, maxSoul - PureSoulBuff.soul());
-			puresoul.scale.x = (float) sanity / (float) maxSoul;
-			//puresoul.scale.x = 1.0f;
-			puresoulText.text(sanity + "/" + maxSoul);
-		}
-		else if (Dungeon.hero.isAlive()) {
-			puresoul.scale.x = 1.0f;
 		}
 
 		if (large) {

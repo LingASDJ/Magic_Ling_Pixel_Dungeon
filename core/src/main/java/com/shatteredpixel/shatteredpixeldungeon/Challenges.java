@@ -52,10 +52,9 @@ public class Challenges {
 	public static final int SBSG = 1024;
 	public static final int EXSG = 2048;
 	public static final int STRONGER_BOSSES 	= 4096;
-	public static final int LIGHTBLACK 	= 8192;
-	public static final int PRO = 16384;
+	public static final int PRO = 8192;
 
-	public static final int MAX_VALUE = 32768;
+	public static final int MAX_VALUE = 16384;
 
 	public static final String[] NAME_IDS = {
 			"no_food",

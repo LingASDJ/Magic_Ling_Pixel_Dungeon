@@ -21,13 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.LIGHTBLACK;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sanity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
@@ -72,10 +67,6 @@ public class LostBackpack extends Item {
 					((MagesStaff) i).applyWandChargeBuff(hero);
 				}
 			}
-		}
-
-		if(Dungeon.isChallenged(LIGHTBLACK)) {
-			Buff.affect(hero, Sanity.class).set((150), 1);
 		}
 
 		hero.updateHT(false);

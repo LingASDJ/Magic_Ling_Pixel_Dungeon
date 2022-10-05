@@ -25,15 +25,15 @@ public class LockSword extends MeleeWeapon {
     @Override
     public int min(int lvl) {
 
-        return  Math.round(1.0f*(tier+1)) +     //15 base, down from 30
-                lvl*Math.round(0.5f*(tier+1));  //+3 per level, down from +6
+        return  Math.round(1.0f*(tier+1)) +
+                lvl*Math.round(1.5f*(tier+1));
     }
 
     @Override
     public int max(int lvl) {
 
-        return  Math.round(1.5f*(tier+1)) +     //15 base, down from 30
-                lvl*Math.round(0.5f*(tier+1));  //+3 per level, down from +6
+        return  Math.round(2.5f*(tier+1)) +
+                lvl*Math.round(0.5f*(tier+1));
     }
 
     public String desc() {
@@ -41,16 +41,21 @@ public class LockSword extends MeleeWeapon {
     }
 
     public int image() {
-        if (lvl == 150) {
-            super.image = ItemSpriteSheet.DG4;
-        } else if (lvl >= 350) {
+        if (lvl >= 750) {
             super.image = ItemSpriteSheet.DG5;
+        } else if (lvl >= 550) {
+            super.image = ItemSpriteSheet.DG4;
         }
         return image;
     }
 
     public int proc(Char attacker, Char defender, int damage ) {
-        ++lvl;
+        if(level >= 10) {
+            lvl = 1000;
+        } else {
+            ++lvl;
+        }
+
         int dmg;
 
         if(level >= 10){
@@ -85,29 +90,29 @@ public class LockSword extends MeleeWeapon {
 
     }
 
-    public void restoreFromBundle(Bundle var1) {
-        super.restoreFromBundle(var1);
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
         super.image = ItemSpriteSheet.DG3;
 
-        if (lvl == 150) {
-            super.image = ItemSpriteSheet.DG4;
-        } else if (lvl >= 350) {
+        if (lvl >= 750) {
             super.image = ItemSpriteSheet.DG5;
+        } else if (lvl >= 550) {
+            super.image = ItemSpriteSheet.DG4;
         }
 
-        this.lvl = var1.getInt("lvl");
+        this.lvl = bundle.getInt("lvl");
     }
 
-    public void storeInBundle(Bundle var1) {
-        super.storeInBundle(var1);
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
         super.image = ItemSpriteSheet.DG3;
 
-        if (lvl == 150) {
-            super.image = ItemSpriteSheet.DG4;
-        } else if (lvl >= 350) {
+        if (lvl >= 750) {
             super.image = ItemSpriteSheet.DG5;
+        } else if (lvl >= 550) {
+            super.image = ItemSpriteSheet.DG4;
         }
 
-        var1.put("lvl", this.lvl);
+        bundle.put("lvl", this.lvl);
     }
 }

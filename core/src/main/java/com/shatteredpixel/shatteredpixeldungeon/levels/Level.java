@@ -478,16 +478,14 @@ public abstract class Level implements Bundlable {
 	abstract protected boolean build();
 	
 	private ArrayList<Class<?extends Mob>> mobsToSpawn = new ArrayList<>();
-	
+
 	public Mob createMob() {
 		if (mobsToSpawn == null || mobsToSpawn.isEmpty()) {
 			mobsToSpawn = Bestiary.getMobRotation(Dungeon.depth);
 		}
 
 		Mob m = Reflection.newInstance(mobsToSpawn.remove(0));
-		if (Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES)){
-			ChampionEnemy.rollForChampion(m);
-		}
+		ChampionEnemy.rollForChampion(m);
 		return m;
 	}
 

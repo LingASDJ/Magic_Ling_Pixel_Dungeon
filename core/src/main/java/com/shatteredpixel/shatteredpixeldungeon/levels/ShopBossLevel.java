@@ -8,7 +8,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrystalDiedTower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.FireMagicDied;
@@ -20,11 +19,11 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 
 public class ShopBossLevel extends Level {
 
@@ -80,6 +79,8 @@ public class ShopBossLevel extends Level {
             WIDTH*17 + 22,
     };
 
+    public static int TRUEPosition = WIDTH * 17 + 17;
+
     @Override
     public void unseal() {
         super.unseal();
@@ -123,7 +124,8 @@ public class ShopBossLevel extends Level {
     private static final int[] pedestals = new int[4];
     public int getSummoningPos(){
         Mob king = getKing();
-        HashSet<FireMagicDied.Summoning> summons = king.buffs(FireMagicDied.Summoning.class);
+        //fixed
+        HashSet<FireMagicDied.Summoning> summons = Objects.requireNonNull(king).buffs(FireMagicDied.Summoning.class);
         ArrayList<Integer> positions = new ArrayList<>();
         for (int pedestal : pedestals) {
             boolean clear = true;
@@ -137,11 +139,12 @@ public class ShopBossLevel extends Level {
                 positions.add(pedestal);
             }
         }
-        if (positions.isEmpty()){
-            return -1;
-        } else {
-            return Random.element(positions);
-        }
+        //if (positions.isEmpty()){
+        //    return -1;
+        //} else {
+        //    return Random.element(positions);
+        //}
+        return -1;
     }
 
     public static final int thronex;
@@ -274,19 +277,11 @@ public class ShopBossLevel extends Level {
     }
 
     public String tilesTex() {
-        if (Dungeon.hero.buff(LockedFloor.class)!=null) {
-            return Assets.Environment.TILES_DIED;
-        } else {
             return Assets.Environment.TILES_COLD;
-        }
     }
 
     public String waterTex() {
-        if (Dungeon.hero.buff(LockedFloor.class)!=null) {
-            return Assets.Environment.WATER_HALLS;
-        } else {
             return Assets.Environment.WATER_COLD;
-        }
     }
 
 }

@@ -21,11 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -98,16 +98,21 @@ public abstract class ChampionEnemy extends Buff {
 
 		Dungeon.mobsToChampion--;
 
-		if (Dungeon.mobsToChampion <= 0){
-			switch (Random.Int(7)){
-				case 0: default:    Buff.affect(m, Blazing.class);      break;
-				case 1:             Buff.affect(m, Projecting.class);   break;
-				case 2:             Buff.affect(m, AntiMagic.class);    break;
-				case 3:             Buff.affect(m, Giant.class);        break;
-				case 4:             Buff.affect(m, Blessed.class);      break;
-				case 5:             Buff.affect(m, Growing.class);      break;
-				case 6:             Buff.affect(m, Halo.class);      break;
-			}
+		//we roll for a champion enemy even if we aren't spawning one to ensure that
+		//mobsToChampion does not affect levelgen RNG (number of calls to Random.Int() is constant)
+		Class<?extends ChampionEnemy> buffCls;
+		switch (Random.Int(7)){
+			case 0: default:    buffCls = Blazing.class;      break;
+			case 1:             buffCls = Projecting.class;   break;
+			case 2:             buffCls = AntiMagic.class;    break;
+			case 3:             buffCls = Giant.class;        break;
+			case 4:             buffCls = Blessed.class;      break;
+			case 5:             buffCls = Growing.class;      break;
+			case 6:             buffCls = Halo.class;      break;
+		}
+
+		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES)) {
+			Buff.affect(m, buffCls);
 			m.state = m.WANDERING;
 		}
 	}
@@ -154,19 +159,19 @@ public abstract class ChampionEnemy extends Buff {
 			Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy);
 		}
 
-		@Override
-		public void detach() {
-			for (int i : PathFinder.NEIGHBOURS9){
-				if (!Dungeon.level.solid[target.pos+i]){
-					GameScene.add(Blob.seed(target.pos+i, 4, HalomethaneFire.class));
-				}
-			}
-			super.detach();
-		}
+//		@Override
+//		public void detach() {
+//			for (int i : PathFinder.NEIGHBOURS9){
+//				if (!Dungeon.level.solid[target.pos+i]){
+//					GameScene.add(Blob.seed(target.pos+i, 4, HalomethaneFire.class));
+//				}
+//			}
+//			super.detach();
+//		}
 
 		@Override
 		public float meleeDamageFactor() {
-			return 1.65f;
+			return 1.15f;
 		}
 
 		{

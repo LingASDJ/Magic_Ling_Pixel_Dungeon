@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.LIGHTBLACK;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -33,7 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
@@ -182,7 +180,7 @@ public class InterlevelScene extends PixelScene {
 			fadeTime += 0.9f; //adds 1 second total
 			//speed up transition when debugging
 		} else if (DeviceCompat.isDebug()){
-			fadeTime = 0.8f;
+			fadeTime = 0.1f;
 		}
 
 		SkinnedBlock bg = new SkinnedBlock(Camera.main.width, Camera.main.height, loadingAsset ){
@@ -506,11 +504,8 @@ public class InterlevelScene extends PixelScene {
 				level.map[Dungeon.hero.pos] = Terrain.GRASS;
 			}
 			Dungeon.hero.resurrect();
-			if(Dungeon.isChallenged(LIGHTBLACK)) {
-				level.drop(new Food(), invPos);
-			} else {
+
 				level.drop(new LostBackpack(), invPos);
-			}
 		}
 
 		Dungeon.switchLevel( level, Dungeon.hero.pos );

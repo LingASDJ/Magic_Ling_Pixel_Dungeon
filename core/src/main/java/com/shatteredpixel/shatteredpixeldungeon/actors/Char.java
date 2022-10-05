@@ -54,6 +54,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySoftDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
@@ -377,6 +380,11 @@ public abstract class Char extends Actor {
 			if ( enemy.buff( Vulnerable.class ) != null){
 				effectiveDamage *= 1.33f;
 			}
+
+			//魔女的低语-软弱
+			if ( enemy.buff(  MagicGirlSaySoftDied.class ) != null){
+				effectiveDamage *= 1.05f;
+			}
 			
 			effectiveDamage = attackProc( enemy, effectiveDamage );
 			
@@ -514,17 +522,24 @@ public abstract class Char extends Actor {
 		if ( buff(Weakness.class) != null ){
 			damage *= 0.67f;
 		}
+
+		//削弱10%伤害
+		if ( buff(MagicGirlSayKill.class) != null ){
+			damage *= 0.90f;
+		}
+
 		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
 			damage *= buff.meleeDamageFactor();
 			buff.onAttackProc( enemy );
 		}
+
 		for (ChampionHero buff : buffs(ChampionHero.class)){
 			damage *= buff.meleeDamageFactor();
 			buff.onAttackProc( enemy );
 		}
 		return damage;
 	}
-	
+
 	public int defenseProc( Char enemy, int damage ) {
 		return damage;
 	}
@@ -532,6 +547,10 @@ public abstract class Char extends Actor {
 	public float speed() {
 		float speed = baseSpeed;
 		if ( buff( Cripple.class ) != null ) speed /= 2f;
+
+		//Todo 迟钝 3回合
+		if ( buff( MagicGirlSaySlowy.class ) != null ) speed /= 3f;
+
 		if ( buff( Stamina.class ) != null) speed *= 1.5f;
 		if ( buff( Adrenaline.class ) != null) speed *= 2f;
 		if ( buff( Haste.class ) != null) speed *= 3f;

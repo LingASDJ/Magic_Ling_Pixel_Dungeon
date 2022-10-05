@@ -22,14 +22,16 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.LIGHTBLACK;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -47,12 +49,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.DeadSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbueEX;
@@ -64,6 +64,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayCursed;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySoftDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
@@ -79,7 +84,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BloodBat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
@@ -115,6 +119,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
+import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -285,7 +291,13 @@ public class Hero extends Char {
 			strBonus += (int)Math.floor(STR * (0.03f + 0.05f*pointsInTalent(Talent.STRONGMAN)));
 		}
 
+		//TODO 无力 本大层-3力量
+		if(Dungeon.hero.buff(MagicGirlSayNoSTR.class) != null){
+			strBonus -= 3;
+		}
+
 		return STR + strBonus;
+
 	}
 
 	private static final String CLASS       = "class";
@@ -298,11 +310,15 @@ public class Hero extends Char {
 	private static final String LEVEL		= "lvl";
 	private static final String EXPERIENCE	= "exp";
 	private static final String HTBOOST     = "htboost";
-	
+
+	private static final String LANTERFTR     = "lanterfire";
+	public int lanterfire;
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 
 		super.storeInBundle( bundle );
+
+		bundle.put( LANTERFTR, lanterfire );
 
 		bundle.put( CLASS, heroClass );
 		bundle.put( SUBCLASS, subClass );
@@ -317,6 +333,8 @@ public class Hero extends Char {
 		bundle.put( EXPERIENCE, exp );
 		bundle.put( HTBOOST, HTBoost );
 
+
+
 		if (!this.name.equals("")) {
 			bundle.put("name", this.name);
 		}
@@ -329,6 +347,8 @@ public class Hero extends Char {
 
 		lvl = bundle.getInt( LEVEL );
 		exp = bundle.getInt( EXPERIENCE );
+
+		lanterfire = bundle.getInt(LANTERFTR);
 
 		HTBoost = bundle.getInt(HTBOOST);
 
@@ -497,6 +517,15 @@ public class Hero extends Char {
 		Buff.affect( this, Regeneration.class );
 		Buff.affect( this, Hunger.class );
 
+//		if(lanterfireactive){
+//			Buff.affect( this, PureSoul.class );
+//		}
+
+		Buff.affect(hero, MagicGirlSayNoSTR.class).set( (3), 1 );
+		Buff.affect(hero, MagicGirlSayCursed.class).set( (3), 1 );
+		Buff.affect(hero, MagicGirlSaySlowy.class).set( (3), 1 );
+		Buff.affect(hero, MagicGirlSayKill.class).set( (3), 1 );
+		Buff.affect(hero, MagicGirlSaySoftDied.class).set( (3), 1 );
 
 		if(HelpSettings()) {
 			Buff.affect(this, GameTracker.class);
@@ -864,6 +893,23 @@ public class Hero extends Char {
 	}
 	
 	private boolean actMove( HeroAction.Move action ) {
+		MagicGirlSayNoSTR.level -= 1;
+		//检查
+		int chCount = 0;
+		for (int ch : Challenges.MASKS){
+			if ((Dungeon.challenges & ch) != 0) chCount++;
+		}
+
+		if(chCount >= 3 && !Dungeon.isChallenged(PRO) && !lanterfireactive){
+			//TODO 灯火前行
+			lanterfire = 100;
+			new OilLantern().quantity(1).identify().collect();
+			new OilPotion().quantity(100).identify().collect();
+			new Ankh().quantity(1).identify().collect();
+			Dungeon.gold+=10000;
+			lanterfireactive = true;
+			GLog.n("系统已经检测到你已开启困难模式，灯火会与你结伴同行，但同时，恶魔也会对你馋言欲滴。");
+		}
 
 		if (getCloser( action.dst )) {
 			return true;
@@ -872,6 +918,8 @@ public class Hero extends Char {
 			ready();
 			return false;
 		}
+
+
 	}
 	
 	private boolean actInteract( HeroAction.Interact action ) {
@@ -1758,17 +1806,17 @@ public class Hero extends Char {
 			}
 		}
 
-		if(Dungeon.isChallenged(LIGHTBLACK)) {
-			BlackSoul s = new BlackSoul();
-			s.pos = Dungeon.hero.pos;
-			s.gold = Dungeon.gold;
-			Dungeon.gold = 0;
-			s.state = s.SLEEPING;
-			GameScene.add(s);
-			Buff.affect(s, ChampionEnemy.DeadSoulSX.class);
-			Buff.affect(s, DeadSoul.class);
-			GameScene.flash(0x80FF0000);
-		}
+//		if(Dungeon.isChallenged(LIGHTBLACK)) {
+//			BlackSoul s = new BlackSoul();
+//			s.pos = Dungeon.hero.pos;
+//			s.gold = Dungeon.gold;
+//			Dungeon.gold = 0;
+//			s.state = s.SLEEPING;
+//			GameScene.add(s);
+//			Buff.affect(s, ChampionEnemy.DeadSoulSX.class);
+//			Buff.affect(s, DeadSoul.class);
+//			GameScene.flash(0x80FF0000);
+//		}
 		if(Statistics.fireGirlnoshopping && Dungeon.depth < 0){
 			reallyDie( cause );
 			GLog.n(Messages.get(this,"died"));
@@ -2258,4 +2306,17 @@ public class Hero extends Char {
 	public static interface Doom {
 		public void onDeath();
 	}
+
+	//TODO 灯火前行逻辑
+	public void damageLantern(int value){
+		lanterfire -= value;
+		if(lanterfire <= 0){
+			damage(HT,this);
+		}
+	}
+
+	public void healLantern(int value){
+		lanterfire = Math.min(lanterfire+value,100);
+	}
+
 }

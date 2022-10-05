@@ -216,7 +216,8 @@ public class WndChallenges extends Window {
 
 		protected boolean onClick(float x, float y){
 			if(!inside(x,y)) return false;
-			if(active) onClick();
+			if(active)
+				onClick();
 
 			return true;
 		}

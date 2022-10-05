@@ -124,7 +124,7 @@ public class EndingBlade extends Weapon {
 
             switch (action) {
                 case AC_LASERCRYSTAL:
-                    if(level >= 3 && firstx){
+                    if(fireenergy >= 300 && firstx){
                         firstx = false;
                         new LaserPython().quantity(1).identify().collect();
                         GLog.n("你突然感觉你的背包鼓鼓的……");
@@ -135,7 +135,7 @@ public class EndingBlade extends Weapon {
                     }
                     break;
                 case AC_DIEDGHOST:
-                    if(level >= 5 && TIME_TO_DIED == 0) {
+                    if(fireenergy >= 500 && TIME_TO_DIED == 0) {
                         curUser = hero;
                         curItem = this;
                         GameScene.selectCell(zapper);
@@ -146,7 +146,7 @@ public class EndingBlade extends Weapon {
                     }
                     break;
                 case AC_HEALRESET:
-                    if(level >= 7 && 0.30f >= (float)(hero.HP/hero.HT) && !Statistics.wangzheguilai) {
+                    if(fireenergy >= 700 && 0.30f >= (float)(hero.HP/hero.HT) && !Statistics.wangzheguilai) {
                         //0.30f >= (float)(hero.HP/hero.HT)
                         PotionOfHealing.cure( hero );
                         hero.belongings.uncurseEquipped();
@@ -390,7 +390,11 @@ public class EndingBlade extends Weapon {
 
     public int proc(Char attacker, Char defender, int damage ) {
         //常规加+1浊焰能量
-        ++fireenergy;
+        if(level >= 10) {
+            fireenergy = 1000;
+        } else {
+            ++fireenergy;
+        }
         int dmg;
         tier+= fireenergy/100;
 
@@ -404,13 +408,13 @@ public class EndingBlade extends Weapon {
             //武器最高级
         } else if(defender.properties().contains(Char.Property.BOSS) && defender.HP <= damage){
             //目标Boss血量小于实际伤害判定为死亡,+20浊焰能量
-            fireenergy+=20;
+            fireenergy+=40;
         } else if(defender.properties().contains(Char.Property.MINIBOSS) && defender.HP <= damage){
             //目标迷你Boss血量小于实际伤害判定为死亡,+10浊焰能量
-            fireenergy+=10;
+            fireenergy+=20;
         } else if (defender.HP <= damage){
             //目标血量小于实际伤害判定为死亡,+5浊焰能量
-            fireenergy+=5;
+            fireenergy+=10;
         }
 
         /*

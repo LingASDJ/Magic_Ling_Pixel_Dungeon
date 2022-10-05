@@ -552,7 +552,7 @@ public class DimandKing extends Boss {
         Dungeon.level.drop(new Ankh(), dropPos).sprite.drop(pos);
         Dungeon.level.drop(new Gold().quantity(Random.Int(2200, 5500)), pos).sprite.drop();
         Badges.validateBossSlain();
-
+        Badges.KILL_DMK();
         Dungeon.level.unseal();
 
         for (Mob m : getSubjects()){

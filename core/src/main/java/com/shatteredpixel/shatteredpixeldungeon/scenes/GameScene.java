@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayCursed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
@@ -63,6 +64,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CursingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
@@ -529,6 +531,17 @@ public class GameScene extends PixelScene {
 				} else {
 					GLog.h(Messages.get(this, "descend"), Dungeon.depth);
 				}
+
+				/*
+				TODO 检查是否存在诅咒buff，然后在下楼的时候背刺英雄一下
+				TODO 魔女的低语：束缚 本大层每下一层穿戴的装备必定被诅咒。
+				 */
+				if(Dungeon.hero.buff(MagicGirlSayCursed.class) != null){
+					CursingTrap cursed = new CursingTrap();
+					cursed.pos = Dungeon.hero.pos;
+					cursed.activate();
+				}
+
 				Sample.INSTANCE.play(Assets.Sounds.DESCEND);
 				if(Dungeon.sbbossLevel()){
 					tell(Messages.get(Slyl.class, "tips"));

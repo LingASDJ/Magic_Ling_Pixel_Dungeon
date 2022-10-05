@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.IntroScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
@@ -50,7 +51,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
@@ -71,8 +71,7 @@ public class WndStartGame extends Window {
 				text = DungeonSeed.formatText(text);
 				if(positive) {
 					SPDSettings.customSeed(text);
-					//抛出一个问题，保证初始化成功
-					throw new RuntimeException("成功，信息已录入");
+					ShatteredPixelDungeon.switchScene(TitleScene.class);
 				}
 			}
 		}));
@@ -282,7 +281,6 @@ public class WndStartGame extends Window {
 					Game.switchScene( IntroScene.class );
 				} else {
 					Game.switchScene( InterlevelScene.class );
-					GLog.n(SPDSettings.customSeed());
 				}
 			}
 

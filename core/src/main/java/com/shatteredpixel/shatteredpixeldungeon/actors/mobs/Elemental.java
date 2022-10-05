@@ -219,17 +219,22 @@ public abstract class Elemental extends Mob {
 				if (enemy.sprite.visible) Splash.at( enemy.sprite.center(), sprite.blood(), 5);
 			}
 		}
-
+		private float resurrectChance = 0.01f;
 		@Override
 		public void die(Object cause) {
-			super.die(cause);
 
-			if(!Statistics.endingbald) {
+			//TODO 1%
+			if(!Statistics.endingbald && Random.Float() <= resurrectChance) {
 				Dungeon.level.drop(new EndingBlade(), pos).sprite.drop();
-					Badges.ENDDIED();
-					Statistics.endingbald = true;
+				Badges.ENDDIED();
+				Statistics.endingbald = true;
+				//TODO 1%
+				super.die(cause);
+			} else if(Statistics.endingbald && Random.Float() <= resurrectChance) {
+				Dungeon.level.drop(new Gold().quantity(Random.Int(12, 24)), pos).sprite.drop();
+				super.die(cause);
 			} else {
-				Dungeon.level.drop(new Gold().quantity(Random.Int(90, 120)), pos).sprite.drop();
+				super.die(cause);
 			}
 		}
 

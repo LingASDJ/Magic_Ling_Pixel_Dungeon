@@ -21,12 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.LIGHTBLACK;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sanity.sanity;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
 import com.watabou.utils.Bundle;
@@ -46,11 +46,11 @@ public class Rat extends Mob {
 	@Override
 	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
-		if(Dungeon.isChallenged(LIGHTBLACK)) {
-			if (Random.Int(5) == 1) {
-				sanity -= 1;
-				//扣除理智-1
-				hero.sprite.showStatus( 0x808080, "1");
+		if(lanterfireactive){
+
+			if (Random.Int(5) == 1 && enemy instanceof Hero) {
+				((Hero) enemy).damageLantern(10);
+				hero.sprite.showStatus( 0x808080, "10");
 			}
 		} else {
 			super.attackProc( enemy, damage );

@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -164,7 +165,12 @@ public class Shopkeeper extends NPC {
 
 	//shopkeepers are greedy!
 	public static int sellPrice(Item item){
-		return item.value() * 5 * (Dungeon.depth / 5 + 1);
+		int price = item.value() * 5 * (Dungeon.depth / 5 + 1);
+
+		if (Dungeon.isChallenged(PRO)) {
+			price *= 0.25;
+		}
+		return price;
 	}
 
 	public static WndBag sell() {

@@ -103,7 +103,7 @@ public class BuffIndicator extends Component {
 
 	public static final int NOINV       = 53;
 	public static final int RANDOM = 54;
-	public static final int FIREDIED = 54;
+	public static final int FIREDIED = 55;
 	public static final int  ROSEBARRIER= 56;
 	public static final int HALOMETHANEBURNING    = 57;
 

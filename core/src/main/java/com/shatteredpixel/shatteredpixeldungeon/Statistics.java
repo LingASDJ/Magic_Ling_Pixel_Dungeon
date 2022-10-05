@@ -59,6 +59,9 @@ public class Statistics {
 
 	public static boolean endingbald = false;
 
+	//TODO 灯火前行
+	public static boolean lanterfireactive = false;
+
 	public static int dageCollected;
 
 	//Directly add float time will cause accuracy lose and stop timing if time is long enough
@@ -79,7 +82,7 @@ public class Statistics {
 		itemsCrafted    = 0;
 		piranhasKilled	= 0;
 		ankhsUsed		= 0;
-		//boss_enhance = 0;
+
 		upgradesUsed    = 0;
 		sneakAttacks    = 0;
 		thrownAssists   = 0;
@@ -98,9 +101,13 @@ public class Statistics {
 		wangzheguilai = false;
 		endingbald = false;
 
+		lanterfireactive = false;
+
 		second_elapsed = 0f;
 		real_seconds = 0;
 		turnsPassed = 0f;
+
+
 		
 	}
 	
@@ -135,7 +142,12 @@ public class Statistics {
 
 	private static final String EXLEVEL = "Exlevel";
 
+	//TODO 灯火前行
+	private static final String LANTERACTIVE		= "lanterfireactive";
+
 	public static void storeInBundle( Bundle bundle ) {
+		bundle.put( LANTERACTIVE, lanterfireactive );
+
 		bundle.put( GOLD,		goldCollected );
 		bundle.put( DEEPEST,	deepestFloor );
 		bundle.put( SLAIN,		enemiesSlain );
@@ -197,6 +209,8 @@ public class Statistics {
 		wangzheguilai = bundle.getBoolean( WZGL );
 
 		endingbald = bundle.getBoolean( ENBR );
+
+		lanterfireactive = bundle.getBoolean( LANTERACTIVE );
 
 		//SPD
 		second_elapsed = bundle.getFloat("real_time_passed");

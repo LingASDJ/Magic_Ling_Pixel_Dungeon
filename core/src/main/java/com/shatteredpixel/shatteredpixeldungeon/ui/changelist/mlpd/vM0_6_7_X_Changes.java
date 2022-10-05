@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdGuardSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.IceCryStalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KagenoNusujinSprite;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_11_Changes(changeInfos);
         add_v0_6_10_Changes(changeInfos);
         add_v0_6_9_Changes(changeInfos);
         add_v0_6_8_Changes(changeInfos);
@@ -37,6 +39,30 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_11_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta21-p1.4-5", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new IceCryStalSprite(), ("浊焰魔女AI调整"),
+                ("重新调整了浊焰魔女的AI属性")));
+
+        changes.addButton(new ChangeButton(new BlueBatSprite(), ("血影蝙蝠调整"),
+                ("英雄15级后法术伤害面板调整")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), (Messages.get(ChangesScene.class, "bugfixes")),
+                Messages.get(vM0_6_7_X_Changes.class, "bug_06X31")));
+
     }
 
     public static void add_v0_6_10_Changes( ArrayList<ChangeInfo> changeInfos ) {

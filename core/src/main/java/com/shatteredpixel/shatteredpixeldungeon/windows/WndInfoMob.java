@@ -37,6 +37,8 @@ public class WndInfoMob extends WndTitledMessage {
 		super( new MobTitle( mob ), mob.info() );
 		
 	}
+
+
 	
 	private static class MobTitle extends Component {
 

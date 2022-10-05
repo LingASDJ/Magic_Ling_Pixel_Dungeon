@@ -167,6 +167,7 @@ public class Badges {
 		CHAMPION_5X                  ( 116 ),
 		NYZ_SHOP                    ( 117 ),
 		DAGETO                    ( 118 ),
+		KILL_DM                    ( 119 ),
 
 		//rudy
 		FIREGIRL                 	 ( 128 ),
@@ -277,7 +278,7 @@ public class Badges {
 		addReplacedBadges(badges);
 
 		int count = 0;
-		String names[] = new String[badges.size()];
+		String[] names = new String[badges.size()];
 
 		for (Badge badge:badges) {
 			names[count++] = badge.toString();
@@ -385,15 +386,15 @@ public class Badges {
 	public static void GhostDageCollected() {
 		Badge badge = null;
 
-		if (!local.contains( Badge.GHOSTDAGE ) && Statistics.naiyaziCollected == 1) {
+
+		if (!local.contains( Badge.GHOSTDAGE ) && Statistics.dageCollected == 1) {
 			badge = Badge.GHOSTDAGE;
 			local.add( badge );
 		}
-		if (!local.contains( Badge.DAGETO ) && Statistics.naiyaziCollected >= 2) {
-			addGlobal(badge);
+		if (!local.contains( Badge.DAGETO ) && Statistics.dageCollected >= 2) {
 			badge = Badge.DAGETO;
+			local.add( badge );
 		}
-		local.add(badge);
 		displayBadge( badge );
 	}
 
@@ -671,9 +672,9 @@ public class Badges {
 	private static void validateAMZ() {
 		if (global.contains( Badge.KILL_SLMKING ) &&
 				global.contains( Badge.KILL_DM720 ) &&
-				global.contains( Badge.KILL_MG) && global.contains( Badge.FIREGIRL) && global.contains( Badge.DRAWF_HEAD)) {
+				global.contains( Badge.KILL_MG) && global.contains( Badge.FIREGIRL) && global.contains( Badge.DRAWF_HEAD)&& global.contains( Badge.KILL_DM) ) {
 
-			Badge badge = Badge.GODD_MAKE;
+			Badge badge = Badge.SPICEALBOSS;
 			displayBadge( badge );
 		}
 	}
@@ -959,6 +960,12 @@ public class Badges {
 		displayBadge( Badge.KILL_MG );
 		validateAMZ();
 	}
+
+	public static void KILL_DMK() {
+		displayBadge( Badge.KILL_DM );
+		validateAMZ();
+	}
+
 
 	public static void BIGX() {
 		displayBadge( Badge.BIG_X );
