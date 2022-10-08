@@ -86,7 +86,7 @@ public class MagicGirlSayCursed extends Buff {
 
     @Override
     public int icon() {
-        return BuffIndicator.TERROR;
+        return BuffIndicator.DEBUFF_DOWN;
     }
 
 

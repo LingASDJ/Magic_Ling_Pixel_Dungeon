@@ -1,16 +1,18 @@
-package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff;
+package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
-public class MagicGirlSaySoftDied extends Buff {
+public class BlessGoRead extends Buff {
 
     {
         type = buffType.POSITIVE;
+        immunities.addAll(AntiMagic.RESISTS);
     }
 
     public static int level = 0;
@@ -43,6 +45,8 @@ public class MagicGirlSaySoftDied extends Buff {
         }
     }
 
+
+
     @Override
     public float iconFadePercent() {
         if (target instanceof Hero){
@@ -59,7 +63,7 @@ public class MagicGirlSaySoftDied extends Buff {
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc", level, dispTurns(visualcooldown()));
+        return Messages.get(this, "desc");
     }
 
     private static final String LEVEL	    = "level";
@@ -81,15 +85,14 @@ public class MagicGirlSaySoftDied extends Buff {
 
     @Override
     public void tintIcon(Image icon) {
-        icon.hardlight(0x6a0a6a);
+        icon.hardlight(0xFF1493);
     }
 
     @Override
     public int icon() {
-        return BuffIndicator.DEBUFF_DOWN;
+        return BuffIndicator.GOBUFF_UPRD;
     }
 
 
 }
-
 

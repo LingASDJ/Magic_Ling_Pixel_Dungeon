@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -35,8 +37,20 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoRead;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMixShiled;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessNoMoney;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayCursed;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySoftDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
@@ -424,12 +438,6 @@ public class GameScene extends PixelScene {
 				break;
 			case FALL:
 			case DESCEND:
-				//if (SPDSettings.BossRush()){
-				//	switch (Dungeon.depth) {
-				//		case 0:
-				//			WndStory.showChapter( WndStory.ID_GAME );
-				//	}
-				//} else {
 					switch (Dungeon.depth) {
 						case 0:
 							WndStory.showChapter( WndStory.ID_FOREST );
@@ -1335,12 +1343,33 @@ public class GameScene extends PixelScene {
 		scene.add(info);
 	}
 
+	//todo 移除Debuff AND GoodBuff
+	public static void cure( Char ch ) {
+		Buff.detach( ch, BlessGoodSTR.class );
+		Buff.detach( ch, BlessGoRead.class );
+		Buff.detach( ch, BlessImmune.class );
+		Buff.detach( ch, BlessMixShiled.class );
+		Buff.detach( ch, BlessMobDied.class );
+		Buff.detach( ch, BlessNoMoney.class );
+
+		Buff.detach( ch, MagicGirlSayCursed.class );
+		Buff.detach( ch, MagicGirlSayKill.class );
+		Buff.detach( ch, MagicGirlSayMoneyMore.class );
+		Buff.detach( ch, MagicGirlSaySlowy.class );
+		Buff.detach( ch, MagicGirlSaySoftDied.class );
+		Buff.detach( ch, MagicGirlSayNoSTR.class );
+	}
+
 	public static void bossSlain() {
 		if (Dungeon.hero.isAlive()) {
 			Banner bossSlain = new Banner( BannerSprites.get( BannerSprites.Type.BOSS_SLAIN ) );
 			bossSlain.show( 0xFFFFFF, 0.3f, 5f );
 			scene.showBanner( bossSlain );
-			
+
+			if(lanterfireactive){
+				cure( Dungeon.hero );
+			}
+
 			Sample.INSTANCE.play( Assets.Sounds.BOSS );
 		}
 	}
@@ -1616,6 +1645,7 @@ public class GameScene extends PixelScene {
 		@Override
 		public String prompt() {
 			return null;
-		}
+		}//double area.length;
+
 	};
 }

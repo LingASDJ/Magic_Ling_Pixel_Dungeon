@@ -47,10 +47,9 @@ public class Rat extends Mob {
 	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
 		if(lanterfireactive){
-
-			if (Random.Int(5) == 1 && enemy instanceof Hero) {
-				((Hero) enemy).damageLantern(10);
-				hero.sprite.showStatus( 0x808080, "10");
+			if (Random.Float()<=0.05f && enemy instanceof Hero && hero.lanterfire < 85) {
+				((Hero) enemy).damageLantern(1);
+				hero.sprite.showStatus( 0x808080, "1");
 			}
 		} else {
 			super.attackProc( enemy, damage );

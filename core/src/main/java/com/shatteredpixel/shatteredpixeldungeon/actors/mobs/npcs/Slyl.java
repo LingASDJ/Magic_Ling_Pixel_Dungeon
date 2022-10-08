@@ -79,7 +79,7 @@ public class Slyl extends NPC {
         }else if(secnod) {
             secnod=false;
             tell(Messages.get(Slyl.class, "message2"));
-        } else if(secnod) {
+        } else if(rd) {
             rd=false;
             tell(Messages.get(Slyl.class, "message3"));
         } else {

@@ -41,6 +41,7 @@ public class Hunger extends Buff implements Hero.Doom {
 
 	public static final float HUNGRY	= 300f;
 	public static final float STARVING	= 450f;
+
 	public static final float ARVING	= 300f;
 	private float level;
 	private float partialDamage;
@@ -71,6 +72,12 @@ public class Hunger extends Buff implements Hero.Doom {
 			spend(STEP);
 			return true;
 		}
+
+//		//TODO 高于90% +2 血量
+//		if(hero.buff(BlessGoRead.class) != null && level >= 405f && hero.HP != hero.HT){
+//			Buff.affect(hero, HealingXP.class).setHeal((int) (2), 0, 0);
+//			spend(2f);
+//		}
 
 		if (target.isAlive() && target instanceof Hero) {
 

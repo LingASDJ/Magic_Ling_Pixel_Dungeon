@@ -18,7 +18,7 @@ public class BossSettingWindows extends Window {
     private static final int TTL_HEIGHT = 12;
     private static final int GAP= 2;
 
-    private ArrayList<CheckBox> cbs;
+    private final ArrayList<CheckBox> cbs;
     OptionSlider level3;
     public BossSettingWindows(){
         resize(WIDTH, HEIGHT);
@@ -30,8 +30,9 @@ public class BossSettingWindows extends Window {
         add(rtb);
         float pos = TTL_HEIGHT + GAP;
         cbs = new ArrayList<>();
+
         for(int i = 0; i<5; ++i){
-            CheckBox cb = new CheckBox(Messages.get(this, "boss_"+String.valueOf(i+1)));
+            CheckBox cb = new CheckBox(Messages.get(this, "boss_"+ (i + 1)));
             cb.setRect(GAP, pos, WIDTH - GAP * 2, BOX_HEIGHT);
             if(i == 2){
                 cb.setRect(GAP, 500, WIDTH - GAP * 2, BOX_HEIGHT);
@@ -42,6 +43,7 @@ public class BossSettingWindows extends Window {
             cb.checked((Statistics.boss_enhance & (1<<i)) >0);
             cb.enable(Statistics.deepestFloor < (5+i*5));
         }
+
         level3 = new OptionSlider("", Messages.get(this, "dm300"),
                 Messages.get(this, "ice"), 1, 3) {
             @Override

@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
@@ -172,7 +171,7 @@ public enum HeroClass {
 			new FireFishSword().quantity(1).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
 			new LockSword().quantity(1).identify().collect();
-			Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);
+			//Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);
 			new Gauntlet().quantity(1).identify().collect();
 			new GoldIron().quantity(1).identify().collect();
 			new ScrollOfIdentify().quantity(45).identify().collect();

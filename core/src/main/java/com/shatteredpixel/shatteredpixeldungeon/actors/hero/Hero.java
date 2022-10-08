@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
@@ -49,10 +50,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoRead;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMixShiled;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessNoMoney;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.DeadSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbueEX;
@@ -66,11 +75,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayCursed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySoftDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Nyctophobia;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Shadows;
@@ -84,6 +95,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BloodBat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
@@ -120,7 +132,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
-import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -166,6 +177,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
@@ -240,6 +252,9 @@ public class Hero extends Char {
 
 	public int lvl = 1;
 	public int exp = 0;
+
+	//TODO 灯火前行
+	public int lanterfire;
 	
 	public int HTBoost = 0;
 	
@@ -291,9 +306,11 @@ public class Hero extends Char {
 			strBonus += (int)Math.floor(STR * (0.03f + 0.05f*pointsInTalent(Talent.STRONGMAN)));
 		}
 
-		//TODO 无力 本大层-3力量
+		//TODO 无力 本大层-3力量 : 坚毅 本大层力量+8
 		if(Dungeon.hero.buff(MagicGirlSayNoSTR.class) != null){
 			strBonus -= 3;
+		} else if(Dungeon.hero.buff(BlessGoodSTR.class) != null) {
+			strBonus += 8;
 		}
 
 		return STR + strBonus;
@@ -312,7 +329,7 @@ public class Hero extends Char {
 	private static final String HTBOOST     = "htboost";
 
 	private static final String LANTERFTR     = "lanterfire";
-	public int lanterfire;
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 
@@ -517,15 +534,22 @@ public class Hero extends Char {
 		Buff.affect( this, Regeneration.class );
 		Buff.affect( this, Hunger.class );
 
-//		if(lanterfireactive){
-//			Buff.affect( this, PureSoul.class );
-//		}
+		if(lanterfireactive){
+			Buff.affect( this, Nyctophobia.class );
+		}
 
-		Buff.affect(hero, MagicGirlSayNoSTR.class).set( (3), 1 );
-		Buff.affect(hero, MagicGirlSayCursed.class).set( (3), 1 );
-		Buff.affect(hero, MagicGirlSaySlowy.class).set( (3), 1 );
-		Buff.affect(hero, MagicGirlSayKill.class).set( (3), 1 );
-		Buff.affect(hero, MagicGirlSaySoftDied.class).set( (3), 1 );
+//		Buff.affect(hero, BlessMixShiled.class).set( (20), 1 );
+//		Buff.affect(hero, BlessMobDied.class).set( (20), 1 );
+//		Buff.affect(hero, BlessGoodSTR.class).set( (20), 1 );
+//		Buff.affect(hero, BlessNoMoney.class).set( (20), 1 );
+//		Buff.affect(hero, BlessGoRead.class).set( (20), 1 );
+//		Buff.affect(hero, BlessImmune.class).set( (20), 1 );
+//		Buff.affect(hero, MagicGirlSayMoneyMore.class).set( (20), 1 );
+//		Buff.affect(hero, MagicGirlSayNoSTR.class).set( (20), 1 );
+//		Buff.affect(hero, MagicGirlSaySlowy.class).set( (20), 1 );
+//		Buff.affect(hero, MagicGirlSaySoftDied.class).set( (20), 1 );
+//		Buff.affect(hero, MagicGirlSayCursed.class).set( (20), 1 );
+//		Buff.affect(hero, MagicGirlSayKill.class).set( (20), 1 );
 
 		if(HelpSettings()) {
 			Buff.affect(this, GameTracker.class);
@@ -893,22 +917,41 @@ public class Hero extends Char {
 	}
 	
 	private boolean actMove( HeroAction.Move action ) {
-		MagicGirlSayNoSTR.level -= 1;
 		//检查
 		int chCount = 0;
 		for (int ch : Challenges.MASKS){
 			if ((Dungeon.challenges & ch) != 0) chCount++;
 		}
 
-		if(chCount >= 3 && !Dungeon.isChallenged(PRO) && !lanterfireactive){
+		//TODO 获取三个挑战的枚举后，则超过或等于3挑战以激活挑战，在英雄移动的时候
+		//
+		if(chCount >= 3 && !lanterfireactive && !Dungeon.isChallenged(PRO) || Dungeon.isChallenged(DHXD) && !lanterfireactive){
 			//TODO 灯火前行
 			lanterfire = 100;
 			new OilLantern().quantity(1).identify().collect();
-			new OilPotion().quantity(100).identify().collect();
+
 			new Ankh().quantity(1).identify().collect();
-			Dungeon.gold+=10000;
+
 			lanterfireactive = true;
-			GLog.n("系统已经检测到你已开启困难模式，灯火会与你结伴同行，但同时，恶魔也会对你馋言欲滴。");
+
+			Buff.affect( this, Nyctophobia.class );
+
+//			GLog.n("系统已经检测到你已开启困难模式，灯火会与你结伴同行，但同时，恶魔也会对你馋言欲滴。");
+
+			switch (Random.Int(3)){
+				case 0: default:
+					Buff.affect(hero, BlessGoRead.class).set( (100), 1 );
+				case 1:
+					Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
+					break;
+				case 2:
+					Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
+					break;
+				case 3:
+					Buff.affect(hero, BlessImmune.class).set( (100), 1 );
+					break;
+			}
+			GLog.b(Messages.get(WndStory.class,"letxz"));
 		}
 
 		if (getCloser( action.dst )) {
@@ -918,7 +961,6 @@ public class Hero extends Char {
 			ready();
 			return false;
 		}
-
 
 	}
 	
@@ -1806,17 +1848,18 @@ public class Hero extends Char {
 			}
 		}
 
-//		if(Dungeon.isChallenged(LIGHTBLACK)) {
-//			BlackSoul s = new BlackSoul();
-//			s.pos = Dungeon.hero.pos;
-//			s.gold = Dungeon.gold;
-//			Dungeon.gold = 0;
-//			s.state = s.SLEEPING;
-//			GameScene.add(s);
-//			Buff.affect(s, ChampionEnemy.DeadSoulSX.class);
-//			Buff.affect(s, DeadSoul.class);
-//			GameScene.flash(0x80FF0000);
-//		}
+			if(lanterfireactive && hero.lanterfire <= 30) {
+				BlackSoul s = new BlackSoul();
+				s.pos = Dungeon.hero.pos;
+				s.gold = Dungeon.gold;
+				Dungeon.gold = 0;
+				s.state = s.SLEEPING;
+				GameScene.add(s);
+				Buff.affect(s, ChampionEnemy.DeadSoulSX.class);
+				Buff.affect(s, DeadSoul.class);
+				GameScene.flash(0x80FF0000);
+			}
+
 		if(Statistics.fireGirlnoshopping && Dungeon.depth < 0){
 			reallyDie( cause );
 			GLog.n(Messages.get(this,"died"));
@@ -2269,6 +2312,263 @@ public class Hero extends Char {
 		HP = HT;
 		live();
 
+		if(lanterfireactive){
+			if (hero.lanterfire == 100){
+				switch (Random.Int(4)){
+					case 0: default:
+						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
+						break;
+					case 1:
+						Buff.affect(hero, BlessGoodSTR.class).set( (100), 1 );
+						break;
+					case 2:
+						Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
+						break;
+					case 3:
+						Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
+						break;
+					case 4:
+						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
+						break;
+				}
+				GLog.p(Messages.get(WndStory.class,"good"));
+			} else if (hero.lanterfire <= 99 && hero.lanterfire >= 90) {
+				switch (Random.Int(4)){
+					case 0: default:
+						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
+						break;
+					case 1:
+						Buff.affect(hero, BlessGoodSTR.class).set( (100), 1 );
+						break;
+					case 2:
+						Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
+						break;
+					case 3:
+						Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
+						break;
+					case 4:
+						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
+						break;
+				}
+				GLog.p(Messages.get(WndStory.class,"good"));
+			} else if (hero.lanterfire <= 89 && hero.lanterfire >= 80 && Random.Float() <= 0.05f ) {
+				switch (Random.Int(5)){
+					case 0: default:
+						Buff.affect(hero, MagicGirlSayMoneyMore.class).set( (100), 1 );
+						break;
+					case 1:
+						Buff.affect(hero, MagicGirlSaySoftDied.class).set( (100), 1 );
+						break;
+					case 2:
+						Buff.affect(hero, MagicGirlSayCursed.class).set( (100), 1 );
+						break;
+					case 3:
+						Buff.affect(hero, MagicGirlSaySlowy.class).set( (100), 1 );
+						break;
+					case 4:
+						Buff.affect(hero, MagicGirlSayKill.class).set( (100), 1 );
+						break;
+					case 5:
+						Buff.affect(hero, MagicGirlSayNoSTR.class).set( (100), 1 );
+						break;
+				}
+				GLog.n(Messages.get(WndStory.class,"bad"));
+			} else if (hero.lanterfire <= 89 && hero.lanterfire >= 80 && Random.Float() <= 0.85f ) {
+				switch (Random.Int(4)){
+					case 0: default:
+						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
+						break;
+					case 1:
+						Buff.affect(hero, BlessGoodSTR.class).set( (100), 1 );
+						break;
+					case 2:
+						Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
+						break;
+					case 3:
+						Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
+						break;
+					case 4:
+						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
+						break;
+				}
+				GLog.p(Messages.get(WndStory.class,"good"));
+			} else if (hero.lanterfire <= 89 && hero.lanterfire >= 80) {
+				GLog.b(Messages.get(WndStory.class,"normoal"));
+			} else if (hero.lanterfire <= 79 && hero.lanterfire >= 60 && Random.Float() <= 0.25f ) {
+				switch (Random.Int(5)){
+					case 0: default:
+						Buff.affect(hero, MagicGirlSayMoneyMore.class).set( (100), 1 );
+						break;
+					case 1:
+						Buff.affect(hero, MagicGirlSaySoftDied.class).set( (100), 1 );
+						break;
+					case 2:
+						Buff.affect(hero, MagicGirlSayCursed.class).set( (100), 1 );
+						break;
+					case 3:
+						Buff.affect(hero, MagicGirlSaySlowy.class).set( (100), 1 );
+						break;
+					case 4:
+						Buff.affect(hero, MagicGirlSayKill.class).set( (100), 1 );
+						break;
+					case 5:
+						Buff.affect(hero, MagicGirlSayNoSTR.class).set( (100), 1 );
+						break;
+				}
+				GLog.n(Messages.get(WndStory.class,"bad"));
+			} else if (hero.lanterfire <= 79 && hero.lanterfire >= 60 && Random.Float() <= 0.70f ) {
+				switch (Random.Int(4)){
+					case 0: default:
+						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
+						break;
+					case 1:
+						Buff.affect(hero, BlessGoodSTR.class).set( (100), 1 );
+						break;
+					case 2:
+						Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
+						break;
+					case 3:
+						Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
+						break;
+					case 4:
+						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
+						break;
+				}
+				GLog.p(Messages.get(WndStory.class,"good"));
+			} else if (hero.lanterfire <= 79 && hero.lanterfire >= 60) {
+				GLog.b(Messages.get(WndStory.class,"normoal"));
+			} else if (hero.lanterfire <= 59 && hero.lanterfire >= 35 && Random.Float() <= 0.40f ) {
+				switch (Random.Int(5)){
+					case 0: default:
+						Buff.affect(hero, MagicGirlSayMoneyMore.class).set( (100), 1 );
+						break;
+					case 1:
+						Buff.affect(hero, MagicGirlSaySoftDied.class).set( (100), 1 );
+						break;
+					case 2:
+						Buff.affect(hero, MagicGirlSayCursed.class).set( (100), 1 );
+						break;
+					case 3:
+						Buff.affect(hero, MagicGirlSaySlowy.class).set( (100), 1 );
+						break;
+					case 4:
+						Buff.affect(hero, MagicGirlSayKill.class).set( (100), 1 );
+						break;
+					case 5:
+						Buff.affect(hero, MagicGirlSayNoSTR.class).set( (100), 1 );
+						break;
+				}
+				GLog.n(Messages.get(WndStory.class,"bad"));
+			} else if (hero.lanterfire <= 59 && hero.lanterfire >= 35 && Random.Float() <= 0.20f ) {
+				switch (Random.Int(4)){
+					case 0: default:
+						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
+						break;
+					case 1:
+						Buff.affect(hero, BlessGoodSTR.class).set( (100), 1 );
+						break;
+					case 2:
+						Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
+						break;
+					case 3:
+						Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
+						break;
+					case 4:
+						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
+						break;
+				}
+				GLog.p(Messages.get(WndStory.class,"good"));
+			} else if (hero.lanterfire <= 59 && hero.lanterfire >= 35) {
+				GLog.b(Messages.get(WndStory.class,"normoal"));
+			} else if (hero.lanterfire <= 34 && hero.lanterfire >= 1 && Random.Float() <= 0.40f ) {
+				switch (Random.Int(5)){
+					case 0: default:
+						Buff.affect(hero, MagicGirlSayMoneyMore.class).set( (100), 1 );
+						break;
+					case 1:
+						Buff.affect(hero, MagicGirlSaySoftDied.class).set( (100), 1 );
+						break;
+					case 2:
+						Buff.affect(hero, MagicGirlSayCursed.class).set( (100), 1 );
+						break;
+					case 3:
+						Buff.affect(hero, MagicGirlSaySlowy.class).set( (100), 1 );
+						break;
+					case 4:
+						Buff.affect(hero, MagicGirlSayKill.class).set( (100), 1 );
+						break;
+					case 5:
+						Buff.affect(hero, MagicGirlSayNoSTR.class).set( (100), 1 );
+						break;
+				}
+				GLog.n(Messages.get(WndStory.class,"bad"));
+			} else if (hero.lanterfire <= 34 && hero.lanterfire >= 1 && Random.Float() <= 0.35f ) {
+				switch (Random.Int(4)){
+					case 0: default:
+						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
+						break;
+					case 1:
+						Buff.affect(hero, BlessGoodSTR.class).set( (100), 1 );
+						break;
+					case 2:
+						Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
+						break;
+					case 3:
+						Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
+						break;
+					case 4:
+						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
+						break;
+				}
+				GLog.p(Messages.get(WndStory.class,"good"));
+			} else if (hero.lanterfire <= 34 && hero.lanterfire >= 1) {
+				GLog.b(Messages.get(WndStory.class,"normoal"));
+			} else if (hero.lanterfire <= 0 && Random.Float() <= 0.48f ) {
+				switch (Random.Int(5)){
+					case 0: default:
+						Buff.affect(hero, MagicGirlSayMoneyMore.class).set( (100), 1 );
+						break;
+					case 1:
+						Buff.affect(hero, MagicGirlSaySoftDied.class).set( (100), 1 );
+						break;
+					case 2:
+						Buff.affect(hero, MagicGirlSayCursed.class).set( (100), 1 );
+						break;
+					case 3:
+						Buff.affect(hero, MagicGirlSaySlowy.class).set( (100), 1 );
+						break;
+					case 4:
+						Buff.affect(hero, MagicGirlSayKill.class).set( (100), 1 );
+						break;
+					case 5:
+						Buff.affect(hero, MagicGirlSayNoSTR.class).set( (100), 1 );
+						break;
+				}
+				GLog.n(Messages.get(WndStory.class,"bad"));
+			} else if (hero.lanterfire <= 0 && Random.Float() <= 0.10f ) {
+				switch (Random.Int(4)){
+					case 0: default:
+						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
+						break;
+					case 1:
+						Buff.affect(hero, BlessGoodSTR.class).set( (100), 1 );
+						break;
+					case 2:
+						Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
+						break;
+					case 3:
+						Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
+						break;
+					case 4:
+						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
+						break;
+				}
+				GLog.p(Messages.get(WndStory.class,"good"));
+			} else if (hero.lanterfire <= 0 ) {
+				GLog.b(Messages.get(WndStory.class,"normoal"));
+			}
+		}
+
 		MagicalHolster holster = belongings.getItem(MagicalHolster.class);
 
 		Buff.affect(this, LostInventory.class);
@@ -2310,9 +2610,9 @@ public class Hero extends Char {
 	//TODO 灯火前行逻辑
 	public void damageLantern(int value){
 		lanterfire -= value;
-		if(lanterfire <= 0){
-			damage(HT,this);
-		}
+//		if(lanterfire <= 0){
+//			damage(HT,this);
+//		}
 	}
 
 	public void healLantern(int value){

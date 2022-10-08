@@ -7,7 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
-public class MagicGirlSaySoftDied extends Buff {
+public class MagicGirlSayMoneyMore extends Buff {
 
     {
         type = buffType.POSITIVE;
@@ -81,7 +81,7 @@ public class MagicGirlSaySoftDied extends Buff {
 
     @Override
     public void tintIcon(Image icon) {
-        icon.hardlight(0x6a0a6a);
+        icon.hardlight(0x409988);
     }
 
     @Override
@@ -91,5 +91,3 @@ public class MagicGirlSaySoftDied extends Buff {
 
 
 }
-
-

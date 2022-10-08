@@ -551,11 +551,16 @@ public class Bundle {
 			return false;
 		}
 	}
-	
+
 	public static void addAlias( Class<?> cl, String alias ) {
 		aliases.put( alias, cl.getName() );
 	}
 
-	public void put(int var4, LinkedHashMap var5) {
+	public void put(int s, LinkedHashMap c) {
+		try {
+			data.put(String.valueOf(s), c );
+		} catch (JSONException e) {
+			Game.reportException(e);
+		}
 	}
 }

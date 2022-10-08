@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -32,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
@@ -180,7 +182,7 @@ public class InterlevelScene extends PixelScene {
 			fadeTime += 0.9f; //adds 1 second total
 			//speed up transition when debugging
 		} else if (DeviceCompat.isDebug()){
-			fadeTime = 0.1f;
+			fadeTime = 0.9f;
 		}
 
 		SkinnedBlock bg = new SkinnedBlock(Camera.main.width, Camera.main.height, loadingAsset ){
@@ -505,7 +507,12 @@ public class InterlevelScene extends PixelScene {
 			}
 			Dungeon.hero.resurrect();
 
+			//todo 灯火少于30给予一个食物。
+			if(lanterfireactive && hero.lanterfire <= 30){
+				level.drop(new Food(), invPos);
+			} else {
 				level.drop(new LostBackpack(), invPos);
+			}
 		}
 
 		Dungeon.switchLevel( level, Dungeon.hero.pos );

@@ -86,7 +86,7 @@ public class MagicGirlSayNoSTR extends Buff {
 
     @Override
     public int icon() {
-        return BuffIndicator.POISON;
+        return BuffIndicator.DEBUFF_DOWN;
     }
 
 

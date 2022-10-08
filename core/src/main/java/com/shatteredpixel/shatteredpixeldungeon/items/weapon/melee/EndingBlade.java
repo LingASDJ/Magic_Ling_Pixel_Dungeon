@@ -385,7 +385,7 @@ public class EndingBlade extends Weapon {
 
     @Override
     public int STRReq(int C) {
-        return 15+fireenergy/100;
+        return 15+fireenergy/500;
     }
 
     public int proc(Char attacker, Char defender, int damage ) {

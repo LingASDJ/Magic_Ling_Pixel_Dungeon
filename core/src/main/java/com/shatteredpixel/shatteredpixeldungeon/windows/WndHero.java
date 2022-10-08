@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -60,7 +61,7 @@ import java.util.regex.Pattern;
 public class WndHero extends WndTabbed {
 
 	private static final int WIDTH		= 130;
-	private static final int HEIGHT		= 120;
+	private static final int HEIGHT		= 130;
 
 	private StatsTab stats;
 	private TalentsTab talents;
@@ -194,6 +195,10 @@ public class WndHero extends WndTabbed {
 			statSlot( Messages.get(this, "gold"), Statistics.goldCollected );
 			statSlot( Messages.get(this, "depth"), Statistics.deepestFloor );
 			statSlot( Messages.get(HeroStat.class, "seed_dungeon"), DungeonSeed.convertToCode(Dungeon.seed) );
+
+			if(lanterfireactive){
+				statSlot( Messages.get(this, "lanterfire"), (hero.lanterfire) + "/" + 100 );
+			}
 
 			pos += GAP;
 

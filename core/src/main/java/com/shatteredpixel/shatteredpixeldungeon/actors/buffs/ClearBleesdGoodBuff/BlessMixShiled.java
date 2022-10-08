@@ -1,13 +1,18 @@
-package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff;
+package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
-public class MagicGirlSaySoftDied extends Buff {
+public class BlessMixShiled extends Buff {
 
     {
         type = buffType.POSITIVE;
@@ -20,8 +25,19 @@ public class MagicGirlSaySoftDied extends Buff {
     public boolean act() {
         if (target.isAlive()) {
 
+            if(Dungeon.hero.buff(BlessMixShiled.class) != null && hero.HT == hero.HP){
+                if(Dungeon.depth <= 5) {
+                    Buff.affect(hero, Barrier.class).setShield(((30)));
+                } else {
+                    Buff.affect(hero, Barrier.class).setShield(((30) * Dungeon.depth / 5));
+                }
+                spend(300f);
+                GLog.w("你的血量已满，奖励你一些护盾值。");
+            }
+
             spend(interval);
             if (level <= 0) {
+
                 detach();
             }
 
@@ -81,15 +97,16 @@ public class MagicGirlSaySoftDied extends Buff {
 
     @Override
     public void tintIcon(Image icon) {
-        icon.hardlight(0x6a0a6a);
+        icon.hardlight(0x00ffff);
     }
 
     @Override
     public int icon() {
-        return BuffIndicator.DEBUFF_DOWN;
+        return BuffIndicator.GOBUFF_UPRD;
     }
 
 
 }
+
 
 

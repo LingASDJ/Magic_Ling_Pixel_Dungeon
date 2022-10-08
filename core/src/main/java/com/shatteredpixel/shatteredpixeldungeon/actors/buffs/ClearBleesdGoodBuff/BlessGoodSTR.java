@@ -1,4 +1,4 @@
-package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff;
+package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -7,7 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
-public class MagicGirlSaySoftDied extends Buff {
+public class BlessGoodSTR extends Buff {
 
     {
         type = buffType.POSITIVE;
@@ -81,12 +81,12 @@ public class MagicGirlSaySoftDied extends Buff {
 
     @Override
     public void tintIcon(Image icon) {
-        icon.hardlight(0x6a0a6a);
+        icon.hardlight(0x00ff00);
     }
 
     @Override
     public int icon() {
-        return BuffIndicator.DEBUFF_DOWN;
+        return BuffIndicator.GOBUFF_UPRD;
     }
 
 

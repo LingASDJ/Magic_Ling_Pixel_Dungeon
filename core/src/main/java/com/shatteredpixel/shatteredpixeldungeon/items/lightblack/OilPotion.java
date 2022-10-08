@@ -1,22 +1,18 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.lightblack;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 import java.util.ArrayList;
 
-public class OilPotion extends MissileWeapon {
+public class OilPotion extends Item {
     public static final String AC_REFILL = "REFILL";
 
     public OilPotion() {
-        this.image = ItemSpriteSheet.SKPOTION;
-        this.tier = 1;
-        this.durability = 1.0f;
+        image = ItemSpriteSheet.SKPOTION;
+        stackable = true;
     }
 
     public ArrayList<String> actions(Hero hero) {
@@ -38,12 +34,13 @@ public class OilPotion extends MissileWeapon {
         detach(Dungeon.hero.belongings.backpack);
     }
 
-    public int proc(Char attacker, Char defender, int damage) {
-        Buff.prolong(defender, Slow.class, 10.0f);
-        return OilPotion.super.proc(attacker, defender, damage);
-    }
+//    public int proc(Char attacker, Char defender, int damage) {
+//        Buff.prolong(defender, Slow.class, 10.0f);
+//        return OilPotion.super.proc(attacker, defender, damage);
+//    }
 
-    public int price() {
-        return this.quantity * 25;
+    @Override
+    public int value() {
+        return quantity * 20;
     }
 }

@@ -38,6 +38,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
@@ -523,9 +525,12 @@ public abstract class Char extends Actor {
 			damage *= 0.67f;
 		}
 
-		//削弱10%伤害
+		//TODO 审判 削弱10%伤害
 		if ( buff(MagicGirlSayKill.class) != null ){
 			damage *= 0.90f;
+			//TODO 安息 x2伤害
+		} else if ( buff(BlessMobDied.class) != null ) {
+			damage *= 2f;
 		}
 
 		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
@@ -584,6 +589,11 @@ public abstract class Char extends Actor {
 
 		if(buff(RoseShiled.class) != null && !this.isImmune(RoseShiled.class)){
 			return;
+		}
+
+		//TODO 减免20%伤害
+		if(buff(BlessImmune.class) != null && !this.isImmune(BlessImmune.class)){
+			dmg = (int) Math.ceil(dmg * 0.8f);
 		}
 
 		if(isInvulnerable(src.getClass())){

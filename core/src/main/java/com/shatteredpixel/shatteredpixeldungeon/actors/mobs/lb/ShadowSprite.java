@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.watabou.noosa.TextureFilm;
@@ -45,13 +44,6 @@ public class ShadowSprite extends MobSprite {
         super.resetColor();
         alpha(0.8f);
         brightness(0.0f);
-    }
-
-    @Override
-    public void link(Char ch) {
-        super.link(ch);
-        renderShadow = false;
-        this.add(State.HALOMETHANEBURNING);
     }
 
     @Override

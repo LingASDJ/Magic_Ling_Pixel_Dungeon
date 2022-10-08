@@ -3,12 +3,14 @@ package com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlueBatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdGuardSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.IceCryStalSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.IceStalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KagenoNusujinSprite;
@@ -16,6 +18,8 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WFSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ChangeButton;
@@ -27,6 +31,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_12_Changes(changeInfos);
         add_v0_6_11_Changes(changeInfos);
         add_v0_6_10_Changes(changeInfos);
         add_v0_6_9_Changes(changeInfos);
@@ -41,6 +46,94 @@ public class vM0_6_7_X_Changes {
         add_v0_6_0_Changes(changeInfos);
     }
 
+    public static void add_v0_6_12_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta21-p2", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("灯火机制-1"),
+                ("提灯引路-灯火前行（规则说明-情报公开）：\n" +
+                        "玩家高于_3挑后_或开启_灯火前路_玩法，将在开局追加灯火值。并立刻给予一个增益Buff。\n" +
+                        "灯火被分为_6个阶段_（从光芒前路-->寂灭若寞)\n" +
+                        "任何增益Buff和Debuff都会在击败Boss后完全移除，并在首次进入下一大层后进行一次Roll判定。\n" +
+                        "Roll判定规则如下:\n" +
+                        "100灯火    必定增益Buff\n" +
+                        "99-90灯火  必定获得1个增益Buff\n" +
+                        "89-80灯火  5%概率获得负面Buff 85%增益Buff 10%啥都不出现\n" +
+                        "79-60灯火  25%概率获得负面Buff 70%增益Buff 5%啥都不出现\n" +
+                        "59-35灯火  40%概率获得负面Buff 35%增益Buff 25%啥都不出现\n" +
+                        "34-1灯火    40%概率获得负面Buff 20%概率获得增益Buff 40%啥都不出现\n" +
+                        "0以下灯火   48%概率获得负面Buff 10%获得增益Buff 42%啥都不出现\n" +
+                        "特殊说明：（首次下到6层 必定获得1个增益Buff) ")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKNANO), ("灯火机制-2"),
+                ("提灯引路-灯火前行（规则说明-情报公开）：\n" +
+                        "随着灯火的微弱，部分怪物将有概率使灯火的能量更低：\n\n" +
+                        "（非必要说明，一切按照近战攻击算)\n" +
+                        "老鼠     低于85灯火 5%概率扣减1灯火\n" +
+                        "监狱守卫  低于85灯火 10%概率扣减1灯火\n" +
+                        "豺狼萨满  低于70灯火 1%概率扣减2灯火 远程法术攻击7%概率扣减1灯火\n" +
+                        "黑色怨灵  低于95灯火 4%概率扣减4灯火(赋予Debuff的情况下) （但触发后此怪物立刻死亡) \n" +
+                        "幽灵任务怪 低于100灯火 20%概率扣减7灯火(除螃蟹外，其他是赋予Debuff的情况下)  \n" +
+                        "（但触发后此怪物立刻死亡) \n" +
+                        "幽灵任务怪-巨型螃蟹 低于90灯火 格挡时 6%概率扣减1灯火 \n" +
+                        "新生火元素 低于80灯火 6%概率扣减2灯火\n" +
+                        "矿洞蜘蛛 低于70灯火 15%概率扣减1灯火 \n" +
+                        "血月矿洞炸弹猎人 低于75灯火 35%概率扣减3灯火 （远程攻击) \n" +
+                        "怨灵 40%概率扣减8灯火（但触发后此怪物立刻死亡)  \n\n" +
+                        "矮人术士 低于50灯火远程攻击必定扣减2灯火，但触发后此怪物立刻死亡" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNA), ("灯火机制-3"),
+                ("提灯引路-灯火前行（规则说明-情报公开）：\n" +
+                        "提灯激活后，将以_每4回合+1回复灯火_ （后续每到新的一大层将_增加3回合_）\n" +
+                        "从第六层开始，玩家将会_每17回合持续扣减1灯火_。但_商人_和_回忆_商店会售卖灯油瓶\n" +
+                        "5.玩家在首次进入_6,11,16,21层_会进行Roll判定，根据上方Roll规则进行给予Buff。\n\n" +
+                        "6.灯火低于30以下，被未祝福的十字架重生，之前的东西会被你的暗影带走，击败它，夺回自己的力量\n\n" +
+                        "7.大部分Debuff优先级高于增益Buff,因此有Debuff存在，增益Buff可能无效。\n\n" +
+                        "8.死亡重生后，会立刻根据当前灯火进行一次_Roll判定_\n\n" +
+                        "9.追加了_6个Debuff_和_6个增益Buff_,愿你在灯火前行的道路中一路向前！！！" )));
+
+        changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.DEBUFF_DOWN, true), "灯火专有-Debuff",
+                "追加了6种Debuff\n\n" +
+                        "无力 本大层将临时-3力量\n" +
+                        "束缚 本大层每下一层获得新的诅咒。\n" +
+                        "审判 英雄近战伤害削弱10%\n" +
+                        "迟钝 本大层英雄行走一回合相当于3回合。\n" +
+                        "软弱 本大层所有被护甲减免过的物理伤害增加5%\n" +
+                        "贪婪 本大层商店的价格除十字架和食物和治疗药水打1折，其他全部1.5倍价格。"));
+
+        changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.GOBUFF_UPRD, true), "灯火专有-Gobuff",
+                "追加了6种增益Buff\n\n" +
+                        "纯洁的赞歌:\n" +
+                        "前路 本大层内，饥饿高于90%的情况下，获得每回合+2的血量。\n" +
+                        "富饶 本大层内，商店打3折!\n" +
+                        "守护 本大层内，满血可额外获得一些护盾值 冷却：300回合\n" +
+                        "安息 本大层内，玩家伤害x2倍\n" +
+                        "隐没 本大层内，玩家免疫魔法效果和减免20%伤害\n" +
+                        "坚毅 本大层内，玩家力量+8"));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), (Messages.get(ChangesScene.class, "bugfixes")),
+                Messages.get(vM0_6_7_X_Changes.class, "bug_06X32")));
+
+        Image issxa = new DM300Sprite();
+        issxa.scale.set(PixelScene.align(0.69f));
+        changes.addButton(new ChangeButton(issxa, "DM300改动",
+                "DM300每次激活能量塔时，玩家会获得7回合灵视"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ENDDIED), ("终焉调整"),
+                ("终焉力量现在是500能量+1力量")));
+
+
+    }
+
     public static void add_v0_6_11_Changes( ArrayList<ChangeInfo> changeInfos ) {
         ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta21-p1.4-5", true, "");
         changes.hardlight(Window.TITLE_COLOR);
@@ -50,7 +143,7 @@ public class vM0_6_7_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new IceCryStalSprite(), ("浊焰魔女AI调整"),
+        changes.addButton(new ChangeButton(new IceStalSprites(), ("浊焰魔女AI调整"),
                 ("重新调整了浊焰魔女的AI属性")));
 
         changes.addButton(new ChangeButton(new BlueBatSprite(), ("血影蝙蝠调整"),

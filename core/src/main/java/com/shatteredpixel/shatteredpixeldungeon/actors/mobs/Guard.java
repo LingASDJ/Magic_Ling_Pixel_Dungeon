@@ -21,11 +21,15 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -59,6 +63,20 @@ public class Guard extends Mob {
 		properties.add(Property.UNDEAD);
 		
 		HUNTING = new Hunting();
+	}
+
+	@Override
+	public int attackProc( Char enemy, int damage ) {
+		damage = super.attackProc( enemy, damage );
+		if(lanterfireactive){
+			if (Random.Float()<=0.1f && enemy instanceof Hero && hero.lanterfire < 85) {
+				((Hero) enemy).damageLantern(1);
+				hero.sprite.showStatus( 0x808080, "1");
+			}
+		} else {
+			super.attackProc( enemy, damage );
+		}
+		return damage;
 	}
 
 	@Override

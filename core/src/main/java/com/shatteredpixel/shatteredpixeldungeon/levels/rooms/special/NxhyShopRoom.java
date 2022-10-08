@@ -3,6 +3,8 @@
 //
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -26,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunB
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
+import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
@@ -141,6 +144,11 @@ public class NxhyShopRoom extends SpecialRoom {
         itemsToSpawn2.add(Generator.randomUsingDefaults(Generator.Category.POTION));
         itemsToSpawn2.add(Generator.randomUsingDefaults(Generator.Category.WAND));
         itemsToSpawn2.add(Generator.randomUsingDefaults(Generator.Category.WAND));
+
+        if(lanterfireactive) {
+            itemsToSpawn2.add(new OilPotion());
+        }
+
         itemsToSpawn2.add(new ScrollOfIdentify());
         itemsToSpawn2.add(new ScrollOfRemoveCurse());
             switch (Random.Int(5)) {

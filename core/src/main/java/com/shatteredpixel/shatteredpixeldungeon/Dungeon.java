@@ -616,6 +616,11 @@ public class Dungeon {
 		return depth == 6 || depth == 11 || depth == 16;
 	}
 
+	//Todo Roll 一下
+	public static boolean RollLevel() {
+		return depth == 6 || depth == 11 || depth == 16|| depth == 21;
+	}
+
 	public static boolean aqiLevel() {
 		return depth == 4 || depth == 8 || depth == 13 || depth == 18;
 	}

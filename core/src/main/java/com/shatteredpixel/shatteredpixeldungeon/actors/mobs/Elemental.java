@@ -21,7 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -32,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
@@ -264,6 +267,20 @@ public abstract class Elemental extends Mob {
 
 			//newborn elementals do not have ranged attacks
 			rangedCooldown = Integer.MAX_VALUE;
+		}
+
+		@Override
+		protected void meleeProc( Char enemy, int damage ) {
+			if (Random.Int( 2 ) == 0 && !level.water[enemy.pos]) {
+				Buff.affect( enemy, Burning.class ).reignite( enemy );
+				if (enemy.sprite.visible) Splash.at( enemy.sprite.center(), sprite.blood(), 5);
+				if(lanterfireactive) {
+					if (Random.Float() <= 0.06f && enemy instanceof Hero && hero.lanterfire < 80) {
+						((Hero) enemy).damageLantern(2);
+						hero.sprite.showStatus(0x808080, "2");
+					}
+				}
+			}
 		}
 
 		@Override
