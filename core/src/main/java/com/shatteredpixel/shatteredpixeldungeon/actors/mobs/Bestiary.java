@@ -75,8 +75,7 @@ public class Bestiary {
 				case 10:
 					switch (Random.Int(3)) {
 						case 0:
-							return new ArrayList<>(Arrays.asList(Skeleton.class,
-									KagenoNusujin.class, BlackHost.class,
+							return new ArrayList<>(Arrays.asList(Skeleton.class, BlackHost.class,
 									Thief.class,DM100.class,Necromancer.class));
 						case 1:
 							return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
@@ -100,8 +99,7 @@ public class Bestiary {
 				case 15:
 					switch (Random.Int(4)) {
 						case 0:
-							return new ArrayList<>(Arrays.asList(Skeleton.class,
-									KagenoNusujin.class, BlackHost.class,
+							return new ArrayList<>(Arrays.asList(Skeleton.class, BlackHost.class,
 									Thief.class,DM100.class,Necromancer.class));
 						case 1:
 							return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
@@ -131,14 +129,13 @@ public class Bestiary {
 				case 25:
 					switch (Random.Int(6)) {
 						case 0:
-							return new ArrayList<>(Arrays.asList(Skeleton.class,
-									KagenoNusujin.class, BlackHost.class,
+							return new ArrayList<>(Arrays.asList(Skeleton.class, BlackHost.class,
 									Thief.class,DM100.class,Necromancer.class));
 						case 1:
 							return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
 									Thief.class,Thief.class,Fire_Scorpio.class,
-									DM201.class,SkullShaman.class,MolotovHuntsman.class,
-									DM201.class,SRPDHBLR.class, Ice_Scorpio.class));
+									DM200.class,SkullShaman.class,MolotovHuntsman.class,
+									DM100.class,SRPDHBLR.class, Ice_Scorpio.class));
 						case 2:
 							return new ArrayList<>(Arrays.asList(
 									Succubus.class, Succubus.class, Succubus.class,
@@ -176,24 +173,18 @@ public class Bestiary {
 				//3x rat, 1x snake
 				return new ArrayList<>(Arrays.asList(
 						Rat.class, Rat.class,
-						Rat.class, OGPDZSLS.class, Rat.class,
-						Snake.class));
+						Rat.class));
 			case 2:
 				return new ArrayList<>(Arrays.asList(Rat.class,
 						Rat.class, Rat.class, Gnoll.class, Gnoll.class,
 						Gnoll.class, OGPDLLS.class, OGPDNQHZ.class));
 			case 3:
 				return new ArrayList<>(Arrays.asList(Rat.class,
-						Rat.class, Rat.class, Gnoll.class, Gnoll.class,
-						Gnoll.class, OGPDLLS.class, OGPDNQHZ.class,
+						Rat.class, OGPDNQHZ.class,
 						OGPDZSLS.class, Rat.class, Rat.class,
-						Snake.class,Crab.class,Crab.class,Swarm.class));
+						Snake.class,Crab.class,Swarm.class));
 			case 4:
-				return new ArrayList<>(Arrays.asList(Rat.class,
-						Gnoll.class, Gnoll.class
-						, OGPDLLS.class,
-						Snake.class,
-						OGPDNQHZ.class, OGPDZSLS.class,
+				return new ArrayList<>(Arrays.asList(OGPDZSLS.class,
 						OGPDLLS.class, Snake.class,
 						Slime_Orange.class, Swarm.class,Crab.class));
 			case 5:
@@ -204,20 +195,16 @@ public class Bestiary {
 						Snake.class));
 
 			case 7:
-				return new ArrayList<>(Arrays.asList(Skeleton.class,
-						KagenoNusujin.class, BlackHost.class,
+				return new ArrayList<>(Arrays.asList(Skeleton.class, BlackHost.class,
 						Thief.class,DM100.class,Necromancer.class));
 			case 8:
 				return new ArrayList<>(Arrays.asList(Skeleton.class,
 						Skeleton.class,
-						Thief.class, Shaman.random(),BrownBat.class,KagenoNusujin.class,
-						Shaman.random(), Guard.class, SRPDHBLR.class,Necromancer.class,
-						KagenoNusujin.class,BrownBat.class));
+						Thief.class,BrownBat.class, Guard.class, SRPDHBLR.class,Necromancer.class, BrownBat.class));
 			case 9:
 				return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
 						Thief.class,Thief.class,BrownBat.class,
-						BrownBat.class,SpectralNecromancer.class,SpectralNecromancer.class,
-						DM100.class,BrownBat.class, BlackHost.class,KagenoNusujin.class));
+						BrownBat.class, DM100.class,BrownBat.class, BlackHost.class));
 
 			case 10:
 				return new ArrayList<>(Arrays.asList(Bat.class,
@@ -236,7 +223,7 @@ public class Bestiary {
 				return new ArrayList<>(Arrays.asList(
 						Bat.class,
 						Brute.class,Spinner.class,
-						DM201.class,RedSwarm.class));
+						DM100.class,RedSwarm.class));
 
 			case 14:
 				return new ArrayList<>(Arrays.asList(
@@ -257,28 +244,25 @@ public class Bestiary {
 			case 16:
 				//5x elemental, 5x warlock, 1x monk, 2x silvercrab
 				return new ArrayList<>(Arrays.asList(
-						Elemental.random(), Elemental.random(), Elemental.random(),
 						Monk.class,
 						Shaman.random()));
 			case 17:
 				//2x elemental, 2x warlock, 2x monk, 1x silvercrab
 				return new ArrayList<>(Arrays.asList(
-						Elemental.random(), Elemental.random(), Elemental.random(), Elemental.random(),
-						Monk.class,RedMurderer.class,FireGhost.class,MolotovHuntsman.class));
+						Elemental.random(),
+						Monk.class,FireGhost.class));
 			case 18:
 				//1x elemental, 1x warlock, 2x monk, 3x golem
 				return new ArrayList<>(Arrays.asList(
-						Elemental.random(),RedMurderer.class,
-						Warlock.class, Warlock.class,
-						Monk.class, Monk.class,
-						IceGolem.class, Golem.class, Golem.class,MolotovHuntsman.class,FireGhost.class));
+						Elemental.random(),
+						Warlock.class,
+						Monk.class,
+						Golem.class,MolotovHuntsman.class,FireGhost.class));
 			case 19:
 				//1x elemental, 1x warlock, 2x monk, 3x golem
 				return new ArrayList<>(Arrays.asList(
-						Elemental.random(),RedMurderer.class,RedMurderer.class,
-						ShieldHuntsman.class, Warlock.class,
-						Monk.class, IceGolem.class,IceGolem.class,
-						Golem.class, Golem.class, Golem.class,ShieldHuntsman.class));
+						Monk.class,IceGolem.class,
+						Golem.class,ShieldHuntsman.class));
 			case 20:
 				//1x elemental, 1x warlock, 2x monk, 3x golem
 				return new ArrayList<>(Arrays.asList(
@@ -290,25 +274,20 @@ public class Bestiary {
 			case 21:case 22:
 				//3x succubus, 3x evil eye
 				return new ArrayList<>(Arrays.asList(
-						Succubus.class, Succubus.class, Succubus.class,
-						Succubus.class, Succubus.class,
 						Eye.class,ShieldHuntsman.class,Ice_Scorpio.class));
 			case 23:
 				//1x: succubus, 2x evil eye, 3x scorpio
 				return new ArrayList<>(Arrays.asList(
 						Succubus.class,
-						Eye.class, Eye.class,
-						Scorpio.class, Eye.class, Eye.class,Succubus.class, Succubus.class,
-						Scorpio.class, Scorpio.class, Scorpio.class,Fire_Scorpio.class,Ice_Scorpio.class));
+						Eye.class,
+						Scorpio.class, Succubus.class,ShieldHuntsman.class));
 			//前半段决战
 			case 24:
 				//1x succubus, 2x evil eye, 3x scorpio
 				return new ArrayList<>(Arrays.asList(
 						Succubus.class,
-						Eye.class, Eye.class,
-						Scorpio.class, Eye.class, Eye.class,Succubus.class, Succubus.class,
-						Scorpio.class, Scorpio.class,Fire_Scorpio.class,Scorpio.class,ShieldHuntsman.class,
-						Ice_Scorpio.class,Fire_Scorpio.class));
+						Eye.class,
+						Scorpio.class, Succubus.class,Fire_Scorpio.class,Ice_Scorpio.class,ShieldHuntsman.class));
 			default:
 				return new ArrayList<>(Arrays.asList(Rat.class, Rat.class,
 						Rat.class,

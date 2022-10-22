@@ -62,6 +62,10 @@ public class Statistics {
 	//TODO 灯火前行
 	public static boolean lanterfireactive = false;
 
+
+	//TODO BUG修复同步
+	public static boolean bugsyncfixed = false;
+
 	public static int dageCollected;
 
 	//Directly add float time will cause accuracy lose and stop timing if time is long enough
@@ -102,6 +106,7 @@ public class Statistics {
 		endingbald = false;
 
 		lanterfireactive = false;
+		bugsyncfixed =  false;
 
 		second_elapsed = 0f;
 		real_seconds = 0;
@@ -145,8 +150,15 @@ public class Statistics {
 	//TODO 灯火前行
 	private static final String LANTERACTIVE		= "lanterfireactive";
 
+	//TODO BUG修复的机制
+	private static final String BUG_SYNC_FIXED		= "bugsyncfixed";
+
 	public static void storeInBundle( Bundle bundle ) {
 		bundle.put( LANTERACTIVE, lanterfireactive );
+
+
+		//TODO BUG修复的机制
+		bundle.put( BUG_SYNC_FIXED, bugsyncfixed );
 
 		bundle.put( GOLD,		goldCollected );
 		bundle.put( DEEPEST,	deepestFloor );
@@ -155,7 +167,7 @@ public class Statistics {
 		bundle.put( ALCHEMY,    itemsCrafted );
 		bundle.put( PIRANHAS,	piranhasKilled );
 		bundle.put( ANKHS,		ankhsUsed );
-		bundle.put(EXLEVEL, realdeepestFloor);
+		bundle.put(	EXLEVEL, realdeepestFloor);
 		bundle.put( UPGRADES,   upgradesUsed );
 		bundle.put( SNEAKS,		sneakAttacks );
 		bundle.put( THROWN,		thrownAssists );
@@ -211,6 +223,8 @@ public class Statistics {
 		endingbald = bundle.getBoolean( ENBR );
 
 		lanterfireactive = bundle.getBoolean( LANTERACTIVE );
+
+		bugsyncfixed = bundle.getBoolean( BUG_SYNC_FIXED );
 
 		//SPD
 		second_elapsed = bundle.getFloat("real_time_passed");

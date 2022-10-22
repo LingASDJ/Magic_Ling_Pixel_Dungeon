@@ -27,18 +27,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.OrangeSprites;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 /*史莱姆烈焰审判现在移除*/
 public class Slime_Orange extends Slime {
     {
         spriteClass = OrangeSprites.class;
-        lootChance = 0f; //by default, see rollToDropLoot()
+        lootChance = 0.25f; //by default, see rollToDropLoot()
+        loot = PotionOfLiquidFlame.class;
         properties.add(Property.ACIDIC);
-        maxLvl = -200;
+        maxLvl = 12;
         EXP=3;
     }
     private int combo = 0;
@@ -54,18 +54,5 @@ public class Slime_Orange extends Slime {
             Buff.affect(enemy, Burning.class).reignite(enemy);
         }
         return damage2;
-    }
-
-    @Override
-    public void rollToDropLoot() {
-        if (Dungeon.hero.lvl > maxLvl + 2) return;
-
-        super.rollToDropLoot();
-
-        int ofs;
-        do {
-            ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
-        } while (!Dungeon.level.passable[pos + ofs]);
-        Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
     }
 }

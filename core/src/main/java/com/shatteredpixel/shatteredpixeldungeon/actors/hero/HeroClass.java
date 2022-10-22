@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.BUG;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -114,7 +116,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.GreenSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceSan;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
@@ -205,11 +206,11 @@ public enum HeroClass {
 
 			new GreenSword().quantity(1).identify().collect();
 			new SkyShield().quantity(1).identify().collect();
-			new IceSan().quantity(1).identify().collect();
+			//new IceSan().quantity(1).identify().collect();
 			new GoldBAo().quantity(9999).identify().collect();
 			new WandOfScale().quantity(1).identify().collect();
 			new WandOfGodIce().quantity(1).identify().collect();
-			new PotionOfLightningShiledX().quantity(50).identify().collect();
+			new PotionOfLightningShiledX().quantity(1).identify().collect();
 			new LevelTeleporter().quantity(1).identify().collect();
 			new MobPlacer().quantity(1).identify().collect();
 			new BlackDog().quantity(1).identify().collect();
@@ -236,6 +237,7 @@ public enum HeroClass {
 			new ScrollOfRoseShiled().quantity(45).identify().collect();
 			new ScrollOfTerror().quantity(45).identify().collect();
 			new DriedRose().quantity(1).identify().collect();
+
 			Dungeon.gold = 600000000;
 			hero.STR = 27;
 			hero.lvl = 30;
@@ -252,8 +254,10 @@ public enum HeroClass {
 
 		i = new Food();
 
-		//new EndingBlade().quantity(1).identify().collect();
-		//new ChaliceOfBlood().quantity(1).identify().collect();
+		//todo 不存在BUG挑战才给予
+		if(!Dungeon.isChallenged(BUG)) {
+			new PotionOfLightningShiledX().quantity(3).identify().collect();
+		}
 
 		new HerbBag().quantity(1).identify().collect();
 		new PotionOfHealing().quantity(3).identify().collect();

@@ -77,6 +77,8 @@ public class WndStory extends Window {
 	public static final int ID_CHAPTONEEND		= 10;
 	public static final int ID_ICEBOSS		= 11;
 	public static final int ID_GAME = 12;
+
+	//
 	public static final int ID_DWADA		= 13;
 
 	private static final SparseArray<String> CHAPTERS = new SparseArray<>();

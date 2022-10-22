@@ -10,7 +10,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
@@ -356,22 +355,6 @@ public class EndingBlade extends Weapon {
         }
     }
 
-    private void corruptEnemy( Mob enemy ){
-        //cannot re-corrupt or doom an enemy, so give them a major debuff instead
-        if(enemy.buff(Corruption.class) != null || enemy.buff(Doom.class) != null){
-            GLog.w( Messages.get(this, "already_corrupted") );
-            return;
-        }
-
-        if (!enemy.isImmune(Corruption.class)){
-            Corruption.corruptionHeal(enemy);
-
-            AllyBuff.affectAndLoot(enemy, curUser, Corruption.class);
-        } else {
-            Buff.affect(enemy, Doom.class);
-        }
-    }
-
     public void fxs(Ballistica beam, Callback callback) {
         MagicMissile.boltFromChar( curUser.sprite.parent,
                 MagicMissile.SHADOW,
@@ -401,8 +384,7 @@ public class EndingBlade extends Weapon {
         if(TIME_TO_DIED != 0){
             TIME_TO_DIED--;
         }
-            //fixme
-            //todo
+
         if(level >= 10){
             fireenergy += 0;
             //武器最高级

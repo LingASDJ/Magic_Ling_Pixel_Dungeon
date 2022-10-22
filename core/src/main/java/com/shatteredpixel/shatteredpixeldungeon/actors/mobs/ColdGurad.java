@@ -32,7 +32,7 @@ public class ColdGurad extends Mob implements Callback {
     {
         spriteClass = ColdGuardSprite.class;
 
-        HP = HT = 80;
+        HP = HT = 40;
         defenseSkill = 10;
 
         EXP = 0;
@@ -140,12 +140,12 @@ public class ColdGurad extends Mob implements Callback {
 
     @Override
     public int attackSkill( Char target ) {
-        return 12;
+        return 5;
     }
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(0, 7);
+        return Random.NormalIntRange(0, 5);
     }
 
     @Override
@@ -206,7 +206,7 @@ public class ColdGurad extends Mob implements Callback {
                 Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
             }
 
-            int dmg = Random.NormalIntRange( 12, 18 );
+            int dmg = Random.NormalIntRange( 3,6 );
 
             for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
                 if(Random.NormalIntRange(0,9)<4) {

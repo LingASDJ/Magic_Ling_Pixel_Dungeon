@@ -79,6 +79,7 @@ public class IceFishSword extends Weapon {
                 bolt.collisionPos,
                 callback);
     }
+
     public int tier;
 
     @Override

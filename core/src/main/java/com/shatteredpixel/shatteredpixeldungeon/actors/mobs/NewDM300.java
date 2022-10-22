@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
@@ -480,7 +481,8 @@ public class NewDM300 extends Mob {
 
 		spend(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 2f : 3f);
 		yell(Messages.get(this, "charging"));
-		Buff.affect( hero, MindVision.class, 7f );
+		Buff.affect( hero, MindVision.class, 20f );
+		Buff.affect( hero, Haste.class, 7f );
 		sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
 		((DM300Sprite)sprite).updateChargeState(true);
 		((DM300Sprite)sprite).charge();

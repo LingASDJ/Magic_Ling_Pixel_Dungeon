@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM300;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -15,6 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KagenoNusujinSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MurdererSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WFSprite;
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_13_Changes(changeInfos);
         add_v0_6_12_Changes(changeInfos);
         add_v0_6_11_Changes(changeInfos);
         add_v0_6_10_Changes(changeInfos);
@@ -44,6 +47,47 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_13_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta21-p2.6", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("BUG同步修复-实验功能"),
+                ("实验性功能，将在每次更新游戏的时候对无法通过代码直接同步的数据进行自动同步。")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.INFO), ("杂项改动"),
+                ("1.总体刷怪体系调整\n2.书籍改为720金币起一本。\n3.矮人大师不再召唤猩红大盗")));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), (Messages.get(ChangesScene.class, "bugfixes")),
+                Messages.get(vM0_6_7_X_Changes.class, "bug_06X33")));
+
+        Image i = new Image(new DM300Sprite());
+        i.scale.set(PixelScene.align(0.74f));
+        changes.addButton( new ChangeButton(i, Messages.get(NewDM300.class, "name"),
+                "DM300每次激活能量塔玩家获得20回合灵视和7回合极速"));
+
+        changes.addButton(new ChangeButton(new ColdGuardSprite(), ("雪凛守卫"),
+                ("调整雪凛峡谷守卫的总体难度")));
+
+        changes = new ChangeInfo("移除", false, null);
+        changes.hardlight(Window.RED_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new KagenoNusujinSprite(), ("影子盗贼"),
+                ("移除此怪物，将在未来版本调整后加入，但不再是普通怪物类型")));
+
+        changes.addButton(new ChangeButton(new MurdererSprite.RedMuderer(), ("猩红大盗"),
+                ("移除此怪物，将在未来版本调整后加入，但不再是普通怪物类型")));
     }
 
     public static void add_v0_6_12_Changes( ArrayList<ChangeInfo> changeInfos ) {

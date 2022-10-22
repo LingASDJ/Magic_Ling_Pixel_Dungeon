@@ -176,6 +176,7 @@ public class Shopkeeper extends NPC {
 				price *= 0.1;
 			}
 			price *= 1.5;
+			//todo 3折
 		} else if (Dungeon.hero.buff(BlessNoMoney.class) != null) {
 			price *= 0.3;
 		}

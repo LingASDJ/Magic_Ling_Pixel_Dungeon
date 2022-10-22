@@ -957,7 +957,7 @@ public class ItemSpriteSheet {
 			assignIconRect( POTION_CLEANSE,     7, 7 );
 			assignIconRect( POTION_DIVINE,      7, 7 );
 			assignIconRect( POTION_DRAGONKING,   7, 7 );
-			assignIconRect( POTION_DRAGONKING,   5, 7 );
+			assignIconRect( POTION_HOLYFUROR,   5, 7 );
 		}
 
 		                                                                                //16 free slots

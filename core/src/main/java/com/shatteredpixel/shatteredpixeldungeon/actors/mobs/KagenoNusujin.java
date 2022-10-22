@@ -17,7 +17,7 @@ public class KagenoNusujin extends Thief {
     public KagenoNusujin() {
         this.spriteClass = KagenoNusujinSprite.class;
         this.HT = this.HP =50;
-        this.defenseSkill = 16;
+        this.defenseSkill = -1;
         this.maxLvl = 34;
         this.properties.add(Property.UNDEAD);
         WANDERING = new Wandering();

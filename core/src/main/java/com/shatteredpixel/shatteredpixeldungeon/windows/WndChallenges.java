@@ -95,6 +95,7 @@ public class WndChallenges extends Window {
 		final int warning_mode =9;
 		final int custom_mode = 13;
 		final int Test_Debug = 14;
+		final int fixed_mode = 15;
 		boolean isCustom = false;
 		float pos = 0;
 
@@ -102,7 +103,7 @@ public class WndChallenges extends Window {
 
 			final String challenge = Challenges.NAME_IDS[i];
 
-			if(i==normal_mode || i==hard_mode || i==warning_mode|| i==custom_mode || i==Test_Debug){
+			if(i==normal_mode || i==hard_mode || i==warning_mode|| i==custom_mode || i==fixed_mode || i==Test_Debug){
 				RenderedTextBlock block = PixelScene.renderTextBlock(10);
 				switch (i){
 					case normal_mode:
@@ -124,6 +125,10 @@ public class WndChallenges extends Window {
 					case Test_Debug:
 						block.text(Messages.get(Challenges.class, "test"));
 						block.hardlight(0xFFFF00);
+						break;
+					case fixed_mode:
+						block.text(Messages.get(Challenges.class, "fixed"));
+						block.hardlight(Window.CBLACK);
 						break;
 				}
 				block.setPos((WIDTH - block.width()) / 2,

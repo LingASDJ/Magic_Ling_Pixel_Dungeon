@@ -54,7 +54,9 @@ public class BackGoKey extends TestItem {
     @Override
     public ArrayList<String> actions(Hero hero ) {
         ArrayList<String> actions = super.actions( hero );
-        actions.add(AC_INTER_TP);
+        if(Dungeon.hero.buff(ShopLimitLock.class) != null || Dungeon.depth == -5) {
+            actions.add(AC_INTER_TP);
+        }
         return actions;
     }
 
@@ -142,7 +144,7 @@ public class BackGoKey extends TestItem {
                     InterlevelScene.returnDepth = selectedLevel;
                     InterlevelScene.returnPos = -1;
                     Game.switchScene( InterlevelScene.class );
-                    //detach( hero.belongings.backpack );
+
                     if(Dungeon.hero.buff(ShopLimitLock.class) != null) {
                         for (Buff buffx : hero.buffs()) {
                             if (buffx instanceof ShopLimitLock) {

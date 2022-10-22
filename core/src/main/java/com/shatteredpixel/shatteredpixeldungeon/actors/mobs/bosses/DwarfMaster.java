@@ -26,7 +26,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Timer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BlackHost;
@@ -1500,7 +1499,7 @@ public class DwarfMaster extends Boss {
 
     @Override
     public int defenseProc(Char enemy, int damage){
-        if(damage > 3) summonMiniGoo();
+//        if(damage > 3) summonMiniGoo();
         return super.defenseProc(enemy, damage);
     }
 
@@ -1515,17 +1514,17 @@ public class DwarfMaster extends Boss {
             }
         }
 
-        if (candidates.size() > 0) {
-            RedMurderer mini = new RedMurderer();
-            Buff.affect(mini, Timer.class, berserk()? 5f:7f);
-            mini.pos = Random.element( candidates );
-            mini.state = mini.HUNTING;
-
-            Dungeon.level.occupyCell(mini);
-
-            GameScene.add( mini , 0f );
-            Actor.addDelayed( new Pushing( mini, pos, mini.pos ), -1 );
-        }
+//        if (candidates.size() > 0) {
+//            RedMurderer mini = new RedMurderer();
+//            Buff.affect(mini, Timer.class, berserk()? 5f:7f);
+//            mini.pos = Random.element( candidates );
+//            mini.state = mini.HUNTING;
+//
+//            Dungeon.level.occupyCell(mini);
+//
+//            GameScene.add( mini , 0f );
+//            Actor.addDelayed( new Pushing( mini, pos, mini.pos ), -1 );
+//        }
     }
 
     @Override
