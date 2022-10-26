@@ -48,7 +48,7 @@ public class IceGolem extends Mob implements Callback {
     {
         spriteClass = IceGolemSprite.class;
 
-        HP = HT = Random.Int(70,140);
+        HP = HT = Random.Int(70,90);
         defenseSkill = 15;
 
         EXP = 3;

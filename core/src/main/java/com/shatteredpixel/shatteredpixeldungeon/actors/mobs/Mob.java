@@ -181,13 +181,14 @@ public abstract class Mob extends Char {
 		boolean justAlerted = alerted;
 		alerted = false;
 
-		if (Dungeon.isChallenged(Challenges.SBSG) && scaleFactor == 1f && !properties().contains(Property.NOBIG)&&!properties().contains(Property.BOSS)){
-			scaleFactor = Random.Float(1f, 1.5f);
-			HP = HT = (int) (HT * scaleFactor);
-			if (scaleFactor >= 1.45f){
-				HP = HT = (int) (HT * 1.15f);
-			}else if (scaleFactor >= 1.35f) {
-				HP = HT = (int) (HT * 1.4f);
+		//TODO 突变巨兽NEW
+		if (Dungeon.isChallenged(Challenges.SBSG) && scaleFactor == 1f && !properties().contains(Property.NOBIG) && !properties().contains(Property.BOSS)&& !properties().contains(Property.MINIBOSS) ){
+			scaleFactor = Random.Float(1f, 1.8f);
+			HT = (int) (HT * scaleFactor);
+			if (scaleFactor >= 1.4f){
+				HP = HT = (int) (HT * 1.45f);
+			} else {
+				HP = HT = (int) (HT / 1.45f);
 			}
 			sprite.linkVisuals(this);
 			sprite.link(this);
@@ -559,13 +560,13 @@ public abstract class Mob extends Char {
 	public float attackDelay() {
 		float delay = 1f;
 		if ( buff(Adrenaline.class) != null) delay /= 1.5f;
-		return super.attackDelay()*(Dungeon.isChallenged(Challenges.SBSG) ? (0.8f * scaleFactor) :  delay);
+		return super.attackDelay()*(Dungeon.isChallenged(Challenges.SBSG) ? (0.5f * scaleFactor) :  delay);
 	}
 
 	@Override
 	public int attackProc(Char enemy, int damage) {
 		return super.attackProc(enemy,
-				(int) (damage*(Dungeon.isChallenged(Challenges.SBSG) ? (1.4f * scaleFactor) : 1)));
+				(int) (damage*(Dungeon.isChallenged(Challenges.SBSG) ? (0.6f * scaleFactor) : 1)));
 	}
 	
 	protected boolean doAttack( Char enemy ) {
@@ -593,7 +594,7 @@ public abstract class Mob extends Char {
 		if ( !surprisedBy(enemy)
 				&& paralysed == 0
 				&& !(alignment == Alignment.ALLY && enemy == hero)) {
-			return (int) (this.defenseSkill/(Dungeon.isChallenged(Challenges.SBSG) ? (0.8f * scaleFactor) : 1));
+			return (int) (this.defenseSkill/(Dungeon.isChallenged(Challenges.SBSG) ? (0.4f * scaleFactor) : 1));
 		} else {
 			return 0;
 		}
@@ -601,7 +602,7 @@ public abstract class Mob extends Char {
 
 	@Override
 	public float speed() {
-		return super.speed()/(Dungeon.isChallenged(Challenges.SBSG) ? (0.8f * scaleFactor) : 1);
+		return super.speed() * (Dungeon.isChallenged(Challenges.SBSG) ? (0.6f * scaleFactor) : 1);
 	}
 	
 	protected boolean hitWithRanged = false;

@@ -211,8 +211,7 @@ public class Bestiary {
 						Brute.class, Brute.class,
 						Necromancer.class,Necromancer.class));
 			case 11:
-				return new ArrayList<>(Arrays.asList(Bat.class,
-						Spinner.class, Spinner.class,ColdMagicRat.class,ColdMagicRat.class));
+				return new ArrayList<>(Arrays.asList(Bat.class, DM100.class,DM100.class,ColdMagicRat.class,ColdMagicRat.class));
 			case 12:
 				//1x bat, 1x brute, 2x shaman, 2x spinner, 2x DM-300
 				return new ArrayList<>(Arrays.asList(

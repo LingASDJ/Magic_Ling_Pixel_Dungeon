@@ -61,15 +61,15 @@ public class ShieldHuntsman extends Mob {
                 Dungeon.quickslot.convertToPlaceholder(weapon);
                 KindOfWeapon.updateQuickslot();
                 Dungeon.level.drop(weapon, hero.pos).sprite.drop();
-                GLog.w("你的武器被猎人击飞了！", new Object[0]);
+                GLog.w("你的武器被猎人击飞了！");
             }
         }
         if (Random.Int(0, 10) > 7) {
             //如果结果大于7 那么触发下面的行动
             Buff.prolong(enemy, Paralysis.class, Random.Float(1.0f, 2.0f));
             enemy.sprite.emitter().burst(Speck.factory(2), 12);
-            Buff.affect(hero, Burning.class ).reignite( hero, 15f );
-            GLog.n("你被猎人的盾牌重重地撞了一下，你全身僵直难以呼吸，同时感觉到一团烈焰正在从你身体内熊熊燃烧！", new Object[0]);
+            Buff.affect(enemy, Burning.class ).reignite( enemy, 15f );
+//            GLog.n("你被猎人的盾牌重重地撞了一下，你全身僵直难以呼吸，同时感觉到一团烈焰正在从你身体内熊熊燃烧！");
         }
         if (this.combo > 5) {
             this.combo = 1;

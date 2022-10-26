@@ -52,4 +52,16 @@ public class SwarmSprite extends MobSprite {
 	public int blood() {
 		return 0xFF8BA077;
 	}
+
+//	@Override
+//	public void link( Char ch ) {
+//		super.link( ch );
+//		add( CharSprite.State.BURNING );
+//	}
+
+	@Override
+	public void die() {
+		super.die();
+		remove( CharSprite.State.BURNING );
+	}
 }

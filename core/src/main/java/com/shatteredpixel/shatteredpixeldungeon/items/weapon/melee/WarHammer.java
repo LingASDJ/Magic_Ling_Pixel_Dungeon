@@ -56,8 +56,8 @@ public class WarHammer extends MeleeWeapon {
 			default:
 				return max(buffedLvl());
 			case 1:
-				Buff.prolong(defender, Vertigo.class, 6f);
-				Buff.prolong(defender, Terror.class, 18f);
+				Buff.prolong(attacker, Vertigo.class, 6f);
+				Buff.prolong(attacker, Terror.class, 18f);
 				Buff.affect(attacker, Vulnerable.class, Degrade.ADURATION);
 				return super.proc(attacker, defender, damage);
 		}

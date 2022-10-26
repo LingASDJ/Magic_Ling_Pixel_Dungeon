@@ -26,7 +26,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
@@ -40,8 +39,13 @@ public class StewedMeat extends Food {
 	protected void satisfy( Hero hero ) {
 		if (Dungeon.isChallenged(Challenges.EXSG)) {
 			hero.earnExp( hero.maxExp(), getClass() );
+			Buff.affect(hero, Hunger.class).satisfy(energy/3f);
+		} else {
+			Buff.affect(hero, Hunger.class).satisfy(energy/2f);
 		}
 	}
+
+
 	{
 		image = ItemSpriteSheet.STEWED;
 		energy = Hunger.HUNGRY/2f;

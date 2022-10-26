@@ -33,6 +33,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_14_Changes(changeInfos);
         add_v0_6_13_Changes(changeInfos);
         add_v0_6_12_Changes(changeInfos);
         add_v0_6_11_Changes(changeInfos);
@@ -47,6 +48,34 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_14_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta21-p2.7", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("调整", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_SOWILO), ("升级卷轴"),
+                ("升级卷轴现在在第一层的出口区域追加了一个，不受挑战影响" )));
+
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), (Messages.get(ChangesScene.class, "bugfixes")),
+                Messages.get(vM0_6_7_X_Changes.class, "bug_06X34")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("突变巨兽调整"),
+                ("突变巨兽进行了一定的调整，详细查看挑战详情")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.INFO), ("监狱优化"),
+                ("监狱的水进行了优化，现在不会瞎眼了。")));
+
     }
 
     public static void add_v0_6_13_Changes( ArrayList<ChangeInfo> changeInfos ) {

@@ -120,7 +120,7 @@ public class ZeroLevel extends Level {
         drop( new Stylus(), this.width * 19 + 20  );
 
         drop( ( Generator.randomUsingDefaults( Generator.Category.STONE ) ), this.width * 16 + 19 );
-        //drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), this.width * 20 + 19 );
+        drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), this.width * 20 + 19 );
         drop( new Pasty(), this.width * 20 + 19  );
         if ( Badges.isUnlocked(Badges.Badge.GODD_MAKE)){
             drop( ( Generator.randomUsingDefaults( Generator.Category.RING ) ), this.width * 17 + 18 );
@@ -136,7 +136,6 @@ public class ZeroLevel extends Level {
             drop( ( Generator.randomUsingDefaults( Generator.Category.ARTIFACT ) ), this.width * 18 + 19 );
         }
 
-        //旧版支离破碎的神器获取方案已经不再使用
     }
 
     public Mob createMob() {
