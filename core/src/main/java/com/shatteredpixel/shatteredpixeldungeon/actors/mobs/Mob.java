@@ -183,7 +183,7 @@ public abstract class Mob extends Char {
 
 		//TODO 突变巨兽NEW
 		if (Dungeon.isChallenged(Challenges.SBSG) && scaleFactor == 1f && !properties().contains(Property.NOBIG) && !properties().contains(Property.BOSS)&& !properties().contains(Property.MINIBOSS) ){
-			scaleFactor = Random.Float(1f, 1.8f);
+			scaleFactor = Random.Float(1f, 1.6f);
 			HT = (int) (HT * scaleFactor);
 			if (scaleFactor >= 1.4f){
 				HP = HT = (int) (HT * 1.45f);

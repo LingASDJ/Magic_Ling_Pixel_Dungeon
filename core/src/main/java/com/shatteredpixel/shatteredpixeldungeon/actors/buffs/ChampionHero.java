@@ -67,7 +67,8 @@ public abstract class ChampionHero extends FlavourBuff {
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc",DURATION);
+        //todo 取负数，通过绝对值获取,以显示为正数 并通过INT省略后面的小数点
+        return Messages.get(this, "desc")+(int)(Math.abs(1.0f - visualcooldown())+1f);
     }
 
 
@@ -254,7 +255,7 @@ public abstract class ChampionHero extends FlavourBuff {
             //
         }
 
-        private float multiplier = 1.19f;
+        private float multiplier = 1.15f;
 
         @Override
         public boolean act() {
@@ -281,7 +282,7 @@ public abstract class ChampionHero extends FlavourBuff {
 
         @Override
         public String desc() {
-            return Messages.get(this, "desc", (int)(100*(multiplier-1)), (int)(100*(1 - 1f/multiplier)));
+            return Messages.get(this, "desc", (int)(100*(multiplier-1)), (int)(100*(1 - 1f/multiplier)))+(int)(Math.abs(1.0f - visualcooldown())+1f);
         }
 
         private static final String MULTIPLIER = "multiplier";

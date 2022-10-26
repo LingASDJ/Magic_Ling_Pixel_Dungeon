@@ -5,7 +5,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.watabou.noosa.TextureFilm;
 
 public class FireGhostSprite extends MobSprite {
@@ -31,17 +30,5 @@ public class FireGhostSprite extends MobSprite {
     @Override
     public int blood() {
         return 0xFFFF7D13;
-    }
-
-    @Override
-    public void link( Char ch ) {
-        super.link( ch );
-        add( CharSprite.State.BURNING );
-    }
-
-    @Override
-    public void die() {
-        super.die();
-        remove( CharSprite.State.BURNING );
     }
 }
