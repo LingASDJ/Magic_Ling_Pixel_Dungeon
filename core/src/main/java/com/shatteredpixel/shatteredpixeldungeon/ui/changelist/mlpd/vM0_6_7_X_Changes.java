@@ -33,6 +33,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_15_Changes(changeInfos);
         add_v0_6_14_Changes(changeInfos);
         add_v0_6_13_Changes(changeInfos);
         add_v0_6_12_Changes(changeInfos);
@@ -48,6 +49,30 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_15_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta21-p2.8", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("调整", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG24), ("极度秘卷"),
+                ("修复了未被鉴定的问题" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SAI), ("吸血鬼刀"),
+                ("调整了吸血鬼刀的成长数值" )));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.INFO), ("杂项改动"),
+                ("1.部分素材和UI进行了调整优化……\n2.删除了用户ID系统")));
+
     }
 
     public static void add_v0_6_14_Changes( ArrayList<ChangeInfo> changeInfos ) {

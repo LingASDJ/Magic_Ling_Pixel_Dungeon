@@ -120,6 +120,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SkyShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
@@ -182,6 +183,7 @@ public enum HeroClass {
 //			Buff.affect(hero, ChampionHero.Giant.class, ChampionHero.DURATION);
 //			Buff.affect(hero, ChampionHero.Growing.class, ChampionHero.DURATION);
 			new Gauntlet().quantity(1).identify().collect();
+			new Sai().quantity(1).identify().collect();
 			new GoldIron().quantity(1).identify().collect();
 			new ScrollOfIdentify().quantity(45).identify().collect();
 			new ScrollOfTransmutation().quantity(45).identify().collect();

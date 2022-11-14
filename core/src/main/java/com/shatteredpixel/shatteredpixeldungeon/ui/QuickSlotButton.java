@@ -69,10 +69,6 @@ public class QuickSlotButton extends Button  {
 		reset();
 	}
 
-	public void slotMargins( int left, int top, int right, int bottom){
-		slot.setMargins(left, top, right, bottom);
-	}
-
 	public static void reset() {
 		instance = new QuickSlotButton[Constants.MAX_QUICKSLOTS];
 

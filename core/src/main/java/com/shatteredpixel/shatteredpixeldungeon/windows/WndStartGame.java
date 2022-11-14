@@ -21,10 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.KEY_CUSTOM_LING;
-import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.KEY_CUSTOM_SEED;
 import static com.shatteredpixel.shatteredpixeldungeon.ui.Icons.RENAME_OFF;
-import static com.watabou.utils.DeviceCompat.isAndroid;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -274,9 +271,10 @@ public class WndStartGame extends Window {
 				InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
 
 				//匹配两个值以及为安卓才显示
-				if(SPDSettings.customSeed().equals(KEY_CUSTOM_LING) && SPDSettings.customSeed().equals(KEY_CUSTOM_SEED) && isAndroid()){
-					WndStartGame.showKeyInput();
-				} else if (SPDSettings.intro()) {
+//				if(SPDSettings.customSeed().equals(KEY_CUSTOM_LING) && SPDSettings.customSeed().equals(KEY_CUSTOM_SEED) && isAndroid()){
+//					WndStartGame.showKeyInput();
+//				} else
+				if (SPDSettings.intro()) {
 					SPDSettings.intro( false );
 					Game.switchScene( IntroScene.class );
 				} else {

@@ -57,14 +57,15 @@ public class Sai extends MeleeWeapon {
 		switch (Random.Int(7)) {
 			case 0:case 1:case 2:case 3:case 4:
 			default:
-				return Random.NormalIntRange( 5, 12 );
+				return super.proc(attacker, defender, damage);
 			case 5:case 6:case 7:
-				//角色最大血量*0.01+武器等级*0.5+0.8
+				//角色最大血量*0.1+武器等级*0.5+1.5
+				//50x0.1+7x0.5+1=10+3.5+1=15
 				if(hero.HP >= hero.HT){
 					GLog.p("血量已满！无法回血");
 				} else {
-					R = (int) (hero.HT * 0.01 + (buffedLvl() * 0.5) + 0.8);
-					hero.HP += (int) hero.HT * 0.01 + (buffedLvl()) + 0.8;
+					R = (int) (hero.HT * 0.1 + (buffedLvl() * 0.5) + 1.5);
+					hero.HP += hero.HT * 0.1 + (buffedLvl()) + 1.5;
 					hero.sprite.showStatus(CharSprite.POSITIVE, ("+" + R + "HP"));
 					GLog.p("迅猛一击，回血成功！");
 				}
@@ -76,7 +77,7 @@ public class Sai extends MeleeWeapon {
 	@Override
 	public int max(int lvl) {
 		return  Math.round(2.5f*(tier+1)) +     //10 base, down from 20
-				lvl*Math.round(0.5f*(tier+1));  //+2 per level, down from +4
+				lvl*Math.round(1.5f*(tier+1));  //+2 per level, down from +4
 	}
 
 }

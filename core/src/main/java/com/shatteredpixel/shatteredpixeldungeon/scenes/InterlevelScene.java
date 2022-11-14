@@ -170,7 +170,7 @@ public class InterlevelScene extends PixelScene {
 				break;
 		}
 		if (loadingDepth == 1)         	loadingAsset = Assets.Interfaces.LOADING_COLD;
-		else if (loadingDepth <= 5)     loadingAsset = Assets.Interfaces.LOADING_COLD;
+		else if (loadingDepth <= 5)     loadingAsset = Assets.Interfaces.LOADING_SEWERS;
 		else if (loadingDepth <= 10)    loadingAsset = Assets.Interfaces.LOADING_PRISON;
 		else if (loadingDepth <= 15)    loadingAsset = Assets.Interfaces.LOADING_COLD;
 		else if (loadingDepth <= 20)    loadingAsset = Assets.Interfaces.LOADING_CITY;

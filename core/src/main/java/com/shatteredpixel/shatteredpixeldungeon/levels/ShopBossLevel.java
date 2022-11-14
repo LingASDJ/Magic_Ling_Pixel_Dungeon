@@ -277,11 +277,11 @@ public class ShopBossLevel extends Level {
     }
 
     public String tilesTex() {
-            return Assets.Environment.TILES_COLD;
+            return Assets.Environment.TILES_DIED;
     }
 
     public String waterTex() {
-            return Assets.Environment.WATER_COLD;
+            return Assets.Environment.WATER_CAVES;
     }
 
 }

@@ -123,12 +123,12 @@ public class ScrollOfFlameCursed extends Scroll {
 
     @Override
     public boolean isIdentified() {
-        return isKnown();
+        return true;
     }
 
 
-    @Override
-    public int value() {
-        return isKnown() ? 40 * quantity : super.value();
-    }
+//    @Override
+//    public int value() {
+//        return isKnown() ? 40 * quantity : super.value();
+//    }
 }
