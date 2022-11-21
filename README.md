@@ -25,3 +25,6 @@ JDSA Ling, Tianscar, Daniel_Clan, REN, Leng Qunwei & Naiyazi
 
 ## License
 [GPL-3.0](https://github.com/AnsdoShip/magic-ling-pixel-dungeon/blob/main/LICENSE.txt) (c) AnsdoShip Studio
+
+![](https://img.shields.io/github/repo-size/AnsdoShip/magic-ling-pixel-dungeon?color=%23F8BBD0)
+![](https://img.shields.io/github/release/AnsdoShip/magic-ling-pixel-dungeon?color=%235C6BC0&label=0.6)
