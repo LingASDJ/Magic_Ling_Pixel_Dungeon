@@ -2,7 +2,7 @@
 
 # Magic Ling Pixel Dungeon
 
-[![](https://img.shields.io/badge/QQ%20Group-Join-brightgreen)](https://jq.qq.com/?_wv=1027&k=R7ZXeEQM)
+[![](https://img.shields.io/badge/join-QQ%20group-brightgreen?logo=tencentqq)](https://jq.qq.com/?_wv=1027&k=R7ZXeEQM)
 
 **ROGUELIKE RPG**, completely randomly generated dungeons! Based on [**Shattered Pixel Dungeon**](https://github.com/00-Evan/shattered-pixel-dungeon)'s open source.
 
