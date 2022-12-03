@@ -27,18 +27,18 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -48,27 +48,66 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-public class SlimeKing extends Golem implements Callback {
+public class SlimeKing extends Boss {
 
     private final String[] attackCurse = {"雕虫小技", "班门弄斧",
             "GAMEOVER"};
     private int combo = 0;
     private static final float TIME_TO_ZAP	= 0.5f;
 
+    private boolean PartCold = false;
+
+    private static final String partcold   = "partcold";
+    private static final String chainsused = "chainsused";
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(partcold, PartCold);
+        bundle.put(chainsused, chainsUsed);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        PartCold = bundle.getBoolean(partcold);
+        chainsUsed = bundle.getBoolean(chainsused);
+    }
+
     {
-        HP =100;
+        HP =140;
         HT= 140;
         EXP = 20;
         defenseSkill = 12;
         spriteClass = SlimeKingSprite.class;
-        properties.add(Property.LARGE);
         lootChance = 1;
         HUNTING = new Hunting();
         properties.add(Property.BOSS);
+        baseSpeed = 0.4f;
+    }
+
+    @Override
+    public boolean act() {
+        BossHealthBar.assignBoss(this);
+
+        if(HP < 70 && !PartCold){
+            baseSpeed = 1f;
+            SummoningTrap var4 = new  SummoningTrap();
+            var4.pos = super.pos;
+            var4.activate();
+            PartCold = true;
+            chainsUsed = true;
+            GLog.n("你彻底激怒我了！！！");
+        } else if (HP < 70) {
+            baseSpeed = 1f;
+        }
+
+        return super.act();
     }
 
     private void zap() {
@@ -118,7 +157,11 @@ public class SlimeKing extends Golem implements Callback {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 5, 8 );
+        if(HP < 70 && Random.Float() > 0.10f) {
+            return Random.NormalIntRange(8, 12);
+        } else {
+            return Random.NormalIntRange(4, 6);
+        }
     }
 
     @Override
@@ -133,10 +176,10 @@ public class SlimeKing extends Golem implements Callback {
         }
         int damage2 = SlimeKing.super.attackProc(enemy, this.combo + damage);
         this.combo++;
-        int effect = Random.Int(2)+combo;
-        if (enemy.buff(Poison.class) == null) {
-            Buff.affect( enemy, Poison.class).set((effect-2) );
-        }
+        int effect = Random.Int(3);
+//        if (enemy.buff(Poison.class) == null && Random.Float() <= 0.25f) {
+//            Buff.affect( enemy, Poison.class).set((effect-2) );
+//        }
         if (this.combo > 3) {
             this.combo = 1;
         }
@@ -145,7 +188,11 @@ public class SlimeKing extends Golem implements Callback {
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(5, 2);
+        if(HP < 70 && !PartCold) {
+            return 0;
+        } else {
+            return 5;
+        }
     }
 
     private boolean chainsUsed = false;
@@ -194,14 +241,16 @@ public class SlimeKing extends Golem implements Callback {
                 }
             }
         }
-        chainsUsed = true;
+        //chainsUsed = true;
         return true;
     }
 
     private void pullEnemy( Char enemy, int pullPos ){
         enemy.pos = pullPos;
         Dungeon.level.occupyCell(enemy);
+
         Cripple.prolong(enemy, Cripple.class, 4f);
+
         if (enemy == hero) {
             hero.interrupt();
             Dungeon.observe();
@@ -218,7 +267,7 @@ public class SlimeKing extends Golem implements Callback {
     @Override
     public void notice() {
         super.notice();
-        BossHealthBar.assignBoss(this);
+        //        BossHealthBar.assignBoss(this);
         Music.INSTANCE.play(Assets.BGM_BOSSA, true);
         yell( Messages.get(this, "notice") );
         //summon();
@@ -250,34 +299,26 @@ public class SlimeKing extends Golem implements Callback {
         Badges.KILLSLIMKING();
         yell( Messages.get(this, "defeated") );
         for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
-            if (	mob instanceof Slime_Lg||
-                    mob instanceof Slime_Qs||
-                    mob instanceof Slime_Sn||
-                    mob instanceof Slime_Sz||
-                    mob instanceof Slime_Lt||
-                    mob instanceof Slime_Red||
-                    mob instanceof Slime_Orange) {
+            if (	mob instanceof Swarm||
+                    mob instanceof Crab||
+                    mob instanceof Rat||
+                    mob instanceof Slime ) {
                 mob.die( cause );
             }
         }
-    }
-
-    @Override
-    public void call() {
-        next();
     }
 
     private class Hunting extends Mob.Hunting{
         @Override
         public boolean act( boolean enemyInFOV, boolean justAlerted ) {
             enemySeen = enemyInFOV;
-            //放风筝必死 恼
-            //140血强制更新玩家血量为1 赋予燃烧 失明 流血 弱化
-            if (++HP+1 >= 141){
-                hero.HP = 	1;
-                Buff.affect(hero, HalomethaneBurning.class).reignite(hero);
-                GLog.b( Messages.get(this, "cus") );
-            }
+//            //放风筝必死 恼
+//            //140血强制更新玩家血量为1 赋予燃烧 失明 流血 弱化
+//            if (++HP+1 >= 141){
+//                hero.HP = 	1;
+//                Buff.affect(hero, HalomethaneBurning.class).reignite(hero);
+//                GLog.b( Messages.get(this, "cus") );
+//            }
             if (!chainsUsed
                     && enemyInFOV
                     && !isCharmedBy( enemy )

@@ -23,7 +23,7 @@ public class CrystalLingTower extends Mob {
     {
         spriteClass = IceStalSprites.class;
 
-        HP = HT = 400;
+        HP = HT = 150;
 
         properties.add(Property.MINIBOSS);
 

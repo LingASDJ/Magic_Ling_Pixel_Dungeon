@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.CryStalPosition;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.FALSEPosition;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.TRUEPosition;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -78,7 +79,7 @@ import java.util.HashSet;
 
 public class FireMagicDied extends Mob implements Callback {
 
-    private static final float TIME_TO_ZAP = 1f;
+    private static final float TIME_TO_ZAP = 6f;
 
     {
         HP = HT = 500;
@@ -544,7 +545,7 @@ public class FireMagicDied extends Mob implements Callback {
                 Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
             }
 
-            int dmg = Random.NormalIntRange( 2, 4 );
+            int dmg = Random.NormalIntRange( 1, 2 );
 
             for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
                 if(Random.NormalIntRange(0,9)<4) {
@@ -583,7 +584,7 @@ public class FireMagicDied extends Mob implements Callback {
                 enemy.sprite.burst( 0x000000, 5 );
             }
         } else if (HP > 400) {
-            if (Random.NormalFloat( 2, 20 ) == 4) {
+            if (Random.NormalFloat( 2, 9 ) == 4) {
                 GLog.n( Messages.get(FireMagicDied.class, "died_kill",Dungeon.hero.name()) );
             }
             zap();
@@ -723,6 +724,8 @@ public class FireMagicDied extends Mob implements Callback {
             CrystalLingTower abc = new CrystalLingTower();
             abc.pos = TRUEPosition;
             GameScene.add(abc);
+
+            this.pos = FALSEPosition;
 
             Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(1000);
 

@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArcaneArmor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
@@ -130,11 +131,11 @@ public class MagicGirlDead extends Boss {
             for(int i=0;i<Math.min(phase/2, 4);++i){
                 summonCaster(Random.Int(4), places.get(i),false);
             }
-        }else{
-            destroyAll();
-            for(int i=0;i<phase/2+1;++i){
-                summonCaster(Random.Int(6), findRandomPlaceForCaster(), false);
-            }
+//        }else{
+//            destroyAll();
+//            for(int i=0;i<phase/2+1;++i){
+//                summonCaster(Random.Int(6), findRandomPlaceForCaster(), false);
+//            }
         }
 
         activateAll();
@@ -155,11 +156,11 @@ public class MagicGirlDead extends Boss {
         for (Buff buff : hero.buffs()) {
             if (buff instanceof RoseShiled) {
                 buff.detach();
-                GLog.b("玫瑰结界的创始人是翼绫，你怎么敢用她的技能?");
+                GLog.b("……你妄图使用这种方法来逃脱吗？");
             }
             if (buff instanceof HaloFireImBlue ||buff instanceof FireImbue) {
                 buff.detach();
-                GLog.b("你想免疫火的伤害？在我这里，没有可能！/kill @e[type=FireImbue=All] enemy!");
+                GLog.b("……你妄图使用这种方法来逃脱吗？");
             }
         }
         if(buff(RageAndFire.class)!=null){
@@ -194,10 +195,10 @@ public class MagicGirlDead extends Boss {
 
             if (Dungeon.level.heroFOV[step] && HP < 200) {
                 if (buff(Haste.class) == null) {
-                    Buff.affect(this, RoseShiled.class, 15f);
+                    Buff.affect(this, Barrier.class).setShield( 20);
                     Buff.affect(this, Haste.class, 5f);
                     Buff.affect(this, ArcaneArmor.class).set(Dungeon.hero.lvl + 10, 10);
-                    Buff.affect(this, Healing.class).setHeal(40, 0f, 6);
+                    Buff.affect(this, Healing.class).setHeal(10, 0f, 6);
                     new SRPDICLRPRO().spawnAround(pos);
                     Buff.affect(this, Adrenaline.class, 20f);
                     yell( Messages.get(this, "arise2") );

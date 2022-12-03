@@ -80,7 +80,7 @@ public class ShopBossLevel extends Level {
     };
 
     public static int TRUEPosition = WIDTH * 17 + 17;
-
+    public static int FALSEPosition = WIDTH * 22 + 17;
     @Override
     public void unseal() {
         super.unseal();

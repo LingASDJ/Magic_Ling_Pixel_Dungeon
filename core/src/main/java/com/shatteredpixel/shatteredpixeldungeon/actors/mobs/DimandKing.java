@@ -355,7 +355,7 @@ public class DimandKing extends Boss {
             if (bestPos != enemy.pos) ScrollOfTeleportation.appear(furthest, bestPos);
             yell(Messages.get(this, "teleport_" + Random.IntRange(1, 2)));
             if(Dungeon.isChallenged(STRONGER_BOSSES)) {
-                doYogLasers();
+                //doYogLasers();
             }
             return true;
         }
@@ -372,7 +372,7 @@ public class DimandKing extends Boss {
         new Flare(5, 32).color(0xFF6060, false).show(sprite, 1.5f);
         yell(Messages.get(this,"buff_all"));
         if(Dungeon.isChallenged(STRONGER_BOSSES)) {
-            doYogLasers();
+            //doYogLasers();
         }
     }
 
@@ -381,7 +381,7 @@ public class DimandKing extends Boss {
         new Flare(6, 32).color(0xFF22FF, false).show(sprite, 1.5f);
         yell(Messages.get(this, "sacrifice"));
         if(Dungeon.isChallenged(STRONGER_BOSSES)) {
-            doYogLasers();
+            //doYogLasers();
         }
     }
 
@@ -401,7 +401,7 @@ public class DimandKing extends Boss {
         new Flare(7, 32).color(0x303030, false).show(sprite, 1.5f);
         yell(Messages.get(this,"death_rattle"));
         if(Dungeon.isChallenged(STRONGER_BOSSES)) {
-            doYogLasers();
+            //doYogLasers();
         }
     }
 
@@ -412,7 +412,7 @@ public class DimandKing extends Boss {
         summonsMade++;
         yell(Messages.get(this, "more_summon"));
         if(Dungeon.isChallenged(STRONGER_BOSSES)) {
-            doYogLasers();
+            //doYogLasers();
         }
         new Flare(4, 32).color(0x4040FF, false).show(sprite, 1.5f);
     }

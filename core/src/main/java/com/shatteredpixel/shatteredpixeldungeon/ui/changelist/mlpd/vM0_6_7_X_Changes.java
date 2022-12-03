@@ -15,10 +15,12 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.IceStalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KagenoNusujinSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MagicGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MurdererSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SlimeKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WFSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_16_Changes(changeInfos);
         add_v0_6_15_Changes(changeInfos);
         add_v0_6_14_Changes(changeInfos);
         add_v0_6_13_Changes(changeInfos);
@@ -49,6 +52,39 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_16_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta21-p2.85", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("调整", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new IceStalSprites(), ("浊焰魔女"),
+                ("浊焰魔女攻击力降低，且三阶段的结晶生命值下降。" )));
+
+        changes.addButton(new ChangeButton(new MagicGirlSprite(), ("冰雪魔女"),
+                ("地形调整，冰雪魔女特殊情况下获得的玫瑰结界换成奥术护盾20点" )));
+
+        changes.addButton(new ChangeButton(new MimicSprite.Dimand(), ("钻石宝箱王"),
+                ("梦魇Boss挑战下不再发射激光" )));
+
+        changes.addButton(new ChangeButton(new SlimeKingSprite(), ("史莱姆王"),
+                ("几乎是完全重做：\n" +
+                        "机制说明:移动极其缓慢但有无限使用的锁链。\n" +
+                        "血量低于一半后立刻呼唤_当前楼层至多3个怪物_前来支援(只可触发一次),\n" +
+                        "并且移速恢复正常但_锁链功能失效_且_自身防御降为0_以及近战有概率造成_双倍伤害_。" )));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.INFO), ("杂项改动"),
+                ("1.部分素材进行了调整优化……\n2.修复了突变巨兽的0血Bug,在新存档生效")));
+
     }
 
     public static void add_v0_6_15_Changes( ArrayList<ChangeInfo> changeInfos ) {

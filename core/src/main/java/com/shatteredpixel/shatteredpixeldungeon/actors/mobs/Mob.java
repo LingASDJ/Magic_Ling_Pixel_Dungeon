@@ -185,10 +185,10 @@ public abstract class Mob extends Char {
 		if (Dungeon.isChallenged(Challenges.SBSG) && scaleFactor == 1f && !properties().contains(Property.NOBIG) && !properties().contains(Property.BOSS)&& !properties().contains(Property.MINIBOSS) ){
 			scaleFactor = Random.Float(1f, 1.6f);
 			HT = (int) (HT * scaleFactor);
-			if (scaleFactor >= 1.4f){
+			if (scaleFactor >= 1.4f && HT >= 1){
 				HP = HT = (int) (HT * 1.45f);
 			} else {
-				HP = HT = (int) (HT / 1.45f);
+				HP = HT = (int) (HT * 1f);
 			}
 			sprite.linkVisuals(this);
 			sprite.link(this);
