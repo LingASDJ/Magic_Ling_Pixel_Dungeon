@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
+import com.shatteredpixel.shatteredpixeldungeon.ui.JoinIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -82,7 +83,7 @@ public class WndFeedback extends Window {
             @Override
             protected void onClick() {
                 super.onClick();
-                String link = "https://jq.qq.com/?_wv=1027&k=T5AojGsc";
+                String link = Messages.get(JoinIndicator.class, "link");
                 Game.platform.openURI(link);
             }
         };

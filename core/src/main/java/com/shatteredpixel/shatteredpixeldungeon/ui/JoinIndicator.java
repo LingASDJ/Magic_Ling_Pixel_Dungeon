@@ -79,7 +79,7 @@ public class JoinIndicator extends Button {
                     @Override
                     protected void onSelect(int index) {
                         if (index == 0) {
-                            ShatteredPixelDungeon.platform.openURI( "https://jq.qq.com/?_wv=1027&k=g5AGtBgo" );
+                            ShatteredPixelDungeon.platform.openURI( Messages.get(this, "link") );
                         }
                     }
                 });
