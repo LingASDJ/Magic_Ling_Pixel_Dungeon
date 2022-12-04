@@ -128,9 +128,9 @@ public class ElementalBlast extends ArmorAbility {
 		damageFactors.put(WandOfRegrowth.class,         0f);
 
 		//TODO FIXED 将要修复的
-		damageFactors.put(WandOfScale.class,         0f);
-		damageFactors.put(WandOfGodIce.class,         0f);
-		damageFactors.put(WandOfBlueFuck.class,         0f);
+		damageFactors.put(WandOfScale.class,         1f);
+		damageFactors.put(WandOfGodIce.class,         1f);
+		damageFactors.put(WandOfBlueFuck.class,         1f);
 	}
 
 	{
@@ -167,7 +167,7 @@ public class ElementalBlast extends ArmorAbility {
 			projectileProps = Ballistica.STOP_TARGET;
 
 			//*** Wand of Fireblast ***
-		} else if (wandCls == WandOfFireblast.class){
+		} else if (wandCls == WandOfFireblast.class||wandCls == WandOfGodIce.class||wandCls == WandOfScale.class||wandCls == WandOfBlueFuck.class){
 			projectileProps = projectileProps | Ballistica.IGNORE_SOFT_SOLID;
 
 			//*** Wand of Warding ***

@@ -29,13 +29,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.HaloBlazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -131,7 +131,7 @@ public class WandOfBlueFuck extends DamageWand {
             processSoulMark(ch, chargesPerCast());
             ch.damage(damageRoll(), this);
             if (ch.isAlive()) {
-                Buff.affect(ch, Burning.class).reignite(ch);
+                Buff.affect(ch, HalomethaneBurning.class).reignite(ch);
                 switch (chargesPerCast()) {
                     case 1:
                         break; //no effects
@@ -149,7 +149,7 @@ public class WandOfBlueFuck extends DamageWand {
     @Override
     public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
         //acts like blazing enchantment
-        new Blazing().proc( staff, attacker, defender, damage);
+        new HaloBlazing().proc( staff, attacker, defender, damage);
     }
 
     @Override

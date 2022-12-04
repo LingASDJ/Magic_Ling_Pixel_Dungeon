@@ -22,12 +22,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.BUG;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.bugsyncfixed;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
 
@@ -137,7 +135,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLightningShiledX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
@@ -930,11 +927,11 @@ public class Hero extends Char {
 		//TODO 获取三个挑战的枚举后，则超过或等于3挑战以激活挑战，在英雄移动的时候
 		//
 
-		//todo 移动时修复了BUG
-		if(Dungeon.isChallenged(BUG) && !bugsyncfixed){
-			new PotionOfLightningShiledX().quantity(3).identify().collect();
-			bugsyncfixed = true;
-		}
+//		//todo 移动时修复了BUG
+//		if(Dungeon.isChallenged(BUG) && !bugsyncfixed){
+//			new PotionOfLightningShiledX().quantity(3).identify().collect();
+//			bugsyncfixed = true;
+//		}
 
 		if(chCount >= 3 && !lanterfireactive && !Dungeon.isChallenged(PRO) || Dungeon.isChallenged(DHXD) && !lanterfireactive){
 			//TODO 灯火前行

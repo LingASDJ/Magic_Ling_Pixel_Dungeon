@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.BUG;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -50,12 +48,13 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.MobPlacer;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
+import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.GoldIron;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
@@ -120,7 +119,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SkyShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
@@ -138,9 +136,9 @@ public enum HeroClass {
 	WARRIOR( HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ),
 	MAGE( HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK ),
 	ROGUE( HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER ),
-	HUNTRESS( HeroSubClass.SNIPER, HeroSubClass.WARDEN ),
+	HUNTRESS( HeroSubClass.SNIPER, HeroSubClass.WARDEN );
 
-	COMINGSOON( HeroSubClass.SNIPER, HeroSubClass.WARDEN );
+//	COMINGSOON( HeroSubClass.SNIPER, HeroSubClass.WARDEN );
 
 	private HeroSubClass[] subClasses;
 
@@ -183,8 +181,8 @@ public enum HeroClass {
 //			Buff.affect(hero, ChampionHero.Giant.class, ChampionHero.DURATION);
 //			Buff.affect(hero, ChampionHero.Growing.class, ChampionHero.DURATION);
 			new Gauntlet().quantity(1).identify().collect();
-			new Sai().quantity(1).identify().collect();
-			new GoldIron().quantity(1).identify().collect();
+			new TengusMask().quantity(1).identify().collect();
+			new KingsCrown().quantity(1).identify().collect();
 			new ScrollOfIdentify().quantity(45).identify().collect();
 			new ScrollOfTransmutation().quantity(45).identify().collect();
 			new BeaconOfReturning().quantity(11).identify().collect();
@@ -265,9 +263,9 @@ public enum HeroClass {
 		i = new Food();
 
 		//todo 不存在BUG挑战才给予
-		if(!Dungeon.isChallenged(BUG)) {
-			new PotionOfLightningShiledX().quantity(3).identify().collect();
-		}
+//		if(!Dungeon.isChallenged(BUG)) {
+//			new PotionOfLightningShiledX().quantity(3).identify().collect();
+//		}
 
 		new HerbBag().quantity(1).identify().collect();
 		new PotionOfHealing().quantity(3).identify().collect();
@@ -433,8 +431,8 @@ public enum HeroClass {
 				return Assets.Sprites.ROGUE;
 			case HUNTRESS:
 				return Assets.Sprites.HUNTRESS;
-			case COMINGSOON:
-				return Assets.Sprites.COMINGSOON;
+//			case COMINGSOON:
+//				return Assets.Sprites.COMINGSOON;
 		}
 	}
 
@@ -449,8 +447,8 @@ public enum HeroClass {
 				return Assets.Sprites.ROGUE;
 			case HUNTRESS:
 				return Assets.Sprites.HUNTRESS;
-			case COMINGSOON:
-				return Assets.Sprites.COMINGSOON;
+//			case COMINGSOON:
+//				return Assets.Sprites.COMINGSOON;
 		}
 	}
 
@@ -514,8 +512,8 @@ public enum HeroClass {
 				return true;
 			case HUNTRESS:
 				return true;
-			case COMINGSOON:
-				return false;
+//			case COMINGSOON:
+//				return false;
 			//敬请期待
 		}
 	}
@@ -530,8 +528,8 @@ public enum HeroClass {
 				return Messages.get(HeroClass.class, "rogue_unlock");
 			case HUNTRESS:
 				return Messages.get(HeroClass.class, "huntress_unlock");
-			case COMINGSOON:
-				return Messages.get(HeroClass.class, "slime_unlock");
+//			case COMINGSOON:
+//				return Messages.get(HeroClass.class, "slime_unlock");
 		}
 	}
 

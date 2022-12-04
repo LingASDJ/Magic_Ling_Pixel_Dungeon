@@ -38,8 +38,6 @@ public class WndInfoMob extends WndTitledMessage {
 		
 	}
 
-
-	
 	private static class MobTitle extends Component {
 
 		private static final int GAP	= 2;

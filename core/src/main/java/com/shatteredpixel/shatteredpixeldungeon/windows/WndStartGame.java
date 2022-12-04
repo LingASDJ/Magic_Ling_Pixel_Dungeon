@@ -37,7 +37,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.IntroScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
@@ -47,7 +46,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
@@ -58,22 +56,6 @@ import com.watabou.utils.DeviceCompat;
 import java.util.ArrayList;
 
 public class WndStartGame extends Window {
-
-	public static void showKeyInput(){
-		Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextInput(Messages.get(WndTextInput.class,"enter_key"), Messages.get(WndGame.class,
-				"dialog_user"), SPDSettings.customSeed(), 10, false, Messages.get(WndTextInput.class,"yes"),
-				Messages.get(WndTextInput.class,"no")){
-			@Override
-			public void onSelect(boolean positive, String text) {
-				text = DungeonSeed.formatText(text);
-				if(positive) {
-					SPDSettings.customSeed(text);
-					ShatteredPixelDungeon.switchScene(TitleScene.class);
-				}
-			}
-		}));
-	}
-
 
 	private static final int WIDTH    = 120;
 	private static final int HEIGHT   = 160;
@@ -95,26 +77,45 @@ public class WndStartGame extends Window {
 			spacers = new ArrayList<>();
 			if (DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY)){
 
-				StyledButton chkSaver = new StyledButton(Chrome.Type.RED_BUTTON, Messages.get(WndStartGame.class,
-						"mode"), 5){
+//				StyledButton chkSaver = new StyledButton(Chrome.Type.RED_BUTTON, Messages.get(WndStartGame.class,
+//						"mode"), 5){
+//					@Override
+//					protected void onClick() {
+//						super.onClick();
+//						ShatteredPixelDungeon.scene().addToFront(new WndDLC(SPDSettings.dlc(), true) {
+//							public void onBackPressed() {
+//								super.onBackPressed();
+//								icon(new ItemSprite(SPDSettings.dlc() > 0 ? ItemSpriteSheet.DG26 :
+//										ItemSpriteSheet.DG24));
+//							}
+//						} );
+//					}
+//
+//				};
+//				chkSaver.active = false;
+//				chkSaver.alpha(0.5f);
+//				chkSaver.icon(new ItemSprite(ItemSpriteSheet.DG26, null));
+//				add( chkSaver );
+//				buttons.add(chkSaver);
+
+				StyledButton hardButton = new StyledButton(Chrome.Type.RED_BUTTON, Messages.get(WndStartGame.class,
+						"hard"), 5){
 					@Override
 					protected void onClick() {
-						super.onClick();
-						ShatteredPixelDungeon.scene().addToFront(new WndDLC(SPDSettings.dlc(), true) {
+						ShatteredPixelDungeon.scene().addToFront(new WndChallenges(SPDSettings.challenges(), true) {
 							public void onBackPressed() {
 								super.onBackPressed();
-								icon(new ItemSprite(SPDSettings.dlc() > 0 ? ItemSpriteSheet.DG26 :
-										ItemSpriteSheet.DG24));
+								icon(Icons.get(SPDSettings.challenges() > 0 ? Icons.CHALLENGE_ON : Icons.CHALLENGE_OFF));
 							}
 						} );
 					}
-
 				};
-				chkSaver.active = false;
-				chkSaver.alpha(0.5f);
-				chkSaver.icon(new ItemSprite(ItemSpriteSheet.DG26, null));
-				add( chkSaver );
-				buttons.add(chkSaver);
+				hardButton.leftJustify = true;
+				hardButton.active = false;
+				hardButton.icon(new ItemSprite(ItemSpriteSheet.ARTIFACT_HOURGLASS, null));
+				hardButton.alpha(0f);
+				add(hardButton);
+				buttons.add(hardButton);
 
 				StyledButton nameButton = new StyledButton(Chrome.Type.RED_BUTTON, Messages.get(WndStartGame.class,
 						"seedtitle"), 5){
@@ -122,7 +123,8 @@ public class WndStartGame extends Window {
 					public void onClick() {
 						if(Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_1)){
 							Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextInput(Messages.get(WndStartGame.class,"custom_name"),
-									Messages.get(WndStartGame.class, "custom_name_desc")+SPDSettings.heroName(),null, 20,
+									Messages.get(WndStartGame.class, "custom_name_desc")+SPDSettings.heroName(),
+									SPDSettings.heroName(), 20,
 									false, Messages.get(WndStartGame.class,"custom_name_set"),
 									Messages.get(WndStartGame.class,"custom_name_clear")){
 								@Override
@@ -152,25 +154,6 @@ public class WndStartGame extends Window {
 				buttons.add(nameButton);
 				add(nameButton);
 
-				StyledButton hardButton = new StyledButton(Chrome.Type.RED_BUTTON, Messages.get(WndStartGame.class,
-						"hard"), 5){
-					@Override
-					protected void onClick() {
-						ShatteredPixelDungeon.scene().addToFront(new WndChallenges(SPDSettings.challenges(), true) {
-							public void onBackPressed() {
-								super.onBackPressed();
-								icon(Icons.get(SPDSettings.challenges() > 0 ? Icons.CHALLENGE_ON : Icons.CHALLENGE_OFF));
-							}
-						} );
-					}
-				};
-				hardButton.leftJustify = true;
-				hardButton.active = false;
-				hardButton.icon(new ItemSprite(ItemSpriteSheet.ARTIFACT_HOURGLASS, null));
-				hardButton.alpha(0.5f);
-				add(hardButton);
-				buttons.add(hardButton);
-
 				StyledButton csbutton = new StyledButton(Chrome.Type.RED_BUTTON, Messages.get(WndStartGame.class,
 						"news"), 5){
 					@Override
@@ -186,7 +169,7 @@ public class WndStartGame extends Window {
 				csbutton.leftJustify = true;
 				csbutton.active = false;
 				csbutton.icon(new ItemSprite(ItemSpriteSheet.ARTIFACT_SPELLBOOK, null));
-				csbutton.alpha(0.5f);
+				csbutton.alpha(0f);
 				add(csbutton);
 				buttons.add(csbutton);
 			}
@@ -222,6 +205,7 @@ public class WndStartGame extends Window {
 
 			this.width = width;
 			this.height = top+bg.marginBottom()-y-1;
+//			this.height = top+bg.marginBottom()-y-1;
 			bg.size(this.width, this.height);
 
 		}
@@ -413,7 +397,7 @@ public class WndStartGame extends Window {
 		private IconButton heroMisc;
 		private IconButton heroSubclass;
 		private IconButton Telnetsc;
-
+		private IconButton infoButton;
 		private RenderedTextBlock name;
 
 		private static final int BTN_SIZE = 20;
@@ -501,6 +485,21 @@ public class WndStartGame extends Window {
 			name = PixelScene.renderTextBlock(12);
 			add(name);
 
+			infoButton = new IconButton(Icons.get(Icons.INFO)){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					ShatteredPixelDungeon.scene().addToFront(new WndHeroInfo(GamesInProgress.selectedClass));
+				}
+
+				@Override
+				protected String hoverText() {
+					return Messages.titleCase(Messages.get(WndKeyBindings.class, "hero_info"));
+				}
+			};
+			infoButton.setSize(21, 21);
+			add(infoButton);
+
 			visible = false;
 		}
 
@@ -508,15 +507,18 @@ public class WndStartGame extends Window {
 		protected void layout() {
 			super.layout();
 
-			avatar.x = x-10;
+			avatar.x = x-12;
 			avatar.y = y + (height - avatar.height() - name.height() - 4)/2f;
 			PixelScene.align(avatar);
 
 			name.setPos(
-					x-10 + (avatar.width() - name.width())/2f,
+					x-2 + (avatar.width() - name.width())/2f,
 					avatar.y + avatar.height() + 3
 			);
 			PixelScene.align(name);
+
+			infoButton.setPos(-4,
+					name.y-15 + name.height());
 
 			heroItem.setPos(0 + (name.width()/60f),
 					name.y + name.height() + 3);

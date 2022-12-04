@@ -301,7 +301,6 @@ public class Assets {
 		public static final String HUNTRESS	= "sprites/huntress.png";
 		public static final String COMINGSOON	= "sprites/slimekingch.png";
 		public static final String AVATARS	= "sprites/avatars.png";
-		public static final String PET		= "sprites/pet.png";
 		public static final String AMULET	= "sprites/amulet.png";
 		public static final String JAMULET	= "sprites/jamulet.png";
 		public static final String COLDRAT	= "sprites/coldrat.png";

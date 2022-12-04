@@ -363,8 +363,8 @@ public enum Icons {
 				return get( ROGUE );
 			case HUNTRESS:
 				return get( HUNTRESS );
-			case COMINGSOON:
-				return get( HUNTRESS );
+//			case COMINGSOON:
+//				return get( HUNTRESS );
 			default:
 				return null;
 		}

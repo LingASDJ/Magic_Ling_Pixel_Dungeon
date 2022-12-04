@@ -35,6 +35,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_17_Changes(changeInfos);
         add_v0_6_16_Changes(changeInfos);
         add_v0_6_15_Changes(changeInfos);
         add_v0_6_14_Changes(changeInfos);
@@ -52,6 +53,30 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_17_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta21-p2.875", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("调整", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new SlimeKingSprite(), ("史莱姆王"),
+                ("追加三阶段，在近战攻击情况下生成蚀化史莱姆，但生成的蚀化史莱姆血量将/4" )));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), (Messages.get(ChangesScene.class, "bugfixes")),
+                Messages.get(vM0_6_7_X_Changes.class, "bug_06X35")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("小道消息"),
+                ("OM9已经在Discord宣传此版本，但英文翻译目前没有，因此国际化需要招人。当然，我们会在P3正式开始英化工作")));
+
     }
 
     public static void add_v0_6_16_Changes( ArrayList<ChangeInfo> changeInfos ) {

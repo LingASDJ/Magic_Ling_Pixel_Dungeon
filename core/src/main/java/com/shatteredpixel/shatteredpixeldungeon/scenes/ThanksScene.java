@@ -155,8 +155,8 @@ public class ThanksScene extends PixelScene {
                 "Tianscar",
                 new TianscarSprite(),
                 "Main Dev:Carbonized Pixel Dungeon",
-                "加入碳化总群",
-                "https://jq.qq.com/?_wv=1027&k=6jAlnlNL");
+                "",
+                "");
         if (landscape()){
             evan.setRect((Camera.main.width - colWidth)/2f-10, reddragon.bottom() + 8, colWidth+20, 0);
         } else {

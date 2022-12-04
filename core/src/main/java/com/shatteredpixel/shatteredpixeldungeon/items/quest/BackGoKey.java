@@ -45,7 +45,7 @@ import java.util.ArrayList;
 public class BackGoKey extends TestItem {
     {
         image = ItemSpriteSheet.DG20;
-        defaultAction = AC_INTER_TP;
+//        defaultAction = Dungeon.hero.buff(ShopLimitLock.class) != null? AC_INTER_TP : null ;
         changeDefAct = true;
     }
 

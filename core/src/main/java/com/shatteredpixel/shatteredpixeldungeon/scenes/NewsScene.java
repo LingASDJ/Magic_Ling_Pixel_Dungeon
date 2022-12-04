@@ -85,7 +85,7 @@ public class NewsScene extends PixelScene {
 		float top = 18;
 
 		displayingNoArticles = !News.articlesAvailable();
-		if (displayingNoArticles || Messages.lang() != Languages.ENGLISH) {
+		if (displayingNoArticles || Messages.lang() != Languages.CHINESE) {
 
 			Component newsInfo = new NewsInfo();
 			newsInfo.setRect(left, 20, fullWidth, 0);
@@ -186,7 +186,7 @@ public class NewsScene extends PixelScene {
 			
 			String message = "";
 
-			if (Messages.lang() != Languages.ENGLISH){
+			if (Messages.lang() != Languages.CHINESE){
 				message += Messages.get(this, "english_warn");
 			}
 			
@@ -270,7 +270,7 @@ public class NewsScene extends PixelScene {
 			icon(News.parseArticleIcon(article));
 			long lastRead = SPDSettings.newsLastRead();
 			if (lastRead > 0 && article.date.getTime() > lastRead) {
-				textColor(Window.SHPX_COLOR);
+				textColor(Window.TITLE_COLOR);
 			}
 
 			Calendar cal = Calendar.getInstance();

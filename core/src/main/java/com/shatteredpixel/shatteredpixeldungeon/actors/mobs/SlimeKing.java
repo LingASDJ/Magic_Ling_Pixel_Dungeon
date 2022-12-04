@@ -53,6 +53,8 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
+import java.util.ArrayList;
+
 public class SlimeKing extends Boss {
 
     private final String[] attackCurse = {"雕虫小技", "班门弄斧",
@@ -64,6 +66,36 @@ public class SlimeKing extends Boss {
 
     private static final String partcold   = "partcold";
     private static final String chainsused = "chainsused";
+
+
+    @Override
+    public int defenseProc( Char enemy, int damage ) {
+
+        if (HP >= damage + 2) {
+            ArrayList<Integer> candidates = new ArrayList<>();
+
+            int[] neighbours = {pos + 1, pos - 1, pos + Dungeon.level.width(), pos - Dungeon.level.width()};
+            for (int n : neighbours) {
+                if (!Dungeon.level.solid[n] && Actor.findChar( n ) == null
+                        && (!properties().contains(Property.LARGE) || Dungeon.level.openSpace[n])) {
+                    candidates.add( n );
+                }
+            }
+
+            if (candidates.size() > 0 && HP < 60 && Random.Float() < 0.45f) {
+            CausticSlime mini = new CausticSlime();
+            mini.pos = this.pos;
+            mini.state = mini.HUNTING;
+            mini.HP /= 4;
+            mini.maxLvl = -5;
+            Dungeon.level.occupyCell(mini);
+            GameScene.add( mini , 0f );
+             Actor.addDelayed( new Pushing( mini, pos, mini.pos ), -1 );
+            }
+        }
+
+        return super.defenseProc(enemy, damage);
+    }
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -270,6 +302,7 @@ public class SlimeKing extends Boss {
         //        BossHealthBar.assignBoss(this);
         Music.INSTANCE.play(Assets.BGM_BOSSA, true);
         yell( Messages.get(this, "notice") );
+        chainsUsed = false;
         //summon();
     }
 
