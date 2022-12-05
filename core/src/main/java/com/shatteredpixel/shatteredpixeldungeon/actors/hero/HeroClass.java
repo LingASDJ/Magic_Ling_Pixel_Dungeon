@@ -273,7 +273,7 @@ public enum HeroClass {
 		new ScrollOfUpgrade().quantity(1).identify().collect();
 		//new IndexBooks().quantity(1).identify().collect();
 		if (!Challenges.isItemBlocked(i)) i.collect();
-
+		new PotionOfLightningShiledX().quantity(3).identify().collect();
 		new ScrollOfIdentify().identify();
 
 		new VelvetPouch().collect();
