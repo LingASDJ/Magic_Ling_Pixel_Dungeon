@@ -53,466 +53,461 @@ import com.watabou.utils.ColorMath;
 
 public class StatusPane extends Component {
 
-	private NinePatch bg;
-	private Image avatar;
-	private Button heroInfo;
-	public static float talentBlink;
-	private float warning;
+  private NinePatch bg;
+  private Image avatar;
+  private Button heroInfo;
+  public static float talentBlink;
+  private float warning;
 
-	public static final float FLASH_RATE = (float)(Math.PI*1.5f); //1.5 blinks per second
+  public static final float FLASH_RATE = (float) (Math.PI * 1.5f); // 1.5 blinks per second
 
-	private int lastTier = 0;
+  private int lastTier = 0;
 
-	private Image rawShielding;
-	private Image shieldedHP;
-	private Image hp;
-	private BitmapText hpText;
-	private Button heroInfoOnBar;
-	private Image hg;
+  private Image rawShielding;
+  private Image shieldedHP;
+  private Image hp;
+  private BitmapText hpText;
+  private Button heroInfoOnBar;
+  private Image hg;
 
-	private Image puresoul;
-	private BitmapText hgText;
+  private Image puresoul;
+  private BitmapText hgText;
 
-	private Image exp;
-	private BitmapText expText;
+  private Image exp;
+  private BitmapText expText;
 
-	private int lastLvl = -1;
+  private int lastLvl = -1;
 
-	private BitmapText level;
+  private BitmapText level;
+
+  private BuffIndicator buffs;
+  private Compass compass;
+
+  private BusyIndicator busy;
+  private CircleArc counter;
 
-	private BuffIndicator buffs;
-	private Compass compass;
-
-	private BusyIndicator busy;
-	private CircleArc counter;
+  // Custom UI Left
+  public PageIndicator page;
+  public PageIndicatorB pageb;
+  public MainHandIndicator mainhand;
+  public BossSelectIndicator bossselect;
+  public JoinIndicator joinxxx;
+  public LanterFireCator lanter;
+
+  private static String asset = Assets.Interfaces.STATUS;
+
+  private boolean large;
+
+  private BitmapText fpsText;
+
+  public StatusPane(boolean large) {
+    super();
+
+    this.large = large;
+
+    if (large) bg = new NinePatch(asset, 0, 64, 41, 39, 33, 0, 4, 0);
+    else bg = new NinePatch(asset, 0, 0, 128, 36, 85, 0, 45, 0);
+    add(bg);
 
-	//Custom UI Left
-	public PageIndicator page;
-	public PageIndicatorB pageb;
-	public MainHandIndicator mainhand;
-	public BossSelectIndicator bossselect;
-	public JoinIndicator joinxxx;
-	public LanterFireCator lanter;
-
-	private static String asset = Assets.Interfaces.STATUS;
-
-	private boolean large;
+    heroInfo =
+        new Button() {
+          @Override
+          protected void onClick() {
+            Camera.main.panTo(Dungeon.hero.sprite.center(), 5f);
+            GameScene.show(new WndHero());
+          }
 
-	private BitmapText fpsText;
-
-	public StatusPane( boolean large ){
-		super();
-
-		this.large = large;
+          @Override
+          public GameAction keyAction() {
+            return SPDAction.HERO_INFO;
+          }
 
-		if (large)  bg = new NinePatch( asset, 0, 64, 41, 39, 33, 0, 4, 0 );
-		else        bg = new NinePatch( asset, 0, 0, 128, 36, 85, 0, 45, 0 );
-		add( bg );
+          @Override
+          protected String hoverText() {
+            return Messages.titleCase(Messages.get(WndKeyBindings.class, "hero_info"));
+          }
+        };
+    add(heroInfo);
 
-		heroInfo = new Button(){
-			@Override
-			protected void onClick () {
-				Camera.main.panTo( Dungeon.hero.sprite.center(), 5f );
-				GameScene.show( new WndHero() );
-			}
-			
-			@Override
-			public GameAction keyAction() {
-				return SPDAction.HERO_INFO;
-			}
+    avatar = HeroSprite.avatar(Dungeon.hero.heroClass, lastTier);
+    add(avatar);
 
-			@Override
-			protected String hoverText() {
-				return Messages.titleCase(Messages.get(WndKeyBindings.class, "hero_info"));
-			}
-		};
-		add(heroInfo);
+    talentBlink = 0;
 
-		avatar = HeroSprite.avatar( Dungeon.hero.heroClass, lastTier );
-		add( avatar );
+    compass = new Compass(Statistics.amuletObtained ? Dungeon.level.entrance : Dungeon.level.exit);
+    add(compass);
 
-		talentBlink = 0;
+    if (large) rawShielding = new Image(asset, 0, 112, 128, 9);
+    else rawShielding = new Image(asset, 0, 40, 50, 4);
+    rawShielding.alpha(0.5f);
+    add(rawShielding);
 
-		compass = new Compass( Statistics.amuletObtained ? Dungeon.level.entrance : Dungeon.level.exit );
-		add( compass );
+    if (large) shieldedHP = new Image(asset, 0, 112, 128, 9);
+    else shieldedHP = new Image(asset, 0, 40, 50, 4);
+    add(shieldedHP);
 
-		if (large)  rawShielding = new Image(asset, 0, 112, 128, 9);
-		else        rawShielding = new Image(asset, 0, 40, 50, 4);
-		rawShielding.alpha(0.5f);
-		add(rawShielding);
+    if (large) hp = new Image(asset, 0, 103, 128, 9);
+    else hp = new Image(asset, 0, 36, 50, 4);
+    add(hp);
 
-		if (large)  shieldedHP = new Image(asset, 0, 112, 128, 9);
-		else        shieldedHP = new Image(asset, 0, 40, 50, 4);
-		add(shieldedHP);
+    if (large) hg = new Image(asset, 0, 128, 128, 7);
+    else hg = new Image(asset, 0, 45, 49, 4);
+    add(hg);
 
-		if (large)  hp = new Image(asset, 0, 103, 128, 9);
-		else        hp = new Image(asset, 0, 36, 50, 4);
-		add( hp );
+    puresoul = new Image(Assets.Interfaces.LANTERLING);
+    add(puresoul);
 
-		if (large)  hg = new Image(asset, 0, 128, 128, 7);
-		else        hg = new Image(asset, 0, 45, 49, 4);
-		add( hg );
+    hpText = new BitmapText(PixelScene.pixelFont);
+    hpText.alpha(0.6f);
+    add(hpText);
 
-	 	puresoul = new Image(Assets.Interfaces.LANTERLING);
-		add( puresoul );
+    hgText = new BitmapText(PixelScene.pixelFont);
+    hgText.alpha(0.6f);
+    add(hgText);
 
-		hpText = new BitmapText(PixelScene.pixelFont);
-		hpText.alpha(0.6f);
-		add(hpText);
+    // FPS TEXT
+    fpsText = new BitmapText(PixelScene.pixelFont);
+    fpsText.alpha(1f);
+    add(fpsText);
 
+    heroInfoOnBar =
+        new Button() {
+          @Override
+          protected void onClick() {
+            Camera.main.panTo(Dungeon.hero.sprite.center(), 5f);
+            GameScene.show(new WndHero());
+          }
+        };
+    add(heroInfoOnBar);
 
-		hgText = new BitmapText(PixelScene.pixelFont);
-		hgText.alpha(0.6f);
-		add(hgText);
-
-		//FPS TEXT
-		fpsText = new BitmapText(PixelScene.pixelFont);
-		fpsText.alpha(1f);
-		add(fpsText);
-
-		heroInfoOnBar = new Button(){
-			@Override
-			protected void onClick () {
-				Camera.main.panTo( Dungeon.hero.sprite.center(), 5f );
-				GameScene.show( new WndHero() );
-			}
-		};
-		add(heroInfoOnBar);
-
-		if (large)  exp = new Image(asset, 0, 121, 128, 7);
-		else        exp = new Image(asset, 0, 44, 16, 1);
-		add( exp );
-
-		if (large){
-			expText = new BitmapText(PixelScene.pixelFont);
-			expText.hardlight( 0xFFFFAA );
-			expText.alpha(0.6f);
-			add(expText);
-		}
-
-		level = new BitmapText( PixelScene.pixelFont);
-		level.hardlight( 0xFFFFAA );
-		add( level );
-
-		buffs = new BuffIndicator( Dungeon.hero,large);
-		add( buffs );
-
-		busy = new BusyIndicator();
-		add( busy );
-
-		counter = new CircleArc(18, 4.25f);
-		counter.color( 0x808080, true );
-		counter.show(this, busy.center(), 0f);
-
-		page=new PageIndicator();
-		add(page);
-
-		pageb=new PageIndicatorB();
-		add(pageb);
-
-		mainhand=new MainHandIndicator();
-		add(mainhand);
-
-		bossselect=new BossSelectIndicator();
-		add(bossselect);
-
-		joinxxx=new JoinIndicator();
-		add(joinxxx);
-
-		lanter=new LanterFireCator();
-		add(lanter);
-	}
-
-
-
-	@Override
-	protected void layout() {
-
-		height = large ? 39 : 32;
-
-		bg.x = x;
-		bg.y = y;
-		if (large)  bg.size( 160, bg.height ); //HP bars must be 128px wide atm
-		else        bg.size( width, bg.height );
-
-		avatar.x = bg.x - avatar.width / 2f + 15;
-		avatar.y = bg.y - avatar.height / 2f + (large ? 15 : 16);
-		PixelScene.align(avatar);
-
-		heroInfo.setRect( x, y+(large ? 0 : 1), 30, large ? 40 : 30 );
-
-		compass.x = avatar.x + avatar.width / 2f - compass.origin.x;
-		compass.y = avatar.y + avatar.height / 2f - compass.origin.y;
-		PixelScene.align(compass);
-
-		if (large) {
-			exp.x = x + 30;
-			exp.y = y + 30;
-
-			hp.x = shieldedHP.x = rawShielding.x = x + 30;
-			hp.y = shieldedHP.y = rawShielding.y = y + 19;
-
-			hpText.x = hp.x + (125 - hpText.width())/2f;
-			hpText.y = hp.y + 1;
-			PixelScene.align(hpText);
-
-			hg.x= x + 30;
-			hg.y= y + 10;
-
-			hgText.x = x+80;
-			hgText.y = hg.y;
-			PixelScene.align(hgText);
-
-			expText.x = exp.x + (128 - expText.width())/2f;
-			expText.y = exp.y;
-			PixelScene.align(expText);
-
-			heroInfoOnBar.setRect(heroInfo.right(), y + 19, 130, 20);
-
-			if(SPDSettings.FPSLimit()) {
-				fpsText.scale.set(PixelScene.align(0.9f));
-				fpsText.x = MenuPane.version.x - 15;
-				fpsText.y = MenuPane.version.y - 10;
-				PixelScene.align(fpsText);
-			} else {
-				fpsText.visible=false;
-				fpsText.active=false;
-			}
-//			buffs.setPos( x + 31, y +15 );
-
-//			//下半段
-//			puresoul.visible = true;
-			lanter.setPos(0, 500);
-			busy.x = x + bg.width + 1;
-			busy.y = y + bg.height - 9;
-		} else {
-			exp.x = x;
-			exp.y = y;
-
-			//
-			hp.x = shieldedHP.x = rawShielding.x = x + 30;
-			hp.y = shieldedHP.y = rawShielding.y = y + 3;
-
-			hpText.scale.set(PixelScene.align(0.5f));
-			hpText.x = hp.x + 1;
-			hpText.y = hp.y + (hp.height - (hpText.baseLine()+hpText.scale.y))/2f;
-			hpText.y -= 0.001f; //prefer to be slightly higher
-			PixelScene.align(hpText);
-
-			hg.x = 30.0f;
-			hg.y = 8.0f;
-
-			hgText.scale.set(PixelScene.align(0.5f));
-			hgText.x = hg.x + 1;
-			hgText.y = hg.y + (hp.height - (hgText.baseLine()+hgText.scale.y))/2f;
-			hgText.y -= 0.001f; //prefer to be slightly higher
-			PixelScene.align(hgText);
-
-//			puresoulText.scale.set(PixelScene.align(0.5f));
-//			puresoulText.x = 31f;
-//			puresoulText.y = 13f + (hg.height - (puresoulText.baseLine()+puresoulText.scale.y))/2f;
-//			puresoulText.y -= 0.001f; //prefer to be slightly higher
-//			PixelScene.align(puresoulText);
-
-			heroInfoOnBar.setRect(heroInfo.right(), y, 50, 9);
-
-			puresoul.x= 1.0f;
-			puresoul.y= 142.0f;
-			puresoul.visible = false; //
-
-			buffs.setPos( x + 31, y + 12 );
-
-			if(SPDSettings.FPSLimit()) {
-				fpsText.scale.set(PixelScene.align(0.9f));
-				fpsText.x = MenuPane.version.x - 15;
-				fpsText.y = MenuPane.version.y - 10;
-				PixelScene.align(fpsText);
-			} else {
-				fpsText.visible=false;
-				fpsText.active=false;
-			}
-
-			busy.x = x + 1;
-			busy.y = y + 33;
-
-			lanter.setPos(0, 500);
-		}
-
-		counter.point(busy.center());
-	}
-	
-	private static final int[] warningColors = new int[]{0x660000, 0xCC0000, 0x660000};
-
-	@Override
-	public void update() {
-		super.update();
-
-		int maxHunger = (int) Hunger.STARVING;
-		int maxPureSole = Dungeon.hero.lanterfire;
-		int health = Dungeon.hero.HP;
-		int shield = Dungeon.hero.shielding();
-		int max = Dungeon.hero.HT;
-		int mtPureSole = 100;
-
-		//检查为光与影使用黑色模块
-//		int chCount = 0;
-//		for (int ch : Challenges.MASKS){
-//			if ((Dungeon.challenges & ch) != 0) chCount++;
-//		}
-//
-//		if(chCount >= 3 && !Dungeon.isChallenged(PRO) && lanterfireactive){
-//			if (SPDSettings.ClassUI()) {
-//				bg.texture = TextureCache.get(Assets.Interfaces.STATUSSOUL_DARK);
-//			} else {
-//				bg.texture = TextureCache.get(Assets.Interfaces.STATUSSOUL);
-//			}
-//		} else
-		if (SPDSettings.ClassUI()) {
-			bg.texture = TextureCache.get(Assets.Interfaces.STATUS_DARK);
-		} else {
-			bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
-		}
-
-		if (ClassPage()) {
-			page.setPos(0, 40);
-			pageb.setPos(0, 500);
-			mainhand.setPos(0, 51);
-			joinxxx.setPos(0, 78);
-			bossselect.setPos(0, 104);
-
-			if(lanterfireactive){
-				lanter.setPos(0, 500);
-				puresoul.visible = false;
-			}
-
-		} else {
-			page.setPos(0, 500);
-			pageb.setPos(0, 40);
-			mainhand.setPos(0, 500);
-			joinxxx.setPos(0, 500);
-			bossselect.setPos(0, 500);
-
-			//TODO 灯火前行
-			if(lanterfireactive){
-				lanter.setPos(0, 75);
-				lanter.visible = true;
-				lanter.active  = true;
-				puresoul.visible =true;
-				puresoul.x= 1.0f;
-				puresoul.y= 142.0f;
-			}
-
-
-		}
-
-		if(Dungeon.hero.isAlive()){
-			fpsText.text("FPS:"+ Gdx.graphics.getFramesPerSecond());
-		}
-
-		if(Gdx.graphics.getFramesPerSecond()>=90){
-			fpsText.hardlight(Window.SKYBULE_COLOR);
-		} else if(Gdx.graphics.getFramesPerSecond()>=60){
-			fpsText.hardlight(Window.CWHITE);
-		} else if(Gdx.graphics.getFramesPerSecond()>=30){
-			fpsText.hardlight(Window.CYELLOW);
-		} else {
-			fpsText.hardlight(Window.RED_COLOR);
-		}
-
-		if (!Dungeon.hero.isAlive()) {
-			avatar.tint(0x000000, 0.5f);
-		} else if ((health/(float)max) < 0.3f) {
-			warning += Game.elapsed * 5f *(0.4f - (health/(float)max));
-			warning %= 1f;
-			avatar.tint(ColorMath.interpolate(warning, warningColors), 0.5f );
-		} else if (talentBlink > 0.33f){ //stops early so it doesn't end in the middle of a blink
-			talentBlink -= Game.elapsed;
-			avatar.tint(1, 1, 0, (float)Math.abs(Math.cos(talentBlink*FLASH_RATE))/2f);
-		} else {
-			avatar.resetColor();
-		}
-
-		hp.scale.x = Math.max( 0, (health-shield)/(float)max);
-		shieldedHP.scale.x = health/(float)max;
-
-		if(lanterfireactive) {
-			puresoul.scale.y = -Math.max( 0, (maxPureSole)/(float)mtPureSole);
-		} else {
-			puresoul.scale.y = -1.0f;
-		}
-
-		if (shield > health) {
-			rawShielding.scale.x = shield / (float) max;
-		} else {
-			rawShielding.scale.x = 0;
-		}
-
-		if (shield <= 0){
-			hpText.text(health + "/" + max);
-		} else {
-			hpText.text(health + "+" + shield +  "/" + max);
-		}
-
-		Hunger hungerBuff = Dungeon.hero.buff(Hunger.class);
-		if (hungerBuff != null) {
-			int hunger = Math.max(0, maxHunger - hungerBuff.hunger());
-			hg.scale.x = (float) hunger / (float) maxHunger;
-			hgText.text(hunger + "/" + maxHunger);
-		}
-		else if (Dungeon.hero.isAlive()) {
-			hg.scale.x = 1.0f;
-		}
-
-		if (large) {
-			exp.scale.x = (128 / exp.width) * Dungeon.hero.exp / Dungeon.hero.maxExp();
-
-			hpText.measure();
-			hpText.x = hp.x + (128 - hpText.width())/2f;
-
-			expText.text(Dungeon.hero.exp + "/" + Dungeon.hero.maxExp());
-			expText.measure();
-			expText.x = hp.x + (128 - expText.width())/2f;
-
-		} else {
-			exp.scale.x = (width / exp.width) * Dungeon.hero.exp / Dungeon.hero.maxExp();
-		}
-
-		if (Dungeon.hero.lvl != lastLvl) {
-
-			if (lastLvl != -1) {
-				showStarParticles();
-			}
-
-			lastLvl = Dungeon.hero.lvl;
-
-			if (large){
-				level.text( "lv. " + lastLvl );
-				level.measure();
-				level.x = x + (30f - level.width()) / 2f;
-				level.y = y + 33f - level.baseLine() / 2f;
-			} else {
-				level.text( Integer.toString( lastLvl ) );
-				level.measure();
-				level.x = x + 27.5f - level.width() / 2f;
-				level.y = y + 28.0f - level.baseLine() / 2f;
-			}
-			PixelScene.align(level);
-		}
-
-		int tier = Dungeon.hero.tier();
-		if (tier != lastTier) {
-			lastTier = tier;
-			avatar.copy( HeroSprite.avatar( Dungeon.hero.heroClass, tier ) );
-		}
-
-		counter.setSweep((1f - Actor.now()%1f)%1f);
-	}
-
-	public void showStarParticles(){
-		Emitter emitter = (Emitter)recycle( Emitter.class );
-		emitter.revive();
-		emitter.pos( avatar.center() );
-		emitter.burst( Speck.factory( Speck.STAR ), 12 );
-	}
-
+    if (large) exp = new Image(asset, 0, 121, 128, 7);
+    else exp = new Image(asset, 0, 44, 16, 1);
+    add(exp);
+
+    if (large) {
+      expText = new BitmapText(PixelScene.pixelFont);
+      expText.hardlight(0xFFFFAA);
+      expText.alpha(0.6f);
+      add(expText);
+    }
+
+    level = new BitmapText(PixelScene.pixelFont);
+    level.hardlight(0xFFFFAA);
+    add(level);
+
+    buffs = new BuffIndicator(Dungeon.hero, large);
+    add(buffs);
+
+    busy = new BusyIndicator();
+    add(busy);
+
+    counter = new CircleArc(18, 4.25f);
+    counter.color(0x808080, true);
+    counter.show(this, busy.center(), 0f);
+
+    page = new PageIndicator();
+    add(page);
+
+    pageb = new PageIndicatorB();
+    add(pageb);
+
+    mainhand = new MainHandIndicator();
+    add(mainhand);
+
+    bossselect = new BossSelectIndicator();
+    add(bossselect);
+
+    joinxxx = new JoinIndicator();
+    add(joinxxx);
+
+    lanter = new LanterFireCator();
+    add(lanter);
+  }
+
+  @Override
+  protected void layout() {
+
+    height = large ? 39 : 32;
+
+    bg.x = x;
+    bg.y = y;
+    if (large) bg.size(160, bg.height); // HP bars must be 128px wide atm
+    else bg.size(width, bg.height);
+
+    avatar.x = bg.x - avatar.width / 2f + 15;
+    avatar.y = bg.y - avatar.height / 2f + (large ? 15 : 16);
+    PixelScene.align(avatar);
+
+    heroInfo.setRect(x, y + (large ? 0 : 1), 30, large ? 40 : 30);
+
+    compass.x = avatar.x + avatar.width / 2f - compass.origin.x;
+    compass.y = avatar.y + avatar.height / 2f - compass.origin.y;
+    PixelScene.align(compass);
+
+    if (large) {
+      exp.x = x + 30;
+      exp.y = y + 30;
+
+      hp.x = shieldedHP.x = rawShielding.x = x + 30;
+      hp.y = shieldedHP.y = rawShielding.y = y + 19;
+
+      hpText.x = hp.x + (125 - hpText.width()) / 2f;
+      hpText.y = hp.y + 1;
+      PixelScene.align(hpText);
+
+      hg.x = x + 30;
+      hg.y = y + 10;
+
+      hgText.x = x + 80;
+      hgText.y = hg.y;
+      PixelScene.align(hgText);
+
+      expText.x = exp.x + (128 - expText.width()) / 2f;
+      expText.y = exp.y;
+      PixelScene.align(expText);
+
+      heroInfoOnBar.setRect(heroInfo.right(), y + 19, 130, 20);
+
+      if (SPDSettings.FPSLimit()) {
+        fpsText.scale.set(PixelScene.align(0.9f));
+        fpsText.x = MenuPane.version.x - 15;
+        fpsText.y = MenuPane.version.y - 10;
+        PixelScene.align(fpsText);
+      } else {
+        fpsText.visible = false;
+        fpsText.active = false;
+      }
+      //			buffs.setPos( x + 31, y +15 );
+
+      //			//下半段
+      //			puresoul.visible = true;
+      lanter.setPos(0, 500);
+      busy.x = x + bg.width + 1;
+      busy.y = y + bg.height - 9;
+    } else {
+      exp.x = x;
+      exp.y = y;
+
+      //
+      hp.x = shieldedHP.x = rawShielding.x = x + 30;
+      hp.y = shieldedHP.y = rawShielding.y = y + 3;
+
+      hpText.scale.set(PixelScene.align(0.5f));
+      hpText.x = hp.x + 1;
+      hpText.y = hp.y + (hp.height - (hpText.baseLine() + hpText.scale.y)) / 2f;
+      hpText.y -= 0.001f; // prefer to be slightly higher
+      PixelScene.align(hpText);
+
+      hg.x = 30.0f;
+      hg.y = 8.0f;
+
+      hgText.scale.set(PixelScene.align(0.5f));
+      hgText.x = hg.x + 1;
+      hgText.y = hg.y + (hp.height - (hgText.baseLine() + hgText.scale.y)) / 2f;
+      hgText.y -= 0.001f; // prefer to be slightly higher
+      PixelScene.align(hgText);
+
+      //			puresoulText.scale.set(PixelScene.align(0.5f));
+      //			puresoulText.x = 31f;
+      //			puresoulText.y = 13f + (hg.height - (puresoulText.baseLine()+puresoulText.scale.y))/2f;
+      //			puresoulText.y -= 0.001f; //prefer to be slightly higher
+      //			PixelScene.align(puresoulText);
+
+      heroInfoOnBar.setRect(heroInfo.right(), y, 50, 9);
+
+      puresoul.x = 1.0f;
+      puresoul.y = 142.0f;
+      puresoul.visible = false; //
+
+      buffs.setPos(x + 31, y + 12);
+
+      if (SPDSettings.FPSLimit()) {
+        fpsText.scale.set(PixelScene.align(0.9f));
+        fpsText.x = MenuPane.version.x - 15;
+        fpsText.y = MenuPane.version.y - 10;
+        PixelScene.align(fpsText);
+      } else {
+        fpsText.visible = false;
+        fpsText.active = false;
+      }
+
+      busy.x = x + 1;
+      busy.y = y + 33;
+
+      lanter.setPos(0, 500);
+    }
+
+    counter.point(busy.center());
+  }
+
+  private static final int[] warningColors = new int[] {0x660000, 0xCC0000, 0x660000};
+
+  @Override
+  public void update() {
+    super.update();
+
+    int maxHunger = (int) Hunger.STARVING;
+    int maxPureSole = Dungeon.hero.lanterfire;
+    int health = Dungeon.hero.HP;
+    int shield = Dungeon.hero.shielding();
+    int max = Dungeon.hero.HT;
+    int mtPureSole = 100;
+
+    // 检查为光与影使用黑色模块
+    //		int chCount = 0;
+    //		for (int ch : Challenges.MASKS){
+    //			if ((Dungeon.challenges & ch) != 0) chCount++;
+    //		}
+    //
+    //		if(chCount >= 3 && !Dungeon.isChallenged(PRO) && lanterfireactive){
+    //			if (SPDSettings.ClassUI()) {
+    //				bg.texture = TextureCache.get(Assets.Interfaces.STATUSSOUL_DARK);
+    //			} else {
+    //				bg.texture = TextureCache.get(Assets.Interfaces.STATUSSOUL);
+    //			}
+    //		} else
+    if (SPDSettings.ClassUI()) {
+      bg.texture = TextureCache.get(Assets.Interfaces.STATUS_DARK);
+    } else {
+      bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
+    }
+
+    if (ClassPage()) {
+      page.setPos(0, 40);
+      pageb.setPos(0, 500);
+      mainhand.setPos(0, 51);
+      joinxxx.setPos(0, 78);
+      bossselect.setPos(0, 104);
+
+      if (lanterfireactive) {
+        lanter.setPos(0, 500);
+        puresoul.visible = false;
+      }
+
+    } else {
+      page.setPos(0, 500);
+      pageb.setPos(0, 40);
+      mainhand.setPos(0, 500);
+      joinxxx.setPos(0, 500);
+      bossselect.setPos(0, 500);
+
+      // TODO 灯火前行
+      if (lanterfireactive) {
+        lanter.setPos(0, 75);
+        lanter.visible = true;
+        lanter.active = true;
+        puresoul.visible = true;
+        puresoul.x = 1.0f;
+        puresoul.y = 142.0f;
+      }
+    }
+
+    if (Dungeon.hero.isAlive()) {
+      fpsText.text("FPS:" + Gdx.graphics.getFramesPerSecond());
+    }
+
+    if (Gdx.graphics.getFramesPerSecond() >= 90) {
+      fpsText.hardlight(Window.SKYBULE_COLOR);
+    } else if (Gdx.graphics.getFramesPerSecond() >= 60) {
+      fpsText.hardlight(Window.CWHITE);
+    } else if (Gdx.graphics.getFramesPerSecond() >= 30) {
+      fpsText.hardlight(Window.CYELLOW);
+    } else {
+      fpsText.hardlight(Window.RED_COLOR);
+    }
+
+    if (!Dungeon.hero.isAlive()) {
+      avatar.tint(0x000000, 0.5f);
+    } else if ((health / (float) max) < 0.3f) {
+      warning += Game.elapsed * 5f * (0.4f - (health / (float) max));
+      warning %= 1f;
+      avatar.tint(ColorMath.interpolate(warning, warningColors), 0.5f);
+    } else if (talentBlink > 0.33f) { // stops early so it doesn't end in the middle of a blink
+      talentBlink -= Game.elapsed;
+      avatar.tint(1, 1, 0, (float) Math.abs(Math.cos(talentBlink * FLASH_RATE)) / 2f);
+    } else {
+      avatar.resetColor();
+    }
+
+    hp.scale.x = Math.max(0, (health - shield) / (float) max);
+    shieldedHP.scale.x = health / (float) max;
+
+    if (lanterfireactive) {
+      puresoul.scale.y = -Math.max(0, (maxPureSole) / (float) mtPureSole);
+    } else {
+      puresoul.scale.y = -1.0f;
+    }
+
+    if (shield > health) {
+      rawShielding.scale.x = shield / (float) max;
+    } else {
+      rawShielding.scale.x = 0;
+    }
+
+    if (shield <= 0) {
+      hpText.text(health + "/" + max);
+    } else {
+      hpText.text(health + "+" + shield + "/" + max);
+    }
+
+    Hunger hungerBuff = Dungeon.hero.buff(Hunger.class);
+    if (hungerBuff != null) {
+      int hunger = Math.max(0, maxHunger - hungerBuff.hunger());
+      hg.scale.x = (float) hunger / (float) maxHunger;
+      hgText.text(hunger + "/" + maxHunger);
+    } else if (Dungeon.hero.isAlive()) {
+      hg.scale.x = 1.0f;
+    }
+
+    if (large) {
+      exp.scale.x = (128 / exp.width) * Dungeon.hero.exp / Dungeon.hero.maxExp();
+
+      hpText.measure();
+      hpText.x = hp.x + (128 - hpText.width()) / 2f;
+
+      expText.text(Dungeon.hero.exp + "/" + Dungeon.hero.maxExp());
+      expText.measure();
+      expText.x = hp.x + (128 - expText.width()) / 2f;
+
+    } else {
+      exp.scale.x = (width / exp.width) * Dungeon.hero.exp / Dungeon.hero.maxExp();
+    }
+
+    if (Dungeon.hero.lvl != lastLvl) {
+
+      if (lastLvl != -1) {
+        showStarParticles();
+      }
+
+      lastLvl = Dungeon.hero.lvl;
+
+      if (large) {
+        level.text("lv. " + lastLvl);
+        level.measure();
+        level.x = x + (30f - level.width()) / 2f;
+        level.y = y + 33f - level.baseLine() / 2f;
+      } else {
+        level.text(Integer.toString(lastLvl));
+        level.measure();
+        level.x = x + 27.5f - level.width() / 2f;
+        level.y = y + 28.0f - level.baseLine() / 2f;
+      }
+      PixelScene.align(level);
+    }
+
+    int tier = Dungeon.hero.tier();
+    if (tier != lastTier) {
+      lastTier = tier;
+      avatar.copy(HeroSprite.avatar(Dungeon.hero.heroClass, tier));
+    }
+
+    counter.setSweep((1f - Actor.now() % 1f) % 1f);
+  }
+
+  public void showStarParticles() {
+    Emitter emitter = (Emitter) recycle(Emitter.class);
+    emitter.revive();
+    emitter.pos(avatar.center());
+    emitter.burst(Speck.factory(Speck.STAR), 12);
+  }
 }

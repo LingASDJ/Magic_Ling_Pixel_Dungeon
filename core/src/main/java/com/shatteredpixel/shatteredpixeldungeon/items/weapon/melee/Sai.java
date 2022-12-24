@@ -32,52 +32,57 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Random;
 
 public class Sai extends MeleeWeapon {
-	public int R;
-	{
-		image = ItemSpriteSheet.SAI;
-		hitSound = Assets.Sounds.HIT_STAB;
-		hitSoundPitch = 1.3f;
+  public int R;
 
-		tier = 4;
-		DLY = 0.5f; //2x speed
-	}
+  {
+    image = ItemSpriteSheet.SAI;
+    hitSound = Assets.Sounds.HIT_STAB;
+    hitSoundPitch = 1.3f;
 
-	@Override
-	public ItemSprite.Glowing glowing() {
-		return new ItemSprite.Glowing(0x880000, 6f);
-	}
+    tier = 4;
+    DLY = 0.5f; // 2x speed
+  }
 
-	public String statsInfo(){
-		return ("持有这个武器，你在迅猛一击的时候可以吸血!你上次吸血的结果为"+"_"+R+"_"+"点");
-	}
+  @Override
+  public ItemSprite.Glowing glowing() {
+    return new ItemSprite.Glowing(0x880000, 6f);
+  }
 
+  public String statsInfo() {
+    return ("持有这个武器，你在迅猛一击的时候可以吸血!你上次吸血的结果为" + "_" + R + "_" + "点");
+  }
 
-	@Override
-	public int proc(Char attacker, Char defender, int damage ) {
-		switch (Random.Int(7)) {
-			case 0:case 1:case 2:case 3:case 4:
-			default:
-				return super.proc(attacker, defender, damage);
-			case 5:case 6:case 7:
-				//角色最大血量*0.1+武器等级*0.5+1.5
-				//50x0.1+7x0.5+1=10+3.5+1=15
-				if(hero.HP >= hero.HT){
-					GLog.p("血量已满！无法回血");
-				} else {
-					R = (int) (hero.HT * 0.1 + (buffedLvl() * 0.5) + 1.5);
-					hero.HP += hero.HT * 0.1 + (buffedLvl()) + 1.5;
-					hero.sprite.showStatus(CharSprite.POSITIVE, ("+" + R + "HP"));
-					GLog.p("迅猛一击，回血成功！");
-				}
-				return super.proc(attacker, defender, damage);
-		}
-	}
+  @Override
+  public int proc(Char attacker, Char defender, int damage) {
+    switch (Random.Int(7)) {
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+      case 4:
+      default:
+        return super.proc(attacker, defender, damage);
+      case 5:
+      case 6:
+      case 7:
+        // 角色最大血量*0.1+武器等级*0.5+1.5
+        // 50x0.1+7x0.5+1=10+3.5+1=15
+        if (hero.HP >= hero.HT) {
+          GLog.p("血量已满！无法回血");
+        } else {
+          R = (int) (hero.HT * 0.1 + (buffedLvl() * 0.5) + 1.5);
+          hero.HP += hero.HT * 0.1 + (buffedLvl()) + 1.5;
+          hero.sprite.showStatus(CharSprite.POSITIVE, ("+" + R + "HP"));
+          GLog.p("迅猛一击，回血成功！");
+        }
+        return super.proc(attacker, defender, damage);
+    }
+  }
 
-
-	@Override
-	public int max(int lvl) {
-		return  Math.round(1.5f*(tier+1)) +     //10 base, down from 20
-				lvl*Math.round(1.0f*(tier+1));  //+2 per level, down from +4
-	}
-
+  @Override
+  public int max(int lvl) {
+    return Math.round(1.5f * (tier + 1))
+        + // 10 base, down from 20
+        lvl * Math.round(1.0f * (tier + 1)); // +2 per level, down from +4
+  }
 }

@@ -31,448 +31,451 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.GameSettings;
 import com.watabou.utils.Point;
-
 import java.util.Locale;
 
 public class SPDSettings extends GameSettings {
-	
-	//Version info
 
-	public static final String KEY_VERSION      = "version";
+  // Version info
 
-	public static void quickslots( int value ){
-		put( KEY_QUICKSLOTS, value );
-	}
+  public static final String KEY_VERSION = "version";
 
-	public static int quickslots(){
-		return getInt( KEY_QUICKSLOTS, 4, Constants.MIN_QUICKSLOTS, Constants.MAX_QUICKSLOTS);
-	}
+  public static void quickslots(int value) {
+    put(KEY_QUICKSLOTS, value);
+  }
 
-	public static void level3boss( int value ){
-		put( KEY_L3BOSS, value );
-	}
+  public static int quickslots() {
+    return getInt(KEY_QUICKSLOTS, 4, Constants.MIN_QUICKSLOTS, Constants.MAX_QUICKSLOTS);
+  }
 
-	public static int level3boss(){
-		return getInt( KEY_L3BOSS, 1, 1, 3);
-	}
+  public static void level3boss(int value) {
+    put(KEY_L3BOSS, value);
+  }
 
-	public static void FPSLimit(boolean value) {
-		put( KEY_FPS, value );
-	}
+  public static int level3boss() {
+    return getInt(KEY_L3BOSS, 1, 1, 3);
+  }
 
-	public static boolean FPSLimit() {
-		return getBoolean(KEY_FPS, true);
-	}
+  public static void FPSLimit(boolean value) {
+    put(KEY_FPS, value);
+  }
 
-	private static final String DEBUG_REPORT  = "debug_report";
-	public static boolean debugReport() {
-		return getBoolean(DEBUG_REPORT,false);
-	}
-	
-	public static void version( int value)  {
-		put( KEY_VERSION, value );
-	}
-	
-	public static int version() {
-		return getInt( KEY_VERSION, 0 );
-	}
+  public static boolean FPSLimit() {
+    return getBoolean(KEY_FPS, true);
+  }
 
-	//Graphics
+  private static final String DEBUG_REPORT = "debug_report";
 
-	public static String heroName() {
-		return !Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_1) ? "" : GameSettings.getString("name", "", 20);
-	}
+  public static boolean debugReport() {
+    return getBoolean(DEBUG_REPORT, false);
+  }
 
-	public static void heroName(String str) {
-		GameSettings.put("name", str);
-	}
+  public static void version(int value) {
+    put(KEY_VERSION, value);
+  }
 
+  public static int version() {
+    return getInt(KEY_VERSION, 0);
+  }
 
+  // Graphics
 
-	public static final String KEY_FULLSCREEN	= "fullscreen";
-	public static final String KEY_LANDSCAPE	= "landscape";
-	public static final String KEY_POWER_SAVER 	= "power_saver";
-	public static final String KEY_FIRE_BASE    = "fire_base";
-	public static final String KEY_SCALE		= "scale";
-	public static final String KEY_ZOOM			= "zoom";
-	public static final String KEY_BRIGHTNESS	= "brightness";
-	public static final String KEY_GRID 	    = "visual_grid";
-	public static final String KEY_SPLASH_SCREEN= "splash_screen";
+  public static String heroName() {
+    return !Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_1)
+        ? ""
+        : GameSettings.getString("name", "", 20);
+  }
 
-	public static final String BossRush	= "bossrush";
+  public static void heroName(String str) {
+    GameSettings.put("name", str);
+  }
 
-	//瀑布系统
-	public static void splashScreen( int value ) {
-		put( KEY_SPLASH_SCREEN, value );
-	}
+  public static final String KEY_FULLSCREEN = "fullscreen";
+  public static final String KEY_LANDSCAPE = "landscape";
+  public static final String KEY_POWER_SAVER = "power_saver";
+  public static final String KEY_FIRE_BASE = "fire_base";
+  public static final String KEY_SCALE = "scale";
+  public static final String KEY_ZOOM = "zoom";
+  public static final String KEY_BRIGHTNESS = "brightness";
+  public static final String KEY_GRID = "visual_grid";
+  public static final String KEY_SPLASH_SCREEN = "splash_screen";
 
-	public static int splashScreen() {
-		return getInt( KEY_SPLASH_SCREEN, 1 );
-	}
+  public static final String BossRush = "bossrush";
 
-	private static final String KEY_FPS	= "fps";
+  // 瀑布系统
+  public static void splashScreen(int value) {
+    put(KEY_SPLASH_SCREEN, value);
+  }
 
-	private static final String KEY_DARK	= "dark_ui";
-	//暗色系统
-	private static final String KEY_SKIN	= "skin_ui";
+  public static int splashScreen() {
+    return getInt(KEY_SPLASH_SCREEN, 1);
+  }
 
-	private static final String KEY_PAGE	= "page_ui";
+  private static final String KEY_FPS = "fps";
 
-	private static final String HelpSettings	= "helpsettings";
-	
-	public static void fullscreen( boolean value ) {
-		put( KEY_FULLSCREEN, value );
-		
-		ShatteredPixelDungeon.updateSystemUI();
-	}
-	
-	public static boolean fullscreen() {
-		return getBoolean( KEY_FULLSCREEN, DeviceCompat.isDesktop() );
-	}
-	
-	public static void landscape( boolean value ){
-		put( KEY_LANDSCAPE, value );
-		((ShatteredPixelDungeon)ShatteredPixelDungeon.instance).updateDisplaySize();
-	}
-	
-	//can return null because we need to directly handle the case of landscape not being set
-	// as there are different defaults for different devices
-	public static Boolean landscape(){
-		if (contains(KEY_LANDSCAPE)){
-			return getBoolean(KEY_LANDSCAPE, false);
-		} else {
-			return null;
-		}
-	}
-	
-	public static void powerSaver( boolean value ){
-		put( KEY_POWER_SAVER, value );
-		((ShatteredPixelDungeon)ShatteredPixelDungeon.instance).updateDisplaySize();
-	}
-	
-	public static boolean powerSaver(){
-		return getBoolean( KEY_POWER_SAVER, false );
-	}
+  private static final String KEY_DARK = "dark_ui";
+  // 暗色系统
+  private static final String KEY_SKIN = "skin_ui";
 
-	public static void firebase( boolean value ){
-		put( KEY_FIRE_BASE, value );
-		((ShatteredPixelDungeon)ShatteredPixelDungeon.instance).updateDisplaySize();
-	}
+  private static final String KEY_PAGE = "page_ui";
 
-	public static boolean firebase(){
-		return getBoolean( KEY_FIRE_BASE, false );
-	}
-	
-	public static void scale( int value ) {
-		put( KEY_SCALE, value );
-	}
-	
-	public static int scale() {
-		return getInt( KEY_SCALE, 0 );
-	}
-	
-	public static void zoom( int value ) {
-		put( KEY_ZOOM, value );
-	}
-	
-	public static int zoom() {
-		return getInt( KEY_ZOOM, 0 );
-	}
-	
-	public static void brightness( int value ) {
-		put( KEY_BRIGHTNESS, value );
-		GameScene.updateFog();
-	}
-	
-	public static int brightness() {
-		return getInt( KEY_BRIGHTNESS, 0, -1, 1 );
-	}
-	
-	public static void visualGrid( int value ){
-		put( KEY_GRID, value );
-		GameScene.updateMap();
-	}
-	
-	public static int visualGrid() {
-		return getInt( KEY_GRID, 0, -1, 2 );
-	}
-	
-	//Interface
+  private static final String HelpSettings = "helpsettings";
 
-	public static final String KEY_FPSLIMIT	= "fpslimit";
+  public static void fullscreen(boolean value) {
+    put(KEY_FULLSCREEN, value);
 
-	public static final String KEY_UI_SIZE 	    = "full_ui";
-	public static final String KEY_QUICKSLOTS	= "quickslots";
-	public static final String KEY_L3BOSS	= "bossl3";
-	public static final String KEY_FLIPTOOLBAR	= "flipped_ui";
-	public static final String KEY_FLIPTAGS 	= "flip_tags";
-	public static final String KEY_BARMODE		= "toolbar_mode";
+    ShatteredPixelDungeon.updateSystemUI();
+  }
 
-	//0 = mobile, 1 = mixed (large without inventory in main UI), 2 = large
-	public static void interfaceSize( int value ){
-		put( KEY_UI_SIZE, value );
-	}
+  public static boolean fullscreen() {
+    return getBoolean(KEY_FULLSCREEN, DeviceCompat.isDesktop());
+  }
 
-	public static int interfaceSize(){
-		int size = getInt( KEY_UI_SIZE, DeviceCompat.isDesktop() ? 2 : 0 );
-		if (size > 0){
-			//force mobile UI if there is not enough space for full UI
-			float wMin = Game.width / PixelScene.MIN_WIDTH_FULL;
-			float hMin = Game.height / PixelScene.MIN_HEIGHT_FULL;
-			if (Math.min(wMin, hMin) < 2*Game.density){
-				size = 0;
-			}
-		}
-		return size;
-	}
-	
-	public static void flipToolbar( boolean value) {
-		put(KEY_FLIPTOOLBAR, value );
-	}
-	
-	public static boolean flipToolbar(){ return getBoolean(KEY_FLIPTOOLBAR, false); }
-	
-	public static void flipTags( boolean value) {
-		put(KEY_FLIPTAGS, value );
-	}
-	
-	public static boolean flipTags(){ return getBoolean(KEY_FLIPTAGS, false); }
-	
-	public static void toolbarMode( String value ) {
-		put( KEY_BARMODE, value );
-	}
-	
-	public static String toolbarMode() {
-		return getString(KEY_BARMODE, PixelScene.landscape() ? "GROUP" : "SPLIT");
-	}
-	
-	//Game State
-	
-	public static final String KEY_LAST_CLASS	= "last_class";
-	public static final String KEY_CHALLENGES	= "challenges";
+  public static void landscape(boolean value) {
+    put(KEY_LANDSCAPE, value);
+    ((ShatteredPixelDungeon) ShatteredPixelDungeon.instance).updateDisplaySize();
+  }
 
-	public static final String KEY_DLC	= "dlc";
+  // can return null because we need to directly handle the case of landscape not being set
+  // as there are different defaults for different devices
+  public static Boolean landscape() {
+    if (contains(KEY_LANDSCAPE)) {
+      return getBoolean(KEY_LANDSCAPE, false);
+    } else {
+      return null;
+    }
+  }
 
-	public static final String KEY_INTRO		= "intro";
+  public static void powerSaver(boolean value) {
+    put(KEY_POWER_SAVER, value);
+    ((ShatteredPixelDungeon) ShatteredPixelDungeon.instance).updateDisplaySize();
+  }
 
-	public static final String KEY_SUPPORT_NAGGED= "support_nagged";
-	
-	public static void intro( boolean value ) {
-		put( KEY_INTRO, value );
-	}
-	
-	public static boolean intro() {
-		return getBoolean( KEY_INTRO, true );
-	}
-	
-	public static void lastClass( int value ) {
-		put( KEY_LAST_CLASS, value );
-	}
+  public static boolean powerSaver() {
+    return getBoolean(KEY_POWER_SAVER, false);
+  }
 
-	public static void challenges( int value ) {
-		put( KEY_CHALLENGES, value );
-	}
-	
-	public static int challenges() {
-		return getInt( KEY_CHALLENGES, 0, 0, Challenges.MAX_VALUE );
-	}
+  public static void firebase(boolean value) {
+    put(KEY_FIRE_BASE, value);
+    ((ShatteredPixelDungeon) ShatteredPixelDungeon.instance).updateDisplaySize();
+  }
 
-	public static void dlc( int value ) {
-		put( KEY_DLC, value );
-	}
+  public static boolean firebase() {
+    return getBoolean(KEY_FIRE_BASE, false);
+  }
 
-	public static int dlc() {
-		return getInt( KEY_DLC, 0, 0, Challenges.MAX_VALUE );
-	}
+  public static void scale(int value) {
+    put(KEY_SCALE, value);
+  }
 
-	public static void supportNagged( boolean value ) {
-		put( KEY_SUPPORT_NAGGED, value );
-	}
+  public static int scale() {
+    return getInt(KEY_SCALE, 0);
+  }
 
-	public static boolean supportNagged() {
-		return getBoolean(KEY_SUPPORT_NAGGED, false);
-	}
-	
-	//Audio
-	
-	public static final String KEY_MUSIC		= "music";
-	public static final String KEY_MUSIC_VOL    = "music_vol";
-	public static final String KEY_SOUND_FX		= "soundfx";
-	public static final String KEY_SFX_VOL      = "sfx_vol";
-	public static final String KEY_IGNORE_SILENT= "ignore_silent";
-	
-	public static void music( boolean value ) {
-		Music.INSTANCE.enable( value );
-		put( KEY_MUSIC, value );
-	}
-	
-	public static boolean music() {
-		return getBoolean( KEY_MUSIC, true );
-	}
-	
-	public static void musicVol( int value ){
-		Music.INSTANCE.volume(value*value/100f);
-		put( KEY_MUSIC_VOL, value );
-	}
-	
-	public static int musicVol(){
-		return getInt( KEY_MUSIC_VOL, 10, 0, 10 );
-	}
-	
-	public static void soundFx( boolean value ) {
-		Sample.INSTANCE.enable( value );
-		put( KEY_SOUND_FX, value );
-	}
-	
-	public static boolean soundFx() {
-		return getBoolean( KEY_SOUND_FX, true );
-	}
-	
-	public static void SFXVol( int value ) {
-		Sample.INSTANCE.volume(value*value/100f);
-		put( KEY_SFX_VOL, value );
-	}
-	
-	public static int SFXVol() {
-		return getInt( KEY_SFX_VOL, 10, 0, 10 );
-	}
+  public static void zoom(int value) {
+    put(KEY_ZOOM, value);
+  }
 
-	public static void ignoreSilentMode( boolean value ){
-		put( KEY_IGNORE_SILENT, value);
-		Game.platform.setHonorSilentSwitch(!value);
-	}
+  public static int zoom() {
+    return getInt(KEY_ZOOM, 0);
+  }
 
-	public static boolean ignoreSilentMode(){
-		return getBoolean( KEY_IGNORE_SILENT, false);
-	}
-	
-	//Languages and Font
-	
-	public static final String KEY_LANG         = "language";
-	public static final String KEY_SYSTEMFONT	= "system_font";
-	
-	public static void language(Languages lang) {
-		put( KEY_LANG, lang.code());
-	}
-	
-	public static Languages language() {
-		String code = getString(KEY_LANG, null);
-		if (code == null){
-			return Languages.matchLocale(Locale.getDefault());
-		} else {
-			return Languages.matchCode(code);
-		}
-	}
-	
-	public static void systemFont(boolean value){
-		put(KEY_SYSTEMFONT, value);
-	}
-	
-	public static boolean systemFont(){
-		return getBoolean(KEY_SYSTEMFONT,
-				(language() == Languages.CHINESE || language() == Languages.JAPANESE));
-	}
+  public static void brightness(int value) {
+    put(KEY_BRIGHTNESS, value);
+    GameScene.updateFog();
+  }
 
-	//Connectivity
+  public static int brightness() {
+    return getInt(KEY_BRIGHTNESS, 0, -1, 1);
+  }
 
-	public static final String KEY_NEWS     = "news";
-	public static final String KEY_UPDATES	= "updates";
-	public static final String KEY_BETAS	= "betas";
-	public static final String KEY_WIFI     = "wifi";
+  public static void visualGrid(int value) {
+    put(KEY_GRID, value);
+    GameScene.updateMap();
+  }
 
-	public static final String KEY_NEWS_LAST_READ = "news_last_read";
+  public static int visualGrid() {
+    return getInt(KEY_GRID, 0, -1, 2);
+  }
 
-	public static void news(boolean value){
-		put(KEY_NEWS, value);
-	}
+  // Interface
 
-	public static boolean news(){
-		return getBoolean(KEY_NEWS, true);
-	}
+  public static final String KEY_FPSLIMIT = "fpslimit";
 
-	public static void updates(boolean value){
-		put(KEY_UPDATES, value);
-	}
+  public static final String KEY_UI_SIZE = "full_ui";
+  public static final String KEY_QUICKSLOTS = "quickslots";
+  public static final String KEY_L3BOSS = "bossl3";
+  public static final String KEY_FLIPTOOLBAR = "flipped_ui";
+  public static final String KEY_FLIPTAGS = "flip_tags";
+  public static final String KEY_BARMODE = "toolbar_mode";
 
-	public static boolean updates(){
-		return getBoolean(KEY_UPDATES, true);
-	}
+  // 0 = mobile, 1 = mixed (large without inventory in main UI), 2 = large
+  public static void interfaceSize(int value) {
+    put(KEY_UI_SIZE, value);
+  }
 
-	public static void betas(boolean value){
-		put(KEY_BETAS, value);
-	}
+  public static int interfaceSize() {
+    int size = getInt(KEY_UI_SIZE, DeviceCompat.isDesktop() ? 2 : 0);
+    if (size > 0) {
+      // force mobile UI if there is not enough space for full UI
+      float wMin = Game.width / PixelScene.MIN_WIDTH_FULL;
+      float hMin = Game.height / PixelScene.MIN_HEIGHT_FULL;
+      if (Math.min(wMin, hMin) < 2 * Game.density) {
+        size = 0;
+      }
+    }
+    return size;
+  }
 
-	public static boolean betas(){
-		return getBoolean(KEY_BETAS, Game.version.contains("BETA") || Game.version.contains("RC"));
-	}
+  public static void flipToolbar(boolean value) {
+    put(KEY_FLIPTOOLBAR, value);
+  }
 
-	public static void WiFi(boolean value){
-		put(KEY_WIFI, value);
-	}
+  public static boolean flipToolbar() {
+    return getBoolean(KEY_FLIPTOOLBAR, false);
+  }
 
-	public static boolean WiFi(){
-		return getBoolean(KEY_WIFI, true);
-	}
+  public static void flipTags(boolean value) {
+    put(KEY_FLIPTAGS, value);
+  }
 
-	public static void newsLastRead(long lastRead){
-		put(KEY_NEWS_LAST_READ, lastRead);
-	}
+  public static boolean flipTags() {
+    return getBoolean(KEY_FLIPTAGS, false);
+  }
 
-	public static long newsLastRead(){
-		return getLong(KEY_NEWS_LAST_READ, 0);
-	}
-	
-	//Window management (desktop only atm)
-	
-	public static final String KEY_WINDOW_WIDTH     = "window_width";
-	public static final String KEY_WINDOW_HEIGHT    = "window_height";
-	public static final String KEY_WINDOW_MAXIMIZED = "window_maximized";
-	
-	public static void windowResolution( Point p ){
-		put(KEY_WINDOW_WIDTH, p.x);
-		put(KEY_WINDOW_HEIGHT, p.y);
-	}
-	
-	public static Point windowResolution(){
-		return new Point(
-				getInt( KEY_WINDOW_WIDTH, 800, 720, Integer.MAX_VALUE ),
-				getInt( KEY_WINDOW_HEIGHT, 600, 400, Integer.MAX_VALUE )
-		);
-	}
-	
-	public static void windowMaximized( boolean value ){
-		put( KEY_WINDOW_MAXIMIZED, value );
-	}
-	
-	public static boolean windowMaximized(){
-		return getBoolean( KEY_WINDOW_MAXIMIZED, false );
-	}
+  public static void toolbarMode(String value) {
+    put(KEY_BARMODE, value);
+  }
 
-	public static void ClassUI(boolean value) {
-		put( KEY_DARK, value );
-	}
+  public static String toolbarMode() {
+    return getString(KEY_BARMODE, PixelScene.landscape() ? "GROUP" : "SPLIT");
+  }
 
-	public static boolean ClassUI() {
-		return getBoolean(KEY_DARK, false);
-	}
+  // Game State
 
-	public static void HelpSettings(boolean value) {
-		put( HelpSettings, value );
-	}
+  public static final String KEY_LAST_CLASS = "last_class";
+  public static final String KEY_CHALLENGES = "challenges";
 
-	public static boolean HelpSettings() {
-		return getBoolean(HelpSettings, false);
-	}
+  public static final String KEY_DLC = "dlc";
 
-	public static boolean ClassSkin() {
-		return getBoolean(KEY_SKIN, false);
-	}
+  public static final String KEY_INTRO = "intro";
 
-	public static boolean ClassPage() {
-		return getBoolean(KEY_PAGE, false);
-	}
+  public static final String KEY_SUPPORT_NAGGED = "support_nagged";
 
-	public static void ClassPage(boolean value) {
-		put( KEY_PAGE, value );
-	}
+  public static void intro(boolean value) {
+    put(KEY_INTRO, value);
+  }
+
+  public static boolean intro() {
+    return getBoolean(KEY_INTRO, true);
+  }
+
+  public static void lastClass(int value) {
+    put(KEY_LAST_CLASS, value);
+  }
+
+  public static void challenges(int value) {
+    put(KEY_CHALLENGES, value);
+  }
+
+  public static int challenges() {
+    return getInt(KEY_CHALLENGES, 0, 0, Challenges.MAX_VALUE);
+  }
+
+  public static void dlc(int value) {
+    put(KEY_DLC, value);
+  }
+
+  public static int dlc() {
+    return getInt(KEY_DLC, 0, 0, Challenges.MAX_VALUE);
+  }
+
+  public static void supportNagged(boolean value) {
+    put(KEY_SUPPORT_NAGGED, value);
+  }
+
+  public static boolean supportNagged() {
+    return getBoolean(KEY_SUPPORT_NAGGED, false);
+  }
+
+  // Audio
+
+  public static final String KEY_MUSIC = "music";
+  public static final String KEY_MUSIC_VOL = "music_vol";
+  public static final String KEY_SOUND_FX = "soundfx";
+  public static final String KEY_SFX_VOL = "sfx_vol";
+  public static final String KEY_IGNORE_SILENT = "ignore_silent";
+
+  public static void music(boolean value) {
+    Music.INSTANCE.enable(value);
+    put(KEY_MUSIC, value);
+  }
+
+  public static boolean music() {
+    return getBoolean(KEY_MUSIC, true);
+  }
+
+  public static void musicVol(int value) {
+    Music.INSTANCE.volume(value * value / 100f);
+    put(KEY_MUSIC_VOL, value);
+  }
+
+  public static int musicVol() {
+    return getInt(KEY_MUSIC_VOL, 10, 0, 10);
+  }
+
+  public static void soundFx(boolean value) {
+    Sample.INSTANCE.enable(value);
+    put(KEY_SOUND_FX, value);
+  }
+
+  public static boolean soundFx() {
+    return getBoolean(KEY_SOUND_FX, true);
+  }
+
+  public static void SFXVol(int value) {
+    Sample.INSTANCE.volume(value * value / 100f);
+    put(KEY_SFX_VOL, value);
+  }
+
+  public static int SFXVol() {
+    return getInt(KEY_SFX_VOL, 10, 0, 10);
+  }
+
+  public static void ignoreSilentMode(boolean value) {
+    put(KEY_IGNORE_SILENT, value);
+    Game.platform.setHonorSilentSwitch(!value);
+  }
+
+  public static boolean ignoreSilentMode() {
+    return getBoolean(KEY_IGNORE_SILENT, false);
+  }
+
+  // Languages and Font
+
+  public static final String KEY_LANG = "language";
+  public static final String KEY_SYSTEMFONT = "system_font";
+
+  public static void language(Languages lang) {
+    put(KEY_LANG, lang.code());
+  }
+
+  public static Languages language() {
+    String code = getString(KEY_LANG, null);
+    if (code == null) {
+      return Languages.matchLocale(Locale.getDefault());
+    } else {
+      return Languages.matchCode(code);
+    }
+  }
+
+  public static void systemFont(boolean value) {
+    put(KEY_SYSTEMFONT, value);
+  }
+
+  public static boolean systemFont() {
+    return getBoolean(
+        KEY_SYSTEMFONT, (language() == Languages.CHINESE || language() == Languages.JAPANESE));
+  }
+
+  // Connectivity
+
+  public static final String KEY_NEWS = "news";
+  public static final String KEY_UPDATES = "updates";
+  public static final String KEY_BETAS = "betas";
+  public static final String KEY_WIFI = "wifi";
+
+  public static final String KEY_NEWS_LAST_READ = "news_last_read";
+
+  public static void news(boolean value) {
+    put(KEY_NEWS, value);
+  }
+
+  public static boolean news() {
+    return getBoolean(KEY_NEWS, true);
+  }
+
+  public static void updates(boolean value) {
+    put(KEY_UPDATES, value);
+  }
+
+  public static boolean updates() {
+    return getBoolean(KEY_UPDATES, true);
+  }
+
+  public static void betas(boolean value) {
+    put(KEY_BETAS, value);
+  }
+
+  public static boolean betas() {
+    return getBoolean(KEY_BETAS, Game.version.contains("BETA") || Game.version.contains("RC"));
+  }
+
+  public static void WiFi(boolean value) {
+    put(KEY_WIFI, value);
+  }
+
+  public static boolean WiFi() {
+    return getBoolean(KEY_WIFI, true);
+  }
+
+  public static void newsLastRead(long lastRead) {
+    put(KEY_NEWS_LAST_READ, lastRead);
+  }
+
+  public static long newsLastRead() {
+    return getLong(KEY_NEWS_LAST_READ, 0);
+  }
+
+  // Window management (desktop only atm)
+
+  public static final String KEY_WINDOW_WIDTH = "window_width";
+  public static final String KEY_WINDOW_HEIGHT = "window_height";
+  public static final String KEY_WINDOW_MAXIMIZED = "window_maximized";
+
+  public static void windowResolution(Point p) {
+    put(KEY_WINDOW_WIDTH, p.x);
+    put(KEY_WINDOW_HEIGHT, p.y);
+  }
+
+  public static Point windowResolution() {
+    return new Point(
+        getInt(KEY_WINDOW_WIDTH, 800, 720, Integer.MAX_VALUE),
+        getInt(KEY_WINDOW_HEIGHT, 600, 400, Integer.MAX_VALUE));
+  }
+
+  public static void windowMaximized(boolean value) {
+    put(KEY_WINDOW_MAXIMIZED, value);
+  }
+
+  public static boolean windowMaximized() {
+    return getBoolean(KEY_WINDOW_MAXIMIZED, false);
+  }
+
+  public static void ClassUI(boolean value) {
+    put(KEY_DARK, value);
+  }
+
+  public static boolean ClassUI() {
+    return getBoolean(KEY_DARK, false);
+  }
+
+  public static void HelpSettings(boolean value) {
+    put(HelpSettings, value);
+  }
+
+  public static boolean HelpSettings() {
+    return getBoolean(HelpSettings, false);
+  }
+
+  public static boolean ClassSkin() {
+    return getBoolean(KEY_SKIN, false);
+  }
+
+  public static boolean ClassPage() {
+    return getBoolean(KEY_PAGE, false);
+  }
+
+  public static void ClassPage(boolean value) {
+    put(KEY_PAGE, value);
+  }
 }

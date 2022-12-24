@@ -23,39 +23,38 @@ import com.watabou.utils.Random;
 
 public class Cake extends Food {
 
-    {
-        image = ItemSpriteSheet.CAKE;
-        energy = Hunger.HUNGRY-50f;
-    }
+  {
+    image = ItemSpriteSheet.CAKE;
+    energy = Hunger.HUNGRY - 50f;
+  }
 
-    public static void cure( Char ch ) {
-        Buff.detach( ch, Poison.class );
-        Buff.detach( ch, Cripple.class );
-        Buff.detach( ch, Weakness.class );
-        Buff.detach( ch, Vulnerable.class );
-        Buff.detach( ch, Bleeding.class );
-        Buff.detach( ch, Blindness.class );
-        Buff.detach( ch, Drowsy.class );
-        Buff.detach( ch, Slow.class );
-        Buff.detach( ch, Vertigo.class);
-    }
+  public static void cure(Char ch) {
+    Buff.detach(ch, Poison.class);
+    Buff.detach(ch, Cripple.class);
+    Buff.detach(ch, Weakness.class);
+    Buff.detach(ch, Vulnerable.class);
+    Buff.detach(ch, Bleeding.class);
+    Buff.detach(ch, Blindness.class);
+    Buff.detach(ch, Drowsy.class);
+    Buff.detach(ch, Slow.class);
+    Buff.detach(ch, Vertigo.class);
+  }
 
-    @Override
-    protected void satisfy(Hero hero) {
-        Buff.prolong( hero, Haste.class, 10f);
-        if(Random.Float()<0.45f) {
-            hero.STR++;
-            hero.sprite.showStatus(CharSprite.POSITIVE, "+1");
-            GLog.p(Messages.get(this, "eat_good"));
-        }
-        Buff.affect(hero, Healing.class).setHeal((int) (0.4f * hero.HT/5), 0.25f, 0);
-        cure( hero );
-        super.satisfy( hero );
+  @Override
+  protected void satisfy(Hero hero) {
+    Buff.prolong(hero, Haste.class, 10f);
+    if (Random.Float() < 0.45f) {
+      hero.STR++;
+      hero.sprite.showStatus(CharSprite.POSITIVE, "+1");
+      GLog.p(Messages.get(this, "eat_good"));
     }
+    Buff.affect(hero, Healing.class).setHeal((int) (0.4f * hero.HT / 5), 0.25f, 0);
+    cure(hero);
+    super.satisfy(hero);
+  }
 
-    @Override
-    public int value() {
-        return 50 * quantity;
-    }
-
+  @Override
+  public int value() {
+    return 50 * quantity;
+  }
 }

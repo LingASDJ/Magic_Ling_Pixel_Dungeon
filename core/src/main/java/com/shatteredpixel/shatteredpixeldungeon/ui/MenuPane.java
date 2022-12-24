@@ -50,369 +50,384 @@ import com.watabou.noosa.ui.Component;
 
 public class MenuPane extends Component {
 
-	private Image bg;
-
-	private Image depthIcon;
-	private BitmapText depthText;
-	private Button depthButton;
-
-	private Image challengeIcon;
-	private BitmapText challengeText;
-	private Button challengeButton;
-
-	private JournalButton btnJournal;
-	private MenuButton btnMenu;
-
-	private Toolbar.PickedUpItem pickedUp;
-
-	public static BitmapText version;
-
-	private DangerIndicator danger;
-
-	public static final int WIDTH = 32;
-
-	@Override
-	protected void createChildren() {
-		super.createChildren();
-
-		bg = new Image(Assets.Interfaces.MENU);
-		add(bg);
-
-		depthIcon = Icons.get(Dungeon.level.feeling);
-		add(depthIcon);
-
-		if(Dungeon.depth < 0){
-			depthText = new BitmapText( "S", PixelScene.pixelFont);
-		} else {
-			depthText = new BitmapText(Integer.toString(Dungeon.depth), PixelScene.pixelFont);
-		}
-		depthText.hardlight( 0xCACFC2 );
-		depthText.measure();
-		add(depthText);
-
-		depthButton = new Button(){
-			@Override
-			protected String hoverText() {
-				switch (Dungeon.level.feeling) {
-					case CHASM:     return Messages.get(GameScene.class, "chasm");
-					case WATER:     return Messages.get(GameScene.class, "water");
-					case GRASS:     return Messages.get(GameScene.class, "grass");
-					case DARK:      return Messages.get(GameScene.class, "dark");
-					case LARGE:     return Messages.get(GameScene.class, "large");
-					case TRAPS:     return Messages.get(GameScene.class, "traps");
-					case SECRETS:   return Messages.get(GameScene.class, "secrets");
-				}
-				return null;
-			}
-
-			@Override
-			protected void onClick() {
-				super.onClick();
-				//just open journal for now, maybe have it open landmarks after expanding that page?
-				GameScene.show( new WndJournal() );
-			}
-		};
-		add(depthButton);
-
-		if (Challenges.activeChallenges() > 0){
-			challengeIcon = Icons.get(Icons.CHAL_COUNT);
-			add(challengeIcon);
-
-			challengeText = new BitmapText( Integer.toString( Challenges.activeChallenges() ), PixelScene.pixelFont)			{
-				private float time;
-				@Override
-				public void update() {
-					super.update();
-					am = 1f + 0.01f*Math.max(0f, (float)Math.sin( time += Game.elapsed/1 ));
-					time += Game.elapsed / 3.5f;
-					float r = 0.33f+0.57f*Math.max(0f, (float)Math.sin( time));
-					float g = 0.53f+0.57f*Math.max(0f, (float)Math.sin( time + 2*Math.PI/3 ));
-					float b = 0.63f+0.57f*Math.max(0f, (float)Math.sin( time + 4*Math.PI/3 ));
-					if (Challenges.activeChallenges() >= 12) {
-						challengeText.hardlight(r,g,b);
-						if (time >= 2f * Math.PI) time = 0;
-					} else if (Challenges.activeChallenges() > 9) {
-						challengeText.hardlight(RED_COLOR);
-					} else if (Challenges.activeChallenges() > 6 && Challenges.activeChallenges() < 9){
-						challengeText.hardlight(CYELLOW);
-					} else {
-						challengeText.hardlight(GREEN_COLOR);
-					}
-				}
-
-				@Override
-				public void draw() {
-					Blending.setLightMode();
-					super.draw();
-					Blending.setNormalMode();
-				}
-			};
-			challengeText.measure();
-			challengeText.alpha(1f);
-			add( challengeText );
-
-			challengeButton = new Button(){
-				@Override
-				protected void onClick() {
-					GameScene.show(new WndChallenges(Dungeon.challenges, false));
-				}
-
-				@Override
-				protected String hoverText() {
-					return Messages.get(WndChallenges.class, "title");
-				}
-			};
-			add(challengeButton);
-		}
-
-		btnJournal = new JournalButton();
-		add( btnJournal );
-
-		btnMenu = new MenuButton();
-		add( btnMenu );
-
-		version = new BitmapText( "v" + Game.version, PixelScene.pixelFont);
-		version.alpha( 0.5f );
-		add(version);
-
-		danger = new DangerIndicator();
-		add( danger );
-
-		add( pickedUp = new Toolbar.PickedUpItem());
-	}
-
-	@Override
-	protected void layout() {
-		super.layout();
-
-		bg.x = x;
-		bg.y = y;
-
-		btnMenu.setPos( x + WIDTH - btnMenu.width(), y );
-
-		btnJournal.setPos( btnMenu.left() - btnJournal.width() + 2, y );
-
-		depthIcon.x = btnJournal.left() - 7 + (7 - depthIcon.width())/2f - 0.1f;
-		depthIcon.y = y + 1;
-		if (SPDSettings.interfaceSize() == 0) depthIcon.y++;
-		PixelScene.align(depthIcon);
-
-		depthText.scale.set(PixelScene.align(0.67f));
-		depthText.x = depthIcon.x + (depthIcon.width() - depthText.width())/2f;
-		depthText.y = depthIcon.y + depthIcon.height();
-		PixelScene.align(depthText);
-
-		depthButton.setRect(depthIcon.x, depthIcon.y, depthIcon.width(), depthIcon.height() + depthText.height());
-
-		if (challengeIcon != null){
-			challengeIcon.x = btnJournal.left() - 14 + (7 - challengeIcon.width())/2f - 0.1f;
-			challengeIcon.y = y + 1;
-			if (SPDSettings.interfaceSize() == 0) challengeIcon.y++;
-			PixelScene.align(challengeIcon);
-
-			challengeText.scale.set(PixelScene.align(0.67f));
-			challengeText.x = challengeIcon.x + (challengeIcon.width() - challengeText.width())/2f;
-			challengeText.y = challengeIcon.y + challengeIcon.height();
-			PixelScene.align(challengeText);
-
-			challengeButton.setRect(challengeIcon.x, challengeIcon.y, challengeIcon.width(), challengeIcon.height() + challengeText.height());
-		}
-
-		version.scale.set(PixelScene.align(0.5f));
-		version.measure();
-		version.x = x + WIDTH - version.width();
-		version.y = y + bg.height() + (3 - version.baseLine());
-		PixelScene.align(version);
-
-		danger.setPos( x + WIDTH - danger.width(), y + bg.height + 3 );
-	}
-
-	public void pickup(Item item, int cell) {
-		pickedUp.reset( item,
-				cell,
-				btnJournal.centerX(),
-				btnJournal.centerY());
-	}
-
-	public void flashForPage( String page ){
-		btnJournal.flashingPage = page;
-	}
-
-	public void updateKeys(){
-		btnJournal.updateKeyDisplay();
-	}
-
-	private static class JournalButton extends Button {
-
-		private Image bg;
-		private Image journalIcon;
-		private KeyDisplay keyIcon;
-
-		private String flashingPage = null;
-
-		public JournalButton() {
-			super();
-
-			width = bg.width + 4;
-			height = bg.height + 4;
-		}
-
-		@Override
-		public GameAction keyAction() {
-			return SPDAction.JOURNAL;
-		}
-
-		@Override
-		protected void createChildren() {
-			super.createChildren();
-
-			bg = new Image( Assets.Interfaces.MENU_BTN, 2, 2, 13, 11 );
-			add( bg );
-
-			journalIcon = new Image( Assets.Interfaces.MENU_BTN, 31, 0, 11, 7);
-			add( journalIcon );
-
-			keyIcon = new KeyDisplay();
-			add(keyIcon);
-			updateKeyDisplay();
-		}
-
-		@Override
-		protected void layout() {
-			super.layout();
-
-			bg.x = x + 2;
-			bg.y = y + 2;
-
-			journalIcon.x = bg.x + (bg.width() - journalIcon.width())/2f;
-			journalIcon.y = bg.y + (bg.height() - journalIcon.height())/2f;
-			PixelScene.align(journalIcon);
-
-			keyIcon.x = bg.x + 1;
-			keyIcon.y = bg.y + 1;
-			keyIcon.width = bg.width - 2;
-			keyIcon.height = bg.height - 2;
-			PixelScene.align(keyIcon);
-		}
-
-		private float time;
-
-		@Override
-		public void update() {
-			super.update();
-
-			if (flashingPage != null){
-				journalIcon.am = (float)Math.abs(Math.cos( StatusPane.FLASH_RATE * (time += Game.elapsed) ));
-				keyIcon.am = journalIcon.am;
-				bg.brightness(0.5f + journalIcon.am);
-				if (time >= Math.PI/StatusPane.FLASH_RATE) {
-					time = 0;
-				}
-			}
-		}
-
-		public void updateKeyDisplay() {
-			keyIcon.updateKeys();
-			keyIcon.visible = keyIcon.keyCount() > 0;
-			journalIcon.visible = !keyIcon.visible;
-			if (keyIcon.keyCount() > 0) {
-				bg.brightness(.8f - (Math.min(6, keyIcon.keyCount()) / 20f));
-			} else {
-				bg.resetColor();
-			}
-		}
-
-		@Override
-		protected void onPointerDown() {
-			bg.brightness( 1.5f );
-			Sample.INSTANCE.play( Assets.Sounds.CLICK );
-		}
-
-		@Override
-		protected void onPointerUp() {
-			if (keyIcon.keyCount() > 0) {
-				bg.brightness(.8f - (Math.min(6, keyIcon.keyCount()) / 20f));
-			} else {
-				bg.resetColor();
-			}
-		}
-
-		@Override
-		protected void onClick() {
-			time = 0;
-			keyIcon.am = journalIcon.am = 1;
-			if (flashingPage != null){
-				if (Document.ADVENTURERS_GUIDE.pageNames().contains(flashingPage)){
-					GameScene.show( new WndStory( WndJournal.GuideTab.iconForPage(flashingPage),
-							Document.ADVENTURERS_GUIDE.pageTitle(flashingPage),
-							Document.ADVENTURERS_GUIDE.pageBody(flashingPage) ));
-					Document.ADVENTURERS_GUIDE.readPage(flashingPage);
-				} else {
-					GameScene.show( new WndJournal() );
-				}
-				flashingPage = null;
-			} else {
-				GameScene.show( new WndJournal() );
-			}
-		}
-
-		@Override
-		protected String hoverText() {
-			return Messages.titleCase(Messages.get(WndKeyBindings.class, "journal"));
-		}
-	}
-
-	private static class MenuButton extends Button {
-
-		private Image image;
-
-		public MenuButton() {
-			super();
-
-			width = image.width + 4;
-			height = image.height + 4;
-		}
-
-		@Override
-		protected void createChildren() {
-			super.createChildren();
-
-			image = new Image( Assets.Interfaces.MENU_BTN, 17, 2, 12, 11 );
-			add( image );
-		}
-
-		@Override
-		protected void layout() {
-			super.layout();
-
-			image.x = x + 2;
-			image.y = y + 2;
-		}
-
-		@Override
-		protected void onPointerDown() {
-			image.brightness( 1.5f );
-			Sample.INSTANCE.play( Assets.Sounds.CLICK );
-		}
-
-		@Override
-		protected void onPointerUp() {
-			image.resetColor();
-		}
-
-		@Override
-		protected void onClick() {
-			GameScene.show( new WndGame() );
-		}
-
-		@Override
-		public GameAction keyAction() {
-			return GameAction.BACK;
-		}
-
-		@Override
-		protected String hoverText() {
-			return Messages.titleCase(Messages.get(WndKeyBindings.class, "menu"));
-		}
-	}
+  private Image bg;
+
+  private Image depthIcon;
+  private BitmapText depthText;
+  private Button depthButton;
+
+  private Image challengeIcon;
+  private BitmapText challengeText;
+  private Button challengeButton;
+
+  private JournalButton btnJournal;
+  private MenuButton btnMenu;
+
+  private Toolbar.PickedUpItem pickedUp;
+
+  public static BitmapText version;
+
+  private DangerIndicator danger;
+
+  public static final int WIDTH = 32;
+
+  @Override
+  protected void createChildren() {
+    super.createChildren();
+
+    bg = new Image(Assets.Interfaces.MENU);
+    add(bg);
+
+    depthIcon = Icons.get(Dungeon.level.feeling);
+    add(depthIcon);
+
+    if (Dungeon.depth < 0) {
+      depthText = new BitmapText("S", PixelScene.pixelFont);
+    } else {
+      depthText = new BitmapText(Integer.toString(Dungeon.depth), PixelScene.pixelFont);
+    }
+    depthText.hardlight(0xCACFC2);
+    depthText.measure();
+    add(depthText);
+
+    depthButton =
+        new Button() {
+          @Override
+          protected String hoverText() {
+            switch (Dungeon.level.feeling) {
+              case CHASM:
+                return Messages.get(GameScene.class, "chasm");
+              case WATER:
+                return Messages.get(GameScene.class, "water");
+              case GRASS:
+                return Messages.get(GameScene.class, "grass");
+              case DARK:
+                return Messages.get(GameScene.class, "dark");
+              case LARGE:
+                return Messages.get(GameScene.class, "large");
+              case TRAPS:
+                return Messages.get(GameScene.class, "traps");
+              case SECRETS:
+                return Messages.get(GameScene.class, "secrets");
+            }
+            return null;
+          }
+
+          @Override
+          protected void onClick() {
+            super.onClick();
+            // just open journal for now, maybe have it open landmarks after expanding that page?
+            GameScene.show(new WndJournal());
+          }
+        };
+    add(depthButton);
+
+    if (Challenges.activeChallenges() > 0) {
+      challengeIcon = Icons.get(Icons.CHAL_COUNT);
+      add(challengeIcon);
+
+      challengeText =
+          new BitmapText(Integer.toString(Challenges.activeChallenges()), PixelScene.pixelFont) {
+            private float time;
+
+            @Override
+            public void update() {
+              super.update();
+              am = 1f + 0.01f * Math.max(0f, (float) Math.sin(time += Game.elapsed / 1));
+              time += Game.elapsed / 3.5f;
+              float r = 0.33f + 0.57f * Math.max(0f, (float) Math.sin(time));
+              float g = 0.53f + 0.57f * Math.max(0f, (float) Math.sin(time + 2 * Math.PI / 3));
+              float b = 0.63f + 0.57f * Math.max(0f, (float) Math.sin(time + 4 * Math.PI / 3));
+              if (Challenges.activeChallenges() >= 12) {
+                challengeText.hardlight(r, g, b);
+                if (time >= 2f * Math.PI) time = 0;
+              } else if (Challenges.activeChallenges() > 9) {
+                challengeText.hardlight(RED_COLOR);
+              } else if (Challenges.activeChallenges() > 6 && Challenges.activeChallenges() < 9) {
+                challengeText.hardlight(CYELLOW);
+              } else {
+                challengeText.hardlight(GREEN_COLOR);
+              }
+            }
+
+            @Override
+            public void draw() {
+              Blending.setLightMode();
+              super.draw();
+              Blending.setNormalMode();
+            }
+          };
+      challengeText.measure();
+      challengeText.alpha(1f);
+      add(challengeText);
+
+      challengeButton =
+          new Button() {
+            @Override
+            protected void onClick() {
+              GameScene.show(new WndChallenges(Dungeon.challenges, false));
+            }
+
+            @Override
+            protected String hoverText() {
+              return Messages.get(WndChallenges.class, "title");
+            }
+          };
+      add(challengeButton);
+    }
+
+    btnJournal = new JournalButton();
+    add(btnJournal);
+
+    btnMenu = new MenuButton();
+    add(btnMenu);
+
+    version = new BitmapText("v" + Game.version, PixelScene.pixelFont);
+    version.alpha(0.5f);
+    add(version);
+
+    danger = new DangerIndicator();
+    add(danger);
+
+    add(pickedUp = new Toolbar.PickedUpItem());
+  }
+
+  @Override
+  protected void layout() {
+    super.layout();
+
+    bg.x = x;
+    bg.y = y;
+
+    btnMenu.setPos(x + WIDTH - btnMenu.width(), y);
+
+    btnJournal.setPos(btnMenu.left() - btnJournal.width() + 2, y);
+
+    depthIcon.x = btnJournal.left() - 7 + (7 - depthIcon.width()) / 2f - 0.1f;
+    depthIcon.y = y + 1;
+    if (SPDSettings.interfaceSize() == 0) depthIcon.y++;
+    PixelScene.align(depthIcon);
+
+    depthText.scale.set(PixelScene.align(0.67f));
+    depthText.x = depthIcon.x + (depthIcon.width() - depthText.width()) / 2f;
+    depthText.y = depthIcon.y + depthIcon.height();
+    PixelScene.align(depthText);
+
+    depthButton.setRect(
+        depthIcon.x, depthIcon.y, depthIcon.width(), depthIcon.height() + depthText.height());
+
+    if (challengeIcon != null) {
+      challengeIcon.x = btnJournal.left() - 14 + (7 - challengeIcon.width()) / 2f - 0.1f;
+      challengeIcon.y = y + 1;
+      if (SPDSettings.interfaceSize() == 0) challengeIcon.y++;
+      PixelScene.align(challengeIcon);
+
+      challengeText.scale.set(PixelScene.align(0.67f));
+      challengeText.x = challengeIcon.x + (challengeIcon.width() - challengeText.width()) / 2f;
+      challengeText.y = challengeIcon.y + challengeIcon.height();
+      PixelScene.align(challengeText);
+
+      challengeButton.setRect(
+          challengeIcon.x,
+          challengeIcon.y,
+          challengeIcon.width(),
+          challengeIcon.height() + challengeText.height());
+    }
+
+    version.scale.set(PixelScene.align(0.5f));
+    version.measure();
+    version.x = x + WIDTH - version.width();
+    version.y = y + bg.height() + (3 - version.baseLine());
+    PixelScene.align(version);
+
+    danger.setPos(x + WIDTH - danger.width(), y + bg.height + 3);
+  }
+
+  public void pickup(Item item, int cell) {
+    pickedUp.reset(item, cell, btnJournal.centerX(), btnJournal.centerY());
+  }
+
+  public void flashForPage(String page) {
+    btnJournal.flashingPage = page;
+  }
+
+  public void updateKeys() {
+    btnJournal.updateKeyDisplay();
+  }
+
+  private static class JournalButton extends Button {
+
+    private Image bg;
+    private Image journalIcon;
+    private KeyDisplay keyIcon;
+
+    private String flashingPage = null;
+
+    public JournalButton() {
+      super();
+
+      width = bg.width + 4;
+      height = bg.height + 4;
+    }
+
+    @Override
+    public GameAction keyAction() {
+      return SPDAction.JOURNAL;
+    }
+
+    @Override
+    protected void createChildren() {
+      super.createChildren();
+
+      bg = new Image(Assets.Interfaces.MENU_BTN, 2, 2, 13, 11);
+      add(bg);
+
+      journalIcon = new Image(Assets.Interfaces.MENU_BTN, 31, 0, 11, 7);
+      add(journalIcon);
+
+      keyIcon = new KeyDisplay();
+      add(keyIcon);
+      updateKeyDisplay();
+    }
+
+    @Override
+    protected void layout() {
+      super.layout();
+
+      bg.x = x + 2;
+      bg.y = y + 2;
+
+      journalIcon.x = bg.x + (bg.width() - journalIcon.width()) / 2f;
+      journalIcon.y = bg.y + (bg.height() - journalIcon.height()) / 2f;
+      PixelScene.align(journalIcon);
+
+      keyIcon.x = bg.x + 1;
+      keyIcon.y = bg.y + 1;
+      keyIcon.width = bg.width - 2;
+      keyIcon.height = bg.height - 2;
+      PixelScene.align(keyIcon);
+    }
+
+    private float time;
+
+    @Override
+    public void update() {
+      super.update();
+
+      if (flashingPage != null) {
+        journalIcon.am = (float) Math.abs(Math.cos(StatusPane.FLASH_RATE * (time += Game.elapsed)));
+        keyIcon.am = journalIcon.am;
+        bg.brightness(0.5f + journalIcon.am);
+        if (time >= Math.PI / StatusPane.FLASH_RATE) {
+          time = 0;
+        }
+      }
+    }
+
+    public void updateKeyDisplay() {
+      keyIcon.updateKeys();
+      keyIcon.visible = keyIcon.keyCount() > 0;
+      journalIcon.visible = !keyIcon.visible;
+      if (keyIcon.keyCount() > 0) {
+        bg.brightness(.8f - (Math.min(6, keyIcon.keyCount()) / 20f));
+      } else {
+        bg.resetColor();
+      }
+    }
+
+    @Override
+    protected void onPointerDown() {
+      bg.brightness(1.5f);
+      Sample.INSTANCE.play(Assets.Sounds.CLICK);
+    }
+
+    @Override
+    protected void onPointerUp() {
+      if (keyIcon.keyCount() > 0) {
+        bg.brightness(.8f - (Math.min(6, keyIcon.keyCount()) / 20f));
+      } else {
+        bg.resetColor();
+      }
+    }
+
+    @Override
+    protected void onClick() {
+      time = 0;
+      keyIcon.am = journalIcon.am = 1;
+      if (flashingPage != null) {
+        if (Document.ADVENTURERS_GUIDE.pageNames().contains(flashingPage)) {
+          GameScene.show(
+              new WndStory(
+                  WndJournal.GuideTab.iconForPage(flashingPage),
+                  Document.ADVENTURERS_GUIDE.pageTitle(flashingPage),
+                  Document.ADVENTURERS_GUIDE.pageBody(flashingPage)));
+          Document.ADVENTURERS_GUIDE.readPage(flashingPage);
+        } else {
+          GameScene.show(new WndJournal());
+        }
+        flashingPage = null;
+      } else {
+        GameScene.show(new WndJournal());
+      }
+    }
+
+    @Override
+    protected String hoverText() {
+      return Messages.titleCase(Messages.get(WndKeyBindings.class, "journal"));
+    }
+  }
+
+  private static class MenuButton extends Button {
+
+    private Image image;
+
+    public MenuButton() {
+      super();
+
+      width = image.width + 4;
+      height = image.height + 4;
+    }
+
+    @Override
+    protected void createChildren() {
+      super.createChildren();
+
+      image = new Image(Assets.Interfaces.MENU_BTN, 17, 2, 12, 11);
+      add(image);
+    }
+
+    @Override
+    protected void layout() {
+      super.layout();
+
+      image.x = x + 2;
+      image.y = y + 2;
+    }
+
+    @Override
+    protected void onPointerDown() {
+      image.brightness(1.5f);
+      Sample.INSTANCE.play(Assets.Sounds.CLICK);
+    }
+
+    @Override
+    protected void onPointerUp() {
+      image.resetColor();
+    }
+
+    @Override
+    protected void onClick() {
+      GameScene.show(new WndGame());
+    }
+
+    @Override
+    public GameAction keyAction() {
+      return GameAction.BACK;
+    }
+
+    @Override
+    protected String hoverText() {
+      return Messages.titleCase(Messages.get(WndKeyBindings.class, "menu"));
+    }
+  }
 }

@@ -29,99 +29,100 @@ import com.watabou.utils.Callback;
 
 public class AutoShopReBot extends NPC {
 
-    private static final String FIRST = "first";
-    private boolean first=true;
+  private static final String FIRST = "first";
+  private boolean first = true;
 
+  @Override
+  public void storeInBundle(Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(FIRST, first);
+  }
 
-    @Override
-    public void storeInBundle(Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put(FIRST, first);
-    }
+  @Override
+  public void restoreFromBundle(Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    first = bundle.getBoolean(FIRST);
+  }
 
-    @Override
-    public void restoreFromBundle(Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        first = bundle.getBoolean(FIRST);
-    }
+  public void flee() {
+    destroy();
+    sprite.killAndErase();
+    CellEmitter.get(pos).burst(ElmoParticle.FACTORY, 6);
+  }
 
-    public void flee() {
-        destroy();
-        sprite.killAndErase();
-        CellEmitter.get( pos ).burst( ElmoParticle.FACTORY, 6 );
-    }
-    private void tell(String text) {
-        Game.runOnRenderThread(new Callback() {
-                                   @Override
-                                   public void call() {
-                                       GameScene.show(new WndQuest(new AutoShopReBot(), text));
-                                   }
-                               }
-        );
-    }
-    @Override
-    public boolean interact(Char c) {
-        sprite.turnTo( pos, Dungeon.hero.pos );
+  private void tell(String text) {
+    Game.runOnRenderThread(
+        new Callback() {
+          @Override
+          public void call() {
+            GameScene.show(new WndQuest(new AutoShopReBot(), text));
+          }
+        });
+  }
 
-        if(Dungeon.hero.buff(AutoRandomBuff.class) == null) {
-            tell(Messages.get(WndAutoShop.class, "maxbuy"));
-            for (Buff buff : hero.buffs()) {
-                if (buff instanceof AutoRandomBuff) {
-                    buff.detach();
-                }
+  @Override
+  public boolean interact(Char c) {
+    sprite.turnTo(pos, Dungeon.hero.pos);
+
+    if (Dungeon.hero.buff(AutoRandomBuff.class) == null) {
+      tell(Messages.get(WndAutoShop.class, "maxbuy"));
+      for (Buff buff : hero.buffs()) {
+        if (buff instanceof AutoRandomBuff) {
+          buff.detach();
+        }
+      }
+    } else {
+      Game.runOnRenderThread(
+          new Callback() {
+            @Override
+            public void call() {
+              GameScene.show(new WndAutoShop());
             }
-        } else {
-            Game.runOnRenderThread(new Callback() {
-                                       @Override
-                                       public void call() {
-                                           GameScene.show(new WndAutoShop());
-                                       }
-                                   }
-            );
-
-        }
-        return true;
+          });
     }
-    private boolean seenBefore = false;
-    protected boolean act() {
-        if (!seenBefore && Dungeon.level.heroFOV[pos]) {
-            GLog.p(Messages.get(this, "greetings", Dungeon.hero.name()));
-            seenBefore = true;
-        } else if (seenBefore && !Dungeon.level.heroFOV[pos] && Dungeon.depth == 0) {
-            Music.INSTANCE.play(Assets.TOWN, true);
-            seenBefore = false;
-        } else if (seenBefore && !Dungeon.level.heroFOV[pos] && Dungeon.depth == 12) {
-            Music.INSTANCE.play(Assets.BGM_2,true);
-            seenBefore = false;
-        }
-        throwItem();
+    return true;
+  }
 
-        sprite.turnTo( pos, Dungeon.hero.pos );
-        spend( TICK );
+  private boolean seenBefore = false;
 
-        shop6 = new ChargrilledMeat();
-        shop5 = new Pasty();
-        shop4 = new Switch();
-        shop3 = new Cake();
-        shop2 = new SmallRation();
-        shop1 = new LightFood();
-        ate = new AutoShopReBot();
-        throwItem();
-        return super.act();
+  protected boolean act() {
+    if (!seenBefore && Dungeon.level.heroFOV[pos]) {
+      GLog.p(Messages.get(this, "greetings", Dungeon.hero.name()));
+      seenBefore = true;
+    } else if (seenBefore && !Dungeon.level.heroFOV[pos] && Dungeon.depth == 0) {
+      Music.INSTANCE.play(Assets.TOWN, true);
+      seenBefore = false;
+    } else if (seenBefore && !Dungeon.level.heroFOV[pos] && Dungeon.depth == 12) {
+      Music.INSTANCE.play(Assets.BGM_2, true);
+      seenBefore = false;
     }
+    throwItem();
 
-    public static Food shop1;
-    public static Food shop2;
-    public static Food shop3;
-    public static Food shop4;
-    public static Food shop5;
-    public static Food shop6;
-    public static AutoShopReBot ate;
+    sprite.turnTo(pos, Dungeon.hero.pos);
+    spend(TICK);
 
-    {
-        spriteClass = AutoShopRoBotSprite.class;
-        HT=HP=30;
-        flying = true;
-    }
+    shop6 = new ChargrilledMeat();
+    shop5 = new Pasty();
+    shop4 = new Switch();
+    shop3 = new Cake();
+    shop2 = new SmallRation();
+    shop1 = new LightFood();
+    ate = new AutoShopReBot();
+    throwItem();
+    return super.act();
+  }
+
+  public static Food shop1;
+  public static Food shop2;
+  public static Food shop3;
+  public static Food shop4;
+  public static Food shop5;
+  public static Food shop6;
+  public static AutoShopReBot ate;
+
+  {
+    spriteClass = AutoShopRoBotSprite.class;
+    HT = HP = 30;
+    flying = true;
+  }
 }
-

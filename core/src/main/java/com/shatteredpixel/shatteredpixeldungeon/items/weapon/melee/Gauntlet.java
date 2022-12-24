@@ -32,48 +32,52 @@ import com.watabou.utils.Random;
 
 public class Gauntlet extends MeleeWeapon {
 
-	{
-		image = ItemSpriteSheet.GAUNTLETS;
-		hitSound = Assets.Sounds.HIT_CRUSH;
-		hitSoundPitch = 1.2f;
+  {
+    image = ItemSpriteSheet.GAUNTLETS;
+    hitSound = Assets.Sounds.HIT_CRUSH;
+    hitSoundPitch = 1.2f;
 
-		tier = 3;
-		DLY = 0.25f; //2x speed
-	}
+    tier = 3;
+    DLY = 0.25f; // 2x speed
+  }
 
-	@Override
-	public int defenseFactor( Char owner ) {
-		return 6+3*buffedLvl();    //6 extra defence, plus 3 per level;
-	}
+  @Override
+  public int defenseFactor(Char owner) {
+    return 6 + 3 * buffedLvl(); // 6 extra defence, plus 3 per level;
+  }
 
-	@Override
-	public int max(int lvl) {
+  @Override
+  public int max(int lvl) {
 
-		return  Math.round(2.5f*(tier+1)) +     //15 base, down from 30
-				lvl*Math.round(0.5f*(tier+1));  //+3 per level, down from +6
-	}
+    return Math.round(2.5f * (tier + 1))
+        + // 15 base, down from 30
+        lvl * Math.round(0.5f * (tier + 1)); // +3 per level, down from +6
+  }
 
-	@Override
-	public int proc(Char attacker, Char defender, int damage ) {
-		switch (Random.Int(6)) {
-			case 0:case 1:case 2:case 3:
-			default:
-				return max(buffedLvl());
-			case 4: case 5:
-				Buff.affect(defender, HalomethaneBurning.class).reignite(defender);
-				if(Random.Float()<0.55f && level <3) {
-					Buff.prolong(attacker, Vertigo.class, 3f);
-				}
-				return max(buffedLvl());
-		}
-	}
+  @Override
+  public int proc(Char attacker, Char defender, int damage) {
+    switch (Random.Int(6)) {
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+      default:
+        return max(buffedLvl());
+      case 4:
+      case 5:
+        Buff.affect(defender, HalomethaneBurning.class).reignite(defender);
+        if (Random.Float() < 0.55f && level < 3) {
+          Buff.prolong(attacker, Vertigo.class, 3f);
+        }
+        return max(buffedLvl());
+    }
+  }
 
-	public String statsInfo(){
-		if (isIdentified()){
-			return Messages.get(this, "stats_desc", 1+1*buffedLvl());
-		} else {
-			return Messages.get(this, "typical_stats_desc", 1);
-		}
-	}
-
+  public String statsInfo() {
+    if (isIdentified()) {
+      return Messages.get(this, "stats_desc", 1 + 1 * buffedLvl());
+    } else {
+      return Messages.get(this, "typical_stats_desc", 1);
+    }
+  }
 }

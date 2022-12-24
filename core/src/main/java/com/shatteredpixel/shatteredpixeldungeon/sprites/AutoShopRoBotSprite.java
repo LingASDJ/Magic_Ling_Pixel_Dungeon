@@ -7,35 +7,33 @@ import com.watabou.noosa.audio.Sample;
 
 public class AutoShopRoBotSprite extends MobSprite {
 
-    public AutoShopRoBotSprite() {
-        super();
+  public AutoShopRoBotSprite() {
+    super();
 
-        texture( Assets.Sprites.KEEPERKINGBOT );
-        TextureFilm film = new TextureFilm( texture, 16, 16 );
+    texture(Assets.Sprites.KEEPERKINGBOT);
+    TextureFilm film = new TextureFilm(texture, 16, 16);
 
-        idle = new Animation( 10, true );
-        idle.frames( film, 0 );
-        die = new Animation( 20, false );
-        die.frames( film, 0 );
+    idle = new Animation(10, true);
+    idle.frames(film, 0);
+    die = new Animation(20, false);
+    die.frames(film, 0);
 
-        run = idle.clone();
+    run = idle.clone();
 
-        attack = idle.clone();
+    attack = idle.clone();
 
-        idle();
+    idle();
+  }
+
+  @Override
+  public void die() {
+    super.die();
+
+    remove(State.SHIELDED);
+    emitter().start(ElmoParticle.FACTORY, 0.03f, 60);
+
+    if (visible) {
+      Sample.INSTANCE.play(Assets.Sounds.BURNING);
     }
-
-    @Override
-    public void die() {
-        super.die();
-
-        remove(State.SHIELDED);
-        emitter().start( ElmoParticle.FACTORY, 0.03f, 60 );
-
-        if (visible) {
-            Sample.INSTANCE.play( Assets.Sounds.BURNING );
-        }
-    }
+  }
 }
-
-
