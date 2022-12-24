@@ -593,6 +593,8 @@ public class WndSettings extends WndTabbed {
 		OptionSlider optSplashScreen;
 		OptionSlider quickslots;
 
+		CheckBox optFPSLimit;
+
 		@Override
 		protected void createChildren() {
 			title = PixelScene.renderTextBlock(Messages.get(this, "title"), 9);
@@ -626,6 +628,16 @@ public class WndSettings extends WndTabbed {
 			optSplashScreen.setSelectedValue(SPDSettings.splashScreen());
 			add(optSplashScreen);
 
+			optFPSLimit = new CheckBox( Messages.get(this, "fpsdisplay") ) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					SPDSettings.FPSLimit(checked());
+				}
+			};
+			optFPSLimit.checked(SPDSettings.FPSLimit());
+			add(optFPSLimit);
+
 			quickslots = new OptionSlider(Messages.get(this, "quickslots"), "" + Constants.MIN_QUICKSLOTS,
 					"" + Constants.MAX_QUICKSLOTS, Constants.MIN_QUICKSLOTS, Constants.MAX_QUICKSLOTS) {
 				@Override
@@ -656,27 +668,29 @@ public class WndSettings extends WndTabbed {
 			if (width > 200){
 				ClassUI.setRect(0, bottom, width, SLIDER_HEIGHT);
 				optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
+				optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width/2-1, SLIDER_HEIGHT);
 				if(Game.scene()!=null && Game.scene().getClass() == GameScene.class) {
-					quickslots.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+					quickslots.setRect(optFPSLimit.right(), optFPSLimit.top(), width/2, SLIDER_HEIGHT);
 					wxts.visible = false;
 				} else {
 					quickslots.visible = false;
-					wxts.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+					wxts.visible = false;
 				}
 			} else {
-				ClassUI.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
-				optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
-				if(Game.scene()!=null && Game.scene().getClass() == GameScene.class) {
-					wxts.visible = false;
-					quickslots.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
-				} else {
+					ClassUI.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
+					optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
+					optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+				if (Game.scene() == null || Game.scene().getClass() != GameScene.class) {
 					quickslots.visible = false;
-					wxts.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+				} else {
+					quickslots.setRect(0, optFPSLimit.bottom() + GAP, width, SLIDER_HEIGHT);
+
 				}
+				wxts.visible = false;
 				//GameScene
 			}
 
-			height = ClassUI.bottom();
+			height = quickslots.bottom();
 		}
 
 	}

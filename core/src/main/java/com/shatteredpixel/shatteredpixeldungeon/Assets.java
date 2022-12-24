@@ -279,6 +279,8 @@ public class Assets {
 		//NPCS
 		public static final String KEEPERKING	= "sprites/npc/ShopKing.png";
 
+		public static final String KEEPERKINGBOT	= "sprites/npc/autoshop.png";
+
 		//BOSS
 		public static final String DIED	= "sprites/items/died.png";
 

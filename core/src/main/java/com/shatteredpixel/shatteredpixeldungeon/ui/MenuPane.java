@@ -65,7 +65,7 @@ public class MenuPane extends Component {
 
 	private Toolbar.PickedUpItem pickedUp;
 
-	private BitmapText version;
+	public static BitmapText version;
 
 	private DangerIndicator danger;
 

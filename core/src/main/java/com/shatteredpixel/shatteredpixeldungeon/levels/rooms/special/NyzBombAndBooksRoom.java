@@ -4,7 +4,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
@@ -15,12 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.MerchantsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Firebomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Flashbang;
@@ -39,7 +33,6 @@ import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 
 public class NyzBombAndBooksRoom extends SpecialRoom {
@@ -49,11 +42,11 @@ public class NyzBombAndBooksRoom extends SpecialRoom {
     }
 
     public int minWidth() {
-        return Math.max(4, (int) (Math.sqrt((double) itemCount()) + 3.0d));
+        return Math.max(4, (int) (Math.sqrt(itemCount()) + 3.0d));
     }
 
     public int minHeight() {
-        return Math.max(4, (int) (Math.sqrt((double) itemCount()) + 3.0d));
+        return Math.max(4, (int) (Math.sqrt(itemCount()) + 3.0d));
     }
 
     public int itemCount() {
@@ -121,9 +114,7 @@ public class NyzBombAndBooksRoom extends SpecialRoom {
 
     protected static ArrayList<Item> generateItems() {
         Item rare;
-        Item item;
         ArrayList<Item> itemsToSpawn2 = new ArrayList<>();
-        int i = Dungeon.depth;
         Item w = Generator.random(Generator.wepTiers[3]);
         //itemsToSpawn2.add(Generator.random(Generator.misTiers[4]).quantity(2).identify());
         itemsToSpawn2.add(new LeatherArmor().identify());
@@ -177,49 +168,4 @@ public class NyzBombAndBooksRoom extends SpecialRoom {
     }
 
 
-    protected static Bag ChooseBag(Belongings pack) {
-        HashMap<Bag, Integer> bags = new HashMap<>();
-        if (!Dungeon.LimitedDrops.VELVET_POUCH.dropped()) {
-            bags.put(new VelvetPouch(), 1);
-        }
-        if (!Dungeon.LimitedDrops.SCROLL_HOLDER.dropped()) {
-            bags.put(new ScrollHolder(), 0);
-        }
-        if (!Dungeon.LimitedDrops.POTION_BANDOLIER.dropped()) {
-            bags.put(new PotionBandolier(), 0);
-        }
-        if (!Dungeon.LimitedDrops.MAGICAL_HOLSTER.dropped()) {
-            bags.put(new MagicalHolster(), 0);
-        }
-        if (bags.isEmpty()) {
-            return null;
-        }
-        Iterator it = pack.backpack.items.iterator();
-        while (it.hasNext()) {
-            Item item = (Item) it.next();
-            for (Bag bag : bags.keySet()) {
-                if (bag.canHold(item)) {
-                    bags.put(bag, Integer.valueOf(bags.get(bag).intValue() + 1));
-                }
-            }
-        }
-        Bag bestBag = null;
-        for (Bag bag2 : bags.keySet()) {
-            if (bestBag == null) {
-                bestBag = bag2;
-            } else if (bags.get(bag2).intValue() > bags.get(bestBag).intValue()) {
-                bestBag = bag2;
-            }
-        }
-        if (bestBag instanceof VelvetPouch) {
-            Dungeon.LimitedDrops.VELVET_POUCH.drop();
-        } else if (bestBag instanceof ScrollHolder) {
-            Dungeon.LimitedDrops.SCROLL_HOLDER.drop();
-        } else if (bestBag instanceof PotionBandolier) {
-            Dungeon.LimitedDrops.POTION_BANDOLIER.drop();
-        } else if (bestBag instanceof MagicalHolster) {
-            Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
-        }
-        return bestBag;
-    }
 }

@@ -24,9 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
@@ -56,14 +55,16 @@ public class Gauntlet extends MeleeWeapon {
 
 	@Override
 	public int proc(Char attacker, Char defender, int damage ) {
-		switch (Random.Int(2)) {
-			case 0:
+		switch (Random.Int(6)) {
+			case 0:case 1:case 2:case 3:
 			default:
-				return super.proc(attacker, defender, damage);
-			case 1:
-				Buff.affect(defender, Burning.class).reignite(defender);
-				Buff.affect(attacker, Cripple.class, Degrade.ADURATION);
-				return super.proc(attacker, defender, damage);
+				return max(buffedLvl());
+			case 4: case 5:
+				Buff.affect(defender, HalomethaneBurning.class).reignite(defender);
+				if(Random.Float()<0.55f && level <3) {
+					Buff.prolong(attacker, Vertigo.class, 3f);
+				}
+				return max(buffedLvl());
 		}
 	}
 

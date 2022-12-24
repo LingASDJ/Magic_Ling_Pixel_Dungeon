@@ -26,15 +26,15 @@ public class GreenSword extends MeleeWeapon {
         this.tier = 3;
     }
 
-    public int damageRoll(Char var1) {
-        if (var1 instanceof Hero) {
-            Hero var2 = (Hero)var1;
-            Char var3 = var2.enemy();
-            if (var3 instanceof Mob && ((Mob)var3).surprisedBy(var2)) {
+    public int damageRoll(Char hero) {
+        if (hero instanceof Hero) {
+            Hero jim = (Hero)hero;
+            Char var3 = jim.enemy();
+            if (var3 instanceof Mob && ((Mob)var3).surprisedBy(jim)) {
                 int var4 = this.max();
                 int var5 = this.min();
                 var4 = this.augment.damageFactor(Random.NormalIntRange(this.min() + Math.round((float)(var4 - var5) * 0.9F), this.max()));
-                int var6 = var2.STR() - this.STRReq();
+                int var6 = jim.STR() - this.STRReq();
                 var5 = var4;
                 if (var6 > 0) {
                     var5 = var4 + Random.IntRange(0, var6);
@@ -48,7 +48,7 @@ public class GreenSword extends MeleeWeapon {
             }
         }
 
-        return super.damageRoll(var1);
+        return super.damageRoll(hero);
     }
 
     public int max(int var1) {
@@ -59,7 +59,7 @@ public class GreenSword extends MeleeWeapon {
     }
 
     public int min(int var1) {
-        return Math.round((float)(this.tier + 0) * 1.08F) * var1 + Math.round((float)(this.tier + 1) * 0.6675F);
+        return Math.round((float)(this.tier) * 1.08F) * var1 + Math.round((float)(this.tier + 1) * 0.6675F);
     }
 
     @Override

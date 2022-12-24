@@ -28,7 +28,7 @@ public class IceFishSword extends Weapon {
         hitSoundPitch = 1f;
         tier = 6;
         ACC = 2.90f; //20% boost to accuracy
-        DLY = 0.7f; //2x speed
+        DLY = 1.5f; //2x speed
     }
 
     @Override

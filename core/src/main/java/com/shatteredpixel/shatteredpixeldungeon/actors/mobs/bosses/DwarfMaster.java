@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MolotovHuntsman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDZSLS;
@@ -1385,7 +1384,6 @@ public class DwarfMaster extends Boss {
             summonSubject(5, DM100.class);
             summonSubject(2, DM201.class);
             summonSubject(5, DM200.class);
-            summonSubject(3, MolotovHuntsman.class);
             summonSubject(3, Skeleton.class);
             summonSubject(3, Necromancer.class);
             summonSubject(3, RedNecromancer.class);

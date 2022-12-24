@@ -84,7 +84,6 @@ public class AndroidGame extends AndroidApplication {
 			// Note that we use a different prefs name on android for legacy purposes,
 			// this is the default prefs filename given to an android app (.xml is automatically added to it)
 			SPDSettings.set(instance.getPreferences("ShatteredPixelDungeon"));
-
 			//UCEHandler.Builder builder = new UCEHandler.Builder(this);
 			//builder.build();
 

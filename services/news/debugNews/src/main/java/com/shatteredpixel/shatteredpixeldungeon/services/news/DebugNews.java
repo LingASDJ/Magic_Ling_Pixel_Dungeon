@@ -46,9 +46,9 @@ public class DebugNews extends NewsService {
 
 		Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
 		if (preferHTTPS) {
-			httpGet.setUrl("https://lingasdj.github.io/MagicLingPixelDungeon_Sing/xml/news.xml");
+			httpGet.setUrl("https://jdsalingzx.top/assets/xml/news.xml");
 		} else {
-			httpGet.setUrl("https://lingasdj.github.io/MagicLingPixelDungeon_Sing/xml/news.xml");
+			httpGet.setUrl("https://jdsalingzx.top/assets/xml/news.xml");
 		}
 
 		Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {

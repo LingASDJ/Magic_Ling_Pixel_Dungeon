@@ -158,7 +158,6 @@ public enum HeroClass {
 
 		if ( Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
 			Buff.affect(hero, RandomBuff.class).set( (5), 1 );
-			System.out.println(RandomBuff.level);
 			Dungeon.gold+=1200;
 		}
 
@@ -269,7 +268,7 @@ public enum HeroClass {
 
 		new HerbBag().quantity(1).identify().collect();
 		new PotionOfHealing().quantity(3).identify().collect();
-
+		//Badges.ENDDIED();
 		new ScrollOfUpgrade().quantity(1).identify().collect();
 		//new IndexBooks().quantity(1).identify().collect();
 		if (!Challenges.isItemBlocked(i)) i.collect();

@@ -27,7 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -49,13 +48,12 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class SlimeKing extends Boss {
+public class SlimeKing extends Mob {
 
     private final String[] attackCurse = {"雕虫小技", "班门弄斧",
             "GAMEOVER"};
@@ -125,7 +123,6 @@ public class SlimeKing extends Boss {
 
     @Override
     public boolean act() {
-        BossHealthBar.assignBoss(this);
 
         if(HP < 70 && !PartCold){
             baseSpeed = 1f;
@@ -134,7 +131,7 @@ public class SlimeKing extends Boss {
             var4.activate();
             PartCold = true;
             chainsUsed = true;
-            GLog.n("你彻底激怒我了！！！");
+            GLog.n(Messages.get(SlimeKing.class,"fuck"));
         } else if (HP < 70) {
             baseSpeed = 1f;
         }
@@ -208,10 +205,10 @@ public class SlimeKing extends Boss {
         }
         int damage2 = SlimeKing.super.attackProc(enemy, this.combo + damage);
         this.combo++;
-        int effect = Random.Int(3);
-//        if (enemy.buff(Poison.class) == null && Random.Float() <= 0.25f) {
-//            Buff.affect( enemy, Poison.class).set((effect-2) );
-//        }
+//        int effect = Random.Int(3);
+////        if (enemy.buff(Poison.class) == null && Random.Float() <= 0.25f) {
+////            Buff.affect( enemy, Poison.class).set((effect-2) );
+////        }
         if (this.combo > 3) {
             this.combo = 1;
         }
@@ -258,15 +255,9 @@ public class SlimeKing extends Boss {
                     yell(Messages.get(this, "scorpion"));
                     new Item().throwSound();
                     Sample.INSTANCE.play(Assets.Sounds.CHAINS);
-                    sprite.parent.add(new Chains(sprite.center(), enemy.sprite.center(), new Callback() {
-                        public void call() {
-                            Actor.addDelayed(new Pushing(enemy, enemy.pos, newPosFinal, new Callback() {
-                                public void call() {
-                                    pullEnemy(enemy, newPosFinal);
-                                }
-                            }), -1);
-                            next();
-                        }
+                    sprite.parent.add(new Chains(sprite.center(), enemy.sprite.center(), () -> {
+                        Actor.addDelayed(new Pushing(enemy, enemy.pos, newPosFinal, () -> pullEnemy(enemy, newPosFinal)), -1);
+                        next();
                     }));
                 } else {
                     pullEnemy(enemy, newPos);
@@ -299,7 +290,7 @@ public class SlimeKing extends Boss {
     @Override
     public void notice() {
         super.notice();
-        //        BossHealthBar.assignBoss(this);
+        BossHealthBar.assignBoss(this);
         Music.INSTANCE.play(Assets.BGM_BOSSA, true);
         yell( Messages.get(this, "notice") );
         chainsUsed = false;

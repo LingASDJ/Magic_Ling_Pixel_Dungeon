@@ -37,16 +37,6 @@ import java.util.Locale;
 public class SPDSettings extends GameSettings {
 	
 	//Version info
-	public static final String KEY_CUSTOM_SEED	= "Your_Key";
-	public static final String KEY_CUSTOM_LING	= "Your_Key";
-
-	public static void customSeed( String value ){
-		put( KEY_CUSTOM_SEED, value );
-	}
-
-	public static String customSeed() {
-		return getString( KEY_CUSTOM_SEED, KEY_CUSTOM_LING, 20);
-	}
 
 	public static final String KEY_VERSION      = "version";
 
@@ -64,6 +54,14 @@ public class SPDSettings extends GameSettings {
 
 	public static int level3boss(){
 		return getInt( KEY_L3BOSS, 1, 1, 3);
+	}
+
+	public static void FPSLimit(boolean value) {
+		put( KEY_FPS, value );
+	}
+
+	public static boolean FPSLimit() {
+		return getBoolean(KEY_FPS, true);
 	}
 
 	private static final String DEBUG_REPORT  = "debug_report";
@@ -112,6 +110,7 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_SPLASH_SCREEN, 1 );
 	}
 
+	private static final String KEY_FPS	= "fps";
 
 	private static final String KEY_DARK	= "dark_ui";
 	//暗色系统
@@ -199,6 +198,8 @@ public class SPDSettings extends GameSettings {
 	}
 	
 	//Interface
+
+	public static final String KEY_FPSLIMIT	= "fpslimit";
 
 	public static final String KEY_UI_SIZE 	    = "full_ui";
 	public static final String KEY_QUICKSLOTS	= "quickslots";

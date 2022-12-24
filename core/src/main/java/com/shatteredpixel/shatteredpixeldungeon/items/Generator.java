@@ -377,7 +377,7 @@ public class Generator {
 					GreenSword.class,
 
 			};
-			WEP_T3.probs = new float[]{ 1, 5, 5, 4, 0, 4 ,3,8,0,4};
+			WEP_T3.probs = new float[]{ 1, 5, 5, 4, 0, 4 ,3,8,0,0};
 
 			WEP_T4.classes = new Class<?>[]{
 					Longsword.class,

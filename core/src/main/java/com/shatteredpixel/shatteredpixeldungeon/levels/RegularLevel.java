@@ -22,7 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
 
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -31,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AutoRandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -55,6 +58,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LoopBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NxhyShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NyzBombAndBooksRoom;
@@ -78,11 +82,53 @@ import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 
 public abstract class RegularLevel extends Level {
-	
+
+	private static Holiday holiday;
+
+	public enum Holiday{
+		NONE,
+		ZQJ, //TBD
+		HWEEN,//2nd week of october though first day of november
+		XMAS //3rd week of december through first week of january
+	}
+
+	static{
+
+		holiday = Holiday.NONE;
+
+		final Calendar calendar = Calendar.getInstance();
+		switch(calendar.get(Calendar.MONTH)){
+			case Calendar.JANUARY:
+				if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
+					holiday = XMAS;
+				break;
+			//2022 9.10-10.1
+			case Calendar.SEPTEMBER:
+				if (calendar.get(Calendar.DAY_OF_MONTH) >= 10 ){
+					holiday = Holiday.ZQJ;
+				} else {
+					holiday = Holiday.NONE;
+				}
+				break;
+			case Calendar.OCTOBER:
+				if (calendar.get(Calendar.DAY_OF_MONTH) == 1 ){
+					holiday = Holiday.ZQJ;
+				} else {
+					holiday = Holiday.NONE;
+				}
+				break;
+			case Calendar.DECEMBER:
+				if (calendar.get(Calendar.WEEK_OF_MONTH) >= 3)
+					holiday = XMAS;
+				break;
+		}
+	}
+
 	protected ArrayList<Room> rooms;
 	
 	protected Builder builder;
@@ -186,8 +232,9 @@ public abstract class RegularLevel extends Level {
 		if (Dungeon.aqiLevel() && (Dungeon.isChallenged(AQUAPHOBIA)))
 		initRooms.add(new AquariumRoom());
 
-		if (Dungeon.NxhyshopOnLevel())
+		if (Dungeon.NxhyshopOnLevel()) {
 			initRooms.add(new NxhyShopRoom());
+		}
 
 		if (Dungeon.NyzshopOnLevel()) {
 			Buff.affect(hero, RandomBuff.class).set( (3 + Random.Int(9)+hero.STR/6+hero.HP/30)/Random.Int(1,2)+5, 1 );
@@ -211,6 +258,19 @@ public abstract class RegularLevel extends Level {
 		if (feeling == Feeling.SECRETS) secrets++;
 		for (int i = 0; i < secrets; i++) {
 			initRooms.add(SecretRoom.createRoom());
+		}
+
+		//圣诞节
+		if (holiday == XMAS) {
+			if(Dungeon.AutoShopLevel()) {
+				initRooms.add(new AutoShopRoom());
+				Buff.affect(hero, AutoRandomBuff.class).set((10), 1);
+			}
+		} else if(Dungeon.isChallenged(SBSG)){
+			if(Dungeon.AutoShopLevel()) {
+				initRooms.add(new AutoShopRoom());
+				Buff.affect(hero, AutoRandomBuff.class).set((10), 1);
+			}
 		}
 		
 		return initRooms;

@@ -27,6 +27,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ExplosiveTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -36,7 +38,7 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public abstract class ChampionEnemy extends Buff {
-	public static final float shopDURATION	= 2000000000f;
+	//public static final float shopDURATION	= 2000000000f;
 	{
 		type = buffType.POSITIVE;
 	}
@@ -89,8 +91,195 @@ public abstract class ChampionEnemy extends Buff {
 		return 1f;
 	}
 
+	public float speedFactor(){
+		return 1f;
+	}
+
 	{
 		immunities.add(Corruption.class);
+	}
+
+	public static void rollForStateLing(Mob m){
+		if (Dungeon.mobsToStateLing <= 0) Dungeon.mobsToStateLing = 8;
+
+		Dungeon.mobsToStateLing--;
+
+		Class<?extends ChampionEnemy> buffCls;
+
+
+		if (Random.Float() < 0.3f) {
+			//30%
+			buffCls = ChampionEnemy.Small.class;
+		} else if (Random.Float() < 0.25f) {
+			//25%
+			buffCls = ChampionEnemy.Bomber.class;
+		} else if (Random.Float() < 0.2f) {
+			//20%
+			buffCls = ChampionEnemy.Middle.class;
+		} else if (Random.Float() < 0.15f) {
+			//15%
+			buffCls = ChampionEnemy.Big.class;
+		} else {
+			//10%
+			buffCls = ChampionEnemy.LongSider.class;
+		}
+
+//		switch ((int) Random.Float()){
+//			case 0:case 1: case 2: case 3: default:
+//				buffCls = ChampionEnemy.Small.class;
+//			break;
+//			case 4: case 5: case 6:
+//				buffCls = ChampionEnemy.Bomber.class;
+//				break;
+//			case 7: case 8:
+//				buffCls = ChampionEnemy.Middle.class;
+//				break;
+//			case 9: case 10: case 11:
+//				buffCls = ChampionEnemy.Big.class;
+//				break;
+//			case 12: case 13:
+//				buffCls = ChampionEnemy.LongSider.class;
+//				break;
+//		}
+
+		if (Dungeon.mobsToStateLing <= 0 && Dungeon.isChallenged(Challenges.SBSG)) {
+			Buff.affect(m, buffCls);
+			m.state = m.WANDERING;
+		}
+	}
+
+
+	public static class LongSider extends ChampionEnemy {
+
+		{
+			color = 0xff00ff;
+		}
+
+		@Override
+		public float meleeDamageFactor() {
+			return 0.9f;
+		}
+
+		@Override
+		public boolean canAttackWithExtraReach(Char enemy) {
+			//attack range of 2
+			return target.fieldOfView[enemy.pos] && Dungeon.level.distance(target.pos, enemy.pos) <= 2;
+		}
+
+		private float resurrectChance = 0.1f;
+		@Override
+		public void onAttackProc(Char enemy) {
+			if(Random.Float() <= resurrectChance) {
+				Buff.prolong( enemy, Vertigo.class, 4f);
+			}
+		}
+
+
+	}
+
+	public static class Small extends ChampionEnemy {
+
+		{
+			color = 0x8f8f8f;
+		}
+
+		@Override
+		public float meleeDamageFactor() {
+			return 0.75f;
+		}
+
+		@Override
+		public float speedFactor() {
+			return 1.3f;
+		}
+
+
+	}
+
+	public static class Bomber extends ChampionEnemy {
+
+		{
+			color = 0x00FF00;
+		}
+
+		@Override
+		public float meleeDamageFactor() {
+			return 0.7f;
+		}
+
+		@Override
+		public float speedFactor() {
+			return 0.5f;
+		}
+
+		public void detach() {
+			for (int i : PathFinder.NEIGHBOURS1){
+				if (!Dungeon.level.solid[target.pos+i]){
+					ExplosiveTrap bomber = new ExplosiveTrap();
+					bomber.pos = target.pos;
+					bomber.activate();
+				}
+			}
+			super.detach();
+		}
+	}
+
+	public static class Middle extends ChampionEnemy {
+
+		{
+			color = 0xFFFF00;
+		}
+
+		@Override
+		public float meleeDamageFactor() {
+			return 1.25f;
+		}
+
+		@Override
+		public float speedFactor() {
+			return 1.25f;
+		}
+
+		@Override
+		public float damageTakenFactor() {
+			return 0.3f;
+		}
+
+	}
+
+
+
+	public static class Big extends ChampionEnemy {
+
+		{
+			color = 0xFF0000;
+		}
+
+		@Override
+		public float meleeDamageFactor() {
+			return 1.30f;
+		}
+		private float resurrectChance = 0.05f;
+		@Override
+		public void onAttackProc(Char enemy) {
+			if(Random.Float() <= resurrectChance) {
+				Buff.affect( enemy, Bleeding.class ).set( 5 );
+			}
+		}
+		private float resurrectChanceB = 0.1f;
+		@Override
+		public void detach() {
+			for (int i : PathFinder.NEIGHBOURS9){
+				if (Random.Float() <= resurrectChanceB) {
+					AlarmTrap xxx = new AlarmTrap();
+					xxx.pos = target.pos;
+					xxx.activate();
+
+				}
+			}
+			super.detach();
+		}
+
 	}
 
 	public static void rollForChampion(Mob m){
@@ -229,7 +418,7 @@ public abstract class ChampionEnemy extends Buff {
 		@Override
 		public boolean canAttackWithExtraReach(Char enemy) {
 			//attack range of 2
-			return target.fieldOfView[enemy.pos] && Dungeon.level.distance(target.pos, enemy.pos) <= 2;
+			return target.fieldOfView[enemy.pos] && Dungeon.level.distance(target.pos, enemy.pos) <= 4;
 		}
 	}
 

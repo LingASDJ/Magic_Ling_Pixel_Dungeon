@@ -72,7 +72,7 @@ public class RedBloodMoon extends MeleeWeapon {
             if (!Dungeon.level.solid[attacker.pos + i]
                     && !Dungeon.level.pit[attacker.pos + i]
                     && Actor.findChar(attacker.pos + i) == null
-                    && attacker == Dungeon.hero&& deadking<6) {
+                    && attacker == Dungeon.hero && deadking<6) {
 
                 GuardianKnight guardianKnight1 = new GuardianKnight();
                 guardianKnight1.weapon = this;

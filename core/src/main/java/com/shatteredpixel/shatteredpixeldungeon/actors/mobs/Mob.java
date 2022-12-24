@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -83,6 +84,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 
 public abstract class Mob extends Char {
+
 	public float scaleFactor = 1f;
 	{
 		actPriority = MOB_PRIO;
@@ -180,19 +182,6 @@ public abstract class Mob extends Char {
 		
 		boolean justAlerted = alerted;
 		alerted = false;
-
-		//TODO 突变巨兽NEW
-		if (Dungeon.isChallenged(Challenges.SBSG) && scaleFactor == 1f && !properties().contains(Property.NOBIG) && !properties().contains(Property.BOSS)&& !properties().contains(Property.MINIBOSS) ){
-			scaleFactor = Random.Float(1f, 1.6f);
-			HT = (int) (HT * scaleFactor);
-			if (scaleFactor >= 1.4f && HT >= 1){
-				HP = HT = (int) (HT * 1.45f);
-			} else {
-				HP = HT = (int) (HT * 1f);
-			}
-			sprite.linkVisuals(this);
-			sprite.link(this);
-		}
 		
 		if (justAlerted){
 			sprite.showAlert();
@@ -602,7 +591,15 @@ public abstract class Mob extends Char {
 
 	@Override
 	public float speed() {
-		return super.speed() * (Dungeon.isChallenged(Challenges.SBSG) ? (0.6f * scaleFactor) : 1);
+
+		if(Dungeon.isChallenged(SBSG)) {
+			//移速控制
+			for (ChampionEnemy buff : buffs(ChampionEnemy.class)) {
+				baseSpeed = buff.speedFactor();
+			}
+		}
+
+		return super.speed() * (1);
 	}
 	
 	protected boolean hitWithRanged = false;

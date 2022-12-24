@@ -45,7 +45,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -228,8 +227,7 @@ public abstract class Elemental extends Mob {
 
 			//TODO 1%
 			if(!Statistics.endingbald && Random.Float() <= resurrectChance) {
-				Dungeon.level.drop(new EndingBlade(), pos).sprite.drop();
-				Badges.ENDDIED();
+				//Dungeon.level.drop(new EndingBlade(), pos).sprite.drop();
 				Statistics.endingbald = true;
 				//TODO 1%
 				super.die(cause);

@@ -5,6 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM300;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.AutoShopRoBotSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlueBatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdGuardSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
@@ -17,6 +18,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KagenoNusujinSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MagicGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MolotovHuntsmanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MurdererSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
@@ -35,6 +37,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_18_Changes(changeInfos);
         add_v0_6_17_Changes(changeInfos);
         add_v0_6_16_Changes(changeInfos);
         add_v0_6_15_Changes(changeInfos);
@@ -53,6 +56,80 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_18_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta21-p2.9(圣诞)", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new AutoShopRoBotSprite(), ("自动食品售货机"),
+                ("药水癔症的新东西，会在7，12，17，22层生成。【在圣诞节期间也会在地牢中常规生成】" )));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("域名更换"),
+                ("由于原lingasdj.github.io域名已经更换为www.jdsalingzx.top,所以现在进行游戏新闻的地址更换。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("FPS帧率现在可显示"),
+                ("如果不习惯，可以到额外设置自行关闭。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("挑战改动-1"),
+                ("突变巨兽改名为基因突变，隶属于T3挑战。具体挑战说明请参考挑战介绍")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("挑战改动-2"),
+                ("支离破碎现在不会再随机楼层，NPC除了红龙之王其他都会出现")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("挑战改动-3"),
+                ("药水癔症追加自动食品售货机，把金币准备好，去售货机里面购买需要的东西吧")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("挑战改动-4"),
+                ("污泥浊水的水灵药剂的治疗不再受药水异症影响，且有效时间变为100回合")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CAKE), ("新食物:草莓蛋糕"),
+                ("在自动售货机内有售卖" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SWTR), ("新食物:魔法三明治"),
+                ("在自动售货机内有售卖" )));
+
+        changes = new ChangeInfo("调整", false, null);
+        changes.hardlight(Window.SKYBULE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GAUNTLETS), ("碧灰双刃优化"),
+                ("碧灰双刃武器优化，现在效果是鬼磷燃烧，并且修正伤害，武器反噬成为概率，并且+3后不再反噬" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SAI), ("吸血鬼刀成长调整"),
+                ("吸血鬼刀武器优化，成长数值调整" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAR_HAMMER), ("白金大剑优化"),
+                ("白金大剑武器优化，现在效果是恐惧+眩晕+燃烧，并且修正伤害，武器反噬成为概率，并且+3后不再反噬" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ICEFISHSWORD), ("尚方宝剑优化"),
+                ("尚方宝剑武器优化，现在打一次相当于1.5个回合。" )));
+
+        changes = new ChangeInfo("修复", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.INFO), ("杂项改动"),
+                ("1.修复部分文案的描述错误\n2.终焉暂时移除，将在后续特殊模式添加\n3.暂时移除红绿两剑的生成，旧档不受影响，将在未来重做后加回")));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), (Messages.get(ChangesScene.class, "bugfixes")),
+                Messages.get(vM0_6_7_X_Changes.class, "bug_06X36")));
+
+        changes = new ChangeInfo("移除", false, null);
+        changes.hardlight(Window.RED_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new MolotovHuntsmanSprite(), ("血月火把猎人"),
+                ("移除此怪物的常规生成，将在未来版本调整后加入，但不再是普通怪物类型")));
+
+        changes.addButton(new ChangeButton(new SRPDHBLRTT(), ("火把猎人"),
+                ("移除此怪物的常规生成，将在未来版本调整后加入，但不再是普通怪物类型")));
+
     }
 
     public static void add_v0_6_17_Changes( ArrayList<ChangeInfo> changeInfos ) {

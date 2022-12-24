@@ -638,6 +638,8 @@ public class ItemSpriteSheet {
 	public static final int BLAND_CHUNKS= FOOD+11;
 	public static final int BERRY =       FOOD+12;
 	public static final int LSPDA =       FOOD+13;
+	public static final int CAKE =       FOOD+14;
+	public static final int SWTR =       FOOD+15;
 	static{
 		assignItemRect(MEAT,        15, 11);
 		assignItemRect(STEAK,       15, 11);

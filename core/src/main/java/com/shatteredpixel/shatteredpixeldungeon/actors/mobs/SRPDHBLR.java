@@ -34,7 +34,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
 import com.watabou.utils.Random;
 
 public class SRPDHBLR extends Mob {
-    private static final String COMBO = "combo";
     private String[] attackCurse = {"烧，快烧起来！", "扭曲的世界",
             "滚开！",
             "你不可能再继续前进了！", "你这个狡猾的人类！", "冒险家，肮脏的冒险家！",
@@ -47,12 +46,6 @@ public class SRPDHBLR extends Mob {
             "四周好冷", "诅咒你这怪物", "相信我的同伴今晚会为我复仇"};
 
     public int generation	= 0;
-    private SRPDHBLR split() {
-        SRPDHBLR clone = new SRPDHBLR();
-        clone.generation = generation + 1;
-        clone.EXP = 0;
-        return clone;
-    }
 
     public SRPDHBLR() {
         this.spriteClass = SRPDHBLRTT.class;

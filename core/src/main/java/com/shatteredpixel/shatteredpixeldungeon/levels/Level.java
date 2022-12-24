@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -486,6 +488,9 @@ public abstract class Level implements Bundlable {
 
 		Mob m = Reflection.newInstance(mobsToSpawn.remove(0));
 		ChampionEnemy.rollForChampion(m);
+		if(Dungeon.isChallenged(SBSG)){
+			ChampionEnemy.rollForStateLing(m);
+		}
 		return m;
 	}
 
@@ -624,7 +629,10 @@ public abstract class Level implements Bundlable {
 			if (Statistics.amuletObtained) {
 				mob.beckon( Dungeon.hero.pos );
 			}
-			if (!mob.buffs(ChampionEnemy.class).isEmpty()){
+			if (!mob.buffs(ChampionEnemy.class).isEmpty() && Dungeon.isChallenged(SBSG)){
+				GLog.n(Messages.get(ChampionEnemy.class, "warn2"));
+				GLog.w(Messages.get(ChampionEnemy.class, "warn"));
+			} else if(!mob.buffs(ChampionEnemy.class).isEmpty()) {
 				GLog.w(Messages.get(ChampionEnemy.class, "warn"));
 			}
 			return true;

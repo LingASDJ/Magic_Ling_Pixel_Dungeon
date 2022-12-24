@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.ROGUE;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -104,6 +103,7 @@ public class Dungeon {
 	public static int gold;
 	public static int nyzbuy;
 	public static int boss;
+
 
 	//雪凛峡谷A
 	public static Level ColdFlowerCanyon(){
@@ -236,6 +236,7 @@ public class Dungeon {
 
 	public static int challenges;
 	public static int mobsToChampion;
+	public static int mobsToStateLing;
 
 	public static Hero hero;
 	public static Level level;
@@ -258,6 +259,7 @@ public class Dungeon {
 		version = Game.versionCode;
 		challenges = SPDSettings.challenges();
 		mobsToChampion = -1;
+		mobsToStateLing = -1;
 
 		String str = CustomGameSettings.getSeedString();
 		seed = str.equals("")?DungeonSeed.randomSeed(): SeedUtil.directConvert(str, 'A', 26);//DungeonSeed.randomSeed();
@@ -384,105 +386,6 @@ public class Dungeon {
 		//			Statistics.deepestFloor--;
 		//	}
 		//} else
-		 if (Dungeon.isChallenged(RLPT)) {
-			switch (depth) {
-				case 0:
-					level = new ZeroLevel();
-					break;
-				case 1:
-				case 2:
-				case 3:
-				case 4:
-					level = new SewerLevel();
-					break;
-				case 5:
-					if((Statistics.boss_enhance & 0x1) != 0) level = new SLMKingLevel();
-					else level = new SewerBossLevel();
-					break;
-				case 6:
-				case 7:
-				case 8:
-				case 9:
-					switch (Random.Int(2)) {
-						case 0:
-						default:
-							level = new PrisonLevel();
-							//Random
-							break;
-						case 1:
-							//Random
-							level = new CavesLevel();
-							break;
-					}
-					break;
-				case 10:
-					if((Statistics.boss_enhance & 0x2) != 0) level = new DimandKingLevel();
-					else level = new PrisonBossLevel();
-					break;
-				case 11:
-				case 12:
-				case 13:
-				case 14:
-					switch (Random.Int(2)) {
-						case 0:
-						default:
-							level = new CavesLevel();
-							break;
-						case 1:
-							level = new CityLevel();
-							break;
-					}
-					break;
-				case 15:
-					if (SPDSettings.level3boss()==3){
-						level = new CavesGirlDeadLevel();
-					} else if (SPDSettings.level3boss()==2){
-						level = new CaveTwoBossLevel();
-					} else {
-						level = new NewCavesBossLevel();
-					}
-					break;
-				case 16:
-				case 17:
-				case 18:
-				case 19:
-					switch (Random.Int(2)) {
-						case 0:
-						default:
-							level = new CityLevel();
-							break;
-						case 1:
-							level = new CavesLevel();
-							break;
-					}
-					break;
-				case 20:
-					if((Statistics.boss_enhance & 0x8) != 0) {
-						Buff.affect(hero, TestDwarfMasterLock.class).set((1), 1);
-						level = new DwarfMasterBossLevel();
-						break;
-					}
-					else level = new NewCityBossLevel();
-					break;
-				case 21:
-				case 22:
-				case 23:
-				case 24:
-					level = new HallsLevel();
-					break;
-				case 25:
-					if((Statistics.boss_enhance & 0x10) != 0) level = new YogGodHardBossLevel();
-					else level = new NewHallsBossLevel();
-					break;
-				case 26:
-					level = new LastLevel();
-					break;
-				default:
-					level = new DeadEndLevel();
-					Statistics.deepestFloor--;
-			}
-		} else
-			//正常模式
 			switch (depth) {
 				case 0:
 					level = new ZeroLevel();
@@ -593,6 +496,10 @@ public class Dungeon {
 		return depth == 12;
 	}
 
+
+	public static boolean AutoShopLevel() {
+		return depth == 7 || depth == 12 || depth == 17 || depth == 22;
+	}
 	//圣域保护
 	public static boolean GodWaterLevel() {
 		return depth == 1 ||depth == 2||depth == 3||depth == 4;
@@ -770,6 +677,8 @@ public class Dungeon {
 	private static final String QUESTS		= "quests";
 	private static final String BADGES		= "badges";
 
+	private static final String MOBS_TO_STATELING	= "mobs_to_stateling";
+
 	public static void saveGame( int save ) {
 		try {
 			Bundle bundle = new Bundle();
@@ -779,6 +688,9 @@ public class Dungeon {
 			bundle.put( SEED, seed );
 			bundle.put( CHALLENGES, challenges );
 			bundle.put( MOBS_TO_CHAMPION, mobsToChampion );
+
+			bundle.put( MOBS_TO_STATELING, mobsToStateLing );
+
 			bundle.put( HERO, hero );
 			bundle.put( DEPTH, depth );
 
@@ -878,6 +790,8 @@ public class Dungeon {
 
 		Dungeon.challenges = bundle.getInt( CHALLENGES );
 		Dungeon.mobsToChampion = bundle.getInt( MOBS_TO_CHAMPION );
+
+		Dungeon.mobsToStateLing = bundle.getInt( MOBS_TO_STATELING );
 
 		Dungeon.level = null;
 		Dungeon.depth = -1;

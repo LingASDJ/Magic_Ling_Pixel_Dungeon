@@ -25,7 +25,6 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class MolotovHuntsman extends Mob {
-    private static final String COMBO = "combo";
     private String[] attackCurse;
     private int combo;
     private String[] deathCurse;

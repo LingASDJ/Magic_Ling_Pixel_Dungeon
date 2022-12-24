@@ -46,7 +46,7 @@ public class BackGoKey extends TestItem {
     {
         image = ItemSpriteSheet.DG20;
 //        defaultAction = Dungeon.hero.buff(ShopLimitLock.class) != null? AC_INTER_TP : null ;
-        changeDefAct = true;
+        changeDefAct = false;
     }
 
     private static final String AC_INTER_TP = "interlevel_tp";

@@ -950,7 +950,6 @@ public class DimandKing extends Boss {
             summonSubject(5, DM100.class);
             summonSubject(2, DM201.class);
             summonSubject(5, DM200.class);
-            summonSubject(7, MolotovHuntsman.class);
             summonSubject(5, Skeleton.class);
             summonSubject(5, Necromancer.class);
             summonSubject(5, RedNecromancer.class);

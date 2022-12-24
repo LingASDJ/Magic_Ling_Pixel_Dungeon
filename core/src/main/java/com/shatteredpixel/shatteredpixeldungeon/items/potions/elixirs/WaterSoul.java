@@ -33,7 +33,7 @@ public class WaterSoul extends Elixir {
 
     @Override
     public void apply(Hero hero) {
-        Buff.affect(hero, WaterSoulX.class).set( (51), 1 );
+        Buff.affect(hero, WaterSoulX.class).set( (101), 1 );
         cure( hero );
         heal( hero );
         if (Dungeon.isChallenged(Challenges.NO_FOOD)){
@@ -44,15 +44,11 @@ public class WaterSoul extends Elixir {
     }
 
     public static void heal( Char ch ){
-        if (ch == Dungeon.hero && Dungeon.isChallenged(Challenges.NO_HEALING)){
-            pharmacophobiaProc(Dungeon.hero);
-        } else {
             //starts out healing 30 hp, equalizes with hero health total at level 11
             Buff.affect(ch, Healing.class).setHeal((int) (0.8f * ch.HT + 14), 0.25f, 0);
             if (ch == Dungeon.hero){
                 GLog.p( Messages.get(PotionOfHealing.class, "heal") );
             }
-        }
     }
 
     public static void pharmacophobiaProc( Hero hero ){
