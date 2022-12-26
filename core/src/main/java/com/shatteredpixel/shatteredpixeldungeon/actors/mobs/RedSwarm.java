@@ -25,8 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -41,7 +40,7 @@ import com.watabou.utils.Random;
 
 public class RedSwarm extends Mob implements Callback {
 
-    private static final float TIME_TO_ZAP	= 1f;
+    private static final float TIME_TO_ZAP	= 3f;
 
     {
         spriteClass = RedSwarmSprite.class;
@@ -65,12 +64,12 @@ public class RedSwarm extends Mob implements Callback {
 
     @Override
     public int attackSkill( Char target ) {
-        return 1;
+        return 6;
     }
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(0, 1);
+        return Random.NormalIntRange(0, 5);
     }
 
     @Override
@@ -105,7 +104,7 @@ public class RedSwarm extends Mob implements Callback {
         if (hit( this, enemy, true )) {
             //TODO would be nice for this to work on ghost/statues too
             if (enemy == Dungeon.hero && Random.Int( 2 ) == 0) {
-                Buff.prolong( enemy, Frost.class, Degrade.DURATION );
+                Buff.affect(enemy, Burning.class).reignite(enemy);
                 Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
             }
 

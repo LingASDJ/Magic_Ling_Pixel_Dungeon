@@ -68,6 +68,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.IceCityBoo
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.NoKingMobBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Cake;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
@@ -180,6 +181,7 @@ public enum HeroClass {
 //			Buff.affect(hero, ChampionHero.Giant.class, ChampionHero.DURATION);
 //			Buff.affect(hero, ChampionHero.Growing.class, ChampionHero.DURATION);
 			new Gauntlet().quantity(1).identify().collect();
+			new Cake().quantity(100).identify().collect();
 			new TengusMask().quantity(1).identify().collect();
 			new KingsCrown().quantity(1).identify().collect();
 			new ScrollOfIdentify().quantity(45).identify().collect();

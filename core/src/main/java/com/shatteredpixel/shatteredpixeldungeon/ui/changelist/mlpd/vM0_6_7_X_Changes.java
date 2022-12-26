@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AutoShopRoBotSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlueBatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdGuardSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdRatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
@@ -20,6 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MagicGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MolotovHuntsmanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MurdererSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.RedSwarmSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SlimeKingSprite;
@@ -37,6 +39,8 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_20_Changes(changeInfos);
+        add_v0_6_19_Changes(changeInfos);
         add_v0_6_18_Changes(changeInfos);
         add_v0_6_17_Changes(changeInfos);
         add_v0_6_16_Changes(changeInfos);
@@ -56,6 +60,71 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_20_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("Coming Soon-Beta21--P3", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.AMULET), ("MLPD上半段-试炼与水晶之心"),
+                ("我们成功的拿到了水晶之心，然而我们在最终调查中得知YOG不是真正的罪魁祸首……" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG20), ("BossRush"),
+                ("常规的开局你可能已经有所厌倦，地牢中的首领也是如此。这一次，不为成败，只为实力而战" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ICEBOOK), ("新年活动"),
+                ("新年的钟声即将敲响，你接到了一份神秘的邀请……")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FIREDVS), ("重构世界观"),
+                ("魔绫的像素地牢已经陪你走过一个春秋了，然而，魔绫的剧情，你是否清楚呢？")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKELETONGOLD), ("部分Boss重做"),
+                ("为了让魔绫和底层破碎更能区分，部分boss会进行改进或者重做。敬请期待")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ICEDVS), ("不止于此"),
+                ("P3的更新远远不止这些，而且这次我们会将一些想法和建议交给玩家，让我们一起制作P3吧，完善上半段旅程吧。")));
+    }
+
+    public static void add_v0_6_19_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta21-p2.910", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new AutoShopRoBotSprite(), ("自动食品售货机新房间"),
+                ("房间会在游戏中生成，里面有固定四个普通补给宝箱，且有5%的概率出现两个金宝箱(二选一)。\n\n但售货机只会在节日期间" +
+                        "(万圣，圣诞，中秋，国庆）或开启药水癔症挑战后出现。且售货机随着地牢深度的增加，商品购买的金币会有所追加。" )));
+
+        changes = new ChangeInfo("修复", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), (Messages.get(ChangesScene.class, "bugfixes")),
+                Messages.get(vM0_6_7_X_Changes.class, "bug_06X37")));
+
+        changes = new ChangeInfo("调整", false, null);
+        changes.hardlight(Window.SKYBULE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new RedSwarmSprite(), ("血红苍蝇"),
+                ("数值调整，攻击动画加入，远程魔法攻击3回合一次，并且有概率造成目标燃烧。" )));
+
+        changes.addButton(new ChangeButton(new ColdRatSprite(), ("寒冰魔鼠"),
+                ("数值调整，攻击动画加入,远程魔法攻击3回合一次" )));
+
+        changes.addButton(new ChangeButton(new MagicGirlSprite(), ("寒冰魔女调整"),
+                ("攻击AI调整，攻击动画加入，加入新的攻击策略，自身低血量时踩水不再狂暴" )));
+
+        changes.addButton(new ChangeButton(new IceStalSprites(), ("浊焰魔女调整"),
+                ("激光攻击延长，攻击AI调整，攻击动画加入。" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CAKE), ("草莓奶油芝士蛋糕"),
+                ("获得力量概率为9%，且每局游戏最多获得两次力量。之后触发将会转换为英雄血量25%的奥术护盾。" )));
+
     }
 
     public static void add_v0_6_18_Changes( ArrayList<ChangeInfo> changeInfos ) {
@@ -345,10 +414,10 @@ public class vM0_6_7_X_Changes {
         changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.GOBUFF_UPRD, true), "灯火专有-Gobuff",
                 "追加了6种增益Buff\n\n" +
                         "纯洁的赞歌:\n" +
-                        "前路 本大层内，饥饿高于90%的情况下，获得每回合+2的血量。\n" +
+                        "前路 本大层内，饥饿高于50%的情况下，获得每回合+2的血量。\n" +
                         "富饶 本大层内，商店打3折!\n" +
                         "守护 本大层内，满血可额外获得一些护盾值 冷却：300回合\n" +
-                        "安息 本大层内，玩家伤害x2倍\n" +
+                        "安息 本大层内，玩家物理伤害x2倍\n" +
                         "隐没 本大层内，玩家免疫魔法效果和减免20%伤害\n" +
                         "坚毅 本大层内，玩家力量+8"));
 

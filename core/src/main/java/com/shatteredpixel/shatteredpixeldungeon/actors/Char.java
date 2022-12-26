@@ -561,6 +561,11 @@ public abstract class Char extends Actor {
 		if ( buff( Haste.class ) != null) speed *= 3f;
 		if ( buff( HasteLing.class ) != null) speed *= 3f;
 		if ( buff( Dread.class ) != null) speed *= 2f;
+
+		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
+			speed *= buff.speedFactor();
+		}
+
 		return speed;
 	}
 	

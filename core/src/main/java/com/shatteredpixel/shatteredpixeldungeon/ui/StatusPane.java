@@ -270,7 +270,7 @@ public class StatusPane extends Component {
 			heroInfoOnBar.setRect(heroInfo.right(), y + 19, 130, 20);
 
 			if(SPDSettings.FPSLimit()) {
-				fpsText.scale.set(PixelScene.align(0.9f));
+				fpsText.scale.set(PixelScene.align(0.8f));
 				fpsText.x = MenuPane.version.x - 15;
 				fpsText.y = MenuPane.version.y - 10;
 				PixelScene.align(fpsText);
@@ -323,7 +323,7 @@ public class StatusPane extends Component {
 			buffs.setPos( x + 31, y + 12 );
 
 			if(SPDSettings.FPSLimit()) {
-				fpsText.scale.set(PixelScene.align(0.9f));
+				fpsText.scale.set(PixelScene.align(0.8f));
 				fpsText.x = MenuPane.version.x - 15;
 				fpsText.y = MenuPane.version.y - 10;
 				PixelScene.align(fpsText);

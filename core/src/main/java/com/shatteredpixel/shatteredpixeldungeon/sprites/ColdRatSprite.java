@@ -17,7 +17,6 @@ public class ColdRatSprite extends MobSprite {
         super();
 
         texture( Assets.Sprites.COLDRAT );
-
         TextureFilm frames = new TextureFilm( texture, 16, 15 );
 
         idle = new Animation( 2, true );
@@ -31,6 +30,8 @@ public class ColdRatSprite extends MobSprite {
 
         die = new Animation( 10, false );
         die.frames( frames, 11, 12, 13, 14 );
+
+        zap = attack.clone();
 
         play( idle );
     }

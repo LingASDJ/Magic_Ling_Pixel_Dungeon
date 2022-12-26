@@ -41,7 +41,7 @@ import com.watabou.utils.Random;
 
 public class ColdMagicRat extends Mob implements Callback {
 
-    private static final float TIME_TO_ZAP	= 1f;
+    private static final float TIME_TO_ZAP	= 3f;
 
     {
         spriteClass = ColdRatSprite.class;
@@ -65,7 +65,7 @@ public class ColdMagicRat extends Mob implements Callback {
 
     @Override
     public int attackSkill( Char target ) {
-        return 1;
+        return 8;
     }
 
     @Override
@@ -109,7 +109,7 @@ public class ColdMagicRat extends Mob implements Callback {
                 Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
             }
 
-            int dmg = Random.NormalIntRange( 2, 4 );
+            int dmg = Random.NormalIntRange( 10, 12 );
             enemy.damage( dmg, new DarkBolt() );
 
             if (enemy == Dungeon.hero && !enemy.isAlive()) {

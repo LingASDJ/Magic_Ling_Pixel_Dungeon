@@ -53,7 +53,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoRead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMixShiled;
@@ -255,6 +254,9 @@ public class Hero extends Char {
 
 	//TODO 灯火前行
 	public int lanterfire;
+
+	//蛋糕
+	public int CakeUsed;
 	
 	public int HTBoost = 0;
 	
@@ -330,6 +332,8 @@ public class Hero extends Char {
 
 	private static final String LANTERFTR     = "lanterfire";
 
+	private static final String CAKEUSED     = "cakeused";
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 
@@ -350,7 +354,7 @@ public class Hero extends Char {
 		bundle.put( EXPERIENCE, exp );
 		bundle.put( HTBOOST, HTBoost );
 
-
+		bundle.put( CAKEUSED, CakeUsed );
 
 		if (!this.name.equals("")) {
 			bundle.put("name", this.name);
@@ -380,6 +384,8 @@ public class Hero extends Char {
 		defenseSkill = bundle.getInt( DEFENSE );
 		
 		STR = bundle.getInt( STRENGTH );
+
+		CakeUsed = bundle.getInt( CAKEUSED);
 
 		String name;
 		if (bundle.contains("name")) {
@@ -948,14 +954,12 @@ public class Hero extends Char {
 
 			switch (Random.Int(3)){
 				case 0: default:
-					Buff.affect(hero, BlessGoRead.class).set( (100), 1 );
-				case 1:
 					Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
 					break;
-				case 2:
+				case 1:
 					Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
 					break;
-				case 3:
+				case 2:
 					Buff.affect(hero, BlessImmune.class).set( (100), 1 );
 					break;
 			}

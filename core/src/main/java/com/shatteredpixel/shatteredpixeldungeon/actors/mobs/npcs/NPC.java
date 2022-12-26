@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.watabou.utils.PathFinder;
@@ -47,6 +48,11 @@ public abstract class NPC extends Mob {
 	}
 	@Override
 	public void beckon( int cell ) {
+	}
+
+	@Override
+	public void add( Buff buff ) {
+		//lee();
 	}
 
 }

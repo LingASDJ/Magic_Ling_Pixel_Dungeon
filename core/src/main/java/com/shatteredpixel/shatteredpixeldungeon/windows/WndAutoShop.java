@@ -40,9 +40,10 @@ public class WndAutoShop extends Window {
         IconTitle titlebar = new IconTitle();
         titlebar.setRect(0, 0, WIDTH, 0);
         titlebar.icon(new AutoShopRoBotSprite());
-        titlebar.label(Messages.get(WndAutoShop.class,"welcome"));
+        titlebar.label(Messages.get(WndAutoShop.class,"welcome") );
         add( titlebar );
-        RenderedTextBlock message = PixelScene.renderTextBlock( (Messages.get(WndAutoShop.class,"xwelcome")), 6 );
+        RenderedTextBlock message =
+                PixelScene.renderTextBlock( (Messages.get(WndAutoShop.class,"xwelcome"))+ 200 * (Dungeon.depth / 5) +(Messages.get(WndAutoShop.class,"gold")), 6 );
         message.maxWidth(WIDTH);
         message.setPos(0, titlebar.bottom() + GAP);
         add( message );
@@ -143,8 +144,8 @@ public class WndAutoShop extends Window {
                                 buff.detach();
                             }
                         }
-                    } else if(Dungeon.gold > 200) {
-                        Dungeon.gold-=200* Random.Int(2)+hero.lvl/5+10;
+                    } else if(Dungeon.gold > 200 * (Dungeon.depth/5)) {
+                        Dungeon.gold-=200 * (Dungeon.depth/5);
                         WndAutoShop.this.selectReward( item );
                         if(Dungeon.hero.buff(AutoRandomBuff.class) != null) {
                             AutoRandomBuff.level -= Random.Int(4);

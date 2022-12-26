@@ -40,6 +40,20 @@ public class AutoShopReBot extends NPC {
     }
 
     @Override
+    public void damage( int dmg, Object src ) {
+    }
+
+    @Override
+    public int defenseSkill( Char enemy ) {
+        return INFINITE_EVASION;
+    }
+
+    @Override
+    public boolean reset() {
+        return true;
+    }
+
+    @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         first = bundle.getBoolean(FIRST);

@@ -3,13 +3,16 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.FireMagicDied;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Callback;
 
 import java.util.ArrayList;
 
@@ -45,7 +48,7 @@ public class FireMagicGirlSprite extends MobSprite {
 
         die = new Animation( 10, false );
         die.frames( frames,2,3,4,5 );
-
+        zap = attack.clone();
         play(idle);
 
         spray = centerEmitter();
@@ -119,6 +122,30 @@ public class FireMagicGirlSprite extends MobSprite {
         super.update();
         spray.pos(center());
         spray.visible = visible;
+    }
+
+    @Override
+    public void attack( int cell ) {
+        if (!Dungeon.level.adjacent(cell, ch.pos)) {
+            play( zap );
+            MagicMissile.boltFromChar( parent,
+                    MagicMissile.FIRE,
+                    this,
+                    cell,
+                    new Callback() {
+                        @Override
+                        public void call() {
+                            ((FireMagicDied)ch).onZapComplete();
+                        }
+                    } );
+            Sample.INSTANCE.play( Assets.Sounds.ZAP );
+            turnTo( ch.pos , cell );
+
+        } else {
+
+            super.attack( cell );
+
+        }
     }
 
     @Override

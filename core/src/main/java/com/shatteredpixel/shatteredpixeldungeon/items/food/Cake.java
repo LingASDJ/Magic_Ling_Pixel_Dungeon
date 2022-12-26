@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -43,13 +44,19 @@ public class Cake extends Food {
     @Override
     protected void satisfy(Hero hero) {
         Buff.prolong( hero, Haste.class, 10f);
-        if(Random.Float()<0.45f) {
+        if(Random.Float()<0.09f && hero.CakeUsed<2) {
             hero.STR++;
+            hero.CakeUsed++;
             hero.sprite.showStatus(CharSprite.POSITIVE, "+1");
             GLog.p(Messages.get(this, "eat_good"));
+        } else if (hero.CakeUsed==2 && Random.Float()<0.09f) {
+            Buff.affect(hero, Barrier.class).setShield(((hero.HT/4)));
+            GLog.p(Messages.get(this, "eat_good2"));
+        } else {
+            Buff.affect(hero, Healing.class).setHeal((int) (0.4f * hero.HT/5 ), 0.25f, 0);
+            cure( hero );
         }
-        Buff.affect(hero, Healing.class).setHeal((int) (0.4f * hero.HT/5), 0.25f, 0);
-        cure( hero );
+
         super.satisfy( hero );
     }
 

@@ -549,13 +549,13 @@ public abstract class Mob extends Char {
 	public float attackDelay() {
 		float delay = 1f;
 		if ( buff(Adrenaline.class) != null) delay /= 1.5f;
-		return super.attackDelay()*(Dungeon.isChallenged(Challenges.SBSG) ? (0.5f * scaleFactor) :  delay);
+		return super.attackDelay()*(delay);
 	}
 
 	@Override
 	public int attackProc(Char enemy, int damage) {
 		return super.attackProc(enemy,
-				(int) (damage*(Dungeon.isChallenged(Challenges.SBSG) ? (0.6f * scaleFactor) : 1)));
+				(int) (damage*(Dungeon.isChallenged(SBSG) ? (0.6f * scaleFactor) : 1)));
 	}
 	
 	protected boolean doAttack( Char enemy ) {
@@ -583,23 +583,10 @@ public abstract class Mob extends Char {
 		if ( !surprisedBy(enemy)
 				&& paralysed == 0
 				&& !(alignment == Alignment.ALLY && enemy == hero)) {
-			return (int) (this.defenseSkill/(Dungeon.isChallenged(Challenges.SBSG) ? (0.4f * scaleFactor) : 1));
+			return (int) (this.defenseSkill/(Dungeon.isChallenged(SBSG) ? (0.4f * scaleFactor) : 1));
 		} else {
 			return 0;
 		}
-	}
-
-	@Override
-	public float speed() {
-
-		if(Dungeon.isChallenged(SBSG)) {
-			//移速控制
-			for (ChampionEnemy buff : buffs(ChampionEnemy.class)) {
-				baseSpeed = buff.speedFactor();
-			}
-		}
-
-		return super.speed() * (1);
 	}
 	
 	protected boolean hitWithRanged = false;

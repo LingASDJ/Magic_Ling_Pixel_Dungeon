@@ -16,7 +16,7 @@ public class Switch extends Food {
 
     @Override
     protected void satisfy(Hero hero) {
-        Buff.affect(hero, Barrier.class).setShield(((20 * Dungeon.depth/5)));
+        Buff.affect(hero, Barrier.class).setShield(((20 + 20 * Dungeon.depth/5)));
         super.satisfy( hero );
     }
 

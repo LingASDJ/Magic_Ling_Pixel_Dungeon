@@ -82,9 +82,9 @@ public class FireMagicDied extends Mob implements Callback {
     private static final float TIME_TO_ZAP = 6f;
 
     {
-        HP = HT = 500;
+        HP = HT = 400;
         EXP = 80;
-        defenseSkill = 10;
+        defenseSkill = 1;
         spriteClass = FireMagicGirlSprite.class;
         flying = true;
         properties.add(Property.BOSS);
@@ -127,35 +127,6 @@ public class FireMagicDied extends Mob implements Callback {
         return (int)(super.defenseSkill(enemy) * ((HP*2 <= HT)? 1.5 : 1));
     }
     private float[] skillBalance = new float[]{100f, 100f, 100f};
-    private void actScanning(){
-        if(phase>0) {
-            --beamCD;
-            if (beamCD <= 0) {
-                Buff.detach(this, FireMagicDied.YogScanHalf.class);
-                int skill = Random.chances(skillBalance);
-                if (skill == 0) {
-                    Char enemy = (this.enemy == null ? Dungeon.hero : this.enemy);
-                    int w = Dungeon.level.width();
-                    int dx = enemy.pos % w - pos % w;
-                    int dy = enemy.pos / w - pos / w;
-                    int direction = 2 * (Math.abs(dx) > Math.abs(dy) ? 0 : 1);
-                    direction += (direction > 0 ? (dy > 0 ? 1 : 0) : (dx > 0 ? 1 : 0));
-                    Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);
-                    skillBalance[skill] /= 1.75f;
-                    beamCD = 20 + 8 - (phase == 5 ? 19 : 0);
-                    Buff.affect(this, Healing.class).setHeal(5, 0f, 6);
-                    sprite.showStatus(0xff0000, Messages.get(this, "dead"));
-                } else {
-                    Buff.affect(this, YogReal.YogScanRound.class).setPos(pos);
-                    skillBalance[skill] /= 2f;
-                    Buff.affect(this, Healing.class).setHeal(5, 0f, 6);
-                    beamCD = 20 + 10 - (phase == 5?19:0);
-                    sprite.showStatus(0x00ff00, Messages.get(this, "life"));
-
-                }
-            }
-        }
-    }
 
     @Override
     public int drRoll() {
@@ -354,7 +325,7 @@ public class FireMagicDied extends Mob implements Callback {
     @Override
     public boolean act() {
         if (phase == 1 && HP <= 350) {
-            actScanning();
+            //actScanning();
             if (Dungeon.level.water[pos] && HP < HT) {
                 HP += healInc;
 
@@ -502,10 +473,12 @@ public class FireMagicDied extends Mob implements Callback {
             return Dungeon.level.distance(enemy.pos, pos) <= 2
                     && new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos
                     && new Ballistica( enemy.pos, pos, Ballistica.PROJECTILE).collisionPos == pos;
-        } else if(HP > 400) {
-            return super.canAttack(enemy);
+        } else if(HP < 200) {
+            return Dungeon.level.distance(enemy.pos, pos) <= 3
+                    && new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos
+                    && new Ballistica( enemy.pos, pos, Ballistica.PROJECTILE).collisionPos == pos;
         } else {
-            return new Ballistica(pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
+            return super.canAttack(enemy);
         }
     }
 
@@ -578,18 +551,17 @@ public class FireMagicDied extends Mob implements Callback {
     @Override
     public int attackProc( Char enemy, int damage ) {
         damage = super.attackProc( enemy, damage );
-        if(HP > 450){
+        if(HP > 300){
             if (Random.Int( 3 ) == 0) {
                 Buff.affect( hero, HalomethaneBurning.class ).reignite( hero, 7f );
                 enemy.sprite.burst( 0x000000, 5 );
             }
-        } else if (HP > 400) {
+        } else if (HP < 200) {
             if (Random.NormalFloat( 2, 9 ) == 4) {
                 GLog.n( Messages.get(FireMagicDied.class, "died_kill",Dungeon.hero.name()) );
             }
             zap();
         } else {
-            zap();
             //doYogLasers();
             if (Random.Int( 3 ) == 0) {
                 Buff.affect( hero, HalomethaneBurning.class ).reignite( hero, 24f );
@@ -661,17 +633,17 @@ public class FireMagicDied extends Mob implements Callback {
         return result;
     }
 
-    @Override
-    protected boolean getCloser(int target) {
-        this.pumpedUp = 0;
-        if (this.state != this.HUNTING) {
-            return FireMagicDied.super.getCloser(target);
-        }
-        if (!this.enemySeen || !getFurther(target)) {
-            return false;
-        }
-        return true;
-    }
+//    @Override
+//    protected boolean getCloser(int target) {
+//        this.pumpedUp = 0;
+//        if (this.state != this.HUNTING) {
+//            return FireMagicDied.super.getCloser(target);
+//        }
+//        if (!this.enemySeen || !getFurther(target)) {
+//            return false;
+//        }
+//        return true;
+//    }
 
     @Override
     public void damage(int dmg, Object src) {
@@ -718,7 +690,7 @@ public class FireMagicDied extends Mob implements Callback {
         } else if (phase == 2 && shielding() == 0 && HP <= 200) {
             actPhaseTwoSummon();
             yell(  Messages.get(this, "enraged" ));
-            GLog.n(  Messages.get(this, "xslx") );
+            GLog.pink(  Messages.get(this, "xslx") );
 
             //T3 阶段
             CrystalLingTower abc = new CrystalLingTower();
@@ -736,7 +708,7 @@ public class FireMagicDied extends Mob implements Callback {
                     buff.detach();
                 }
             }
-            actScanning();
+            //actScanning();
             phase = 3;
             summonsMade = 0;
             sprite.idle();

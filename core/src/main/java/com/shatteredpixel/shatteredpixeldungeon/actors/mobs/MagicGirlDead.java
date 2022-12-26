@@ -10,10 +10,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArcaneArmor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
@@ -36,14 +34,13 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GME;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BeamCustom;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.MissileSpriteCustom;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SnowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
@@ -68,6 +65,7 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class MagicGirlDead extends Boss {
     {
@@ -80,7 +78,11 @@ public class MagicGirlDead extends Boss {
         HT=400;
         viewDistance = 18;
     }
-
+    //the actual affected cells
+    private HashSet<Integer> affectedCells;
+    //the cells to trace fire shots to, for visual effects.
+    private HashSet<Integer> visualCells;
+    private int direction = 0;
     {
         immunities.add(Sleep.class);
 
@@ -146,6 +148,108 @@ public class MagicGirlDead extends Boss {
         yell(Messages.get(this, "damaged"));
     }
 
+    protected void onZap( Ballistica bolt ) {
+
+        for( int cell : affectedCells){
+
+            //ignore caster cell
+            if (cell == bolt.sourcePos){
+                continue;
+            }
+
+            //only ignite cells directly near caster if they are flammable
+            if (!Dungeon.level.adjacent(bolt.sourcePos, cell)
+                    || Dungeon.level.flamable[cell]){
+                GameScene.add( Blob.seed( cell, 1+2, Freezing.class ) );
+            }
+        }
+    }
+
+    public void shoot(Char ch, int pos){
+        final Ballistica shot = new Ballistica( ch.pos, pos, Ballistica.MAGIC_BOLT);
+        fx(shot, new Callback() {
+            @Override
+            public void call() {
+                onZap(shot);
+            }
+        }, ch);
+    }
+
+    protected void fx(Ballistica bolt, Callback callback, Char ch ) {
+        //need to perform flame spread logic here so we can determine what cells to put flames in.
+        affectedCells = new HashSet<>();
+        visualCells = new HashSet<>();
+
+        int maxDist = 4 + 4*4;
+        int dist = Math.min(bolt.dist, maxDist);
+
+        for (int i = 0; i < PathFinder.CIRCLE8.length; i++){
+            if (bolt.sourcePos+PathFinder.CIRCLE8[i] == bolt.path.get(1)){
+                direction = i;
+                break;
+            }
+        }
+
+        float strength = maxDist;
+        for (int c : bolt.subPath(1, dist)) {
+            strength--; //as we start at dist 1, not 0.
+            affectedCells.add(c);
+            if (strength > 1) {
+                spreadFlames(c + PathFinder.CIRCLE8[left(direction)], strength - 1);
+                spreadFlames(c + PathFinder.CIRCLE8[direction], strength - 1);
+                spreadFlames(c + PathFinder.CIRCLE8[right(direction)], strength - 1);
+            } else {
+                visualCells.add(c);
+            }
+        }
+
+        //going to call this one manually
+        visualCells.remove(bolt.path.get(dist));
+
+        for (int cell : visualCells){
+            //this way we only get the cells at the tip, much better performance.
+            ((MagicMissile)ch.sprite.parent.recycle( MagicMissile.class )).reset(
+                    MagicMissile.FROST,
+                    ch.sprite,
+                    cell,
+                    null
+            );
+        }
+        MagicMissile.boltFromChar( ch.sprite.parent,
+                MagicMissile.FROST,
+                ch.sprite,
+                bolt.path.get(dist/2),
+                callback );
+        if(Dungeon.level.heroFOV[bolt.sourcePos] || Dungeon.level.heroFOV[bolt.collisionPos]){
+            Sample.INSTANCE.play( Assets.Sounds.ZAP );
+        }
+    }
+
+
+    //burn... BURNNNNN!.....
+    private void spreadFlames(int cell, float strength){
+        if (strength >= 0 && (Dungeon.level.passable[cell] || Dungeon.level.flamable[cell])){
+            affectedCells.add(cell);
+            if (strength >= 1.5f) {
+                visualCells.remove(cell);
+                spreadFlames(cell + PathFinder.CIRCLE8[left(direction)], strength - 1.5f);
+                spreadFlames(cell + PathFinder.NEIGHBOURS9[direction], strength - 1.5f);
+                spreadFlames(cell + PathFinder.CIRCLE8[right(direction)], strength - 1.5f);
+            } else {
+                visualCells.add(cell);
+            }
+        } else if (!Dungeon.level.passable[cell])
+            visualCells.add(cell);
+    }
+
+    private int left(int direction){
+        return direction == 0 ? 3 : direction-1;
+    }
+
+    private int right(int direction){
+        return direction == 7 ? 0 : direction+1;
+    }
+    private static final float TIME_TO_BURN	= 6f;
     @Override
     public boolean act(){
         if(paralysed>0){
@@ -163,11 +267,15 @@ public class MagicGirlDead extends Boss {
                 GLog.b("……你妄图使用这种方法来逃脱吗？");
             }
         }
+
         if(buff(RageAndFire.class)!=null){
             //if target is locked, fire, target = -1
             if(lastTargeting != -1){
                 //no spend, execute next act
-                fireProc(lastTargeting);
+                    sprite.attack( enemy.pos );
+                    spend( attackDelay()*5f );
+                    shoot(this, enemy.pos);
+
                 return true;
                 //else try to lock target
             }else if(findTargetLocation()) {
@@ -193,27 +301,14 @@ public class MagicGirlDead extends Boss {
 
         if (Dungeon.level.map[step] == Terrain.WATER && state == HUNTING) {
 
-            if (Dungeon.level.heroFOV[step] && HP < 200) {
-                if (buff(Haste.class) == null) {
-                    Buff.affect(this, Barrier.class).setShield( 20);
-                    Buff.affect(this, Haste.class, 5f);
-                    Buff.affect(this, ArcaneArmor.class).set(Dungeon.hero.lvl + 10, 10);
-                    Buff.affect(this, Healing.class).setHeal(10, 0f, 6);
-                    new SRPDICLRPRO().spawnAround(pos);
-                    Buff.affect(this, Adrenaline.class, 20f);
-                    yell( Messages.get(this, "arise2") );
-                    GLog.b(Messages.get(this, "shield2"));
-                    enemy.sprite.showStatus(0x00ffff, ("游戏开始！！！"));
-                }
-                sprite.emitter().start(SparkParticle.STATIC, 0.05f, 20);
-            } else if (Dungeon.level.heroFOV[step]) {
+            if (Dungeon.level.heroFOV[step]) {
                 if (buff(Haste.class) == null) {
                     Buff.affect(this, Haste.class, 10f);
                     Buff.affect(this, Healing.class).setHeal(42, 0f, 6);
                     new SRPDICLRPRO().spawnAround(pos);
                     yell( Messages.get(this, "arise") );
                     GLog.b(Messages.get(this, "shield"));
-                    enemy.sprite.showStatus(0x00ffff, ("不自量力！！！"));
+                    enemy.sprite.showStatus(0x00ffff, ("！！！"));
                 }
                 sprite.emitter().start(SparkParticle.STATIC, 0.05f, 20);
             }
@@ -570,36 +665,6 @@ public class MagicGirlDead extends Boss {
 
             }
         }
-    }
-
-    protected void fireProc(int targetCell){
-        Ballistica ballistica = new Ballistica(pos, targetCell, Ballistica.PROJECTILE);
-        ((MissileSpriteCustom)sprite.parent.recycle(MissileSpriteCustom.class)).reset(
-                sprite, ballistica.collisionPos, new Bomb(), 10f, 2.0f,
-                new Callback() {
-                    @Override
-                    public void call() {
-                        int[] cells = GME.NEIGHBOURS5();
-                        for(int i: cells){
-                            int c = i+ballistica.collisionPos;
-                            Char ch = findChar(c);
-                            if(ch!=null){
-                                if(ch.alignment != Alignment.ENEMY){
-                                    int damage = Random.Int(14, 24);
-                                    damage -= ch.drRoll();
-                                    ch.damage(damage, this);
-                                    if(ch == hero && !ch.isAlive()){
-                                        Dungeon.fail(this.getClass());
-                                    }
-                                }
-                            }
-                            CellEmitter.center(c).burst(SnowParticle.FACTORY, 15);
-                        }
-
-                    }
-                }
-        );
-        lastTargeting = -1;
     }
 
     protected boolean findTargetLocation(){

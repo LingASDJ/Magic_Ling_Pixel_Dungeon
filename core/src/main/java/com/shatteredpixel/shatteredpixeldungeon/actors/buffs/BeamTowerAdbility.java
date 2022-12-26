@@ -68,7 +68,7 @@ public class BeamTowerAdbility extends Buff {
         } else if (stateLoop == 4) {
             stateLoop++;
             FloatingText.show(p.x, p.y, "x", 0xFF8055);
-        } else if (stateLoop == 5) {
+        } else if (stateLoop == 8) {
             int w = Dungeon.level.width();
             int[] tile = {w + 1, w - 1, -w + 1, -w - 1};
             for (int i = 0; i < 4; ++i) {
@@ -77,10 +77,10 @@ public class BeamTowerAdbility extends Buff {
                 beamProc(b);
             }
             stateLoop++;
-        } else if (stateLoop == 6) {
+        } else if (stateLoop == 9) {
             stateLoop++;
             FloatingText.show(p.x, p.y, "S", 0x00ffff);
-        } else if (stateLoop == 7) {
+        } else if (stateLoop == 13) {
             int w = Dungeon.level.width();
             int[] tile = {w, w - 5, -w + 5, -w};
             for (int i = 0; i < 4; ++i) {
@@ -90,10 +90,10 @@ public class BeamTowerAdbility extends Buff {
                 beamProc(b);
             }
             stateLoop++;
-        } else if (stateLoop == 10) {
+        } else if (stateLoop == 16) {
             stateLoop++;
             FloatingText.show(p.x, p.y, "※", 0x00ffff);
-        } else if (stateLoop == 11) {
+        } else if (stateLoop == 18) {
             int w = Dungeon.level.width();
             int[] tile = {w + 1, w - 1, -w + 1, -w - 1};
             for (int i = 0; i < 4; ++i) {
@@ -101,7 +101,7 @@ public class BeamTowerAdbility extends Buff {
                 target.sprite.parent.add(new Beam.DeathRay(DungeonTilemap.raisedTileCenterToWorld(b.sourcePos), DungeonTilemap.raisedTileCenterToWorld(b.collisionPos)));
                 beamProc(b);
             }
-            if (stateLoop == 11) {
+            if (stateLoop == 18) {
                 int wx = Dungeon.level.width();
                 int[] tilex = {w, -wx, 1, -1};
                 for (int i = 0; i < 4; ++i) {
@@ -112,7 +112,7 @@ public class BeamTowerAdbility extends Buff {
                 }
             }
             stateLoop = 0;
-        } else if (stateLoop == 0 || stateLoop == 3|| stateLoop == 8|| stateLoop == 9) {
+        } else if (stateLoop == 0 || stateLoop >= 3 && stateLoop <= 17) {
             stateLoop++;
         } else {
             stateLoop = 0;

@@ -435,6 +435,9 @@ public class InterlevelScene extends PixelScene {
 	private void returnPO() throws IOException {
 		Mob.holdAllies( Dungeon.level );
 		hero.STR = 10;
+
+		hero.CakeUsed = 0;
+
 		hero.lvl = 1;
 		InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1 - (Dungeon.depth-2)%5));
 		InterlevelScene.returnPos = -1;
