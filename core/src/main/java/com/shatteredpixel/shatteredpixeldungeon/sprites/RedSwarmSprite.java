@@ -30,50 +30,51 @@ import com.watabou.utils.Callback;
 
 public class RedSwarmSprite extends MobSprite {
 
-    public RedSwarmSprite() {
-        super();
+  public RedSwarmSprite() {
+    super();
 
-        texture( Assets.Sprites.REDSWARM );
+    texture(Assets.Sprites.REDSWARM);
 
-        TextureFilm frames = new TextureFilm( texture, 16, 16 );
+    TextureFilm frames = new TextureFilm(texture, 16, 16);
 
-        idle = new Animation( 15, true );
-        idle.frames( frames, 0, 1, 2, 3, 4, 5 );
+    idle = new Animation(15, true);
+    idle.frames(frames, 0, 1, 2, 3, 4, 5);
 
-        run = new Animation( 15, true );
-        run.frames( frames, 0, 1, 2, 3, 4, 5 );
+    run = new Animation(15, true);
+    run.frames(frames, 0, 1, 2, 3, 4, 5);
 
-        attack = new Animation( 20, false );
-        attack.frames( frames, 6, 7, 8, 9 );
+    attack = new Animation(20, false);
+    attack.frames(frames, 6, 7, 8, 9);
 
-        die = new Animation( 15, false );
-        die.frames( frames, 10, 11, 12, 13, 14 );
+    die = new Animation(15, false);
+    die.frames(frames, 10, 11, 12, 13, 14);
 
-        zap = attack.clone();
+    zap = attack.clone();
 
-        play( idle );
-    }
+    play(idle);
+  }
 
-    public void zap( int cell ) {
+  public void zap(int cell) {
 
-        turnTo( ch.pos , cell );
-        play( zap );
+    turnTo(ch.pos, cell);
+    play(zap);
 
-        MagicMissile.boltFromChar( parent,
-                MagicMissile.FIRE,
-                this,
-                cell,
-                new Callback() {
-                    @Override
-                    public void call() {
-                        ((RedSwarm)ch).onZapComplete();
-                    }
-                } );
-        Sample.INSTANCE.play( Assets.Sounds.ZAP );
-    }
+    MagicMissile.boltFromChar(
+        parent,
+        MagicMissile.FIRE,
+        this,
+        cell,
+        new Callback() {
+          @Override
+          public void call() {
+            ((RedSwarm) ch).onZapComplete();
+          }
+        });
+    Sample.INSTANCE.play(Assets.Sounds.ZAP);
+  }
 
-    @Override
-    public int blood() {
-        return 0xFF8BA077;
-    }
+  @Override
+  public int blood() {
+    return 0xFF8BA077;
+  }
 }

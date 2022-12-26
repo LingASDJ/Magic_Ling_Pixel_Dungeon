@@ -9,20 +9,19 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class Switch extends Food {
 
-    {
-        image = ItemSpriteSheet.SWTR;
-        energy = Hunger.HUNGRY-50f;
-    }
+  {
+    image = ItemSpriteSheet.SWTR;
+    energy = Hunger.HUNGRY - 50f;
+  }
 
-    @Override
-    protected void satisfy(Hero hero) {
-        Buff.affect(hero, Barrier.class).setShield(((20 + 20 * Dungeon.depth/5)));
-        super.satisfy( hero );
-    }
+  @Override
+  protected void satisfy(Hero hero) {
+    Buff.affect(hero, Barrier.class).setShield(((20 + 20 * Dungeon.depth / 5)));
+    super.satisfy(hero);
+  }
 
-    @Override
-    public int value() {
-        return 50 * quantity;
-    }
-
+  @Override
+  public int value() {
+    return 50 * quantity;
+  }
 }

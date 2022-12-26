@@ -20,195 +20,184 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.watabou.utils.Random;
-
 import java.util.Calendar;
 
 public class AutoShopRoom extends SpecialRoom {
 
-    public AutoShopRoom() {
-    }
+  public AutoShopRoom() {}
 
-    public int minWidth() {
-        return 9;
-    }
+  public int minWidth() {
+    return 9;
+  }
 
-    public int minHeight() {
-        return 9;
-    }
+  public int minHeight() {
+    return 9;
+  }
 
-    private static RegularLevel.Holiday holiday;
+  private static RegularLevel.Holiday holiday;
 
-    public enum Holiday{
-        NONE,
-        ZQJ, //TBD
-        HWEEN,//2nd week of october though first day of november
-        XMAS //3rd week of december through first week of january
-    }
+  public enum Holiday {
+    NONE,
+    ZQJ, // TBD
+    HWEEN, // 2nd week of october though first day of november
+    XMAS // 3rd week of december through first week of january
+  }
 
-    static{
+  static {
+    holiday = RegularLevel.Holiday.NONE;
 
-        holiday = RegularLevel.Holiday.NONE;
-
-        final Calendar calendar = Calendar.getInstance();
-        switch(calendar.get(Calendar.MONTH)){
-            case Calendar.JANUARY:
-                if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
-                    holiday = XMAS;
-                break;
-            //2022 9.10-10.1
-            case Calendar.SEPTEMBER:
-                if (calendar.get(Calendar.DAY_OF_MONTH) >= 10 ){
-                    holiday = RegularLevel.Holiday.ZQJ;
-                } else {
-                    holiday = RegularLevel.Holiday.NONE;
-                }
-                break;
-            case Calendar.OCTOBER:
-                if (calendar.get(Calendar.DAY_OF_MONTH) == 1 ){
-                    holiday = RegularLevel.Holiday.ZQJ;
-                } else {
-                    holiday = RegularLevel.Holiday.NONE;
-                }
-                break;
-            case Calendar.DECEMBER:
-                if (calendar.get(Calendar.WEEK_OF_MONTH) >= 3)
-                    holiday = XMAS;
-                break;
+    final Calendar calendar = Calendar.getInstance();
+    switch (calendar.get(Calendar.MONTH)) {
+      case Calendar.JANUARY:
+        if (calendar.get(Calendar.WEEK_OF_MONTH) == 1) holiday = XMAS;
+        break;
+        // 2022 9.10-10.1
+      case Calendar.SEPTEMBER:
+        if (calendar.get(Calendar.DAY_OF_MONTH) >= 10) {
+          holiday = RegularLevel.Holiday.ZQJ;
+        } else {
+          holiday = RegularLevel.Holiday.NONE;
         }
+        break;
+      case Calendar.OCTOBER:
+        if (calendar.get(Calendar.DAY_OF_MONTH) == 1) {
+          holiday = RegularLevel.Holiday.ZQJ;
+        } else {
+          holiday = RegularLevel.Holiday.NONE;
+        }
+        break;
+      case Calendar.DECEMBER:
+        if (calendar.get(Calendar.WEEK_OF_MONTH) >= 3) holiday = XMAS;
+        break;
+    }
+  }
+
+  public void paint(Level level) {
+    Painter.fill(level, this, 4);
+    Painter.fill(level, this, 1, 14);
+
+    if (holiday == HWEEN || holiday == XMAS || Dungeon.isChallenged(EXSG)) {
+      placeShopkeeper(level);
     }
 
-    public void paint(Level level) {
-        Painter.fill(level, this, 4);
-        Painter.fill(level, this, 1, 14);
+    for (Room.Door door : this.connected.values()) {
+      door.set(Door.Type.LOCKED);
+    }
+    Door entrance = entrance();
+    entrance.set(Door.Type.LOCKED);
+    level.addItemToSpawn(new IronKey(Dungeon.depth));
+    int door = entrance.x + entrance.y * level.width();
 
-        if(holiday == HWEEN || holiday == XMAS|| Dungeon.isChallenged(EXSG)) {
-            placeShopkeeper(level);
-        }
+    // 布局 x2 箱子 左
+    addChest(level, (top + 2) * level.width() + right - 2, door);
+    addChestB(level, (bottom - 2) * level.width() + right - 2, door);
 
-        for (Room.Door door : this.connected.values()) {
-            door.set(Door.Type.LOCKED);
-        }
-        Door entrance = entrance();
-        entrance.set( Door.Type.LOCKED );
-        level.addItemToSpawn( new IronKey( Dungeon.depth ) );
-        int door = entrance.x + entrance.y * level.width();
+    // 布局 x2 箱子 右
+    addChestC(level, (top + 2) * level.width() + right - 6, door);
+    addChestD(level, (bottom - 2) * level.width() + right - 6, door);
 
-        //布局 x2 箱子 左
-        addChest( level, (top + 2) * level.width() + right-2, door );
-        addChestB( level, (bottom - 2) * level.width() + right-2, door );
+    // 7,17层---20%概率出金箱子 20% probability of gold chest
+    if (Dungeon.depth == 7 || Dungeon.depth == 17) {
+      if (Random.Float() < 0.2f) {
+        addChestE(level, (top + 5) * level.width() + right - 2, door);
+        addChestF(level, (top + 5) * level.width() + right - 6, door);
+        level.addItemToSpawn(new GoldenKey(Dungeon.depth));
+      }
+    }
+  }
 
-        //布局 x2 箱子 右
-        addChestC( level, (top + 2) * level.width() + right-6, door );
-        addChestD( level, (bottom - 2) * level.width() + right-6, door );
+  protected void placeShopkeeper(Level level) {
+    int pos = level.pointToCell(center());
+    Mob autoShopReBot = new AutoShopReBot();
+    autoShopReBot.pos = pos;
+    level.mobs.add(autoShopReBot);
+  }
 
-        //7,17层---20%概率出金箱子 20% probability of gold chest
-        if(Dungeon.depth == 7||Dungeon.depth == 17) {
-            if (Random.Float() < 0.2f) {
-                addChestE(level, (top + 5) * level.width() + right - 2, door);
-                addChestF(level, (top + 5) * level.width() + right - 6, door);
-                level.addItemToSpawn(new GoldenKey(Dungeon.depth));
-            }
-        }
+  private static void addChest(Level level, int pos, int door) {
 
+    if (pos == door - 1
+        || pos == door + 1
+        || pos == door - level.width()
+        || pos == door + level.width()) {
+      return;
     }
 
-    protected void placeShopkeeper(Level level) {
-        int pos = level.pointToCell(center());
-        Mob autoShopReBot = new AutoShopReBot();
-        autoShopReBot.pos = pos;
-        level.mobs.add(autoShopReBot);
+    Item prize = new Gold(Random.IntRange(10, 25));
+
+    level.drop(prize, pos).type = Heap.Type.CHEST;
+  }
+
+  private static void addChestB(Level level, int pos, int door) {
+
+    if (pos == door - 1
+        || pos == door + 1
+        || pos == door - level.width()
+        || pos == door + level.width()) {
+      return;
     }
 
+    Item prize = Generator.randomUsingDefaults(Generator.Category.STONE);
 
+    level.drop(prize, pos).type = Heap.Type.CHEST;
+  }
 
-    private static void addChest( Level level, int pos, int door ) {
+  private static void addChestC(Level level, int pos, int door) {
 
-        if (pos == door - 1 ||
-                pos == door + 1 ||
-                pos == door - level.width() ||
-                pos == door + level.width()) {
-            return;
-        }
-
-        Item prize = new Gold( Random.IntRange( 10, 25 ) );
-
-        level.drop( prize, pos ).type = Heap.Type.CHEST;
+    if (pos == door - 1
+        || pos == door + 1
+        || pos == door - level.width()
+        || pos == door + level.width()) {
+      return;
     }
 
-    private static void addChestB( Level level, int pos, int door ) {
+    Item prize = Generator.randomUsingDefaults(Generator.Category.MISSILE);
 
-        if (pos == door - 1 ||
-                pos == door + 1 ||
-                pos == door - level.width() ||
-                pos == door + level.width()) {
-            return;
-        }
+    level.drop(prize, pos).type = Heap.Type.CHEST;
+  }
 
-        Item prize = Generator.randomUsingDefaults( Generator.Category.STONE );
+  private static void addChestD(Level level, int pos, int door) {
 
-        level.drop( prize, pos ).type = Heap.Type.CHEST;
+    if (pos == door - 1
+        || pos == door + 1
+        || pos == door - level.width()
+        || pos == door + level.width()) {
+      return;
     }
 
-    private static void addChestC( Level level, int pos, int door ) {
+    Item prize = Generator.randomUsingDefaults(Generator.Category.SEED);
 
-        if (pos == door - 1 ||
-                pos == door + 1 ||
-                pos == door - level.width() ||
-                pos == door + level.width()) {
-            return;
-        }
+    level.drop(prize, pos).type = Heap.Type.CHEST;
+  }
 
-        Item prize = Generator.randomUsingDefaults( Generator.Category.MISSILE );
+  private static void addChestE(Level level, int pos, int door) {
 
-        level.drop( prize, pos ).type = Heap.Type.CHEST;
+    if (pos == door - 1
+        || pos == door + 1
+        || pos == door - level.width()
+        || pos == door + level.width()) {
+      return;
     }
 
-    private static void addChestD( Level level, int pos, int door ) {
+    Wand mw = (Wand) Generator.randomUsingDefaults(Generator.Category.WAND);
+    mw.level(Random.Int(0, 3));
+    mw.cursed = false;
+    mw.identify();
+    level.drop(mw, pos).type = Heap.Type.LOCKED_CHEST;
+  }
 
-        if (pos == door - 1 ||
-                pos == door + 1 ||
-                pos == door - level.width() ||
-                pos == door + level.width()) {
-            return;
-        }
+  private static void addChestF(Level level, int pos, int door) {
 
-        Item prize = Generator.randomUsingDefaults( Generator.Category.SEED );
-
-        level.drop( prize, pos ).type = Heap.Type.CHEST;
+    if (pos == door - 1
+        || pos == door + 1
+        || pos == door - level.width()
+        || pos == door + level.width()) {
+      return;
     }
 
-    private static void addChestE( Level level, int pos, int door ) {
-
-        if (pos == door - 1 ||
-                pos == door + 1 ||
-                pos == door - level.width() ||
-                pos == door + level.width()) {
-            return;
-        }
-
-        Wand mw = (Wand) Generator.randomUsingDefaults( Generator.Category.WAND );
-        mw.level(Random.Int(0,3));
-        mw.cursed = false;
-        mw.identify();
-        level.drop(mw, pos ).type = Heap.Type.LOCKED_CHEST;
-    }
-
-    private static void addChestF( Level level, int pos, int door ) {
-
-        if (pos == door - 1 ||
-                pos == door + 1 ||
-                pos == door - level.width() ||
-                pos == door + level.width()) {
-            return;
-        }
-
-        Weapon mw = Generator.randomWeapon(11);
-        mw.level(Random.Int(0,3));
-        mw.cursed = false;
-        mw.identify();
-        level.drop(mw, pos ).type = Heap.Type.LOCKED_CHEST;
-    }
-
-
+    Weapon mw = Generator.randomWeapon(11);
+    mw.level(Random.Int(0, 3));
+    mw.cursed = false;
+    mw.identify();
+    level.drop(mw, pos).type = Heap.Type.LOCKED_CHEST;
+  }
 }
-

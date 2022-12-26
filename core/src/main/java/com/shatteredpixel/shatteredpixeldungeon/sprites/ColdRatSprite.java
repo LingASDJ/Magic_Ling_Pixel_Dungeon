@@ -13,43 +13,45 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 
 public class ColdRatSprite extends MobSprite {
-    public ColdRatSprite() {
-        super();
+  public ColdRatSprite() {
+    super();
 
-        texture( Assets.Sprites.COLDRAT );
-        TextureFilm frames = new TextureFilm( texture, 16, 15 );
+    texture(Assets.Sprites.COLDRAT);
+    TextureFilm frames = new TextureFilm(texture, 16, 15);
 
-        idle = new Animation( 2, true );
-        idle.frames( frames, 0, 0, 0, 1 );
+    idle = new Animation(2, true);
+    idle.frames(frames, 0, 0, 0, 1);
 
-        run = new Animation( 10, true );
-        run.frames( frames, 6, 7, 8, 9, 10 );
+    run = new Animation(10, true);
+    run.frames(frames, 6, 7, 8, 9, 10);
 
-        attack = new Animation( 15, false );
-        attack.frames( frames, 2, 3, 4, 5, 0 );
+    attack = new Animation(15, false);
+    attack.frames(frames, 2, 3, 4, 5, 0);
 
-        die = new Animation( 10, false );
-        die.frames( frames, 11, 12, 13, 14 );
+    die = new Animation(10, false);
+    die.frames(frames, 11, 12, 13, 14);
 
-        zap = attack.clone();
+    zap = attack.clone();
 
-        play( idle );
-    }
-    public void zap( int cell ) {
+    play(idle);
+  }
 
-        turnTo( ch.pos , cell );
-        play( zap );
+  public void zap(int cell) {
 
-        MagicMissile.boltFromChar( parent,
-                MagicMissile.FROST,
-                this,
-                cell,
-                new Callback() {
-                    @Override
-                    public void call() {
-                        ((ColdMagicRat)ch).onZapComplete();
-                    }
-                } );
-        Sample.INSTANCE.play( Assets.Sounds.ZAP );
-    }
+    turnTo(ch.pos, cell);
+    play(zap);
+
+    MagicMissile.boltFromChar(
+        parent,
+        MagicMissile.FROST,
+        this,
+        cell,
+        new Callback() {
+          @Override
+          public void call() {
+            ((ColdMagicRat) ch).onZapComplete();
+          }
+        });
+    Sample.INSTANCE.play(Assets.Sounds.ZAP);
+  }
 }

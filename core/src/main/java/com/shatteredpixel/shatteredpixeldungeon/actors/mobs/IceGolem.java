@@ -43,133 +43,133 @@ import com.watabou.utils.Random;
 
 public class IceGolem extends Mob implements Callback {
 
-    private static final float TIME_TO_ZAP	= 5f;
+  private static final float TIME_TO_ZAP = 5f;
 
-    {
-        spriteClass = IceGolemSprite.class;
+  {
+    spriteClass = IceGolemSprite.class;
 
-        HP = HT = Random.Int(70,90);
-        defenseSkill = 15;
+    HP = HT = Random.Int(70, 90);
+    defenseSkill = 15;
 
-        EXP = 3;
-        maxLvl = 35;
+    EXP = 3;
+    maxLvl = 35;
 
-        loot = PotionOfFrost.class;
-        lootChance = 0.3f;
-        properties.add(Property.ICY);
-        properties.add(Property.UNDEAD);
-    }
+    loot = PotionOfFrost.class;
+    lootChance = 0.3f;
+    properties.add(Property.ICY);
+    properties.add(Property.UNDEAD);
+  }
 
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange( 10, 18 );
-    }
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(10, 18);
+  }
 
-    @Override
-    public int attackSkill( Char target ) {
-        return 15;
-    }
+  @Override
+  public int attackSkill(Char target) {
+    return 15;
+  }
 
-    @Override
-    public int drRoll() {
-        return Random.NormalIntRange(0, 1);
-    }
+  @Override
+  public int drRoll() {
+    return Random.NormalIntRange(0, 1);
+  }
 
-    @Override
-    protected boolean canAttack( Char enemy ) {
-        return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
-    }
+  @Override
+  protected boolean canAttack(Char enemy) {
+    return new Ballistica(pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
+  }
 
-    protected boolean doAttack( Char enemy ) {
+  protected boolean doAttack(Char enemy) {
 
-        if (Dungeon.level.adjacent( pos, enemy.pos )) {
+    if (Dungeon.level.adjacent(pos, enemy.pos)) {
 
-            return super.doAttack( enemy );
+      return super.doAttack(enemy);
 
-        } else {
+    } else {
 
-            if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
-                sprite.zap( enemy.pos );
-                return false;
-            } else {
-                zap();
-                return true;
-            }
-        }
-    }
-    public int attackProc(Char var1, int var2) {
-        int var3 = var2;
-        if (Random.Int(3) == 0) {
-            var3 = var2 +10;
-            TeleportationTrap var4 = new TeleportationTrap();
-            var4.pos = super.pos;
-            var4.activate();
-        }
-
-        return var3;
-    }
-
-    //used so resistances can differentiate between melee and magical attacks
-    public static class DarkBolt{}
-
-    private void zap() {
-        spend( TIME_TO_ZAP );
-
-        if (hit( this, enemy, true )) {
-            //TODO would be nice for this to work on ghost/statues too
-            if (enemy == Dungeon.hero && Random.Int( 2 ) == 0) {
-                Buff.affect(enemy, Chill.class, Frost.DURATION);
-                Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
-            }
-
-            int dmg = Random.NormalIntRange( 15, 25 );
-            enemy.damage( dmg, new DarkBolt() );
-
-            if (enemy == Dungeon.hero && !enemy.isAlive()) {
-                Dungeon.fail( getClass() );
-                GLog.n( Messages.get(this, "frost_kill") );
-            }
-        } else {
-            enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
-        }
-    }
-
-    public void onZapComplete() {
+      if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
+        sprite.zap(enemy.pos);
+        return false;
+      } else {
         zap();
-        next();
+        return true;
+      }
+    }
+  }
+
+  public int attackProc(Char var1, int var2) {
+    int var3 = var2;
+    if (Random.Int(3) == 0) {
+      var3 = var2 + 10;
+      TeleportationTrap var4 = new TeleportationTrap();
+      var4.pos = super.pos;
+      var4.activate();
     }
 
-    @Override
-    public void call() {
-        next();
+    return var3;
+  }
+
+  // used so resistances can differentiate between melee and magical attacks
+  public static class DarkBolt {}
+
+  private void zap() {
+    spend(TIME_TO_ZAP);
+
+    if (hit(this, enemy, true)) {
+      // TODO would be nice for this to work on ghost/statues too
+      if (enemy == Dungeon.hero && Random.Int(2) == 0) {
+        Buff.affect(enemy, Chill.class, Frost.DURATION);
+        Sample.INSTANCE.play(Assets.Sounds.DEBUFF);
+      }
+
+      int dmg = Random.NormalIntRange(15, 25);
+      enemy.damage(dmg, new DarkBolt());
+
+      if (enemy == Dungeon.hero && !enemy.isAlive()) {
+        Dungeon.fail(getClass());
+        GLog.n(Messages.get(this, "frost_kill"));
+      }
+    } else {
+      enemy.sprite.showStatus(CharSprite.NEUTRAL, enemy.defenseVerb());
     }
+  }
 
-    @Override
-    public Item createLoot(){
+  public void onZapComplete() {
+    zap();
+    next();
+  }
 
-        // 1/6 chance for healing, scaling to 0 over 8 drops
-        if (Random.Int(2) == 0 && Random.Int(8) > Dungeon.LimitedDrops.WARLOCK_HP.count ){
-            Dungeon.LimitedDrops.WARLOCK_HP.drop();
-            return new PotionOfHealing();
-        } else {
-            Item i = Generator.random(Generator.Category.POTION);
-            int healingTried = 0;
-            while (i instanceof PotionOfHealing){
-                healingTried++;
-                i = Generator.random(Generator.Category.POTION);
-            }
+  @Override
+  public void call() {
+    next();
+  }
 
-            //return the attempted healing potion drops to the pool
-            if (healingTried > 0){
-                for (int j = 0; j < Generator.Category.POTION.classes.length; j++){
-                    if (Generator.Category.POTION.classes[j] == PotionOfHealing.class){
-                        Generator.Category.POTION.probs[j] += healingTried;
-                    }
-                }
-            }
+  @Override
+  public Item createLoot() {
 
-            return i;
+    // 1/6 chance for healing, scaling to 0 over 8 drops
+    if (Random.Int(2) == 0 && Random.Int(8) > Dungeon.LimitedDrops.WARLOCK_HP.count) {
+      Dungeon.LimitedDrops.WARLOCK_HP.drop();
+      return new PotionOfHealing();
+    } else {
+      Item i = Generator.random(Generator.Category.POTION);
+      int healingTried = 0;
+      while (i instanceof PotionOfHealing) {
+        healingTried++;
+        i = Generator.random(Generator.Category.POTION);
+      }
+
+      // return the attempted healing potion drops to the pool
+      if (healingTried > 0) {
+        for (int j = 0; j < Generator.Category.POTION.classes.length; j++) {
+          if (Generator.Category.POTION.classes[j] == PotionOfHealing.class) {
+            Generator.Category.POTION.probs[j] += healingTried;
+          }
         }
+      }
 
+      return i;
     }
+  }
 }

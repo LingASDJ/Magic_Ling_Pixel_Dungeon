@@ -29,30 +29,30 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public abstract class NPC extends Mob {
-	{
-		HP = HT = 1;
-		EXP = 0;
+  {
+    HP = HT = 1;
+    EXP = 0;
 
-		alignment = Alignment.NEUTRAL;
-		state = PASSIVE;
-	}
-	protected void throwItem() {
-		Heap heap = Dungeon.level.heaps.get( pos );
-		if (heap != null && heap.type == Heap.Type.HEAP) {
-			int n;
-			do {
-				n = pos + PathFinder.NEIGHBOURS8[Random.Int( 8 )];
-			} while (!Dungeon.level.passable[n] && !Dungeon.level.avoid[n]);
-			Dungeon.level.drop( heap.pickUp(), n ).sprite.drop( pos );
-		}
-	}
-	@Override
-	public void beckon( int cell ) {
-	}
+    alignment = Alignment.NEUTRAL;
+    state = PASSIVE;
+  }
 
-	@Override
-	public void add( Buff buff ) {
-		//lee();
-	}
+  protected void throwItem() {
+    Heap heap = Dungeon.level.heaps.get(pos);
+    if (heap != null && heap.type == Heap.Type.HEAP) {
+      int n;
+      do {
+        n = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
+      } while (!Dungeon.level.passable[n] && !Dungeon.level.avoid[n]);
+      Dungeon.level.drop(heap.pickUp(), n).sprite.drop(pos);
+    }
+  }
 
+  @Override
+  public void beckon(int cell) {}
+
+  @Override
+  public void add(Buff buff) {
+    // lee();
+  }
 }
