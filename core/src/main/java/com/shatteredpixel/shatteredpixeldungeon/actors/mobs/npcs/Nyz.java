@@ -29,89 +29,91 @@ import com.watabou.utils.Callback;
 
 public class Nyz extends NPC {
 
-    {
+  {
+    spriteClass = NyzSprites.class;
 
-        spriteClass = NyzSprites.class;
+    properties.add(Property.IMMOVABLE);
+  }
 
-        properties.add(Property.IMMOVABLE);
+  private boolean seenBefore = false;
+
+  protected boolean act() {
+    if (!seenBefore && Dungeon.level.heroFOV[pos]) {
+      GLog.p(Messages.get(this, "greetings", Dungeon.hero.name()));
+      // TODO 诡异奈亚子 早上好 中午好 晚上好
+      Music.INSTANCE.play(Assets.NYZSHOP, true);
+      seenBefore = true;
+    } else if (seenBefore && !Dungeon.level.heroFOV[pos] && Dungeon.depth == 0) {
+      Music.INSTANCE.play(Assets.TOWN, true);
+      seenBefore = false;
+    } else if (seenBefore && !Dungeon.level.heroFOV[pos] && Dungeon.depth == 12) {
+      Music.INSTANCE.play(Assets.BGM_2, true);
+      seenBefore = false;
     }
-    private boolean seenBefore = false;
+    throwItem();
 
-    protected boolean act() {
-        if (!seenBefore && Dungeon.level.heroFOV[pos]) {
-            GLog.p(Messages.get(this, "greetings", Dungeon.hero.name()));
-            //TODO 诡异奈亚子 早上好 中午好 晚上好
-            Music.INSTANCE.play(Assets.NYZSHOP, true);
-            seenBefore = true;
-        } else if (seenBefore && !Dungeon.level.heroFOV[pos] && Dungeon.depth == 0) {
-            Music.INSTANCE.play(Assets.TOWN, true);
-            seenBefore = false;
-        } else if (seenBefore && !Dungeon.level.heroFOV[pos] && Dungeon.depth == 12) {
-            Music.INSTANCE.play(Assets.BGM_2,true);
-            seenBefore = false;
-        }
-        throwItem();
+    sprite.turnTo(pos, Dungeon.hero.pos);
+    spend(TICK);
 
-        sprite.turnTo( pos, Dungeon.hero.pos );
-        spend( TICK );
+    shop6 = new YellowSunBooks();
+    shop5 = new BrokenBooks();
+    shop4 = new IceCityBooks();
+    shop3 = new NoKingMobBooks();
+    shop2 = new DeepBloodBooks();
+    shop1 = new MagicGirlBooks();
+    bomb1 = (Bomb) new Flashbang().quantity(1);
+    bomb2 = (Bomb) new Noisemaker().quantity(1);
+    bomb3 = (Bomb) new RegrowthBomb().quantity(1);
+    bomb4 = (Bomb) new HolyBomb().quantity(1);
+    bomb5 = (Bomb) new Firebomb().quantity(1);
+    bomb6 = (Bomb) new FrostBomb().quantity(1);
+    throwItem();
+    return Nyz.super.act();
+  }
 
-        shop6 = new YellowSunBooks();
-        shop5 = new BrokenBooks();
-        shop4 = new IceCityBooks();
-        shop3 = new NoKingMobBooks();
-        shop2 = new DeepBloodBooks();
-        shop1 = new MagicGirlBooks();
-        bomb1 = (Bomb) new Flashbang().quantity(1);
-        bomb2 = (Bomb) new Noisemaker().quantity(1);
-        bomb3 = (Bomb) new RegrowthBomb().quantity(1);
-        bomb4 = (Bomb) new HolyBomb().quantity(1);
-        bomb5 = (Bomb) new Firebomb().quantity(1);
-        bomb6 = (Bomb) new FrostBomb().quantity(1);
-        throwItem();
-        return Nyz.super.act();
+  public static Books shop1;
+  public static Books shop2;
+  public static Books shop3;
+  public static Books shop4;
+  public static Books shop5;
+  public static Books shop6;
+
+  public static Bomb bomb1;
+  public static Bomb bomb2;
+  public static Bomb bomb3;
+  public static Bomb bomb4;
+  public static Bomb bomb5;
+  public static Bomb bomb6;
+
+  public int defenseSkill(Char enemy) {
+    return 1000;
+  }
+
+  private void tell(String text) {
+    Game.runOnRenderThread(
+        new Callback() {
+          @Override
+          public void call() {
+            GameScene.show(new WndQuest(new Nyz(), text));
+          }
+        });
+  }
+
+  public boolean reset() {
+    return true;
+  }
+
+  public boolean interact(Char c) {
+    this.sprite.turnTo(this.pos, Dungeon.hero.pos);
+    if (seenBefore && Dungeon.level.heroFOV[pos]) {
+      Game.runOnRenderThread(
+          new Callback() {
+            @Override
+            public void call() {
+              GameScene.show(new WndNyzShop(this));
+            }
+          });
     }
-
-    public static Books shop1;
-    public static Books shop2;
-    public static Books shop3;
-    public static Books shop4;
-    public static Books shop5;
-    public static Books shop6;
-
-    public static Bomb bomb1;
-    public static Bomb bomb2;
-    public static Bomb bomb3;
-    public static Bomb bomb4;
-    public static Bomb bomb5;
-    public static Bomb bomb6;
-    public int defenseSkill(Char enemy) {
-        return 1000;
-    }
-
-    private void tell(String text) {
-        Game.runOnRenderThread(new Callback() {
-                                   @Override
-                                   public void call() {
-                                       GameScene.show(new WndQuest(new Nyz(), text));
-                                   }
-                               }
-        );
-    }
-
-    public boolean reset() {
-        return true;
-    }
-
-    public boolean interact(Char c) {
-        this.sprite.turnTo(this.pos, Dungeon.hero.pos);
-        if (seenBefore && Dungeon.level.heroFOV[pos]) {
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    GameScene.show(new WndNyzShop(this));
-                }
-            });
-        }
-        return true;
-    }
+    return true;
+  }
 }
