@@ -11,10 +11,8 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.updates.Updates;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdGuardSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.MolotovHuntsmanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.EndButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
@@ -185,7 +183,7 @@ public class TitleScene extends PixelScene {
 				return super.onLongClick();
 			}
 		};
-		btnPlay.icon(new ItemSprite(ItemSpriteSheet.ENDDIED, null));
+		btnPlay.icon(new ItemSprite(ItemSpriteSheet.MAGICGIRLBOOKS, null));
 		add(btnPlay);
 
 		StyledButton btnRankings = new StyledButton(GREY_TR,Messages.get(this, "rankings")) {
@@ -194,7 +192,7 @@ public class TitleScene extends PixelScene {
 				ShatteredPixelDungeon.switchNoFade(RankingsScene.class);
 			}
 		};
-		btnRankings.icon(new ItemSprite(ItemSpriteSheet.ANKH, null));
+		btnRankings.icon(new ItemSprite(ItemSpriteSheet.BREDBOOK, null));
 		add(btnRankings);
 
 		StyledButton btnBadges = new StyledButton(GREY_TR, Messages.get(this, "badges")) {
@@ -203,7 +201,7 @@ public class TitleScene extends PixelScene {
 				ShatteredPixelDungeon.switchNoFade(BadgesScene.class);
 			}
 		};
-		btnBadges.icon(new ItemSprite(ItemSpriteSheet.DG12, null));
+		btnBadges.icon(new ItemSprite(ItemSpriteSheet.GREENBOOKS, null));
 		add(btnBadges);
 
 		StyledButton btnSupport = new SupportButton(GREY_TR, Messages.get(this, "support"));
@@ -222,7 +220,7 @@ public class TitleScene extends PixelScene {
 				ShatteredPixelDungeon.switchNoFade( AboutSelectScene.class );
 			}
 		};
-		btnAbout.icon(new ItemSprite(ItemSpriteSheet.MAGICGIRLBOOKS, null));
+		btnAbout.icon(new ItemSprite(ItemSpriteSheet.FIRELIYD, null));
 		add(btnAbout);
 
 		StyledButton btnNews = new NewsButton(GREY_TR, Messages.get(this, "news"));
@@ -283,13 +281,13 @@ public class TitleScene extends PixelScene {
 	}
 
 	private void placeTorch2( float x, float y ) {
-		Image fb = (new MolotovHuntsmanSprite());
+		Image fb = (new ItemSprite(ItemSpriteSheet.CAKE));
 		fb.setPos( x, y );
 		add( fb );
 	}
 
 	private void placeTorch3( float x, float y ) {
-		Image fb = (new ColdGuardSprite());
+		Image fb = (new ItemSprite(ItemSpriteSheet.SWTR));
 		fb.setPos( x, y );
 		add( fb );
 	}

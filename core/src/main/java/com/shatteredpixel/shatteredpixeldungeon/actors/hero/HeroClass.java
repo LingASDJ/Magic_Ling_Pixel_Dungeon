@@ -181,6 +181,7 @@ public enum HeroClass {
 //			Buff.affect(hero, ChampionHero.Giant.class, ChampionHero.DURATION);
 //			Buff.affect(hero, ChampionHero.Growing.class, ChampionHero.DURATION);
 			new Gauntlet().quantity(1).identify().collect();
+
 			new Cake().quantity(100).identify().collect();
 			new TengusMask().quantity(1).identify().collect();
 			new KingsCrown().quantity(1).identify().collect();

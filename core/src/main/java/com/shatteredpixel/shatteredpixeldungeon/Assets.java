@@ -116,6 +116,7 @@ public class Assets {
 
 		public static final String SURFACE  = "interfaces/surface.png";
 
+		public static final String LOADING_GOLD   = "interfaces/loading_gold.png";
 		public static final String LOADING_SEWERS   = "interfaces/loading_sewers.png";
 		public static final String LOADING_PRISON   = "interfaces/loading_prison.png";
 		public static final String LOADING_COLD    = "interfaces/loading_cold.png";

@@ -27,6 +27,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.tipsgodungeon;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -95,6 +96,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
@@ -175,6 +177,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
@@ -1206,6 +1209,16 @@ public class Hero extends Char {
 			return false;
 		}
 	}
+
+	private void tell(String text) {
+		Game.runOnRenderThread(new Callback() {
+								   @Override
+								   public void call() {
+									   GameScene.show(new WndQuest(new Slyl(), text));
+								   }
+							   }
+		);
+	}
 	
 	private boolean actDescend( HeroAction.Descend action ) {
 		int stairs = action.dst;
@@ -1217,28 +1230,41 @@ public class Hero extends Char {
 		//there can be multiple exit tiles, so descend on any of them
 		//TODO this is slightly brittle, it assumes there are no disjointed sets of exit tiles
 		} else if ((Dungeon.level.map[pos] == Terrain.EXIT || Dungeon.level.map[pos] == Terrain.UNLOCKED_EXIT)) {
-			
-			curAction = null;
 
-			TimekeepersHourglass.timeFreeze timeFreeze = buff(TimekeepersHourglass.timeFreeze.class);
-			if (timeFreeze != null) timeFreeze.disarmPressedTraps();
-			Swiftthistle.TimeBubble timeBubble = buff(Swiftthistle.TimeBubble.class);
-			if (timeBubble != null) timeBubble.disarmPressedTraps();
-			
-			InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-			Game.switchScene( InterlevelScene.class );
+			if (Dungeon.depth == 0 && !tipsgodungeon) {
 
-			return false;
+				if (!tipsgodungeon) {
+					Game.runOnRenderThread(new Callback() {
+						@Override
+						public void call() {
+							tell(Messages.get(Hero.this, "acs"));
+						}
+					});
+					ready();
+					tipsgodungeon = true;
+				}
+			} else {
+
+				curAction = null;
+
+				TimekeepersHourglass.timeFreeze timeFreeze = buff(TimekeepersHourglass.timeFreeze.class);
+				if (timeFreeze != null) timeFreeze.disarmPressedTraps();
+				Swiftthistle.TimeBubble timeBubble = buff(Swiftthistle.TimeBubble.class);
+				if (timeBubble != null) timeBubble.disarmPressedTraps();
+
+				InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+				Game.switchScene(InterlevelScene.class);
+
+				return false;
+			}
 
 		} else if (getCloser( stairs )) {
 
-			return true;
-
-		} else {
-			ready();
-			return false;
+		return true;
 		}
-	}
+		ready();
+		return false;
+		}
 	
 	private boolean actAscend( HeroAction.Ascend action ) {
 		int stairs = action.dst;
@@ -1253,22 +1279,42 @@ public class Hero extends Char {
 		} else if (Dungeon.level.map[pos] == Terrain.ENTRANCE) {
 			
 			if (Dungeon.depth == 0) {
-				
-				if (belongings.getItem( Amulet.class ) == null) {
+
+				if (belongings.getItem(Amulet.class) == null) {
 					Game.runOnRenderThread(new Callback() {
 						@Override
 						public void call() {
-							GameScene.show( new WndMessage( Messages.get(Hero.this, "leave") ) );
+							GameScene.show(new WndMessage(Messages.get(Hero.this, "leave")));
 						}
 					});
 					ready();
 				} else {
 					Badges.silentValidateHappyEnd();
-					Dungeon.win( Amulet.class );
-					Dungeon.deleteGame( GamesInProgress.curSlot, true );
-					Game.switchScene( SurfaceScene.class );
+					Dungeon.win(Amulet.class);
+					Dungeon.deleteGame(GamesInProgress.curSlot, true);
+					Game.switchScene(SurfaceScene.class);
 				}
-				
+			} else if (Dungeon.depth == 1) {
+
+				if (belongings.getItem( Amulet.class ) == null) {
+					Game.runOnRenderThread(new Callback() {
+						@Override
+						public void call() {
+							GameScene.show( new WndMessage( Messages.get(Hero.this, "leave2") ) );
+						}
+					});
+					ready();
+				} else {
+					curAction = null;
+
+					TimekeepersHourglass.timeFreeze timeFreeze = buff(TimekeepersHourglass.timeFreeze.class);
+					if (timeFreeze != null) timeFreeze.disarmPressedTraps();
+					Swiftthistle.TimeBubble timeBubble = buff(Swiftthistle.TimeBubble.class);
+					if (timeBubble != null) timeBubble.disarmPressedTraps();
+
+					InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
+					Game.switchScene( InterlevelScene.class );
+				}
 			} else {
 				
 				curAction = null;

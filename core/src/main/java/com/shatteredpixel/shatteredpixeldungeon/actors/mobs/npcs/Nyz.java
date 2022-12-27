@@ -3,9 +3,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Firebomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Flashbang;
@@ -20,7 +17,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.IceCityBoo
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.NoKingMobBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
@@ -90,23 +86,6 @@ public class Nyz extends NPC {
     public static Bomb bomb6;
     public int defenseSkill(Char enemy) {
         return 1000;
-    }
-
-    @Override
-    public void damage( int dmg, Object src ) {
-        flee();
-    }
-
-    public void flee() {
-        destroy();
-        Notes.remove(Notes.Landmark.SHOP);
-        sprite.killAndErase();
-        CellEmitter.get( pos ).burst( ElmoParticle.FACTORY, 6 );
-    }
-
-    @Override
-    public void add( Buff buff ) {
-        flee();
     }
 
     private void tell(String text) {

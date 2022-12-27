@@ -133,6 +133,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SkyShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
@@ -203,7 +204,7 @@ public enum Catalog {
 		WEAPONS.seen.put( Gauntlet.class,                   false);
 		//WEAPONS.seen.put( GreenSword.class,                 false);
 		WEAPONS.seen.put( LockSword.class,                  false);
-		//WEAPONS.seen.put( RedBloodMoon.class,               false);
+		WEAPONS.seen.put( SkyShield.class,               false);
 		WEAPONS.seen.put( Dairikyan.class,                  false);
 		WEAPONS.seen.put( BlackDog.class,                   false);
 		WEAPONS.seen.put( IceFishSword.class,                   false);

@@ -66,6 +66,9 @@ public class Statistics {
 	//TODO BUG修复同步
 	public static boolean bugsyncfixed = false;
 
+	//TODO 警告
+	public static boolean tipsgodungeon = false;
+
 	public static int dageCollected;
 
 	//Directly add float time will cause accuracy lose and stop timing if time is long enough
@@ -98,6 +101,8 @@ public class Statistics {
 		qualifiedForNoKilling = false;
 		
 		amuletObtained = false;
+
+		tipsgodungeon = false;
 
 		fireGirlnoshopping = false;
 
@@ -153,10 +158,14 @@ public class Statistics {
 	//TODO BUG修复的机制
 	private static final String BUG_SYNC_FIXED		= "bugsyncfixed";
 
+	private static final String TIPSGO		= "tipsgo";
+
 	public static void storeInBundle( Bundle bundle ) {
 		bundle.put( LANTERACTIVE, lanterfireactive );
 
 
+
+		bundle.put( TIPSGO, tipsgodungeon );
 		//TODO BUG修复的机制
 		bundle.put( BUG_SYNC_FIXED, bugsyncfixed );
 
@@ -225,6 +234,8 @@ public class Statistics {
 		lanterfireactive = bundle.getBoolean( LANTERACTIVE );
 
 		bugsyncfixed = bundle.getBoolean( BUG_SYNC_FIXED );
+
+		tipsgodungeon = bundle.getBoolean(TIPSGO);
 
 		//SPD
 		second_elapsed = bundle.getFloat("real_time_passed");

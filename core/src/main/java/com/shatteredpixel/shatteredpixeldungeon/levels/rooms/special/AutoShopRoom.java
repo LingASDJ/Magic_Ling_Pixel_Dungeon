@@ -1,8 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.HWEEN;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoom.Holiday.HWEENX;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoom.Holiday.XMASX;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -12,11 +12,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
-import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.watabou.utils.Random;
@@ -24,9 +22,6 @@ import com.watabou.utils.Random;
 import java.util.Calendar;
 
 public class AutoShopRoom extends SpecialRoom {
-
-    public AutoShopRoom() {
-    }
 
     public int minWidth() {
         return 9;
@@ -36,43 +31,43 @@ public class AutoShopRoom extends SpecialRoom {
         return 9;
     }
 
-    private static RegularLevel.Holiday holiday;
+    private static Holiday holiday;
 
     public enum Holiday{
         NONE,
-        ZQJ, //TBD
-        HWEEN,//2nd week of october though first day of november
-        XMAS //3rd week of december through first week of january
+        ZQJX, //TBD
+        HWEENX,//2nd week of october though first day of november
+        XMASX //3rd week of december through first week of january
     }
 
     static{
 
-        holiday = RegularLevel.Holiday.NONE;
+        holiday = Holiday.NONE;
 
         final Calendar calendar = Calendar.getInstance();
         switch(calendar.get(Calendar.MONTH)){
             case Calendar.JANUARY:
                 if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
-                    holiday = XMAS;
+                    holiday = XMASX;
                 break;
             //2022 9.10-10.1
             case Calendar.SEPTEMBER:
                 if (calendar.get(Calendar.DAY_OF_MONTH) >= 10 ){
-                    holiday = RegularLevel.Holiday.ZQJ;
+                    holiday = Holiday.ZQJX;
                 } else {
-                    holiday = RegularLevel.Holiday.NONE;
+                    holiday = Holiday.NONE;
                 }
                 break;
             case Calendar.OCTOBER:
                 if (calendar.get(Calendar.DAY_OF_MONTH) == 1 ){
-                    holiday = RegularLevel.Holiday.ZQJ;
+                    holiday = Holiday.ZQJX;
                 } else {
-                    holiday = RegularLevel.Holiday.NONE;
+                    holiday = Holiday.NONE;
                 }
                 break;
             case Calendar.DECEMBER:
                 if (calendar.get(Calendar.WEEK_OF_MONTH) >= 3)
-                    holiday = XMAS;
+                    holiday = XMASX;
                 break;
         }
     }
@@ -81,16 +76,16 @@ public class AutoShopRoom extends SpecialRoom {
         Painter.fill(level, this, 4);
         Painter.fill(level, this, 1, 14);
 
-        if(holiday == HWEEN || holiday == XMAS|| Dungeon.isChallenged(EXSG)) {
+        if(holiday == HWEENX || holiday == XMASX|| Dungeon.isChallenged(EXSG)) {
             placeShopkeeper(level);
         }
 
         for (Room.Door door : this.connected.values()) {
-            door.set(Door.Type.LOCKED);
+            door.set(Door.Type.REGULAR);
         }
         Door entrance = entrance();
-        entrance.set( Door.Type.LOCKED );
-        level.addItemToSpawn( new IronKey( Dungeon.depth ) );
+        entrance.set( Door.Type.REGULAR );
+        //level.addItemToSpawn( new IronKey( Dungeon.depth ) );
         int door = entrance.x + entrance.y * level.width();
 
         //布局 x2 箱子 左

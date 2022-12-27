@@ -87,6 +87,26 @@ public class vM0_6_7_X_Changes {
     }
 
     public static void add_v0_6_19_Changes( ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changesx = new ChangeInfo("v0.6.0.0-Beta21-p2.920", true, "");
+        changesx.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changesx);
+
+        changesx = new ChangeInfo("新内容", false, null);
+        changesx.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changesx);
+
+        changesx.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.AMULET), ("0层改动"),
+                ("现在0层不可以随进随出了，且水晶之心的背景故事略做调整" )));
+
+        changesx = new ChangeInfo("修复", false, null);
+        changesx.hardlight(Window.CYELLOW);
+        changeInfos.add(changesx);
+
+        changesx.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                (Messages.get(ChangesScene.class, "bugfixes")),
+                Messages.get(vM0_6_7_X_Changes.class, "bug_06X38")));
+
         ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta21-p2.910", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
