@@ -34,7 +34,7 @@ import com.watabou.noosa.audio.Sample;
 public class ScrollOfPetrification extends ExoticScroll {
 	
 	{
-		icon = ItemSpriteSheet.Icons.SCROLL_PETRIF;
+		icon = ItemSpriteSheet.Icons.SCROLL_STONE;
 	}
 	
 	@Override

@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.items.Generator.randomArtifact;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
@@ -102,7 +103,8 @@ public class WndRedDragon extends Window {
         btnRing.setRect( (WIDTH - BTN_GAP) / 2 - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE, BTN_SIZE );
         add( btnRing );
 
-        RewardButton btnFood = new RewardButton( RedDragon.Quest.armor );
+        RewardButton btnFood = new RewardButton( randomArtifact() != null ? RedDragon.Quest.armor:
+                RedDragon.Quest.RingT );
         btnFood.setRect( btnRing.right() + BTN_GAP, btnRing.top(), BTN_SIZE, BTN_SIZE );
 
         add(btnFood);

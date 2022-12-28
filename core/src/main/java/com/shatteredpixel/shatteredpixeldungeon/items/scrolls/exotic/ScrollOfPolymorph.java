@@ -38,7 +38,7 @@ import com.watabou.utils.Random;
 public class ScrollOfPolymorph extends ExoticScroll {
 	
 	{
-		icon = ItemSpriteSheet.Icons.SCROLL_POLYMORPH;
+		icon = ItemSpriteSheet.Icons.SCROLL_SHEEP;
 	}
 	
 	@Override

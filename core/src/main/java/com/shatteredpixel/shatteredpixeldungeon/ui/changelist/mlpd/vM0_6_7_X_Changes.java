@@ -88,7 +88,7 @@ public class vM0_6_7_X_Changes {
 
     public static void add_v0_6_19_Changes( ArrayList<ChangeInfo> changeInfos ) {
 
-        ChangeInfo changesx = new ChangeInfo("v0.6.0.0-Beta21-p2.920", true, "");
+        ChangeInfo changesx = new ChangeInfo("v0.6.0.0-Beta21-p2.920-925", true, "");
         changesx.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changesx);
 
@@ -99,9 +99,20 @@ public class vM0_6_7_X_Changes {
         changesx.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.AMULET), ("0层改动"),
                 ("现在0层不可以随进随出了，且水晶之心的背景故事略做调整" )));
 
+        changesx.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.EXOTIC_CRIMSON), ("炼金迁移"),
+                ("羊化秘卷==>蜕变秘卷\n" +
+                        "石化秘卷==>极度恐慌秘卷\n" +
+                        "迷乱秘卷==>决斗秘卷\n" +
+                        "神意祝福合剂==>神意启发合剂\n" +
+                        "魅惑秘卷==>塞壬秘卷\n" )));
+
         changesx = new ChangeInfo("修复", false, null);
         changesx.hardlight(Window.CYELLOW);
         changeInfos.add(changesx);
+
+        changesx.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                (Messages.get(ChangesScene.class, "bugfixes")),
+                Messages.get(vM0_6_7_X_Changes.class, "bug_06X39")));
 
         changesx.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
                 (Messages.get(ChangesScene.class, "bugfixes")),

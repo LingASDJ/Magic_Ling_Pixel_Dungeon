@@ -699,7 +699,7 @@ public class FireMagicDied extends Mob implements Callback {
 
             this.pos = FALSEPosition;
 
-            Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(1000);
+            Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(300);
 
             Buff.append(hero, BeamTowerAdbility.class).towerPos = TRUEPosition;
 
@@ -721,22 +721,7 @@ public class FireMagicDied extends Mob implements Callback {
             Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);
             beamCD = 40 + 8 - (phase == 10 ? 38 : 0);
             sprite.showStatus(0xff0000, Messages.get(this, "dead"));
-            switch (Random.Int(7)){
-                case 0: default:    Buff.affect(this, ChampionEnemy.Blazing.class);
-                break;
-                case 1:             Buff.affect(this, ChampionEnemy.Projecting.class);
-                break;
-                case 2:             Buff.affect(this, ChampionEnemy.AntiMagic.class);
-                break;
-                case 3:             Buff.affect(this, ChampionEnemy.Giant.class);
-                break;
-                case 4:             Buff.affect(this, ChampionEnemy.Blessed.class);
-                break;
-                case 5:             Buff.affect(this, ChampionEnemy.Growing.class);
-                break;
-                case 6:             Buff.affect(this, ChampionEnemy.Halo.class);
-                break;
-            }
+            Buff.affect(this, ChampionEnemy.Halo.class);
         } else if (phase == 3 && preHP > 80 && HP <= 80){
             yell( Messages.get(this, "losing") );
         }

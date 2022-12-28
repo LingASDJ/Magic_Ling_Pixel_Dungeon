@@ -34,8 +34,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SkullShaman;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.Brew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
@@ -47,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAff
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfConfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesLevel;
@@ -236,7 +239,7 @@ public class RedDragon extends NPC {
         private static int depth;
 
         public static Ring weapon;
-        public static Ring RingT;
+        public static Wand RingT;
         public static Artifact armor;
         public static Brew food;
         public static ExoticScroll scrolls;
@@ -251,6 +254,7 @@ public class RedDragon extends NPC {
             enchant = null;
             glyph = null;
             RingT = null;
+            food = null;
         }
 
         private static final String NODE		= "sads";
@@ -267,6 +271,8 @@ public class RedDragon extends NPC {
         private static final String ENCHANT		= "enchant";
         private static final String GLYPH		= "glyph";
 
+        private static final String RINGT		= "ringt";
+
         public static void storeInBundle( Bundle bundle ) {
 
             Bundle node = new Bundle();
@@ -281,8 +287,12 @@ public class RedDragon extends NPC {
                 node.put( DEPTH, depth );
                 node.put( PROCESSED, processed );
 
-                node.put( WEAPON, weapon );
+
                 node.put( ARMOR, armor );
+                node.put( RINGT, RingT );
+
+                node.put( WEAPON, weapon );
+
                 node.put( FOOD, food );
                 node.put( SCROLLS, scrolls);
 
@@ -302,22 +312,24 @@ public class RedDragon extends NPC {
             if (!node.isNull() && (spawned = node.getBoolean( SPAWNED ))) {
 
                 type = node.getInt(TYPE);
-                given	= node.getBoolean( GIVEN );
-                processed = node.getBoolean( PROCESSED );
+                given = node.getBoolean(GIVEN);
+                processed = node.getBoolean(PROCESSED);
 
-                depth	= node.getInt( DEPTH );
+                depth = node.getInt(DEPTH);
 
-                weapon	= (Ring)node.get( WEAPON );
-                armor	= (Artifact) node.get( ARMOR );
-                food	= (Brew) node.get( FOOD );
-                scrolls	= (ExoticScroll) node.get( SCROLLS );
+                weapon = (Ring) node.get(WEAPON);
+
+                armor = (Artifact) node.get(ARMOR);
+                RingT = (Wand) node.get(RINGT);
+
+
+                food = (Brew) node.get(FOOD);
+                scrolls = (ExoticScroll) node.get(SCROLLS);
 
                 if (node.contains(ENCHANT)) {
                     enchant = (Weapon.Enchantment) node.get(ENCHANT);
-                    glyph   = (Armor.Glyph) node.get(GLYPH);
+                    glyph = (Armor.Glyph) node.get(GLYPH);
                 }
-            } else {
-                reset();
             }
         }
 
@@ -348,12 +360,19 @@ public class RedDragon extends NPC {
                     case 5: food = new ShockingBrew();   break;
                 }
 
-                //TODO Fixed Ring Spawn;
-                if(randomArtifact() != null){
-                    armor = (Artifact)Generator.random( Generator.Category.ARTIFACT );
+                Item item = randomArtifact();
+                if(item != null) {
+                    armor = (Artifact) Generator.random(Generator.Category.ARTIFACT);
                 } else {
-                    RingT = (Ring)Generator.random(Generator.Category.RING);
+                    switch (Random.chances(new float[]{0, 0, 10, 6, 3, 1})){
+                        default:
+                        case 2: armor = new CapeOfThorns(); break;
+                        case 3: armor = new CapeOfThorns();break;
+                        case 4: armor = new CapeOfThorns();   break;
+                        case 5: armor = new CapeOfThorns();   break;
+                    }
                 }
+                RingT = (Wand) Generator.random(Generator.Category.WAND);
 
                 switch (Random.chances(new float[]{0, 0, 10, 6, 3, 1})){
                     default:
@@ -382,6 +401,7 @@ public class RedDragon extends NPC {
                 }
                 weapon.upgrade(itemLevel);
                 armor.upgrade(itemLevel);
+                RingT.upgrade(itemLevel);
 
                 //10% to be enchanted. We store it separately so enchant status isn't revealed early
                 if (Random.Int(10) == 0){

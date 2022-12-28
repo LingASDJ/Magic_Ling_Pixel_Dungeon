@@ -59,14 +59,14 @@ public abstract class ExoticScroll extends Scroll {
 		regToExo.put(ScrollOfRemoveCurse.class, ScrollOfAntiMagic.class);
 		exoToReg.put(ScrollOfAntiMagic.class, ScrollOfRemoveCurse.class);
 
-		regToExo.put(ScrollOfLullaby.class, ScrollOfAffection.class);
-		exoToReg.put(ScrollOfAffection.class, ScrollOfLullaby.class);
+		regToExo.put(ScrollOfLullaby.class, ScrollOfSirensSong.class);
+		exoToReg.put(ScrollOfSirensSong.class, ScrollOfLullaby.class);
 
-		regToExo.put(ScrollOfRage.class, ScrollOfConfusion.class);
-		exoToReg.put(ScrollOfConfusion.class, ScrollOfRage.class);
+		regToExo.put(ScrollOfRage.class, ScrollOfChallenge.class);
+		exoToReg.put(ScrollOfChallenge.class, ScrollOfRage.class);
 
-		regToExo.put(ScrollOfTerror.class, ScrollOfPetrification.class);
-		exoToReg.put(ScrollOfPetrification.class, ScrollOfTerror.class);
+		regToExo.put(ScrollOfTerror.class, ScrollOfDread.class);
+		exoToReg.put(ScrollOfDread.class, ScrollOfTerror.class);
 
 		regToExo.put(ScrollOfRecharging.class, ScrollOfMysticalEnergy.class);
 		exoToReg.put(ScrollOfMysticalEnergy.class, ScrollOfRecharging.class);
@@ -83,8 +83,8 @@ public abstract class ExoticScroll extends Scroll {
 		regToExo.put(ScrollOfMirrorImage.class, ScrollOfPrismaticImage.class);
 		exoToReg.put(ScrollOfPrismaticImage.class, ScrollOfMirrorImage.class);
 
-		regToExo.put(ScrollOfTransmutation.class, ScrollOfPolymorph.class);
-		exoToReg.put(ScrollOfPolymorph.class, ScrollOfTransmutation.class);
+		regToExo.put(ScrollOfTransmutation.class, ScrollOfMetamorphosis.class);
+		exoToReg.put(ScrollOfMetamorphosis.class, ScrollOfTransmutation.class);
 	}
 
 	@Override
