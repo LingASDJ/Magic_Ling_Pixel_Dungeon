@@ -32,24 +32,24 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 
 public class ScrollOfPetrification extends ExoticScroll {
-	
-	{
-		icon = ItemSpriteSheet.Icons.SCROLL_STONE;
-	}
-	
-	@Override
-	public void doRead() {
-		new Flare( 5, 32 ).color( 0xFF0000, true ).show( curUser.sprite, 2f );
-		Sample.INSTANCE.play( Assets.Sounds.READ );
-		
-		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
-			if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
-				Buff.affect( mob, Paralysis.class, Paralysis.DURATION );
-			}
-		}
 
-		identify();
-		
-		readAnimation();
-	}
+  {
+    icon = ItemSpriteSheet.Icons.SCROLL_STONE;
+  }
+
+  @Override
+  public void doRead() {
+    new Flare(5, 32).color(0xFF0000, true).show(curUser.sprite, 2f);
+    Sample.INSTANCE.play(Assets.Sounds.READ);
+
+    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+      if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
+        Buff.affect(mob, Paralysis.class, Paralysis.DURATION);
+      }
+    }
+
+    identify();
+
+    readAnimation();
+  }
 }

@@ -31,106 +31,105 @@ import com.watabou.utils.Bundle;
 
 public class Dread extends Buff {
 
-	protected int left = (int)DURATION;
-	public int object = 0;
+  protected int left = (int) DURATION;
+  public int object = 0;
 
-	public static final float DURATION = 20f;
+  public static final float DURATION = 20f;
 
-	{
-		type = buffType.NEGATIVE;
-		announced = true;
-	}
+  {
+    type = buffType.NEGATIVE;
+    announced = true;
+  }
 
-	//dread overrides terror
-	@Override
-	public boolean attachTo(Char target) {
-		if (super.attachTo(target)){
-			Buff.detach( target, Terror.class );
-			return true;
-		} else {
-			return false;
-		}
-	}
+  // dread overrides terror
+  @Override
+  public boolean attachTo(Char target) {
+    if (super.attachTo(target)) {
+      Buff.detach(target, Terror.class);
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-	{
-		immunities.add(Terror.class);
-	}
+  {
+    immunities.add(Terror.class);
+  }
 
-	@Override
-	public boolean act() {
+  @Override
+  public boolean act() {
 
-		if (!Dungeon.level.heroFOV[target.pos]
-				&& Dungeon.level.distance(target.pos, Dungeon.hero.pos) >= 6) {
-			if (target instanceof Mob){
-				((Mob) target).EXP /= 2;
-			}
-			target.destroy();
-			target.sprite.killAndErase();
-			Dungeon.level.mobs.remove(target);
-			target.die(true);
-		} else {
-			left--;
-			if (left <= 0){
-				detach();
-			}
-		}
+    if (!Dungeon.level.heroFOV[target.pos]
+        && Dungeon.level.distance(target.pos, Dungeon.hero.pos) >= 6) {
+      if (target instanceof Mob) {
+        ((Mob) target).EXP /= 2;
+      }
+      target.destroy();
+      target.sprite.killAndErase();
+      Dungeon.level.mobs.remove(target);
+      target.die(true);
+    } else {
+      left--;
+      if (left <= 0) {
+        detach();
+      }
+    }
 
-		spend(TICK);
-		return true;
-	}
+    spend(TICK);
+    return true;
+  }
 
-	private static final String LEFT	= "left";
-	private static final String OBJECT    = "object";
+  private static final String LEFT = "left";
+  private static final String OBJECT = "object";
 
-	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle(bundle);
-		bundle.put(LEFT, left);
-		bundle.put(OBJECT, object);
-	}
+  @Override
+  public void storeInBundle(Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(LEFT, left);
+    bundle.put(OBJECT, object);
+  }
 
-	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		object = bundle.getInt( OBJECT );
-		left = bundle.getInt( LEFT );
-	}
+  @Override
+  public void restoreFromBundle(Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    object = bundle.getInt(OBJECT);
+    left = bundle.getInt(LEFT);
+  }
 
-	@Override
-	public int icon() {
-		return BuffIndicator.TERROR;
-	}
+  @Override
+  public int icon() {
+    return BuffIndicator.TERROR;
+  }
 
-	@Override
-	public float iconFadePercent() {
-		return Math.max(0, (DURATION - left) / DURATION);
-	}
+  @Override
+  public float iconFadePercent() {
+    return Math.max(0, (DURATION - left) / DURATION);
+  }
 
-	@Override
-	public String iconTextDisplay() {
-		return Integer.toString(left);
-	}
+  @Override
+  public String iconTextDisplay() {
+    return Integer.toString(left);
+  }
 
-	@Override
-	public void tintIcon(Image icon) {
-		icon.hardlight(1, 0, 0);
-	}
+  @Override
+  public void tintIcon(Image icon) {
+    icon.hardlight(1, 0, 0);
+  }
 
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
+  @Override
+  public String toString() {
+    return Messages.get(this, "name");
+  }
 
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc", left);
-	}
+  @Override
+  public String desc() {
+    return Messages.get(this, "desc", left);
+  }
 
-	public void recover() {
-		left -= 5;
-		if (left <= 0){
-			detach();
-		}
-	}
-
+  public void recover() {
+    left -= 5;
+    if (left <= 0) {
+      detach();
+    }
+  }
 }
