@@ -26,8 +26,8 @@ public class BossSelectIndicator extends Button {
   public void flash() {
     lightness = 1f;
   } // although it sounds damn stupid,but extends tag means unable to auto-target,so I have had to
-    // copy its visual and add the auto-targeting feature,may create a father class for these two
-    // later
+  // copy its visual and add the auto-targeting feature,may create a father class for these two
+  // later
 
   public void flip(boolean value) {
     bg.flipHorizontal(value);
