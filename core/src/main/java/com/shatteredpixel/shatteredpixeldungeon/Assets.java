@@ -97,6 +97,10 @@ public class Assets {
 		public static final String LANTERLING  = "interfaces/LanterLing.png";
 
 		public static final String BANNERS  = "interfaces/banners.png";
+
+		//圣诞节
+		public static final String BANNERSSD  = "interfaces/banners_sd.png";
+
 		public static final String BADGES   = "interfaces/badges.png";
 		public static final String LOCKED   = "interfaces/locked_badge.png";
 

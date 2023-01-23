@@ -45,10 +45,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAffection;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAntiMagic;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfConfusion;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
@@ -374,12 +375,13 @@ public class RedDragon extends NPC {
                 }
                 RingT = (Wand) Generator.random(Generator.Category.WAND);
 
-                switch (Random.chances(new float[]{0, 0, 10, 6, 3, 1})){
+                switch (Random.Int(5)){
                     default:
-                    case 2: scrolls = new ScrollOfAffection(); break;
+                    case 0: scrolls = new ScrollOfSirensSong(); break;
+                    case 1: scrolls = new ScrollOfChallenge(); break;
+                    case 2: scrolls = new ScrollOfMetamorphosis(); break;
                     case 3: scrolls = new ScrollOfAntiMagic();    break;
-                    case 4: scrolls = new ScrollOfConfusion();   break;
-                    case 5: scrolls = new ScrollOfPsionicBlast();   break;
+                    case 4: scrolls = new ScrollOfPsionicBlast();   break;
                 }
 
                 //50%:tier2, 30%:tier3, 15%:tier4, 5%:tier5

@@ -28,8 +28,7 @@ public class LighS extends FlavourBuff {
 
     public boolean act() {
         OilLantern lantern = Dungeon.hero.belongings.getItem(OilLantern.class);
-        if (lantern == null || !lantern.isActivated() || lantern.getCharge() <= 0) {
-            assert lantern != null;
+        if ( !lantern.isActivated() || lantern.getCharge() <= 0) {
             lantern.deactivate(Dungeon.hero, false);
             detach();
             return true;

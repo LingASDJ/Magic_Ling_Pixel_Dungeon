@@ -77,21 +77,20 @@ public class DesktopLauncher {
 
 				//shorten/simplify exception message to make it easier to fit into a message box
 				exceptionMsg = exceptionMsg.replaceAll("\\(.*:([0-9]*)\\)", "($1)");
-				exceptionMsg = exceptionMsg.replace("com.shatteredpixel.shatteredpixeldungeon.", "");
+				exceptionMsg = exceptionMsg.replace("com.magiclingpc.cn", "");
 				exceptionMsg = exceptionMsg.replace("com.watabou.", "");
 				exceptionMsg = exceptionMsg.replace("com.badlogic.gdx.", "");
 				exceptionMsg = exceptionMsg.replace("\t", "    ");
 
-				if (exceptionMsg.contains("Couldn't create window")){
+				if (exceptionMsg.contains("无法打开窗口！")){
 					TinyFileDialogs.tinyfd_messageBox(title + " Has Crashed!",
 							title + " wasn't able to initialize it's graphics display, sorry about that!\n\n" +
 									"This usually happens when a computer's graphics card does not support OpenGL 2.0+, or has misconfigured graphics drivers.\n\n" +
 									"If you're certain the game should be working on your computer, feel free to message the developer (Evan@ShatteredPixel.com)\n\n" +
 									"version: " + Game.version, "ok", "error", false);
 				} else {
-					TinyFileDialogs.tinyfd_messageBox(title + " Has Crashed!",
-							title + " has run into an error it can't recover from and has crashed, sorry about that!\n\n" +
-									"If you could, please email this error message to the developer (Evan@ShatteredPixel.com):\n\n" +
+					TinyFileDialogs.tinyfd_messageBox(title + "魔绫像素地牢发生了意外的崩溃!",
+							title + "请将此处的代码截图发送给作者，QQ：2735951230" +
 									"version: " + Game.version + "\n" +
 									exceptionMsg,
 							"ok", "error", false);

@@ -63,27 +63,58 @@ public class vM0_6_7_X_Changes {
     }
 
     public static void add_v0_6_20_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("Coming Soon-Beta21--P3", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta21-p2.940", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.AMULET), ("MLPD上半段-试炼与水晶之心"),
-                ("我们成功的拿到了水晶之心，然而我们在最终调查中得知YOG不是真正的罪魁祸首……" )));
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG20), ("BossRush"),
-                ("常规的开局你可能已经有所厌倦，地牢中的首领也是如此。这一次，不为成败，只为实力而战" )));
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("污泥浊水"),
+                ("1.矮人层饮用漂浮药剂或者水灵药剂都会获得极速Buff，且每大层会额外产生食人鱼房间。" +
+                        "\n-2.修复漂浮效果存在时还能获得Debuff的问题" )));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ICEBOOK), ("新年活动"),
-                ("新年的钟声即将敲响，你接到了一份神秘的邀请……")));
+        changes.addButton(new ChangeButton(Icons.get(Icons.INFO), ("圣诞与常规两个主界面Logo"),
+                ("现在圣诞和常规有两个主界面logo，未来还会有更多。" )));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FIREDVS), ("重构世界观"),
-                ("魔绫的像素地牢已经陪你走过一个春秋了，然而，魔绫的剧情，你是否清楚呢？")));
+        changes = new ChangeInfo("修复", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKELETONGOLD), ("部分Boss重做"),
-                ("为了让魔绫和底层破碎更能区分，部分boss会进行改进或者重做。敬请期待")));
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                (Messages.get(ChangesScene.class, "bugfixes")),
+                Messages.get(vM0_6_7_X_Changes.class, "bug_06X40")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ICEDVS), ("不止于此"),
-                ("P3的更新远远不止这些，而且这次我们会将一些想法和建议交给玩家，让我们一起制作P3吧，完善上半段旅程吧。")));
+        changes = new ChangeInfo("重制", false, null);
+        changes.hardlight(Window.ANSDO_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKELETONGOLD), ("Boss重制计划"),
+                ("冰雪魔女，钻石宝箱王，矮人大师，Yog-Zot,史莱姆王将在完全重制后重新加入，并且可能会改名。且弃用注解版的Boss。并且现在Boss终端暂时暂停使用。" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG20), ("教程重制计划"),
+                ("教程文档正在返修，敬请期待" )));
+
+        changes = new ChangeInfo("调整", false, null);
+        changes.hardlight(Window.CBLACK);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.REDDRAGON), ("核子可乐"),
+                ("核子可乐现在不能在红龙之王处被获得，但会在未来的娱乐模式中加入。" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG26), ("玫瑰秘卷"),
+                ("玫瑰秘卷无敌时间从35回合改为5回合，且不能在此期间使用吸血圣杯。制造配方能量消耗从20改为14" )));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_OFF), ("挑战重制计划"),
+                ("药水癔症，基因突变，暴力Boss将会在未来重新加入，现在暂时禁用！" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG24), ("极度秘卷"),
+                ("暂时移除，将在未来加入。" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ICEFISHSWORD), ("尚方宝剑"),
+                ("初始力量变为20，每10大层进行+1力量，成长面板调整，攻击特效从100%改为20%有几率触发。" )));
+
     }
 
     public static void add_v0_6_19_Changes( ArrayList<ChangeInfo> changeInfos ) {

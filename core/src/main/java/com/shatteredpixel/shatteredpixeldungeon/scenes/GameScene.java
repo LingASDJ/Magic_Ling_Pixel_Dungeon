@@ -447,9 +447,9 @@ public class GameScene extends PixelScene {
 						case 1:
 							WndStory.showChapter( WndStory.ID_SEWERS );
 							break;
-						case 5:
-							WndStory.showChapter( WndStory.ID_SEWERSBOSS );
-							break;
+//						case 5:
+//							WndStory.showChapter( WndStory.ID_SEWERSBOSS );
+//							break;
 						case 6:
 							WndStory.showChapter( WndStory.ID_PRISON );
 							break;
@@ -459,16 +459,16 @@ public class GameScene extends PixelScene {
 						case 16:
 							WndStory.showChapter( WndStory.ID_CITY );
 							break;
-						case 20:
-							if((Statistics.boss_enhance & 0x8) != 0) WndStory.showChapter( WndStory.ID_DWADA );
-							else WndStory.showChapter( WndStory.ID_CITYSBOSS );
-							break;
+////						case 20:
+////							if((Statistics.boss_enhance & 0x8) != 0) WndStory.showChapter( WndStory.ID_DWADA );
+////							else WndStory.showChapter( WndStory.ID_CITYSBOSS );
+//							break;
 						case 21:
 							WndStory.showChapter( WndStory.ID_HALLS );
 							break;
-						case 25:
-							WndStory.showChapter( WndStory.ID_HALLSBOOS );
-							break;
+//						case 25:
+//							WndStory.showChapter( WndStory.ID_HALLSBOOS );
+//							break;
 						case 26:
 							WndStory.showChapter( WndStory.ID_CHAPTONEEND );
 							break;
@@ -553,9 +553,10 @@ public class GameScene extends PixelScene {
 				}
 
 				Sample.INSTANCE.play(Assets.Sounds.DESCEND);
-				if(Dungeon.sbbossLevel()){
-					tell(Messages.get(Slyl.class, "tips"));
-				}
+//				TODO P3
+//				if(Dungeon.sbbossLevel()){
+//					tell(Messages.get(Slyl.class, "tips"));
+//				}
 				for (Char ch : Actor.chars()){
 					if (ch instanceof DriedRose.GhostHero){
 						((DriedRose.GhostHero) ch).sayAppeared();

@@ -1905,7 +1905,7 @@ public class Hero extends Char {
 				ankh = i;
 			}
 		}
-
+			//灯火值低于30死亡生成自己的邪恶面，并清空金币，将金币保存到json文件。（灵感：空洞骑士）
 			if(lanterfireactive && hero.lanterfire <= 30) {
 				BlackSoul s = new BlackSoul();
 				s.pos = Dungeon.hero.pos;
@@ -2060,7 +2060,13 @@ public class Hero extends Char {
 		boolean wasHighGrass = Dungeon.level.map[step] == Terrain.HIGH_GRASS;
 
 		super.move( step, travelling);
-		if (Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.hero.buff(WaterSoulX.class) == null && Dungeon.level.water[pos] && Dungeon.GodWaterLevel()){
+		if(Dungeon.GodWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {
+			for (Buff buff : hero.buffs()) {
+				if (buff instanceof InvisibilityRing||buff instanceof HasteLing) {
+					buff.detach();
+				}
+			}
+		} else if (Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.hero.buff(WaterSoulX.class) == null && Dungeon.level.water[pos] && Dungeon.GodWaterLevel()){
 			Buff.prolong( hero, Cripple.class, Cripple.DURATION/5f );
 		} else if (Dungeon.GodWaterLevel()&& Dungeon.level.water[pos]){
 			Buff.affect(hero, Barkskin.class).set( 2 + hero.lvl/4, 10 );
@@ -2069,7 +2075,13 @@ public class Hero extends Char {
 
 		//监狱之水 祝福效果
 		//如果是污泥浊水则触发Debuff
-		if (Dungeon.PrisonWaterLevel()&& Dungeon.level.water[pos] && Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.hero.buff(WaterSoulX.class)== null){
+		if(Dungeon.PrisonWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {
+			for (Buff buff : hero.buffs()) {
+				if (buff instanceof InvisibilityRing||buff instanceof HasteLing) {
+					buff.detach();
+				}
+			}
+		} else if (Dungeon.PrisonWaterLevel()&& Dungeon.level.water[pos] && Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.hero.buff(WaterSoulX.class)== null){
 			Buff.prolong(hero, Blindness.class, Blindness.DURATION/5f);
 		} else if (Dungeon.PrisonWaterLevel()&& Dungeon.level.water[pos]){
 			Buff.affect(hero, Barkskin.class).set( 2 + hero.lvl/4, 10 );
@@ -2085,7 +2097,13 @@ public class Hero extends Char {
 
 		//矿洞之水 祝福效果
 		//如果是污泥浊水则触发Debuff
-		if (Dungeon.ColdWaterLevel()&& Dungeon.level.water[pos] && Dungeon.hero.buff(WaterSoulX.class)== null && Dungeon.isChallenged(AQUAPHOBIA)){
+		if(Dungeon.ColdWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {
+			for (Buff buff : hero.buffs()) {
+				if (buff instanceof FrostImbueEX) {
+					buff.detach();
+				}
+			}
+		} else if (Dungeon.ColdWaterLevel()&& Dungeon.level.water[pos] && Dungeon.hero.buff(WaterSoulX.class)== null && Dungeon.isChallenged(AQUAPHOBIA)){
 			Buff.affect(hero, Chill.class, 2f);
 		} else if (Dungeon.ColdWaterLevel()&& Dungeon.level.water[pos]){
 			Buff.affect(this, FrostImbueEX.class, FrostImbueEX.DURATION*0.3f);
@@ -2097,12 +2115,21 @@ public class Hero extends Char {
 			}
 
 		//矮人层
-		if (Dungeon.DiedWaterLevel()&& Dungeon.level.water[pos] && Dungeon.hero.buff(WaterSoulX.class)== null && Dungeon.isChallenged(AQUAPHOBIA)){
+		if(Dungeon.DiedWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {
+			Buff.affect(this, HasteLing.class, Haste.DURATION/20);
+		} else if (Dungeon.DiedWaterLevel()&& Dungeon.level.water[pos] && Dungeon.hero.buff(WaterSoulX.class)== null && Dungeon.isChallenged(AQUAPHOBIA)){
 			Buff.prolong(hero, Chill.class, 2f);
 			Buff.prolong(hero, Blindness.class, Blindness.DURATION/5f);
 			Buff.prolong( hero, Cripple.class, Cripple.DURATION/5f );
 			Buff.prolong( hero, Hex.class, Hex.DURATION/10f );
-		}
+		} else if (Dungeon.DiedWaterLevel()&& Dungeon.level.water[pos] && Dungeon.isChallenged(AQUAPHOBIA)){
+			Buff.affect(this, HasteLing.class, Haste.DURATION/20);
+		} else if(Dungeon.DiedWaterLevel()&& !Dungeon.level.water[pos] && Dungeon.isChallenged(AQUAPHOBIA))
+			for (Buff buff : hero.buffs()) {
+				if (buff instanceof HasteLing) {
+					buff.detach();
+				}
+			}
 		
 		if (!flying && travelling) {
 			if (Dungeon.level.water[pos]) {

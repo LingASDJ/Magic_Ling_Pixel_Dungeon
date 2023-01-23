@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 
+//TODO 娱乐模式加入
 public class ElixirOfNukeCole extends Elixir {
 
     {

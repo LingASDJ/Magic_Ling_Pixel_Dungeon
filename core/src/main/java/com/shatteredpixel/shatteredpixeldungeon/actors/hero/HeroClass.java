@@ -56,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
@@ -76,6 +77,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.PotionOfLightningShil
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLevitation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLightningShiledX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
@@ -117,7 +119,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.GreenSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SkyShield;
@@ -171,7 +172,7 @@ public enum HeroClass {
 			new FrozenCarpaccio().quantity(11).identify().collect();
 			new FireFishSword().quantity(1).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
-			new LockSword().quantity(1).identify().collect();
+			new PotionOfLevitation().quantity(100).identify().collect();
 			Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);
 //			Buff.affect(hero, ChampionHero.Blazing.class, ChampionHero.DURATION);
 //			Buff.affect(hero, ChampionHero.Halo.class, ChampionHero.DURATION);
@@ -216,7 +217,7 @@ public enum HeroClass {
 
 			new GreenSword().quantity(1).identify().collect();
 			new SkyShield().quantity(1).identify().collect();
-			//new IceSan().quantity(1).identify().collect();
+			new SandalsOfNature().quantity(1).identify().collect();
 			new GoldBAo().quantity(9999).identify().collect();
 			new WandOfScale().quantity(1).identify().collect();
 			new WandOfGodIce().quantity(1).identify().collect();

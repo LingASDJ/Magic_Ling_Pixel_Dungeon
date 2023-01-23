@@ -3,12 +3,15 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.windows.BossSettingWindows;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
+import com.watabou.utils.Callback;
 
 public class BossSelectIndicator extends Button {
 
@@ -70,11 +73,22 @@ public class BossSelectIndicator extends Button {
             @Override
             protected void onClick() {
                 super.onClick();
-                GameScene.show(new BossSettingWindows());
+                //
+                tell(Messages.get(Slyl.class, "tips"));
             }
 
         });
 
+    }
+
+    private void tell(String text) {
+        Game.runOnRenderThread(new Callback() {
+                                   @Override
+                                   public void call() {
+                                       GameScene.show(new WndQuest(new Slyl(), text));
+                                   }
+                               }
+        );
     }
 
     @Override

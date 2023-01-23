@@ -92,6 +92,8 @@ public class OilLantern extends Item {
         if (action.equals(AC_LIGHT)) {
             if (this.charge > 0) {
                 activate(hero, true);
+            } else if(this.flasks > 0) {
+                GLog.w(Messages.get(OilLantern.class,"lanterneedsxs"));
             } else {
                 GLog.w(Messages.get(OilLantern.class,"lanterneedsx"));
             }

@@ -35,7 +35,7 @@ import com.watabou.noosa.Camera;
 import com.watabou.utils.Bundle;
 
 public class Earthroot extends Plant {
-	
+
 	{
 		image = 8;
 		seedClass = Seed.class;
@@ -48,7 +48,7 @@ public class Earthroot extends Plant {
 			if (Dungeon.hero.subClass == HeroSubClass.WARDEN){
 				Buff.affect(ch, Barkskin.class).set(Dungeon.hero.lvl + 5, 5);
 			} else {
-				Buff.affect(ch, Armor.class).level(ch.HT);
+				Buff.affect(ch, Armor.class).level(ch.HT,ch);
 			}
 		}
 		
@@ -109,12 +109,12 @@ public class Earthroot extends Plant {
 				return damage - block;
 			}
 		}
-		
-		public void level( int value ) {
+
+		public void level( int value,Char enemy ) {
 			if (level < value) {
 				level = value;
 			}
-			pos = target.pos;
+			pos = enemy.pos;
 		}
 		
 		@Override

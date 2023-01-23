@@ -139,7 +139,7 @@ public class WndChallenges extends Window {
 			cb.active = editable;
 
 			//Disable
-			if(Challenges.NAME_IDS[i].equals("light&black")||Challenges.NAME_IDS[i].equals("boss")){
+			if(Challenges.NAME_IDS[i].equals("stronger_bosses")||Challenges.NAME_IDS[i].equals("sbsg")||Challenges.NAME_IDS[i].equals("exsg")){
 				cb.active = false;
 				cb.checked(false);
 				cb.alpha(0.5f);

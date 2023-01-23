@@ -15,6 +15,10 @@ public class OilPotion extends Item {
         stackable = true;
     }
 
+    public boolean isIdentified() {
+        return true;
+    }
+
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = OilPotion.super.actions(hero);
         actions.add(AC_REFILL);

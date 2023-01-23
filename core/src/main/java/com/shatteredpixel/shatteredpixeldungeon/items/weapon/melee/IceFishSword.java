@@ -18,6 +18,7 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 public class IceFishSword extends Weapon {
 
@@ -129,18 +130,20 @@ public class IceFishSword extends Weapon {
 
     @Override
     public int min(int lvl) {
-        return  2*(Dungeon.depth/5+tier+1) +    //8 base, down from 10
-                lvl*(Dungeon.depth/5+tier+1);   //scaling unchanged
+        return  (Dungeon.depth / 5 + tier + 1)+ +     //10 base, down from 20
+                lvl*Math.round(1.0f*(tier+1));   //scaling unchanged
     }
 
     @Override
     public int max(int lvl) {
-        return  3*(Dungeon.depth/5+tier+1) +    //8 base, down from 10
-                lvl*(Dungeon.depth/5+tier+1);   //scaling unchanged
+        return  2*(Dungeon.depth/5+tier+1) +     //10 base, down from 20
+                lvl*Math.round(1.0f*(tier+1));   //scaling unchanged
     }
 
+
+
     public int proc(Char attacker, Char defender, int damage) {
-        if(attacker instanceof Hero){
+        if(attacker instanceof Hero && Random.Float()<0.2f){
             for(Mob mob : ((Hero) attacker).visibleEnemiesList()){
                 bolt(mob.pos, mob);
             }
@@ -151,6 +154,6 @@ public class IceFishSword extends Weapon {
 
     @Override
     public int STRReq(int lvl) {
-        return Dungeon.depth/5+16;
+        return Dungeon.depth/10+20;
     }
 }

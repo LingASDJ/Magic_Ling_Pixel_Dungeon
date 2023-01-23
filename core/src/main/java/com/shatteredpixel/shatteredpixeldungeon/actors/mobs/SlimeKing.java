@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -255,16 +256,22 @@ public class SlimeKing extends Mob {
                     yell(Messages.get(this, "scorpion"));
                     new Item().throwSound();
                     Sample.INSTANCE.play(Assets.Sounds.CHAINS);
-                    sprite.parent.add(new Chains(sprite.center(), enemy.sprite.center(), () -> {
-                        Actor.addDelayed(new Pushing(enemy, enemy.pos, newPosFinal, () -> pullEnemy(enemy, newPosFinal)), -1);
-                        next();
+                    sprite.parent.add(new Chains(sprite.center(), enemy.sprite.destinationCenter(), new Callback() {
+                        public void call() {
+                            Actor.addDelayed(new Pushing(enemy, enemy.pos, newPosFinal, new Callback() {
+                                public void call() {
+                                    pullEnemy(enemy, newPosFinal);
+                                }
+                            }), -1);
+                            next();
+                        }
                     }));
                 } else {
                     pullEnemy(enemy, newPos);
                 }
             }
         }
-        //chainsUsed = true;
+        chainsUsed = true;
         return true;
     }
 

@@ -272,7 +272,7 @@ public class MagicGirlDead extends Boss {
             //if target is locked, fire, target = -1
             if(lastTargeting != -1){
                 //no spend, execute next act
-                    sprite.attack( enemy.pos );
+                    //sprite.attack( enemy.pos );
                     spend( attackDelay()*5f );
                     shoot(this, enemy.pos);
 

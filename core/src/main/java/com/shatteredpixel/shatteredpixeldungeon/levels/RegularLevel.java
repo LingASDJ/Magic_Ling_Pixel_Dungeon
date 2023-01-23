@@ -88,7 +88,7 @@ import java.util.Iterator;
 
 public abstract class RegularLevel extends Level {
 
-	private static Holiday holiday;
+	public static Holiday holiday;
 
 	public enum Holiday{
 		NONE,
