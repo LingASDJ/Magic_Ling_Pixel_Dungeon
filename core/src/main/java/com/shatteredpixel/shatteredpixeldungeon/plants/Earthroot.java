@@ -36,127 +36,127 @@ import com.watabou.utils.Bundle;
 
 public class Earthroot extends Plant {
 
-	{
-		image = 8;
-		seedClass = Seed.class;
-	}
-	
-	@Override
-	public void activate( Char ch ) {
-		
-		if (ch == Dungeon.hero) {
-			if (Dungeon.hero.subClass == HeroSubClass.WARDEN){
-				Buff.affect(ch, Barkskin.class).set(Dungeon.hero.lvl + 5, 5);
-			} else {
-				Buff.affect(ch, Armor.class).level(ch.HT,ch);
-			}
-		}
-		
-		if (Dungeon.level.heroFOV[pos]) {
-			CellEmitter.bottom( pos ).start( EarthParticle.FACTORY, 0.05f, 8 );
-			Camera.main.shake( 1, 0.4f );
-		}
-	}
-	
-	public static class Seed extends Plant.Seed {
-		{
-			image = ItemSpriteSheet.SEED_EARTHROOT;
+  {
+    image = 8;
+    seedClass = Seed.class;
+  }
 
-			plantClass = Earthroot.class;
+  @Override
+  public void activate(Char ch) {
 
-			bones = true;
-		}
-	}
-	
-	public static class Armor extends Buff {
-		
-		private static final float STEP = 1f;
-		
-		private int pos;
-		private int level;
+    if (ch == Dungeon.hero) {
+      if (Dungeon.hero.subClass == HeroSubClass.WARDEN) {
+        Buff.affect(ch, Barkskin.class).set(Dungeon.hero.lvl + 5, 5);
+      } else {
+        Buff.affect(ch, Armor.class).level(ch.HT, ch);
+      }
+    }
 
-		{
-			type = buffType.POSITIVE;
-			announced = true;
-		}
-		
-		@Override
-		public boolean attachTo( Char target ) {
-			pos = target.pos;
-			return super.attachTo( target );
-		}
-		
-		@Override
-		public boolean act() {
-			if (target.pos != pos) {
-				detach();
-			}
-			spend( STEP );
-			return true;
-		}
-		
-		private static int blocking(){
-			return (Dungeon.depth + 5)/2;
-		}
-		
-		public int absorb( int damage ) {
-			int block = Math.min( damage, blocking());
-			if (level <= block) {
-				detach();
-				return damage - block;
-			} else {
-				level -= block;
-				return damage - block;
-			}
-		}
+    if (Dungeon.level.heroFOV[pos]) {
+      CellEmitter.bottom(pos).start(EarthParticle.FACTORY, 0.05f, 8);
+      Camera.main.shake(1, 0.4f);
+    }
+  }
 
-		public void level( int value,Char enemy ) {
-			if (level < value) {
-				level = value;
-			}
-			pos = enemy.pos;
-		}
-		
-		@Override
-		public int icon() {
-			return BuffIndicator.ARMOR;
-		}
+  public static class Seed extends Plant.Seed {
+    {
+      image = ItemSpriteSheet.SEED_EARTHROOT;
 
-		@Override
-		public float iconFadePercent() {
-			return Math.max(0, (target.HT - level) / (float) target.HT);
-		}
+      plantClass = Earthroot.class;
 
-		@Override
-		public String iconTextDisplay() {
-			return Integer.toString(level);
-		}
-		
-		@Override
-		public String toString() {
-			return Messages.get(this, "name");
-		}
+      bones = true;
+    }
+  }
 
-		@Override
-		public String desc() {
-			return Messages.get(this, "desc", blocking(), level);
-		}
+  public static class Armor extends Buff {
 
-		private static final String POS		= "pos";
-		private static final String LEVEL	= "level";
-		
-		@Override
-		public void storeInBundle( Bundle bundle ) {
-			super.storeInBundle( bundle );
-			bundle.put( POS, pos );
-			bundle.put( LEVEL, level );
-		}
-		
-		@Override
-		public void restoreFromBundle( Bundle bundle ) {
-			super.restoreFromBundle( bundle );
-			pos = bundle.getInt( POS );
-			level = bundle.getInt( LEVEL );
-		}
-	}
+    private static final float STEP = 1f;
+
+    private int pos;
+    private int level;
+
+    {
+      type = buffType.POSITIVE;
+      announced = true;
+    }
+
+    @Override
+    public boolean attachTo(Char target) {
+      pos = target.pos;
+      return super.attachTo(target);
+    }
+
+    @Override
+    public boolean act() {
+      if (target.pos != pos) {
+        detach();
+      }
+      spend(STEP);
+      return true;
+    }
+
+    private static int blocking() {
+      return (Dungeon.depth + 5) / 2;
+    }
+
+    public int absorb(int damage) {
+      int block = Math.min(damage, blocking());
+      if (level <= block) {
+        detach();
+        return damage - block;
+      } else {
+        level -= block;
+        return damage - block;
+      }
+    }
+
+    public void level(int value, Char enemy) {
+      if (level < value) {
+        level = value;
+      }
+      pos = enemy.pos;
+    }
+
+    @Override
+    public int icon() {
+      return BuffIndicator.ARMOR;
+    }
+
+    @Override
+    public float iconFadePercent() {
+      return Math.max(0, (target.HT - level) / (float) target.HT);
+    }
+
+    @Override
+    public String iconTextDisplay() {
+      return Integer.toString(level);
+    }
+
+    @Override
+    public String toString() {
+      return Messages.get(this, "name");
+    }
+
+    @Override
+    public String desc() {
+      return Messages.get(this, "desc", blocking(), level);
+    }
+
+    private static final String POS = "pos";
+    private static final String LEVEL = "level";
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+      super.storeInBundle(bundle);
+      bundle.put(POS, pos);
+      bundle.put(LEVEL, level);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+      super.restoreFromBundle(bundle);
+      pos = bundle.getInt(POS);
+      level = bundle.getInt(LEVEL);
+    }
+  }
 }

@@ -34,40 +34,39 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class ScrollOfRoseShiled extends Scroll {
 
+  {
+    image = ItemSpriteSheet.DG26;
+    unique = true;
+  }
+
+  public static class Recipe
+      extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
+
     {
-        image = ItemSpriteSheet.DG26;
-        unique = true;
+      inputs = new Class[] {PotionOfPurity.class, AlchemicalCatalyst.class, StoneOfBlink.class};
+      inQuantity = new int[] {1, 1, 1};
+
+      cost = 14;
+
+      output = ScrollOfRoseShiled.class;
+      outQuantity = 3;
     }
+  }
 
-    public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
+  @Override
+  public boolean isIdentified() {
+    return true;
+  }
 
-        {
-            inputs =  new Class[]{PotionOfPurity.class, AlchemicalCatalyst.class, StoneOfBlink.class};
-            inQuantity = new int[]{1, 1, 1};
+  @Override
+  public void doRead() {
 
-            cost = 14;
+    Buff.prolong(hero, RoseShiled.class, 5f);
+    setKnown();
+    new Flare(5, 32).color(0xFF00FF, true).show(curUser.sprite, 2f);
 
-            output = ScrollOfRoseShiled.class;
-            outQuantity = 3;
-        }
+    identify();
 
-    }
-
-    @Override
-    public boolean isIdentified() {
-        return true;
-    }
-
-
-    @Override
-    public void doRead() {
-
-        Buff.prolong(hero, RoseShiled.class, 5f);
-        setKnown();
-        new Flare( 5, 32 ).color( 0xFF00FF, true ).show( curUser.sprite, 2f );
-
-        identify();
-
-        readAnimation();
-    }
+    readAnimation();
+  }
 }

@@ -63,634 +63,633 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 
 public class MagicGirlDead extends Boss {
-    {
-        spriteClass = MagicGirlSprite.class;
+  {
+    spriteClass = MagicGirlSprite.class;
 
-        initProperty();
-        initBaseStatus(16, 22, 28, 16, 400, 4, 8);
-        initStatus(76);
-        HP=400;
-        HT=400;
-        viewDistance = 18;
+    initProperty();
+    initBaseStatus(16, 22, 28, 16, 400, 4, 8);
+    initStatus(76);
+    HP = 400;
+    HT = 400;
+    viewDistance = 18;
+  }
+  // the actual affected cells
+  private HashSet<Integer> affectedCells;
+  // the cells to trace fire shots to, for visual effects.
+  private HashSet<Integer> visualCells;
+  private int direction = 0;
+
+  {
+    immunities.add(Sleep.class);
+
+    resistances.add(Terror.class);
+    resistances.add(Charm.class);
+    resistances.add(Vertigo.class);
+    resistances.add(Cripple.class);
+    resistances.add(Chill.class);
+    resistances.add(Frost.class);
+    resistances.add(Roots.class);
+    resistances.add(Slow.class);
+
+    immunities.add(Paralysis.class);
+  }
+
+  // 0~7 phases. if health < threshold[phase], then go on.
+  private static final int[] healthThreshold =
+      new int[] {399, 330, 270, 210, 160, 120, 80, 40, -1000000};
+
+  private int phase = 0;
+
+  private float summonCD = 50f;
+
+  private int lastTargeting = -1;
+
+  @Override
+  public String info() {
+    return Messages.get(this, "desc", phase, HP - healthThreshold[phase]);
+  }
+
+  @Override
+  public float speed() {
+    return super.speed() * (0.6f + phase * 0.05f);
+  }
+
+  protected void goOnPhase() {
+    phase++;
+    CellEmitter.center(pos).burst(SnowParticle.FACTORY, 30);
+    Sample.INSTANCE.play(Assets.Sounds.CURSED);
+    if (phase % 2 == 0) {
+      destroyAll();
+      ArrayList<Integer> places = new ArrayList<>();
+      places.add(5 * Dungeon.level.width() + 4);
+      places.add(6 * Dungeon.level.width() - 5);
+      places.add(17 * Dungeon.level.width() + 4);
+      places.add(18 * Dungeon.level.width() - 5);
+      Random.shuffle(places);
+      for (int i = 0; i < Math.min(phase / 2, 4); ++i) {
+        summonCaster(Random.Int(4), places.get(i), false);
+      }
+      //        }else{
+      //            destroyAll();
+      //            for(int i=0;i<phase/2+1;++i){
+      //                summonCaster(Random.Int(6), findRandomPlaceForCaster(), false);
+      //            }
     }
-    //the actual affected cells
-    private HashSet<Integer> affectedCells;
-    //the cells to trace fire shots to, for visual effects.
-    private HashSet<Integer> visualCells;
-    private int direction = 0;
-    {
-        immunities.add(Sleep.class);
 
-        resistances.add(Terror.class);
-        resistances.add(Charm.class);
-        resistances.add(Vertigo.class);
-        resistances.add(Cripple.class);
-        resistances.add(Chill.class);
-        resistances.add(Frost.class);
-        resistances.add(Roots.class);
-        resistances.add(Slow.class);
+    activateAll();
 
-        immunities.add(Paralysis.class);
+    lastTargeting = -1;
+    Buff.affect(this, RageAndFire.class, 1f * phase + 5f);
+
+    yell(Messages.get(this, "damaged"));
+  }
+
+  protected void onZap(Ballistica bolt) {
+
+    for (int cell : affectedCells) {
+
+      // ignore caster cell
+      if (cell == bolt.sourcePos) {
+        continue;
+      }
+
+      // only ignite cells directly near caster if they are flammable
+      if (!Dungeon.level.adjacent(bolt.sourcePos, cell) || Dungeon.level.flamable[cell]) {
+        GameScene.add(Blob.seed(cell, 1 + 2, Freezing.class));
+      }
+    }
+  }
+
+  public void shoot(Char ch, int pos) {
+    final Ballistica shot = new Ballistica(ch.pos, pos, Ballistica.MAGIC_BOLT);
+    fx(
+        shot,
+        new Callback() {
+          @Override
+          public void call() {
+            onZap(shot);
+          }
+        },
+        ch);
+  }
+
+  protected void fx(Ballistica bolt, Callback callback, Char ch) {
+    // need to perform flame spread logic here so we can determine what cells to put flames in.
+    affectedCells = new HashSet<>();
+    visualCells = new HashSet<>();
+
+    int maxDist = 4 + 4 * 4;
+    int dist = Math.min(bolt.dist, maxDist);
+
+    for (int i = 0; i < PathFinder.CIRCLE8.length; i++) {
+      if (bolt.sourcePos + PathFinder.CIRCLE8[i] == bolt.path.get(1)) {
+        direction = i;
+        break;
+      }
     }
 
-    //0~7 phases. if health < threshold[phase], then go on.
-    private static final int[] healthThreshold = new int[]{399, 330, 270, 210, 160, 120, 80, 40, -1000000};
-
-    private int phase = 0;
-
-    private float summonCD = 50f;
-
-    private int lastTargeting = -1;
-
-
-    @Override
-    public String info(){
-        return Messages.get(this, "desc", phase, HP - healthThreshold[phase]);
+    float strength = maxDist;
+    for (int c : bolt.subPath(1, dist)) {
+      strength--; // as we start at dist 1, not 0.
+      affectedCells.add(c);
+      if (strength > 1) {
+        spreadFlames(c + PathFinder.CIRCLE8[left(direction)], strength - 1);
+        spreadFlames(c + PathFinder.CIRCLE8[direction], strength - 1);
+        spreadFlames(c + PathFinder.CIRCLE8[right(direction)], strength - 1);
+      } else {
+        visualCells.add(c);
+      }
     }
 
-    @Override
-    public float speed(){
-        return super.speed() * (0.6f + phase*0.05f);
+    // going to call this one manually
+    visualCells.remove(bolt.path.get(dist));
+
+    for (int cell : visualCells) {
+      // this way we only get the cells at the tip, much better performance.
+      ((MagicMissile) ch.sprite.parent.recycle(MagicMissile.class))
+          .reset(MagicMissile.FROST, ch.sprite, cell, null);
+    }
+    MagicMissile.boltFromChar(
+        ch.sprite.parent, MagicMissile.FROST, ch.sprite, bolt.path.get(dist / 2), callback);
+    if (Dungeon.level.heroFOV[bolt.sourcePos] || Dungeon.level.heroFOV[bolt.collisionPos]) {
+      Sample.INSTANCE.play(Assets.Sounds.ZAP);
+    }
+  }
+
+  // burn... BURNNNNN!.....
+  private void spreadFlames(int cell, float strength) {
+    if (strength >= 0 && (Dungeon.level.passable[cell] || Dungeon.level.flamable[cell])) {
+      affectedCells.add(cell);
+      if (strength >= 1.5f) {
+        visualCells.remove(cell);
+        spreadFlames(cell + PathFinder.CIRCLE8[left(direction)], strength - 1.5f);
+        spreadFlames(cell + PathFinder.NEIGHBOURS9[direction], strength - 1.5f);
+        spreadFlames(cell + PathFinder.CIRCLE8[right(direction)], strength - 1.5f);
+      } else {
+        visualCells.add(cell);
+      }
+    } else if (!Dungeon.level.passable[cell]) visualCells.add(cell);
+  }
+
+  private int left(int direction) {
+    return direction == 0 ? 3 : direction - 1;
+  }
+
+  private int right(int direction) {
+    return direction == 7 ? 0 : direction + 1;
+  }
+
+  private static final float TIME_TO_BURN = 6f;
+
+  @Override
+  public boolean act() {
+    if (paralysed > 0) {
+      spend(TICK);
+      summonCD -= 1 / speed();
+      return true;
+    }
+    for (Buff buff : hero.buffs()) {
+      if (buff instanceof RoseShiled) {
+        buff.detach();
+        GLog.b("……你妄图使用这种方法来逃脱吗？");
+      }
+      if (buff instanceof HaloFireImBlue || buff instanceof FireImbue) {
+        buff.detach();
+        GLog.b("……你妄图使用这种方法来逃脱吗？");
+      }
     }
 
-    protected void goOnPhase(){
-        phase++;
-        CellEmitter.center(pos).burst(SnowParticle.FACTORY, 30);
-        Sample.INSTANCE.play( Assets.Sounds.CURSED );
-        if(phase % 2 == 0){
-            destroyAll();
-            ArrayList<Integer> places = new ArrayList<>();
-            places.add(5*Dungeon.level.width()+4);
-            places.add(6*Dungeon.level.width()-5);
-            places.add(17*Dungeon.level.width()+4);
-            places.add(18*Dungeon.level.width()-5);
-            Random.shuffle(places);
-            for(int i=0;i<Math.min(phase/2, 4);++i){
-                summonCaster(Random.Int(4), places.get(i),false);
+    if (buff(RageAndFire.class) != null) {
+      // if target is locked, fire, target = -1
+      if (lastTargeting != -1) {
+        // no spend, execute next act
+        // sprite.attack( enemy.pos );
+        spend(attackDelay() * 5f);
+        shoot(this, enemy.pos);
+
+        return true;
+        // else try to lock target
+      } else if (findTargetLocation()) {
+        // if success, spend and ready to fire
+        return true;
+      } // else, just act
+    }
+    if (summonCD < 0f) {
+      summonCD += Math.max(60f - phase * 2f, 40f);
+      summonCaster(Random.Int(4), findRandomPlaceForCaster(), phase > 5);
+    }
+    summonCD -= 1 / speed();
+    return super.act();
+  }
+
+  @Override
+  public void move(int step) {
+
+    super.move(step);
+
+    Camera.main.shake(1, 0.25f);
+
+    if (Dungeon.level.map[step] == Terrain.WATER && state == HUNTING) {
+
+      if (Dungeon.level.heroFOV[step]) {
+        if (buff(Haste.class) == null) {
+          Buff.affect(this, Haste.class, 10f);
+          Buff.affect(this, Healing.class).setHeal(42, 0f, 6);
+          new SRPDICLRPRO().spawnAround(pos);
+          yell(Messages.get(this, "arise"));
+          GLog.b(Messages.get(this, "shield"));
+          enemy.sprite.showStatus(0x00ffff, ("！！！"));
+        }
+        sprite.emitter().start(SparkParticle.STATIC, 0.05f, 20);
+      }
+
+      if (Dungeon.level.water[pos] && HP < HT) {
+        if (Dungeon.level.heroFOV[pos]) {
+          sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
+        }
+        if (HP * 2 == HT) {
+          BossHealthBar.bleed(false);
+        }
+        HP++;
+      }
+
+      summonCD -= 24f;
+    }
+  }
+
+  @Override
+  public void notice() {
+    super.notice();
+    if (!BossHealthBar.isAssigned()) {
+      BossHealthBar.assignBoss(this);
+      yell(Messages.get(this, "notice"));
+      for (Char ch : Actor.chars()) {
+        if (ch instanceof DriedRose.GhostHero) {
+          ((DriedRose.GhostHero) ch).sayBoss();
+        }
+      }
+    }
+  }
+
+  @Override
+  public void damage(int damage, Object src) {
+    if (!BossHealthBar.isAssigned()) {
+      BossHealthBar.assignBoss(this);
+      yell(Messages.get(this, "notice"));
+    }
+    if (damage >= 30) {
+      damage = 30 + (int) (Math.sqrt(4 * (damage - 14) + 1) - 1) / 2;
+    }
+
+    if (HP <= 50) {
+      damage = 5;
+    }
+
+    if (buff(RageAndFire.class) != null) damage = Math.round(damage * 0.1f);
+
+    int preHP = HP;
+    super.damage(damage, src);
+    int postHP = HP;
+    if (preHP > healthThreshold[phase] && postHP <= healthThreshold[phase]) {
+      HP = healthThreshold[phase];
+      goOnPhase();
+    }
+
+    if (phase > 4) BossHealthBar.bleed(true);
+    LockedFloor lock = hero.buff(LockedFloor.class);
+    if (lock != null) lock.addTime(damage * 2);
+  }
+
+  @Override
+  public void die(Object src) {
+
+    super.die(src);
+
+    yell(Messages.get(this, "die"));
+
+    for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])) {
+      if (m instanceof SpellCaster) {
+        m.die(this);
+        Dungeon.level.mobs.remove(m);
+      }
+    }
+
+    Dungeon.level.drop(new SkeletonKey(Dungeon.depth), pos).sprite.drop();
+    GameScene.bossSlain();
+    Badges.KILLMG();
+    Badges.validateBossSlain();
+
+    WandOfGodIce woc = new WandOfGodIce();
+    woc.level(Random.NormalIntRange(2, 6));
+    woc.identify();
+
+    Dungeon.level.drop(woc, pos).sprite.drop();
+
+    Dungeon.level.drop(new Gold().quantity(Random.Int(1800, 1200)), pos).sprite.drop();
+    Dungeon.level
+        .drop(new PotionOfHealing().quantity(Random.NormalIntRange(1, 2)), pos)
+        .sprite
+        .drop();
+    Dungeon.level.drop(new ScrollOfMagicMapping().quantity(1).identify(), pos).sprite.drop();
+    Dungeon.level.drop(new ScrollOfUpgrade().quantity(1).identify(), pos).sprite.drop();
+  }
+
+  @Override
+  protected boolean canAttack(Char enemy) {
+    if (enemy != null && enemySeen) {
+      if (Dungeon.level.distance(pos, enemy.pos) < 3) return true;
+    }
+    return false;
+  }
+
+  @Override
+  public void storeInBundle(Bundle bundle) {
+    bundle.put("phaseDM", phase);
+    bundle.put("summonCD", summonCD);
+    bundle.put("lastTargetingDM", lastTargeting);
+    super.storeInBundle(bundle);
+  }
+
+  @Override
+  public void restoreFromBundle(Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    phase = bundle.getInt("phaseDM");
+    summonCD = bundle.getFloat("summonCD");
+    lastTargeting = bundle.getInt("lastTargetingDM");
+
+    BossHealthBar.assignBoss(this);
+    if (phase > 4) BossHealthBar.bleed(true);
+  }
+
+  // caster ability logic
+
+  private static final int FROST = 0;
+  private static final int EXPLODE = 1;
+  private static final int LIGHT = 2;
+  private static final int HALOFIRE = 3;
+  private static final int BOUNCE = 4;
+  private static final int FIRESE = 5;
+
+  protected void fallingRockVisual(int pos) {
+    Camera.main.shake(0.4f, 2f);
+    CellEmitter.get(pos - Dungeon.level.width()).start(Speck.factory(Speck.RED_LIGHT), 0.08f, 10);
+  }
+
+  protected void activateVisual(int pos) {
+    CellEmitter.get(pos).start(Speck.factory(Speck.STAR), 0.14f, 8);
+  }
+
+  protected void summonCaster(int category, int pos, boolean activate) {
+    if (pos != -1) {
+      SpellCaster caster;
+      switch (category) {
+        case FROST:
+          caster = new SpellCaster.FrostCaster();
+          break;
+        case EXPLODE:
+          caster = new SpellCaster.ExplosionCaster();
+          break;
+        case LIGHT:
+          caster = new SpellCaster.LightCaster();
+          break;
+        case HALOFIRE:
+          caster = new SpellCaster.HaloFireCaster();
+          break;
+        case BOUNCE:
+        default:
+          caster = new SpellCaster.BounceCaster();
+      }
+      caster.pos = pos;
+      GameScene.add(caster, Random.Float(2f, 8f));
+      Dungeon.level.mobs.add(caster);
+      fallingRockVisual(pos);
+      if (activate) caster.activate();
+      Dungeon.level.passable[pos] = false;
+    }
+  }
+
+  protected int findRandomPlaceForCaster() {
+
+    int[] ceil = GME.rectBuilder(pos, 4, 4);
+
+    // shuffle
+    for (int i = 0; i < ceil.length - 1; i++) {
+      int j = Random.Int(i, ceil.length);
+      if (j != i) {
+        int t = ceil[i];
+        ceil[i] = ceil[j];
+        ceil[j] = t;
+      }
+    }
+
+    boolean valid;
+    for (int i : ceil) {
+      valid = true;
+      for (int j : PathFinder.NEIGHBOURS4) {
+        if (findChar(j + i) != null) {
+          valid = false;
+          break;
+        }
+      }
+      if (!valid) continue;
+      if (findChar(i) == null
+          && !Dungeon.level.solid[i]
+          && !(Dungeon.level.map[i] == Terrain.INACTIVE_TRAP)) {
+
+        // caster.spriteHardlight();
+        return i;
+      }
+    }
+
+    return -1;
+  }
+
+  protected void activateAll() {
+    for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])) {
+      if (m instanceof SpellCaster) {
+        if (m.alignment == Alignment.NEUTRAL) {
+          ((SpellCaster) m).activate();
+          activateVisual(m.pos);
+        }
+      }
+    }
+  }
+
+  protected void destroyAll() {
+    for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])) {
+      if (m instanceof SpellCaster) {
+        if (m.alignment == Alignment.NEUTRAL) continue;
+        Ballistica beam = new Ballistica(m.pos, hero.pos, Ballistica.WONT_STOP);
+        m.sprite.parent.add(
+            new BeamCustom(
+                    DungeonTilemap.raisedTileCenterToWorld(m.pos),
+                    DungeonTilemap.tileCenterToWorld(beam.collisionPos),
+                    Effects.Type.DEATH_RAY)
+                .setLifespan(0.9f));
+        for (int i : beam.path) {
+          Char ch = findChar(i);
+          if (ch != null) {
+            if (ch.alignment != Alignment.ENEMY) {
+              SpellCaster.zapDamage(ch, 20, 30, 0.85f, m);
             }
-//        }else{
-//            destroyAll();
-//            for(int i=0;i<phase/2+1;++i){
-//                summonCaster(Random.Int(6), findRandomPlaceForCaster(), false);
-//            }
+          }
         }
+        m.die(this);
+        Dungeon.level.mobs.remove(m);
+      }
+    }
+  }
 
-        activateAll();
+  // the first num is all nums, and the second is activated nums.
+  protected int[] aliveCasters() {
+    int[] count = new int[] {0, 0};
+    for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])) {
+      if (m instanceof SpellCaster) {
+        ++count[0];
+        if (m.alignment != Alignment.NEUTRAL) {
+          ++count[1];
+        }
+      }
+    }
+    return count;
+  }
 
-        lastTargeting = -1;
-        Buff.affect(this, RageAndFire.class, 1f*phase + 5f);
+  public void onZapComplete() {
+    ventGas(enemy);
+    next();
+  }
 
-        yell(Messages.get(this, "damaged"));
+  public void ventGas(Char target) {
+    hero.interrupt();
+
+    int gasVented = 0;
+
+    Ballistica trajectory = new Ballistica(pos, target.pos, Ballistica.STOP_TARGET);
+
+    int gasMulti = 2;
+
+    for (int i : trajectory.subPath(0, trajectory.dist)) {
+      GameScene.add(Blob.seed(i, 20 * gasMulti, ToxicGas.class));
+      gasVented += 20 * gasMulti;
     }
 
-    protected void onZap( Ballistica bolt ) {
+    GameScene.add(Blob.seed(trajectory.collisionPos, 100 * gasMulti, ToxicGas.class));
 
-        for( int cell : affectedCells){
-
-            //ignore caster cell
-            if (cell == bolt.sourcePos){
-                continue;
-            }
-
-            //only ignite cells directly near caster if they are flammable
-            if (!Dungeon.level.adjacent(bolt.sourcePos, cell)
-                    || Dungeon.level.flamable[cell]){
-                GameScene.add( Blob.seed( cell, 1+2, Freezing.class ) );
-            }
-        }
+    if (gasVented < 250 * gasMulti) {
+      int toVentAround = (int) Math.ceil(((250 * gasMulti) - gasVented) / 8f);
+      for (int i : PathFinder.NEIGHBOURS8) {
+        GameScene.add(Blob.seed(pos + i, toVentAround, ToxicGas.class));
+      }
     }
+  }
 
-    public void shoot(Char ch, int pos){
-        final Ballistica shot = new Ballistica( ch.pos, pos, Ballistica.MAGIC_BOLT);
-        fx(shot, new Callback() {
-            @Override
-            public void call() {
-                onZap(shot);
-            }
-        }, ch);
-    }
+  public boolean supercharged = false;
 
-    protected void fx(Ballistica bolt, Callback callback, Char ch ) {
-        //need to perform flame spread logic here so we can determine what cells to put flames in.
-        affectedCells = new HashSet<>();
-        visualCells = new HashSet<>();
+  public boolean isSupercharged() {
+    return supercharged;
+  }
 
-        int maxDist = 4 + 4*4;
-        int dist = Math.min(bolt.dist, maxDist);
+  public void dropRocks(Char target) {
 
-        for (int i = 0; i < PathFinder.CIRCLE8.length; i++){
-            if (bolt.sourcePos+PathFinder.CIRCLE8[i] == bolt.path.get(1)){
-                direction = i;
-                break;
-            }
-        }
+    hero.interrupt();
+    final int rockCenter;
 
-        float strength = maxDist;
-        for (int c : bolt.subPath(1, dist)) {
-            strength--; //as we start at dist 1, not 0.
-            affectedCells.add(c);
-            if (strength > 1) {
-                spreadFlames(c + PathFinder.CIRCLE8[left(direction)], strength - 1);
-                spreadFlames(c + PathFinder.CIRCLE8[direction], strength - 1);
-                spreadFlames(c + PathFinder.CIRCLE8[right(direction)], strength - 1);
-            } else {
-                visualCells.add(c);
-            }
-        }
-
-        //going to call this one manually
-        visualCells.remove(bolt.path.get(dist));
-
-        for (int cell : visualCells){
-            //this way we only get the cells at the tip, much better performance.
-            ((MagicMissile)ch.sprite.parent.recycle( MagicMissile.class )).reset(
-                    MagicMissile.FROST,
-                    ch.sprite,
-                    cell,
-                    null
-            );
-        }
-        MagicMissile.boltFromChar( ch.sprite.parent,
-                MagicMissile.FROST,
-                ch.sprite,
-                bolt.path.get(dist/2),
-                callback );
-        if(Dungeon.level.heroFOV[bolt.sourcePos] || Dungeon.level.heroFOV[bolt.collisionPos]){
-            Sample.INSTANCE.play( Assets.Sounds.ZAP );
-        }
-    }
-
-
-    //burn... BURNNNNN!.....
-    private void spreadFlames(int cell, float strength){
-        if (strength >= 0 && (Dungeon.level.passable[cell] || Dungeon.level.flamable[cell])){
-            affectedCells.add(cell);
-            if (strength >= 1.5f) {
-                visualCells.remove(cell);
-                spreadFlames(cell + PathFinder.CIRCLE8[left(direction)], strength - 1.5f);
-                spreadFlames(cell + PathFinder.NEIGHBOURS9[direction], strength - 1.5f);
-                spreadFlames(cell + PathFinder.CIRCLE8[right(direction)], strength - 1.5f);
-            } else {
-                visualCells.add(cell);
-            }
-        } else if (!Dungeon.level.passable[cell])
-            visualCells.add(cell);
-    }
-
-    private int left(int direction){
-        return direction == 0 ? 3 : direction-1;
-    }
-
-    private int right(int direction){
-        return direction == 7 ? 0 : direction+1;
-    }
-    private static final float TIME_TO_BURN	= 6f;
-    @Override
-    public boolean act(){
-        if(paralysed>0){
-            spend(TICK);
-            summonCD -= 1/speed();
-            return true;
-        }
-        for (Buff buff : hero.buffs()) {
-            if (buff instanceof RoseShiled) {
-                buff.detach();
-                GLog.b("……你妄图使用这种方法来逃脱吗？");
-            }
-            if (buff instanceof HaloFireImBlue ||buff instanceof FireImbue) {
-                buff.detach();
-                GLog.b("……你妄图使用这种方法来逃脱吗？");
-            }
-        }
-
-        if(buff(RageAndFire.class)!=null){
-            //if target is locked, fire, target = -1
-            if(lastTargeting != -1){
-                //no spend, execute next act
-                    //sprite.attack( enemy.pos );
-                    spend( attackDelay()*5f );
-                    shoot(this, enemy.pos);
-
-                return true;
-                //else try to lock target
-            }else if(findTargetLocation()) {
-                //if success, spend and ready to fire
-                return true;
-            }//else, just act
-        }
-        if(summonCD<0f){
-            summonCD += Math.max(60f - phase * 2f, 40f);
-            summonCaster(Random.Int(4), findRandomPlaceForCaster(), phase>5);
-        }
-        summonCD -= 1/speed();
-        return super.act();
-    }
-
-
-    @Override
-    public void move(int step) {
-
-        super.move(step);
-
-        Camera.main.shake(  1, 0.25f );
-
-        if (Dungeon.level.map[step] == Terrain.WATER && state == HUNTING) {
-
-            if (Dungeon.level.heroFOV[step]) {
-                if (buff(Haste.class) == null) {
-                    Buff.affect(this, Haste.class, 10f);
-                    Buff.affect(this, Healing.class).setHeal(42, 0f, 6);
-                    new SRPDICLRPRO().spawnAround(pos);
-                    yell( Messages.get(this, "arise") );
-                    GLog.b(Messages.get(this, "shield"));
-                    enemy.sprite.showStatus(0x00ffff, ("！！！"));
-                }
-                sprite.emitter().start(SparkParticle.STATIC, 0.05f, 20);
-            }
-
-
-
-            if (Dungeon.level.water[pos] && HP < HT) {
-                if (Dungeon.level.heroFOV[pos] ){
-                    sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
-                }
-                if (HP*2 == HT) {
-                    BossHealthBar.bleed(false);
-                }
-                HP++;
-            }
-
-            summonCD -= 24f;
-
-        }
-    }
-
-    @Override
-    public void notice() {
-        super.notice();
-        if (!BossHealthBar.isAssigned()) {
-            BossHealthBar.assignBoss(this);
-            yell(Messages.get(this, "notice"));
-            for (Char ch : Actor.chars()){
-                if (ch instanceof DriedRose.GhostHero){
-                    ((DriedRose.GhostHero) ch).sayBoss();
-                }
-            }
-        }
-    }
-
-    @Override
-    public void damage(int damage, Object src){
-        if (!BossHealthBar.isAssigned()) {
-            BossHealthBar.assignBoss(this);
-            yell(Messages.get(this, "notice"));
-        }
-        if (damage >= 30){
-            damage = 30 + (int)(Math.sqrt(4*(damage - 14) + 1) - 1)/2;
-        }
-
-        if (HP <= 50){
-            damage = 5;
-        }
-
-        if(buff(RageAndFire.class)!=null) damage = Math.round(damage*0.1f);
-
-        int preHP = HP;
-        super.damage(damage, src);
-        int postHP = HP;
-        if(preHP>healthThreshold[phase] && postHP<=healthThreshold[phase]){
-            HP = healthThreshold[phase];
-            goOnPhase();
-        }
-
-        if(phase>4) BossHealthBar.bleed(true);
-        LockedFloor lock = hero.buff(LockedFloor.class);
-        if (lock != null) lock.addTime(damage*2);
-    }
-
-    @Override
-    public void die(Object src){
-
-        super.die(src);
-
-        yell(Messages.get(this, "die"));
-
-        for(Mob m: Dungeon.level.mobs.toArray(new Mob[0])){
-            if(m instanceof SpellCaster){
-                m.die(this);
-                Dungeon.level.mobs.remove(m);
-            }
-        }
-
-        Dungeon.level.drop(new SkeletonKey(Dungeon.depth), pos).sprite.drop();
-        GameScene.bossSlain();
-        Badges.KILLMG();
-        Badges.validateBossSlain();
-
-        WandOfGodIce woc = new WandOfGodIce();
-        woc.level(Random.NormalIntRange(2,6));
-        woc.identify();
-
-        Dungeon.level.drop(woc, pos).sprite.drop();
-
-        Dungeon.level.drop(new Gold().quantity(Random.Int(1800, 1200)), pos).sprite.drop();
-        Dungeon.level.drop(new PotionOfHealing().quantity(Random.NormalIntRange(1, 2)), pos).sprite.drop();
-        Dungeon.level.drop(new ScrollOfMagicMapping().quantity(1).identify(), pos).sprite.drop();
-        Dungeon.level.drop(new ScrollOfUpgrade().quantity(1).identify(), pos).sprite.drop();
-
-
-    }
-
-    @Override
-    protected boolean canAttack(Char enemy){
-        if(enemy!=null && enemySeen){
-            if(Dungeon.level.distance(pos, enemy.pos)<3) return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void storeInBundle(Bundle bundle) {
-        bundle.put("phaseDM", phase);
-        bundle.put("summonCD", summonCD);
-        bundle.put("lastTargetingDM", lastTargeting);
-        super.storeInBundle(bundle);
-
-    }
-
-    @Override
-    public void restoreFromBundle(Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        phase = bundle.getInt("phaseDM");
-        summonCD = bundle.getFloat("summonCD");
-        lastTargeting = bundle.getInt("lastTargetingDM");
-
-        BossHealthBar.assignBoss(this);
-        if (phase>4) BossHealthBar.bleed(true);
-
-    }
-
-//caster ability logic
-
-    private static final int FROST = 0;
-    private static final int EXPLODE = 1;
-    private static final int LIGHT = 2;
-    private static final int HALOFIRE = 3;
-    private static final int BOUNCE = 4;
-    private static final int FIRESE = 5;
-
-    protected void fallingRockVisual(int pos){
-        Camera.main.shake(0.4f, 2f);
-        CellEmitter.get( pos - Dungeon.level.width() ).start(Speck.factory(Speck.RED_LIGHT), 0.08f, 10);
-    }
-
-    protected void activateVisual(int pos){
-        CellEmitter.get( pos ).start(Speck.factory(Speck.STAR), 0.14f, 8);
-    }
-
-    protected void summonCaster(int category, int pos, boolean activate){
-        if(pos != -1){
-            SpellCaster caster;
-            switch (category){
-                case FROST:
-                    caster = new SpellCaster.FrostCaster();
-                    break;
-                case EXPLODE:
-                    caster = new SpellCaster.ExplosionCaster();
-                    break;
-                case LIGHT:
-                    caster = new SpellCaster.LightCaster();
-                    break;
-                case HALOFIRE:
-                    caster = new SpellCaster.HaloFireCaster();
-                    break;
-                case BOUNCE: default:
-                    caster = new SpellCaster.BounceCaster();
-            }
-            caster.pos = pos;
-            GameScene.add(caster, Random.Float(2f, 8f));
-            Dungeon.level.mobs.add(caster);
-            fallingRockVisual(pos);
-            if(activate) caster.activate();
-            Dungeon.level.passable[pos] = false;
-        }
-    }
-
-    protected int findRandomPlaceForCaster(){
-
-        int[] ceil = GME.rectBuilder(pos, 4, 4);
-
-        //shuffle
-        for (int i=0; i < ceil.length - 1; i++) {
-            int j = Random.Int( i, ceil.length );
-            if (j != i) {
-                int t = ceil[i];
-                ceil[i] = ceil[j];
-                ceil[j] = t;
-            }
-        }
-
-        boolean valid;
-        for(int i: ceil){
-            valid = true;
-            for(int j: PathFinder.NEIGHBOURS4){
-                if(findChar(j+i)!=null){
-                    valid = false;break;
-                }
-            }
-            if(!valid) continue;
-            if(findChar(i) == null && !Dungeon.level.solid[i] && !(Dungeon.level.map[i]==Terrain.INACTIVE_TRAP)){
-
-                //caster.spriteHardlight();
-                return i;
-            }
-        }
-
-        return -1;
-    }
-
-    protected void activateAll(){
-        for(Mob m: Dungeon.level.mobs.toArray(new Mob[0])){
-            if(m instanceof SpellCaster){
-                if(m.alignment == Alignment.NEUTRAL) {
-                    ((SpellCaster) m).activate();
-                    activateVisual(m.pos);
-                }
-            }
-        }
-    }
-
-    protected void destroyAll(){
-        for(Mob m: Dungeon.level.mobs.toArray(new Mob[0])){
-            if(m instanceof SpellCaster){
-                if(m.alignment == Alignment.NEUTRAL) continue;
-                Ballistica beam = new Ballistica(m.pos, hero.pos, Ballistica.WONT_STOP);
-                m.sprite.parent.add(new BeamCustom(
-                        DungeonTilemap.raisedTileCenterToWorld(m.pos),
-                        DungeonTilemap.tileCenterToWorld(beam.collisionPos),
-                        Effects.Type.DEATH_RAY).setLifespan(0.9f));
-                for(int i: beam.path){
-                    Char ch = findChar(i);
-                    if(ch!=null){
-                        if(ch.alignment != Alignment.ENEMY){
-                            SpellCaster.zapDamage(ch, 20, 30, 0.85f, m);
-                        }
-                    }
-                }
-                m.die(this);
-                Dungeon.level.mobs.remove(m);
-            }
-        }
-    }
-
-    //the first num is all nums, and the second is activated nums.
-    protected int[] aliveCasters(){
-        int[] count = new int[]{0, 0};
-        for(Mob m: Dungeon.level.mobs.toArray(new Mob[0])) {
-            if (m instanceof SpellCaster) {
-                ++count[0];
-                if(m.alignment != Alignment.NEUTRAL){
-                    ++count[1];
-                }
-            }
-        }
-        return count;
-    }
-
-    public void onZapComplete(){
-        ventGas(enemy);
-        next();
-    }
-
-    public void ventGas( Char target ){
+    if (Dungeon.level.adjacent(pos, target.pos)) {
+      int oppositeAdjacent = target.pos + (target.pos - pos);
+      Ballistica trajectory = new Ballistica(target.pos, oppositeAdjacent, Ballistica.MAGIC_BOLT);
+      WandOfBlastWave.throwChar(target, trajectory, 2, false, false);
+      if (target == hero) {
         hero.interrupt();
-
-        int gasVented = 0;
-
-        Ballistica trajectory = new Ballistica(pos, target.pos, Ballistica.STOP_TARGET);
-
-        int gasMulti = 2 ;
-
-        for (int i : trajectory.subPath(0, trajectory.dist)){
-            GameScene.add(Blob.seed(i, 20*gasMulti, ToxicGas.class));
-            gasVented += 20*gasMulti;
-        }
-
-        GameScene.add(Blob.seed(trajectory.collisionPos, 100*gasMulti, ToxicGas.class));
-
-        if (gasVented < 250*gasMulti){
-            int toVentAround = (int)Math.ceil(((250*gasMulti) - gasVented)/8f);
-            for (int i : PathFinder.NEIGHBOURS8){
-                GameScene.add(Blob.seed(pos+i, toVentAround, ToxicGas.class));
-            }
-
-        }
-
-    }
-    public boolean supercharged = false;
-    public boolean isSupercharged(){
-        return supercharged;
+      }
+      rockCenter = trajectory.path.get(Math.min(trajectory.dist, 2));
+    } else {
+      rockCenter = target.pos;
     }
 
-    public void dropRocks( Char target ) {
+    int safeCell;
+    do {
+      safeCell = rockCenter + PathFinder.NEIGHBOURS8[Random.Int(8)];
+    } while (safeCell == pos
+        || (Dungeon.level.solid[safeCell] && Random.Int(2) == 0)
+        || (Blob.volumeAt(safeCell, CavesGirlDeadLevel.PylonEnergy.class) > 0
+            && Random.Int(2) == 0));
 
-        hero.interrupt();
-        final int rockCenter;
+    ArrayList<Integer> rockCells = new ArrayList<>();
 
-        if (Dungeon.level.adjacent(pos, target.pos)){
-            int oppositeAdjacent = target.pos + (target.pos - pos);
-            Ballistica trajectory = new Ballistica(target.pos, oppositeAdjacent, Ballistica.MAGIC_BOLT);
-            WandOfBlastWave.throwChar(target, trajectory, 2, false, false);
-            if (target == hero){
-                hero.interrupt();
-            }
-            rockCenter = trajectory.path.get(Math.min(trajectory.dist, 2));
-        } else {
-            rockCenter = target.pos;
+    int start = rockCenter - Dungeon.level.width() * 3 - 3;
+    int pos;
+    for (int y = 0; y < 7; y++) {
+      pos = start + Dungeon.level.width() * y;
+      for (int x = 0; x < 7; x++) {
+        if (!Dungeon.level.insideMap(pos)) {
+          pos++;
+          continue;
         }
-
-        int safeCell;
-        do {
-            safeCell = rockCenter + PathFinder.NEIGHBOURS8[Random.Int(8)];
-        } while (safeCell == pos
-                || (Dungeon.level.solid[safeCell] && Random.Int(2) == 0)
-                || (Blob.volumeAt(safeCell, CavesGirlDeadLevel.PylonEnergy.class) > 0 && Random.Int(2) == 0));
-
-        ArrayList<Integer> rockCells = new ArrayList<>();
-
-        int start = rockCenter - Dungeon.level.width() * 3 - 3;
-        int pos;
-        for (int y = 0; y < 7; y++) {
-            pos = start + Dungeon.level.width() * y;
-            for (int x = 0; x < 7; x++) {
-                if (!Dungeon.level.insideMap(pos)) {
-                    pos++;
-                    continue;
-                }
-                //add rock cell to pos, if it is not solid, and isn't the safecell
-                if (!Dungeon.level.solid[pos] && pos != safeCell && Random.Int(Dungeon.level.distance(rockCenter, pos)) == 0) {
-                    //don't want to overly punish players with slow move or attack speed
-                    rockCells.add(pos);
-                }
-                pos++;
-            }
+        // add rock cell to pos, if it is not solid, and isn't the safecell
+        if (!Dungeon.level.solid[pos]
+            && pos != safeCell
+            && Random.Int(Dungeon.level.distance(rockCenter, pos)) == 0) {
+          // don't want to overly punish players with slow move or attack speed
+          rockCells.add(pos);
         }
-        Buff.append(this, NewDM300.FallingRockBuff.class, Math.min(target.cooldown(), 3*TICK)).setRockPositions(rockCells);
-
+        pos++;
+      }
     }
+    Buff.append(this, NewDM300.FallingRockBuff.class, Math.min(target.cooldown(), 3 * TICK))
+        .setRockPositions(rockCells);
+  }
 
-    public void onSlamComplete(){
-        dropRocks(enemy);
-        next();
-    }
-    public static class RageAndFire extends FlavourBuff {
-        Emitter charge;
-        @Override
-        public void fx(boolean on){
-            if(on) {
-                charge = target.sprite.emitter();
-                charge.autoKill = false;
-                charge.pour(SparkParticle.STATIC, 0.05f);
-                //charge.on = false;
-            }else{
-                if(charge != null) {
-                    charge.on = false;
-                    charge = null;
-                }
+  public void onSlamComplete() {
+    dropRocks(enemy);
+    next();
+  }
 
-            }
-        }
-    }
-
-    protected boolean findTargetLocation(){
-        if(enemy!=null && enemySeen){
-            lastTargeting = enemy.pos;
-        }else{
-            lastTargeting = hero.pos;
-        }
-        if(canHit(lastTargeting)) {
-            sprite.parent.addToBack(new TargetedCell(lastTargeting, 0xFF0000));
-            spend(TICK);
-            return true;
-        }else{
-            lastTargeting = -1;
-            return false;
-        }
-    }
-
-    protected boolean canHit(int targetPos){
-        Ballistica ba = new Ballistica(pos, targetPos, Ballistica.PROJECTILE);
-        return Dungeon.level.distance(ba.collisionPos, targetPos) <= 1;
-    }
+  public static class RageAndFire extends FlavourBuff {
+    Emitter charge;
 
     @Override
-    public boolean isAlive(){
-        return HP>0 || healthThreshold[phase]>0;
+    public void fx(boolean on) {
+      if (on) {
+        charge = target.sprite.emitter();
+        charge.autoKill = false;
+        charge.pour(SparkParticle.STATIC, 0.05f);
+        // charge.on = false;
+      } else {
+        if (charge != null) {
+          charge.on = false;
+          charge = null;
+        }
+      }
     }
+  }
+
+  protected boolean findTargetLocation() {
+    if (enemy != null && enemySeen) {
+      lastTargeting = enemy.pos;
+    } else {
+      lastTargeting = hero.pos;
+    }
+    if (canHit(lastTargeting)) {
+      sprite.parent.addToBack(new TargetedCell(lastTargeting, 0xFF0000));
+      spend(TICK);
+      return true;
+    } else {
+      lastTargeting = -1;
+      return false;
+    }
+  }
+
+  protected boolean canHit(int targetPos) {
+    Ballistica ba = new Ballistica(pos, targetPos, Ballistica.PROJECTILE);
+    return Dungeon.level.distance(ba.collisionPos, targetPos) <= 1;
+  }
+
+  @Override
+  public boolean isAlive() {
+    return HP > 0 || healthThreshold[phase] > 0;
+  }
 }
-

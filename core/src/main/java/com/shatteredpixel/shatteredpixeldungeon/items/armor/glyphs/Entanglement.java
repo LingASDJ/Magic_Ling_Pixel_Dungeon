@@ -34,28 +34,26 @@ import com.watabou.noosa.Camera;
 import com.watabou.utils.Random;
 
 public class Entanglement extends Glyph {
-	
-	private static ItemSprite.Glowing BROWN = new ItemSprite.Glowing( 0x663300 );
-	
-	@Override
-	public int proc(Armor armor, Char attacker, final Char defender, final int damage ) {
 
-		final int level = Math.max( 0, armor.buffedLvl() );
-		
-		if (Random.Int( 4 ) == 0) {
-			
-			Buff.affect( defender, Earthroot.Armor.class ).level( 5 + 2 * level,defender );
-			CellEmitter.bottom( defender.pos ).start( EarthParticle.FACTORY, 0.05f, 8 );
-			Camera.main.shake( 1, 0.4f );
-			
-		}
+  private static ItemSprite.Glowing BROWN = new ItemSprite.Glowing(0x663300);
 
-		return damage;
-	}
+  @Override
+  public int proc(Armor armor, Char attacker, final Char defender, final int damage) {
 
-	@Override
-	public Glowing glowing() {
-		return BROWN;
-	}
-	
+    final int level = Math.max(0, armor.buffedLvl());
+
+    if (Random.Int(4) == 0) {
+
+      Buff.affect(defender, Earthroot.Armor.class).level(5 + 2 * level, defender);
+      CellEmitter.bottom(defender.pos).start(EarthParticle.FACTORY, 0.05f, 8);
+      Camera.main.shake(1, 0.4f);
+    }
+
+    return damage;
+  }
+
+  @Override
+  public Glowing glowing() {
+    return BROWN;
+  }
 }
