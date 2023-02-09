@@ -25,236 +25,231 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.SparseArray;
 
 public class Statistics {
-	public static int realdeepestFloor;
-	public static int boss_enhance = 0;
-	public static int goldCollected;
-	public static int deepestFloor;
-	public static int enemiesSlain;
-	public static int foodEaten;
-	public static int itemsCrafted;
-	public static int piranhasKilled;
-	public static int ankhsUsed;
-	public static int spawnersIce;
-	public static int naiyaziCollected;
-	public static boolean iscustomName = false;
-	//used for hero unlock badges
-	public static int upgradesUsed;
-	public static int sneakAttacks;
-	public static int thrownAssists;
+  public static int realdeepestFloor;
+  public static int boss_enhance = 0;
+  public static int goldCollected;
+  public static int deepestFloor;
+  public static int enemiesSlain;
+  public static int foodEaten;
+  public static int itemsCrafted;
+  public static int piranhasKilled;
+  public static int ankhsUsed;
+  public static int spawnersIce;
+  public static int naiyaziCollected;
+  public static boolean iscustomName = false;
+  // used for hero unlock badges
+  public static int upgradesUsed;
+  public static int sneakAttacks;
+  public static int thrownAssists;
 
-	public static int spawnersAlive;
-	
-	public static float duration;
-	
-	public static boolean qualifiedForNoKilling = false;
-	public static boolean completedWithNoKilling = false;
-	
-	public static boolean amuletObtained = false;
+  public static int spawnersAlive;
 
-	public static boolean fireGirlnoshopping = false;
+  public static float duration;
 
-	public static boolean deadshoppingdied = false;
+  public static boolean qualifiedForNoKilling = false;
+  public static boolean completedWithNoKilling = false;
 
-	public static boolean wangzheguilai = false;
+  public static boolean amuletObtained = false;
 
-	public static boolean endingbald = false;
+  public static boolean fireGirlnoshopping = false;
 
-	//灯火前行
-	public static boolean lanterfireactive = false;
+  public static boolean deadshoppingdied = false;
 
-	//克里弗斯之果
-	public static boolean crivusfruitslevel2 = false;
+  public static boolean wangzheguilai = false;
 
+  public static boolean endingbald = false;
 
-	//修复同步
-	public static boolean bugsyncfixed = false;
+  // 灯火前行
+  public static boolean lanterfireactive = false;
 
-	//警告
-	public static boolean tipsgodungeon = false;
+  // 克里弗斯之果
+  public static boolean crivusfruitslevel2 = false;
 
-	public static int dageCollected;
+  // 修复同步
+  public static boolean bugsyncfixed = false;
 
-	//Directly add float time will cause accuracy lose and stop timing if time is long enough
-	//so use long to record seconds, float to count sub-seconds.
-	//SPD-V1.3.2-ITEM SPAWN CODE
-	public static long real_seconds = 0;
-	public static float second_elapsed = 0;
-	public static float turnsPassed = 0f;
+  // 警告
+  public static boolean tipsgodungeon = false;
 
-	public static SparseArray<Boolean> floorsExplored = new SparseArray<>();
-	
-	public static void reset() {
-		
-		goldCollected	= 0;
-		deepestFloor	= -1;
-		enemiesSlain	= 0;
-		foodEaten		= 0;
-		itemsCrafted    = 0;
-		piranhasKilled	= 0;
-		ankhsUsed		= 0;
+  public static int dageCollected;
 
-		upgradesUsed    = 0;
-		sneakAttacks    = 0;
-		thrownAssists   = 0;
-		realdeepestFloor = 0;
-		spawnersAlive   = 0;
-		
-		duration	= 0;
-		
-		qualifiedForNoKilling = false;
-		
-		amuletObtained = false;
+  // Directly add float time will cause accuracy lose and stop timing if time is long enough
+  // so use long to record seconds, float to count sub-seconds.
+  // SPD-V1.3.2-ITEM SPAWN CODE
+  public static long real_seconds = 0;
+  public static float second_elapsed = 0;
+  public static float turnsPassed = 0f;
 
-		tipsgodungeon = false;
+  public static SparseArray<Boolean> floorsExplored = new SparseArray<>();
 
-		fireGirlnoshopping = false;
+  public static void reset() {
 
-		deadshoppingdied = false;
-		wangzheguilai = false;
-		endingbald = false;
+    goldCollected = 0;
+    deepestFloor = -1;
+    enemiesSlain = 0;
+    foodEaten = 0;
+    itemsCrafted = 0;
+    piranhasKilled = 0;
+    ankhsUsed = 0;
 
-		lanterfireactive = false;
-		bugsyncfixed =  false;
-		crivusfruitslevel2 = false;
+    upgradesUsed = 0;
+    sneakAttacks = 0;
+    thrownAssists = 0;
+    realdeepestFloor = 0;
+    spawnersAlive = 0;
 
-		second_elapsed = 0f;
-		real_seconds = 0;
-		turnsPassed = 0f;
+    duration = 0;
 
+    qualifiedForNoKilling = false;
 
-		
-	}
-	
-	private static final String GOLD		= "score";
-	private static final String DEEPEST		= "maxDepth";
-	private static final String SLAIN		= "enemiesSlain";
-	private static final String FOOD		= "foodEaten";
-	private static final String ALCHEMY		= "potionsCooked";
-	private static final String PIRANHAS	= "priranhas";
-	private static final String ANKHS		= "ankhsUsed";
-	
-	private static final String UPGRADES	= "upgradesUsed";
-	private static final String SNEAKS		= "sneakAttacks";
-	private static final String THROWN		= "thrownAssists";
+    amuletObtained = false;
 
-	private static final String SPAWNERS	= "spawnersAlive";
-	
-	private static final String DURATION	= "duration";
+    tipsgodungeon = false;
 
-	private static final String NO_KILLING_QUALIFIED	= "qualifiedForNoKilling";
-	
-	private static final String AMULET		= "amuletObtained";
+    fireGirlnoshopping = false;
 
-	//浊焰契约
-	private static final String NOSHOPPING		= "fireGirlnoshopping";
+    deadshoppingdied = false;
+    wangzheguilai = false;
+    endingbald = false;
 
-	private static final String SHOPPINGDIED		= "deadshoppingdied";
+    lanterfireactive = false;
+    bugsyncfixed = false;
+    crivusfruitslevel2 = false;
 
-	private static final String WZGL		= "wangzheguilai";
+    second_elapsed = 0f;
+    real_seconds = 0;
+    turnsPassed = 0f;
+  }
 
-	private static final String ENBR		= "endingbald";
+  private static final String GOLD = "score";
+  private static final String DEEPEST = "maxDepth";
+  private static final String SLAIN = "enemiesSlain";
+  private static final String FOOD = "foodEaten";
+  private static final String ALCHEMY = "potionsCooked";
+  private static final String PIRANHAS = "priranhas";
+  private static final String ANKHS = "ankhsUsed";
 
-	private static final String EXLEVEL = "Exlevel";
+  private static final String UPGRADES = "upgradesUsed";
+  private static final String SNEAKS = "sneakAttacks";
+  private static final String THROWN = "thrownAssists";
 
-	//灯火前行
-	private static final String LANTERACTIVE		= "lanterfireactive";
+  private static final String SPAWNERS = "spawnersAlive";
 
-	//BUG修复的机制
-	private static final String BUG_SYNC_FIXED		= "bugsyncfixed";
+  private static final String DURATION = "duration";
 
-	//克里弗斯之果
-	private static final String CrivusFruitsLevel2		= "crivusfruitslevel2";
+  private static final String NO_KILLING_QUALIFIED = "qualifiedForNoKilling";
 
-	private static final String TIPSGO		= "tipsgo";
+  private static final String AMULET = "amuletObtained";
 
-	public static void storeInBundle( Bundle bundle ) {
-		bundle.put( LANTERACTIVE, lanterfireactive );
+  // 浊焰契约
+  private static final String NOSHOPPING = "fireGirlnoshopping";
 
-		bundle.put( CrivusFruitsLevel2, crivusfruitslevel2 );
+  private static final String SHOPPINGDIED = "deadshoppingdied";
 
-		bundle.put( TIPSGO, tipsgodungeon );
+  private static final String WZGL = "wangzheguilai";
 
-		bundle.put( BUG_SYNC_FIXED, bugsyncfixed );
+  private static final String ENBR = "endingbald";
 
-		bundle.put( GOLD,		goldCollected );
-		bundle.put( DEEPEST,	deepestFloor );
-		bundle.put( SLAIN,		enemiesSlain );
-		bundle.put( FOOD,		foodEaten );
-		bundle.put( ALCHEMY,    itemsCrafted );
-		bundle.put( PIRANHAS,	piranhasKilled );
-		bundle.put( ANKHS,		ankhsUsed );
-		bundle.put(	EXLEVEL, realdeepestFloor);
-		bundle.put( UPGRADES,   upgradesUsed );
-		bundle.put( SNEAKS,		sneakAttacks );
-		bundle.put( THROWN,		thrownAssists );
+  private static final String EXLEVEL = "Exlevel";
 
-		bundle.put( SPAWNERS,	spawnersAlive );
-		
-		bundle.put( DURATION,	duration );
+  // 灯火前行
+  private static final String LANTERACTIVE = "lanterfireactive";
 
-		bundle.put(NO_KILLING_QUALIFIED, qualifiedForNoKilling);
-		
-		bundle.put( AMULET,		amuletObtained );
+  // BUG修复的机制
+  private static final String BUG_SYNC_FIXED = "bugsyncfixed";
 
-		bundle.put( NOSHOPPING,	fireGirlnoshopping );
+  // 克里弗斯之果
+  private static final String CrivusFruitsLevel2 = "crivusfruitslevel2";
 
-		bundle.put( SHOPPINGDIED, deadshoppingdied );
+  private static final String TIPSGO = "tipsgo";
 
-		bundle.put( WZGL, wangzheguilai );
+  public static void storeInBundle(Bundle bundle) {
+    bundle.put(LANTERACTIVE, lanterfireactive);
 
-		bundle.put( ENBR, endingbald );
+    bundle.put(CrivusFruitsLevel2, crivusfruitslevel2);
 
-		//SPD
-		bundle.put("real_time_passed", second_elapsed);
-		bundle.put("real_seconds_passed", real_seconds);
-		bundle.put("turns_passed", turnsPassed);
-	}
-	
-	public static void restoreFromBundle( Bundle bundle ) {
-		goldCollected	= bundle.getInt( GOLD );
-		deepestFloor	= bundle.getInt( DEEPEST );
-		enemiesSlain	= bundle.getInt( SLAIN );
-		foodEaten		= bundle.getInt( FOOD );
-		itemsCrafted    = bundle.getInt( ALCHEMY );
-		piranhasKilled	= bundle.getInt( PIRANHAS );
-		ankhsUsed		= bundle.getInt( ANKHS );
-		realdeepestFloor = bundle.getInt(EXLEVEL);
-		upgradesUsed    = bundle.getInt( UPGRADES );
-		sneakAttacks    = bundle.getInt( SNEAKS );
-		thrownAssists   = bundle.getInt( THROWN );
+    bundle.put(TIPSGO, tipsgodungeon);
 
-		spawnersAlive   = bundle.getInt( SPAWNERS );
-		
-		duration		= bundle.getFloat( DURATION );
+    bundle.put(BUG_SYNC_FIXED, bugsyncfixed);
 
-		qualifiedForNoKilling = bundle.getBoolean( NO_KILLING_QUALIFIED );
-		
-		amuletObtained	= bundle.getBoolean( AMULET );
+    bundle.put(GOLD, goldCollected);
+    bundle.put(DEEPEST, deepestFloor);
+    bundle.put(SLAIN, enemiesSlain);
+    bundle.put(FOOD, foodEaten);
+    bundle.put(ALCHEMY, itemsCrafted);
+    bundle.put(PIRANHAS, piranhasKilled);
+    bundle.put(ANKHS, ankhsUsed);
+    bundle.put(EXLEVEL, realdeepestFloor);
+    bundle.put(UPGRADES, upgradesUsed);
+    bundle.put(SNEAKS, sneakAttacks);
+    bundle.put(THROWN, thrownAssists);
 
-		fireGirlnoshopping	= bundle.getBoolean( NOSHOPPING );
-		deadshoppingdied = bundle.getBoolean( SHOPPINGDIED );
+    bundle.put(SPAWNERS, spawnersAlive);
 
-		wangzheguilai = bundle.getBoolean( WZGL );
+    bundle.put(DURATION, duration);
 
-		endingbald = bundle.getBoolean( ENBR );
+    bundle.put(NO_KILLING_QUALIFIED, qualifiedForNoKilling);
 
-		lanterfireactive = bundle.getBoolean( LANTERACTIVE );
+    bundle.put(AMULET, amuletObtained);
 
-		bugsyncfixed = bundle.getBoolean( BUG_SYNC_FIXED );
+    bundle.put(NOSHOPPING, fireGirlnoshopping);
 
-		crivusfruitslevel2 = bundle.getBoolean( CrivusFruitsLevel2 );
+    bundle.put(SHOPPINGDIED, deadshoppingdied);
 
-		tipsgodungeon = bundle.getBoolean(TIPSGO);
+    bundle.put(WZGL, wangzheguilai);
 
-		//SPD
-		second_elapsed = bundle.getFloat("real_time_passed");
-		real_seconds =   bundle.getLong("real_seconds_passed");
-		turnsPassed =    bundle.getFloat("turns_passed");
-	}
-	
-	public static void preview( GamesInProgress.Info info, Bundle bundle ){
-		info.goldCollected  = bundle.getInt( GOLD );
-		info.maxDepth       = bundle.getInt( DEEPEST );
-	}
+    bundle.put(ENBR, endingbald);
 
+    // SPD
+    bundle.put("real_time_passed", second_elapsed);
+    bundle.put("real_seconds_passed", real_seconds);
+    bundle.put("turns_passed", turnsPassed);
+  }
+
+  public static void restoreFromBundle(Bundle bundle) {
+    goldCollected = bundle.getInt(GOLD);
+    deepestFloor = bundle.getInt(DEEPEST);
+    enemiesSlain = bundle.getInt(SLAIN);
+    foodEaten = bundle.getInt(FOOD);
+    itemsCrafted = bundle.getInt(ALCHEMY);
+    piranhasKilled = bundle.getInt(PIRANHAS);
+    ankhsUsed = bundle.getInt(ANKHS);
+    realdeepestFloor = bundle.getInt(EXLEVEL);
+    upgradesUsed = bundle.getInt(UPGRADES);
+    sneakAttacks = bundle.getInt(SNEAKS);
+    thrownAssists = bundle.getInt(THROWN);
+
+    spawnersAlive = bundle.getInt(SPAWNERS);
+
+    duration = bundle.getFloat(DURATION);
+
+    qualifiedForNoKilling = bundle.getBoolean(NO_KILLING_QUALIFIED);
+
+    amuletObtained = bundle.getBoolean(AMULET);
+
+    fireGirlnoshopping = bundle.getBoolean(NOSHOPPING);
+    deadshoppingdied = bundle.getBoolean(SHOPPINGDIED);
+
+    wangzheguilai = bundle.getBoolean(WZGL);
+
+    endingbald = bundle.getBoolean(ENBR);
+
+    lanterfireactive = bundle.getBoolean(LANTERACTIVE);
+
+    bugsyncfixed = bundle.getBoolean(BUG_SYNC_FIXED);
+
+    crivusfruitslevel2 = bundle.getBoolean(CrivusFruitsLevel2);
+
+    tipsgodungeon = bundle.getBoolean(TIPSGO);
+
+    // SPD
+    second_elapsed = bundle.getFloat("real_time_passed");
+    real_seconds = bundle.getLong("real_seconds_passed");
+    turnsPassed = bundle.getFloat("turns_passed");
+  }
+
+  public static void preview(GamesInProgress.Info info, Bundle bundle) {
+    info.goldCollected = bundle.getInt(GOLD);
+    info.maxDepth = bundle.getInt(DEEPEST);
+  }
 }
