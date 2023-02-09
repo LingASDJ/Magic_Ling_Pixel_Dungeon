@@ -60,11 +60,11 @@ public class TitleScene extends PixelScene {
 		placeTorch(title.x + 22, title.y + 46);
 		placeTorch(title.x + title.width - 22, title.y + 46);
 
-		placeTorch2(title.x + -5, title.y + 63);
-		placeTorch2(title.x + title.width - 15, title.y + 63);
-
-		placeTorch3(title.x + -10, title.y + 46);
-		placeTorch3(title.x + title.width - 10, title.y + 46);
+//		placeTorch2(title.x + -5, title.y + 63);
+//		placeTorch2(title.x + title.width - 15, title.y + 63);
+//
+//		placeTorch3(title.x + -10, title.y + 46);
+//		placeTorch3(title.x + title.width - 10, title.y + 46);
 
 		Image swordLeft = new Image( BannerSprites.get( BannerSprites.Type.SWORD ) ) {
 			private float preCurTime = 0;

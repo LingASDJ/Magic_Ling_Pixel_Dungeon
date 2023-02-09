@@ -26,8 +26,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.CrivusFruitsFood;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -36,6 +39,8 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 //克里弗斯之果 本体
 public class CrivusFruits extends Mob {
@@ -220,6 +225,27 @@ public class CrivusFruits extends Mob {
         Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
         Dungeon.level.drop( new IronKey( Dungeon.depth ), pos-1 ).sprite.drop();
         Dungeon.level.drop( new IronKey( Dungeon.depth ), pos+1 ).sprite.drop();
+
+        int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
+        for (int i = 0; i < blobs; i++){
+            int ofs;
+            do {
+                ofs = PathFinder.NEIGHBOURS8[Random.Int(6)];
+            } while (!Dungeon.level.passable[pos + ofs]);
+            Dungeon.level.drop( new CrivusFruitsFood(), pos + ofs ).sprite.drop( pos );
+        }
+
+        int flakes = Random.chances(new float[]{0, 0, 6, 3, 1});
+        for (int i = 0; i < flakes; i++){
+            int ofs;
+            do {
+                ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
+            } while (!Dungeon.level.passable[pos + ofs]);
+            Dungeon.level.drop( new CrivusFruitsFlake(), pos + ofs ).sprite.drop( pos );
+        }
+
+        Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
+
     }
 
     {

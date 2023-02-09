@@ -21,7 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.CrivusFruitsFood;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.utils.Bundle;
 
 public class LifeTreeSword extends MeleeWeapon {
 
@@ -29,8 +34,36 @@ public class LifeTreeSword extends MeleeWeapon {
         image = ItemSpriteSheet.LifeTreeSword;
 
         tier = 3;
+    }
 
-        bones = false;
+    public String desc() {
+        return Messages.get(this, "desc")+"_"+getFood+"_";
+    }
+
+    public int proc(Char attacker, Char defender, int damage ) {
+        if (defender.HP <= damage && getFood < 99){
+            //判定为死亡
+            getFood+=111;
+        } else {
+            Dungeon.level.drop( new CrivusFruitsFood(), defender.pos ).sprite.drop();
+            getFood=0;
+        }
+
+        return super.proc(attacker, defender, damage);
+
+
+    }
+
+    private int getFood = 0;
+
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        this.getFood = bundle.getInt("getFood");
+    }
+
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put("getFood", this.getFood);
     }
 
     @Override

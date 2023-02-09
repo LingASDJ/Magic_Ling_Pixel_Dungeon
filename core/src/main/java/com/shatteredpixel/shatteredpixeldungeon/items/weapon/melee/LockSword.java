@@ -15,7 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Bundle;
 
 public class LockSword extends MeleeWeapon {
-    public int lvl = 0;
+    private int lvl = 0;
 
     public LockSword() {
         super.image = ItemSpriteSheet.DG3;
