@@ -685,7 +685,7 @@ public class ItemSpriteSheet {
 	public static final int BANDOLIER   = BAGS+3;
 	public static final int HOLSTER     = BAGS+4;
 	public static final int MagicBlueSword      = BAGS+5;
-	public static final int BlackDog     = BAGS+6;
+	public static final int LifeTreeSword     = BAGS+6;
 	public static final int RedBloodMoon     = BAGS+7;
 	public static final int	DG1				= BAGS+8;
 	public static final int	DG2				= BAGS+9;

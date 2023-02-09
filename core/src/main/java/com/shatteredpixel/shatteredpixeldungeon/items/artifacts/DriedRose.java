@@ -778,7 +778,7 @@ public class DriedRose extends Artifact {
 			
 			switch(depth){
 				case 0:
-					yell( Messages.get( this, "seen_goo_" + Random.IntRange(1, 3) ));
+					yell( Messages.get( this, "seen_crivuefruit_" + Random.IntRange(1, 3) ));
 					break;
 				case 1:
 					yell( Messages.get( this, "seen_tengu_" + Random.IntRange(1, 3) ));

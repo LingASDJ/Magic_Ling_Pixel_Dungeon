@@ -287,11 +287,16 @@ public class Assets {
 		public static final String KEEPERKINGBOT	= "sprites/npc/autoshop.png";
 
 		//BOSS
+
+		public static final String DIMK	= "sprites/boss/DimandKing.png";
+
 		public static final String DIED	= "sprites/items/died.png";
 
 		public static final String CRID	= "sprites/boss/ColdGuard.png";
 
 		public static final String FRAS	= "sprites/boss/FireMagicGirl.png";
+
+		public static final String CFAS	= "sprites/boss/FruitsCrivus.png";
 		public static final String NECROREDEX	= "sprites/boss/rednecromancer_ex.png";
 		public static final String SLIMEPRINCESS	= "sprites/boss/SlimePrincess.png";
 		public static final String ICEALICE	= "sprites/boss/IceFireCrstal.png";

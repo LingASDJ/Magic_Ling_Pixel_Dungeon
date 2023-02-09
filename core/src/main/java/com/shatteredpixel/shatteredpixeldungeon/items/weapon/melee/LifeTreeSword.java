@@ -23,21 +23,23 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class BlackDog extends MeleeWeapon {
+public class LifeTreeSword extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.BlackDog;
+        image = ItemSpriteSheet.LifeTreeSword;
 
-        tier = 1;
-        DLY = 0.6f; //2x speed
+        tier = 3;
 
         bones = false;
     }
 
     @Override
     public int max(int lvl) {
-        return  (int)(0.1f*(tier+1)) +    //6 base, down from 10
-                lvl*tier;               //+1 per level, down from +2
+        return  12+lvl;
+    }
+
+    public int min(int lvl) {
+        return  9+lvl*2;
     }
 
 }

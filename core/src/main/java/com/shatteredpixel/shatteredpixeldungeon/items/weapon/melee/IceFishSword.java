@@ -30,6 +30,8 @@ public class IceFishSword extends Weapon {
         tier = 6;
         ACC = 2.90f; //20% boost to accuracy
         DLY = 1.5f; //2x speed
+        cursed = true;
+        enchant(Enchantment.randomCurse());
     }
 
     @Override
@@ -154,6 +156,11 @@ public class IceFishSword extends Weapon {
 
     @Override
     public int STRReq(int lvl) {
-        return Dungeon.depth/10+20;
+        return Dungeon.depth/10+16;
+    }
+
+    @Override
+    public int value() {
+        return quantity * 500;
     }
 }

@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DimandKing;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class Bestiary {
 					return new ArrayList<>(Arrays.asList(
 							Rat.class, Rat.class,
 							Rat.class, OGPDZSLS.class, Snake.class,
-							Snake.class,Snake.class,Snake.class));
+							Snake.class,Snake.class,Snake.class, DimandKing.class));
 				case 2:
 					return new ArrayList<>(Arrays.asList(Rat.class,
 							Rat.class, Rat.class, Gnoll.class, Gnoll.class,

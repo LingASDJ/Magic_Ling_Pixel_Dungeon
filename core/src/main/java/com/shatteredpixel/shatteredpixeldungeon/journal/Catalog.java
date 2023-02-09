@@ -108,7 +108,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BlackDog;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dairikyan;
@@ -206,7 +205,7 @@ public enum Catalog {
 		WEAPONS.seen.put( LockSword.class,                  false);
 		WEAPONS.seen.put( SkyShield.class,               false);
 		WEAPONS.seen.put( Dairikyan.class,                  false);
-		WEAPONS.seen.put( BlackDog.class,                   false);
+		//WEAPONS.seen.put( BlackDog.class,                   false);
 		WEAPONS.seen.put( IceFishSword.class,                   false);
 		WEAPONS.seen.put( FireFishSword.class,                   false);
 	

@@ -111,14 +111,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfScale;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BlackDog;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.GreenSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SkyShield;
@@ -215,7 +214,8 @@ public enum HeroClass {
 			new MasterThievesArmband().quantity(1).identify().collect();
 			new Dart().quantity(1).identify().collect();
 
-			new GreenSword().quantity(1).identify().collect();
+			new LifeTreeSword().quantity(1).identify().collect();
+
 			new SkyShield().quantity(1).identify().collect();
 			new SandalsOfNature().quantity(1).identify().collect();
 			new GoldBAo().quantity(9999).identify().collect();
@@ -224,7 +224,6 @@ public enum HeroClass {
 			new PotionOfLightningShiledX().quantity(1).identify().collect();
 			new LevelTeleporter().quantity(1).identify().collect();
 			new MobPlacer().quantity(1).identify().collect();
-			new BlackDog().quantity(1).identify().collect();
 			new RedBloodMoon().quantity(1).identify().collect();
 			new KingBag().quantity(1).identify().collect();
 			new PotionOfLiquidFlameX().quantity(100).identify().collect();
