@@ -447,9 +447,9 @@ public class GameScene extends PixelScene {
 						case 1:
 							WndStory.showChapter( WndStory.ID_SEWERS );
 							break;
-//						case 5:
-//							WndStory.showChapter( WndStory.ID_SEWERSBOSS );
-//							break;
+						case 5:
+							WndStory.showChapter( WndStory.ID_SEWERSBOSS );
+							break;
 						case 6:
 							WndStory.showChapter( WndStory.ID_PRISON );
 							break;

@@ -7,7 +7,10 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruitsLasher;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RatKing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Ripple;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
@@ -27,9 +30,12 @@ public class ForestBossLevel extends Level {
 
     }
 
+    //二选一
     @Override
     protected void createItems() {
+        drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.width * 28 + 10 );
 
+        drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 28 + 22 );
     }
 
     public static final int WIDTH = 32;
@@ -89,6 +95,56 @@ public class ForestBossLevel extends Level {
             WIDTH*11+22,
     };
 
+    //鼠王的A号房间
+    public static int[] RatKingRoom = new int[]{
+            WIDTH*13+6,  WIDTH*9+6,  WIDTH*5+6,
+            WIDTH*8+6,  WIDTH*4+6,   WIDTH+6,
+            WIDTH*12+6,  WIDTH*7+6,  WIDTH*3+6,
+            WIDTH*10+6,  WIDTH*6+6,  WIDTH*2+6,
+    };
+
+    //鼠王的B号房间
+    public static int[] BRatKingRoom = new int[]{
+            WIDTH+25,  WIDTH*5+25, WIDTH*10+25,
+            WIDTH*2+25, WIDTH*6+25,
+            WIDTH*3+25,  WIDTH*7+25,
+            WIDTH*4+25,   WIDTH*8+25,
+            WIDTH*12+25,   WIDTH*9+25,
+    };
+
+    //鼠王和它的宝藏A号区域
+    public static int[] RatKingRoomASpawn = new int[]{
+            WIDTH*12+5, WIDTH*12+1,WIDTH*12+2,
+            WIDTH*10+5, WIDTH*11+1,WIDTH*12+3,
+            WIDTH*9+5,  WIDTH*10+1,WIDTH*12+4,
+            WIDTH*8+5,  WIDTH*9+1,
+            WIDTH*7+5,  WIDTH*8+1,
+            WIDTH*6+5,  WIDTH*7+1,
+            WIDTH*5+5,  WIDTH*6+1,
+            WIDTH*4+5,  WIDTH*5+1,
+            WIDTH*3+5,  WIDTH*4+1,
+            WIDTH*2+5,  WIDTH*3+1,
+            WIDTH+5,    WIDTH*2+1,
+            WIDTH+1,
+            WIDTH+2,
+            WIDTH+3,
+            WIDTH+4
+    };
+
+    //鼠王和它的宝藏B号区域
+    public static int[] RatKingRoomBSpawn = new int[]{
+           WIDTH+26,WIDTH*2+26,WIDTH*3+26,WIDTH*4+26,
+           WIDTH*5+26,WIDTH*6+26,WIDTH*7+26,WIDTH*8+26,
+           WIDTH*9+26,WIDTH*10+26,WIDTH*12+26,
+
+           WIDTH+30,WIDTH*2+30,WIDTH*3+30,WIDTH*4+30,
+           WIDTH*5+30,WIDTH*6+30,WIDTH*7+30,WIDTH*8+30,
+           WIDTH*9+30,WIDTH*10+30,WIDTH*12+30,WIDTH*11+30,
+
+           WIDTH*12+27,WIDTH*12+28,WIDTH*12+29,
+           WIDTH+27,WIDTH+28,WIDTH+29,
+    };
+
     @Override
     public void occupyCell( Char ch ) {
 
@@ -140,7 +196,28 @@ public class ForestBossLevel extends Level {
             GameScene.updateMap( i );
         }
 
+        switch(Random.NormalIntRange(1,6)){
+            case 1:case 2:case 3:
+                for (int i : RatKingRoomASpawn) {
+                    drop(new Gold( Random.IntRange( 10, 25 )),i);
+                }
+                RatKing king = new RatKing();
+                king.pos = WIDTH*7+3;
+                GameScene.add(king);
+            break;
+            case 4: case 5: case 6:
+                for (int i : RatKingRoomBSpawn) {
+                    drop(new Gold( Random.IntRange( 10, 25 )),i);
+                }
+                RatKing king2 = new RatKing();
+                king2.pos = WIDTH*7+28;
+                GameScene.add(king2);
+                break;
+        }
+
         Dungeon.observe();
+
+
     }
 
     //地图结构
