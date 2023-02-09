@@ -10,20 +10,20 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 public class CrivusFruitsFood extends Food {
-    {
-        stackable = true;
-        image = ItemSpriteSheet.CrivusFruitFood;
+  {
+    stackable = true;
+    image = ItemSpriteSheet.CrivusFruitFood;
 
-        defaultAction = AC_EAT;
+    defaultAction = AC_EAT;
 
-        bones = true;
-    }
+    bones = true;
+  }
 
-    protected void satisfy( Hero hero ){
-        Buff.affect(hero, Hunger.class).satisfy(50f);
-        Buff.prolong(hero, Bless.class, 20f);
-        Buff.affect(hero, Adrenaline.class, 10f);
-        hero.spend( eatingTime() );
-        GLog.p(Messages.get(this, "eat_msg2"));
-    }
+  protected void satisfy(Hero hero) {
+    Buff.affect(hero, Hunger.class).satisfy(50f);
+    Buff.prolong(hero, Bless.class, 20f);
+    Buff.affect(hero, Adrenaline.class, 10f);
+    hero.spend(eatingTime());
+    GLog.p(Messages.get(this, "eat_msg2"));
+  }
 }

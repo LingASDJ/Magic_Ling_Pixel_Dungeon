@@ -5,28 +5,28 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class CrivusFruitsFlake extends Item {
 
-    {
-        image = ItemSpriteSheet.CrivusFruitflake;
-        stackable = true;
-    }
+  {
+    image = ItemSpriteSheet.CrivusFruitflake;
+    stackable = true;
+  }
 
-    @Override
-    public boolean isUpgradable() {
-        return false;
-    }
+  @Override
+  public boolean isUpgradable() {
+    return false;
+  }
 
-    @Override
-    public boolean isIdentified() {
-        return true;
-    }
+  @Override
+  public boolean isIdentified() {
+    return true;
+  }
 
-    @Override
-    public int value() {
-        return quantity * 90;
-    }
+  @Override
+  public int value() {
+    return quantity * 90;
+  }
 
-    @Override
-    public int energyVal() {
-        return quantity * 3;
-    }
+  @Override
+  public int energyVal() {
+    return quantity * 3;
+  }
 }
