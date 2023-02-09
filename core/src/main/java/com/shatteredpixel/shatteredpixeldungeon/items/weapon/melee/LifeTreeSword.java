@@ -25,21 +25,20 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class LifeTreeSword extends MeleeWeapon {
 
-    {
-        image = ItemSpriteSheet.LifeTreeSword;
+  {
+    image = ItemSpriteSheet.LifeTreeSword;
 
-        tier = 3;
+    tier = 3;
 
-        bones = false;
-    }
+    bones = false;
+  }
 
-    @Override
-    public int max(int lvl) {
-        return  12+lvl;
-    }
+  @Override
+  public int max(int lvl) {
+    return 12 + lvl;
+  }
 
-    public int min(int lvl) {
-        return  9+lvl*2;
-    }
-
+  public int min(int lvl) {
+    return 9 + lvl * 2;
+  }
 }
