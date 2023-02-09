@@ -59,14 +59,17 @@ public class Statistics {
 
 	public static boolean endingbald = false;
 
-	//TODO 灯火前行
+	//灯火前行
 	public static boolean lanterfireactive = false;
 
+	//克里弗斯之果
+	public static boolean crivusfruitslevel2 = false;
 
-	//TODO BUG修复同步
+
+	//修复同步
 	public static boolean bugsyncfixed = false;
 
-	//TODO 警告
+	//警告
 	public static boolean tipsgodungeon = false;
 
 	public static int dageCollected;
@@ -112,6 +115,7 @@ public class Statistics {
 
 		lanterfireactive = false;
 		bugsyncfixed =  false;
+		crivusfruitslevel2 = false;
 
 		second_elapsed = 0f;
 		real_seconds = 0;
@@ -152,21 +156,24 @@ public class Statistics {
 
 	private static final String EXLEVEL = "Exlevel";
 
-	//TODO 灯火前行
+	//灯火前行
 	private static final String LANTERACTIVE		= "lanterfireactive";
 
-	//TODO BUG修复的机制
+	//BUG修复的机制
 	private static final String BUG_SYNC_FIXED		= "bugsyncfixed";
+
+	//克里弗斯之果
+	private static final String CrivusFruitsLevel2		= "crivusfruitslevel2";
 
 	private static final String TIPSGO		= "tipsgo";
 
 	public static void storeInBundle( Bundle bundle ) {
 		bundle.put( LANTERACTIVE, lanterfireactive );
 
-
+		bundle.put( CrivusFruitsLevel2, crivusfruitslevel2 );
 
 		bundle.put( TIPSGO, tipsgodungeon );
-		//TODO BUG修复的机制
+
 		bundle.put( BUG_SYNC_FIXED, bugsyncfixed );
 
 		bundle.put( GOLD,		goldCollected );
@@ -234,6 +241,8 @@ public class Statistics {
 		lanterfireactive = bundle.getBoolean( LANTERACTIVE );
 
 		bugsyncfixed = bundle.getBoolean( BUG_SYNC_FIXED );
+
+		crivusfruitslevel2 = bundle.getBoolean( CrivusFruitsLevel2 );
 
 		tipsgodungeon = bundle.getBoolean(TIPSGO);
 

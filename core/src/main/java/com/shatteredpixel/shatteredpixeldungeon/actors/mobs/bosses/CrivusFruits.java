@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel.ForestBossLasherTWOPos;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -31,7 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
 
 //克里弗斯之果 本体
 public class CrivusFruits extends Mob {
@@ -98,25 +98,15 @@ public class CrivusFruits extends Mob {
     }
 
 
-    public static boolean GoTwoBoss = false;
-    public static final String gotwoboss   = "gotwoboss";
-
-    @Override
-    public void storeInBundle(Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put(gotwoboss, GoTwoBoss);
-    }
-
-    @Override
-    public void restoreFromBundle(Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        GoTwoBoss = bundle.getBoolean(gotwoboss);
-    }
-
-
     @Override
     protected boolean act() {
-        GameScene.add(Blob.seed(pos, HP<36 ? 120 : 50, DiedBlobs.class));
+        //毒雾扩散
+        if(!crivusfruitslevel2){
+            GameScene.add(Blob.seed(pos, HP<65 ? 50 : 30, DiedBlobs.class));
+        } else {
+            GameScene.add(Blob.seed(pos, HP<36 ? 100 : 50, DiedBlobs.class));
+        }
+
 
         //判定是否第一次加进入游戏
         if( Dungeon.hero.buff(LockedFloor.class) != null){
@@ -125,10 +115,10 @@ public class CrivusFruits extends Mob {
         state = PASSIVE;
 
         //二阶段
-        if( HP<65 && !GoTwoBoss){
+        if( HP<65 && !crivusfruitslevel2){
             HP=HT=64;
             GLog.n(Messages.get(this,"anargy"));
-            GoTwoBoss = true;
+            crivusfruitslevel2 = true;
             GameScene.flash(0x808c8c8c);
             for (int i : ForestBossLasherTWOPos) {
                 CrivusFruitsLasher csp = new CrivusFruitsLasher();

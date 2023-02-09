@@ -2656,7 +2656,9 @@ public class Hero extends Char {
 
 		MagicalHolster holster = belongings.getItem(MagicalHolster.class);
 
-		Buff.affect(this, LostInventory.class);
+		if(!Dungeon.bossLevel()) {
+			Buff.affect(this, LostInventory.class);
+		}
 		Buff.affect(this, Invisibility.class, 10f);
 		//lost inventory is dropped in interlevelscene
 

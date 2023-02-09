@@ -29,9 +29,7 @@ public class ForestBossLevel extends Level {
 
     @Override
     protected void createItems() {
-        drop( new PotionOfPurity(),   WIDTH*15+19  );
-        drop( new PotionOfPurity(),   WIDTH*23+19  );
-        drop( new PotionOfPurity(),   WIDTH*15+13  );
+
     }
 
     public static final int WIDTH = 32;
@@ -79,6 +77,18 @@ public class ForestBossLevel extends Level {
             WIDTH*23+19,
     };
 
+    //铺路
+    public static int[] UpdateRead = new int[]{
+            WIDTH*11+12,
+            WIDTH*11+10,
+            WIDTH*11+11,
+            WIDTH*11+9,
+
+            WIDTH*11+20,
+            WIDTH*11+21,
+            WIDTH*11+22,
+    };
+
     @Override
     public void occupyCell( Char ch ) {
 
@@ -109,6 +119,10 @@ public class ForestBossLevel extends Level {
         set( HOME, Terrain.EMPTY );
         GameScene.updateMap( HOME );
         Dungeon.observe();
+
+        drop( new PotionOfPurity(),   WIDTH*11+15  );
+        drop( new PotionOfPurity(),   WIDTH*15+16  );
+        drop( new PotionOfPurity(),   WIDTH*11+17  );
     }
 
     @Override
@@ -120,6 +134,11 @@ public class ForestBossLevel extends Level {
 
         set( HOME, Terrain.ENTRANCE );
         GameScene.updateMap( HOME );
+
+        for (int i : UpdateRead) {
+            set( i, Terrain.EMPTY_SP );
+            GameScene.updateMap( i );
+        }
 
         Dungeon.observe();
     }

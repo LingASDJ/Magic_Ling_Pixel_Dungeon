@@ -1,8 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
-import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits.GoTwoBoss;
-
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -25,7 +24,7 @@ public class CrivusFruitsLasher extends Mob {
     {
         spriteClass = RotLasherSprite.class;
 
-        HP = HT = GoTwoBoss ? 40 : 20;
+        HP = HT = Statistics.crivusfruitslevel2 ? 20 : 15;
         defenseSkill = 0;
 
         EXP = 1;
@@ -41,14 +40,16 @@ public class CrivusFruitsLasher extends Mob {
 
     @Override
     protected boolean act() {
-        GameScene.add(Blob.seed(pos, GoTwoBoss ? 60 : 35, ToxicGas.class));
+        //毒雾 都得死 啊哈哈哈哈
+        GameScene.add(Blob.seed(pos, Statistics.crivusfruitslevel2 ? 60 : 10, ToxicGas.class));
 
+        //无敌也要扣减本体 NND
         if(Dungeon.hero.buff(CrivusFruits.DiedDamager.class) == null){
             Buff.affect(this,CrivusFruits.DiedDamager.class);
         }
 
         //二阶段开始瞬移，地狱绘图
-        if(GoTwoBoss){
+        if(Statistics.crivusfruitslevel2){
             if(Random.Float() < 0.4f && (enemy == null || !Dungeon.level.adjacent(pos, enemy.pos))){
                switch (Random.Int(14)){
                    case 0: default:
@@ -141,7 +142,7 @@ public class CrivusFruitsLasher extends Mob {
 
         }
 
-        if(this.HT!=HP) {
+        if(this.HT!=HP && !Statistics.crivusfruitslevel2) {
             HP = Math.min(HT, HP + 1);
             this.sprite.showStatus(CharSprite.POSITIVE, "+2");
         }
@@ -151,7 +152,7 @@ public class CrivusFruitsLasher extends Mob {
 
     @Override
     public void damage(int dmg, Object src) {
-        if (src instanceof Burning && !GoTwoBoss) {
+        if (src instanceof Burning && ! Statistics.crivusfruitslevel2) {
             Buff.affect( this, HalomethaneBurning.class ).reignite( this, 100f );
         } else {
             super.damage(dmg, src);
@@ -182,17 +183,17 @@ public class CrivusFruitsLasher extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(8, 15);
+        return Random.NormalIntRange( 1, 7 );
     }
 
     @Override
     public int attackSkill( Char target ) {
-        return 15;
+        return 6;
     }
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(0, 8);
+        return Random.NormalIntRange(0, 4);
     }
 
     {
