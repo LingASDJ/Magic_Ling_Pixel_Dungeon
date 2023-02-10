@@ -41,10 +41,12 @@ public class LifeTreeSword extends MeleeWeapon {
     }
 
     public int proc(Char attacker, Char defender, int damage ) {
-        if (defender.HP <= damage && getFood < 99){
-            //判定为死亡
-            getFood+=111;
-        } else {
+
+        if (defender.HP <= damage) {
+            getFood += 1;
+        }
+
+        if (defender.HP <= damage && getFood > 99){
             Dungeon.level.drop( new CrivusFruitsFood(), defender.pos ).sprite.drop();
             getFood=0;
         }

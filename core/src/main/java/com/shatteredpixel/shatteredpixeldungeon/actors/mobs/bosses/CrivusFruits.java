@@ -111,7 +111,7 @@ public class CrivusFruits extends Mob {
         if(!crivusfruitslevel2){
             GameScene.add(Blob.seed(pos, HP<65 ? 50 : 30, DiedBlobs.class));
         } else {
-            GameScene.add(Blob.seed(pos, HP<36 ? 100 : 50, DiedBlobs.class));
+            GameScene.add(Blob.seed(pos, HP<36 ? 150 : 50, DiedBlobs.class));
         }
 
 
@@ -178,7 +178,7 @@ public class CrivusFruits extends Mob {
         protected void evolve() {
             super.evolve();
 
-            int damage = 4;
+            int damage = 6;
 
             Char ch;
             int cell;

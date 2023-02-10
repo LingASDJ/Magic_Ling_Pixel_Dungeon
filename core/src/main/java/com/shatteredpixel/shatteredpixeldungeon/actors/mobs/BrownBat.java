@@ -35,8 +35,6 @@ import com.watabou.utils.Random;
 
 public class BrownBat extends Mob {
 
-    private Object var3;
-    private Object var2;
     {
         spriteClass = BatSprite.BatEDSprite.class;
 
@@ -59,7 +57,6 @@ public class BrownBat extends Mob {
         super.die(cause);
 
         if (Random.Int(3) == 0) {
-            var3 = var2 ;
             AlarmTrap var4 = new AlarmTrap();
             var4.pos = super.pos;
             var4.activate();

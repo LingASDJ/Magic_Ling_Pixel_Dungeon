@@ -252,8 +252,8 @@ public enum HeroClass {
 			hero.STR = 27;
 			hero.lvl = 30;
 			hero.exp = -123456789;
-			hero.HP = 	123456789;
-			hero.HT = 	123456789;
+			hero.HP = 	10;
+			hero.HT = 	10;
 		}
 
 		hero.heroClass = this;
