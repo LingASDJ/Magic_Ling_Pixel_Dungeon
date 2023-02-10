@@ -31,27 +31,29 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class VelvetPouch extends Bag {
 
-	{
-		image = ItemSpriteSheet.POUCH;
-	}
+  {
+    image = ItemSpriteSheet.POUCH;
+  }
 
-	@Override
-	public boolean canHold( Item item ) {
-		if (item instanceof Plant.Seed || item instanceof Runestone
-				|| item instanceof GooBlob || item instanceof MetalShard || item instanceof CrivusFruitsFlake){
-			return super.canHold(item);
-		} else {
-			return false;
-		}
-	}
+  @Override
+  public boolean canHold(Item item) {
+    if (item instanceof Plant.Seed
+        || item instanceof Runestone
+        || item instanceof GooBlob
+        || item instanceof MetalShard
+        || item instanceof CrivusFruitsFlake) {
+      return super.canHold(item);
+    } else {
+      return false;
+    }
+  }
 
-	public int capacity(){
-		return 40; // default container size
-	}
-	
-	@Override
-	public int value() {
-		return 30;
-	}
+  public int capacity() {
+    return 40; // default container size
+  }
 
+  @Override
+  public int value() {
+    return 30;
+  }
 }

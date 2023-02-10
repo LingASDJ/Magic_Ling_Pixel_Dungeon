@@ -35,78 +35,75 @@ import com.watabou.utils.Random;
 
 public class BrownBat extends Mob {
 
-    {
-        spriteClass = BatSprite.BatEDSprite.class;
+  {
+    spriteClass = BatSprite.BatEDSprite.class;
 
-        HP = HT = 5;
-        defenseSkill = 24;
-        baseSpeed = 1.3f;
+    HP = HT = 5;
+    defenseSkill = 24;
+    baseSpeed = 1.3f;
 
-        EXP = 7;
-        maxLvl = 15;
+    EXP = 7;
+    maxLvl = 15;
 
-        flying = true;
+    flying = true;
 
-        loot = new PotionOfHealing();
-        lootChance = 0.1667f; //by default, see rollToDropLoot()
+    loot = new PotionOfHealing();
+    lootChance = 0.1667f; // by default, see rollToDropLoot()
+  }
+
+  @Override
+  public void die(Object cause) {
+
+    super.die(cause);
+
+    if (Random.Int(3) == 0) {
+      AlarmTrap var4 = new AlarmTrap();
+      var4.pos = super.pos;
+      var4.activate();
+    }
+    for (Buff buff : hero.buffs()) {
+      if (buff instanceof Blindness) {
+        buff.detach();
+      }
+    }
+  }
+
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(5, 5);
+  }
+
+  @Override
+  public int attackSkill(Char target) {
+    return 3;
+  }
+
+  @Override
+  public int drRoll() {
+    return Random.NormalIntRange(0, 4);
+  }
+
+  @Override
+  public int attackProc(Char enemy, int damage) {
+    damage = super.attackProc(enemy, damage);
+    int reg = Math.min(damage - 4, HT - HP);
+
+    if (reg > 0) {
+      Buff.prolong(Dungeon.hero, Blindness.class, Blindness.DURATION * 1.5f);
     }
 
-    @Override
-    public void die( Object cause ) {
+    return damage;
+  }
 
-        super.die(cause);
+  @Override
+  public void rollToDropLoot() {
+    lootChance *= ((7f - Dungeon.LimitedDrops.BAT_HP.count) / 7f);
+    super.rollToDropLoot();
+  }
 
-        if (Random.Int(3) == 0) {
-            AlarmTrap var4 = new AlarmTrap();
-            var4.pos = super.pos;
-            var4.activate();
-
-        }
-            for (Buff buff : hero.buffs()) {
-                if (buff instanceof Blindness) {
-                    buff.detach();
-                }
-            }
-        }
-
-
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange( 5, 5 );
-    }
-
-    @Override
-    public int attackSkill( Char target ) {
-        return 3;
-    }
-
-    @Override
-    public int drRoll() {
-        return Random.NormalIntRange(0, 4);
-    }
-
-    @Override
-    public int attackProc( Char enemy, int damage ) {
-        damage = super.attackProc( enemy, damage );
-        int reg = Math.min( damage - 4, HT - HP );
-
-        if (reg > 0) {
-            Buff.prolong( Dungeon.hero, Blindness.class, Blindness.DURATION*1.5f );
-        }
-
-        return damage;
-    }
-
-    @Override
-    public void rollToDropLoot() {
-        lootChance *= ((7f - Dungeon.LimitedDrops.BAT_HP.count) / 7f);
-        super.rollToDropLoot();
-    }
-
-    @Override
-    public Item createLoot(){
-        Dungeon.LimitedDrops.BAT_HP.count++;
-        return super.createLoot();
-    }
-
+  @Override
+  public Item createLoot() {
+    Dungeon.LimitedDrops.BAT_HP.count++;
+    return super.createLoot();
+  }
 }

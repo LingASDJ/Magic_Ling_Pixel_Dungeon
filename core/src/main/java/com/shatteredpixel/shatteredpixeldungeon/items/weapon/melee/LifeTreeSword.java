@@ -30,51 +30,48 @@ import com.watabou.utils.Bundle;
 
 public class LifeTreeSword extends MeleeWeapon {
 
-    {
-        image = ItemSpriteSheet.LifeTreeSword;
+  {
+    image = ItemSpriteSheet.LifeTreeSword;
 
-        tier = 3;
+    tier = 3;
+  }
+
+  public String desc() {
+    return Messages.get(this, "desc") + "_" + getFood + "_";
+  }
+
+  public int proc(Char attacker, Char defender, int damage) {
+
+    if (defender.HP <= damage) {
+      getFood += 1;
     }
 
-    public String desc() {
-        return Messages.get(this, "desc")+"_"+getFood+"_";
+    if (defender.HP <= damage && getFood > 99) {
+      Dungeon.level.drop(new CrivusFruitsFood(), defender.pos).sprite.drop();
+      getFood = 0;
     }
 
-    public int proc(Char attacker, Char defender, int damage ) {
+    return super.proc(attacker, defender, damage);
+  }
 
-        if (defender.HP <= damage) {
-            getFood += 1;
-        }
+  private int getFood = 0;
 
-        if (defender.HP <= damage && getFood > 99){
-            Dungeon.level.drop( new CrivusFruitsFood(), defender.pos ).sprite.drop();
-            getFood=0;
-        }
+  public void restoreFromBundle(Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    this.getFood = bundle.getInt("getFood");
+  }
 
-        return super.proc(attacker, defender, damage);
+  public void storeInBundle(Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put("getFood", this.getFood);
+  }
 
+  @Override
+  public int max(int lvl) {
+    return 12 + lvl;
+  }
 
-    }
-
-    private int getFood = 0;
-
-    public void restoreFromBundle(Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        this.getFood = bundle.getInt("getFood");
-    }
-
-    public void storeInBundle(Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put("getFood", this.getFood);
-    }
-
-    @Override
-    public int max(int lvl) {
-        return  12+lvl;
-    }
-
-    public int min(int lvl) {
-        return  9+lvl*2;
-    }
-
+  public int min(int lvl) {
+    return 9 + lvl * 2;
+  }
 }
