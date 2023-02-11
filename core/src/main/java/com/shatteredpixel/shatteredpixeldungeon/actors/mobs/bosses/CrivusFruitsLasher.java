@@ -12,6 +12,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
@@ -157,7 +159,9 @@ public class CrivusFruitsLasher extends Mob {
 
     @Override
     public void damage(int dmg, Object src) {
-        int damage = 4;
+        LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+        if (lock != null) lock.addTime(dmg*2);
+        int damage = Random.Int(1,3);
         if (src instanceof Burning && ! Statistics.crivusfruitslevel2) {
             //一阶段如果触手着火会给予它100回合磷火燃烧（永久燃烧）
             Buff.affect( this, HalomethaneBurning.class ).reignite( this, 100f );
@@ -167,6 +171,8 @@ public class CrivusFruitsLasher extends Mob {
                 if(hero.belongings.armor.level < 3){
                     damage -= hero.drRoll();
                     hero.damage(damage, this);
+                } else {
+                    Buff.affect( hero, Poison.class ).set(1);
                 }
             } else {
                 damage -= hero.drRoll();

@@ -104,6 +104,14 @@ public class CrivusFruits extends Mob {
         }
     }
 
+    //回合
+    @Override
+    public void damage(int dmg, Object src) {
+        LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+        if (lock != null) lock.addTime(dmg * 2);
+        super.damage(dmg, src);
+    }
+
 
     @Override
     protected boolean act() {

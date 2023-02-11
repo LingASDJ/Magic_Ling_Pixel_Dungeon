@@ -533,6 +533,9 @@ public class InterlevelScene extends PixelScene {
 		hero.HP += 20;
 		SpecialRoom.resetPitRoom(Dungeon.depth+1);
 
+		//Boss全局布尔控制
+		Statistics.crivusfruitslevel2 = false;
+
 		Dungeon.depth--;
 		Level level = Dungeon.newLevel();
 		Dungeon.switchLevel( level, level.entrance );
