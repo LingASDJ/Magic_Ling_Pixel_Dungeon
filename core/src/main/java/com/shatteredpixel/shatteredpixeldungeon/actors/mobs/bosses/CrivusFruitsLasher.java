@@ -149,11 +149,6 @@ public class CrivusFruitsLasher extends Mob {
 
         }
 
-        if(this.HT!=HP ) {
-            HP = Math.min(HT, HP + 1);
-            this.sprite.showStatus(CharSprite.POSITIVE, "+2");
-        }
-
         return super.act();
     }
 
@@ -188,6 +183,12 @@ public class CrivusFruitsLasher extends Mob {
     public int attackProc(Char enemy, int damage) {
         damage = super.attackProc( enemy, damage );
         Buff.affect( enemy, Cripple.class, 2f );
+
+        if(this.HT!=HP && enemy instanceof Hero ) {
+            HP = Math.min(HT, HP + 1);
+            this.sprite.showStatus(CharSprite.POSITIVE, "+2");
+        }
+
         return super.attackProc(enemy, damage);
     }
 

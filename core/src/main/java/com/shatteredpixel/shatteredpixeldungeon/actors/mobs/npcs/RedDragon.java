@@ -36,8 +36,13 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.Brew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
@@ -363,14 +368,27 @@ public class RedDragon extends NPC {
 
                 Item item = randomArtifact();
                 if(item != null) {
-                    armor = (Artifact) Generator.random(Generator.Category.ARTIFACT);
+                    switch (Random.Int(6)){
+                        case 1:
+                            armor = new CapeOfThorns(); break;
+                        case 2:
+                            armor = new AlchemistsToolkit(); break;
+                        case 3:
+                            armor = new ChaliceOfBlood(); break;
+                        case 4:
+                            armor = new DriedRose(); break;
+                        case 5:
+                            armor = new SandalsOfNature(); break;
+                        case 6:
+                            armor = new TimekeepersHourglass(); break;
+                    }
                 } else {
                     switch (Random.chances(new float[]{0, 0, 10, 6, 3, 1})){
                         default:
-                        case 2: armor = new CapeOfThorns(); break;
+                        case 2: armor = new CapeOfThorns();break;
                         case 3: armor = new CapeOfThorns();break;
-                        case 4: armor = new CapeOfThorns();   break;
-                        case 5: armor = new CapeOfThorns();   break;
+                        case 4: armor = new CapeOfThorns();break;
+                        case 5: armor = new CapeOfThorns();break;
                     }
                 }
                 RingT = (Wand) Generator.random(Generator.Category.WAND);

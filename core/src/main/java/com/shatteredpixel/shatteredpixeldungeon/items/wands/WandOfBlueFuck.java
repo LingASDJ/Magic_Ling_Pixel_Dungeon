@@ -55,7 +55,7 @@ public class WandOfBlueFuck extends DamageWand {
     {
         image = ItemSpriteSheet.DG6;
 
-        collisionProperties = Ballistica.MAGIC_BOLT | Ballistica.MAGIC_BOLT;
+        collisionProperties = Ballistica.MAGIC_BOLT;
     }
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 

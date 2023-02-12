@@ -187,6 +187,8 @@ public abstract class Level implements Bundlable {
 	private static final String BLOBS		= "blobs";
 	private static final String FEELING		= "feeling";
 
+
+	//自用的地块查找
 	public static int distancex(int a, int b) {
 		int ax = a % getWidth();
 		int ay = a / getWidth();
