@@ -24,72 +24,85 @@ package com.shatteredpixel.shatteredpixeldungeon.messages;
 import java.util.Locale;
 
 public enum Languages {
-	CHINESE("中文",      "",   Status.REVIEWED,  null, null),
-	ENGLISH("English",          "en", Status.INCOMPLETE, new String[]{"JDSALing","Noodlemire","Aeonius"}, null),
-	HARDCHINESE("繁體中文",          "zh_TW", Status.INCOMPLETE, new String[]{"JDSALing"},
-			new String[]{"那些回忆","冷群"}),
-	GREEK("ελληνικά",       "el", Status.INCOMPLETE,   new String[]{"JDSALing","Aeonius", "Saxy"}, new String[]{
-			"DU_Clouds",
-			"VasKyr", "YiorgosH", "fr3sh", "stefboi", "toumbo", "val.exe"}),
-	JAPANESE("日本語","ja", Status.INCOMPLETE, new String[]{"JDSALing","Gosamaru","FromBeyond"}, new String[]{
-			"Gosamaru",
-			"Otogiri",
-			"Siraore_Rou", "amama",
-			"daingewuvzeevisiddfddd", "kiyofumimanabe", "librada", "mocklike", "tomofumikitano"});
+  CHINESE("中文", "", Status.REVIEWED, null, null),
+  ENGLISH(
+      "English", "en", Status.INCOMPLETE, new String[] {"JDSALing", "Noodlemire", "Aeonius"}, null),
+  HARDCHINESE(
+      "繁體中文", "zh_TW", Status.INCOMPLETE, new String[] {"JDSALing"}, new String[] {"那些回忆", "冷群"}),
+  GREEK(
+      "ελληνικά",
+      "el",
+      Status.INCOMPLETE,
+      new String[] {"JDSALing", "Aeonius", "Saxy"},
+      new String[] {"DU_Clouds", "VasKyr", "YiorgosH", "fr3sh", "stefboi", "toumbo", "val.exe"}),
+  JAPANESE(
+      "日本語",
+      "ja",
+      Status.INCOMPLETE,
+      new String[] {"JDSALing", "Gosamaru", "FromBeyond"},
+      new String[] {
+        "Gosamaru",
+        "Otogiri",
+        "Siraore_Rou",
+        "amama",
+        "daingewuvzeevisiddfddd",
+        "kiyofumimanabe",
+        "librada",
+        "mocklike",
+        "tomofumikitano"
+      });
 
-	public enum Status{
-		//below 80% complete languages are not added.
-		INCOMPLETE, //80-99% complete
-		UNREVIEWED, //100% complete
-		REVIEWED    //100% reviewed
-	}
+  public enum Status {
+    // below 80% complete languages are not added.
+    INCOMPLETE, // 80-99% complete
+    UNREVIEWED, // 100% complete
+    REVIEWED // 100% reviewed
+  }
 
-	private String name;
-	private String code;
-	private Status status;
-	private String[] reviewers;
-	private String[] translators;
+  private String name;
+  private String code;
+  private Status status;
+  private String[] reviewers;
+  private String[] translators;
 
-	Languages(String name, String code, Status status, String[] reviewers, String[] translators){
-		this.name = name;
-		this.code = code;
-		this.status = status;
-		this.reviewers = reviewers;
-		this.translators = translators;
-	}
+  Languages(String name, String code, Status status, String[] reviewers, String[] translators) {
+    this.name = name;
+    this.code = code;
+    this.status = status;
+    this.reviewers = reviewers;
+    this.translators = translators;
+  }
 
-	public String nativeName(){
-		return name;
-	}
+  public String nativeName() {
+    return name;
+  }
 
-	public String code(){
-		return code;
-	}
+  public String code() {
+    return code;
+  }
 
-	public Status status(){
-		return status;
-	}
+  public Status status() {
+    return status;
+  }
 
-	public String[] reviewers() {
-		if (reviewers == null) return new String[]{};
-		else return reviewers.clone();
-	}
+  public String[] reviewers() {
+    if (reviewers == null) return new String[] {};
+    else return reviewers.clone();
+  }
 
-	public String[] translators() {
-		if (translators == null) return new String[]{};
-		else return translators.clone();
-	}
+  public String[] translators() {
+    if (translators == null) return new String[] {};
+    else return translators.clone();
+  }
 
-	public static Languages matchLocale(Locale locale){
-		return matchCode(locale.getLanguage());
-	}
+  public static Languages matchLocale(Locale locale) {
+    return matchCode(locale.getLanguage());
+  }
 
-	public static Languages matchCode(String code){
-		for (Languages lang : Languages.values()){
-			if (lang.code().equals(code))
-				return lang;
-		}
-		return CHINESE;
-	}
-
+  public static Languages matchCode(String code) {
+    for (Languages lang : Languages.values()) {
+      if (lang.code().equals(code)) return lang;
+    }
+    return CHINESE;
+  }
 }

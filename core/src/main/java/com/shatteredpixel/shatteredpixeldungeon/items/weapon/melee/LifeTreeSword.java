@@ -44,216 +44,217 @@ import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
-
 import java.util.ArrayList;
 
 public class LifeTreeSword extends MeleeWeapon {
 
-    {
-        image = ItemSpriteSheet.LifeTreeSword;
-        hitSoundPitch = 1f;
-        ACC = 1.28f; //28% boost to accuracy
-        tier = 3;
-        defaultAction=AC_SUMMON;
+  {
+    image = ItemSpriteSheet.LifeTreeSword;
+    hitSoundPitch = 1f;
+    ACC = 1.28f; // 28% boost to accuracy
+    tier = 3;
+    defaultAction = AC_SUMMON;
+  }
+
+  @Override
+  public ArrayList<String> actions(Hero hero) {
+    ArrayList<String> actions = super.actions(hero);
+    actions.add(AC_SUMMON);
+    return actions;
+  }
+
+  @Override
+  public void execute(Hero hero, String action) {
+    super.execute(hero, action);
+    if (action.equals(AC_SUMMON)) {
+
+      curUser = hero;
+      curItem = this;
+      if (getFood > 74) {
+        GameScene.selectCell(summonpos);
+      } else {
+        GLog.w(Messages.get(LifeTreeSword.class, "not_chare"));
+      }
+    }
+  }
+
+  public void teleportToLocation(int pos) {
+    if (Dungeon.level.avoid[pos] || !Dungeon.level.passable[pos] || Actor.findChar(pos) != null) {
+      GLog.n(Messages.get(LifeTreeSword.class, "badlocation"));
+      return;
+    } else if (Dungeon.level.distance(pos, Dungeon.hero.pos) >= 3) {
+      GLog.n(Messages.get(LifeTreeSword.class, "nolongrange"));
+      return;
     }
 
-    @Override
-    public ArrayList<String> actions(Hero hero ) {
-        ArrayList<String> actions = super.actions( hero );
-        actions.add(AC_SUMMON);
-        return actions;
-    }
+    CrivusFruitsFriend ward = new CrivusFruitsFriend();
+    ward.pos = pos;
+    GameScene.add(ward, 1f);
+    getFood = 0;
+    Dungeon.level.occupyCell(ward);
+    ward.HP = ward.HT = 3 + LifeTreeSword.curItem.buffedLvl() / 3;
+    ward.defenseSkill = 4 + LifeTreeSword.curItem.buffedLvl() / 3;
+    ward.sprite.emitter().burst(MagicMissile.WardParticle.UP, 6);
+    Dungeon.level.pressCell(pos);
+    CellEmitter.get(ward.pos).burst(Speck.factory(Speck.EVOKE), 4);
+  }
 
-    @Override
-    public void execute( Hero hero, String action ) {
-        super.execute(hero, action);
-        if (action.equals( AC_SUMMON )) {
-
-            curUser = hero;
-            curItem = this;
-            if (getFood > 74){
-                GameScene.selectCell( summonpos );
-            } else {
-                GLog.w( Messages.get(LifeTreeSword.class, "not_chare") );
-            }
-        }
-    }
-
-    public void teleportToLocation(int pos){
-        if (Dungeon.level.avoid[pos] || !Dungeon.level.passable[pos]
-                || Actor.findChar(pos) != null){
-            GLog.n( Messages.get(LifeTreeSword.class, "badlocation") );
-            return;
-        } else if (Dungeon.level.distance(pos, Dungeon.hero.pos) >= 3) {
-            GLog.n( Messages.get(LifeTreeSword.class, "nolongrange") );
-            return;
-        }
-
-        CrivusFruitsFriend ward = new CrivusFruitsFriend();
-        ward.pos = pos;
-        GameScene.add(ward, 1f);
-        getFood=0;
-        Dungeon.level.occupyCell(ward);
-        ward.HP = ward.HT = 3 + LifeTreeSword.curItem.buffedLvl()/3;
-        ward.defenseSkill = 4 + LifeTreeSword.curItem.buffedLvl()/3;
-        ward.sprite.emitter().burst(MagicMissile.WardParticle.UP,6);
-        Dungeon.level.pressCell(pos);
-        CellEmitter.get(ward.pos).burst(Speck.factory(Speck.EVOKE), 4);
-    }
-
-    protected CellSelector.Listener summonpos = new  CellSelector.Listener() {
+  protected CellSelector.Listener summonpos =
+      new CellSelector.Listener() {
         @Override
         public void onSelect(Integer target) {
-            if (target != null) {
-                teleportToLocation(target);
-            }
+          if (target != null) {
+            teleportToLocation(target);
+          }
         }
 
         @Override
         public String prompt() {
-            return Messages.get(Wand.class, "summon");
+          return Messages.get(Wand.class, "summon");
         }
-    };
+      };
 
-    public static final String AC_SUMMON	= "summon";
+  public static final String AC_SUMMON = "summon";
 
-    public String desc() {
-        return Messages.get(this, "desc")+"_"+getFood+"_";
+  public String desc() {
+    return Messages.get(this, "desc") + "_" + getFood + "_";
+  }
+
+  public int proc(Char attacker, Char defender, int damage) {
+
+    if (defender.HP <= damage) {
+      getFood += 1;
     }
 
-    public int proc(Char attacker, Char defender, int damage ) {
+    return super.proc(attacker, defender, damage);
+  }
 
-        if (defender.HP <= damage) {
-            getFood += 1;
-        }
+  private int getFood;
 
-        return super.proc(attacker, defender, damage);
-    }
+  public void restoreFromBundle(Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    this.getFood = bundle.getInt("getFood");
+  }
 
-    private int getFood;
+  public void storeInBundle(Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put("getFood", this.getFood);
+  }
 
-    public void restoreFromBundle(Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        this.getFood = bundle.getInt("getFood");
-    }
+  @Override
+  public int max(int lvl) {
+    return 12 + lvl * 2;
+  }
 
-    public void storeInBundle(Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put("getFood", this.getFood);
+  public int min(int lvl) {
+    return 9 + lvl;
+  }
+
+  public class CrivusFruitsFriend extends Rat {
+    {
+      spriteClass = CrivusFruitsRedSprites.class;
+      alignment = Alignment.ALLY;
+
+      state = WANDERING = new Waiting();
+
+      properties.add(Property.IMMOVABLE);
     }
 
     @Override
-    public int max(int lvl) {
-        return  12+lvl*2;
+    protected boolean getCloser(int target) {
+      return true;
     }
 
-    public int min(int lvl) {
-        return  9+lvl;
+    @Override
+    public int damageRoll() {
+      return Random.NormalIntRange(5, 8);
     }
 
-    public class CrivusFruitsFriend extends Rat {
-        {
-            spriteClass = CrivusFruitsRedSprites.class;
-            alignment = Alignment.ALLY;
+    @Override
+    public int attackSkill(Char target) {
+      return 6;
+    }
 
-            state = WANDERING = new Waiting();
+    @Override
+    public int drRoll() {
+      return Random.NormalIntRange(0, 4);
+    }
 
-            properties.add(Property.IMMOVABLE);
-        }
+    @Override
+    protected boolean getFurther(int target) {
+      return true;
+    }
 
-        @Override
-        protected boolean getCloser(int target) {
-            return true;
-        }
+    private class Waiting extends Mob.Wandering {}
 
-        @Override
-        public int damageRoll() {
-            return Random.NormalIntRange( 5, 8 );
-        }
+    {
+      immunities.add(ToxicGas.class);
+    }
 
-        @Override
-        public int attackSkill( Char target ) {
-            return 6;
-        }
+    @Override
+    public int attackProc(Char enemy, int damage) {
+      damage = super.attackProc(enemy, damage);
+      Buff.affect(enemy, Cripple.class, 2f);
 
-        @Override
-        public int drRoll() {
-            return Random.NormalIntRange(0, 4);
-        }
+      return super.attackProc(enemy, damage);
+    }
 
-        @Override
-        protected boolean getFurther(int target) {
-            return true;
-        }
+    @Override
+    public void damage(int dmg, Object src) {
+      if (dmg >= 0) {
+        // 限伤1
+        dmg = 1;
+      }
+      super.damage(dmg, src);
+    }
 
-
-        private class Waiting extends Mob.Wandering{}
-
-        {
-            immunities.add( ToxicGas.class );
-        }
-
-        @Override
-        public int attackProc(Char enemy, int damage) {
-            damage = super.attackProc( enemy, damage );
-            Buff.affect( enemy, Cripple.class, 2f );
-
-            return super.attackProc(enemy, damage);
-        }
-
-        @Override
-        public void damage(int dmg, Object src) {
-            if (dmg >= 0){
-                //限伤1
-                dmg = 1;
+    @Override
+    public boolean interact(Char c) {
+      if (c != Dungeon.hero) {
+        return true;
+      }
+      Game.runOnRenderThread(
+          new Callback() {
+            @Override
+            public void call() {
+              GameScene.show(
+                  new WndOptions(
+                      sprite(),
+                      Messages.get(this, "crivusfruitslasher_title"),
+                      Messages.get(this, "crivusfruitslasher_body"),
+                      Messages.get(this, "crivusfruitslasher_confirm"),
+                      Messages.get(this, "crivusfruitslasher_cancel")) {
+                    @Override
+                    protected void onSelect(int index) {
+                      if (index == 0) {
+                        die(null);
+                        getFood = 70;
+                      }
+                    }
+                  });
             }
-            super.damage(dmg, src);
-        }
-
-        @Override
-        public boolean interact( Char c ) {
-            if (c != Dungeon.hero){
-                return true;
-            }
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    GameScene.show(new WndOptions( sprite(),
-                            Messages.get(this, "crivusfruitslasher_title"),
-                            Messages.get(this, "crivusfruitslasher_body"),
-                            Messages.get(this, "crivusfruitslasher_confirm"),
-                            Messages.get(this, "crivusfruitslasher_cancel") ){
-                        @Override
-                        protected void onSelect(int index) {
-                            if (index == 0){
-                                die(null);
-                                getFood=70;
-                            }
-                        }
-                    });
-                }
-            });
-            return true;
-        }
-
-        @Override
-        public void die(Object cause) {
-            super.die(cause);
-        }
+          });
+      return true;
     }
 
-    public static class CrivusFruitsRedSprites extends com.shatteredpixel.shatteredpixeldungeon.sprites.RotLasherSprite {
+    @Override
+    public void die(Object cause) {
+      super.die(cause);
+    }
+  }
 
-        public CrivusFruitsRedSprites(){
-            super();
-            tint(0, 1, 1, 0.4f);
-        }
+  public static class CrivusFruitsRedSprites
+      extends com.shatteredpixel.shatteredpixeldungeon.sprites.RotLasherSprite {
 
-        @Override
-        public void resetColor() {
-            super.resetColor();
-            tint(0, 1, 1, 0.4f);
-        }
+    public CrivusFruitsRedSprites() {
+      super();
+      tint(0, 1, 1, 0.4f);
     }
 
+    @Override
+    public void resetColor() {
+      super.resetColor();
+      tint(0, 1, 1, 0.4f);
+    }
+  }
 }
