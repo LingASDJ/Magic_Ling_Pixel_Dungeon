@@ -37,3 +37,4 @@ desktop/replay_pid17852.log
 desktop/replay_pid21216.log
 desktop/replay_pid7460.log
 core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/HeroClass$1.smali
+core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/ColdChestBossLevel.smali

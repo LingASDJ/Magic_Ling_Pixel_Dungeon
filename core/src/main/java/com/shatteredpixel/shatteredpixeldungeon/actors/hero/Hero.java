@@ -2697,9 +2697,6 @@ public class Hero extends Char {
 	//TODO 灯火前行逻辑
 	public void damageLantern(int value){
 		lanterfire -= value;
-//		if(lanterfire <= 0){
-//			damage(HT,this);
-//		}
 	}
 
 	public void healLantern(int value){

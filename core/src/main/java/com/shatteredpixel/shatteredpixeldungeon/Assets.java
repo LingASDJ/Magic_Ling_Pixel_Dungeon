@@ -320,6 +320,9 @@ public class Assets {
 		public static final String COLDRAT	= "sprites/coldrat.png";
 		public static final String REDSWARM	= "sprites/RedSearm.png";
 		public static final String REN		= "Ren/ren.png";
+
+		public static final String DKGirl		= "Npcs/DKGirl.png";
+
 		public static final String WHITE		= "Npcs/White.png";
 		public static final String BBAT	= "sprites/bloodbat.png";
 

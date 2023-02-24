@@ -52,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ColdSnowParticles;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.WindParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -545,6 +546,9 @@ public abstract class Level implements Bundlable {
 				if (i >= width() && water[i-width()]) {
 					visuals.add( new FlowParticle.Flow( i - width() ) );
 				}
+			}
+			if(Dungeon.depth >= 6){
+				visuals.add( new ColdSnowParticles.Snow(i));
 			}
 		}
 		return visuals;

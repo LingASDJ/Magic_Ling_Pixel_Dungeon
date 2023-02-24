@@ -12,19 +12,25 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
-public class REN extends NPC {
+import java.util.ArrayList;
+
+public class REN extends NTNPC {
 
     private static final String[] TXT_RANDOM = {"今日、明日、昨日...日日都在担忧，日日都在惶恐...发狂的因陀罗在注视着你，觊觎着你的光辉...","在呕吐的灾难中渡过的日月，啊啊...那个残忍的机器，名为‘δ’的浩劫，就要到来了...","仍不能理解的你，最终会明白这份崇高的支言片语的..."};
 
     {
         spriteClass = RenSprite.class;
-
+        chat = new ArrayList<String>() {
+            {
+                add((Messages.get(REN.class, "message1")));
+                add((Messages.get(REN.class, "message2")));
+                add((Messages.get(REN.class, "message3")));
+            }
+        };
         properties.add(Property.IMMOVABLE);
     }
 
     private boolean first=true;
-    private boolean secnod=true;
-    private boolean rd=true;
 
     private static final String FIRST = "first";
     private static final String SECNOD = "secnod";
@@ -40,8 +46,6 @@ public class REN extends NPC {
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         first = bundle.getBoolean(FIRST);
-        secnod = bundle.getBoolean(SECNOD);
-        rd = bundle.getBoolean(RD);
     }
 
     @Override
@@ -73,16 +77,10 @@ public class REN extends NPC {
 
         sprite.turnTo(pos, Dungeon.hero.pos);
 
-        if(first) {
+        if(first){
+            WndQuest.chating(this,chat);
             first=false;
-            tell(Messages.get(REN.class, "message1"));
-        }else if(secnod) {
-            secnod=false;
-            tell(Messages.get(REN.class, "message2"));
-        } else if(rd) {
-            rd=false;
-            tell(Messages.get(REN.class, "message3"));
-        } else {
+        }else {
             GLog.i(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
         }
 
