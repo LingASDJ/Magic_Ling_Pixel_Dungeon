@@ -38,48 +38,48 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 
 public class RenderedText extends Image {
-	
+
 	private BitmapFont font = null;
 	private int size;
 	private String text;
-	
+
 	public RenderedText( ) {
 		text = null;
 	}
-	
+
 	public RenderedText( int size ){
 		text = null;
 		this.size = size;
 	}
-	
+
 	public RenderedText(String text, int size){
 		this.text = text;
 		this.size = size;
-		
+
 		measure();
 	}
-	
+
 	public void text( String text ){
 		this.text = text;
-		
+
 		measure();
 	}
-	
+
 	public String text(){
 		return text;
 	}
-	
+
 	public void size( int size ){
 		this.size = size;
 		measure();
 	}
-	
+
 	private synchronized void measure(){
-		
-		if (Thread.currentThread().getName().equals("SHPD Actor Thread")){
+
+		if (Thread.currentThread().getName().equals("CAPD Actor Thread")){
 			throw new RuntimeException("Text measured from the actor thread!");
 		}
-		
+
 		if ( text == null || text.equals("") ) {
 			text = "";
 			width=height=0;
@@ -88,23 +88,31 @@ public class RenderedText extends Image {
 		} else {
 			visible = true;
 		}
-		
-		font = Game.platform.getFont(size, text, true, true);
-		
+
+		font = Game.platform.getFont(size, text, true, true, false);
+
 		if (font != null){
 			GlyphLayout glyphs = new GlyphLayout( font, text);
-			
+
 			for (char c : text.toCharArray()) {
 				BitmapFont.Glyph g = font.getData().getGlyph(c);
 				if (g == null || (g.id != c)){
-					String toException = text;
-					if (toException.length() > 30){
-						toException = toException.substring(0, 30) + "...";
+					font = Game.platform.getFont(size, text, true, true, true);
+					for (char c1 : text.toCharArray()) {
+						BitmapFont.Glyph g1 = font.getData().getGlyph(c1);
+						if (g1 == null || (g1.id != c1)){
+							String toException = text;
+							if (toException.length() > 30){
+								toException = toException.substring(0, 30) + "...";
+							}
+							font = Game.platform.getFont(size, text, true, true, false);
+							Game.reportException(new Throwable("font file " + font.toString() + " could not render " + c + " from string: " + toException));
+						}
 					}
-					Game.reportException(new Throwable("font file " + font.toString() + " could not render " + c + " from string: " + toException));
+					break;
 				}
 			}
-			
+
 			//We use the xadvance of the last glyph in some cases to fix issues
 			// with fullwidth punctuation marks in some asian scripts
 			BitmapFont.Glyph lastGlyph = font.getData().getGlyph(text.charAt(text.length()-1));
@@ -113,15 +121,15 @@ public class RenderedText extends Image {
 			} else {
 				width = glyphs.width;
 			}
-			
+
 			//this is identical to l.height in most cases, but we force this for consistency.
 			height = Math.round(size*0.75f);
 			renderedHeight = glyphs.height;
 		}
 	}
-	
+
 	private float renderedHeight = 0;
-	
+
 	@Override
 	protected void updateMatrix() {
 		super.updateMatrix();
@@ -130,9 +138,9 @@ public class RenderedText extends Image {
 			Matrix.translate(matrix, 0, Math.round(height - renderedHeight));
 		}
 	}
-	
+
 	private static TextRenderBatch textRenderer = new TextRenderBatch();
-	
+
 	@Override
 	public synchronized void draw() {
 		if (font != null) {
@@ -146,7 +154,7 @@ public class RenderedText extends Image {
 	//can interface with the freetype font generator
 	//some copypasta from BitmapText here
 	private static class TextRenderBatch implements Batch {
-		
+
 		//this isn't as good as only updating once, like with BitmapText
 		// but it skips almost all allocations, which is almost as good
 		private static RenderedText textBeingRendered = null;
@@ -156,7 +164,7 @@ public class RenderedText extends Image {
 		@Override
 		public void draw(Texture texture, float[] spriteVertices, int offset, int count) {
 			Visual v = textBeingRendered;
-			
+
 			FloatBuffer toOpenGL;
 			if (buffers.containsKey(count/20)){
 				toOpenGL = buffers.get(count/20);
@@ -165,54 +173,54 @@ public class RenderedText extends Image {
 				toOpenGL = Quad.createSet(count / 20);
 				buffers.put(count/20, toOpenGL);
 			}
-			
+
 			for (int i = 0; i < count; i += 20){
-				
+
 				vertices[0]     = spriteVertices[i+0];
 				vertices[1]     = spriteVertices[i+1];
-				
+
 				vertices[2]     = spriteVertices[i+3];
 				vertices[3]     = spriteVertices[i+4];
-				
+
 				vertices[4]     = spriteVertices[i+5];
 				vertices[5]     = spriteVertices[i+6];
-				
+
 				vertices[6]     = spriteVertices[i+8];
 				vertices[7]     = spriteVertices[i+9];
-				
+
 				vertices[8]     = spriteVertices[i+10];
 				vertices[9]     = spriteVertices[i+11];
-				
+
 				vertices[10]    = spriteVertices[i+13];
 				vertices[11]    = spriteVertices[i+14];
-				
+
 				vertices[12]    = spriteVertices[i+15];
 				vertices[13]    = spriteVertices[i+16];
-				
+
 				vertices[14]    = spriteVertices[i+18];
 				vertices[15]    = spriteVertices[i+19];
-				
+
 				toOpenGL.put(vertices);
-				
+
 			}
 
 			((Buffer)toOpenGL).position(0);
-			
+
 			NoosaScript script = NoosaScript.get();
-			
+
 			texture.bind();
 			com.watabou.glwrap.Texture.clear();
-			
+
 			script.camera( v.camera() );
-			
+
 			script.uModel.valueM4( v.matrix );
 			script.lighting(
 					v.rm, v.gm, v.bm, v.am,
 					v.ra, v.ga, v.ba, v.aa );
-			
+
 			script.drawQuadSet( toOpenGL, count/20 );
 		}
-		
+
 		//none of these functions are needed, so they are stubbed
 		@Override
 		public void begin() { }

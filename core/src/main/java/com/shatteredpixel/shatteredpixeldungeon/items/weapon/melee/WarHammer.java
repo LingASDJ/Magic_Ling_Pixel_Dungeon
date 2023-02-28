@@ -59,6 +59,7 @@ public class WarHammer extends MeleeWeapon {
 				Buff.prolong(defender, Vertigo.class, 12f+level);
 				Buff.prolong(defender, Terror.class, 12f+level);
 				Buff.affect(defender, Burning.class).reignite(defender,5f+level);
+				//Over Level 3,Not Debuff
 				if(Random.Float()<0.65f && level <3) {
 					Buff.affect(attacker, Vulnerable.class, 6f);
 				}

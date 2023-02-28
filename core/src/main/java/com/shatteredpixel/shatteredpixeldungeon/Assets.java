@@ -100,6 +100,9 @@ public class Assets {
 
 		public static final String BANNERS  = "interfaces/banners.png";
 
+		public static final String MENUTITLE  = "interfaces/menutitle.png";
+		public static final String TWOYEARS  = "interfaces/2years.png";
+
 		//圣诞节
 		public static final String BANNERSSD  = "interfaces/banners_sd.png";
 
@@ -121,6 +124,8 @@ public class Assets {
 		public static final String BOSSHP   = "interfaces/boss_hp.png";
 
 		public static final String SURFACE  = "interfaces/surface.png";
+
+		public static final String NEW_MENU  = "interfaces/go-surface.png";
 
 		public static final String LOADING_GOLD   = "interfaces/loading_gold.png";
 		public static final String LOADING_SEWERS   = "interfaces/loading_sewers.png";
@@ -155,7 +160,7 @@ public class Assets {
 		public static final String THEME      = "music/theme.ogg";
 		public static final String GO      = "music/Open.ogg";
 		public static final String SHOP      = "music/shop.ogg";
-		public static final String THEME_1      = "music/theme.ogg";
+		public static final String THEME_1      = "music/newtheme.ogg";
 		public static final String THEME_2      = "music/theme.ogg";
 
 		public static final String SEWERS_1     = "music/Level1.ogg";

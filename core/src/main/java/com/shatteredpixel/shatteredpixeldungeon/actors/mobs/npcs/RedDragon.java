@@ -152,9 +152,6 @@ public class RedDragon extends NPC {
                         @Override
                         public void call() {
                             switch (Quest.type) {
-                                //豺狼炼药长老
-                                //豺狼萨满长老
-                                //FLAME-C02
                                 case 1:
                                 default:
                                     GameScene.show(new WndQuest(RedDragon.this, Messages.get(RedDragon.this,
@@ -174,13 +171,9 @@ public class RedDragon extends NPC {
 
                     int newPos = -1;
                     for (int i = 0; i < 10; i++) {
-                        int Click = 1;
-                        if (3 == 3) {
-                            Click = 1 + 10;
-                            AlarmTrap Waring = new AlarmTrap();
-                            Waring.pos = super.pos;
-                            Waring.activate();
-                        }
+                        AlarmTrap Waring = new AlarmTrap();
+                        Waring.pos = super.pos;
+                        Waring.activate();
                         newPos = Dungeon.level.randomRespawnCell( this );
                         if (newPos != -1) {
                             break;

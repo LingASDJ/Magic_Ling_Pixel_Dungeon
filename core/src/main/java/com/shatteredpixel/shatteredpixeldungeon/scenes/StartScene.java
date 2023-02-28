@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndGameInProgress;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndStartGame;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
@@ -266,9 +265,18 @@ public class StartScene extends PixelScene {
 		
 		@Override
 		//old select scene like good,I don't like new select scene.
+//		protected void onClick() {
+//			if (newGame) {
+//				ShatteredPixelDungeon.scene().add( new WndStartGame(slot));
+//			} else {
+//				ShatteredPixelDungeon.scene().add( new WndGameInProgress(slot));
+//			}
+//		}
 		protected void onClick() {
 			if (newGame) {
-				ShatteredPixelDungeon.scene().add( new WndStartGame(slot));
+				GamesInProgress.selectedClass = null;
+				GamesInProgress.curSlot = slot;
+				ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
 			} else {
 				ShatteredPixelDungeon.scene().add( new WndGameInProgress(slot));
 			}
