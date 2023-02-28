@@ -33,38 +33,42 @@ import com.watabou.utils.Random;
 
 public class WarHammer extends MeleeWeapon {
 
-	{
-		image = ItemSpriteSheet.WAR_HAMMER;
-		hitSound = Assets.Sounds.HIT_CRUSH;
-		hitSoundPitch = 1f;
+  {
+    image = ItemSpriteSheet.WAR_HAMMER;
+    hitSound = Assets.Sounds.HIT_CRUSH;
+    hitSoundPitch = 1f;
 
-		tier = 5;
-		ACC = 1.90f; //20% boost to accuracy
-		DLY = 1.50f; //2x speed
-	}
+    tier = 5;
+    ACC = 1.90f; // 20% boost to accuracy
+    DLY = 1.50f; // 2x speed
+  }
 
-	@Override
-	public int max(int lvl) {
-		return  4*(tier+1) +    //24 base, down from 30
-				lvl*(tier+1);   //scaling unchanged
-	}
+  @Override
+  public int max(int lvl) {
+    return 4 * (tier + 1)
+        + // 24 base, down from 30
+        lvl * (tier + 1); // scaling unchanged
+  }
 
-	@Override
-	public int proc(Char attacker, Char defender, int damage ) {
-		switch (Random.Int(6)) {
-			case 0:case 1:case 2:case 3:
-			default:
-				return max(buffedLvl());
-			case 4:case 5:
-				Buff.prolong(defender, Vertigo.class, 12f+level);
-				Buff.prolong(defender, Terror.class, 12f+level);
-				Buff.affect(defender, Burning.class).reignite(defender,5f+level);
-				//Over Level 3,Not Debuff
-				if(Random.Float()<0.65f && level <3) {
-					Buff.affect(attacker, Vulnerable.class, 6f);
-				}
-				return max(buffedLvl());
-		}
-	}
-
+  @Override
+  public int proc(Char attacker, Char defender, int damage) {
+    switch (Random.Int(6)) {
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+      default:
+        return max(buffedLvl());
+      case 4:
+      case 5:
+        Buff.prolong(defender, Vertigo.class, 12f + level);
+        Buff.prolong(defender, Terror.class, 12f + level);
+        Buff.affect(defender, Burning.class).reignite(defender, 5f + level);
+        // Over Level 3,Not Debuff
+        if (Random.Float() < 0.65f && level < 3) {
+          Buff.affect(attacker, Vulnerable.class, 6f);
+        }
+        return max(buffedLvl());
+    }
+  }
 }

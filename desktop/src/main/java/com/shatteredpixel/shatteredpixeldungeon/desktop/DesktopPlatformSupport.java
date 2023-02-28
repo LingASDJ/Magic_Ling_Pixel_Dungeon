@@ -30,7 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.watabou.noosa.Game;
 import com.watabou.utils.PlatformSupport;
 import com.watabou.utils.Point;
-
 import java.awt.Desktop;
 import java.net.URI;
 import java.util.HashMap;
@@ -39,140 +38,150 @@ import java.util.regex.Pattern;
 
 public class DesktopPlatformSupport extends PlatformSupport {
 
-	//we recall previous window sizes as a workaround to not save maximized size to settings
-	//have to do this as updateDisplaySize is called before maximized is set =S
-	protected static Point[] previousSizes = null;
+  // we recall previous window sizes as a workaround to not save maximized size to settings
+  // have to do this as updateDisplaySize is called before maximized is set =S
+  protected static Point[] previousSizes = null;
 
-	@Override
-	public void updateDisplaySize() {
-		if (previousSizes == null){
-			previousSizes = new Point[2];
-			previousSizes[0] = previousSizes[1] = new Point(Game.width, Game.height);
-		} else {
-			previousSizes[1] = previousSizes[0];
-			previousSizes[0] = new Point(Game.width, Game.height);
-		}
-		if (!SPDSettings.fullscreen()) {
-			SPDSettings.windowResolution( previousSizes[0] );
-		}
-	}
-	
-	@Override
-	public void updateSystemUI() {
-		Gdx.app.postRunnable( new Runnable() {
-			@Override
-			public void run () {
-				if (SPDSettings.fullscreen()){
-					Gdx.graphics.setFullscreenMode( Gdx.graphics.getDisplayMode() );
-				} else {
-					Point p = SPDSettings.windowResolution();
-					Gdx.graphics.setWindowedMode( p.x, p.y );
-				}
-			}
-		} );
-	}
-	
-	@Override
-	public boolean connectedToUnmeteredNetwork() {
-		return true; //no easy way to check this in desktop, just assume user doesn't care
-	}
+  @Override
+  public void updateDisplaySize() {
+    if (previousSizes == null) {
+      previousSizes = new Point[2];
+      previousSizes[0] = previousSizes[1] = new Point(Game.width, Game.height);
+    } else {
+      previousSizes[1] = previousSizes[0];
+      previousSizes[0] = new Point(Game.width, Game.height);
+    }
+    if (!SPDSettings.fullscreen()) {
+      SPDSettings.windowResolution(previousSizes[0]);
+    }
+  }
 
-	//TODO backported openURI fix from libGDX-1.10.1-SNAPSHOT, remove when updating libGDX
-	public boolean openURI( String uri ){
-		if (SharedLibraryLoader.isMac) {
-			try {
-				(new ProcessBuilder("open", (new URI(uri).toString()))).start();
-				return true;
-			} catch (Throwable t) {
-				return false;
-			}
-		} else if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-			try {
-				Desktop.getDesktop().browse(new URI(uri));
-				return true;
-			} catch (Throwable t) {
-				return false;
-			}
-		} else if (SharedLibraryLoader.isLinux) {
-			try {
-				(new ProcessBuilder("xdg-open", (new URI(uri).toString()))).start();
-				return true;
-			} catch (Throwable t) {
-				return false;
-			}
-		}
-		return false;
-	}
+  @Override
+  public void updateSystemUI() {
+    Gdx.app.postRunnable(
+        new Runnable() {
+          @Override
+          public void run() {
+            if (SPDSettings.fullscreen()) {
+              Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+            } else {
+              Point p = SPDSettings.windowResolution();
+              Gdx.graphics.setWindowedMode(p.x, p.y);
+            }
+          }
+        });
+  }
 
-	/* FONT SUPPORT */
-	
-	//custom pixel font, for use with Latin and Cyrillic languages
-	private static FreeTypeFontGenerator basicFontGenerator;
-	//droid sans fallback, for asian fonts
-	private static FreeTypeFontGenerator asianFontGenerator;
-	
-	@Override
-	public void setupFontGenerators(int pageSize, boolean systemfont) {
-		//don't bother doing anything if nothing has changed
-		if (fonts != null && this.pageSize == pageSize && this.systemfont == systemfont){
-			return;
-		}
-		this.pageSize = pageSize;
-		this.systemfont = systemfont;
+  @Override
+  public boolean connectedToUnmeteredNetwork() {
+    return true; // no easy way to check this in desktop, just assume user doesn't care
+  }
 
-		resetGenerators(false);
-		fonts = new HashMap<>();
+  // TODO backported openURI fix from libGDX-1.10.1-SNAPSHOT, remove when updating libGDX
+  public boolean openURI(String uri) {
+    if (SharedLibraryLoader.isMac) {
+      try {
+        (new ProcessBuilder("open", (new URI(uri).toString()))).start();
+        return true;
+      } catch (Throwable t) {
+        return false;
+      }
+    } else if (Desktop.isDesktopSupported()
+        && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+      try {
+        Desktop.getDesktop().browse(new URI(uri));
+        return true;
+      } catch (Throwable t) {
+        return false;
+      }
+    } else if (SharedLibraryLoader.isLinux) {
+      try {
+        (new ProcessBuilder("xdg-open", (new URI(uri).toString()))).start();
+        return true;
+      } catch (Throwable t) {
+        return false;
+      }
+    }
+    return false;
+  }
 
-		if (systemfont) {
-			basicFontGenerator = asianFontGenerator = fallbackFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/droid_sans.ttf"));
-		} else {
-			basicFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/pixel_font.ttf"));
-			asianFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/fusion_pixel.ttf"));
-			fallbackFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/droid_sans.ttf"));
-		}
+  /* FONT SUPPORT */
 
-		fonts.put(basicFontGenerator, new HashMap<>());
-		fonts.put(asianFontGenerator, new HashMap<>());
-		fonts.put(fallbackFontGenerator, new HashMap<>());
+  // custom pixel font, for use with Latin and Cyrillic languages
+  private static FreeTypeFontGenerator basicFontGenerator;
+  // droid sans fallback, for asian fonts
+  private static FreeTypeFontGenerator asianFontGenerator;
 
-		packer = new PixmapPacker(pageSize, pageSize, Pixmap.Format.RGBA8888, 1, false);
-	}
-	
-	private static Matcher asianMatcher = Pattern.compile("\\p{InHangul_Syllables}|" +
-			"\\p{InCJK_Unified_Ideographs}|\\p{InCJK_Symbols_and_Punctuation}|\\p{InHalfwidth_and_Fullwidth_Forms}|" +
-			"\\p{InHiragana}|\\p{InKatakana}").matcher("");
+  @Override
+  public void setupFontGenerators(int pageSize, boolean systemfont) {
+    // don't bother doing anything if nothing has changed
+    if (fonts != null && this.pageSize == pageSize && this.systemfont == systemfont) {
+      return;
+    }
+    this.pageSize = pageSize;
+    this.systemfont = systemfont;
 
-	@Override
-	protected FreeTypeFontGenerator getGeneratorForString( String input ){
-		if (asianMatcher.reset(input).find()){
-			return asianFontGenerator;
-		} else {
-			return basicFontGenerator;
-		}
-	}
-	
-	//splits on newlines, underscores, and chinese/japaneses characters
-	private Pattern regularsplitter = Pattern.compile(
-			"(?<=\n)|(?=\n)|(?<=_)|(?=_)|" +
-					"(?<=\\p{InHiragana})|(?=\\p{InHiragana})|" +
-					"(?<=\\p{InKatakana})|(?=\\p{InKatakana})|" +
-					"(?<=\\p{InCJK_Unified_Ideographs})|(?=\\p{InCJK_Unified_Ideographs})|" +
-					"(?<=\\p{InCJK_Symbols_and_Punctuation})|(?=\\p{InCJK_Symbols_and_Punctuation})");
-	
-	//additionally splits on words, so that each word can be arranged individually
-	private Pattern regularsplitterMultiline = Pattern.compile(
-			"(?<= )|(?= )|(?<=\n)|(?=\n)|(?<=_)|(?=_)|" +
-					"(?<=\\p{InHiragana})|(?=\\p{InHiragana})|" +
-					"(?<=\\p{InKatakana})|(?=\\p{InKatakana})|" +
-					"(?<=\\p{InCJK_Unified_Ideographs})|(?=\\p{InCJK_Unified_Ideographs})|" +
-					"(?<=\\p{InCJK_Symbols_and_Punctuation})|(?=\\p{InCJK_Symbols_and_Punctuation})");
-	
-	@Override
-	public String[] splitforTextBlock(String text, boolean multiline) {
-		if (multiline) {
-			return regularsplitterMultiline.split(text);
-		} else {
-			return regularsplitter.split(text);
-		}
-	}
+    resetGenerators(false);
+    fonts = new HashMap<>();
+
+    if (systemfont) {
+      basicFontGenerator =
+          asianFontGenerator =
+              fallbackFontGenerator =
+                  new FreeTypeFontGenerator(Gdx.files.internal("fonts/droid_sans.ttf"));
+    } else {
+      basicFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/pixel_font.ttf"));
+      asianFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/fusion_pixel.ttf"));
+      fallbackFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/droid_sans.ttf"));
+    }
+
+    fonts.put(basicFontGenerator, new HashMap<>());
+    fonts.put(asianFontGenerator, new HashMap<>());
+    fonts.put(fallbackFontGenerator, new HashMap<>());
+
+    packer = new PixmapPacker(pageSize, pageSize, Pixmap.Format.RGBA8888, 1, false);
+  }
+
+  private static Matcher asianMatcher =
+      Pattern.compile(
+              "\\p{InHangul_Syllables}|"
+                  + "\\p{InCJK_Unified_Ideographs}|\\p{InCJK_Symbols_and_Punctuation}|\\p{InHalfwidth_and_Fullwidth_Forms}|"
+                  + "\\p{InHiragana}|\\p{InKatakana}")
+          .matcher("");
+
+  @Override
+  protected FreeTypeFontGenerator getGeneratorForString(String input) {
+    if (asianMatcher.reset(input).find()) {
+      return asianFontGenerator;
+    } else {
+      return basicFontGenerator;
+    }
+  }
+
+  // splits on newlines, underscores, and chinese/japaneses characters
+  private Pattern regularsplitter =
+      Pattern.compile(
+          "(?<=\n)|(?=\n)|(?<=_)|(?=_)|"
+              + "(?<=\\p{InHiragana})|(?=\\p{InHiragana})|"
+              + "(?<=\\p{InKatakana})|(?=\\p{InKatakana})|"
+              + "(?<=\\p{InCJK_Unified_Ideographs})|(?=\\p{InCJK_Unified_Ideographs})|"
+              + "(?<=\\p{InCJK_Symbols_and_Punctuation})|(?=\\p{InCJK_Symbols_and_Punctuation})");
+
+  // additionally splits on words, so that each word can be arranged individually
+  private Pattern regularsplitterMultiline =
+      Pattern.compile(
+          "(?<= )|(?= )|(?<=\n)|(?=\n)|(?<=_)|(?=_)|"
+              + "(?<=\\p{InHiragana})|(?=\\p{InHiragana})|"
+              + "(?<=\\p{InKatakana})|(?=\\p{InKatakana})|"
+              + "(?<=\\p{InCJK_Unified_Ideographs})|(?=\\p{InCJK_Unified_Ideographs})|"
+              + "(?<=\\p{InCJK_Symbols_and_Punctuation})|(?=\\p{InCJK_Symbols_and_Punctuation})");
+
+  @Override
+  public String[] splitforTextBlock(String text, boolean multiline) {
+    if (multiline) {
+      return regularsplitterMultiline.split(text);
+    } else {
+      return regularsplitter.split(text);
+    }
+  }
 }
