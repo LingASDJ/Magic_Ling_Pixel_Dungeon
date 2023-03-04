@@ -27,10 +27,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
@@ -53,10 +55,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.CaveTwoBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.CavesGirlDeadLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.DimandKingLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.DwarfMasterBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HallsLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LastLevel;
@@ -65,9 +70,11 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.LinkLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewCityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewHallsBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.YogGodHardBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ZeroLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
@@ -398,10 +405,9 @@ public class Dungeon {
 					level = new PrisonLevel();
 					break;
 				case 10:
-//					if((Statistics.boss_enhance & 0x2) != 0) level = new DimandKingLevel();
-//					else
-
-						level = new ColdChestBossLevel();
+					if((Statistics.boss_enhance & 0x2) != 0) level = new DimandKingLevel();
+					else
+						level = new PrisonBossLevel();
 					break;
 				case 11:
 				case 12:
@@ -410,13 +416,13 @@ public class Dungeon {
 					level = new CavesLevel();
 					break;
 				case 15:
-//					if (SPDSettings.level3boss()==3){
-//						level = new CavesGirlDeadLevel();
-//					} else if (SPDSettings.level3boss()==2){
-//						level = new CaveTwoBossLevel();
-//					} else {
+					if (SPDSettings.level3boss()==3){
+						level = new CavesGirlDeadLevel();
+					} else if (SPDSettings.level3boss()==2){
+						level = new CaveTwoBossLevel();
+					} else {
 						level = new NewCavesBossLevel();
-//					}
+					}
 					break;
 				case 16:
 				case 17:
@@ -425,12 +431,12 @@ public class Dungeon {
 					level = new CityLevel();
 					break;
 				case 20:
-//					if((Statistics.boss_enhance & 0x8) != 0) {
-//						Buff.affect(hero, TestDwarfMasterLock.class).set((1), 1);
-//						level = new DwarfMasterBossLevel();
-//						break;
-//					}
-//					else
+					if((Statistics.boss_enhance & 0x8) != 0) {
+						Buff.affect(hero, TestDwarfMasterLock.class).set((1), 1);
+						level = new DwarfMasterBossLevel();
+						break;
+					}
+					else
 						level = new NewCityBossLevel();
 					break;
 				case 21:
@@ -440,9 +446,8 @@ public class Dungeon {
 					level = new HallsLevel();
 					break;
 				case 25:
-//					if((Statistics.boss_enhance & 0x10) != 0) level = new YogGodHardBossLevel();
-//					else
-				level = new NewHallsBossLevel();
+					if((Statistics.boss_enhance & 0x10) != 0) level = new YogGodHardBossLevel();
+					else level = new NewHallsBossLevel();
 					break;
 				case 26:
 					level = new LastLevel();

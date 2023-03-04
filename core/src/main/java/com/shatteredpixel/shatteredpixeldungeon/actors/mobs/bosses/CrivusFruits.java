@@ -8,6 +8,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel.WI
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -27,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.CrivusFruitsFood;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
@@ -57,7 +59,7 @@ public class CrivusFruits extends Mob {
         state = PASSIVE;
 
         properties.add(Property.IMMOVABLE);
-        properties.add(Property.MINIBOSS);
+        properties.add(Property.BOSS);
     }
 
     //无敌也要扣减！
@@ -233,6 +235,18 @@ public class CrivusFruits extends Mob {
         Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
         Dungeon.level.drop( new IronKey( Dungeon.depth ), pos-1 ).sprite.drop();
         Dungeon.level.drop( new IronKey( Dungeon.depth ), pos+1 ).sprite.drop();
+        Badges.validateBossSlain();
+
+
+        if (!Badges.isUnlocked(Badges.Badge.KILL_APPLE)){
+            Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
+        } else if (Random.Float()<0.4f) {
+            Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
+        } else {
+            Dungeon.level.drop( new Food(), pos ).sprite.drop();
+        }
+
+        Badges.KILLSAPPLE();
 
         int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
         for (int i = 0; i < blobs; i++){
@@ -252,7 +266,7 @@ public class CrivusFruits extends Mob {
             Dungeon.level.drop( new CrivusFruitsFlake(), pos + ofs ).sprite.drop( pos );
         }
 
-        Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
+
 
     }
 

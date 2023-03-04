@@ -218,7 +218,7 @@ public class WndRanking extends WndTabbed {
 				RedButton btnChallenges = new RedButton( Messages.get(this, "challenges") ) {
 					@Override
 					protected void onClick() {
-						Game.scene().add( new WndChallenges( Dungeon.challenges, false ) );
+						Game.scene().add( new WndChallenges( Dungeon.challenges, false,null ) );
 					}
 				};
 

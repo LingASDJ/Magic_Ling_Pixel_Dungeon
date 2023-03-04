@@ -22,282 +22,316 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.custom.visuals.TextField;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
-import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Component;
+import com.watabou.utils.Callback;
 
 import java.util.ArrayList;
 
 public class WndChallenges extends Window {
 
 	private static final int WIDTH		= 120;
-	private static final int HEIGHT		= 162;
+	private static final int TTL_HEIGHT = 16;
 	private static final int BTN_HEIGHT = 16;
 	private static final int GAP        = 1;
 
 	private boolean editable;
-	private ArrayList<CanScrollCheckBox> boxes;
-	private ArrayList<CanScrollInfo> infos;
-	private CanScrollTextField cstf;
-	private CanScrollButton deleteSeedInput;
+	private ArrayList<ChallengeButton> boxes;
 
-	public WndChallenges( long checked, boolean editable ) {
+	public int index;
+	private static int boundIndex(int index) {
+		int result = index;
+		while (result < 0) result += 9;
+		while (result >= Challenges.NAME_IDS.length) result -= 9;
+		result = (int) (Math.floor(result / 9.0)) * 9;
+		return result;
+	}
+
+	private Callback callback;
+
+	private int checked;
+
+	public WndChallenges( int checked, boolean editable, Callback callback ) {
+		this(checked, 0, editable, callback);
+	}
+	private WndChallenges( int checked, int index, boolean editable, Callback callback ) {
 
 		super();
 
-		resize(WIDTH, HEIGHT);
-
+		this.checked = checked;
+		this.index = index;
 		this.editable = editable;
+		this.callback = callback;
 
-		ScrollPane pane = new ScrollPane(new Component()) {
-			@Override
-			public void onClick(float x, float y) {
-				int max_size = boxes.size();
-				for (int i = 0; i < max_size; ++i) {
-					if (boxes.get(i).onClick(x, y))
-						return;
-				}
-				max_size = infos.size();
-				for(int i = 0; i<max_size;++i){
-					if(infos.get(i).onClick(x,y)){
-						return;
-					}
-				}
-				if(cstf.onClick(x, y)){
-					return;
-				}
-				if(deleteSeedInput.onClick(x, y)){
-					return;
-				}
-			}
-		};
-		add(pane);
-		pane.setRect(0, GAP, WIDTH, HEIGHT - 2 * GAP);
-		Component content = pane.content();
+		RenderedTextBlock title = PixelScene.renderTextBlock( Messages.get(this, "title"+
+				WndChallenges.this.index), 12 );
+		title.hardlight( TITLE_COLOR );
+		title.setPos(
+				(WIDTH - title.width()) / 2,
+				(TTL_HEIGHT - title.height()) / 2
+		);
+		PixelScene.align(title);
+		add( title );
+
+
+
 
 		boxes = new ArrayList<>();
-		infos = new ArrayList<>();
-		final int normal_mode = 0;
-		final int hard_mode = 7;
-		final int warning_mode =9;
-		final int custom_mode = 13;
-		final int Test_Debug = 14;
 
-		boolean isCustom = false;
-		float pos = 0;
+		float pos = TTL_HEIGHT;
 
-		for (int i = 0; i < Challenges.NAME_IDS.length; i++) {
+		float infoBottom = 0;
+		index = boundIndex(index);
+		for (int i = index; i < index + 9; i++) {
 
+			if (i >= Challenges.NAME_IDS.length) break;
 			final String challenge = Challenges.NAME_IDS[i];
 
-			if(i==normal_mode || i==hard_mode || i==warning_mode|| i==custom_mode || i==Test_Debug){
-				RenderedTextBlock block = PixelScene.renderTextBlock(10);
-				switch (i){
-					case normal_mode:
-						block.text(Messages.get(Challenges.class, "traditional"));
-						block.hardlight(0x00FF00);
-						break;
-					case hard_mode:
-						block.text(Messages.get(Challenges.class, "hard"));
-						block.hardlight(0xFF00FF);
-						break;
-					case warning_mode:
-						block.text(Messages.get(Challenges.class, "warning"));
-						block.hardlight(0xFF0000);
-						break;
-					case custom_mode:
-						block.text(Messages.get(Challenges.class, "custom"));
-						block.hardlight(Window.Pink_COLOR);
-						break;
-					case Test_Debug:
-						block.text(Messages.get(Challenges.class, "test"));
-						block.hardlight(0xFFFF00);
-						break;
-				}
-				block.setPos((WIDTH - block.width()) / 2,
-						pos + GAP *4);
-				PixelScene.align(block);
-				content.add(block);
-				pos += block.height() + 11*GAP;
+			if (i > index && i % 3 == 0) {
+				pos += GAP;
 			}
+			ChallengeInfo info = new ChallengeInfo(foundChallangeIcon(i), challenge,false,
+					null);
 
-			CanScrollCheckBox cb = new CanScrollCheckBox(Messages.get(Challenges.class, challenge));
+			ChallengeButton cb = info.check;
 			cb.checked((checked & Challenges.MASKS[i]) != 0);
 			cb.active = editable;
 
-			//Disable
-			if(Challenges.NAME_IDS[i].equals("stronger_bosses")||Challenges.NAME_IDS[i].equals("sbsg")||Challenges.NAME_IDS[i].equals("exsg")){
-				cb.active = false;
-				cb.checked(false);
-				cb.alpha(0.5f);
+//			//Disable
+//			if(Challenges.NAME_IDS[i].equals("stronger_bosses")){
+//				cb.active = false;
+//				cb.checked(false);
+//				cb.visible=false;
+//			}
+
+			boxes.add( cb );
+			info.setRect((i % 3) * 40, pos, 40, 0);
+			infoBottom = Math.max(infoBottom, info.bottom());
+
+			add( info );
+
+			if (i % 3 == 2) {
+				pos = infoBottom;
 			}
-
-
-			if (i > 0) {
-				pos += GAP;
-			}
-			cb.setRect(0, pos, WIDTH - 16, BTN_HEIGHT);
-
-			content.add(cb);
-			boxes.add(cb);
-
-			boolean finalIsCustom = isCustom;
-			CanScrollInfo info = new CanScrollInfo(Icons.get(Icons.INFO)) {
-				@Override
-				protected void onClick() {
-					super.onClick();
-					ShatteredPixelDungeon.scene().add(
-							new WndMessage(Messages.get(finalIsCustom ? TextChallenges.class : Challenges.class, challenge + "_desc"))
-					);
-				}
-			};
-			info.setRect(cb.right(), pos, 16, BTN_HEIGHT);
-			infos.add(info);
-			content.add(info);
-
-			pos = cb.bottom();
 		}
-
-		pos += GAP;
-		cstf = new CanScrollTextField(Messages.get(TextChallenges.class, "seed_custom_title"));
-		cstf.setHint(Messages.get(TextChallenges.class, "hint"));
-		content.add(cstf);
-		cstf.enable(editable);
-		cstf.setLarge(false);
-		cstf.setMaxStringLength(22);
-		cstf.setRect(0, pos, WIDTH-16-GAP, 22);
-		cstf.text(editable ? CustomGameSettings.getSeedString() : DungeonSeed.convertToCode(Dungeon.seed));
-		deleteSeedInput = new CanScrollButton(Messages.get(TextChallenges.class, "delete_seed_input")){
+		RedButton btnPrev; RedButton btnNext; RedButton btnFirst; RedButton btnLast;
+		btnPrev = new RedButton("上页" /*需要替换为国际化文本*/) {
 			@Override
 			protected void onClick() {
-				super.onClick();
-				cstf.text("");
-				cstf.onTextChange();
+				final int lastIndex = WndChallenges.this.index;
+				WndChallenges.this.hide();
+				ShatteredPixelDungeon.scene().addToFront(new WndChallenges(refreshChecked(checked),
+						WndChallenges.boundIndex(lastIndex - 9), editable, callback));
 			}
 		};
-		content.add(deleteSeedInput);
-		deleteSeedInput.enable(editable);
-		deleteSeedInput.setRect(cstf.right() + GAP, pos, 16, 22);
-		pos = cstf.bottom();
-		content.setSize(WIDTH, (int) pos + GAP*2);
-		pane.scrollTo(0, 0);
+		add( btnPrev );
+		pos += GAP;
+
+		btnPrev.setRect(0, pos, (WIDTH - GAP) * 0.5f, BTN_HEIGHT);
+		btnNext = new RedButton("下页" /*需要替换为国际化文本*/) {
+			@Override
+			protected void onClick() {
+				final int lastIndex = WndChallenges.this.index;
+				WndChallenges.this.hide();
+				ShatteredPixelDungeon.scene().addToFront(new WndChallenges(refreshChecked(checked),
+						WndChallenges.boundIndex(lastIndex + 9), editable, callback));
+			}
+		};
+		add( btnNext );
+		btnNext.setRect(btnPrev.right() + GAP, pos, (WIDTH - GAP) * 0.5f, BTN_HEIGHT);
+
+		pos += BTN_HEIGHT;
+
+		btnFirst = new RedButton("首页" /*需要替换为国际化文本*/) {
+			@Override
+			protected void onClick() {
+				WndChallenges.this.hide();
+				ShatteredPixelDungeon.scene().addToFront(new WndChallenges(refreshChecked(checked), 0, editable, callback));
+			}
+		};
+		add( btnFirst );
+		pos += GAP;
+
+		btnFirst.setRect(0, pos, (WIDTH - GAP) * 0.5f, BTN_HEIGHT);
+		btnLast = new RedButton("末页" /*需要替换为国际化文本*/) {
+			@Override
+			protected void onClick() {
+				WndChallenges.this.hide();
+				ShatteredPixelDungeon.scene().addToFront(new WndChallenges(refreshChecked(checked),
+						WndChallenges.boundIndex(Challenges.NAME_IDS.length - 1), editable, callback));
+			}
+		};
+		add( btnLast );
+		btnLast.setRect(btnFirst.right() + GAP, pos, (WIDTH - GAP) * 0.5f, BTN_HEIGHT);
+
+		RedButton btnClear = new RedButton("清空本页挑战", 7) {
+			@Override
+			protected void onClick() {
+				for (int i = 0; i < boxes.size(); i++) {
+					setCheckedNoUpdate(i, false);
+				}
+			}
+		};
+		btnClear.setRect(btnFirst.left()+ GAP, pos+20, (WIDTH - GAP), BTN_HEIGHT);
+		add(btnClear);
+		if (!editable) {
+			btnClear.enable(false);
+		}
+
+		pos += BTN_HEIGHT+20;
+
+		resize( WIDTH, (int)pos );
 	}
 
+	private void setCheckedNoUpdate(int id, boolean checked) {
+		boxes.get(id).checked(checked);
+	}
 
 
 	@Override
 	public void onBackPressed() {
 
 		if (editable) {
-			int value = 0;
-			for (int i=0; i < boxes.size(); i++) {
-				if (boxes.get( i ).checked()) {
-					value |= Challenges.MASKS[i];
-				}
-			}
-			SPDSettings.challenges( value );
+			SPDSettings.challenges( refreshChecked(checked) );
 		}
 
 		super.onBackPressed();
+		if (callback != null) callback.call();
 	}
 
-	public static class CanScrollCheckBox extends CheckBox{
-
-		public CanScrollCheckBox(String label) {
-			super(label);
+	private int refreshChecked(int checked) {
+		int value = checked;
+		for (int i = 0; i < boxes.size(); i ++) {
+			if (index + i >= Challenges.MASKS.length) break;
+			value &= ~Challenges.MASKS[index + i];
+			if (boxes.get( i ).checked()) {
+				value |= Challenges.MASKS[index + i];
+			}
 		}
-
-		protected boolean onClick(float x, float y){
-			if(!inside(x,y)) return false;
-			if(active)
-				onClick();
-
-			return true;
-		}
-
-		@Override
-		protected void layout(){
-			super.layout();
-			hotArea.width = hotArea.height = 0;
-		}
+		return value;
 	}
 
-	public static class CanScrollInfo extends IconButton{
-		public CanScrollInfo(Image Icon){super(Icon);}
-
-		protected boolean onClick(float x, float y){
-			if(!inside(x,y)) return false;
-			if(active) onClick();
-			return true;
+	private static class ChallengeButton extends IconButton {
+		private boolean checked = false;
+		public ChallengeButton() {
+			super( Icons.get( Icons.CHALLENGE_OFF ));
 		}
-
 		@Override
-		protected void layout(){
-			super.layout();
-			hotArea.width = hotArea.height = 0;
+		protected void onClick() {
+			checked(!checked);
+		}
+		public boolean checked() {
+			return checked;
+		}
+		public void checked( boolean checked ) {
+			this.checked = checked;
+			icon( Icons.get( checked ? Icons.CHALLENGE_ON : Icons.CHALLENGE_OFF ) );
 		}
 	}
 
-	public static class CanScrollTextField extends TextField {
-
-		public CanScrollTextField(String label) {
-			super(label);
-		}
-
-		@Override
-		public void onTextChange() {
-			CustomGameSettings.putSeedString(text());
-		}
-
-		@Override
-		public void onTextCancel() {
-
+	private class ChallengeInfo extends Component {
+		Image icon;
+		IconButton info;
+		ChallengeButton check;
+		IconButton conflict;
+		public ChallengeInfo(Image icon, String challenge, boolean conflict, Callback onConflict) {
+			super();
+			this.icon = icon;
+			add( icon );
+			info = new IconButton(Icons.get(Icons.INFO)){
+				@Override
+				protected void onClick() {
+					ShatteredPixelDungeon.scene().add(
+							new WndTitledMessage(new Image(ChallengeInfo.this.icon),
+									Messages.titleCase(Messages.get(Challenges.class, challenge)),
+									Messages.get(Challenges.class, challenge+"_desc"))
+					);
+				}
+			};
+			add( info );
+			check = new ChallengeButton();
+			add( check );
+			if (conflict) {
+				this.conflict = new IconButton(Icons.get(Icons.HUNTRESS)) {
+					@Override
+					protected void onClick() {
+						if (onConflict != null)
+							onConflict.call();
+					}
+				};
+				add( this.conflict );
+			}
+			else this.conflict = null;
 		}
 
 		@Override
 		protected void layout() {
-			super.layout();
-			hotArea.height = hotArea.width = 0;
+			icon.x = x + (width - 32) / 2;
+			icon.y = y;
+			PixelScene.align( icon );
+			info.setRect(icon.x + icon.width, y, 16, BTN_HEIGHT);
+			PixelScene.align( info );
+			if (conflict == null) {
+				check.setRect(x + (width - 16) / 2, y + BTN_HEIGHT, 16, BTN_HEIGHT);
+				PixelScene.align( check );
+			}
+			else {
+				check.setRect(x + (width - 32) / 2, y + BTN_HEIGHT, 16, BTN_HEIGHT);
+				PixelScene.align( check );
+				conflict.setRect(check.right(), check.top(), 16, BTN_HEIGHT);
+				PixelScene.align( conflict );
+			}
+			height = BTN_HEIGHT * 2;
 		}
 
-		protected boolean onClick(float x, float y){
-			if(!inside(x,y)) return false;
-			if(active) onClick();
-
-			return true;
-		}
 	}
 
-	public static class CanScrollButton extends RedButton{
 
-		public CanScrollButton(String label) {
-			super(label, 7);
+		private Image foundChallangeIcon(int i) {
+
+		if (Challenges.NAME_IDS[i].equals("no_food")) {
+			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_1,new ItemSprite.Glowing( 0xFF0000 ));
+		} else if (Challenges.NAME_IDS[i].equals("no_armor")) {
+			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_2,new ItemSprite.Glowing( 0x8f8f8f ));
+		} else if (Challenges.NAME_IDS[i].equals("no_healing")) {
+			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_3,new ItemSprite.Glowing( 0xff0000 ));
+		} else if (Challenges.NAME_IDS[i].equals("no_herbalism")) {
+			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_4);
+		} else if (Challenges.NAME_IDS[i].equals("swarm_intelligence")) {
+			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_5,new ItemSprite.Glowing( 0xffff00 ));
+		} else if (Challenges.NAME_IDS[i].equals("darkness")) {
+			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_6,new ItemSprite.Glowing( 0x8f8f8f ));
+		} else if (Challenges.NAME_IDS[i].equals("no_scrolls")) {
+			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_7,new ItemSprite.Glowing( 0x00dd00 ));
+		} else if (Challenges.NAME_IDS[i].equals("aquaphobia")) {
+			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_8,new ItemSprite.Glowing( 0xac89cc ));
+		} else if (Challenges.NAME_IDS[i].equals("champion_enemies")) {
+			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_9,new ItemSprite.Glowing( 0x333333 ));
+		} else if (Challenges.NAME_IDS[i].equals("rlpt")) {
+			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_10,new ItemSprite.Glowing( 0xc6cc6c ));
+		} else if (Challenges.NAME_IDS[i].equals("sbsg")) {
+			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_11,new ItemSprite.Glowing( 0x3b1051 ));
+		} else if (Challenges.NAME_IDS[i].equals("exsg")) {
+			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_12,new ItemSprite.Glowing( 0xd1ce9f ));
+		} else if (Challenges.NAME_IDS[i].equals("stronger_bosses")) {
+			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_13,new ItemSprite.Glowing( 0xff0000 ));
+		} else if (Challenges.NAME_IDS[i].equals("dhxd")) {
+			return new ItemSprite(ItemSpriteSheet.LANTERNB,new ItemSprite.Glowing( 0x384976 ));
+		} else {
+			return Icons.get(Icons.PREFS);
 		}
 
-		@Override
-		protected void layout() {
-			super.layout();
-			hotArea.height = hotArea.width = 0;
-		}
-
-		protected boolean onClick(float x, float y){
-			if(!inside(x,y)) return false;
-			if(active) onClick();
-
-			return true;
-		}
 	}
+
 }

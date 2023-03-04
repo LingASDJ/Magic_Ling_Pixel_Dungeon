@@ -45,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHeroInfo;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
@@ -276,7 +277,7 @@ public class HeroSelectScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				if (DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY)) {
-					ShatteredPixelDungeon.scene().addToFront(new WndChallenges(SPDSettings.challenges(), true) {
+					ShatteredPixelDungeon.scene().addToFront(new WndChallenges(SPDSettings.challenges(), true,null) {
 						public void onBackPressed() {
 							super.onBackPressed();
 							icon(Icons.get(SPDSettings.challenges() > 0 ? Icons.CHALLENGE_ON : Icons.CHALLENGE_OFF));
@@ -379,10 +380,10 @@ public class HeroSelectScene extends PixelScene {
 		Telnetsc.setPos( frame.x + frame.width + FRAME_MARGIN_X, frame.y + frame.height - BUTTON_HEIGHT);
 		add(Telnetsc);
 
-		IconButton DevMode = new IconButton(Icons.get(Icons.WARNING)){
+		IconButton DevMode = new IconButton(new ItemSprite(ItemSpriteSheet.SEED_SKYBLUEFIRE)){
 			@Override
 			protected void onClick() {
-				//
+				ShatteredPixelDungeon.scene().addToFront(new WndSeed(true));
 			}
 		};
 		DevMode.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
@@ -392,7 +393,7 @@ public class HeroSelectScene extends PixelScene {
 		IconButton Rename = new IconButton(Icons.get(Icons.RENAME_OFF)){
 			@Override
 			protected void onClick() {
-					if(!Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_1)){
+				if (Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_1)){
 						Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextInput(Messages.get(WndStartGame.class,"custom_name"),
 								Messages.get(WndStartGame.class, "custom_name_desc")+SPDSettings.heroName(),
 								SPDSettings.heroName(), 20,
@@ -421,7 +422,7 @@ public class HeroSelectScene extends PixelScene {
 		IconButton EverDayGo = new IconButton(new Image(new PinkLingSprite())) {
 			@Override
 			protected void onClick() {
-				if(!Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_1)){
+				if(1==2){
 					Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextInput(Messages.get(WndStartGame.class,"custom_name"),
 							Messages.get(WndStartGame.class, "custom_name_desc")+SPDSettings.heroName(),
 							SPDSettings.heroName(), 20,
@@ -438,7 +439,7 @@ public class HeroSelectScene extends PixelScene {
 						}
 					}));
 				} else {
-					ShatteredPixelDungeon.scene().addToFront(new WndMessage("获得_衪人之遇_徽章后解锁每日挑战。"));
+					ShatteredPixelDungeon.scene().addToFront(new WndMessage("获得_衪人之遇_徽章后解锁每日狩猎。--暂未实装"));
 				}
 
 			}
@@ -446,6 +447,122 @@ public class HeroSelectScene extends PixelScene {
 		EverDayGo.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
 		EverDayGo.setPos( frame.x + frame.width + FRAME_MARGIN_X, frame.y-51+ frame.height-51- BUTTON_HEIGHT);
 		add(EverDayGo);
+
+		IconButton DungeonHappyMode = new IconButton(new ItemSprite(ItemSpriteSheet.LANTERNB)) {
+			@Override
+			protected void onClick() {
+				if(1==2){
+					Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextInput(Messages.get(WndStartGame.class,"custom_name"),
+							Messages.get(WndStartGame.class, "custom_name_desc")+SPDSettings.heroName(),
+							SPDSettings.heroName(), 20,
+							false, Messages.get(WndStartGame.class,"custom_name_set"),
+							Messages.get(WndStartGame.class,"custom_name_clear")){
+						@Override
+						public void onSelect(boolean name, String str) {
+							if (name) {
+								SPDSettings.heroName(str);
+							} else {
+								SPDSettings.heroName("");
+							}
+							icon(Icons.get(SPDSettings.heroName().equals("") ? RENAME_OFF : Icons.RENAME_ON));
+						}
+					}));
+				} else {
+					ShatteredPixelDungeon.scene().addToFront(new WndMessage("完成_一局游戏_后解锁娱乐模式。--暂未实装"));
+				}
+
+			}
+		};
+		DungeonHappyMode.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
+		DungeonHappyMode.setPos( frame.x-58+frame.width-58+FRAME_MARGIN_X, frame.y-51+ frame.height-51- BUTTON_HEIGHT);
+		add(DungeonHappyMode);
+
+		IconButton DiffcultButton = new IconButton(new ItemSprite(ItemSpriteSheet.DIFFCULTBOOT)) {
+			@Override
+			protected void onClick() {
+				if(1==2){
+					Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextInput(Messages.get(WndStartGame.class,"custom_name"),
+							Messages.get(WndStartGame.class, "custom_name_desc")+SPDSettings.heroName(),
+							SPDSettings.heroName(), 20,
+							false, Messages.get(WndStartGame.class,"custom_name_set"),
+							Messages.get(WndStartGame.class,"custom_name_clear")){
+						@Override
+						public void onSelect(boolean name, String str) {
+							if (name) {
+								SPDSettings.heroName(str);
+							} else {
+								SPDSettings.heroName("");
+							}
+							icon(Icons.get(SPDSettings.heroName().equals("") ? RENAME_OFF : Icons.RENAME_ON));
+						}
+					}));
+				} else {
+					ShatteredPixelDungeon.scene().addToFront(new WndMessage("获得_不屈斗士_徽章后解锁难度系统。--暂未实装"));
+				}
+
+			}
+		};
+		DiffcultButton.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
+		DiffcultButton.setPos( frame.x-58+frame.width-58+FRAME_MARGIN_X, frame.y-38+ frame.height-38- BUTTON_HEIGHT);
+		add(DiffcultButton);
+
+		IconButton CheatPatbutton = new IconButton(new ItemSprite(ItemSpriteSheet.STORYBOOKS)) {
+			@Override
+			protected void onClick() {
+				if(1==2){
+					Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextInput(Messages.get(WndStartGame.class,"custom_name"),
+							Messages.get(WndStartGame.class, "custom_name_desc")+SPDSettings.heroName(),
+							SPDSettings.heroName(), 20,
+							false, Messages.get(WndStartGame.class,"custom_name_set"),
+							Messages.get(WndStartGame.class,"custom_name_clear")){
+						@Override
+						public void onSelect(boolean name, String str) {
+							if (name) {
+								SPDSettings.heroName(str);
+							} else {
+								SPDSettings.heroName("");
+							}
+							icon(Icons.get(SPDSettings.heroName().equals("") ? RENAME_OFF : Icons.RENAME_ON));
+						}
+					}));
+				} else {
+					ShatteredPixelDungeon.scene().addToFront(new WndMessage("章节系统将于下半段开启，敬请期待。"));
+				}
+
+			}
+		};
+		CheatPatbutton.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
+		CheatPatbutton.setPos( frame.x-58+frame.width-58+FRAME_MARGIN_X, frame.y-14+ frame.height-14- BUTTON_HEIGHT);
+		add(CheatPatbutton);
+
+		IconButton DLCStoryMode = new IconButton(new ItemSprite(ItemSpriteSheet.DLCBOOKS)) {
+			@Override
+			protected void onClick() {
+				if(1==2){
+					Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextInput(Messages.get(WndStartGame.class,"custom_name"),
+							Messages.get(WndStartGame.class, "custom_name_desc")+SPDSettings.heroName(),
+							SPDSettings.heroName(), 20,
+							false, Messages.get(WndStartGame.class,"custom_name_set"),
+							Messages.get(WndStartGame.class,"custom_name_clear")){
+						@Override
+						public void onSelect(boolean name, String str) {
+							if (name) {
+								SPDSettings.heroName(str);
+							} else {
+								SPDSettings.heroName("");
+							}
+							icon(Icons.get(SPDSettings.heroName().equals("") ? RENAME_OFF : Icons.RENAME_ON));
+						}
+					}));
+				} else {
+					ShatteredPixelDungeon.scene().addToFront(new WndMessage("DLC尚未开启，敬请期待"));
+				}
+
+			}
+		};
+		DLCStoryMode.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
+		DLCStoryMode.setPos( frame.x-58+frame.width-58+FRAME_MARGIN_X, frame.y+ frame.height- BUTTON_HEIGHT);
+		add(DLCStoryMode);
 
 
 		btnExit = new ExitButton();
@@ -709,4 +826,39 @@ public class HeroSelectScene extends PixelScene {
 			Matrix.skewX( matrix, (float)(angle / Matrix.G2RAD) );
 		}
 	}
+
+//TODO 待添加
+
+//	private static Image foundChallangeIcon(int i) {
+//
+//		if (Challenges.NAME_IDS[i].equals("no_food")) {
+//			return new ItemSprite(ItemSpriteSheet.OVERPRICED,new ItemSprite.Glowing( 0xFF0000 ));
+//		} else if (Challenges.NAME_IDS[i].equals("no_armor")) {
+//			return new ItemSprite(ItemSpriteSheet.ARMOR_MAGE,new ItemSprite.Glowing( 0xFF0000 ));
+//		} else if (Challenges.NAME_IDS[i].equals("no_healing")) {
+//			return new RatSprite();
+//		} else if (Challenges.NAME_IDS[i].equals("no_herbalism")) {
+//			return new GnollSprite();
+//		} else if (Challenges.NAME_IDS[i].equals("darkness")) {
+//			return Icons.get(Icons.NEWS);
+//		} else if (Challenges.NAME_IDS[i].equals("no_scrolls")) {
+//			return Icons.get(Icons.LANGS);
+//		} else if (Challenges.NAME_IDS[i].equals("aquaphobia")) {
+//			return Icons.get(Icons.SHPX);
+//		} else if (Challenges.NAME_IDS[i].equals("rlpt")) {
+//			return Icons.get(Icons.LIBGDX);
+//		} else if (Challenges.NAME_IDS[i].equals("sbsg")) {
+//			return Icons.get(Icons.WATA);
+//		} else if (Challenges.NAME_IDS[i].equals("exsg")) {
+//			return Icons.get(Icons.SHPX);
+//		} else if (Challenges.NAME_IDS[i].equals("stronger_bosses")) {
+//			return Icons.get(Icons.HUNTRESS);
+//		} else if (Challenges.NAME_IDS[i].equals("dhxd")) {
+//			return Icons.get(Icons.SKULL);
+//		} else {
+//			return Icons.get(Icons.STATS);
+//		}
+//
+//	}
+
 }

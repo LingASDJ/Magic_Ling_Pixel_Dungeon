@@ -73,7 +73,7 @@ public class TextInput extends Component {
 		skin = new Skin(FileUtils.getFileHandle(Files.FileType.Internal, "gdx/textfield.json"));
 
 		TextField.TextFieldStyle style = skin.get(TextField.TextFieldStyle.class);
-		style.font = Game.platform.getFont(size, "", false, false,false);
+		style.font = Game.platform.getFont(size, "", false, false,true);
 		style.background = null;
 		textField = multiline ? new TextArea("", style) : new TextField("", style);
 		textField.setProgrammaticChangeEvents(true);
@@ -83,7 +83,7 @@ public class TextInput extends Component {
 		textField.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				BitmapFont f = Game.platform.getFont(size, textField.getText(), false, false,false);
+				BitmapFont f = Game.platform.getFont(size, textField.getText(), false, false,true);
 				TextField.TextFieldStyle style = textField.getStyle();
 				if (f != style.font){
 					style.font = f;

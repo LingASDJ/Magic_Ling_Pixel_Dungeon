@@ -56,12 +56,12 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_L3BOSS, 1, 1, 3);
 	}
 
-	public static void FPSLimit(boolean value) {
-		put( KEY_FPS, value );
+	public static void TimeLimit(boolean value) {
+		put(KEY_TIME, value );
 	}
 
-	public static boolean FPSLimit() {
-		return getBoolean(KEY_FPS, true);
+	public static boolean TimeLimit() {
+		return getBoolean(KEY_TIME, true);
 	}
 
 	private static final String DEBUG_REPORT  = "debug_report";
@@ -110,7 +110,7 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_SPLASH_SCREEN, 1 );
 	}
 
-	private static final String KEY_FPS	= "fps";
+	private static final String KEY_TIME = "fps";
 
 	private static final String KEY_DARK	= "dark_ui";
 	//暗色系统

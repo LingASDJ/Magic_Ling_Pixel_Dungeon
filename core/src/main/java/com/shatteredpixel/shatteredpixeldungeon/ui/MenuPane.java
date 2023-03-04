@@ -154,7 +154,7 @@ public class MenuPane extends Component {
 			challengeButton = new Button(){
 				@Override
 				protected void onClick() {
-					GameScene.show(new WndChallenges(Dungeon.challenges, false));
+					GameScene.show(new WndChallenges(Dungeon.challenges, false,null));
 				}
 
 				@Override

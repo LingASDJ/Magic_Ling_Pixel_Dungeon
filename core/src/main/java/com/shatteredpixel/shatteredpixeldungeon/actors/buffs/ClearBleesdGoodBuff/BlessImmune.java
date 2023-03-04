@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
@@ -30,6 +31,23 @@ public class BlessImmune extends Buff {
         }
 
         return true;
+    }
+
+    @Override
+    public boolean attachTo(Char target) {
+        if (super.attachTo(target)){
+            for (Buff b : target.buffs()){
+                for (Class immunity : immunities){
+                    if (b.getClass().isAssignableFrom(immunity)){
+                        b.detach();
+                        break;
+                    }
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public int level() {

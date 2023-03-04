@@ -34,14 +34,25 @@ public class BossSettingWindows extends Window {
         for(int i = 0; i<5; ++i){
             CheckBox cb = new CheckBox(Messages.get(this, "boss_"+ (i + 1)));
             cb.setRect(GAP, pos, WIDTH - GAP * 2, BOX_HEIGHT);
-            if(i == 2){
-                cb.setRect(GAP, 500, WIDTH - GAP * 2, BOX_HEIGHT);
-            }
+
+
             add(cb);
             cbs.add(cb);
             pos += BOX_HEIGHT + GAP;
-            cb.checked((Statistics.boss_enhance & (1<<i)) >0);
-            cb.enable(Statistics.deepestFloor < (5+i*5));
+
+            if(i == 2){
+                cb.setRect(GAP, 500, WIDTH - GAP * 2, BOX_HEIGHT);
+            }
+
+            if(i == 1 || i == 0 || i==4){
+                cb.alpha(0.4f);
+                cb.active=false;
+                cb.checked(false);
+            } else {
+                cb.checked((Statistics.boss_enhance & (1<<i)) >0);
+                cb.enable(Statistics.deepestFloor < (5+i*5));
+            }
+
         }
 
         level3 = new OptionSlider("", Messages.get(this, "dm300"),

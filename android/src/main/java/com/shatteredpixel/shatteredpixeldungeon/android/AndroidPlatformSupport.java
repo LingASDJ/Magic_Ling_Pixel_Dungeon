@@ -340,12 +340,6 @@ public class AndroidPlatformSupport extends PlatformSupport {
 	public boolean isAndroid() {
 		return true;
 	}
-
-	@Override
-	public boolean isiOS() {
-		return false;
-	}
-
 	@Override
 	public boolean isDesktop() {
 		return false;

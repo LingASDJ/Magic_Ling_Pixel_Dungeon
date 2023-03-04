@@ -54,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoRead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMixShiled;
@@ -311,11 +312,11 @@ public class Hero extends Char {
 			strBonus += (int)Math.floor(STR * (0.03f + 0.05f*pointsInTalent(Talent.STRONGMAN)));
 		}
 
-		//TODO 无力 本大层-3力量 : 坚毅 本大层力量+8
+		//TODO 无力 本大层-3力量 : 坚毅 本大层力量+2
 		if(Dungeon.hero.buff(MagicGirlSayNoSTR.class) != null){
 			strBonus -= 3;
 		} else if(Dungeon.hero.buff(BlessGoodSTR.class) != null) {
-			strBonus += 8;
+			strBonus += 2;
 		}
 
 		return STR + strBonus;
@@ -955,7 +956,7 @@ public class Hero extends Char {
 
 //			GLog.n("系统已经检测到你已开启困难模式，灯火会与你结伴同行，但同时，恶魔也会对你馋言欲滴。");
 
-			switch (Random.Int(3)){
+			switch (Random.Int(4)){
 				case 0: default:
 					Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
 					break;
@@ -964,6 +965,9 @@ public class Hero extends Char {
 					break;
 				case 2:
 					Buff.affect(hero, BlessImmune.class).set( (100), 1 );
+					break;
+				case 3:
+					Buff.affect(hero, BlessGoRead.class).set( (100), 1 );
 					break;
 			}
 			GLog.b(Messages.get(WndStory.class,"letxz"));

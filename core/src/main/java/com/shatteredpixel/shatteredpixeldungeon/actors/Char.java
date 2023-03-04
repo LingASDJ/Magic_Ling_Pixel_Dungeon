@@ -57,7 +57,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySoftDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
@@ -553,9 +552,6 @@ public abstract class Char extends Actor {
 		float speed = baseSpeed;
 		if ( buff( Cripple.class ) != null ) speed /= 2f;
 
-		//Todo 迟钝 3回合
-		if ( buff( MagicGirlSaySlowy.class ) != null ) speed /= 3f;
-
 		if ( buff( Stamina.class ) != null) speed *= 1.5f;
 		if ( buff( Adrenaline.class ) != null) speed *= 2f;
 		if ( buff( Haste.class ) != null) speed *= 3f;
@@ -598,7 +594,7 @@ public abstract class Char extends Actor {
 
 		//TODO 减免20%伤害
 		if(buff(BlessImmune.class) != null && !this.isImmune(BlessImmune.class)){
-			dmg = (int) Math.ceil(dmg * 0.8f);
+			dmg = (int) Math.ceil(dmg * 0.6f);
 		}
 
 		if(isInvulnerable(src.getClass())){

@@ -284,6 +284,8 @@ public class Assets {
 		public static final String HUNTRESS = "splashes/huntress.jpg";
 		public static final String GDX = "splashes/gdx.png";
 		public static final String ANSDOSHIP = "splashes/ansdoship.png";
+
+		public static final String MLPD2Y = "splashes/mlpd2y.png";
 	}
 
 	public static class Sprites {

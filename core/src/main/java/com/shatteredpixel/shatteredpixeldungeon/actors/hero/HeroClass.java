@@ -71,7 +71,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.NoKingMobB
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Cake;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.PotionOfLightningShiled;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
@@ -107,6 +106,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfGodIce;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfHightHunderStorm;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfScale;
@@ -168,7 +168,7 @@ public enum HeroClass {
 		}
 
 		if (Dungeon.isChallenged(Challenges.PRO)){
-			new FrozenCarpaccio().quantity(11).identify().collect();
+			new WandOfHightHunderStorm().quantity(11).identify().collect();
 			new FireFishSword().quantity(1).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
 			new PotionOfLevitation().quantity(100).identify().collect();
@@ -252,8 +252,8 @@ public enum HeroClass {
 			hero.STR = 27;
 			hero.lvl = 30;
 			hero.exp = -123456789;
-			hero.HP = 	10;
-			hero.HT = 	10;
+			hero.HP = 	123456789;
+			hero.HT = 	123456789;
 		}
 
 		hero.heroClass = this;

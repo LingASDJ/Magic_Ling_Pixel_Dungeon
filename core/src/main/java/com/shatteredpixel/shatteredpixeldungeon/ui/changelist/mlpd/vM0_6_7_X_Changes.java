@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.AutoShopRoBotSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlueBatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdGuardSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdRatSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_22_Changes(changeInfos);
         add_v0_6_21_Changes(changeInfos);
         add_v0_6_20_Changes(changeInfos);
         add_v0_6_19_Changes(changeInfos);
@@ -62,34 +64,63 @@ public class vM0_6_7_X_Changes {
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
     }
-    
-    public static void add_v0_6_20_Changes(ArrayList<ChangeInfo> changeInfos) {
-        ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta21-p2.940", true, "");
-        changes.hardlight(65535);
+
+    public static void add_v0_6_22_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta1(P3)", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
-        ChangeInfo changes2 = new ChangeInfo("新内容", false, (String) null);
-        changes2.hardlight(65280);
-        changeInfos.add(changes2);
-        changes2.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), "污泥浊水", "1.矮人层饮用漂浮药剂或者水灵药剂都会获得极速Buff，且每大层会额外产生食人鱼房间。\n-2.修复漂浮效果存在时还能获得Debuff的问题"));
-        changes2.addButton(new ChangeButton(Icons.get(Icons.INFO), "圣诞与常规两个主界面Logo", "现在圣诞和常规有两个主界面logo，未来还会有更多。"));
-        ChangeInfo changes3 = new ChangeInfo("修复", false, (String) null);
-        changes3.hardlight(16776960);
-        changeInfos.add(changes3);
-        changes3.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes", new Object[0]), Messages.get(vM0_6_7_X_Changes.class, "bug_06X40", new Object[0])));
-        ChangeInfo changes4 = new ChangeInfo("重制", false, (String) null);
-        changes4.hardlight(16711680);
-        changeInfos.add(changes4);
-        changes4.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKELETONGOLD), "Boss重制计划", "冰雪魔女，钻石宝箱王，矮人大师，Yog-Zot,史莱姆王将在完全重制后重新加入，并且可能会改名。且弃用注解版的Boss。并且现在Boss终端暂时暂停使用。"));
-        changes4.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG20), "教程重制计划", "教程文档正在返修，敬请期待"));
-        ChangeInfo changes5 = new ChangeInfo("调整", false, (String) null);
-        changes5.hardlight(8421504);
-        changeInfos.add(changes5);
-        changes5.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.REDDRAGON), "核子可乐", "核子可乐现在不能在红龙之王处被获得，但会在未来的娱乐模式中加入。"));
-        changes5.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG26), "玫瑰秘卷", "玫瑰秘卷无敌时间从35回合改为5回合，且不能在此期间使用吸血圣杯。制造配方能量消耗从20改为14"));
-        changes5.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_OFF), "挑战重制计划", "药水癔症，基因突变，暴力Boss将会在未来重新加入，现在暂时禁用！"));
-        changes5.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG24), "极度秘卷", "暂时移除，将在未来加入。"));
-        changes5.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ICEFISHSWORD), "尚方宝剑", "初始力量变为20，每10大层进行+1力量，成长面板调整，攻击特效从100%改为20%有几率触发。"));
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("挑战界面更新"),
+                ("换成了更好的九宫格图标界面，特别感谢Tianscar的帮忙。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DATA), ("日期时间的更新"),
+                ("玩游戏老是忘了时间？现在可以直接在游戏查看时间。在额外设置中启用")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("界面优化"),
+                ("部分界面进行了优化处理。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("下雪特效"),
+                ("从第六层加入下雪效果，为即将到来的寒冷效果做铺垫")));
+
+        changes.addButton(new ChangeButton(new CrivusFruitsSprite(), ("新Boss：克里弗斯之果"),
+                ("它们编织成一张大网，将所有不慎跌落谷底的生命体供给给中间那粒鲜红的果实。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LifeTreeSword), ("“倒悬的生命树”"),
+                ("克里弗斯之果Boss专武，首次击败必定获得。后续40%概率。" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_HTR), ("风暴雷霆法杖"),
+                ("全新法杖登场，同时开启法杖高阶炼金机制。" )));
+
+        changes = new ChangeInfo("调整", false, null);
+        changes.hardlight(Window.CBLACK);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("灯火前路"),
+                ("灯火前路已经进行了一些修改：\n\n" +
+                        "-纯洁的祝福（前路&隐没)正式实装\n" +
+                        "-纯洁的祝福（坚毅力量+8改为+2）\n" +
+                        "-纯洁的祝福（守护从300回合改成100回合，初始护盾值从30改为60）\n" +
+                        "-魔女的低语-迟缓（改为每10回合给予残废3回合）" )));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_OFF), ("部分挑战改动："),
+                ("药水癔症挑战已经进行一些小的改进，具体请查看挑战具体说明\n" +
+                        "梦魇Boss尚未完全实现，请金山游玩。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKELETONGOLD), "终端重新开放",
+                "Boss终端现在重新开放，但在后续更新中，终端的作用会发生改变"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG6), "磷焰法杖",
+                "配方改变，攻击效果改进。"));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X50")));
+
     }
+    
 
     public static void add_v0_6_21_Changes( ArrayList<ChangeInfo> changeInfos ) {
         ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta21-p2.950", true, "");
@@ -110,9 +141,37 @@ public class vM0_6_7_X_Changes {
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ICEFISHSWORD), ("尚方宝剑"),
                 ("尚方宝剑现在力量初始为16，但是必定获得一个随机诅咒，商人对它的价值提升" )));
-
       
     }
+
+    public static void add_v0_6_20_Changes(ArrayList<ChangeInfo> changeInfos) {
+        ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta21-p2.940", true, "");
+        changes.hardlight(65535);
+        changeInfos.add(changes);
+        ChangeInfo changes2 = new ChangeInfo("新内容", false, (String) null);
+        changes2.hardlight(65280);
+        changeInfos.add(changes2);
+        changes2.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), "污泥浊水", "1.矮人层饮用漂浮药剂或者水灵药剂都会获得极速Buff，且每大层会额外产生食人鱼房间。\n-2.修复漂浮效果存在时还能获得Debuff的问题"));
+        changes2.addButton(new ChangeButton(Icons.get(Icons.INFO), "圣诞与常规两个主界面Logo", "现在圣诞和常规有两个主界面logo，未来还会有更多。"));
+        ChangeInfo changes3 = new ChangeInfo("修复", false, (String) null);
+        changes3.hardlight(16776960);
+        changeInfos.add(changes3);
+        changes3.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X40")));
+        ChangeInfo changes4 = new ChangeInfo("重制", false, (String) null);
+        changes4.hardlight(16711680);
+        changeInfos.add(changes4);
+        changes4.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKELETONGOLD), "Boss重制计划", "冰雪魔女，钻石宝箱王，矮人大师，Yog-Zot,史莱姆王将在完全重制后重新加入，并且可能会改名。且弃用注解版的Boss。并且现在Boss终端暂时暂停使用。"));
+        changes4.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG20), "教程重制计划", "教程文档正在返修，敬请期待"));
+        ChangeInfo changes5 = new ChangeInfo("调整", false, (String) null);
+        changes5.hardlight(8421504);
+        changeInfos.add(changes5);
+        changes5.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.REDDRAGON), "核子可乐", "核子可乐现在不能在红龙之王处被获得，但会在未来的娱乐模式中加入。"));
+        changes5.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG26), "玫瑰秘卷", "玫瑰秘卷无敌时间从35回合改为5回合，且不能在此期间使用吸血圣杯。制造配方能量消耗从20改为14"));
+        changes5.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_OFF), "挑战重制计划", "药水癔症，基因突变，暴力Boss将会在未来重新加入，现在暂时禁用！"));
+        changes5.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG24), "极度秘卷", "暂时移除，将在未来加入。"));
+        changes5.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ICEFISHSWORD), "尚方宝剑", "初始力量变为20，每10大层进行+1力量，成长面板调整，攻击特效从100%改为20%有几率触发。"));
+    }
+
 
     public static void add_v0_6_19_Changes( ArrayList<ChangeInfo> changeInfos ) {
 

@@ -24,7 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.ClassPage;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
-import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
@@ -32,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CircleArc;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -50,6 +50,11 @@ import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.ColorMath;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class StatusPane extends Component {
 
@@ -98,7 +103,8 @@ public class StatusPane extends Component {
 
 	private boolean large;
 
-	private BitmapText fpsText;
+	private RenderedTextBlock timeText;
+	private RenderedTextBlock timeStatusText;
 
 	public StatusPane( boolean large ){
 		super();
@@ -166,9 +172,13 @@ public class StatusPane extends Component {
 		add(hgText);
 
 		//FPS TEXT
-		fpsText = new BitmapText(PixelScene.pixelFont);
-		fpsText.alpha(1f);
-		add(fpsText);
+		timeText = PixelScene.renderTextBlock(5);
+		timeText.alpha(0.6f);
+		add(timeText);
+
+		timeStatusText = PixelScene.renderTextBlock( 5 );
+		timeStatusText.alpha(0.6f);
+		add(timeStatusText);
 
 		heroInfoOnBar = new Button(){
 			@Override
@@ -269,14 +279,19 @@ public class StatusPane extends Component {
 
 			heroInfoOnBar.setRect(heroInfo.right(), y + 19, 130, 20);
 
-			if(SPDSettings.FPSLimit()) {
-				fpsText.scale.set(PixelScene.align(0.8f));
-				fpsText.x = MenuPane.version.x - 15;
-				fpsText.y = MenuPane.version.y - 10;
-				PixelScene.align(fpsText);
+			if(SPDSettings.TimeLimit()) {
+//				fpsText.scale.set(PixelScene.align(0.8f));
+//				timeText.x = MenuPane.version.x;
+//				timeText.y = MenuPane.version.y+6;
+				PixelScene.align(timeText);
+				timeStatusText.x = MenuPane.version.x;
+				timeStatusText.y = MenuPane.version.y+10;
+				PixelScene.align(timeStatusText);
 			} else {
-				fpsText.visible=false;
-				fpsText.active=false;
+				timeText.visible=false;
+				timeText.active=false;
+				timeStatusText.active=false;
+				timeStatusText.visible=false;
 			}
 //			buffs.setPos( x + 31, y +15 );
 
@@ -322,20 +337,26 @@ public class StatusPane extends Component {
 
 			buffs.setPos( x + 31, y + 12 );
 
-			if(SPDSettings.FPSLimit()) {
-				fpsText.scale.set(PixelScene.align(0.8f));
-				fpsText.x = MenuPane.version.x - 15;
-				fpsText.y = MenuPane.version.y - 10;
-				PixelScene.align(fpsText);
-			} else {
-				fpsText.visible=false;
-				fpsText.active=false;
-			}
-
 			busy.x = x + 1;
 			busy.y = y + 33;
 
 			lanter.setPos(0, 500);
+		}
+
+		if(SPDSettings.TimeLimit()) {
+			timeText.x = MenuPane.version.x;
+
+			timeText.y = MenuPane.version.y + 5;
+
+			PixelScene.align(timeText);
+			timeStatusText.x = MenuPane.version.x;
+			timeStatusText.y = MenuPane.version.y+10;
+			PixelScene.align(timeStatusText);
+		} else {
+			timeText.visible=false;
+			timeText.active=false;
+			timeStatusText.active=false;
+			timeStatusText.visible=false;
 		}
 
 		counter.point(busy.center());
@@ -373,6 +394,14 @@ public class StatusPane extends Component {
 			bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
 		}
 
+		if(SPDSettings.TimeLimit()) {
+			if (Dungeon.hero.buff(LockedFloor.class) != null) {
+				timeText.y = MenuPane.version.y + 14;
+			} else {
+				timeText.y = MenuPane.version.y + 5;
+			}
+		}
+
 		if (ClassPage()) {
 			page.setPos(0, 40);
 			pageb.setPos(0, 500);
@@ -406,18 +435,23 @@ public class StatusPane extends Component {
 		}
 
 		if(Dungeon.hero.isAlive()){
-			fpsText.text("FPS:"+ Gdx.graphics.getFramesPerSecond());
+			Date date = new Date();
+			String strDateFormat = "yyyy-MM-dd HH:mm:ss";
+			SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat, Locale.getDefault());
+			Calendar cal=Calendar.getInstance();
+			int s=cal.get(Calendar.SECOND);
+			if(s<20) {
+				timeText.hardlight(Window.CWHITE);
+			} else if(s<40) {
+				timeText.hardlight(Window.CYELLOW);
+			} else {
+				timeText.hardlight(Window.SKYBULE_COLOR);
+			}
+			timeText.text(sdf.format(date));
+		} else {
+			timeText.text("满目疮痍!游戏结束!");
 		}
 
-		if(Gdx.graphics.getFramesPerSecond()>=90){
-			fpsText.hardlight(Window.SKYBULE_COLOR);
-		} else if(Gdx.graphics.getFramesPerSecond()>=60){
-			fpsText.hardlight(Window.CWHITE);
-		} else if(Gdx.graphics.getFramesPerSecond()>=30){
-			fpsText.hardlight(Window.CYELLOW);
-		} else {
-			fpsText.hardlight(Window.RED_COLOR);
-		}
 
 		if (!Dungeon.hero.isAlive()) {
 			avatar.tint(0x000000, 0.5f);

@@ -23,7 +23,6 @@ package com.watabou.utils;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
@@ -179,66 +178,16 @@ public abstract class PlatformSupport {
 		//does nothing by default
 	}
 
-	public boolean supportsFullScreen(){
-		switch (Gdx.app.getType()){
-			case Android:
-				//Android 4.4+ supports hiding UI via immersive mode
-				return Gdx.app.getVersion() >= 19;
-			case iOS:
-				//iOS supports hiding UI via drawing into the gesture safe area
-				return Gdx.graphics.getSafeInsetBottom() != 0;
-			default:
-				//TODO implement functionality for other platforms here
-				return true;
-		}
-	}
-
 	public boolean isAndroid() {
 		return Gdx.app.getType() == Application.ApplicationType.Android;
-	}
-
-	public boolean isiOS() {
-		return Gdx.app.getType() == Application.ApplicationType.iOS;
 	}
 
 	public boolean isDesktop() {
 		return Gdx.app.getType() == Application.ApplicationType.Desktop;
 	}
 
-	public boolean hasHardKeyboard() {
-		return Gdx.input.isPeripheralAvailable(Input.Peripheral.HardwareKeyboard);
-	}
-
-	public boolean isDebug() {
-		return Game.version.contains("INDEV");
-	}
-
-	public boolean isSnapshot() {
-		return Game.version.contains("SNAPSHOT");
-	}
-
 	public boolean openURI( String URI ) {
 		return Gdx.net.openURI(URI);
-	}
-
-	public void log( String tag, String message ){
-		Gdx.app.log( tag, message );
-	}
-
-	public void debug( String message ) {
-		if (isDebug()) Gdx.app.log("DEBUG", message);
-	}
-
-	public void setClipboardContents( String str ) {
-		Gdx.app.getClipboard().setContents( str );
-	}
-
-	public String getClipboardContents() {
-		return Gdx.app.getClipboard().getContents();
-	}
-
-	public boolean isClipboardEmpty() {
-		return !Gdx.app.getClipboard().hasContents();
 	}
 
 }

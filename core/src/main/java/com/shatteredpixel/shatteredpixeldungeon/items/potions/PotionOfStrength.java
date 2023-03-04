@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.utils.Random;
 
 public class PotionOfStrength extends Potion {
 
@@ -45,7 +46,7 @@ public class PotionOfStrength extends Potion {
 	@Override
 	public void apply( Hero hero ) {
 		identify();
-		if(Dungeon.isChallenged(EXSG)) {
+		if(Dungeon.isChallenged(EXSG) && Random.Float()>0.8f) {
 			hero.STR--;
 			hero.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "esg_1"));
 			GLog.n(Messages.get(this, "esg_2"));

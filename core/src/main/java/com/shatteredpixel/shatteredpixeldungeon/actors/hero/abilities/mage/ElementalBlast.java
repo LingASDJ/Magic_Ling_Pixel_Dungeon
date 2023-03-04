@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
@@ -61,6 +62,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfGodIce;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfHightHunderStorm;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
@@ -109,6 +111,7 @@ public class ElementalBlast extends ArmorAbility {
 		effectTypes.put(WandOfScale.class,       MagicMissile.FOLIAGE_CONE);
 		effectTypes.put(WandOfGodIce.class,       MagicMissile.FOLIAGE_CONE);
 		effectTypes.put(WandOfBlueFuck.class,       MagicMissile.FOLIAGE_CONE);
+		effectTypes.put(WandOfHightHunderStorm.class,       MagicMissile.FOLIAGE_CONE);
 	}
 
 	private static final HashMap<Class<?extends Wand>, Float> damageFactors = new HashMap<>();
@@ -127,10 +130,10 @@ public class ElementalBlast extends ArmorAbility {
 		damageFactors.put(WandOfCorruption.class,       0f);
 		damageFactors.put(WandOfRegrowth.class,         0f);
 
-		//TODO FIXED 将要修复的
 		damageFactors.put(WandOfScale.class,         1f);
 		damageFactors.put(WandOfGodIce.class,         1f);
 		damageFactors.put(WandOfBlueFuck.class,         1f);
+		damageFactors.put(WandOfHightHunderStorm.class,         1f);
 	}
 
 	{
@@ -167,7 +170,9 @@ public class ElementalBlast extends ArmorAbility {
 			projectileProps = Ballistica.STOP_TARGET;
 
 			//*** Wand of Fireblast ***
-		} else if (wandCls == WandOfFireblast.class||wandCls == WandOfGodIce.class||wandCls == WandOfScale.class||wandCls == WandOfBlueFuck.class){
+		} else if (wandCls == WandOfFireblast.class){
+			projectileProps = projectileProps | Ballistica.IGNORE_SOFT_SOLID;
+		} else if (wandCls == WandOfBlueFuck.class){
 			projectileProps = projectileProps | Ballistica.IGNORE_SOFT_SOLID;
 
 			//*** Wand of Warding ***
@@ -289,6 +294,11 @@ public class ElementalBlast extends ArmorAbility {
 										Buff.affect( mob, Burning.class ).reignite( mob );
 									}
 
+								} else if (finalWandCls == WandOfBlueFuck.class){
+									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
+										Buff.affect( mob, HalomethaneBurning.class ).reignite( mob );
+									}
+
 									//*** Wand of Corrosion ***
 								} else if (finalWandCls == WandOfCorrosion.class){
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
@@ -304,8 +314,8 @@ public class ElementalBlast extends ArmorAbility {
 										knockback *= effectMulti;
 										WandOfBlastWave.throwChar(mob,
 												new Ballistica(mob.pos, aim.collisionPos, Ballistica.MAGIC_BOLT),
-												knockback,
-												true);
+												knockback
+										);
 									}
 
 									//*** Wand of Frost ***

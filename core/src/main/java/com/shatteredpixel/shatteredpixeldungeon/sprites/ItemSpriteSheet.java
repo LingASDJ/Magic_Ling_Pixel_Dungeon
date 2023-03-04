@@ -386,8 +386,9 @@ public class ItemSpriteSheet {
 	public static final int WAND_WARDING        = WANDS+10;
 	public static final int WAND_REGROWTH       = WANDS+11;
 	public static final int WAND_TRANSFUSION    = WANDS+12;
+	public static final int WAND_HTR    = WANDS+14;
 	static {
-		for (int i = WANDS; i < WANDS+16; i++)
+		for (int i = WANDS; i < WANDS+12; i++)
 			assignItemRect(i, 14, 14);
 	}
 
@@ -779,12 +780,33 @@ public class ItemSpriteSheet {
 	public static final int FBK=		MAINBOOKINDEX+9;
 	public static final int LASERPYTHON=		MAINBOOKINDEX+10;
 
+	public static final int DLCBOOKS=		MAINBOOKINDEX+11;
+	public static final int DIFFCULTBOOT=		MAINBOOKINDEX+12;
+	public static final int STORYBOOKS=		MAINBOOKINDEX+13;
+
 	private static final int MAINPALYBOOKS     = xy(1, 40);
 	public static final int MONEYBOOKS=		MAINPALYBOOKS+1;
 	public static final int PINKBOOKS=		MAINPALYBOOKS+2;
 	public static final int DEBOOKS=		MAINPALYBOOKS+3;
 
 	//16 free slots                                                  //16 free slots
+
+	private static final int CHALLANEESICONINDEX   	 = xy(1, 42);  //16 slots
+
+	public static final int CHALLANEESICON_1=			 CHALLANEESICONINDEX+0;
+	public static final int CHALLANEESICON_2=			 CHALLANEESICONINDEX+1;
+	public static final int CHALLANEESICON_3=			 CHALLANEESICONINDEX+2;
+	public static final int CHALLANEESICON_4=			 CHALLANEESICONINDEX+3;
+	public static final int CHALLANEESICON_5=			 CHALLANEESICONINDEX+4;
+	public static final int CHALLANEESICON_6=			 CHALLANEESICONINDEX+5;
+
+	public static final int CHALLANEESICON_7=			 CHALLANEESICONINDEX+6;
+	public static final int CHALLANEESICON_8=			 CHALLANEESICONINDEX+7;
+	public static final int CHALLANEESICON_9=			 CHALLANEESICONINDEX+8;
+	public static final int CHALLANEESICON_10=			 CHALLANEESICONINDEX+9;
+	public static final int CHALLANEESICON_11=			 CHALLANEESICONINDEX+10;
+	public static final int CHALLANEESICON_12=			 CHALLANEESICONINDEX+11;
+	public static final int CHALLANEESICON_13=			 CHALLANEESICONINDEX+12;
 
 	//for smaller 8x8 icons that often accompany an item sprite
 	public static class Icons {

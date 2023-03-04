@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDiedTO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.BackGoKey;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -178,7 +179,26 @@ public class WndKingShop extends Window {
         btnReload.setRect(80,-2, 40, 20 );
         add(btnReload);
 
-        resize(WIDTH, (int) s6.bottom());
+        StyledButton btnGoBack = new StyledButton(Chrome.Type.RED_BUTTON, Messages.get(this,"goback"),6){
+            @Override
+            protected void onClick() {
+                super.onClick();
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        hide();
+                        GameScene.show(new BackGoKey.WndSelectLevel());
+                        GLog.w(Messages.get(WndKingShop.class,"back"));
+                    }
+                });
+            }
+        };
+        btnGoBack.textColor(Window.CYELLOW);
+        btnGoBack.icon(Icons.get(Icons.DEPTH));
+        btnGoBack.setRect(s1.left(), s6.bottom()+5,111,BTN_SIZE );
+        add(btnGoBack);
+
+        resize(WIDTH, (int) btnGoBack.bottom());
     }
 
     public static WndBag sell() {

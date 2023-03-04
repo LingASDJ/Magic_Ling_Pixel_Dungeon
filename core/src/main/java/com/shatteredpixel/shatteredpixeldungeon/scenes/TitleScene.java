@@ -28,7 +28,6 @@ import com.watabou.utils.ColorMath;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.Point;
-import com.watabou.utils.Random;
 
 import java.util.Date;
 
@@ -40,7 +39,7 @@ public class TitleScene extends PixelScene {
 	public void create() {
 		super.create();
 
-		Music.INSTANCE.play(Random.Float() < 0.6f ? Assets.Music.THEME : Assets.Music.THEME_1, true);
+		Music.INSTANCE.play(Assets.Music.THEME_1, true);
 
 
 		uiCamera.visible = false;

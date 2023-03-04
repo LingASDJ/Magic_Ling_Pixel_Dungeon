@@ -632,10 +632,10 @@ public class WndSettings extends WndTabbed {
 				@Override
 				protected void onClick() {
 					super.onClick();
-					SPDSettings.FPSLimit(checked());
+					SPDSettings.TimeLimit(checked());
 				}
 			};
-			optFPSLimit.checked(SPDSettings.FPSLimit());
+			optFPSLimit.checked(SPDSettings.TimeLimit());
 			add(optFPSLimit);
 
 			quickslots = new OptionSlider(Messages.get(this, "quickslots"), "" + Constants.MIN_QUICKSLOTS,

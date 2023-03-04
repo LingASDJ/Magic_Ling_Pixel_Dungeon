@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -32,9 +33,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
-import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.HaloBlazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -47,6 +48,8 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 
@@ -60,13 +63,24 @@ public class WandOfBlueFuck extends DamageWand {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
         {
-            inputs =  new Class[]{PotionOfLiquidFlameX.class, ScrollOfFlameCursed.class, Stylus.class};
+            inputs =  new Class[]{PotionOfLiquidFlameX.class, WandOfFireblast.class, CrivusFruitsFlake.class};
             inQuantity = new int[]{1, 1, 1};
 
-            cost = 7+Dungeon.depth/2;
+            cost = 15+Dungeon.depth/2;
 
             output = WandOfBlueFuck.class;
             outQuantity = 1;
+        }
+
+        public final Item sampleOutput(ArrayList<Item> ingredients){
+            try {
+                Item result = Reflection.newInstance(output);
+                result.quantity(outQuantity).level(Random.NormalIntRange(2,4));
+                return result;
+            } catch (Exception e) {
+                ShatteredPixelDungeon.reportException( e );
+                return null;
+            }
         }
 
     }
@@ -106,7 +120,7 @@ public class WandOfBlueFuck extends DamageWand {
             if (Dungeon.level.adjacent(bolt.sourcePos, cell) && !Dungeon.level.flamable[cell]){
                 adjacentCells.add(cell);
             } else {
-                GameScene.add( Blob.seed( cell, 1+chargesPerCast(), HalomethaneFire.class ) );
+                GameScene.add( Blob.seed( cell, 6+chargesPerCast(), HalomethaneFire.class ) );
             }
 
             Char ch = Actor.findChar( cell );
@@ -118,11 +132,11 @@ public class WandOfBlueFuck extends DamageWand {
         //ignite cells that share a side with an adjacent cell, are flammable, and are further from the source pos
         //This prevents short-range casts not igniting barricades or bookshelves
         for (int cell : adjacentCells){
-            for (int i : PathFinder.CIRCLE4){
+            for (int i : PathFinder.CIRCLE8){
                 if (Dungeon.level.trueDistance(cell+i, bolt.sourcePos) > Dungeon.level.trueDistance(cell, bolt.sourcePos)
                         && Dungeon.level.flamable[cell+i]
                         && HalomethaneFire.volumeAt(cell+i, HalomethaneFire.class) == 0){
-                    GameScene.add( Blob.seed( cell+i, 6+chargesPerCast(), HalomethaneFire.class ) );
+                    GameScene.add( Blob.seed( cell+i, 12+chargesPerCast(), HalomethaneFire.class ) );
                 }
             }
         }
@@ -157,18 +171,18 @@ public class WandOfBlueFuck extends DamageWand {
         //need to perform flame spread logic here so we can determine what cells to put flames in.
 
         // 5/7/9 distance
-        int maxDist = 3 + 2*chargesPerCast();
+        int maxDist = (1 + chargesPerCast())*level/5+3;
         int dist = Math.min(bolt.dist, maxDist);
 
         cone = new ConeAOE( bolt,
                 maxDist,
-                30 + 20*chargesPerCast(),
+                30 + 40*chargesPerCast(),
                 collisionProperties | Ballistica.STOP_TARGET);
 
         //cast to cells at the tip, rather than all cells, better performance.
         for (Ballistica ray : cone.rays){
             ((MagicMissile)curUser.sprite.parent.recycle( MagicMissile.class )).reset(
-                    MagicMissile.EARTH,
+                    MagicMissile.SHAMAN_PURPLE,
                     curUser.sprite,
                     ray.path.get(ray.dist),
                     null
@@ -177,7 +191,7 @@ public class WandOfBlueFuck extends DamageWand {
 
         //final zap at half distance, for timing of the actual wand effect
         MagicMissile.boltFromChar( curUser.sprite.parent,
-                MagicMissile.EARTH,
+                MagicMissile.SHAMAN_PURPLE,
                 curUser.sprite,
                 bolt.path.get(dist/4),
                 callback );

@@ -1,6 +1,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -23,6 +27,11 @@ public class MagicGirlSaySlowy extends Buff {
             spend(interval);
             if (level <= 0) {
                 detach();
+            }
+
+            if(Dungeon.hero.buff(MagicGirlSaySlowy.class) != null && hero.HT == hero.HP){
+                Buff.affect(hero, Cripple.class, 3f);
+                spend(10f);
             }
 
         }

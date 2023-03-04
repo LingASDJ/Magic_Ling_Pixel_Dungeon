@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NxhyNpc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PinkLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.REN;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.obSir;
@@ -130,7 +129,7 @@ public class ZeroLevel extends Level {
         if ( Badges.isUnlocked(Badges.Badge.BIG_X)){
             drop( ( Generator.randomUsingDefaults( Generator.Category.ARMOR ) ), this.width * 19 + 18 );
         }
-        if ( Badges.isUnlocked(Badges.Badge.KILL_SLMKING)||Badges.isUnlocked(Badges.Badge.KILL_MG)  ){
+        if ( Badges.isUnlocked(Badges.Badge.KILL_APPLE)||Badges.isUnlocked(Badges.Badge.KILL_MG)  ){
             drop(new Ankh(), this.width * 18 + 17  );
         }
         if ( Badges.isUnlocked(Badges.Badge.RLPT)){
@@ -160,11 +159,11 @@ public class ZeroLevel extends Level {
         npc3.pos = (this.width * 18 + 20);
         mobs.add(npc3);
 
-        PinkLing god1= new PinkLing();
-        god1.pos = (this.width * 28 + 30);
-        mobs.add(god1);
+//        PinkLing god1= new PinkLing();
+//        god1.pos = (this.width * 28 + 30);
+//        mobs.add(god1);
 
-        if (!Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
+        if (Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
             Nyz npc4= new Nyz();
             npc4.pos = (this.width * 28 + 7);
             mobs.add(npc4);

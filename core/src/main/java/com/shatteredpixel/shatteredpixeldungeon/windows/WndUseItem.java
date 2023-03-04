@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.ui.Icons.RENAME_OFF;
+
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
@@ -75,18 +77,17 @@ public class WndUseItem extends WndInfoItem {
 					btn.textColor( TITLE_COLOR );
 				}
 				if (Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_1)) {
-					label43: {
-						boolean var9 = item instanceof EquipableItem;
-						if (!var9) {
+					ling: {
+						boolean itemname = item instanceof EquipableItem;
+						if (!itemname) {
 							if (!(item instanceof Wand)) {
-								break label43;
+								break ling;
 							}
 						}
-						Image var12 = Icons.get(Icons.RENAME_OFF);
-						Image var11 = var12;
-						if (var9) {
+						Image renamebutton = Icons.get(Icons.RENAME_OFF);
+						if (itemname) {
 							if (!((EquipableItem)item).customName.equals("")) {
-								var11 = Icons.get(Icons.RENAME_ON);
+								renamebutton = Icons.get(Icons.RENAME_ON);
 							}
 						}
 
@@ -96,7 +97,7 @@ public class WndUseItem extends WndInfoItem {
 							}
 						}
 
-						IconButton Rename = new IconButton(var11) {
+						IconButton Rename = new IconButton(renamebutton) {
 							public String hoverText() {
 								return Messages.titleCase(Messages.get(WndGame.class, "rename"));
 							}
@@ -122,6 +123,7 @@ public class WndUseItem extends WndInfoItem {
 										GameScene.show(new WndUseItem(owner, item));
 									}
 								});
+								icon(Icons.get(!item.name().equals("") ? RENAME_OFF : Icons.RENAME_ON));
 							}
 						};
 						Rename.setRect((float)(super.width - 16), 0.0F, 16.0F, 16.0F);

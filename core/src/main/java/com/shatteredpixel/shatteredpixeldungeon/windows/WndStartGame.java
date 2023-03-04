@@ -102,7 +102,7 @@ public class WndStartGame extends Window {
 						"hard"), 5){
 					@Override
 					protected void onClick() {
-						ShatteredPixelDungeon.scene().addToFront(new WndChallenges(SPDSettings.challenges(), true) {
+						ShatteredPixelDungeon.scene().addToFront(new WndChallenges(SPDSettings.challenges(), false, null) {
 							public void onBackPressed() {
 								super.onBackPressed();
 								icon(Icons.get(SPDSettings.challenges() > 0 ? Icons.CHALLENGE_ON : Icons.CHALLENGE_OFF));
@@ -158,7 +158,7 @@ public class WndStartGame extends Window {
 						"news"), 5){
 					@Override
 					protected void onClick() {
-						ShatteredPixelDungeon.scene().addToFront(new WndChallenges(SPDSettings.challenges(), true) {
+						ShatteredPixelDungeon.scene().addToFront(new WndChallenges(SPDSettings.challenges(), false, null) {
 							public void onBackPressed() {
 								super.onBackPressed();
 								icon(Icons.get(SPDSettings.challenges() > 0 ? Icons.CHALLENGE_ON : Icons.CHALLENGE_OFF));
@@ -283,7 +283,7 @@ public class WndStartGame extends Window {
 					Icons.get( SPDSettings.challenges() > 0 ? Icons.CHALLENGE_ON :Icons.CHALLENGE_OFF)){
 				@Override
 				protected void onClick() {
-					ShatteredPixelDungeon.scene().addToFront(new WndChallenges(SPDSettings.challenges(), true) {
+					ShatteredPixelDungeon.scene().addToFront(new WndChallenges(SPDSettings.challenges(), false, null) {
 						public void onBackPressed() {
 							super.onBackPressed();
 							if (parent != null) {

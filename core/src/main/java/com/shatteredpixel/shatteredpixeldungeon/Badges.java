@@ -154,7 +154,7 @@ public class Badges {
 		VICTORY_ALL_CLASSES         ( 98, true ),
 		GAMES_PLAYED_3              ( 99, true ),
 		CHAMPION_1X                  ( 100 ),
-		KILL_SLMKING				(101),
+		KILL_APPLE(101),
 		KILL_DM720				(102),
 		RLPT				(103),
 
@@ -574,11 +574,11 @@ public class Badges {
 	}
 
 	public static void ENDDIED() {
-		Badge badge = Badge.ENDIED;
-		local.add( badge );
-		displayBadge( badge );
-
-		validateYASD();
+//		Badge badge = Badge.ENDIED;
+//		local.add( badge );
+//		displayBadge( badge );
+//
+//		validateYASD();
 	}
 
 	public static void DeathRedNercols() {
@@ -670,9 +670,8 @@ public class Badges {
 	}
 
 	private static void validateAMZ() {
-		if (global.contains( Badge.KILL_SLMKING ) &&
-				global.contains( Badge.KILL_DM720 ) &&
-				global.contains( Badge.KILL_MG) && global.contains( Badge.FIREGIRL) && global.contains( Badge.DRAWF_HEAD)&& global.contains( Badge.KILL_DM) ) {
+		if (global.contains( Badge.KILL_APPLE ) &&global.contains( Badge.KILL_DM720 ) &&
+				global.contains( Badge.KILL_MG) && global.contains( Badge.FIREGIRL) && global.contains( Badge.DRAWF_HEAD)) {
 
 			Badge badge = Badge.SPICEALBOSS;
 			displayBadge( badge );
@@ -932,8 +931,8 @@ public class Badges {
 		displayBadge( Badge.HAPPY_END );
 	}
 
-	public static void KILLSLIMKING() {
-		displayBadge( Badge.KILL_SLMKING );
+	public static void KILLSAPPLE() {
+		displayBadge( Badge.KILL_APPLE);
 		validateAMZ();
 	}
 

@@ -24,16 +24,12 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.CustomGameSettings;
 import com.shatteredpixel.shatteredpixeldungeon.custom.visuals.TextField;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
@@ -42,11 +38,10 @@ import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
 
-public class WndHard extends Window {
+public class WndSeed extends Window {
 
     private static final int WIDTH		= 120;
-    private static final int HEIGHT		= 162;
-    private static final int BTN_HEIGHT = 16;
+    private static final int HEIGHT		= 26;
     private static final int GAP        = 1;
 
     private boolean editable;
@@ -55,7 +50,7 @@ public class WndHard extends Window {
     private CanScrollTextField cstf;
     private CanScrollButton deleteSeedInput;
 
-    public WndHard ( long checked, boolean editable ) {
+    public WndSeed(boolean editable ) {
 
         super();
 
@@ -66,17 +61,6 @@ public class WndHard extends Window {
         ScrollPane pane = new ScrollPane(new Component()) {
             @Override
             public void onClick(float x, float y) {
-                int max_size = boxes.size();
-                for (int i = 0; i < max_size; ++i) {
-                    if (boxes.get(i).onClick(x, y))
-                        return;
-                }
-                max_size = infos.size();
-                for(int i = 0; i<max_size;++i){
-                    if(infos.get(i).onClick(x,y)){
-                        return;
-                    }
-                }
                 if(cstf.onClick(x, y)){
                     return;
                 }
@@ -91,77 +75,10 @@ public class WndHard extends Window {
 
         boxes = new ArrayList<>();
         infos = new ArrayList<>();
-        final int normal_mode = 0;
-        final int hard_mode = 7;
-        final int warning_mode =9;
-        final int Test_Debug = 12;
-        boolean isCustom = false;
-        //boolean isCustom = false;
+
         float pos = 0;
 
-        for (int i = 0; i < Challenges.NAME_IDS.length; i++) {
-
-            final String challenge = Challenges.NAME_IDS[i];
-
-            if(i==normal_mode || i==hard_mode || i==warning_mode || i==Test_Debug){
-                RenderedTextBlock block = PixelScene.renderTextBlock(10);
-                switch (i){
-                    case normal_mode:
-                        block.text(M.L(Challenges.class, "traditional"));
-                        block.hardlight(0x00FF00);
-                        break;
-                    case hard_mode:
-                        block.text(M.L(Challenges.class, "hard"));
-                        block.hardlight(0xFF00FF);
-                        break;
-                    case warning_mode:
-                        block.text(M.L(Challenges.class, "warning"));
-                        block.hardlight(0xFF0000);
-                        break;
-                    case Test_Debug:
-                        block.text(M.L(Challenges.class, "test"));
-                        block.hardlight(0xFFFF00);
-                        break;
-                }
-                block.setPos((WIDTH - block.width()) / 2,
-                        pos + GAP *4);
-                PixelScene.align(block);
-                content.add(block);
-                pos += block.height() + 11*GAP;
-            }
-
-            CanScrollCheckBox cb = new CanScrollCheckBox(M.TL(Challenges.class, challenge));
-            cb.checked((checked & Challenges.MASKS[i]) != 0);
-            cb.active = editable;
-
-            if (i > 0) {
-                pos += GAP;
-            }
-            cb.setRect(0, pos, WIDTH - 16, BTN_HEIGHT);
-
-            content.add(cb);
-            boxes.add(cb);
-
-            boolean finalIsCustom = isCustom;
-            CanScrollInfo info = new CanScrollInfo(Icons.get(Icons.INFO)) {
-                @Override
-                protected void onClick() {
-                    super.onClick();
-                    ShatteredPixelDungeon.scene().add(
-                            new WndMessage(M.L(finalIsCustom ? TextChallenges.class : Challenges.class, challenge + "_desc"))
-                    );
-                }
-            };
-            info.setRect(cb.right(), pos, 16, BTN_HEIGHT);
-            infos.add(info);
-            content.add(info);
-
-            pos = cb.bottom();
-        }
-
         pos += GAP;
-
-
 
         cstf = new CanScrollTextField(M.L(TextChallenges.class, "seed_custom_title"));
         cstf.setHint(M.L(TextChallenges.class, "hint"));

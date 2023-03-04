@@ -327,7 +327,7 @@ public class SlimeKing extends Mob {
         }
 
         Badges.validateBossSlain();
-        Badges.KILLSLIMKING();
+//        Badges.KILLSLIMKING();
         yell( Messages.get(this, "defeated") );
         for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
             if (	mob instanceof Swarm||
