@@ -495,7 +495,7 @@ public class WndSettings extends WndTabbed {
 					ShatteredPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback() {
 						@Override
 						public void beforeCreate() {
-							SPDSettings.systemFont(checked());
+							SPDSettings.systemFont(false);
 						}
 
 						@Override

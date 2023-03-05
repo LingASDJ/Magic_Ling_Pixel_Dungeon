@@ -769,8 +769,8 @@ public class HeroSelectScene extends PixelScene {
 
 	private static class Avatar extends Image {
 
-		private static final int WIDTH	= 24;
-		private static final int HEIGHT	= 32;
+		private static final int WIDTH	= 64;
+		private static final int HEIGHT	= 64;
 
 		public Avatar( HeroClass cl ) {
 			super( Assets.Sprites.AVATARS );

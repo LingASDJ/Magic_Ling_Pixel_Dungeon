@@ -28,12 +28,10 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.CustomGameSettings;
 import com.shatteredpixel.shatteredpixeldungeon.custom.visuals.TextField;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
-import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
-import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
@@ -44,11 +42,10 @@ public class WndSeed extends Window {
     private static final int HEIGHT		= 26;
     private static final int GAP        = 1;
 
-    private boolean editable;
-    private ArrayList<CanScrollCheckBox> boxes;
-    private ArrayList<CanScrollInfo> infos;
-    private CanScrollTextField cstf;
-    private CanScrollButton deleteSeedInput;
+    private final boolean editable;
+    private final ArrayList<CanScrollCheckBox> boxes;
+    private final CanScrollTextField cstf;
+    private final CanScrollButton deleteSeedInput;
 
     public WndSeed(boolean editable ) {
 
@@ -64,9 +61,7 @@ public class WndSeed extends Window {
                 if(cstf.onClick(x, y)){
                     return;
                 }
-                if(deleteSeedInput.onClick(x, y)){
-                    return;
-                }
+                deleteSeedInput.onClick(x, y);
             }
         };
         add(pane);
@@ -74,7 +69,6 @@ public class WndSeed extends Window {
         Component content = pane.content();
 
         boxes = new ArrayList<>();
-        infos = new ArrayList<>();
 
         float pos = 0;
 
@@ -133,22 +127,6 @@ public class WndSeed extends Window {
             if(!inside(x,y)) return false;
             if(active) onClick();
 
-            return true;
-        }
-
-        @Override
-        protected void layout(){
-            super.layout();
-            hotArea.width = hotArea.height = 0;
-        }
-    }
-
-    public static class CanScrollInfo extends IconButton{
-        public CanScrollInfo(Image Icon){super(Icon);}
-
-        protected boolean onClick(float x, float y){
-            if(!inside(x,y)) return false;
-            if(active) onClick();
             return true;
         }
 

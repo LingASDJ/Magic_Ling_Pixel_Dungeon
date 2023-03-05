@@ -62,6 +62,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
         }
     }
 
+
     @Override
     public int icon() {
         if (hero.lanterfire >= 90 && hero.lanterfire <= 100) {
