@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
@@ -92,7 +93,7 @@ public class WndGame extends Window {
 				protected void onClick() {
 					GamesInProgress.selectedClass = Dungeon.hero.heroClass;
 					InterlevelScene.noStory = false;
-					GameScene.show(new WndStartGame(GamesInProgress.firstEmpty()));
+					ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
 				}
 			} );
 			curBtn.icon(Icons.get(Icons.ENTER));

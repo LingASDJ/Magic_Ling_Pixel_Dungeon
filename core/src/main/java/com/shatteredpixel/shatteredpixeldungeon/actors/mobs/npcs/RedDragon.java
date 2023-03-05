@@ -413,7 +413,7 @@ public class RedDragon extends NPC {
                     itemLevel = 3;
                 }
                 weapon.upgrade(itemLevel);
-                armor.upgrade(itemLevel);
+                armor.upgrade(0);
                 RingT.upgrade(itemLevel);
 
                 //10% to be enchanted. We store it separately so enchant status isn't revealed early

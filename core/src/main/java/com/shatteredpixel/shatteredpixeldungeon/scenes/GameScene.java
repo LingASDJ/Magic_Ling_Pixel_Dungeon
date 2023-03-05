@@ -132,7 +132,6 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndStartGame;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
 import com.watabou.glwrap.Blending;
 import com.watabou.input.PointerEvent;
@@ -1275,8 +1274,7 @@ public class GameScene extends PixelScene {
 			protected void onClick() {
 				InterlevelScene.noStory = true;
 				GamesInProgress.selectedClass = Dungeon.hero.heroClass;
-				GamesInProgress.curSlot = GamesInProgress.firstEmpty();
-				GameScene.show(new WndStartGame(GamesInProgress.firstEmpty()));
+				ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
 			}
 
 			@Override
