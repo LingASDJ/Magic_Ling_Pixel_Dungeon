@@ -17,6 +17,10 @@ Karstian Lee
 Evan Debenham & Kevin MacMartin (Shattered Pixel Dungeon's open source)  
 Watabou (Pixel Dungeon's open source)  
 Arcnor (libGDX port of Pixel Dungeon)
+### Item & Hero Design
+JDSA Ling  
+Evan Debenham & Aleksander Komitov (Shattered Pixel Dungeon)  
+Watabou (Pixel Dungeon)
 ### Background Music
 Prohonor  
 Kristjan Haaristo (Shattered Pixel Dungeon)
