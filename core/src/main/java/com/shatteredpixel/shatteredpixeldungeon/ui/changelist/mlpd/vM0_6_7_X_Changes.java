@@ -72,7 +72,17 @@ public class vM0_6_7_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
-        changes = new ChangeInfo("调整", false, null);
+        changes = new ChangeInfo("P3-Beta4", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("10层隐藏预载"),
+                ("关于10层隐藏Boss的底层逻辑已OK,将在P3-Beta5正式加入")));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X53")));
+
+        changes = new ChangeInfo("P3-Beta3", false, null);
         changes.hardlight(Window.GREEN_COLOR);
         changeInfos.add(changes);
 
