@@ -36,7 +36,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SnowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
@@ -190,31 +189,22 @@ public class MagicGirlDead extends Boss {
             }
         }
 
-        float strength = maxDist;
-        for (int c : bolt.subPath(1, dist)) {
-            strength--; //as we start at dist 1, not 0.
-            affectedCells.add(c);
-            if (strength > 1) {
-                spreadFlames(c + PathFinder.CIRCLE8[left(direction)], strength - 1);
-                spreadFlames(c + PathFinder.CIRCLE8[direction], strength - 1);
-                spreadFlames(c + PathFinder.CIRCLE8[right(direction)], strength - 1);
-            } else {
-                visualCells.add(c);
-            }
-        }
+//        float strength = maxDist;
+//        for (int c : bolt.subPath(1, dist)) {
+//            strength--; //as we start at dist 1, not 0.
+//            affectedCells.add(c);
+//            if (strength > 1) {
+//                spreadFlames(c + PathFinder.CIRCLE8[left(direction)], strength - 1);
+//                spreadFlames(c + PathFinder.CIRCLE8[direction], strength - 1);
+//                spreadFlames(c + PathFinder.CIRCLE8[right(direction)], strength - 1);
+//            } else {
+//                visualCells.add(c);
+//            }
+//        }
 
         //going to call this one manually
-        visualCells.remove(bolt.path.get(dist));
 
-        for (int cell : visualCells){
-            //this way we only get the cells at the tip, much better performance.
-            ((MagicMissile)ch.sprite.parent.recycle( MagicMissile.class )).reset(
-                    MagicMissile.FROST,
-                    ch.sprite,
-                    cell,
-                    null
-            );
-        }
+        //this way we only get the cells at the tip, much better performance.
         MagicMissile.boltFromChar( ch.sprite.parent,
                 MagicMissile.FROST,
                 ch.sprite,
@@ -227,20 +217,20 @@ public class MagicGirlDead extends Boss {
 
 
     //burn... BURNNNNN!.....
-    private void spreadFlames(int cell, float strength){
-        if (strength >= 0 && (Dungeon.level.passable[cell] || Dungeon.level.flamable[cell])){
-            affectedCells.add(cell);
-            if (strength >= 1.5f) {
-                visualCells.remove(cell);
-                spreadFlames(cell + PathFinder.CIRCLE8[left(direction)], strength - 1.5f);
-                spreadFlames(cell + PathFinder.NEIGHBOURS9[direction], strength - 1.5f);
-                spreadFlames(cell + PathFinder.CIRCLE8[right(direction)], strength - 1.5f);
-            } else {
-                visualCells.add(cell);
-            }
-        } else if (!Dungeon.level.passable[cell])
-            visualCells.add(cell);
-    }
+//    private void spreadFlames(int cell, float strength){
+//        if (strength >= 0 && (Dungeon.level.passable[cell] || Dungeon.level.flamable[cell])){
+//            affectedCells.add(cell);
+//            if (strength >= 1.5f) {
+//                visualCells.remove(cell);
+//                spreadFlames(cell + PathFinder.CIRCLE8[left(direction)], strength - 1.5f);
+//                spreadFlames(cell + PathFinder.NEIGHBOURS9[direction], strength - 1.5f);
+//                spreadFlames(cell + PathFinder.CIRCLE8[right(direction)], strength - 1.5f);
+//            } else {
+//                visualCells.add(cell);
+//            }
+//        } else if (!Dungeon.level.passable[cell])
+//            visualCells.add(cell);
+//    }
 
     private int left(int direction){
         return direction == 0 ? 3 : direction-1;
@@ -268,25 +258,25 @@ public class MagicGirlDead extends Boss {
             }
         }
 
-        if(buff(RageAndFire.class)!=null){
-            //if target is locked, fire, target = -1
-            if(lastTargeting != -1){
-                //no spend, execute next act
-                    //sprite.attack( enemy.pos );
-                    spend( attackDelay()*5f );
-                    if(pos == 0) {
-                        shoot(this, 1);
-                    } else {
-                        shoot(this, enemy.pos);
-                    }
-
-                return true;
-                //else try to lock target
-            }else if(findTargetLocation()) {
-                //if success, spend and ready to fire
-                return true;
-            }//else, just act
-        }
+//        if(buff(RageAndFire.class)!=null){
+//            //if target is locked, fire, target = -1
+//            if(lastTargeting != -1){
+//                //no spend, execute next act
+//                    //sprite.attack( enemy.pos );
+//                    spend( attackDelay()*5f );
+//                    if(pos == 0) {
+//                        shoot(this, 1);
+//                    } else {
+//                        shoot(this, enemy.pos);
+//                    }
+//
+//                return true;
+//                //else try to lock target
+//            }else if(findTargetLocation()) {
+//                //if success, spend and ready to fire
+//                return true;
+//            }//else, just act
+//        }
         if(summonCD<0f){
             summonCD += Math.max(60f - phase * 2f, 40f);
             summonCaster(Random.Int(4), findRandomPlaceForCaster(), phase>5);
@@ -413,7 +403,7 @@ public class MagicGirlDead extends Boss {
     @Override
     protected boolean canAttack(Char enemy){
         if(enemy!=null && enemySeen){
-            if(Dungeon.level.distance(pos, enemy.pos)<3) return true;
+            return Dungeon.level.distance(pos, enemy.pos) < 3;
         }
         return false;
     }
@@ -446,7 +436,6 @@ public class MagicGirlDead extends Boss {
     private static final int LIGHT = 2;
     private static final int HALOFIRE = 3;
     private static final int BOUNCE = 4;
-    private static final int FIRESE = 5;
 
     protected void fallingRockVisual(int pos){
         Camera.main.shake(0.4f, 2f);
@@ -552,20 +541,6 @@ public class MagicGirlDead extends Boss {
         }
     }
 
-    //the first num is all nums, and the second is activated nums.
-    protected int[] aliveCasters(){
-        int[] count = new int[]{0, 0};
-        for(Mob m: Dungeon.level.mobs.toArray(new Mob[0])) {
-            if (m instanceof SpellCaster) {
-                ++count[0];
-                if(m.alignment != Alignment.NEUTRAL){
-                    ++count[1];
-                }
-            }
-        }
-        return count;
-    }
-
     public void onZapComplete(){
         ventGas(enemy);
         next();
@@ -669,27 +644,6 @@ public class MagicGirlDead extends Boss {
 
             }
         }
-    }
-
-    protected boolean findTargetLocation(){
-        if(enemy!=null && enemySeen){
-            lastTargeting = enemy.pos;
-        }else{
-            lastTargeting = hero.pos;
-        }
-        if(canHit(lastTargeting)) {
-            sprite.parent.addToBack(new TargetedCell(lastTargeting, 0xFF0000));
-            spend(TICK);
-            return true;
-        }else{
-            lastTargeting = -1;
-            return false;
-        }
-    }
-
-    protected boolean canHit(int targetPos){
-        Ballistica ba = new Ballistica(pos, targetPos, Ballistica.PROJECTILE);
-        return Dungeon.level.distance(ba.collisionPos, targetPos) <= 1;
     }
 
     @Override

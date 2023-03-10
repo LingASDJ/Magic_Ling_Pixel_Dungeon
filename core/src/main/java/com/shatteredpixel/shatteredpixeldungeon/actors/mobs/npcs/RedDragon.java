@@ -239,7 +239,7 @@ public class RedDragon extends NPC {
 
         public static Ring weapon;
         public static Wand RingT;
-        public static Artifact armor;
+        public static Item armor;
         public static Brew food;
         public static ExoticScroll scrolls;
 
@@ -413,7 +413,7 @@ public class RedDragon extends NPC {
                     itemLevel = 3;
                 }
                 weapon.upgrade(itemLevel);
-                armor.upgrade(0);
+                armor.upgrade(itemLevel);
                 RingT.upgrade(itemLevel);
 
                 //10% to be enchanted. We store it separately so enchant status isn't revealed early

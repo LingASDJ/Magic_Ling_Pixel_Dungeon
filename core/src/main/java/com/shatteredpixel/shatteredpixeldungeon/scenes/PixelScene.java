@@ -152,7 +152,7 @@ public class PixelScene extends Scene {
 				Messages.lang() == Languages.JAPANESE){
 			renderedTextPageSize *= 2;
 		}
-		Game.platform.setupFontGenerators(renderedTextPageSize, SPDSettings.systemFont());
+		Game.platform.setupFontGenerators(renderedTextPageSize, false);
 
 		Tooltip.resetLastUsedTime();
 

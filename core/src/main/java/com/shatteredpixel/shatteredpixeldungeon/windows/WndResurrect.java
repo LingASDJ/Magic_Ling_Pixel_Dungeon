@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
 
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
@@ -138,6 +139,11 @@ public class WndResurrect extends Window {
 				}
 				if (btnItem4.item != null){
 					btnItem4.item.keptThoughLostInvent = true;
+				}
+
+				//克里弗斯之果二阶段死亡的时候的给予重新评估
+				if(crivusfruitslevel2){
+					crivusfruitslevel2 = false;
 				}
 
 

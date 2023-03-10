@@ -36,7 +36,6 @@ public class Statistics {
 	public static int ankhsUsed;
 	public static int spawnersIce;
 	public static int naiyaziCollected;
-	public static boolean iscustomName = false;
 	//used for hero unlock badges
 	public static int upgradesUsed;
 	public static int sneakAttacks;
@@ -72,6 +71,9 @@ public class Statistics {
 	//警告
 	public static boolean tipsgodungeon = false;
 
+	//宝藏迷宫
+	public static int goldchestmazeCollected;
+
 	public static int dageCollected;
 
 	//Directly add float time will cause accuracy lose and stop timing if time is long enough
@@ -89,6 +91,7 @@ public class Statistics {
 		deepestFloor	= -1;
 		enemiesSlain	= 0;
 		foodEaten		= 0;
+		goldchestmazeCollected = 0;
 		itemsCrafted    = 0;
 		piranhasKilled	= 0;
 		ankhsUsed		= 0;
@@ -167,8 +170,11 @@ public class Statistics {
 
 	private static final String TIPSGO		= "tipsgo";
 
+	private static final String GOLDCHEST		= "goldchest";
+
 	public static void storeInBundle( Bundle bundle ) {
 		bundle.put( LANTERACTIVE, lanterfireactive );
+		bundle.put(GOLDCHEST,	  goldchestmazeCollected);
 
 		bundle.put( CrivusFruitsLevel2, crivusfruitslevel2 );
 
@@ -211,6 +217,9 @@ public class Statistics {
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
+
+		goldchestmazeCollected = bundle.getInt(GOLDCHEST);
+
 		goldCollected	= bundle.getInt( GOLD );
 		deepestFloor	= bundle.getInt( DEEPEST );
 		enemiesSlain	= bundle.getInt( SLAIN );
