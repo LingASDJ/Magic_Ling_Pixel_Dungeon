@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
@@ -197,7 +198,7 @@ public class WndHero extends WndTabbed {
 			statSlot( Messages.get(HeroStat.class, "seed_dungeon"), DungeonSeed.convertToCode(Dungeon.seed) );
 
 			if(lanterfireactive){
-				statSlot( Messages.get(this, "lanterfire"), (hero.lanterfire) + "/" + 100 );
+				RestatSlot( Messages.get(this, "lanterfire"), (hero.lanterfire) + "/" + 100 );
 			}
 
 			pos += GAP;
@@ -243,6 +244,23 @@ public class WndHero extends WndTabbed {
 			pos += GAP + txt.height();
 		}
 
+		private void RestatSlot( String label, String value ) {
+
+			RenderedTextBlock txt = PixelScene.renderTextBlock( label, 7 );
+			txt.setPos(0, pos);
+			add( txt );
+
+			txt = PixelScene.renderTextBlock( value, 7 );
+			txt.setPos(WIDTH * 0.5f, pos);
+			PixelScene.align(txt);
+
+			txt.hardlight(hero.lanterfire<=0 ? 0x808080 : Window.WHITE );
+
+			add( txt );
+
+			pos += GAP + txt.height();
+		}
+
 		private void statSlot( String label, int value ) {
 			statSlot( label, Integer.toString( value ) );
 		}
@@ -263,7 +281,7 @@ public class WndHero extends WndTabbed {
 				this.add(pane);
 				pane.setRect(0,0,WIDTH, HEIGHT);
 
-				GameTracker gmt = Dungeon.hero.buff(GameTracker.class);
+				GameTracker gmt = hero.buff(GameTracker.class);
 				if(gmt != null){
 					String allInfo = gmt.itemInfo();
 					String[] result = allInfo.split("\n");
@@ -367,7 +385,7 @@ public class WndHero extends WndTabbed {
 		
 		private void setupList() {
 			Component content = buffList.content();
-			for (Buff buff : Dungeon.hero.buffs()) {
+			for (Buff buff : hero.buffs()) {
 				if (buff.icon() != BuffIndicator.NONE) {
 					BuffSlot slot = new BuffSlot(buff);
 					slot.setRect(0, pos, WIDTH, slot.icon.height());

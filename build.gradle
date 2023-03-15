@@ -6,6 +6,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:7.0.4'
         classpath 'com.google.gms:google-services:4.3.15'
+        //noinspection GradleDependency
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
     }
 }
@@ -16,8 +17,8 @@ allprojects {
         appName = 'Magic Ling Pixel Dungeon'
         appPackageName = 'com.ansdomagiclingpixeldungeon.ling'
 
-        appVersionCode =800000
-        appVersionName = '0.6.1.0-Beta3(P4)'
+        appVersionCode =800009
+        appVersionName = '0.6.1.0-Beta3(P4.1)'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 

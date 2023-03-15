@@ -2,13 +2,18 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DimandKing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 
 //宝藏迷宫 10层
 public class ColdChestBossLevel extends Level {
 
-    private State state;
+    private State pro;
+
+    public State pro(){
+        return pro;
+    }
 
     //地图状态
     public enum State {
@@ -19,13 +24,16 @@ public class ColdChestBossLevel extends Level {
         WIN
     }
 
+    private static final int WIDTH = 35;
+    private final int HEIGHT = 35;
+
     @Override
     protected boolean build() {
-        setSize(35,35);
+        setSize(WIDTH,HEIGHT);
         this.entrance = 0;
         this.exit = 0;
         //首次构建地图
-        state = State.START;
+        pro = State.START;
         setMapStart();
 
         return true;
@@ -81,32 +89,50 @@ public class ColdChestBossLevel extends Level {
 
     };
 
+
     private void setMapStart() {
-        entrance = 35*2+17;
-        //exit = 0;
+        entrance = HOME;
         map = WorldRoomShort.clone();
     }
 
-    private void setMazeStart(Level level) {
-
-    }
-
     public void progress(){
-        switch (state) {
-            case START:
-                for (Mob mob : (Iterable<Mob>) Dungeon.level.mobs.clone()) {
-                    if (mob instanceof DimandKing) {
-                        if(mob.HP <= 180){
-                            state = State.MAZE_START;
-                        }
-                    }
-                }
+        switch (pro) {
         }
     }
 
     @Override
     protected void createMobs() {
 
+    }
+
+    private static final int getBossDoor = WIDTH*11+17;
+    private static final int LDBossDoor = WIDTH*12+17;
+    private static final int HOME = WIDTH*2+17;
+
+    @Override
+    public void seal() {
+        super.seal();
+
+        DiamondKnight boss = new DiamondKnight();
+        boss.state = boss.WANDERING;
+        boss.pos = WIDTH*19+17;
+        GameScene.add( boss );
+        set( getBossDoor, Terrain.LOCKED_DOOR );
+        GameScene.updateMap( getBossDoor );
+        set( HOME, Terrain.EMPTY );
+        GameScene.updateMap( HOME );
+        Dungeon.observe();
+    }
+
+    @Override
+    public void occupyCell( Char ch ) {
+
+        super.occupyCell( ch );
+
+        //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
+        if (map[getBossDoor] == Terrain.DOOR && ch.pos == LDBossDoor && ch == Dungeon.hero) {
+            seal();
+        }
     }
 
     @Override

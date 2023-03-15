@@ -59,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.CaveTwoBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesGirlDeadLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DimandKingLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DwarfMasterBossLevel;
@@ -407,7 +408,7 @@ public class Dungeon {
 				case 10:
 					if((Statistics.boss_enhance & 0x2) != 0) level = new DimandKingLevel();
 					else
-						level = new PrisonBossLevel();
+						level = new ColdChestBossLevel();
 					break;
 				case 11:
 				case 12:

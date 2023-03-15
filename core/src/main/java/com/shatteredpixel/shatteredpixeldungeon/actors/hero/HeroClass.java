@@ -26,7 +26,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
@@ -120,6 +119,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SkyShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
@@ -172,14 +172,9 @@ public enum HeroClass {
 			new FireFishSword().quantity(1).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
 			new PotionOfLevitation().quantity(100).identify().collect();
+			new SDBSword().quantity(1).identify().collect();
 			Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);
-//			Buff.affect(hero, ChampionHero.Blazing.class, ChampionHero.DURATION);
-//			Buff.affect(hero, ChampionHero.Halo.class, ChampionHero.DURATION);
-//			Buff.affect(hero, ChampionHero.Light.class, ChampionHero.DURATION);
-//			Buff.affect(hero, ChampionHero.Blessed.class, ChampionHero.DURATION);
-//			Buff.affect(hero, ChampionHero.Projecting.class, ChampionHero.DURATION);
-//			Buff.affect(hero, ChampionHero.Giant.class, ChampionHero.DURATION);
-//			Buff.affect(hero, ChampionHero.Growing.class, ChampionHero.DURATION);
+
 			new Gauntlet().quantity(1).identify().collect();
 
 			new Cake().quantity(100).identify().collect();
@@ -257,6 +252,7 @@ public enum HeroClass {
 		}
 
 		hero.heroClass = this;
+
 		Talent.initClassTalents(hero);
 
 		Item i = new ClothArmor().identify();
@@ -418,26 +414,6 @@ public enum HeroClass {
 		}
 	}
 
-	public String spritesheet2() {
-
-		if (SPDSettings.ClassSkin()) {
-			return Assets.Sprites.COMINGSOON;
-		}
-
-		switch (this) {
-			case WARRIOR: default:
-				return Assets.Sprites.WARRIOR;
-			case MAGE:
-				return Assets.Sprites.MAGE;
-			case ROGUE:
-				return Assets.Sprites.ROGUE;
-			case HUNTRESS:
-				return Assets.Sprites.HUNTRESS;
-//			case COMINGSOON:
-//				return Assets.Sprites.COMINGSOON;
-		}
-	}
-
 	public String spritesheet() {
 
 		switch (this) {
@@ -451,19 +427,6 @@ public enum HeroClass {
 				return Assets.Sprites.HUNTRESS;
 //			case COMINGSOON:
 //				return Assets.Sprites.COMINGSOON;
-		}
-	}
-
-	public String splashArt(){
-		switch (this) {
-			case WARRIOR: default:
-				return Assets.Splashes.WARRIOR;
-			case MAGE:
-				return Assets.Splashes.MAGE;
-			case ROGUE:
-				return Assets.Splashes.ROGUE;
-			case HUNTRESS:
-				return Assets.Splashes.HUNTRESS;
 		}
 	}
 	

@@ -54,21 +54,6 @@ public abstract class Shaman extends Mob {
 		loot = Generator.Category.WAND;
 		lootChance = 0.03f; //initially, see lootChance()
 	}
-
-	//TODO 豺狼萨满近战攻击，低于70灯火扣减1灯火
-	@Override
-	public int attackProc( Char enemy, int damage ) {
-		damage = super.attackProc( enemy, damage );
-		if(lanterfireactive){
-			if (Random.Float()<=0.1f && enemy instanceof Hero && hero.lanterfire < 70) {
-				((Hero) enemy).damageLantern(2);
-				hero.sprite.showStatus( 0x808080, "2");
-			}
-		} else {
-			super.attackProc( enemy, damage );
-		}
-		return damage;
-	}
 	
 	@Override
 	public int damageRoll() {
@@ -131,11 +116,10 @@ public abstract class Shaman extends Mob {
 			
 			if (Random.Int( 2 ) == 0) {
 				if (enemy == Dungeon.hero) Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
-				//TODO 低于70灯火 7%概率扣减1灯火(远程攻击)
+				//TODO 低于70灯火 15%概率扣减1灯火(远程攻击)
 					if(lanterfireactive){
-						if (Random.Float()<=0.07f && enemy instanceof Hero && hero.lanterfire < 70) {
+						if (Random.Float()<=0.15f && enemy instanceof Hero && hero.lanterfire < 70) {
 							((Hero) enemy).damageLantern(1);
-							hero.sprite.showStatus( 0x808080, "1");
 						}
 					} else {
 						debuff( enemy );

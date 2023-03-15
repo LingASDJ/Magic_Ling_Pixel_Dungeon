@@ -88,7 +88,6 @@ public class GreatCrab extends Crab {
 			if(lanterfireactive) {
 				if (Random.Float() <= 0.06f && enemy instanceof Hero && hero.lanterfire < 90) {
 					((Hero) enemy).damageLantern(1);
-					hero.sprite.showStatus(0x808080, "1");
 				}
 			}
 		} else {

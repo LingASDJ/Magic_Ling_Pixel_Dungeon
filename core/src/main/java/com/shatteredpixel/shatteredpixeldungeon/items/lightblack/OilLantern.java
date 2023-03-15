@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LighS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
@@ -124,19 +125,24 @@ public class OilLantern extends Item {
     }
 
     public void activate(Hero hero, boolean voluntary) {
-        this.active = true;
-        updateSprite();
-        Buff.affect(hero, LighS.class);
-        hero.search(false);
-        if (voluntary) {
+
+        if (voluntary && hero.lanterfire >0) {
             hero.spend(TIME_TO_USE);
             hero.busy();
             GLog.i(Messages.get(OilLantern.class,"lanteron"));
             hero.sprite.operate(hero.pos);
+            this.active = true;
+            updateSprite();
+            Buff.affect(hero, LighS.class);
+            hero.search(false);
+            Sample.INSTANCE.play("sounds/snd_click.mp3");
+            updateQuickslot();
+            Dungeon.observe();
+        } else {
+            GameScene.flash(0x880000);
+            GLog.n(Messages.get(OilLantern.class,"black"));
         }
-        Sample.INSTANCE.play("sounds/snd_click.mp3");
-        updateQuickslot();
-        Dungeon.observe();
+
     }
 
     public void deactivate(Hero hero, boolean voluntary) {

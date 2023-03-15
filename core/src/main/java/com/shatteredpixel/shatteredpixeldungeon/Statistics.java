@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.watabou.utils.Bundle;
-import com.watabou.utils.SparseArray;
 
 public class Statistics {
 	public static int realdeepestFloor;
@@ -64,7 +63,6 @@ public class Statistics {
 	//克里弗斯之果
 	public static boolean crivusfruitslevel2 = false;
 
-
 	//修复同步
 	public static boolean bugsyncfixed = false;
 
@@ -83,8 +81,6 @@ public class Statistics {
 	public static float second_elapsed = 0;
 	public static float turnsPassed = 0f;
 
-	public static SparseArray<Boolean> floorsExplored = new SparseArray<>();
-	
 	public static void reset() {
 		
 		goldCollected	= 0;
@@ -123,9 +119,6 @@ public class Statistics {
 		second_elapsed = 0f;
 		real_seconds = 0;
 		turnsPassed = 0f;
-
-
-		
 	}
 	
 	private static final String GOLD		= "score";

@@ -5,14 +5,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
-
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
@@ -63,14 +59,6 @@ public class MolotovHuntsman extends Mob {
             int var8 = var7[var2];
             if (!Dungeon.level.solid[var4 + var8]) {
                 GameScene.add(Blob.seed(var4 + var8, 2, Fire.class));
-
-                //TODO 血月矿洞炸弹猎人 低于75灯火 35%概率扣减1灯火
-                if(lanterfireactive) {
-                    if (Random.Float() <= 0.35f && enemy instanceof Hero && hero.lanterfire < 75) {
-                        ((Hero) enemy).damageLantern(1);
-                        hero.sprite.showStatus(0x808080, "1");
-                    }
-                }
             }
         }
 

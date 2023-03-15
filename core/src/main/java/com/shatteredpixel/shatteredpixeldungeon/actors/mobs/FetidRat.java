@@ -21,15 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
-
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StenchGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FetidRatSprite;
@@ -66,16 +62,7 @@ public class FetidRat extends Rat {
 	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
 		if (Random.Int(3) == 0) {
-			if(lanterfireactive) {
-				if (Random.Float() <= 0.2f && enemy instanceof Hero && hero.lanterfire < 100) {
-					((Hero) enemy).damageLantern(7);
-					hero.sprite.showStatus(0x808080, "7");
-					Buff.affect(enemy, Ooze.class).set( Ooze.DURATION );
-					die(true);
-				}
-			} else {
 				Buff.affect(enemy, Ooze.class).set( Ooze.DURATION );
-			}
 		}
 
 		return damage;

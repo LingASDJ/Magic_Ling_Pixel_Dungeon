@@ -21,13 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
-
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WraithSprite;
@@ -56,23 +52,6 @@ public class Wraith extends Mob {
 		properties.add(Property.UNDEAD);
 	}
 
-	@Override
-	public int attackProc( Char enemy, int damage ) {
-		damage = super.attackProc( enemy, damage );
-
-		//TODO 40%概率扣减8灯火，但扣减完成后立刻死亡
-		if(lanterfireactive){
-			if (Random.Float()<=0.4f && enemy instanceof Hero) {
-				((Hero) enemy).damageLantern(8);
-				hero.sprite.showStatus( 0x808080, "8");
-				die(true);
-			}
-		} else {
-			super.attackProc( enemy, damage );
-		}
-		return damage;
-	}
-	
 	private static final String LEVEL = "level";
 	
 	@Override

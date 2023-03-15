@@ -1281,7 +1281,7 @@ public class Hero extends Char {
 		//there can be multiple entrance tiles, so descend on any of them
 		//TODO this is slightly brittle, it assumes there are no disjointed sets of entrance tiles
 		} else if (Dungeon.level.map[pos] == Terrain.ENTRANCE) {
-			
+
 			if (Dungeon.depth == 0) {
 
 				if (belongings.getItem(Amulet.class) == null) {
@@ -1300,11 +1300,11 @@ public class Hero extends Char {
 				}
 			} else if (Dungeon.depth == 1) {
 
-				if (belongings.getItem( Amulet.class ) == null) {
+				if (belongings.getItem(Amulet.class) == null) {
 					Game.runOnRenderThread(new Callback() {
 						@Override
 						public void call() {
-							GameScene.show( new WndMessage( Messages.get(Hero.this, "leave2") ) );
+							GameScene.show(new WndMessage(Messages.get(Hero.this, "leave2")));
 						}
 					});
 					ready();
@@ -1317,19 +1317,8 @@ public class Hero extends Char {
 					if (timeBubble != null) timeBubble.disarmPressedTraps();
 
 					InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
-					Game.switchScene( InterlevelScene.class );
+					Game.switchScene(InterlevelScene.class);
 				}
-			} else {
-				
-				curAction = null;
-
-				TimekeepersHourglass.timeFreeze timeFreeze = buff(TimekeepersHourglass.timeFreeze.class);
-				if (timeFreeze != null) timeFreeze.disarmPressedTraps();
-				Swiftthistle.TimeBubble timeBubble = buff(Swiftthistle.TimeBubble.class);
-				if (timeBubble != null) timeBubble.disarmPressedTraps();
-
-				InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
-				Game.switchScene( InterlevelScene.class );
 			}
 
 			return false;
@@ -2701,10 +2690,12 @@ public class Hero extends Char {
 	//TODO 灯火前行逻辑
 	public void damageLantern(int value){
 		lanterfire -= value;
+		hero.sprite.showStatus(0x808080, String.valueOf(value));
 	}
 
 	public void healLantern(int value){
 		lanterfire = Math.min(lanterfire+value,100);
+		hero.sprite.showStatus(0x00ff00, String.valueOf(value));
 	}
 
 }

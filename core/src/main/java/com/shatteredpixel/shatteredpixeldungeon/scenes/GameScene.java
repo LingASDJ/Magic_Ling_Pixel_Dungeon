@@ -472,7 +472,7 @@ public class GameScene extends PixelScene {
 							WndStory.showChapter( WndStory.ID_CHAPTONEEND );
 							break;
 					}
-				if (Dungeon.hero.isAlive()) {
+				if (Dungeon.hero.isAlive() && Dungeon.depth > 0 ) {
 					Badges.validateNoKilling();
 				}
 				break;

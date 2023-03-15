@@ -21,9 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
-
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -32,7 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -124,14 +120,6 @@ public class Spinner extends Mob {
 		damage = super.attackProc( enemy, damage );
 		if (Random.Int(2) == 0) {
 			Buff.affect(enemy, Poison.class).set(Random.Int(7, 9) );
-
-			//TODO 矿洞蜘蛛 低于70灯火 15%概率扣减1灯火
-			if(lanterfireactive) {
-				if (Random.Float() <= 0.15f && enemy instanceof Hero && hero.lanterfire < 70) {
-					((Hero) enemy).damageLantern(1);
-					hero.sprite.showStatus(0x808080, "1");
-				}
-			}
 
 			webCoolDown = 0;
 			state = FLEEING;

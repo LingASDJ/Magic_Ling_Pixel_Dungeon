@@ -1,8 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.watabou.noosa.TextureFilm;
 
 public class DimandKingSprite extends MobSprite {

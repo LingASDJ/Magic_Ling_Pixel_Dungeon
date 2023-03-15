@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
@@ -554,10 +555,49 @@ public abstract class Mob extends Char {
 
 	@Override
 	public int attackProc(Char enemy, int damage) {
+		if(Dungeon.isChallenged(DHXD)){
+			damageAttackProcLanterMob();
+		}
 		return super.attackProc(enemy,
 				(int) (damage*(Dungeon.isChallenged(SBSG) ? (0.6f * scaleFactor) : 1)));
 	}
-	
+
+	//写在Mob主类，从而方便后续维护
+	private void damageAttackProcLanterMob() {
+		//近战判定
+		boolean isHero = enemy instanceof Hero;
+		//15%
+		boolean one =  Random.Float() <= 0.15f;
+		//25%
+		boolean two =  Random.Float() <= 0.25f;
+		//75%
+		boolean three =  Random.Float() <= 0.75f;
+		//50%
+		boolean four =  Random.Float() <= 0.50f;
+		//85%
+		boolean five =  Random.Float() <= 0.85f;
+		//
+		boolean GhostQuestMob = this instanceof GreatCrab ||this instanceof GnollTrickster || this instanceof FetidRat;
+
+		//15%的老鼠 (-1) <85
+		if (isHero && this instanceof Rat && one && hero.lanterfire < 85) ((Hero) enemy).damageLantern(1);
+		//25%的监狱守卫 (-1) <85
+		if (isHero && this instanceof Guard && two && hero.lanterfire < 85) ((Hero) enemy).damageLantern(1);
+		//15%的豺狼萨满 (-2) <70
+		if (isHero && this instanceof Shaman && one && hero.lanterfire < 70) ((Hero) enemy).damageLantern(2);
+		//50%的幽灵任务怪 (-5) <95 NZND
+		if (isHero && GhostQuestMob && four && hero.lanterfire < 95) ((Hero) enemy).damageLantern(5);
+		//怨灵 75%的概率-6灯火 FINAL
+		if (isHero && this instanceof Wraith && three ) ((Hero) enemy).damageLantern(6); die(true);
+		//新生火元素 25%的概率-6灯火 <80
+		if (isHero && this instanceof Elemental.NewbornFireElemental && two && hero.lanterfire < 80 ) ((Hero) enemy).damageLantern(2);
+		//矿洞蜘蛛 15%的概率-3灯火 <70
+		if (isHero && this instanceof Wraith && one && hero.lanterfire < 70 ) ((Hero) enemy).damageLantern(3);
+		//矮人术士 85%的概率-5灯火 <70
+		if (isHero && this instanceof Warlock && five && hero.lanterfire < 50 ) ((Hero) enemy).damageLantern(5);
+	}
+
+
 	protected boolean doAttack( Char enemy ) {
 		
 		if (sprite != null && (sprite.visible || enemy.sprite.visible)) {

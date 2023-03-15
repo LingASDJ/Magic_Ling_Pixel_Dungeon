@@ -752,6 +752,9 @@ public class ItemSpriteSheet {
 	public static final int	WATERSOUL				= BAGS+59;
 	public static final int	WRALIPS				= BAGS+60;
 
+	public static final int	SDBlade			= BAGS+74;
+	public static final int	HHBlade				= BAGS+75;
+
 	static{
 		assignItemRect(VIAL,        16, 16);
 		assignItemRect(POUCH,       14, 15);
@@ -766,6 +769,7 @@ public class ItemSpriteSheet {
 		assignItemRect(SKNANO, 15, 14);
 		assignItemRect(WATERSOUL, 14, 14);
 		assignItemRect(WRALIPS, 16, 16);
+		assignItemRect(SDBlade, 15, 15);
 	}
 
 	private static final int MAINBOOKINDEX    	 = xy(1, 37);  //16 slots

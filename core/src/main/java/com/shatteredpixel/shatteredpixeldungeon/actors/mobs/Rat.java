@@ -22,11 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
 import com.watabou.utils.Bundle;
@@ -42,21 +40,6 @@ public class Rat extends Mob {
 		
 		maxLvl = 5;
 	}
-
-	@Override
-	public int attackProc( Char enemy, int damage ) {
-		damage = super.attackProc( enemy, damage );
-		if(lanterfireactive){
-			if (Random.Float()<=0.05f && enemy instanceof Hero && hero.lanterfire < 85) {
-				((Hero) enemy).damageLantern(1);
-				hero.sprite.showStatus( 0x808080, "1");
-			}
-		} else {
-			super.attackProc( enemy, damage );
-		}
-		return damage;
-	}
-
 
 	@Override
 	protected boolean act() {
