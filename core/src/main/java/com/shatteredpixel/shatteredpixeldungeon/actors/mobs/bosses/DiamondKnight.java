@@ -32,13 +32,10 @@ public class DiamondKnight extends Boss  {
 
     {
         spriteClass = DimandKingSprite.class;
-        
-        HP = HT = 240;
-        defenseSkill = 12;
 
         initProperty();
-        initBaseStatus(14, 23, 33, 22, 200, 5, 12);
-        initStatus(50);
+        initBaseStatus(14, 23, 33, 22, 420, 5, 12);
+        initStatus(80);
         
         maxLvl = 30;
 

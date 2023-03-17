@@ -1,18 +1,38 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.START;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.utils.Bundle;
 
 //宝藏迷宫 10层
 public class ColdChestBossLevel extends Level {
 
     private State pro;
 
+    private DiamondKnight diamond;
+
     public State pro(){
         return pro;
+    }
+    private static final String PRO	        = "pro";
+    @Override
+    public void restoreFromBundle( Bundle bundle ) {
+        super.restoreFromBundle(bundle);
+        pro = bundle.getEnum(PRO, State.class);
+    }
+
+    public void storeInBundle( Bundle bundle ) {
+        super.storeInBundle(bundle);
+        bundle.put(PRO, pro);
     }
 
     //地图状态
@@ -33,7 +53,7 @@ public class ColdChestBossLevel extends Level {
         this.entrance = 0;
         this.exit = 0;
         //首次构建地图
-        pro = State.START;
+        pro = START;
         setMapStart();
 
         return true;
@@ -47,6 +67,7 @@ public class ColdChestBossLevel extends Level {
     private static final short P = Terrain.EMPTY_SP;
     private static final short B = Terrain.EMPTY_SP;
     private static final short K = Terrain.EMPTY;
+    private static final short L = Terrain.EMPTY;
     private static final short D = Terrain.DOOR;
     private static final short T = Terrain.PEDESTAL;
 
@@ -89,16 +110,120 @@ public class ColdChestBossLevel extends Level {
 
     };
 
+    private static final int[] MazeRoom = {
+            W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+            W,J,L,L,L,L,W,L,W,L,W,W,W,W,W,L,L,L,W,W,W,W,W,W,L,L,L,L,W,L,W,W,W,L,W,
+            W,W,W,W,W,L,W,L,W,L,W,W,W,W,W,L,W,W,W,W,W,W,W,W,L,W,L,L,W,L,W,W,W,L,W,
+            W,W,W,L,L,L,W,L,L,L,W,L,L,L,W,L,L,L,W,L,L,L,L,L,L,W,L,L,W,L,W,W,W,L,W,
+            W,W,W,L,W,W,W,L,W,W,W,L,W,L,L,L,L,L,W,L,L,L,L,W,W,W,L,L,L,L,L,L,W,L,W,
+            W,L,L,L,W,L,L,L,L,L,L,L,W,L,W,L,W,L,W,W,W,L,L,W,L,L,L,L,L,L,W,L,W,L,W,
+            W,L,W,L,W,L,W,W,W,W,W,W,W,W,W,L,W,L,W,L,L,L,L,W,L,L,W,W,W,W,W,L,W,L,W,
+            W,W,W,L,L,L,L,L,L,W,L,W,L,L,W,L,W,W,W,L,L,W,W,W,L,L,L,L,L,L,W,W,W,L,W,
+            W,W,W,L,W,W,W,W,W,W,L,W,L,L,W,L,W,L,L,L,L,W,L,W,L,L,W,W,W,L,W,L,L,L,W,
+            W,W,W,L,L,W,L,W,L,L,L,L,L,L,W,L,W,W,W,W,W,W,L,W,L,L,L,L,W,L,W,L,L,L,W,
+            W,W,W,L,L,W,L,W,L,W,W,W,W,W,W,L,W,L,W,L,L,W,L,W,L,L,W,L,W,L,L,L,W,L,W,
+            W,W,W,L,L,L,L,W,L,L,W,L,L,L,W,L,L,L,W,L,L,W,L,W,L,L,W,L,W,L,W,W,W,L,W,
+            W,W,W,W,W,W,L,L,L,L,W,L,L,L,W,L,W,W,W,L,L,L,L,L,L,L,W,L,L,L,L,L,W,L,W,
+            W,W,W,L,L,L,L,L,L,L,W,L,L,L,L,L,W,W,W,L,L,W,L,W,L,L,W,W,W,W,L,W,W,L,W,
+            W,W,W,W,W,L,L,W,L,L,L,L,L,L,L,L,W,W,W,L,L,W,L,W,L,L,L,L,L,L,L,L,W,L,W,
+            W,W,W,L,L,L,W,W,L,W,W,W,L,W,L,L,L,L,W,L,W,W,W,W,W,L,L,L,L,L,L,L,W,L,W,
+            W,W,W,L,L,L,L,W,L,W,W,W,L,W,L,L,L,L,W,L,L,W,L,L,L,L,L,W,W,W,W,W,W,L,W,
+            W,W,W,L,L,L,L,W,L,W,W,W,L,W,L,L,W,L,L,L,L,W,L,W,L,L,L,L,L,L,L,L,L,L,W,
+            W,W,W,L,W,W,W,W,L,L,L,L,L,L,L,L,W,L,L,L,L,W,L,W,W,W,L,L,W,L,L,L,L,W,W,
+            W,W,W,L,L,L,L,W,L,L,L,L,L,L,L,L,W,W,W,W,L,L,L,W,L,W,W,L,W,W,W,W,W,W,W,
+            W,W,W,L,L,L,L,W,L,L,L,L,W,W,W,L,W,L,L,L,L,L,L,W,L,L,L,L,L,L,L,L,L,W,W,
+            W,L,L,L,L,L,L,L,L,L,L,L,W,L,L,L,W,L,W,W,W,W,L,W,L,W,W,W,W,W,W,W,L,W,W,
+            W,L,W,L,L,W,W,W,W,L,W,W,W,W,W,W,W,L,L,L,L,W,L,L,L,L,L,L,L,L,L,W,L,L,W,
+            W,L,W,L,L,L,L,L,W,L,L,L,L,L,W,L,W,W,W,W,L,W,L,L,L,L,L,L,W,L,L,W,L,L,W,
+            W,L,W,W,W,W,L,L,W,L,L,W,W,W,W,L,L,W,L,W,L,W,L,L,W,W,W,L,W,L,L,L,L,L,W,
+            W,W,W,L,L,L,L,L,W,L,L,L,L,L,W,L,L,W,L,L,L,W,L,L,L,L,W,L,W,W,W,W,W,W,W,
+            W,W,W,L,W,L,W,W,W,L,L,L,W,L,W,L,L,W,W,W,L,W,W,W,W,W,W,L,W,L,L,L,L,L,W,
+            W,W,W,L,W,L,L,L,W,L,L,L,W,L,W,L,L,W,L,L,L,L,L,L,L,L,W,L,L,L,W,W,W,L,W,
+            W,W,W,L,W,L,L,W,W,L,W,L,W,L,L,L,L,W,L,W,W,W,L,W,L,L,W,L,W,L,W,L,W,L,W,
+            W,W,W,W,W,L,L,W,W,L,W,L,W,L,W,W,W,W,L,L,W,L,L,W,L,L,L,L,W,L,W,W,W,L,W,
+            W,W,W,L,L,L,W,W,W,L,W,L,W,L,L,W,L,L,L,L,L,L,L,W,L,L,L,L,W,L,L,L,L,L,W,
+            W,W,W,L,W,L,L,L,W,L,W,L,W,L,L,W,L,W,W,W,W,W,L,W,W,W,W,W,W,W,W,W,W,W,W,
+            W,W,W,L,W,L,W,L,W,W,W,W,W,L,W,W,L,L,L,L,W,L,L,L,W,L,L,L,W,L,L,L,W,L,W,
+            W,L,L,L,W,L,W,L,L,L,L,L,L,L,L,W,W,W,W,W,W,L,W,L,L,L,W,L,L,L,W,L,L,X,W,
+            W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+    };
+
 
     private void setMapStart() {
         entrance = HOME;
         map = WorldRoomShort.clone();
     }
 
+    private void setMazeStart() {
+        entrance = HOME;
+        map = MazeRoom.clone();
+    }
+
+    @Override
+    public void occupyCell(Char ch) {
+        super.occupyCell(ch);
+
+        if (ch == Dungeon.hero){
+            switch (pro){
+                case START:
+                    if (map[getBossDoor] == Terrain.DOOR && ch.pos == LDBossDoor) {
+                        progress();
+                    }
+                    break;
+                case MAZE_START:
+                    changeMap(MazeRoom);
+                    break;
+            }
+        }
+
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            if(mob instanceof DiamondKnight && mob.HP >400){
+                GLog.n("ColdChestBoss");
+            }
+
+        }
+
+    }
+
+    private void cleanMapState(){
+        buildFlagMaps();
+        cleanWalls();
+
+        BArray.setFalse(visited);
+        BArray.setFalse(mapped);
+
+        for (Blob blob: blobs.values()){
+            blob.fullyClear();
+        }
+        addVisuals(); //this also resets existing visuals
+        traps.clear();
+
+        GameScene.resetMap();
+        Dungeon.observe();
+    }
+
     public void progress(){
         switch (pro) {
+            case START:
+                //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
+                    seal();
+                    DiamondKnight boss = new DiamondKnight();
+                    boss.state = boss.WANDERING;
+                    boss.pos = WIDTH*19+17;
+                    GameScene.add( boss );
+                    set( getBossDoor, Terrain.LOCKED_DOOR );
+                    GameScene.updateMap( getBossDoor );
+                    set( HOME, Terrain.EMPTY );
+                    GameScene.updateMap( HOME );
+                    Dungeon.observe();
+                break;
+            case MAZE_START:
+                break;
         }
     }
+
+
+
 
     @Override
     protected void createMobs() {
@@ -108,32 +233,6 @@ public class ColdChestBossLevel extends Level {
     private static final int getBossDoor = WIDTH*11+17;
     private static final int LDBossDoor = WIDTH*12+17;
     private static final int HOME = WIDTH*2+17;
-
-    @Override
-    public void seal() {
-        super.seal();
-
-        DiamondKnight boss = new DiamondKnight();
-        boss.state = boss.WANDERING;
-        boss.pos = WIDTH*19+17;
-        GameScene.add( boss );
-        set( getBossDoor, Terrain.LOCKED_DOOR );
-        GameScene.updateMap( getBossDoor );
-        set( HOME, Terrain.EMPTY );
-        GameScene.updateMap( HOME );
-        Dungeon.observe();
-    }
-
-    @Override
-    public void occupyCell( Char ch ) {
-
-        super.occupyCell( ch );
-
-        //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
-        if (map[getBossDoor] == Terrain.DOOR && ch.pos == LDBossDoor && ch == Dungeon.hero) {
-            seal();
-        }
-    }
 
     @Override
     protected void createItems() {

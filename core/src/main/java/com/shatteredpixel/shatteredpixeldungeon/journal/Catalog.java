@@ -157,7 +157,7 @@ public enum Catalog {
 	SCROLLS,
 	BOOKS,
 	PLAYBOOKS;
-	
+
 	private LinkedHashMap<Class<? extends Item>, Boolean> seen = new LinkedHashMap<>();
 	
 	public Collection<Class<? extends Item>> items(){
@@ -201,11 +201,11 @@ public enum Catalog {
 		WEAPONS.seen.put( Greataxe.class,                   false);
 		WEAPONS.seen.put( Greatshield.class,                false);
 		WEAPONS.seen.put( Gauntlet.class,                   false);
-		//WEAPONS.seen.put( GreenSword.class,                 false);
+
 		WEAPONS.seen.put( LockSword.class,                  false);
 		WEAPONS.seen.put( SkyShield.class,               false);
 		WEAPONS.seen.put( Dairikyan.class,                  false);
-		//WEAPONS.seen.put( BlackDog.class,                   false);
+
 		WEAPONS.seen.put( IceFishSword.class,                   false);
 		WEAPONS.seen.put( FireFishSword.class,                   false);
 	
