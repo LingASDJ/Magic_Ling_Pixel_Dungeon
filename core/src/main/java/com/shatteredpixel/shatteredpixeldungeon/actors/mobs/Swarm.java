@@ -121,10 +121,6 @@ public class Swarm extends Mob {
 		Swarm clone = new Swarm();
 		clone.generation = generation + 1;
 		clone.EXP = 0;
-		//TODO 修复火焰遗留问题
-//		if (buff( Burning.class ) != null) {
-//			Buff.affect( clone, Burning.class ).reignite( clone );
-//		}
 		if (buff( Poison.class ) != null) {
 			Buff.affect( clone, Poison.class ).set(2);
 		}

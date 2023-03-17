@@ -587,8 +587,11 @@ public abstract class Mob extends Char {
 		if (isHero && this instanceof Shaman && one && hero.lanterfire < 70) ((Hero) enemy).damageLantern(2);
 		//50%的幽灵任务怪 (-5) <95 NZND
 		if (isHero && GhostQuestMob && four && hero.lanterfire < 95) ((Hero) enemy).damageLantern(5);
-		//怨灵 75%的概率-6灯火 FINAL
-		if (isHero && this instanceof Wraith && three ) ((Hero) enemy).damageLantern(6); die(true);
+		//怨灵 75%的概率-6灯火 且必定死亡
+		if (isHero && this instanceof Wraith && three ){
+			((Hero) enemy).damageLantern(6);
+			this.die(true);
+		}
 		//新生火元素 25%的概率-6灯火 <80
 		if (isHero && this instanceof Elemental.NewbornFireElemental && two && hero.lanterfire < 80 ) ((Hero) enemy).damageLantern(2);
 		//矿洞蜘蛛 15%的概率-3灯火 <70

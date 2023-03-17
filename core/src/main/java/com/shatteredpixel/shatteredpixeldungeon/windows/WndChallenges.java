@@ -101,7 +101,7 @@ public class WndChallenges extends Window {
 			if (i > index && i % 3 == 0) {
 				pos += GAP;
 			}
-			ChallengeInfo info = new ChallengeInfo(foundChallangeIcon(i), challenge,false,
+			ChallengeInfo info = new ChallengeInfo(foundChallangeIcon(i), challenge, false,
 					null);
 
 			ChallengeButton cb = info.check;
@@ -240,7 +240,7 @@ public class WndChallenges extends Window {
 		}
 	}
 
-	private class ChallengeInfo extends Component {
+	private static class ChallengeInfo extends Component {
 		Image icon;
 		IconButton info;
 		ChallengeButton check;
@@ -297,41 +297,39 @@ public class WndChallenges extends Window {
 
 	}
 
-
-		private Image foundChallangeIcon(int i) {
-
-		if (Challenges.NAME_IDS[i].equals("no_food")) {
-			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_1,new ItemSprite.Glowing( 0xFF0000 ));
-		} else if (Challenges.NAME_IDS[i].equals("no_armor")) {
-			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_2,new ItemSprite.Glowing( 0x8f8f8f ));
-		} else if (Challenges.NAME_IDS[i].equals("no_healing")) {
-			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_3,new ItemSprite.Glowing( 0xff0000 ));
-		} else if (Challenges.NAME_IDS[i].equals("no_herbalism")) {
-			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_4);
-		} else if (Challenges.NAME_IDS[i].equals("swarm_intelligence")) {
-			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_5,new ItemSprite.Glowing( 0xffff00 ));
-		} else if (Challenges.NAME_IDS[i].equals("darkness")) {
-			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_6,new ItemSprite.Glowing( 0x8f8f8f ));
-		} else if (Challenges.NAME_IDS[i].equals("no_scrolls")) {
-			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_7,new ItemSprite.Glowing( 0x00dd00 ));
-		} else if (Challenges.NAME_IDS[i].equals("aquaphobia")) {
-			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_8,new ItemSprite.Glowing( 0xac89cc ));
-		} else if (Challenges.NAME_IDS[i].equals("champion_enemies")) {
-			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_9,new ItemSprite.Glowing( 0x333333 ));
-		} else if (Challenges.NAME_IDS[i].equals("rlpt")) {
-			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_10,new ItemSprite.Glowing( 0xc6cc6c ));
-		} else if (Challenges.NAME_IDS[i].equals("sbsg")) {
-			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_11,new ItemSprite.Glowing( 0x3b1051 ));
-		} else if (Challenges.NAME_IDS[i].equals("exsg")) {
-			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_12,new ItemSprite.Glowing( 0xd1ce9f ));
-		} else if (Challenges.NAME_IDS[i].equals("stronger_bosses")) {
-			return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_13,new ItemSprite.Glowing( 0xff0000 ));
-		} else if (Challenges.NAME_IDS[i].equals("dhxd")) {
-			return new ItemSprite(ItemSpriteSheet.LANTERNB,new ItemSprite.Glowing( 0x384976 ));
-		} else {
-			return Icons.get(Icons.PREFS);
+	private Image foundChallangeIcon(int i) {
+		switch (Challenges.NAME_IDS[i]) {
+			case "no_food":
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_1, new ItemSprite.Glowing(0xFF0000));
+			case "no_armor":
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_2, new ItemSprite.Glowing(0x8f8f8f));
+			case "no_healing":
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_3, new ItemSprite.Glowing(0xff0000));
+			case "no_herbalism":
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_4);
+			case "swarm_intelligence":
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_5, new ItemSprite.Glowing(0xffff00));
+			case "darkness":
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_6, new ItemSprite.Glowing(0x8f8f8f));
+			case "no_scrolls":
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_7, new ItemSprite.Glowing(0x00dd00));
+			case "aquaphobia":
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_8, new ItemSprite.Glowing(0xac89cc));
+			case "champion_enemies":
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_9, new ItemSprite.Glowing(0x333333));
+			case "rlpt":
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_10, new ItemSprite.Glowing(0xc6cc6c));
+			case "sbsg":
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_11, new ItemSprite.Glowing(0x3b1051));
+			case "exsg":
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_12, new ItemSprite.Glowing(0xd1ce9f));
+			case "stronger_bosses":
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_13, new ItemSprite.Glowing(0xff0000));
+			case "dhxd":
+				return new ItemSprite(ItemSpriteSheet.LANTERNB, new ItemSprite.Glowing(0x384976));
+			default:
+				return Icons.get(Icons.PREFS);
 		}
-
 	}
 
 }
