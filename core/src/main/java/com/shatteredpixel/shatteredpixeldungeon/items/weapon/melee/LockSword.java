@@ -7,6 +7,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
@@ -20,6 +21,11 @@ public class LockSword extends MeleeWeapon {
     public LockSword() {
         super.image = ItemSpriteSheet.DG3;
         super.tier = 5;
+    }
+
+    @Override
+    public int level() {
+        return lvl/100;
     }
 
     @Override
@@ -41,16 +47,23 @@ public class LockSword extends MeleeWeapon {
     }
 
     public int image() {
-        if (lvl >= 750) {
+        if (lvl >= 1000) {
             super.image = ItemSpriteSheet.DG5;
+        } else if (lvl >= 750) {
+            super.image = ItemSpriteSheet.PBlade;
         } else if (lvl >= 550) {
             super.image = ItemSpriteSheet.DG4;
         }
         return image;
     }
 
+    @Override
+    public boolean isUpgradable() {
+        return false;
+    }
+
     public int proc(Char attacker, Char defender, int damage ) {
-        if(level >= 10) {
+        if (level >= 10) {
             lvl = 1000;
         } else {
             ++lvl;
@@ -58,20 +71,24 @@ public class LockSword extends MeleeWeapon {
 
         int dmg;
 
-        if(level >= 10){
+        if (level >= 10) {
             lvl += 0;
-        } else if(defender.properties().contains(Char.Property.BOSS) && defender.HP <= damage){
-            //目标Boss血量小于实际伤害判定为死亡,+20
-            lvl+=20;
-        } else if(defender.properties().contains(Char.Property.MINIBOSS) && defender.HP <= damage){
-            //目标迷你Boss血量小于实际伤害判定为死亡,+10
-            lvl+=10;
-        } else if (defender.HP <= damage){
-            //目标血量小于实际伤害判定为死亡,+5
-            lvl+=5;
+        } else if (defender.properties().contains(Char.Property.BOSS) && defender.HP <= damage && level >= 10) {
+            //目标Boss血量小于实际伤害判定为死亡,+100
+            lvl += 100;
+        } else if (defender.properties().contains(Char.Property.MINIBOSS) && defender.HP <= damage && level >= 10) {
+            //目标迷你Boss血量小于实际伤害判定为死亡,+30
+            lvl += 50;
+        } else if (defender.HP <= damage && level >= 10) {
+            //目标血量小于实际伤害判定为死亡,+15
+            lvl += 15;
+        } else {
+            lvl = 1000;
         }
-
-         if (level>= 8) {
+        if (level>= 9) {
+            dmg = (new Grim()).proc(this, attacker, defender, damage) + 8;
+            damage = dmg;
+        } else if (level>= 8) {
             dmg = (new Unstable()).proc(this, attacker, defender, damage) + 4;
             damage = dmg;
         } else if (level>= 6){
@@ -94,8 +111,10 @@ public class LockSword extends MeleeWeapon {
         super.restoreFromBundle(bundle);
         super.image = ItemSpriteSheet.DG3;
 
-        if (lvl >= 750) {
+        if (lvl >= 1000) {
             super.image = ItemSpriteSheet.DG5;
+        } else if (lvl >= 750) {
+            super.image = ItemSpriteSheet.PBlade;
         } else if (lvl >= 550) {
             super.image = ItemSpriteSheet.DG4;
         }
@@ -107,8 +126,10 @@ public class LockSword extends MeleeWeapon {
         super.storeInBundle(bundle);
         super.image = ItemSpriteSheet.DG3;
 
-        if (lvl >= 750) {
+        if (lvl >= 1000) {
             super.image = ItemSpriteSheet.DG5;
+        } else if (lvl >= 750) {
+            super.image = ItemSpriteSheet.PBlade;
         } else if (lvl >= 550) {
             super.image = ItemSpriteSheet.DG4;
         }

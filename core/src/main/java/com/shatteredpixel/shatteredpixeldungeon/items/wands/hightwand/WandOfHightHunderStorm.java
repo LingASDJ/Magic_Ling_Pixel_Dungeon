@@ -1,4 +1,4 @@
-package com.shatteredpixel.shatteredpixeldungeon.items.wands;
+package com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -14,6 +14,8 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLightningShiledX;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.DamageWand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -69,11 +71,11 @@ public class WandOfHightHunderStorm extends DamageWand {
     private ArrayList<Lightning.Arc> arcs = new ArrayList<>();
 
     public int min(int lvl){
-        return 8+lvl;
+        return 4+lvl;
     }
 
     public int max(int lvl){
-        return 16+5*lvl;
+        return 4+5*lvl;
     }
     ConeAOE cone;
     @Override
@@ -99,7 +101,7 @@ public class WandOfHightHunderStorm extends DamageWand {
         }
 
         //lightning deals less damage per-target, the more targets that are hit.
-        float multipler = 0.6f + (0.85f/affected.size());
+        float multipler = 0.4f + (0.75f/affected.size());
         //if the main target is in water, all affected take full damage
         if (Dungeon.level.water[bolt.collisionPos]) multipler = 1f;
 

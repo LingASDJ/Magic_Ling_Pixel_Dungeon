@@ -33,7 +33,9 @@ import java.util.HashMap;
 import java.util.regex.Pattern;
 
 public abstract class PlatformSupport {
-
+	public void setOnscreenKeyboardVisible(boolean value){
+		Gdx.input.setOnscreenKeyboardVisible(value);
+	}
 	public abstract void updateDisplaySize();
 
 	public abstract void updateSystemUI();

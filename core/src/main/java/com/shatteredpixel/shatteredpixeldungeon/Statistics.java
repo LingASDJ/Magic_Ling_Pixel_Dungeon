@@ -91,7 +91,7 @@ public class Statistics {
 		itemsCrafted    = 0;
 		piranhasKilled	= 0;
 		ankhsUsed		= 0;
-
+		naiyaziCollected = 0;
 		upgradesUsed    = 0;
 		sneakAttacks    = 0;
 		thrownAssists   = 0;
@@ -165,6 +165,8 @@ public class Statistics {
 
 	private static final String GOLDCHEST		= "goldchest";
 
+	private static final String NAYAZICOLLECTED		= "naiyaziCollected";
+
 	public static void storeInBundle( Bundle bundle ) {
 		bundle.put( LANTERACTIVE, lanterfireactive );
 		bundle.put(GOLDCHEST,	  goldchestmazeCollected);
@@ -174,6 +176,8 @@ public class Statistics {
 		bundle.put( TIPSGO, tipsgodungeon );
 
 		bundle.put( BUG_SYNC_FIXED, bugsyncfixed );
+
+		bundle.put( NAYAZICOLLECTED, naiyaziCollected );
 
 		bundle.put( GOLD,		goldCollected );
 		bundle.put( DEEPEST,	deepestFloor );
@@ -212,6 +216,8 @@ public class Statistics {
 	public static void restoreFromBundle( Bundle bundle ) {
 
 		goldchestmazeCollected = bundle.getInt(GOLDCHEST);
+
+		naiyaziCollected = bundle.getInt(NAYAZICOLLECTED);
 
 		goldCollected	= bundle.getInt( GOLD );
 		deepestFloor	= bundle.getInt( DEEPEST );

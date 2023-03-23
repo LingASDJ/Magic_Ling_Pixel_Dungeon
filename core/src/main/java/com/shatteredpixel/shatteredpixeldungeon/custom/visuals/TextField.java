@@ -84,14 +84,13 @@ public abstract class TextField extends RedButton {
         };
         if(Constants.gameIsAndroid()) {
             Gdx.input.getTextInput(tinp, text.text(), inputText.text(), hint);
-            /*
-            Game.platform.promptTextInput("title", "hint", 100, false, "pos", "neg", new PlatformSupport.TextCallback() {
-                @Override
-                public void onSelect(boolean positive, String text) {
-                    text(text);
-                }
-            });
-             */
+            //TODO 待迁移为破碎1.3种子系统
+//            Game.platform.promptTextInput("title", "hint", 100, false, "pos", "neg", new PlatformSupport.TextCallback() {
+//                @Override
+//                public void onSelect(boolean positive, String text) {
+//                    text(text);
+//                }
+//            });
         }else{
             TextInput.getTextInput(tinp, text.text(), inputText.text(), hint);
         }

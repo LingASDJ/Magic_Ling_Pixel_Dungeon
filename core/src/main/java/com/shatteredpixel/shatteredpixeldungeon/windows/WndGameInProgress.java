@@ -31,13 +31,16 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.StartScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.watabou.noosa.Game;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.FileUtils;
 
@@ -82,26 +85,14 @@ public class WndGameInProgress extends Window {
 		add(title);
 		
 		//manually produces debug information about a run, mainly useful for levelgen errors
-		Button debug = new Button(){
-			@Override
-			protected boolean onLongClick() {
-				try {
-					Bundle bundle = FileUtils.bundleFromFile(GamesInProgress.gameFile(slot));
-					ShatteredPixelDungeon.scene().addToFront(new WndMessage("_Debug Info:_\n\n" +
-							"Version: " + Game.version + " (" + Game.versionCode + ")\n" +
-							"Seed: " + bundle.getLong("seed") + "\n" +
-							"Challenge Mask: " + info.challenges));
-				} catch (IOException ignored) { }
-				return true;
-			}
-		};
+		Button debug = new Button();
 		debug.setRect(0, 0, title.imIcon.width(), title.imIcon.height);
 		add(debug);
 		
 		if (info.challenges > 0) GAP -= 2;
 		
 		pos = title.bottom() + GAP;
-		
+
 		if (info.challenges > 0) {
 			RedButton btnChallenges = new RedButton( Messages.get(this, "challenges") ) {
 				@Override
@@ -111,10 +102,55 @@ public class WndGameInProgress extends Window {
 			};
 			btnChallenges.icon(Icons.get(Icons.CHALLENGE_ON));
 			float btnW = btnChallenges.reqWidth() + 2;
-			btnChallenges.setRect( (WIDTH - btnW)/2, pos, btnW , 18 );
+			btnChallenges.setRect( (WIDTH - btnW)/2-20, pos, btnW , 18 );
 			add( btnChallenges );
+
+			RedButton btnGameInfo = new RedButton( Messages.get(this, "gameinfo") ) {
+				@Override
+				protected void onClick() {
+					try {
+						Bundle bundle = FileUtils.bundleFromFile(GamesInProgress.gameFile(slot));
+						String ing =
+								"游戏版本:" + Game.version+"\n\n"+
+								"地牢种子:" + DungeonSeed.convertToCode(bundle.getLong("seed"))+"\n\n"+
+								"现有金币:" + bundle.getInt("gold") +"\n\n"+
+								"奈亚大亨:" + bundle.getInt("naiyaziCollected")+"\n一场游戏累计在终端购买7次，奈亚即可永久入驻0层" +"\n\n"+
+								"拟态猎杀:" + bundle.getInt("goldchest") +"\n\n"+
+								"注：类型不同的种子所生成的地牢物品规则将有所不同。\n-_B类_为开启_独当一面_挑战后的种子";
+						ShatteredPixelDungeon.scene().addToFront(new WndMessage(ing));
+					} catch (IOException ignored) {
+					}
+				}
+			};
+			btnGameInfo.icon(new ItemSprite(ItemSpriteSheet.SEED_SKYBLUEFIRE));
+			btnGameInfo.setRect( (WIDTH - btnW)/2+20, pos, btnW , 18 );
+			add( btnGameInfo );
 			
-			pos = btnChallenges.bottom() + GAP;
+			pos = btnGameInfo.bottom() + GAP;
+		} else {
+
+			RedButton btnGameInfo = new RedButton( Messages.get(this, "gameinfo") ) {
+				@Override
+				protected void onClick() {
+					try {
+						Bundle bundle = FileUtils.bundleFromFile(GamesInProgress.gameFile(slot));
+						String ing =
+						"游戏版本:" + Game.version+"\n\n"+
+						"地牢种子:" + DungeonSeed.convertToCode(bundle.getLong("seed"))+"\n\n"+
+						"现有金币:" + bundle.getInt("gold") +"\n\n"+
+						"奈亚大亨:" + bundle.getInt("naiyaziCollected")+"\n一场游戏累计在终端购买7次，奈亚即可永久入驻0层" +"\n\n"+
+						"拟态猎杀:" + bundle.getInt("goldchest") +"\n\n"+
+						"注：类型不同的种子所生成的地牢物品规则将有所不同。\n-_B类_为开启_独当一面_挑战后的种子";
+						ShatteredPixelDungeon.scene().addToFront(new WndMessage(ing));
+					} catch (IOException ignored) {
+					}
+				}
+			};
+			float btnW = btnGameInfo.reqWidth() + 10;
+			btnGameInfo.icon(new ItemSprite(ItemSpriteSheet.SEED_SKYBLUEFIRE));
+			btnGameInfo.setRect( (WIDTH - btnW)/2, pos, btnW , 18 );
+			add( btnGameInfo );
+			pos = btnGameInfo.bottom() + GAP;
 		}
 		
 		pos += GAP;

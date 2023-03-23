@@ -93,23 +93,23 @@ public class OilLantern extends Item {
         if (action.equals(AC_LIGHT)) {
             if (this.charge > 0) {
                 activate(hero, true);
-            } else if(this.flasks > 0) {
-                GLog.w(Messages.get(OilLantern.class,"lanterneedsxs"));
+            } else if (this.flasks > 0) {
+                GLog.w(Messages.get(OilLantern.class, "lanterneedsxs"));
             } else {
-                GLog.w(Messages.get(OilLantern.class,"lanterneedsx"));
+                GLog.w(Messages.get(OilLantern.class, "lanterneedsx"));
             }
         } else if (action.equals(AC_REFILL)) {
             if (this.flasks > 0) {
                 refill(hero);
             } else {
-                GLog.w(Messages.get(OilLantern.class,"lanterneed"));
+                GLog.w(Messages.get(OilLantern.class, "lanterneed"));
             }
         } else if (action.equals(AC_SNUFF)) {
             if (isActivated()) {
                 deactivate(hero, true);
             }
         } else {
-            GLog.w(Messages.get(OilLantern.class,"lanterneeds"));
+            GLog.w(Messages.get(OilLantern.class, "lanterneeds"));
         }
     }
 
@@ -120,16 +120,16 @@ public class OilLantern extends Item {
         hero.busy();
         Sample.INSTANCE.play(Assets.Sounds.DRINK, TIME_TO_USE, TIME_TO_USE, 1.2f);
         hero.sprite.operate(hero.pos);
-        GLog.i(Messages.get(OilLantern.class,"lanterreload"));
+        GLog.i(Messages.get(OilLantern.class, "lanterreload"));
         updateQuickslot();
     }
 
     public void activate(Hero hero, boolean voluntary) {
 
-        if (voluntary && hero.lanterfire >0) {
+        if (voluntary && hero.lanterfire > 0) {
             hero.spend(TIME_TO_USE);
             hero.busy();
-            GLog.i(Messages.get(OilLantern.class,"lanteron"));
+            GLog.i(Messages.get(OilLantern.class, "lanteron"));
             hero.sprite.operate(hero.pos);
             this.active = true;
             updateSprite();
@@ -140,7 +140,7 @@ public class OilLantern extends Item {
             Dungeon.observe();
         } else {
             GameScene.flash(0x880000);
-            GLog.n(Messages.get(OilLantern.class,"black"));
+            GLog.n(Messages.get(OilLantern.class, "black"));
         }
 
     }
@@ -153,9 +153,9 @@ public class OilLantern extends Item {
             hero.spend(TIME_TO_USE);
             hero.busy();
             hero.sprite.operate(hero.pos);
-            GLog.i(Messages.get(OilLantern.class,"lanteroff"));
+            GLog.i(Messages.get(OilLantern.class, "lanteroff"));
         } else {
-            GLog.w(Messages.get(OilLantern.class,"lanterdied"));
+            GLog.w(Messages.get(OilLantern.class, "lanterdied"));
         }
         Sample.INSTANCE.play("sounds/snd_puff.mp3");
         updateQuickslot();
@@ -169,50 +169,4 @@ public class OilLantern extends Item {
     public String status() {
         return Utils.format(TXT_STATUS, this.charge);
     }
-
-//    public String info() {
-//        StringBuilder sb = new StringBuilder();
-//        sb.append("这盏来自硬化玻璃的灯是暗无天日的地牢中不可缺少的物品。即使是在最黑暗的地牢里，这个简单的油灯也能照亮你的道路，只要你有油瓶来保持它的光亮。");
-//        sb.append(isActivated() ? "灯火旺盛得燃烧着，照亮了周围的一切与你的内心。 " : "这个小灯笼已经被掐灭了，等待着再次点亮的那一刻。");
-//        sb.append("你有 ");
-//        double d = this.charge;
-//        Double.isNaN(d);
-//        sb.append(d / 10.0d);
-//        sb.append("盎司的灯油和 _");
-//        sb.append(this.flasks);
-//        sb.append(" 备用瓶");
-//        sb.append(this.flasks != 1 ? "_" : "_");
-//        sb.append("余下。");
-//        return sb.toString();
-//    }
-
-//    protected CellSelector.Listener burner = new  CellSelector.Listener() {
-//
-//        public void onSelect(Integer target) {
-//            if (target != null) {
-//                Ballistica.cast(Item.curUser.pos, target, false, true);
-//                int cell = Ballistica.trace[0];
-//                if (Ballistica.distance > 1) {
-//                    cell = Ballistica.trace[1];
-//                }
-//                GameScene.add(Blob.seed(cell, 5, Fire.class));
-//                Item.curItem.flasks--;
-//                Invisibility.dispel();
-//                if (Item.curUser.pos == cell) {
-//                    GLog.i("你将油瓶中的灯油浇到自己身上然后点上了火。你为什么要这样做？");
-//                } else {
-//                    GLog.i("你把灯油倒在了附近的地格并点着了那里。");
-//                }
-//                Sample.INSTANCE.play("sounds/snd_burning.mp3", 0.6f, 0.6f, 1.5f);
-//                CellEmitter.get(cell).burst(FlameParticle.FACTORY, 5);
-//                Item.curUser.sprite.operate(cell);
-//                Item.curUser.busy();
-//                Item.curUser.spend(1.0f);
-//            }
-//        }
-//
-//        public String prompt() {
-//            return "选择一个身边的地格点燃";
-//        }
-
 }

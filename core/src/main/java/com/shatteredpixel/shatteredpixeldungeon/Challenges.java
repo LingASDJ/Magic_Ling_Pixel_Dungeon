@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 public class Challenges {
 
@@ -102,6 +103,7 @@ public class Challenges {
 
 		if (Dungeon.isChallenged(NO_ARMOR)) {
 			if (item instanceof Armor && !(item instanceof ClothArmor || item instanceof ClassArmor)) {
+				GLog.n("这片大地吃布甲之外的护甲从不挑食,侦查到作弊行为，已移除"+item);
 				return true;
 			}
 		}

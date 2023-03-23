@@ -43,8 +43,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.CustomGameSettings;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.SeedUtil;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -71,7 +69,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.LinkLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewCityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewHallsBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
@@ -253,6 +250,7 @@ public class Dungeon {
 	public static int version;
 
 	public static long seed;
+	public static String customSeedText = "";
 
 	public static void init() {
 
@@ -261,8 +259,14 @@ public class Dungeon {
 		mobsToChampion = -1;
 		mobsToStateLing = -1;
 
-		String str = CustomGameSettings.getSeedString();
-		seed = str.equals("")?DungeonSeed.randomSeed(): SeedUtil.directConvert(str, 'A', 26);//DungeonSeed.randomSeed();
+		//Custom Seed Code
+		if (!SPDSettings.customSeed().isEmpty()){
+			customSeedText = SPDSettings.customSeed();
+			seed = DungeonSeed.convertFromText(customSeedText);
+		} else {
+			customSeedText = "";
+			seed = DungeonSeed.randomSeed();
+		}
 
 		Actor.clear();
 		Actor.resetNextID();

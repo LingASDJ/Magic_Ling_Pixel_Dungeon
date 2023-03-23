@@ -44,8 +44,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHeroInfo;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
@@ -383,7 +383,38 @@ public class HeroSelectScene extends PixelScene {
 		IconButton DevMode = new IconButton(new ItemSprite(ItemSpriteSheet.SEED_SKYBLUEFIRE)){
 			@Override
 			protected void onClick() {
-				ShatteredPixelDungeon.scene().addToFront(new WndSeed(true));
+				String existingSeedtext = SPDSettings.customSeed();
+				ShatteredPixelDungeon.scene().addToFront(new WndTextInput(Messages.get(HeroSelectScene.class, "custom_seed_title"),
+						Messages.get(HeroSelectScene.class, "custom_seed_desc"),
+						existingSeedtext,
+						20,
+						false,
+						Messages.get(HeroSelectScene.class, "custom_seed_set"),
+						Messages.get(HeroSelectScene.class, "custom_seed_clear")) {
+					@Override
+					public void onSelect(boolean positive, String text) {
+						text = DungeonSeed.formatText(text);
+						long seed = DungeonSeed.convertFromText(text);
+
+						if (positive && seed != -1) {
+
+							for (GamesInProgress.Info info : GamesInProgress.checkAll()) {
+								if (info.seed == seed) {
+									SPDSettings.customSeed("");
+									icon.resetColor();
+									ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(HeroSelectScene.class, "custom_seed_duplicate")));
+									return;
+								}
+							}
+
+							SPDSettings.customSeed(text);
+							icon.hardlight(1f, 1.5f, 0.67f);
+						} else {
+							SPDSettings.customSeed("");
+							icon.resetColor();
+						}
+					}
+				});
 			}
 		};
 		DevMode.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
@@ -538,10 +569,10 @@ public class HeroSelectScene extends PixelScene {
 		IconButton DLCStoryMode = new IconButton(new ItemSprite(ItemSpriteSheet.DLCBOOKS)) {
 			@Override
 			protected void onClick() {
-				if(1==2){
+				if(1 == 2){
 					Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextInput(Messages.get(WndStartGame.class,"custom_name"),
 							Messages.get(WndStartGame.class, "custom_name_desc")+SPDSettings.heroName(),
-							SPDSettings.heroName(), 20,
+							SPDSettings.heroName(), 100,
 							false, Messages.get(WndStartGame.class,"custom_name_set"),
 							Messages.get(WndStartGame.class,"custom_name_clear")){
 						@Override
@@ -628,9 +659,6 @@ public class HeroSelectScene extends PixelScene {
 	}
 
 	private static class Sky extends Visual {
-
-		private static final int[] day		= {0xFF4488FF, 0xFFCCEEFF};
-		private static final int[] night	= {0xFF001155, 0xFF335980};
 		private static final int[][] gradients = new int[][] {
 				{ 0xff012459, 0xff001322 },
 				{ 0xff003972, 0xff001322 },

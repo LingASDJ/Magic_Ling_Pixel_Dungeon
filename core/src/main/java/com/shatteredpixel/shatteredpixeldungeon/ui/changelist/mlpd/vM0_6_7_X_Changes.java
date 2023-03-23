@@ -40,6 +40,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_25_Changes(changeInfos);
         add_v0_6_24_Changes(changeInfos);
         add_v0_6_23_Changes(changeInfos);
         add_v0_6_22_Changes(changeInfos);
@@ -65,6 +66,39 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_25_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta4.5(P3)", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEED_SKYBLUEFIRE), ("破碎地牢种子系统"),
+                ("现在已正式接入破碎地牢的种子系统")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.PBlade), ("归溯钥剑"),
+                ("钥匙剑现在无法自我升级，但可以通过打怪获得经验。且获得经验提升为\n\n" +
+                        "普通怪物+15，迷你Boss+50，首领+100\n\n" +
+                        "注意：获得经验必须由钥匙剑进行攻击且目标死亡，否则无法获得经验" )));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X54")));
+
+        changes = new ChangeInfo("削弱", false, null);
+        changes.hardlight(Window.RED_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_HTR), ("风暴雷霆法杖"),
+                ("伤害进行了一些改进，现在初始伤害为4-4。" )));
+
     }
 
     public static void add_v0_6_24_Changes( ArrayList<ChangeInfo> changeInfos ) {

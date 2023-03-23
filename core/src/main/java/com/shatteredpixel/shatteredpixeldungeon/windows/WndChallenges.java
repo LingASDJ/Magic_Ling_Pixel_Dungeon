@@ -179,7 +179,7 @@ public class WndChallenges extends Window {
 			@Override
 			protected void onClick() {
 				for (int i = 0; i < boxes.size(); i++) {
-					setCheckedNoUpdate(i, false);
+					setCheckedNoUpdate(i);
 				}
 			}
 		};
@@ -194,8 +194,8 @@ public class WndChallenges extends Window {
 		resize( WIDTH, (int)pos );
 	}
 
-	private void setCheckedNoUpdate(int id, boolean checked) {
-		boxes.get(id).checked(checked);
+	private void setCheckedNoUpdate(int id) {
+		boxes.get(id).checked(false);
 	}
 
 

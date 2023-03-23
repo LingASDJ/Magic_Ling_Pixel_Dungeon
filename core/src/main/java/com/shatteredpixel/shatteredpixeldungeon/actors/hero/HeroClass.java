@@ -105,10 +105,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfGodIce;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfHightHunderStorm;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfScale;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
@@ -117,6 +117,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
@@ -169,7 +170,7 @@ public enum HeroClass {
 
 		if (Dungeon.isChallenged(Challenges.PRO)){
 			new WandOfHightHunderStorm().quantity(11).identify().collect();
-			new FireFishSword().quantity(1).identify().collect();
+			new LockSword().quantity(1).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
 			new PotionOfLevitation().quantity(100).identify().collect();
 			new SDBSword().quantity(1).identify().collect();
@@ -260,16 +261,11 @@ public enum HeroClass {
 
 		i = new Food();
 
-		//todo 不存在BUG挑战才给予
-//		if(!Dungeon.isChallenged(BUG)) {
-//			new PotionOfLightningShiledX().quantity(3).identify().collect();
-//		}
-
 		new HerbBag().quantity(1).identify().collect();
 		new PotionOfHealing().quantity(3).identify().collect();
 		//Badges.ENDDIED();
 		new ScrollOfUpgrade().quantity(1).identify().collect();
-		//new IndexBooks().quantity(1).identify().collect();
+
 		if (!Challenges.isItemBlocked(i)) i.collect();
 		new PotionOfLightningShiledX().quantity(3).identify().collect();
 		new ScrollOfIdentify().identify();

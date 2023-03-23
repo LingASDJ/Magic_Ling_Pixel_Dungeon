@@ -128,7 +128,10 @@ public class GamesInProgress {
 		
 		info.depth = depth;
 		info.challenges = challenges;
-		
+
+		info.seed = Dungeon.seed;
+		info.customSeed = Dungeon.customSeedText;
+
 		info.level = hero.lvl;
 		info.str = hero.STR;
 		info.strBonus = hero.STR() - hero.STR;
@@ -158,6 +161,10 @@ public class GamesInProgress {
 	
 	public static class Info {
 		public int slot;
+
+		//Seed
+		public long seed;
+		public String customSeed;
 
 		public int depth;
 		public int version;

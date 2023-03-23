@@ -928,20 +928,11 @@ public class Hero extends Char {
 	}
 	
 	private boolean actMove( HeroAction.Move action ) {
-		//检查
+
 		int chCount = 0;
 		for (int ch : Challenges.MASKS){
 			if ((Dungeon.challenges & ch) != 0) chCount++;
 		}
-
-		//TODO 获取三个挑战的枚举后，则超过或等于3挑战以激活挑战，在英雄移动的时候
-		//
-
-//		//todo 移动时修复了BUG
-//		if(Dungeon.isChallenged(BUG) && !bugsyncfixed){
-//			new PotionOfLightningShiledX().quantity(3).identify().collect();
-//			bugsyncfixed = true;
-//		}
 
 		if(chCount >= 3 && !lanterfireactive && !Dungeon.isChallenged(PRO) || Dungeon.isChallenged(DHXD) && !lanterfireactive){
 			//TODO 灯火前行
@@ -953,8 +944,6 @@ public class Hero extends Char {
 			lanterfireactive = true;
 
 			Buff.affect( this, Nyctophobia.class );
-
-//			GLog.n("系统已经检测到你已开启困难模式，灯火会与你结伴同行，但同时，恶魔也会对你馋言欲滴。");
 
 			switch (Random.Int(4)){
 				case 0: default:

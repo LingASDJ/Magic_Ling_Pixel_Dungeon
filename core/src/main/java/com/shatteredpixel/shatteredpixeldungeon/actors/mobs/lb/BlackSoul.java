@@ -24,13 +24,10 @@ public class BlackSoul extends Mob {
         spriteClass = ShadowSprite.class;
 
         //与英雄成长阶级相同
-        HP = HT = 20 + 5*(hero.lvl-1) + hero.HTBoost;
+        HP = HT = (20 + 5*(hero.lvl-1) + hero.HTBoost)/2;
 
         immunities.add(AllyBuff.class);
     }
-
-
-
         @Override
         protected boolean act() {
             int oldPos = pos;

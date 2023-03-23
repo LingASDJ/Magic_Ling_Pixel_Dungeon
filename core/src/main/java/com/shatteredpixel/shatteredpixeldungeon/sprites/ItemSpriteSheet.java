@@ -755,6 +755,8 @@ public class ItemSpriteSheet {
 	public static final int	SDBlade			= BAGS+74;
 	public static final int	HHBlade				= BAGS+75;
 
+	public static final int	PBlade				= BAGS+76;
+
 	static{
 		assignItemRect(VIAL,        16, 16);
 		assignItemRect(POUCH,       14, 15);

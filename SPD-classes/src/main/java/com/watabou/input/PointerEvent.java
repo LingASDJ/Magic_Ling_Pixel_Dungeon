@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PointerEvent {
-
+	public static boolean clearKeyboardThisPress = true;
 	public enum Type {
 		DOWN,
 		UP,

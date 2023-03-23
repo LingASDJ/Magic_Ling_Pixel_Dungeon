@@ -227,7 +227,7 @@ public class EndingBlade extends Weapon {
                 else
                     QuickSlotButton.target(Actor.findChar(cell));
 
-                if (curWand.tryToZap(curUser, target)) {
+                if (curWand.tryToZap(curUser)) {
 
                     curUser.busy();
                         curWand.fxs(shot, new Callback() {
@@ -249,7 +249,7 @@ public class EndingBlade extends Weapon {
         }
     };
 
-    public boolean tryToZap( Hero owner, int target ){
+    public boolean tryToZap( Hero owner ){
 
         if (owner.buff(MagicImmune.class) != null){
             GLog.w( Messages.get(Wand.class, "no_magic") );
