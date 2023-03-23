@@ -1308,6 +1308,16 @@ public class Hero extends Char {
 					InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
 					Game.switchScene(InterlevelScene.class);
 				}
+			} else {
+				curAction = null;
+
+				TimekeepersHourglass.timeFreeze timeFreeze = buff(TimekeepersHourglass.timeFreeze.class);
+				if (timeFreeze != null) timeFreeze.disarmPressedTraps();
+				Swiftthistle.TimeBubble timeBubble = buff(Swiftthistle.TimeBubble.class);
+				if (timeBubble != null) timeBubble.disarmPressedTraps();
+
+				InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
+				Game.switchScene(InterlevelScene.class);
 			}
 
 			return false;
