@@ -73,17 +73,15 @@ public class LockSword extends MeleeWeapon {
 
         if (level >= 10) {
             lvl += 0;
-        } else if (defender.properties().contains(Char.Property.BOSS) && defender.HP <= damage && level >= 10) {
+        } else if (defender.properties().contains(Char.Property.BOSS) && defender.HP <= damage && level <= 10) {
             //目标Boss血量小于实际伤害判定为死亡,+100
             lvl += 100;
-        } else if (defender.properties().contains(Char.Property.MINIBOSS) && defender.HP <= damage && level >= 10) {
+        } else if (defender.properties().contains(Char.Property.MINIBOSS) && defender.HP <= damage && level <= 10) {
             //目标迷你Boss血量小于实际伤害判定为死亡,+30
             lvl += 50;
-        } else if (defender.HP <= damage && level >= 10) {
+        } else if (defender.HP <= damage && level <= 10) {
             //目标血量小于实际伤害判定为死亡,+15
             lvl += 15;
-        } else {
-            lvl = 1000;
         }
         if (level>= 9) {
             dmg = (new Grim()).proc(this, attacker, defender, damage) + 8;
