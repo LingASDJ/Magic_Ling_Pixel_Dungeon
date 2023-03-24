@@ -58,7 +58,7 @@ public class WndGameInProgress extends Window {
 	public WndGameInProgress(final int slot){
 		
 		final GamesInProgress.Info info = GamesInProgress.check(slot);
-		String className = null;
+		String className;
 		assert info != null;
 		if (info.subClass != HeroSubClass.NONE){
 			className = info.subClass.title();
@@ -72,11 +72,10 @@ public class WndGameInProgress extends Window {
 		if (info.name.equals("")) {
 			title.label(Messages.get(this, "title", info.level, className.toUpperCase(Locale.ENGLISH)));
 		} else {
-			StringBuilder csname = new StringBuilder();
-			csname.append(info.name);
-			csname.append("\n");
-			csname.append(Messages.get(this, "title",info.level, className));
-			title.label(csname.toString().toUpperCase(Locale.ENGLISH));
+			String csname = info.name +
+					"\n" +
+					Messages.get(this, "title", info.level, className);
+			title.label(csname.toUpperCase(Locale.ENGLISH));
 		}
 
 
@@ -111,12 +110,13 @@ public class WndGameInProgress extends Window {
 					try {
 						Bundle bundle = FileUtils.bundleFromFile(GamesInProgress.gameFile(slot));
 						String ing =
-								"游戏版本:" + Game.version+"\n\n"+
-								"地牢种子:" + DungeonSeed.convertToCode(bundle.getLong("seed"))+"\n\n"+
-								"现有金币:" + bundle.getInt("gold") +"\n\n"+
-								"奈亚大亨:" + bundle.getInt("naiyaziCollected")+"\n一场游戏累计在终端购买7次，奈亚即可永久入驻0层" +"\n\n"+
-								"拟态猎杀:" + bundle.getInt("goldchest") +"\n\n"+
-								"注：类型不同的种子所生成的地牢物品规则将有所不同。\n-_B类_为开启_独当一面_挑战后的种子";
+								Messages.get(WndGameInProgress.class,"gameversion") + Game.version+"\n\n"+
+								Messages.get(WndGameInProgress.class,"gameseed")+ DungeonSeed.convertToCode(bundle.getLong("seed"))+"\n\n"+
+								Messages.get(WndGameInProgress.class,"gamegold") + bundle.getInt("gold") +"\n\n"+
+								Messages.get(WndGameInProgress.class,"gamenayzi") + bundle.getInt("naiyaziCollected")+
+								Messages.get(WndGameInProgress.class,"gamenayzis") +"\n\n"+
+								Messages.get(WndGameInProgress.class,"gamemimic") + bundle.getInt("goldchest") +"\n\n"+
+								Messages.get(WndGameInProgress.class,"gameinof");
 						ShatteredPixelDungeon.scene().addToFront(new WndMessage(ing));
 					} catch (IOException ignored) {
 					}
@@ -205,11 +205,11 @@ public class WndGameInProgress extends Window {
 		};
 
 		cont.icon(Icons.get(Icons.ENTER));
-		cont.setRect(0, pos, WIDTH/2 -1, 20);
+		cont.setRect(0, pos, WIDTH/2f -1, 20);
 		add(cont);
 
 		erase.icon(Icons.get(Icons.CLOSE));
-		erase.setRect(WIDTH/2 + 1, pos, WIDTH/2 - 1, 20);
+		erase.setRect(WIDTH/2f + 1, pos, WIDTH/2f - 1, 20);
 		add(erase);
 		
 		resize(WIDTH, (int)cont.bottom()+1);

@@ -277,6 +277,8 @@ public class Toolbar extends Component {
 		float startX, startY;
 		switch(Mode.valueOf(SPDSettings.toolbarMode())){
 			case SPLIT:
+			case GROUP:
+			case CENTER:
 				btnWait.setPos(x, y);
 				btnSearch.setPos(btnWait.right(), y);
 
@@ -285,25 +287,40 @@ public class Toolbar extends Component {
 				startX = btnInventory.left() - btnQuick[0].width();
 				for (int i = 0; i < maxHorizontalQuickslots; i++) {
 					QuickslotTool tool = btnQuick[i];
-					tool.setPos(startX, y);
+					tool.setPos(startX, y+2);
 					if (i + 1 < btnQuick.length) {
 						startX = btnQuick[i].left() - btnQuick[i+1].width();
 					}
 				}
 
-				startY = 40;
+				startY = 60;
 				for (int i = maxHorizontalQuickslots; i < btnQuick.length; i++) {
 					QuickslotTool tool = btnQuick[i];
 					tool.setPos(width - (tool.width() + 2), startY);
 					if (i + 1 < btnQuick.length) {
-						startY = btnQuick[i].bottom();
+						if(i +1 < 7) {
+							startY = btnQuick[i].bottom();
+						} else if (i == 7) {
+							startY = btnQuick[i].top();
+							tool.setPos(width - (tool.width() + 24), startY);
+						} else if (i == 8) {
+							startY = btnQuick[i].top() - 24;
+							tool.setPos(width - (tool.width() + 24), startY);
+						} else if (i == 9) {
+							startY = btnQuick[i].top() - 48;
+							tool.setPos(width - (tool.width() + 24), startY);
+						} else if (i == 10) {
+							startY = btnQuick[i].top() - 24;
+							tool.setPos(width - (tool.width() + 24), startY);
+						}
 					}
 				}
 
+
 				//center the quickslots if they
 				if (btnQuick[btnQuick.length-1].left() < btnSearch.right()){
-					float diff = Math.round(btnSearch.right() - btnQuick[btnQuick.length-1].left())/2;
-					for( int i = 0; i < Constants.MAX_QUICKSLOTS; i++){
+					float diff = Math.round(btnSearch.right() - btnQuick[btnQuick.length-1].left())/2f;
+					for( int i = 0; i < maxHorizontalQuickslots; i++){
 						btnQuick[i].setPos( btnQuick[i].left()+diff, btnQuick[i].top() );
 					}
 				}
@@ -373,8 +390,6 @@ public class Toolbar extends Component {
 		private static final int BGCOLOR = 0x7B8073;
 
 		private Image base;
-
-
 
 		public Tool( int x, int y, int width, int height ) {
 			super();

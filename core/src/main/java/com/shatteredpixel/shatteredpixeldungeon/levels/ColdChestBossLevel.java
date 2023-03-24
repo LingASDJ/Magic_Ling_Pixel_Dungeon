@@ -5,11 +5,9 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 
@@ -176,6 +174,7 @@ public class ColdChestBossLevel extends Level {
             }
         }
 
+
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
             if(mob instanceof DiamondKnight && mob.HP >400){
                 GLog.n("ColdChestBoss");
@@ -183,23 +182,6 @@ public class ColdChestBossLevel extends Level {
 
         }
 
-    }
-
-    private void cleanMapState(){
-        buildFlagMaps();
-        cleanWalls();
-
-        BArray.setFalse(visited);
-        BArray.setFalse(mapped);
-
-        for (Blob blob: blobs.values()){
-            blob.fullyClear();
-        }
-        addVisuals(); //this also resets existing visuals
-        traps.clear();
-
-        GameScene.resetMap();
-        Dungeon.observe();
     }
 
     public void progress(){

@@ -38,7 +38,7 @@ public class TitleScene extends PixelScene {
 	@Override
 	public void create() {
 		super.create();
-		SPDSettings.systemFont(false);
+//		SPDSettings.systemFont(false);
 		Music.INSTANCE.play(Assets.Music.THEME_1, true);
 
 

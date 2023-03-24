@@ -174,15 +174,15 @@ public class Bestiary {
 			case 2:
 				return new ArrayList<>(Arrays.asList(Rat.class,
 						Rat.class, Rat.class, Gnoll.class, Gnoll.class,
-						Gnoll.class, OGPDLLS.class, OGPDNQHZ.class));
+						Gnoll.class, Gnoll.class, Albino.class));
 			case 3:
 				return new ArrayList<>(Arrays.asList(Rat.class,
-						Rat.class, OGPDNQHZ.class,
-						OGPDZSLS.class, Rat.class, Rat.class,
-						Snake.class,Crab.class,Swarm.class));
+						Rat.class, Salamander.class,
+						Salamander.class, Rat.class, Rat.class,
+						ClearElemental.class,Crab.class,Swarm.class));
 			case 4:
-				return new ArrayList<>(Arrays.asList(OGPDZSLS.class,
-						OGPDLLS.class, Snake.class,
+				return new ArrayList<>(Arrays.asList(Salamander.class,
+						ClearElemental.class, Slime_Red.class,
 						Slime_Orange.class, Swarm.class,Crab.class));
 			case 5:
 				return new ArrayList<>(Arrays.asList(Rat.class, Rat.class,Slime.class,Slime.class,Swarm.class,Crab.class));

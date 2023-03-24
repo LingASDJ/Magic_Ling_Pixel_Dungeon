@@ -21,21 +21,20 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedSprites;
 import com.watabou.utils.Random;
 
 public class Slime_Red extends Slime {
+
     {
         spriteClass = RedSprites.class;
-        maxLvl = -200;
+        maxLvl = 16;
+        lootChance = 0.15f;
+        loot = PotionOfHealing.class;
         properties.add(Property.ACIDIC);
     }
 
@@ -43,16 +42,10 @@ public class Slime_Red extends Slime {
 
     @Override
     public int attackProc(Char enemy, int damage) {
-        if (Random.Int(0, 6) > 7) {
+        if (Random.Int(0, 6) > 4) {
+            Buff.affect( enemy, Bleeding.class ).set( 3 );
         }
-        int damage2 = Slime_Red.super.attackProc(enemy, this.combo + damage);
-        if (Dungeon.level.flamable[enemy.pos]) {
-            GameScene.add(Blob.seed(enemy.pos, 1, Fire.class));
-        }
-        if (enemy.buff(Burning.class) == null) {
-            Buff.affect(enemy, Bleeding.class);
-        }
-        return damage2;
+        return Slime_Red.super.attackProc(enemy, this.combo + damage);
     }
 
 }

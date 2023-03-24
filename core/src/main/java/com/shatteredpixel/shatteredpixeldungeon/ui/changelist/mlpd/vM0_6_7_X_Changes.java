@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AutoShopRoBotSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlueBatSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearElementalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdGuardSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdRatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
@@ -22,10 +23,13 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MagicGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MolotovHuntsmanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MurdererSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.OGPDNQHZTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedSwarmSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SalamanderSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SlimeKingSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SnakeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WFSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -40,6 +44,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_26_Changes(changeInfos);
         add_v0_6_25_Changes(changeInfos);
         add_v0_6_24_Changes(changeInfos);
         add_v0_6_23_Changes(changeInfos);
@@ -68,6 +73,45 @@ public class vM0_6_7_X_Changes {
         add_v0_6_0_Changes(changeInfos);
     }
 
+    public static void add_v0_6_26_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta4.9(P3)", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new SalamanderSprites(), ("新生物：深蓝蝾螈"),
+                ("森林中的小生物，但早已不再温顺\n它们的锋利尾巴可以刺穿每一个敌人。")));
+
+        changes.addButton(new ChangeButton(new ClearElementalSprites(), ("新怪物：纯晶元素"),
+                ("森林曾经的守护者，如今只能使用残剩的力量试图驱赶森林的入侵者")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.快捷栏进行了少量优化\n2.部分代码优化")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.PBlade), ("归溯钥剑"),
+                ("修复一系列问题，并且重新调整成长面板" )));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X55")));
+
+        changes = new ChangeInfo("移除", false, null);
+        changes.hardlight(Window.RED_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new OGPDNQHZTT(), ("OGPD老鼠组"),
+                ("曾经的魔绫代表怪物，如今也正式退出魔绫的舞台。2021.2.21--2023.3.24（R.I.P.)")));
+
+        changes.addButton(new ChangeButton(new SnakeSprite(), ("下水道巨蛇"),
+                ("破碎的代表怪物，由于不符合魔绫的世界观，故而被移除。")));
+    }
+
     public static void add_v0_6_25_Changes( ArrayList<ChangeInfo> changeInfos ) {
         ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta4.5(P3)", true, "");
         changes.hardlight(Window.TITLE_COLOR);
@@ -81,7 +125,7 @@ public class vM0_6_7_X_Changes {
                 ("现在已正式接入破碎地牢的种子系统")));
 
         changes = new ChangeInfo("改动", false, null);
-        changes.hardlight(Window.GREEN_COLOR);
+        changes.hardlight(Window.CYELLOW);
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.PBlade), ("归溯钥剑"),
@@ -102,7 +146,7 @@ public class vM0_6_7_X_Changes {
     }
 
     public static void add_v0_6_24_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta2(P3)", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta4(P3)", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 

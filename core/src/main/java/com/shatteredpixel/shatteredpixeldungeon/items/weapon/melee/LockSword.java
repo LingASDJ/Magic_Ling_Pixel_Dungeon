@@ -8,12 +8,14 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.HaloBlazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
 public class LockSword extends MeleeWeapon {
     private int lvl = 0;
@@ -25,20 +27,24 @@ public class LockSword extends MeleeWeapon {
 
     @Override
     public int level() {
-        return lvl/100;
-    }
-
-    @Override
-    public int min(int lvl) {
-
-        return  Math.round(1.0f*(tier+1)) +
-                lvl*Math.round(1.5f*(tier+1));
+        if(lvl <=1000){
+            return lvl/100;
+        } else {
+            return 10;
+        }
     }
 
     @Override
     public int max(int lvl) {
 
-        return  Math.round(2.5f*(tier+1)) +
+        return  Math.round(1.9f*(tier+1)) +
+                lvl*Math.round(1.5f*(tier+1));
+    }
+
+    @Override
+    public int min(int lvl) {
+
+        return  Math.round(1.5f*(tier+1)) +
                 lvl*Math.round(0.5f*(tier+1));
     }
 
@@ -63,39 +69,55 @@ public class LockSword extends MeleeWeapon {
     }
 
     public int proc(Char attacker, Char defender, int damage ) {
-        if (level >= 10) {
-            lvl = 1000;
-        } else {
-            ++lvl;
-        }
 
         int dmg;
 
-        if (level >= 10) {
-            lvl += 0;
-        } else if (defender.properties().contains(Char.Property.BOSS) && defender.HP <= damage && level <= 10) {
+        if (lvl >= 1000) {
+            lvl += 1;
+        } else if (defender.properties().contains(Char.Property.BOSS) && defender.HP <= damage && lvl <= 1000) {
             //目标Boss血量小于实际伤害判定为死亡,+100
             lvl += 100;
-        } else if (defender.properties().contains(Char.Property.MINIBOSS) && defender.HP <= damage && level <= 10) {
+        } else if (defender.properties().contains(Char.Property.MINIBOSS) && defender.HP <= damage && lvl <= 1000) {
             //目标迷你Boss血量小于实际伤害判定为死亡,+30
             lvl += 50;
-        } else if (defender.HP <= damage && level <= 10) {
+        } else if (defender.HP <= damage && lvl <= 1000) {
             //目标血量小于实际伤害判定为死亡,+15
             lvl += 15;
         }
-        if (level>= 9) {
-            dmg = (new Grim()).proc(this, attacker, defender, damage) + 8;
-            damage = dmg;
-        } else if (level>= 8) {
+
+        if (lvl>= 900) {
+            switch (Random.NormalIntRange(1,4)){
+                case 1:
+                    dmg = (new Grim()).proc(this, attacker, defender, damage) + 8;
+                    damage = dmg;
+                    break;
+                case 2:
+                    dmg = (new Shocking()).proc(this, attacker, defender, damage) + 8;
+                    damage = dmg;
+                    break;
+                case 3:
+                    dmg = (new Blazing()).proc(this, attacker, defender, damage) + 8;
+                    damage = dmg;
+                    break;
+                case 4:
+                    dmg = (new Kinetic()).proc(this, attacker, defender, damage) + 8;
+                    damage = dmg;
+                    break;
+                default:
+                    dmg = (new HaloBlazing()).proc(this, attacker, defender, damage) + 8;
+                    damage = dmg;
+                    break;
+            }
+        } else if (lvl>= 800) {
             dmg = (new Unstable()).proc(this, attacker, defender, damage) + 4;
             damage = dmg;
-        } else if (level>= 6){
+        } else if (lvl>= 600){
             dmg = (new Shocking()).proc(this, attacker, defender, damage) + 3;
             damage = dmg;
-        } else if (level>= 4){
+        } else if (lvl>= 400){
             dmg = (new Blazing()).proc(this, attacker, defender, damage) + 2;
             damage = dmg;
-        } else if (level>= 2){
+        } else if (lvl>= 200){
             dmg = (new Kinetic()).proc(this, attacker, defender, damage) + 1;
             damage = dmg;
         }

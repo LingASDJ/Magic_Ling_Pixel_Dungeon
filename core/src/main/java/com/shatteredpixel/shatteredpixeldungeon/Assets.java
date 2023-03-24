@@ -162,7 +162,7 @@ public class Assets {
 		public static final String THEME      = "music/theme.ogg";
 		public static final String GO      = "music/Open.ogg";
 		public static final String SHOP      = "music/shop.ogg";
-		public static final String THEME_1      = "music/newtheme.ogg";
+		public static final String THEME_1      = "music/theme.ogg";
 		public static final String THEME_2      = "music/theme.ogg";
 
 		public static final String SEWERS_1     = "music/Level1.ogg";
@@ -332,10 +332,13 @@ public class Assets {
 
 		public static final String DKGirl		= "Npcs/DKGirl.png";
 
+		public static final String SAESD		= "sprites/bluedragon.png";
+
 		public static final String WHITE		= "Npcs/White.png";
 		public static final String BBAT	= "sprites/bloodbat.png";
 
 		public static final String RAT		= "sprites/rat.png";
+		public static final String CLEAR		= "sprites/clearelemt.png";
 		public static final String BRUTE	= "sprites/brute.png";
 		public static final String SPINNER	= "sprites/spinner.png";
 		public static final String ASDW	= "sprites/Viaw.png";

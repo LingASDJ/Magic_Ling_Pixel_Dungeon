@@ -62,7 +62,7 @@ public class ScrollOfRoseShiled extends Scroll {
     @Override
     public void doRead() {
 
-        Buff.prolong(hero, RoseShiled.class, 5f);
+        Buff.prolong(hero, RoseShiled.class, 10f);
         setKnown();
         new Flare( 5, 32 ).color( 0xFF00FF, true ).show( curUser.sprite, 2f );
 

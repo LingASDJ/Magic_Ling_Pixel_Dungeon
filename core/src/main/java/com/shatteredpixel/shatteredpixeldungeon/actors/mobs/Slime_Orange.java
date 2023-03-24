@@ -31,7 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlam
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.OrangeSprites;
 import com.watabou.utils.Random;
-/*史莱姆烈焰审判现在移除*/
+
 public class Slime_Orange extends Slime {
     {
         spriteClass = OrangeSprites.class;

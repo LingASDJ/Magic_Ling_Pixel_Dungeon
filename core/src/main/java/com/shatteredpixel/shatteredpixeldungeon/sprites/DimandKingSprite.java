@@ -12,7 +12,7 @@ public class DimandKingSprite extends MobSprite {
 
         TextureFilm frames = new TextureFilm( texture, 24, 24 );
 
-        idle = new Animation( 2, true );
+        idle = new Animation( 7, true );
         idle.frames( frames, 0, 0, 0, 1 );
 
         run = new Animation( 10, true );
