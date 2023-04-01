@@ -275,7 +275,7 @@ public class FlameC01 extends Mob {
         affectedCells = new HashSet<>();
         visualCells = new HashSet<>();
 
-        int maxDist = 4 + 4*4;
+        int maxDist = 2 + 4*4;
         int dist = Math.min(bolt.dist, maxDist);
 
         for (int i = 0; i < PathFinder.CIRCLE8.length; i++){
@@ -341,7 +341,7 @@ public class FlameC01 extends Mob {
     }
 
     private int right(int direction){
-        return direction == 7 ? 0 : direction+1;
+        return direction == 3 ? 0 : direction+1;
     }
 
     protected void onZap( Ballistica bolt ) {

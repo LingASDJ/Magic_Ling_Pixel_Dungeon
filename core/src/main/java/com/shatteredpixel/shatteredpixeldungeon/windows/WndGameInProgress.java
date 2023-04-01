@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -135,12 +137,13 @@ public class WndGameInProgress extends Window {
 					try {
 						Bundle bundle = FileUtils.bundleFromFile(GamesInProgress.gameFile(slot));
 						String ing =
-						"游戏版本:" + Game.version+"\n\n"+
-						"地牢种子:" + DungeonSeed.convertToCode(bundle.getLong("seed"))+"\n\n"+
-						"现有金币:" + bundle.getInt("gold") +"\n\n"+
-						"奈亚大亨:" + bundle.getInt("naiyaziCollected")+"\n一场游戏累计在终端购买7次，奈亚即可永久入驻0层" +"\n\n"+
-						"拟态猎杀:" + bundle.getInt("goldchest") +"\n\n"+
-						"注：类型不同的种子所生成的地牢物品规则将有所不同。\n-_B类_为开启_独当一面_挑战后的种子";
+								Messages.get(WndGameInProgress.class,"gameversion") + Game.version+"\n\n"+
+										Messages.get(WndGameInProgress.class,"gameseed")+ DungeonSeed.convertToCode(bundle.getLong("seed"))+"\n\n"+
+										Messages.get(WndGameInProgress.class,"gamegold") + bundle.getInt("gold") +"\n\n"+
+										Messages.get(WndGameInProgress.class,"gamenayzi") + bundle.getInt("naiyaziCollected")+
+										Messages.get(WndGameInProgress.class,"gamenayzis") +"\n\n"+
+										Messages.get(WndGameInProgress.class,"gamemimic") + bundle.getInt("goldchest") +"\n\n"+
+										Messages.get(WndGameInProgress.class,"gameinof");
 						ShatteredPixelDungeon.scene().addToFront(new WndMessage(ing));
 					} catch (IOException ignored) {
 					}
@@ -162,6 +165,8 @@ public class WndGameInProgress extends Window {
 		if (info.shld > 0)  statSlot( Messages.get(this, "health"), info.hp + "+" + info.shld + "/" + info.ht );
 		else                statSlot( Messages.get(this, "health"), (info.hp) + "/" + info.ht );
 		statSlot( Messages.get(this, "exp"), info.exp + "/" + Hero.maxExp(info.level) );
+
+		statSlot( Messages.get(this, "icehp"), (info.icehp) + "/" + 100 );
 		
 		pos += GAP;
 		statSlot( Messages.get(this, "gold"), info.goldCollected );
@@ -176,7 +181,7 @@ public class WndGameInProgress extends Window {
 				
 				GamesInProgress.curSlot = slot;
 				
-				Dungeon.hero = null;
+				hero = null;
 				ActionIndicator.action = null;
 				InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
 				ShatteredPixelDungeon.switchScene(InterlevelScene.class);

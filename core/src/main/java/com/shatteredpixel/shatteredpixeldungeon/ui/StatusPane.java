@@ -75,7 +75,11 @@ public class StatusPane extends Component {
 	private Button heroInfoOnBar;
 	private Image hg;
 
-	private Image puresoul;
+	private Image icehp;
+
+	private BitmapText icehpText;
+
+	private Image lanterfirevae;
 	private BitmapText hgText;
 
 	private Image exp;
@@ -159,8 +163,12 @@ public class StatusPane extends Component {
 		else        hg = new Image(asset, 0, 45, 49, 4);
 		add( hg );
 
-	 	puresoul = new Image(Assets.Interfaces.LANTERLING);
-		add( puresoul );
+		if (large)  icehp = new Image(asset, 0, 128, 128, 7);
+		else        icehp = new Image(asset, 0, 49, 52, 4);
+		add( icehp );
+
+	 	lanterfirevae = new Image(Assets.Interfaces.LANTERLING);
+		add(lanterfirevae);
 
 		hpText = new BitmapText(PixelScene.pixelFont);
 		hpText.alpha(0.6f);
@@ -171,7 +179,11 @@ public class StatusPane extends Component {
 		hgText.alpha(0.6f);
 		add(hgText);
 
-		//FPS TEXT
+		icehpText = new BitmapText(PixelScene.pixelFont);
+		icehpText.alpha(0.6f);
+		add(icehpText);
+
+		//TIME TEXT
 		timeText = PixelScene.renderTextBlock(5);
 		timeText.alpha(0.6f);
 		add(timeText);
@@ -273,6 +285,9 @@ public class StatusPane extends Component {
 			hgText.y = hg.y;
 			PixelScene.align(hgText);
 
+			icehp.x = x+ 30;
+			icehp.y = y + 4;
+
 			expText.x = exp.x + (128 - expText.width())/2f;
 			expText.y = exp.y;
 			PixelScene.align(expText);
@@ -280,9 +295,6 @@ public class StatusPane extends Component {
 			heroInfoOnBar.setRect(heroInfo.right(), y + 19, 130, 20);
 
 			if(SPDSettings.TimeLimit()) {
-//				fpsText.scale.set(PixelScene.align(0.8f));
-//				timeText.x = MenuPane.version.x;
-//				timeText.y = MenuPane.version.y+6;
 				PixelScene.align(timeText);
 				timeStatusText.x = MenuPane.version.x;
 				timeStatusText.y = MenuPane.version.y+10;
@@ -293,18 +305,12 @@ public class StatusPane extends Component {
 				timeStatusText.active=false;
 				timeStatusText.visible=false;
 			}
-//			buffs.setPos( x + 31, y +15 );
-
-//			//下半段
-//			puresoul.visible = true;
 			lanter.setPos(0, 500);
 			busy.x = x + bg.width + 1;
 			busy.y = y + bg.height - 9;
 		} else {
 			exp.x = x;
 			exp.y = y;
-
-			//
 			hp.x = shieldedHP.x = rawShielding.x = x + 30;
 			hp.y = shieldedHP.y = rawShielding.y = y + 3;
 
@@ -323,19 +329,22 @@ public class StatusPane extends Component {
 			hgText.y -= 0.001f; //prefer to be slightly higher
 			PixelScene.align(hgText);
 
-//			puresoulText.scale.set(PixelScene.align(0.5f));
-//			puresoulText.x = 31f;
-//			puresoulText.y = 13f + (hg.height - (puresoulText.baseLine()+puresoulText.scale.y))/2f;
-//			puresoulText.y -= 0.001f; //prefer to be slightly higher
-//			PixelScene.align(puresoulText);
+			icehp.x = 30.0f;
+			icehp.y = 13.0f;
+
+			icehpText.scale.set(PixelScene.align(0.5f));
+			icehpText.x = icehp.x + 1;
+			icehpText.y = icehp.y + (icehp.height - (icehpText.baseLine()+icehpText.scale.y))/2f;
+			icehpText.y -= 0.001f; //prefer to be slightly higher
+			PixelScene.align(icehpText);
 
 			heroInfoOnBar.setRect(heroInfo.right(), y, 50, 9);
 
-			puresoul.x= 1.0f;
-			puresoul.y= 142.0f;
-			puresoul.visible = false; //
+			lanterfirevae.x= 1.0f;
+			lanterfirevae.y= 142.0f;
+			lanterfirevae.visible = false; //
 
-			buffs.setPos( x + 31, y + 12 );
+			buffs.setPos( x + 34, y + 20 );
 
 			busy.x = x + 1;
 			busy.y = y + 33;
@@ -370,24 +379,16 @@ public class StatusPane extends Component {
 
 		int maxHunger = (int) Hunger.STARVING;
 		int maxPureSole = Dungeon.hero.lanterfire;
+		int mtPureSole = 100;
+
+		//冰血聪明 x
+		int maxIceHp = Dungeon.hero.icehp;
+		int mtIceHp = 100;
+
 		int health = Dungeon.hero.HP;
 		int shield = Dungeon.hero.shielding();
 		int max = Dungeon.hero.HT;
-		int mtPureSole = 100;
 
-		//检查为光与影使用黑色模块
-//		int chCount = 0;
-//		for (int ch : Challenges.MASKS){
-//			if ((Dungeon.challenges & ch) != 0) chCount++;
-//		}
-//
-//		if(chCount >= 3 && !Dungeon.isChallenged(PRO) && lanterfireactive){
-//			if (SPDSettings.ClassUI()) {
-//				bg.texture = TextureCache.get(Assets.Interfaces.STATUSSOUL_DARK);
-//			} else {
-//				bg.texture = TextureCache.get(Assets.Interfaces.STATUSSOUL);
-//			}
-//		} else
 		if (SPDSettings.ClassUI()) {
 			bg.texture = TextureCache.get(Assets.Interfaces.STATUS_DARK);
 		} else {
@@ -411,7 +412,7 @@ public class StatusPane extends Component {
 
 			if(lanterfireactive){
 				lanter.setPos(0, 500);
-				puresoul.visible = false;
+				lanterfirevae.visible = false;
 			}
 
 		} else {
@@ -421,16 +422,14 @@ public class StatusPane extends Component {
 			joinxxx.setPos(0, 500);
 			bossselect.setPos(0, 500);
 
-			//TODO 灯火前行
 			if(lanterfireactive){
 				lanter.setPos(0, 75);
 				lanter.visible = true;
 				lanter.active  = true;
-				puresoul.visible =true;
-				puresoul.x= 1.0f;
-				puresoul.y= 142.0f;
+				lanterfirevae.visible =true;
+				lanterfirevae.x= 1.0f;
+				lanterfirevae.y= 142.0f;
 			}
-
 
 		}
 
@@ -449,7 +448,7 @@ public class StatusPane extends Component {
 			}
 			timeText.text(sdf.format(date));
 		} else {
-			timeText.text("满目疮痍!游戏结束!");
+			timeText.text("GAME OVER");
 		}
 
 
@@ -470,10 +469,12 @@ public class StatusPane extends Component {
 		shieldedHP.scale.x = health/(float)max;
 
 		if(lanterfireactive) {
-			puresoul.scale.y = -Math.max( 0, (maxPureSole)/(float)mtPureSole);
+			lanterfirevae.scale.y = -Math.max( 0, (maxPureSole)/(float)mtPureSole);
 		} else {
-			puresoul.scale.y = -1.0f;
+			lanterfirevae.scale.y = -1.0f;
 		}
+
+		icehp.scale.x = Math.max( 0, (maxIceHp)/(float)mtIceHp);
 
 		if (shield > health) {
 			rawShielding.scale.x = shield / (float) max;
@@ -486,6 +487,8 @@ public class StatusPane extends Component {
 		} else {
 			hpText.text(health + "+" + shield +  "/" + max);
 		}
+
+		icehpText.text(maxIceHp + "/" + mtIceHp);
 
 		Hunger hungerBuff = Dungeon.hero.buff(Hunger.class);
 		if (hungerBuff != null) {

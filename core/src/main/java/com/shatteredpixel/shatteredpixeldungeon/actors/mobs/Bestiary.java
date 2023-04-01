@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.watabou.utils.Random;
@@ -41,33 +42,26 @@ public class Bestiary {
 
 	//支离破碎
 	private static ArrayList<Class<? extends Mob>> standardMobRotation(int i) {
-		if (Dungeon.isChallenged(RLPT)){
+		if (Dungeon.isChallenged(RLPT) && !Dungeon.isDLC(BOSSRUSH)){
 			switch (i) {
 				case 1:
 					//3x rat, 1x snake
 					return new ArrayList<>(Arrays.asList(
 							Rat.class, Rat.class,
-							Rat.class, OGPDZSLS.class, Snake.class,
-							Snake.class,Snake.class,Snake.class));
+							Rat.class));
 				case 2:
 					return new ArrayList<>(Arrays.asList(Rat.class,
 							Rat.class, Rat.class, Gnoll.class, Gnoll.class,
-							Gnoll.class, OGPDLLS.class, OGPDNQHZ.class, Crab.class));
+							Gnoll.class, Gnoll.class, Albino.class));
 				case 3:
 					return new ArrayList<>(Arrays.asList(Rat.class,
-							Rat.class, Rat.class, Gnoll.class, Gnoll.class,
-							Gnoll.class, OGPDLLS.class, OGPDNQHZ.class,
-							OGPDZSLS.class, Rat.class, Rat.class,
-							Snake.class,
-							Crab.class));
+							Rat.class, Salamander.class,
+							Salamander.class, Rat.class, Rat.class,
+							ClearElemental.class,Crab.class,Swarm.class));
 				case 4:
-					return new ArrayList<>(Arrays.asList(Rat.class,
-							Gnoll.class, Gnoll.class
-							, OGPDLLS.class,
-							Snake.class,
-							OGPDNQHZ.class, OGPDZSLS.class,
-							OGPDLLS.class, Snake.class,
-							Slime_Orange.class, Swarm.class, Crab.class));
+					return new ArrayList<>(Arrays.asList(Salamander.class,
+							ClearElemental.class, Slime_Red.class,
+							Slime_Orange.class, Swarm.class,Crab.class));
 				case 6:
 				case 7:
 				case 8:
@@ -188,8 +182,7 @@ public class Bestiary {
 				return new ArrayList<>(Arrays.asList(Rat.class, Rat.class,Slime.class,Slime.class,Swarm.class,Crab.class));
 			case 6:
 				return new ArrayList<>(Arrays.asList(Skeleton.class,
-						BlackHost.class,Guard.class, DM100.class, DM100.class, DM100.class,
-						Snake.class));
+						BlackHost.class,Guard.class, DM100.class, DM100.class, DM100.class));
 
 			case 7:
 				return new ArrayList<>(Arrays.asList(Skeleton.class, BlackHost.class,
@@ -265,16 +258,23 @@ public class Bestiary {
 						Monk.class, IceGolem.class,
 						Golem.class, IceGolem.class, Golem.class,Ice_Scorpio.class));
 
-			case 21:case 22:
+			case 21:
 				//3x succubus, 3x evil eye
 				return new ArrayList<>(Arrays.asList(
 						Eye.class,ShieldHuntsman.class,Ice_Scorpio.class));
+			case 22:
+				//3x succubus, 3x evil eye
+				return Dungeon.isDLC(BOSSRUSH) ? new ArrayList<>(Arrays.asList(
+						Eye.class,ShieldHuntsman.class,Ice_Scorpio.class,RedMurderer.class,MolotovHuntsman.class)) :
+						new ArrayList<>(Arrays.asList(
+						Eye.class,ShieldHuntsman.class,Ice_Scorpio.class));
 			case 23:
 				//1x: succubus, 2x evil eye, 3x scorpio
-				return new ArrayList<>(Arrays.asList(
-						Succubus.class,
-						Eye.class,
-						Scorpio.class, Succubus.class,ShieldHuntsman.class));
+				return Dungeon.isDLC(BOSSRUSH) ? new ArrayList<>(Arrays.asList(
+						Eye.class,ShieldHuntsman.class,Fire_Scorpio.class,Ice_Scorpio.class,RedMurderer.class,
+						MolotovHuntsman.class)) :
+						new ArrayList<>(Arrays.asList(
+								Eye.class,ShieldHuntsman.class,Ice_Scorpio.class));
 			//前半段决战
 			case 24:
 				//1x succubus, 2x evil eye, 3x scorpio

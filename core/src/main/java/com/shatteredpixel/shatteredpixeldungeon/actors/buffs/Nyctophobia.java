@@ -16,8 +16,6 @@ public class Nyctophobia extends Buff implements Hero.Doom {
 
     private static final float STEP = 100.0f;
 
-    public String[] hopelessTxt = {"你觉得自己注定失败。", "你感到无能为力。", "你感到生命在逐渐离你而去。"};
-
     private float level;
     private float partialDamage;
 

@@ -75,7 +75,9 @@ public class PotionOfHealing extends Potion {
 	}
 	
 	public static void cure( Char ch ) {
-		Buff.detach( ch, Poison.class );
+		if(Dungeon.depth!=28){
+			Buff.detach( ch, Poison.class );
+		}
 		Buff.detach( ch, Cripple.class );
 		Buff.detach( ch, Weakness.class );
 		Buff.detach( ch, Vulnerable.class );

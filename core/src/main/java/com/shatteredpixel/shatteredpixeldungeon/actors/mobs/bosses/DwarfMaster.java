@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -1611,7 +1612,10 @@ public class DwarfMaster extends Boss {
                 mob.die( cause );
             }
         }
+        if(Dungeon.isDLC(BOSSRUSH)){
 
+            GetBossLoot();
+        }
         for (Buff buff : hero.buffs()) {
             if (buff instanceof TestDwarfMasterLock) {
                 buff.detach();

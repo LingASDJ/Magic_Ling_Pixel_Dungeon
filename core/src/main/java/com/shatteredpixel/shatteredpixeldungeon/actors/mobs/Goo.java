@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
+
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -48,7 +50,12 @@ import com.watabou.utils.Random;
 public class Goo extends Mob {
 		
 	{
-		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 120 : 100;
+		if(Dungeon.isDLC(BOSSRUSH)){
+			HP = HT = 180;
+		} else {
+			HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 120 : 100;
+		}
+
 		EXP = 10;
 		defenseSkill = 8;
 		spriteClass = GooSprite.class;
@@ -246,25 +253,30 @@ public class Goo extends Mob {
 	public void die( Object cause ) {
 		
 		super.die( cause );
-		
-		Dungeon.level.unseal();
-		
-		GameScene.bossSlain();
-		Dungeon.level.drop( new SkeletonKey( Dungeon.depth ), pos ).sprite.drop();
-		
-		//60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5
-		int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
-		for (int i = 0; i < blobs; i++){
-			int ofs;
-			do {
-				ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
-			} while (!Dungeon.level.passable[pos + ofs]);
-			Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
+
+		if(Dungeon.depth!=28){
+			Dungeon.level.unseal();
+
+			GetBossLoot();
+
+			GameScene.bossSlain();
+			Dungeon.level.drop( new SkeletonKey( Dungeon.depth ), pos ).sprite.drop();
+
+			//60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5
+			int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
+			for (int i = 0; i < blobs; i++){
+				int ofs;
+				do {
+					ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
+				} while (!Dungeon.level.passable[pos + ofs]);
+				Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
+			}
+
+			Badges.validateBossSlain();
+
+			yell( Messages.get(this, "defeated") );
 		}
-		
-		Badges.validateBossSlain();
-		
-		yell( Messages.get(this, "defeated") );
+
 	}
 	
 	@Override

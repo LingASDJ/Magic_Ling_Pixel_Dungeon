@@ -814,6 +814,8 @@ public class ItemSpriteSheet {
 	public static final int CHALLANEESICON_12=			 CHALLANEESICONINDEX+11;
 	public static final int CHALLANEESICON_13=			 CHALLANEESICONINDEX+12;
 
+	public static final int CHALLANEESICON_14=			 CHALLANEESICONINDEX+13;
+
 	//for smaller 8x8 icons that often accompany an item sprite
 	public static class Icons {
 

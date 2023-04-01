@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -22,6 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurs
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKingShop;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
@@ -39,6 +42,25 @@ public class NullDiedTO extends NTNPC {
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(FIRST, first);
+    }
+    @Override
+    public String name(){
+        if(Dungeon.isDLC(BOSSRUSH)){
+            return Messages.get(this, "namex");
+        } else {
+            return Messages.get(this, "name");
+        }
+
+    }
+
+    @Override
+    public String description(){
+        if(Dungeon.isDLC(BOSSRUSH)){
+            return Messages.get(this, "descx");
+        } else {
+            return Messages.get(this, "desc");
+        }
+
     }
 
     @Override
@@ -130,12 +152,17 @@ public class NullDiedTO extends NTNPC {
             WndQuest.chating(this,chat);
             first=false;
         }else {
-            Game.runOnRenderThread(new Callback() {
-                                       @Override
-                                       public void call() {
-                                           GameScene.show(new WndKingShop());
-                                       }
-            });
+            if(Dungeon.isDLC(BOSSRUSH) && Dungeon.depth == 28){
+                GLog.n("冒险家，快通过水晶之心离开这里吧……");
+            } else {
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show(new WndKingShop());
+                    }
+                });
+            }
+
 
         }
         return true;
@@ -146,7 +173,29 @@ public class NullDiedTO extends NTNPC {
 
         chat = new ArrayList<String>() {
             {
-                add(Messages.get(NullDiedTO.class, "talk_x"));
+                if(Dungeon.isDLC(BOSSRUSH) && Dungeon.depth==0) {
+                    add(Messages.get(NullDiedTO.class, "talk_a"));
+                    add(Messages.get(NullDiedTO.class, "talk_b"));
+                    add(Messages.get(NullDiedTO.class, "talk_c"));
+                    add(Messages.get(NullDiedTO.class, "talk_d"));
+                    add(Messages.get(NullDiedTO.class, "talk_e"));
+                    add(Messages.get(NullDiedTO.class, "talk_f"));
+                } else if(Dungeon.isDLC(BOSSRUSH) && Dungeon.depth==17) {
+                    add(Messages.get(NullDiedTO.class, "talk_g"));
+                    add(Messages.get(NullDiedTO.class, "talk_h"));
+                } else if(Dungeon.isDLC(BOSSRUSH) && Dungeon.depth==27) {
+                    add(Messages.get(NullDiedTO.class, "talk_i"));
+                    add(Messages.get(NullDiedTO.class, "talk_j"));
+                } else if(Dungeon.isDLC(BOSSRUSH) && Dungeon.depth==28) {
+                    add(Messages.get(NullDiedTO.class, "talk_k"));
+                    add(Messages.get(NullDiedTO.class, "talk_l"));
+                    add(Messages.get(NullDiedTO.class, "talk_m"));
+                    add(Messages.get(NullDiedTO.class, "talk_n"));
+                    add(Messages.get(NullDiedTO.class, "talk_o"));
+                } else {
+                    add(Messages.get(NullDiedTO.class, "talk_x"));
+                }
+
             }
         };
 

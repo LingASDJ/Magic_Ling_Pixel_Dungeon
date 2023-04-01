@@ -73,6 +73,7 @@ public class Rat extends Mob {
 		if (alignment == Alignment.ALLY) bundle.put(RAT_ALLY, true);
 	}
 
+
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);

@@ -21,10 +21,15 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CavesPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -47,29 +52,48 @@ public class ItemLevel extends RegularLevel {
     protected int standardRooms(boolean forceMax) {
         if (forceMax) return 1;
         //5 to 7, average 5.57
-        return 1+Random.chances(new float[]{1,1,1});
+        return 1+ Dungeon.depth/5+ Random.chances(new float[]{1,1,1});
     }
 
     @Override
     protected int specialRooms(boolean forceMax) {
         if (forceMax) return 1;
         //1 to 3, average 2.2
-        return 1+Random.chances(new float[]{1,1,1});
+        return 1+ Dungeon.depth/5+ Random.chances(new float[]{1,1,1});
     }
 
     @Override
     protected void createItems() {
-        if (Dungeon.depth == 1) {
-            addItemToSpawn(new Gold(100));
-            super.createItems();
-        }
-        if (Dungeon.depth == 3) {
-            addItemToSpawn(new PotionOfStrength());
-            addItemToSpawn(new PotionOfStrength());
-            addItemToSpawn(new PotionOfStrength());
-            super.createItems();
-        }
-
+       switch (depth){
+           //T1 补给层
+          case 1: case 3: case 6: case 7:
+                addItemToSpawn(new Gold().random());
+                addItemToSpawn(new PotionOfStrength());
+                addItemToSpawn(new PotionOfHealing());
+                addItemToSpawn(new PotionOfHealing());
+                addItemToSpawn(new PotionOfExperience());
+                addItemToSpawn(Generator.random(Generator.Category.FOOD));
+                addItemToSpawn(Generator.random(Generator.Category.FOOD));
+          break;
+           //T2 补给层
+          case 9: case 11: case 13:
+               addItemToSpawn(new PotionOfStrength());
+               addItemToSpawn(new PotionOfExperience());
+               addItemToSpawn(new PotionOfHealing());
+               addItemToSpawn(Generator.random(Generator.Category.FOOD));
+               addItemToSpawn(Generator.randomWeapon());
+               addItemToSpawn(Generator.randomArmor());
+          break;
+          //T3 补给层
+           case 18: case 20: case 23:case 25:
+               addItemToSpawn(new PotionOfStrength());
+               addItemToSpawn(new PotionOfHealing());
+               addItemToSpawn(Generator.random(Generator.Category.FOOD));
+               addItemToSpawn(Generator.randomWeapon());
+               addItemToSpawn(Generator.randomArmor());
+               break;
+       }
+        super.createItems();
     }
 
     @Override

@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -44,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.He
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.LevelTeleporter;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.MobPlacer;
+import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -168,6 +171,14 @@ public enum HeroClass {
 			new PotionOfExperience().quantity(2).identify().collect();
 		}
 
+		if ( Dungeon.isDLC(BOSSRUSH)){
+			Dungeon.gold += 3000;
+		}
+
+		if (Dungeon.isDLC(BOSSRUSH)){
+			new Amulet().quantity(1).identify().collect();
+		}
+
 		if (Dungeon.isChallenged(Challenges.PRO)){
 			new WandOfHightHunderStorm().quantity(11).identify().collect();
 			new LockSword().quantity(1).identify().collect();
@@ -224,7 +235,7 @@ public enum HeroClass {
 			new KingBag().quantity(1).identify().collect();
 			new PotionOfLiquidFlameX().quantity(100).identify().collect();
 			new YellowSunBooks().quantity(1).identify().collect();
-			new BrokenBooks().quantity(1).identify().collect();
+			new BrokenBooks().quantity(44).identify().collect();
 			new DeepBloodBooks().quantity(1).identify().collect();
 			new BookBag().quantity(1).identify().collect();
 			new IceCityBooks().quantity(1).identify().collect();

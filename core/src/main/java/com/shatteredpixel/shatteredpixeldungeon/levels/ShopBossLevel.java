@@ -84,13 +84,21 @@ public class ShopBossLevel extends Level {
     @Override
     public void unseal() {
         super.unseal();
-        FireMagicDiedNPC boss = new FireMagicDiedNPC();
-        boss.pos = WIDTH*17 + 17;
-        GameScene.add(boss);
 
-        NullDiedTO bossx = new NullDiedTO();
-        bossx.pos = WIDTH*15 + 17;
-        GameScene.add(bossx);
+        if(Dungeon.depth == 25){
+            set(  this.entrance =  WIDTH*17 + 17, Terrain.EXIT );
+            GameScene.updateMap( this.entrance =  WIDTH*17 + 17 );
+        } else {
+            FireMagicDiedNPC boss = new FireMagicDiedNPC();
+            boss.pos = WIDTH*17 + 17;
+            GameScene.add(boss);
+
+            NullDiedTO bossx = new NullDiedTO();
+            bossx.pos = WIDTH*15 + 17;
+            GameScene.add(bossx);
+        }
+
+
     }
 
     @Override

@@ -102,10 +102,11 @@ public class WandOfScale extends DamageWand {
         int maxDist = 2 + 2*chargesPerCast();
         int dist = Math.min(bolt.dist, maxDist);
 
-        cone = new ConeAOE( bolt.sourcePos, bolt.path.get(dist),
+        cone = new ConeAOE( bolt,
                 maxDist,
-                30 + 20*chargesPerCast(),
+                30 + 40*chargesPerCast(),
                 collisionProperties | Ballistica.STOP_TARGET);
+
 
         //cast to cells at the tip, rather than all cells, better performance.
         for (Ballistica ray : cone.rays){

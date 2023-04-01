@@ -26,11 +26,13 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.CorrosionParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SwordParticle;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
@@ -58,6 +60,7 @@ public class MagicMissile extends Emitter {
 	public static final int MAGIC_MISSILE   = 0;
 	public static final int FROST           = 1;
 	public static final int FIRE            = 2;
+	public static final int HALOFIRE            = 300;
 	public static final int CORROSION       = 3;
 	public static final int FOLIAGE         = 4;
 	public static final int FORCE           = 5;
@@ -86,6 +89,8 @@ public class MagicMissile extends Emitter {
 	public static final int PURPLE_CONE     = 111;
 	public static final int SPARK_CONE      = 112;
 	public static final int BLOOD_CONE      = 113;
+
+	public static final int SWORDLING      = 114;
 	
 	public void reset( int type, int from, int to, Callback callback ) {
 		reset( type,
@@ -136,6 +141,10 @@ public class MagicMissile extends Emitter {
 				size( 4 );
 				pour( FlameParticle.FACTORY, 0.01f );
 				break;
+			case HALOFIRE:
+				size( 4 );
+				pour( HalomethaneFlameParticle.FACTORY, 0.01f );
+				break;
 			case CORROSION:
 				size( 3 );
 				pour( CorrosionParticle.MISSILE, 0.01f );
@@ -165,6 +174,10 @@ public class MagicMissile extends Emitter {
 			case WARD:
 				size( 4 );
 				pour( WardParticle.FACTORY, 0.01f );
+				break;
+			case SWORDLING:
+				size( 4 );
+				pour( SwordParticle.FACTORY, 0.01f );
 				break;
 				
 			case SHAMAN_RED:

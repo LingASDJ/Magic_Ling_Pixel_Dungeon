@@ -6,7 +6,7 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DM920;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DMZERO;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.watabou.noosa.TextureFilm;
@@ -88,7 +88,7 @@ public class DM300AttackSprite extends MobSprite
                 new Callback() {
                     @Override
                     public void call() {
-                        ((DM920.DM300AttackMode)ch).onZapComplete();
+                        ((DMZERO.DM300AttackMode)ch).onZapComplete();
                     }
                 } );
         Sample.INSTANCE.play( Assets.Sounds.ZAP );

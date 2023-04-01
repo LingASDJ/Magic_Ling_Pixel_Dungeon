@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -371,7 +372,10 @@ public class MagicGirlDead extends Boss {
     public void die(Object src){
 
         super.die(src);
+        if(Dungeon.isDLC(BOSSRUSH)){
 
+            GetBossLoot();
+        }
         yell(Messages.get(this, "die"));
 
         for(Mob m: Dungeon.level.mobs.toArray(new Mob[0])){
@@ -584,7 +588,7 @@ public class MagicGirlDead extends Boss {
         if (Dungeon.level.adjacent(pos, target.pos)){
             int oppositeAdjacent = target.pos + (target.pos - pos);
             Ballistica trajectory = new Ballistica(target.pos, oppositeAdjacent, Ballistica.MAGIC_BOLT);
-            WandOfBlastWave.throwChar(target, trajectory, 2, false, false);
+            WandOfBlastWave.throwChar(target, trajectory, 2, false, false, getClass());
             if (target == hero){
                 hero.interrupt();
             }

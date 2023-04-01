@@ -148,6 +148,8 @@ public class GamesInProgress {
 
 		info.name = hero.name().equals(hero.className()) ? "" : hero.name();
 
+		info.icehp = hero.icehp;
+
 		slotStates.put( slot, info );
 	}
 	
@@ -169,6 +171,7 @@ public class GamesInProgress {
 		public int depth;
 		public int version;
 		public int challenges;
+		public int icehp;
 		public String name;
 		public int level;
 		public int str;

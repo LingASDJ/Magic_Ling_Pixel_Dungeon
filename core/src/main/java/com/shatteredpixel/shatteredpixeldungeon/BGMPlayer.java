@@ -1,5 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.watabou.noosa.audio.Music;
 
@@ -11,65 +14,137 @@ public class BGMPlayer {
                 return;
             }
         }
-        int d = Dungeon.depth;
+        int d = depth;
 
-        if (d == -1) {
-            Music.INSTANCE.play(Assets.TOWN, true);
-        }else if (d == 0) {
-            Music.INSTANCE.play(Assets.TOWN, true);
-        } else if (d > 0 && d <= 5) {
-            Music.INSTANCE.play(Assets.BGM_1, true);
-        } else if (d > 5 && d <= 10) {
-            Music.INSTANCE.play(Assets.BGM_2, true);
-        } else if (d > 10 && d <= 15) {
-            Music.INSTANCE.play(Assets.BGM_3, true);
-        } else if (d > 15 && d <= 20) {
-            Music.INSTANCE.play(Assets.BGM_4, true);
-        } else if (d > 20 && d <= 26) {
-            Music.INSTANCE.play(Assets.BGM_5, true);
-        } else if (d ==-5||d ==-15) {
-            Music.INSTANCE.play(Assets.SNOWCYON, true);
-        } else
-            //default
-            Music.INSTANCE.play(Assets.Music.THEME, true);
+
+        if(Dungeon.isDLC(BOSSRUSH)){
+            switch (d) {
+                case -1:case 0:
+                    Music.INSTANCE.play(Assets.SNOWCYON, true);
+                break;
+                case 1:case 3: case 5:case 7:case 9:case 11:case 14:case 15:
+                    Music.INSTANCE.play(Assets.BGM_3, true);
+                    break;
+            }
+        } else {
+            if (d == -1) {
+                Music.INSTANCE.play(Assets.TOWN, true);
+            }else if (d == 0) {
+                Music.INSTANCE.play(Assets.TOWN, true);
+            } else if (d > 0 && d <= 5) {
+                Music.INSTANCE.play(Assets.BGM_1, true);
+            } else if (d > 5 && d <= 10) {
+                Music.INSTANCE.play(Assets.BGM_2, true);
+            } else if (d > 10 && d <= 15) {
+                Music.INSTANCE.play(Assets.BGM_3, true);
+            } else if (d > 15 && d <= 20) {
+                Music.INSTANCE.play(Assets.BGM_4, true);
+            } else if (d > 20 && d <= 26) {
+                Music.INSTANCE.play(Assets.BGM_5, true);
+            } else if (d ==-5||d ==-15) {
+                Music.INSTANCE.play(Assets.SNOWCYON, true);
+            } else
+                //default
+                Music.INSTANCE.play(Assets.Music.THEME, true);
+        }
+
+
     }
 
     /*
-    第1层 补给层
-    第2层 粘咕
-    第3层 史莱姆王
-    第4层 补给层
-    第5层 天狗
-    第6层 宝箱王
-    第7层 补给层
-    第8层 DM720
-    第9层 冰雪魔女
-    第10层 DM300
-    第11层 补给层
-    第12层 EX古神
-    **第13层** DM920
-     */
+    第1层 补给层 T1
+    第2层 毒苹果
+    第3层 补给层 T1
+    第4层 粘咕
+    第5层 史莱姆王
+
+    第6层 补给层 T1
+    第7层 补给层 T1
+    第8层 天狗
+    第9层 补给层 T2
+
+    第10层 钻石宝箱王
+    第11层 补给层T2
+    第12层 DM300
+    第13层 补给层T2
+
+    第14层 DM720
+    第15层 补给层T2
+    第16层 冰雪魔女
+
+    第17层 初始层
+
+    第18层 补给层T3
+    第19层 矮人国王
+    第20层 补给层T3
+    第21层 矮人将军
+
+    第22层 恶魔层
+    第23层 补给层T3
+    第24层 浊焰魔女
+    第25层 补给层T3
+
+    第26层 Yog-Zot
+    第27层 初始层
+    第28层 DM-ZERO
+    */
 
     public static void playBoss() {
-        int t = Dungeon.depth;
-        if (Dungeon.bossLevel() && t == 5) {
-            Music.INSTANCE.play(Assets.BGM_BOSSA, true);
-        } else if (Dungeon.bossLevel() && t == 10) {
-            Music.INSTANCE.play(Assets.BGM_BOSSB, true);
-        } else if (Dungeon.bossLevel() && t == 15 && Statistics.spawnersIce > 0) {
-            Music.INSTANCE.play(Assets.BGM_BOSSC3, true);
-        } else if (Dungeon.bossLevel() && t == 15) {
-            if(SPDSettings.level3boss()==3)  Music.INSTANCE.play(Assets.BGM_BOSSC3, true);
-            else Music.INSTANCE.play(Assets.BGM_BOSSC, true);
-        } else if (Dungeon.bossLevel() && t == 20) {
-            if((Statistics.boss_enhance & 0x8) != 0)  Music.INSTANCE.play(Assets.BGM_BOSSD2, true);
-            else  Music.INSTANCE.play(Assets.BGM_BOSSD, true);
-        } else if (Dungeon.bossLevel() && t == 25 && (Statistics.spawnersAlive > 0)) {
-            Music.INSTANCE.play(Assets.BGM_BOSSE3, true);
-        }else if (Dungeon.bossLevel() && t == 25){
-            Music.INSTANCE.play(Assets.BGM_BOSSE, true);
-        } else if (Dungeon.bossLevel() && t == -15) {
-            Music.INSTANCE.play(Assets.BGM_FRBOSS, true);
+        int t = depth;
+
+        if(Dungeon.isDLC(BOSSRUSH)){
+            switch (depth){
+                case 2:
+                    Music.INSTANCE.play(Assets.BGM_BOSSA, true);
+                    break;
+                case 4:case 5:
+                    Music.INSTANCE.play(Assets.BGM_BOSSB, true);
+                break;
+                case 8: case 10:
+                    Music.INSTANCE.play(Assets.BGM_BOSSC, true);
+                    break;
+                case 12: case 14:
+                    Music.INSTANCE.play(Assets.BGM_BOSSD, true);
+                    break;
+                case 16:
+                    Music.INSTANCE.play(Assets.BGM_BOSSC3, true);
+                    break;
+                case 19: case 21:
+                    Music.INSTANCE.play(Assets.BGM_BOSSD2, true);
+                    break;
+                case 25:
+                    Music.INSTANCE.play(Assets.BGM_FRBOSS, true);
+                    break;
+                case 26:
+                    Music.INSTANCE.play(Assets.BGM_BOSSE3, true);
+                    break;
+                case 28:
+                    Music.INSTANCE.play( Assets.BGM_0, true );
+                    break;
+            }
+        } else {
+            if (Dungeon.bossLevel() && t == 5) {
+                Music.INSTANCE.play(Assets.BGM_BOSSA, true);
+            } else if (Dungeon.bossLevel() && t == 10) {
+                Music.INSTANCE.play(Assets.BGM_BOSSB, true);
+            } else if (Dungeon.bossLevel() && t == 15 && Statistics.spawnersIce > 0) {
+                Music.INSTANCE.play(Assets.BGM_BOSSC3, true);
+            } else if (Dungeon.bossLevel() && t == 15) {
+                if(SPDSettings.level3boss()==3)  Music.INSTANCE.play(Assets.BGM_BOSSC3, true);
+                else Music.INSTANCE.play(Assets.BGM_BOSSC, true);
+            } else if (Dungeon.bossLevel() && t == 20) {
+                if((Statistics.boss_enhance & 0x8) != 0)  Music.INSTANCE.play(Assets.BGM_BOSSD2, true);
+                else  Music.INSTANCE.play(Assets.BGM_BOSSD, true);
+            } else if (Dungeon.bossLevel() && t == 25 && (Statistics.spawnersAlive > 0)) {
+                Music.INSTANCE.play(Assets.BGM_BOSSE3, true);
+            }else if (Dungeon.bossLevel() && t == 25){
+                Music.INSTANCE.play(Assets.BGM_BOSSE, true);
+            } else if (Dungeon.bossLevel() && t == -15) {
+                Music.INSTANCE.play(Assets.BGM_FRBOSS, true);
+            }
         }
+
+
+
     }
 }

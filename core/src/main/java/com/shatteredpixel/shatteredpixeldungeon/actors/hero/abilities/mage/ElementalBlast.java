@@ -108,9 +108,12 @@ public class ElementalBlast extends ArmorAbility {
 		effectTypes.put(WandOfRegrowth.class,       MagicMissile.FOLIAGE_CONE);
 
 		//TODO FIXED 将要修复的
-		effectTypes.put(WandOfScale.class,       MagicMissile.FOLIAGE_CONE);
+
+		effectTypes.put(WandOfBlueFuck.class,       MagicMissile.HALOFIRE);
+		effectTypes.put(WandOfScale.class,       MagicMissile.SHAMAN_BLUE);
+
+
 		effectTypes.put(WandOfGodIce.class,       MagicMissile.FOLIAGE_CONE);
-		effectTypes.put(WandOfBlueFuck.class,       MagicMissile.FOLIAGE_CONE);
 		effectTypes.put(WandOfHightHunderStorm.class,       MagicMissile.FOLIAGE_CONE);
 	}
 
@@ -171,8 +174,6 @@ public class ElementalBlast extends ArmorAbility {
 
 			//*** Wand of Fireblast ***
 		} else if (wandCls == WandOfFireblast.class){
-			projectileProps = projectileProps | Ballistica.IGNORE_SOFT_SOLID;
-		} else if (wandCls == WandOfBlueFuck.class){
 			projectileProps = projectileProps | Ballistica.IGNORE_SOFT_SOLID;
 
 			//*** Wand of Warding ***
@@ -294,11 +295,6 @@ public class ElementalBlast extends ArmorAbility {
 										Buff.affect( mob, Burning.class ).reignite( mob );
 									}
 
-								} else if (finalWandCls == WandOfBlueFuck.class){
-									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
-										Buff.affect( mob, HalomethaneBurning.class ).reignite( mob );
-									}
-
 									//*** Wand of Corrosion ***
 								} else if (finalWandCls == WandOfCorrosion.class){
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
@@ -314,8 +310,10 @@ public class ElementalBlast extends ArmorAbility {
 										knockback *= effectMulti;
 										WandOfBlastWave.throwChar(mob,
 												new Ballistica(mob.pos, aim.collisionPos, Ballistica.MAGIC_BOLT),
-												knockback
-										);
+												knockback,
+												true,
+												true,
+												ElementalBlast.this.getClass());
 									}
 
 									//*** Wand of Frost ***
@@ -380,7 +378,12 @@ public class ElementalBlast extends ArmorAbility {
 										Buff.prolong( mob, Roots.class, effectMulti*Roots.DURATION );
 										charsHit++;
 									}
+								} else if (finalWandCls == WandOfBlueFuck.class){
+								if (mob.alignment != Char.Alignment.ALLY) {
+									Buff.affect( mob, HalomethaneBurning.class ).reignite( mob, 7f );
+									charsHit++;
 								}
+							}
 							}
 
 						}

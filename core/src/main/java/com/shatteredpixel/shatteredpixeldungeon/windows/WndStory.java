@@ -72,8 +72,25 @@ public class WndStory extends Window {
 	public static final int ID_HALLSBOOS		= 9;
 	public static final int ID_CHAPTONEEND		= 10;
 	public static final int ID_ICEBOSS		= 11;
-	public static final int ID_GAME = 12;
 
+
+	//DLC BOSSRUSH
+	public static final int ID_GAME = 12;
+	public static final int ID_NOMOBS = 14;
+	public static final int ID_CALA = 15;
+	public static final int ID_SEWS = 16;
+	public static final int ID_SKBS = 17;
+	public static final int ID_TGKS = 18;
+	public static final int ID_DKBS = 19;
+	public static final int ID_DMBS = 20;
+	public static final int ID_DKVS = 21;
+	public static final int ID_ICES = 22;
+	public static final int ID_DKKX = 23;
+	public static final int ID_LXKS = 24;
+	public static final int ID_FBXA = 25;
+	public static final int ID_ZTBS = 26;
+	public static final int ID_DMZR = 27;
+	public static final int ID_ENDS = 28;
 	//
 	public static final int ID_DWADA		= 13;
 
@@ -93,10 +110,26 @@ public class WndStory extends Window {
 		CHAPTERS.put( ID_HALLSBOOS, "hallsboss" );
 		CHAPTERS.put( ID_CHAPTONEEND, "new" );
 		CHAPTERS.put( ID_ICEBOSS, "icedead" );
-		CHAPTERS.put( ID_GAME, "gamehappy" );
-		//CHAPTERS.put( ID_DM920, "dm920" );
+		CHAPTERS.put( ID_GAME, "bossrushstart" );
+		CHAPTERS.put( ID_NOMOBS, "nomobs" );
+		CHAPTERS.put( ID_CALA, "calaboss" );
+		CHAPTERS.put( ID_SEWS, "sewsboss" );
+		CHAPTERS.put( ID_SKBS, "skingboss" );
+		CHAPTERS.put( ID_TGKS, "tenguboss" );
+		CHAPTERS.put( ID_DKBS, "dimandkingboss" );
+		CHAPTERS.put( ID_DMBS, "dm300boss" );
+		CHAPTERS.put( ID_DKVS, "dm720boss" );
+		CHAPTERS.put( ID_ICES, "icegirlboss" );
+		CHAPTERS.put( ID_DKKX, "kawboss" );
+		CHAPTERS.put( ID_LXKS, "lkxboss" );
+		CHAPTERS.put( ID_FBXA, "fireboss" );
+		CHAPTERS.put( ID_ZTBS, "zotboss" );
+		CHAPTERS.put( ID_DMZR, "dmzero" );
+		CHAPTERS.put( ID_ENDS, "end" );
 		CHAPTERS.put( ID_DWADA, "drawfmaster" );
 	}
+
+
 
 	private IconTitle ttl;
 	private RenderedTextBlock tf;

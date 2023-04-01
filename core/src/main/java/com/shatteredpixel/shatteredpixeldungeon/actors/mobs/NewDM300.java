@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -401,7 +402,7 @@ public class NewDM300 extends Mob {
 		if (Dungeon.level.adjacent(pos, target.pos)){
 			int oppositeAdjacent = target.pos + (target.pos - pos);
 			Ballistica trajectory = new Ballistica(target.pos, oppositeAdjacent, Ballistica.MAGIC_BOLT);
-			WandOfBlastWave.throwChar(target, trajectory, 2, false, false);
+			WandOfBlastWave.throwChar(target, trajectory, 2, false, false, getClass());
 			if (target == Dungeon.hero){
 				Dungeon.hero.interrupt();
 			}
@@ -515,7 +516,10 @@ public class NewDM300 extends Mob {
 	public void die( Object cause ) {
 
 		super.die( cause );
+		if(Dungeon.isDLC(BOSSRUSH)){
 
+			GetBossLoot();
+		}
 		GameScene.bossSlain();
 		Dungeon.level.unseal();
 

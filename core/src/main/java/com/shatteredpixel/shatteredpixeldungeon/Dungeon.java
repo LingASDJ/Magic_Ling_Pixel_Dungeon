@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.ROGUE;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -53,15 +54,18 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.AncityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CaveTwoBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesGirlDeadLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.DM920BossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DimandKingLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DwarfMasterBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HallsLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ItemLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LastLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LinkLevel;
@@ -70,6 +74,8 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.NewCityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewHallsBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.SLMKingLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.YogGodHardBossLevel;
@@ -232,6 +238,8 @@ public class Dungeon {
 	}
 
 	public static int challenges;
+
+	public static int dlcs;
 	public static int mobsToChampion;
 	public static int mobsToStateLing;
 
@@ -256,6 +264,9 @@ public class Dungeon {
 
 		version = Game.versionCode;
 		challenges = SPDSettings.challenges();
+
+		dlcs = SPDSettings.dlc();
+
 		mobsToChampion = -1;
 		mobsToStateLing = -1;
 
@@ -321,6 +332,10 @@ public class Dungeon {
 		return (challenges & mask) != 0;
 	}
 
+	public static boolean isDLC( int mask ) {
+		return (dlcs & mask) != 0;
+	}
+
 	public static Level newLevel() {
 
 		Dungeon.level = null;
@@ -338,58 +353,63 @@ public class Dungeon {
 		}
 
 		Level level;
-		//if (SPDSettings.BossRush()) {
-		//	switch (depth) {
-		//		case 0:
-		//		level = new ZeroLevel();
-		//		break;
-		//		case 1: case 3: case 5:case 7:case 9:case 11:case 14:case 15:
-		//			level = new ItemLevel();
-		//			break;
-		//		case 2:
-		//			level = new SewerBossLevel();
-		//			break;
-		//		case 4:
-		//			level = new SLMKingLevel();
-		//			break;
-		//		case 6:
-		//			level = new PrisonBossLevel();
-		//			break;
-		//		case 8:
-		//			level = new DimandKingLevel();
-		//			break;
-		//		case 10:
-		//			level = new NewCavesBossLevel();
-		//			break;
-		//		case 12:
-		//			level = new CaveTwoBossLevel();
-		//			break;
-		//		case 13:
-		//			level = new CavesGirlDeadLevel();
-		//			break;
-		//		case 16:
-		//			level = new NewCityBossLevel();
-		//			break;
-		//		case 17:
-		//			level = new DwarfMasterBossLevel();
-		//			break;
-		//		case 18:case 19:case 20:case 21:
-		//			level = new HallsLevel();
-		//			break;
-		//		case 22:
-		//			level = new HallsBossLevel();
-		//			break;
-		//		case 23:
-		//			level = new YogGodHardBossLevel();
-		//			break;
-		//		case 24:
-		//			level = new LastLevel();
-		//			break;
-		//		default:
-		//			level = new DeadEndLevel();
-		//			Statistics.deepestFloor--;
-		//	}
-		//} else
+		if (Dungeon.isDLC(BOSSRUSH)) {
+			switch (depth) {
+				case 17: case 27:case 0:
+					level = new AncityLevel();
+					break;
+				case 1: case 3: case 6:case 7:case 9: case 11: case 13: case 15:case 18: case 20: case 24:
+					level = new ItemLevel();
+					break;
+				case 2:
+					level = new ForestBossLevel();
+					break;
+				case 4:
+					level = new SewerBossLevel();
+					break;
+				case 5:
+					level = new SLMKingLevel();
+					break;
+				case 8:
+					level = new PrisonBossLevel();
+					break;
+				case 10:
+					level = new DimandKingLevel();
+					break;
+				case 12:
+					level = new NewCavesBossLevel();
+					break;
+				case 14:
+					level = new CaveTwoBossLevel();
+					break;
+				case 16:
+					level = new CavesGirlDeadLevel();
+					break;
+				case 19:
+					level = new NewCityBossLevel();
+					break;
+				case 21:
+					level = new DwarfMasterBossLevel();
+					Buff.affect(hero, TestDwarfMasterLock.class).set((1), 1);
+					break;
+				case 22:case 23:
+					level = new HallsLevel();
+					break;
+				case 25:
+					level = new ShopBossLevel();
+					break;
+				case 26:
+					level = new YogGodHardBossLevel();
+					break;
+				case 28:
+					level = new DM920BossLevel();
+					Buff.affect(hero, TestDwarfMasterLock.class).set((1), 1);
+					break;
+				default:
+					level = new DeadEndLevel();
+					Statistics.deepestFloor--;
+			}
+		} else
 			switch (depth) {
 				case 0:
 					level = new ZeroLevel();
@@ -669,6 +689,7 @@ public class Dungeon {
 	private static final String VERSION		= "version";
 	private static final String SEED		= "seed";
 	private static final String CHALLENGES	= "challenges";
+	private static final String DLCS	= "dlcs";
 	private static final String MOBS_TO_CHAMPION	= "mobs_to_champion";
 	private static final String HERO		= "hero";
 	private static final String DEPTH		= "depth";
@@ -692,6 +713,7 @@ public class Dungeon {
 			bundle.put( VERSION, version );
 			bundle.put( SEED, seed );
 			bundle.put( CHALLENGES, challenges );
+			bundle.put(	DLCS,dlcs);
 			bundle.put( MOBS_TO_CHAMPION, mobsToChampion );
 
 			bundle.put( MOBS_TO_STATELING, mobsToStateLing );
@@ -794,6 +816,7 @@ public class Dungeon {
 		QuickSlotButton.reset();
 
 		Dungeon.challenges = bundle.getInt( CHALLENGES );
+		Dungeon.dlcs = bundle.getInt( DLCS);
 		Dungeon.mobsToChampion = bundle.getInt( MOBS_TO_CHAMPION );
 
 		Dungeon.mobsToStateLing = bundle.getInt( MOBS_TO_STATELING );

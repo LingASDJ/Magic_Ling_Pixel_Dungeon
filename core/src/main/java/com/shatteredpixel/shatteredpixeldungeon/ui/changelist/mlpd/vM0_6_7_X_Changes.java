@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearElementalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdGuardSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdRatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300SpiderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
@@ -44,6 +45,8 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_28_Changes(changeInfos);
+        add_v0_6_27_Changes(changeInfos);
         add_v0_6_26_Changes(changeInfos);
         add_v0_6_25_Changes(changeInfos);
         add_v0_6_24_Changes(changeInfos);
@@ -71,6 +74,68 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_28_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta4.975(P3)", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("娱乐模式"),
+                ("娱乐模式正式开启测试\n\n第一个娱乐模式为：首领对决(BOSSRUSH)")));
+
+        Image a = new DM300SpiderSprite();
+        a.scale.set(PixelScene.align(0.72f));
+        changes.addButton(new ChangeButton(a, ("新BOSS:DMZERO"),
+                ("DMZERO是死灵巫师为夺取前矮人国王的政权而用黑暗魔法仿造矮人科技所制造的试作型魔法机械。\n" +
+                        "由于水晶之心的影响，DMZERO被禁锢在另一个异次元空间内，无法影响地牢所在的时间线。\n" +
+                        "Γ战斗回合过长将会释放_湮灭审判_，对玩家造成致死伤害。半血后伤害大幅度提升。\n\n" +
+                        "根据商人给出的情报，它的高智能辐射电波影响了这个地牢。封印，摧毁，抑或是遣返。让这里恢复原状吧。")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class,
+                        "bugfixes"),
+                ("修复了很多Bug,我忘了我修了什么了（")));
+    }
+
+    public static void add_v0_6_27_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta4.95(P3)", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton((new Image("Ling.png", 0, 0, 16, 16)), ("开发者的话"),
+                ("不知不觉中，魔绫已经走过2年路程。从最初的几十人测试群到现在的1000人以上，\n" +
+                        "你们的支持和喜爱是我继续开发的动力。\n" +
+                        "近期，我的课程很多，所以更新有所减缓。希望各位能够理解\n" +
+                        "此版本是重大更新前的最后一个版本，宝箱王我经过了多次重新设计，希望能在Beta5版本为大家带来不一样的体验。\n" +
+                        "如果各位还有什么建议，欢迎到群里面艾特我并告诉我你的建议。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("(预载)全新挑战：雪虐风饕"),
+                ("为即将到来的寒冷系统做准备")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.INFO), ("(预载)寒冷系统"),
+                ("为即将到来的全新旅程做准备")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class,
+                "bugfixes"),
+                ("1.快捷栏翻转修复\n2.修复新生火元素无法被冰冻类buff秒杀的问题\n3.修复深蓝蝾螈会让幽灵任务错误完成的问题\n4.修复元素风暴特效错误问题")));
     }
 
     public static void add_v0_6_26_Changes( ArrayList<ChangeInfo> changeInfos ) {

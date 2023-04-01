@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel.BRatKingRoom;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel.ForestBossLasherTWOPos;
@@ -252,7 +253,7 @@ public class CrivusFruits extends Mob {
         for (int i = 0; i < blobs; i++){
             int ofs;
             do {
-                ofs = PathFinder.NEIGHBOURS8[Random.Int(6)];
+                ofs = PathFinder.NEIGHBOURS8[Random.Int(3)];
             } while (!Dungeon.level.passable[pos + ofs]);
             Dungeon.level.drop( new CrivusFruitsFood(), pos + ofs ).sprite.drop( pos );
         }
@@ -261,10 +262,16 @@ public class CrivusFruits extends Mob {
         for (int i = 0; i < flakes; i++){
             int ofs;
             do {
-                ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
+                ofs = PathFinder.NEIGHBOURS8[Random.Int(4)];
             } while (!Dungeon.level.passable[pos + ofs]);
             Dungeon.level.drop( new CrivusFruitsFlake(), pos + ofs ).sprite.drop( pos );
         }
+
+        if(Dungeon.isDLC(BOSSRUSH)){
+
+            GetBossLoot();
+        }
+
 
 
 

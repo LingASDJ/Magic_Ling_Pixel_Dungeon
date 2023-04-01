@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class WndDLC extends Window {
 
     private static final int WIDTH		= 120;
-    private static final int HEIGHT		= 162;
+    private static final int HEIGHT		= 40;
     private static final int BTN_HEIGHT = 16;
     private static final int GAP        = 1;
 
@@ -66,7 +66,7 @@ public class WndDLC extends Window {
             final String dlc = DLC.NAME_IDS[i];
 
             if(i==normal_mode || i==hard_mode){
-                RenderedTextBlock block = PixelScene.renderTextBlock(6);
+                RenderedTextBlock block = PixelScene.renderTextBlock(9);
                 switch (i){
                     case normal_mode:
                         block.text(Messages.get(WndDLC.class, "mode"));

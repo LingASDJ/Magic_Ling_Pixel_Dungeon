@@ -60,6 +60,7 @@ public class Statistics {
 	//灯火前行
 	public static boolean lanterfireactive = false;
 
+
 	//克里弗斯之果
 	public static boolean crivusfruitslevel2 = false;
 

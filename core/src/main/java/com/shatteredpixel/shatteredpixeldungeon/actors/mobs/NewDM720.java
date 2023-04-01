@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -407,7 +409,7 @@ public class NewDM720 extends MolotovHuntsman {
         if (Dungeon.level.adjacent(pos, target.pos)){
             int oppositeAdjacent = target.pos + (target.pos - pos);
             Ballistica trajectory = new Ballistica(target.pos, oppositeAdjacent, Ballistica.MAGIC_BOLT);
-            WandOfBlastWave.throwChar(target, trajectory, 10, false, false);
+            WandOfBlastWave.throwChar(target, trajectory, 8, false, false, getClass());
             if (target == Dungeon.hero){
                 Dungeon.hero.interrupt();
             }
@@ -527,7 +529,10 @@ public class NewDM720 extends MolotovHuntsman {
 
     @Override
     public void die( Object cause ) {
+        if(Dungeon.isDLC(BOSSRUSH)){
 
+            GetBossLoot();
+        }
         super.die(cause);
         Badges.validateBossSlain();
         Badges.KILLSDM720();

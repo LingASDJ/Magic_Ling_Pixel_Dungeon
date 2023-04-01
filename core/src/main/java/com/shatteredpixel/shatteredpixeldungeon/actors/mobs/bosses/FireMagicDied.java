@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.CryStalPosition;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.FALSEPosition;
@@ -737,7 +738,10 @@ public class FireMagicDied extends Mob implements Callback {
 
     @Override
     public void die( Object cause ) {
+        if(Dungeon.isDLC(BOSSRUSH)){
 
+            GetBossLoot();
+        }
         super.die( cause );
 
         Dungeon.level.drop(new BackGoKey().quantity(1).identify(), pos).sprite.drop();

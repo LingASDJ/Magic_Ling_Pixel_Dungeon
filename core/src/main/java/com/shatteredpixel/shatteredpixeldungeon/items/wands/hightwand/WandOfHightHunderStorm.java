@@ -168,10 +168,11 @@ public class WandOfHightHunderStorm extends DamageWand {
         int maxDist = (1 + 2*chargesPerCast())*level/5+2;
         int dist = Math.min(bolt.dist, maxDist);
 
-        cone = new ConeAOE( bolt.sourcePos, bolt.path.get(dist),
+        cone = new ConeAOE( bolt,
                 maxDist,
-                5 + 10*chargesPerCast(),
-                collisionProperties | Ballistica.MAGIC_BOLT);
+                30 + 40*chargesPerCast(),
+                collisionProperties | Ballistica.STOP_TARGET);
+
         int cell = bolt.collisionPos;
 
 

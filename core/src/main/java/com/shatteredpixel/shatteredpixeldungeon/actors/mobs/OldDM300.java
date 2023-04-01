@@ -22,11 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
@@ -35,9 +33,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -48,7 +43,6 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class OldDM300 extends Mob {
@@ -84,7 +78,7 @@ public class OldDM300 extends Mob {
 	@Override
 	public boolean act() {
 		
-		GameScene.add( Blob.seed( pos, 30, ToxicGas.class ) );
+		//GameScene.add( Blob.seed( pos, 30, ToxicGas.class ) );
 		
 		return super.act();
 	}
@@ -93,7 +87,7 @@ public class OldDM300 extends Mob {
 	public void move( int step ) {
 		super.move( step );
 		
-		if (Dungeon.level.map[step] == Terrain.INACTIVE_TRAP && HP < HT) {
+		if (Dungeon.level.map[step] == Terrain.WATER && HP < HT) {
 			
 			HP += Random.Int( 1, HT - HP );
 			sprite.emitter().burst( ElmoParticle.FACTORY, 5 );
@@ -136,34 +130,6 @@ public class OldDM300 extends Mob {
 		super.damage(dmg, src);
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 		if (lock != null && !isImmune(src.getClass())) lock.addTime(dmg*1.5f);
-	}
-
-	@Override
-	public void die( Object cause ) {
-		
-		super.die( cause );
-		
-		GameScene.bossSlain();
-		Dungeon.level.drop( new SkeletonKey( Dungeon.depth  ), pos ).sprite.drop();
-		
-		//60% chance of 2 shards, 30% chance of 3, 10% chance for 4. Average of 2.5
-		int shards = Random.chances(new float[]{0, 0, 6, 3, 1});
-		for (int i = 0; i < shards; i++){
-			int ofs;
-			do {
-				ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
-			} while (!Dungeon.level.passable[pos + ofs]);
-			Dungeon.level.drop( new MetalShard(), pos + ofs ).sprite.drop( pos );
-		}
-		
-		Badges.validateBossSlain();
-
-		LloydsBeacon beacon = Dungeon.hero.belongings.getItem(LloydsBeacon.class);
-		if (beacon != null) {
-			beacon.upgrade();
-		}
-		
-		yell( Messages.get(this, "defeated") );
 	}
 	
 	{

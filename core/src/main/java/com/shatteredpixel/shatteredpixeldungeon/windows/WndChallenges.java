@@ -108,12 +108,12 @@ public class WndChallenges extends Window {
 			cb.checked((checked & Challenges.MASKS[i]) != 0);
 			cb.active = editable;
 
-//			//Disable
-//			if(Challenges.NAME_IDS[i].equals("stronger_bosses")){
-//				cb.active = false;
-//				cb.checked(false);
-//				cb.visible=false;
-//			}
+			//Disable
+			if(Challenges.NAME_IDS[i].equals("cs")){
+				cb.active = false;
+				cb.checked(false);
+				cb.visible=false;
+			}
 
 			boxes.add( cb );
 			info.setRect((i % 3) * 40, pos, 40, 0);
@@ -292,6 +292,7 @@ public class WndChallenges extends Window {
 				conflict.setRect(check.right(), check.top(), 16, BTN_HEIGHT);
 				PixelScene.align( conflict );
 			}
+
 			height = BTN_HEIGHT * 2;
 		}
 
@@ -325,8 +326,12 @@ public class WndChallenges extends Window {
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_12, new ItemSprite.Glowing(0xd1ce9f));
 			case "stronger_bosses":
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_13, new ItemSprite.Glowing(0xff0000));
+			case "icedied":
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14, new ItemSprite.Glowing(0x009999));
 			case "dhxd":
 				return new ItemSprite(ItemSpriteSheet.LANTERNB, new ItemSprite.Glowing(0x384976));
+			case "cs":
+				return Icons.get(Icons.WARNING);
 			default:
 				return Icons.get(Icons.PREFS);
 		}

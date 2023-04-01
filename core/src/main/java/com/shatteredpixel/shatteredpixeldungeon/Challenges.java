@@ -35,9 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 public class Challenges {
-
-
-	//Some of these internal IDs are outdated and don't represent what these challenges do
 	public static final int NO_FOOD = 1;
 	public static final int NO_ARMOR = 2;
 	public static final int NO_HEALING = 4;
@@ -48,20 +45,16 @@ public class Challenges {
 	public static final int AQUAPHOBIA = 128;
 	public static final int CHAMPION_ENEMIES = 256;
 	public static final int RLPT = 512;
-
-	//public static final int BOSS = 8192;
 	public static final int SBSG = 1024;
 	public static final int EXSG = 2048;
-	public static final int STRONGER_BOSSES 	= 4096;
+	public static final int STRONGER_BOSSES  = 4096;
+	public static final int DHXD = 8192;
+	public static final int ICEDIED = 16384;
+	public static final int   PRO  = 32768;
+	public static final int CS    = 65536;
 
-	public static final int DHXD 	= 8192;
 
-	public static final int PRO = 16384;
-
-//	public static final int BUG = 32768;
-
-	public static final int MAX_VALUE = 32768;
-
+	public static final int MAX_VALUE = 131072;
 	public static final String[] NAME_IDS = {
 			"no_food",
 			"no_armor",
@@ -77,12 +70,15 @@ public class Challenges {
 			"exsg",
 			"stronger_bosses",
 			"dhxd",
+			"icedied",
 			"pro",
+			"cs",
+			"cs",
 	};
 
 	public static final int[] MASKS = {
 			NO_FOOD, NO_ARMOR, NO_HEALING, NO_HERBALISM, SWARM_INTELLIGENCE, DARKNESS, NO_SCROLLS
-			, AQUAPHOBIA, CHAMPION_ENEMIES,RLPT,SBSG,EXSG,STRONGER_BOSSES,DHXD,PRO,
+			, AQUAPHOBIA, CHAMPION_ENEMIES,RLPT,SBSG,EXSG,STRONGER_BOSSES,DHXD,ICEDIED,PRO,CS,CS,
 	};
 	public String name;
 

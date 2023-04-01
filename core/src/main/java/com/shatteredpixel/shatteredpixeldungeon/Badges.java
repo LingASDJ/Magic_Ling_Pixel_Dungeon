@@ -177,7 +177,8 @@ public class Badges {
 
 		KILL_MG			(133),
 		BIG_X				(134),
-		EXSG                (135);
+		EXSG                (135),
+		BRCLER                (136);
 
 		public boolean meta;
 
@@ -971,6 +972,10 @@ public class Badges {
 	}
 	public static void EXSG() {
 		displayBadge( Badge.EXSG );
+	}
+
+	public static void BOSSRUSH() {
+		displayBadge( Badge.BRCLER );
 	}
 
 	public static void GOODRLPT() {

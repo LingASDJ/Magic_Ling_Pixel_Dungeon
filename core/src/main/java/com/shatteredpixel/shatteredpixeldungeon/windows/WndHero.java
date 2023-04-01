@@ -201,6 +201,8 @@ public class WndHero extends WndTabbed {
 				RestatSlot( Messages.get(this, "lanterfire"), (hero.lanterfire) + "/" + 100 );
 			}
 
+			IcestatSlot( Messages.get(this, "icehp"), (hero.icehp) + "/" + 100 );
+
 			pos += GAP;
 
 			Hunger hunger = Dungeon.hero.buff(Hunger.class);
@@ -255,6 +257,23 @@ public class WndHero extends WndTabbed {
 			PixelScene.align(txt);
 
 			txt.hardlight(hero.lanterfire<=0 ? 0x808080 : Window.WHITE );
+
+			add( txt );
+
+			pos += GAP + txt.height();
+		}
+
+		private void IcestatSlot( String label, String value ) {
+
+			RenderedTextBlock txt = PixelScene.renderTextBlock( label, 7 );
+			txt.setPos(0, pos);
+			add( txt );
+
+			txt = PixelScene.renderTextBlock( value, 7 );
+			txt.setPos(WIDTH * 0.5f, pos);
+			PixelScene.align(txt);
+
+			txt.hardlight(Window.TITLE_COLOR);
 
 			add( txt );
 

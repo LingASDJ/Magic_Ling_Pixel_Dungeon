@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
@@ -72,6 +73,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HasteLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.IceHpBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.InvisibilityRing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
@@ -259,6 +261,8 @@ public class Hero extends Char {
 	//TODO 灯火前行
 	public int lanterfire;
 
+	public int icehp;
+
 	//蛋糕
 	public int CakeUsed;
 	
@@ -336,12 +340,16 @@ public class Hero extends Char {
 
 	private static final String LANTERFTR     = "lanterfire";
 
+	private static final String ICEHP     = "icehp";
+
 	private static final String CAKEUSED     = "cakeused";
 
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 
 		super.storeInBundle( bundle );
+
+		bundle.put( ICEHP, icehp );
 
 		bundle.put( LANTERFTR, lanterfire );
 
@@ -374,6 +382,8 @@ public class Hero extends Char {
 		exp = bundle.getInt( EXPERIENCE );
 
 		lanterfire = bundle.getInt(LANTERFTR);
+
+		icehp = bundle.getInt(ICEHP);
 
 		HTBoost = bundle.getInt(HTBOOST);
 
@@ -442,6 +452,7 @@ public class Hero extends Char {
 		info.str = bundle.getInt( STRENGTH );
 		info.exp = bundle.getInt( EXPERIENCE );
 		info.hp = bundle.getInt( Char.TAG_HP );
+		info.icehp = bundle.getInt( Hero.ICEHP );
 		info.ht = bundle.getInt( Char.TAG_HT );
 		info.shld = bundle.getInt( Char.TAG_SHLD );
 		info.heroClass = bundle.getEnum( CLASS, HeroClass.class );
@@ -549,18 +560,8 @@ public class Hero extends Char {
 			Buff.affect( this, Nyctophobia.class );
 		}
 
-//		Buff.affect(hero, BlessMixShiled.class).set( (20), 1 );
-//		Buff.affect(hero, BlessMobDied.class).set( (20), 1 );
-//		Buff.affect(hero, BlessGoodSTR.class).set( (20), 1 );
-//		Buff.affect(hero, BlessNoMoney.class).set( (20), 1 );
-//		Buff.affect(hero, BlessGoRead.class).set( (20), 1 );
-//		Buff.affect(hero, BlessImmune.class).set( (20), 1 );
-//		Buff.affect(hero, MagicGirlSayMoneyMore.class).set( (20), 1 );
-//		Buff.affect(hero, MagicGirlSayNoSTR.class).set( (20), 1 );
-//		Buff.affect(hero, MagicGirlSaySlowy.class).set( (20), 1 );
-//		Buff.affect(hero, MagicGirlSaySoftDied.class).set( (20), 1 );
-//		Buff.affect(hero, MagicGirlSayCursed.class).set( (20), 1 );
-//		Buff.affect(hero, MagicGirlSayKill.class).set( (20), 1 );
+		//寒冷buff初始化
+		Buff.affect( this, IceHpBuff.class );
 
 		if(HelpSettings()) {
 			Buff.affect(this, GameTracker.class);
@@ -934,6 +935,8 @@ public class Hero extends Char {
 			if ((Dungeon.challenges & ch) != 0) chCount++;
 		}
 
+		//icehp++;
+
 		if(chCount >= 3 && !lanterfireactive && !Dungeon.isChallenged(PRO) || Dungeon.isChallenged(DHXD) && !lanterfireactive){
 			//TODO 灯火前行
 			lanterfire = 100;
@@ -1224,7 +1227,7 @@ public class Hero extends Char {
 		//TODO this is slightly brittle, it assumes there are no disjointed sets of exit tiles
 		} else if ((Dungeon.level.map[pos] == Terrain.EXIT || Dungeon.level.map[pos] == Terrain.UNLOCKED_EXIT)) {
 
-			if (Dungeon.depth == 0 && !tipsgodungeon) {
+			if (Dungeon.depth == 0 && !tipsgodungeon && !Dungeon.isDLC(BOSSRUSH)) {
 
 				if (!tipsgodungeon) {
 					Game.runOnRenderThread(new Callback() {
@@ -1723,6 +1726,11 @@ public class Hero extends Char {
 		} else if (Dungeon.level.map[cell] == Terrain.LOCKED_DOOR || Dungeon.level.map[cell] == Terrain.CRYSTAL_DOOR || Dungeon.level.map[cell] == Terrain.LOCKED_EXIT) {
 			
 			curAction = new HeroAction.Unlock( cell );
+
+		} else if ((cell == Dungeon.level.exit || Dungeon.level.map[cell] == Terrain.EXIT || Dungeon.level.map[cell] == Terrain.UNLOCKED_EXIT && Dungeon.isDLC(BOSSRUSH))
+				&& Dungeon.depth < 30) {
+
+			curAction = new HeroAction.Descend( cell );
 			
 		} else if ((cell == Dungeon.level.exit || Dungeon.level.map[cell] == Terrain.EXIT || Dungeon.level.map[cell] == Terrain.UNLOCKED_EXIT)
 				&& Dungeon.depth < 26) {
@@ -2695,6 +2703,17 @@ public class Hero extends Char {
 	public void healLantern(int value){
 		lanterfire = Math.min(lanterfire+value,100);
 		hero.sprite.showStatus(0x00ff00, String.valueOf(value));
+	}
+
+	//TODO 寒冰值系统
+	public void damageIcehp(int value){
+		icehp -= value;
+		hero.sprite.showStatus(0x009999, String.valueOf(value));
+	}
+
+	public void healIcehp(int value){
+		icehp = Math.min(lanterfire+value,100);
+		hero.sprite.showStatus(0x00ffff, String.valueOf(value));
 	}
 
 }

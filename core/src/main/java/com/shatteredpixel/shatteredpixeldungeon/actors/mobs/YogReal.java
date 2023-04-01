@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -255,7 +256,7 @@ public class YogReal extends Boss {
             int dist = Dungeon.level.distance(pos, ch.pos);
             if(dist <= 4 && dist > 0){
                 Ballistica ba = HitBack.bounceBack(ch, this);
-                WandOfBlastWave.throwChar(ch, ba, 10 - 2 * dist);
+                WandOfBlastWave.throwChar(ch, ba, 10 - 2 * dist, false, false, getClass());
             }
         }
 
@@ -478,6 +479,10 @@ public class YogReal extends Boss {
         actScanning();
         actSummon();
         actDestroy();
+        if(Dungeon.isDLC(BOSSRUSH)){
+
+            GetBossLoot();
+        }
         for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
             if (mob instanceof Larva
                     || mob instanceof RipperDemon

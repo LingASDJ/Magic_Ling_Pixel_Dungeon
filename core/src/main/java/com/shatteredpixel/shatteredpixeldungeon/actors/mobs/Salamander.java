@@ -7,7 +7,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -109,13 +108,6 @@ public class Salamander extends Mob {
         //half quantity, rounded up
         drop.quantity((drop.quantity()+1)/2);
         return drop;
-    }
-
-    @Override
-    public void die( Object cause ) {
-        super.die( cause );
-
-        Ghost.Quest.process();
     }
 
     private static final String COMBO = "combo";

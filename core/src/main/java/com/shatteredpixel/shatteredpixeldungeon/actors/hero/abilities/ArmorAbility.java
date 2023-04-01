@@ -53,6 +53,8 @@ public abstract class ArmorAbility implements Bundlable {
 		}
 	}
 
+
+
 	//leave null for no targeting
 	public String targetingPrompt(){
 		return null;

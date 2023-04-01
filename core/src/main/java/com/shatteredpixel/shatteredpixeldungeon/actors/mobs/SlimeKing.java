@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -45,7 +46,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SlimeKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
@@ -111,8 +111,15 @@ public class SlimeKing extends Mob {
     }
 
     {
-        HP =140;
-        HT= 140;
+        if(Dungeon.isDLC(BOSSRUSH)){
+            HP =190;
+            HT= 190;
+
+        } else {
+            HP =140;
+            HT= 140;
+        }
+
         EXP = 20;
         defenseSkill = 12;
         spriteClass = SlimeKingSprite.class;
@@ -298,7 +305,6 @@ public class SlimeKing extends Mob {
     public void notice() {
         super.notice();
         BossHealthBar.assignBoss(this);
-        Music.INSTANCE.play(Assets.BGM_BOSSA, true);
         yell( Messages.get(this, "notice") );
         chainsUsed = false;
         //summon();
@@ -325,9 +331,12 @@ public class SlimeKing extends Mob {
             } while (!Dungeon.level.passable[pos + ofs]);
             Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
         }
+        if(Dungeon.isDLC(BOSSRUSH)){
 
+            GetBossLoot();
+        }
         Badges.validateBossSlain();
-//        Badges.KILLSLIMKING();
+
         yell( Messages.get(this, "defeated") );
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
             if (	mob instanceof Swarm||

@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -506,7 +507,10 @@ public class DimandKing extends Boss {
 
     @Override
     public void die(Object cause) {
+        if(Dungeon.isDLC(BOSSRUSH)){
 
+            GetBossLoot();
+        }
         GameScene.bossSlain();
 
         super.die( cause );

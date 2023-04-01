@@ -5,34 +5,40 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlameB01;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM300;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDiedTO;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DM150Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM275Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300AttackSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300SpiderSprite;
@@ -47,76 +53,88 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /*
-* DM920 隐藏Boss
+* DMZERO 隐藏Boss
 * 总共四个形态
-* This is DM920 Boss
-* Total 4 Read……
 */
 
-public class DM920 extends Mob
+public class DMZERO extends Mob
 {
-    public static class DM150 extends Mob
+
+    public static class DM300AttackMode extends FlameB01 implements Callback
     {
 
-        public int attackSkill(Char char1)
-        {
-            return 14;
-        }
+        public int attackProc(Char var1, int var2) {
+            byte var3 = 0;
+            int var4;
 
-        @Override
-        public void damage(int dmg, Object src) {
-            super.damage(dmg, src);
-            LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-            if (lock != null && !isImmune(src.getClass())) lock.addTime(dmg*1.5f);
-        }
-        public int damageRoll()
-        {
-            return Random.NormalIntRange(10, 13);
-        }
+            int var5 = super.attackProc(var1, var2);
+            var4 = var1.pos;
+            CellEmitter.center(var4).burst(BlastParticle.FACTORY, 30);
+            GameScene.add(Blob.seed(var4, 2, Fire.class));
+            int[] var7 = PathFinder.NEIGHBOURS9;
+            int var6 = var7.length;
 
-        public int drRoll() {
-            return Random.NormalIntRange(0, 10);
-        }
-
-        public void move(int i)
-        {
-            super.move(i);
-            if(Dungeon.level.map[i] == 19 && HP < HT)
-            {
-                HP = HP + Random.Int(1, HT - HP);
-                sprite.emitter().burst(ElmoParticle.FACTORY, 3);
-                if(Dungeon.level.heroFOV[i] && Dungeon.hero.isAlive())
-                    GLog.n(Messages.get(this, "repair"));
+            for(var2 = var3; var2 < var6; ++var2) {
+                int var8 = var7[var2];
+                if (!Dungeon.level.solid[var4 + var8]) {
+                    GameScene.add(Blob.seed(var4 + var8, 2, Fire.class));
+                }
             }
+            return var5;
         }
-
-        public void notice()
-        {
-            super.notice();
-            yell(Messages.get(this, "notice"));
-        }
-
-        public DM150()
-        {
-            spriteClass = DM150Sprite.class;
-            HT = 50;
-            HP = 50;
-            EXP = 15;
-            defenseSkill = 9;
-            loot = new StoneOfEnchantment();
-            lootChance = 0.333F;
-        }
-    }
-
-    public static class DM300AttackMode extends Mob implements Callback
-    {
 
         public int attackSkill(Char char1)
         {
             return 28;
+        }
+
+        public void dropRocks( Char target ) {
+
+            Dungeon.hero.interrupt();
+            final int rockCenter;
+
+            if (Dungeon.level.adjacent(pos, target.pos)){
+                int oppositeAdjacent = target.pos + (target.pos - pos);
+                Ballistica trajectory = new Ballistica(target.pos, oppositeAdjacent, Ballistica.MAGIC_BOLT);
+                WandOfBlastWave.throwChar(target, trajectory, 2, false, false, getClass());
+                if (target == Dungeon.hero){
+                    Dungeon.hero.interrupt();
+                }
+                rockCenter = trajectory.path.get(Math.min(trajectory.dist, 2));
+            } else {
+                rockCenter = target.pos;
+            }
+
+            int safeCell;
+            do {
+                safeCell = rockCenter + PathFinder.NEIGHBOURS8[Random.Int(8)];
+            } while (safeCell == pos
+                    || (Dungeon.level.solid[safeCell] && Random.Int(2) == 0)
+                    || (Blob.volumeAt(safeCell, NewCavesBossLevel.PylonEnergy.class) > 0 && Random.Int(2) == 0));
+
+            ArrayList<Integer> rockCells = new ArrayList<>();
+
+            int start = rockCenter - Dungeon.level.width() * 3 - 3;
+            int pos;
+            for (int y = 0; y < 7; y++) {
+                pos = start + Dungeon.level.width() * y;
+                for (int x = 0; x < 7; x++) {
+                    if (!Dungeon.level.insideMap(pos)) {
+                        pos++;
+                        continue;
+                    }
+                    //add rock cell to pos, if it is not solid, and isn't the safecell
+                    if (!Dungeon.level.solid[pos] && pos != safeCell && Random.Int(Dungeon.level.distance(rockCenter, pos)) == 0) {
+                        //don't want to overly punish players with slow move or attack speed
+                        rockCells.add(pos);
+                    }
+                    pos++;
+                }
+            }
+            Buff.append(this, NewDM300.FallingRockBuff.class, Math.min(target.cooldown(), 3*TICK)).setRockPositions(rockCells);
+
         }
 
         @Override
@@ -131,26 +149,10 @@ public class DM920 extends Mob
             return Random.NormalIntRange(20, 25);
         }
 
-
-        @Override
-        public int attackProc(Char enemy, int damage ) {
-            damage = super.attackProc( enemy, damage );
-            if (Random.Int( 2 ) == 0) {
-                Buff.prolong( enemy, Chill.class, Chill.DURATION );
-            }
-
-            return damage;
-        }
-
-        @Override
-        protected boolean canAttack( Char enemy ) {
-            Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
-            return !Dungeon.level.adjacent( pos, enemy.pos ) && attack.collisionPos == enemy.pos;
-        }
-
         public void die(Object obj)
         {
             super.die(obj);
+            Dungeon.level.drop(new IronKey(Dungeon.depth), pos).sprite.drop();
             obj = new DM300SpiderMode();
             ((DM300SpiderMode) obj).pos = pos;
             GameScene.add(((Mob) (obj)));
@@ -171,6 +173,11 @@ public class DM920 extends Mob
             }
 
             GameScene.add(Blob.seed(trajectory.collisionPos, 100, ToxicGas.class));
+
+            if(Random.Float()>=0.4f){
+                dropRocks(enemy);
+            }
+
 
             if (gasVented < 250){
                 int toVentAround = (int)Math.ceil((250 - gasVented)/8f);
@@ -229,9 +236,10 @@ public class DM920 extends Mob
         public DM300AttackMode()
         {
             spriteClass = DM300AttackSprite.class;
-            HT = 350;
-            HP = 350;
+            HT = 140;
+            HP = 140;
             EXP = 30;
+            Buff.affect(this, ChampionEnemy.Blazing.class);
             defenseSkill = 18;
         }
 
@@ -264,7 +272,7 @@ public class DM920 extends Mob
             if (hit( this, enemy, true )) {
                 //TODO would be nice for this to work on ghost/statues too
                 if (enemy == Dungeon.hero && Random.Int( 2 ) == 0) {
-                    Buff.prolong( enemy, Blindness.class, Degrade.DURATION );
+                    Buff.affect( hero, Burning.class ).reignite( hero, 12f );
                     Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
                 }
 
@@ -273,7 +281,7 @@ public class DM920 extends Mob
 
                 if (enemy == Dungeon.hero && !enemy.isAlive()) {
                     Dungeon.fail( getClass() );
-                    GLog.n( Messages.get(this, "frost_kill") );
+                    //GLog.n( Messages.get(this, "frost_kill") );
                 }
             } else {
                 enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
@@ -303,13 +311,73 @@ public class DM920 extends Mob
         {
             return Random.NormalIntRange(20, 25);
         }
+        private int pumpedUp = 0;
+        private int healInc = 1;
+        @Override
+        public boolean act() {
+
+            if (HP < HT) {
+                HP += Dungeon.level.water[pos] ? healInc+3 : healInc;
+
+                LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+                if (lock != null) lock.removeTime(healInc*2);
+
+                if (Dungeon.level.heroFOV[pos] ){
+                    sprite.emitter().burst( Speck.factory( Speck.HEALING ), healInc );
+                }
+                if (healInc < 1) {
+                    healInc++;
+                }
+                if (HP*2 > HT) {
+                    BossHealthBar.bleed(false);
+                    HP = Math.min(HP, HT);
+                }
+            } else {
+                healInc = 1;
+            }
+
+            if (state != SLEEPING){
+                Dungeon.level.seal();
+            }
+
+            return super.act();
+        }
+
+        {
+            immunities.add( ToxicGas.class );
+            immunities.add( Corrosion.class );
+            immunities.add( Terror.class );
+        }
+
+        private final String PUMPEDUP = "pumpedup";
+        private final String HEALINC = "healinc";
+
+        @Override
+        public void storeInBundle( Bundle bundle ) {
+
+            super.storeInBundle( bundle );
+
+            bundle.put( PUMPEDUP , pumpedUp );
+            bundle.put( HEALINC, healInc );
+        }
 
         public void die(Object obj)
         {
             super.die(obj);
             GameScene.bossSlain();
-            Dungeon.level.drop(new SkeletonKey(Dungeon.depth), pos).sprite.drop();
-            Badges.validateBossSlain();
+            for (Buff buff : hero.buffs()) {
+                if (buff instanceof TestDwarfMasterLock) {
+                    buff.detach();
+                }
+            }
+            Statistics.amuletObtained = true;
+            obj = new NullDiedTO();
+            ((NullDiedTO) obj).pos = pos;
+            GameScene.add(((Mob) (obj)));
+            Actor.addDelayed(new Pushing(((Char) (obj)), pos, ((NullDiedTO) (obj)).pos), -1F);
+
+            Badges.BOSSRUSH();
+
             yell( Messages.get(this, "defeated") );
         }
 
@@ -375,16 +443,22 @@ public class DM920 extends Mob
         public DM300DeathBall()
         {
             spriteClass = DM275Sprite.class;
-            HT = 1000;
-            HP = 1000;
-            EXP = 10;
+            HT = 400;
+            HP = 400;
+            EXP = 400;
             defenseSkill = 25;
+            Buff.affect(this, ChampionEnemy.AntiMagic.class);
+            Buff.affect(this, ChampionEnemy.Growing.class);
         }
     }
 
     public static class DM300SpiderMode extends Spinner
     {
-
+        {
+            immunities.add( ToxicGas.class );
+            immunities.add( Terror.class );
+            immunities.add( DiedBlobs.class );
+        }
         public int attackSkill(Char char1)
         {
             return 26;
@@ -397,6 +471,35 @@ public class DM920 extends Mob
         }
 
         @Override
+        public int attackProc(Char var1, int var2) {
+            byte var3 = 0;
+            int var4;
+
+            int var5 = super.attackProc(var1, var2);
+            var4 = var1.pos;
+            CellEmitter.center(var4).burst(BlastParticle.FACTORY, 30);
+            GameScene.add(Blob.seed(var4, 2, Fire.class));
+            int[] var7 = PathFinder.NEIGHBOURS9;
+            int var6 = var7.length;
+
+            for(var2 = var3; var2 < var6; ++var2) {
+                int var8 = var7[var2];
+                if (!Dungeon.level.solid[var4 + var8]) {
+                    GameScene.add(Blob.seed(var4 + var8, 2, Fire.class));
+                }
+            }
+            return var5;
+        }
+
+        @Override
+        public void restoreFromBundle(Bundle b){
+            super.restoreFromBundle(b);
+            BossHealthBar.assignBoss(this);
+            if (HP < 200) BossHealthBar.bleed(true);
+        }
+
+
+        @Override
         public void damage(int dmg, Object src) {
             super.damage(dmg, src);
             LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
@@ -405,13 +508,16 @@ public class DM920 extends Mob
 
         public int damageRoll()
         {
-            return Random.NormalIntRange(18, 23);
+            return Random.NormalIntRange(30, 50);
         }
+
+
 
         public void die(Object obj)
         {
             super.die(obj);
             obj = new DM300DeathBall();
+            Dungeon.level.drop(new IronKey(Dungeon.depth), pos).sprite.drop();
             ((DM300DeathBall) obj).pos = pos;
             GameScene.add(((Mob) (obj)));
             Actor.addDelayed(new Pushing(((Char) (obj)), pos, ((DM300DeathBall) (obj)).pos), -1F);
@@ -431,9 +537,9 @@ public class DM920 extends Mob
                 HP = HP + Random.Int(1, HT - HP);
                 sprite.emitter().burst(ElmoParticle.FACTORY, 5);
                 if(Dungeon.level.heroFOV[i] && Dungeon.hero.isAlive())
-                    GLog.n(Messages.get(this, "repair", new Object[0]), new Object[0]);
+                    GLog.n(Messages.get(this, "repair"));
             }
-            int ai[] = new int[8];
+            int[] ai = new int[8];
             int j = i - 1;
             ai[0] = j;
             int k = i + 1;
@@ -471,118 +577,24 @@ public class DM920 extends Mob
             yell(Messages.get(this, "notice"));
         }
 
-        public void restoreFromBundle(Bundle bundle)
-        {
-            super.restoreFromBundle(bundle);
-            BossHealthBar.assignBoss(this);
-        }
-
         public DM300SpiderMode ()
         {
             spriteClass = DM300SpiderSprite.class;
-            HT = 600;
-            HP = 600;
+            HT = 240;
+            HP = 240;
             EXP = 10;
-            defenseSkill = 23;
+            defenseSkill = 4;
+            Buff.affect(this, ChampionEnemy.Halo.class);
+            Buff.affect(this, ChampionEnemy.AntiMagic.class);
             maxLvl = -1;
         }
     }
 
-    public static class DM75 extends Mob
-    {
-
-        public int attackSkill(Char char1)
-        {
-            return 7;
-        }
-
-        @Override
-        public void damage(int dmg, Object src) {
-            super.damage(dmg, src);
-            LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-            if (lock != null && !isImmune(src.getClass())) lock.addTime(dmg*1.5f);
-        }
-
-        public int damageRoll()
-        {
-            return Random.NormalIntRange(5, 6);
-        }
-
-        public void die(Object obj)
-        {
-            super.die(obj);
-            obj = new ArrayList();
-            for(int i = 0; i < PathFinder.NEIGHBOURS8.length; i++)
-                ((ArrayList) (obj)).add(Integer.valueOf(pos + PathFinder.NEIGHBOURS8[i]));
-
-            if(!Dungeon.level.mobs.isEmpty())
-            {
-                for(obj = ((ArrayList) (obj)).iterator(); ((Iterator) (obj)).hasNext();)
-                {
-                    int j = ((Integer)((Iterator) (obj)).next()).intValue();
-                    if(Actor.findChar(j) instanceof DM300SpiderMode)
-                    {
-                        Actor.findChar(j).die(this);
-                        obj = new DM300SpiderMode();
-                        ((DM300SpiderMode) obj).pos = pos;
-                        GameScene.add(((Mob) (obj)));
-                        Actor.addDelayed(new Pushing(((Char) (obj)), pos, ((DM300SpiderMode) (obj)).pos), -1F);
-                        return;
-                    }
-                }
-
-                for(obj = Dungeon.level.mobs.iterator(); ((Iterator) (obj)).hasNext(); Actor.findChar(((Mob)((Iterator) (obj)).next()).pos).die(this));
-                GameScene.bossSlain();
-                Dungeon.level.drop(new SkeletonKey(Dungeon.depth), pos).sprite.drop();
-                Badges.validateBossSlain();
-                LloydsBeacon beacon = Dungeon.hero.belongings.getItem(LloydsBeacon.class);
-                if(obj != null)
-                    ((LloydsBeacon) (obj)).upgrade();
-                yell( Messages.get(this, "defeated") );
-            }
-        }
-
-        public int drRoll()
-        {
-            return Random.NormalIntRange(0, 3);
-        }
-
-        public void move(int i)
-        {
-            super.move(i);
-
-            if (Dungeon.level.map[i] == Terrain.INACTIVE_TRAP && HP < HT) {
-
-                HP += Random.Int( 1, HT - HP );
-                sprite.emitter().burst( ElmoParticle.FACTORY, 5 );
-
-                if (Dungeon.level.heroFOV[i] && Dungeon.hero.isAlive()) {
-                    GLog.n( Messages.get(this, "repair") );
-                }
-            }
-
-            if(Dungeon.level.map[i] == 19 && HP < HT)
-            {
-                HP = HP + Random.Int(1, HT - HP);
-                sprite.emitter().burst(ElmoParticle.FACTORY, 1);
-                if(Dungeon.level.heroFOV[i] && Dungeon.hero.isAlive())
-                    GLog.n(Messages.get(this, "repair"));
-            }
-        }
-
-        public void notice()
-        {
-            super.notice();
-            yell(Messages.get(this, "notice"));
-        }
-    }
-
-
-    public DM920()
+    public DMZERO()
     {
         spriteClass = DM300Sprite.class;
 
-        HP = HT = 280;
+        HP = HT = 200;
         EXP = 30;
         defenseSkill = 18;
 
@@ -611,13 +623,19 @@ public class DM920 extends Mob
 
     public int damageRoll()
     {
-        return Random.NormalIntRange(15, 20);
+
+        return (HT/2 >= HP) ? Random.NormalIntRange(25, 35) : Random.NormalIntRange(15, 20);
     }
 
     public void die(Object obj)
     {
         super.die(obj);
-        split(pos, enemy);
+        Dungeon.level.drop(new IronKey(Dungeon.depth), pos).sprite.drop();
+        obj = new DM300AttackMode();
+        ((DM300AttackMode) obj).pos = pos;
+        GameScene.add(((Mob) (obj)));
+        Actor.addDelayed(new Pushing(((Char) (obj)), pos, ((DM300AttackMode) (obj)).pos), -1F);
+
         yell( Messages.get(this, "defeated") );
     }
 
@@ -636,7 +654,7 @@ public class DM920 extends Mob
             if(Dungeon.level.heroFOV[i] && Dungeon.hero.isAlive())
                 GLog.n(Messages.get(this, "repair"));
         }
-        int ai[] = new int[8];
+        int[] ai = new int[8];
         int j = i - 1;
         ai[0] = j;
         int k = i + 1;
@@ -672,41 +690,13 @@ public class DM920 extends Mob
         super.notice();
         BossHealthBar.assignBoss(this);
         yell(Messages.get(this, "notice"));
-        Buff.affect(hero, RandomBuff.DiedBuff.class).set( (1000), 1 );
+        Buff.affect(hero, RandomBuff.DiedBuff.class).set( (500), 1 );
     }
 
     public void restoreFromBundle(Bundle bundle)
     {
         super.restoreFromBundle(bundle);
         BossHealthBar.assignBoss(this);
-    }
-
-    public void split(int i, Char char1)
-    {
-        ArrayList arraylist = new ArrayList();
-        for(int j = 0; j < PathFinder.NEIGHBOURS8.length; j++)
-        {
-            int k = PathFinder.NEIGHBOURS8[j] + i;
-            if(Actor.findChar(k) == null && (Dungeon.level.passable[k] || Dungeon.level.avoid[k]))
-                arraylist.add(k);
-        }
-
-        if(arraylist.size() > 0)
-        {
-            DM300AttackMode dm75 = new DM300AttackMode();
-            dm75.pos = ((Integer)Random.element(arraylist)).intValue();
-            GameScene.add(dm75);
-            Actor.addDelayed(new Pushing(dm75, i, dm75.pos), -1F);
-        }
-        Iterator iterator = Dungeon.level.mobs.iterator();
-        do
-        {
-            if(!iterator.hasNext())
-                break;
-            Mob mob = (Mob)iterator.next();
-            if(mob instanceof DM150)
-                mob.aggro(char1);
-        } while(true);
     }
 
     //死亡国度
@@ -717,5 +707,29 @@ public class DM920 extends Mob
 
             emitter.pour( Speck.factory( Speck.DIED ), 0.4f );
         }
+
+        @Override
+        protected void evolve() {
+            super.evolve();
+
+            int damage = 9 + Dungeon.depth/5;
+
+            Char ch;
+            int cell;
+
+            for (int i = area.left; i < area.right; i++){
+                for (int j = area.top; j < area.bottom; j++){
+                    cell = i + j*Dungeon.level.width();
+                    if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
+                        if (!ch.isImmune(this.getClass())) {
+
+                            ch.damage(damage, this);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
+
+

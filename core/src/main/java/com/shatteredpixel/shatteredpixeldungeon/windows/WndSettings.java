@@ -412,7 +412,6 @@ public class WndSettings extends WndTabbed {
 		CheckBox chkFlipToolbar;
 		CheckBox chkFlipTags;
 		ColorBlock sep2;
-		CheckBox chkFont;
 		ColorBlock sep3;
 		RedButton btnKeyBindings;
 
@@ -488,25 +487,25 @@ public class WndSettings extends WndTabbed {
 			sep2 = new ColorBlock(1, 1, 0xFF000000);
 			add(sep2);
 
-			chkFont = new CheckBox(Messages.get(this, "system_font")){
-				@Override
-				protected void onClick() {
-					super.onClick();
-					ShatteredPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback() {
-						@Override
-						public void beforeCreate() {
-							SPDSettings.systemFont(false);
-						}
-
-						@Override
-						public void afterCreate() {
-							//do nothing
-						}
-					});
-				}
-			};
-			chkFont.checked(SPDSettings.systemFont());
-			add(chkFont);
+//			chkFont = new CheckBox(Messages.get(this, "system_font")){
+//				@Override
+//				protected void onClick() {
+//					super.onClick();
+//					ShatteredPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback() {
+//						@Override
+//						public void beforeCreate() {
+//							SPDSettings.systemFont();
+//						}
+//
+//						@Override
+//						public void afterCreate() {
+//							//do nothing
+//						}
+//					});
+//				}
+//			};
+//			chkFont.checked(SPDSettings.systemFont());
+//			add(chkFont);
 
 			if (DeviceCompat.hasHardKeyboard()){
 
@@ -561,24 +560,22 @@ public class WndSettings extends WndTabbed {
 			sep2.size(width, 1);
 			sep2.y = chkFlipTags.bottom() + 2;
 
-			chkFont.setRect(0, sep2.y + 1 + GAP, width, BTN_HEIGHT);
-
 			if (btnKeyBindings != null){
 				if (width > 200){
-					chkFont.setSize(width/2-1, BTN_HEIGHT);
+					chkFlipTags.setSize(width/2-1, BTN_HEIGHT);
 					sep3.size(1, BTN_HEIGHT + 2*GAP);
-					sep3.x = chkFont.right() + 0.5f;
+					sep3.x = chkFlipTags.right() + 0.5f;
 					sep3.y = sep2.y+1;
 					PixelScene.align(sep3);
-					btnKeyBindings.setRect(chkFont.right()+2, chkFont.top(), width/2 - 1, BTN_HEIGHT);
+					btnKeyBindings.setRect(chkFlipTags.right()+2, chkFlipTags.top(), width/2 - 1, BTN_HEIGHT);
 				} else {
 					sep3.size(width, 1);
-					sep3.y = chkFont.bottom() + 2;
+					sep3.y = chkFlipTags.bottom() + 2;
 					btnKeyBindings.setRect(0, sep3.y + 1 + GAP, width, BTN_HEIGHT);
 				}
 				height = btnKeyBindings.bottom();
 			} else {
-				height = chkFont.bottom();
+				height = chkFlipTags.bottom();
 			}
 		}
 
@@ -799,17 +796,16 @@ public class WndSettings extends WndTabbed {
 				add(chkWifi);
 			}
 
-			chkFireBase = new CheckBox(Messages.get(this, "firebase")) {
+			chkFireBase = new CheckBox("firebase") {
 				@Override
 				protected void onClick() {
 					super.onClick();
 					if (checked()) {
 						checked(!checked());
 						ShatteredPixelDungeon.scene().add(new WndOptions(Icons.get(Icons.DATA),
-								Messages.get(DisplayTab.class, "firebase_active"),
-								Messages.get(DisplayTab.class, "firebase_desc"),
-								Messages.get(DisplayTab.class, "okay"),
-								Messages.get(DisplayTab.class, "cancel")) {
+								"firebase_active",
+								"firebase_desc",
+								"cancel") {
 							@Override
 							protected void onSelect(int index) {
 								if (index == 0) {

@@ -26,7 +26,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DM920;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DMZERO;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
@@ -36,8 +37,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.noosa.Group;
-import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class DM920BossLevel extends Level {
@@ -171,7 +172,7 @@ public class DM920BossLevel extends Level {
 
 	@Override
 	protected void createMobs() {
-		DM920 Boss= new DM920();
+		DMZERO Boss= new DMZERO();
 		Boss.pos =  (this.width * 21 + 21);
 		mobs.add(Boss);
 	}
@@ -197,9 +198,21 @@ public class DM920BossLevel extends Level {
 		super.occupyCell(ch);
 
 		if (map[entrance] == Terrain.ENTRANCE && map[exit] != Terrain.EXIT
-				&& ch == Dungeon.hero && Dungeon.level.distance(ch.pos, entrance) >= 0) {
+				&& ch == Dungeon.hero && Dungeon.level.distance(ch.pos, entrance) >= 0 &&Dungeon.hero.buff(TestDwarfMasterLock.class) != null) {
 			seal();
 		}
+	}
+
+	@Override
+	public int randomRespawnCell( Char ch ) {
+		int pos = (this.width * 35) + 21;
+		int cell;
+		do {
+			cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
+		} while (!passable[cell]
+				|| (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
+				|| Actor.findChar(cell) != null);
+		return cell;
 	}
 
 	@Override
@@ -209,7 +222,6 @@ public class DM920BossLevel extends Level {
 		set( entrance, Terrain.WALL );
 		GameScene.updateMap( entrance );
 		CellEmitter.get( entrance ).start( FlameParticle.FACTORY, 0.1f, 10 );
-		Music.INSTANCE.play( Assets.BGM_0, true );
 		Dungeon.observe();
 	}
 

@@ -32,6 +32,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
@@ -277,9 +279,16 @@ public abstract class Elemental extends Mob {
 			super.die(cause);
 			if (alignment == Alignment.ENEMY) Dungeon.level.drop( new Embers(), pos ).sprite.drop();
 
-			//机会
-
 			Badges.KILL_COLDELE();
+		}
+
+		@Override
+		protected boolean act() {
+			if(buff(Frost.class) != null || buff(Chill.class) != null) {
+				this.die(Frost.class);
+				return true;
+			}
+			return super.act();
 		}
 
 		@Override

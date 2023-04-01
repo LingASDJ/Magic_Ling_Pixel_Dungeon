@@ -73,9 +73,8 @@ public class ZeroLevel extends Level {
                 case 124:
                 case 140:
                     return 27;
-                case 4:
-                    return 14;
                 case 69:
+                case 161:
                     return 12;
                 case 80:
                     return 5;
@@ -87,8 +86,6 @@ public class ZeroLevel extends Level {
                     return 20;
                 case 123:
                     return 29;
-                case 161:
-                    return 12;
                 default:
                     return 1;
             }

@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
+
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -47,11 +49,20 @@ public class Amulet extends Item {
 	
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
-		ArrayList<String> actions = super.actions( hero );
-		actions.add( AC_END );
-		return actions;
+		if(Statistics.amuletObtained){
+			ArrayList<String> actions = super.actions( hero );
+			actions.add( AC_END );
+			return actions;
+		} else if(Dungeon.isDLC(BOSSRUSH) && Dungeon.depth !=27 ){
+			return new ArrayList<>(); //yup, no dropping this one
+		} else {
+			ArrayList<String> actions = super.actions( hero );
+			actions.add( AC_END );
+			return actions;
+		}
+
 	}
-	
+
 	@Override
 	public void execute( Hero hero, String action ) {
 
@@ -64,7 +75,7 @@ public class Amulet extends Item {
 	
 	@Override
 	public boolean doPickUp(Hero hero, int pos) {
-		if (super.doPickUp( hero, pos )) {
+		if (super.doPickUp( hero, pos ) && !Dungeon.isDLC(BOSSRUSH) ) {
 			
 			if (!Statistics.amuletObtained) {
 				Statistics.amuletObtained = true;

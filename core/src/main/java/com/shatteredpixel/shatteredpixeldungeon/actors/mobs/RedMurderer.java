@@ -23,6 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -163,7 +165,7 @@ public class RedMurderer extends Mob {
             } else if (item instanceof Honeypot.ShatteredPot) {
                 ((Honeypot.ShatteredPot)item).pickupPot(this);
             }
-
+            Buff.affect(this, Bleeding.class).set(10f);
             return true;
         } else {
             return false;

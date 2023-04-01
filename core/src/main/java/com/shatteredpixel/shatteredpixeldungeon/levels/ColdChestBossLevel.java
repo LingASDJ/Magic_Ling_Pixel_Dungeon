@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.MAZECOMPLE;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.MAZE_START;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.START;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -37,6 +39,7 @@ public class ColdChestBossLevel extends Level {
     public enum State {
         START,
         MAZE_START,
+        MAZECOMPLE,
         VSBOSS_START,
         FIND_START,
         WIN
@@ -169,7 +172,14 @@ public class ColdChestBossLevel extends Level {
                     }
                     break;
                 case MAZE_START:
-                    changeMap(MazeRoom);
+                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                        if (pro != MAZECOMPLE && mob instanceof DiamondKnight && mob.HP > 350) {
+                            changeMap(MazeRoom);
+                            pro = MAZECOMPLE;
+                        }
+                    }
+                    break;
+                case MAZECOMPLE:
                     break;
             }
         }
@@ -178,6 +188,10 @@ public class ColdChestBossLevel extends Level {
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
             if(mob instanceof DiamondKnight && mob.HP >400){
                 GLog.n("ColdChestBoss");
+            } else if (pro != MAZE_START  && mob instanceof DiamondKnight && mob.HP >350) {
+                GLog.n("让这场游戏变得更加有趣吧");
+                GameScene.flash(0x808080);
+                pro = MAZE_START;
             }
 
         }

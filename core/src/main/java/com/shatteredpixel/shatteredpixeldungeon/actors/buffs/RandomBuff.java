@@ -21,9 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
@@ -114,6 +118,15 @@ public class RandomBuff extends Buff {
                 spend( interval );
                 if (--level <= 0) {
                     detach();
+                    GameScene.flash(0xff0000);
+                    GLog.n("Now! You Time is Out Over!Go Died!!!");
+                    for (Buff buff : hero.buffs()) {
+                        if (buff instanceof RoseShiled) {
+                            buff.detach();
+                        }
+                    }
+                    Buff.affect( hero, Poison.class ).set(hero.HT);
+                    Buff.affect( hero, LostInventory.class);
                 }
 
             } else {

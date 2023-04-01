@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDLC;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHeroInfo;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
@@ -472,22 +473,8 @@ public class HeroSelectScene extends PixelScene {
 		IconButton DungeonHappyMode = new IconButton(new ItemSprite(ItemSpriteSheet.LANTERNB)) {
 			@Override
 			protected void onClick() {
-				if(1==2){
-					Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextInput(Messages.get(WndStartGame.class,"custom_name"),
-							Messages.get(WndStartGame.class, "custom_name_desc")+SPDSettings.heroName(),
-							SPDSettings.heroName(), 20,
-							false, Messages.get(WndStartGame.class,"custom_name_set"),
-							Messages.get(WndStartGame.class,"custom_name_clear")){
-						@Override
-						public void onSelect(boolean name, String str) {
-							if (name) {
-								SPDSettings.heroName(str);
-							} else {
-								SPDSettings.heroName("");
-							}
-							icon(Icons.get(SPDSettings.heroName().equals("") ? RENAME_OFF : Icons.RENAME_ON));
-						}
-					}));
+				if(1==1){
+					ShatteredPixelDungeon.scene().addToFront(new WndDLC(SPDSettings.dlc(), true));
 				} else {
 					ShatteredPixelDungeon.scene().addToFront(new WndMessage("完成_一局游戏_后解锁娱乐模式。--暂未实装"));
 				}

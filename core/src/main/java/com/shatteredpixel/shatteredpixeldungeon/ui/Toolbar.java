@@ -263,7 +263,7 @@ public class Toolbar extends Component {
 			if (i == 0 && !SPDSettings.flipToolbar() ||
 					i == Math.min(SPDSettings.quickslots(), maxHorizontalQuickslots)-1 && SPDSettings.flipToolbar()) {
 				btnQuick[i].border(0, 2);
-				btnQuick[i].frame(106, 0, 19, 24);
+				btnQuick[i].frame(86, 0, 20, 24);
 			} else if (i == 0 && SPDSettings.flipToolbar() ||
 					i == Math.min(SPDSettings.quickslots(), maxHorizontalQuickslots)-1 && !SPDSettings.flipToolbar()) {
 				btnQuick[i].border(2, 1);
@@ -287,7 +287,16 @@ public class Toolbar extends Component {
 				startX = btnInventory.left() - btnQuick[0].width();
 				for (int i = 0; i < maxHorizontalQuickslots; i++) {
 					QuickslotTool tool = btnQuick[i];
-					tool.setPos(startX, y+2);
+
+					//修复反向工具栏的错误
+					if (!SPDSettings.flipToolbar()) {
+						tool.setPos(startX, y + 2);
+					} else if (i >= 1) {
+						tool.setPos(startX, y + 2);
+					} else {
+						tool.setPos(startX-16, y + 2);
+					}
+
 					if (i + 1 < btnQuick.length) {
 						startX = btnQuick[i].left() - btnQuick[i+1].width();
 					}
@@ -336,9 +345,6 @@ public class Toolbar extends Component {
 			btnSearch.setPos( (right - btnSearch.right()), y);
 			btnInventory.setPos( (right - btnInventory.right()), y);
 
-			for (QuickslotTool tool : btnQuick) {
-				tool.setPos( right - tool.right(), y+2);
-			}
 		}
 	}
 
