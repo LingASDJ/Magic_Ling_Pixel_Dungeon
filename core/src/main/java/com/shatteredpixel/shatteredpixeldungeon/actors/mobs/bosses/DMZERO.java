@@ -443,8 +443,8 @@ public class DMZERO extends Mob
         public DM300DeathBall()
         {
             spriteClass = DM275Sprite.class;
-            HT = 400;
-            HP = 400;
+            HT = 220;
+            HP = 220;
             EXP = 400;
             defenseSkill = 25;
             Buff.affect(this, ChampionEnemy.AntiMagic.class);

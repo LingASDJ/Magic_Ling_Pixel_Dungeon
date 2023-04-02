@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.shopOnLevel;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -148,6 +149,11 @@ public class WndTradeItem extends WndInfoItem {
 				}
 			}
 		};
+
+		if(Dungeon.isDLC(BOSSRUSH)){
+			btnStole.alpha(0.3f);
+			btnStole.active=false;
+		}
 		btnStole.setRect( 0, pos + GAP, width, BTN_HEIGHT );
 		btnStole.icon(Statistics.fireGirlnoshopping && !Statistics.deadshoppingdied ? new FireMagicGirlSprite() :
 				new ShopGuardDead.ShopGuardianRedSprite());

@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
@@ -64,6 +65,7 @@ public class ItemLevel extends RegularLevel {
 
     @Override
     protected void createItems() {
+        Ghost.Quest.spawnx( this );
        switch (depth){
            //T1 补给层
           case 1: case 3: case 6: case 7:
@@ -77,7 +79,6 @@ public class ItemLevel extends RegularLevel {
           break;
            //T2 补给层
           case 9: case 11: case 13:
-               addItemToSpawn(new PotionOfStrength());
                addItemToSpawn(new PotionOfExperience());
                addItemToSpawn(new PotionOfHealing());
                addItemToSpawn(Generator.random(Generator.Category.FOOD));
@@ -114,12 +115,25 @@ public class ItemLevel extends RegularLevel {
 
     @Override
     public String tilesTex() {
-        return Assets.Environment.TILES_COLD;
+        if(depth>=16){
+            return Assets.Environment.TILES_CITY;
+        } else if(depth>=6){
+            return Assets.Environment.TILES_PRISON;
+        } else {
+            return Assets.Environment.TILES_COLD;
+        }
+
     }
 
     @Override
     public String waterTex() {
-        return Assets.Environment.WATER_COLD;
+        if(depth>=16){
+            return Assets.Environment.WATER_CITY;
+        } else if(depth>=6){
+            return Assets.Environment.WATER_PRISON;
+        } else {
+            return Assets.Environment.WATER_COLD;
+        }
     }
 
     @Override

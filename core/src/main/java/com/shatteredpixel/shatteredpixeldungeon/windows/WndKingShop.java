@@ -8,7 +8,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReloadShop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReloadShopTwo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDiedTO;
@@ -280,8 +279,6 @@ public class WndKingShop extends Window {
                     if(Dungeon.gold >500) {
                         Dungeon.gold-=500;
                         WndKingShop.this.selectReward( item );
-                        if (RandomBuff.level-- >= 0) {
-                        }
                         Buff.prolong( hero, ReloadShop.class, 1f);
                         //Statistics.naiyaziCollected += 1;
                         WndKingShop.RewardWindow.this.hide();
@@ -316,12 +313,10 @@ public class WndKingShop extends Window {
             RedButton btnConfirm = new RedButton(Messages.get(WndKingShop.class, "buy")){
                 @Override
                 protected void onClick() {
-                    if(Dungeon.gold > 500) {
+                    if(Dungeon.gold >= 500) {
                         Dungeon.gold-=500;
                         Buff.prolong( hero, ReloadShop.class, 1f);
                         WndKingShop.this.selectReward( item );
-                        if (RandomBuff.level-- >= 0) {
-                        }
                         //Badges.nyzvalidateGoldCollected();
                         //Statistics.naiyaziCollected += 1;
                         WndKingShop.RewardWindow2.this.hide();

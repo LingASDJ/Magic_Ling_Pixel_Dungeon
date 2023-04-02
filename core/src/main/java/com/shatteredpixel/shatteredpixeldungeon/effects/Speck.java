@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.effects;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.TextureFilm;
@@ -312,7 +313,12 @@ public class Speck extends Image {
 				break;
 
 			case DIED:
-				hardlight(0x0);
+				if(Dungeon.depth==27){
+					hardlight(0x0);
+				} else {
+					hardlight(0xff5060);
+				}
+
 				angularSpeed = 30;
 				angle =Random.Float( 360 );
 				lifespan = Random.Float( 1f,3f);

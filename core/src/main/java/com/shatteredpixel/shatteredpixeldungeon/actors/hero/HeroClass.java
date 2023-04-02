@@ -173,11 +173,9 @@ public enum HeroClass {
 
 		if ( Dungeon.isDLC(BOSSRUSH)){
 			Dungeon.gold += 3000;
-		}
-
-		if (Dungeon.isDLC(BOSSRUSH)){
 			new Amulet().quantity(1).identify().collect();
 		}
+
 
 		if (Dungeon.isChallenged(Challenges.PRO)){
 			new WandOfHightHunderStorm().quantity(11).identify().collect();

@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -44,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ItemLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -137,7 +139,12 @@ public class Ghost extends NPC {
 									GameScene.show(new WndQuest(Ghost.this, Messages.get(Ghost.this, "rat_2")));
 									break;
 								case 2:
-									GameScene.show(new WndQuest(Ghost.this, Messages.get(Ghost.this, "gnoll_2")));
+									if(Dungeon.isDLC(BOSSRUSH)){
+										GameScene.show(new WndQuest(Ghost.this, Messages.get(Ghost.this, "agnoll_2")));
+									} else {
+										GameScene.show(new WndQuest(Ghost.this, Messages.get(Ghost.this, "gnoll_2")));
+									}
+
 									break;
 								case 3:
 									GameScene.show(new WndQuest(Ghost.this, Messages.get(Ghost.this, "crab_2")));
@@ -298,6 +305,76 @@ public class Ghost extends NPC {
 				//depth2=fetid rat, 3=gnoll trickster, 4=great crab
 				type = Dungeon.depth-1;
 				
+				given = false;
+				processed = false;
+				depth = Dungeon.depth;
+
+				//50%:tier2, 30%:tier3, 15%:tier4, 5%:tier5
+				switch (Random.chances(new float[]{0, 0, 10, 6, 3, 1})){
+					default:
+					case 2: armor = new LeatherArmor(); break;
+					case 3: armor = new MailArmor();    break;
+					case 4: armor = new ScaleArmor();   break;
+					case 5: armor = new PlateArmor();   break;
+				}
+				//50%:tier2, 30%:tier3, 15%:tier4, 5%:tier5
+				int wepTier = Random.chances(new float[]{0, 0, 10, 6, 3, 1});
+				Generator.Category c = Generator.wepTiers[wepTier - 1];
+				weapon = (MeleeWeapon) Reflection.newInstance(c.classes[Random.chances(c.probs)]);
+
+				//26%:+0, 25%:+1, 15%:+2, 10%:+3, 5%:+4, 5%+5
+				float itemLevelRoll = Random.Float();
+				int itemLevel;
+				if (itemLevelRoll < 0.74f){
+					itemLevel = 0;
+				} else if (itemLevelRoll < 0.75f){
+					itemLevel = 1;
+				} else if (itemLevelRoll < 0.85f){
+					itemLevel = 2;
+				} else if (itemLevelRoll < 0.90f) {
+					itemLevel = 3;
+					hero.sprite.showStatus( CharSprite.NEGATIVE, "+3!!!" );
+				} else if (itemLevelRoll < 0.95f){
+					hero.sprite.showStatus( CharSprite.POSITIVE, "+5!!!" );
+					if(( !Badges.isUnlocked(Badges.Badge.DAGETO))) {
+						Statistics.dageCollected = 2;
+						Badges.GhostDageCollected();
+					}
+					itemLevel = 5;
+				} else {
+					itemLevel = 4;
+					hero.sprite.showStatus( CharSprite.WARNING, "+4!!!" );
+					if(( !Badges.isUnlocked(Badges.Badge.GHOSTDAGE))) {
+						Statistics.dageCollected = 1;
+						Badges.GhostDageCollected();
+					}
+				}
+				weapon.upgrade(itemLevel);
+				armor.upgrade(itemLevel);
+
+				//10% to be enchanted. We store it separately so enchant status isn't revealed early
+				if (Random.Int(10) == 0){
+					enchant = Weapon.Enchantment.random();
+					glyph = Armor.Glyph.random();
+				}
+
+			}
+		}
+
+		public static void spawnx( ItemLevel level ) {
+			if (!spawned && Dungeon.depth == 3) {
+
+				Ghost ghost = new Ghost();
+				do {
+					ghost.pos = level.randomRespawnCell( ghost );
+				} while (ghost.pos == -1);
+				level.mobs.add( ghost );
+
+				spawned = true;
+				//dungeon depth determines type of quest.
+				//depth2=fetid rat, 3=gnoll trickster, 4=great crab
+				type = Dungeon.depth-1;
+
 				given = false;
 				processed = false;
 				depth = Dungeon.depth;

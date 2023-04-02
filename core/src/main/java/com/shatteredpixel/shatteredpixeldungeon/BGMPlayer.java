@@ -18,14 +18,25 @@ public class BGMPlayer {
 
 
         if(Dungeon.isDLC(BOSSRUSH)){
-            switch (d) {
-                case -1:case 0:
-                    Music.INSTANCE.play(Assets.SNOWCYON, true);
-                break;
-                case 1:case 3: case 5:case 7:case 9:case 11:case 14:case 15:
-                    Music.INSTANCE.play(Assets.BGM_3, true);
-                    break;
-            }
+            if (d == -1) {
+                Music.INSTANCE.play(Assets.SNOWCYON, true);
+            }else if (d == 0||d==27) {
+                Music.INSTANCE.play(Assets.SNOWCYON, true);
+            } else if (d > 0 && d <= 5) {
+                Music.INSTANCE.play(Assets.BGM_1, true);
+            } else if (d > 5 && d <= 10) {
+                Music.INSTANCE.play(Assets.BGM_2, true);
+            } else if (d > 10 && d <= 15) {
+                Music.INSTANCE.play(Assets.BGM_3, true);
+            } else if (d > 15 && d <= 20) {
+                Music.INSTANCE.play(Assets.BGM_4, true);
+            } else if (d > 20 && d <= 26) {
+                Music.INSTANCE.play(Assets.BGM_5, true);
+            } else if (d ==-5||d ==-15) {
+                Music.INSTANCE.play(Assets.SNOWCYON, true);
+            } else
+                //default
+                Music.INSTANCE.play(Assets.Music.THEME, true);
         } else {
             if (d == -1) {
                 Music.INSTANCE.play(Assets.TOWN, true);
@@ -121,6 +132,7 @@ public class BGMPlayer {
                 case 28:
                     Music.INSTANCE.play( Assets.BGM_0, true );
                     break;
+
             }
         } else {
             if (Dungeon.bossLevel() && t == 5) {

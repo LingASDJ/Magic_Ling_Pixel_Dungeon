@@ -77,13 +77,17 @@ public class vM0_6_7_X_Changes {
     }
 
     public static void add_v0_6_28_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta4.975(P3)", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta4.975-985(P3)", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
         changes = new ChangeInfo("新内容", false, null);
         changes.hardlight(Window.GREEN_COLOR);
         changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_ROSE3), ("首领对决V1.5"),
+                ("1.现在可以在3层完成幽妹的任务，让她和你并肩前行。\n" +
+                        "2.T3补给层现在不会再给予力量药水")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("娱乐模式"),
                 ("娱乐模式正式开启测试\n\n第一个娱乐模式为：首领对决(BOSSRUSH)")));
@@ -103,7 +107,9 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
                 Messages.get(ChangesScene.class,
                         "bugfixes"),
-                ("修复了很多Bug,我忘了我修了什么了（")));
+                ("1.修复天狗10层的错误\n" +
+                        "2.修复部分BGM错误运行的问题\n" +
+                        "3.其他崩溃修复")));
     }
 
     public static void add_v0_6_27_Changes( ArrayList<ChangeInfo> changeInfos ) {

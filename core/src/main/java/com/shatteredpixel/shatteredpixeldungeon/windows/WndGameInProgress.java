@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
@@ -109,25 +110,12 @@ public class WndGameInProgress extends Window {
 			RedButton btnGameInfo = new RedButton( Messages.get(this, "gameinfo") ) {
 				@Override
 				protected void onClick() {
-					try {
-						Bundle bundle = FileUtils.bundleFromFile(GamesInProgress.gameFile(slot));
-						String ing =
-								Messages.get(WndGameInProgress.class,"gameversion") + Game.version+"\n\n"+
-								Messages.get(WndGameInProgress.class,"gameseed")+ DungeonSeed.convertToCode(bundle.getLong("seed"))+"\n\n"+
-								Messages.get(WndGameInProgress.class,"gamegold") + bundle.getInt("gold") +"\n\n"+
-								Messages.get(WndGameInProgress.class,"gamenayzi") + bundle.getInt("naiyaziCollected")+
-								Messages.get(WndGameInProgress.class,"gamenayzis") +"\n\n"+
-								Messages.get(WndGameInProgress.class,"gamemimic") + bundle.getInt("goldchest") +"\n\n"+
-								Messages.get(WndGameInProgress.class,"gameinof");
-						ShatteredPixelDungeon.scene().addToFront(new WndMessage(ing));
-					} catch (IOException ignored) {
-					}
+					ShatteredPixelDungeon.scene().addToFront(new WndDLC(SPDSettings.dlc(), true));
 				}
 			};
 			btnGameInfo.icon(new ItemSprite(ItemSpriteSheet.SEED_SKYBLUEFIRE));
 			btnGameInfo.setRect( (WIDTH - btnW)/2+20, pos, btnW , 18 );
 			add( btnGameInfo );
-			
 			pos = btnGameInfo.bottom() + GAP;
 		} else {
 
@@ -153,7 +141,19 @@ public class WndGameInProgress extends Window {
 			btnGameInfo.icon(new ItemSprite(ItemSpriteSheet.SEED_SKYBLUEFIRE));
 			btnGameInfo.setRect( (WIDTH - btnW)/2, pos, btnW , 18 );
 			add( btnGameInfo );
-			pos = btnGameInfo.bottom() + GAP;
+
+			RedButton btDLC = new RedButton( Messages.get(this, "dlc") ) {
+				@Override
+				protected void onClick() {
+					ShatteredPixelDungeon.scene().addToFront(new WndDLC(SPDSettings.dlc(), true));
+				}
+			};
+			float btnX = btDLC.reqWidth() + 10;
+			btDLC.icon(new ItemSprite(ItemSpriteSheet.LANTERNB));
+			btDLC.setRect( (WIDTH - btnX)/2, pos, btnX , 18 );
+			add( btDLC );
+
+			pos = btDLC.bottom() + GAP;
 		}
 		
 		pos += GAP;

@@ -383,7 +383,7 @@ public class GameScene extends PixelScene {
 
 		boss = new BossHealthBar();
 		boss.camera = uiCamera;
-		boss.setPos( 6 + (uiCamera.width - boss.width())/2, 20);
+		boss.setPos( 6 + (uiCamera.width - boss.width())/2, 28);
 		add(boss);
 
 		attack = new AttackIndicator();

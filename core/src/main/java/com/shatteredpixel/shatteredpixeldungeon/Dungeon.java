@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -357,6 +358,7 @@ public class Dungeon {
 			switch (depth) {
 				case 17: case 27:case 0:
 					level = new AncityLevel();
+					Buff.affect(hero, RandomBuff.class).set( (5), 1 );
 					break;
 				case 1: case 3: case 6:case 7:case 9: case 11: case 13: case 15:case 18: case 20: case 24:
 					level = new ItemLevel();
