@@ -388,17 +388,17 @@ public class Dungeon {
 					level = new CavesGirlDeadLevel();
 					break;
 				case 19:
-					level = new NewCityBossLevel();
+					level = new ShopBossLevel();
 					break;
 				case 21:
-					level = new DwarfMasterBossLevel();
+					level = new NewCityBossLevel();
 					Buff.affect(hero, TestDwarfMasterLock.class).set((1), 1);
 					break;
 				case 22:case 23:
-					level = new HallsLevel();
+					level = new CityLevel();
 					break;
 				case 25:
-					level = new ShopBossLevel();
+					level = new DwarfMasterBossLevel();
 					break;
 				case 26:
 					level = new YogGodHardBossLevel();

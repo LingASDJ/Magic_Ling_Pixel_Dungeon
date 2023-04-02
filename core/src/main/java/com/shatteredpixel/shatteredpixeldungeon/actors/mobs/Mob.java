@@ -122,11 +122,6 @@ public abstract class Mob extends Char {
 					break;
 			}
 		}
-
-		if(Dungeon.depth>=10){
-			Dungeon.level.drop( ( Generator.randomArtifact() ), pos );
-		}
-
 		Dungeon.level.drop( new Food(), pos ).sprite.drop();
 		Dungeon.level.drop( new PotionOfExperience(), pos ).sprite.drop();
 		Dungeon.level.drop( ( new Gold().random() ), pos );

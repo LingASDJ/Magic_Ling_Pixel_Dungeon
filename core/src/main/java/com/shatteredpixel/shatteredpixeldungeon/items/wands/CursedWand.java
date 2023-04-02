@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -38,7 +40,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WarpBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GoldenMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
@@ -145,21 +146,24 @@ public class CursedWand {
 
 			//random teleportation
 			case 2:
-				if(Random.Int(2) == 0) {
-					if (user != null && !user.properties().contains(Char.Property.IMMOVABLE)) {
-						ScrollOfTeleportation.teleportChar(user);
+				if(!Dungeon.isDLC(BOSSRUSH)){
+					if(Random.Int(2) == 0) {
+						if (user != null && !user.properties().contains(Char.Property.IMMOVABLE)) {
+							ScrollOfTeleportation.teleportChar(user);
+						} else {
+							return cursedEffect(origin, user, targetPos);
+						}
 					} else {
-						return cursedEffect(origin, user, targetPos);
-					}
-				} else {
-					Char ch = Actor.findChar( targetPos );
-					if (ch != null && !ch.properties().contains(Char.Property.IMMOVABLE)) {
-						ScrollOfTeleportation.teleportChar(ch);
-						tryForWandProc(ch, origin);
-					} else {
-						return cursedEffect(origin, user, targetPos);
+						Char ch = Actor.findChar( targetPos );
+						if (ch != null && !ch.properties().contains(Char.Property.IMMOVABLE)) {
+							ScrollOfTeleportation.teleportChar(ch);
+							tryForWandProc(ch, origin);
+						} else {
+							return cursedEffect(origin, user, targetPos);
+						}
 					}
 				}
+				//ＴＯＤＯ
 				return true;
 
 			//random gas at location

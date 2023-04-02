@@ -473,13 +473,13 @@ public class GameScene extends PixelScene {
 							WndStory.showChapter(WndStory.ID_ICES);
 							break;
 						case 19:
-							WndStory.showChapter(WndStory.ID_DKKX);
+							WndStory.showChapter(WndStory.ID_FBXA);
 							break;
 						case 21:
-							WndStory.showChapter(WndStory.ID_LXKS);
+							WndStory.showChapter(WndStory.ID_DKKX);
 							break;
 						case 25:
-							WndStory.showChapter(WndStory.ID_FBXA);
+							WndStory.showChapter(WndStory.ID_LXKS);
 							break;
 						case 26:
 							WndStory.showChapter(WndStory.ID_ZTBS);

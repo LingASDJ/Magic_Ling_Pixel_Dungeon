@@ -230,7 +230,7 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new ShopRoom());
 
 		if (Dungeon.aqiLevel() && (Dungeon.isChallenged(AQUAPHOBIA)))
-		initRooms.add(new AquariumRoom());
+			initRooms.add(new AquariumRoom());
 
 		if (Dungeon.NxhyshopOnLevel()) {
 			initRooms.add(new NxhyShopRoom());

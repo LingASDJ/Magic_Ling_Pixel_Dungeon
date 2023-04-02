@@ -1,6 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
 import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -70,7 +69,7 @@ public class DimandKing extends Boss {
         initBaseStatus(14, 23, 33, 22, 200, 5, 12);
         initStatus(120);
         properties.add(Property.UNDEAD);
-        HP = HT = Dungeon.isChallenged(STRONGER_BOSSES) ? 320 : 250;
+        HP = HT = 320;
     }
 
     private int phase = 1;
@@ -355,9 +354,7 @@ public class DimandKing extends Boss {
 
             if (bestPos != enemy.pos) ScrollOfTeleportation.appear(furthest, bestPos);
             yell(Messages.get(this, "teleport_" + Random.IntRange(1, 2)));
-            if(Dungeon.isChallenged(STRONGER_BOSSES)) {
-                //doYogLasers();
-            }
+
             return true;
         }
         return false;
@@ -372,18 +369,14 @@ public class DimandKing extends Boss {
         }
         new Flare(5, 32).color(0xFF6060, false).show(sprite, 1.5f);
         yell(Messages.get(this,"buff_all"));
-        if(Dungeon.isChallenged(STRONGER_BOSSES)) {
-            //doYogLasers();
-        }
+        doYogLasers();
     }
 
     private void sacrificeSubject(){
         Buff.affect(this,  SacrificeSubjectListener.class, 3f);
         new Flare(6, 32).color(0xFF22FF, false).show(sprite, 1.5f);
         yell(Messages.get(this, "sacrifice"));
-        if(Dungeon.isChallenged(STRONGER_BOSSES)) {
-            //doYogLasers();
-        }
+        doYogLasers();
     }
 
     private void deathRattleSubject(){
@@ -401,9 +394,7 @@ public class DimandKing extends Boss {
         }
         new Flare(7, 32).color(0x303030, false).show(sprite, 1.5f);
         yell(Messages.get(this,"death_rattle"));
-        if(Dungeon.isChallenged(STRONGER_BOSSES)) {
-            //doYogLasers();
-        }
+        doYogLasers();
     }
 
     private void extraSummonSubject(){
@@ -412,9 +403,7 @@ public class DimandKing extends Boss {
         summonSubject(3);
         summonsMade++;
         yell(Messages.get(this, "more_summon"));
-        if(Dungeon.isChallenged(STRONGER_BOSSES)) {
-            //doYogLasers();
-        }
+        doYogLasers();
         new Flare(4, 32).color(0x4040FF, false).show(sprite, 1.5f);
     }
 
@@ -465,8 +454,8 @@ public class DimandKing extends Boss {
             int dmgTaken = preHP - HP;
             abilityCooldown -= dmgTaken/8f;
             summonCooldown -= dmgTaken/8f;
-            if (HP <= 80) {
-                HP = 80;
+            if (HP <= 120) {
+                HP = 120;
                 sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
                 ScrollOfTeleportation.appear(this, DimandKingLevel.throne);
                 properties.add(Property.IMMOVABLE);
@@ -898,15 +887,18 @@ public class DimandKing extends Boss {
             summonSubject(2, DKGhoul.class);
             summonSubject(3, DKGhoul.class);
             ++wave;
+            doYogLasers();
             spend(TICK*9);
         }else if(wave == 1){
             summonSubject(1, DKGhoul.class);
             summonSubject(5, DKMonk.class);
             ++wave;
+            doYogLasers();
             spend(TICK*12);
         }else if(wave == 2){
             summonSubject(1, DKGhoul.class);
             summonSubject(2, DKWarlock.class);
+            doYogLasers();
             summonSubject(6, DKGhoul.class);
             summonSubject(6, DKGhoul.class);
             ++wave;
@@ -919,6 +911,7 @@ public class DimandKing extends Boss {
             summonSubject(11, DKMonk.class);
             summonSubject(5, OGPDZSLS.class);
             summonSubject(7, SRPDHBLR.class);
+            doYogLasers();
             ++wave;
             spend(TICK*15);
         }else if(wave == 4){
@@ -928,6 +921,7 @@ public class DimandKing extends Boss {
             summonSubject(2, DKGhoul.class);
             summonSubject(5, OGPDZSLS.class);
             summonSubject(7, SRPDHBLR.class);
+            doYogLasers();
             summonSubject(5, DM100.class);
             ++wave;
             spend(TICK*14);
@@ -939,6 +933,7 @@ public class DimandKing extends Boss {
             summonSubject(8, DKMonk.class);
             summonSubject(2, DKGhoul.class);
             summonSubject(5, OGPDZSLS.class);
+            doYogLasers();
             summonSubject(7, SRPDHBLR.class);
             summonSubject(5, DM100.class);
             ++wave;
@@ -948,6 +943,7 @@ public class DimandKing extends Boss {
             summonSubject(3, DKMonk.class);
             summonSubject(3, DKMonk.class);
             summonSubject(3, DKWarlock.class);
+            doYogLasers();
             summonSubject(2, DKGhoul.class);
             summonSubject(5, OGPDZSLS.class);
             summonSubject(7, SRPDHBLR.class);
@@ -960,6 +956,7 @@ public class DimandKing extends Boss {
             ++wave;
             spend(TICK*12);
         }else{
+            doYogLasers();
             //only need to kill one.
             summonSubject(3, DKWarlock.class);
             spend(TICK);

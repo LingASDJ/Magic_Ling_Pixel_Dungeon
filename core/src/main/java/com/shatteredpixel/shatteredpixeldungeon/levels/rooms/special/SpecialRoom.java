@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
+import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
@@ -80,7 +82,13 @@ public abstract class SpecialRoom extends Room {
 	}
 
 	//10 special rooms which give equipment more often than consumables (or as often as)
-	private static final ArrayList<Class<? extends SpecialRoom>> EQUIP_SPECIALS = new ArrayList<>( Arrays.asList(
+	private static final ArrayList<Class<? extends SpecialRoom>> EQUIP_SPECIALS =
+			new ArrayList<>( Dungeon.isDLC(BOSSRUSH) ? Arrays.asList(
+					CryptRoom.class, PoolRoom.class, ArmoryRoom.class, SentryRoom.class,
+					StatueRoom.class, CrystalVaultRoom.class, CrystalPathRoom.class, CrystalChoiceRoom.class,
+					SacrificeRoom.class
+			) :
+					Arrays.asList(
 			WeakFloorRoom.class, CryptRoom.class, PoolRoom.class, ArmoryRoom.class, SentryRoom.class,
 			StatueRoom.class, CrystalVaultRoom.class, CrystalPathRoom.class, CrystalChoiceRoom.class,
 			SacrificeRoom.class
@@ -181,7 +189,7 @@ public abstract class SpecialRoom extends Room {
 
 			Room r = Reflection.newInstance(floorSpecials.get( index ));
 
-			if (r instanceof WeakFloorRoom){
+			if (r instanceof WeakFloorRoom && !Dungeon.isDLC(BOSSRUSH)){
 				pitNeededDepth = Dungeon.depth + 1;
 			}
 			

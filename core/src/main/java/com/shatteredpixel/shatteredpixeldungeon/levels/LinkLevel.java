@@ -108,6 +108,7 @@ public class LinkLevel  extends Level {
         vis.pos = (this.width + 43);
         mobs.add(vis);
 
+        //第一个i是初始值，第二个i是条件范围值，第三个是循环方式，这里是每次+2
         for (int i = 20; i < 25; i+=2){
             ColdGurad x = new ColdGurad();
             x.pos = (this.width * i + 10);

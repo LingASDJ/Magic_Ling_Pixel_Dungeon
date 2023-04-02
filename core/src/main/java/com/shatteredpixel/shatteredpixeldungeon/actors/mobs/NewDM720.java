@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -529,10 +527,9 @@ public class NewDM720 extends MolotovHuntsman {
 
     @Override
     public void die( Object cause ) {
-        if(Dungeon.isDLC(BOSSRUSH)){
-
-            GetBossLoot();
-        }
+//        if(Dungeon.isDLC(BOSSRUSH)){
+//            GetBossLoot();
+//        }
         super.die(cause);
         Badges.validateBossSlain();
         Badges.KILLSDM720();

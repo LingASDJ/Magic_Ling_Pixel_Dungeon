@@ -731,5 +731,3 @@ public class DMZERO extends Mob
         }
     }
 }
-
-

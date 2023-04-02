@@ -77,13 +77,18 @@ public class vM0_6_7_X_Changes {
     }
 
     public static void add_v0_6_28_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta4.975-985(P3)", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta4.975-986(P3)", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
         changes = new ChangeInfo("新内容", false, null);
         changes.hardlight(Window.GREEN_COLOR);
         changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_HORN4), ("首领对决V1.6"),
+                ("1.部分Boss发生了改变，19层火魔女，21层矮人国王，25层矮人将军\n" +
+                        "2.现在不会在BR模式生成跳楼房间，以及修复了一些Bug\n" +
+                        "3.现在诅咒法杖不会在BR模式中触发传送效果")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_ROSE3), ("首领对决V1.5"),
                 ("1.现在可以在3层完成幽妹的任务，让她和你并肩前行。\n" +
