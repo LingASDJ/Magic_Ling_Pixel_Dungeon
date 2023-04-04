@@ -1,8 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -45,7 +44,7 @@ public class NullDiedTO extends NTNPC {
     }
     @Override
     public String name(){
-        if(Dungeon.isDLC(BOSSRUSH)){
+        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
             return Messages.get(this, "namex");
         } else {
             return Messages.get(this, "name");
@@ -55,7 +54,7 @@ public class NullDiedTO extends NTNPC {
 
     @Override
     public String description(){
-        if(Dungeon.isDLC(BOSSRUSH)){
+        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
             return Messages.get(this, "descx");
         } else {
             return Messages.get(this, "desc");
@@ -152,7 +151,7 @@ public class NullDiedTO extends NTNPC {
             WndQuest.chating(this,chat);
             first=false;
         }else {
-            if(Dungeon.isDLC(BOSSRUSH) && Dungeon.depth == 28){
+            if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && Dungeon.depth == 28){
                 GLog.n("冒险家，快通过水晶之心离开这里吧……");
             } else {
                 Game.runOnRenderThread(new Callback() {
@@ -173,20 +172,20 @@ public class NullDiedTO extends NTNPC {
 
         chat = new ArrayList<String>() {
             {
-                if(Dungeon.isDLC(BOSSRUSH) && Dungeon.depth==0) {
+                if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && Dungeon.depth==0) {
                     add(Messages.get(NullDiedTO.class, "talk_a"));
                     add(Messages.get(NullDiedTO.class, "talk_b"));
                     add(Messages.get(NullDiedTO.class, "talk_c"));
                     add(Messages.get(NullDiedTO.class, "talk_d"));
                     add(Messages.get(NullDiedTO.class, "talk_e"));
                     add(Messages.get(NullDiedTO.class, "talk_f"));
-                } else if(Dungeon.isDLC(BOSSRUSH) && Dungeon.depth==17) {
+                } else if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && Dungeon.depth==17) {
                     add(Messages.get(NullDiedTO.class, "talk_g"));
                     add(Messages.get(NullDiedTO.class, "talk_h"));
-                } else if(Dungeon.isDLC(BOSSRUSH) && Dungeon.depth==27) {
+                } else if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && Dungeon.depth==27) {
                     add(Messages.get(NullDiedTO.class, "talk_i"));
                     add(Messages.get(NullDiedTO.class, "talk_j"));
-                } else if(Dungeon.isDLC(BOSSRUSH) && Dungeon.depth==28) {
+                } else if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && Dungeon.depth==28) {
                     add(Messages.get(NullDiedTO.class, "talk_k"));
                     add(Messages.get(NullDiedTO.class, "talk_l"));
                     add(Messages.get(NullDiedTO.class, "talk_m"));

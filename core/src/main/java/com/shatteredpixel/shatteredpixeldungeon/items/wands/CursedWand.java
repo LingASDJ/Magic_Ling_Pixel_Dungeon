@@ -21,10 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -146,7 +145,7 @@ public class CursedWand {
 
 			//random teleportation
 			case 2:
-				if(!Dungeon.isDLC(BOSSRUSH)){
+				if(!Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
 					if(Random.Int(2) == 0) {
 						if (user != null && !user.properties().contains(Char.Property.IMMOVABLE)) {
 							ScrollOfTeleportation.teleportChar(user);

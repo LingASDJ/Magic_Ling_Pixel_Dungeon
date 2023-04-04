@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.TorchHalo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SnowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -89,7 +90,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	public enum State {
 		BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED,
-		ROSESHIELDED,HALOMETHANEBURNING,BUTTER,SPINVISIBLE
+		ROSESHIELDED,HALOMETHANEBURNING,BUTTER,SPINVISIBLE,SMOKER
 	}
 	private int stunStates = 0;
 
@@ -106,6 +107,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	protected Emitter burning;
 	protected Emitter haloburning;
+	protected Emitter soling;
 	protected Emitter chilled;
 	protected Emitter marked;
 	protected Emitter levitation;
@@ -377,6 +379,10 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					Sample.INSTANCE.play( Assets.Sounds.BURNING );
 				}
 				break;
+			case SMOKER:
+				soling = emitter();
+				soling.pour( SmokeFlameParticle.FACTORY, 0.06f );
+				break;
 			case BURNING:
 				burning = emitter();
 				burning.pour( FlameParticle.FACTORY, 0.06f );
@@ -438,6 +444,12 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				if (haloburning != null) {
 					haloburning.on = false;
 					haloburning = null;
+				}
+				break;
+			case SMOKER:
+				if (soling != null) {
+					soling .on = false;
+					soling  = null;
 				}
 				break;
 			case BURNING:

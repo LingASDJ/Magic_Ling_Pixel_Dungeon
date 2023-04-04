@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
-import com.watabou.noosa.Game;
 
 public class ExitButton3 extends IconButton {
 

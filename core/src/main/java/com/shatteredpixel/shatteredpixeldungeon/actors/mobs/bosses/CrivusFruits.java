@@ -1,6 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel.BRatKingRoom;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel.ForestBossLasherTWOPos;
@@ -10,6 +9,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -267,7 +267,7 @@ public class CrivusFruits extends Mob {
             Dungeon.level.drop( new CrivusFruitsFlake(), pos + ofs ).sprite.drop( pos );
         }
 
-        if(Dungeon.isDLC(BOSSRUSH)){
+        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 
             GetBossLoot();
         }

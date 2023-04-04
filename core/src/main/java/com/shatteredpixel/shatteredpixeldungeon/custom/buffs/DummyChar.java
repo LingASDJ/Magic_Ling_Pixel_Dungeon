@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.watabou.utils.Callback;
 
 //It's called char, but it serves for buffs, not chars.
 

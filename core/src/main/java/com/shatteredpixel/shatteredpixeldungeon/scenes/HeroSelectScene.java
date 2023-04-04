@@ -476,7 +476,7 @@ public class HeroSelectScene extends PixelScene {
 				if(1==1){
 					ShatteredPixelDungeon.scene().addToFront(new WndDLC(SPDSettings.dlc(), true));
 				} else {
-					ShatteredPixelDungeon.scene().addToFront(new WndMessage("完成_一局游戏_后解锁娱乐模式。--暂未实装"));
+					ShatteredPixelDungeon.scene().addToFront(new WndMessage("击败_第三大层Boss_后解锁娱乐模式。"));
 				}
 
 			}

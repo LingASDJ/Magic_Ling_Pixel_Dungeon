@@ -96,6 +96,20 @@ public abstract class Mob extends Char {
 	}
 	public ArrayList<Item> items;
 
+	//TODO LIST
+	@Override
+	public void updateHT(boolean boostHP) {
+//		HP = HT = (int) (normalHP(level) * healthFactor);
+//		HP = HT *= Dungeon.difficulty.mobHealthFactor() * CustomGame.Modifier.MOB_HP_FACTOR.getLocal();
+//		//Bosses (obviously) have higher HP
+		if (properties().contains(Property.BOSS)) {
+			HP = HT *= 5;
+		} else if (properties().contains(Property.MINIBOSS)) {
+			HP = HT *= 2;
+		}
+		super.updateHT(boostHP);
+	}
+
 	//Boss Rush 掉落规则
 	public void GetBossLoot(){
 		int flakes = Random.chances(new float[]{0, 0, 6, 3, 1});

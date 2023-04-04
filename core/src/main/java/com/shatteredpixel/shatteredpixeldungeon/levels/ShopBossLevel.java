@@ -85,9 +85,12 @@ public class ShopBossLevel extends Level {
     public void unseal() {
         super.unseal();
 
-        if(Dungeon.depth == 25){
+        if(Dungeon.depth == 19){
             set(  this.entrance =  WIDTH*17 + 17, Terrain.EXIT );
             GameScene.updateMap( this.entrance =  WIDTH*17 + 17 );
+
+            set(  this.entrance =  WIDTH*21 + 17, Terrain.ENTRANCE );
+            GameScene.updateMap( this.entrance =  WIDTH*21 + 17 );
         } else {
             FireMagicDiedNPC boss = new FireMagicDiedNPC();
             boss.pos = WIDTH*17 + 17;

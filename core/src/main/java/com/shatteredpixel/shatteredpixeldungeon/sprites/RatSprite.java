@@ -47,4 +47,5 @@ public class RatSprite extends MobSprite {
 		
 		play( idle );
 	}
+
 }

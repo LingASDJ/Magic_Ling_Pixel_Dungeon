@@ -364,10 +364,10 @@ public class ItemSpriteSheet {
 		assignItemRect(ARMOR_MAIL,      15, 15);
 		assignItemRect(ARMOR_SCALE,     16, 16);
 		assignItemRect(ARMOR_PLATE,     15, 15);
-		assignItemRect(ARMOR_WARRIOR,   16, 16);
-		assignItemRect(ARMOR_MAGE,      16, 16);
-		assignItemRect(ARMOR_ROGUE,     16, 16);
-		assignItemRect(ARMOR_HUNTRESS,  16, 16);
+		assignItemRect(ARMOR_WARRIOR,   15, 13);
+		assignItemRect(ARMOR_MAGE,      13, 13);
+		assignItemRect(ARMOR_ROGUE,     11, 13);
+		assignItemRect(ARMOR_HUNTRESS,  13, 13);
 	}
 
 	                                                                                    //16 free slots

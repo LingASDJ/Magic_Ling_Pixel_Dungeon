@@ -18,7 +18,7 @@ public class AncityLevel extends Level {
             64,0,0,4,0,0,0,4,4,4,0,0,0,4,0,0,64,
             64,4,4,4,4,4,4,4,17,4,4,4,4,4,4,4,64,
             64,0,0,4,0,0,0,4,4,4,0,0,0,4,0,0,64,
-            64,0,0,4,0,0,4,0,4,0,4,0,0,4,0,0,64,
+            64,0,0,4,0,0,4,0,83,0,4,0,0,4,0,0,64,
             64,0,0,4,0,4,0,0,4,0,0,4,0,4,0,0,64,
             64,0,0,0,4,0,0,0,4,0,0,0,4,0,0,0,64,
             64,0,0,4,0,4,4,4,4,4,4,4,0,4,0,0,64,
@@ -57,8 +57,8 @@ public class AncityLevel extends Level {
                 return Terrain.LOCKED_EXIT;
             case 17:
                 return Dungeon.depth == 27 ? Terrain.CHASM : Terrain.EXIT;
-            case 98:
-                return Terrain.STATUE;
+            case 83:
+                return Dungeon.depth == 17 || Dungeon.depth == 27 ? Terrain.ENTRANCE : 14;
             case 99:
                 return Terrain.STATUE_SP;
             case 20:

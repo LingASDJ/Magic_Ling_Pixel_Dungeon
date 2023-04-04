@@ -1,9 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
@@ -38,8 +37,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlueFuck;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DimandKingLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -496,7 +493,7 @@ public class DimandKing extends Boss {
 
     @Override
     public void die(Object cause) {
-        if(Dungeon.isDLC(BOSSRUSH)){
+        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 
             GetBossLoot();
         }
@@ -525,27 +522,15 @@ public class DimandKing extends Boss {
             dropPos = pos + Dungeon.level.width();
         }
 
-        WandOfFireblast woc = new WandOfFireblast();
-        woc.level(3);
-        woc.identify();
-
-        WandOfBlueFuck fire = new WandOfBlueFuck();
-        fire.level(1);
-        fire.identify();
-        if(drop<5) {
-            Dungeon.level.drop(woc, dropPos).sprite.drop();
-        }else {
-            Dungeon.level.drop(fire, dropPos).sprite.drop();
-         }
 
         //Dungeon.level.drop(new KingsCrown(), dropPos).sprite.drop();
-        Dungeon.level.drop(new ScrollOfRecharging().quantity(3),  dropPos).sprite.drop(pos);
+        Dungeon.level.drop(new ScrollOfRecharging().quantity(2),  dropPos).sprite.drop(pos);
         Ankh ankh = new Ankh();
         ankh.bless();
         Dungeon.level.drop(new Ankh(), dropPos).sprite.drop(pos);
-        Dungeon.level.drop(new Gold().quantity(Random.Int(2200, 5500)), pos).sprite.drop();
+        Dungeon.level.drop(new Gold().quantity(Random.Int(400,900)), pos).sprite.drop();
         Badges.validateBossSlain();
-        Badges.KILL_DMK();
+        //Badges.KILL_DMK();
         Dungeon.level.unseal();
 
         for (Mob m : getSubjects()){

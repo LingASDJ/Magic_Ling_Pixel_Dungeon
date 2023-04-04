@@ -332,6 +332,8 @@ public class Assets {
 
 		public static final String DKGirl		= "Npcs/DKGirl.png";
 
+		public static final String LanFire		= "sprites/npc/lanfire.png";
+
 		public static final String SAESD		= "sprites/bluedragon.png";
 
 		public static final String WHITE		= "Npcs/White.png";
@@ -410,5 +412,7 @@ public class Assets {
 		public static final String NINJA_LOG= "sprites/ninja_log.png";
 		public static final String SPIRIT_HAWK= "sprites/spirit_hawk.png";
 		public static final String RED_SENTRY= "sprites/red_sentry.png";
-	}
+
+		public static final String SWORDLING= "Boss/swordling.png";
+    }
 }

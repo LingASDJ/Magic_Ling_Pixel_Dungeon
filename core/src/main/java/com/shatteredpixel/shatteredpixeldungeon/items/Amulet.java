@@ -21,16 +21,17 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
-
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.AmuletScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.SurfaceScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.Game;
 
@@ -53,7 +54,7 @@ public class Amulet extends Item {
 			ArrayList<String> actions = super.actions( hero );
 			actions.add( AC_END );
 			return actions;
-		} else if(Dungeon.isDLC(BOSSRUSH) && Dungeon.depth !=27 ){
+		} else if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && Dungeon.depth !=27 ){
 			return new ArrayList<>(); //yup, no dropping this one
 		} else {
 			ArrayList<String> actions = super.actions( hero );
@@ -68,14 +69,19 @@ public class Amulet extends Item {
 
 		super.execute( hero, action );
 
-		if (action.equals(AC_END)) {
+		if (action.equals(AC_END) && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 			showAmuletScene( false );
+		} else {
+			Badges.silentValidateHappyEnd();
+			Dungeon.win(Amulet.class);
+			Dungeon.deleteGame(GamesInProgress.curSlot, true);
+			Game.switchScene(SurfaceScene.class);
 		}
 	}
 	
 	@Override
 	public boolean doPickUp(Hero hero, int pos) {
-		if (super.doPickUp( hero, pos ) && !Dungeon.isDLC(BOSSRUSH) ) {
+		if (super.doPickUp( hero, pos ) && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ) {
 			
 			if (!Statistics.amuletObtained) {
 				Statistics.amuletObtained = true;

@@ -21,10 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
-
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -50,7 +49,7 @@ import com.watabou.utils.Random;
 public class Goo extends Mob {
 		
 	{
-		if(Dungeon.isDLC(BOSSRUSH)){
+		if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 			HP = HT = 180;
 		} else {
 			HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 120 : 100;

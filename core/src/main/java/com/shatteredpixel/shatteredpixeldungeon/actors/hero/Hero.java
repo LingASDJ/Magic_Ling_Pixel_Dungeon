@@ -24,7 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
@@ -35,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -1227,7 +1227,7 @@ public class Hero extends Char {
 		//TODO this is slightly brittle, it assumes there are no disjointed sets of exit tiles
 		} else if ((Dungeon.level.map[pos] == Terrain.EXIT || Dungeon.level.map[pos] == Terrain.UNLOCKED_EXIT)) {
 
-			if (Dungeon.depth == 0 && !tipsgodungeon && !Dungeon.isDLC(BOSSRUSH)) {
+			if (Dungeon.depth == 0 && !tipsgodungeon && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 
 				if (!tipsgodungeon) {
 					Game.runOnRenderThread(new Callback() {
@@ -1727,7 +1727,7 @@ public class Hero extends Char {
 			
 			curAction = new HeroAction.Unlock( cell );
 
-		} else if ((cell == Dungeon.level.exit || Dungeon.level.map[cell] == Terrain.EXIT || Dungeon.level.map[cell] == Terrain.UNLOCKED_EXIT && Dungeon.isDLC(BOSSRUSH))
+		} else if ((cell == Dungeon.level.exit || Dungeon.level.map[cell] == Terrain.EXIT || Dungeon.level.map[cell] == Terrain.UNLOCKED_EXIT && Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))
 				&& Dungeon.depth < 30) {
 
 			curAction = new HeroAction.Descend( cell );

@@ -22,8 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.watabou.utils.Random;
 
@@ -42,7 +42,7 @@ public class Bestiary {
 
 	//支离破碎
 	private static ArrayList<Class<? extends Mob>> standardMobRotation(int i) {
-		if (Dungeon.isChallenged(RLPT) && !Dungeon.isDLC(BOSSRUSH)){
+		if (Dungeon.isChallenged(RLPT) && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
 			switch (i) {
 				case 1:
 					//3x rat, 1x snake
@@ -264,13 +264,13 @@ public class Bestiary {
 						Eye.class,ShieldHuntsman.class,Ice_Scorpio.class));
 			case 22:
 				//3x succubus, 3x evil eye
-				return Dungeon.isDLC(BOSSRUSH) ? new ArrayList<>(Arrays.asList(
+				return Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? new ArrayList<>(Arrays.asList(
 						Eye.class,ShieldHuntsman.class,Ice_Scorpio.class,RedMurderer.class,MolotovHuntsman.class)) :
 						new ArrayList<>(Arrays.asList(
 						Eye.class,ShieldHuntsman.class,Ice_Scorpio.class));
 			case 23:
 				//1x: succubus, 2x evil eye, 3x scorpio
-				return Dungeon.isDLC(BOSSRUSH) ? new ArrayList<>(Arrays.asList(
+				return Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? new ArrayList<>(Arrays.asList(
 						Eye.class,ShieldHuntsman.class,Fire_Scorpio.class,Ice_Scorpio.class,RedMurderer.class,
 						MolotovHuntsman.class)) :
 						new ArrayList<>(Arrays.asList(

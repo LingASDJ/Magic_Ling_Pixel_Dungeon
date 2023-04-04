@@ -1,8 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
@@ -43,7 +42,7 @@ public class Nyz extends NPC {
         if (!seenBefore && Dungeon.level.heroFOV[pos]) {
             GLog.p(Messages.get(this, "greetings", Dungeon.hero.name()));
             //TODO 诡异奈亚子 早上好 中午好 晚上好
-            if(!Dungeon.isDLC(BOSSRUSH)){
+            if(!Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
                 Music.INSTANCE.play(Assets.NYZSHOP, true);
             }
             seenBefore = true;

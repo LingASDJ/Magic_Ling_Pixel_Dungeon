@@ -21,11 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -111,7 +111,7 @@ public class SlimeKing extends Mob {
     }
 
     {
-        if(Dungeon.isDLC(BOSSRUSH)){
+        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
             HP =190;
             HT= 190;
 
@@ -331,7 +331,7 @@ public class SlimeKing extends Mob {
             } while (!Dungeon.level.passable[pos + ofs]);
             Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
         }
-        if(Dungeon.isDLC(BOSSRUSH)){
+        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 
             GetBossLoot();
         }

@@ -1,10 +1,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -41,7 +41,7 @@ public class WndKingShop extends Window {
         IconTitle titlebar = new IconTitle();
         titlebar.setRect(0, 0, WIDTH, 0);
         titlebar.icon(new ShopkKingSprite());
-        if(Dungeon.isDLC(BOSSRUSH)){
+        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
             titlebar.label("水晶意志");
         } else {
             titlebar.label(Messages.get(WndKingShop.class,"king"));
@@ -49,7 +49,7 @@ public class WndKingShop extends Window {
 
         add( titlebar );
 
-        RenderedTextBlock message = PixelScene.renderTextBlock( Dungeon.isDLC(BOSSRUSH) ? "喜欢什么随便拿，但一次500金币的费用还是要交的哦" :
+        RenderedTextBlock message = PixelScene.renderTextBlock( Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? "喜欢什么随便拿，但一次500金币的费用还是要交的哦" :
         (Messages.get(WndKingShop.class,"select")), 6 );
         message.maxWidth(WIDTH);
         message.setPos(0, titlebar.bottom() + GAP);
@@ -203,7 +203,7 @@ public class WndKingShop extends Window {
         btnGoBack.textColor(Window.CYELLOW);
         btnGoBack.icon(Icons.get(Icons.DEPTH));
 
-        if(Dungeon.isDLC(BOSSRUSH)){
+        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
             btnGoBack.active=false;
             btnGoBack.alpha(0.3f);
         }

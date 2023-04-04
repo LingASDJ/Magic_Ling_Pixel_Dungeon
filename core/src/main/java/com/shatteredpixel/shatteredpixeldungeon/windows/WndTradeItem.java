@@ -21,9 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.shopOnLevel;
 
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -150,7 +150,7 @@ public class WndTradeItem extends WndInfoItem {
 			}
 		};
 
-		if(Dungeon.isDLC(BOSSRUSH)){
+		if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 			btnStole.alpha(0.3f);
 			btnStole.active=false;
 		}

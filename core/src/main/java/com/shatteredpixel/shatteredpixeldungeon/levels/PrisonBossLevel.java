@@ -21,11 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -560,7 +559,7 @@ public class PrisonBossLevel extends Level {
 			drop( item, randomRespawnCell( null ) ).setHauntedIfCursed().type = Heap.Type.REMAINS;
 		}
 
-		if(Dungeon.isDLC(BOSSRUSH)){
+		if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 			drop(new IronKey(8), randomPrisonCellPos());
 		} else {
 			drop(new IronKey(10), randomPrisonCellPos());

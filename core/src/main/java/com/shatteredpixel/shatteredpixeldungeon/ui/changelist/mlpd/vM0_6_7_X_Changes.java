@@ -77,13 +77,19 @@ public class vM0_6_7_X_Changes {
     }
 
     public static void add_v0_6_28_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta4.975-986(P3)", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta4.975-987(P3)", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
         changes = new ChangeInfo("新内容", false, null);
         changes.hardlight(Window.GREEN_COLOR);
         changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MAGES_STAFF), ("首领对决V1.7"),
+                ("1.修复了BR模式的19层的错误生成，加强10层钻石宝箱王的攻击能力\n" +
+                        "2.现在17层和27层可以上楼了\n" +
+                        "3.英雄素材更新，部分物品贴图更新\n" +
+                        "4.现在击败宝箱王不再能获得拟态徽章，28层完成后通过水晶之心会直接幸福结局。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_HORN4), ("首领对决V1.6"),
                 ("1.部分Boss发生了改变，19层火魔女，21层矮人国王，25层矮人将军\n" +

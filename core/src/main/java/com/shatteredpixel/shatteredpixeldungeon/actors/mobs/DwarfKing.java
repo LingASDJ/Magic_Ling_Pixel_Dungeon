@@ -22,11 +22,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -495,7 +494,7 @@ public class DwarfKing extends Mob {
 
 	@Override
 	public void die(Object cause) {
-		if(Dungeon.isDLC(BOSSRUSH)){
+		if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 
 			GetBossLoot();
 		}

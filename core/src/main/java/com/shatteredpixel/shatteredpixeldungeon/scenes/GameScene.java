@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -30,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
@@ -440,7 +440,7 @@ public class GameScene extends PixelScene {
 				break;
 			case FALL:
 			case DESCEND:
-				if(Dungeon.isDLC(BOSSRUSH)){
+				if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 					switch (Dungeon.depth) {
 						case 0:
 							WndStory.showChapter(WndStory.ID_GAME);

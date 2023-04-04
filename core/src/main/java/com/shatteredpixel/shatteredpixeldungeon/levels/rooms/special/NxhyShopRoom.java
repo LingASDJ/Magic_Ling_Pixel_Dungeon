@@ -49,8 +49,8 @@ import java.util.Iterator;
 public class NxhyShopRoom extends SpecialRoom {
     private ArrayList<Item> itemsToSpawn;
 
-    public NxhyShopRoom() {
-    }
+//    public NxhyShopRoom() {
+//    }
 
     public int minWidth() {
         return Math.max(8, (int) (Math.sqrt((double) itemCount()) + 3.0d));

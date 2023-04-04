@@ -6,7 +6,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.watabou.noosa.TextureFilm;
-import com.watabou.noosa.MovieClip.Animation;
 import com.watabou.utils.GameMath;
 
 public class LgSprites extends MobSprite {

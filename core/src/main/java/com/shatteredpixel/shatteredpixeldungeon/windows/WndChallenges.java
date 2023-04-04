@@ -109,7 +109,7 @@ public class WndChallenges extends Window {
 			cb.active = editable;
 
 			//Disable
-			if(Challenges.NAME_IDS[i].equals("cs")){
+			if(Challenges.NAME_IDS[i].equals("cs") ){
 				cb.active = false;
 				cb.checked(false);
 				cb.visible=false;

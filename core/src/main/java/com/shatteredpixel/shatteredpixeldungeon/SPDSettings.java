@@ -28,6 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundlable;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.GameSettings;
 import com.watabou.utils.Point;
@@ -206,7 +208,7 @@ public class SPDSettings extends GameSettings {
 	}
 
 	//Interface
-
+	public static final String KEY_ONE_CONDUCT  = "one_conduct";
 	public static final String KEY_FPSLIMIT	= "fpslimit";
 
 	public static final String KEY_UI_SIZE 	    = "full_ui";
@@ -285,12 +287,37 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_CHALLENGES, 0, 0, Challenges.MAX_VALUE );
 	}
 
-	public static void dlc( int value ) {
-		put( KEY_DLC, value );
+	public static void dlc( Conducts.ConductStorage value ) {
+		put( KEY_DLC, value);
 	}
 
-	public static int dlc() {
-		return getInt( KEY_DLC, 0, 0, Challenges.MAX_VALUE );
+
+	private static final String BUNDLABLE="b";
+
+	public static <T extends Bundlable> T getBundlable(String key, T defValue){
+		try {
+			Bundle b = Bundle.fromString(getString(key,""));
+			return (T)b.get(BUNDLABLE);
+		} catch (Exception e) {
+			return defValue;
+		}
+	}
+	public static void put( String key, Bundlable value ) {
+		Bundle b = new Bundle();
+		b.put(BUNDLABLE,value);
+		put(key,b.toString());
+	}
+
+	public static Conducts.ConductStorage dlc() {
+		return getBundlable(KEY_DLC, new Conducts.ConductStorage());
+	}
+
+
+
+	public static boolean oneConduct() {return getBoolean(KEY_ONE_CONDUCT, true);}
+
+	public static void oneConduct(boolean value){
+		put(KEY_ONE_CONDUCT, value);
 	}
 
 	public static void supportNagged( boolean value ) {

@@ -83,6 +83,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Potential;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
@@ -272,7 +273,25 @@ public abstract class Char extends Actor {
 	protected static final String TAG_HT    = "HT";
 	protected static final String TAG_SHLD  = "SHLD";
 	protected static final String BUFFS	    = "buffs";
-	
+
+
+	//Hard System
+	public void updateHT(boolean boostHP) {
+		int curHT = HT;
+
+		//float multiplier = RingOfPower.HTMultiplier(this);
+		//HT = Math.round(multiplier * HT);
+
+		if (buff(ElixirOfMight.HTBoost.class) != null) {
+			HT += buff(ElixirOfMight.HTBoost.class).boost();
+		}
+
+		if (boostHP) {
+			HP += Math.max(HT - curHT, 0);
+		}
+		HP = Math.min(HP, HT);
+	}
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		

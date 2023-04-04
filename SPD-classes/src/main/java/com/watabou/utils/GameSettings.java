@@ -28,7 +28,16 @@ import com.watabou.noosa.Game;
 public class GameSettings {
 	
 	public static final String DEFAULT_PREFS_FILE = "settings.xml";
-	
+	private static final String BUNDLABLE="b";
+
+	public static <T extends Bundlable> T getBundlable(String key, T defValue){
+		try {
+			Bundle b = Bundle.fromString(getString(key,""));
+			return (T)b.get(BUNDLABLE);
+		} catch (Exception e) {
+			return defValue;
+		}
+	}
 	private static Preferences prefs;
 	
 	private static Preferences get() {

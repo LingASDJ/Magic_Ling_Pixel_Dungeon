@@ -21,11 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -139,7 +139,7 @@ public class Ghost extends NPC {
 									GameScene.show(new WndQuest(Ghost.this, Messages.get(Ghost.this, "rat_2")));
 									break;
 								case 2:
-									if(Dungeon.isDLC(BOSSRUSH)){
+									if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 										GameScene.show(new WndQuest(Ghost.this, Messages.get(Ghost.this, "agnoll_2")));
 									} else {
 										GameScene.show(new WndQuest(Ghost.this, Messages.get(Ghost.this, "gnoll_2")));

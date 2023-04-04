@@ -1,10 +1,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
@@ -106,6 +106,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class DwarfMaster extends Boss {
+
     {
         initProperty();
         initBaseStatus(3, 8, 14, 10, 800, 0, 2);
@@ -1612,7 +1613,7 @@ public class DwarfMaster extends Boss {
                 mob.die( cause );
             }
         }
-        if(Dungeon.isDLC(BOSSRUSH)){
+        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 
             GetBossLoot();
         }

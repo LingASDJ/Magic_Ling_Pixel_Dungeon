@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.ROGUE;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -240,7 +239,7 @@ public class Dungeon {
 
 	public static int challenges;
 
-	public static int dlcs;
+	public static Conducts.ConductStorage dlcs;
 	public static int mobsToChampion;
 	public static int mobsToStateLing;
 
@@ -266,7 +265,7 @@ public class Dungeon {
 		version = Game.versionCode;
 		challenges = SPDSettings.challenges();
 
-		dlcs = SPDSettings.dlc();
+		dlcs =  new Conducts.ConductStorage(SPDSettings.dlc());
 
 		mobsToChampion = -1;
 		mobsToStateLing = -1;
@@ -333,8 +332,8 @@ public class Dungeon {
 		return (challenges & mask) != 0;
 	}
 
-	public static boolean isDLC( int mask ) {
-		return (dlcs & mask) != 0;
+	public static boolean isDLC(Conducts.Conduct mask ) {
+		return dlcs.isConducted(mask);
 	}
 
 	public static Level newLevel() {
@@ -354,7 +353,7 @@ public class Dungeon {
 		}
 
 		Level level;
-		if (Dungeon.isDLC(BOSSRUSH)) {
+		if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 			switch (depth) {
 				case 17: case 27:case 0:
 					level = new AncityLevel();
@@ -397,6 +396,7 @@ public class Dungeon {
 				case 22:case 23:
 					level = new CityLevel();
 					break;
+				//TODO FIXED LIST:矮人将军那里用没祝福的十字架复活,Boss会消失不见
 				case 25:
 					level = new DwarfMasterBossLevel();
 					break;
@@ -818,7 +818,7 @@ public class Dungeon {
 		QuickSlotButton.reset();
 
 		Dungeon.challenges = bundle.getInt( CHALLENGES );
-		Dungeon.dlcs = bundle.getInt( DLCS);
+		dlcs.restoreFromBundle(bundle);
 		Dungeon.mobsToChampion = bundle.getInt( MOBS_TO_CHAMPION );
 
 		Dungeon.mobsToStateLing = bundle.getInt( MOBS_TO_STATELING );
@@ -945,6 +945,7 @@ public class Dungeon {
 		info.depth = bundle.getInt( DEPTH );
 		info.version = bundle.getInt( VERSION );
 		info.challenges = bundle.getInt( CHALLENGES );
+
 		Hero.preview( info, bundle.getBundle( HERO ) );
 		Statistics.preview( info, bundle );
 	}

@@ -21,11 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -171,7 +170,7 @@ public enum HeroClass {
 			new PotionOfExperience().quantity(2).identify().collect();
 		}
 
-		if ( Dungeon.isDLC(BOSSRUSH)){
+		if ( Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
 			Dungeon.gold += 3000;
 			new Amulet().quantity(1).identify().collect();
 		}

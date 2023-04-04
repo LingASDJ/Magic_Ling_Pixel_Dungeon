@@ -9,10 +9,11 @@ public class DLC {
 
     public static final String[] NAME_IDS = {
             "bossrush",
+            "kling"
     };
 
     public static final int[] MASKS = {
-            BOSSRUSH
+            BOSSRUSH,BACKGO
     };
 
     public String name;

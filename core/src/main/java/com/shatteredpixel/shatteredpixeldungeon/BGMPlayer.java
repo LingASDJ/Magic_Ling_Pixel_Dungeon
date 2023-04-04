@@ -17,7 +17,7 @@ public class BGMPlayer {
         int d = depth;
 
 
-        if(Dungeon.isDLC(BOSSRUSH)){
+        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
             if (d == -1) {
                 Music.INSTANCE.play(Assets.SNOWCYON, true);
             }else if (d == 0||d==27) {
@@ -103,7 +103,7 @@ public class BGMPlayer {
     public static void playBoss() {
         int t = depth;
 
-        if(Dungeon.isDLC(BOSSRUSH)){
+        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
             switch (depth){
                 case 2:
                     Music.INSTANCE.play(Assets.BGM_BOSSA, true);
