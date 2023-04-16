@@ -237,7 +237,7 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new NxhyShopRoom());
 		}
 
-		if(Dungeon.depth>=6 && Dungeon.depth <= 9){
+		if(Dungeon.FireLevel()){
 			initRooms.add(new LanFireRoom());
 		}
 

@@ -533,6 +533,10 @@ public class Dungeon {
 		return depth == 9 || depth == 18;
 	}
 
+	public static boolean FireLevel() {
+		return depth == 7 || depth == 9;
+	}
+
 	public static boolean NyzshopOnLevel() {
 		return depth == 12;
 	}
