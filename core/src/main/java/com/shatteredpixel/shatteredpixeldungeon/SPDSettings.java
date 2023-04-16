@@ -209,7 +209,7 @@ public class SPDSettings extends GameSettings {
 
 	//Interface
 	public static final String KEY_ONE_CONDUCT  = "one_conduct";
-	public static final String KEY_FPSLIMIT	= "fpslimit";
+	public static final String KEY_TWO_CONDUCT  = "two_conduct";
 
 	public static final String KEY_UI_SIZE 	    = "full_ui";
 	public static final String KEY_QUICKSLOTS	= "quickslots";
@@ -262,6 +262,7 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_CHALLENGES	= "challenges";
 
 	public static final String KEY_DLC	= "dlc";
+	public static final String KEY_DIFFICULTY	= "difficulty";
 
 	public static final String KEY_INTRO		= "intro";
 
@@ -287,10 +288,23 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_CHALLENGES, 0, 0, Challenges.MAX_VALUE );
 	}
 
+	//DLC SYSTEM
 	public static void dlc( Conducts.ConductStorage value ) {
 		put( KEY_DLC, value);
 	}
 
+	public static Conducts.ConductStorage dlc() {
+		return getBundlable(KEY_DLC, new Conducts.ConductStorage());
+	}
+
+	//HARD SYSTEM
+	public static Difficulty.HardStorage difficulty() {
+		return getCundlable(KEY_DIFFICULTY, new Difficulty.HardStorage());
+	}
+
+	public static void difficulty(Difficulty.HardStorage value ) {
+		cut( KEY_DIFFICULTY, value);
+	}
 
 	private static final String BUNDLABLE="b";
 
@@ -302,23 +316,32 @@ public class SPDSettings extends GameSettings {
 			return defValue;
 		}
 	}
+
+	private static final String CUNDLABLE="c";
+
+	public static <T extends Bundlable> T getCundlable(String key, T defValue){
+		try {
+			Bundle b = Bundle.fromString(getString(key,""));
+			return (T)b.get(CUNDLABLE);
+		} catch (Exception e) {
+			return defValue;
+		}
+	}
 	public static void put( String key, Bundlable value ) {
 		Bundle b = new Bundle();
 		b.put(BUNDLABLE,value);
 		put(key,b.toString());
 	}
 
-	public static Conducts.ConductStorage dlc() {
-		return getBundlable(KEY_DLC, new Conducts.ConductStorage());
+	public static void cut( String key, Bundlable value ) {
+		Bundle b = new Bundle();
+		b.put(CUNDLABLE,value);
+		put(key,b.toString());
 	}
 
-
+	public static boolean twoConduct() {return getBoolean(KEY_TWO_CONDUCT, true);}
 
 	public static boolean oneConduct() {return getBoolean(KEY_ONE_CONDUCT, true);}
-
-	public static void oneConduct(boolean value){
-		put(KEY_ONE_CONDUCT, value);
-	}
 
 	public static void supportNagged( boolean value ) {
 		put( KEY_SUPPORT_NAGGED, value );

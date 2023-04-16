@@ -14,12 +14,14 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300SpiderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceStalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KagenoNusujinSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.LanFireSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MagicGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MolotovHuntsmanSprite;
@@ -45,6 +47,8 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_30_Changes(changeInfos);
+        add_v0_6_29_Changes(changeInfos);
         add_v0_6_28_Changes(changeInfos);
         add_v0_6_27_Changes(changeInfos);
         add_v0_6_26_Changes(changeInfos);
@@ -74,6 +78,65 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_30_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta5(P3)", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        Image issxsaxs =new DimandKingSprite();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs,("关于宝箱之王？"),
+                ("由于机制较于复杂，且时间不太充足。将在后续更新进行完善，敬请期待。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DASlade), ("新武器：涤罪[捐赠物品]"),
+                ("感谢_落白_的投稿，该武器是一个5阶武器，初始19力量，20%生成概率。可以召唤✦未安息的亡魂✦助战,自身基准攻击力随着杀敌数追加，但有上限。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14), ("寒冷系统0.1测试版"),
+                ("监狱层追加寒冷系统，最高阈值为25")));
+
+        changes.addButton(new ChangeButton(new LanFireSprites(), ("篝火系统0.1测试版"),
+                ("寒冷系统0.1测试版配套机制，降低寒冷阈值。\n\nP.S.:还有一个彩蛋降低寒冷阈值的方法，请自行探索哦")));
+
+        Image issxsas =new Image(Assets.Interfaces.BUFFS_LARGE, 32, 64, 16, 16);
+        issxsas.scale.set(PixelScene.align(1f));
+        changes.addButton(new ChangeButton(issxsas,
+                ("新Buff:刀锋寒冻"),
+                ("寒冷系统0.1测试版配套惩罚机制，降低物理伤害。")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X58")));
+    }
+
+    public static void add_v0_6_29_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta4.999(P3)", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DIFFCULTBOOT), ("难度系统测试版"),
+                ("难度系统开始测试。")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class,
+                        "bugfixes"),
+                ("修复了一些Bug")));
     }
 
     public static void add_v0_6_28_Changes( ArrayList<ChangeInfo> changeInfos ) {

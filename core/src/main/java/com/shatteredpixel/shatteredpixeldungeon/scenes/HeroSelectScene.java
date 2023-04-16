@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDLC;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDLCX;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHeroInfo;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
@@ -488,22 +489,8 @@ public class HeroSelectScene extends PixelScene {
 		IconButton DiffcultButton = new IconButton(new ItemSprite(ItemSpriteSheet.DIFFCULTBOOT)) {
 			@Override
 			protected void onClick() {
-				if(1==2){
-					Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextInput(Messages.get(WndStartGame.class,"custom_name"),
-							Messages.get(WndStartGame.class, "custom_name_desc")+SPDSettings.heroName(),
-							SPDSettings.heroName(), 20,
-							false, Messages.get(WndStartGame.class,"custom_name_set"),
-							Messages.get(WndStartGame.class,"custom_name_clear")){
-						@Override
-						public void onSelect(boolean name, String str) {
-							if (name) {
-								SPDSettings.heroName(str);
-							} else {
-								SPDSettings.heroName("");
-							}
-							icon(Icons.get(SPDSettings.heroName().equals("") ? RENAME_OFF : Icons.RENAME_ON));
-						}
-					}));
+				if(1==1){
+					ShatteredPixelDungeon.scene().addToFront(new WndDLCX(SPDSettings.difficulty(), true));
 				} else {
 					ShatteredPixelDungeon.scene().addToFront(new WndMessage("获得_不屈斗士_徽章后解锁难度系统。--暂未实装"));
 				}

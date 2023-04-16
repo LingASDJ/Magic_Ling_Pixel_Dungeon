@@ -123,7 +123,7 @@ public class DesktopLauncher {
 			if (System.getProperties().getProperty("os.name").equals("Windows XP")) {
 				basePath = "Application Data/.shatteredpixel/Shattered Pixel Dungeon/";
 			} else {
-				basePath = "AppData/Roaming/.shatteredpixel/Shattered Pixel Dungeon/";
+				basePath = "AppData/Roaming/.shatteredpixel/Magic Ling Pixel Dungeon/";
 			}
 		} else if (SharedLibraryLoader.isMac) {
 			basePath = "Library/Application Support/Shattered Pixel Dungeon/";

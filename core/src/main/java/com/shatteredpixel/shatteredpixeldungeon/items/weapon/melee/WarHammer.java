@@ -27,7 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
 
@@ -54,16 +53,13 @@ public class WarHammer extends MeleeWeapon {
 		switch (Random.Int(6)) {
 			case 0:case 1:case 2:case 3:
 			default:
-				return max(buffedLvl());
+				return super.proc( attacker, defender, damage );
 			case 4:case 5:
 				Buff.prolong(defender, Vertigo.class, 12f+level);
 				Buff.prolong(defender, Terror.class, 12f+level);
 				Buff.affect(defender, Burning.class).reignite(defender,5f+level);
 				//Over Level 3,Not Debuff
-				if(Random.Float()<0.65f && level <3) {
-					Buff.affect(attacker, Vulnerable.class, 6f);
-				}
-				return max(buffedLvl());
+				return super.proc( attacker, defender, damage );
 		}
 	}
 

@@ -1,92 +1,100 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.watabou.utils.Bundlable;
+import com.watabou.utils.Bundle;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 //难度系统
-public enum Difficulty {
-    EASY,
-    MEDIUM,
-    HARD
-//    IMPOSSIBLE
+public class Difficulty {
+    public enum DifficultyConduct {
+        NULL,
+        EASY(1.2f),
+        NORMAL(2.5f),
+        HARD(1.75f);
+//        IMPOSSIBLE(1.5f);
 
-    {
+        public float scoreMod;
+
+        DifficultyConduct(){
+            scoreMod = 1f;
+        }
+
+        DifficultyConduct(float scoreMod){
+            this.scoreMod = scoreMod;
+        }
+
         @Override
-        public boolean isUnlocked() {
-            return Badges.isUnlocked(Badges.Badge.VICTORY_ALL_CLASSES);
+        public String toString() {
+            return Messages.get(Difficulty.class, this.name());
         }
-    };
 
-    public boolean isUnlocked() {
-        return true;
-    }
-
-
-    public float mobHealthFactor() {
-        switch (this) {
-            case EASY:
-                return 2/3f;
-            case MEDIUM: default:
-                return 1f;
-            case HARD:
-                return 1 + 1/3f;
-//            case IMPOSSIBLE:
-//                return 2f;
+        public String desc(){
+            return Messages.get(Difficulty.class, name() + "_desc");
         }
     }
 
-    public float mobDamageFactor() {
-        switch (this) {
-            case EASY:
-                return 0.5f;
-            case MEDIUM: default:
-                return 1f;
-            case HARD:
-                return 1.5f;
-//            case IMPOSSIBLE:
-//                return 2f;
-        }
-    }
+    public static class HardStorage implements Bundlable {
 
-    public float moraleFactor() {
-        switch (this) {
-            case EASY:
-                return 2/3f;
-            case MEDIUM: default:
-                return 1f;
-            case HARD:
-                return 1 + 1/3f;
-//            case IMPOSSIBLE:
-//                return 2f;
-        }
-    }
+        public ArrayList<DifficultyConduct> difficultyConducts;
 
-    public int degradationAmount() {
-        switch (this) {
-            case EASY://Easy = 3 drop in durability per hit (200 hits until break)
-                return 3;
-            case MEDIUM: default://Medium = 6 drop in durability per hit (100 hits until break)
-                return 6;
-            case HARD://Hard = 12 drop in durability per hit (83 hits until break)
-                return 12;
-//            case IMPOSSIBLE:
-//                return 20;//Impossible = 20 drop in durability per hit (50 hits until break)
+        public HardStorage() {
+            difficultyConducts = new ArrayList<>();
         }
-    }
 
-    public static Difficulty fromInt(int diff) {
-        switch (diff) {
-            case 1:
-                return EASY;
-            case 2: default:
-                return MEDIUM;
-            case 3:
-                return HARD;
-//            case 4:
-//                return IMPOSSIBLE;
+        public HardStorage(DifficultyConduct... difficultyConducts) {this.difficultyConducts = new ArrayList<>(Arrays.asList(difficultyConducts));}
+
+        public HardStorage(HardStorage storage) {this.difficultyConducts = new ArrayList<>(storage.difficultyConducts);}
+
+        @Override
+        public void storeInBundle(Bundle bundle) {
+            ArrayList<String> conductIds = new ArrayList<>();
+            for (DifficultyConduct difficultyConduct : difficultyConducts){
+                conductIds.add(difficultyConduct.name());
+            }
+            bundle.put("difficultyConducts", conductIds.toArray(new String[0]));
         }
-    }
 
-    public String title() {
-        return Messages.get(Difficulty.class, name());
+        @Override
+        public void restoreFromBundle(Bundle bundle) {
+            difficultyConducts.clear();
+            if (bundle.getStringArray("difficultyConducts") != null) {
+                String[] difficultyConductsIds = bundle.getStringArray("difficultyConducts");
+                for (String conduct : difficultyConductsIds) {
+                    difficultyConducts.add(DifficultyConduct.valueOf(conduct));
+                }
+            }
+        }
+
+        public String getDebugString(){
+            if (difficultyConducts.isEmpty()){
+                return "NULL";
+            }
+            StringBuilder str = new StringBuilder();
+            for (DifficultyConduct difficultyConduct : difficultyConducts){
+                str.append(difficultyConduct.name()).append(",");
+            }
+            str.delete(str.length() - 1, str.length());
+            return str.toString();
+        }
+
+        public boolean isConductedAtAll(){
+            return !difficultyConducts.isEmpty();
+        }
+
+        public boolean oneConduct(){
+            return difficultyConducts.size() == 1;
+        }
+
+        public boolean isConducted(DifficultyConduct mask){
+            return isConductedAtAll() && difficultyConducts.contains(mask);
+        }
+
+        public DifficultyConduct getFirst(){
+            if (isConductedAtAll()) return difficultyConducts.get(0);
+            return null;
+        }
     }
 }

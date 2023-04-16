@@ -22,13 +22,16 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
+import static com.shatteredpixel.shatteredpixeldungeon.Difficulty.DifficultyConduct.EASY;
+import static com.shatteredpixel.shatteredpixeldungeon.Difficulty.DifficultyConduct.HARD;
+import static com.shatteredpixel.shatteredpixeldungeon.Difficulty.DifficultyConduct.NORMAL;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Difficulty;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -96,16 +99,25 @@ public abstract class Mob extends Char {
 	}
 	public ArrayList<Item> items;
 
+
+
 	//TODO LIST
 	@Override
 	public void updateHT(boolean boostHP) {
-//		HP = HT = (int) (normalHP(level) * healthFactor);
-//		HP = HT *= Dungeon.difficulty.mobHealthFactor() * CustomGame.Modifier.MOB_HP_FACTOR.getLocal();
-//		//Bosses (obviously) have higher HP
-		if (properties().contains(Property.BOSS)) {
-			HP = HT *= 5;
-		} else if (properties().contains(Property.MINIBOSS)) {
-			HP = HT *= 2;
+
+		if(Dungeon.isDIFFICULTY(EASY)){
+				HP = HT = (int) (0.8f * HP);
+		} else if(Dungeon.isDIFFICULTY(Difficulty.DifficultyConduct.NORMAL)){
+				HP=HT *= 1f;
+		} else if(Dungeon.isDIFFICULTY(HARD)){
+				HP=HT *= 1.25f;
+			if (properties().contains(Property.BOSS)) {
+				HP = HT *= 5f;
+			} else if (properties().contains(Property.MINIBOSS)) {
+				HP = HT *= 2f;
+			}
+		} else {
+			HP=HT *= 1f;
 		}
 		super.updateHT(boostHP);
 	}
@@ -242,6 +254,8 @@ public abstract class Mob extends Char {
 		if (buff(Terror.class) != null || buff(Dread.class) != null ){
 			state = FLEEING;
 		}
+
+
 		
 		enemy = chooseEnemy();
 		
@@ -592,6 +606,19 @@ public abstract class Mob extends Char {
 	public float attackDelay() {
 		float delay = 1f;
 		if ( buff(Adrenaline.class) != null) delay /= 1.5f;
+
+		//难度系统 敌人攻速
+		if(Dungeon.isDIFFICULTY(EASY)){
+			delay = 1.5f;
+		} else if(Dungeon.isDIFFICULTY(NORMAL)){
+			delay = 1f;
+		} else if(Dungeon.isDIFFICULTY(HARD)){
+			delay /= 1.5f;
+		} else{
+			delay = 1f;
+		}
+
+
 		return super.attackDelay()*(delay);
 	}
 
@@ -600,8 +627,8 @@ public abstract class Mob extends Char {
 		if(Dungeon.isChallenged(DHXD)){
 			damageAttackProcLanterMob();
 		}
-		return super.attackProc(enemy,
-				(int) (damage*(Dungeon.isChallenged(SBSG) ? (0.6f * scaleFactor) : 1)));
+
+		return super.attackProc(enemy, damage);
 	}
 
 	//写在Mob主类，从而方便后续维护
@@ -665,10 +692,25 @@ public abstract class Mob extends Char {
 
 	@Override
 	public int defenseSkill( Char enemy ) {
-		if ( !surprisedBy(enemy)
+		float modifier =1f;
+		boolean seen = (enemySeen && enemy.invisible == 0);
+
+		//难度系统-闪避
+		if(Dungeon.isDIFFICULTY(EASY)){
+			modifier *= 0.7f;
+		} else if(Dungeon.isDIFFICULTY(NORMAL)){
+			modifier *= 1f;
+		} else if(Dungeon.isDIFFICULTY(HARD)){
+			modifier *= 1.3f;
+		} else {
+			modifier *= 1f;
+		}
+
+		if (enemy == Dungeon.hero && !Dungeon.hero.canSurpriseAttack()) seen = true;
+		if ( seen
 				&& paralysed == 0
-				&& !(alignment == Alignment.ALLY && enemy == hero)) {
-			return (int) (this.defenseSkill/(Dungeon.isChallenged(SBSG) ? (0.4f * scaleFactor) : 1));
+				&& !(alignment == Alignment.ALLY && enemy == Dungeon.hero)) {
+			return Math.round(this.defenseSkill * modifier);
 		} else {
 			return 0;
 		}
@@ -779,8 +821,21 @@ public abstract class Mob extends Char {
 				Statistics.qualifiedForNoKilling = false;
 				
 				int exp = Dungeon.hero.lvl <= maxLvl ? EXP : 0;
+
+				//难度系统 英雄获得的经验
 				if (exp > 0) {
-					Dungeon.hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "exp", exp));
+					if(Dungeon.isDIFFICULTY(EASY)){
+						exp *= 1.5f;
+					} else if(Dungeon.isDIFFICULTY(Difficulty.DifficultyConduct.NORMAL)){
+						exp *= 1f;
+					} else if(Dungeon.isDIFFICULTY(HARD)){
+						exp *= 0.5f;
+					} else {
+						exp *= 1f;
+					}
+					//保底经验
+					Dungeon.hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "exp",
+							Dungeon.isDIFFICULTY(HARD) ? (exp==0 ? exp+1 : exp) : exp));
 				}
 				Dungeon.hero.earnExp(exp, getClass());
 			}

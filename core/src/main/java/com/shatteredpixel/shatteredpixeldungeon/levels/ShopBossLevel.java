@@ -23,7 +23,6 @@ import com.watabou.noosa.audio.Sample;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Objects;
 
 public class ShopBossLevel extends Level {
 
@@ -37,6 +36,8 @@ public class ShopBossLevel extends Level {
     private static final int K = Terrain.ALCHEMY;
     private static final int D = Terrain.STATUE;
     private static final int H = Terrain.WELL;
+
+    private static final int B = Terrain.STATUE;
 
     //portals. (from, to).
 
@@ -63,7 +64,7 @@ public class ShopBossLevel extends Level {
         }
 
         FireMagicDied boss = new FireMagicDied();
-        boss.pos = WIDTH*17 + 17;
+        boss.pos = WIDTH*16 + 17;
         GameScene.add(boss);
 
         //activateAll();
@@ -81,6 +82,8 @@ public class ShopBossLevel extends Level {
 
     public static int TRUEPosition = WIDTH * 17 + 17;
     public static int FALSEPosition = WIDTH * 22 + 17;
+
+    public static int DiedPosition = WIDTH*17 + 17;
     @Override
     public void unseal() {
         super.unseal();
@@ -108,7 +111,7 @@ public class ShopBossLevel extends Level {
     public void occupyCell( Char ch ) {
         super.occupyCell( ch );
 
-        if (map[entrance] == Terrain.ENTRANCE && map[exit] != Terrain.EXIT
+        if (map[entrance] == Terrain.STATUE && map[exit] != Terrain.EXIT
                 && ch == hero && Dungeon.level.distance(ch.pos, entrance) >= 2) {
             seal();
         }
@@ -136,7 +139,7 @@ public class ShopBossLevel extends Level {
     public int getSummoningPos(){
         Mob king = getKing();
         //fixed
-        HashSet<FireMagicDied.Summoning> summons = Objects.requireNonNull(king).buffs(FireMagicDied.Summoning.class);
+        HashSet<FireMagicDied.Summoning> summons = king.buffs(FireMagicDied.Summoning.class);
         ArrayList<Integer> positions = new ArrayList<>();
         for (int pedestal : pedestals) {
             boolean clear = true;
@@ -228,7 +231,7 @@ public class ShopBossLevel extends Level {
             S,S,S,W,W,P,P,P,R,P,P,R,X,X,G,G,G,R,X,X,G,G,G,R,P,P,R,P,P,P,W,W,S,S,S,
             S,S,S,S,W,W,P,R,P,P,P,R,X,X,X,G,D,R,X,G,G,G,G,R,P,P,P,R,P,W,W,S,S,S,S,
             S,S,S,S,S,W,W,P,P,P,P,R,X,X,X,X,G,R,G,D,G,G,G,R,P,P,P,P,W,W,S,S,S,S,S,
-            S,S,S,S,S,S,W,W,R,R,R,R,H,R,R,R,R,G,R,R,R,R,H,R,R,R,R,W,W,S,S,S,S,S,S,
+            S,S,S,S,S,S,W,W,R,R,R,R,H,R,R,R,R,B,R,R,R,R,H,R,R,R,R,W,W,S,S,S,S,S,S,
             S,S,S,S,S,W,W,P,P,P,P,R,G,G,G,D,G,R,G,X,X,X,X,R,P,P,P,P,W,W,S,S,S,S,S,
             S,S,S,S,W,W,P,R,P,P,P,R,G,G,G,G,X,R,D,G,X,X,X,R,P,P,P,R,P,W,W,S,S,S,S,
             S,S,S,W,W,P,P,P,R,P,P,R,G,G,G,X,X,R,G,G,G,X,X,R,P,P,R,P,P,P,W,W,S,S,S,

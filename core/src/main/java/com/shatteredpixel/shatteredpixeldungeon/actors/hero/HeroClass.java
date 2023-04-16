@@ -53,9 +53,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
@@ -125,6 +125,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SkyShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WashCrime;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
@@ -186,6 +187,8 @@ public enum HeroClass {
 
 			new Gauntlet().quantity(1).identify().collect();
 
+			new WashCrime().quantity(1).identify().collect();
+
 			new Cake().quantity(100).identify().collect();
 			new TengusMask().quantity(1).identify().collect();
 			new KingsCrown().quantity(1).identify().collect();
@@ -193,7 +196,7 @@ public enum HeroClass {
 			new ScrollOfTransmutation().quantity(45).identify().collect();
 			new BeaconOfReturning().quantity(11).identify().collect();
 			new WarHammer().quantity(1).identify().collect();
-			new ChaliceOfBlood().quantity(1).identify().collect();
+			new EtherealChains().quantity(1).identify().collect();
 			new Firebloom.Seed().quantity(50).identify().collect();
 			new Blindweed.Seed().quantity(50).identify().collect();
 			new StoneOfFlock().quantity(50).identify().collect();

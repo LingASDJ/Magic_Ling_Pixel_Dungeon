@@ -76,7 +76,6 @@ public class WndChallenges extends Window {
 
 		RenderedTextBlock title = PixelScene.renderTextBlock( Messages.get(this, "title"+
 				WndChallenges.this.index), 12 );
-		title.hardlight( TITLE_COLOR );
 		title.setPos(
 				(WIDTH - title.width()) / 2,
 				(TTL_HEIGHT - title.height()) / 2
@@ -109,7 +108,7 @@ public class WndChallenges extends Window {
 			cb.active = editable;
 
 			//Disable
-			if(Challenges.NAME_IDS[i].equals("cs") ){
+			if(Challenges.NAME_IDS[i].equals("cs")||(Challenges.NAME_IDS[i].equals("icedied"))){
 				cb.active = false;
 				cb.checked(false);
 				cb.visible=false;

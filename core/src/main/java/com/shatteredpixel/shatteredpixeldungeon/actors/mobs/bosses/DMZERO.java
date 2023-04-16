@@ -370,6 +370,11 @@ public class DMZERO extends Mob
                     buff.detach();
                 }
             }
+            for (Buff buff : hero.buffs()) {
+                if (buff instanceof RandomBuff.DiedBuff) {
+                    buff.detach();
+                }
+            }
             Statistics.amuletObtained = true;
             obj = new NullDiedTO();
             ((NullDiedTO) obj).pos = pos;

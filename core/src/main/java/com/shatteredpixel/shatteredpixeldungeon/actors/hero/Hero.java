@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
+import static com.shatteredpixel.shatteredpixeldungeon.Difficulty.DifficultyConduct.HARD;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
@@ -1759,8 +1760,10 @@ public class Hero extends Char {
 	}
 	
 	public void earnExp( int exp, Class source ) {
-		
-		this.exp += exp;
+
+		//保底经验获取 难度系统
+		this.exp += Dungeon.isDIFFICULTY(HARD) ? (exp==0 ? exp+1 : exp) : exp;
+
 		float percent = exp/(float)maxExp();
 
 		EtherealChains.chainsRecharge chains = buff(EtherealChains.chainsRecharge.class);
@@ -2707,13 +2710,15 @@ public class Hero extends Char {
 
 	//TODO 寒冰值系统
 	public void damageIcehp(int value){
-		icehp -= value;
-		hero.sprite.showStatus(0x009999, String.valueOf(value));
+		icehp += value;
+		hero.sprite.showStatus(0x009999, String.valueOf("-"+value));
 	}
 
 	public void healIcehp(int value){
-		icehp = Math.min(lanterfire+value,100);
-		hero.sprite.showStatus(0x00ffff, String.valueOf(value));
+		if(icehp > 0) {
+			icehp -= value;
+		}
+		hero.sprite.showStatus(0x00ffff, String.valueOf("+"+value));
 	}
 
 }

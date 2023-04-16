@@ -31,19 +31,21 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameC01Sprite;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -51,7 +53,7 @@ import java.util.HashSet;
 
 public class FlameC01 extends Mob {
 
-    private static final float TIME_TO_BURN	= 1f;
+    private static final float TIME_TO_BURN	= 3f;
 
     public int gasTankPressure;
 
@@ -59,7 +61,6 @@ public class FlameC01 extends Mob {
     private HashSet<Integer> affectedCells;
     //the cells to trace fire shots to, for visual effects.
     private HashSet<Integer> visualCells;
-    private int direction = 0;
 
     public void spawnAround( int pos ) {
         for (int n : PathFinder.NEIGHBOURS4) {
@@ -70,17 +71,13 @@ public class FlameC01 extends Mob {
             }
         }
     }
-    private int summonCooldown = 10;
-    private int delay = 0;
-
-
 
     private static final float SPAWN_DELAY	= 2f;
     public static FlameC01 spawnAt(int pos ) {
         if (!Dungeon.level.solid[pos] && Actor.findChar( pos ) == null) {
 
             FlameC01 w = new FlameC01();
-            w.adjustStats( Dungeon.depth );
+            w.adjustStats();
             w.pos = pos;
             w.state = w.HUNTING;
             GameScene.add( w, SPAWN_DELAY );
@@ -96,9 +93,7 @@ public class FlameC01 extends Mob {
         }
     }
 
-    private int level;
-    public void adjustStats( int level ) {
-        this.level = level;
+    public void adjustStats() {
         defenseSkill = attackSkill( null ) * 5;
         enemySeen = true;
     }
@@ -262,15 +257,11 @@ public class FlameC01 extends Mob {
 
     public void shoot(Char ch, int pos){
         final Ballistica shot = new Ballistica( ch.pos, pos, Ballistica.PROJECTILE);
-        fx(shot, new Callback() {
-            @Override
-            public void call() {
-                onZap(shot);
-            }
-        }, ch);
+        fx(shot, ch);
     }
+    ConeAOE cone;
 
-    protected void fx(Ballistica bolt, Callback callback, Char ch ) {
+    protected void fx(Ballistica bolt, Char ch ) {
         //need to perform flame spread logic here so we can determine what cells to put flames in.
         affectedCells = new HashSet<>();
         visualCells = new HashSet<>();
@@ -280,68 +271,31 @@ public class FlameC01 extends Mob {
 
         for (int i = 0; i < PathFinder.CIRCLE8.length; i++){
             if (bolt.sourcePos+PathFinder.CIRCLE8[i] == bolt.path.get(1)){
-                direction = i;
                 break;
             }
         }
 
-        float strength = maxDist;
-        for (int c : bolt.subPath(1, dist)) {
-            strength--; //as we start at dist 1, not 0.
-            affectedCells.add(c);
-            if (strength > 1) {
-                spreadFlames(c + PathFinder.CIRCLE8[left(direction)], strength - 1);
-                spreadFlames(c + PathFinder.CIRCLE8[direction], strength - 1);
-                spreadFlames(c + PathFinder.CIRCLE8[right(direction)], strength - 1);
-            } else {
-                visualCells.add(c);
-            }
-        }
+        cone = new ConeAOE( bolt,
+                maxDist,
+                80 + 40,Ballistica.MAGIC_BOLT);
 
-        //going to call this one manually
         visualCells.remove(bolt.path.get(dist));
 
-        for (int cell : visualCells){
-            //this way we only get the cells at the tip, much better performance.
+        for (Ballistica ray : cone.rays){
             ((MagicMissile)ch.sprite.parent.recycle( MagicMissile.class )).reset(
-                    MagicMissile.FIRE,
+                    MagicMissile.HALOFIRE,
                     ch.sprite,
-                    cell,
+                    ray.path.get(ray.dist),
                     null
             );
         }
-        MagicMissile.boltFromChar( ch.sprite.parent,
-                MagicMissile.FIRE,
-                ch.sprite,
-                bolt.path.get(dist/2),
-                callback );
+        Buff.affect( enemy, HalomethaneBurning.class ).reignite( enemy, 7f );
+
+        //GameScene.add( Blob.seed( target.pos, 7, HalomethaneFire.class ) );
+
         if(Dungeon.level.heroFOV[bolt.sourcePos] || Dungeon.level.heroFOV[bolt.collisionPos]){
             Sample.INSTANCE.play( Assets.Sounds.ZAP );
         }
-    }
-
-    //burn... BURNNNNN!.....
-    private void spreadFlames(int cell, float strength){
-        if (strength >= 0 && (Dungeon.level.passable[cell] || Dungeon.level.flamable[cell])){
-            affectedCells.add(cell);
-            if (strength >= 1.5f) {
-                visualCells.remove(cell);
-                spreadFlames(cell + PathFinder.CIRCLE8[left(direction)], strength - 1.5f);
-                spreadFlames(cell + PathFinder.NEIGHBOURS9[direction], strength - 1.5f);
-                spreadFlames(cell + PathFinder.CIRCLE8[right(direction)], strength - 1.5f);
-            } else {
-                visualCells.add(cell);
-            }
-        } else if (!Dungeon.level.passable[cell])
-            visualCells.add(cell);
-    }
-
-    private int left(int direction){
-        return direction == 0 ? 3 : direction-1;
-    }
-
-    private int right(int direction){
-        return direction == 3 ? 0 : direction+1;
     }
 
     protected void onZap( Ballistica bolt ) {
@@ -354,10 +308,7 @@ public class FlameC01 extends Mob {
             }
 
             //only ignite cells directly near caster if they are flammable
-            if (!Dungeon.level.adjacent(bolt.sourcePos, cell)
-                    || Dungeon.level.flamable[cell]){
-                GameScene.add( Blob.seed( cell, 1+2, HalomethaneFire.class ) );
-            }
+            GameScene.add( Blob.seed( cell, 1+2, HalomethaneFire.class ) );
         }
     }
 

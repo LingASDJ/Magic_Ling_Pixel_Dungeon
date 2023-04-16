@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Difficulty;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -45,7 +47,7 @@ public class Healing extends Buff {
 	
 	@Override
 	public boolean act(){
-		
+
 		target.HP = Math.min(target.HT, target.HP + healingThisTick());
 
 		if (target.HP == target.HT && target instanceof Hero){
@@ -70,9 +72,15 @@ public class Healing extends Buff {
 	}
 	
 	public void setHeal(int amount, float percentPerTick, int flatPerTick){
-		healingLeft = amount;
-		percentHealPerTick = percentPerTick;
-		flatHealPerTick = flatPerTick;
+		if (Dungeon.isDIFFICULTY(Difficulty.DifficultyConduct.HARD)) {
+			healingLeft = amount/2;
+			percentHealPerTick = percentPerTick/2;
+			flatHealPerTick = flatPerTick/2;
+		} else {
+			healingLeft = amount;
+			percentHealPerTick = percentPerTick;
+			flatHealPerTick = flatPerTick;
+		}
 	}
 	
 	public void increaseHeal( int amount ){

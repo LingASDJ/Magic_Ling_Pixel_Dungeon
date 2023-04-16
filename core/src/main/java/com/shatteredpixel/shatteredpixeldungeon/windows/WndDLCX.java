@@ -1,7 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
+import com.shatteredpixel.shatteredpixeldungeon.Difficulty;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -19,7 +19,7 @@ import com.watabou.noosa.ui.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class WndDLC extends Window {
+public class WndDLCX extends Window {
 
     private final int WIDTH = Math.min(138, (int) (PixelScene.uiCamera.width * 0.9));
     private final int HEIGHT = (int) (PixelScene.uiCamera.height * 0.4);
@@ -32,11 +32,11 @@ public class WndDLC extends Window {
     private ArrayList<ConduitBox> boxes = new ArrayList<>();
     private ScrollPane pane;
 
-    public WndDLC( Conducts.Conduct conduct, boolean editable){
-        new WndDLC(new Conducts.ConductStorage(conduct), editable);
+    public WndDLCX(Difficulty.DifficultyConduct difficultyConduct, boolean editable){
+        new WndDLCX(new Difficulty.HardStorage(difficultyConduct), editable);
     }
 
-    public WndDLC(Conducts.ConductStorage conducts, boolean editable ) {
+    public WndDLCX(Difficulty.HardStorage conducts, boolean editable ) {
 
         super();
 
@@ -51,9 +51,9 @@ public class WndDLC extends Window {
         );
         PixelScene.align(title);
         add( title );
-        ArrayList<Conducts.Conduct> allConducts = editable ?
-                new ArrayList<>(Arrays.asList(Conducts.Conduct.values())) :
-                conducts.conducts;
+        ArrayList<Difficulty.DifficultyConduct> allDifficultyConducts = editable ?
+                new ArrayList<>(Arrays.asList(Difficulty.DifficultyConduct.values())) :
+                conducts.difficultyConducts;
 
         ScrollPane pane = new ScrollPane(new Component()) {
             @Override
@@ -67,15 +67,16 @@ public class WndDLC extends Window {
                 size = infos.size();
                 for (int i = 1; i < size+1; i++) {
                     if (infos.get(i-1).inside(x, y)) {
-                        int index = allConducts.contains(Conducts.Conduct.NULL) ? i : i-1;
+                        int index = allDifficultyConducts.contains(Difficulty.DifficultyConduct.NULL) ? i : i-1;
 
-                        String message = allConducts.get(index).desc();
-                        String title = Messages.titleCase(Messages.get(Conducts.class, allConducts.get(index).name()));
+                        String message = allDifficultyConducts.get(index).desc();
+                        String title = Messages.titleCase(Messages.get(Difficulty.class,
+                                allDifficultyConducts.get(index).name()));
                         ShatteredPixelDungeon.scene().add(
                                 new WndTitledMessage(
                                         new Image(Assets.Interfaces.HAICONS,
-                                                (allConducts.get(index).ordinal() - 1) * 16,
-                                                16, 16, 16),
+                                                (allDifficultyConducts.get(index).ordinal()-1) * 16,
+                                                0, 16, 16),
                                         title, message)
                         );
 
@@ -89,25 +90,28 @@ public class WndDLC extends Window {
         Component content = pane.content();
 
         float pos = 2;
-        for (Conducts.Conduct i : allConducts) {
+        for (Difficulty.DifficultyConduct i : allDifficultyConducts) {
 
             final String challenge = i.toString();
 
-            ConduitBox cb = new ConduitBox( i == Conducts.Conduct.NULL ? challenge : "       " + challenge);
+            ConduitBox cb = new ConduitBox( i == Difficulty.DifficultyConduct.NULL ? challenge : "       " + challenge);
             cb.checked(conducts.isConducted(i));
-            if (i == Conducts.Conduct.NULL && !conducts.isConductedAtAll()) cb.checked(true);
+            if (i == Difficulty.DifficultyConduct.NULL){
+                cb.checked(false);
+                cb.visible=false;
+            }
             cb.active = editable;
-            cb.conduct = i;
+            cb.difficultyConduct = i;
 
             pos += GAP;
             cb.setRect(0, pos, WIDTH - 16, BTN_HEIGHT);
-            if (i == Conducts.Conduct.NULL){
+            if (i == Difficulty.DifficultyConduct.NULL){
                 cb.setSize(WIDTH, BTN_HEIGHT);
             }
 
             content.add(cb);
             boxes.add(cb);
-            if (i != Conducts.Conduct.NULL) {
+            if (i != Difficulty.DifficultyConduct.NULL) {
                 IconButton info = new IconButton(Icons.get(Icons.INFO)) {
                     @Override
                     protected void layout() {
@@ -118,7 +122,7 @@ public class WndDLC extends Window {
                 info.setRect(cb.right(), pos, 16, BTN_HEIGHT);
                 content.add(info);
                 infos.add(info);
-                Image icon = new Image(Assets.Interfaces.HAICONS, (i.ordinal() - 1) * 16, 16, 16, 16);
+                Image icon = new Image(Assets.Interfaces.HAICONS, (i.ordinal() - 1) * 16, 0, 16, 16);
                 icon.x = cb.left()+1;
                 icon.y = cb.top()+1;
                 content.add(icon);
@@ -134,13 +138,13 @@ public class WndDLC extends Window {
     public void onBackPressed() {
 
         if (editable) {
-            Conducts.ConductStorage value = new Conducts.ConductStorage();
+            Difficulty.HardStorage value = new Difficulty.HardStorage();
             for (ConduitBox slot : boxes) {
-                if (slot.checked() && slot.conduct != Conducts.Conduct.NULL) {
-                    value.conducts.add(slot.conduct);
+                if (slot.checked() && slot.difficultyConduct != Difficulty.DifficultyConduct.NULL) {
+                    value.difficultyConducts.add(slot.difficultyConduct);
                 }
             }
-            SPDSettings.dlc( value );
+            SPDSettings.difficulty( value );
         }
 
         super.onBackPressed();
@@ -148,7 +152,7 @@ public class WndDLC extends Window {
 
     public class ConduitBox extends CheckBox{
 
-        public Conducts.Conduct conduct;
+        public Difficulty.DifficultyConduct difficultyConduct;
 
         public ConduitBox(String label) {
             super(label);
@@ -158,7 +162,7 @@ public class WndDLC extends Window {
         protected void onClick() {
             super.onClick();
             if (active){
-                boolean disableEverything = this.conduct == Conducts.Conduct.BOSSRUSH || SPDSettings.oneConduct();
+                boolean disableEverything = this.difficultyConduct == Difficulty.DifficultyConduct.EASY || SPDSettings.twoConduct();
                 for (CheckBox slot : boxes){
                     if (slot != this && disableEverything) slot.checked(false);
                 }

@@ -44,7 +44,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDZSLS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedMurderer;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedNecromancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedSwarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RipperDemon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotHeart;
@@ -428,7 +427,7 @@ public class MobPlacer extends TestItem{
         Flame(FlameB01.class, DictSpriteSheet.FLAME),
         NQHZ(OGPDNQHZ.class, DictSpriteSheet.OGPDNQHZ),
 
-        REDBS(RedNecromancer.class, DictSpriteSheet.REDBS),
+        //REDBS(RedNecromancer.class, DictSpriteSheet.REDBS),
         SLXJ(SpectralNecromancer.class, DictSpriteSheet.SLXJ),
         BMHR(ShieldHuntsman.class, DictSpriteSheet.BMHR),
         XTG(XTG100.class, DictSpriteSheet.XTG),

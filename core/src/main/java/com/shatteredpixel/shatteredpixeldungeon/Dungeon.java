@@ -239,7 +239,13 @@ public class Dungeon {
 
 	public static int challenges;
 
-	public static Conducts.ConductStorage dlcs;
+//	public static Conducts.ConductStorage dlcs;
+//
+//	public static Difficulty.HardStorage difficultys;
+
+	public static Conducts.ConductStorage dlcs = new Conducts.ConductStorage();
+
+	public static Difficulty.HardStorage difficultys = new Difficulty.HardStorage();
 	public static int mobsToChampion;
 	public static int mobsToStateLing;
 
@@ -265,7 +271,11 @@ public class Dungeon {
 		version = Game.versionCode;
 		challenges = SPDSettings.challenges();
 
+		//娱乐模式
 		dlcs =  new Conducts.ConductStorage(SPDSettings.dlc());
+
+		//难度模式
+		difficultys =  new Difficulty.HardStorage(SPDSettings.difficulty());
 
 		mobsToChampion = -1;
 		mobsToStateLing = -1;
@@ -334,6 +344,10 @@ public class Dungeon {
 
 	public static boolean isDLC(Conducts.Conduct mask ) {
 		return dlcs.isConducted(mask);
+	}
+
+	public static boolean isDIFFICULTY(Difficulty.DifficultyConduct mask ) {
+		return difficultys.isConducted(mask);
 	}
 
 	public static Level newLevel() {
@@ -692,6 +706,8 @@ public class Dungeon {
 	private static final String SEED		= "seed";
 	private static final String CHALLENGES	= "challenges";
 	private static final String DLCS	= "dlcs";
+
+	private static final String DIFFICULTY	= "difficulty";
 	private static final String MOBS_TO_CHAMPION	= "mobs_to_champion";
 	private static final String HERO		= "hero";
 	private static final String DEPTH		= "depth";
@@ -715,7 +731,15 @@ public class Dungeon {
 			bundle.put( VERSION, version );
 			bundle.put( SEED, seed );
 			bundle.put( CHALLENGES, challenges );
+
+//			//娱乐模式
 			bundle.put(	DLCS,dlcs);
+			dlcs.storeInBundle(bundle);
+			difficultys.storeInBundle(bundle);
+//			//难度选择
+			bundle.put(DIFFICULTY,	difficultys );
+
+
 			bundle.put( MOBS_TO_CHAMPION, mobsToChampion );
 
 			bundle.put( MOBS_TO_STATELING, mobsToStateLing );
@@ -794,7 +818,7 @@ public class Dungeon {
 			saveGame( GamesInProgress.curSlot );
 			saveLevel( GamesInProgress.curSlot );
 
-			GamesInProgress.set( GamesInProgress.curSlot, depth, challenges, hero );
+			GamesInProgress.set( GamesInProgress.curSlot, depth, challenges, hero,dlcs,difficultys );
 
 		}
 	}
@@ -818,7 +842,9 @@ public class Dungeon {
 		QuickSlotButton.reset();
 
 		Dungeon.challenges = bundle.getInt( CHALLENGES );
+
 		dlcs.restoreFromBundle(bundle);
+		difficultys.restoreFromBundle(bundle);
 		Dungeon.mobsToChampion = bundle.getInt( MOBS_TO_CHAMPION );
 
 		Dungeon.mobsToStateLing = bundle.getInt( MOBS_TO_STATELING );
@@ -945,6 +971,12 @@ public class Dungeon {
 		info.depth = bundle.getInt( DEPTH );
 		info.version = bundle.getInt( VERSION );
 		info.challenges = bundle.getInt( CHALLENGES );
+
+		info.dlcs = new Conducts.ConductStorage();
+		info.dlcs.restoreFromBundle(bundle);
+
+		info.difficulty = new Difficulty.HardStorage();
+		info.difficulty.restoreFromBundle(bundle);
 
 		Hero.preview( info, bundle.getBundle( HERO ) );
 		Statistics.preview( info, bundle );

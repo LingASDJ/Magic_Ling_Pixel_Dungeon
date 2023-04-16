@@ -237,6 +237,10 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new NxhyShopRoom());
 		}
 
+		if(Dungeon.depth>=6 && Dungeon.depth <= 9){
+			initRooms.add(new LanFireRoom());
+		}
+
 		if (Dungeon.NyzshopOnLevel()) {
 			Buff.affect(hero, RandomBuff.class).set( (3 + Random.Int(9)+hero.STR/6+hero.HP/30)/Random.Int(1,2)+5, 1 );
 			initRooms.add(new NyzBombAndBooksRoom());
@@ -274,10 +278,10 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-
-		if(Dungeon.depth==6){
-			initRooms.add(new LanFireRoom());
-		}
+//
+//		if(Dungeon.depth==6){
+//			initRooms.add(new LanFireRoom());
+//		}
 		
 		return initRooms;
 	}

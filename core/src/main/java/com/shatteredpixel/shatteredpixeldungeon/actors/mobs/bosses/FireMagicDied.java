@@ -325,6 +325,12 @@ public class FireMagicDied extends Mob implements Callback {
 
     @Override
     public boolean act() {
+        //热修复处理
+
+        if (Dungeon.hero.buff(LockedFloor.class) != null){
+            die(true);
+        }
+
         if (phase == 1 && HP <= 350) {
             //actScanning();
             if (Dungeon.level.water[pos] && HP < HT) {
@@ -563,7 +569,7 @@ public class FireMagicDied extends Mob implements Callback {
             }
             zap();
         } else {
-            //doYogLasers();
+            ////doYogLasers();
             if (Random.Int( 3 ) == 0) {
                 Buff.affect( hero, HalomethaneBurning.class ).reignite( hero, 24f );
                 enemy.sprite.burst( 0x000000, 5 );
@@ -672,7 +678,7 @@ public class FireMagicDied extends Mob implements Callback {
                 }
                 //properties.add(Property.IMMOVABLE);
                 ScrollOfTeleportation.appear(this, ShopBossLevel.throneling);
-                //doYogLasers();
+                ////doYogLasers();
                 sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
                 Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
                 phase = 2;
@@ -935,6 +941,7 @@ public class FireMagicDied extends Mob implements Callback {
 
         @Override
         public boolean act() {
+
             delay--;
             if (delay <= 0){
                 if (summon == FireMagicDied.ColdGuradA.class){

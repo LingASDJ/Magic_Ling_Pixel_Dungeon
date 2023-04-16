@@ -37,14 +37,14 @@ import com.watabou.utils.Random;
 public class xykl extends Mob {
     private static final String COMBO = "combo";
     public RedBloodMoon weapon;
-    private String[] attackCurse = {"烧，快烧起来！", "扭曲的世界",
+    private final String[] attackCurse = {"烧，快烧起来！", "扭曲的世界",
             "滚开！",
             "你不可能再继续前进了！", "你这个狡猾的恶魔！", "去死，全部都去死吧！",
             "去死，你这肮脏的怪物！", "啊！",
             "尝尝我的怒火！",
             "誓死守护我的主人！"};
     private int combo = 0;
-    private String[] deathCurse = {"再一次，我辜负了你！", "对不起，主人！我尽力了！",
+    private final String[] deathCurse = {"再一次，我辜负了你！", "对不起，主人！我尽力了！",
             "我……对不起……", "我再一次没能守护好你", "神啊...帮帮我吧...",
             "一切已经结束了吗？", "我……太弱了……", "300年前，我辜负了她；300年，后我辜负了你！"};
 
@@ -69,7 +69,7 @@ public class xykl extends Mob {
 
     public int attackProc(Char enemy, int damage) {
         if (Random.Int(0, 10) > 7) {
-            this.sprite.showStatus(16711680, this.attackCurse[Random.Int(this.attackCurse.length)], new Object[0]);
+            this.sprite.showStatus(16711680, this.attackCurse[Random.Int(this.attackCurse.length)]);
         }
         int damage2 = xykl.super.attackProc(enemy, this.combo + damage);
         this.combo++;
@@ -89,7 +89,7 @@ public class xykl extends Mob {
     public void die(Object cause) {
         xykl.super.die(cause);
         if (cause != Chasm.class) {
-            this.sprite.showStatus(16711680, this.deathCurse[Random.Int(this.deathCurse.length)], new Object[0]);
+            this.sprite.showStatus(16711680, this.deathCurse[Random.Int(this.deathCurse.length)]);
             RedBloodMoon.deadking--;
         }
     }

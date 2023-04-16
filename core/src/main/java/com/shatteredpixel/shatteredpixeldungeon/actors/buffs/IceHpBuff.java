@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -12,18 +14,32 @@ public class IceHpBuff extends Buff implements Hero.Doom {
     private static final String LEVEL = "level";
     private static final String PARTIALDAMAGE = "partialDamage";
 
-    private static final float STEP = 100.0f;
+    private static final float STEP = 50.0f;
 
     private float level;
     private float partialDamage;
 
     @Override
     public boolean act() {
+
+        //第一阶段 刀锋寒冻(Thanks:二月)
+        if(hero.icehp>=15){
+            Buff.affect(hero, IceSwordDown.class).set( (100), 1 );
+        } else {
+            Buff.detach( hero, IceSwordDown.class );
+        }
+
         if (Dungeon.depth <= 5) {
             spend(STEP);
             return true;
-        } else if (Dungeon.level.locked || this.target.buff(LighS.class) != null) {
+        } else if (Dungeon.level.locked || this.target.buff(IceHealHP.class) != null) {
+            hero.healIcehp(1);
             spend(STEP);
+            return true;
+        //燃起来了
+        }else if(this.target.buff(HalomethaneBurning.class) != null || this.target.buff(Burning.class) != null){
+            hero.healIcehp(1);
+            spend(25f);
             return true;
         } else {
             Hero hero = (Hero) this.target;
@@ -31,14 +47,15 @@ public class IceHpBuff extends Buff implements Hero.Doom {
                 diactivate();
                 return true;
             }
-            if (hero.lanterfire > 30) {
-                hero.damageLantern(1);
+            if (hero.icehp < 25) {
+                hero.damageIcehp(1);
                 spend(17f-(float) Dungeon.depth/5);
             } else {
                 spend(STEP);
             }
             return true;
         }
+
     }
 
     @Override

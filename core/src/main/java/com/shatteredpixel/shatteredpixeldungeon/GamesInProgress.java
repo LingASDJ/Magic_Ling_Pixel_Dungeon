@@ -122,12 +122,16 @@ public class GamesInProgress {
 	}
 
 	public static void set(int slot, int depth, int challenges,
-	                       Hero hero) {
+	                       Hero hero,Conducts.ConductStorage dlcs,Difficulty.HardStorage difficulty) {
 		Info info = new Info();
 		info.slot = slot;
 		
 		info.depth = depth;
 		info.challenges = challenges;
+
+		info.dlcs = dlcs;
+
+		info.difficulty= difficulty;
 
 		info.seed = Dungeon.seed;
 		info.customSeed = Dungeon.customSeedText;
@@ -171,6 +175,11 @@ public class GamesInProgress {
 		public int depth;
 		public int version;
 		public int challenges;
+
+		public Conducts.ConductStorage dlcs;
+		public Difficulty.HardStorage difficulty;
+
+
 		public int icehp;
 		public String name;
 		public int level;
