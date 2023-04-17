@@ -16,6 +16,15 @@ public class LanFire extends NPC {
         properties.add(Property.IMMOVABLE);
     }
     public static boolean seenBefore = false;
+
+    @Override
+    public void damage( int dmg, Object src ) {
+    }
+
+    @Override
+    public int defenseSkill( Char enemy ) {
+        return INFINITE_EVASION;
+    }
     @Override
     public boolean interact(Char c) {
         return false;

@@ -23,7 +23,7 @@ public class IceHpBuff extends Buff implements Hero.Doom {
     public boolean act() {
 
         //第一阶段 刀锋寒冻(Thanks:二月)
-        if(hero.icehp>=15){
+        if(hero.icehp>=15 && Dungeon.depth<10){
             Buff.affect(hero, IceSwordDown.class).set( (100), 1 );
         } else {
             Buff.detach( hero, IceSwordDown.class );
@@ -39,7 +39,7 @@ public class IceHpBuff extends Buff implements Hero.Doom {
         //燃起来了
         }else if(this.target.buff(HalomethaneBurning.class) != null || this.target.buff(Burning.class) != null){
             hero.healIcehp(1);
-            spend(25f);
+            spend(10f);
             return true;
         } else {
             Hero hero = (Hero) this.target;
@@ -47,7 +47,7 @@ public class IceHpBuff extends Buff implements Hero.Doom {
                 diactivate();
                 return true;
             }
-            if (hero.icehp < 25) {
+            if (hero.icehp < 25 && Dungeon.depth<10) {
                 hero.damageIcehp(1);
                 spend(17f-(float) Dungeon.depth/5);
             } else {

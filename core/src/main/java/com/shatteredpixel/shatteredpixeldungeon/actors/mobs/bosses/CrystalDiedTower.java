@@ -10,7 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.BeamCustom;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.IceStalSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FireCrystalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -18,7 +18,7 @@ import com.watabou.utils.Random;
 public class CrystalDiedTower extends Mob {
 
     {
-        spriteClass = IceStalSprites.class;
+        spriteClass = FireCrystalSprites.class;
 
         HP = HT = 1;
 

@@ -313,6 +313,8 @@ public class Assets {
 		public static final String SLIMEPRINCESS	= "sprites/boss/SlimePrincess.png";
 		public static final String ICEALICE	= "sprites/boss/IceFireCrstal.png";
 
+		public static final String FREA	= "sprites/boss/FireCrstal.png";
+
 		public static final String ITEMS	    = "sprites/items/items.png";
 		public static final String WFS	    = "sprites/items/wf.png";
 		public static final String ITEM_ICONS   = "sprites/item_icons.png";

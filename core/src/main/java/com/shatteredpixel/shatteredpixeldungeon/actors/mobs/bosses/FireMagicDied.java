@@ -96,7 +96,6 @@ public class FireMagicDied extends Mob implements Callback {
 
 
     private int pumpedUp = 0;
-    private int healInc = 1;
 
     @Override
     public int damageRoll() {
@@ -109,11 +108,6 @@ public class FireMagicDied extends Mob implements Callback {
             return Random.NormalIntRange( min, max );
         }
     }
-
-//    @Override
-//    public boolean isInvulnerable(Class effect) {
-//        return phase == 3 && effect != FireMagicDied.KingDamager.class;
-//    }
 
     @Override
     public int attackSkill( Char target ) {
@@ -325,12 +319,7 @@ public class FireMagicDied extends Mob implements Callback {
 
     @Override
     public boolean act() {
-        //热修复处理
-
-        if (Dungeon.hero.buff(LockedFloor.class) != null){
-            die(true);
-        }
-
+        int healInc = 1;
         if (phase == 1 && HP <= 350) {
             //actScanning();
             if (Dungeon.level.water[pos] && HP < HT) {
