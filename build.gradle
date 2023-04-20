@@ -14,8 +14,8 @@ buildscript {
 allprojects {
 
     ext {
-        appName = 'Magic Ling Pixel Dungeon'
-        appPackageName = 'com.ansdomagiclingpixeldungeon.ling'
+        appName = 'Magic Ling Pixel Dungeon-EDU'
+        appPackageName = 'com.ansdomagiclingpixeldungeon.lingedu'
 
         appVersionCode =800850
         appVersionName = '0.6.1.0-Beta5(P3)'
