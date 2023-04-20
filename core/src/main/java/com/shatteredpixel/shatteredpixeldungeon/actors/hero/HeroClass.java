@@ -120,6 +120,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SkyShield;
@@ -185,6 +186,7 @@ public enum HeroClass {
 			new Gauntlet().quantity(1).identify().collect();
 
 			new WashCrime().quantity(1).identify().collect();
+			new MagicTorch().quantity(1).identify().collect();
 
 			new Cake().quantity(100).identify().collect();
 			new TengusMask().quantity(1).identify().collect();
