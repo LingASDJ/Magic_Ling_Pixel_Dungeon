@@ -1,4 +1,4 @@
-# Magic Ling Pixel Dungeon
+# Magic Ling Pixel Dungeon-EDU
 
 [![](https://img.shields.io/badge/join-QQ%20group-brightgreen?style=for-the-badge&logo=tencentqq)](https://jq.qq.com/?_wv=1027&k=R7ZXeEQM)
 ![](https://img.shields.io/github/repo-size/AnsdoShip/magic-ling-pixel-dungeon?style=for-the-badge&color=%23F8BBD0)
