@@ -317,7 +317,7 @@ public class Hero extends Char {
 			strBonus += (int)Math.floor(STR * (0.03f + 0.05f*pointsInTalent(Talent.STRONGMAN)));
 		}
 
-		//TODO 无力 本大层-3力量 : 坚毅 本大层力量+2
+		//无力 本大层-3力量 : 坚毅 本大层力量+2
 		if(Dungeon.hero.buff(MagicGirlSayNoSTR.class) != null){
 			strBonus -= 3;
 		} else if(Dungeon.hero.buff(BlessGoodSTR.class) != null) {

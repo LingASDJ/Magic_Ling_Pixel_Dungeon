@@ -590,8 +590,8 @@ public class GameScene extends PixelScene {
 				}
 
 				/*
-				TODO 检查是否存在诅咒buff，然后在下楼的时候背刺英雄一下
-				TODO 魔女的低语：束缚 本大层每下一层穿戴的装备必定被诅咒。
+				检查是否存在诅咒buff，然后在下楼的时候背刺英雄一下
+				魔女的低语：束缚 本大层每下一层穿戴的装备必定被诅咒。
 				 */
 				if(Dungeon.hero.buff(MagicGirlSayCursed.class) != null){
 					CursingTrap cursed = new CursingTrap();

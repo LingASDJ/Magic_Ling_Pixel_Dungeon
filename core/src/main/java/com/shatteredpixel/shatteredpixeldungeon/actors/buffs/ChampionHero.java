@@ -260,7 +260,7 @@ public abstract class ChampionHero extends FlavourBuff {
         @Override
         public boolean act() {
             //detach();
-            multiplier += 0.1f;
+            multiplier += 0.5f;
             spend(3*TICK);
             return true;
         }

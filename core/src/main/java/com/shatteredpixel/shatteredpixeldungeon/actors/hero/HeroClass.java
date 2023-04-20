@@ -49,7 +49,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
@@ -110,8 +109,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfGodIce;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfScale;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
@@ -132,8 +131,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSt
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
 import com.watabou.utils.Random;
 
 public enum HeroClass {
@@ -178,27 +175,24 @@ public enum HeroClass {
 
 
 		if (Dungeon.isChallenged(Challenges.PRO)){
-			new WandOfHightHunderStorm().quantity(11).identify().collect();
 			new LockSword().quantity(1).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
 			new PotionOfLevitation().quantity(100).identify().collect();
 			new SDBSword().quantity(1).identify().collect();
 			Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);
 
+			new BloodthirstyThorn().quantity(1).identify().collect();
 			new Gauntlet().quantity(1).identify().collect();
 
 			new WashCrime().quantity(1).identify().collect();
 
 			new Cake().quantity(100).identify().collect();
 			new TengusMask().quantity(1).identify().collect();
-			new KingsCrown().quantity(1).identify().collect();
 			new ScrollOfIdentify().quantity(45).identify().collect();
 			new ScrollOfTransmutation().quantity(45).identify().collect();
 			new BeaconOfReturning().quantity(11).identify().collect();
 			new WarHammer().quantity(1).identify().collect();
 			new EtherealChains().quantity(1).identify().collect();
-			new Firebloom.Seed().quantity(50).identify().collect();
-			new Blindweed.Seed().quantity(50).identify().collect();
 			new StoneOfFlock().quantity(50).identify().collect();
 			new PotionOfMindVision().quantity(50).identify().collect();
 			new PotionOfStrength().quantity(50).identify().collect();
