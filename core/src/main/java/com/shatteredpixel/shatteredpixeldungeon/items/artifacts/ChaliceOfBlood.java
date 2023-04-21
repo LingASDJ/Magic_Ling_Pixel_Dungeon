@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
@@ -41,6 +43,24 @@ import com.watabou.utils.Bundle;
 import java.util.ArrayList;
 
 public class ChaliceOfBlood extends Artifact {
+
+	public static class PlaceHolder extends ChaliceOfBlood {
+
+		{
+			image = ItemSpriteSheet.ARTIFACT_CHALICE3;
+		}
+
+		@Override
+		public boolean isSimilar(Item item) {
+			return item instanceof ChaliceOfBlood && !item.isEquipped(hero);
+		}
+
+
+		@Override
+		public String info() {
+			return "注意：蓄血圣杯必须是未装备的才能参与炼金";
+		}
+	}
 
 	{
 		image = ItemSpriteSheet.ARTIFACT_CHALICE1;

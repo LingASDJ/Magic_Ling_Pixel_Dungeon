@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM300;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PinkLingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -47,6 +48,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_31_Changes(changeInfos);
         add_v0_6_30_Changes(changeInfos);
         add_v0_6_29_Changes(changeInfos);
         add_v0_6_28_Changes(changeInfos);
@@ -78,6 +80,50 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_31_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta5.1(P3)", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("即将到来", false, null);
+        changes.hardlight(Window.Pink_COLOR);
+        changeInfos.add(changes);
+
+        Image issxsaxs =new DimandKingSprite();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs,("关于宝箱之王？"),
+                ("将在下个版本Beta5.2进行测试更新，请做好战斗准备!")));
+
+        changes.addButton(new ChangeButton(new PinkLingSprite(), ("狩猎系统1.0"),
+                ("击败两次宝箱之王后解锁狩猎系统，神秘NPC会入驻0层。并派发狩猎任务。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FBK), ("灯火系统V3--狩猎与前行之章"),
+                ("灯火系统即将进行大改，敬请期待")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14), ("寒冷系统V0.2"),
+                ("将追加矿洞层的寒冷惩罚和新的事件，敬请期待")));
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.INFO), ("图鉴和炼金合成表加入新东西"),
+                ("请自行到游戏查看")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MAGIC_TORCH), ("新武器：魔法火把[捐赠物品]"),
+                ("感谢_落白_的投稿，该武器属于3阶武器。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BloodDied), ("新武器：嗜血荆棘[捐赠物品]"),
+                ("感谢_落白_的投稿，该武器属于6阶武器。")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X59")));
     }
 
     public static void add_v0_6_30_Changes( ArrayList<ChangeInfo> changeInfos ) {

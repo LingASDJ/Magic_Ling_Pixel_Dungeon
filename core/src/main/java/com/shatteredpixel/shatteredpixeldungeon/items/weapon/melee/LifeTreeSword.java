@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -33,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -253,6 +256,24 @@ public class LifeTreeSword extends MeleeWeapon {
         public void resetColor() {
             super.resetColor();
             tint(0, 1, 1, 0.4f);
+        }
+    }
+
+    public static class PlaceHolder extends LifeTreeSword {
+
+        {
+            image = ItemSpriteSheet.LifeTreeSword;
+        }
+
+        @Override
+        public boolean isSimilar(Item item) {
+            return item instanceof LifeTreeSword && !item.isEquipped(hero);
+        }
+
+
+        @Override
+        public String info() {
+            return "注意：倒悬的生命树必须是未装备的才能参与炼金";
         }
     }
 

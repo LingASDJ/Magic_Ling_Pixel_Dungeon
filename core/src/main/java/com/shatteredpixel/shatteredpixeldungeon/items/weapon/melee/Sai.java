@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -61,12 +59,12 @@ public class Sai extends MeleeWeapon {
 			case 5:case 6:case 7:
 				//角色最大血量*0.1+武器等级*0.5+1.5
 				//50x0.1+7x0.5+1=10+3.5+1=15
-				if(hero.HP >= hero.HT){
+				if(attacker.HP >= attacker.HT){
 					GLog.p("血量已满！无法回血");
 				} else {
-					R = (int) (hero.HT * 0.1 + (buffedLvl() * 0.5) + 1.5);
-					hero.HP += hero.HT * 0.1 + (buffedLvl()) + 1.5;
-					hero.sprite.showStatus(CharSprite.POSITIVE, ("+" + R + "HP"));
+					R = (int) (attacker.HT * 0.1 + (buffedLvl() * 0.5) + 1.5);
+					attacker.HP +=attacker.HT * 0.1 + (buffedLvl()) + 1.5;
+					attacker.sprite.showStatus(CharSprite.POSITIVE, ("+" + R + "HP"));
 					GLog.p("迅猛一击，回血成功！");
 				}
 				return super.proc(attacker, defender, damage);

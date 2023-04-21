@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
@@ -493,10 +492,10 @@ public class DimandKing extends Boss {
 
     @Override
     public void die(Object cause) {
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-
-            GetBossLoot();
-        }
+//        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+//
+//            GetBossLoot();
+//        }
         GameScene.bossSlain();
 
         super.die( cause );

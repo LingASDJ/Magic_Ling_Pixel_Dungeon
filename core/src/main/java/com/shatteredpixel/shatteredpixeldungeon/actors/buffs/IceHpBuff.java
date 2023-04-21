@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -37,7 +38,7 @@ public class IceHpBuff extends Buff implements Hero.Doom {
             spend(STEP);
             return true;
         //燃起来了
-        }else if(this.target.buff(HalomethaneBurning.class) != null || this.target.buff(Burning.class) != null){
+        }else if((this.target.buff(HalomethaneBurning.class) != null || this.target.buff(Burning.class) != null || this.target.buff(MagicTorch.MagicLight.class) != null) && Dungeon.depth <= 5){
             hero.healIcehp(1);
             spend(10f);
             return true;

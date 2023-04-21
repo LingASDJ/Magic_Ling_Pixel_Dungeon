@@ -153,11 +153,6 @@ public class ShopBossLevel extends Level {
                 positions.add(pedestal);
             }
         }
-        //if (positions.isEmpty()){
-        //    return -1;
-        //} else {
-        //    return Random.element(positions);
-        //}
         return -1;
     }
 

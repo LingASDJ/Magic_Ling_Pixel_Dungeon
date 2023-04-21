@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
@@ -376,6 +377,15 @@ public class MagicGirlDead extends Boss {
 
             GetBossLoot();
         }
+        int shards = Random.chances(new float[]{0, 0, 6, 3, 1});
+        for (int i = 0; i < shards; i++){
+            int ofs;
+            do {
+                ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
+            } while (!Dungeon.level.passable[pos + ofs]);
+            Dungeon.level.drop( new MetalShard(), pos + ofs ).sprite.drop( pos );
+        }
+
         yell(Messages.get(this, "die"));
 
         for(Mob m: Dungeon.level.mobs.toArray(new Mob[0])){

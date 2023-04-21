@@ -255,11 +255,11 @@ public abstract class ChampionHero extends FlavourBuff {
             //
         }
 
-        private float multiplier = 1.15f;
+        private float multiplier = 1.85f;
 
         @Override
         public boolean act() {
-            //detach();
+            detach();
             multiplier += 0.5f;
             spend(3*TICK);
             return true;
