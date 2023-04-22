@@ -248,11 +248,15 @@ public class BloodthirstyThorn extends MeleeWeapon {
             Buff.affect(attacker, Bleeding.class).set(7);
         } else if (level() >= 10) {
             //吸血为每次伤害/5 例如=50/5=10 Math.min()不超出。
-            attacker.HP += Math.min( attacker.HT, damage/5);
-            hero.sprite.showStatus(CharSprite.POSITIVE, ("+" +Math.min( attacker.HT, damage/5) + "HP"));
-        } else {
-            getHerodamageHp(hero);
-            Buff.affect(attacker, Bleeding.class).set(7);
+
+            int healAmt = Math.min( attacker.HT, damage/5);
+            healAmt = Math.min( healAmt, attacker.HT - attacker.HP );
+
+            if (healAmt > 0 && attacker.isAlive()) {
+                attacker.HP += healAmt;
+                hero.sprite.showStatus(CharSprite.POSITIVE, ("+" +Math.min( attacker.HT, damage/5) + "HP"));
+            }
+
         }
 
         //恐惧和流血

@@ -268,7 +268,6 @@ public class CrivusFruits extends Mob {
         }
 
         if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-
             GetBossLoot();
         }
 

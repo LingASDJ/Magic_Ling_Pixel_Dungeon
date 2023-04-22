@@ -94,7 +94,7 @@ public class vM0_6_7_X_Changes {
         Image issxsaxs =new DimandKingSprite();
         issxsaxs.scale.set(PixelScene.align(0.8f));
         changes.addButton(new ChangeButton(issxsaxs,("关于宝箱之王？"),
-                ("将在下个版本Beta5.2进行测试更新，请做好战斗准备!")));
+                ("将在下个版本Beta5.3进行测试更新，请做好战斗准备!")));
 
         changes.addButton(new ChangeButton(new PinkLingSprite(), ("狩猎系统1.0"),
                 ("击败两次宝箱之王后解锁狩猎系统，神秘NPC会入驻0层。并派发狩猎任务。")));

@@ -142,13 +142,13 @@ public class MagicTorch extends MeleeWeapon {
                 return false;
             }
         }
-
+        MagicTorch item = Dungeon.hero.belongings.getItem(MagicTorch.class);
         @Override
         public boolean act() {
             if (target.isAlive()) {
 
                 spend(interval);
-                if (level <= 0) {
+                if (level <= 0 || hero.belongings.weapon != item) {
                     detach();
                 }
 
