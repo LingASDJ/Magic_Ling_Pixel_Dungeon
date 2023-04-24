@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
-import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.MAZECOMPLE;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.GO_START;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.MAZE_START;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.START;
 
@@ -9,21 +10,23 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
+
+import java.util.HashMap;
 
 //宝藏迷宫 10层
 public class ColdChestBossLevel extends Level {
 
     private State pro;
 
-    private DiamondKnight diamond;
-
     public State pro(){
         return pro;
     }
-    private static final String PRO	        = "pro";
+
+    private static final String PRO	= "pro";
+
     @Override
     public void restoreFromBundle( Bundle bundle ) {
         super.restoreFromBundle(bundle);
@@ -37,6 +40,7 @@ public class ColdChestBossLevel extends Level {
 
     //地图状态
     public enum State {
+        GO_START,
         START,
         MAZE_START,
         MAZECOMPLE,
@@ -54,7 +58,7 @@ public class ColdChestBossLevel extends Level {
         this.entrance = 0;
         this.exit = 0;
         //首次构建地图
-        pro = START;
+        pro = GO_START;
         setMapStart();
 
         return true;
@@ -115,28 +119,28 @@ public class ColdChestBossLevel extends Level {
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
             W,J,L,L,L,L,W,L,W,L,W,W,W,W,W,L,L,L,W,W,W,W,W,W,L,L,L,L,W,L,W,W,W,L,W,
             W,W,W,W,W,L,W,L,W,L,W,W,W,W,W,L,W,W,W,W,W,W,W,W,L,W,L,L,W,L,W,W,W,L,W,
-            W,W,W,L,L,L,W,L,L,L,W,L,L,L,W,L,L,L,W,L,L,L,L,L,L,W,L,L,W,L,W,W,W,L,W,
+            W,W,W,B,L,L,W,L,L,L,W,L,L,L,W,L,L,L,W,L,L,L,L,L,L,W,L,L,W,L,W,W,W,L,W,
             W,W,W,L,W,W,W,L,W,W,W,L,W,L,L,L,L,L,W,L,L,L,L,W,W,W,L,L,L,L,L,L,W,L,W,
             W,L,L,L,W,L,L,L,L,L,L,L,W,L,W,L,W,L,W,W,W,L,L,W,L,L,L,L,L,L,W,L,W,L,W,
-            W,L,W,L,W,L,W,W,W,W,W,W,W,W,W,L,W,L,W,L,L,L,L,W,L,L,W,W,W,W,W,L,W,L,W,
+            W,T,W,L,W,L,W,W,W,W,W,W,W,W,W,L,W,L,W,L,L,L,L,W,L,L,W,W,W,W,W,T,W,L,W,
             W,W,W,L,L,L,L,L,L,W,L,W,L,L,W,L,W,W,W,L,L,W,W,W,L,L,L,L,L,L,W,W,W,L,W,
             W,W,W,L,W,W,W,W,W,W,L,W,L,L,W,L,W,L,L,L,L,W,L,W,L,L,W,W,W,L,W,L,L,L,W,
             W,W,W,L,L,W,L,W,L,L,L,L,L,L,W,L,W,W,W,W,W,W,L,W,L,L,L,L,W,L,W,L,L,L,W,
             W,W,W,L,L,W,L,W,L,W,W,W,W,W,W,L,W,L,W,L,L,W,L,W,L,L,W,L,W,L,L,L,W,L,W,
             W,W,W,L,L,L,L,W,L,L,W,L,L,L,W,L,L,L,W,L,L,W,L,W,L,L,W,L,W,L,W,W,W,L,W,
             W,W,W,W,W,W,L,L,L,L,W,L,L,L,W,L,W,W,W,L,L,L,L,L,L,L,W,L,L,L,L,L,W,L,W,
-            W,W,W,L,L,L,L,L,L,L,W,L,L,L,L,L,W,W,W,L,L,W,L,W,L,L,W,W,W,W,L,W,W,L,W,
+            W,W,W,L,L,L,L,L,L,L,W,L,L,L,L,L,W,L,D,B,L,W,L,W,L,L,W,W,W,W,L,W,W,L,W,
             W,W,W,W,W,L,L,W,L,L,L,L,L,L,L,L,W,W,W,L,L,W,L,W,L,L,L,L,L,L,L,L,W,L,W,
-            W,W,W,L,L,L,W,W,L,W,W,W,L,W,L,L,L,L,W,L,W,W,W,W,W,L,L,L,L,L,L,L,W,L,W,
-            W,W,W,L,L,L,L,W,L,W,W,W,L,W,L,L,L,L,W,L,L,W,L,L,L,L,L,W,W,W,W,W,W,L,W,
-            W,W,W,L,L,L,L,W,L,W,W,W,L,W,L,L,W,L,L,L,L,W,L,W,L,L,L,L,L,L,L,L,L,L,W,
+            W,W,W,L,L,L,W,W,B,W,W,W,L,W,L,L,L,L,W,L,W,W,W,W,W,L,L,L,L,L,L,L,W,L,W,
+            W,W,W,L,L,L,L,W,L,D,L,W,L,W,L,L,L,L,W,L,L,W,L,L,L,L,L,W,W,W,W,W,W,L,W,
+            W,W,W,L,L,L,L,W,L,W,W,W,L,W,L,L,W,L,L,L,L,W,L,W,L,L,L,L,L,L,L,L,L,B,W,
             W,W,W,L,W,W,W,W,L,L,L,L,L,L,L,L,W,L,L,L,L,W,L,W,W,W,L,L,W,L,L,L,L,W,W,
             W,W,W,L,L,L,L,W,L,L,L,L,L,L,L,L,W,W,W,W,L,L,L,W,L,W,W,L,W,W,W,W,W,W,W,
             W,W,W,L,L,L,L,W,L,L,L,L,W,W,W,L,W,L,L,L,L,L,L,W,L,L,L,L,L,L,L,L,L,W,W,
             W,L,L,L,L,L,L,L,L,L,L,L,W,L,L,L,W,L,W,W,W,W,L,W,L,W,W,W,W,W,W,W,L,W,W,
             W,L,W,L,L,W,W,W,W,L,W,W,W,W,W,W,W,L,L,L,L,W,L,L,L,L,L,L,L,L,L,W,L,L,W,
             W,L,W,L,L,L,L,L,W,L,L,L,L,L,W,L,W,W,W,W,L,W,L,L,L,L,L,L,W,L,L,W,L,L,W,
-            W,L,W,W,W,W,L,L,W,L,L,W,W,W,W,L,L,W,L,W,L,W,L,L,W,W,W,L,W,L,L,L,L,L,W,
+            W,T,W,W,W,W,L,L,W,L,L,W,W,W,W,L,L,W,L,W,L,W,L,L,W,W,W,L,W,L,L,L,L,L,W,
             W,W,W,L,L,L,L,L,W,L,L,L,L,L,W,L,L,W,L,L,L,W,L,L,L,L,W,L,W,W,W,W,W,W,W,
             W,W,W,L,W,L,W,W,W,L,L,L,W,L,W,L,L,W,W,W,L,W,W,W,W,W,W,L,W,L,L,L,L,L,W,
             W,W,W,L,W,L,L,L,W,L,L,L,W,L,W,L,L,W,L,L,L,L,L,L,L,L,W,L,L,L,W,W,W,L,W,
@@ -144,8 +148,8 @@ public class ColdChestBossLevel extends Level {
             W,W,W,W,W,L,L,W,W,L,W,L,W,L,W,W,W,W,L,L,W,L,L,W,L,L,L,L,W,L,W,W,W,L,W,
             W,W,W,L,L,L,W,W,W,L,W,L,W,L,L,W,L,L,L,L,L,L,L,W,L,L,L,L,W,L,L,L,L,L,W,
             W,W,W,L,W,L,L,L,W,L,W,L,W,L,L,W,L,W,W,W,W,W,L,W,W,W,W,W,W,W,W,W,W,W,W,
-            W,W,W,L,W,L,W,L,W,W,W,W,W,L,W,W,L,L,L,L,W,L,L,L,W,L,L,L,W,L,L,L,W,L,W,
-            W,L,L,L,W,L,W,L,L,L,L,L,L,L,L,W,W,W,W,W,W,L,W,L,L,L,W,L,L,L,W,L,L,X,W,
+            W,W,W,L,W,L,W,L,W,W,W,W,W,L,W,W,T,L,L,L,W,L,L,L,W,L,L,L,W,L,L,L,W,L,W,
+            W,B,L,L,W,L,W,L,L,L,L,L,L,L,L,W,W,W,W,W,W,L,W,L,L,L,W,L,L,L,W,L,T,X,W,
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
     };
 
@@ -155,71 +159,83 @@ public class ColdChestBossLevel extends Level {
         map = WorldRoomShort.clone();
     }
 
-    private void setMazeStart() {
-        entrance = HOME;
-        map = MazeRoom.clone();
+    private static final HashMap<Integer, Integer> MAIN_PORTAL = new HashMap<>(5);
+    {
+        MAIN_PORTAL.put(32 + WIDTH * 33, WIDTH*3 + 3);
+        MAIN_PORTAL.put(211, 628);
+        MAIN_PORTAL.put(1136, 533);
+        MAIN_PORTAL.put(841, 1156);
+        MAIN_PORTAL.put(241, 474);
+    }
+
+    private static final HashMap<Integer, Integer> IF_MAIN_PORTAL = new HashMap<>(5);
+    {
+        IF_MAIN_PORTAL.put(32 + WIDTH * 33, WIDTH*3 + 3);
+        IF_MAIN_PORTAL.put(211, 628);
+        IF_MAIN_PORTAL.put(1136, 533);
+        IF_MAIN_PORTAL.put(841, 1156);
+        IF_MAIN_PORTAL.put(241, 474);
     }
 
     @Override
     public void occupyCell(Char ch) {
         super.occupyCell(ch);
-
-        if (ch == Dungeon.hero){
-            switch (pro){
-                case START:
-                    if (map[getBossDoor] == Terrain.DOOR && ch.pos == LDBossDoor) {
-                        progress();
-                    }
-                    break;
-                case MAZE_START:
-                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                        if (pro != MAZECOMPLE && mob instanceof DiamondKnight && mob.HP > 350) {
-                            changeMap(MazeRoom);
-                            pro = MAZECOMPLE;
-                        }
-                    }
-                    break;
-                case MAZECOMPLE:
-                    break;
-            }
+        if (map[getBossDoor] == Terrain.DOOR && ch.pos == LDBossDoor && ch == hero) {
+           progress();
         }
 
-
-        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-            if(mob instanceof DiamondKnight && mob.HP >400){
-                GLog.n("ColdChestBoss");
-            } else if (pro != MAZE_START  && mob instanceof DiamondKnight && mob.HP >350) {
-                GLog.n("让这场游戏变得更加有趣吧");
-                GameScene.flash(0x808080);
-                pro = MAZE_START;
+        if(ch == hero){
+            //指定区域
+            if(MAIN_PORTAL.containsKey(ch.pos) && pro == MAZE_START) {
+                ScrollOfTeleportation.appear(ch, IF_MAIN_PORTAL.get(ch.pos));
+                //传送目标区域
+                hero.interrupt();
+                Dungeon.observe();
+                GameScene.updateFog();
             }
-
         }
-
+        //GLog.n(String.valueOf(hero.pos));
     }
 
     public void progress(){
         switch (pro) {
-            case START:
+            case GO_START:
                 //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
-                    seal();
-                    DiamondKnight boss = new DiamondKnight();
-                    boss.state = boss.WANDERING;
-                    boss.pos = WIDTH*19+17;
-                    GameScene.add( boss );
-                    set( getBossDoor, Terrain.LOCKED_DOOR );
-                    GameScene.updateMap( getBossDoor );
-                    set( HOME, Terrain.EMPTY );
-                    GameScene.updateMap( HOME );
-                    Dungeon.observe();
+                seal();
+                DiamondKnight bossx = new DiamondKnight();
+                bossx.state = bossx.WANDERING;
+                bossx.pos = WIDTH*19+17;
+                GameScene.add( bossx );
+                set( getBossDoor, Terrain.LOCKED_DOOR );
+                GameScene.updateMap( getBossDoor );
+                set( HOME, Terrain.EMPTY );
+                GameScene.updateMap( HOME );
+                Dungeon.observe();
+                pro = START;
+                break;
+            case START:
+                //血量低于360后且在START枚举中
+                for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if(boss instanceof DiamondKnight) {
+                        //如果楼层为开始且boss血量小于360 二阶段
+                        if (pro == START && boss.HP < 360) {
+                            //动态修改整个房间
+                            changeMap(MazeRoom);
+                            //宝箱王移动到看戏位
+                            ScrollOfTeleportation.appear(boss, MDX);
+                            //玩家移动到初始位
+                            ScrollOfTeleportation.appear(hero, STARTPOS);
+                            boss.HP = 360;
+                            pro = MAZE_START;
+                        }
+                    }
+                }
                 break;
             case MAZE_START:
+
                 break;
         }
     }
-
-
-
 
     @Override
     protected void createMobs() {
@@ -228,6 +244,9 @@ public class ColdChestBossLevel extends Level {
 
     private static final int getBossDoor = WIDTH*11+17;
     private static final int LDBossDoor = WIDTH*12+17;
+
+    public static final int MDX = WIDTH*28+31;
+    public static final int STARTPOS = WIDTH+4;
     private static final int HOME = WIDTH*2+17;
 
     @Override

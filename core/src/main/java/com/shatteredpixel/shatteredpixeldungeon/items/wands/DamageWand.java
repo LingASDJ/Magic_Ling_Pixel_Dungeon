@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AnkhInvulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower;
@@ -65,7 +66,7 @@ public abstract class DamageWand extends Wand{
 			}
 			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG, 0.75f, 1.2f);
 		}
-		return dmg;
+		return Dungeon.hero.buff(AnkhInvulnerability.GodDied.class)!=null ? dmg*2 : dmg;
 	}
 
 	//TODO some naming issues here. Consider renaming this method and externalizing char awareness buff
@@ -86,8 +87,12 @@ public abstract class DamageWand extends Wand{
 	@Override
 	public String statsDesc() {
 		if (levelKnown)
-			return Messages.get(this, "stats_desc", min(), max());
+			return Messages.get(this, "stats_desc", Dungeon.hero.buff(AnkhInvulnerability.GodDied.class)!=null?
+					min()*2:min(),	Dungeon.hero.buff(AnkhInvulnerability.GodDied.class)!=null?
+					max()*2:max());
 		else
-			return Messages.get(this, "stats_desc", min(0), max(0));
+			return Messages.get(this, "stats_desc", Dungeon.hero.buff(AnkhInvulnerability.GodDied.class)!=null?
+					min(0)*2:min(0), Dungeon.hero.buff(AnkhInvulnerability.GodDied.class)!=null?
+					max(0)*2:max(0));
 	}
 }

@@ -44,7 +44,7 @@ public class BossSettingWindows extends Window {
                 cb.setRect(GAP, 500, WIDTH - GAP * 2, BOX_HEIGHT);
             }
 
-            if(i == 1 || i == 0 || i==4){
+            if(1==2){
                 cb.alpha(0.4f);
                 cb.active=false;
                 cb.checked(false);

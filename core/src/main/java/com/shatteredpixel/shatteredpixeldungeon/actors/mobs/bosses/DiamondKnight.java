@@ -1,553 +1,305 @@
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015 Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2022 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
-import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdMagicRat;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
-import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
-import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-
-public class DiamondKnight extends Boss  {
-    private int abilitiesUsed = 0;
-    private final int OneHP = 179;
-    private final int TwoHP = 99;
-    private final int ThreeHP = 49;
-    private static Char throwingChar;
-
+public class DiamondKnight extends Boss {
+    private static final float TIME_TO_ZAP	= 3f;
     {
-        spriteClass = DimandKingSprite.class;
-
         initProperty();
         initBaseStatus(14, 23, 33, 22, 420, 5, 12);
         initStatus(80);
+        EXP = 10;
+        defenseSkill = 8;
+        spriteClass = DimandKingSprite.class;
 
-        maxLvl = 30;
-        HUNTING = new Hunting();
-
-        flying = true; //doesn't literally fly, but he is fleet-of-foot enough to avoid hazards
-        properties.add(Property.IMMOVABLE);
         properties.add(Property.BOSS);
-        properties.add(Property.INORGANIC);
-        properties.add(Property.LARGE);
+        properties.add(Property.DEMONIC);
+        properties.add(Property.ACIDIC);
     }
 
-    private int ventCooldown = 0;
-    private int phase = 1;
+    private int pumpedUp = 0;
+    private int phase;
+    private int healInc = 1;
 
-    private static final float TIME_TO_ZAP	= 5f;
+    @Override
+    public int damageRoll() {
+        int min = 1;
+        int max = (HP*2 <= HT) ? 12 : 8;
+        if (pumpedUp > 0) {
+            pumpedUp = 0;
+            return Random.NormalIntRange( min*3, max*3 );
+        } else {
+            return Random.NormalIntRange( min, max );
+        }
+    }
 
-    private static final String PHASE = "phase";
-    private boolean teleporting = false;
-    private int selfTeleCooldown = 0;
-    private int enemyTeleCooldown = 0;
-    private static final String TELEPORTING = "teleporting";
-    private static final String ABILITIES_USED   = "abilities_used";
-    private static final String SELF_COOLDOWN = "self_cooldown";
-    private static final String ENEMY_COOLDOWN = "enemy_cooldown";
+    @Override
+    public int attackSkill( Char target ) {
+        int attack = 10;
+        if (HP*2 <= HT) attack = 15;
+        if (pumpedUp > 0) attack *= 2;
+        return attack;
+    }
 
-    private static final String LAST_ABILITY     = "last_ability";
+    @Override
+    public boolean isInvulnerable(Class effect) {
+        return this.HP==360;
+    }
 
-        @Override
-        public void storeInBundle(Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put(PHASE, phase);
-        bundle.put( ABILITIES_USED, abilitiesUsed );
-        bundle.put(TELEPORTING, teleporting);
-        bundle.put(SELF_COOLDOWN, selfTeleCooldown);
-        bundle.put(ENEMY_COOLDOWN, enemyTeleCooldown);
-        bundle.put( LAST_ABILITY, lastAbility );
-        bundle.put( ABILITIES_USED, abilitiesUsed );
+    @Override
+    public int defenseSkill(Char enemy) {
+        return (int)(super.defenseSkill(enemy) * ((HP*2 <= HT)? 1.5 : 1));
+    }
 
+    @Override
+    public int drRoll() {
+        return Random.NormalIntRange(0, 2);
+    }
+
+    @Override
+    public boolean act() {
+
+        if (Dungeon.level.water[pos] && HP < HT) {
+            HP += healInc;
+
+            LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+            if (lock != null) lock.removeTime(healInc*2);
+
+            if (Dungeon.level.heroFOV[pos] ){
+                sprite.emitter().burst( Speck.factory( Speck.HEALING ), healInc );
+            }
+            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && healInc < 3) {
+                healInc++;
+            }
+            if (HP*2 > HT) {
+                BossHealthBar.bleed(false);
+                HP = Math.min(HP, HT);
+            }
+        } else {
+            healInc = 1;
         }
 
-    @Override
-    public void restoreFromBundle(Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        phase = bundle.getInt(PHASE);
-        abilitiesUsed = bundle.getInt( ABILITIES_USED );
-
-        lastAbility = bundle.getInt( LAST_ABILITY );
-        abilitiesUsed = bundle.getInt( ABILITIES_USED );
-
-        BossHealthBar.assignBoss(this);
-        if (HP <= HT/2) BossHealthBar.bleed(true);
-    }
-
-
-    @Override
-    protected boolean act() {
-        switch (phase){
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
+        if (state != SLEEPING){
+            Dungeon.level.seal();
         }
 
         return super.act();
     }
 
-    //*****************************************************************************************
-    //***** Boss abilities. These are expressed in game logic as buffs, blobs, and items *****
-    //*****************************************************************************************
-
-    //so that mobs can also use this
-
-    private int lastAbility = -1;
-
-    //starts at 2, so one turn and then first ability
-
-    private static final int BOMB_ABILITY    = 0;
-    private static final int FIRE_ABILITY    = 1;
-    private static final int SHOCKER_ABILITY = 2;
-
-    public boolean useAbility(){
-        boolean abilityUsed = false;
-        int abilityToUse = -1;
-
-        while (!abilityUsed){
-
-            if (abilitiesUsed == 0){
-                abilityToUse = BOMB_ABILITY;
-            } else if (abilitiesUsed == 1){
-                abilityToUse = SHOCKER_ABILITY;
-            } else if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-                abilityToUse = Random.Int(2)*2; //0 or 2, can't roll fire ability with challenge
-            } else {
-                abilityToUse = Random.Int(3);
-            }
-
-            //If we roll the same ability as last time, 9/10 chance to reroll
-            if (abilityToUse != lastAbility || Random.Int(10) == 0){
-                switch (abilityToUse){
-                    case BOMB_ABILITY : default:
-                        abilityUsed = throwBomb(this, enemy);
-                        //if Tengu cannot use his bomb ability first, use fire instead.
-                        if (abilitiesUsed == 0 && !abilityUsed){
-                            abilityToUse = FIRE_ABILITY;
-                            abilityUsed = throwBomb(this, enemy);
-                        }
-                        break;
-                    case FIRE_ABILITY:
-                        abilityUsed =throwBomb(this, enemy);
-                        break;
-                    case SHOCKER_ABILITY:
-                        abilityUsed = throwBomb(this, enemy);
-                        //if Tengu cannot use his shocker ability second, use fire instead.
-                        if (abilitiesUsed == 1 && !abilityUsed){
-                            abilityToUse = FIRE_ABILITY;
-                            abilityUsed =throwBomb(this, enemy);
-                        }
-                        break;
-                }
-                //always use the fire ability with the bosses challenge
-                if (abilityUsed && abilityToUse != FIRE_ABILITY && Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
-                    throwBomb(this, enemy);
-                }
-            }
-
-        }
-
-        lastAbility = abilityToUse;
-        abilitiesUsed++;
-        return lastAbility == FIRE_ABILITY;
-    }
-
-    private static final float ATTACSWORD_DELAY	= 2f;
-
-    public static class DarkBolt{}
-
-    //the actual affected cells
-    private HashSet<Integer> affectedCells;
-    //the cells to trace fire shots to, for visual effects.
-    private HashSet<Integer> visualCells;
-    private int direction = 0;
-
-    protected void fx(Ballistica bolt, Char ch ) {
-        //need to perform flame spread logic here so we can determine what cells to put flames in.
-        affectedCells = new HashSet<>();
-        visualCells = new HashSet<>();
-
-        int maxDist = 30;
-        int dist = Math.min(bolt.dist, maxDist);
-
-        for (int i = 0; i < PathFinder.CIRCLE8.length; i++){
-            if (bolt.sourcePos+PathFinder.CIRCLE8[i] == bolt.path.get(1)){
-                direction = i;
-                break;
-            }
-        }
-
-        float strength = maxDist;
-        for (int c : bolt.subPath(1, dist)) {
-            strength--; //as we start at dist 1, not 0.
-            affectedCells.add(c);
-            if (strength > 1) {
-                spreadFlames(c + PathFinder.CIRCLE8[direction], strength - 1);
-            } else {
-                visualCells.add(c);
-            }
-        }
-
-        //going to call this one manually
-        visualCells.remove(bolt.path.get(dist));
-
-        for (int cell : visualCells){
-            //this way we only get the cells at the tip, much better performance.
-            ((MagicMissile)ch.sprite.parent.recycle( MagicMissile.class )).reset(
-                    MagicMissile.SWORDLING,
-                    ch.sprite,
-                    cell,
-                    null
-            );
-        }
-        if(Dungeon.level.heroFOV[bolt.sourcePos] || Dungeon.level.heroFOV[bolt.collisionPos]){
-            Sample.INSTANCE.play( Assets.Sounds.ZAP );
-        }
-    }
-
-    private void spreadFlames(int cell, float strength){
-        if (strength >= 0 && (Dungeon.level.passable[cell] || Dungeon.level.flamable[cell])){
-            affectedCells.add(cell);
-            if (strength >= 1.5f) {
-                visualCells.remove(cell);
-                spreadFlames(cell + PathFinder.CIRCLE8[direction], strength - 1.5f);
-            } else {
-                visualCells.add(cell);
-            }
-        } else if (!Dungeon.level.passable[cell])
-            visualCells.add(cell);
-    }
-
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange( 10,20 );
-    }
-
     @Override
     protected boolean canAttack( Char enemy ) {
-        return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
-    }
-
-    protected boolean doAttack( Char enemy ) {
-
-        if (Dungeon.level.distance(pos, enemy.pos) <= 1) {
-
-            return super.doAttack(enemy);
-
+        if (pumpedUp > 0){
+            //we check both from and to in this case as projectile logic isn't always symmetrical.
+            //this helps trim out BS edge-cases
+            return Dungeon.level.distance(enemy.pos, pos) <= 2
+                    && new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos
+                    && new Ballistica( enemy.pos, pos, Ballistica.PROJECTILE).collisionPos == pos;
         } else {
-
-            boolean visible = fieldOfView[pos] || fieldOfView[enemy.pos];
-            if (visible) {
-                sprite.attack(enemy.pos);
-                spend(ATTACSWORD_DELAY);
-                shoot(this, enemy.pos);
-            }
-
-            return !visible;
+            return super.canAttack(enemy);
         }
     }
 
-    public void teleportEnemy(){
-        spend(3f);
-
-        int bestPos = enemy.pos;
-        for (int i : PathFinder.NEIGHBOURS8){
-            if (Dungeon.level.passable[pos + i]
-                    && Actor.findChar(pos+i) == null
-                    && Dungeon.level.trueDistance(pos+i, enemy.pos) > Dungeon.level.trueDistance(bestPos, enemy.pos)){
-                bestPos = pos+i;
-            }
+    @Override
+    public int attackProc( Char enemy, int damage ) {
+        damage = super.attackProc( enemy, damage );
+        if (Random.Int( 3 ) == 0) {
+            Buff.affect( enemy, Ooze.class ).set( Ooze.DURATION );
+            enemy.sprite.burst( 0x000000, 5 );
         }
 
-        if (enemy.buff(MagicImmune.class) != null){
-            bestPos = enemy.pos;
+        if (pumpedUp > 0) {
+            Camera.main.shake( 3, 0.2f );
         }
 
-        if (bestPos != enemy.pos){
-            //ScrollOfTeleportation.appear(enemy, bestPos);
-            if (enemy instanceof Hero){
-                ((Hero) enemy).interrupt();
-                Dungeon.observe();
-            }
-        }
-        enemyTeleCooldown = 20;
+        return damage;
     }
 
-    public void onZapComplete(){
-        teleportEnemy();
-        next();
+    @Override
+    public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti ) {
+        boolean result = super.attack( enemy, dmgMulti, dmgBonus, accMulti );
+        pumpedUp = 0;
+        return result;
     }
 
+    @Override
+    protected boolean getCloser( int target ) {
+        if (pumpedUp != 0) {
+            pumpedUp = 0;
+            sprite.idle();
+        }
+        return super.getCloser( target );
+    }
+
+    @Override
     public void damage(int dmg, Object src) {
-        if (!Dungeon.level.mobs.contains(this)){
-            return;
+        if (!BossHealthBar.isAssigned()){
+            BossHealthBar.assignBoss( this );
+            Dungeon.level.seal();
         }
 
-        ColdChestBossLevel.State state = ((ColdChestBossLevel)Dungeon.level).pro();
-
-        int hpBracket = HT / 8;
-
-        int beforeHitHP = HP;
         super.damage(dmg, src);
-        dmg = beforeHitHP - HP;
-
-        if ((beforeHitHP/hpBracket - HP/hpBracket) >= 2){
-            HP = hpBracket * ((beforeHitHP/hpBracket)-1) + 1;
-        }
-
         LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-        if (lock != null) {
-            int multiple = state == ColdChestBossLevel.State.MAZE_START ? 1 : 4;
-            lock.addTime(dmg*multiple);
+        if (lock != null) lock.addTime(dmg*2);
+
+        ColdChestBossLevel.State level = ((ColdChestBossLevel)Dungeon.level).pro();
+        //血量低于360后追加phase并加载楼层的进度方法
+        if (level == ColdChestBossLevel.State.START && this.HP < 360 && phase == 0) {
+            GLog.n("让这场游戏变得更加有趣吧");
+            GameScene.flash(0x808080);
+            ((ColdChestBossLevel)Dungeon.level).progress();
+            phase++;
+        } else if(level == ColdChestBossLevel.State.MAZE_START && this.HP < 360 && phase == 1) {
+            GLog.n("让这场游戏变得更加有d趣吧");
         }
 
-        if (HP == 0 && state == ColdChestBossLevel.State.VSBOSS_START) {
-            Actor.add(new Actor() {
-
-                {
-                    actPriority = VFX_PRIO;
-                }
-
-                @Override
-                protected boolean act() {
-                    Actor.remove(this);
-                    ((ColdChestBossLevel)Dungeon.level).progress();
-                    return true;
-                }
-            });
-            return;
-        }
-
-        if (state == ColdChestBossLevel.State.MAZE_START && HP <= OneHP) {
-            HP = OneHP;
-            yell(Messages.get(this, "interesting"));
-            ((ColdChestBossLevel) Dungeon.level).progress();
-            BossHealthBar.bleed(true);
-        }
     }
 
-    protected void onZap( Ballistica bolt ) {
+    @Override
+    public void die( Object cause ) {
 
-        for( int cell : affectedCells){
+        super.die( cause );
 
-            //ignore caster cell
-            if (cell == bolt.sourcePos){
-                continue;
+        if(Dungeon.depth!=28){
+            Dungeon.level.unseal();
+
+            GetBossLoot();
+
+            GameScene.bossSlain();
+            Dungeon.level.drop( new SkeletonKey( Dungeon.depth ), pos ).sprite.drop();
+
+            //60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5
+            int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
+            for (int i = 0; i < blobs; i++){
+                int ofs;
+                do {
+                    ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
+                } while (!Dungeon.level.passable[pos + ofs]);
+                Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
             }
 
-            //only ignite cells directly near caster if they are flammable
-            if (!Dungeon.level.adjacent(bolt.sourcePos, cell)
-                    || Dungeon.level.flamable[cell]){
-                //GameScene.add( Blob.seed( cell, 1+2, Fire.class ) );
-            }
+            Badges.validateBossSlain();
+
+            yell( Messages.get(this, "defeated") );
         }
+
     }
 
-    public void shoot(Char ch, int pos){
-        final Ballistica shot = new Ballistica( ch.pos, pos, Ballistica.PROJECTILE);
-        fx(shot, ch);
-    }
-
-    public static boolean throwBomb(final Char thrower, final Char target){
-
-        int targetCell = -1;
-
-        //Targets closest cell which is adjacent to target
-        for (int i : PathFinder.NEIGHBOURS8){
-            int cell = target.pos + i;
-            if (targetCell == -1 ||
-                    Dungeon.level.trueDistance(cell, thrower.pos) < Dungeon.level.trueDistance(targetCell, thrower.pos)){
-                targetCell = cell;
-            }
-        }
-
-        if (targetCell == -1){
-            return false;
-        }
-
-        final int finalTargetCell = targetCell;
-        throwingChar = thrower;
-        final BombAbility.BombItem item = new BombAbility.BombItem();
-        thrower.sprite.zap(finalTargetCell);
-        ((MissileSprite) thrower.sprite.parent.recycle(MissileSprite.class)).
-                reset(thrower.sprite,
-                        finalTargetCell,
-                        item,
-                        new Callback() {
-                            @Override
-                            public void call() {
-                                //item.onThrow(finalTargetCell);
-                                thrower.next();
-                            }
-                        });
-        return true;
-    }
-
-    public static class BombAbility extends Buff {
-
-        public int bombPos = -1;
-        private int timer = 3;
-
-        private ArrayList<Emitter> smokeEmitters = new ArrayList<>();
-
-        @Override
-        public boolean act() {
-
-            if (smokeEmitters.isEmpty()){
-                fx(true);
-            }
-
-            PointF p = DungeonTilemap.raisedTileCenterToWorld(bombPos);
-            if (timer == 3) {
-                FloatingText.show(p.x, p.y, bombPos, "3...", CharSprite.NEUTRAL);
-            } else if (timer == 2){
-                FloatingText.show(p.x, p.y, bombPos, "2...", CharSprite.WARNING);
-            } else if (timer == 1){
-                FloatingText.show(p.x, p.y, bombPos, "1...", CharSprite.NEGATIVE);
-            } else {
-                PathFinder.buildDistanceMap( bombPos, BArray.not( Dungeon.level.solid, null ), 2 );
-                Sample.INSTANCE.play(Assets.Sounds.BLAST);
-                detach();
-                return true;
-            }
-
-            timer--;
-            spend(TICK);
-            return true;
-        }
-
-        @Override
-        public void fx(boolean on) {
-            if (on && bombPos != -1){
-                PathFinder.buildDistanceMap( bombPos, BArray.not( Dungeon.level.solid, null ), 2 );
-                for (int i = 0; i < PathFinder.distance.length; i++) {
-                    if (PathFinder.distance[i] < Integer.MAX_VALUE) {
-                        Emitter e = CellEmitter.get(i);
-                        e.pour( SmokeParticle.FACTORY, 0.25f );
-                        smokeEmitters.add(e);
-                    }
+    @Override
+    public void notice() {
+        super.notice();
+        if (!BossHealthBar.isAssigned()) {
+            BossHealthBar.assignBoss(this);
+            Dungeon.level.seal();
+            yell(Messages.get(this, "notice"));
+            for (Char ch : Actor.chars()){
+                if (ch instanceof DriedRose.GhostHero){
+                    ((DriedRose.GhostHero) ch).sayBoss();
                 }
-            } else if (!on) {
-                for (Emitter e : smokeEmitters){
-                    e.burst(BlastParticle.FACTORY, 2);
-                }
-            }
-        }
-
-        private static final String BOMB_POS = "bomb_pos";
-        private static final String TIMER = "timer";
-
-        @Override
-        public void storeInBundle(Bundle bundle) {
-            super.storeInBundle(bundle);
-            bundle.put( BOMB_POS, bombPos );
-            bundle.put( TIMER, timer );
-        }
-
-        @Override
-        public void restoreFromBundle(Bundle bundle) {
-            super.restoreFromBundle(bundle);
-            bombPos = bundle.getInt( BOMB_POS );
-            timer = bundle.getInt( TIMER );
-        }
-
-        public static class BombItem extends Item {
-
-            {
-                dropsDownHeap = true;
-                unique = true;
-
-                image = ItemSpriteSheet.TENGU_BOMB;
-            }
-
-            @Override
-            public boolean doPickUp( Hero hero ) {
-                GLog.w( Messages.get(this, "cant_pickup") );
-                return false;
-            }
-
-            @Override
-            protected void onThrow(int cell) {
-                super.onThrow(cell);
-                if (throwingChar != null){
-                    Buff.append(throwingChar, BombAbility.class).bombPos = cell;
-                    throwingChar = null;
-                } else {
-                    Buff.append(curUser, BombAbility.class).bombPos = cell;
-                }
-            }
-
-            @Override
-            public Emitter emitter() {
-                Emitter emitter = new Emitter();
-                emitter.pos(7.5f, 3.5f);
-                emitter.fillTarget = false;
-                emitter.pour(SmokeParticle.SPEW, 0.05f);
-                return emitter;
             }
         }
     }
 
-    private class Hunting extends Mob.Hunting{
+    private final String PUMPEDUP = "pumpedup";
+    private final String HEALINC = "healinc";
+    private static final String PHASE       ="dimandphase";
+    @Override
+    public void storeInBundle( Bundle bundle ) {
 
-        @Override
-        public boolean act(boolean enemyInFOV, boolean justAlerted) {
+        super.storeInBundle( bundle );
+        phase = bundle.getInt(PHASE);
+        bundle.put( PUMPEDUP , pumpedUp );
+        bundle.put( HEALINC, healInc );
+    }
 
-            enemySeen = enemyInFOV;
-            if (enemyInFOV && !isCharmedBy( enemy ) && canAttack( enemy )) {
-                return useAbility();
-            } else {
+    @Override
+    public void restoreFromBundle( Bundle bundle ) {
 
-                if (!enemyInFOV) {
-                    chooseEnemy();
-                    if (enemy == null) {
-                        //if nothing else can be targeted, target hero
-                        enemy = Dungeon.hero;
-                    }
-                }
-                target = enemy.pos;
+        super.restoreFromBundle( bundle );
+        bundle.put(PHASE,phase);
+        pumpedUp = bundle.getInt( PUMPEDUP );
+        if (state != SLEEPING) BossHealthBar.assignBoss(this);
+        if ((HP*2 <= HT)) BossHealthBar.bleed(true);
 
-                spend( 6f );
-                return true;
+        //if check is for pre-0.9.3 saves
+        healInc = bundle.getInt(HEALINC);
 
+    }
+
+    private void zap() {
+        spend( TIME_TO_ZAP );
+
+        if (hit( this, enemy, true )) {
+            //TODO would be nice for this to work on ghost/statues too
+            if (enemy == Dungeon.hero && Random.Int( 2 ) == 0) {
+                Buff.prolong( enemy, Blindness.class, Degrade.DURATION );
+                Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
             }
+
+            int dmg = Random.NormalIntRange( 10, 12 );
+            enemy.damage( dmg, new ColdMagicRat.DarkBolt() );
+
+            if (enemy == Dungeon.hero && !enemy.isAlive()) {
+                Dungeon.fail( getClass() );
+                GLog.n( Messages.get(this, "frost_kill") );
+            }
+        } else {
+            enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
         }
+    }
+
+    public void onZapComplete() {
+        zap();
+        next();
     }
 
 }

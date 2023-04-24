@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AnkhInvulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArcaneArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
@@ -89,6 +90,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Potential;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -575,6 +577,9 @@ public abstract class Char extends Actor {
 		} else if ( buff(BlessMobDied.class) != null ) {
 			damage *= 2f;
 		}
+		if ( buff(AnkhInvulnerability.GodDied.class) != null ) {
+			damage *= 2.25f;
+		}
 
 		if ( buff(IceSwordDown.class) != null ){
 			//0.2+20x0.005=0.2+100
@@ -599,6 +604,14 @@ public abstract class Char extends Actor {
 	
 	public float speed() {
 		float speed = baseSpeed;
+
+		//提升20%移速
+		MIME.GOLD_THREE getSpeed = Dungeon.hero.belongings.getItem(MIME.GOLD_THREE.class);
+		if (getSpeed!=null) speed *= 1.2f;
+
+		//创世神之怒
+		if ( buff( AnkhInvulnerability.GodDied.class ) != null ) speed *= 2f;
+
 		if ( buff( Cripple.class ) != null ) speed /= 2f;
 
 		if ( buff( Stamina.class ) != null) speed *= 1.5f;

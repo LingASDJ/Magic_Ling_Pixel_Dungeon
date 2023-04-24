@@ -436,6 +436,13 @@ public class ItemSpriteSheet {
 	public static final int ARTIFACT_ROSE2      = ARTIFACTS+21;
 	public static final int ARTIFACT_ROSE3      = ARTIFACTS+22;
 	public static final int Gold_Iron       = ARTIFACTS+23;
+
+	public static final int MIME_ONE       = ARTIFACTS+24;
+	public static final int MIME_TWO       = ARTIFACTS+25;
+	public static final int MIME_THREE       = ARTIFACTS+26;
+	public static final int MIME_FOUR       = ARTIFACTS+27;
+	public static final int MIME_FIVE       = ARTIFACTS+28;
+
 	static{
 		assignItemRect(ARTIFACT_CLOAK,      9,  15);
 		assignItemRect(ARTIFACT_ARMBAND,    16, 13);

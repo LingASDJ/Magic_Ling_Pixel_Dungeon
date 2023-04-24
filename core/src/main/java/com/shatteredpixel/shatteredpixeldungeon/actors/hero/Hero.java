@@ -142,6 +142,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
@@ -930,6 +931,24 @@ public class Hero extends Char {
 	}
 	
 	private boolean actMove( HeroAction.Move action ) {
+		MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
+		if(getHeal != null && HT/4 > HP){
+			this.HP = HT;
+			interrupt();
+			PotionOfHealing.cure(this);
+			Buff.prolong(this, AnkhInvulnerability.GodDied.class, AnkhInvulnerability.DURATION*10f);
+			SpellSprite.show(this, SpellSprite.ANKH);
+			GameScene.flash(0x80FFFF40);
+			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+			GLog.w(Messages.get(this, "heartdied"));
+			getHeal.detach(belongings.backpack);
+		}
+		//携带该物品时，玩家血量低于一半后自动隐身一段回合。
+		MIME.GOLD_TWO getFalseBody = Dungeon.hero.belongings.getItem(MIME.GOLD_TWO.class);
+		if(getFalseBody != null && HT/5>HP){
+			Buff.affect(this, InvisibilityRing.class, InvisibilityRing.DURATION);
+		}
+
 
 		int chCount = 0;
 		for (int ch : Challenges.MASKS){
@@ -1454,6 +1473,19 @@ public class Hero extends Char {
 		if (!(src instanceof Hunger || src instanceof Viscosity.DeferedDamage) && damageInterrupt) {
 			interrupt();
 			resting = false;
+		}
+
+		MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
+		if(getHeal != null && HT/4 > HP){
+			this.HP = HT;
+			interrupt();
+			PotionOfHealing.cure(this);
+			Buff.prolong(this, AnkhInvulnerability.GodDied.class, AnkhInvulnerability.DURATION*10f);
+			SpellSprite.show(this, SpellSprite.ANKH);
+			GameScene.flash(0x80FFFF40);
+			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+			GLog.w(Messages.get(this, "heartdied"));
+			getHeal.detach(belongings.backpack);
 		}
 
 		if (this.buff(Drowsy.class) != null){
@@ -2251,7 +2283,7 @@ public class Hero extends Char {
 
 	@Override
 	public boolean isInvulnerable(Class effect) {
-		return buff(AnkhInvulnerability.class) != null;
+		return buff(AnkhInvulnerability.class) != null || buff(AnkhInvulnerability.GodDied.class) != null;
 	}
 
 	public boolean search( boolean intentional ) {

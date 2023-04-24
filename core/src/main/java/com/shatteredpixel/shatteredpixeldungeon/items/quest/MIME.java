@@ -25,7 +25,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
 
-public class GoldBAo extends Item {
+@SuppressWarnings("all")
+public class MIME extends Item {
 
     {
         image = ItemSpriteSheet.DG21;
@@ -44,4 +45,55 @@ public class GoldBAo extends Item {
     public int value() {
         return quantity *  Random.Int(2500,5500);
     }
+
+    public static class GOLD_ONE extends MIME {
+        {
+            image = ItemSpriteSheet.MIME_ONE;
+        }
+        @Override
+        public int value() {
+            return quantity * 750;
+        }
+    }
+
+    public static class GOLD_TWO extends MIME {
+        {
+            image = ItemSpriteSheet.MIME_TWO;
+        }
+        @Override
+        public int value() {
+            return quantity * 450;
+        }
+    }
+
+    public static class GOLD_THREE extends MIME {
+        {
+            image = ItemSpriteSheet.MIME_THREE;
+        }
+        @Override
+        public int value() {
+            return quantity * 150;
+        }
+    }
+
+    public static class GOLD_FOUR extends MIME {
+        {
+            image = ItemSpriteSheet.MIME_FOUR;
+        }
+        @Override
+        public int value() {
+            return quantity * 250;
+        }
+    }
+
+    public static class GOLD_FIVE extends MIME {
+        {
+            image = ItemSpriteSheet.MIME_FIVE;
+        }
+        @Override
+        public int value() {
+            return quantity * 1000;
+        }
+    }
+
 }

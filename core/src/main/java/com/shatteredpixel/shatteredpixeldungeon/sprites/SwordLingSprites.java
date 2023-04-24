@@ -12,7 +12,7 @@ public class SwordLingSprites extends CharSprite{
     public PosTweener tweener;
     private Callback callback;
 
-    public float time = 1f;
+    public float time;
 
     public SwordLingSprites() {
         super();
@@ -37,7 +37,7 @@ public class SwordLingSprites extends CharSprite{
         PointF pointF1 = worldToCamera(to);
         PointF d = PointF.diff(pointF1,pointF);
         angle = 90 - (float)(Math.atan2(d.x,d.y) / 3.1415926 * 180);
-        speed.set(d).normalize().scale(200f);
+        speed.set(d).normalize().scale(10f);
         angularSpeed = 0;
 
         tweener = new PosTweener(this,pointF1,1f);
