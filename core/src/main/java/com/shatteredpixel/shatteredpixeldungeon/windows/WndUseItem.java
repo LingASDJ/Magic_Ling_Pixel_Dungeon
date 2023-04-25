@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
@@ -35,7 +36,9 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.InventoryPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -108,6 +111,10 @@ public class WndUseItem extends WndInfoItem {
 										if (name) {
 											if (item instanceof EquipableItem) {
 												((EquipableItem) item).customName = str;
+												if (!(item instanceof Weapon) || isMatch(((Weapon)item).customName)) {
+													item.level(Random.Int(2, 4));
+													GLog.b("拼写正确！该武器名称为 " + item.name() + "，等级为 " + item.level() + "。");
+												}
 											} else {
 												((Wand) item).customName = str;
 											}

@@ -73,6 +73,55 @@ public class WndInfoItem extends Window {
 		layoutFields(item, iconTitle, PixelScene.renderTextBlock(item.info(), 6));
 	}
 
+	boolean isMatch(String customName) {
+		String[] matchArray = {
+				// 水果 Fruit
+				"Apple", "Banana", "Orange", "Grape", "Watermelon", "Strawberry", "Mango", "Peach", "Pineapple", "Pear",
+
+				// 动物 Animal
+				"Bear", "Beaver", "Bee", "Bird", "Butterfly", "Cat", "Chicken", "Cow", "Crocodile",
+				"Deer", "Dog", "Dolphin", "Duck", "Eagle", "Elephant", "Fish", "Fox", "Frog", "Giraffe",
+				"Goat", "Gorilla", "Hamster", "Hippopotamus", "Horse", "Jaguar", "Kangaroo", "Koala", "Leopard",
+				"Lion", "Lobster", "Monkey", "Mosquito", "Mouse", "Octopus", "Owl", "Panda", "Panther", "Parrot",
+				"Pelican", "Penguin", "Pig", "Pigeon", "Pike", "Rabbit", "Rat", "Rhinoceros", "Rooster", "Seagull",
+				"Shark", "Sheep", "Snail", "Snake", "Spider", "Squirrel", "Swan", "Tiger", "Turtle", "Walrus",
+				"Whale", "Wolf", "Zebra",
+
+				// 花卉 Flower
+				"Rose", "Lily", "Daisy", "Sunflower", "Tulip", "Orchid", "Carnation", "Hyacinth", "Peony", "Chrysanthemum",
+
+				// 运动器材 Sport Equipment
+				"Basketball", "Football", "Soccer", "Tennis", "Table Tennis", "Badminton", "Swimming", "Running", "Cycling", "Hiking",
+
+				// 学科 Subject
+				"Mathematics", "Physics", "Chemistry", "Biology", "History", "Geography", "English", "Chinese", "Art", "Music",
+
+				// 家具 Furniture
+				"Chair", "Table", "Bed", "Wardrobe", "Sofa", "Armchair", "Bookshelf", "Coffee Table", "Dining Table", "Desk",
+
+				// 电器 Appliance
+				"Television", "Refrigerator", "Washing Machine", "Air Conditioner", "Microwave Oven", "Vacuum Cleaner", "Water Heater", "Hair Dryer", "Electric Fan", "Lamp",
+
+				// 自然地理 Nature
+				"Forest", "Mountain", "River", "Lake", "Beach", "Desert", "Jungle", "Grassland", "Island", "Volcano",
+
+				// 职业 Occupation
+				"Doctor", "Nurse", "Teacher", "Engineer", "Lawyer", "Writer", "Actor", "Singer", "Chef", "Scientist",
+
+				// 学习用品 Stationery
+				"Pencil", "Pen", "Eraser", "Ruler", "Scissors", "Tape", "Glue", "Calculator", "Notebook", "Highlighter"
+		};
+
+		//忽略首尾空格 忽略大小写判定
+		customName = customName.trim().toLowerCase();
+		for (String str : matchArray) {
+			if (str.toLowerCase().equals(customName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private void layoutFields(Item item, IconTitle iconTitle, RenderedTextBlock renderedTextBlock) {
 		int i = 120;
 		renderedTextBlock.maxWidth(120);
