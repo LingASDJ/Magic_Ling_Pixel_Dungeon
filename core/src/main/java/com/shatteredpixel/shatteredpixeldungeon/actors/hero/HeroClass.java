@@ -218,7 +218,7 @@ public enum HeroClass {
 			new BrokenBooks().quantity(44).identify().collect();
 
 			new MIME.GOLD_ONE().quantity(1).identify().collect();
-
+			new MIME.GOLD_TWO().quantity(1).identify().collect();
 			new MIME.GOLD_THREE().quantity(1).identify().collect();
 			new MIME.GOLD_FOUR().quantity(1).identify().collect();
 			new MIME.GOLD_FIVE().quantity(1).identify().collect();

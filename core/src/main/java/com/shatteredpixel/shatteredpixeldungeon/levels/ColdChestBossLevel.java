@@ -75,6 +75,7 @@ public class ColdChestBossLevel extends Level {
     private static final short L = Terrain.EMPTY;
     private static final short D = Terrain.DOOR;
     private static final short T = Terrain.PEDESTAL;
+    private static final short S = Terrain.STATUE;
 
     private static final int[] WorldRoomShort = {
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
@@ -153,6 +154,44 @@ public class ColdChestBossLevel extends Level {
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
     };
 
+    private static final int[] EndMap = {
+            W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+            W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,E,B,B,B,B,B,B,B,E,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,E,B,K,K,K,K,K,B,E,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,E,B,K,B,B,B,K,B,E,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,E,B,B,B,T,B,B,B,E,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,E,B,K,B,B,B,K,B,E,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,E,B,K,K,K,K,K,B,E,E,W,W,W,K,O,K,W,W,W,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,E,B,B,B,B,B,B,B,E,E,W,S,K,K,K,K,K,S,W,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,E,E,E,E,B,E,E,E,E,E,W,K,O,K,O,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,E,E,E,E,B,E,W,W,W,W,W,K,O,K,O,K,O,K,W,W,W,W,W,E,E,E,E,E,E,E,E,W,
+            W,E,E,E,E,E,E,B,E,W,S,K,K,K,K,O,K,O,K,O,K,K,K,K,S,W,E,E,E,E,E,E,E,E,W,
+            W,E,E,E,E,E,E,B,E,W,K,O,O,O,O,O,K,O,K,O,O,O,O,O,K,W,E,E,E,E,E,E,E,E,W,
+            W,E,E,E,E,E,E,B,E,W,K,O,K,S,K,K,K,T,K,K,K,S,K,O,K,W,E,E,E,E,E,E,E,E,W,
+            W,W,W,W,W,W,W,D,W,W,K,K,K,K,B,B,B,B,B,B,B,K,K,K,K,W,W,W,W,W,W,W,W,W,W,
+            W,K,K,K,K,K,K,K,K,S,K,K,K,K,B,K,K,K,K,K,B,K,K,K,K,S,K,K,K,K,K,K,K,K,W,
+            W,O,O,O,K,K,O,K,O,K,O,K,O,K,B,K,B,B,B,K,B,K,O,O,O,K,K,K,K,K,K,O,O,O,W,
+            W,O,K,O,O,O,O,O,O,K,K,K,O,T,B,B,B,K,B,B,B,T,O,K,K,K,O,O,O,O,O,O,K,O,W,
+            W,O,O,O,K,K,K,K,K,K,O,O,O,K,B,K,B,B,B,K,B,K,O,K,O,K,O,K,O,K,K,O,O,O,W,
+            W,K,K,K,K,K,K,K,K,S,K,K,K,K,B,K,K,K,K,K,B,K,K,K,K,S,K,K,K,K,K,K,K,K,W,
+            W,W,W,W,W,W,W,W,W,W,K,O,K,K,B,B,B,B,B,B,B,K,K,K,K,W,W,D,W,W,W,W,W,W,W,
+            W,E,E,E,E,E,E,E,E,W,K,O,K,S,K,K,K,T,K,K,K,S,K,O,K,W,E,B,E,E,E,E,E,E,W,
+            W,E,E,E,E,E,E,E,E,W,K,O,O,O,O,O,K,O,K,O,O,O,O,O,K,W,E,B,E,E,E,E,E,E,W,
+            W,E,E,E,E,E,E,E,E,W,S,K,K,K,K,O,K,O,K,O,K,K,K,K,S,W,E,B,E,E,E,E,E,E,W,
+            W,E,E,E,E,E,E,E,E,W,W,W,W,W,K,O,K,O,K,O,K,W,W,W,W,W,E,B,E,E,E,E,E,E,W,
+            W,E,E,E,E,E,E,E,E,E,E,E,E,W,K,O,K,O,K,O,K,W,E,E,E,E,E,B,E,E,E,E,E,E,W,
+            W,E,E,E,E,E,E,E,E,E,E,E,E,W,S,K,K,K,K,K,S,W,E,E,E,W,W,D,W,W,E,E,E,E,W,
+            W,E,E,E,E,E,E,E,E,E,E,E,E,W,W,W,K,O,K,W,W,W,E,E,E,W,K,K,K,W,E,E,E,E,W,
+            W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,K,O,K,W,E,E,E,E,E,W,K,T,K,W,E,E,E,E,W,
+            W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,K,O,K,W,E,E,E,E,E,W,K,K,K,W,E,E,E,E,W,
+            W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,K,O,K,W,E,E,E,E,E,W,W,W,W,W,E,E,E,E,W,
+            W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+    };
+
 
     private void setMapStart() {
         entrance = HOME;
@@ -220,11 +259,11 @@ public class ColdChestBossLevel extends Level {
                         //如果楼层为开始且boss血量小于360 二阶段
                         if (pro == START && boss.HP < 360) {
                             //动态修改整个房间
-                            changeMap(MazeRoom);
+                            changeMap(EndMap);
                             //宝箱王移动到看戏位
-                            ScrollOfTeleportation.appear(boss, MDX);
-                            //玩家移动到初始位
-                            ScrollOfTeleportation.appear(hero, STARTPOS);
+//                            ScrollOfTeleportation.appear(boss, MDX);
+//                            //玩家移动到初始位
+//                            ScrollOfTeleportation.appear(hero, STARTPOS);
                             boss.HP = 360;
                             pro = MAZE_START;
                         }
