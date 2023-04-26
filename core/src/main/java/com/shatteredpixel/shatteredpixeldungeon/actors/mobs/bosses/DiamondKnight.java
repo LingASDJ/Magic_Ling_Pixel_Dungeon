@@ -168,8 +168,6 @@ public class DiamondKnight extends Boss {
             Dungeon.level.seal();
         }
 
-
-
         super.damage(dmg, src);
         LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null) lock.addTime(dmg*2);
@@ -196,6 +194,7 @@ public class DiamondKnight extends Boss {
             GameScene.flash(0x808080);
             ((ColdChestBossLevel)Dungeon.level).progress();
             spriteClass=DimandKingSprite.PrismaticSprite.class;
+            //强制刷新屏幕
             ShatteredPixelDungeon.resetScene();
             GameScene.flash(0x888888);
             phase++;
@@ -204,6 +203,7 @@ public class DiamondKnight extends Boss {
             GLog.n(Messages.get(DiamondKnight.class,"ok_go"));
             GameScene.flash(0x808080);
             spriteClass=DimandKingSprite.class;
+            //强制刷新屏幕
             ShatteredPixelDungeon.resetScene();
             GameScene.flash(0x888888);
             ((ColdChestBossLevel)Dungeon.level).progress();
@@ -211,7 +211,6 @@ public class DiamondKnight extends Boss {
         }
 
     }
-
     @Override
     public void die( Object cause ) {
 

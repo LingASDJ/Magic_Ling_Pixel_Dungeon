@@ -214,7 +214,12 @@ public class BloodthirstyThorn extends MeleeWeapon {
              */
             bloodthirstyThorn.identify();
 
-            bloodthirstyThorn.level=chaliceOfBlood.level();
+            if(chaliceOfBlood!=null){
+                bloodthirstyThorn.level=chaliceOfBlood.level();
+            } else {
+                bloodthirstyThorn.level=0;
+            }
+
             return bloodthirstyThorn;
         }
     }

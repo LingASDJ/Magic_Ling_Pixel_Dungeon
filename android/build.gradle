@@ -12,6 +12,9 @@ android {
         manifestPlaceholders = [appName:appName]
         applicationId appPackageName
 
+        //接入多Dex,解决代码方法超过65535的问题
+        multiDexEnabled true
+
         versionCode appVersionCode
         versionName appVersionName
 
@@ -28,8 +31,8 @@ android {
             applicationIdSuffix ".indev"
             versionNameSuffix '-INDEV'
             dependencies {
-                debugImplementation project(':services:updates:debugUpdates')
-                debugImplementation project(':services:news:debugNews')
+                releaseImplementation project(':services:updates:githubUpdates')
+                releaseImplementation project(':services:news:shatteredNews')
             }
         }
         release {
@@ -62,9 +65,7 @@ dependencies {
     implementation project(':core')
 
     // Import the Firebase BoM
-
-
-    implementation platform('com.google.firebase:firebase-bom:30.3.1')
+    implementation platform('com.google.firebase:firebase-bom:31.4.0')
 
     // Declare the dependencies for the Crashlytics and Analytics libraries
     // When using the BoM, you don't specify versions in Firebase library dependencies
@@ -83,9 +84,14 @@ dependencies {
 
     // https://firebase.google.com/docs/android/setup#available-libraries
 
+    //接入多DEX
+    implementation 'com.android.support:multidex:1.0.3'
+
 
     //noinspection GradleDependency
     implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+    implementation project(path: ':services:updates:githubUpdates')
+    implementation project(path: ':services:news:shatteredNews')
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"

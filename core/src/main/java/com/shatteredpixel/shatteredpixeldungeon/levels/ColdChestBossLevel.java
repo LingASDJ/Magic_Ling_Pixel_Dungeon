@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.utils.Bundle;
@@ -287,6 +288,7 @@ public class ColdChestBossLevel extends Level {
                             ScrollOfTeleportation.appear(boss,647);
                             //玩家移动到初始位
                             ScrollOfTeleportation.appear(hero, 962);
+                            drop( new PotionOfPurity(),648 );
                             boss.HP = 300;
                             pro = VSBOSS_START;
                         }

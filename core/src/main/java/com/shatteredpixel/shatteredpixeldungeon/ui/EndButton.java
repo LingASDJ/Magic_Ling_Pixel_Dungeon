@@ -2,7 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.FeedBackScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameNewsScene;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.watabou.input.GameAction;
 
@@ -18,7 +18,7 @@ public class EndButton  extends IconButton {
     @Override
     protected void onClick() {
         super.onClick();
-        ShatteredPixelDungeon.switchNoFade(FeedBackScene.class);
+        ShatteredPixelDungeon.switchNoFade(GameNewsScene.class);
     }
 
     @Override
