@@ -21,10 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -32,13 +35,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdMagicRat;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -49,10 +49,10 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class DiamondKnight extends Boss {
+    public int armTier;
     private static final float TIME_TO_ZAP	= 3f;
     {
         initProperty();
@@ -60,6 +60,7 @@ public class DiamondKnight extends Boss {
         initStatus(80);
         EXP = 10;
         defenseSkill = 8;
+
         spriteClass = DimandKingSprite.class;
 
         properties.add(Property.BOSS);
@@ -68,14 +69,19 @@ public class DiamondKnight extends Boss {
     }
 
     private int pumpedUp = 0;
-    private int phase;
+    public int phase;
     private int healInc = 1;
 
     @Override
     public int damageRoll() {
         int min = 1;
         int max = (HP*2 <= HT) ? 12 : 8;
-        if (pumpedUp > 0) {
+
+        //模仿玩家的伤害
+        ColdChestBossLevel.State level = ((ColdChestBossLevel)Dungeon.level).pro();
+        if (level == ColdChestBossLevel.State.VSYOU_START){
+            return hero.damageRoll();
+        } else if (pumpedUp > 0) {
             pumpedUp = 0;
             return Random.NormalIntRange( min*3, max*3 );
         } else {
@@ -91,10 +97,10 @@ public class DiamondKnight extends Boss {
         return attack;
     }
 
-    @Override
-    public boolean isInvulnerable(Class effect) {
-        return this.HP==360;
-    }
+//    @Override
+//    public boolean isInvulnerable(Class effect) {
+//        return this.HP==360;
+//    }
 
     @Override
     public int defenseSkill(Char enemy) {
@@ -103,36 +109,11 @@ public class DiamondKnight extends Boss {
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(0, 2);
+        return Random.NormalIntRange(5,9);
     }
 
     @Override
     public boolean act() {
-
-        if (Dungeon.level.water[pos] && HP < HT) {
-            HP += healInc;
-
-            LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-            if (lock != null) lock.removeTime(healInc*2);
-
-            if (Dungeon.level.heroFOV[pos] ){
-                sprite.emitter().burst( Speck.factory( Speck.HEALING ), healInc );
-            }
-            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && healInc < 3) {
-                healInc++;
-            }
-            if (HP*2 > HT) {
-                BossHealthBar.bleed(false);
-                HP = Math.min(HP, HT);
-            }
-        } else {
-            healInc = 1;
-        }
-
-        if (state != SLEEPING){
-            Dungeon.level.seal();
-        }
-
         return super.act();
     }
 
@@ -152,10 +133,10 @@ public class DiamondKnight extends Boss {
     @Override
     public int attackProc( Char enemy, int damage ) {
         damage = super.attackProc( enemy, damage );
-        if (Random.Int( 3 ) == 0) {
-            Buff.affect( enemy, Ooze.class ).set( Ooze.DURATION );
-            enemy.sprite.burst( 0x000000, 5 );
-        }
+//        if (Random.Int( 3 ) == 0) {
+//            Buff.affect( enemy, Ooze.class ).set( Ooze.DURATION );
+//            enemy.sprite.burst( 0x000000, 5 );
+//        }
 
         if (pumpedUp > 0) {
             Camera.main.shake( 3, 0.2f );
@@ -187,19 +168,46 @@ public class DiamondKnight extends Boss {
             Dungeon.level.seal();
         }
 
+
+
         super.damage(dmg, src);
-        LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+        LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null) lock.addTime(dmg*2);
 
         ColdChestBossLevel.State level = ((ColdChestBossLevel)Dungeon.level).pro();
-        //血量低于360后追加phase并加载楼层的进度方法
-        if (level == ColdChestBossLevel.State.START && this.HP < 360 && phase == 0) {
-            GLog.n("让这场游戏变得更加有趣吧");
+        //血量低于360后追加phase并加载楼层的进度方法,加载迷宫
+        if (level == ColdChestBossLevel.State.START && this.HP <= 360 && phase == 0) {
+            GLog.n(Messages.get(DiamondKnight.class,"now_go"));
             GameScene.flash(0x808080);
             ((ColdChestBossLevel)Dungeon.level).progress();
             phase++;
-        } else if(level == ColdChestBossLevel.State.MAZE_START && this.HP < 360 && phase == 1) {
-            GLog.n("让这场游戏变得更加有d趣吧");
+            //血量低于300加载第三场景
+        } else if(level == ColdChestBossLevel.State.MAZE_START && this.HP <= 300 && phase == 1) {
+            GLog.n(Messages.get(DiamondKnight.class,"war_go"));
+            GameScene.flash(0x808080);
+            ((ColdChestBossLevel)Dungeon.level).progress();
+            phase++;
+        } else if (level == ColdChestBossLevel.State.VSBOSS_START && this.HP <= 240 && phase == 2) {
+            ((ColdChestBossLevel)Dungeon.level).progress();
+            phase++;
+            //血量低于200后变成玩家的样子，伤害和防御数值与玩家一致
+        } else if (level == ColdChestBossLevel.State.VSLINK_START && this.HP <= 200 && phase == 3) {
+            GLog.n(Messages.get(DiamondKnight.class,"iswar_go"));
+            GameScene.flash(0x808080);
+            ((ColdChestBossLevel)Dungeon.level).progress();
+            spriteClass=DimandKingSprite.PrismaticSprite.class;
+            ShatteredPixelDungeon.resetScene();
+            GameScene.flash(0x888888);
+            phase++;
+            //血量低于100后变回来，基础伤害二连击
+        } else if (level == ColdChestBossLevel.State.VSYOU_START && this.HP <= 100 && phase == 4) {
+            GLog.n(Messages.get(DiamondKnight.class,"ok_go"));
+            GameScene.flash(0x808080);
+            spriteClass=DimandKingSprite.class;
+            ShatteredPixelDungeon.resetScene();
+            GameScene.flash(0x888888);
+            ((ColdChestBossLevel)Dungeon.level).progress();
+            phase++;
         }
 
     }
@@ -209,29 +217,22 @@ public class DiamondKnight extends Boss {
 
         super.die( cause );
 
-        if(Dungeon.depth!=28){
-            Dungeon.level.unseal();
+        Dungeon.level.unseal();
 
-            GetBossLoot();
+        phase++;
 
-            GameScene.bossSlain();
-            Dungeon.level.drop( new SkeletonKey( Dungeon.depth ), pos ).sprite.drop();
+        GameScene.bossSlain();
 
-            //60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5
-            int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
-            for (int i = 0; i < blobs; i++){
-                int ofs;
-                do {
-                    ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
-                } while (!Dungeon.level.passable[pos + ofs]);
-                Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
-            }
+        //入口
+        set( 647, Terrain.EXIT );
+        GameScene.updateMap( 647 );
 
-            Badges.validateBossSlain();
+        //出口
+        set( 52, Terrain.ENTRANCE );
+        GameScene.updateMap( 52 );
 
-            yell( Messages.get(this, "defeated") );
-        }
-
+        Badges.validateBossSlain();
+        yell( Messages.get(this, "defeated") );
     }
 
     @Override
@@ -254,16 +255,21 @@ public class DiamondKnight extends Boss {
     private static final String PHASE       ="dimandphase";
     @Override
     public void storeInBundle( Bundle bundle ) {
-
         super.storeInBundle( bundle );
         phase = bundle.getInt(PHASE);
         bundle.put( PUMPEDUP , pumpedUp );
         bundle.put( HEALINC, healInc );
+
+        if(phase == 5) {
+            spriteClass=DimandKingSprite.PrismaticSprite.class;
+        } else {
+            spriteClass=DimandKingSprite.class;
+        }
+
     }
 
     @Override
     public void restoreFromBundle( Bundle bundle ) {
-
         super.restoreFromBundle( bundle );
         bundle.put(PHASE,phase);
         pumpedUp = bundle.getInt( PUMPEDUP );
@@ -273,6 +279,12 @@ public class DiamondKnight extends Boss {
         //if check is for pre-0.9.3 saves
         healInc = bundle.getInt(HEALINC);
 
+        if(phase == 5) {
+            spriteClass=DimandKingSprite.PrismaticSprite.class;
+        } else {
+            spriteClass=DimandKingSprite.class;
+        }
+
     }
 
     private void zap() {
@@ -280,7 +292,7 @@ public class DiamondKnight extends Boss {
 
         if (hit( this, enemy, true )) {
             //TODO would be nice for this to work on ghost/statues too
-            if (enemy == Dungeon.hero && Random.Int( 2 ) == 0) {
+            if (enemy == hero && Random.Int( 2 ) == 0) {
                 Buff.prolong( enemy, Blindness.class, Degrade.DURATION );
                 Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
             }
@@ -288,7 +300,7 @@ public class DiamondKnight extends Boss {
             int dmg = Random.NormalIntRange( 10, 12 );
             enemy.damage( dmg, new ColdMagicRat.DarkBolt() );
 
-            if (enemy == Dungeon.hero && !enemy.isAlive()) {
+            if (enemy == hero && !enemy.isAlive()) {
                 Dungeon.fail( getClass() );
                 GLog.n( Messages.get(this, "frost_kill") );
             }

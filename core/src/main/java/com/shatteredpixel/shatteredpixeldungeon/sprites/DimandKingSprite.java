@@ -1,10 +1,12 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
@@ -47,6 +49,7 @@ public class DimandKingSprite extends MobSprite {
     @Override
     public void update() {
         super.update();
+
         if (teleParticles != null){
             teleParticles.pos( this );
             teleParticles.visible = visible;
@@ -60,10 +63,6 @@ public class DimandKingSprite extends MobSprite {
         if (teleParticles != null) {
             teleParticles.on = false;
         }
-    }
-
-    public void teleParticles(boolean value){
-        if (teleParticles != null) teleParticles.on = value;
     }
 
     @Override
@@ -107,6 +106,57 @@ public class DimandKingSprite extends MobSprite {
             idle();
         }
         super.onComplete( anim );
+    }
+
+    public static class PrismaticSprite extends MobSprite {
+
+        private static final int FRAME_WIDTH	= 12;
+        private static final int FRAME_HEIGHT	= 15;
+
+        public PrismaticSprite() {
+            super();
+
+            texture( Dungeon.hero.heroClass.spritesheet() );
+            updateArmor( 0 );
+            idle();
+        }
+
+        @Override
+        public void link( Char ch ) {
+            super.link( ch );
+            updateArmor( ((DiamondKnight)ch).armTier );
+        }
+
+        public void updateArmor( int tier ) {
+            TextureFilm film = new TextureFilm( HeroSprite.tiers(), tier, FRAME_WIDTH, FRAME_HEIGHT );
+
+            idle = new Animation( 1, true );
+            idle.frames( film, 0, 0, 0, 1, 0, 0, 1, 1 );
+
+            run = new Animation( 20, true );
+            run.frames( film, 2, 3, 4, 5, 6, 7 );
+
+            die = new Animation( 20, false );
+            die.frames( film, 0 );
+
+            attack = new Animation( 15, false );
+            attack.frames( film, 13, 14, 15, 0 );
+
+            idle();
+        }
+
+        @Override
+        public void update() {
+            super.update();
+            if (flashTime <= 0) {
+                float interval = (Game.timeTotal % 9) / 3f;
+                tint(0,
+                        interval > 1 ? Math.max(0.9f, 1 - interval) : interval,
+                        interval < 1 ? Math.min(153 + interval * 72, 255) : Math.max(153 - (interval - 1) * 72, 128),
+                        0.5f);
+            }
+        }
+
     }
     
 }

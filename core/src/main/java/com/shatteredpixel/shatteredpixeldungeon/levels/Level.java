@@ -103,12 +103,20 @@ import java.util.HashSet;
 
 public abstract class Level implements Bundlable {
 
+
+
+
 	//静态地图改变的轮子调用
 	public void changeMap(int[] map){
 		//构建全新地图，通过MAPCSV构建，并清理当前地块
 		this.map = map.clone();
 		buildFlagMaps();
 		cleanWalls();
+
+		//清理掉落物
+		for (Heap heap : heaps.valueList()){
+				heap.destroy();
+		}
 
 		//自动获取出入口
 		exit = entrance = 0;
@@ -133,7 +141,8 @@ public abstract class Level implements Bundlable {
 		GameScene.resetMap();
 		Dungeon.observe();
 	}
-	
+
+
 	public static enum Feeling {
 		NONE,
 		CHASM,

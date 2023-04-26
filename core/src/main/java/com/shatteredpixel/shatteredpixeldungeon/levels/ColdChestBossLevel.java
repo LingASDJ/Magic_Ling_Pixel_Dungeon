@@ -4,6 +4,10 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.GO_START;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.MAZE_START;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.START;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.VSBOSS_START;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.VSLINK_START;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.VSYOU_START;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.WIN;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -43,9 +47,9 @@ public class ColdChestBossLevel extends Level {
         GO_START,
         START,
         MAZE_START,
-        MAZECOMPLE,
         VSBOSS_START,
-        FIND_START,
+        VSLINK_START,
+        VSYOU_START,
         WIN
     }
 
@@ -90,8 +94,8 @@ public class ColdChestBossLevel extends Level {
             W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,P,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
             W,E,E,E,E,E,P,E,W,W,W,W,E,E,E,E,W,P,W,E,E,E,E,W,W,W,W,E,P,E,E,E,E,E,W,
             W,E,E,E,E,E,E,E,W,K,K,W,W,W,W,W,W,D,W,W,W,W,W,W,K,K,W,E,E,E,E,E,E,E,W,
-            W,E,E,E,E,E,P,E,W,K,K,K,K,K,K,K,K,K,K,K,K,K,K,K,K,K,W,E,P,E,E,E,E,E,W,
-            W,E,E,E,E,E,E,E,W,K,K,K,K,K,K,K,K,O,K,K,K,K,K,K,K,K,W,E,E,E,E,E,E,E,W,
+            W,E,E,E,E,E,P,E,W,K,K,K,K,K,K,K,W,K,W,K,K,K,K,K,K,K,W,E,P,E,E,E,E,E,W,
+            W,E,E,E,E,E,E,E,W,K,K,K,K,K,K,K,W,O,W,K,K,K,K,K,K,K,W,E,E,E,E,E,E,E,W,
             W,W,W,W,W,W,W,W,W,K,K,K,K,K,K,K,O,O,O,K,K,K,K,K,K,K,W,W,W,W,W,W,W,W,W,
             W,B,B,B,B,B,B,B,W,K,K,K,K,K,K,O,O,O,O,O,K,K,K,K,K,K,W,B,B,B,B,B,B,B,W,
             W,B,K,K,K,K,K,B,W,K,K,K,K,K,O,O,O,K,O,O,O,K,K,K,K,K,W,B,K,K,K,K,K,B,W,
@@ -249,6 +253,8 @@ public class ColdChestBossLevel extends Level {
                 GameScene.updateMap( getBossDoor );
                 set( HOME, Terrain.EMPTY );
                 GameScene.updateMap( HOME );
+                set( 1102, Terrain.EMPTY );
+                GameScene.updateMap( 1102 );
                 Dungeon.observe();
                 pro = START;
                 break;
@@ -256,14 +262,14 @@ public class ColdChestBossLevel extends Level {
                 //血量低于360后且在START枚举中
                 for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
                     if(boss instanceof DiamondKnight) {
-                        //如果楼层为开始且boss血量小于360 二阶段
-                        if (pro == START && boss.HP < 360) {
+                        //如果楼层为开始且boss血量小于360 1阶段
+                        if (pro == START && boss.HP <= 360) {
                             //动态修改整个房间
-                            changeMap(EndMap);
+                            changeMap(MazeRoom);
                             //宝箱王移动到看戏位
-//                            ScrollOfTeleportation.appear(boss, MDX);
-//                            //玩家移动到初始位
-//                            ScrollOfTeleportation.appear(hero, STARTPOS);
+                            ScrollOfTeleportation.appear(boss, MDX);
+                            //玩家移动到初始位
+                            ScrollOfTeleportation.appear(hero, STARTPOS);
                             boss.HP = 360;
                             pro = MAZE_START;
                         }
@@ -271,7 +277,56 @@ public class ColdChestBossLevel extends Level {
                 }
                 break;
             case MAZE_START:
-
+                //血量低于300后且在MAZE_START枚举中
+                for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if(boss instanceof DiamondKnight) {
+                        //如果楼层为开始且boss血量小于300 2阶段
+                        if (pro == MAZE_START && boss.HP <= 300) {
+                            //动态修改整个房间 宝藏迷宫
+                            changeMap(EndMap);
+                            ScrollOfTeleportation.appear(boss,647);
+                            //玩家移动到初始位
+                            ScrollOfTeleportation.appear(hero, 962);
+                            boss.HP = 300;
+                            pro = VSBOSS_START;
+                        }
+                    }
+                }
+                break;
+            case VSBOSS_START:
+                for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if(boss instanceof DiamondKnight) {
+                        //如果楼层为开始且boss血量小于240 3阶段
+                        if (pro == VSBOSS_START && boss.HP <= 240) {
+                            boss.HP = 240;
+                            pro = VSLINK_START;
+                        }
+                    }
+                }
+                break;
+            case VSLINK_START:
+                for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if(boss instanceof DiamondKnight) {
+                        //如果楼层为开始且boss血量小于200 4阶段
+                        if (pro == VSLINK_START && boss.HP <= 200) {
+                            pro = VSYOU_START;
+                        }
+                    }
+                }
+                break;
+            case VSYOU_START:
+                //血量低于300后且在MAZE_START枚举中
+                for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if(boss instanceof DiamondKnight) {
+                        //如果楼层为开始且boss血量小于100 判定WIN
+                        if (pro == VSYOU_START && boss.HP <= 100) {
+                            pro = WIN;
+                        }
+                    }
+                }
+                break;
+            case WIN:
+                //
                 break;
         }
     }
@@ -280,6 +335,9 @@ public class ColdChestBossLevel extends Level {
     protected void createMobs() {
 
     }
+    //keep track of removed items as the level is changed. Dump them back into the level at the end.
+
+
 
     private static final int getBossDoor = WIDTH*11+17;
     private static final int LDBossDoor = WIDTH*12+17;
