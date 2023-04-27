@@ -87,7 +87,6 @@ dependencies {
     //接入多DEX
     implementation 'com.android.support:multidex:1.0.3'
 
-
     //noinspection GradleDependency
     implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
     implementation project(path: ':services:updates:githubUpdates')

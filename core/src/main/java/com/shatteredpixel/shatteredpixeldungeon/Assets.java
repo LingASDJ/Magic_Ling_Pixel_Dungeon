@@ -315,6 +315,8 @@ public class Assets {
 
 		public static final String FREA	= "sprites/boss/FireCrstal.png";
 
+		public static final String DREA	= "sprites/boss/DCrstal.png";
+
 		public static final String ITEMS	    = "sprites/items/items.png";
 		public static final String WFS	    = "sprites/items/wf.png";
 		public static final String ITEM_ICONS   = "sprites/item_icons.png";
