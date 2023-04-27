@@ -245,6 +245,7 @@ public class ColdChestBossLevel extends Level {
         //GLog.n(String.valueOf(hero.pos));
     }
 
+
     public void progress(){
         switch (pro) {
             case GO_START:

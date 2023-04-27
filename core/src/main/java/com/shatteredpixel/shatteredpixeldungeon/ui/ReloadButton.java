@@ -2,14 +2,12 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.FeedBackScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameNewsScene;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
-import com.watabou.input.GameAction;
 
-public class EndButton  extends IconButton {
-
-    public EndButton() {
-        super(Icons.EXIT.get());
+public class ReloadButton extends IconButton{
+    public ReloadButton() {
+        super(Icons.CHANGES.get());
 
         width = 20;
         height = 20;
@@ -18,17 +16,11 @@ public class EndButton  extends IconButton {
     @Override
     protected void onClick() {
         super.onClick();
-        ShatteredPixelDungeon.switchNoFade(FeedBackScene.class);
-    }
-
-    @Override
-    public GameAction keyAction() {
-        return GameAction.BACK;
+        ShatteredPixelDungeon.switchNoFade(GameNewsScene.class);
     }
 
     @Override
     protected String hoverText() {
-        return Messages.titleCase(Messages.get(WndKeyBindings.class, "back"));
+        return Messages.titleCase(Messages.get(WndKeyBindings.class, "update"));
     }
 }
-

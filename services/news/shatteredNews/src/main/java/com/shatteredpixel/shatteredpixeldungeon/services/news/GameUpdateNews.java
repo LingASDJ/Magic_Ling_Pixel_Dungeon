@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 public class GameUpdateNews extends GameUpdateNewsService {
 
     @Override
@@ -49,9 +48,15 @@ public class GameUpdateNews extends GameUpdateNewsService {
                     }
                     article.summary = xmlArticle.get("summary");
                     article.ling = xmlArticle.getInt("ling");
+
                     article.URL = xmlArticle.getChildByName("link").getAttribute("href");
                     if (!preferHTTPS) {
                         article.URL= article.URL.replace("https://", "http://");
+                    }
+
+                    article.DesktopURL = xmlArticle.getChildByName("kinl").getAttribute("href");
+                    if (!preferHTTPS) {
+                        article.DesktopURL= article.DesktopURL.replace("https://", "http://");
                     }
 
                     Pattern versionCodeMatcher = Pattern.compile("v[0-9]+");
@@ -91,4 +96,6 @@ public class GameUpdateNews extends GameUpdateNewsService {
     }
 
 }
+
+
 

@@ -15,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.EndButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ReloadButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings;
@@ -139,6 +140,10 @@ public class TitleScene extends PixelScene {
 		archs.setSize( w, h );
 		addToBack( archs );
 
+		ReloadButton btnReload = new ReloadButton();
+		btnReload.setRect(0, 0, 16, 20);
+		add( btnReload );
+
 		Image signs = new Image( BannerSprites.get( BannerSprites.Type.PIXEL_DUNGEON_SIGNS ) ) {
 			private float time = 0;
 			@Override
@@ -223,6 +228,7 @@ public class TitleScene extends PixelScene {
 		add(btnAbout);
 
 		StyledButton btnNews = new NewsButton(GREY_TR, Messages.get(this, "news"));
+		btnNews.icon(new ItemSprite(ItemSpriteSheet.YELLOWBOOKS, null));
 		btnNews.icon(new ItemSprite(ItemSpriteSheet.YELLOWBOOKS, null));
 		add(btnNews);
 

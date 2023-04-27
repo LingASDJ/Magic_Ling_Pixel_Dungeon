@@ -73,12 +73,20 @@ public class WndInfoItem extends Window {
 		layoutFields(item, iconTitle, PixelScene.renderTextBlock(item.info(), 6));
 	}
 
+	/**
+	 * 布局字段
+	 * @param item 物品
+	 * @param iconTitle 物品图标
+	 * @param renderedTextBlock 物品信息
+	 */
 	private void layoutFields(Item item, IconTitle iconTitle, RenderedTextBlock renderedTextBlock) {
 		int i = 120;
 		renderedTextBlock.maxWidth(120);
 		while (PixelScene.landscape() && renderedTextBlock.height() > 100.0f && i < 220) {
 			i += 20;
 			renderedTextBlock.maxWidth(i);
+//			q:为什么这里要用while循环？
+//			a：因为在横屏的时候，如果文字太多，会导致窗口的高度超过屏幕的高度，所以要不断的增加窗口的宽度，直到文字的高度小于窗口的高度
 		}
 		if (!Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_1) || !(this instanceof WndUseItem) || (!(item instanceof EquipableItem) && !(item instanceof Wand))) {
 			iconTitle.setRect(0.0f, 0.0f, (float) i, 0.0f);

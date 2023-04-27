@@ -97,6 +97,11 @@ public class DiamondKnight extends Boss {
         return attack;
     }
 
+    /**
+     * 无敌判定
+     * @param effect 无敌效果
+     * @return true:无敌
+     */
 //    @Override
 //    public boolean isInvulnerable(Class effect) {
 //        return this.HP==360;
@@ -117,6 +122,11 @@ public class DiamondKnight extends Boss {
         return super.act();
     }
 
+    /**
+     * 判定是否可以攻击
+     * @param enemy 目标
+     * @return true:可以攻击
+     */
     @Override
     protected boolean canAttack( Char enemy ) {
         if (pumpedUp > 0){
@@ -152,6 +162,7 @@ public class DiamondKnight extends Boss {
         return result;
     }
 
+
     @Override
     protected boolean getCloser( int target ) {
         if (pumpedUp != 0) {
@@ -160,6 +171,7 @@ public class DiamondKnight extends Boss {
         }
         return super.getCloser( target );
     }
+
 
     @Override
     public void damage(int dmg, Object src) {
@@ -174,6 +186,7 @@ public class DiamondKnight extends Boss {
 
         ColdChestBossLevel.State level = ((ColdChestBossLevel)Dungeon.level).pro();
         //血量低于360后追加phase并加载楼层的进度方法,加载迷宫
+
         if (level == ColdChestBossLevel.State.START && this.HP <= 360 && phase == 0) {
             GLog.n(Messages.get(DiamondKnight.class,"now_go"));
             GameScene.flash(0x808080);
@@ -211,6 +224,8 @@ public class DiamondKnight extends Boss {
         }
 
     }
+    //        当boos血量低于360时，加载第二场景
+
     @Override
     public void die( Object cause ) {
 

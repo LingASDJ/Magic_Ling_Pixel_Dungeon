@@ -8,23 +8,22 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.GameUpdateNewsArticles;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.UpdateNews;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.ui.Component;
+import com.watabou.utils.DeviceCompat;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class GameNewsScene extends PixelScene {
 
@@ -32,7 +31,7 @@ public class GameNewsScene extends PixelScene {
 
     private static final int BTN_HEIGHT = 22;
     private static final int BTN_WIDTH = 100;
-
+    RenderedTextBlock title = PixelScene.renderTextBlock(Messages.get(this, "title"), 9);
     @Override
     public void create() {
         super.create();
@@ -49,14 +48,14 @@ public class GameNewsScene extends PixelScene {
         archs.setSize(w, h);
         add(archs);
 
-        RenderedTextBlock title = PixelScene.renderTextBlock(Messages.get(this, "title"), 9);
-        title.hardlight(Window.TITLE_COLOR);
-        title.setPos(
-                (w - title.width()) / 2f,
-                (20 - title.height()) / 2f
-        );
-        align(title);
-        add(title);
+
+//        title.hardlight(Window.TITLE_COLOR);
+//        title.setPos(
+//                (w - title.width()) / 2f,
+//                (20 - title.height()) / 2f
+//        );
+//        align(title);
+//        add(title);
 
         float top = 18;
 
@@ -70,6 +69,18 @@ public class GameNewsScene extends PixelScene {
             top = newsInfo.bottom();
 
         }
+
+        StyledButton btnSite = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this, "read_more")){
+            @Override
+            protected void onClick() {
+                super.onClick();
+                ShatteredPixelDungeon.switchNoFade( TitleScene.class );
+            }
+        };
+        btnSite.icon(Icons.get(Icons.NEWS));
+        btnSite.textColor(Window.TITLE_COLOR);
+        btnSite.setRect(left, 190, fullWidth, BTN_HEIGHT);
+        add(btnSite);
 
         if (!displayingNoArticles) {
             ArrayList<GameUpdateNewsArticles> articles = UpdateNews.articles();
@@ -111,25 +122,38 @@ public class GameNewsScene extends PixelScene {
                     }
                     rightCol = !rightCol;
                 }
+                btnSite.visible= false;
+                btnSite.active= false;
+
+                if(article.ling > Game.versionCode || article.ling < Game.versionCode) {
+                    RenderedTextBlock title = PixelScene.renderTextBlock("你的版本需要更新！", 9);
+                    title.hardlight(Window.RED_COLOR);
+                    title.setPos(
+                            (w - title.width()) / 2f,
+                            (20 - title.height()) / 2f
+                    );
+                    align(title);
+                    add(title);
+                } else {
+                    RenderedTextBlock title = PixelScene.renderTextBlock("已是最新版本！", 9);
+                    title.hardlight(Window.TITLE_COLOR);
+                    title.setPos(
+                            (w - title.width()) / 2f,
+                            (20 - title.height()) / 2f
+                    );
+                    align(title);
+                    add(title);
+                }
             }
             top += gap;
         } else {
             top += 18;
         }
 
-        StyledButton btnSite = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this, "read_more")){
-            @Override
-            protected void onClick() {
-                super.onClick();
-                ShatteredPixelDungeon.switchNoFade( TitleScene.class );
-            }
-        };
-        btnSite.icon(Icons.get(Icons.NEWS));
-        btnSite.textColor(Window.TITLE_COLOR);
-        btnSite.setRect(left, 190, fullWidth, BTN_HEIGHT);
-        add(btnSite);
+
 
     }
+
 
     @Override
     public void update() {
@@ -151,11 +175,7 @@ public class GameNewsScene extends PixelScene {
             bg = Chrome.get(Chrome.Type.GREY_BUTTON_TR);
             add(bg);
 
-            String message = "";
-
-            if (Messages.lang() != Languages.CHINESE){
-                message += Messages.get(this, "english_warn");
-            }
+            String message = Game.version+"---"+Game.versionCode;
 
             SPDSettings.WiFi(false);
             UpdateNews.checkForNews();
@@ -228,6 +248,11 @@ public class GameNewsScene extends PixelScene {
     }
 
     private static class ArticleButton extends StyledButton {
+
+
+        public static void message(String message) {
+            Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndMessage(message)));
+        }
         GameUpdateNewsArticles article;
         BitmapText date;
 
@@ -235,52 +260,52 @@ public class GameNewsScene extends PixelScene {
             super(Chrome.Type.GREY_BUTTON_TR, article.title, 6);
             this.article = article;
 
-            icon(UpdateNews.parseArticleIcon(article));
-
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(article.date);
-            date = new BitmapText( UpdateNews.parseArticleDate(article), pixelFont);
-            date.scale.set(PixelScene.align(0.5f));
-            date.hardlight( 0x888888 );
-            date.measure();
-            //add(date);
-
-            IconTitle title = new IconTitle(new ItemSprite( ItemSpriteSheet.MAGICGIRLBOOKS ),article.title);
-            title.setRect( 30, 20, 100, 0 );
-            title.setPos( title.centerX(), title.bottom() + 4 );
-            add(title);
-            int w = Camera.main.width;
-            String message = article.summary;
-            message += "\n\n你现在的游戏版本代码："+ Game.versionCode;
-            message += "\n\n网络上的游戏版本代码："+ article.ling;
-            message += "\n\n"+(
-                    article.ling > Game.versionCode ? "✦你的版本是旧版本，请及时更新✦":
-                    article.ling == Game.versionCode ? "Δ版本一致,你已是最新版本。Δ": "Γ版本号大于服务器数据，可能是修改版，请谨慎游玩。Γ");
-            int fullWidth = PixelScene.landscape() ? 202 : 100;
-            int left = (w - fullWidth)/2;
             if(article.ling > Game.versionCode || article.ling < Game.versionCode){
-                StyledButton btnDownload = new StyledButton(Chrome.Type.SCROLL,
-                        //这里读取的是外面的数据,Condition 'article.ling < Game.versionCode' is always 'true'
-                        //AS不会判定这种外网数据，它实际可以运行，请勿通过AS优化此代码
-                        article.ling > Game.versionCode ? Messages.get(this, "btnDownload_more") :
-                                article.ling < Game.versionCode ? Messages.get(this, "btnFixedDownload") : ""){
-                    @Override
-                    protected void onClick() {
-                        super.onClick();
-                        ShatteredPixelDungeon.platform.openURI(article.URL);
-                    }
-                };
-                btnDownload.icon(Icons.get(article.ling > Game.versionCode?Icons.STATS :
-                        article.ling < Game.versionCode ? Icons.WARNING: Icons.STATS));
-                btnDownload.textColor(Window.TITLE_COLOR);
-                btnDownload.setRect(left, 160, fullWidth, BTN_HEIGHT);
-                add(btnDownload);
-            }
+                icon(UpdateNews.parseArticleIcon(article));
 
-            RenderedTextBlock text = PixelScene.renderTextBlock( 6 );
-            text.text( message, 100 );
-            text.setPos( title.left(), title.bottom() + 4 );
-            add( text );
+                ShatteredPixelDungeon.scene().add(new WndOptions(Icons.get(Icons.CHANGES),
+                        article.title,
+                        article.summary,
+                        Messages.get(this, "download"),Messages.get(this, "okay")) {
+                    @Override
+                    protected void onSelect(int index) {
+                        if (index == 0) {
+                            //q:书写下面的代码效果注释
+                            //a:如果是桌面版，就打开桌面版的下载链接
+                            //a:如果是安卓版，就打开安卓版的下载链接
+                            if(DeviceCompat.isDesktop()){
+                                ShatteredPixelDungeon.platform.openURI(article.DesktopURL);
+                            } else {
+                                ShatteredPixelDungeon.platform.openURI(article.URL);
+                            }
+                            ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+                        } else {
+                            ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+                        }
+                    }
+                    @Override
+                    public void onBackPressed() {
+                        //
+                    }
+                });
+            } else {
+                icon(UpdateNews.parseArticleIcon(article));
+                ShatteredPixelDungeon.scene().add(new WndOptions(Icons.get(Icons.CHANGES),
+                        Messages.get(this, "update"),
+                        Messages.get(this, "desc"),
+                        Messages.get(this, "okay")) {
+                    @Override
+                    protected void onSelect(int index) {
+                        if (index == 0) {
+                            ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+                        }
+                    }
+                    public void onBackPressed() {
+                        //
+                    }
+                });
+
+            }
         }
 
         @Override

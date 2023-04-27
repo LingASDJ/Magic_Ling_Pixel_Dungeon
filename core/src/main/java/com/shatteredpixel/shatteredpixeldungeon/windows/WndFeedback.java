@@ -15,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
+import com.watabou.utils.DeviceCompat;
 
 public class WndFeedback extends Window {
 
@@ -53,7 +54,12 @@ public class WndFeedback extends Window {
             @Override
             protected void onClick() {
                 super.onClick();
-                Gdx.app.exit();
+                if(DeviceCompat.isAndroid()){
+                    //由于安卓架构对于下方的LibGDX退出并非完全退出，仍然可能有进程在后台运行，为此强制抛出错误以达到游戏进程完全停止的目的。
+                    throw new IllegalStateException("Died");
+                } else {
+                    Gdx.app.exit();
+                }
             }
         };
         btnSponsor.icon(Icons.get(Icons.COMPASS));

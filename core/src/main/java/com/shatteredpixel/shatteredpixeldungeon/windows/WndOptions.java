@@ -73,6 +73,8 @@ public class WndOptions extends Window {
 		layoutBody(pos, message, options);
 	}
 
+
+
 	private void layoutBody(float pos, String message, String... options){
 		int width = PixelScene.landscape() ? WIDTH_L : WIDTH_P;
 

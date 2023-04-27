@@ -11,6 +11,8 @@ public class GameUpdateNewsArticles {
     public int ling;
     public String URL;
 
+    public String DesktopURL;
+
     //the icon is stored as a string here so it can be decoded to an image later
     //See News.java for supported formats
     public String icon;
