@@ -28,15 +28,26 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdMagicRat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -46,7 +57,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -60,6 +70,7 @@ public class DiamondKnight extends Boss {
         initStatus(80);
         EXP = 10;
         defenseSkill = 8;
+        flying=true;
 
         spriteClass = DimandKingSprite.class;
 
@@ -74,8 +85,8 @@ public class DiamondKnight extends Boss {
 
     @Override
     public int damageRoll() {
-        int min = 1;
-        int max = (HP*2 <= HT) ? 12 : 8;
+        int min = 8;
+        int max = (HP*2 <= HT) ?  14 : 9;
 
         //模仿玩家的伤害
         ColdChestBossLevel.State level = ((ColdChestBossLevel)Dungeon.level).pro();
@@ -102,10 +113,30 @@ public class DiamondKnight extends Boss {
      * @param effect 无敌效果
      * @return true:无敌
      */
-//    @Override
-//    public boolean isInvulnerable(Class effect) {
-//        return this.HP==360;
-//    }
+    @Override
+    public boolean isInvulnerable(Class effect) {
+        return (this.HP>=301 && this.HP<=360) && effect != DiamondKnight.DiedDamager.class;
+    }
+
+    public static class DiedDamager extends Buff {
+
+        @Override
+        public boolean act() {
+            detach();
+            spend( TICK );
+            return true;
+        }
+
+        @Override
+        public void detach() {
+            super.detach();
+            for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
+                if (m instanceof DiamondKnight){
+                    m.damage(12, this);
+                }
+            }
+        }
+    }
 
     @Override
     public int defenseSkill(Char enemy) {
@@ -114,11 +145,15 @@ public class DiamondKnight extends Boss {
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(5,9);
+        return Random.NormalIntRange(4,8);
     }
 
     @Override
     public boolean act() {
+        if(this.HP <= 300 && phase == 1) {
+            GLog.n(Messages.get(DiamondKnight.class, "war_go"));
+            phase++;
+        }
         return super.act();
     }
 
@@ -129,7 +164,7 @@ public class DiamondKnight extends Boss {
      */
     @Override
     protected boolean canAttack( Char enemy ) {
-        if (pumpedUp > 0){
+        if ( Dungeon.level.distance(enemy.pos, pos) >= 2){
             //we check both from and to in this case as projectile logic isn't always symmetrical.
             //this helps trim out BS edge-cases
             return Dungeon.level.distance(enemy.pos, pos) <= 2
@@ -140,26 +175,26 @@ public class DiamondKnight extends Boss {
         }
     }
 
+    private int combo = 0;
     @Override
     public int attackProc( Char enemy, int damage ) {
         damage = super.attackProc( enemy, damage );
-//        if (Random.Int( 3 ) == 0) {
-//            Buff.affect( enemy, Ooze.class ).set( Ooze.DURATION );
-//            enemy.sprite.burst( 0x000000, 5 );
-//        }
+        //The gnoll's attacks get more severe the more the player lets it hit them
+        combo++;
+        int effect = Random.Int(4)+combo;
 
-        if (pumpedUp > 0) {
-            Camera.main.shake( 3, 0.2f );
+        if (effect > 2) {
+
+            if (effect >=6 && enemy.buff(Burning.class) == null){
+
+                if (Dungeon.level.flamable[enemy.pos])
+                    GameScene.add(Blob.seed(enemy.pos, 4, Fire.class));
+                Buff.affect(enemy, Burning.class).reignite( enemy );
+
+            } else
+                Buff.affect( enemy, Poison.class).set((effect-2) );
         }
-
         return damage;
-    }
-
-    @Override
-    public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti ) {
-        boolean result = super.attack( enemy, dmgMulti, dmgBonus, accMulti );
-        pumpedUp = 0;
-        return result;
     }
 
 
@@ -172,7 +207,10 @@ public class DiamondKnight extends Boss {
         return super.getCloser( target );
     }
 
-
+    /**
+     * @param dmg 伤害
+     * @param src 伤害来源
+     */
     @Override
     public void damage(int dmg, Object src) {
         if (!BossHealthBar.isAssigned()){
@@ -193,11 +231,11 @@ public class DiamondKnight extends Boss {
             ((ColdChestBossLevel)Dungeon.level).progress();
             phase++;
             //血量低于300加载第三场景
-        } else if(level == ColdChestBossLevel.State.MAZE_START && this.HP <= 300 && phase == 1) {
-            GLog.n(Messages.get(DiamondKnight.class,"war_go"));
-            GameScene.flash(0x808080);
-            ((ColdChestBossLevel)Dungeon.level).progress();
-            phase++;
+//        } else if(level == ColdChestBossLevel.State.MAZE_START && this.HP <= 300 && phase == 1) {
+//            GLog.n(Messages.get(DiamondKnight.class,"war_go"));
+//            GameScene.flash(0x808080);
+//            ((ColdChestBossLevel)Dungeon.level).progress();
+//            phase++;
         } else if (level == ColdChestBossLevel.State.VSBOSS_START && this.HP <= 240 && phase == 2) {
             ((ColdChestBossLevel)Dungeon.level).progress();
             phase++;
@@ -233,7 +271,33 @@ public class DiamondKnight extends Boss {
 
         Dungeon.level.unseal();
 
+        Dungeon.level.drop( new TengusMask(), pos ).sprite.drop();
+        int dropPos = this.pos;
+
+        Dungeon.level.drop(new ScrollOfRecharging().quantity(2),  dropPos).sprite.drop(pos);
+
+        Ankh ankh = new Ankh();
+        ankh.bless();
+
+        Dungeon.level.drop(new Ankh(), dropPos).sprite.drop(pos);
+
+        Dungeon.level.drop(new Gold().quantity(Random.Int(400,900)), pos).sprite.drop();
+
+        Badges.KILL_SMK();
+
+        if(Statistics.dimandchestmazeCollected>=3){
+            Badges.KILL_OMP();
+        }
+
         phase++;
+
+        if (!Badges.isUnlocked(Badges.Badge.KILL_SM)){
+            Dungeon.level.drop( new SDBSword(), pos ).sprite.drop();
+        } else if (Random.Float()<0.43f) {
+            Dungeon.level.drop( new SDBSword(), pos ).sprite.drop();
+        } else {
+            Dungeon.level.drop( new PotionOfExperience(), pos ).sprite.drop();
+        }
 
         GameScene.bossSlain();
 
@@ -267,12 +331,15 @@ public class DiamondKnight extends Boss {
     private final String PUMPEDUP = "pumpedup";
     private final String HEALINC = "healinc";
     private static final String PHASE       ="dimandphase";
+
+    private static final String COMBO = "combo";
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle( bundle );
         phase = bundle.getInt(PHASE);
         bundle.put( PUMPEDUP , pumpedUp );
         bundle.put( HEALINC, healInc );
+        bundle.put(COMBO, combo);
 
         if(phase == 5) {
             spriteClass=DimandKingSprite.PrismaticSprite.class;
@@ -299,25 +366,21 @@ public class DiamondKnight extends Boss {
             spriteClass=DimandKingSprite.class;
         }
 
+        combo = bundle.getInt( COMBO );
+
     }
 
     private void zap() {
         spend( TIME_TO_ZAP );
 
         if (hit( this, enemy, true )) {
-            //TODO would be nice for this to work on ghost/statues too
-            if (enemy == hero && Random.Int( 2 ) == 0) {
-                Buff.prolong( enemy, Blindness.class, Degrade.DURATION );
-                Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
-            }
-
-            int dmg = Random.NormalIntRange( 10, 12 );
+            int dmg = Random.NormalIntRange( 20, 30 );
             enemy.damage( dmg, new ColdMagicRat.DarkBolt() );
-
-            if (enemy == hero && !enemy.isAlive()) {
-                Dungeon.fail( getClass() );
-                GLog.n( Messages.get(this, "frost_kill") );
+            if(Random.Float()<0.45f){
+                Buff.affect( enemy, Bleeding.class ).set( 9 );
+                Sample.INSTANCE.play( Assets.Sounds.CURSED );
             }
+            Sample.INSTANCE.play( Assets.Sounds.ZAP );
         } else {
             enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
         }

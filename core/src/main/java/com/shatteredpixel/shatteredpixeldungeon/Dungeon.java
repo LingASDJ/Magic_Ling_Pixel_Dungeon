@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
@@ -447,7 +448,9 @@ public class Dungeon {
 					level = new PrisonLevel();
 					break;
 				case 10:
-					if((Statistics.boss_enhance & 0x2) != 0) level = new ColdChestBossLevel();
+					if((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking){
+						level = new ColdChestBossLevel();
+					}
 					else
 						level = new PrisonBossLevel();
 					break;
@@ -498,6 +501,10 @@ public class Dungeon {
 					level = new DeadEndLevel();
 					Statistics.deepestFloor--;
 			}
+
+		if(Dungeon.hero.buff(BlessAnmy.class) != null && Statistics.TryUsedAnmy){
+			Statistics.TryUsedAnmy = false;
+		}
 
 		level.create();
 

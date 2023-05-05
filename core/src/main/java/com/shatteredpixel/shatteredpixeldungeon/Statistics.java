@@ -73,7 +73,13 @@ public class Statistics {
 	//宝藏迷宫
 	public static int goldchestmazeCollected;
 
+	//珍宝
+	public static int dimandchestmazeCollected;
+
 	public static int dageCollected;
+
+	//首次对决
+	public static boolean mimicking = false;
 
 	//Directly add float time will cause accuracy lose and stop timing if time is long enough
 	//so use long to record seconds, float to count sub-seconds.
@@ -81,14 +87,16 @@ public class Statistics {
 	public static long real_seconds = 0;
 	public static float second_elapsed = 0;
 	public static float turnsPassed = 0f;
+    public static boolean TryUsedAnmy= false;
 
-	public static void reset() {
+    public static void reset() {
 		
 		goldCollected	= 0;
 		deepestFloor	= -1;
 		enemiesSlain	= 0;
 		foodEaten		= 0;
 		goldchestmazeCollected = 0;
+		dimandchestmazeCollected =0;
 		itemsCrafted    = 0;
 		piranhasKilled	= 0;
 		ankhsUsed		= 0;
@@ -102,6 +110,8 @@ public class Statistics {
 		duration	= 0;
 		
 		qualifiedForNoKilling = false;
+
+		mimicking = false;
 		
 		amuletObtained = false;
 
@@ -116,6 +126,8 @@ public class Statistics {
 		lanterfireactive = false;
 		bugsyncfixed =  false;
 		crivusfruitslevel2 = false;
+
+		TryUsedAnmy = false;
 
 		second_elapsed = 0f;
 		real_seconds = 0;
@@ -168,11 +180,23 @@ public class Statistics {
 
 	private static final String NAYAZICOLLECTED		= "naiyaziCollected";
 
+	private static final String AnmyMobs		= "anmymobs";
+
+	private static final String MMC		= "mmcsx";
+
+	private static final String DDK		= "dada";
+
 	public static void storeInBundle( Bundle bundle ) {
 		bundle.put( LANTERACTIVE, lanterfireactive );
 		bundle.put(GOLDCHEST,	  goldchestmazeCollected);
 
+		bundle.put(DDK,dimandchestmazeCollected);
+
 		bundle.put( CrivusFruitsLevel2, crivusfruitslevel2 );
+
+		bundle.put(MMC,mimicking);
+
+		bundle.put( AnmyMobs, TryUsedAnmy );
 
 		bundle.put( TIPSGO, tipsgodungeon );
 
@@ -216,9 +240,13 @@ public class Statistics {
 	
 	public static void restoreFromBundle( Bundle bundle ) {
 
+		dimandchestmazeCollected = bundle.getInt(DDK);
+
 		goldchestmazeCollected = bundle.getInt(GOLDCHEST);
 
 		naiyaziCollected = bundle.getInt(NAYAZICOLLECTED);
+
+		mimicking = bundle.getBoolean(MMC);
 
 		goldCollected	= bundle.getInt( GOLD );
 		deepestFloor	= bundle.getInt( DEEPEST );
@@ -237,6 +265,8 @@ public class Statistics {
 		duration		= bundle.getFloat( DURATION );
 
 		qualifiedForNoKilling = bundle.getBoolean( NO_KILLING_QUALIFIED );
+
+		TryUsedAnmy = bundle.getBoolean( AnmyMobs);
 		
 		amuletObtained	= bundle.getBoolean( AMULET );
 

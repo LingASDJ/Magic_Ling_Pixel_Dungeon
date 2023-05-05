@@ -90,7 +90,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMys
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFlock;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
@@ -102,7 +101,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfScale;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
@@ -165,11 +163,11 @@ public enum HeroClass {
 			new LockSword().quantity(1).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
 			new PotionOfLevitation().quantity(100).identify().collect();
-			new SDBSword().quantity(1).identify().collect();
+
 			Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);
 
 			new BloodthirstyThorn().quantity(1).identify().collect();
-			new Gauntlet().quantity(1).identify().collect();
+			new SDBSword().quantity(1).identify().collect();
 
 			new WashCrime().quantity(1).identify().collect();
 			new MagicTorch().quantity(1).identify().collect();
@@ -307,7 +305,7 @@ public enum HeroClass {
 		stones.quantity(3).collect();
 
 		Dungeon.quickslot.setSlot(0, stones);
-		new SummonElemental().quantity(2).identify().collect();
+		//new SummonElemental().quantity(1).identify().collect();
 		if (hero.belongings.armor != null){
 			hero.belongings.armor.affixSeal(new BrokenSeal());
 		}
@@ -320,7 +318,7 @@ public enum HeroClass {
 		MagesStaff staff;
 
 		staff = new MagesStaff(new WandOfMagicMissile());
-		new MIME.GOLD_FIVE().quantity(1).identify().collect();
+		//new MIME.GOLD_FIVE().quantity(1).identify().collect();
 		(hero.belongings.weapon = staff).identify();
 		hero.belongings.weapon.activate(hero);
 

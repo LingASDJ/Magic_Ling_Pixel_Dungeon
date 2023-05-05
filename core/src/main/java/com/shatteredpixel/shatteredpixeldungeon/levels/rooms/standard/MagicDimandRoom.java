@@ -1,7 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.CeremonialCandle;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.DimandBook;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -36,6 +36,9 @@ public class MagicDimandRoom extends StandardRoom{
         ChestMarker vis = new ChestMarker();
         Point c = center();
         vis.pos(c.x - 1, c.y - 1);
+        int pos = level.pointToCell(center());
+
+        level.drop( new DimandBook(),pos );
 
         level.customTiles.add(vis);
 
@@ -46,7 +49,7 @@ public class MagicDimandRoom extends StandardRoom{
 //        level.addItemToSpawn(new CeremonialCandle());
 //        level.addItemToSpawn(new CeremonialCandle());
 
-        CeremonialCandle.ritualPos = c.x + (level.width() * c.y);
+        //CeremonialCandle.ritualPos = c.x + (level.width() * c.y);
     }
 
     public static class ChestMarker extends CustomTilemap {

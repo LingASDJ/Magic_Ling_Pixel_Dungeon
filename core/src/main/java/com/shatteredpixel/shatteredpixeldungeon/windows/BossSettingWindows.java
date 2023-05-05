@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -44,7 +45,8 @@ public class BossSettingWindows extends Window {
                 cb.setRect(GAP, 500, WIDTH - GAP * 2, BOX_HEIGHT);
             }
 
-            if(1==2){
+            //1 拟态王
+            if(i == 1 && !Badges.isUnlocked(Badges.Badge.KILL_SM) || i == 0  || i==4){
                 cb.alpha(0.4f);
                 cb.active=false;
                 cb.checked(false);

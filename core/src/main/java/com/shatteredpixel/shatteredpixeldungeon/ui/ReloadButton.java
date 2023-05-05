@@ -19,6 +19,7 @@ public class ReloadButton extends IconButton{
         ShatteredPixelDungeon.switchNoFade(GameNewsScene.class);
     }
 
+
     @Override
     protected String hoverText() {
         return Messages.titleCase(Messages.get(WndKeyBindings.class, "update"));

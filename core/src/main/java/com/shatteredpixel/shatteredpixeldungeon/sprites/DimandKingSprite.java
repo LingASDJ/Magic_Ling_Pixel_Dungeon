@@ -14,6 +14,7 @@ import com.watabou.utils.Callback;
 
 public class DimandKingSprite extends MobSprite {
     private Emitter teleParticles;
+    private Animation cast;
 
     public DimandKingSprite() {
         super();
@@ -31,11 +32,38 @@ public class DimandKingSprite extends MobSprite {
         attack = new Animation( 15, false );
         attack.frames( frames, 5,6,7,8);
 
+        cast = attack.clone();
+
         die = new Animation( 3, false );
         die.frames( frames, 9,10,11 );
 
         play( idle );
 	}
+
+    @Override
+    public void attack( int cell ) {
+        if (!Dungeon.level.adjacent(cell, ch.pos)) {
+
+            MagicMissile.boltFromChar( parent,
+                    MagicMissile.SWORDLING,
+                    this,
+                    cell,
+                    new Callback() {
+                        @Override
+                        public void call() {
+                            ((DiamondKnight)ch).onZapComplete();
+                        }
+                    } );
+
+            play( cast );
+            turnTo( ch.pos , cell );
+
+        } else {
+
+            super.attack( cell );
+
+        }
+    }
 
     @Override
     public void link(Char ch) {

@@ -943,9 +943,12 @@ public class Hero extends Char {
 			GLog.w(Messages.get(this, "heartdied"));
 			getHeal.detach(belongings.backpack);
 		}
+
 		//携带该物品时，玩家血量低于一半后自动隐身一段回合。
+		//actMove实现
 		MIME.GOLD_TWO getFalseBody = Dungeon.hero.belongings.getItem(MIME.GOLD_TWO.class);
 		if(getFalseBody != null && HT/5>HP){
+			//给予一个看不见的隐形Buff,继承至Invisibility
 			Buff.affect(this, InvisibilityRing.class, InvisibilityRing.DURATION);
 		}
 

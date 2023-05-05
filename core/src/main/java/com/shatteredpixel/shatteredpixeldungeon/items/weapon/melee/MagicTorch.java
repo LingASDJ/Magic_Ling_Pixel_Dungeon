@@ -69,22 +69,18 @@ public class MagicTorch extends MeleeWeapon {
         super.execute(hero, action);
         //当英雄使用魔法火把时，给英雄添加一个光环buff，光环buff会对周围的敌人造成伤害，
         // 伤害值为英雄的魔法火把的最大伤害值，持续时间为5回合，每回合造成一次伤害，伤害值为英雄的魔法火把的最大伤害值，光环buff的名称为“光环”
-        if (action.equals(AC_EQUIP)) {
-            //In addition to equipping itself, item reassigns itself to the quickslot
-            //This is a special case as the item is being removed from inventory, but is staying with the hero.
-            int slot = Dungeon.quickslot.getSlot(this);
-            doEquip(hero);
-            if (slot != -1) {
-                Dungeon.quickslot.setSlot(slot, this);
-                updateQuickslot();
-            }
-            Buff.affect(hero, MagicLight.class).set( (100), 1 );
-        } else if (action.equals(AC_UNEQUIP)) {
-            doUnequip(hero, true);
-            Buff.detach(hero, MagicLight.class);
-        } else if (action.equals(AC_THROW)) {
-            super.doThrow(hero);
-            Buff.detach(hero, MagicLight.class);
+        switch (action) {
+            case AC_EQUIP:
+                Buff.affect(hero, MagicLight.class).set((100), 1);
+                break;
+            case AC_UNEQUIP:
+                doUnequip(hero, true);
+                Buff.detach(hero, MagicLight.class);
+                break;
+            case AC_THROW:
+                super.doThrow(hero);
+                Buff.detach(hero, MagicLight.class);
+                break;
         }
     }
 

@@ -28,15 +28,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -115,7 +118,11 @@ public class SummonElemental extends Spell {
 
 			summonClass = Elemental.AllyNewBornElemental.class;
 
-			detach(Dungeon.hero.belongings.backpack);
+
+			if(Dungeon.hero.heroClass != HeroClass.WARRIOR){
+				detach(Dungeon.hero.belongings.backpack);
+			}
+
 
 		} else {
 			GLog.w(Messages.get(SpiritHawk.class, "no_space"));
@@ -129,6 +136,7 @@ public class SummonElemental extends Spell {
 		if (summonClass == Elemental.FrostElemental.class)  return new ItemSprite.Glowing(0x8EE3FF);
 		if (summonClass == Elemental.ShockElemental.class)  return new ItemSprite.Glowing(0xFFFF85);
 		if (summonClass == Elemental.ChaosElemental.class)  return new ItemSprite.Glowing(0xE3E3E3, 0.5f);
+		if (summonClass == Elemental.HaloWar.class)  return new ItemSprite.Glowing(0x00ffff, 0.5f);
 		return super.glowing();
 	}
 
@@ -143,6 +151,7 @@ public class SummonElemental extends Spell {
 		if (summonClass == Elemental.FrostElemental.class)          desc += Messages.get(this, "desc_frost");
 		if (summonClass == Elemental.ShockElemental.class)          desc += Messages.get(this, "desc_shock");
 		if (summonClass == Elemental.ChaosElemental.class)          desc += Messages.get(this, "desc_chaos");
+		if (summonClass == Elemental.HaloWar.class)          desc += Messages.get(this, "desc_halos");
 
 		return desc;
 	}
@@ -172,7 +181,7 @@ public class SummonElemental extends Spell {
 			return item.isIdentified() && (item instanceof PotionOfLiquidFlame
 					|| item instanceof PotionOfFrost
 					|| item instanceof ScrollOfRecharging
-					|| item instanceof ScrollOfTransmutation);
+					|| item instanceof ScrollOfTransmutation || item instanceof PotionOfLiquidFlameX);
 		}
 
 		@Override
@@ -202,6 +211,10 @@ public class SummonElemental extends Spell {
 				Sample.INSTANCE.play(Assets.Sounds.READ);
 				curUser.sprite.emitter().burst( RainbowParticle.BURST, 12 );
 				summonClass = Elemental.ChaosElemental.class;
+			} else if (item instanceof PotionOfLiquidFlameX){
+				Sample.INSTANCE.play(Assets.Sounds.READ);
+				curUser.sprite.emitter().burst( HalomethaneFlameParticle.FACTORY, 12 );
+				summonClass = Elemental.HaloWar.class;
 			}
 
 			curUser.sprite.operate(curUser.pos);

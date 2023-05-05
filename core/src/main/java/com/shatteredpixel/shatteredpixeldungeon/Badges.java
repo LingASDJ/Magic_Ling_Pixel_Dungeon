@@ -167,7 +167,9 @@ public class Badges {
 		CHAMPION_5X                  ( 116 ),
 		NYZ_SHOP                    ( 117 ),
 		DAGETO                    ( 118 ),
-		KILL_DM                    ( 119 ),
+		KILL_SM                    ( 119 ),
+
+		TAKE_ITEM                   ( 120 ),
 
 		//rudy
 		FIREGIRL                 	 ( 128 ),
@@ -961,9 +963,13 @@ public class Badges {
 		validateAMZ();
 	}
 
-	public static void KILL_DMK() {
-		displayBadge( Badge.KILL_DM );
+	public static void KILL_SMK() {
+		displayBadge( Badge.KILL_SM );
 		validateAMZ();
+	}
+
+	public static void KILL_OMP() {
+		displayBadge( Badge.TAKE_ITEM );
 	}
 
 

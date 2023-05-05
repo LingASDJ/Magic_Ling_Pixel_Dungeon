@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM300;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PinkLingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -49,6 +48,7 @@ public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
         add_v0_6_31_Changes(changeInfos);
+        add_v0_6_32_Changes(changeInfos);
         add_v0_6_30_Changes(changeInfos);
         add_v0_6_29_Changes(changeInfos);
         add_v0_6_28_Changes(changeInfos);
@@ -82,48 +82,58 @@ public class vM0_6_7_X_Changes {
         add_v0_6_0_Changes(changeInfos);
     }
 
-    public static void add_v0_6_31_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta5.1(P3)", true, "");
+    public static void add_v0_6_32_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta5.275(P3)", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
-
-        changes = new ChangeInfo("即将到来", false, null);
-        changes.hardlight(Window.Pink_COLOR);
-        changeInfos.add(changes);
-
-        Image issxsaxs =new DimandKingSprite();
-        issxsaxs.scale.set(PixelScene.align(0.8f));
-        changes.addButton(new ChangeButton(issxsaxs,("关于宝箱之王？"),
-                ("将在下个版本Beta5.3进行测试更新，请做好战斗准备!")));
-
-        changes.addButton(new ChangeButton(new PinkLingSprite(), ("狩猎系统1.0"),
-                ("击败两次宝箱之王后解锁狩猎系统，神秘NPC会入驻0层。并派发狩猎任务。")));
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FBK), ("灯火系统V3--狩猎与前行之章"),
-                ("灯火系统即将进行大改，敬请期待")));
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14), ("寒冷系统V0.2"),
-                ("将追加矿洞层的寒冷惩罚和新的事件，敬请期待")));
 
         changes = new ChangeInfo("新内容", false, null);
         changes.hardlight(Window.GREEN_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(Icons.get(Icons.INFO), ("图鉴和炼金合成表加入新东西"),
-                ("请自行到游戏查看")));
+//        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("一些温馨提示"),
+//                ("对于尚未进行正常模式的玩家进行提示。例如BOSSRUSH模式。")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MAGIC_TORCH), ("新武器：魔法火把[捐赠物品]"),
-                ("感谢_落白_的投稿，该武器属于3阶武器。")));
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHANGES), ("自动更新系统"),
+                ("现在你可以在游戏内自动更新了，不需要再去下载更新包了。祝你游戏愉快！")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BloodDied), ("新武器：嗜血荆棘[捐赠物品]"),
-                ("感谢_落白_的投稿，该武器属于6阶武器。")));
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WORN_SHORTSWORD), ("战士初始改动"),
+                ("现在战士使用唤魔晶柱不消耗数量，并且这也为战士后续的专精职业_召唤师-斗争战士_做了铺垫。该职业将替换原版狂战士职业并改变天赋。但目前暂时只是初始改动，敬请期待后续更新")));
 
         changes = new ChangeInfo("改动", false, null);
         changes.hardlight(Window.CYELLOW);
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
-                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X59")));
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X60")));
+    }
+
+    public static void add_v0_6_31_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta5.32-35(P3)", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        Image issxsaxs =new DimandKingSprite();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs,("拟态之王"),
+                ("王会消灭每一个屠杀衪的子嗣的人")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("灯火系统V2.5"),
+                ("追加两个Buff，和其他改进")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14), ("篝火系统0.2"),
+                ("在篝火房间现在寒冷值恢复得更快，且在寒冷回复期间不会受到饥饿效果")));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X61")));
     }
 
     public static void add_v0_6_30_Changes( ArrayList<ChangeInfo> changeInfos ) {

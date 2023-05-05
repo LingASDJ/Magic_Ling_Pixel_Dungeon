@@ -171,7 +171,7 @@ public class BloodthirstyThorn extends MeleeWeapon {
         /**
          * @param message 消息弹框控件
          */
-        public static void message(String message) {
+        public void message(String message) {
             Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndMessage(message)));
         }
 
@@ -201,7 +201,6 @@ public class BloodthirstyThorn extends MeleeWeapon {
                 chaliceOfBlood1.cursed = true;
                 chaliceOfBlood1.level=Random.NormalIntRange(1,3);
                 chaliceOfBlood1.identify().quantity(1).collect();
-                message(Messages.get(BloodthirstyThorn.class,"good"));
             }
 
             return sampleOutput(null);

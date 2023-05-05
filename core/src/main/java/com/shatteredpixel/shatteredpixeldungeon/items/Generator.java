@@ -399,7 +399,7 @@ public class Generator {
 					Greatshield.class
 
 			};
-			WEP_T5.probs = new float[]{ 6, 5, 5, 4, 4, 4};
+			WEP_T5.probs = new float[]{ 1, 3, 2, 3, 2, 3};
 
 			WEP_T6.classes = new Class<?>[]{
 					IceFishSword.class,

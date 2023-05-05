@@ -225,7 +225,37 @@ public class Toolbar extends Component {
 
 	@Override
 	protected void layout() {
-		final int maxHorizontalQuickslots = PixelScene.landscape() ? 12 : 3;
+		/**
+		 * 现在的代码是为了适应不同的屏幕尺寸
+		 * 但是这样做会导致在不同的屏幕尺寸下，按钮的位置不一样
+		 * 为此使用三目运算符判定当前屏幕尺寸，然后根据不同的屏幕尺寸设置按钮的位置
+		 */
+		float wMin = Game.width / PixelScene.MIN_WIDTH_FULL;
+		float hMin = Game.height / PixelScene.MIN_HEIGHT_FULL;
+		final int maxHorizontalQuickslots =
+				/** 中文
+				 * 如果是竖屏，那么最多显示12个快捷栏
+				 * 如果是竖屏且>=5x缩放，那么下方最多显示4个快捷栏
+				 * 如果是竖屏且>=4x缩放，那么下方最多显示5个快捷栏
+				 * 如果是竖屏且>=3x缩放，那么下方最多显示8个快捷栏
+				 * 如果是横屏，那么所有快捷栏在游戏界面底部生成布局
+				 */
+
+				/**English
+				//If it is a vertical screen, then at most 12 quick slots are displayed below
+				//If it is a vertical screen and >=5x zoom, then at most 4 quick slots are displayed below
+				//If it is a vertical screen and >=4x zoom, then at most 5 quick slots are displayed below
+				//If it is a vertical screen and >=3x zoom, then at most 8 quick slots are displayed below
+				//If it is a horizontal screen, then all quick slots are generated at the bottom of the game interface
+				*/
+
+				PixelScene.landscape() ? 12 :
+
+				SPDSettings.scale() >= 5 ? 4 :
+
+				SPDSettings.scale() >= 4 ? 5 :
+
+				SPDSettings.scale() >= 3 ? 8 : 12;
 		float right = width;
 		if (SPDSettings.interfaceSize() > 0){
 			btnInventory.setPos(right - btnInventory.width(), y);
@@ -258,7 +288,8 @@ public class Toolbar extends Component {
 			}
 		}
 
-		for(int i = 0; i < Constants.MAX_QUICKSLOTS; i++) {
+		for(int i = 0; i < (Math.min(wMin, hMin) >= 2*Game.density ? Constants.MOX_QUICKSLOTS :
+				Constants.MAX_QUICKSLOTS); i++) {
 			//FIXME doesn't work for portrait mode and no longer dynamically resizes.
 			if (i == 0 && !SPDSettings.flipToolbar() ||
 					i == Math.min(SPDSettings.quickslots(), maxHorizontalQuickslots)-1 && SPDSettings.flipToolbar()) {
@@ -302,26 +333,12 @@ public class Toolbar extends Component {
 					}
 				}
 
-				startY = 60;
+				startY = SPDSettings.scale() >= 4 ? 28 : 40;
 				for (int i = maxHorizontalQuickslots; i < btnQuick.length; i++) {
 					QuickslotTool tool = btnQuick[i];
 					tool.setPos(width - (tool.width() + 2), startY);
 					if (i + 1 < btnQuick.length) {
-						if(i +1 < 7) {
-							startY = btnQuick[i].bottom();
-						} else if (i == 7) {
-							startY = btnQuick[i].top();
-							tool.setPos(width - (tool.width() + 24), startY);
-						} else if (i == 8) {
-							startY = btnQuick[i].top() - 24;
-							tool.setPos(width - (tool.width() + 24), startY);
-						} else if (i == 9) {
-							startY = btnQuick[i].top() - 48;
-							tool.setPos(width - (tool.width() + 24), startY);
-						} else if (i == 10) {
-							startY = btnQuick[i].top() - 24;
-							tool.setPos(width - (tool.width() + 24), startY);
-						}
+						startY = btnQuick[i].bottom();
 					}
 				}
 

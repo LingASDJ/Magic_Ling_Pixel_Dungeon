@@ -589,7 +589,7 @@ public abstract class Level implements Bundlable {
 					visuals.add( new FlowParticle.Flow( i - width() ) );
 				}
 			}
-			if(Dungeon.depth >= 6){
+			if(Dungeon.depth >= 6 && Dungeon.depth <= 10){
 				visuals.add( new ColdSnowParticles.Snow(i));
 			}
 		}

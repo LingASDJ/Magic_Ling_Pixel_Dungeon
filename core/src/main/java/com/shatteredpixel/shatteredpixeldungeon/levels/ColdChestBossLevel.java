@@ -11,13 +11,21 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.TPDoor;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 import java.util.HashMap;
 
@@ -58,10 +66,21 @@ public class ColdChestBossLevel extends Level {
     private final int HEIGHT = 35;
 
     @Override
+    public int randomRespawnCell( Char ch ) {
+        int pos = WIDTH + 16; //random cell adjacent to the entrance.
+        int cell;
+        do {
+            cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
+        } while (!passable[cell]
+                || (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
+                || Actor.findChar(cell) != null);
+        return cell;
+    }
+
+    @Override
     protected boolean build() {
         setSize(WIDTH,HEIGHT);
-        this.entrance = 0;
-        this.exit = 0;
+
         //首次构建地图
         pro = GO_START;
         setMapStart();
@@ -69,6 +88,7 @@ public class ColdChestBossLevel extends Level {
         return true;
     }
     private static final short W = Terrain.WALL;
+    private static final short M = Terrain.WELL;
     private static final short E = Terrain.CHASM;
 
     private static final short X = Terrain.EXIT;
@@ -92,7 +112,7 @@ public class ColdChestBossLevel extends Level {
             W,E,E,E,O,O,O,O,O,E,E,E,E,E,E,E,W,P,W,E,E,E,E,E,E,E,O,O,O,O,O,E,E,E,W,
             W,E,E,E,P,P,P,P,P,E,E,E,E,E,E,E,W,P,W,E,E,E,E,E,E,E,P,P,P,P,P,E,E,E,W,
             W,E,E,E,P,E,E,E,P,E,E,E,E,E,E,E,W,K,W,E,E,E,E,E,E,E,P,E,E,E,P,E,E,E,W,
-            W,E,P,E,P,E,P,E,P,E,P,E,P,E,P,E,W,P,W,E,P,E,P,E,P,E,P,E,P,E,P,E,P,E,W,
+            W,E,P,E,P,E,M,E,P,E,P,E,P,E,P,E,W,P,W,E,P,E,P,E,P,E,P,E,M,E,P,E,P,E,W,
             W,E,E,E,P,E,E,E,P,E,E,E,E,E,E,E,W,P,W,E,E,E,E,E,E,E,P,E,E,E,P,E,E,E,W,
             W,E,E,E,P,P,P,P,P,E,E,E,E,E,E,E,W,P,W,E,E,E,E,E,E,E,P,P,P,P,P,E,E,E,W,
             W,E,E,E,E,E,P,E,E,E,E,E,E,E,E,E,W,K,W,E,E,E,E,E,E,E,E,E,P,E,E,E,E,E,W,
@@ -127,7 +147,7 @@ public class ColdChestBossLevel extends Level {
 
     private static final int[] MazeRoom = {
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
-            W,J,L,L,L,L,W,L,W,L,W,W,W,W,W,L,L,L,W,W,W,W,W,W,L,L,L,L,W,L,W,W,W,L,W,
+            W,L,L,L,L,L,W,L,W,L,W,W,W,W,W,L,L,L,W,W,W,W,W,W,L,L,L,L,W,L,W,W,W,L,W,
             W,W,W,W,W,L,W,L,W,L,W,W,W,W,W,L,W,W,W,W,W,W,W,W,L,W,L,L,W,L,W,W,W,L,W,
             W,W,W,B,L,L,W,L,L,L,W,L,L,L,W,L,L,L,W,L,L,L,L,L,L,W,L,L,W,L,W,W,W,L,W,
             W,W,W,L,W,W,W,L,W,W,W,L,W,L,L,L,L,L,W,L,L,L,L,W,W,W,L,L,L,L,L,L,W,L,W,
@@ -154,31 +174,31 @@ public class ColdChestBossLevel extends Level {
             W,W,W,L,L,L,L,L,W,L,L,L,L,L,W,L,L,W,L,L,L,W,L,L,L,L,W,L,W,W,W,W,W,W,W,
             W,W,W,L,W,L,W,W,W,L,L,L,W,L,W,L,L,W,W,W,L,W,W,W,W,W,W,L,W,L,L,L,L,L,W,
             W,W,W,L,W,L,L,L,W,L,L,L,W,L,W,L,L,W,L,L,L,L,L,L,L,L,W,L,L,L,W,W,W,L,W,
-            W,W,W,L,W,L,L,W,W,L,W,L,W,L,L,L,L,W,L,W,W,W,L,W,L,L,W,L,W,L,W,L,W,L,W,
+            W,W,W,L,W,L,L,W,W,L,W,L,W,L,L,L,L,W,L,W,W,W,L,W,L,L,W,L,W,L,W,E,W,L,W,
             W,W,W,W,W,L,L,W,W,L,W,L,W,L,W,W,W,W,L,L,W,L,L,W,L,L,L,L,W,L,W,W,W,L,W,
             W,W,W,L,L,L,W,W,W,L,W,L,W,L,L,W,L,L,L,L,L,L,L,W,L,L,L,L,W,L,L,L,L,L,W,
             W,W,W,L,W,L,L,L,W,L,W,L,W,L,L,W,L,W,W,W,W,W,L,W,W,W,W,W,W,W,W,W,W,W,W,
             W,W,W,L,W,L,W,L,W,W,W,W,W,L,W,W,T,L,L,L,W,L,L,L,W,L,L,L,W,L,L,L,W,L,W,
-            W,B,L,L,W,L,W,L,L,L,L,L,L,L,L,W,W,W,W,W,W,L,W,L,L,L,W,L,L,L,W,L,T,X,W,
+            W,B,L,L,W,L,W,L,L,L,L,L,L,L,L,W,W,W,W,W,W,L,W,L,L,L,W,L,L,L,W,L,T,L,W,
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
     };
 
     private static final int[] EndMap = {
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
             W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
-            W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
-            W,E,E,E,B,B,B,B,B,B,B,E,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
-            W,E,E,E,B,K,K,K,K,K,B,E,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
-            W,E,E,E,B,K,B,B,B,K,B,E,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
-            W,E,E,E,B,B,B,T,B,B,B,E,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
-            W,E,E,E,B,K,B,B,B,K,B,E,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
-            W,E,E,E,B,K,K,K,K,K,B,E,E,W,W,W,K,O,K,W,W,W,E,E,E,E,E,E,E,E,E,E,E,E,W,
-            W,E,E,E,B,B,B,B,B,B,B,E,E,W,S,K,K,K,K,K,S,W,E,E,E,E,E,E,E,E,E,E,E,E,W,
-            W,E,E,E,E,E,E,B,E,E,E,E,E,W,K,O,K,O,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,W,
-            W,E,E,E,E,E,E,B,E,W,W,W,W,W,K,O,K,O,K,O,K,W,W,W,W,W,E,E,E,E,E,E,E,E,W,
-            W,E,E,E,E,E,E,B,E,W,S,K,K,K,K,O,K,O,K,O,K,K,K,K,S,W,E,E,E,E,E,E,E,E,W,
-            W,E,E,E,E,E,E,B,E,W,K,O,O,O,O,O,K,O,K,O,O,O,O,O,K,W,E,E,E,E,E,E,E,E,W,
-            W,E,E,E,E,E,E,B,E,W,K,O,K,S,K,K,K,T,K,K,K,S,K,O,K,W,E,E,E,E,E,E,E,E,W,
+            W,E,E,W,W,W,W,W,W,W,W,W,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,W,B,B,B,B,B,B,B,W,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,W,B,K,K,K,K,K,B,W,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,W,B,K,B,B,B,K,B,W,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,W,B,B,B,T,B,B,B,W,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,W,B,K,B,B,B,K,B,W,E,E,E,W,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,W,B,K,K,K,K,K,B,W,E,W,W,W,K,O,K,W,W,W,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,W,B,B,B,B,B,B,B,W,E,W,S,K,K,K,K,K,S,W,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,W,W,W,W,B,W,W,W,W,E,W,K,O,K,O,K,O,K,W,E,E,E,E,E,E,E,E,E,E,E,E,W,
+            W,E,E,E,E,E,W,B,W,W,W,W,W,W,K,O,K,O,K,O,K,W,W,W,W,W,E,E,E,E,E,E,E,E,W,
+            W,E,E,E,E,E,W,B,W,W,S,K,K,K,K,O,K,O,K,O,K,K,K,K,S,W,E,E,E,E,E,E,E,E,W,
+            W,E,E,E,E,E,W,B,W,W,K,O,O,O,O,O,K,O,K,O,O,O,O,O,K,W,E,E,E,E,E,E,E,E,W,
+            W,E,E,E,E,E,W,B,W,W,K,O,K,S,K,K,K,T,K,K,K,S,K,O,K,W,E,E,E,E,E,E,E,E,W,
             W,W,W,W,W,W,W,D,W,W,K,K,K,K,B,B,B,B,B,B,B,K,K,K,K,W,W,W,W,W,W,W,W,W,W,
             W,K,K,K,K,K,K,K,K,S,K,K,K,K,B,K,K,K,K,K,B,K,K,K,K,S,K,K,K,K,K,K,K,K,W,
             W,O,O,O,K,K,O,K,O,K,O,K,O,K,B,K,B,B,B,K,B,K,O,O,O,K,K,K,K,K,K,O,O,O,W,
@@ -186,11 +206,11 @@ public class ColdChestBossLevel extends Level {
             W,O,O,O,K,K,K,K,K,K,O,O,O,K,B,K,B,B,B,K,B,K,O,K,O,K,O,K,O,K,K,O,O,O,W,
             W,K,K,K,K,K,K,K,K,S,K,K,K,K,B,K,K,K,K,K,B,K,K,K,K,S,K,K,K,K,K,K,K,K,W,
             W,W,W,W,W,W,W,W,W,W,K,O,K,K,B,B,B,B,B,B,B,K,K,K,K,W,W,D,W,W,W,W,W,W,W,
-            W,E,E,E,E,E,E,E,E,W,K,O,K,S,K,K,K,T,K,K,K,S,K,O,K,W,E,B,E,E,E,E,E,E,W,
-            W,E,E,E,E,E,E,E,E,W,K,O,O,O,O,O,K,O,K,O,O,O,O,O,K,W,E,B,E,E,E,E,E,E,W,
-            W,E,E,E,E,E,E,E,E,W,S,K,K,K,K,O,K,O,K,O,K,K,K,K,S,W,E,B,E,E,E,E,E,E,W,
-            W,E,E,E,E,E,E,E,E,W,W,W,W,W,K,O,K,O,K,O,K,W,W,W,W,W,E,B,E,E,E,E,E,E,W,
-            W,E,E,E,E,E,E,E,E,E,E,E,E,W,K,O,K,O,K,O,K,W,E,E,E,E,E,B,E,E,E,E,E,E,W,
+            W,E,E,E,E,E,E,E,E,W,K,O,K,S,K,K,K,T,K,K,K,S,K,O,K,W,W,B,W,E,E,E,E,E,W,
+            W,E,E,E,E,E,E,E,E,W,K,O,O,O,O,O,K,O,K,O,O,O,O,O,K,W,W,B,W,E,E,E,E,E,W,
+            W,E,E,E,E,E,E,E,E,W,S,K,K,K,K,O,K,O,K,O,K,K,K,K,S,W,W,B,W,E,E,E,E,E,W,
+            W,E,E,E,E,E,E,E,E,W,W,W,W,W,K,O,K,O,K,O,K,W,W,W,W,W,W,B,W,E,E,E,E,E,W,
+            W,E,E,E,E,E,E,E,E,E,E,E,E,W,K,O,K,O,K,O,K,W,E,E,E,E,W,B,W,E,E,E,E,E,W,
             W,E,E,E,E,E,E,E,E,E,E,E,E,W,S,K,K,K,K,K,S,W,E,E,E,W,W,D,W,W,E,E,E,E,W,
             W,E,E,E,E,E,E,E,E,E,E,E,E,W,W,W,K,O,K,W,W,W,E,E,E,W,K,K,K,W,E,E,E,E,W,
             W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,K,O,K,W,E,E,E,E,E,W,K,T,K,W,E,E,E,E,W,
@@ -205,6 +225,12 @@ public class ColdChestBossLevel extends Level {
     private void setMapStart() {
         entrance = HOME;
         map = WorldRoomShort.clone();
+    }
+
+
+    public void setMapEnd(){
+        this.entrance = 52;
+        this.exit = 647;
     }
 
     private static final HashMap<Integer, Integer> MAIN_PORTAL = new HashMap<>(5);
@@ -225,6 +251,24 @@ public class ColdChestBossLevel extends Level {
         IF_MAIN_PORTAL.put(241, 474);
     }
 
+    private static final HashMap<Integer, Integer> S_MAIN_PORTAL = new HashMap<>(5);
+    {
+        S_MAIN_PORTAL.put(844, 111);
+        S_MAIN_PORTAL.put(869, 133);
+
+        S_MAIN_PORTAL.put(181, 682);
+        S_MAIN_PORTAL.put(203, 682);
+    }
+
+    private static final HashMap<Integer, Integer> IF_S_MAIN_PORTAL = new HashMap<>(5);
+    {
+        IF_S_MAIN_PORTAL.put(844, 111);
+        IF_S_MAIN_PORTAL.put(869, 133);
+
+        IF_S_MAIN_PORTAL.put(181, 682);
+        IF_S_MAIN_PORTAL.put(203, 682);
+    }
+
     @Override
     public void occupyCell(Char ch) {
         super.occupyCell(ch);
@@ -234,15 +278,32 @@ public class ColdChestBossLevel extends Level {
 
         if(ch == hero){
             //指定区域
+
+
+
+            if(S_MAIN_PORTAL.containsKey(ch.pos) && pro == START) {
+                ScrollOfTeleportation.appear(ch, IF_S_MAIN_PORTAL.get(ch.pos));
+                //传送目标区域 第一场景
+                hero.interrupt();
+                Dungeon.observe();
+                GameScene.updateFog();
+                if(ch.pos==682){
+                    Buff.detach(hero, Levitation.class);
+                } else if(ch.pos==111||ch.pos==133) {
+                    Buff.affect( hero, Levitation.class, Levitation.DURATION*20 );
+                }
+            }
+
             if(MAIN_PORTAL.containsKey(ch.pos) && pro == MAZE_START) {
                 ScrollOfTeleportation.appear(ch, IF_MAIN_PORTAL.get(ch.pos));
-                //传送目标区域
+                //传送目标区域 第二场景
                 hero.interrupt();
                 Dungeon.observe();
                 GameScene.updateFog();
             }
+
         }
-        //GLog.n(String.valueOf(hero.pos));
+        //GLog.n(String.valueOf(Statistics.dimandchestmazeCollected));
     }
 
 
@@ -262,6 +323,23 @@ public class ColdChestBossLevel extends Level {
                 set( 1102, Terrain.EMPTY );
                 GameScene.updateMap( 1102 );
                 Dungeon.observe();
+
+                //进行Roll判定
+                switch(Random.NormalIntRange(0,3)){
+                    case 0:
+                        drop( new MIME.GOLD_ONE(),634 );
+                    break;
+                    case 1:
+                        drop( new MIME.GOLD_ONE(),660 );
+                        break;
+                    case 2:
+                        drop( new MIME.GOLD_ONE(),308 );
+                        break;
+                    case 3:
+                        drop( new MIME.GOLD_ONE(),286 );
+                        break;
+                }
+
                 pro = START;
                 break;
             case START:
@@ -277,6 +355,95 @@ public class ColdChestBossLevel extends Level {
                             //玩家移动到初始位
                             ScrollOfTeleportation.appear(hero, STARTPOS);
                             boss.HP = 360;
+
+                            //进行Roll判定 获得一定的随机坐标
+                            if(Random.Float()<0.5f) {
+                                switch(Random.NormalIntRange(0,4)){
+                                    case 0:
+                                        drop( new MIME.GOLD_TWO(),570 );
+                                        break;
+                                    case 1:
+                                        drop( new MIME.GOLD_TWO(),472 );
+                                        break;
+                                    case 2:
+                                        drop( new MIME.GOLD_TWO(),1041 );
+                                        break;
+                                    case 3:
+                                        drop( new MIME.GOLD_TWO(),52 );
+                                        break;
+                                    case 4:
+                                        drop( new MIME.GOLD_TWO(),1096 );
+                                        break;
+                                }
+                            } else {
+                                switch(Random.NormalIntRange(0,4)){
+                                    case 0:
+                                        drop( new MIME.GOLD_THREE(),570 );
+                                        break;
+                                    case 1:
+                                        drop( new MIME.GOLD_THREE(),472 );
+                                        break;
+                                    case 2:
+                                        drop( new MIME.GOLD_THREE(),1041 );
+                                        break;
+                                    case 3:
+                                        drop( new MIME.GOLD_THREE(),52 );
+                                        break;
+                                    case 4:
+                                        drop( new MIME.GOLD_THREE(),1096 );
+                                        break;
+                                }
+                            }
+
+                            switch (Random.NormalIntRange(0,8)){
+                                case 0:
+                                    TPDoor ds0 = new TPDoor();
+                                    ds0.pos = 613;
+                                    GameScene.add(ds0);
+                                break;
+                                case 1:
+                                    TPDoor ds1 = new TPDoor();
+                                    ds1.pos = 888;
+                                    GameScene.add(ds1);
+                                    break;
+                                case 2:
+                                    TPDoor ds2 = new TPDoor();
+                                    ds2.pos = 1088;
+                                    GameScene.add(ds2);
+                                    break;
+                                case 3:
+                                    TPDoor ds3 = new TPDoor();
+                                    ds3.pos = 732;
+                                    GameScene.add(ds3);
+                                    break;
+                                case 4:
+                                    TPDoor ds4 = new TPDoor();
+                                    ds4.pos = 297;
+                                    GameScene.add(ds4);
+                                    break;
+                                case 5:
+                                    TPDoor ds5 = new TPDoor();
+                                    ds5.pos = 206;
+                                    GameScene.add(ds5);
+                                    break;
+                                case 6:
+                                    TPDoor ds6 = new TPDoor();
+                                    ds6.pos = 255;
+                                    GameScene.add(ds6);
+                                    break;
+                                case 7:
+                                    TPDoor ds7 = new TPDoor();
+                                    ds7.pos = 1186;
+                                    GameScene.add(ds7);
+                                    break;
+                                case 8:
+                                    TPDoor ds8 = new TPDoor();
+                                    ds8.pos = 820;
+                                    GameScene.add(ds8);
+                                    break;
+                            }
+
+
                             pro = MAZE_START;
                         }
                     }
@@ -290,10 +457,32 @@ public class ColdChestBossLevel extends Level {
                         if (pro == MAZE_START && boss.HP <= 300) {
                             //动态修改整个房间 宝藏迷宫
                             changeMap(EndMap);
+                            Buff.affect(boss, ChampionEnemy.Halo.class);
                             ScrollOfTeleportation.appear(boss,647);
                             //玩家移动到初始位
                             ScrollOfTeleportation.appear(hero, 962);
                             //drop( new PotionOfPurity(),648 );
+
+                            //进行Roll判定
+                            if(Random.Float()<0.5f) {
+                                switch(Random.NormalIntRange(0,1)){
+                                    case 0:
+                                        drop( new MIME.GOLD_FOUR(),217 );
+                                        break;
+                                    case 1:
+                                        drop( new MIME.GOLD_FOUR(),1042 );
+                                        break;
+                                }
+                            } else {
+                                switch(Random.NormalIntRange(0,1)){
+                                    case 0:
+                                        drop( new MIME.GOLD_FIVE(),217 );
+                                        break;
+                                    case 1:
+                                        drop( new MIME.GOLD_FIVE(),1042 );
+                                        break;
+                                }
+                            }
 
                             //生成四个水晶，宝箱王持续回血
                             for (int i : FourCrystal) {
@@ -336,7 +525,15 @@ public class ColdChestBossLevel extends Level {
                         //如果楼层为开始且boss血量小于100 判定WIN
                         if (pro == VSYOU_START && boss.HP <= 100) {
                             pro = WIN;
+                            Buff.detach(boss, ChampionEnemy.Halo.class);
+                            setMapEnd();
                         }
+                    }
+                }
+                //水晶自爆
+                for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if (boss instanceof DCrystal) {
+                        boss.die(true);
                     }
                 }
                 break;

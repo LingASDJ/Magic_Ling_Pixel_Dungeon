@@ -65,6 +65,7 @@ public class WndChallenges extends Window {
 	public WndChallenges( int checked, boolean editable, Callback callback ) {
 		this(checked, 0, editable, callback);
 	}
+	
 	private WndChallenges( int checked, int index, boolean editable, Callback callback ) {
 
 		super();

@@ -37,14 +37,14 @@ public class LockSword extends MeleeWeapon {
     @Override
     public int max(int lvl) {
 
-        return  Math.round(1.9f*(tier+1)) +
+        return  Math.round(1.7f*(tier+1)) +
                 lvl*Math.round(1.5f*(tier+1));
     }
 
     @Override
     public int min(int lvl) {
 
-        return  Math.round(1.5f*(tier+1)) +
+        return  Math.round(1.4f*(tier+1)) +
                 lvl*Math.round(0.5f*(tier+1));
     }
 
@@ -76,13 +76,13 @@ public class LockSword extends MeleeWeapon {
             lvl += 1;
         } else if (defender.properties().contains(Char.Property.BOSS) && defender.HP <= damage && lvl <= 1000) {
             //目标Boss血量小于实际伤害判定为死亡,+100
-            lvl += 100;
+            lvl += 50;
         } else if (defender.properties().contains(Char.Property.MINIBOSS) && defender.HP <= damage && lvl <= 1000) {
             //目标迷你Boss血量小于实际伤害判定为死亡,+30
-            lvl += 50;
+            lvl += 20;
         } else if (defender.HP <= damage && lvl <= 1000) {
             //目标血量小于实际伤害判定为死亡,+15
-            lvl += 15;
+            lvl += 10;
         }
 
         if (lvl>= 900) {

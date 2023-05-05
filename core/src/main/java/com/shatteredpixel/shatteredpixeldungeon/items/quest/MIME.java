@@ -21,12 +21,17 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 @SuppressWarnings("all")
 public class MIME extends Item {
+
+    public boolean isMimeSupported = false;
 
     {
         image = ItemSpriteSheet.DG21;
@@ -94,6 +99,30 @@ public class MIME extends Item {
         public int value() {
             return quantity * 1000;
         }
+    }
+
+    public boolean doPickUp(Hero hero, int pos) {
+        if (super.doPickUp(hero, pos)) {
+            if(!isMimeSupported){
+                Statistics.dimandchestmazeCollected++;
+                isMimeSupported = true;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private static final String COMBO = "combox";
+    @Override
+    public void storeInBundle( Bundle bundle ) {
+        super.storeInBundle(bundle);
+        isMimeSupported = bundle.getBoolean(COMBO);
+    }
+
+    public void restoreInBundle( Bundle bundle ) {
+        super.storeInBundle(bundle);
+        isMimeSupported = bundle.getBoolean(COMBO);
     }
 
 }

@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoRead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
@@ -54,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.Mag
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySoftDied;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
@@ -504,6 +506,13 @@ public class GameScene extends PixelScene {
 							break;
 						case 6:
 							WndStory.showChapter( WndStory.ID_PRISON );
+							break;
+						case 10:
+							if((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) {
+								WndStory.showChapter(WndStory.ID_COLDCHESTBOSS);
+							} else {
+								WndStory.showChapter(WndStory.ID_PRISONBOSS);
+							}
 							break;
 						case 11:
 							WndStory.showChapter( WndStory.ID_CAVES );
@@ -1403,6 +1412,7 @@ public class GameScene extends PixelScene {
 		Buff.detach( ch, BlessMixShiled.class );
 		Buff.detach( ch, BlessMobDied.class );
 		Buff.detach( ch, BlessNoMoney.class );
+		Buff.detach( ch, BlessAnmy.class );
 
 		Buff.detach( ch, MagicGirlSayCursed.class );
 		Buff.detach( ch, MagicGirlSayKill.class );
@@ -1410,6 +1420,7 @@ public class GameScene extends PixelScene {
 		Buff.detach( ch, MagicGirlSaySlowy.class );
 		Buff.detach( ch, MagicGirlSaySoftDied.class );
 		Buff.detach( ch, MagicGirlSayNoSTR.class );
+		Buff.detach( ch, MagicGirlSayTimeLast.class );
 	}
 
 	public static void bossSlain() {

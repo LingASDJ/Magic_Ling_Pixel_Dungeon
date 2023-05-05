@@ -25,6 +25,8 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
 
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
@@ -146,6 +148,8 @@ public class WndResurrect extends Window {
 					crivusfruitslevel2 = false;
 				}
 
+				//矮人将军
+				Buff.affect(hero, TestDwarfMasterLock.class).set((1), 1);
 
 				InterlevelScene.mode = InterlevelScene.Mode.RESURRECT;
 				Game.switchScene( InterlevelScene.class );

@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.IceHealHP;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.InvisibilityRing;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LanFireSprites;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
@@ -32,15 +33,17 @@ public class LanFire extends NPC {
 
     @Override
     protected boolean act() {
-        if (!seenBefore && Dungeon.level.heroFOV[pos]) {
+        if (!seenBefore && Dungeon.level.heroFOV[pos] && Dungeon.level.distance(pos, hero.pos) <= 3) {
             seenBefore = true;
             Buff.affect(hero, IceHealHP.class).set( (100), 1 );
+            Buff.affect(this, InvisibilityRing.class, 1000f);
             GLog.p("篝火的温暖照亮每一个在寒冷中徒步的冒险者，在寒冷而又凛冽的地牢中，这里是唯一的休息站。");
             spend(TICK);
             return true;
         } else if(seenBefore && !Dungeon.level.heroFOV[pos]) {
             seenBefore = false;
             Buff.detach( hero, IceHealHP.class );
+            Buff.detach( hero, InvisibilityRing.class);
             GLog.n("离开温暖的篝火休息站，前方迎面而来的又是凛冽的寒风。");
             return true;
         }

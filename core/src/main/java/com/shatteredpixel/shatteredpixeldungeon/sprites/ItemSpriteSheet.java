@@ -388,6 +388,8 @@ public class ItemSpriteSheet {
 	public static final int WAND_REGROWTH       = WANDS+11;
 	public static final int WAND_TRANSFUSION    = WANDS+12;
 	public static final int WAND_HTR    = WANDS+14;
+
+	public static final int WAND_KCX    = WANDS+15;
 	static {
 		for (int i = WANDS; i < WANDS+12; i++)
 			assignItemRect(i, 14, 14);
@@ -802,6 +804,8 @@ public class ItemSpriteSheet {
 	public static final int DLCBOOKS=		MAINBOOKINDEX+11;
 	public static final int DIFFCULTBOOT=		MAINBOOKINDEX+12;
 	public static final int STORYBOOKS=		MAINBOOKINDEX+13;
+
+	public static final int SOYBOOKS=		MAINBOOKINDEX+14;
 
 	private static final int MAINPALYBOOKS     = xy(1, 40);
 	public static final int MONEYBOOKS=		MAINPALYBOOKS+1;

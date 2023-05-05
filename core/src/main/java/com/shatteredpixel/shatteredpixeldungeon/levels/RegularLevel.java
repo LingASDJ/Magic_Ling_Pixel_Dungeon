@@ -69,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.MagicDimandRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BurningTrap;
@@ -232,6 +233,10 @@ public abstract class RegularLevel extends Level {
 
 		if (Dungeon.aqiLevel() && (Dungeon.isChallenged(AQUAPHOBIA)))
 			initRooms.add(new AquariumRoom());
+
+		if(Dungeon.depth == 9){
+			initRooms.add(new MagicDimandRoom());
+		}
 
 		if (Dungeon.NxhyshopOnLevel()) {
 			initRooms.add(new NxhyShopRoom());
