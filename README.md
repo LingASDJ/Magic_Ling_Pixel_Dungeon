@@ -1,49 +1,30 @@
-# Magic Ling Pixel Dungeon
+
+
+<div align="center"> 
+
+# AnsdoShip-Magic Ling Pixel Dungeon
 
 [![](https://img.shields.io/badge/join-QQ%20group-brightgreen?style=for-the-badge&logo=tencentqq)](https://jq.qq.com/?_wv=1027&k=R7ZXeEQM)
 ![](https://img.shields.io/github/repo-size/AnsdoShip/magic-ling-pixel-dungeon?style=for-the-badge&color=%23F8BBD0)
 ![](https://img.shields.io/github/release/AnsdoShip/magic-ling-pixel-dungeon?style=for-the-badge&color=%235C6BC0&label=0.6)
 
-A traditional roguelike game, with randomly generated levels, items, enemies, and traps! Based on the [source code of Shattered Pixel Dungeon](https://github.com/00-Evan/shattered-pixel-dungeon), by [ShatteredPixel](https://shatteredpixel.com).
+<!--滚动区域-->  
+<img src="https://capsule-render.vercel.app/api?type=Waving&color=ff40c6&height=200&animation=fadeIn&section=header&text=Magic%20Ling%20Pixel%20Dungeon&fontAlignY=30&desc=生日快乐，2周年&fontSize=40" />
 
-Magic Ling Pixel Dungeon currently compiles for Android and Desktop platforms. It is available from [GitHub](https://github.com/AnsdoShip/magic-ling-pixel-dungeon/releases).
+```
+未知不代表无知，亵渎的最高境界是忘我……
+```
 
-## Producers
-### Planning
-JDSA Ling
-### Program
-JDSA Ling  
-Karstian Lee  
-Evan Debenham & Kevin MacMartin (Shattered Pixel Dungeon's open source)  
-Watabou (Pixel Dungeon's open source)  
-Arcnor (libGDX port of Pixel Dungeon)
-### Item & Hero Design
-JDSA Ling  
-Evan Debenham & Aleksander Komitov (Shattered Pixel Dungeon)  
-Watabou (Pixel Dungeon)
-### Background Music
-Prohonor  
-Kristjan Haaristo (Shattered Pixel Dungeon)
-### Sound FX
-Celesti (Shattered Pixel Dungeon)  
-Watabou (Pixel Dungeon)  
-freesound.org
-### Graphics  
-JDSA Ling  
-Karstian Lee  
-Daniel Calan  
-REN  
-Leng Qunwei  
-Naiyazi  
-Evan Debenham & Aleksander Komitov (Shattered Pixel Dungeon)  
-Watabou (Pixel Dungeon)
-### Font
-Fusion Pixel Font (the main font used in game, website: https://fusion-pixel-font.takwolf.com)  
-Droid Sans Fallback (by Google, only be used in desktop version of the game)  
-Pixel Font (from Shattered Pixel Dungeon)
+</div>
 
-## Special Thanks
-[IntelliJ IDEA](https://en.wikipedia.org/wiki/IntelliJ_IDEA) is an IDE that maximizes the productivity of developers in all aspects, and is suitable for JVM platform languages.
 
-## License
-[GPL-3.0](https://github.com/AnsdoShip/carbonized-pixel-dungeon/blob/main/LICENSE.txt) (c) AnsdoShip Studio
+
+
+- 总作者：JDSA Ling
+- 美工：被子&Complexx&REN&Naiyazi&龙蚊
+- 音乐：Prohonor
+- 剧情设计：JDSA Ling
+- 平衡建议：怖，暗光，荨麻心绪
+- 测试协力：所有魔绫的测试人员
+
+</div>
