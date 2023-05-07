@@ -19,7 +19,7 @@
 |-|-
 | - 编码指导：SmuJB,Shower,Alexstrasza | - 外部引用：SSPD,OGPD,SRPD,CPD,SMPD |
 | - 美工：被子,Complexx,REN | - 平衡建议：怖，暗光，荨麻心绪 |
-| - 美工：Naiyazi,龙蚊|- 冷群怪,落白
+| - 美工：Naiyazi,龙蚊| - 美工：冷群怪,落白,Om9
 | - 音乐：Prohonor | - 测试协力：所有魔绫的测试人员 |
 
 </div>
