@@ -9,7 +9,7 @@
 ![](https://img.shields.io/github/release/AnsdoShip/magic-ling-pixel-dungeon?style=for-the-badge&color=%235C6BC0&label=0.6)
 
 <!--滚动区域-->  
-<img src="https://capsule-render.vercel.app/api?type=Waving&color=ff40c6&height=200&animation=fadeIn&section=header&text=Magic%20Ling%20Pixel%20Dungeon&fontAlignY=30&desc=生日快乐，2周年&fontSize=40" />
+<img src="https://capsule-render.vercel.app/api?type=Waving&color=ff40c6&height=200&animation=fadeIn&section=header&text=Magic%20Ling%20Pixel%20Dungeon&fontAlignY=30&desc=Happy%20birthday,2nd%20Anniversary!&fontSize=40" />
 
 ```
 未知不代表无知，亵渎的最高境界是忘我……
