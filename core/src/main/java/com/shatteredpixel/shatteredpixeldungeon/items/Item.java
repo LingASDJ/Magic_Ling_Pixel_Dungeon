@@ -73,8 +73,8 @@ public class Item implements Bundlable {
 	public int icon = -1; //used as an identifier for items with randomized images
 
 	public boolean stackable = false;
-	public int flasks;
 
+	public int flasks;
 
     protected int quantity = 1;
 	public boolean dropsDownHeap = false;

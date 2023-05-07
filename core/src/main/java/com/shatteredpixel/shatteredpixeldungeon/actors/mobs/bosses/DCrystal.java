@@ -54,7 +54,7 @@ public class DCrystal extends Mob {
                     }
 
                     //困难模式+6血量 治疗血量翻倍
-                    boss.HP = Math.min(Dungeon.isDIFFICULTY(HARD)?boss.HP+6 : boss.HP + 3, boss.HT/2);
+                    boss.HP = Math.min(Dungeon.isDIFFICULTY(HARD) ? boss.HP+6 : boss.HP + 3, boss.HT/2);
                     if (boss.sprite.visible) boss.sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
 
                     //不符合的情况下给予3回合激素涌动

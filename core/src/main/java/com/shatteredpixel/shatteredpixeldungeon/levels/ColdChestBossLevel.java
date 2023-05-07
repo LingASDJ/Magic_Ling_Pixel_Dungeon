@@ -457,6 +457,8 @@ public class ColdChestBossLevel extends Level {
                         if (pro == MAZE_START && boss.HP <= 300) {
                             //动态修改整个房间 宝藏迷宫
                             changeMap(EndMap);
+                            //在切换房间的时候立刻切换全新坐标
+                            setMapEnd();
                             Buff.affect(boss, ChampionEnemy.Halo.class);
                             ScrollOfTeleportation.appear(boss,647);
                             //玩家移动到初始位
@@ -526,7 +528,6 @@ public class ColdChestBossLevel extends Level {
                         if (pro == VSYOU_START && boss.HP <= 100) {
                             pro = WIN;
                             Buff.detach(boss, ChampionEnemy.Halo.class);
-                            setMapEnd();
                         }
                     }
                 }
