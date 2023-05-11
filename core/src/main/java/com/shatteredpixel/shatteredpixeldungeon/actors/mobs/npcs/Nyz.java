@@ -28,13 +28,23 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Callback;
 
-public class Nyz extends NPC {
+import java.util.ArrayList;
+
+public class Nyz extends NTNPC {
 
     {
 
         spriteClass = NyzSprites.class;
 
         properties.add(Property.IMMOVABLE);
+
+        chat = new ArrayList<String>() {
+            {
+                add(Messages.get(Nyz.class, "chat_1"));
+                add(Messages.get(Nyz.class, "chat_2"));
+                add(Messages.get(Nyz.class, "chat_3"));
+            }
+        };
     }
     private boolean seenBefore = false;
 
@@ -93,11 +103,11 @@ public class Nyz extends NPC {
 
     private void tell(String text) {
         Game.runOnRenderThread(new Callback() {
-                                   @Override
-                                   public void call() {
-                                       GameScene.show(new WndQuest(new Nyz(), text));
-                                   }
-                               }
+            @Override
+                public void call() {
+                    GameScene.show(new WndQuest(new Nyz(), text));
+                }
+            }
         );
     }
 
@@ -107,13 +117,15 @@ public class Nyz extends NPC {
 
     public boolean interact(Char c) {
         this.sprite.turnTo(this.pos, Dungeon.hero.pos);
-        if (seenBefore && Dungeon.level.heroFOV[pos]) {
+        if (seenBefore && Dungeon.level.heroFOV[pos] && Dungeon.depth != 0 || Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {
                     GameScene.show(new WndNyzShop(this));
                 }
             });
+        } else {
+            WndQuest.chating(this,chat);
         }
         return true;
     }

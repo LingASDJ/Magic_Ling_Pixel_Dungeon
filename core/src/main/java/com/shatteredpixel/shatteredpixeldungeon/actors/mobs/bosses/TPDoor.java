@@ -29,8 +29,13 @@ public class TPDoor extends Mob {
         baseSpeed =0;
     }
 
+    private int kill = 0;
+
     @Override
     public void damage(int dmg, Object src) {
+
+
+
         if (dmg >= 20){
             //20
             dmg = 20;
@@ -42,7 +47,12 @@ public class TPDoor extends Mob {
             }
         } else {
             dmg = 0;
-            GLog.n(Messages.get(this,"lowdamage"));
+            if(kill == 0){
+                GLog.n(Messages.get(this,"lowdamage"));
+                kill = 10;
+            } else {
+                kill--;
+            }
         }
         super.damage(dmg, src);
     }

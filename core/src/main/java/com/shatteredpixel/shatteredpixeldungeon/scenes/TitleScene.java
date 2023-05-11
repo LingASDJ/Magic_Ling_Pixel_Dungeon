@@ -39,9 +39,14 @@ public class TitleScene extends PixelScene {
 	@Override
 	public void create() {
 		super.create();
-//		SPDSettings.systemFont(false);
-		Music.INSTANCE.play(Assets.Music.THEME_1, true);
 
+//		if(SPDSettings.startPort(false)){
+//			SPDSettings.scale(3);
+//			ShatteredPixelDungeon.seamlessResetScene();
+//			SPDSettings.startPort(true);
+//		}
+
+		Music.INSTANCE.play(Assets.Music.THEME_1, true);
 
 		uiCamera.visible = false;
 
@@ -59,12 +64,6 @@ public class TitleScene extends PixelScene {
 
 		placeTorch(title.x + 22, title.y + 46);
 		placeTorch(title.x + title.width - 22, title.y + 46);
-
-//		placeTorch2(title.x + -5, title.y + 63);
-//		placeTorch2(title.x + title.width - 15, title.y + 63);
-//
-//		placeTorch3(title.x + -10, title.y + 46);
-//		placeTorch3(title.x + title.width - 10, title.y + 46);
 
 		Image swordLeft = new Image( BannerSprites.get( BannerSprites.Type.SWORD ) ) {
 			private float preCurTime = 0;
@@ -196,7 +195,7 @@ public class TitleScene extends PixelScene {
 				ShatteredPixelDungeon.switchNoFade(RankingsScene.class);
 			}
 		};
-		btnRankings.icon(new ItemSprite(ItemSpriteSheet.BREDBOOK, null));
+		btnRankings.icon(new ItemSprite(ItemSpriteSheet.LANTERNB, null));
 		add(btnRankings);
 
 		StyledButton btnBadges = new StyledButton(GREY_TR, Messages.get(this, "badges")) {

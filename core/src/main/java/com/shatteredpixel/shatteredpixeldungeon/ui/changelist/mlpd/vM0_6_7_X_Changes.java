@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM300;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PinkLingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -26,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MagicGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MolotovHuntsmanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MurdererSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.OGPDNQHZTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedSwarmSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
@@ -47,8 +49,9 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
-        add_v0_6_31_Changes(changeInfos);
+        add_v0_6_33_Changes(changeInfos);
         add_v0_6_32_Changes(changeInfos);
+        add_v0_6_31_Changes(changeInfos);
         add_v0_6_30_Changes(changeInfos);
         add_v0_6_29_Changes(changeInfos);
         add_v0_6_28_Changes(changeInfos);
@@ -82,6 +85,45 @@ public class vM0_6_7_X_Changes {
         add_v0_6_0_Changes(changeInfos);
     }
 
+    public static void add_v0_6_33_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta6(P3)", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("灯火前行V2.6"),
+                ("灯火现在进行了一些改动，低灯火值下玩家将会遇到重重考验。")));
+
+        changes.addButton(new ChangeButton(new PinkLingSprite(), ("新NPC预载:紫凛"),
+                ("将在0层入驻，在后续将会实装狩猎任务")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+
+        Image issxsaxs =new LanFireSprites();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs, ("篝火系统V0.3"),
+                ("改进了篝火系统，回暖回合时间减少，同时现在会饥饿。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GOLD), ("Boss终端系统改进"),
+                ("改进了终端系统，详情参考游戏内部")));
+
+        changes.addButton(new ChangeButton(new NyzSprites(), ("奈亚子商店改动"),
+                ("0层的奈亚子商店将有所变化")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHANGES), ("自动更新系统V1.2"),
+                ("现在检查到新版本为强制更新，而不是选择性更新。")));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X62")));
+
+    }
+
     public static void add_v0_6_32_Changes( ArrayList<ChangeInfo> changeInfos ) {
         ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta5.275(P3)", true, "");
         changes.hardlight(Window.TITLE_COLOR);
@@ -90,9 +132,6 @@ public class vM0_6_7_X_Changes {
         changes = new ChangeInfo("新内容", false, null);
         changes.hardlight(Window.GREEN_COLOR);
         changeInfos.add(changes);
-
-//        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("一些温馨提示"),
-//                ("对于尚未进行正常模式的玩家进行提示。例如BOSSRUSH模式。")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.CHANGES), ("自动更新系统"),
                 ("现在你可以在游戏内自动更新了，不需要再去下载更新包了。祝你游戏愉快！")));

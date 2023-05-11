@@ -27,11 +27,13 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NxhyNpc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PinkLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.REN;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.obSir;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 
@@ -117,6 +119,7 @@ public class ZeroLevel extends Level {
         drop( ( Generator.randomUsingDefaults( Generator.Category.STONE ) ), this.width * 16 + 19 );
         drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), this.width * 20 + 19 );
         drop( new Pasty(), this.width * 20 + 19  );
+
         if ( Badges.isUnlocked(Badges.Badge.GODD_MAKE)){
             drop( ( Generator.randomUsingDefaults( Generator.Category.RING ) ), this.width * 17 + 18 );
         }
@@ -137,6 +140,14 @@ public class ZeroLevel extends Level {
         return null;
     }
 
+    public static int[] SALEPOS = new int[]{
+        970,1008,1004,968,1116,1078,1118,1082
+    };
+
+    public static int[] POSSALE = new int[]{
+           969,1041,1117,1045
+    };
+
     protected void createMobs() {
         REN n = new REN();
         n.pos = (this.width * 18 + 16);
@@ -154,14 +165,22 @@ public class ZeroLevel extends Level {
         npc3.pos = (this.width * 18 + 20);
         mobs.add(npc3);
 
-//        PinkLing god1= new PinkLing();
-//        god1.pos = (this.width * 28 + 30);
-//        mobs.add(god1);
+        PinkLing god1= new PinkLing();
+        god1.pos = (this.width * 28 + 30);
+        mobs.add(god1);
 
         if (Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
             Nyz npc4= new Nyz();
             npc4.pos = (this.width * 28 + 7);
             mobs.add(npc4);
+            for (int i : SALEPOS) {
+                drop((Generator.randomUsingDefaults(Generator.Category.MISSILE)), i).type =
+                        Heap.Type.FOR_SALE;
+            }
+            for (int i : POSSALE) {
+                drop((Generator.randomUsingDefaults(Generator.Category.SEED)), i).type =
+                        Heap.Type.FOR_SALE;
+            }
        }
     }
 

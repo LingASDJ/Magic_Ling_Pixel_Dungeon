@@ -333,7 +333,7 @@ public class Toolbar extends Component {
 					}
 				}
 
-				startY = SPDSettings.scale() >= 4 ? 28 : 40;
+				startY = SPDSettings.scale() >= 4 ? 38 : 50;
 				for (int i = maxHorizontalQuickslots; i < btnQuick.length; i++) {
 					QuickslotTool tool = btnQuick[i];
 					tool.setPos(width - (tool.width() + 2), startY);

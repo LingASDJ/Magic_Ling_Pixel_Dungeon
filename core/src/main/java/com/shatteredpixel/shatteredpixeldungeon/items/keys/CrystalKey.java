@@ -37,5 +37,6 @@ public class CrystalKey extends Key {
 		super();
 		this.depth = depth;
 	}
+
 	
 }

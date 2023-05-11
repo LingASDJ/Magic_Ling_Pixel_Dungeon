@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.ClassPage;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -305,7 +306,7 @@ public class StatusPane extends Component {
 				timeStatusText.active=false;
 				timeStatusText.visible=false;
 			}
-			lanter.setPos(0, 500);
+			lanter.setPos(0, 1000);
 			busy.x = x + bg.width + 1;
 			busy.y = y + bg.height - 9;
 		} else {
@@ -349,7 +350,7 @@ public class StatusPane extends Component {
 			busy.x = x + 1;
 			busy.y = y + 33;
 
-			lanter.setPos(0, 500);
+			lanter.setPos(0, 1000);
 		}
 
 		if(SPDSettings.TimeLimit()) {
@@ -405,22 +406,28 @@ public class StatusPane extends Component {
 
 		if (ClassPage()) {
 			page.setPos(0, 40);
-			pageb.setPos(0, 500);
+			pageb.setPos(0, 1000);
 			mainhand.setPos(0, 51);
 			joinxxx.setPos(0, 78);
-			bossselect.setPos(0, 104);
+
+			if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
+				bossselect.setPos(0, 1000);
+			} else {
+				bossselect.setPos(0, 104);
+			}
+
 
 			if(lanterfireactive){
-				lanter.setPos(0, 500);
+				lanter.setPos(0, 1000);
 				lanterfirevae.visible = false;
 			}
 
 		} else {
-			page.setPos(0, 500);
+			page.setPos(0, 1000);
 			pageb.setPos(0, 40);
-			mainhand.setPos(0, 500);
-			joinxxx.setPos(0, 500);
-			bossselect.setPos(0, 500);
+			mainhand.setPos(0, 1000);
+			joinxxx.setPos(0, 1000);
+			bossselect.setPos(0, 1000);
 
 			if(lanterfireactive){
 				lanter.setPos(0, 75);

@@ -71,6 +71,10 @@ public class SPDSettings extends GameSettings {
 		return getBoolean(DEBUG_REPORT,false);
 	}
 
+	public static boolean startPort(boolean value) {
+		return getBoolean(START_PORT, value);
+	}
+
 	public static void version( int value)  {
 		put( KEY_VERSION, value );
 	}
@@ -101,7 +105,7 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_GRID 	    = "visual_grid";
 	public static final String KEY_SPLASH_SCREEN= "splash_screen";
 
-	public static final String BossRush	= "bossrush";
+	private static final String START_PORT  = "start_report";
 
 	//瀑布系统
 	public static void splashScreen( int value ) {

@@ -15,7 +15,7 @@ public class IceHpBuff extends Buff implements Hero.Doom {
     private static final String LEVEL = "level";
     private static final String PARTIALDAMAGE = "partialDamage";
 
-    private static final float STEP = 25.0f;
+    private static final float STEP = 15.0f;
 
     private float level;
     private float partialDamage;

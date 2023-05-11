@@ -430,7 +430,7 @@ public abstract class Char extends Actor {
 
 			//魔女的低语-软弱
 			if ( enemy.buff(  MagicGirlSaySoftDied.class ) != null){
-				effectiveDamage *= 1.05f;
+				effectiveDamage *= 1.25f;
 			}
 			
 			effectiveDamage = attackProc( enemy, effectiveDamage );

@@ -234,7 +234,7 @@ public abstract class RegularLevel extends Level {
 		if (Dungeon.aqiLevel() && (Dungeon.isChallenged(AQUAPHOBIA)))
 			initRooms.add(new AquariumRoom());
 
-		if(Dungeon.depth == 9){
+		if(Statistics.goldchestmazeCollected>=3){
 			initRooms.add(new MagicDimandRoom());
 		}
 

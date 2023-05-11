@@ -68,7 +68,7 @@ public class Hunger extends Buff implements Hero.Doom {
 
 		if (Dungeon.level.locked
 				|| target.buff(WellFed.class) != null
-				|| target.buff(ScrollOfChallenge.ChallengeArena.class) != null || Dungeon.depth == 0|| target.buff(IceHealHP.class) != null){
+				|| target.buff(ScrollOfChallenge.ChallengeArena.class) != null || Dungeon.depth == 0){
 			spend(STEP);
 			return true;
 		}

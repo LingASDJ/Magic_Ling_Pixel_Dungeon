@@ -47,7 +47,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -291,13 +290,13 @@ public class DiamondKnight extends Boss {
 
         phase++;
 
-        if (!Badges.isUnlocked(Badges.Badge.KILL_SM)){
-            Dungeon.level.drop( new SDBSword(), pos ).sprite.drop();
-        } else if (Random.Float()<0.43f) {
-            Dungeon.level.drop( new SDBSword(), pos ).sprite.drop();
-        } else {
+//        if (!Badges.isUnlocked(Badges.Badge.KILL_SM)){
+//            //Dungeon.level.drop( new SDBSword(), pos ).sprite.drop();
+//        } else if (Random.Float()<0.43f) {
+//            //Dungeon.level.drop( new SDBSword(), pos ).sprite.drop();
+//        } else {
             Dungeon.level.drop( new PotionOfExperience(), pos ).sprite.drop();
-        }
+//        }
 
         GameScene.bossSlain();
 

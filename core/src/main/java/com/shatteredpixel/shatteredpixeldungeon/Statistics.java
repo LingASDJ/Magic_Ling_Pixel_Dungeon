@@ -90,7 +90,10 @@ public class Statistics {
     public static boolean TryUsedAnmy= false;
 
     public static void reset() {
-		
+
+
+		boss_enhance = 0;
+
 		goldCollected	= 0;
 		deepestFloor	= -1;
 		enemiesSlain	= 0;
@@ -186,7 +189,12 @@ public class Statistics {
 
 	private static final String DDK		= "dada";
 
+	private static final String BossSelect	= "bossselect";
+
 	public static void storeInBundle( Bundle bundle ) {
+
+		bundle.put(BossSelect,boss_enhance);
+
 		bundle.put( LANTERACTIVE, lanterfireactive );
 		bundle.put(GOLDCHEST,	  goldchestmazeCollected);
 
@@ -247,6 +255,9 @@ public class Statistics {
 		naiyaziCollected = bundle.getInt(NAYAZICOLLECTED);
 
 		mimicking = bundle.getBoolean(MMC);
+
+
+		boss_enhance = bundle.getInt(BossSelect);
 
 		goldCollected	= bundle.getInt( GOLD );
 		deepestFloor	= bundle.getInt( DEEPEST );

@@ -1,13 +1,21 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.cure;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySoftDied;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
 public class Nyctophobia extends Buff implements Hero.Doom {
 
@@ -21,6 +29,50 @@ public class Nyctophobia extends Buff implements Hero.Doom {
 
     @Override
     public boolean act() {
+
+        if (hero.lanterfire < 51 && hero.lanterfire>31) {
+            cure( Dungeon.hero );
+            switch (Random.Int(5)){
+                case 0: default:
+                    Buff.affect(hero, MagicGirlSayMoneyMore.class).set( (100), 1 );
+                    break;
+                case 1:
+                    Buff.affect(hero, MagicGirlSaySoftDied.class).set( (100), 1 );
+                    break;
+                case 2:
+                    Buff.affect(hero, MagicGirlSaySlowy.class).set( (100), 1 );
+                    break;
+                case 3:
+                    Buff.affect(hero, MagicGirlSayKill.class).set( (100), 1 );
+                    break;
+                case 4:
+                    Buff.affect(hero, MagicGirlSayNoSTR.class).set( (100), 1 );
+                    break;
+                case 5:
+                    Buff.affect(hero, MagicGirlSayTimeLast.class).set( (100), 1 );
+                    break;
+            }
+            spend(100f);
+        } else if (hero.lanterfire < 31) {
+            cure( Dungeon.hero );
+            switch (Random.Int(5)){
+                case 0: case 1:
+                    Buff.affect(hero, MagicGirlSayMoneyMore.class).set( (100), 1 );
+                    Buff.affect(hero, MagicGirlSaySoftDied.class).set( (100), 1 );
+                    break;
+                case 2:case 3:
+                    Buff.affect(hero, MagicGirlSayTimeLast.class).set( (100), 1 );
+                    Buff.affect(hero, MagicGirlSaySlowy.class).set( (100), 1 );
+                    break;
+                case 4: case 5:
+                    Buff.affect(hero, MagicGirlSayKill.class).set( (100), 1 );
+                    Buff.affect(hero, MagicGirlSayNoSTR.class).set( (100), 1 );
+                    break;
+            }
+            spend(50f);
+        }
+
+
         if (Dungeon.depth <= 5) {
             spend(STEP);
             return true;
@@ -33,7 +85,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
                 diactivate();
                 return true;
             }
-            if (hero.lanterfire > 30) {
+            if (hero.lanterfire >= 0 ) {
                 hero.damageLantern(1);
                 spend(17f-(float) Dungeon.depth/5);
             } else {
@@ -76,7 +128,6 @@ public class Nyctophobia extends Buff implements Hero.Doom {
         } else {
             return BuffIndicator.LANTERFIRE_SIX;
         }
-
     }
 
     @Override

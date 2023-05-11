@@ -53,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
@@ -107,7 +108,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SkyShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
@@ -167,7 +167,6 @@ public enum HeroClass {
 			Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);
 
 			new BloodthirstyThorn().quantity(1).identify().collect();
-			new SDBSword().quantity(1).identify().collect();
 
 			new WashCrime().quantity(1).identify().collect();
 			new MagicTorch().quantity(1).identify().collect();
@@ -223,6 +222,8 @@ public enum HeroClass {
 			new MIME.GOLD_THREE().quantity(1).identify().collect();
 			new MIME.GOLD_FOUR().quantity(1).identify().collect();
 			new MIME.GOLD_FIVE().quantity(1).identify().collect();
+
+			new LeatherArmor().quantity(1).identify().collect();
 
 			Dungeon.gold = 600000000;
 			hero.STR = 27;

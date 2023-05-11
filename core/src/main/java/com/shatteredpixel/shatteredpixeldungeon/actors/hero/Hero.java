@@ -944,6 +944,9 @@ public class Hero extends Char {
 			getHeal.detach(belongings.backpack);
 		}
 
+		///测试坐标用
+		//GLog.w(String.valueOf(hero.pos));
+
 		//携带该物品时，玩家血量低于一半后自动隐身一段回合。
 		//actMove实现
 		MIME.GOLD_TWO getFalseBody = Dungeon.hero.belongings.getItem(MIME.GOLD_TWO.class);
@@ -1150,7 +1153,6 @@ public class Hero extends Char {
 					return false;
 
 				}
-
 
 				switch (heap.type) {
 				case TOMB:
