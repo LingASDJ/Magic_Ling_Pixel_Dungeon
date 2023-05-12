@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
+
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LanFire;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -16,9 +18,12 @@ public class LanFireRoom extends SpecialRoom {
         return 5;
     }
 
+    /** 中文注释
+     * @param level
+     */
     public void paint(Level level) {
         Painter.fill(level, this, 4);
-        Painter.fill(level, this, 1, 14);
+        Painter.fill(level, this, 1, WATER);
 
         placeLanFire(level);
 

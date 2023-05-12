@@ -278,9 +278,6 @@ public class ColdChestBossLevel extends Level {
 
         if(ch == hero){
             //指定区域
-
-
-
             if(S_MAIN_PORTAL.containsKey(ch.pos) && pro == START) {
                 ScrollOfTeleportation.appear(ch, IF_S_MAIN_PORTAL.get(ch.pos));
                 //传送目标区域 第一场景
@@ -290,7 +287,7 @@ public class ColdChestBossLevel extends Level {
                 if(ch.pos==682){
                     Buff.detach(hero, Levitation.class);
                 } else if(ch.pos==111||ch.pos==133) {
-                    Buff.affect( hero, Levitation.class, Levitation.DURATION*20 );
+                    Buff.affect( hero, Levitation.class, 114514f );
                 }
             }
 

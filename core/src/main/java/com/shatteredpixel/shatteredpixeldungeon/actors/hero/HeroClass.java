@@ -68,10 +68,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunB
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Cake;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLevitation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLightningShiledX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
@@ -162,7 +162,7 @@ public enum HeroClass {
 		if (Dungeon.isChallenged(Challenges.PRO)){
 			new LockSword().quantity(1).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
-			new PotionOfLevitation().quantity(100).identify().collect();
+			new MysteryMeat().quantity(100).identify().collect();
 
 			Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);
 

@@ -7,10 +7,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 
-public class IceHpBuff extends Buff implements Hero.Doom {
+public class IceHpBuff extends Buff {
 
     private static final String LEVEL = "level";
     private static final String PARTIALDAMAGE = "partialDamage";
@@ -22,6 +21,10 @@ public class IceHpBuff extends Buff implements Hero.Doom {
 
     @Override
     public boolean act() {
+
+        if(hero.icehp<0){
+            hero.icehp = 0;
+        }
 
         //第一阶段 刀锋寒冻(Thanks:二月)
         if(hero.icehp>=15 && Dungeon.depth<10){
@@ -50,7 +53,7 @@ public class IceHpBuff extends Buff implements Hero.Doom {
             }
             if (hero.icehp < 25 && Dungeon.depth<10) {
                 hero.damageIcehp(1);
-                spend(17f-(float) Dungeon.depth/5);
+                spend(32f-(float) Dungeon.depth/5);
             } else {
                 spend(STEP);
             }
@@ -96,10 +99,10 @@ public class IceHpBuff extends Buff implements Hero.Doom {
         return BuffIndicator.NONE;
     }
 
-    @Override
-    public void onDeath() {
-        GLog.n("无尽的黑暗涌入了你的意识，你最终被黑暗拖入了深渊...");
-    }
+//    @Override
+//    public void onDeath() {
+//        GLog.n("无尽的黑暗涌入了你的意识，你最终被黑暗拖入了深渊...");
+//    }
 
     @Override
     public void restoreFromBundle(Bundle bundle) {

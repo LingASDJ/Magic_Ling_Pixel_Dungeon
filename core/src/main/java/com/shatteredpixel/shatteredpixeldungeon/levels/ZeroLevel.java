@@ -140,8 +140,20 @@ public class ZeroLevel extends Level {
         return null;
     }
 
-    public static int[] SALEPOS = new int[]{
-        970,1008,1004,968,1116,1078,1118,1082
+    public static int[] SALEPOS_ONE = new int[]{
+        970,1008
+    };
+
+    public static int[] SALEPOS_TWO = new int[]{
+            1004,968
+    };
+
+    public static int[] SALEPOS_THREE = new int[]{
+            1116,1078
+    };
+
+    public static int[] SALEPOS_FOUR = new int[]{
+            1118,1082
     };
 
     public static int[] POSSALE = new int[]{
@@ -169,12 +181,24 @@ public class ZeroLevel extends Level {
         god1.pos = (this.width * 28 + 30);
         mobs.add(god1);
 
-        if (Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
+        if (!Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
             Nyz npc4= new Nyz();
             npc4.pos = (this.width * 28 + 7);
             mobs.add(npc4);
-            for (int i : SALEPOS) {
+            for (int i : SALEPOS_ONE) {
                 drop((Generator.randomUsingDefaults(Generator.Category.MISSILE)), i).type =
+                        Heap.Type.FOR_SALE;
+            }
+            for (int i : SALEPOS_TWO) {
+                drop((Generator.randomUsingDefaults(Generator.Category.POTION)), i).type =
+                        Heap.Type.FOR_SALE;
+            }
+            for (int i : SALEPOS_THREE) {
+                drop((Generator.randomUsingDefaults(Generator.Category.WEAPON)), i).type =
+                        Heap.Type.FOR_SALE;
+            }
+            for (int i : SALEPOS_FOUR) {
+                drop((Generator.randomUsingDefaults(Generator.Category.SCROLL)), i).type =
                         Heap.Type.FOR_SALE;
             }
             for (int i : POSSALE) {

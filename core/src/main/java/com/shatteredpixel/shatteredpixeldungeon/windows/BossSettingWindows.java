@@ -63,8 +63,10 @@ public class BossSettingWindows extends Window {
                                     checked( !checked );
                                     Dungeon.gold -= ((finalI+1) * (Math.max(depth / 5, 1)) * 200 );
                                     GLog.w(Messages.get(BossSettingWindows.class,"getboss")+Messages.get(BossSettingWindows.class, "boss_"+ (finalI + 1)));
-                                } else if (Dungeon.gold < ((finalI + 1) * (Math.max(depth / 5, 1)) * 200)) {
-                                    GLog.w(Messages.get(BossSettingWindows.class,"no_money"));
+                                } else if (index == 1) {
+                                    GLog.w(Messages.get(BossSettingWindows.class, "cancal"));
+                                } else if (Dungeon.gold < ((finalI + 1) * (Math.max(depth / 10, 1)) * 200)) {
+                                    GLog.w(Messages.get(BossSettingWindows.class, "no_money"));
                                 }
                             }
                         });

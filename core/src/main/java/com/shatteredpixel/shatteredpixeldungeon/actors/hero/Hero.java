@@ -558,17 +558,15 @@ public class Hero extends Char {
 		Buff.affect( this, Regeneration.class );
 		Buff.affect( this, Hunger.class );
 
+
 		if(lanterfireactive){
 			Buff.affect( this, Nyctophobia.class );
 		}
 
-		//寒冷buff初始化
 		Buff.affect( this, IceHpBuff.class );
 
 		if(HelpSettings()) {
 			Buff.affect(this, GameTracker.class);
-		} {
-			//Do Stauff
 		}
 	}
 	
@@ -942,6 +940,11 @@ public class Hero extends Char {
 			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 			GLog.w(Messages.get(this, "heartdied"));
 			getHeal.detach(belongings.backpack);
+		}
+		for(Buff buff : Dungeon.hero.buffs()) {
+			if (HelpSettings() && !(buff instanceof GameTracker)) {
+				Buff.affect(this, GameTracker.class);
+			}
 		}
 
 		///测试坐标用

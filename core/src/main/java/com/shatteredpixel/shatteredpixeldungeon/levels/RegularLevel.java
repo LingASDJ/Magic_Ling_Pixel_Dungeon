@@ -27,6 +27,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
 
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -234,7 +235,7 @@ public abstract class RegularLevel extends Level {
 		if (Dungeon.aqiLevel() && (Dungeon.isChallenged(AQUAPHOBIA)))
 			initRooms.add(new AquariumRoom());
 
-		if(Statistics.goldchestmazeCollected>=3){
+		if(Statistics.goldchestmazeCollected>=3 && Dungeon.depth == 9 && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
 			initRooms.add(new MagicDimandRoom());
 		}
 
