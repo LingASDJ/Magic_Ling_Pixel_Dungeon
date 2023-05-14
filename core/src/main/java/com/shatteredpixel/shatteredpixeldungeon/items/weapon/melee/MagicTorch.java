@@ -67,20 +67,8 @@ public class MagicTorch extends MeleeWeapon {
     @Override
     public void execute(Hero hero, String action) {
         super.execute(hero, action);
-        //当英雄使用魔法火把时，给英雄添加一个光环buff，光环buff会对周围的敌人造成伤害，
-        // 伤害值为英雄的魔法火把的最大伤害值，持续时间为5回合，每回合造成一次伤害，伤害值为英雄的魔法火把的最大伤害值，光环buff的名称为“光环”
-        switch (action) {
-            case AC_EQUIP:
-                Buff.affect(hero, MagicLight.class).set((100), 1);
-                break;
-            case AC_UNEQUIP:
-                doUnequip(hero, true);
-                Buff.detach(hero, MagicLight.class);
-                break;
-            case AC_THROW:
-                super.doThrow(hero);
-                Buff.detach(hero, MagicLight.class);
-                break;
+        if (AC_EQUIP.equals(action)) {
+            Buff.affect(hero, MagicLight.class).set((100), 1);
         }
     }
 
@@ -138,13 +126,13 @@ public class MagicTorch extends MeleeWeapon {
                 return false;
             }
         }
-        MagicTorch item = Dungeon.hero.belongings.getItem(MagicTorch.class);
+//        MagicTorch item = Dungeon.hero.belongings.getItem(MagicTorch.class);
         @Override
         public boolean act() {
             if (target.isAlive()) {
 
                 spend(interval);
-                if (level <= 0 || hero.belongings.weapon != item) {
+                if (level <= 0 || !(hero.belongings.weapon instanceof MagicTorch)) {
                     detach();
                 }
 

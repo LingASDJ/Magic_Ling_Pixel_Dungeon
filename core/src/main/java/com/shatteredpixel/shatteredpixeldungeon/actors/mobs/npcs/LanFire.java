@@ -69,9 +69,8 @@ public class LanFire extends NPC {
                                     hero.healIcehp(Math.max(0, 3));
                                     GameScene.pickUp(chargrilledMeat, Dungeon.hero.pos);
                                     chargrilledMeat.quantity(3).collect();
-                                    mysteryMeat.detach(hero.belongings.backpack);
-                                    mysteryMeat.detach(hero.belongings.backpack);
-                                    mysteryMeat.detach(hero.belongings.backpack);
+                                    mysteryMeat.quantity(mysteryMeat.quantity() - 3);
+                                    //mysteryMeat.detach(hero.belongings.backpack);
                                     hero.spend(9f);
                                     hero.busy();
                                     hero.sprite.operate(hero.pos);

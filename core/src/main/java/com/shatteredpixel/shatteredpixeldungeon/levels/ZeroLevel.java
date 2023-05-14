@@ -181,7 +181,7 @@ public class ZeroLevel extends Level {
         god1.pos = (this.width * 28 + 30);
         mobs.add(god1);
 
-        if (!Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
+        if (Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
             Nyz npc4= new Nyz();
             npc4.pos = (this.width * 28 + 7);
             mobs.add(npc4);

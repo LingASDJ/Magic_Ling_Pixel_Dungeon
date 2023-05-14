@@ -49,6 +49,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_34_Changes(changeInfos);
         add_v0_6_33_Changes(changeInfos);
         add_v0_6_32_Changes(changeInfos);
         add_v0_6_31_Changes(changeInfos);
@@ -83,6 +84,32 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_34_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta7(P3)", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        Image issxsaxs =new LanFireSprites();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs, ("篝火系统V0.4"),
+                ("改进了篝火系统，现在可以将神秘的肉转换为烤肉，无需炼金能量，还能回复大量温度")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14), ("寒冷系统0.2测试版"),
+                ("寒冷值增加延迟时间增加")));
+
+        changes.addButton(new ChangeButton(new NyzSprites(), ("奈亚子商店改动"),
+                ("0层的奈亚子商店进一步改进")));
+
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X63")));
+
     }
 
     public static void add_v0_6_33_Changes( ArrayList<ChangeInfo> changeInfos ) {

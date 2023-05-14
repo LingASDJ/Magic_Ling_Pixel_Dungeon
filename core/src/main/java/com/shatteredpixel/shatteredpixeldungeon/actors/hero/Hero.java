@@ -2116,7 +2116,7 @@ public class Hero extends Char {
 			Buff.prolong(this, Bless.class, Bless.GODSPOERF);
 		}
 
-		//监狱之水 祝福效果
+		//监狱之水 祝福效果 水里隐身
 		//如果是污泥浊水则触发Debuff
 		if(Dungeon.PrisonWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {
 			for (Buff buff : hero.buffs()) {
