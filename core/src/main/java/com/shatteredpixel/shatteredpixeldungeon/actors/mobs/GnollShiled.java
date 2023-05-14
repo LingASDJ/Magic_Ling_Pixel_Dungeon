@@ -24,7 +24,7 @@ public class GnollShiled extends Gnoll {
 
     public GnollShiled() {
         this.spriteClass = BombGnollTricksterSprites.class;
-        this.HT = HP = Random.Int(50,210);
+        this.HT = HP = Random.Int(80,120);
         this.defenseSkill = 5;
         this.EXP = 8;
         this.state = this.WANDERING;
@@ -114,8 +114,14 @@ public class GnollShiled extends Gnoll {
 
     public void die(Object cause) {
         GnollShiled.super.die(cause);
-        RedDragon.Quest.process();
         //赋予红龙权限
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (mob instanceof RedDragon && mob.isAlive()) {
+                RedDragon.Quest.process();
+            }
+        }
+
+
     }
 
     public void storeInBundle(Bundle bundle) {

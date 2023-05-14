@@ -100,13 +100,21 @@ public class WndDLCX extends Window {
                 cb.checked(false);
                 cb.visible=false;
             }
-            cb.active = editable;
-            cb.difficultyConduct = i;
+
 
             pos += GAP;
             cb.setRect(0, pos, WIDTH - 16, BTN_HEIGHT);
             if (i == Difficulty.DifficultyConduct.NULL){
                 cb.setSize(WIDTH, BTN_HEIGHT);
+            }
+
+            if (i == Difficulty.DifficultyConduct.HARD){
+                cb.alpha(0.7f);
+                cb.active=false;
+                cb.setPos(0,9000);
+            } else {
+                cb.active = editable;
+                cb.difficultyConduct = i;
             }
 
             content.add(cb);
@@ -124,7 +132,10 @@ public class WndDLCX extends Window {
                 infos.add(info);
                 Image icon = new Image(Assets.Interfaces.HAICONS, (i.ordinal() - 1) * 16, 0, 16, 16);
                 icon.x = cb.left()+1;
-                icon.y = cb.top()+1;
+                if (i == Difficulty.DifficultyConduct.HARD) {
+                    info.setPos(0,9000);
+                }
+                icon.y = cb.top() + 1;
                 content.add(icon);
             }
 

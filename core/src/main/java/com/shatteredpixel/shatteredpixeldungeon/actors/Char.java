@@ -573,9 +573,9 @@ public abstract class Char extends Actor {
 		//TODO 审判 削弱10%伤害
 		if ( buff(MagicGirlSayKill.class) != null ){
 			damage *= 0.90f;
-			//TODO 安息 x2伤害
+			//TODO 安息 x1.5伤害
 		} else if ( buff(BlessMobDied.class) != null ) {
-			damage *= 2f;
+			damage *= 1.5f;
 		}
 		if ( buff(AnkhInvulnerability.GodDied.class) != null ) {
 			damage *= 2.25f;

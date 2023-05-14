@@ -12,7 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 
-//TODO 娱乐模式加入
+
 public class ElixirOfNukeCole extends Elixir {
 
     {
@@ -24,7 +24,7 @@ public class ElixirOfNukeCole extends Elixir {
         Buff.affect(hero, HaloFireImBlue.class).set(HaloFireImBlue.DURATION);
         Buff.affect(hero, Haste.class, 10f);
         Buff.affect(hero, WellFed.class).resetload();
-        Buff.affect(hero, Barrier.class).setShield((int) (0.6f * hero.HT + 10));
+        Buff.affect(hero, Barrier.class).setShield((int) (0.3f * hero.HT + 10));
         Buff.affect(hero, Healing.class).setHeal((int) (0.4f * hero.HT + 5), 0.2f, 0);
         Sample.INSTANCE.play( Assets.Sounds.BURNING );
         hero.sprite.emitter().burst(FlameParticle.FACTORY, 10);

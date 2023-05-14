@@ -49,6 +49,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_35_Changes(changeInfos);
         add_v0_6_34_Changes(changeInfos);
         add_v0_6_33_Changes(changeInfos);
         add_v0_6_32_Changes(changeInfos);
@@ -84,6 +85,47 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_35_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta7.2(P3)", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        Image issxsaxs =new MolotovHuntsmanSprite();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs, ("精英刷怪机制调整"),
+                ("在原有基础上修改以下精英怪：\n" +
+                "魔像---》冰魔像 精英\n" +
+                "监狱守卫---》赏金猎人 精英\n"+
+                "洞穴蜘蛛---》豺狼炼药长老 精英\n" +
+                "红色怨灵---》血月火把猎人 精英\n\n" +
+                "同时现阶段有关于上面的正常刷怪被移除，也就是说冰魔像他们不再是常规刷新了。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.REDDRAGON), "核子可乐回归",
+                "核子可乐现在回归正常模式，且仅在困难难度前获得，并且效果有所减弱。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), "部分灯火Buff调整",
+                "部分灯火buff都进行了一定的调整：\n" +
+                "1.纯洁的祝福--前路\n调整：回血效果减半\n\n" +
+                "2.魔女的低语--无力\n调整：效果持续期间力量从-3调整至-1\n\n" +
+                "3.纯洁的祝福--安息\n调整：物理伤害从x2调整至x1.5\n\n" +
+                "4.纯洁的祝福--守护\n调整：效果持续期间每150回合获得一些护盾"));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Interfaces.HAICONS, 32, 0, 16, 16), "难度系统",
+                "难度系统现在困难模式暂时去除，数值的困难太敷衍，难度系统需要更多时间制作，敬请期待。"));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X64")));
+
     }
 
     public static void add_v0_6_34_Changes( ArrayList<ChangeInfo> changeInfos ) {

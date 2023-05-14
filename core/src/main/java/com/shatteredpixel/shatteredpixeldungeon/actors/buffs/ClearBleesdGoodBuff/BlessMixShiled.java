@@ -27,12 +27,12 @@ public class BlessMixShiled extends Buff {
 
             if(Dungeon.hero.buff(BlessMixShiled.class) != null && hero.HT == hero.HP){
                 if(Dungeon.depth <= 5) {
-                    Buff.affect(hero, Barrier.class).setShield(((60)));
+                    Buff.affect(hero, Barrier.class).setShield(((30)));
                 } else {
-                    Buff.affect(hero, Barrier.class).setShield(((60) * Dungeon.depth / 5));
+                    Buff.affect(hero, Barrier.class).setShield(((20) * Dungeon.depth / 5));
                 }
-                spend(100f);
-                GLog.w("你的血量已满，奖励你一些护盾值。");
+                spend(150f);
+                GLog.w("你的血量已满，奖励你"+(Dungeon.depth<=5 ? 20 : (20) * Dungeon.depth / 5)+"点护盾值。");
             }
 
             spend(interval);

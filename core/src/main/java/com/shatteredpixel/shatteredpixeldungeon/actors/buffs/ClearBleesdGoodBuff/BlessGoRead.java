@@ -30,7 +30,7 @@ public class BlessGoRead extends Buff {
             }
 
             if(hero.lanterfire > 60 ) {
-                float healDelay = 10f - 10*0.9f;
+                float healDelay = 10f - 10*0.5f;
                 healDelay /= 0.1f;
                 //effectively 1HP at lvl 0-5, 2HP lvl 6-8, 3HP lvl 9, and 5HP lvl 10.
                 target.HP = Math.min( target.HT, target.HP + (int)Math.ceil(5/healDelay));

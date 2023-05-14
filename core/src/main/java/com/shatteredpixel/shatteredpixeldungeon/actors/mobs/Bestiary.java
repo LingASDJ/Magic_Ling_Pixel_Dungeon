@@ -212,7 +212,8 @@ public class Bestiary {
 				return new ArrayList<>(Arrays.asList(
 						Bat.class,
 						Brute.class,Spinner.class,
-						DM100.class,RedSwarm.class));
+						DM100.class,RedSwarm.class,MolotovHuntsman.class,
+						MolotovHuntsman.class));
 
 			case 14:
 				return new ArrayList<>(Arrays.asList(
@@ -248,15 +249,15 @@ public class Bestiary {
 			case 19:
 				//1x elemental, 1x warlock, 2x monk, 3x golem
 				return new ArrayList<>(Arrays.asList(
-						Monk.class,IceGolem.class,
+						Monk.class,
 						Golem.class,ShieldHuntsman.class));
 			case 20:
 				//1x elemental, 1x warlock, 2x monk, 3x golem
 				return new ArrayList<>(Arrays.asList(
 						Elemental.random(),
 						Warlock.class, Warlock.class,
-						Monk.class, IceGolem.class,
-						Golem.class, IceGolem.class, Golem.class,Ice_Scorpio.class));
+						Monk.class,
+						Golem.class, Golem.class,Ice_Scorpio.class));
 
 			case 21:
 				//3x succubus, 3x evil eye
@@ -299,22 +300,22 @@ public class Bestiary {
 			// Sewers
 			default:
 				return;
-			case 9:
+			case 4:
 				if (Random.Float() < 0.025f) rotation.add(Thief.class);
 				return;
 
 			// Prison
-			case 19:
+			case 9:
 				if (Random.Float() < 0.025f) rotation.add(Bat.class);
 				return;
 
 			// Caves
-			case 29:
+			case 14:
 				if (Random.Float() < 0.025f) rotation.add(Ghoul.class);
 				return;
 
 			// City
-			case 39:
+			case 19:
 				if (Random.Float() < 0.025f) rotation.add(Succubus.class);
 				return;
 		}
@@ -327,8 +328,8 @@ public class Bestiary {
 				Class<? extends Mob> cl = rotation.get(i);
 				if (cl == Rat.class) {
 					cl = Albino.class;
-				} else if (cl == Slime.class) {
-					cl = CausticSlime.class;
+				} else if (cl == Guard.class) {
+					cl = SRPDHBLR.class;
 				} else if (cl == Thief.class) {
 					cl = Bandit.class;
 				} else if (cl == Brute.class) {
@@ -337,8 +338,14 @@ public class Bestiary {
 					cl = DM201.class;
 				} else if (cl == Monk.class) {
 					cl = Senior.class;
+				} else if (cl == Golem.class) {
+					cl = IceGolem.class;
 				} else if (cl == Scorpio.class) {
 					cl = Acidic.class;
+				} else if (cl == Spinner.class) {
+					cl = GnollShiled.class;
+				} else if (cl == FireGhost.class) {
+					cl = MolotovHuntsman.class;
 				}
 				rotation.set(i, cl);
 			}

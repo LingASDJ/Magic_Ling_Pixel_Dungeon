@@ -47,7 +47,7 @@ import com.watabou.utils.FileUtils;
 public class AndroidGame extends AndroidApplication {
 	
 	public static AndroidApplication instance;
-	private FirebaseAnalytics mFirebaseAnalytics;
+
 	private static AndroidPlatformSupport support;
 
 	@Override

@@ -320,7 +320,7 @@ public class Hero extends Char {
 
 		//无力 本大层-3力量 : 坚毅 本大层力量+2
 		if(Dungeon.hero.buff(MagicGirlSayNoSTR.class) != null){
-			strBonus -= 3;
+			strBonus -= 1;
 		} else if(Dungeon.hero.buff(BlessGoodSTR.class) != null) {
 			strBonus += 2;
 		}

@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfNukeCole;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -134,7 +135,7 @@ public class WndRedDragon extends Window {
         reward.identify();
         if (reward.doPickUp( hero )) {
             GLog.i( Messages.get(hero, "you_now_have", reward.name()) );
-            //new ElixirOfNukeCole().quantity(5).identify().collect();
+            new ElixirOfNukeCole().quantity(2).identify().collect();
             rewardObtained = true;
         } else {
             Dungeon.level.drop( reward, reddragon.pos ).sprite.drop();
