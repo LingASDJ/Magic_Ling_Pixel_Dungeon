@@ -274,11 +274,30 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
                             if (index == 0) {
                                 // 如果是桌面版就打开桌面版的下载链接，否则打开安卓版的下载链接
                                 if (DeviceCompat.isDesktop()) {
-                                    ShatteredPixelDungeon.platform.openURI(article.DesktopURL);
+                                    ShatteredPixelDungeon.scene().add(new WndOptions(Icons.get(Icons.CHANGES),
+                                            article.title,
+                                            article.summary,
+                                            "JAR版下载","NoJVM-版本下载") {
+                                        @Override
+                                        protected void onSelect(int index) {
+                                            if (index == 0) {
+                                                ShatteredPixelDungeon.platform.openURI(article.DesktopURL);
+                                            } else {
+                                                ShatteredPixelDungeon.platform.openURI("https://lingasdj.lanzouo.com/b05rqansf");
+                                            }
+                                            Gdx.app.exit();
+                                        }
+
+                                        @Override
+                                        public void onBackPressed() {
+                                            //
+                                        }
+                                    });
                                 } else {
                                     ShatteredPixelDungeon.platform.openURI(article.URL);
+                                    Gdx.app.exit();
                                 }
-                                Gdx.app.exit();
+
                             }
                         }
 

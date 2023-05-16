@@ -27,7 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -190,7 +189,11 @@ public class BloodthirstyThorn extends MeleeWeapon {
             }
 
             //返回圣杯一致的等级
-            bloodthirstyThorn.level=chaliceOfBlood.level();
+            if(chaliceOfBlood!=null){
+                bloodthirstyThorn.level=chaliceOfBlood.level();
+            } else {
+                bloodthirstyThorn.level=Random.NormalIntRange(3,6);
+            }
 
             bloodthirstyThorn.quantity(1).identify();
 
@@ -272,37 +275,7 @@ public class BloodthirstyThorn extends MeleeWeapon {
 
     }
 
-    //动态改变图标1
-    @Override
-    public void restoreFromBundle(Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        super.image = ItemSpriteSheet.BloodDir;
-        if (level() >= 5) {
-            super.image = ItemSpriteSheet.BloodDied;
-            //在载入存档更新图标的同时更新攻击范围
-            RCH=2;
-            ACC = 1.95f;
-        } else {
-            super.image = ItemSpriteSheet.BloodDir;
-        }
-    }
-
-    //动态改变图标2
-    @Override
-    public void storeInBundle(Bundle bundle) {
-        super.storeInBundle(bundle);
-        super.image = ItemSpriteSheet.BloodDir;
-        if (level() >= 5) {
-            //在保存存档更新图标的同时更新攻击范围
-            super.image = ItemSpriteSheet.BloodDied;
-            RCH=2;
-            ACC = 1.95f;
-        } else {
-            super.image = ItemSpriteSheet.BloodDir;
-        }
-    }
-
-    //动态改变图标3
+    //动态改变图标与范围
     @Override
     public int image() {
         super.image = ItemSpriteSheet.BloodDir;
