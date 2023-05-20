@@ -28,9 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
@@ -104,21 +102,17 @@ public class Challenges {
 			}
 		}
 
-		if (Dungeon.isChallenged(NO_HEALING)) {
-			if (item instanceof PotionOfHealing) {
-				return true;
-			} else if (item instanceof Blandfruit
-					&& ((Blandfruit) item).potionAttrib instanceof PotionOfHealing) {
-				return true;
-			}
-		}
-
-
+//		if (Dungeon.isChallenged(NO_HEALING)) {
+//			if (item instanceof PotionOfHealing) {
+//				return true;
+//			} else if (item instanceof Blandfruit
+//					&& ((Blandfruit) item).potionAttrib instanceof PotionOfHealing) {
+//				return true;
+//			}
+//		}
 
 		if (Dungeon.isChallenged(NO_HERBALISM)) {
-			if (item instanceof Dewdrop) {
-				return true;
-			}
+			return item instanceof Dewdrop;
 		}
 
 		return false;

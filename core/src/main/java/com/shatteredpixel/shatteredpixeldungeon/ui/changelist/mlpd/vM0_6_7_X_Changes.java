@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdRatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300SpiderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
@@ -49,6 +50,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_36_Changes(changeInfos);
         add_v0_6_35_Changes(changeInfos);
         add_v0_6_34_Changes(changeInfos);
         add_v0_6_33_Changes(changeInfos);
@@ -85,6 +87,35 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_36_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta7.3(P3)-520特别更新", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        Image issxsaxs =new DM720Sprite();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs, ("DM720调整"),
+                ("DM720现在将会在第三大层以20%概率出现，如果你未选择救赎寒冰公主的话。\n\n" +
+                        "同时，DM720将会追加一个三阶段，请小心！奖励有所变化。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MOBBOOKS), "第八个精英",
+                "苦痛精英：受到的伤害进行延时释放，拥有 45% 额外近战伤害。"));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.POTION_DEEPYELLOW), "经验修复",
+                "现在如果在游戏中获得了负数经验，将会在下次行动后立刻修复。"));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X65")));
     }
 
     public static void add_v0_6_35_Changes( ArrayList<ChangeInfo> changeInfos ) {

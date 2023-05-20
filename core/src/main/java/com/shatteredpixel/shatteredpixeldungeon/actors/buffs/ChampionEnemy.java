@@ -290,14 +290,15 @@ public abstract class ChampionEnemy extends Buff {
 		//we roll for a champion enemy even if we aren't spawning one to ensure that
 		//mobsToChampion does not affect levelgen RNG (number of calls to Random.Int() is constant)
 		Class<?extends ChampionEnemy> buffCls;
-		switch (Random.Int(7)){
+		switch (Random.Int(8)){
 			case 0: default:    buffCls = Blazing.class;      break;
 			case 1:             buffCls = Projecting.class;   break;
 			case 2:             buffCls = AntiMagic.class;    break;
 			case 3:             buffCls = Giant.class;        break;
 			case 4:             buffCls = Blessed.class;      break;
 			case 5:             buffCls = Growing.class;      break;
-			case 6:             buffCls = Halo.class;      break;
+			case 6:             buffCls = Halo.class;      	  break;
+			case 7:             buffCls = DelayMob.class;     break;
 		}
 
 		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES)) {
@@ -348,16 +349,6 @@ public abstract class ChampionEnemy extends Buff {
 			Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy);
 		}
 
-//		@Override
-//		public void detach() {
-//			for (int i : PathFinder.NEIGHBOURS9){
-//				if (!Dungeon.level.solid[target.pos+i]){
-//					GameScene.add(Blob.seed(target.pos+i, 4, HalomethaneFire.class));
-//				}
-//			}
-//			super.detach();
-//		}
-
 		@Override
 		public float meleeDamageFactor() {
 			return 1.15f;
@@ -366,6 +357,18 @@ public abstract class ChampionEnemy extends Buff {
 		{
 			immunities.add(HalomethaneBurning.class);
 			immunities.add(Burning.class);
+		}
+	}
+
+	public static class DelayMob extends ChampionEnemy {
+
+		{
+			color = 0x4B66AC;
+		}
+
+		@Override
+		public float meleeDamageFactor() {
+			return 1.45f;
 		}
 	}
 

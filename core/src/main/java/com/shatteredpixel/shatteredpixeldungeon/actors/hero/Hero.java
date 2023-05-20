@@ -947,6 +947,10 @@ public class Hero extends Char {
 			}
 		}
 
+		if(hero.exp < 0 && !(Dungeon.isChallenged(PRO))){
+			exp = Random.NormalIntRange(10,20);
+		}
+
 		///测试坐标用
 		//GLog.w(String.valueOf(hero.pos));
 

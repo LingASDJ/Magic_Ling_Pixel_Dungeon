@@ -84,12 +84,8 @@ public class BossSettingWindows extends Window {
             cbs.add(cb);
             pos += BOX_HEIGHT + GAP;
 
-//            if(i == 2){
-//                cb.setRect(GAP, 500, WIDTH - GAP * 2, BOX_HEIGHT);
-//            }
-
             //1 拟态王
-            if(i == 1 && !Badges.isUnlocked(Badges.Badge.KILL_SM) || i == 0 || i==2 || i==4){
+            if(i == 1 && !Badges.isUnlocked(Badges.Badge.KILL_SM) || i == 0 || i==4){
                 cb.alpha(0.4f);
                 cb.active=false;
                 cb.checked(false);
@@ -103,13 +99,35 @@ public class BossSettingWindows extends Window {
 
 //        level3 = new OptionSlider("", Messages.get(this, "dm300"),
 //                Messages.get(this, "ice"), 1, 3) {
+//
 //            @Override
 //            protected void onChange() {
-//                SPDSettings.level3boss(getSelectedValue());
-//            }
+//                    ShatteredPixelDungeon.scene().add(new WndOptions(new ItemSprite(ItemSpriteSheet.GOLD),
+//                            Messages.get(BossSettingWindows.class, "bossattack"),
+//                            Messages.get(BossSettingWindows.class, "bossgold") + ((2 + 1) * (Math.max(depth / 5,
+//                                    1)) * 200),
+//                            Messages.get(BossSettingWindows.class, "bug"), Messages.get(BossSettingWindows.class,
+//                            "not_yet")) {
+//                        @Override
+//                        protected void onSelect(int index) {
+//                            if (index == 0 && Dungeon.gold >= ((2 + 1) * (Math.max(depth / 5, 1)) * 200)) {
+//                                Dungeon.gold -= ((2 + 1) * (Math.max(depth / 5, 1)) * 200);
+//                                GLog.w(Messages.get(BossSettingWindows.class, "getboss") + Messages.get(BossSettingWindows.class, "boss_" + (2 + 1)));
+//                                SPDSettings.level3boss(getSelectedValue());
+//                            } else if (index == 1) {
+//                                GLog.w(Messages.get(BossSettingWindows.class, "cancal"));
+//                                SPDSettings.level3boss(9);
+//                            } else if (Dungeon.gold < ((2 + 1) * (Math.max(depth / 10, 1)) * 200)) {
+//                                GLog.w(Messages.get(BossSettingWindows.class, "no_money"));
+//                                SPDSettings.level3boss(9);
+//                            }
+//                        }
+//                    });
+//                }
+//
 //        };
 //        level3.setRect(GAP, 50, WIDTH - GAP * 2, BOX_HEIGHT);
-//        level3.setSelectedValue(SPDSettings.level3boss());
+//        //level3.setSelectedValue(SPDSettings.level3boss());
 //        add(level3);
 
         resize(WIDTH, HEIGHT);

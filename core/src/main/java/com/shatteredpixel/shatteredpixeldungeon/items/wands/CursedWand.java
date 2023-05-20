@@ -295,7 +295,7 @@ public class CursedWand {
 
 			//inter-level teleportation
 			case 2:
-				if (Dungeon.depth > 1 && !Dungeon.bossLevel() && user == Dungeon.hero) {
+				if (Dungeon.depth > 1 && !Dungeon.bossLevel() && user == Dungeon.hero && Dungeon.isDLC(Conducts.Conduct.NULL)) {
 
 					//each depth has 1 more weight than the previous depth.
 					float[] depths = new float[Dungeon.depth-1];
@@ -314,7 +314,6 @@ public class CursedWand {
 
 				} else {
 					ScrollOfTeleportation.teleportChar(user);
-
 				}
 				return true;
 

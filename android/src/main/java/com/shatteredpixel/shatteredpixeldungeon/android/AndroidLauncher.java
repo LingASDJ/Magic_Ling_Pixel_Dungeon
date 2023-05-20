@@ -60,5 +60,12 @@ public class AndroidLauncher extends Activity {
 			text.setPadding(10, 10, 10, 10);
 			setContentView(text);
 		}
+
+//		FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+//		FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+//				.setMinimumFetchIntervalInSeconds(3600)
+//				.build();
+//		mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+
 	}
 }

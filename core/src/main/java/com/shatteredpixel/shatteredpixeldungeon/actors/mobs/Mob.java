@@ -61,6 +61,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
@@ -801,6 +802,12 @@ public abstract class Mob extends Char {
 		if (state != HUNTING && !(src instanceof Corruption)) {
 			alerted = true;
 		}
+
+		if(this.buff(ChampionEnemy.DelayMob.class) != null && dmg> 0){
+			Viscosity.DeferedDamage deferred = Buff.affect( this, Viscosity.DeferedDamage.class );
+			deferred.prolong( dmg );
+		}
+
 		
 		super.damage( dmg, src );
 	}

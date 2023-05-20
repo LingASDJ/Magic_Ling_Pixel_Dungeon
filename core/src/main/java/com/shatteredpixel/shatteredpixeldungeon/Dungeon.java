@@ -461,13 +461,11 @@ public class Dungeon {
 					level = new CavesLevel();
 					break;
 				case 15:
-					if (SPDSettings.level3boss()==3){
+					if((Statistics.boss_enhance & 0x3) != 0){
 						level = new CavesGirlDeadLevel();
-					} else if (SPDSettings.level3boss()==2){
-						level = new CaveTwoBossLevel();
-					} else {
-						level = new NewCavesBossLevel();
 					}
+					else
+						level = Random.Float()<=0.4f ? new CaveTwoBossLevel() : new NewCavesBossLevel();
 					break;
 				case 16:
 				case 17:

@@ -474,7 +474,7 @@ public class HeroSelectScene extends PixelScene {
 		IconButton DungeonHappyMode = new IconButton(new ItemSprite(ItemSpriteSheet.LANTERNB)) {
 			@Override
 			protected void onClick() {
-				if(1==1){
+				if ( Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3)){
 					ShatteredPixelDungeon.scene().addToFront(new WndDLC(SPDSettings.dlc(), true));
 				} else {
 					ShatteredPixelDungeon.scene().addToFront(new WndMessage("击败_第三大层Boss_后解锁娱乐模式。"));
@@ -489,12 +489,7 @@ public class HeroSelectScene extends PixelScene {
 		IconButton DiffcultButton = new IconButton(new ItemSprite(ItemSpriteSheet.DIFFCULTBOOT)) {
 			@Override
 			protected void onClick() {
-				if(1==1){
-					ShatteredPixelDungeon.scene().addToFront(new WndDLCX(SPDSettings.difficulty(), true));
-				} else {
-					ShatteredPixelDungeon.scene().addToFront(new WndMessage("获得_不屈斗士_徽章后解锁难度系统。--暂未实装"));
-				}
-
+				ShatteredPixelDungeon.scene().addToFront(new WndDLCX(SPDSettings.difficulty(), true));
 			}
 		};
 		DiffcultButton.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );

@@ -1,6 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
-import static com.shatteredpixel.shatteredpixeldungeon.DLC.BOSSRUSH;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
@@ -142,8 +141,8 @@ public class BGMPlayer {
             } else if (Dungeon.bossLevel() && t == 15 && Statistics.spawnersIce > 0) {
                 Music.INSTANCE.play(Assets.BGM_BOSSC3, true);
             } else if (Dungeon.bossLevel() && t == 15) {
-                if(SPDSettings.level3boss()==3)  Music.INSTANCE.play(Assets.BGM_BOSSC3, true);
-                else Music.INSTANCE.play(Assets.BGM_BOSSC, true);
+                if((Statistics.boss_enhance & 0x8) != 0)  Music.INSTANCE.play(Assets.BGM_BOSSC3, true);
+                else  Music.INSTANCE.play(Assets.BGM_BOSSC, true);
             } else if (Dungeon.bossLevel() && t == 20) {
                 if((Statistics.boss_enhance & 0x8) != 0)  Music.INSTANCE.play(Assets.BGM_BOSSD2, true);
                 else  Music.INSTANCE.play(Assets.BGM_BOSSD, true);

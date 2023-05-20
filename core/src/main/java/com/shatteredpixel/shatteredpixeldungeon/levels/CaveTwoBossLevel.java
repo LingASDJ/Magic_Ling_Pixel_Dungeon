@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM720;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OldDM300;
@@ -122,7 +123,7 @@ public class CaveTwoBossLevel extends Level {
         Painter.fill(this, 10, 8, 13, 1, Terrain.CHASM);
         Painter.fill(this, 12, 9, 9, 1, Terrain.CHASM);
         Painter.fill(this, 13, 10, 7, 1, Terrain.CHASM);
-        Painter.fill(this, 14, 3, 5, 10, Terrain.WATER);
+        Painter.fill(this, 14, 3, 5, 10, Terrain.EMPTY);
 
         //fill in special floor, statues, and exits
         Painter.fill(this, 15, 2, 3, 3, Terrain.WATER);
@@ -400,8 +401,8 @@ public class CaveTwoBossLevel extends Level {
 
     private static final short n = -1; //used when a tile shouldn't be changed
     private static final short W = Terrain.WALL;
-    private static final short e = Terrain.WATER;
-    private static final short s = Terrain.WATER;
+    private static final short e = Terrain.EMPTY;
+    private static final short s = Terrain.EMPTY;
 
     private static short[] entrance1 = {
             n, n, n, n, n, n, n, n,
@@ -768,11 +769,12 @@ public class CaveTwoBossLevel extends Level {
 
                         Char ch = Actor.findChar(cell);
                         if (ch != null && !(ch instanceof NewDM720)) {
-                            Sample.INSTANCE.play( Assets.Sounds.LIGHTNING );
-                            if(Dungeon.hero.buff(ChampionHero.Light.class) != null){
-                                ch.damage( Random.NormalIntRange(0, 0), Electricity.class);
+
+                            if(Dungeon.hero.buff(ChampionHero.Light.class) != null || Dungeon.hero.buff(LockedFloor.class) == null || ch.buff(ChampionHero.Light.class) != null){
+                                return;
                             } else {
                                 ch.damage(Random.NormalIntRange(6, 12), Electricity.class);
+                                Sample.INSTANCE.play( Assets.Sounds.LIGHTNING );
                             }
                             ch.sprite.flash();
 

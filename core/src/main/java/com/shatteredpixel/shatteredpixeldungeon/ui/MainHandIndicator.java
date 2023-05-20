@@ -2,11 +2,12 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GuideScene;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
@@ -83,19 +84,7 @@ public class MainHandIndicator extends Button {
             @Override
             protected void onClick() {
                 super.onClick();
-//                    ShatteredPixelDungeon.scene().add(new WndOptions(
-//                            Messages.get(this, "saver"),
-//                            Messages.get(this, "saver_desc"),
-//                            Messages.get(this, "okay"),
-//                            Messages.get(this, "cancel")) {
-//                        @Override
-//                        protected void onSelect(int index) {
-//                            if (index == 0) {
-//                                ShatteredPixelDungeon.switchNoFade(GuideScene.class);
-//                            }
-//                        }
-//                    });
-                tell(Messages.get(Slyl.class, "readbooks"));
+                ShatteredPixelDungeon.switchNoFade(GuideScene.class);
             }
 
         });

@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -30,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
@@ -53,7 +53,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CaveTwoBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
-import com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -318,7 +317,7 @@ public class NewDM720 extends MolotovHuntsman {
         if (Dungeon.level.map[step] == Terrain.INACTIVE_TRAP && state == HUNTING) {
 
             //don't gain energy from cells that are energized
-            if (NewCavesBossLevel.PylonEnergy.volumeAt(pos, NewCavesBossLevel.PylonEnergy.class) > 0){
+            if (CaveTwoBossLevel.PylonEnergy.volumeAt(pos, CaveTwoBossLevel.PylonEnergy.class) > 0){
                 return;
             }
 
@@ -434,7 +433,7 @@ public class NewDM720 extends MolotovHuntsman {
                     safeCell = rockCenter + PathFinder.NEIGHBOURS8[Random.Int(8)];
                 } while (safeCell == pos
                         || (Dungeon.level.solid[safeCell] && Random.Int(2) == 0)
-                        || (Blob.volumeAt(safeCell, NewCavesBossLevel.PylonEnergy.class) > 0 && Random.Int(2) == 0));
+                        || (Blob.volumeAt(safeCell, CaveTwoBossLevel.PylonEnergy.class) > 0 && Random.Int(2) == 0));
 
                 int start = rockCenter - Dungeon.level.width() * 3 - 3;
                 int pos;
@@ -531,10 +530,12 @@ public class NewDM720 extends MolotovHuntsman {
 //            GetBossLoot();
 //        }
         super.die(cause);
-        Badges.validateBossSlain();
-        Badges.KILLSDM720();
-        GameScene.bossSlain();
-        Dungeon.level.unseal();
+        cause = new MoloHR();
+        ((MoloHR) cause).pos = pos;
+        GameScene.add(((Mob) (cause)));
+        Buff.affect((Mob) (cause), ChampionHero.Light.class, ChampionHero.DURATION*200f);
+        ((Mob) (cause)).notice();
+
         //60% chance of 2 shards, 30% chance of 3, 10% chance for 4. Average of 2.5
         int shards = Random.chances(new float[]{0, 0, 6, 3, 1});
         for (int i = 0; i < shards; i++) {
@@ -544,7 +545,6 @@ public class NewDM720 extends MolotovHuntsman {
             } while (!Dungeon.level.passable[pos + ofs]);
             Dungeon.level.drop(new MetalShard(), pos + ofs).sprite.drop(pos);
         }
-        Badges.validateBossSlain();
 
         Dungeon.level.drop(new CapeOfThorns(), pos).sprite.drop(pos);
         yell( Messages.get(this, "defeated") );
@@ -586,7 +586,7 @@ public class NewDM720 extends MolotovHuntsman {
             if (bestpos != pos){
                 Sample.INSTANCE.play( Assets.Sounds.ROCKS );
 
-                Rect gate = NewCavesBossLevel.gate;
+                Rect gate = CaveTwoBossLevel.gate;
                 for (int i : PathFinder.NEIGHBOURS9){
                     if (Dungeon.level.map[pos+i] == Terrain.WALL || Dungeon.level.map[pos+i] == Terrain.WALL_DECO){
                         Point p = Dungeon.level.cellToPoint(pos+i);

@@ -22,8 +22,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM720;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
@@ -46,6 +48,22 @@ public class DM720Sprite extends MobSprite {
         texture( Assets.Sprites.DM720 );
 
         updateChargeState(false);
+    }
+
+    public void attack(int cell) {
+        if (!Dungeon.level.adjacent(cell, this.ch.pos)) {
+            ((MissileSprite)this.parent.recycle(MissileSprite.class)).reset(this.ch.pos, cell, new Tengu.BombAbility.BombItem(),
+                    new Callback() {
+                public void call() {
+                    DM720Sprite.this.ch.onAttackComplete();
+                }
+            });
+            this.play(this.attack);
+            this.turnTo(this.ch.pos, cell);
+        } else {
+            super.attack(cell);
+        }
+
     }
 
     public void updateChargeState( boolean enraged ){
