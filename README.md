@@ -5,8 +5,8 @@
 # AnsdoShip-Magic Ling Pixel Dungeon
 
 [![](https://img.shields.io/badge/join-QQ%20group-brightgreen?style=for-the-badge&logo=tencentqq)](https://jq.qq.com/?_wv=1027&k=R7ZXeEQM)
-![](https://img.shields.io/github/repo-size/AnsdoShip/magic-ling-pixel-dungeon?style=for-the-badge&color=%23F8BBD0)
-![](https://img.shields.io/github/release/AnsdoShip/magic-ling-pixel-dungeon?style=for-the-badge&color=%235C6BC0&label=0.6)
+![](https://img.shields.io/github/repo-size/LingASDJ/magic-ling-pixel-dungeon?style=for-the-badge&color=%23F8BBD0)
+![](https://img.shields.io/github/release/LingASDJ/magic-ling-pixel-dungeon?style=for-the-badge&color=%235C6BC0&label=0.6)
 
 <!--滚动区域-->  
 <img src="https://capsule-render.vercel.app/api?type=Waving&color=ff40c6&height=200&animation=fadeIn&section=header&text=Magic%20Ling%20Pixel%20Dungeon&fontAlignY=30&desc=Happy%20birthday,2nd%20Anniversary!&fontSize=40" />
