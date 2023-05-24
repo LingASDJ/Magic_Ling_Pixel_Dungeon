@@ -45,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
+import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -76,6 +77,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.NewCityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewHallsBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SLMKingLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
@@ -109,6 +111,12 @@ public class Dungeon {
 	public static int nyzbuy;
 	public static int boss;
 
+	public static boolean interfloorTeleportAllowed(){
+		if (Dungeon.level.locked || (Dungeon.hero != null && Dungeon.hero.belongings.getItem(Amulet.class) != null)){
+			return false;
+		}
+		return true;
+	}
 
 	//雪凛峡谷A
 	public static Level ColdFlowerCanyon(){
@@ -263,14 +271,23 @@ public class Dungeon {
 	public static SparseArray<ArrayList<Item>> droppedItems;
 	public static SparseArray<ArrayList<Item>> portedItems;
 
+	public static int initialVersion;
 	public static int version;
 
 	public static long seed;
 	public static String customSeedText = "";
 
-	public static void init() {
 
-		version = Game.versionCode;
+	public static int branch;
+
+	public static void updateLevelExplored(){
+		if (branch == 0 && level instanceof RegularLevel && !Dungeon.bossLevel()){
+			Statistics.floorsExplored.put( depth, level.isLevelExplored(depth));
+		}
+	}
+
+	public static void init() {
+		initialVersion = version = Game.versionCode;
 		challenges = SPDSettings.challenges();
 
 		//娱乐模式
@@ -314,7 +331,7 @@ public class Dungeon {
 		QuickSlotButton.reset();
 
 		depth = -1;
-
+		branch = 0;
 		gold = 0;
 		energy = 0;
 		nyzbuy = 1;
@@ -369,136 +386,151 @@ public class Dungeon {
 		}
 
 		Level level;
-		if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-			switch (depth) {
-				case 17: case 27:case 0:
-					level = new AncityLevel();
-					Buff.affect(hero, RandomBuff.class).set( (5), 1 );
-					break;
-				case 1: case 3: case 6:case 7:case 9: case 11: case 13: case 15:case 18: case 20: case 24:
-					level = new ItemLevel();
-					break;
-				case 2:
-					level = new ForestBossLevel();
-					break;
-				case 4:
-					level = new SewerBossLevel();
-					break;
-				case 5:
-					level = new SLMKingLevel();
-					break;
-				case 8:
-					level = new PrisonBossLevel();
-					break;
-				case 10:
-					level = new DimandKingLevel();
-					break;
-				case 12:
-					level = new NewCavesBossLevel();
-					break;
-				case 14:
-					level = new CaveTwoBossLevel();
-					break;
-				case 16:
-					level = new CavesGirlDeadLevel();
-					break;
-				case 19:
-					level = new ShopBossLevel();
-					break;
-				case 21:
-					level = new NewCityBossLevel();
-					Buff.affect(hero, TestDwarfMasterLock.class).set((1), 1);
-					break;
-				case 22:case 23:
-					level = new CityLevel();
-					break;
-				//TODO FIXED LIST:矮人将军那里用没祝福的十字架复活,Boss会消失不见
-				case 25:
-					level = new DwarfMasterBossLevel();
-					break;
-				case 26:
-					level = new YogGodHardBossLevel();
-					break;
-				case 28:
-					level = new DM920BossLevel();
-					Buff.affect(hero, TestDwarfMasterLock.class).set((1), 1);
-					break;
-				default:
-					level = new DeadEndLevel();
-					Statistics.deepestFloor--;
-			}
-		} else
-			switch (depth) {
-				case 0:
-					level = new ZeroLevel();
-					break;
-				case 1:
-				case 2:
-				case 3:
-				case 4:
-					level = new SewerLevel();
-					break;
-				case 5:
-					level = new ForestBossLevel();
-					break;
-				case 6:
-				case 7:
-				case 8:
-				case 9:
-					level = new PrisonLevel();
-					break;
-				case 10:
-					if((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking){
-						level = new ColdChestBossLevel();
-					}
-					else
+		if (branch == 0) {
+			if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+				switch (depth) {
+					case 17:
+					case 27:
+					case 0:
+						level = new AncityLevel();
+						Buff.affect(hero, RandomBuff.class).set((5), 1);
+						break;
+					case 1:
+					case 3:
+					case 6:
+					case 7:
+					case 9:
+					case 11:
+					case 13:
+					case 15:
+					case 18:
+					case 20:
+					case 24:
+						level = new ItemLevel();
+						break;
+					case 2:
+						level = new ForestBossLevel();
+						break;
+					case 4:
+						level = new SewerBossLevel();
+						break;
+					case 5:
+						level = new SLMKingLevel();
+						break;
+					case 8:
 						level = new PrisonBossLevel();
-					break;
-				case 11:
-				case 12:
-				case 13:
-				case 14:
-					level = new CavesLevel();
-					break;
-				case 15:
-					if((Statistics.boss_enhance & 0x3) != 0){
+						break;
+					case 10:
+						level = new DimandKingLevel();
+						break;
+					case 12:
+						level = new NewCavesBossLevel();
+						break;
+					case 14:
+						level = new CaveTwoBossLevel();
+						break;
+					case 16:
 						level = new CavesGirlDeadLevel();
-					}
-					else
-						level = Random.Float()<=0.4f ? new CaveTwoBossLevel() : new NewCavesBossLevel();
-					break;
-				case 16:
-				case 17:
-				case 18:
-				case 19:
-					level = new CityLevel();
-					break;
-				case 20:
-					if((Statistics.boss_enhance & 0x8) != 0) {
+						break;
+					case 19:
+						level = new ShopBossLevel();
+						break;
+					case 21:
+						level = new NewCityBossLevel();
 						Buff.affect(hero, TestDwarfMasterLock.class).set((1), 1);
+						break;
+					case 22:
+					case 23:
+						level = new CityLevel();
+						break;
+					//TODO FIXED LIST:矮人将军那里用没祝福的十字架复活,Boss会消失不见
+					case 25:
 						level = new DwarfMasterBossLevel();
 						break;
-					}
-					else
-						level = new NewCityBossLevel();
-					break;
-				case 21:
-				case 22:
-				case 23:
-				case 24:
-					level = new HallsLevel();
-					break;
-				case 25:
-					if((Statistics.boss_enhance & 0x10) != 0) level = new YogGodHardBossLevel();
-					else level = new NewHallsBossLevel();
-					break;
-				case 26:
-					level = new LastLevel();
-					break;
-				default:
-					level = new DeadEndLevel();
-					Statistics.deepestFloor--;
-			}
+					case 26:
+						level = new YogGodHardBossLevel();
+						break;
+					case 28:
+						level = new DM920BossLevel();
+						Buff.affect(hero, TestDwarfMasterLock.class).set((1), 1);
+						break;
+					default:
+						level = new DeadEndLevel();
+						Statistics.deepestFloor--;
+				}
+			} else
+				switch (depth) {
+					case 0:
+						level = new ZeroLevel();
+						break;
+					case 1:
+					case 2:
+					case 3:
+					case 4:
+						level = new SewerLevel();
+						break;
+					case 5:
+						level = new ForestBossLevel();
+						break;
+					case 6:
+					case 7:
+					case 8:
+					case 9:
+						level = new PrisonLevel();
+						break;
+					case 10:
+						if ((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) {
+							level = new ColdChestBossLevel();
+						} else
+							level = new PrisonBossLevel();
+						break;
+					case 11:
+					case 12:
+					case 13:
+					case 14:
+						level = new CavesLevel();
+						break;
+					case 15:
+						if ((Statistics.boss_enhance & 0x4) != 0) {
+							level = new CavesGirlDeadLevel();
+						} else
+							level = Random.Float() <= 0.4f ? new CaveTwoBossLevel() : new NewCavesBossLevel();
+						break;
+					case 16:
+					case 17:
+					case 18:
+					case 19:
+						level = new CityLevel();
+						break;
+					case 20:
+						if ((Statistics.boss_enhance & 0x8) != 0) {
+							Buff.affect(hero, TestDwarfMasterLock.class).set((1), 1);
+							level = new DwarfMasterBossLevel();
+							break;
+						} else
+							level = new NewCityBossLevel();
+						break;
+					case 21:
+					case 22:
+					case 23:
+					case 24:
+						level = new HallsLevel();
+						break;
+					case 25:
+						if ((Statistics.boss_enhance & 0x10) != 0) level = new YogGodHardBossLevel();
+						else level = new NewHallsBossLevel();
+						break;
+					case 26:
+						level = new LastLevel();
+						break;
+					default:
+						level = new DeadEndLevel();
+						Statistics.deepestFloor--;
+				}
+		} else {
+			level = new DeadEndLevel();
+			Statistics.deepestFloor--;
+		}
 
 		if(Dungeon.hero.buff(BlessAnmy.class) != null && Statistics.TryUsedAnmy){
 			Statistics.TryUsedAnmy = false;
@@ -520,16 +552,19 @@ public class Dungeon {
 	}
 
 	public static long seedCurDepth(){
-		return seedForDepth(depth);
+		return seedForDepth(depth, branch);
 	}
 
-	public static long seedForDepth(int depth){
+	public static long seedForDepth(int depth, int branch){
+		int lookAhead = depth;
+		lookAhead += 30*branch; //Assumes depth is always 1-30, and branch is always 0 or higher
+
 		Random.pushGenerator( seed );
 
-			for (int i = 0; i < depth; i ++) {
-				Random.Long(); //we don't care about these values, just need to go through them
-			}
-			long result = Random.Long();
+		for (int i = 0; i < lookAhead; i ++) {
+			Random.Long(); //we don't care about these values, just need to go through them
+		}
+		long result = Random.Long();
 
 		Random.popGenerator();
 		return result;
@@ -730,13 +765,13 @@ public class Dungeon {
 	private static final String CHAPTERS	= "chapters";
 	private static final String QUESTS		= "quests";
 	private static final String BADGES		= "badges";
-
+	private static final String BRANCH		= "branch";
 	private static final String MOBS_TO_STATELING	= "mobs_to_stateling";
-
+	private static final String INIT_VER	= "init_ver";
 	public static void saveGame( int save ) {
 		try {
 			Bundle bundle = new Bundle();
-
+			bundle.put( INIT_VER, initialVersion );
 			version = Game.versionCode;
 			bundle.put( VERSION, version );
 			bundle.put( SEED, seed );
@@ -756,7 +791,7 @@ public class Dungeon {
 
 			bundle.put( HERO, hero );
 			bundle.put( DEPTH, depth );
-
+			bundle.put( BRANCH, branch );
 			bundle.put( GOLD, gold );
 			bundle.put( ENERGY, energy );
 
@@ -818,12 +853,12 @@ public class Dungeon {
 		Bundle bundle = new Bundle();
 		bundle.put( LEVEL, level );
 
-		FileUtils.bundleToFile(GamesInProgress.depthFile( save, depth), bundle);
+		FileUtils.bundleToFile(GamesInProgress.depthFile( save, depth, branch ), bundle);
 	}
 
 	public static void saveAll() throws IOException {
 		if (hero != null && (hero.isAlive() || WndResurrect.instance != null)) {
-
+			updateLevelExplored();
 			Actor.fixTime();
 			saveGame( GamesInProgress.curSlot );
 			saveLevel( GamesInProgress.curSlot );
@@ -841,7 +876,11 @@ public class Dungeon {
 
 		Bundle bundle = FileUtils.bundleFromFile( GamesInProgress.gameFile( save ) );
 
-		version = bundle.getInt( VERSION );
+		if (bundle.contains(INIT_VER)){
+			initialVersion = bundle.getInt( INIT_VER );
+		} else {
+			initialVersion = bundle.getInt( VERSION );
+		}
 
 		seed = bundle.contains( SEED ) ? bundle.getLong( SEED ) : DungeonSeed.randomSeed();
 
@@ -861,7 +900,7 @@ public class Dungeon {
 
 		Dungeon.level = null;
 		Dungeon.depth = -1;
-
+		branch = bundle.getInt( BRANCH );
 		Scroll.restore( bundle );
 		Potion.restore( bundle );
 		Ring.restore( bundle );
@@ -950,7 +989,7 @@ public class Dungeon {
 		Dungeon.level = null;
 		Actor.clear();
 
-		Bundle bundle = FileUtils.bundleFromFile( GamesInProgress.depthFile( save, depth)) ;
+		Bundle bundle = FileUtils.bundleFromFile( GamesInProgress.depthFile( save, depth, branch)) ;
 
 		Level level = (Level)bundle.get( LEVEL );
 
@@ -994,6 +1033,7 @@ public class Dungeon {
 
 	public static void fail( Class cause ) {
 		if (WndResurrect.instance == null) {
+			updateLevelExplored();
 			Rankings.INSTANCE.submit( false, cause );
 		}
 	}
@@ -1001,7 +1041,7 @@ public class Dungeon {
 	public static void win( Class cause ) {
 
 		hero.belongings.identify();
-
+		updateLevelExplored();
 		Rankings.INSTANCE.submit( true, cause );
 	}
 

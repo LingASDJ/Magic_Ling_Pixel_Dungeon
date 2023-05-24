@@ -71,6 +71,8 @@ public class InterlevelScene extends PixelScene {
 
 	private static float fadeTime;
 
+	public static int returnBranch;
+
 	public enum Mode {
 		DESCEND, ASCEND, CONTINUE, RESURRECT, RETURN, FALL, RESET, NONE,EXBOSS,GOBACK,FRGIRLBOSS,DR,
 	}
@@ -429,7 +431,7 @@ public class InterlevelScene extends PixelScene {
 	private void returnTo() throws IOException {
 
 		Mob.holdAllies( Dungeon.level );
-
+		Dungeon.branch = returnBranch;
 		Dungeon.saveAll();
 		Dungeon.depth = returnDepth;
 		Level level = Dungeon.loadLevel( GamesInProgress.curSlot );

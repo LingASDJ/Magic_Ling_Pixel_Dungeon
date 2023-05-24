@@ -478,6 +478,7 @@ public class YogReal extends Boss {
         GameScene.flash(0x80FFFFFF);
         actScanning();
         actSummon();
+        Statistics.bossScores[4] += 15000;
         actDestroy();
         if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 
@@ -856,6 +857,7 @@ public class YogReal extends Boss {
         public int onHitProc(Char ch) {
             if (ch.alignment == Alignment.ENEMY) return 0;
             ch.damage(Random.Int(40, 70), YogReal.class);
+            Statistics.bossScores[3] -= 500;
             ch.sprite.centerEmitter().burst(RainbowParticle.BURST, Random.Int(20, 35));
             ch.sprite.flash();
             Buff.affect(ch, Blindness.class, 50f);
@@ -929,6 +931,7 @@ public class YogReal extends Boss {
                 if (ch != null) {
                     if (ch.alignment == Alignment.ENEMY) continue;
                     ch.damage(Random.Int(30, 50), YogReal.class);
+                    Statistics.bossScores[3] -= 500;
                     Buff.affect(ch, Blindness.class, 5f);
                     ch.sprite.flash();
                     if (ch == Dungeon.hero) {

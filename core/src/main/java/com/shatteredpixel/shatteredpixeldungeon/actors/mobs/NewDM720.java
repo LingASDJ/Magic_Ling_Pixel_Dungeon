@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -529,6 +530,7 @@ public class NewDM720 extends MolotovHuntsman {
 //        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 //            GetBossLoot();
 //        }
+        Statistics.bossScores[2] += 1000;
         super.die(cause);
         cause = new MoloHR();
         ((MoloHR) cause).pos = pos;
@@ -671,6 +673,9 @@ public class NewDM720 extends MolotovHuntsman {
                         Char ch = Actor.findChar(cell);
                         if (ch != null && !(ch instanceof NewDM720)){
                             Buff.prolong( ch, Paralysis.class, 3 );
+                            if (ch == Dungeon.hero){
+                                Statistics.bossScores[2] -= 400;
+                            }
                         }
 
                         rocksFell = true;

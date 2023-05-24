@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -195,8 +196,9 @@ public class Wandmaker extends NPC {
 	
 	public static class Quest {
 
-		private static int type;
-		// 1 = corpse dust quest
+		public static int type;
+        public static int depth;
+        // 1 = corpse dust quest
 		// 2 = elemental embers quest
 		// 3 = rotberry quest
 		
@@ -342,7 +344,7 @@ public class Wandmaker extends NPC {
 		public static void complete() {
 			wand1 = null;
 			wand2 = null;
-			
+			Statistics.questScores[1] = 2000;
 			Notes.remove( Notes.Landmark.WANDMAKER );
 		}
 	}

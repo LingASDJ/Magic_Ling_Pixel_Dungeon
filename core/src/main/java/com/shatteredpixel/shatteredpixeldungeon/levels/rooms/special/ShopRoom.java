@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
@@ -171,13 +172,22 @@ public class ShopRoom extends SpecialRoom {
 		case 16:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[3]);
 			itemsToSpawn.add( Generator.random(Generator.misTiers[3]).quantity(2).identify(false) );
-			itemsToSpawn.add( new ScaleArmor().identify(false) );
+			if(Random.Int(10) == 0){
+				itemsToSpawn.add( new LeatherArmor().identify(false) );
+			} else {
+				itemsToSpawn.add( new ScaleArmor().identify(false) );
+			}
+
 			break;
 
 		case 20: case 21:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[4]);
 			itemsToSpawn.add( Generator.random(Generator.misTiers[4]).quantity(2).identify(false) );
-			itemsToSpawn.add( new PlateArmor().identify(false) );
+			if(Random.Int(10) == 0){
+				itemsToSpawn.add( new LamellarArmor().identify(false) );
+			} else {
+				itemsToSpawn.add( new PlateArmor().identify(false) );
+			}
 			itemsToSpawn.add( new Torch() );
 			itemsToSpawn.add( new Torch() );
 			itemsToSpawn.add( new Torch() );

@@ -30,60 +30,135 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
+import com.watabou.noosa.Game;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.FileUtils;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public enum Rankings {
-	
+
 	INSTANCE;
-	
+
 	public static final int TABLE_SIZE	= 11;
-	
+
 	public static final String RANKINGS_FILE = "rankings.dat";
-	
+
 	public ArrayList<Record> records;
+
 	public int lastRecord;
 	public int totalNumber;
 	public int wonNumber;
 
+	public int calculateScore(){
+
+
+			Statistics.progressScore = Dungeon.hero.lvl * Statistics.deepestFloor * 65;
+			Statistics.progressScore = Math.min(Statistics.progressScore, 50_000);
+
+			if (Statistics.heldItemValue == 0) {
+				for (Item i : Dungeon.hero.belongings) {
+					Statistics.heldItemValue += i.value();
+					if (i instanceof CorpseDust && Statistics.deepestFloor >= 10){
+						// in case player kept the corpse dust, for a necromancer run
+						Statistics.questScores[1] = 2000;
+					}
+				}
+			}
+			Statistics.treasureScore = Statistics.goldCollected + Statistics.heldItemValue;
+			Statistics.treasureScore = Math.min(Statistics.treasureScore, 20_000);
+
+			Statistics.exploreScore = 0;
+			int scorePerFloor = Statistics.floorsExplored.size * 50;
+			for (Boolean b : Statistics.floorsExplored.valueList()){
+				if (b) Statistics.exploreScore += scorePerFloor;
+			}
+
+			Statistics.totalBossScore = 0;
+			for (int i : Statistics.bossScores){
+				if (i > 0) Statistics.totalBossScore += i;
+			}
+
+			Statistics.totalQuestScore = 0;
+			for (int i : Statistics.questScores){
+				if (i > 0) Statistics.totalQuestScore += i;
+			}
+
+		Statistics.winMultiplier = 1f;
+		if (Statistics.gameWon)         Statistics.winMultiplier += 1f;
+		if (Statistics.ascended)        Statistics.winMultiplier += 0.5f;
+
+
+		Statistics.chalMultiplier = (float)Math.pow(1.25, Challenges.activeChallenges());
+		Statistics.chalMultiplier = Math.round(Statistics.chalMultiplier*20f)/20f;
+
+		Statistics.totalScore = Statistics.progressScore + Statistics.treasureScore + Statistics.exploreScore
+				+ Statistics.totalBossScore + Statistics.totalQuestScore;
+
+		Statistics.totalScore *= Statistics.winMultiplier * Statistics.chalMultiplier;
+
+		return Statistics.totalScore;
+	}
+
 	public void submit( boolean win, Class cause ) {
 
-		if(Dungeon.isChallenged(Challenges.PRO)){
-			return;
+		load();
+
+		Record rec = new Record();
+
+		//we trim version to just the numbers, ignoring alpha/beta, etc.
+		Pattern p = Pattern.compile("\\d+\\.\\d+\\.\\d+");
+		Matcher m = p.matcher(ShatteredPixelDungeon.version);
+		if (m.find()) {
+			rec.version = "v" + m.group();
+		} else {
+			rec.version = "";
 		}
 
-		load();
-		
-		Record rec = new Record();
-		
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
+		rec.date = format.format(new Date(Game.realTime));
+
 		rec.cause = cause;
 		rec.win		= win;
 		rec.heroClass	= Dungeon.hero.heroClass;
 		rec.armorTier	= Dungeon.hero.tier();
 		rec.herolevel	= Dungeon.hero.lvl;
-		rec.depth		= Dungeon.depth;
-		rec.score	= score( win );
-		
+		if (Statistics.highestAscent == 0){
+			rec.depth = Statistics.deepestFloor;
+			rec.ascending = false;
+		} else {
+			rec.depth = Statistics.highestAscent;
+			rec.ascending = true;
+		}
+		rec.score       = calculateScore();
+		rec.customSeed  = Dungeon.customSeedText;
+
+
 		INSTANCE.saveGameData(rec);
 
 		rec.gameID = UUID.randomUUID().toString();
-		
+
 		records.add( rec );
-		
+
 		Collections.sort( records, scoreComparator );
-		
+
 		lastRecord = records.indexOf( rec );
 		int size = records.size();
 		while (size > TABLE_SIZE) {
@@ -97,14 +172,16 @@ public enum Rankings {
 
 			size = records.size();
 		}
-		
-		totalNumber++;
-		if (win) {
-			wonNumber++;
+
+		if (rec.customSeed.isEmpty()) {
+			totalNumber++;
+			if (win) {
+				wonNumber++;
+			}
 		}
 
 		Badges.validateGamesPlayed();
-		
+
 		save();
 	}
 
@@ -117,6 +194,8 @@ public enum Rankings {
 	public static final String BADGES = "badges";
 	public static final String HANDLERS = "handlers";
 	public static final String CHALLENGES = "challenges";
+	public static final String SEED         = "seed";
+	public static final String CUSTOM_SEED	= "custom_seed";
 
 	public void saveGameData(Record rec){
 		rec.gameData = new Bundle();
@@ -163,10 +242,10 @@ public enum Rankings {
 		if (belongings.ring != null)        belongings.backpack.items.add(belongings.ring);
 		Ring.saveSelectively(handler, belongings.backpack.items);
 		rec.gameData.put( HANDLERS, handler);
-
+		rec.gameData.put( SEED, Dungeon.seed );
 		//restore items now that we're done saving
 		belongings.backpack.items = allItems;
-		
+
 		//save challenges
 		rec.gameData.put( CHALLENGES, Dungeon.challenges );
 	}
@@ -192,11 +271,24 @@ public enum Rankings {
 		Dungeon.hero = (Hero)data.get(HERO);
 
 		Statistics.restoreFromBundle(data.getBundle(STATS));
-		
+
 		Dungeon.challenges = data.getInt(CHALLENGES);
 
+		if (Dungeon.initialVersion <= ShatteredPixelDungeon.v1_0_3){
+			Statistics.gameWon = rec.win;
+		}
+		rec.score = calculateScore();
+
+		if (rec.gameData.contains(SEED)){
+			Dungeon.seed = rec.gameData.getLong(SEED);
+			Dungeon.customSeedText = rec.gameData.getString(CUSTOM_SEED);
+		} else {
+			Dungeon.seed = -1;
+			Dungeon.customSeedText = "";
+		}
+
 	}
-	
+
 	private static final String RECORDS	= "records";
 	private static final String LATEST	= "latest";
 	private static final String TOTAL	= "total";
@@ -216,23 +308,23 @@ public enum Rankings {
 		}
 
 	}
-	
+
 	public void load() {
-		
+
 		if (records != null) {
 			return;
 		}
-		
+
 		records = new ArrayList<>();
-		
+
 		try {
 			Bundle bundle = FileUtils.bundleFromFile( RANKINGS_FILE );
-			
+
 			for (Bundlable record : bundle.getCollection( RECORDS )) {
 				records.add( (Record)record );
 			}
 			lastRecord = bundle.getInt( LATEST );
-			
+
 			totalNumber = bundle.getInt( TOTAL );
 			if (totalNumber == 0) {
 				totalNumber = records.size();
@@ -250,7 +342,7 @@ public enum Rankings {
 		} catch (IOException e) {
 		}
 	}
-	
+
 	public static class Record implements Bundlable {
 
 		private static final String CAUSE   = "cause";
@@ -262,18 +354,20 @@ public enum Rankings {
 		private static final String DEPTH	= "depth";
 		private static final String DATA	= "gameData";
 		private static final String ID      = "gameID";
+		private static final String SEED    = "custom_seed";
 
 		public Class cause;
 		public boolean win;
-
+		public String date;
+		public String version;
 		public HeroClass heroClass;
 		public int armorTier;
 		public int herolevel;
 		public int depth;
-		
+		public String customSeed;
 		public Bundle gameData;
 		public String gameID;
-
+		public boolean ascending;
 		public int score;
 
 		public String desc(){
@@ -288,45 +382,45 @@ public enum Rankings {
 				}
 			}
 		}
-		
+
 		@Override
 		public void restoreFromBundle( Bundle bundle ) {
-			
+
 			if (bundle.contains( CAUSE )) {
 				cause   = bundle.getClass( CAUSE );
 			} else {
 				cause = null;
 			}
-			
+
 			win		= bundle.getBoolean( WIN );
 			score	= bundle.getInt( SCORE );
-			
+			customSeed  = bundle.getString( SEED );
 			heroClass	= bundle.getEnum( CLASS, HeroClass.class );
 			armorTier	= bundle.getInt( TIER );
-			
+
 			if (bundle.contains(DATA))  gameData = bundle.getBundle(DATA);
 			if (bundle.contains(ID))   gameID = bundle.getString(ID);
-			
+
 			if (gameID == null) gameID = UUID.randomUUID().toString();
 
 			depth = bundle.getInt( DEPTH );
 			herolevel = bundle.getInt( LEVEL );
 
 		}
-		
+
 		@Override
 		public void storeInBundle( Bundle bundle ) {
-			
+
 			if (cause != null) bundle.put( CAUSE, cause );
 
 			bundle.put( WIN, win );
 			bundle.put( SCORE, score );
-			
+
 			bundle.put( CLASS, heroClass );
 			bundle.put( TIER, armorTier );
 			bundle.put( LEVEL, herolevel );
 			bundle.put( DEPTH, depth );
-			
+			bundle.put( SEED, customSeed );
 			if (gameData != null) bundle.put( DATA, gameData );
 			bundle.put( ID, gameID );
 		}

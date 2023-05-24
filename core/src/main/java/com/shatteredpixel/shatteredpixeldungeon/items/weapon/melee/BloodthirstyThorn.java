@@ -228,12 +228,12 @@ public class BloodthirstyThorn extends MeleeWeapon {
 
     @Override
     public int min(int lvl) {
-        return 4 +lvl*2;
+        return 2 +lvl*2;
     }
 
     @Override
     public int max(int lvl) {
-        return  14 + lvl*7;
+        return  7 + lvl*7;
     }
 
     @Override

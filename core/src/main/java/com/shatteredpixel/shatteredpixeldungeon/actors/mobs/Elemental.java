@@ -269,6 +269,7 @@ public abstract class Elemental extends Mob {
 			rangedCooldown = Integer.MAX_VALUE;
 		}
 
+
 		@Override
 		protected void meleeProc( Char enemy, int damage ) {
 			if (Random.Int( 2 ) == 0 && !level.water[enemy.pos]) {
@@ -280,9 +281,11 @@ public abstract class Elemental extends Mob {
 		@Override
 		public void die(Object cause) {
 			super.die(cause);
-			if (alignment == Alignment.ENEMY) Dungeon.level.drop( new Embers(), pos ).sprite.drop();
-
-			Badges.KILL_COLDELE();
+			if (alignment == Alignment.ENEMY){
+				Dungeon.level.drop( new Embers(), pos ).sprite.drop();
+				Statistics.questScores[1] = 2000;
+				Badges.KILL_COLDELE();
+			}
 		}
 
 		@Override

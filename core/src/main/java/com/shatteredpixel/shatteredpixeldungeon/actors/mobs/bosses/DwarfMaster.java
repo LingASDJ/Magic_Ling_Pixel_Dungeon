@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -234,6 +235,7 @@ public class DwarfMaster extends Boss {
         public int onHitProc(Char ch) {
             if(ch.alignment == Alignment.ENEMY) return 0;
             ch.damage( Random.Int(50, 80), YogReal.class );
+            Statistics.bossScores[3] -= 500;
             if(ch == Dungeon.hero){
                 Sample.INSTANCE.play(Assets.Sounds.BLAST, Random.Float(1.1f, 1.5f));
                 Buff.affect( ch, Poison.class ).set( (5f)+(ch.HP/8f) );
@@ -1601,7 +1603,7 @@ public class DwarfMaster extends Boss {
     public void die( Object cause ) {
 
         super.die( cause );
-
+        Statistics.bossScores[3] += 6000;
         Dungeon.level.unseal();
 
         for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {

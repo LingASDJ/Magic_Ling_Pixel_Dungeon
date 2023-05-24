@@ -7,6 +7,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
@@ -96,6 +97,7 @@ public class MoloHR extends Mob {
             int var2 = Random.Int(this.deathCurse.length);
             this.sprite.showStatus(16711680, this.deathCurse[var2]);
         }
+        Statistics.bossScores[2] += 1000;
         Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.pos );
         Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.pos );
         Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.WAND ) ), this.pos );

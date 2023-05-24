@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SpellCaster;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -253,10 +254,12 @@ public class MagicGirlDead extends Boss {
             if (buff instanceof RoseShiled) {
                 buff.detach();
                 GLog.b("……你妄图使用这种方法来逃脱吗？");
+                Statistics.bossScores[2] -= 800;
             }
             if (buff instanceof HaloFireImBlue ||buff instanceof FireImbue) {
                 buff.detach();
                 GLog.b("……你妄图使用这种方法来逃脱吗？");
+                Statistics.bossScores[2] -= 800;
             }
         }
 
@@ -295,8 +298,10 @@ public class MagicGirlDead extends Boss {
 
         Camera.main.shake(  1, 0.25f );
 
-        if (Dungeon.level.map[step] == Terrain.WATER && state == HUNTING) {
 
+        //冰雪魔女踩一次水扣300分
+        if (Dungeon.level.map[step] == Terrain.WATER && state == HUNTING) {
+            Statistics.bossScores[2] -= 300;
             if (Dungeon.level.heroFOV[step]) {
                 if (buff(Haste.class) == null) {
                     Buff.affect(this, Haste.class, 10f);
@@ -371,7 +376,7 @@ public class MagicGirlDead extends Boss {
 
     @Override
     public void die(Object src){
-
+        Statistics.bossScores[2] += 5000;
         super.die(src);
         if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 

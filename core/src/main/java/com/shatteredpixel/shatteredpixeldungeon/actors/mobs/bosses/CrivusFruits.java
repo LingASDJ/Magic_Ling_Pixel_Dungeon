@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -202,6 +203,7 @@ public class CrivusFruits extends Mob {
                             if( Dungeon.hero.buff(LockedFloor.class) != null) {
                                 //不为空为4 否则就是0
                                 ch.damage(Dungeon.hero.buff(LockedFloor.class) != null ? damage : 0, this);
+                                Statistics.bossScores[0] -= 200;
                             }
                         }
                     }
@@ -237,7 +239,7 @@ public class CrivusFruits extends Mob {
         Dungeon.level.drop( new IronKey( Dungeon.depth ), pos-1 ).sprite.drop();
         Dungeon.level.drop( new IronKey( Dungeon.depth ), pos+1 ).sprite.drop();
         Badges.validateBossSlain();
-
+        Statistics.bossScores[0] += 1000;
 
         if (!Badges.isUnlocked(Badges.Badge.KILL_APPLE)){
             Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();

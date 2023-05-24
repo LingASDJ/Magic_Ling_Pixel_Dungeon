@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -497,7 +498,7 @@ public class DimandKing extends Boss {
 //            GetBossLoot();
 //        }
         GameScene.bossSlain();
-
+        Statistics.bossScores[1] += 1000;
         super.die( cause );
         if (Dungeon.hero.subClass == HeroSubClass.NONE) {
             Dungeon.level.drop( new TengusMask(), pos ).sprite.drop();
@@ -848,6 +849,7 @@ public class DimandKing extends Boss {
                         if(ch != null){
                             if(ch.alignment != Alignment.ENEMY){
                                 ch.damage(Random.IntRange(25, 36), m);
+                                Statistics.bossScores[1] -= 600;
                                 if(ch == Dungeon.hero && !ch.isAlive()){
                                     Dungeon.fail(getClass());
                                 }

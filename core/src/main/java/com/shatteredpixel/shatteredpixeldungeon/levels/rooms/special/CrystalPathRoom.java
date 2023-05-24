@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -145,13 +146,18 @@ public class CrystalPathRoom extends SpecialRoom {
 					);
 					break;
 				case 3:
-					item = Generator.random(Random.oneOf(
-							Generator.Category.ARMOR,
-							Generator.Category.STONE,
-							Generator.Category.WAND,
-							Generator.Category.ARTIFACT)
-					);
+					if(Random.Int(10)==0){
+						item = new LamellarArmor();
+					} else {
+						item = Generator.random(Random.oneOf(
+								Generator.Category.ARMOR,
+								Generator.Category.STONE,
+								Generator.Category.WAND,
+								Generator.Category.ARTIFACT)
+						);
+					}
 					break;
+
 			}
 			level.drop(item, pos);
 			if (clockwise){

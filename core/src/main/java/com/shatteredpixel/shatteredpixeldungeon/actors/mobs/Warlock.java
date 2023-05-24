@@ -48,7 +48,7 @@ public class Warlock extends Mob implements Callback {
 	
 	{
 		spriteClass = WarlockSprite.class;
-		
+
 		HP = HT = 70;
 		defenseSkill = 18;
 		
@@ -102,7 +102,7 @@ public class Warlock extends Mob implements Callback {
 	//used so resistances can differentiate between melee and magical attacks
 	public static class DarkBolt{}
 	
-	private void zap() {
+	protected void zap() {
 		spend( TIME_TO_ZAP );
 		
 		if (hit( this, enemy, true )) {

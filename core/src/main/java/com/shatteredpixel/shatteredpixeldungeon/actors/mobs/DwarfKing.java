@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
@@ -499,7 +500,7 @@ public class DwarfKing extends Mob {
 			GetBossLoot();
 		}
 		GameScene.bossSlain();
-
+		Statistics.bossScores[3] += 4000;
 		super.die( cause );
 
 		if (Dungeon.level.solid[pos]){
@@ -561,6 +562,13 @@ public class DwarfKing extends Mob {
 	public static class DKWarlock extends Warlock {
 		{
 			state = HUNTING;
+		}
+		@Override
+		protected void zap() {
+			if (enemy == Dungeon.hero){
+				Statistics.bossScores[3] -= 400;
+			}
+			super.zap();
 		}
 	}
 

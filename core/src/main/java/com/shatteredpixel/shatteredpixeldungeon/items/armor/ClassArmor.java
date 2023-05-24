@@ -55,7 +55,7 @@ abstract public class ClassArmor extends Armor {
 	public float charge = 0;
 	
 	public ClassArmor() {
-		super( 5 );
+		super( 6 );
 	}
 
 	@Override

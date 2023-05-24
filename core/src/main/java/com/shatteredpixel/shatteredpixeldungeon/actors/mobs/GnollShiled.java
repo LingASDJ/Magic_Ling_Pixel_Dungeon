@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
@@ -119,6 +120,7 @@ public class GnollShiled extends Gnoll {
             if (mob instanceof RedDragon && mob.isAlive()) {
                 RedDragon.Quest.process();
             }
+            Statistics.questScores[2] += 1200;
         }
 
 

@@ -229,7 +229,7 @@ public class WndTradeItem extends WndInfoItem {
 
 		//selling items in the sell interface doesn't spend time
 		hero.spend(-hero.cooldown());
-
+		Statistics.totalScore += 400;
 		new Gold( item.value() ).doPickUp( hero );
 	}
 
@@ -240,7 +240,7 @@ public class WndTradeItem extends WndInfoItem {
 		} else {
 			
 			Hero hero = Dungeon.hero;
-			
+			Statistics.totalScore += 100;
 			item = item.detach( hero.belongings.backpack );
 
 			//selling items in the sell interface doesn't spend time

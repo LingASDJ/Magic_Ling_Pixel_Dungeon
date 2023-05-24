@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
@@ -117,7 +118,7 @@ public class Blacksmith extends NPC {
 					}
 					pick.detach( Dungeon.hero.belongings.backpack );
 					tell( Messages.get(this, "completed") );
-					
+					Statistics.questScores[2] += 3000;
 					Quest.completed = true;
 					Quest.reforged = false;
 				}
@@ -137,7 +138,7 @@ public class Blacksmith extends NPC {
 					pick.detach( Dungeon.hero.belongings.backpack );
 					gold.detachAll( Dungeon.hero.belongings.backpack );
 					tell( Messages.get(this, "completed") );
-					
+					Statistics.questScores[2] += 3000;
 					Quest.completed = true;
 					Quest.reforged = false;
 				}

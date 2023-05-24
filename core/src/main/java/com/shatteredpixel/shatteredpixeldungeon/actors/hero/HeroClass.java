@@ -116,6 +116,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortswor
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.windows.ScrollOfAwareness;
 import com.watabou.utils.Random;
 
 public enum HeroClass {
@@ -170,6 +171,8 @@ public enum HeroClass {
 
 			new WashCrime().quantity(1).identify().collect();
 			new MagicTorch().quantity(1).identify().collect();
+
+			new ScrollOfAwareness().quantity(1).identify().collect();
 
 			new Cake().quantity(100).identify().collect();
 			new TengusMask().quantity(1).identify().collect();

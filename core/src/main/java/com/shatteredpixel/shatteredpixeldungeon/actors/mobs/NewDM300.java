@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -514,7 +515,7 @@ public class NewDM300 extends Mob {
 
 	@Override
 	public void die( Object cause ) {
-
+		Statistics.bossScores[2] += 3000;
 		super.die( cause );
 		if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 
@@ -642,6 +643,9 @@ public class NewDM300 extends Mob {
 				Char ch = Actor.findChar(i);
 				if (ch != null && !(ch instanceof NewDM300)){
 					Buff.prolong( ch, Paralysis.class, Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 5 : 3 );
+					if (ch == Dungeon.hero){
+						Statistics.bossScores[2] -= 400;
+					}
 				}
 			}
 

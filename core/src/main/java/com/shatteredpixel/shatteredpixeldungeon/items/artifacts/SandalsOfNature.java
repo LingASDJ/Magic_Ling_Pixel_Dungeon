@@ -55,8 +55,6 @@ public class SandalsOfNature extends Artifact {
 		levelCap = 3;
 
 		charge = 0;
-
-		defaultAction = this.level() == 10 ? AC_ROOT : AC_FEED;
 	}
 
 	public static final String AC_FEED = "FEED";
@@ -88,7 +86,6 @@ public class SandalsOfNature extends Artifact {
 			else if (charge == 0)    GLog.i( Messages.get(this, "no_charge") );
 			else {
 				Buff.prolong(hero, Roots.class, Roots.DURATION);
-				//TODO NEED FIXED
 				Buff.affect(hero, Earthroot.Armor.class).level(charge,hero);
 				CellEmitter.bottom(hero.pos).start(EarthParticle.FACTORY, 0.05f, 8);
 				Camera.main.shake(1, 0.4f);

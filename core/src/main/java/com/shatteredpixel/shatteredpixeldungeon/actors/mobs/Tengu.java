@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -203,7 +204,7 @@ public class Tengu extends Mob {
 		if (Dungeon.hero.subClass == HeroSubClass.NONE) {
 			Dungeon.level.drop( new TengusMask(), pos ).sprite.drop();
 		}
-		
+		Statistics.bossScores[1] += 2000;
 		GameScene.bossSlain();
 		super.die( cause );
 		
@@ -611,8 +612,12 @@ public class Tengu extends Mob {
 								ch.damage(dmg, Bomb.class);
 							}
 
-							if (ch == Dungeon.hero && !ch.isAlive()) {
-								Dungeon.fail(Tengu.class);
+							if (ch == Dungeon.hero){
+								Statistics.bossScores[1] -= 100;
+
+								if (!ch.isAlive()) {
+									Dungeon.fail(Tengu.class);
+								}
 							}
 						}
 
@@ -846,6 +851,10 @@ public class Tengu extends Mob {
 								observe = true;
 								GameScene.updateMap( cell );
 							}
+
+							if (ch == Dungeon.hero){
+								Statistics.bossScores[1] -= 200;
+							}
 							
 							burned = true;
 							CellEmitter.get(cell).start(FlameParticle.FACTORY, 0.03f, 10);
@@ -1019,10 +1028,14 @@ public class Tengu extends Mob {
 							Char ch = Actor.findChar(cell);
 							if (ch != null && !(ch instanceof Tengu)){
 								ch.damage(2 + Dungeon.depth, new Electricity());
-								
-								if (ch == Dungeon.hero && !ch.isAlive()) {
-									Dungeon.fail(Tengu.class);
-									GLog.n( Messages.get(Electricity.class, "ondeath") );
+
+								if (ch == Dungeon.hero){
+
+									Statistics.bossScores[1] -= 200;
+									if (!ch.isAlive()) {
+										Dungeon.fail(Tengu.class);
+										GLog.n(Messages.get(Electricity.class, "ondeath"));
+									}
 								}
 							}
 							

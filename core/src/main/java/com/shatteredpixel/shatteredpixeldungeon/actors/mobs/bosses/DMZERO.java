@@ -152,6 +152,7 @@ public class DMZERO extends Mob
         public void die(Object obj)
         {
             super.die(obj);
+
             Dungeon.level.drop(new IronKey(Dungeon.depth), pos).sprite.drop();
             obj = new DM300SpiderMode();
             ((DM300SpiderMode) obj).pos = pos;
@@ -380,7 +381,7 @@ public class DMZERO extends Mob
             ((NullDiedTO) obj).pos = pos;
             GameScene.add(((Mob) (obj)));
             Actor.addDelayed(new Pushing(((Char) (obj)), pos, ((NullDiedTO) (obj)).pos), -1F);
-
+            Statistics.bossScores[4] += 3000;
             Badges.BOSSRUSH();
 
             yell( Messages.get(this, "defeated") );

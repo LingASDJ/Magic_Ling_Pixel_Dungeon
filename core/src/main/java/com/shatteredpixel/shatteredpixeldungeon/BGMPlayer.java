@@ -141,7 +141,7 @@ public class BGMPlayer {
             } else if (Dungeon.bossLevel() && t == 15 && Statistics.spawnersIce > 0) {
                 Music.INSTANCE.play(Assets.BGM_BOSSC3, true);
             } else if (Dungeon.bossLevel() && t == 15) {
-                if((Statistics.boss_enhance & 0x8) != 0)  Music.INSTANCE.play(Assets.BGM_BOSSC3, true);
+                if((Statistics.boss_enhance & 0x4) != 0)  Music.INSTANCE.play(Assets.BGM_BOSSC3, true);
                 else  Music.INSTANCE.play(Assets.BGM_BOSSC, true);
             } else if (Dungeon.bossLevel() && t == 20) {
                 if((Statistics.boss_enhance & 0x8) != 0)  Music.INSTANCE.play(Assets.BGM_BOSSD2, true);

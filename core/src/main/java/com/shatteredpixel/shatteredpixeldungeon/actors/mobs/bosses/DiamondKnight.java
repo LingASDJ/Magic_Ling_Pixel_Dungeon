@@ -269,7 +269,7 @@ public class DiamondKnight extends Boss {
         super.die( cause );
 
         Dungeon.level.unseal();
-
+        Statistics.bossScores[1] += 2500;
         Dungeon.level.drop( new TengusMask(), pos ).sprite.drop();
         int dropPos = this.pos;
 
@@ -286,6 +286,7 @@ public class DiamondKnight extends Boss {
 
         if(Statistics.dimandchestmazeCollected>=3){
             Badges.KILL_OMP();
+            Statistics.bossScores[1] += 1000;
         }
 
         phase++;
@@ -378,6 +379,7 @@ public class DiamondKnight extends Boss {
             if(Random.Float()<0.45f){
                 Buff.affect( enemy, Bleeding.class ).set( 9 );
                 Sample.INSTANCE.play( Assets.Sounds.CURSED );
+                Statistics.bossScores[1] -= 300;
             }
             Sample.INSTANCE.play( Assets.Sounds.ZAP );
         } else {

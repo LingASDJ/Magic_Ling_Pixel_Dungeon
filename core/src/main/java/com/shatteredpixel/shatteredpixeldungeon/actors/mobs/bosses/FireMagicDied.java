@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
@@ -738,7 +739,7 @@ public class FireMagicDied extends Mob implements Callback {
             GetBossLoot();
         }
         super.die( cause );
-
+        Statistics.bossScores[3] += 5000;
         Dungeon.level.drop(new BackGoKey().quantity(1).identify(), pos).sprite.drop();
         Dungeon.level.drop(new ScrollOfMagicMapping().quantity(1).identify(), pos).sprite.drop();
         Dungeon.level.drop(new ScrollOfUpgrade().quantity(3).identify(), pos).sprite.drop();

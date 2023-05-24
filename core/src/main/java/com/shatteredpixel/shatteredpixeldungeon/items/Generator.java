@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
@@ -415,8 +416,9 @@ public class Generator {
 					LeatherArmor.class,
 					MailArmor.class,
 					ScaleArmor.class,
-					PlateArmor.class };
-			ARMOR.probs = new float[]{ 0, 0, 0, 0, 0 };
+					PlateArmor.class,
+					LamellarArmor.class};
+			ARMOR.probs = new float[]{ 0, 0, 0, 0, 0, 0 };
 			
 			//see Generator.randomMissile
 			MISSILE.classes = new Class<?>[]{};
@@ -573,7 +575,7 @@ public class Generator {
 	}
 
 	public static Armor randomArmor(){
-		return randomArmor(Dungeon.depth / 5);
+		return randomArmor((Dungeon.depth + 1) / 3);
 	}
 	
 	public static Armor randomArmor(int floorSet) {

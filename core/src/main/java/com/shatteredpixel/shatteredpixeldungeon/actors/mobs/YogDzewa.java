@@ -220,6 +220,9 @@ public class YogDzewa extends Mob {
 					Dungeon.observe();
 				}
 				for (Char ch : affected) {
+					if (ch == Dungeon.hero) {
+						Statistics.bossScores[4] -= 1000;
+					}
 					if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
 						ch.damage(Random.NormalIntRange(30, 50), new Eye.DeathGaze());
 					} else {
@@ -489,7 +492,7 @@ public class YogDzewa extends Mob {
 		GameScene.bossSlain();
 		Dungeon.level.unseal();
 		super.die( cause );
-
+		Statistics.bossScores[4] += 10000 + 1250*Statistics.spawnersAlive;
 		yell( Messages.get(this, "defeated") );
 	}
 

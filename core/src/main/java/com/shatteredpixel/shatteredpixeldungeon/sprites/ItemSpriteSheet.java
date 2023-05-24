@@ -355,16 +355,19 @@ public class ItemSpriteSheet {
 	public static final int ARMOR_MAIL      = ARMOR+2;
 	public static final int ARMOR_SCALE     = ARMOR+3;
 	public static final int ARMOR_PLATE     = ARMOR+4;
-	public static final int ARMOR_WARRIOR   = ARMOR+5;
-	public static final int ARMOR_MAGE      = ARMOR+6;
-	public static final int ARMOR_ROGUE     = ARMOR+7;
-	public static final int ARMOR_HUNTRESS  = ARMOR+8;
+
+	public static final int ARMOR_LAMELLAR     = ARMOR+5;
+	public static final int ARMOR_WARRIOR   = ARMOR+6;
+	public static final int ARMOR_MAGE      = ARMOR+7;
+	public static final int ARMOR_ROGUE     = ARMOR+8;
+	public static final int ARMOR_HUNTRESS  = ARMOR+9;
 	static{
 		assignItemRect(ARMOR_CLOTH,     14, 14);
 		assignItemRect(ARMOR_LEATHER,   15, 15);
 		assignItemRect(ARMOR_MAIL,      15, 15);
 		assignItemRect(ARMOR_SCALE,     16, 16);
 		assignItemRect(ARMOR_PLATE,     15, 15);
+		assignItemRect(ARMOR_LAMELLAR,  14, 14);
 		assignItemRect(ARMOR_WARRIOR,   15, 13);
 		assignItemRect(ARMOR_MAGE,      13, 13);
 		assignItemRect(ARMOR_ROGUE,     11, 13);

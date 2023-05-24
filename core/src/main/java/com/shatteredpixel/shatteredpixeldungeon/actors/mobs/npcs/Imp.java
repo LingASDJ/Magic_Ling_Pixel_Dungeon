@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
@@ -140,8 +141,9 @@ public class Imp extends NPC {
 	}
 
 	public static class Quest {
-		
-		private static boolean alternative;
+
+        public static int depth;
+        private static boolean alternative;
 		
 		private static boolean spawned;
 		private static boolean given;
@@ -247,7 +249,7 @@ public class Imp extends NPC {
 		public static void complete() {
 			reward = null;
 			completed = true;
-			
+			Statistics.questScores[3] = 4000;
 			Notes.remove( Notes.Landmark.IMP );
 		}
 		

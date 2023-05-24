@@ -112,7 +112,11 @@ public enum Icons {
 	KRISTJAN,
 	CUBE_CODE,
 	PURIGRO,
-	ARCNOR;
+	ARCNOR,
+
+	PASTE,
+
+	COPY;
 
 	public Image get() {
 		return get( this );
@@ -167,6 +171,12 @@ public enum Icons {
 				break;
 			case RIGHTBUTTON:
 				icon.frame( icon.texture.uvRectBySize( 97, 16, 9, 9 ) );
+				break;
+			case PASTE:
+				icon.frame( icon.texture.uvRectBySize( 113, 16, 13, 13 ) );
+				break;
+			case COPY:
+				icon.frame( icon.texture.uvRectBySize( 129, 16, 13, 13 ) );
 				break;
 
 			case EXIT:

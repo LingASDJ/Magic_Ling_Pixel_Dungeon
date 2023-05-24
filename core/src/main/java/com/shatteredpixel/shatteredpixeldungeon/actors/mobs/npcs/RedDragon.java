@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.items.Generator.randomArtifact;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlameC02;
@@ -430,6 +431,7 @@ public class RedDragon extends NPC {
                 GLog.b( Messages.get(RedDragon.class, "find_me") );
                 //Sample.INSTANCE.play( Assets.Sounds.GHOST );
                 processed = true;
+                Statistics.questScores[2] += 4000;
             }
         }
 

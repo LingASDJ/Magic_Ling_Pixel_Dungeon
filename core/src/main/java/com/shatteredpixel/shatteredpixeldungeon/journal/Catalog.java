@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.HuntressArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.MageArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor;
@@ -223,6 +224,7 @@ public enum Catalog {
 		ARMOR.seen.put( MailArmor.class,                    false);
 		ARMOR.seen.put( ScaleArmor.class,                   false);
 		ARMOR.seen.put( PlateArmor.class,                   false);
+		ARMOR.seen.put( LamellarArmor.class,                false);
 		ARMOR.seen.put( WarriorArmor.class,                 false);
 		ARMOR.seen.put( MageArmor.class,                    false);
 		ARMOR.seen.put( RogueArmor.class,                   false);
