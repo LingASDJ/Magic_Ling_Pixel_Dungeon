@@ -12,13 +12,13 @@ public class PoltergeistSprite extends MobSprite {
         this.texture("SRPD/BlackGhost.png");
         TextureFilm var1 = new TextureFilm(this.texture, 14, 15);
         this.idle = new Animation(5, true);
-        this.idle.frames(var1, new Object[]{0, 1});
+        this.idle.frames(var1, 0, 1);
         this.run = new Animation(10, true);
-        this.run.frames(var1, new Object[]{0, 1});
+        this.run.frames(var1, 0, 1);
         this.attack = new Animation(10, false);
-        this.attack.frames(var1, new Object[]{0, 2, 3, 4, 5});
+        this.attack.frames(var1, 0, 2, 3, 4, 5);
         this.die = new Animation(8, false);
-        this.die.frames(var1, new Object[]{0, 5, 6, 7, 8, 9});
+        this.die.frames(var1, 0, 5, 6, 7, 8);
         this.play(this.idle);
     }
 
