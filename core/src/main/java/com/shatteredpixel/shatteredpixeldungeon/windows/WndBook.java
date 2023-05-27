@@ -30,7 +30,7 @@ public class WndBook extends Window {
         int width = WIDTH_MIN;
 
         RenderedTextBlock info = PixelScene.renderTextBlock(
-                Messages.get(this, "written_by", book.author) +"\n"+
+                Messages.get(this, "written_by") +"\n"+
                         Messages.get(this, "age", book.age) +"\n\n"+
                         book.desc, 6 );
         info.maxWidth(width);

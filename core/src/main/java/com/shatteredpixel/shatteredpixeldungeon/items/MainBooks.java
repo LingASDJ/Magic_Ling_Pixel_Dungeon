@@ -7,7 +7,7 @@ public class MainBooks extends Item {
 
     @Override
     public String info() {
-        return desc()+"\n\n"+author;
+        return desc();
     }
     @Override
     public int value() {

@@ -89,7 +89,7 @@ public class DesktopLauncher {
 									"If you're certain the game should be working on your computer, feel free to message the developer (Evan@ShatteredPixel.com)\n\n" +
 									"version: " + Game.version, "ok", "error", false);
 				} else {
-					TinyFileDialogs.tinyfd_messageBox(title + "魔绫像素地牢发生了意外的崩溃!",
+					TinyFileDialogs.tinyfd_messageBox(title + "脑力益智像素游戏发生了意外的崩溃!",
 							title + "请将此处的代码截图发送给作者，QQ：2735951230" +
 									"version: " + Game.version + "\n" +
 									exceptionMsg,

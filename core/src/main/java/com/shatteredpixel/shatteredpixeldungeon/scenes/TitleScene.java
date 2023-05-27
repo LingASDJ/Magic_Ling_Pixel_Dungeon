@@ -7,7 +7,6 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.updates.Updates;
@@ -26,7 +25,6 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.ColorMath;
 import com.watabou.utils.DeviceCompat;
-import com.watabou.utils.GameMath;
 import com.watabou.utils.Point;
 
 import java.util.Date;
@@ -56,8 +54,8 @@ public class TitleScene extends PixelScene {
 
 		align(title);
 
-		placeTorch(title.x + 22, title.y + 46);
-		placeTorch(title.x + title.width - 22, title.y + 46);
+//		placeTorch(title.x + 22, title.y + 46);
+//		placeTorch(title.x + title.width - 22, title.y + 46);
 
 //		placeTorch2(title.x + -5, title.y + 63);
 //		placeTorch2(title.x + title.width - 15, title.y + 63);
@@ -65,75 +63,75 @@ public class TitleScene extends PixelScene {
 //		placeTorch3(title.x + -10, title.y + 46);
 //		placeTorch3(title.x + title.width - 10, title.y + 46);
 
-		Image swordLeft = new Image( BannerSprites.get( BannerSprites.Type.SWORD ) ) {
-			private float preCurTime = 0;
-			private float curTime = 0;
-
-			@Override
-			public void update() {
-				super.update();
-				this.origin.set( this.width / 2, this.height / 2 );
-				float time = 0.8f;
-				this.x = - this.width + curTime/ time * (Camera.main.width / 2f + this.width / 2f);
-				this.angle = 90 - curTime/ time *225;
-				am = curTime*curTime*curTime/(time * time * time);
-
-				float preTime = 0.9f;
-				if (preCurTime < preTime) {
-					preCurTime += Game.elapsed;
-					return;
-				}
-				if (curTime < time) {
-					curTime += Game.elapsed;
-					if (curTime >= time) Camera.main.shake( GameMath.gate( 1, 2, 5), 0.3f );
-				}
-			}
-		};
-		swordLeft.center(title.center());
-		add( swordLeft );
-
-		Image swordRight = new Image( BannerSprites.get( BannerSprites.Type.SWORD ) ) {
-			private float preCurTime = 0;
-			private float curTime = 0;
-
-			@Override
-			public void update() {
-				super.update();
-				this.origin.set( this.width / 2, this.height / 2 );
-				float time = 0.8f;
-				this.x = Camera.main.width - curTime/ time * (Camera.main.width / 2f + this.width / 2f);
-				this.angle = 90 + curTime/ time * 225;
-				am = curTime*curTime*curTime/(time * time * time);
-
-				float preTime = 0.9f;
-				if (preCurTime < preTime) {
-					preCurTime += Game.elapsed;
-					return;
-				}
-				if (curTime < time) curTime += Game.elapsed;
-			}
-		};
-		swordRight.center(title.center());
-		add( swordRight );
-
+//		Image swordLeft = new Image( BannerSprites.get( BannerSprites.Type.SWORD ) ) {
+//			private float preCurTime = 0;
+//			private float curTime = 0;
+//
+//			@Override
+//			public void update() {
+//				super.update();
+//				this.origin.set( this.width / 2, this.height / 2 );
+//				float time = 0.8f;
+//				this.x = - this.width + curTime/ time * (Camera.main.width / 2f + this.width / 2f);
+//				this.angle = 90 - curTime/ time *225;
+//				am = curTime*curTime*curTime/(time * time * time);
+//
+//				float preTime = 0.9f;
+//				if (preCurTime < preTime) {
+//					preCurTime += Game.elapsed;
+//					return;
+//				}
+//				if (curTime < time) {
+//					curTime += Game.elapsed;
+//					if (curTime >= time) Camera.main.shake( GameMath.gate( 1, 2, 5), 0.3f );
+//				}
+//			}
+//		};
+//		swordLeft.center(title.center());
+//		add( swordLeft );
+//
+//		Image swordRight = new Image( BannerSprites.get( BannerSprites.Type.SWORD ) ) {
+//			private float preCurTime = 0;
+//			private float curTime = 0;
+//
+//			@Override
+//			public void update() {
+//				super.update();
+//				this.origin.set( this.width / 2, this.height / 2 );
+//				float time = 0.8f;
+//				this.x = Camera.main.width - curTime/ time * (Camera.main.width / 2f + this.width / 2f);
+//				this.angle = 90 + curTime/ time * 225;
+//				am = curTime*curTime*curTime/(time * time * time);
+//
+//				float preTime = 0.9f;
+//				if (preCurTime < preTime) {
+//					preCurTime += Game.elapsed;
+//					return;
+//				}
+//				if (curTime < time) curTime += Game.elapsed;
+//			}
+//		};
+//		swordRight.center(title.center());
+//		add( swordRight );
+//
 		add( title );
-
-		Flare flare = new Flare( 7, 128 ) {
-			private float time1 = 0;
-			private float time2 = 0;
-			private float time3 = 0;
-			@Override
-			public void update() {
-				super.update();
-				am = Math.max(0f, (float)Math.sin(time1 += Game.elapsed));
-				if (time1 >= 1.5f * Math.PI) time1 = 0;
-				rm = Math.max(0f, (float)Math.sin(time2 += Game.elapsed));
-				if (time2 >= 1.0f * Math.E) time2 = 5;
-				ra = Math.max(0f, (float)Math.sin(time3 += Game.elapsed));
-				if (time3 >= 1.0f * Math.PI) time3 = 1;
-			}
-		};
-		flare.color( Window.BLUE_COLOR, true ).show( title, 0 ).angularSpeed = +27;
+//
+//		Flare flare = new Flare( 7, 128 ) {
+//			private float time1 = 0;
+//			private float time2 = 0;
+//			private float time3 = 0;
+//			@Override
+//			public void update() {
+//				super.update();
+//				am = Math.max(0f, (float)Math.sin(time1 += Game.elapsed));
+//				if (time1 >= 1.5f * Math.PI) time1 = 0;
+//				rm = Math.max(0f, (float)Math.sin(time2 += Game.elapsed));
+//				if (time2 >= 1.0f * Math.E) time2 = 5;
+//				ra = Math.max(0f, (float)Math.sin(time3 += Game.elapsed));
+//				if (time3 >= 1.0f * Math.PI) time3 = 1;
+//			}
+//		};
+//		flare.color( Window.BLUE_COLOR, true ).show( title, 0 ).angularSpeed = +27;
 
 		Archs archs = new Archs();
 		archs.setSize( w, h );
@@ -224,7 +222,7 @@ public class TitleScene extends PixelScene {
 
 		StyledButton btnNews = new NewsButton(GREY_TR, Messages.get(this, "news"));
 		btnNews.icon(new ItemSprite(ItemSpriteSheet.YELLOWBOOKS, null));
-		add(btnNews);
+		//add(btnNews);
 
 		final int BTN_HEIGHT = 20;
 		int GAP = (int)(h - topRegion - (landscape() ? 3 : 4) * BTN_HEIGHT) / 3;

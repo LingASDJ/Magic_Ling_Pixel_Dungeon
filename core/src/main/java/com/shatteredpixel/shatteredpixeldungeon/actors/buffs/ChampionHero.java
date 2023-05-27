@@ -67,7 +67,7 @@ public abstract class ChampionHero extends FlavourBuff {
 
     @Override
     public String desc() {
-        //todo 取负数，通过绝对值获取,以显示为正数 并通过INT省略后面的小数点
+        //todo 取负数，通过绝对值获取,以显示为正数 并通过INT省略后面的小数点 未来会优化
         return Messages.get(this, "desc")+(int)(Math.abs(1.0f - visualcooldown())+1f);
     }
 
