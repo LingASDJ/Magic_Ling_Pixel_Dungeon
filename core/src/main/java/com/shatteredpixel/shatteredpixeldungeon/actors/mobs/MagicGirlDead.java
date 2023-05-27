@@ -1,5 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -39,12 +43,10 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SnowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.NoKingMobBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfGodIce;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesGirlDeadLevel;
@@ -389,19 +391,29 @@ public class MagicGirlDead extends Boss {
         GameScene.bossSlain();
         Badges.KILLMG();
         Badges.validateBossSlain();
-
+        Dungeon.level.drop( new MagicGirlBooks(), pos ).sprite.drop();
+        Dungeon.level.drop( new NoKingMobBooks(), pos ).sprite.drop();
         WandOfGodIce woc = new WandOfGodIce();
         woc.level(Random.NormalIntRange(2,6));
         woc.identify();
 
+        if(Dungeon.isChallenged(RLPT)){
+            Badges.GOODRLPT();
+        }
+
+        if(Dungeon.isChallenged(AQUAPHOBIA)){
+            Badges.CLEARWATER();
+        }
+
+        if(Dungeon.isChallenged(SBSG)){
+            Badges.BIGX();
+        }
+
+        if(Dungeon.isChallenged(EXSG)){
+            Badges.EXSG();
+        }
+
         Dungeon.level.drop(woc, pos).sprite.drop();
-
-        Dungeon.level.drop(new Gold().quantity(Random.Int(1800, 1200)), pos).sprite.drop();
-        Dungeon.level.drop(new PotionOfHealing().quantity(Random.NormalIntRange(1, 2)), pos).sprite.drop();
-        Dungeon.level.drop(new ScrollOfMagicMapping().quantity(1).identify(), pos).sprite.drop();
-        Dungeon.level.drop(new ScrollOfUpgrade().quantity(1).identify(), pos).sprite.drop();
-
-
     }
 
     @Override

@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AutoRandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GoldenMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
@@ -62,7 +61,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoo
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.LanFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NxhyShopRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NyzBombAndBooksRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
@@ -241,10 +239,10 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new LanFireRoom());
 		}
 
-		if (Dungeon.NyzshopOnLevel()) {
-			Buff.affect(hero, RandomBuff.class).set( (3 + Random.Int(9)+hero.STR/6+hero.HP/30)/Random.Int(1,2)+5, 1 );
-			initRooms.add(new NyzBombAndBooksRoom());
-		}
+//		if (Dungeon.NyzshopOnLevel()) {
+//			Buff.affect(hero, RandomBuff.class).set( (3 + Random.Int(9)+hero.STR/6+hero.HP/30)/Random.Int(1,2)+5, 1 );
+//			initRooms.add(new NyzBombAndBooksRoom());
+//		}
 
 		//force max special rooms and add one more for large levels
 		int specials = specialRooms(feeling == Feeling.LARGE);

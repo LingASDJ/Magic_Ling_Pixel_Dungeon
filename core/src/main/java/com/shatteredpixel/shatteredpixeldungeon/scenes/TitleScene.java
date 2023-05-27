@@ -16,6 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.EndButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.BitmapText;
@@ -339,7 +340,7 @@ public class TitleScene extends PixelScene {
 
 		@Override
 		protected void onClick() {
-				ShatteredPixelDungeon.switchNoFade( ChangesScene.class );
+			ShatteredPixelDungeon.scene().addToFront(new WndMessage("脑力像素益智游戏，始于2023"));
 		}
 
 	}
@@ -374,7 +375,8 @@ public class TitleScene extends PixelScene {
 
 		@Override
 		protected void onClick() {
-			ShatteredPixelDungeon.switchNoFade(ThanksScene.class);
+			ShatteredPixelDungeon.scene().addToFront(new WndMessage("鸣谢以下人员：\n\n策划设计：JDSALing Mason\n\n文案设计：Mason " +
+					"Complex\n\n音乐设计：Prohonor\n\n美工设计：Complex DC 被子"));
 		}
 	}
 

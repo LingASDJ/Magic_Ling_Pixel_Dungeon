@@ -28,6 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.IceCityBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.CrivusFruitsFood;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
@@ -237,8 +239,8 @@ public class CrivusFruits extends Mob {
         Dungeon.level.drop( new IronKey( Dungeon.depth ), pos-1 ).sprite.drop();
         Dungeon.level.drop( new IronKey( Dungeon.depth ), pos+1 ).sprite.drop();
         Badges.validateBossSlain();
-
-
+        Dungeon.level.drop( new IceCityBooks(), pos ).sprite.drop();
+        Dungeon.level.drop( new YellowSunBooks(), pos ).sprite.drop();
         if (!Badges.isUnlocked(Badges.Badge.KILL_APPLE)){
             Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
         } else if (Random.Float()<0.4f) {

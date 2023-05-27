@@ -532,7 +532,7 @@ public class NewDM720 extends MolotovHuntsman {
 //        }
         super.die(cause);
         Badges.validateBossSlain();
-        Badges.KILLSDM720();
+        //Badges.KILLSDM720();
         GameScene.bossSlain();
         Dungeon.level.unseal();
         //60% chance of 2 shards, 30% chance of 3, 10% chance for 4. Average of 2.5

@@ -110,7 +110,6 @@ public class Badges {
 		GODD_MAKE					( 82 ),
 		CLEAR_WATER					( 83 ),
 		GHOSTDAGE					( 84 ),
-		ENDIED					( 85 ),
 		//gold
 		PIRANHAS                    ( 64 ),
 		//these names are a bit outdated, but it doesn't really matter.
@@ -155,7 +154,7 @@ public class Badges {
 		GAMES_PLAYED_3              ( 99, true ),
 		CHAMPION_1X                  ( 100 ),
 		KILL_APPLE(101),
-		KILL_DM720				(102),
+
 		RLPT				(103),
 
 
@@ -165,20 +164,16 @@ public class Badges {
 		CHAMPION_3X                  ( 114 ),
 		CHAMPION_4X                  ( 115 ),
 		CHAMPION_5X                  ( 116 ),
-		NYZ_SHOP                    ( 117 ),
 		DAGETO                    ( 118 ),
-		KILL_DM                    ( 119 ),
 
-		//rudy
-		FIREGIRL                 	 ( 128 ),
+		//rudy/FIREGIRL                 	 ( 128 ),
 		//SLIMEPR                  	 ( 129 ),
-		DRAWF_HEAD                    ( 130 ),
-		SPICEALBOSS 				 ( 131),
+
+
 
 		KILL_MG			(133),
 		BIG_X				(134),
-		EXSG                (135),
-		BRCLER                (136);
+		EXSG                (135);
 
 		public boolean meta;
 
@@ -367,17 +362,6 @@ public class Badges {
 		}
 		if (!local.contains( Badge.GOLD_COLLECTED_4 ) && Statistics.goldCollected >= 7500) {
 			badge = Badge.GOLD_COLLECTED_4;
-			local.add( badge );
-		}
-
-		displayBadge( badge );
-	}
-
-	public static void nyzvalidateGoldCollected() {
-		Badge badge = null;
-
-		if (!local.contains( Badge.NYZ_SHOP ) && Statistics.naiyaziCollected >= 7) {
-			badge = Badge.NYZ_SHOP;
 			local.add( badge );
 		}
 
@@ -574,13 +558,7 @@ public class Badges {
 		validateYASD();
 	}
 
-	public static void ENDDIED() {
-//		Badge badge = Badge.ENDIED;
-//		local.add( badge );
-//		displayBadge( badge );
-//
-//		validateYASD();
-	}
+
 
 	public static void DeathRedNercols() {
 		Badge badge = Badge.DEATH_FROM_FIRE;
@@ -670,14 +648,14 @@ public class Badges {
 		}
 	}
 
-	private static void validateAMZ() {
-		if (global.contains( Badge.KILL_APPLE ) &&global.contains( Badge.KILL_DM720 ) &&
-				global.contains( Badge.KILL_MG) && global.contains( Badge.FIREGIRL) && global.contains( Badge.DRAWF_HEAD)) {
-
-			Badge badge = Badge.SPICEALBOSS;
-			displayBadge( badge );
-		}
-	}
+//	private static void validateAMZ() {
+//		if (global.contains( Badge.KILL_APPLE ) &&global.contains( Badge.KILL_DM720 ) &&
+//				global.contains( Badge.KILL_MG) && global.contains( Badge.FIREGIRL) && global.contains( Badge.DRAWF_HEAD)) {
+//
+//			Badge badge = Badge.SPICEALBOSS;
+//			displayBadge( badge );
+//		}
+//	}
 
 	private static void validateYASD() {
 		if (global.contains( Badge.DEATH_FROM_FIRE ) &&
@@ -934,37 +912,30 @@ public class Badges {
 
 	public static void KILLSAPPLE() {
 		displayBadge( Badge.KILL_APPLE);
-		validateAMZ();
+		//validateAMZ();
 	}
 
-	public static void KILLSDM720() {
-		displayBadge( Badge.KILL_DM720 );
-		validateAMZ();
-	}
+//	public static void KILLSDM720() {
+//		displayBadge( Badge.KILL_DM720 );
+//		validateAMZ();
+//	}
 
 	public static void CLEARWATER() {
 		displayBadge( Badge.CLEAR_WATER );
 	}
 
-	public static void KILLDWARF() {
-		displayBadge( Badge.DRAWF_HEAD );
-		validateAMZ();
-	}
+//	public static void KILLDWARF() {
+//		displayBadge( Badge.DRAWF_HEAD );
+//		validateAMZ();
+//	}
 
-	public static void KILLFIREGIRL() {
-		displayBadge( Badge.FIREGIRL );
-		validateAMZ();
-	}
+
 
 	public static void KILLMG() {
 		displayBadge( Badge.KILL_MG );
-		validateAMZ();
+		//validateAMZ();
 	}
 
-	public static void KILL_DMK() {
-		displayBadge( Badge.KILL_DM );
-		validateAMZ();
-	}
 
 
 	public static void BIGX() {
@@ -974,9 +945,7 @@ public class Badges {
 		displayBadge( Badge.EXSG );
 	}
 
-	public static void BOSSRUSH() {
-		displayBadge( Badge.BRCLER );
-	}
+
 
 	public static void GOODRLPT() {
 		displayBadge( Badge.RLPT );

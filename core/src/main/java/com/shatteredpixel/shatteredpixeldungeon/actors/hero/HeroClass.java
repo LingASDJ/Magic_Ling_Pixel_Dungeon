@@ -29,7 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpectralBlades;
@@ -159,11 +158,6 @@ public enum HeroClass {
 
 		if (Dungeon.isChallenged(Challenges.AQUAPHOBIA)) {
 			new WaterSoul().quantity(4).identify().collect();
-		}
-
-		if ( Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
-			Buff.affect(hero, RandomBuff.class).set( (5), 1 );
-			Dungeon.gold+=1200;
 		}
 
 		if ( Badges.isUnlocked(Badges.Badge.EXSG)){

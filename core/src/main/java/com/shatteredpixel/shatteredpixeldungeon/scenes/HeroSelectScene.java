@@ -46,7 +46,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndDLC;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDLCX;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHeroInfo;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
@@ -474,12 +473,7 @@ public class HeroSelectScene extends PixelScene {
 		IconButton DungeonHappyMode = new IconButton(new ItemSprite(ItemSpriteSheet.LANTERNB)) {
 			@Override
 			protected void onClick() {
-				if(1==1){
-					ShatteredPixelDungeon.scene().addToFront(new WndDLC(SPDSettings.dlc(), true));
-				} else {
-					ShatteredPixelDungeon.scene().addToFront(new WndMessage("击败_第三大层Boss_后解锁娱乐模式。"));
-				}
-
+					ShatteredPixelDungeon.scene().addToFront(new WndMessage("该模式正在开发……"));
 			}
 		};
 		DungeonHappyMode.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
@@ -573,16 +567,16 @@ public class HeroSelectScene extends PixelScene {
 
 
 			title.setPos(frame.x - frame.width / 5f + FRAME_MARGIN_X / 5f, frame.y + frame.height / 8 - BUTTON_HEIGHT - 45);
-			placeTorch(title.x - 8, title.y + 42);
-			placeTorch(title.x + 132, title.y + 42);
-			add(title);
+			//placeTorch(title.x - 8, title.y + 42);
+			//placeTorch(title.x + 132, title.y + 42);
+			//add(title);
 
 			Image twotitle = new Image(Assets.Interfaces.TWOYEARS, 0, 0, 126, 34);
 
 			//float topRegion = Math.max(title.height/2, 20f);
 
 			twotitle.setPos(frame.x - frame.width / 5f + FRAME_MARGIN_X / 5f, frame.y + frame.height / 4 - BUTTON_HEIGHT - 40);
-			add(twotitle);
+			//add(twotitle);
 		}
 
 		fadeIn();

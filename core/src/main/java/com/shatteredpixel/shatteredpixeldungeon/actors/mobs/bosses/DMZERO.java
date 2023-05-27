@@ -3,7 +3,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -381,7 +380,7 @@ public class DMZERO extends Mob
             GameScene.add(((Mob) (obj)));
             Actor.addDelayed(new Pushing(((Char) (obj)), pos, ((NullDiedTO) (obj)).pos), -1F);
 
-            Badges.BOSSRUSH();
+            //Badges.BOSSRUSH();
 
             yell( Messages.get(this, "defeated") );
         }

@@ -14,11 +14,11 @@ buildscript {
 allprojects {
 
     ext {
-        appName = 'Magic Ling Pixel Dungeon-EDU'
+        appName = '脑力像素益智游戏'
         appPackageName = 'com.ansdomagiclingpixeldungeon.lingedu'
 
         appVersionCode =800850
-        appVersionName = '0.6.1.0-Beta5(P3)'
+        appVersionName = '0.0.1.2'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 

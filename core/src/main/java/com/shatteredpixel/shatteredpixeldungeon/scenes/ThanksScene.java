@@ -47,9 +47,9 @@ public class ThanksScene extends PixelScene {
         content.clear();
 
         CreditsBlock mispd = new CreditsBlock(true, Window.TITLE_COLOR,
-                "Magic Ling Pixel Dungeon",
+                "脑力益智像素游戏",
                 new Image("Ling.png", 0, 0, 16, 16),
-                "_Start to 2021-2-12_\n\nDev:_JDSA Ling_"
+                "_Start to 2023-1-10_\n\nDev:_JDSA Ling_"
                 ,
                 null,
                 null);
@@ -184,7 +184,7 @@ public class ThanksScene extends PixelScene {
                 "Thanks Playing My Dungeon",
                 Icons.TALENT.get(),
                 "All the Players wishing you all the best every day!!!\n\n",
-                "加入QQ魔绫开发总群",
+                "加入QQ脑力像素开发总群",
                 "https://jq.qq.com/?_wv=1027&k=wzMjU0f7");
         if (landscape()){
             wata2.setRect((Camera.main.width - colWidth)/2f-10, wata.bottom() + 20, colWidth+20, 0);

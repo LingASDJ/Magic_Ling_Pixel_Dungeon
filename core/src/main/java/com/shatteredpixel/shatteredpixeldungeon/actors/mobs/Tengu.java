@@ -54,6 +54,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.DeepBloodBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.GrassKingBooks;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -206,7 +208,8 @@ public class Tengu extends Mob {
 		
 		GameScene.bossSlain();
 		super.die( cause );
-		
+		Dungeon.level.drop( new DeepBloodBooks(), pos ).sprite.drop();
+		Dungeon.level.drop( new GrassKingBooks(), pos ).sprite.drop();
 		Badges.validateBossSlain();
 		
 		LloydsBeacon beacon = Dungeon.hero.belongings.getItem(LloydsBeacon.class);

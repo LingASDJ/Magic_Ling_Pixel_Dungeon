@@ -3,7 +3,6 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -195,7 +194,7 @@ public class WndNyzShop extends Window {
                         Buff.prolong( hero, ReloadShop.class, 1f);
                         Statistics.naiyaziCollected += 1;
                         WndNyzShop.RewardWindow.this.hide();
-                        Badges.nyzvalidateGoldCollected();
+                        //Badges.nyzvalidateGoldCollected();
                     } else {
                         tell(Messages.get(WndNyzShop.class,"nomoney"));
                         WndNyzShop.RewardWindow.this.hide();
@@ -239,7 +238,7 @@ public class WndNyzShop extends Window {
                         WndNyzShop.this.selectReward( item );
                         if (RandomBuff.level-- >= 0) {
                         }
-                        Badges.nyzvalidateGoldCollected();
+                       //Badges.nyzvalidateGoldCollected();
                         Statistics.naiyaziCollected += 1;
                         WndNyzShop.RewardWindow2.this.hide();
                     } else {

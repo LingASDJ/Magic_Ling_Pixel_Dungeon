@@ -6,7 +6,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.FALS
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.TRUEPosition;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -767,7 +766,7 @@ public class FireMagicDied extends Mob implements Callback {
 
         GameScene.bossSlain();
 
-        Badges.KILLFIREGIRL();
+        //Badges.KILLFIREGIRL();
 
         yell( Messages.get(this, "defeated",Dungeon.hero.name()) );
     }

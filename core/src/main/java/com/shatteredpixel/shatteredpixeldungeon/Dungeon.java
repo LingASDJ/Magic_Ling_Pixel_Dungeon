@@ -64,14 +64,12 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DimandKingLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DwarfMasterBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.HallsLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ItemLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LastLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LinkLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewCityBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.NewHallsBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SLMKingLevel;
@@ -457,40 +455,9 @@ public class Dungeon {
 					level = new CavesLevel();
 					break;
 				case 15:
-					if (SPDSettings.level3boss()==3){
-						level = new CavesGirlDeadLevel();
-					} else if (SPDSettings.level3boss()==2){
-						level = new CaveTwoBossLevel();
-					} else {
-						level = new NewCavesBossLevel();
-					}
+					level = new CavesGirlDeadLevel();
 					break;
 				case 16:
-				case 17:
-				case 18:
-				case 19:
-					level = new CityLevel();
-					break;
-				case 20:
-					if((Statistics.boss_enhance & 0x8) != 0) {
-						Buff.affect(hero, TestDwarfMasterLock.class).set((1), 1);
-						level = new DwarfMasterBossLevel();
-						break;
-					}
-					else
-						level = new NewCityBossLevel();
-					break;
-				case 21:
-				case 22:
-				case 23:
-				case 24:
-					level = new HallsLevel();
-					break;
-				case 25:
-					if((Statistics.boss_enhance & 0x10) != 0) level = new YogGodHardBossLevel();
-					else level = new NewHallsBossLevel();
-					break;
-				case 26:
 					level = new LastLevel();
 					break;
 				default:

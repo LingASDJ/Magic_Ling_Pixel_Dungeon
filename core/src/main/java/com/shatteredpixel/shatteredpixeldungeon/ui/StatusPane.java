@@ -296,7 +296,7 @@ public class StatusPane extends Component {
 
 			if(SPDSettings.TimeLimit()) {
 				PixelScene.align(timeText);
-				timeStatusText.x = MenuPane.version.x;
+				timeStatusText.x = MenuPane.version.x-10;
 				timeStatusText.y = MenuPane.version.y+10;
 				PixelScene.align(timeStatusText);
 			} else {
@@ -353,10 +353,8 @@ public class StatusPane extends Component {
 		}
 
 		if(SPDSettings.TimeLimit()) {
-			timeText.x = MenuPane.version.x;
-
+			timeText.x = MenuPane.version.x-20;
 			timeText.y = MenuPane.version.y + 5;
-
 			PixelScene.align(timeText);
 			timeStatusText.x = MenuPane.version.x;
 			timeStatusText.y = MenuPane.version.y+10;
@@ -404,8 +402,8 @@ public class StatusPane extends Component {
 		}
 
 		if (ClassPage()) {
-			page.setPos(0, 40);
-			pageb.setPos(0, 500);
+			page.setPos(0, 5000);
+			pageb.setPos(0, 5000);
 			mainhand.setPos(0, 51);
 			joinxxx.setPos(0, 78);
 			bossselect.setPos(0, 104);
@@ -416,8 +414,8 @@ public class StatusPane extends Component {
 			}
 
 		} else {
-			page.setPos(0, 500);
-			pageb.setPos(0, 40);
+			page.setPos(0, 5000);
+			pageb.setPos(0, 5000);
 			mainhand.setPos(0, 500);
 			joinxxx.setPos(0, 500);
 			bossselect.setPos(0, 500);

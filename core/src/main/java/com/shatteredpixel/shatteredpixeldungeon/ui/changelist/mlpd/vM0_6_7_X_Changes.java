@@ -196,7 +196,7 @@ public class vM0_6_7_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton((new Image("Ling.png", 0, 0, 16, 16)), ("开发者的话"),
-                ("不知不觉中，魔绫已经走过2年路程。从最初的几十人测试群到现在的1000人以上，\n" +
+                ("不知不觉中，脑力像素已经走过2年路程。从最初的几十人测试群到现在的1000人以上，\n" +
                         "你们的支持和喜爱是我继续开发的动力。\n" +
                         "近期，我的课程很多，所以更新有所减缓。希望各位能够理解\n" +
                         "此版本是重大更新前的最后一个版本，宝箱王我经过了多次重新设计，希望能在Beta5版本为大家带来不一样的体验。\n" +
@@ -251,10 +251,10 @@ public class vM0_6_7_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new OGPDNQHZTT(), ("OGPD老鼠组"),
-                ("曾经的魔绫代表怪物，如今也正式退出魔绫的舞台。2021.2.21--2023.3.24（R.I.P.)")));
+                ("曾经的脑力像素代表怪物，如今也正式退出脑力像素的舞台。2021.2.21--2023.3.24（R.I.P.)")));
 
         changes.addButton(new ChangeButton(new SnakeSprite(), ("下水道巨蛇"),
-                ("破碎的代表怪物，由于不符合魔绫的世界观，故而被移除。")));
+                ("破碎的代表怪物，由于不符合脑力像素的世界观，故而被移除。")));
     }
 
     public static void add_v0_6_25_Changes( ArrayList<ChangeInfo> changeInfos ) {
@@ -1140,8 +1140,8 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton((new Image("Ling.png", 0, 0, 16, 16)), ("开发者的话"),
                 ("你好，这里是绫。如你所见，这是全新的脑力益智像素游戏，她已经步入了破碎1.2" +
                         ".3的版本。\n\n至此，脑力益智像素游戏以后将针对于此破碎底层进行更新。今后不会继续同步底层破碎版本。\n\n" +
-                        "同时，本次更新后，后续应该还有几个补丁版。很高兴一路以来有那么多的朋友，非常谢谢你们的支持。\n\n现在，旅途才刚刚开始，魔绫下半段，将会更加精彩。\n" +
-                        "在这之前，就让我们继续在上半段的魔绫里面探索前进吧。")));
+                        "同时，本次更新后，后续应该还有几个补丁版。很高兴一路以来有那么多的朋友，非常谢谢你们的支持。\n\n现在，旅途才刚刚开始，脑力像素下半段，将会更加精彩。\n" +
+                        "在这之前，就让我们继续在上半段的脑力像素里面探索前进吧。")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("新挑战:空洞旅程"),
                 ("开启本挑战将会在开局获得240点理智，在_没有光芒下_和_部分怪物的近战_将会使你理智降低。详情查看下表:\n" +
@@ -1165,16 +1165,16 @@ public class vM0_6_7_X_Changes {
                 ("快捷栏使用说明:\n-1.请最好根据自己的分辨率进行调整，避免出现快捷栏叠加情况\n-2.由于技术问题，快捷栏仅在游戏中才可以设置\n-3.最多支持12个快捷栏，玩得高兴！！！")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.CHANGES), ("重大更新"),
-                ("魔绫现已更新底层到破碎V1.2.3版本!")));
+                ("脑力像素现已更新底层到破碎V1.2.3版本!")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("新挑战和部分挑战改动"),
                 ("部分挑战进行重新调整，同时追加全新挑战，欢迎前来探索\n\n注意：部分挑战尚未完成，请等待后续版本")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.LANGS), ("本地化模块升级"),
-                ("魔绫已经对本地化语言模块优化，使部分低配设备性能更好")));
+                ("脑力像素已经对本地化语言模块优化，使部分低配设备性能更好")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("UI优化改动"),
-                ("魔绫已经对UI优化改动进行大规模调整，欢迎前来体验")));
+                ("脑力像素已经对UI优化改动进行大规模调整，欢迎前来体验")));
 
         changes = new ChangeInfo("调整", false, null);
         changes.hardlight(Window.CYELLOW);

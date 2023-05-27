@@ -72,8 +72,6 @@ public class Challenges {
 			"dhxd",
 			"icedied",
 			"pro",
-			"cs",
-			"cs",
 	};
 
 	public static final int[] MASKS = {

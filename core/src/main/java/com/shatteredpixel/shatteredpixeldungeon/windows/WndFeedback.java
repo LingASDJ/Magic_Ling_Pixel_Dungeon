@@ -19,7 +19,7 @@ import com.watabou.noosa.Game;
 public class WndFeedback extends Window {
 
     protected static final int WIDTH_P    = 122;
-    protected static final int WIDTH_L    = 223;
+    protected static final int WIDTH_L    = 200;
     private static final int BTN_HEIGHT	    = 18;
     private static final float GAP          = 2;
 
@@ -93,7 +93,7 @@ public class WndFeedback extends Window {
         } else {
             btnJoinback.setRect(0,btnFeedback.bottom() + GAP, width, BTN_HEIGHT);
         }
-        add(btnJoinback);
+        //add(btnJoinback);
 
         if (ingame) {
             RedButton btnClose = new RedButton(Messages.get(this, "close")){
@@ -109,7 +109,7 @@ public class WndFeedback extends Window {
 
             resize(width, (int)btnClose.bottom());
         }
-        else resize(width, (int) btnJoinback.bottom());
+        else resize(width, (int) btnFeedback.bottom());
 
     }
 

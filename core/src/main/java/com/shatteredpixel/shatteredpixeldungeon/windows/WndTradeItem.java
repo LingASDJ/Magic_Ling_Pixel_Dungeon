@@ -158,10 +158,10 @@ public class WndTradeItem extends WndInfoItem {
 		btnStole.icon(Statistics.fireGirlnoshopping && !Statistics.deadshoppingdied ? new FireMagicGirlSprite() :
 				new ShopGuardDead.ShopGuardianRedSprite());
 
-		add( btnStole );
+		//add( btnStole );
 
 		if(shopOnLevel()){
-			pos = btnStole.bottom();
+			pos = btnBuy.bottom();
 			btnStole.visible=true;
 		} else {
 			pos = btnBuy.bottom()-2;
