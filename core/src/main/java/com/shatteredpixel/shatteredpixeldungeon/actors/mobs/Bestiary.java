@@ -123,32 +123,38 @@ public class Bestiary {
 					switch (Random.Int(6)) {
 						case 0:
 							return new ArrayList<>(Arrays.asList(Skeleton.class, BlackHost.class,
-									Thief.class,DM100.class,Necromancer.class));
+									Thief.class,DM100.class,Necromancer.class,Monk.class,
+									Golem.class));
 						case 1:
 							return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
 									Thief.class,Thief.class,Fire_Scorpio.class,
 									DM200.class,SkullShaman.class,
-									DM100.class, Ice_Scorpio.class));
+									DM100.class, Ice_Scorpio.class,Monk.class,
+									Golem.class));
 						case 2:
 							return new ArrayList<>(Arrays.asList(
 									Succubus.class,
-									Eye.class,ShieldHuntsman.class,Scorpio.class,Fire_Scorpio.class));
+									Eye.class,ShieldHuntsman.class,Scorpio.class,Monk.class,
+									Golem.class));
 						case 3:
 							return new ArrayList<>(Arrays.asList(
 									Succubus.class, Succubus.class, Succubus.class,
 									Succubus.class, Succubus.class,
-									Eye.class,ShieldHuntsman.class,Ice_Scorpio.class,Fire_Scorpio.class,Albino.class));
+									Eye.class,ShieldHuntsman.class,Albino.class,Monk.class,
+									Golem.class));
 						case 4:
 							return new ArrayList<>(Arrays.asList(
 									Succubus.class,
 									Succubus.class,
-									Eye.class,ShieldHuntsman.class,Ice_Scorpio.class));
+									Eye.class,ShieldHuntsman.class,
+									Monk.class,
+									Golem.class));
 						case 5:
 							return new ArrayList<>(Arrays.asList(
 									Succubus.class,
 									Eye.class, Eye.class,
-									Scorpio.class, Eye.class,Succubus.class,
-									Ice_Scorpio.class,Fire_Scorpio.class));
+									Scorpio.class, Eye.class,Succubus.class,Monk.class,
+									Golem.class));
 					}
 				default:
 					return new ArrayList<>(Arrays.asList(Rat.class, Rat.class,
@@ -168,7 +174,7 @@ public class Bestiary {
 			case 2:
 				return new ArrayList<>(Arrays.asList(Rat.class,
 						Rat.class, Rat.class, Gnoll.class, Gnoll.class,
-						Gnoll.class, Gnoll.class, Albino.class));
+						Gnoll.class, Gnoll.class));
 			case 3:
 				return new ArrayList<>(Arrays.asList(Rat.class,
 						Rat.class, Salamander.class,

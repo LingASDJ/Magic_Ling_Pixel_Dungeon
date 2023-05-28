@@ -48,8 +48,8 @@ public class Challenges {
 	public static final int STRONGER_BOSSES  = 4096;
 	public static final int DHXD = 8192;
 	public static final int ICEDIED = 16384;
-	public static final int   PRO  = 32768;
-	public static final int   CS   = 65536;
+	public static final int PRO  = 32768;
+	public static final int CS   = 65536;
 
 
 	public static final int MAX_VALUE = 131072;

@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -49,9 +50,11 @@ public class MeatPie extends Food {
 	protected void satisfy(Hero hero) {
 		if (Dungeon.isChallenged(Challenges.EXSG)){
 			Buff.prolong( hero, Haste.class, 8f);
-			hero.STR++;
-			hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
-			GLog.p(Messages.get(this, "eat_msg_2"));
+			if(Random.Float() > (0.2f + (hero.STR/5f)/10f)){
+				hero.STR++;
+				hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
+				GLog.p(Messages.get(this, "eat_msg_2"));
+			}
 		}
 		super.satisfy( hero );
 		Buff.affect(hero, WellFed.class).reset();

@@ -975,8 +975,6 @@ public class Hero extends Char {
 			lanterfire = 100;
 			new OilLantern().quantity(1).identify().collect();
 
-			new Ankh().quantity(1).identify().collect();
-
 			lanterfireactive = true;
 
 			Buff.affect( this, Nyctophobia.class );

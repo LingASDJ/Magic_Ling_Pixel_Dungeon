@@ -21,16 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.potions;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
-
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.watabou.utils.Random;
 
 public class PotionOfExperience extends Potion {
 
@@ -43,12 +38,7 @@ public class PotionOfExperience extends Potion {
 	@Override
 	public void apply( Hero hero ) {
 		identify();
-		if (Dungeon.isChallenged(EXSG) && Random.Float()>0.4f) {
-			Buff.affect(hero, Bleeding.class).set(6f);
-		}else{
-			hero.earnExp( hero.maxExp(), getClass() );
-		}
-
+		hero.earnExp( hero.maxExp(), getClass() );
 	}
 	
 	@Override

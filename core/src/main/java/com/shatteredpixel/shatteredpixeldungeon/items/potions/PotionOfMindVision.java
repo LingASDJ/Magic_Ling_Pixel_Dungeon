@@ -44,7 +44,7 @@ public class PotionOfMindVision extends Potion {
     public void apply(Hero hero) {
         identify();
 
-        if (Dungeon.isChallenged(EXSG)&& Random.Float()>0.5f) {
+        if (Dungeon.isChallenged(EXSG)&& Random.Float()>0.4f) {
             if (Dungeon.level.mobs.size() > 0) {
                 GLog.i(Messages.get(this, "can't_see_mobs"));
 

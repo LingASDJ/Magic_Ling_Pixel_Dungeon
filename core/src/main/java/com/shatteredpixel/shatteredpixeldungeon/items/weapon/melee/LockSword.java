@@ -37,15 +37,15 @@ public class LockSword extends MeleeWeapon {
     @Override
     public int max(int lvl) {
 
-        return  Math.round(1.7f*(tier+1)) +
+        return  Math.round(1.4f*(tier+1)) +
                 lvl*Math.round(1.5f*(tier+1));
     }
 
     @Override
     public int min(int lvl) {
 
-        return  Math.round(1.4f*(tier+1)) +
-                lvl*Math.round(0.5f*(tier+1));
+        return  Math.round(1.2f*(tier+1)) +
+                lvl*Math.round(0.3f*(tier+1));
     }
 
     public String desc() {
@@ -88,19 +88,19 @@ public class LockSword extends MeleeWeapon {
         if (lvl>= 900) {
             switch (Random.NormalIntRange(1,4)){
                 case 1:
-                    dmg = (new Grim()).proc(this, attacker, defender, damage) + 8;
+                    dmg = (new Grim()).proc(this, attacker, defender, damage) + 4;
                     damage = dmg;
                     break;
                 case 2:
-                    dmg = (new Shocking()).proc(this, attacker, defender, damage) + 8;
+                    dmg = (new Shocking()).proc(this, attacker, defender, damage) + 5;
                     damage = dmg;
                     break;
                 case 3:
-                    dmg = (new Blazing()).proc(this, attacker, defender, damage) + 8;
+                    dmg = (new Blazing()).proc(this, attacker, defender, damage) + 6;
                     damage = dmg;
                     break;
                 case 4:
-                    dmg = (new Kinetic()).proc(this, attacker, defender, damage) + 8;
+                    dmg = (new Kinetic()).proc(this, attacker, defender, damage) + 7;
                     damage = dmg;
                     break;
                 default:

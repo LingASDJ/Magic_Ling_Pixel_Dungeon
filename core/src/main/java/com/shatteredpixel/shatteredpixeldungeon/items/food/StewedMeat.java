@@ -21,10 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
-
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -37,12 +33,7 @@ public class StewedMeat extends Food {
 
 	@Override
 	protected void satisfy( Hero hero ) {
-		if (Dungeon.isChallenged(Challenges.EXSG)) {
-			hero.earnExp( hero.maxExp(), getClass() );
-			Buff.affect(hero, Hunger.class).satisfy(energy/3f);
-		} else {
-			Buff.affect(hero, Hunger.class).satisfy(energy/2f);
-		}
+		Buff.affect(hero, Hunger.class).satisfy(energy/2f);
 	}
 
 
@@ -97,6 +88,6 @@ public class StewedMeat extends Food {
 	@Override
 	public String desc() {
 		//三元一次逻辑运算
-		return Dungeon.isChallenged(EXSG) ? Messages.get(this, "descx") : Messages.get(this, "desc");
+		return Messages.get(this, "desc");
 	}
 }

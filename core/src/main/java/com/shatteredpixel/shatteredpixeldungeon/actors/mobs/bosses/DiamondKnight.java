@@ -114,7 +114,7 @@ public class DiamondKnight extends Boss {
      */
     @Override
     public boolean isInvulnerable(Class effect) {
-        return (this.HP>=301 && this.HP<=360) && effect != DiamondKnight.DiedDamager.class;
+        return (this.HP>=301 && this.HP<=360) && effect != DiamondKnight.DiedDamager.class && !Statistics.TPDoorDieds;
     }
 
     public static class DiedDamager extends Buff {

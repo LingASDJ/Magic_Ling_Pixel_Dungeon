@@ -11,6 +11,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -32,7 +33,7 @@ import java.util.HashMap;
 //宝藏迷宫 10层
 public class ColdChestBossLevel extends Level {
 
-    private State pro;
+    public State pro;
 
     public State pro(){
         return pro;
@@ -90,8 +91,6 @@ public class ColdChestBossLevel extends Level {
     private static final short W = Terrain.WALL;
     private static final short M = Terrain.WELL;
     private static final short E = Terrain.CHASM;
-
-    private static final short X = Terrain.EXIT;
     private static final short J = Terrain.ENTRANCE;
     private static final short O = Terrain.WATER;
     private static final short P = Terrain.EMPTY_SP;
@@ -138,7 +137,7 @@ public class ColdChestBossLevel extends Level {
             W,E,E,W,K,W,E,E,E,E,E,E,E,W,K,K,K,K,K,K,K,W,E,E,E,E,E,E,W,K,W,E,E,E,W,
             W,E,E,W,K,W,E,E,E,E,E,E,E,W,K,K,K,P,K,K,K,W,E,E,E,E,E,E,W,K,W,E,E,E,W,
             W,E,E,W,K,W,W,W,W,W,W,W,W,W,K,K,P,P,P,K,K,W,W,W,W,W,W,W,W,K,W,E,E,E,W,
-            W,E,E,W,K,K,K,K,K,K,K,K,K,D,K,P,P,X,P,P,K,D,K,K,K,K,K,K,K,K,W,E,E,E,W,
+            W,E,E,W,K,K,K,K,K,K,K,K,K,D,K,P,P,P,P,P,K,D,K,K,K,K,K,K,K,K,W,E,E,E,W,
             W,E,E,W,W,W,W,W,W,W,W,W,W,W,K,K,P,P,P,K,K,W,W,W,W,W,W,W,W,W,W,E,E,E,W,
             W,E,E,E,E,E,E,E,E,E,E,E,E,W,K,K,K,P,K,K,K,W,E,E,E,E,E,E,E,E,E,E,E,E,W,
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
@@ -307,7 +306,6 @@ public class ColdChestBossLevel extends Level {
     public void progress(){
         switch (pro) {
             case GO_START:
-                //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
                 seal();
                 DiamondKnight bossx = new DiamondKnight();
                 bossx.state = bossx.WANDERING;
@@ -451,7 +449,7 @@ public class ColdChestBossLevel extends Level {
                 for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于300 2阶段
-                        if (pro == MAZE_START && boss.HP <= 300) {
+                        if (pro == MAZE_START && boss.HP <= 300 || Statistics.TPDoorDieds) {
                             //动态修改整个房间 宝藏迷宫
                             changeMap(EndMap);
                             //在切换房间的时候立刻切换全新坐标

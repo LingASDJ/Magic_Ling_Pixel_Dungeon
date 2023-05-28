@@ -23,6 +23,7 @@ public class Fire_Scorpio extends Scorpio{
         lootChance = 0.8f;
 
         properties.add(Property.DEMONIC);
+        properties.add(Property.MINIBOSS);
     }
 
     @Override
@@ -30,6 +31,7 @@ public class Fire_Scorpio extends Scorpio{
         damage = super.attackProc( enemy, damage );
         if (Random.Int( 2,5 ) > 3) {
             Buff.affect( enemy, Burning.class ).reignite( enemy, 4f );
+            spend(3f);
         }
 
         return damage;

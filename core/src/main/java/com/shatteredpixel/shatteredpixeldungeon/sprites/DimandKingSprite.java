@@ -146,7 +146,7 @@ public class DimandKingSprite extends MobSprite {
             super();
 
             texture( Dungeon.hero.heroClass.spritesheet() );
-            updateArmor( 6 );
+            updateArmor( 7 );
             idle();
         }
 

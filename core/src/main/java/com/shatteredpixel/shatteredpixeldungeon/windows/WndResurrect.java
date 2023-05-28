@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.TPDoorDieds;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
 
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -146,6 +147,11 @@ public class WndResurrect extends Window {
 				//克里弗斯之果二阶段死亡的时候的给予重新评估
 				if(crivusfruitslevel2){
 					crivusfruitslevel2 = false;
+				}
+
+				//拟态王二阶段死亡的时候给予重新评估
+				if(TPDoorDieds){
+					TPDoorDieds = false;
 				}
 
 				//矮人将军

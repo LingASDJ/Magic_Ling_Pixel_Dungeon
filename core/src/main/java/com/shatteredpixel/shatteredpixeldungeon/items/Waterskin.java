@@ -37,7 +37,7 @@ import java.util.ArrayList;
 
 public class Waterskin extends Item {
 
-	private static final int MAX_VOLUME	= 10;
+	private static final int MAX_VOLUME	= 16;
 
 	private static final String AC_DRINK	= "DRINK";
 
@@ -129,7 +129,7 @@ public class Waterskin extends Item {
 
 	@Override
 	public Item upgrade() {
-		DewViewSword = Math.min(DewViewSword + 1, 20);
+		DewViewSword = Math.min(DewViewSword + 1, 8);
 		return super.upgrade();
 	}
 	@Override

@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
@@ -62,8 +63,8 @@ public class TPDoor extends Mob {
 
         super.die(cause);
         GameScene.flash(0x808080);
+        Statistics.TPDoorDieds = true;
         ((ColdChestBossLevel) Dungeon.level).progress();
-
     }
 
 }

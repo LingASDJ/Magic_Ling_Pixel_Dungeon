@@ -354,7 +354,7 @@ public class StatusPane extends Component {
 		}
 
 		if(SPDSettings.TimeLimit()) {
-			timeText.x = MenuPane.version.x;
+			timeText.x = MenuPane.version.x - 10;
 
 			timeText.y = MenuPane.version.y + 5;
 
@@ -442,7 +442,7 @@ public class StatusPane extends Component {
 
 		if(Dungeon.hero.isAlive()){
 			Date date = new Date();
-			String strDateFormat = "yyyy-MM-dd HH:mm:ss";
+			String strDateFormat = "yyyy-MM-dd HH:mm";
 			SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat, Locale.getDefault());
 			Calendar cal=Calendar.getInstance();
 			int s=cal.get(Calendar.SECOND);

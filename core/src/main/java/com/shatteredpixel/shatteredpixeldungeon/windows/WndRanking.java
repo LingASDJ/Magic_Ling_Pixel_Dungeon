@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -44,6 +45,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ItemSlot;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.TalentButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.TalentsPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.watabou.noosa.ColorBlock;
@@ -197,6 +200,53 @@ public class WndRanking extends WndTabbed {
 			version.hardlight(0xCCCCCC);
 			version.setPos(WIDTH-version.width(), pos);
 			add(version);
+
+			RedButton btnTalents = new RedButton( Messages.get(this, "talents") ){
+
+				@Override
+				protected void onClick() {
+					//removes talents from upper tiers
+					int tiers = 1;
+					if (Dungeon.hero.lvl >= 6) tiers++;
+					if (Dungeon.hero.lvl >= 12 && Dungeon.hero.subClass != HeroSubClass.NONE) tiers++;
+					if (Dungeon.hero.lvl >= 20 && Dungeon.hero.armorAbility != null) tiers++;
+					while (Dungeon.hero.talents.size() > tiers){
+						Dungeon.hero.talents.remove(Dungeon.hero.talents.size()-1);
+					}
+					Game.scene().addToFront( new Window(){
+						{
+							TalentsPane p = new TalentsPane(TalentButton.Mode.INFO);
+							add(p);
+							p.setPos(0, 0);
+							p.setSize(120, p.content().height());
+							resize((int)p.width(), (int)p.height());
+							p.setPos(0, 0);
+						}
+					});
+				}
+			};
+			int buttontopx = HEIGHT - 36;
+			btnTalents.icon(Icons.get(Icons.TALENT));
+			if (Dungeon.challenges > 0) {
+				btnTalents.setRect((WIDTH - btnTalents.reqWidth() + 2) / 6, buttontopx, btnTalents.reqWidth() + 2, 16);
+			} else {
+				btnTalents.setRect((WIDTH - btnTalents.reqWidth() + 2) / 2, buttontopx, btnTalents.reqWidth() + 2, 16);
+			}
+			add(btnTalents);
+
+			if (Dungeon.challenges > 0) {
+				RedButton btnChallenges = new RedButton( Messages.get(this, "challenges") ) {
+					@Override
+					protected void onClick() {
+						Game.scene().add( new WndChallenges( Dungeon.challenges, false,null ) );
+					}
+				};
+
+				btnChallenges.icon(Icons.get(Icons.CHALLENGE_ON));
+				btnChallenges.setRect( (WIDTH - btnTalents.reqWidth()-12), buttontopx, btnTalents.reqWidth()+2 , 16 );
+				add( btnChallenges );
+			}
+
 
 			pos = date.bottom()+5;
 

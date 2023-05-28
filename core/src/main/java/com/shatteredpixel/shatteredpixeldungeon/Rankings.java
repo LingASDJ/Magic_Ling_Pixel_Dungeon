@@ -149,7 +149,7 @@ public enum Rankings {
 		}
 		rec.score       = calculateScore();
 		rec.customSeed  = Dungeon.customSeedText;
-
+		Badges.validateHighScore( rec.score );
 
 		INSTANCE.saveGameData(rec);
 
@@ -350,6 +350,8 @@ public enum Rankings {
 		private static final String SCORE	= "score";
 		private static final String CLASS	= "class";
 		private static final String TIER	= "tier";
+		private static final String DATE    = "date";
+		private static final String VERSION = "version";
 		private static final String LEVEL	= "level";
 		private static final String DEPTH	= "depth";
 		private static final String DATA	= "gameData";
@@ -401,6 +403,13 @@ public enum Rankings {
 			if (bundle.contains(DATA))  gameData = bundle.getBundle(DATA);
 			if (bundle.contains(ID))   gameID = bundle.getString(ID);
 
+			if (bundle.contains( DATE )){
+				date = bundle.getString( DATE );
+				version = bundle.getString( VERSION );
+			} else {
+				date = version = null;
+			}
+
 			if (gameID == null) gameID = UUID.randomUUID().toString();
 
 			depth = bundle.getInt( DEPTH );
@@ -412,10 +421,10 @@ public enum Rankings {
 		public void storeInBundle( Bundle bundle ) {
 
 			if (cause != null) bundle.put( CAUSE, cause );
-
+			bundle.put( VERSION, version );
 			bundle.put( WIN, win );
 			bundle.put( SCORE, score );
-
+			bundle.put( DATE, date );
 			bundle.put( CLASS, heroClass );
 			bundle.put( TIER, armorTier );
 			bundle.put( LEVEL, herolevel );

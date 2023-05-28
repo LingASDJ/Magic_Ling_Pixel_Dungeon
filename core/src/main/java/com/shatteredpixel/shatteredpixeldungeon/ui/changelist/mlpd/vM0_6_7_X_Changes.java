@@ -19,6 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.IceFireScorpioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceStalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -50,6 +51,9 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_39_Changes(changeInfos);
+        add_v0_6_38_Changes(changeInfos);
+        add_v0_6_37_Changes(changeInfos);
         add_v0_6_36_Changes(changeInfos);
         add_v0_6_35_Changes(changeInfos);
         add_v0_6_34_Changes(changeInfos);
@@ -89,8 +93,131 @@ public class vM0_6_7_X_Changes {
         add_v0_6_0_Changes(changeInfos);
     }
 
+    public static void add_v0_6_39_Changes( ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.6.2.0-Beta3", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("徽章改进"),
+                ("徽章现在进行了一定的改进，并追加了一些新徽章。")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        Image issxsaxs =new DimandKingSprite();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs,("拟态王改进"),
+                ("修复拟态王二阶段可能无法跳转地图的问题")));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X68")));
+
+    }
+
+    public static void add_v0_6_38_Changes( ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.6.2.0-Beta2", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("药水癔症"),
+                ("药水癔症已经进行了一定的改进，详见挑战说明。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.STATS), ("评分系统"),
+                ("评分系统现在进行了一些Bug修复，并且对评分追加SSS+评级。")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X67")));
+
+        changes.addButton(new ChangeButton(new GhostSprite(), "幽灵任务",
+                "幽灵任务现在进行了调整，如果未获得+4徽章是无法获得+5的东西的。并且两个徽章不在独立，合并起来了。"));
+
+        changes = new ChangeInfo("平衡", false, null);
+        changes.hardlight(Window.RED_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WATERSOUL), "水灵药剂",
+                "炼金能量从10提升到14。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BloodDied), "嗜血荆棘",
+                "整体攻击面板属性削弱，其余效果不变"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SAI), "吸血鬼刀",
+                "整体攻击面板属性削弱，攻速从0.5变成0.8。"));
+
+        changes.addButton(new ChangeButton(new IceFireScorpioSprite(), "寒冰巨蝎",
+                "现在攻速调整为3回合一次，火蝎子也是一样的。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DASlade), "涤罪",
+                "现在攻速随着杀怪数量渐渐追加，最快可达到0.3x"));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), "突变爆炸体",
+                "突变爆炸体现在死亡不会摧毁你的物品。"));
+    }
+
+    public static void add_v0_6_37_Changes( ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.6.2.0-Beta1", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.COPY), ("UI迭代更新"),
+                ("文本类UI已经进行迭代，现在拥有更好的使用体验。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.STATS), ("评分系统"),
+                ("现在魔绫加入评分系统，并且含有评分等级。\n快去开一把看看自己能获得什么水准吧。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEED_SKYBLUEFIRE), "地牢种子",
+                "现在排行榜进行了翻新，你的种子可以在这里快速分享给其他人。\n" +
+                        "当然，仅限更新后的新版本哦。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARMOR_LAMELLAR), "第6代护甲",
+                "札甲全新登场，你有尝试过叠甲的快乐吗？"));
+
+
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.INFO), ("文案调整"),
+                ("部分文案得到优化调整。")));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X66")));
+
+
+        changes = new ChangeInfo("削弱", false, null);
+        changes.hardlight(Window.RED_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BloodDied), "嗜血荆棘",
+                "整体成长属性削弱。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), "归溯钥剑",
+                "整体成长属性削弱，随机附魔概率减少。"));
+    }
+
     public static void add_v0_6_36_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta7.3(P3)-520特别更新", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.1.0-Beta7.3", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -344,15 +471,15 @@ public class vM0_6_7_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MAGES_STAFF), ("首领对决V1.7"),
-                ("1.修复了BR模式的19层的错误生成，加强10层钻石宝箱王的攻击能力\n" +
+                ("1.修复了娱乐模式的19层的错误生成，加强10层钻石宝箱王的攻击能力\n" +
                         "2.现在17层和27层可以上楼了\n" +
                         "3.英雄素材更新，部分物品贴图更新\n" +
                         "4.现在击败宝箱王不再能获得拟态徽章，28层完成后通过水晶之心会直接幸福结局。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_HORN4), ("首领对决V1.6"),
                 ("1.部分Boss发生了改变，19层火魔女，21层矮人国王，25层矮人将军\n" +
-                        "2.现在不会在BR模式生成跳楼房间，以及修复了一些Bug\n" +
-                        "3.现在诅咒法杖不会在BR模式中触发传送效果")));
+                        "2.现在不会在娱乐模式生成跳楼房间，以及修复了一些Bug\n" +
+                        "3.现在诅咒法杖不会在娱乐模式中触发传送效果")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_ROSE3), ("首领对决V1.5"),
                 ("1.现在可以在3层完成幽妹的任务，让她和你并肩前行。\n" +

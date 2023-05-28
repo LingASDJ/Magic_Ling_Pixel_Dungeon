@@ -5,7 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -19,8 +19,8 @@ import com.watabou.utils.Random;
 
 public class WashCrime extends MeleeWeapon {
 
-    private int killmobs = 0;
-    private int spawnmobs = 0;
+    private int killmobs;
+    private int spawnmobs;
 
     @Override
     public int min(int lvl) {
@@ -41,7 +41,7 @@ public class WashCrime extends MeleeWeapon {
 
         tier = 5;
         RCH = 3;    //lots of extra reach
-        DLY = 2; //Slow Speed
+        DLY = 2f;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class WashCrime extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage ) {
-
+        DLY = DLY < 0.3f ? 0.3f : 2-(killmobs/10f)/10f; //Slow Speed
         if(killmobs > 61 ){
             killmobs=60;
         } else if (defender.HP <= damage && killmobs < 61) {
@@ -113,7 +113,7 @@ public class WashCrime extends MeleeWeapon {
 
 
             if (Random.NormalIntRange(1, 4) == 4) {
-                Buff.prolong(defender, Weakness.class, 8f);
+                Buff.prolong(defender, Cripple.class, 8f);
             } else {
                 return super.proc(attacker, defender, damage);
             }

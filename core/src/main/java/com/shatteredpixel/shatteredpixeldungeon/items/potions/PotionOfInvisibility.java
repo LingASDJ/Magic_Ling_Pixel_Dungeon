@@ -47,7 +47,7 @@ public class PotionOfInvisibility extends Potion {
 	@Override
 	public void apply( Hero hero ) {
 		identify();
-		if(Dungeon.isChallenged(EXSG)&& Random.Float()>0.7f){
+		if(Dungeon.isChallenged(EXSG)&& Random.Float()>0.4f){
 			for (Mob mob : Dungeon.level.mobs) {
 				mob.beckon( Dungeon.hero.pos );
 			}

@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.amuletObtained;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.chalMultiplier;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
@@ -33,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.FileUtils;
 
@@ -73,11 +76,12 @@ public class Badges {
 		DEATH_FROM_GAS              ( 16 ),
 		DEATH_FROM_HUNGER           ( 17 ),
 		DEATH_FROM_FALLING          ( 18 ),
+		HIGH_SCORE_1 				( 19 ),
 		KILL_ROTHEART         			( 20 ),
 		GET_SC        			( 21 ),
 		KILL_COLDELE        			( 22 ),
 
-		HALOFIRE_DIED					( 24 ),
+		HALOFIRE_DIED					( 23 ),
 
 		//silver
 		NO_MONSTERS_SLAIN           ( 32 ),
@@ -107,10 +111,9 @@ public class Badges {
 		BOSS_SLAIN_1_HUNTRESS,
 		BOSS_SLAIN_1_ALL_CLASSES    ( 53, true ),
 		GAMES_PLAYED_1              ( 54, true ),
-		GODD_MAKE					( 82 ),
-		CLEAR_WATER					( 83 ),
-		GHOSTDAGE					( 84 ),
-		ENDIED					( 85 ),
+
+		HIGH_SCORE_2				( 55 ),
+
 		//gold
 		PIRANHAS                    ( 64 ),
 		//these names are a bit outdated, but it doesn't really matter.
@@ -133,6 +136,13 @@ public class Badges {
 		ALL_ARTIFACTS_IDENTIFIED    ( 77 ),
 		VICTORY                     ( 78 ),
 		YASD                        ( 79, true ),
+
+		GODD_MAKE					( 82 ),
+		CLEAR_WATER					( 83 ),
+		GHOSTDAGE					( 84 ),
+//		ENDIED					( 85 ),
+
+		HIGH_SCORE_3 				( 86 ),
 		BOSS_SLAIN_3_GLADIATOR,
 		BOSS_SLAIN_3_BERSERKER,
 		BOSS_SLAIN_3_WARLOCK,
@@ -158,6 +168,7 @@ public class Badges {
 		KILL_DM720				(102),
 		RLPT				(103),
 
+		HIGH_SCORE_4 				( 104 ),
 
 		//diamond
 		GAMES_PLAYED_4              ( 112, true ),
@@ -177,14 +188,26 @@ public class Badges {
 		DRAWF_HEAD                    ( 130 ),
 		SPICEALBOSS 				 ( 131),
 
+		STORM 				 ( 132),
+
 		KILL_MG			(133),
 		BIG_X				(134),
 		EXSG                (135),
-		BRCLER                (136);
+		BRCLER                (136),
+
+		HIGH_SCORE_5 				( 137 );
 
 		public boolean meta;
 
 		public int image;
+
+		public String title(){
+			return Messages.get(this, name()+".title");
+		}
+
+		public String desc(){
+			return Messages.get(this, name()+".desc");
+		}
 
 		Badge( int image ) {
 			this( image, false );
@@ -193,10 +216,6 @@ public class Badges {
 		Badge( int image, boolean meta ) {
 			this.image = image;
 			this.meta = meta;
-		}
-
-		public String desc(){
-			return Messages.get(this, name());
 		}
 
 		Badge() {
@@ -352,6 +371,32 @@ public class Badges {
 		displayBadge( badge );
 	}
 
+	public static void validateHighScore( int score ){
+		Badge badge = null;
+		if (score >= LevelChecker.B_SCORE * chalMultiplier * (amuletObtained ? 1 : 2)) {
+			badge = Badge.HIGH_SCORE_1;
+			local.add( badge );
+		}
+		if (score >= LevelChecker.A_SCORE * chalMultiplier * (amuletObtained ? 1 : 2)) {
+			badge = Badge.HIGH_SCORE_2;
+			local.add( badge );
+		}
+		if (score >= LevelChecker.SS_SCORE * chalMultiplier * (amuletObtained ? 1 : 3)) {
+			badge = Badge.HIGH_SCORE_3;
+			local.add( badge );
+		}
+		if (score >= LevelChecker.SSS_SCORE * chalMultiplier * (amuletObtained ? 1 : 4)) {
+			badge = Badge.HIGH_SCORE_4;
+			local.add( badge );
+		}
+		if (score >= LevelChecker.SSSP_SCORE * chalMultiplier * (amuletObtained ? 1 : 5)) {
+			badge = Badge.HIGH_SCORE_5;
+			local.add( badge );
+		}
+
+		displayBadge( badge );
+	}
+
 	public static void validateGoldCollected() {
 		Badge badge = null;
 
@@ -388,7 +433,6 @@ public class Badges {
 
 	public static void GhostDageCollected() {
 		Badge badge = null;
-
 
 		if (!local.contains( Badge.GHOSTDAGE ) && Statistics.dageCollected == 1) {
 			badge = Badge.GHOSTDAGE;
@@ -939,6 +983,10 @@ public class Badges {
 		validateAMZ();
 	}
 
+	public static void STORM() {
+		displayBadge( Badge.STORM);
+	}
+
 	public static void KILLSDM720() {
 		displayBadge( Badge.KILL_DM720 );
 		validateAMZ();
@@ -1091,7 +1139,9 @@ public class Badges {
 			{Badge.ITEMS_CRAFTED_1, Badge.ITEMS_CRAFTED_2, Badge.ITEMS_CRAFTED_3, Badge.ITEMS_CRAFTED_4},
 			{Badge.BOSS_SLAIN_1, Badge.BOSS_SLAIN_2, Badge.BOSS_SLAIN_3, Badge.BOSS_SLAIN_4},
 			{Badge.GAMES_PLAYED_1, Badge.GAMES_PLAYED_2, Badge.GAMES_PLAYED_3, Badge.GAMES_PLAYED_4},
-			{Badge.CHAMPION_1X, Badge.CHAMPION_2X, Badge.CHAMPION_3X,Badge.CHAMPION_4X,Badge.CHAMPION_5X}
+			{Badge.CHAMPION_1X, Badge.CHAMPION_2X, Badge.CHAMPION_3X,Badge.CHAMPION_4X,Badge.CHAMPION_5X},
+			{Badge.GHOSTDAGE,Badge.DAGETO},
+			{Badge.HIGH_SCORE_1, Badge.HIGH_SCORE_2, Badge.HIGH_SCORE_3, Badge.HIGH_SCORE_4, Badge.HIGH_SCORE_5},
 	};
 
 	private static final Badge[][] metaBadgeReplacements = new Badge[][]{

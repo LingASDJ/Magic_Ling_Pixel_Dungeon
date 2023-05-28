@@ -43,8 +43,6 @@ public class Statistics {
 	public static int highestAscent;
 	public static boolean gameWon = false;
 	public static boolean ascended = false;
-
-
 	public static int realdeepestFloor;
 	public static int boss_enhance = 0;
 	public static int goldCollected;
@@ -81,9 +79,11 @@ public class Statistics {
 	//灯火前行
 	public static boolean lanterfireactive = false;
 
-
 	//克里弗斯之果
 	public static boolean crivusfruitslevel2 = false;
+
+	//拟态之王
+	public static boolean TPDoorDieds = false;
 
 	//修复同步
 	public static boolean bugsyncfixed = false;
@@ -150,7 +150,7 @@ public class Statistics {
 		lanterfireactive = false;
 		bugsyncfixed =  false;
 		crivusfruitslevel2 = false;
-
+		TPDoorDieds = false;
 		TryUsedAnmy = false;
 
 		second_elapsed = 0f;
@@ -213,6 +213,9 @@ public class Statistics {
 	//克里弗斯之果
 	private static final String CrivusFruitsLevel2		= "crivusfruitslevel2";
 
+	//拟态之王
+	private static final String TPDoorDied		= "TPDoorDieds";
+
 	private static final String TIPSGO		= "tipsgo";
 
 	private static final String GOLDCHEST		= "goldchest";
@@ -274,6 +277,8 @@ public class Statistics {
 		bundle.put(DDK,dimandchestmazeCollected);
 
 		bundle.put( CrivusFruitsLevel2, crivusfruitslevel2 );
+
+		bundle.put( TPDoorDied, TPDoorDieds );
 
 		bundle.put(MMC,mimicking);
 
@@ -392,6 +397,8 @@ public class Statistics {
 		bugsyncfixed = bundle.getBoolean( BUG_SYNC_FIXED );
 
 		crivusfruitslevel2 = bundle.getBoolean( CrivusFruitsLevel2 );
+
+		TPDoorDieds  = bundle.getBoolean( TPDoorDied );
 
 		tipsgodungeon = bundle.getBoolean(TIPSGO);
 

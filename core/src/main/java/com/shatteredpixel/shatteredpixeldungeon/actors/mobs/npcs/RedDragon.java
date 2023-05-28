@@ -431,7 +431,7 @@ public class RedDragon extends NPC {
                 GLog.b( Messages.get(RedDragon.class, "find_me") );
                 //Sample.INSTANCE.play( Assets.Sounds.GHOST );
                 processed = true;
-                Statistics.questScores[2] += 4000;
+                Statistics.questScores[2] += 8000;
             }
         }
 

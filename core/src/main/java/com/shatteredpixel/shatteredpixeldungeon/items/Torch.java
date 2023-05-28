@@ -22,11 +22,15 @@
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LighS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 
@@ -59,20 +63,23 @@ public class Torch extends Item {
 		super.execute( hero, action );
 		
 		if (action.equals( AC_LIGHT )) {
-			
-			hero.spend( TIME_TO_LIGHT );
-			hero.busy();
-			
-			hero.sprite.operate( hero.pos );
-			
-			detach( hero.belongings.backpack );
-			
-			Buff.affect(hero, Light.class, Light.DURATION);
-			Sample.INSTANCE.play(Assets.Sounds.BURNING);
-			
-			Emitter emitter = hero.sprite.centerEmitter();
-			emitter.start( FlameParticle.FACTORY, 0.2f, 3 );
-			
+
+			if (Dungeon.hero.buff(LighS.class) != null || Dungeon.hero.buff(MagicTorch.MagicLight.class) != null) {
+				GLog.n("你已有其他光芒效果，在这些效果取消或主动失效前，暂时无法使用火把。");
+			} else {
+				hero.spend( TIME_TO_LIGHT );
+				hero.busy();
+
+				hero.sprite.operate( hero.pos );
+
+				detach( hero.belongings.backpack );
+
+				Buff.affect(hero, Light.class, Light.DURATION);
+				Sample.INSTANCE.play(Assets.Sounds.BURNING);
+
+				Emitter emitter = hero.sprite.centerEmitter();
+				emitter.start( FlameParticle.FACTORY, 0.2f, 3 );
+			}
 		}
 	}
 	

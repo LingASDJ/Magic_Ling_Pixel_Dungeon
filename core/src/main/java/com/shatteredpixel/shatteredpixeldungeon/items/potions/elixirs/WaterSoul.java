@@ -75,7 +75,7 @@ public class WaterSoul extends Elixir {
             inputs =  new Class[]{PotionOfHealing.class, FrozenCarpaccio.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 10;
+            cost = 14;
 
             output = WaterSoul.class;
             outQuantity = 2;

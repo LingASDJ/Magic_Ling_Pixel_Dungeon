@@ -37,10 +37,10 @@ public class WndScoreBreakdown extends Window {
                     num.format(Statistics.exploreScore), pos, Statistics.exploreScore >= 20_000);
         pos = addInfo(this, Messages.get(this, "explore_desc"), pos);
         pos = statSlot(this, Messages.get(this, "bosses_title"),
-                    num.format(Statistics.totalBossScore), pos, Statistics.totalBossScore >= 15_000);
+                    num.format(Statistics.totalBossScore), pos, Statistics.totalBossScore >= 18_000);
         pos = addInfo(this, Messages.get(this, "bosses_desc"), pos);
         pos = statSlot(this, Messages.get(this, "quests_title"),
-                    num.format(Statistics.totalQuestScore), pos, Statistics.totalQuestScore >= 10_000);
+                    num.format(Statistics.totalQuestScore), pos, Statistics.totalQuestScore >= 14_000);
         pos = addInfo(this, Messages.get(this, "quests_desc"), pos);
 
         if (Statistics.winMultiplier > 1) {

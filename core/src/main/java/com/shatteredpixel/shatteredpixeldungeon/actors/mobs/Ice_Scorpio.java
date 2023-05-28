@@ -23,6 +23,7 @@ public class Ice_Scorpio extends Scorpio{
         lootChance = 0.5f;
 
         properties.add(Property.DEMONIC);
+        properties.add(Property.MINIBOSS);
     }
 
     @Override
@@ -30,6 +31,7 @@ public class Ice_Scorpio extends Scorpio{
         damage = super.attackProc( enemy, damage );
         if (Random.Int( 3,6 ) > 2) {
             Buff.prolong( enemy, Chill.class, Chill.DURATION );
+            spend(3f);
         }
         return damage;
     }

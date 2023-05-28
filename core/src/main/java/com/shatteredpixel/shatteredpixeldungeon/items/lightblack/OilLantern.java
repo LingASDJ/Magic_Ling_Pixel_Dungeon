@@ -9,8 +9,11 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LighS;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -84,18 +87,23 @@ public class OilLantern extends Item {
         actions.add(AC_REFILL);
 
         actions.remove("THROW");
+
         actions.remove("DROP");
         return actions;
     }
 
     public void execute(Hero hero, String action) {
         if (action.equals(AC_LIGHT)) {
-            if (this.charge > 0) {
-                activate(hero, true);
-            } else if (this.flasks > 0) {
-                GLog.w(Messages.get(OilLantern.class, "lanterneedsxs"));
+            if (hero.buff(LostInventory.class) == null) {
+                if (this.charge > 0) {
+                    activate(hero, true);
+                } else if (this.flasks > 0) {
+                    GLog.w(Messages.get(OilLantern.class, "lanterneedsxs"));
+                } else {
+                    GLog.w(Messages.get(OilLantern.class, "lanterneedsx"));
+                }
             } else {
-                GLog.w(Messages.get(OilLantern.class, "lanterneedsx"));
+                GLog.n("你陷入灵魂残缺的迷茫当中 无法引燃提灯");
             }
         } else if (action.equals(AC_REFILL)) {
             if (this.flasks > 0) {
@@ -125,17 +133,22 @@ public class OilLantern extends Item {
 
     public void activate(Hero hero, boolean voluntary) {
         if (voluntary) {
-            hero.spend(TIME_TO_USE);
-            hero.busy();
-            GLog.i(Messages.get(OilLantern.class, "lanteron"));
-            hero.sprite.operate(hero.pos);
-            this.active = true;
-            updateSprite();
-            Buff.affect(hero, LighS.class);
-            hero.search(false);
-            Sample.INSTANCE.play("sounds/snd_click.mp3");
-            updateQuickslot();
-            Dungeon.observe();
+            if (Dungeon.hero.buff(Light.class) != null || Dungeon.hero.buff(MagicTorch.MagicLight.class) != null) {
+                GLog.n("你已有其他光芒效果，在这些效果取消或主动失效前，暂时无法使用提灯的效果。");
+            } else {
+                hero.spend(TIME_TO_USE);
+                hero.busy();
+                GLog.i(Messages.get(OilLantern.class, "lanteron"));
+                hero.sprite.operate(hero.pos);
+                this.active = true;
+                updateSprite();
+                Buff.affect(hero, LighS.class);
+                hero.search(false);
+                Sample.INSTANCE.play("sounds/snd_click.mp3");
+                updateQuickslot();
+                Dungeon.observe();
+            }
+
         }
 
 //        if (voluntary && hero.lanterfire > 0) {

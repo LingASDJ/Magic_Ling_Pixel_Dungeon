@@ -1,9 +1,12 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 public class LighS extends FlavourBuff {
     private static final float DELAY = 7.0f;
@@ -14,26 +17,36 @@ public class LighS extends FlavourBuff {
         this.type = Buff.buffType.POSITIVE;
     }
 
-    public boolean attachTo(Char target) {
-        if (!LighS.super.attachTo(target)) {
+    @Override
+    public boolean attachTo( Char target ) {
+        if (super.attachTo( target )) {
+            if (Dungeon.level != null) {
+                target.viewDistance = Math.max( Dungeon.level.viewDistance, DISTANCE );
+                Dungeon.observe();
+            }
+            return true;
+        } else {
             return false;
         }
-        if (Dungeon.level == null) {
-            return true;
-        }
-        target.viewDistance = Math.max(Dungeon.level.viewDistance, 6);
-        Dungeon.observe();
-        return true;
     }
 
     public boolean act() {
-        OilLantern lantern = Dungeon.hero.belongings.getItem(OilLantern.class);
-        if ( !lantern.isActivated() || lantern.getCharge() <= 0) {
-            lantern.deactivate(Dungeon.hero, false);
+        OilLantern lantern = hero.belongings.getItem(OilLantern.class);
+        if (hero.buff(LostInventory.class) == null){
+            if ( !lantern.isActivated() || lantern.getCharge() <= 0) {
+                lantern.deactivate(hero, false);
+                detach();
+                return true;
+            }
+            lantern.spendCharge();
+        } else {
+            GLog.n("在遗物状态下无法点亮提灯");
             detach();
-            return true;
         }
-        lantern.spendCharge();
+
+
+
+
 
         if(Dungeon.depth>20){
             spend(DELAY + 6f);

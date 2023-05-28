@@ -7,12 +7,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LighS;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.MagicFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -68,7 +71,12 @@ public class MagicTorch extends MeleeWeapon {
     public void execute(Hero hero, String action) {
         super.execute(hero, action);
         if (AC_EQUIP.equals(action)) {
-            Buff.affect(hero, MagicLight.class).set((100), 1);
+            if (Dungeon.hero.buff(LighS.class) != null || Dungeon.hero.buff(Light.class) != null) {
+                GLog.n("你已有其他光芒效果，在这些效果取消或主动失效前，魔法火把的效果不生效。");
+            } else {
+                Buff.affect(hero, MagicLight.class).set((100), 1);
+            }
+
         }
     }
 

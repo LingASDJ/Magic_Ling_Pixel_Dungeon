@@ -38,7 +38,7 @@ public class SmallRation extends Food {
 	@Override
 	protected void satisfy( Hero hero ){
 		if (Dungeon.isChallenged(Challenges.EXSG)){
-			Buff.prolong( hero, Haste.class, 8f);
+			Buff.prolong( hero, Haste.class, 4f);
 		}
 
 		if (Dungeon.isChallenged(Challenges.NO_FOOD)){

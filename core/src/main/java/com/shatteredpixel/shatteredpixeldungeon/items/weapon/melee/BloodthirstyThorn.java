@@ -195,15 +195,17 @@ public class BloodthirstyThorn extends MeleeWeapon {
                 bloodthirstyThorn.level=Random.NormalIntRange(3,6);
             }
 
-            bloodthirstyThorn.quantity(1).identify();
+            if(chaliceOfBlood!=null) {
+                bloodthirstyThorn.quantity(1).identify();
 
-            chaliceOfBlood.detachAll( hero.belongings.backpack );
+                chaliceOfBlood.detach(hero.belongings.backpack);
 
-            if(chaliceOfBlood.level()==10){
-                ChaliceOfBlood chaliceOfBlood1 = new ChaliceOfBlood();
-                chaliceOfBlood1.cursed = true;
-                chaliceOfBlood1.level=Random.NormalIntRange(1,3);
-                chaliceOfBlood1.identify().quantity(1).collect();
+                if (chaliceOfBlood.level() == 10) {
+                    ChaliceOfBlood chaliceOfBlood1 = new ChaliceOfBlood();
+                    chaliceOfBlood1.cursed = true;
+                    chaliceOfBlood1.level = Random.NormalIntRange(1, 3);
+                    chaliceOfBlood1.identify().quantity(1).collect();
+                }
             }
 
             return sampleOutput(null);
@@ -233,7 +235,7 @@ public class BloodthirstyThorn extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        return  7 + lvl*7;
+        return  6 + lvl*4;
     }
 
     @Override

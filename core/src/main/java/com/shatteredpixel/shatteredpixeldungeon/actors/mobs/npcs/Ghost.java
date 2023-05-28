@@ -336,7 +336,7 @@ public class Ghost extends NPC {
 				} else if (itemLevelRoll < 0.90f) {
 					itemLevel = 3;
 					hero.sprite.showStatus( CharSprite.NEGATIVE, "+3!!!" );
-				} else if (itemLevelRoll < 0.95f){
+				} else if (itemLevelRoll < 0.95f && Badges.isUnlocked(Badges.Badge.GHOSTDAGE)){
 					hero.sprite.showStatus( CharSprite.POSITIVE, "+5!!!" );
 					if(( !Badges.isUnlocked(Badges.Badge.DAGETO))) {
 						Statistics.dageCollected = 2;
@@ -407,7 +407,7 @@ public class Ghost extends NPC {
 				} else if (itemLevelRoll < 0.90f) {
 					itemLevel = 3;
 					hero.sprite.showStatus( CharSprite.NEGATIVE, "+3!!!" );
-				} else if (itemLevelRoll < 0.95f){
+				} else if (itemLevelRoll < 0.95f && Badges.isUnlocked(Badges.Badge.GHOSTDAGE)){
 					hero.sprite.showStatus( CharSprite.POSITIVE, "+5!!!" );
 					if(( !Badges.isUnlocked(Badges.Badge.DAGETO))) {
 						Statistics.dageCollected = 2;

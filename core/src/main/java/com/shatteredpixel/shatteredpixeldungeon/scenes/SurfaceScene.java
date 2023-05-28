@@ -256,7 +256,7 @@ public class SurfaceScene extends PixelScene {
 		add( gameOver );
 		
 		Badges.validateHappyEnd();
-		
+		Badges.STORM();
 		fadeIn();
 	}
 

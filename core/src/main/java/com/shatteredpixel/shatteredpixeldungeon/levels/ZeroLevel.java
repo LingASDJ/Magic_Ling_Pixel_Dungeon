@@ -112,23 +112,22 @@ public class ZeroLevel extends Level {
         drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 20 + 17 );
         drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 19 + 16 );
 
-
         drop( new Ankh(), this.width * 17 + 20  );
         drop( new Stylus(), this.width * 19 + 20  );
 
         drop( ( Generator.randomUsingDefaults( Generator.Category.STONE ) ), this.width * 16 + 19 );
         drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), this.width * 20 + 19 );
+
         drop( new Pasty(), this.width * 20 + 19  );
 
         if ( Badges.isUnlocked(Badges.Badge.GODD_MAKE)){
             drop( ( Generator.randomUsingDefaults( Generator.Category.RING ) ), this.width * 17 + 18 );
         }
-
         if ( Badges.isUnlocked(Badges.Badge.BIG_X)){
             drop( ( Generator.randomUsingDefaults( Generator.Category.ARMOR ) ), this.width * 19 + 18 );
         }
-        if ( Badges.isUnlocked(Badges.Badge.KILL_APPLE)||Badges.isUnlocked(Badges.Badge.KILL_MG)  ){
-            drop(new Ankh(), this.width * 18 + 17  );
+        if ( Badges.isUnlocked(Badges.Badge.KILL_DM720)||Badges.isUnlocked(Badges.Badge.KILL_MG)  ){
+            drop(( Generator.randomUsingDefaults( Generator.Category.WEP_T2 )), this.width * 18 + 17  );
         }
         if ( Badges.isUnlocked(Badges.Badge.RLPT)){
             drop( ( Generator.randomUsingDefaults( Generator.Category.ARTIFACT ) ), this.width * 18 + 19 );
