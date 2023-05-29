@@ -665,7 +665,7 @@ public class WndSettings extends WndTabbed {
 			if (width > 200){
 				ClassUI.setRect(0, bottom, width, SLIDER_HEIGHT);
 				optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
-				optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+				optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width/2, SLIDER_HEIGHT);
 				if(Game.scene()!=null && Game.scene().getClass() == GameScene.class) {
 					quickslots.setRect(optFPSLimit.right(), optFPSLimit.top(), width/2, SLIDER_HEIGHT);
 					wxts.visible = false;

@@ -248,7 +248,7 @@ public abstract class Level implements Bundlable {
 		int ay = a / getWidth();
 		int bx = b % getWidth();
 		int by = b / getWidth();
-		return Math.max(Math.abs(ax - bx), Math.abs(ay - by));
+		return Math.max( Math.abs( ax - bx ), Math.abs( ay - by ) );
 	}
 
 	public static final int WIDTHX = 48;

@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.ItemStatusHandler;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
@@ -236,7 +237,9 @@ public class Potion extends Item {
 
 		} else if (action.equals( AC_DRINK )) {
 
-			if (isKnown() && mustThrowPots.contains(getClass())) {
+			if(Dungeon.hero.buff(WraithAmulet.CursedAmulet.class) != null) {
+				GLog.n(Messages.get(WraithAmulet.class, "drink_cursed"));
+			} else if (isKnown() && mustThrowPots.contains(getClass())) {
 
 					GameScene.show(
 						new WndOptions(new ItemSprite(this),

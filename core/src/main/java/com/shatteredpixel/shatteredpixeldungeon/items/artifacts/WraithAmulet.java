@@ -1,41 +1,54 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Objects;
 
 public class WraithAmulet extends Artifact {
 
     {
         image = ItemSpriteSheet.WRALIPS;
         cooldown = 0;
-        charge = Math.min(level()+3, 10);
+        charge = Math.min(level()+1, 10);
         partialCharge = 0;
-        chargeCap = Math.min(level()+3, 10);
+        chargeCap = Math.min(level()+1, 10);
         level = 0;
         levelCap = 10;
         defaultAction = AC_GHOST;
     }
 
-
+    @Override
+    public boolean doEquip(Hero hero) {
+        if (super.doEquip(hero)){
+            if (cursed) {
+                Buff.affect(hero, CursedAmulet.class).set( (100), 1 );
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     private static final String AC_GHOST = "ghost";
     private static final String AC_ASSASSINATE = "darkkill";
@@ -55,16 +68,16 @@ public class WraithAmulet extends Artifact {
     @Override
     public void execute(Hero hero, String action) {
         super.execute(hero, action);
-        if(action.equals(AC_GHOST)){
+        if(action.equals(AC_GHOST) && !cursed){
             if (cooldown > 0) {
-                GLog.i(Messages.get(this,"cooddown"));
+                GLog.w(Messages.get(this,"cooddown"));
             } else if(useableBasic()) {
                 if(this.isEquipped(Dungeon.hero)){
                     if(this.charge > 0) {
                         exp += 5;
                         Buff.affect(Dungeon.hero, Invisibility.class, Invisibility.DURATION);
-                        GLog.i(Messages.get(this,"ghost"));
-                        cooldown = 12 - (level / 2);
+                        GLog.p(Messages.get(this,"ghost"));
+                        cooldown = 34 - (level / 2);
                         charge--;
                     } else {
                         GLog.i(Messages.get(this,"nochareup"));
@@ -73,15 +86,16 @@ public class WraithAmulet extends Artifact {
                     GLog.i(Messages.get(this,"noequip"));
                 }
             } else {
-                GLog.i(Messages.get(this,"whoareyou"));
+                GLog.n(Messages.get(this,"whoareyou"));
             }
-        } else if (action.equals(AC_ASSASSINATE)) {
+        } else if (action.equals(AC_ASSASSINATE) && !cursed) {
             if(this.charge >= 5){
                 GameScene.selectCell(porter);
-                charge-=5;
             } else {
                 GLog.i(Messages.get(this,"nochareup"));
             }
+        } else if(cursed) {
+            GLog.i(Messages.get(this,"must_nocursed"));
         }
     }
 
@@ -89,16 +103,12 @@ public class WraithAmulet extends Artifact {
             return true;
     }
 
-    protected boolean useable(){
-            return true;
-    }
-
     @Override
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = super.actions(hero);
-        if (isEquipped(hero))
+        if (isEquipped(hero) && !cursed)
             actions.add(AC_GHOST);
-        if (isEquipped(hero) && charge >= 7)
+        if (isEquipped(hero) && charge >= 7 && !cursed)
             actions.add(AC_ASSASSINATE);
         return actions;
     }
@@ -111,6 +121,7 @@ public class WraithAmulet extends Artifact {
     public class WraithRecharge extends ArtifactBuff{
         @Override
         public boolean act() {
+
             if (charge < chargeCap && !cursed && useableBasic()) {
                 partialCharge += 1 / (150f - (chargeCap - charge) * 15f);
 
@@ -123,9 +134,14 @@ public class WraithAmulet extends Artifact {
                     }
                 }
             } else if(cursed){
-                if(Random.Int(40) == 0){
-                    GLog.i(Messages.get(this,"cursed"));
+                int level = level() == 0 ? 1 : level();
+                hero.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this,"cursed"));
+                hero.damage(Random.Int(4*level, 6*level), this);
+                if (!hero.isAlive()) {
+                    Dungeon.fail(getClass());
+                    GLog.n(Messages.get(this, "ondeath"));
                 }
+                spend(90f);
             }
 
             if(exp > level * 50){
@@ -151,7 +167,16 @@ public class WraithAmulet extends Artifact {
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc");
+        String result = Messages.get(this, "desc");
+
+        if (isEquipped(Dungeon.hero)) {
+            if (cursed) {
+                Buff.affect(hero, CursedAmulet.class).set( (100), 1 );
+                result += "\n\n" + Messages.get(this, "cursed");
+            }
+        }
+
+        return result;
     }
     public int getCharge(){
         return this.charge;
@@ -163,35 +188,130 @@ public class WraithAmulet extends Artifact {
         }
         @Override
         public void onSelect(Integer target) {
-            HashSet<Mob> victim = new HashSet<Mob>();
+
             if (target != null ) {
 
                 if (target == curUser.pos) {
-                    GLog.i(Messages.get(this,"select"));
+                    GLog.i(Messages.get(this, "select"));
                     return;
                 }
 
                 QuickSlotButton.target(Actor.findChar(target));
-                if(Actor.findChar(target) != null){
-                    if(Level.distancex(Dungeon.hero.pos, target) == 1) {
+                Char enemy = Actor.findChar(target);
+                if (enemy != null && !(enemy instanceof NPC)) {
+                    if (hero.rooted || Dungeon.level.distance(hero.pos, target) < 3) {
                         final WraithAmulet amulet = (WraithAmulet) Item.curItem;
                         amulet.charge--;
                         amulet.exp += 10;
-                        Objects.requireNonNull(Actor.findChar(target)).damage(Objects.requireNonNull(Actor.findChar(target)).HT, WraithAmulet.class);
-                        Dungeon.hero.pos = target;
-                        Dungeon.hero.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
-                        ScrollOfTeleportation.appear(Dungeon.hero, target);
+                        hero.pos = target;
+                        if (enemy.properties().contains(Char.Property.BOSS)) {
+                            enemy.damage(enemy.HT / 2, WraithAmulet.class);
+                            GLog.i(Messages.get(this, "killboss"));
+                        } else {
+                            enemy.damage(enemy.HT * 4, WraithAmulet.class);
+                            GLog.i(Messages.get(this, "killmobs"));
+                        }
+                        hero.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
+                        ScrollOfTeleportation.appear(hero, target);
                         Dungeon.observe();
-                        GLog.i(Messages.get(this,"killmobs"));
-                    }
-                    } else {
-                    GLog.i(Messages.get(this,"far"));
+
+                        amulet.charge -= 5;
+                    } else if(Dungeon.level.distance(hero.pos, target) < 3) {
+                        GLog.i(Messages.get(this, "far"));
+                    } else if (hero.rooted) {
+                        GLog.i(Messages.get(this, "rooted"));
                     }
                 } else {
-                    GLog.i(Messages.get(this,"notthere"));
+                    GLog.i(Messages.get(this, "notthere"));
                 }
+            }
         }
     };
+
+    public static class CursedAmulet extends Buff {
+
+        {
+            type = buffType.POSITIVE;
+        }
+
+        public static int level = 0;
+        private int interval = 1;
+
+        @Override
+        public boolean act() {
+            if (target.isAlive()) {
+
+                spend(interval);
+                if (level <= 0) {
+                    detach();
+                }
+
+            }
+
+            return true;
+        }
+
+        public int level() {
+            return level;
+        }
+
+        public void set( int value, int time ) {
+            //decide whether to override, preferring high value + low interval
+            if (Math.sqrt(interval)*level <= Math.sqrt(time)*value) {
+                level = value;
+                interval = time;
+                spend(time - cooldown() - 1);
+            }
+        }
+
+        @Override
+        public float iconFadePercent() {
+            if (target instanceof Hero){
+                float max = ((Hero) target).lvl;
+                return Math.max(0, (max-level)/max);
+            }
+            return 0;
+        }
+
+        @Override
+        public String toString() {
+            return Messages.get(this, "name");
+        }
+
+        @Override
+        public String desc() {
+            return Messages.get(this, "desc", level, dispTurns(visualcooldown()));
+        }
+
+        private static final String LEVEL	    = "level";
+        private static final String INTERVAL    = "interval";
+
+        @Override
+        public void storeInBundle( Bundle bundle ) {
+            super.storeInBundle( bundle );
+            bundle.put( INTERVAL, interval );
+            bundle.put( LEVEL, level );
+        }
+
+        @Override
+        public void restoreFromBundle( Bundle bundle ) {
+            super.restoreFromBundle( bundle );
+            interval = bundle.getInt( INTERVAL );
+            level = bundle.getInt( LEVEL );
+        }
+
+//    @Override
+//    public void tintIcon(Image icon) {
+//        icon.hardlight(0x990000);
+//    }
+
+        @Override
+        public int icon() {
+            return BuffIndicator.BLESS;
+        }
+
+
+    }
 
 }
 

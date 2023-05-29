@@ -135,7 +135,7 @@ public enum HeroClass {
 	}
 
 	public void initHero( Hero hero ) {
-
+		//new WraithAmulet().quantity(1).identify().collect();
 		if (Dungeon.isChallenged(Challenges.RLPT)) {
 			new Ankh().quantity(1).identify().collect();
 		}
@@ -166,6 +166,7 @@ public enum HeroClass {
 			new MysteryMeat().quantity(100).identify().collect();
 
 			Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);
+			//new WraithAmulet().quantity(1).identify().collect();
 
 			new BloodthirstyThorn().quantity(1).identify().collect();
 

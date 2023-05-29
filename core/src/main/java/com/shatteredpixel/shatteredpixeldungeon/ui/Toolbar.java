@@ -232,30 +232,7 @@ public class Toolbar extends Component {
 		 */
 		float wMin = Game.width / PixelScene.MIN_WIDTH_FULL;
 		float hMin = Game.height / PixelScene.MIN_HEIGHT_FULL;
-		final int maxHorizontalQuickslots =
-				/** 中文
-				 * 如果是竖屏，那么最多显示12个快捷栏
-				 * 如果是竖屏且>=5x缩放，那么下方最多显示4个快捷栏
-				 * 如果是竖屏且>=4x缩放，那么下方最多显示5个快捷栏
-				 * 如果是竖屏且>=3x缩放，那么下方最多显示8个快捷栏
-				 * 如果是横屏，那么所有快捷栏在游戏界面底部生成布局
-				 */
-
-				/**English
-				//If it is a vertical screen, then at most 12 quick slots are displayed below
-				//If it is a vertical screen and >=5x zoom, then at most 4 quick slots are displayed below
-				//If it is a vertical screen and >=4x zoom, then at most 5 quick slots are displayed below
-				//If it is a vertical screen and >=3x zoom, then at most 8 quick slots are displayed below
-				//If it is a horizontal screen, then all quick slots are generated at the bottom of the game interface
-				*/
-
-				PixelScene.landscape() ? 12 :
-
-				SPDSettings.scale() >= 5 ? 4 :
-
-				SPDSettings.scale() >= 4 ? 5 :
-
-				SPDSettings.scale() >= 3 ? 8 : 12;
+		final int maxHorizontalQuickslots = PixelScene.landscape() ? 8 : 4;
 		float right = width;
 		if (SPDSettings.interfaceSize() > 0){
 			btnInventory.setPos(right - btnInventory.width(), y);

@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -31,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
@@ -95,7 +97,11 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 		for (Item item : items) {
 			if (item != null) {
 				item.cursedKnown = true;
-				if (item instanceof EndingBlade) {
+				if (item instanceof WraithAmulet) {
+					Buff.detach(hero, WraithAmulet.CursedAmulet.class);
+					procced = true;
+					item.cursed = false;
+				} else if (item instanceof EndingBlade) {
 						item.cursed = true;
 				} else {
 					if (item.cursed) {
