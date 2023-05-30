@@ -26,7 +26,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DMZERO;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -198,7 +197,7 @@ public class DM920BossLevel extends Level {
 		super.occupyCell(ch);
 
 		if (map[entrance] == Terrain.ENTRANCE && map[exit] != Terrain.EXIT
-				&& ch == Dungeon.hero && Dungeon.level.distance(ch.pos, entrance) >= 0 &&Dungeon.hero.buff(TestDwarfMasterLock.class) != null) {
+				&& ch == Dungeon.hero && Dungeon.level.distance(ch.pos, entrance) >= 0) {
 			seal();
 		}
 	}
@@ -228,9 +227,9 @@ public class DM920BossLevel extends Level {
 	@Override
 	public void unseal() {
 		super.unseal();
-		set( entrance, Terrain.EXIT );
-		GameScene.updateMap( entrance );
-		CellEmitter.get( entrance ).start( FlameParticle.FACTORY, 0.1f, 10 );
+		set( (this.width * 35) + 22, Terrain.EXIT );
+		GameScene.updateMap( (this.width * 35) + 22 );
+		CellEmitter.get( (this.width * 35) + 22 ).start( FlameParticle.FACTORY, 0.1f, 10 );
 		Dungeon.observe();
 
 		Dungeon.observe();

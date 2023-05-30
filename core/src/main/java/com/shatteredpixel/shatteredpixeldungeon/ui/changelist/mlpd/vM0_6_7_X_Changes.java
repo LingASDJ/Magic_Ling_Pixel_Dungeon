@@ -96,7 +96,7 @@ public class vM0_6_7_X_Changes {
 
     public static void add_v0_6_40_Changes( ArrayList<ChangeInfo> changeInfos ) {
 
-        ChangeInfo changes = new ChangeInfo("v0.6.2.0-Beta4", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.2.0-Beta4-4.2", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -116,6 +116,13 @@ public class vM0_6_7_X_Changes {
 
         changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
                 Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X69")));
+
+        changes = new ChangeInfo("平衡", false, null);
+        changes.hardlight(Window.RED_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BloodDied), "嗜血荆棘",
+                "力量从8提升至14，+10后每次70%概率吸血。其余属性不变。"));
 
     }
 

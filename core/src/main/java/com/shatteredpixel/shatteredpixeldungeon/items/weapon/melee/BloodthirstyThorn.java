@@ -240,7 +240,7 @@ public class BloodthirstyThorn extends MeleeWeapon {
 
     @Override
     public int STRReq(int lvl){
-        return 8;
+        return 14;
     }
 
     private void getHerodamageHp(Hero hero) {
@@ -261,7 +261,7 @@ public class BloodthirstyThorn extends MeleeWeapon {
             int healAmt = Math.min( attacker.HT, damage/5);
             healAmt = Math.min( healAmt, attacker.HT - attacker.HP );
 
-            if (healAmt > 0 && attacker.isAlive()) {
+            if (healAmt > 0 && attacker.isAlive() && Random.Float()<=0.7f) {
                 attacker.HP += healAmt;
                 hero.sprite.showStatus(CharSprite.POSITIVE, ("+" +Math.min( attacker.HT, damage/5) + "HP"));
             }

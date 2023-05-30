@@ -155,7 +155,7 @@ public class WndResurrect extends Window {
 				}
 
 				//矮人将军
-				Buff.affect(hero, TestDwarfMasterLock.class).set((1), 1);
+				Buff.affect(hero, TestDwarfMasterLock.class).set((10), 1);
 
 				InterlevelScene.mode = InterlevelScene.Mode.RESURRECT;
 				Game.switchScene( InterlevelScene.class );

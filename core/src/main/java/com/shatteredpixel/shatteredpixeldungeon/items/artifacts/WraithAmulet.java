@@ -3,10 +3,12 @@ package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
@@ -30,11 +32,11 @@ public class WraithAmulet extends Artifact {
     {
         image = ItemSpriteSheet.WRALIPS;
         cooldown = 0;
+        levelCap = 10;
         charge = Math.min(level()+1, 10);
         partialCharge = 0;
-        chargeCap = Math.min(level()+1, 10);
+        charge = Math.min(level()+1, 10);
         level = 0;
-        levelCap = 10;
         defaultAction = AC_GHOST;
     }
 
@@ -121,8 +123,8 @@ public class WraithAmulet extends Artifact {
     public class WraithRecharge extends ArtifactBuff{
         @Override
         public boolean act() {
-
-            if (charge < chargeCap && !cursed && useableBasic()) {
+            LockedFloor lock = target.buff(LockedFloor.class);
+            if (charge < chargeCap && !cursed && useableBasic() && (lock == null || lock.regenOn())) {
                 partialCharge += 1 / (150f - (chargeCap - charge) * 15f);
 
                 if (partialCharge >= 1) {
@@ -198,7 +200,7 @@ public class WraithAmulet extends Artifact {
 
                 QuickSlotButton.target(Actor.findChar(target));
                 Char enemy = Actor.findChar(target);
-                if (enemy != null && !(enemy instanceof NPC)) {
+                if (enemy != null && !(enemy instanceof NPC) || !(((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && Dungeon.depth==10)) {
                     if (hero.rooted || Dungeon.level.distance(hero.pos, target) < 3) {
                         final WraithAmulet amulet = (WraithAmulet) Item.curItem;
                         amulet.charge--;
@@ -211,15 +213,17 @@ public class WraithAmulet extends Artifact {
                             enemy.damage(enemy.HT * 4, WraithAmulet.class);
                             GLog.i(Messages.get(this, "killmobs"));
                         }
-                        hero.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
                         ScrollOfTeleportation.appear(hero, target);
                         Dungeon.observe();
+                        hero.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
 
                         amulet.charge -= 5;
                     } else if(Dungeon.level.distance(hero.pos, target) < 3) {
                         GLog.i(Messages.get(this, "far"));
                     } else if (hero.rooted) {
                         GLog.i(Messages.get(this, "rooted"));
+                    } else if(((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && Dungeon.depth==10){
+                        GLog.i(Messages.get(this, "gold"));
                     }
                 } else {
                     GLog.i(Messages.get(this, "notthere"));
@@ -307,7 +311,7 @@ public class WraithAmulet extends Artifact {
 
         @Override
         public int icon() {
-            return BuffIndicator.BLESS;
+            return BuffIndicator.NONE;
         }
 
 

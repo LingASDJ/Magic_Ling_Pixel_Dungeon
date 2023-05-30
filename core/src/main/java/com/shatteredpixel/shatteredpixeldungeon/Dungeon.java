@@ -439,11 +439,11 @@ public class Dungeon {
 						break;
 					case 21:
 						level = new NewCityBossLevel();
-						Buff.affect(hero, TestDwarfMasterLock.class).set((1), 1);
 						break;
 					case 22:
 					case 23:
 						level = new CityLevel();
+						Buff.affect(hero, TestDwarfMasterLock.class).set((10), 1);
 						break;
 					//TODO FIXED LIST:矮人将军那里用没祝福的十字架复活,Boss会消失不见
 					case 25:

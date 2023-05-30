@@ -8,7 +8,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfMaster;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
@@ -54,6 +53,7 @@ public class DwarfMasterBossLevel extends Level {
     public static final int CENTER = 18 + WIDTH * 17;
 
     private static final int ENTRANCE = 18 + WIDTH * 31;
+    private static final int ENTRANC = 19 + WIDTH * 31;
 
     @Override
     public String tilesTex() {
@@ -306,7 +306,7 @@ public class DwarfMasterBossLevel extends Level {
         super.occupyCell(ch);
 
         if (map[entrance] == Terrain.ENTRANCE && map[exit] != Terrain.EXIT
-                && ch == Dungeon.hero && (Dungeon.level.distance(ch.pos, entrance) >= 0)&&Dungeon.hero.buff(TestDwarfMasterLock.class) != null) {
+                && ch == Dungeon.hero && (Dungeon.level.distance(ch.pos, entrance) >= 0)) {
             seal();
             CellEmitter.get( entrance ).start( FlameParticle.FACTORY, 0.1f, 10 );
         }
@@ -358,8 +358,8 @@ public class DwarfMasterBossLevel extends Level {
     @Override
     public void unseal() {
         super.unseal();
-        set( ENTRANCE, Terrain.ENTRANCE );
-        GameScene.updateMap( ENTRANCE );
+        set( ENTRANC, Terrain.ENTRANCE );
+        GameScene.updateMap( ENTRANC );
         Dungeon.observe();
 
         if (Imp.Quest.isCompleted()) {
