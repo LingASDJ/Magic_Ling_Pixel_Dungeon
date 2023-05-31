@@ -5,6 +5,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -192,7 +193,7 @@ public class BloodthirstyThorn extends MeleeWeapon {
             if(chaliceOfBlood!=null){
                 bloodthirstyThorn.level=chaliceOfBlood.level();
             } else {
-                bloodthirstyThorn.level=Random.NormalIntRange(3,6);
+                bloodthirstyThorn.level=Statistics.ChaicBlood;
             }
 
             if(chaliceOfBlood!=null) {
@@ -221,7 +222,7 @@ public class BloodthirstyThorn extends MeleeWeapon {
             if(chaliceOfBlood!=null){
                 bloodthirstyThorn.level=chaliceOfBlood.level();
             } else {
-                bloodthirstyThorn.level=0;
+                bloodthirstyThorn.level= Statistics.ChaicBlood;
             }
 
             return bloodthirstyThorn;

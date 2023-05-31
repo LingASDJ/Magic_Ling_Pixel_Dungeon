@@ -53,6 +53,9 @@ public class Statistics {
 	public static int piranhasKilled;
 	public static int ankhsUsed;
 	public static int spawnersIce;
+
+	public static int ChaicBlood;
+
 	public static int naiyaziCollected;
 	//used for hero unlock badges
 	public static int upgradesUsed;
@@ -114,7 +117,7 @@ public class Statistics {
 
 
 		boss_enhance = 0;
-
+		ChaicBlood = 0;
 		goldCollected	= 0;
 		deepestFloor	= -1;
 		enemiesSlain	= 0;
@@ -247,6 +250,10 @@ public class Statistics {
 	private static final String WON		        = "won";
 	private static final String ASCENDED		= "ascended";
 
+	//嗜血荆棘
+	private static final String CHACEBLOOD		= "ChaicBlood";
+
+
 	public static void storeInBundle( Bundle bundle ) {
 
 		//分数
@@ -268,6 +275,8 @@ public class Statistics {
 		bundle.put( TOTAL_SCORE, totalScore );
 		bundle.put( WON,        gameWon );
 		bundle.put( ASCENDED,   ascended );
+
+		bundle.put(CHACEBLOOD,ChaicBlood);
 
 		bundle.put(BossSelect,boss_enhance);
 
@@ -325,6 +334,9 @@ public class Statistics {
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
+
+		//嗜血荆棘等级处理
+		ChaicBlood   = bundle.getInt( CHACEBLOOD );
 
 		//分数
 		progressScore   = bundle.getInt( PROG_SCORE );

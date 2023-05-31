@@ -223,18 +223,11 @@ public class DiamondKnight extends Boss {
 
         ColdChestBossLevel.State level = ((ColdChestBossLevel)Dungeon.level).pro();
         //血量低于360后追加phase并加载楼层的进度方法,加载迷宫
-
         if (level == ColdChestBossLevel.State.START && this.HP <= 360 && phase == 0) {
             GLog.n(Messages.get(DiamondKnight.class,"now_go"));
             GameScene.flash(0x808080);
             ((ColdChestBossLevel)Dungeon.level).progress();
             phase++;
-            //血量低于300加载第三场景
-//        } else if(level == ColdChestBossLevel.State.MAZE_START && this.HP <= 300 && phase == 1) {
-//            GLog.n(Messages.get(DiamondKnight.class,"war_go"));
-//            GameScene.flash(0x808080);
-//            ((ColdChestBossLevel)Dungeon.level).progress();
-//            phase++;
         } else if (level == ColdChestBossLevel.State.VSBOSS_START && this.HP <= 240 && phase == 2) {
             ((ColdChestBossLevel)Dungeon.level).progress();
             phase++;
