@@ -27,7 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
@@ -50,7 +49,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
@@ -59,15 +57,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.BrokenBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.TestBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Cake;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
@@ -80,7 +77,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlam
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
@@ -118,7 +114,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortswor
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.windows.ScrollOfAwareness;
 import com.watabou.utils.Random;
 
 public enum HeroClass {
@@ -169,15 +164,11 @@ public enum HeroClass {
 
 			Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);
 			new WraithAmulet().quantity(1).identify().collect();
-			Buff.affect(Dungeon.hero, ArtifactRecharge.class).prolong(2000);
 			new BloodthirstyThorn().quantity(1).identify().collect();
 
 			new WashCrime().quantity(1).identify().collect();
 			new MagicTorch().quantity(1).identify().collect();
 
-			new ScrollOfAwareness().quantity(1).identify().collect();
-
-			new Cake().quantity(100).identify().collect();
 			new TengusMask().quantity(1).identify().collect();
 			new ScrollOfIdentify().quantity(45).identify().collect();
 			new ScrollOfTransmutation().quantity(45).identify().collect();
@@ -201,7 +192,7 @@ public enum HeroClass {
 			new MagicalInfusion().quantity(1).identify().collect();
 			new ScrollOfMysticalEnergy().quantity(1).identify().collect();
 			new AquaBlast().quantity(1).identify().collect();
-
+			new TestBooks().quantity(1).identify().collect();
 			new WandOfCorruption().quantity(1).identify().collect();
 			new MasterThievesArmband().quantity(1).identify().collect();
 			new MetalShard().quantity(1).identify().collect();
@@ -210,7 +201,6 @@ public enum HeroClass {
 			new Sai().quantity(1).identify().collect();
 			new MagicTorch().quantity(1).identify().collect();
 			new SkyShield().quantity(1).identify().collect();
-			new SandalsOfNature().quantity(1).identify().collect();
 			new WandOfScale().quantity(1).identify().collect();
 			new WandOfGodIce().quantity(1).identify().collect();
 			new PotionOfLightningShiledX().quantity(1).identify().collect();
@@ -222,21 +212,12 @@ public enum HeroClass {
 			new YellowSunBooks().quantity(1).identify().collect();
 			new BrokenBooks().quantity(44).identify().collect();
 			new ScrollOfFlameCursed().quantity(44).identify().collect();
-			new KingsCrown().quantity(1).identify().collect();
-			new MIME.GOLD_ONE().quantity(1).identify().collect();
-			new MIME.GOLD_TWO().quantity(1).identify().collect();
-			new MIME.GOLD_THREE().quantity(1).identify().collect();
-			new MIME.GOLD_FOUR().quantity(1).identify().collect();
-			new MIME.GOLD_FIVE().quantity(1).identify().collect();
 
 			new LeatherArmor().quantity(1).identify().collect();
 
 			Dungeon.gold = 600000000;
 			hero.STR = 27;
 			hero.lvl = 30;
-			hero.exp = -123456789;
-			hero.HP = 	123456789;
-			hero.HT = 	123456789;
 		}
 
 		hero.heroClass = this;

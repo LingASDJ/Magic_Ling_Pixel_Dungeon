@@ -235,7 +235,7 @@ public class CrivusFruits extends Mob {
         Dungeon.level.unseal();
         GameScene.bossSlain();
         GLog.n(Messages.get(this,"dead"));
-        Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
+        Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos-2 ).sprite.drop();
         Dungeon.level.drop( new IronKey( Dungeon.depth ), pos-1 ).sprite.drop();
         Dungeon.level.drop( new IronKey( Dungeon.depth ), pos+1 ).sprite.drop();
         Badges.validateBossSlain();

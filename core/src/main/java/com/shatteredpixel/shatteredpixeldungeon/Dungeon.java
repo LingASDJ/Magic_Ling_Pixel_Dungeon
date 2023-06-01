@@ -1050,7 +1050,7 @@ public class Dungeon {
 	}
 
 	public static void win( Class cause ) {
-
+		Statistics.gameWon = true;
 		hero.belongings.identify();
 		updateLevelExplored();
 		Rankings.INSTANCE.submit( true, cause );

@@ -17,6 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FireCrystalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceFireScorpioSprite;
@@ -51,6 +52,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_41_Changes(changeInfos);
         add_v0_6_40_Changes(changeInfos);
         add_v0_6_39_Changes(changeInfos);
         add_v0_6_38_Changes(changeInfos);
@@ -92,6 +94,37 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_41_Changes( ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.6.2.0-Beta4.9", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("更新系统-V1.5"),
+                ("更新系统修复了一些问题，并且加入检查更新的超时等待时间")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X70")));
+
+        changes = new ChangeInfo("平衡", false, null);
+        changes.hardlight(Window.RED_COLOR);
+        changeInfos.add(changes);
+
+        Image i = new Image(new FireCrystalSprites());
+        i.scale.set(PixelScene.align(0.74f));
+        changes.addButton(new ChangeButton(i, "圣火魔女",
+                "现在升级卷轴只掉一个。"));
+
     }
 
     public static void add_v0_6_40_Changes( ArrayList<ChangeInfo> changeInfos ) {

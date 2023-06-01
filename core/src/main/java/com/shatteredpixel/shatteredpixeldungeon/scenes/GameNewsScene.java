@@ -15,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndHardNotification;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.BitmapText;
@@ -64,17 +65,17 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
 
         }
 
-        StyledButton btnSite = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this, "read_more")) {  //创建一个样式化的Button
+        add(new WndHardNotification(Icons.get(Icons.CHANGES),
+                Messages.get(this, "title"),
+                Messages.get(this, "update"),
+                Messages.get(this, "continue"),
+                7){
             @Override
-            protected void onClick() {  //重写当前Button的onClick方法，点击按钮时切换到标题场景
-                super.onClick();
+            public void hide() {
+                super.hide();
                 ShatteredPixelDungeon.switchNoFade(TitleScene.class);
             }
-        };
-        btnSite.icon(Icons.get(Icons.NEWS));  //为Button添加图标
-        btnSite.textColor(Window.TITLE_COLOR);  //设置Button文本的颜色
-        btnSite.setRect(left, 190, fullWidth, BTN_HEIGHT);  //设置Button的位置和大小
-        add(btnSite);  //将Button添加到场景中
+        });
 
         if (!displayingNoArticles) {  //有文章可用于加载时
 
@@ -122,8 +123,8 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
                     rightCol = !rightCol;
                 }
 
-                btnSite.visible = false;  //将Button的可见性设置为False
-                btnSite.active = false;  //将Button的活跃状态设置为False
+//                btnSite.visible = false;  //将Button的可见性设置为False
+//                btnSite.active = false;  //将Button的活跃状态设置为False
 
                 RenderedTextBlock title;
 

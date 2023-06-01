@@ -21,14 +21,18 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.Brew;
@@ -85,22 +89,22 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		} else {
 			if (result != item) {
 				int slot = Dungeon.quickslot.getSlot(item);
-				if (item.isEquipped(Dungeon.hero)) {
+				if (item.isEquipped(hero)) {
 					item.cursed = false; //to allow it to be unequipped
-					((EquipableItem) item).doUnequip(Dungeon.hero, false);
-					((EquipableItem) result).doEquip(Dungeon.hero);
+					((EquipableItem) item).doUnequip(hero, false);
+					((EquipableItem) result).doEquip(hero);
 				} else {
-					item.detach(Dungeon.hero.belongings.backpack);
+					item.detach(hero.belongings.backpack);
 					if (!result.collect()) {
 						Dungeon.level.drop(result, curUser.pos).sprite.drop();
-					} else if (Dungeon.hero.belongings.getSimilar(result) != null){
-						result = Dungeon.hero.belongings.getSimilar(result);
+					} else if (hero.belongings.getSimilar(result) != null){
+						result = hero.belongings.getSimilar(result);
 					}
 				}
 				if (slot != -1
 						&& result.defaultAction != null
 						&& !Dungeon.quickslot.isNonePlaceholder(slot)
-						&& Dungeon.hero.belongings.contains(result)){
+						&& hero.belongings.contains(result)){
 					Dungeon.quickslot.setSlot(slot, result);
 				}
 			}
@@ -133,6 +137,9 @@ public class ScrollOfTransmutation extends InventoryScroll {
 			return changeSeed((Plant.Seed) item);
 		} else if (item instanceof Runestone) {
 			return changeStone((Runestone) item);
+		} else if (item instanceof WraithAmulet) {
+			Buff.detach(hero, WraithAmulet.CursedAmulet.class);
+			return changeArtifact( (Artifact)item );
 		} else if (item instanceof Artifact) {
 			return changeArtifact( (Artifact)item );
 		} else {

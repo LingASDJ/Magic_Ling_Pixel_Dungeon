@@ -742,7 +742,7 @@ public class FireMagicDied extends Mob implements Callback {
         Statistics.bossScores[3] += 5000;
         Dungeon.level.drop(new BackGoKey().quantity(1).identify(), pos).sprite.drop();
         Dungeon.level.drop(new ScrollOfMagicMapping().quantity(1).identify(), pos).sprite.drop();
-        Dungeon.level.drop(new ScrollOfUpgrade().quantity(3).identify(), pos).sprite.drop();
+        Dungeon.level.drop(new ScrollOfUpgrade().quantity(1).identify(), pos).sprite.drop();
 
         Dungeon.level.drop(new Gold().quantity(5000), pos).sprite.drop();
 

@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -124,9 +125,13 @@ public class WraithAmulet extends Artifact {
         @Override
         public boolean act() {
             LockedFloor lock = target.buff(LockedFloor.class);
+
+
             if (charge < chargeCap && !cursed && useableBasic() && (lock == null || lock.regenOn())) {
                 partialCharge += 1 / (150f - (chargeCap - charge) * 15f);
-
+                float chargeGain = 1 / (90f - (chargeCap - charge)*3f);
+                chargeGain *= RingOfEnergy.artifactChargeMultiplier(target);
+                partialCharge += chargeGain;
                 if (partialCharge >= 1) {
                     partialCharge--;
                     charge++;
