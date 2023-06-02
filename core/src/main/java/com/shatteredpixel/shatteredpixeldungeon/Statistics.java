@@ -56,6 +56,8 @@ public class Statistics {
 
 	public static int ChaicBlood;
 
+	public static int HealingIsDied;
+
 	public static int naiyaziCollected;
 	//used for hero unlock badges
 	public static int upgradesUsed;
@@ -118,6 +120,9 @@ public class Statistics {
 
 		boss_enhance = 0;
 		ChaicBlood = 0;
+
+		HealingIsDied = 0;
+
 		goldCollected	= 0;
 		deepestFloor	= -1;
 		enemiesSlain	= 0;
@@ -254,6 +259,9 @@ public class Statistics {
 	private static final String CHACEBLOOD		= "ChaicBlood";
 
 
+	private static final String HEALDIED		= "HealingisDied";
+
+
 	public static void storeInBundle( Bundle bundle ) {
 
 		//分数
@@ -265,6 +273,7 @@ public class Statistics {
 				bundle.put( FLR_EXPL+i, floorsExplored.get(i) );
 			}
 		}
+		bundle.put( HEALDIED, HealingIsDied);
 		bundle.put( EXPL_SCORE,  exploreScore );
 		bundle.put( BOSS_SCORES, bossScores );
 		bundle.put( TOT_BOSS,    totalBossScore );
@@ -337,6 +346,8 @@ public class Statistics {
 
 		//嗜血荆棘等级处理
 		ChaicBlood   = bundle.getInt( CHACEBLOOD );
+
+		HealingIsDied   = bundle.getInt( HEALDIED );
 
 		//分数
 		progressScore   = bundle.getInt( PROG_SCORE );

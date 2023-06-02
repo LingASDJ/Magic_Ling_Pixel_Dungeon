@@ -24,6 +24,11 @@ package com.shatteredpixel.shatteredpixeldungeon;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.amuletObtained;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.chalMultiplier;
+import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.A_SCORE;
+import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.B_SCORE;
+import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.SSSP_SCORE;
+import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.SSS_SCORE;
+import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.SS_SCORE;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
@@ -35,7 +40,6 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.FileUtils;
 
@@ -373,23 +377,23 @@ public class Badges {
 
 	public static void validateHighScore( int score ){
 		Badge badge = null;
-		if (score >= LevelChecker.B_SCORE * chalMultiplier * (amuletObtained ? 1 : 2)) {
+		if (score >= B_SCORE * chalMultiplier * (amuletObtained ? 1 : 2)) {
 			badge = Badge.HIGH_SCORE_1;
 			local.add( badge );
 		}
-		if (score >= LevelChecker.A_SCORE * chalMultiplier * (amuletObtained ? 1 : 2)) {
+		if (score >= A_SCORE * chalMultiplier * (amuletObtained ? 1 : 2)) {
 			badge = Badge.HIGH_SCORE_2;
 			local.add( badge );
 		}
-		if (score >= LevelChecker.SS_SCORE * chalMultiplier * (amuletObtained ? 1 : 3)) {
+		if (score >= SS_SCORE * chalMultiplier * (amuletObtained ? 1 : 3)) {
 			badge = Badge.HIGH_SCORE_3;
 			local.add( badge );
 		}
-		if (score >= LevelChecker.SSS_SCORE * chalMultiplier * (amuletObtained ? 1 : 4)) {
+		if (score >=  SSS_SCORE * chalMultiplier/2 * (amuletObtained ? 1 : 4)) {
 			badge = Badge.HIGH_SCORE_4;
 			local.add( badge );
 		}
-		if (score >= LevelChecker.SSSP_SCORE * chalMultiplier * (amuletObtained ? 1 : 5)) {
+		if (score >= SSSP_SCORE * chalMultiplier * (amuletObtained ? 0.7 : 5)) {
 			badge = Badge.HIGH_SCORE_5;
 			local.add( badge );
 		}

@@ -60,8 +60,8 @@ public class Piranha extends Mob {
 	public Piranha() {
 		super();
 		if (Dungeon.isChallenged(AQUAPHOBIA)) {
-			HP = HT = 6 + Dungeon.depth/5;
-			defenseSkill = 6 + Dungeon.depth/5;
+			HP = HT = 6 + Dungeon.depth*2;
+			defenseSkill = 6 + Dungeon.depth*3;
 		} else {
 			HP = HT = 10 + Dungeon.depth * 5;
 			defenseSkill = 10 + Dungeon.depth * 2;

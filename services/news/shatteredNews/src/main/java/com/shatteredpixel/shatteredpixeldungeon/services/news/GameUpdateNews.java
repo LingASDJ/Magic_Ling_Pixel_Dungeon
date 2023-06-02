@@ -24,9 +24,9 @@ public class GameUpdateNews extends GameUpdateNewsService {
 
         Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
         if (preferHTTPS) {
-            httpGet.setUrl("https://jdsalingzx.top/assets/xml/gamenews.xml");
+            httpGet.setUrl("https://rust.coldmint.top/ftp/ling/json/gamenews.xml");
         } else {
-            httpGet.setUrl("https://jdsalingzx.top/assets/xml/gamenews.xml");
+            httpGet.setUrl("https://rust.coldmint.top/ftp/ling/json/gamenews.xml");
         }
 
         Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {

@@ -49,7 +49,6 @@ public class Shopkeeper extends NPC {
 
 	{
 		spriteClass = ShopkeeperSprite.class;
-		properties.add(Property.BOSS);
 		properties.add(Property.IMMOVABLE);
 	}
 	public static boolean seenBefore = false;

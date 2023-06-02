@@ -78,9 +78,9 @@ public class WraithAmulet extends Artifact {
                 if(this.isEquipped(Dungeon.hero)){
                     if(this.charge > 0) {
                         exp += 5;
-                        Buff.affect(Dungeon.hero, Invisibility.class, Invisibility.DURATION);
+                        Buff.affect(Dungeon.hero, Invisibility.class, Invisibility.DURATION/2);
                         GLog.p(Messages.get(this,"ghost"));
-                        cooldown = 34 - (level / 2);
+                        cooldown = 45 - (level / 2);
                         charge--;
                     } else {
                         GLog.i(Messages.get(this,"nochareup"));
@@ -92,7 +92,9 @@ public class WraithAmulet extends Artifact {
                 GLog.n(Messages.get(this,"whoareyou"));
             }
         } else if (action.equals(AC_ASSASSINATE) && !cursed) {
-            if(this.charge >= 5){
+            if (cooldown > 0) {
+                GLog.w(Messages.get(this, "cooddown"));
+            } else if(this.charge >= 5){
                 GameScene.selectCell(porter);
             } else {
                 GLog.i(Messages.get(this,"nochareup"));
@@ -205,26 +207,28 @@ public class WraithAmulet extends Artifact {
 
                 QuickSlotButton.target(Actor.findChar(target));
                 Char enemy = Actor.findChar(target);
-                if (enemy != null && !(enemy instanceof NPC) || !(((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && Dungeon.depth==10)) {
+                if (!(((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && Dungeon.depth==10)) {
                     if (hero.rooted || Dungeon.level.distance(hero.pos, target) < 3) {
-                        if(enemy != null){
+                        if(enemy != null && !(enemy instanceof NPC)){
                             final WraithAmulet amulet = (WraithAmulet) Item.curItem;
                             amulet.exp += 10;
                             hero.pos = target;
                             if (enemy.properties().contains(Char.Property.BOSS)) {
-                                enemy.damage(enemy.HT / 2, WraithAmulet.class);
+                                enemy.damage(enemy.HT/10, WraithAmulet.class);
                                 GLog.i(Messages.get(this, "killboss"));
                                 enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this,"koss"));
                             } else {
-                                enemy.damage(enemy.HT * 4, WraithAmulet.class);
+                                enemy.die(true);
                                 GLog.i(Messages.get(this, "killmobs"));
                                 enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this,"died"));
                             }
                             ScrollOfTeleportation.appear(hero, target);
                             Dungeon.observe();
                             hero.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
-
+                            amulet.cooldown = 95;
                             amulet.charge -= 6;
+                        } else {
+                            GLog.w(Messages.get(this, "notnpc"));
                         }
                     } else if(Dungeon.level.distance(hero.pos, target) > 3 && enemy !=null) {
                         GLog.w(Messages.get(this, "far"));

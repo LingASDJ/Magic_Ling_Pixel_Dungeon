@@ -52,6 +52,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_42_Changes(changeInfos);
         add_v0_6_41_Changes(changeInfos);
         add_v0_6_40_Changes(changeInfos);
         add_v0_6_39_Changes(changeInfos);
@@ -94,6 +95,31 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_42_Changes( ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.6.2.0-Beta5.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("平衡", false, null);
+        changes.hardlight(Window.RED_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("挑战改进"),
+                ("如果开启恐药，水灵将在饮用两次后治疗失效。并转换为中毒效果。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WRALIPS), "暗金宝石护符",
+                "修复了一些问题，并平衡了神器参数。"));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X71")));
+
     }
 
     public static void add_v0_6_41_Changes( ArrayList<ChangeInfo> changeInfos ) {

@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
@@ -35,7 +36,12 @@ public class WaterSoul extends Elixir {
     public void apply(Hero hero) {
         Buff.affect(hero, WaterSoulX.class).set( (101), 1 );
         cure( hero );
-        heal( hero );
+        if (Dungeon.isChallenged(Challenges.NO_HEALING) && Statistics.HealingIsDied>=2) {
+           pharmacophobiaProc(hero);
+        } else {
+            heal(hero);
+            Statistics.HealingIsDied++;
+        }
         if (Dungeon.isChallenged(Challenges.NO_FOOD)){
             Buff.affect(hero, Hunger.class).satisfy(energy/3f);
         } else {
@@ -53,7 +59,7 @@ public class WaterSoul extends Elixir {
 
     public static void pharmacophobiaProc( Hero hero ){
         // harms the hero for ~40% of their max HP in poison
-        Buff.affect( hero, Poison.class).set(4 + hero.lvl/2);
+        Buff.affect( hero, Poison.class).set(6 + hero.lvl/2f);
     }
 
     public static void cure( Char ch ) {
