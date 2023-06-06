@@ -56,8 +56,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
@@ -77,7 +77,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlam
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
@@ -97,6 +96,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfGodIce;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfScale;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
@@ -161,6 +161,7 @@ public enum HeroClass {
 			new LockSword().quantity(1).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
 			new MysteryMeat().quantity(100).identify().collect();
+			new TimekeepersHourglass().quantity(1).identify().collect();
 
 			Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);
 			new WraithAmulet().quantity(1).identify().collect();
@@ -169,6 +170,7 @@ public enum HeroClass {
 			new WashCrime().quantity(1).identify().collect();
 			new MagicTorch().quantity(1).identify().collect();
 
+			new WandOfTransfusion().quantity(2).identify().collect();
 			new TengusMask().quantity(1).identify().collect();
 			new ScrollOfIdentify().quantity(45).identify().collect();
 			new ScrollOfTransmutation().quantity(45).identify().collect();
@@ -194,8 +196,6 @@ public enum HeroClass {
 			new AquaBlast().quantity(1).identify().collect();
 			new TestBooks().quantity(1).identify().collect();
 			new WandOfCorruption().quantity(1).identify().collect();
-			new MasterThievesArmband().quantity(1).identify().collect();
-			new MetalShard().quantity(1).identify().collect();
 			new ChaliceOfBlood().quantity(1).identify().collect();
 			new LifeTreeSword().quantity(1).identify().collect();
 			new Sai().quantity(1).identify().collect();
@@ -218,6 +218,8 @@ public enum HeroClass {
 			Dungeon.gold = 600000000;
 			hero.STR = 27;
 			hero.lvl = 30;
+			hero.HP=hero.HT=120;
+			hero.exp=-1;
 		}
 
 		hero.heroClass = this;

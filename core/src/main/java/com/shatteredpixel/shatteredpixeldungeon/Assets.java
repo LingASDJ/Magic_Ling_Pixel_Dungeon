@@ -95,6 +95,14 @@ public class Assets {
 	}
 
 	public static class Interfaces {
+
+		//Boss 贴图
+
+		public static final String QliPhoth_Title  = "interfaces/bosslogo/qliphoth-title.png";
+		public static final String QliPhoth_Clear  = "interfaces/bosslogo/qliphoth-clear.png";
+
+
+
 		public static final String ARCS_BG  = "interfaces/arcs1.png";
 		public static final String ARCS_FG  = "interfaces/arcs2.png";
 

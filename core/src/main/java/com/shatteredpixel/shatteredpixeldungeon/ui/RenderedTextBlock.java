@@ -124,27 +124,27 @@ public class RenderedTextBlock extends Component {
 
 
 			/*
-			Γ = 红色
-			Δ = 绿色
+			{ = 红色
+			} = 绿色
 			Θ = 蓝色
-			Ξ = 粉色
-			Π = 紫色
-			✦ = 黑色
+			[ = 粉色
+			] = 紫色
+			| = 黑色
 			_ = 青色 */
 
 			if (str.equals("_") && highlightingEnabled){
 				highlighting = !highlighting;
-			} else if(str.equals("Γ") && RedEnabled){
+			} else if(str.equals("{") && RedEnabled){
 				Redhighlighting = !Redhighlighting;
-			} else if(str.equals("Δ") && GreenEnabled){
+			} else if(str.equals("}") && GreenEnabled){
 				Greenhighlighting = !Greenhighlighting;
-			} else if(str.equals("Θ") && BlueEnabled){
+			} else if(str.equals("*") && BlueEnabled){
 				Bluehighlighting = !Bluehighlighting;
-			} else if(str.equals("Ξ") && PinkEnabled){
+			} else if(str.equals("[") && PinkEnabled){
 				Pinkhighlighting = !Pinkhighlighting;
-			} else if(str.equals("Π") && DeepEnabled){
+			} else if(str.equals("]") && DeepEnabled){
 				Deeppinkhighlighting = !Deeppinkhighlighting;
-			} else if(str.equals("✦") && BlackEnabled){
+			} else if(str.equals("|") && BlackEnabled){
 				Blackhighlighting = !Blackhighlighting;
 			} else if (str.equals("\n")){
 				words.add(NEWLINE);

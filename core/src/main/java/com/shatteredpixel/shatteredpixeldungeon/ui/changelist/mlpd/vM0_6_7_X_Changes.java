@@ -52,6 +52,8 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_44_Changes(changeInfos);
+        add_v0_6_43_Changes(changeInfos);
         add_v0_6_42_Changes(changeInfos);
         add_v0_6_41_Changes(changeInfos);
         add_v0_6_40_Changes(changeInfos);
@@ -95,6 +97,57 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_44_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("金榜题名，高考加油", true, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("v0.6.3.0-Beta1.5", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CRYSTAL_CHEST), ("克里弗斯之果-二选一改进"),
+                ("对二选一问题进行了一些改进，在新存档生效。")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X73")));
+
+    }
+
+    public static void add_v0_6_43_Changes( ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.6.3.0-Beta1.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_13), ("梦魇领袖-测试版"),
+                ("现在追加了克里弗斯之果的梦魇领袖词条，欢迎挑战")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("Boss横幅"),
+                ("现在Boss会在战斗开始时显示大横幅，以便玩家更好地了解Boss\n\n同时在Boss死亡时也会有对应的Boss战败横幅\n\n由于该系统对于美工的工作量极大，因此如果尚未完成logo的Boss将会显示默认的。")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X72")));
+
     }
 
     public static void add_v0_6_42_Changes( ArrayList<ChangeInfo> changeInfos ) {
@@ -509,7 +562,7 @@ public class vM0_6_7_X_Changes {
                 ("由于机制较于复杂，且时间不太充足。将在后续更新进行完善，敬请期待。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DASlade), ("新武器：涤罪[捐赠物品]"),
-                ("感谢_落白_的投稿，该武器是一个5阶武器，初始19力量，20%生成概率。可以召唤✦未安息的亡魂✦助战,自身基准攻击力随着杀敌数追加，但有上限。")));
+                ("感谢_落白_的投稿，该武器是一个5阶武器，初始19力量，20%生成概率。可以召唤|未安息的亡魂|助战,自身基准攻击力随着杀敌数追加，但有上限。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14), ("寒冷系统0.1测试版"),
                 ("监狱层追加寒冷系统，最高阈值为25")));
@@ -585,7 +638,7 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(a, ("新BOSS:DMZERO"),
                 ("DMZERO是死灵巫师为夺取前矮人国王的政权而用黑暗魔法仿造矮人科技所制造的试作型魔法机械。\n" +
                         "由于水晶之心的影响，DMZERO被禁锢在另一个异次元空间内，无法影响地牢所在的时间线。\n" +
-                        "Γ战斗回合过长将会释放_湮灭审判_，对玩家造成致死伤害。半血后伤害大幅度提升。\n\n" +
+                        "{战斗回合过长将会释放_湮灭审判_，对玩家造成致死伤害。半血后伤害大幅度提升。\n\n" +
                         "根据商人给出的情报，它的高智能辐射电波影响了这个地牢。封印，摧毁，抑或是遣返。让这里恢复原状吧。")));
 
         changes = new ChangeInfo("改动", false, null);

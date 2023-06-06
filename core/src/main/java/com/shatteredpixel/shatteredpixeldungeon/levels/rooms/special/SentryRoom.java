@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EmptyRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -131,7 +132,7 @@ public class SentryRoom extends SpecialRoom {
 				}
 			}
 			dangerDist = 2*(height()-5);
- 		} else  if (entrance.y == bottom){
+		} else  if (entrance.y == bottom){
 			sentryPos.set(center.x, top+1);
 			Painter.fill(level, left+1, bottom-1, width()-2, 1, Terrain.EMPTY);
 			if (entrance.x > center.x){
@@ -156,7 +157,7 @@ public class SentryRoom extends SpecialRoom {
 		sentry.pos = level.pointToCell(sentryPos);
 		sentry.room = new EmptyRoom();
 		sentry.room.set((Rect)this);
-		sentry.initialChargeDelay = dangerDist / 3f + 0.1f;
+		sentry.initialChargeDelay = sentry.curChargeDelay = dangerDist / 3f + 0.1f;
 		level.mobs.add( sentry );
 
 		Painter.set(level, treasurePos, Terrain.PEDESTAL);
@@ -238,7 +239,8 @@ public class SentryRoom extends SpecialRoom {
 			if (Dungeon.hero != null){
 				if (fieldOfView[Dungeon.hero.pos]
 						&& Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMPTY_SP
-						&& room.inside(Dungeon.level.cellToPoint(Dungeon.hero.pos))){
+						&& room.inside(Dungeon.level.cellToPoint(Dungeon.hero.pos))
+						&& Dungeon.hero.buff(LostInventory.class) == null){
 
 					if (curChargeDelay > 0.001f){ //helps prevent rounding errors
 						if (curChargeDelay == initialChargeDelay) {
@@ -273,11 +275,20 @@ public class SentryRoom extends SpecialRoom {
 		}
 
 		public void onZapComplete(){
-			Dungeon.hero.damage(Random.NormalIntRange(2+Dungeon.depth/2, 4+Dungeon.depth), new Eye.DeathGaze());
-			if (!Dungeon.hero.isAlive()){
-				GLog.n( Messages.capitalize(Messages.get(Char.class, "kill", name())) );
-				Dungeon.fail( getClass() );
+			if (hit(this, Dungeon.hero, true)) {
+				Dungeon.hero.damage(Random.NormalIntRange(2 + Dungeon.depth / 2, 4 + Dungeon.depth), new Eye.DeathGaze());
+				if (!Dungeon.hero.isAlive()) {
+					Dungeon.fail(getClass());
+					GLog.n(Messages.capitalize(Messages.get(Char.class, "kill", name())));
+				}
+			} else {
+				Dungeon.hero.sprite.showStatus( CharSprite.NEUTRAL,  Dungeon.hero.defenseVerb() );
 			}
+		}
+
+		@Override
+		public int attackSkill(Char target) {
+			return 20 + Dungeon.depth * 2;
 		}
 
 		@Override
@@ -287,10 +298,7 @@ public class SentryRoom extends SpecialRoom {
 
 		@Override
 		public void damage( int dmg, Object src ) {
-		}
-
-		@Override
-		public void add( Buff buff ) {
+			//do nothing
 		}
 
 		@Override

@@ -74,7 +74,7 @@ public class WandOfTransfusion extends Wand {
 			//this wand does different things depending on the target.
 			
 			//heals/shields an ally or a charmed enemy while damaging self
-			if (ch.alignment == Char.Alignment.ALLY || ch.buff(Charm.class) != null){
+			if (ch.alignment == Char.Alignment.ALLY || ch.buff(Charm.class) != null ){
 				
 				// 5% of max hp
 				int selfDmg = Math.round(curUser.HT*0.05f);
@@ -87,11 +87,20 @@ public class WandOfTransfusion extends Wand {
 				} else {
 					shielding = 0;
 				}
+
+				if(ch.properties().contains(Char.Property.BOSS)){
+					ch.HP += 0;
+					ch.sprite.emitter().burst(Speck.factory(Speck.HEALING), 2 + buffedLvl() / 2);
+					ch.sprite.showStatus(CharSprite.WARNING, "+0HP", healing + shielding);
+					GLog.n("注魂法杖对Boss治疗是无效的！");
+				} else {
+					ch.HP += healing;
+					ch.sprite.emitter().burst(Speck.factory(Speck.HEALING), 2 + buffedLvl() / 2);
+					ch.sprite.showStatus(CharSprite.POSITIVE, "+%dHP", healing + shielding);
+				}
+
 				
-				ch.HP += healing;
-				
-				ch.sprite.emitter().burst(Speck.factory(Speck.HEALING), 2 + buffedLvl() / 2);
-				ch.sprite.showStatus(CharSprite.POSITIVE, "+%dHP", healing + shielding);
+
 				
 				if (!freeCharge) {
 					damageHero(selfDmg);

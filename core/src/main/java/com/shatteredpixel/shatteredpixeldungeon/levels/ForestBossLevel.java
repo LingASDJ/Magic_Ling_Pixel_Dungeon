@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -12,6 +13,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RatKing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Ripple;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
@@ -214,19 +217,39 @@ public class ForestBossLevel extends Level {
         switch(Random.NormalIntRange(1,6)){
             case 1:case 2:case 3:
                 for (int i : RatKingRoomASpawn) {
-                    drop(new Gold( Random.IntRange( 10, 25 )),i);
+                    //drop(new Gold( Random.IntRange( 10, 25 )),i).type = Heap.Type.CHEST;
+                    Heap droppedGold = Dungeon.level.drop( new Gold( Random.IntRange( 10, 25 )),i);
+                    droppedGold.type = Heap.Type.CHEST;
+                    //必须追加一个view处理才能让金币的类型申请给地牢view处理后变成箱子样子
+                    droppedGold.sprite.view( droppedGold );
                 }
                 RatKing king = new RatKing();
                 king.pos = WIDTH*7+3;
                 GameScene.add(king);
+
+                drop( new CrystalKey(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? 2 : 5 ), WIDTH*7+29 );
+
+                Heap droppedA = Dungeon.level.drop( Generator.randomUsingDefaults( Generator.Category.STONE),
+                        WIDTH*7+28 );
+                droppedA.type = Heap.Type.CRYSTAL_CHEST;
+                droppedA.sprite.view( droppedA );
             break;
             case 4: case 5: case 6:
                 for (int i : RatKingRoomBSpawn) {
-                    drop(new Gold( Random.IntRange( 10, 25 )),i);
+                    Heap droppedGold = Dungeon.level.drop( new Gold( Random.IntRange( 10, 25 )),i);
+                    droppedGold.type = Heap.Type.CHEST;
+                    droppedGold.sprite.view( droppedGold );
                 }
                 RatKing king2 = new RatKing();
                 king2.pos = WIDTH*7+28;
                 GameScene.add(king2);
+
+                drop( new CrystalKey(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? 2 : 5 ), WIDTH*7+4 );
+
+                Heap droppedB = Dungeon.level.drop( Generator.randomUsingDefaults( Generator.Category.WEAPON),
+                        WIDTH*7+3 );
+                droppedB.type = Heap.Type.CRYSTAL_CHEST;
+                droppedB.sprite.view( droppedB );
                 break;
         }
 

@@ -2,6 +2,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -21,9 +23,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RotLasherSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
 public class CrivusFruitsLasher extends Mob {
@@ -36,13 +42,64 @@ public class CrivusFruitsLasher extends Mob {
 
         EXP = 1;
 
-//        loot = Generator.Category.SEED;
-//        lootChance = 0.35f;
-
         state = WANDERING = new Waiting();
 
         properties.add(Property.IMMOVABLE);
         properties.add(Property.MINIBOSS);
+    }
+
+    @Override
+    protected boolean canAttack( Char enemy ) {
+        if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && Statistics.crivusfruitslevel2){
+            return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
+        }
+        return super.canAttack(enemy);
+    }
+
+    protected boolean doAttack( Char enemy ) {
+
+        if (Dungeon.level.adjacent( pos, enemy.pos )) {
+
+            return super.doAttack( enemy );
+
+        } else {
+
+            if (sprite != null && (sprite.visible || enemy.sprite.visible) && Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+                sprite.zap( enemy.pos );
+                return false;
+            } else {
+                zap();
+                return true;
+            }
+        }
+    }
+
+
+
+    private void zap() {
+        spend( 3f );
+
+        if (hit( this, enemy, true )) {
+            //TODO would be nice for this to work on ghost/statues too
+            if (enemy == Dungeon.hero && Random.Int( 2 ) == 0) {
+                GameScene.add(Blob.seed(enemy.pos, 45, ToxicGas.class));
+                Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
+            }
+
+            enemy.damage( damageRoll(), enemy );
+
+            if (enemy == Dungeon.hero && !enemy.isAlive()) {
+                Dungeon.fail( getClass() );
+                GLog.n( Messages.get(this, "frost_kill") );
+            }
+        } else {
+            enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
+        }
+    }
+
+    public void onZapComplete() {
+        zap();
+        next();
     }
 
     @Override

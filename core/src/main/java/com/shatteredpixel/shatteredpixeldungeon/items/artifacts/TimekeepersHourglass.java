@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
@@ -101,13 +102,18 @@ public class TimekeepersHourglass extends Artifact {
 							@Override
 							protected void onSelect(int index) {
 								if (index == 0) {
-									GLog.i( Messages.get(TimekeepersHourglass.class, "onstasis") );
-									GameScene.flash(0x80FFFFFF);
-									Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+									if(!Statistics.deadshoppingdied && Dungeon.depth<0){
+										GLog.n( Messages.get(TimekeepersHourglass.class, "onstasiss") );
+									} else {
+										GLog.i( Messages.get(TimekeepersHourglass.class, "onstasis") );
+										GameScene.flash(0x80FFFFFF);
+										Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 
-									activeBuff = new timeStasis();
-									Talent.onArtifactUsed(Dungeon.hero);
-									activeBuff.attachTo(Dungeon.hero);
+										activeBuff = new timeStasis();
+										Talent.onArtifactUsed(Dungeon.hero);
+										activeBuff.attachTo(Dungeon.hero);
+									}
+
 								} else if (index == 1) {
 									GLog.i( Messages.get(TimekeepersHourglass.class, "onfreeze") );
 									GameScene.flash(0x80FFFFFF);

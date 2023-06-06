@@ -99,7 +99,7 @@ public class IceGolem extends Mob implements Callback {
     }
     public int attackProc(Char var1, int var2) {
         int var3 = var2;
-        if (Random.Int(3) == 0) {
+        if (Random.Int(3) == 0 && var1 == Dungeon.hero) {
             var3 = var2 +10;
             TeleportationTrap var4 = new TeleportationTrap();
             var4.pos = super.pos;

@@ -1423,11 +1423,67 @@ public class GameScene extends PixelScene {
 		Buff.detach( ch, MagicGirlSayTimeLast.class );
 	}
 
+
+	public static void bossReady() {
+		if (Dungeon.hero.isAlive()) {
+			Banner bossSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
+
+
+			//Boss开始后的处理Logo,不在Switch中就是默认的Logo。
+			switch (Dungeon.depth){
+				case 2:
+					if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ){
+						bossSlain.texture( Assets.Interfaces.QliPhoth_Title );
+						bossSlain.show( 0xFFFFFF, 0.3f, 5f );
+						scene.showBanner( bossSlain );
+					}
+					break;
+				case 5:
+					if(!Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ) {
+						bossSlain.texture(Assets.Interfaces.QliPhoth_Title);
+						bossSlain.show(0xFFFFFF, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+					}
+					break;
+			}
+
+			if(lanterfireactive){
+				cure( Dungeon.hero );
+			}
+
+			if (Dungeon.hero.buff(LockedFloor.class) == null) {
+				BGMPlayer.playBGMWithDepth();
+			}
+
+			Sample.INSTANCE.play( Assets.Sounds.ALERT );
+		}
+	}
+
+
 	public static void bossSlain() {
 		if (Dungeon.hero.isAlive()) {
 			Banner bossSlain = new Banner( BannerSprites.get( BannerSprites.Type.BOSS_SLAIN ) );
 			bossSlain.show( 0xFFFFFF, 0.3f, 5f );
 			scene.showBanner( bossSlain );
+
+
+			//Boss死亡后的处理Logo,不在Switch中就是默认的Logo。
+			switch (Dungeon.depth){
+				case 2:
+					if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ){
+						bossSlain.texture( Assets.Interfaces.QliPhoth_Clear );
+						bossSlain.show( 0xFFFFFF, 0.3f, 5f );
+						scene.showBanner( bossSlain );
+					}
+					break;
+				case 5:
+					if(!Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ) {
+						bossSlain.texture(Assets.Interfaces.QliPhoth_Clear);
+						bossSlain.show(0xFFFFFF, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+					}
+					break;
+			}
 
 			if(lanterfireactive){
 				cure( Dungeon.hero );

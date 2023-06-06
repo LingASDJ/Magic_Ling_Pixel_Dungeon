@@ -20,7 +20,7 @@ public class TPDoor extends Mob {
 
         HP = HT = 100;
 
-        properties.add(Property.MINIBOSS);
+        properties.add(Property.BOSS);
         properties.add(Property.INORGANIC);
         properties.add(Property.ELECTRIC);
         properties.add(Property.IMMOVABLE);

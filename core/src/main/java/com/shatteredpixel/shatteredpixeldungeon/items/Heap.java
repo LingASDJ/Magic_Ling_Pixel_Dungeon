@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.DocumentPage;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -70,7 +71,7 @@ public class Heap implements Bundlable {
 	public Type type = Type.HEAP;
 	
 	public int pos = 0;
-	
+
 	public ItemSprite sprite;
 	public boolean seen = false;
 	public boolean haunted = false;
@@ -389,8 +390,10 @@ public class Heap implements Bundlable {
 					return Messages.get(this, "crystal_chest_desc", Messages.get(this, "artifact") );
 				else if (peek() instanceof Wand)
 					return Messages.get(this, "crystal_chest_desc", Messages.get(this, "wand") );
-				else
+				else if (peek() instanceof Ring)
 					return Messages.get(this, "crystal_chest_desc", Messages.get(this, "ring") );
+				else
+					return Messages.get(this, "crystal_chest_desc", Messages.get(this, "unknow") );
 			case TOMB:
 				return Messages.get(this, "tomb_desc");
 			case BLACK:

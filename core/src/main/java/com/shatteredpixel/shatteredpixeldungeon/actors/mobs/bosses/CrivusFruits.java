@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel.BRatKingRoom;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel.ForestBossLasherTWOPos;
@@ -9,14 +10,17 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
@@ -27,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.CrivusFruitsFood;
@@ -36,19 +41,27 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
+import java.util.HashSet;
+
 //克里弗斯之果 本体
 public class CrivusFruits extends Mob {
-
+    //the actual affected cells
+    private HashSet<Integer> affectedCells;
+    //the cells to trace fire shots to, for visual effects.
+    private HashSet<Integer> visualCells;
     //基本属性
     {
         spriteClass = CrivusFruitsSprite.class;
@@ -58,7 +71,7 @@ public class CrivusFruits extends Mob {
 
         EXP = 20;
 
-        state = PASSIVE;
+        state = WANDERING;
 
         properties.add(Property.IMMOVABLE);
         properties.add(Property.BOSS);
@@ -99,7 +112,10 @@ public class CrivusFruits extends Mob {
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
             GLog.n(Messages.get(this, "notice"));
+            GameScene.flash(0x8000cc00);
+            Camera.main.shake(1f,3f);
             this.sprite.showStatus(CharSprite.NEGATIVE, "!!!");
+            GameScene.bossReady();
             for (Char ch : Actor.chars()){
                 if (ch instanceof DriedRose.GhostHero){
                     ((DriedRose.GhostHero) ch).sayBoss();
@@ -111,7 +127,7 @@ public class CrivusFruits extends Mob {
     //回合
     @Override
     public void damage(int dmg, Object src) {
-        LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+        LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null) lock.addTime(dmg * 2);
         super.damage(dmg, src);
     }
@@ -123,12 +139,17 @@ public class CrivusFruits extends Mob {
         if(!crivusfruitslevel2){
             GameScene.add(Blob.seed(pos, HP<65 ? 50 : 30, DiedBlobs.class));
         } else {
+            if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+                sprite.attack( hero.pos );
+                spend( 25f );
+                shoot(this, hero.pos);
+            }
             GameScene.add(Blob.seed(pos, HP<36 ? 150 : 50, DiedBlobs.class));
         }
 
 
         //判定是否第一次加进入游戏
-        if( Dungeon.hero.buff(LockedFloor.class) != null){
+        if( hero.buff(LockedFloor.class) != null){
             notice();
         }
         state = PASSIVE;
@@ -143,6 +164,9 @@ public class CrivusFruits extends Mob {
                 CrivusFruitsLasher csp = new CrivusFruitsLasher();
                 csp.pos = i;
                 GameScene.add(csp);
+                if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+                    Buff.affect(csp, Barrier.class).setShield((int) (2.4f * csp.HT + 10));
+                }
             }
             Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
             this.sprite.showStatus(CharSprite.NEGATIVE, "!!!");
@@ -163,16 +187,32 @@ public class CrivusFruits extends Mob {
                 GameScene.updateMap( WIDTH*11+25 );
             }
 
+
+            if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+                sprite.attack( hero.pos );
+                spend( 3f );
+                shoot(this, hero.pos);
+            }
+
+
         }
 
         //三阶段
         if(HP==36){
             GameScene.flash(0x80009c9c);
             HP=HT=35;
+            if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+                Buff.affect(this, Barrier.class).setShield((int) (3f * this.HT + 10));
+            }
             GLog.n(Messages.get(this,"died!!!"));
             GLog.w(Messages.get(this,"!!!"));
             Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
             this.sprite.showStatus(CharSprite.NEGATIVE, "!!!");
+            if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+                sprite.attack( hero.pos );
+                spend( 3f );
+                shoot(this, hero.pos);
+            }
         }
 
         return super.act();
@@ -184,7 +224,7 @@ public class CrivusFruits extends Mob {
         //Boss死亡后改变描述
         @Override
         public String tileDesc() {
-            return Messages.get(this, Dungeon.hero.buff(LockedFloor.class) != null? "desc" : "csed" );
+            return Messages.get(this, hero.buff(LockedFloor.class) != null? "desc" : "csed" );
         }
         @Override
         protected void evolve() {
@@ -200,9 +240,9 @@ public class CrivusFruits extends Mob {
                     cell = i + j*Dungeon.level.width();
                     if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
                         if (!ch.isImmune(this.getClass())) {
-                            if( Dungeon.hero.buff(LockedFloor.class) != null) {
+                            if( hero.buff(LockedFloor.class) != null) {
                                 //不为空为4 否则就是0
-                                ch.damage(Dungeon.hero.buff(LockedFloor.class) != null ? damage : 0, this);
+                                ch.damage(hero.buff(LockedFloor.class) != null ? damage : 0, this);
                                 Statistics.bossScores[0] -= 200;
                             }
                         }
@@ -272,11 +312,50 @@ public class CrivusFruits extends Mob {
         if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
             GetBossLoot();
         }
-
-
-
-
     }
+
+    public void shoot(Char ch, int pos){
+        final Ballistica shot = new Ballistica( hero.pos, pos, Ballistica.MAGIC_BOLT);
+        fx(shot, ch);
+    }
+    ConeAOE cone;
+
+    protected void fx(Ballistica bolt, Char ch ) {
+        //need to perform flame spread logic here so we can determine what cells to put flames in.
+        affectedCells = new HashSet<>();
+        visualCells = new HashSet<>();
+
+        int maxDist = 2 + 4*4;
+        int dist = Math.min(bolt.dist, maxDist);
+
+        for (int i = 0; i < PathFinder.CIRCLE8.length; i++){
+            if (bolt.sourcePos+PathFinder.CIRCLE8[i] == bolt.path.get(1)){
+                break;
+            }
+        }
+
+        cone = new ConeAOE( bolt,
+                maxDist,
+                80 + 40,Ballistica.MAGIC_BOLT);
+
+        visualCells.remove(bolt.path.get(dist));
+
+        for (Ballistica ray : cone.rays){
+            ((MagicMissile)ch.sprite.parent.recycle( MagicMissile.class )).reset(
+                    MagicMissile.SHADOW_CONE,
+                    ch.sprite,
+                    ray.path.get(ray.dist),
+                    null
+            );
+        }
+
+        GameScene.add(Blob.seed(hero.pos, 120, CorrosiveGas.class));
+
+        if(Dungeon.level.heroFOV[bolt.sourcePos] || Dungeon.level.heroFOV[bolt.collisionPos]){
+            Sample.INSTANCE.play( Assets.Sounds.ZAP );
+        }
+    }
+
 
     {
         immunities.add( Paralysis.class );

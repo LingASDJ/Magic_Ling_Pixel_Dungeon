@@ -376,12 +376,6 @@ public class S_Changes {
                         "_3._两袖清风&负债累累_\n"+
                         "_一个是禁止地牢的_金币生成_，另一个则是_移除金币_"));
 
-        changes.addButton( new ChangeButton(Icons.get(Icons.LANGS), "文本渲染",
-                "文本现在可以渲染成RGB各拉满的三种颜色\n\n红色：_红_ \n\n蓝色：∮蓝∮ \n\n绿色：_绿_"));
-
-        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.DG8), "_红宝石魔袋_",
-                "矮人国王的宝贝，现在在_DM300_那里有可能获得！\n\n或者去_商人那里_也有可能获得！"));
-
         changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.DG7), "_食物袋_",
                 "在_粘咕_那里有几率获得该物品\n\n或者在_商人那里_也可能得到"));
 
@@ -461,22 +455,22 @@ public class S_Changes {
         ChangeInfo changeInfo6 = new ChangeInfo("v0.3.0.1b", true, "");
         changeInfo6.hardlight(16711935);
         arrayList.add(changeInfo6);
-        ChangeInfo changeInfo7 = new ChangeInfo(Messages.get(ChangesScene.class, "new", new Object[0]), false, (String) null);
+        ChangeInfo changeInfo7 = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, (String) null);
         changeInfo7.hardlight(16711935);
         arrayList.add(changeInfo7);
         changeInfo7.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MAGIC_INFUSE, (ItemSprite.Glowing) null), "新怪物", "1.添加了一个怪物\n\n"));
         changeInfo7.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CURSE_INFUSE, (ItemSprite.Glowing) null), "新机制", "地牢的一些机制改变了\n\n"));
-        ChangeInfo changeInfo8 = new ChangeInfo(Messages.get(ChangesScene.class, "changes", new Object[0]), false, (String) null);
+        ChangeInfo changeInfo8 = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, (String) null);
         changeInfo8.hardlight(16745258);
         arrayList.add(changeInfo8);
         changeInfo8.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHEST, (ItemSprite.Glowing) null), "Bug修复", "修复了以下问题\n\n1.修复了上个版本楼层26层闪退问题\n\n2.修复了界面问题\n\n"));
         changeInfo8.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_OPAL, (ItemSprite.Glowing) null), "武器改动详情", "武器名称:_血红魔剑_\n-首个版本属于_5阶武器_，现在已经升级了_8阶武器_\n\n"));
-        ChangeInfo changeInfo9 = new ChangeInfo(Messages.get(ChangesScene.class, "buffs", new Object[0]), false, (String) null);
+        ChangeInfo changeInfo9 = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, (String) null);
         changeInfo9.hardlight(16711935);
         arrayList.add(changeInfo9);
         changeInfo9.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HOLSTER, (ItemSprite.Glowing) null), "游戏物品增强记录A", "0.2.7 加强蓝色剑\n\n0.2.8 加强蓝焰法杖\n\n"));
         changeInfo9.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_HOURGLASS, (ItemSprite.Glowing) null), "游戏物品增强记录B", "Up\n\n"));
-        ChangeInfo changeInfo10 = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs", new Object[0]), false, (String) null);
+        ChangeInfo changeInfo10 = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, (String) null);
         changeInfo10.hardlight(16711680);
         arrayList.add(changeInfo10);
         changeInfo10.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_FROST, (ItemSprite.Glowing) null), "武器削弱记录A", "1.蔚蓝审判之剑\n-此版本已削弱精准和伤害，现在它的伤害20-35伤害左右\n\n"));
