@@ -59,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
@@ -132,9 +133,13 @@ public enum HeroClass {
 	}
 
 	public void initHero( Hero hero ) {
-		//new WraithAmulet().quantity(1).identify().collect();
+
 		if (Dungeon.isChallenged(Challenges.RLPT)) {
 			new Ankh().quantity(1).identify().collect();
+		}
+
+		if(!Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3) && Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ){
+			Badges.BOSSTHREE();
 		}
 
 		if (Dungeon.isChallenged(Challenges.AQUAPHOBIA)) {
@@ -162,6 +167,8 @@ public enum HeroClass {
 			new PotionOfInvisibility().quantity(45).identify().collect();
 			new MysteryMeat().quantity(100).identify().collect();
 			new TimekeepersHourglass().quantity(1).identify().collect();
+
+			new Amulet().quantity(1).identify().collect();
 
 			Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);
 			new WraithAmulet().quantity(1).identify().collect();
@@ -232,6 +239,7 @@ public enum HeroClass {
 		i = new Food();
 
 		new HerbBag().quantity(1).identify().collect();
+		new BookBag().quantity(1).identify().collect();
 		new PotionOfHealing().quantity(3).identify().collect();
 
 		new ScrollOfUpgrade().quantity(1).identify().collect();

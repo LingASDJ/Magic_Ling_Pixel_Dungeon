@@ -52,6 +52,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_45_Changes(changeInfos);
         add_v0_6_44_Changes(changeInfos);
         add_v0_6_43_Changes(changeInfos);
         add_v0_6_42_Changes(changeInfos);
@@ -99,12 +100,41 @@ public class vM0_6_7_X_Changes {
         add_v0_6_0_Changes(changeInfos);
     }
 
-    public static void add_v0_6_44_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("金榜题名，高考加油", true, null);
+    public static void add_v0_6_45_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.3.0-Beta2.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CRYSTAL_CHEST), ("克里弗斯之果-二选一改进"),
+                ("对二选一问题进行了一些更多的改进，在新存档生效。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.NOKING), ("书籍系统2.0"),
+                ("书籍系统全面升级，欢迎使用全新书籍系统。我们还追加了一些徽章方便各位探索。")));
+
+        changes = new ChangeInfo("改动", false, null);
         changes.hardlight(Window.CYELLOW);
         changeInfos.add(changes);
 
-        changes = new ChangeInfo("v0.6.3.0-Beta1.5", true, "");
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BOOKBAG), ("牛皮书袋"),
+                ("现在牛皮书袋奈亚子不再出售，而是英雄初始就能绑定获得。")));
+
+        changes.addButton(new ChangeButton(new NyzSprites(), ("奈亚子"),
+                ("奈亚子商店全新升级，书籍现在捆绑销售，且最低可能为100金币。")));
+
+        changes.addButton(new ChangeButton(new ShopkKingSprite(), ("商人领主"),
+                ("商人领主商店全新升级，刷新现在需要150金币。")));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X74")));
+
+    }
+
+    public static void add_v0_6_44_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.3.0-Beta1.5", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 

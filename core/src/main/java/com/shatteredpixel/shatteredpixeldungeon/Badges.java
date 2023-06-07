@@ -87,6 +87,8 @@ public class Badges {
 
 		HALOFIRE_DIED					( 23 ),
 
+		READ_BOOK_ONE				( 24 ),
+
 		//silver
 		NO_MONSTERS_SLAIN           ( 32 ),
 		GRIM_WEAPON                 ( 33 ),
@@ -117,6 +119,8 @@ public class Badges {
 		GAMES_PLAYED_1              ( 54, true ),
 
 		HIGH_SCORE_2				( 55 ),
+
+		READ_BOOK_TWO				( 56 ),
 
 		//gold
 		PIRANHAS                    ( 64 ),
@@ -158,6 +162,8 @@ public class Badges {
 		BOSS_SLAIN_3_ALL_SUBCLASSES ( 80, true ),
 		GAMES_PLAYED_2              ( 81, true ),
 
+		READ_BOOK_THREE				( 87 ),
+
 		//platinum
 		HAPPY_END                   ( 96 ),
 		ALL_ITEMS_IDENTIFIED        ( 97, true ),
@@ -173,6 +179,8 @@ public class Badges {
 		RLPT				(103),
 
 		HIGH_SCORE_4 				( 104 ),
+
+		READ_BOOK_FOUR				( 105 ),
 
 		//diamond
 		GAMES_PLAYED_4              ( 112, true ),
@@ -418,6 +426,29 @@ public class Badges {
 		}
 		if (!local.contains( Badge.GOLD_COLLECTED_4 ) && Statistics.goldCollected >= 7500) {
 			badge = Badge.GOLD_COLLECTED_4;
+			local.add( badge );
+		}
+
+		displayBadge( badge );
+	}
+
+	public static void valiReadBooks() {
+		Badge badge = null;
+
+		if (!local.contains( Badge.READ_BOOK_ONE ) && Statistics.readBooks >= 1) {
+			badge = Badge.READ_BOOK_ONE;
+			local.add( badge );
+		}
+		if (!local.contains( Badge.READ_BOOK_TWO ) && Statistics.readBooks >= 3) {
+			badge = Badge.READ_BOOK_TWO;
+			local.add( badge );
+		}
+		if (!local.contains( Badge.READ_BOOK_THREE ) && Statistics.readBooks >= 5) {
+			badge = Badge.READ_BOOK_THREE;
+			local.add( badge );
+		}
+		if (!local.contains( Badge.READ_BOOK_FOUR ) && Statistics.readBooks >= 7) {
+			badge = Badge.READ_BOOK_FOUR;
 			local.add( badge );
 		}
 
@@ -996,6 +1027,10 @@ public class Badges {
 		validateAMZ();
 	}
 
+	public static void BOSSTHREE() {
+		displayBadge( Badge.BOSS_SLAIN_3 );
+	}
+
 	public static void CLEARWATER() {
 		displayBadge( Badge.CLEAR_WATER );
 	}
@@ -1146,6 +1181,7 @@ public class Badges {
 			{Badge.CHAMPION_1X, Badge.CHAMPION_2X, Badge.CHAMPION_3X,Badge.CHAMPION_4X,Badge.CHAMPION_5X},
 			{Badge.GHOSTDAGE,Badge.DAGETO},
 			{Badge.HIGH_SCORE_1, Badge.HIGH_SCORE_2, Badge.HIGH_SCORE_3, Badge.HIGH_SCORE_4, Badge.HIGH_SCORE_5},
+			{Badge.READ_BOOK_ONE, Badge.READ_BOOK_TWO, Badge.READ_BOOK_THREE, Badge.READ_BOOK_FOUR},
 	};
 
 	private static final Badge[][] metaBadgeReplacements = new Badge[][]{

@@ -7,11 +7,11 @@ public class MainBooks extends Item {
 
     @Override
     public String info() {
-        return desc()+"\n\n"+author;
+        return author;
     }
     @Override
     public int value() {
         return 20 * quantity;
     }
-    public String author = Messages.get(this, "author");
+    public String author = Messages.get(MainBooks.class, "mustread");
 }

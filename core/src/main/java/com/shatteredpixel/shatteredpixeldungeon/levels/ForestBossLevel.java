@@ -229,7 +229,7 @@ public class ForestBossLevel extends Level {
 
                 drop( new CrystalKey(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? 2 : 5 ), WIDTH*7+29 );
 
-                Heap droppedA = Dungeon.level.drop( Generator.randomUsingDefaults( Generator.Category.STONE),
+                Heap droppedA = Dungeon.level.drop( Generator.randomUsingDefaults( Generator.Category.ARMOR),
                         WIDTH*7+28 );
                 droppedA.type = Heap.Type.CRYSTAL_CHEST;
                 droppedA.sprite.view( droppedA );

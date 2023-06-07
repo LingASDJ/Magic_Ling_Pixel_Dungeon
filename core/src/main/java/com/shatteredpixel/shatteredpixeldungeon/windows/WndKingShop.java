@@ -175,8 +175,13 @@ public class WndKingShop extends Window {
                 Game.runOnRenderThread(new Callback() {
                     @Override
                     public void call() {
-                        hide();
-                        Buff.prolong( hero, ReloadShopTwo.class, 1f);
+                        if(Dungeon.gold >=150) {
+                            hide();
+                            Buff.prolong(hero, ReloadShopTwo.class, 1f);
+                            Dungeon.gold -= 150;
+                        } else {
+                            GLog.n(Messages.get(WndKingShop.class,"x_gold"));
+                        }
                     }
                 });
             }

@@ -188,7 +188,7 @@ public class WndNyzShop extends Window {
                             }
                         }
                     } else if(Dungeon.gold >= 720) {
-                        Dungeon.gold-=720*Random.Int(2)+hero.lvl/5+10;
+                        Dungeon.gold-=720*Random.Int(2)+hero.lvl/5+100;
                         WndNyzShop.this.selectReward( item );
                         if (RandomBuff.level-- >= 0) {
                         }

@@ -28,6 +28,8 @@ public class Statistics {
 
 	//统计分数
 	public static int progressScore;
+
+	public static int readBooks;
 	public static int treasureScore;
 	public static SparseArray<Boolean> floorsExplored = new SparseArray<>();
 	public static int exploreScore;
@@ -120,7 +122,7 @@ public class Statistics {
 
 		boss_enhance = 0;
 		ChaicBlood = 0;
-
+		readBooks = 0;
 		HealingIsDied = 0;
 
 		goldCollected	= 0;
@@ -261,6 +263,8 @@ public class Statistics {
 
 	private static final String HEALDIED		= "HealingisDied";
 
+	private static final String READBOOKS		= "readbooks";
+
 
 	public static void storeInBundle( Bundle bundle ) {
 
@@ -274,6 +278,9 @@ public class Statistics {
 			}
 		}
 		bundle.put( HEALDIED, HealingIsDied);
+
+		bundle.put( READBOOKS, readBooks);
+
 		bundle.put( EXPL_SCORE,  exploreScore );
 		bundle.put( BOSS_SCORES, bossScores );
 		bundle.put( TOT_BOSS,    totalBossScore );
@@ -348,6 +355,8 @@ public class Statistics {
 		ChaicBlood   = bundle.getInt( CHACEBLOOD );
 
 		HealingIsDied   = bundle.getInt( HEALDIED );
+
+		readBooks = bundle.getInt( READBOOKS );
 
 		//分数
 		progressScore   = bundle.getInt( PROG_SCORE );

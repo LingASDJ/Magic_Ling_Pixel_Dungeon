@@ -14,7 +14,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.MerchantsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Firebomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Flashbang;
@@ -22,6 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.FrostBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.HolyBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Noisemaker;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.RegrowthBomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.GrassKingBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
@@ -130,12 +130,12 @@ public class NyzBombAndBooksRoom extends SpecialRoom {
         itemsToSpawn2.add (new Firebomb().quantity(1));
         itemsToSpawn2.add (new FrostBomb().quantity(1));
         itemsToSpawn2.add(new MerchantsBeacon());
-        //itemsToSpawn2.add(ChooseBag(Dungeon.hero.belongings));
+        itemsToSpawn2.add(new GrassKingBooks().quantity(2));
         itemsToSpawn2.add(new PotionOfHealing());
         itemsToSpawn2.add(new ScrollOfTransmutation());
         //itemsToSpawn2.add(new DriedRose());
         itemsToSpawn2.add(new ScrollOfMagicMapping());
-        itemsToSpawn2.add(new BookBag());
+        //itemsToSpawn2.add(new BookBag());
         int Int = Random.Int(4);
         if (Int == 0) {
             itemsToSpawn2.add(new Bomb());
@@ -160,11 +160,8 @@ public class NyzBombAndBooksRoom extends SpecialRoom {
         rare.cursed = false;
         rare.cursedKnown = true;
         itemsToSpawn2.add(rare);
-        if (itemsToSpawn2.size() <= 63) {
-            Random.shuffle(itemsToSpawn2);
-            return itemsToSpawn2;
-        }
-        throw new RuntimeException("Shop attempted to carry more than 63 items!");
+        Random.shuffle(itemsToSpawn2);
+        return itemsToSpawn2;
     }
 
 

@@ -24,6 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.GrassKingBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
@@ -161,6 +162,7 @@ public class NxhyShopRoom extends SpecialRoom {
                 case 3:
                 case 4:
                     itemsToSpawn2.add(new YellowSunBooks());
+                    itemsToSpawn2.add(new GrassKingBooks());
                     break;
                 case 5:
                     itemsToSpawn2.add(new MeatPie());
