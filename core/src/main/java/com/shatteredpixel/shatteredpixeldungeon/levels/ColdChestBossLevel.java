@@ -271,7 +271,8 @@ public class ColdChestBossLevel extends Level {
     @Override
     public void occupyCell(Char ch) {
         super.occupyCell(ch);
-        if (map[getBossDoor] == Terrain.DOOR && ch.pos == LDBossDoor && ch == hero) {
+        boolean isTrue = ch.pos == LDBossDoor && ch == Dungeon.hero;
+        if (map[getBossDoor] == Terrain.DOOR && isTrue || map[getBossDoor] == Terrain.EMBERS && isTrue) {
            progress();
         }
 
