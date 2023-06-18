@@ -16,7 +16,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHaste;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
@@ -102,7 +101,7 @@ public class NullDiedTO extends NTNPC {
         shop15 = new MeatPie();
         shop16 = new LightFood();
         shop17 = new ScrollOfIdentify();
-        shop18 = new PotionOfHealing();
+        shop18 = new PotionOfLiquidFlame();
 
         shop19 = new PotionOfHaste();
         shop20 = new ScrollOfRemoveCurse();

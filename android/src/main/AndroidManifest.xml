@@ -13,6 +13,10 @@
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+	<!--Fixed OBSERVE_GRANT_REVOKE_PERMISSIONS-->
+	<uses-permission android:name="android.permission.OBSERVE_GRANT_REVOKE_PERMISSIONS"
+		tools:ignore="ProtectedPermissions" />
+
 	<!-- We perform a runtime check to ensure controllers are disabled on API 14 & 15 -->
 	<uses-sdk tools:overrideLibrary="com.badlogicgames.gdx.controllers" />
 

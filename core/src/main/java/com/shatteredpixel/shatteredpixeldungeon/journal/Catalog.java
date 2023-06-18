@@ -40,7 +40,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -270,7 +269,7 @@ public enum Catalog {
 		ARTIFACTS.seen.put( EtherealChains.class,           false);
 		ARTIFACTS.seen.put( HornOfPlenty.class,             false);
 		//ARTIFACTS.seen.put( LloydsBeacon.class,             false);
-		ARTIFACTS.seen.put( MasterThievesArmband.class,     false);
+		//ARTIFACTS.seen.put( MasterThievesArmband.class,     false);
 		ARTIFACTS.seen.put( SandalsOfNature.class,          false);
 		ARTIFACTS.seen.put( TalismanOfForesight.class,      false);
 		ARTIFACTS.seen.put( TimekeepersHourglass.class,     false);

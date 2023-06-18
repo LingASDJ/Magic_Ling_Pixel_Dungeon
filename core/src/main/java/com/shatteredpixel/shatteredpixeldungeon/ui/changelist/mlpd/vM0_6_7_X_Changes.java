@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AutoShopRoBotSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlueBatSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BruteBotSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearElementalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdGuardSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdRatSprite;
@@ -30,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MagicGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MolotovHuntsmanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MurdererSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.NxhySprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.OGPDNQHZTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedSwarmSprite;
@@ -52,6 +54,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_46_Changes(changeInfos);
         add_v0_6_45_Changes(changeInfos);
         add_v0_6_44_Changes(changeInfos);
         add_v0_6_43_Changes(changeInfos);
@@ -98,6 +101,48 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_46_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.3.0-Beta3.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), ("新徽章：豺狼的复仇"),
+                ("别惹它们，我是说真的-----已逝去的冒险者")));
+
+        changes.addButton(new ChangeButton(new BruteBotSprite(), ("新怪物：重甲豺狼"),
+                ("矮人雇佣的高智能豺狼，拿到了以前倒霉的冒险家的装备，是矮人的贴身保镖，拥有高集群化思想，一定小心它们。")));
+
+        changes = new ChangeInfo("平衡", false, null);
+        changes.hardlight(Window.RED_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), ("徽章改动"),
+                ("大症若愚：1500金币改为720金币，并且去除经验药水。\n\n奈亚大亨：金币改为追加320金币，去除经验药水加成。")));
+
+        changes.addButton(new ChangeButton(new NxhySprite(), ("额外商人商品调整"),
+                ("除了小恶魔，现在额外商人不再贩卖十字架与治疗药水！")));
+
+        changes.addButton(new ChangeButton(new GhostSprite(), ("幽妹奖励调整"),
+                ("现在最高奖励为+4，而不是+5！")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WRALIPS), ("暗金宝石护符"),
+                ("使用的后的冷却时间大幅度提升，并且升级需求调整")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SAI), ("吸血鬼刀"),
+                ("调整吸血鬼刀的权重值。")));
+
+        changes.addButton(new ChangeButton(new FireCrystalSprites(), ("圣火魔女"),
+                ("圣火魔女即将在主线移除，且现在不再掉落重生十字架。")));
+
+        changes.addButton(new ChangeButton(new PinkLingSprite(), ("0层改动"),
+                ("奇迹与魔法都不是免费的，现在0层的额外十字架和刻笔需要购买。")));
+
     }
 
     public static void add_v0_6_45_Changes( ArrayList<ChangeInfo> changeInfos ) {

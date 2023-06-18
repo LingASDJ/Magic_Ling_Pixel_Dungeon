@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
@@ -284,12 +282,11 @@ public class SlimeKing extends Mob {
 
     private void pullEnemy( Char enemy, int pullPos ){
         enemy.pos = pullPos;
+        enemy.sprite.place(pullPos);
         Dungeon.level.occupyCell(enemy);
-
         Cripple.prolong(enemy, Cripple.class, 4f);
-
-        if (enemy == hero) {
-            hero.interrupt();
+        if (enemy == Dungeon.hero) {
+            Dungeon.hero.interrupt();
             Dungeon.observe();
             GameScene.updateFog();
         }
@@ -352,19 +349,13 @@ public class SlimeKing extends Mob {
         @Override
         public boolean act( boolean enemyInFOV, boolean justAlerted ) {
             enemySeen = enemyInFOV;
-//            //放风筝必死 恼
-//            //140血强制更新玩家血量为1 赋予燃烧 失明 流血 弱化
-//            if (++HP+1 >= 141){
-//                hero.HP = 	1;
-//                Buff.affect(hero, HalomethaneBurning.class).reignite(hero);
-//                GLog.b( Messages.get(this, "cus") );
-//            }
+
             if (!chainsUsed
                     && enemyInFOV
                     && !isCharmedBy( enemy )
                     && !canAttack( enemy )
-                    && Dungeon.level.distance( pos, enemy.pos ) < 3
-                    && Random.Int(3) == 0
+                    && Dungeon.level.distance( pos, enemy.pos ) < 5
+
 
                     && chain(enemy.pos)){
                 return !(sprite.visible || enemy.sprite.visible);

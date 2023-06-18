@@ -89,6 +89,8 @@ public class Badges {
 
 		READ_BOOK_ONE				( 24 ),
 
+		BRUTE_BOT_DIED				( 25 ),
+
 		//silver
 		NO_MONSTERS_SLAIN           ( 32 ),
 		GRIM_WEAPON                 ( 33 ),
@@ -741,6 +743,12 @@ public class Badges {
 		displayBadge( badge );
 	}
 
+	public static void BRUTE_DIED() {
+		Badge badge = Badge.BRUTE_BOT_DIED;
+		local.add( badge );
+		displayBadge( badge );
+	}
+
 	private static void validateGOODMAKE() {
 		if (global.contains( Badge.KILL_ROTHEART ) &&
 				global.contains( Badge.GET_SC ) &&
@@ -766,7 +774,7 @@ public class Badges {
 				global.contains( Badge.DEATH_FROM_GAS ) &&
 				global.contains( Badge.DEATH_FROM_HUNGER) &&
 				global.contains( Badge.DEATH_FROM_GLYPH) &&
-				global.contains( Badge.DEATH_FROM_FALLING)) {
+				global.contains( Badge.DEATH_FROM_FALLING) && global.contains( Badge.HALOFIRE_DIED) && global.contains( Badge.BRUTE_BOT_DIED)) {
 
 			Badge badge = Badge.YASD;
 			displayBadge( badge );

@@ -112,8 +112,10 @@ public class ZeroLevel extends Level {
         drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 20 + 17 );
         drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 19 + 16 );
 
-        drop( new Ankh(), this.width * 17 + 20  );
-        drop( new Stylus(), this.width * 19 + 20  );
+        drop( new Ankh(), this.width * 17 + 20  ).type =
+                Heap.Type.FOR_SALE;
+        drop( new Stylus(), this.width * 19 + 20  ).type =
+                Heap.Type.FOR_SALE;
 
         drop( ( Generator.randomUsingDefaults( Generator.Category.STONE ) ), this.width * 16 + 19 );
         drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), this.width * 20 + 19 );

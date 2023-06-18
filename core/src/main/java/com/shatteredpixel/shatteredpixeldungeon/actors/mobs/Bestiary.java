@@ -103,7 +103,8 @@ public class Bestiary {
 						case 2:
 							return new ArrayList<>(Arrays.asList(
 									Elemental.random(),
-									Monk.class,FireGhost.class,FireGhost.class,Warlock.class));
+									Monk.class,FireGhost.class,
+									Warlock.class,Random.NormalFloat(1,6)>=3 ? BruteBot.class : Warlock.class));
 						case 3:
 							return new ArrayList<>(Arrays.asList(
 									Elemental.random(),
@@ -249,32 +250,33 @@ public class Bestiary {
 				//1x elemental, 1x warlock, 2x monk, 3x golem
 				return new ArrayList<>(Arrays.asList(
 						Elemental.random(),
-						Warlock.class,
+						Random.NormalFloat(1,6)>=3 ? BruteBot.class : Warlock.class,
 						Monk.class,
 						Golem.class,FireGhost.class));
 			case 19:
 				//1x elemental, 1x warlock, 2x monk, 3x golem
 				return new ArrayList<>(Arrays.asList(
 						Monk.class,
-						Golem.class,ShieldHuntsman.class));
+						Golem.class, Warlock.class,ShieldHuntsman.class,
+						Random.NormalFloat(1,6)>3 ? BruteBot.class : Warlock.class));
 			case 20:
 				//1x elemental, 1x warlock, 2x monk, 3x golem
 				return new ArrayList<>(Arrays.asList(
 						Elemental.random(),
-						Warlock.class, Warlock.class,
+						Random.NormalFloat(1,6)>3 ? BruteBot.class : Warlock.class,
 						Monk.class,
 						Golem.class, Golem.class,Ice_Scorpio.class));
 
 			case 21:
 				//3x succubus, 3x evil eye
 				return new ArrayList<>(Arrays.asList(
-						Eye.class,ShieldHuntsman.class,Ice_Scorpio.class));
+						Eye.class,ShieldHuntsman.class));
 			case 22:
 				//3x succubus, 3x evil eye
 				return Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? new ArrayList<>(Arrays.asList(
-						Eye.class,ShieldHuntsman.class,Ice_Scorpio.class,RedMurderer.class,MolotovHuntsman.class)) :
+						Eye.class,ShieldHuntsman.class,RedMurderer.class,MolotovHuntsman.class)) :
 						new ArrayList<>(Arrays.asList(
-						Eye.class,ShieldHuntsman.class,Ice_Scorpio.class));
+						Eye.class,ShieldHuntsman.class));
 			case 23:
 				//1x: succubus, 2x evil eye, 3x scorpio
 				return Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? new ArrayList<>(Arrays.asList(

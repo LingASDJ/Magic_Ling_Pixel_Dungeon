@@ -324,7 +324,7 @@ public class Ghost extends NPC {
 				Generator.Category c = Generator.wepTiers[wepTier - 1];
 				weapon = (MeleeWeapon) Reflection.newInstance(c.classes[Random.chances(c.probs)]);
 
-				//26%:+0, 25%:+1, 15%:+2, 10%:+3, 5%:+4, 5%+5
+				//26%:+0, 25%:+1, 15%:+2, 10%:+3, 5%:+4
 				float itemLevelRoll = Random.Float();
 				int itemLevel;
 				if (itemLevelRoll < 0.74f){
@@ -336,20 +336,24 @@ public class Ghost extends NPC {
 				} else if (itemLevelRoll < 0.90f) {
 					itemLevel = 3;
 					hero.sprite.showStatus( CharSprite.NEGATIVE, "+3!!!" );
-				} else if (itemLevelRoll < 0.95f && Badges.isUnlocked(Badges.Badge.GHOSTDAGE)){
-					hero.sprite.showStatus( CharSprite.POSITIVE, "+5!!!" );
-					if(( !Badges.isUnlocked(Badges.Badge.DAGETO))) {
-						Statistics.dageCollected = 2;
-						Badges.GhostDageCollected();
-					}
-					itemLevel = 5;
-				} else {
-					itemLevel = 4;
-					hero.sprite.showStatus( CharSprite.WARNING, "+4!!!" );
-					if(( !Badges.isUnlocked(Badges.Badge.GHOSTDAGE))) {
+					if ((!Badges.isUnlocked(Badges.Badge.GHOSTDAGE))) {
 						Statistics.dageCollected = 1;
 						Badges.GhostDageCollected();
 					}
+				} else if (itemLevelRoll < 0.95f && Badges.isUnlocked(Badges.Badge.GHOSTDAGE)) {
+					hero.sprite.showStatus(CharSprite.POSITIVE, "+4!!!");
+					if ((!Badges.isUnlocked(Badges.Badge.DAGETO))) {
+						Statistics.dageCollected = 2;
+						Badges.GhostDageCollected();
+					}
+					itemLevel = 4;
+				} else {
+					hero.sprite.showStatus( CharSprite.NEGATIVE, "+3!!!" );
+					if ((!Badges.isUnlocked(Badges.Badge.GHOSTDAGE))) {
+						Statistics.dageCollected = 1;
+						Badges.GhostDageCollected();
+					}
+					itemLevel = 3;
 				}
 				weapon.upgrade(itemLevel);
 				armor.upgrade(itemLevel);

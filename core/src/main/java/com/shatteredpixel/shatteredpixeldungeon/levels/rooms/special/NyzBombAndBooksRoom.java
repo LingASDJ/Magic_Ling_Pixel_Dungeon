@@ -3,17 +3,14 @@
 //
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
-import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.MerchantsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Firebomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Flashbang;
@@ -22,7 +19,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.HolyBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Noisemaker;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.RegrowthBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.GrassKingBooks;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
@@ -131,7 +127,6 @@ public class NyzBombAndBooksRoom extends SpecialRoom {
         itemsToSpawn2.add (new FrostBomb().quantity(1));
         itemsToSpawn2.add(new MerchantsBeacon());
         itemsToSpawn2.add(new GrassKingBooks().quantity(2));
-        itemsToSpawn2.add(new PotionOfHealing());
         itemsToSpawn2.add(new ScrollOfTransmutation());
         //itemsToSpawn2.add(new DriedRose());
         itemsToSpawn2.add(new ScrollOfMagicMapping());
@@ -144,9 +139,7 @@ public class NyzBombAndBooksRoom extends SpecialRoom {
         } else if (Int == 3) {
             itemsToSpawn2.add(new Honeypot());
         }
-        itemsToSpawn2.add(new Ankh());
         itemsToSpawn2.add(new StoneOfAugmentation());
-        TimekeepersHourglass hourglass = Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);
         int Int2 = Random.Int(10);
         if (Int2 == 0) {
             rare = Generator.random(Generator.Category.WAND);

@@ -50,7 +50,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ScanningBeam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.BackGoKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
@@ -745,10 +744,6 @@ public class FireMagicDied extends Mob implements Callback {
         Dungeon.level.drop(new ScrollOfUpgrade().quantity(1).identify(), pos).sprite.drop();
 
         Dungeon.level.drop(new Gold().quantity(5000), pos).sprite.drop();
-
-        Ankh woc = new Ankh();
-        woc.blessed = true;
-        woc.identify();
 
         Dungeon.level.unseal();
 

@@ -9,7 +9,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nxhy;
-import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
@@ -30,7 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
@@ -139,7 +137,6 @@ public class NxhyShopRoom extends SpecialRoom {
         itemsToSpawn2.add(TippedDart.randomTipped(2));
         itemsToSpawn2.add(new MerchantsBeacon());
         itemsToSpawn2.add(ChooseBag(Dungeon.hero.belongings));
-        itemsToSpawn2.add(new PotionOfHealing());
         itemsToSpawn2.add(new ScrollOfTransmutation());
         //itemsToSpawn2.add(new DriedRose());
         itemsToSpawn2.add(Generator.randomUsingDefaults(Generator.Category.POTION));
@@ -187,7 +184,6 @@ public class NxhyShopRoom extends SpecialRoom {
         } else if (Int == 3) {
             itemsToSpawn2.add(new Honeypot());
         }
-        itemsToSpawn2.add(new Ankh());
         itemsToSpawn2.add(new StoneOfAugmentation());
         TimekeepersHourglass hourglass = Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);
         if (hourglass != null) {

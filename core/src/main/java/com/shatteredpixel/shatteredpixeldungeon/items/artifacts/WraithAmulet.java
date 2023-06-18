@@ -80,7 +80,7 @@ public class WraithAmulet extends Artifact {
                         exp += 5;
                         Buff.affect(Dungeon.hero, Invisibility.class, Invisibility.DURATION/2);
                         GLog.p(Messages.get(this,"ghost"));
-                        cooldown = 45 - (level / 2);
+                        cooldown = 40 - (level / 2);
                         charge--;
                     } else {
                         GLog.i(Messages.get(this,"nochareup"));
@@ -159,7 +159,7 @@ public class WraithAmulet extends Artifact {
                     //I must add Complete WraithAmulet
                     //Ok,Ling will Complete WraithAmulet
                     upgrade();
-                    exp += level * 50;
+                    exp += level * 25;
                     GLog.p(Messages.get(this,"ghoststong"));
                 }
             }
@@ -225,7 +225,7 @@ public class WraithAmulet extends Artifact {
                             ScrollOfTeleportation.appear(hero, target);
                             Dungeon.observe();
                             hero.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
-                            amulet.cooldown = 95;
+                            amulet.cooldown = 300;
                             amulet.charge -= 6;
                         } else {
                             GLog.w(Messages.get(this, "notnpc"));

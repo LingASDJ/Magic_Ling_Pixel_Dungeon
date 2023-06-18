@@ -269,7 +269,7 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
                     ShatteredPixelDungeon.scene().add(new WndOptions(Icons.get(Icons.CHANGES),
                             article.title,
                             article.summary,
-                            Messages.get(this, "download")) {
+                            Messages.get(this, "download"),Messages.get(this, "stop_download")) {
                         @Override
                         protected void onSelect(int index) {
                             if (index == 0) {
@@ -299,6 +299,8 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
                                     Gdx.app.exit();
                                 }
 
+                            } else {
+                                ShatteredPixelDungeon.switchNoFade(TitleScene.class);
                             }
                         }
 

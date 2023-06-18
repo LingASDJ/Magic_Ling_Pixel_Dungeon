@@ -22,19 +22,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nxhy;
-import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLevitation;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -43,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.watabou.utils.Point;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class NxhyShopRoomList extends SpecialRoom {
 
@@ -139,9 +130,6 @@ public class NxhyShopRoomList extends SpecialRoom {
         switch (Dungeon.depth) {
             default:
                 w = (MeleeWeapon) Generator.random(Generator.wepTiers[1]);
-                itemsToSpawn.add( new PotionOfHealing() );
-                itemsToSpawn.add( new PotionOfHealing() );
-                itemsToSpawn.add( new PotionOfHealing() );
                 itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.STONE ) );
                 itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.STONE ) );
                 itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.STONE ) );
@@ -176,55 +164,7 @@ public class NxhyShopRoomList extends SpecialRoom {
         itemsToSpawn.add( new PotionOfLevitation() );
         itemsToSpawn.add( new PotionOfLevitation() );
         itemsToSpawn.add( new PotionOfLevitation() );
-        itemsToSpawn.add( new Ankh() );
-        itemsToSpawn.add( new Ankh() );
-        itemsToSpawn.add( new Ankh() );
-        itemsToSpawn.add( new Ankh() );
         return itemsToSpawn;
-    }
-
-    protected static Bag ChooseBag(Belongings pack){
-
-        //generate a hashmap of all valid bags.
-        HashMap<Bag, Integer> bags = new HashMap<>();
-        if (!Dungeon.LimitedDrops.VELVET_POUCH.dropped()) bags.put(new VelvetPouch(), 1);
-        if (!Dungeon.LimitedDrops.SCROLL_HOLDER.dropped()) bags.put(new ScrollHolder(), 0);
-        if (!Dungeon.LimitedDrops.POTION_BANDOLIER.dropped()) bags.put(new PotionBandolier(), 0);
-        if (!Dungeon.LimitedDrops.MAGICAL_HOLSTER.dropped()) bags.put(new MagicalHolster(), 0);
-
-        if (bags.isEmpty()) return null;
-
-        //count up items in the main bag
-        for (Item item : pack.backpack.items) {
-            for (Bag bag : bags.keySet()){
-                if (bag.canHold(item)){
-                    bags.put(bag, bags.get(bag)+1);
-                }
-            }
-        }
-
-        //find which bag will result in most inventory savings, drop that.
-        Bag bestBag = null;
-        for (Bag bag : bags.keySet()){
-            if (bestBag == null){
-                bestBag = bag;
-            } else if (bags.get(bag) > bags.get(bestBag)){
-                bestBag = bag;
-            }
-        }
-
-        if (bestBag instanceof VelvetPouch){
-            Dungeon.LimitedDrops.VELVET_POUCH.drop();
-        } else if (bestBag instanceof ScrollHolder){
-            Dungeon.LimitedDrops.SCROLL_HOLDER.drop();
-        } else if (bestBag instanceof PotionBandolier){
-            Dungeon.LimitedDrops.POTION_BANDOLIER.drop();
-        } else if (bestBag instanceof MagicalHolster){
-            Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
-        }
-
-        return bestBag;
-
     }
 
 }

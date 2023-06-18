@@ -129,8 +129,8 @@ public abstract class Mob extends Char {
 		for (int i = 0; i < flakes; i++){
 			int ofs;
 			do {
-				ofs = PathFinder.NEIGHBOURS8[Random.Int(4)];
-			} while (!Dungeon.level.passable[pos + ofs]);
+				ofs = PathFinder.NEIGHBOURS9[Random.Int(4)];
+			} while (!(Dungeon.level.passable[pos + ofs] || pos + ofs == this.pos));
 			switch (Random.Int(5)) {
 				case 0:
 					Dungeon.level.drop( ( Generator.random(Generator.Category.POTION)), pos+ofs );

@@ -85,7 +85,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.YogGodHardBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.ZeroLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -463,7 +462,7 @@ public class Dungeon {
 			} else
 				switch (depth) {
 					case 0:
-						level = new ZeroLevel();
+						level = new DM920BossLevel();
 						break;
 					case 1:
 					case 2:

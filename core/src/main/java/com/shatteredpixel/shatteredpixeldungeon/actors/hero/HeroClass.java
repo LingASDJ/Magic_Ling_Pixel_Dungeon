@@ -46,7 +46,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Sh
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.LevelTeleporter;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.MobPlacer;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
-import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
@@ -134,10 +133,6 @@ public enum HeroClass {
 
 	public void initHero( Hero hero ) {
 
-		if (Dungeon.isChallenged(Challenges.RLPT)) {
-			new Ankh().quantity(1).identify().collect();
-		}
-
 		if(!Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3) && Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ){
 			Badges.BOSSTHREE();
 		}
@@ -148,12 +143,11 @@ public enum HeroClass {
 
 		if ( Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
 			Buff.affect(hero, RandomBuff.class).set( (5), 1 );
-			Dungeon.gold+=1200;
+			Dungeon.gold += 320;
 		}
 
 		if ( Badges.isUnlocked(Badges.Badge.EXSG)){
-			Dungeon.gold += 1500;
-			new PotionOfExperience().quantity(2).identify().collect();
+			Dungeon.gold += 720;
 		}
 
 		if ( Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
@@ -167,8 +161,6 @@ public enum HeroClass {
 			new PotionOfInvisibility().quantity(45).identify().collect();
 			new MysteryMeat().quantity(100).identify().collect();
 			new TimekeepersHourglass().quantity(1).identify().collect();
-
-			new Amulet().quantity(1).identify().collect();
 
 			Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);
 			new WraithAmulet().quantity(1).identify().collect();
@@ -242,10 +234,8 @@ public enum HeroClass {
 		new BookBag().quantity(1).identify().collect();
 		new PotionOfHealing().quantity(3).identify().collect();
 
-		new ScrollOfUpgrade().quantity(1).identify().collect();
-
 		if (!Challenges.isItemBlocked(i)) i.collect();
-		new PotionOfLightningShiledX().quantity(3).identify().collect();
+		new PotionOfLightningShiledX().quantity(2).identify().collect();
 		new ScrollOfIdentify().identify();
 
 		new VelvetPouch().collect();
