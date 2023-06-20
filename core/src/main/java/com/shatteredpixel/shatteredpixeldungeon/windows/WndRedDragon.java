@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.items.Generator.randomArtifact;
 
@@ -49,7 +50,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.NinePatch;
-import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Component;
 
@@ -202,7 +202,7 @@ public class WndRedDragon extends Window {
                         Buff.affect(hero, Bleeding.class).set(8);
                         Buff.prolong(hero, Blindness.class, Degrade.DURATION);
                         Buff.prolong(hero, Cripple.class, Cripple.DURATION);
-                        Music.INSTANCE.play(Assets.RUN, true);
+                       playBGM(Assets.RUN, true);
                     }
                 }
 

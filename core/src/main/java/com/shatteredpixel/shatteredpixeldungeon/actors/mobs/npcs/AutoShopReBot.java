@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -23,7 +24,6 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndAutoShop;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 
@@ -102,10 +102,10 @@ public class AutoShopReBot extends NPC {
             GLog.p(Messages.get(this, "greetings", Dungeon.hero.name()));
             seenBefore = true;
         } else if (seenBefore && !Dungeon.level.heroFOV[pos] && Dungeon.depth == 0) {
-            Music.INSTANCE.play(Assets.TOWN, true);
+           playBGM(Assets.TOWN, true);
             seenBefore = false;
         } else if (seenBefore && !Dungeon.level.heroFOV[pos] && Dungeon.depth == 12) {
-            Music.INSTANCE.play(Assets.BGM_2,true);
+           playBGM(Assets.BGM_2,true);
             seenBefore = false;
         }
         throwItem();

@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -26,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKingShop;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 
@@ -70,7 +71,7 @@ public class NullDiedTO extends NTNPC {
     public void flee() {
         destroy();
         Dungeon.level.seal();
-        Music.INSTANCE.play(Assets.BGM_FRBOSS, true);
+       playBGM(Assets.BGM_FRBOSS, true);
         GameScene.flash(0x8000FFFF);
         sprite.killAndErase();
         CellEmitter.get( pos ).burst(SnowParticle.FACTORY, 6 );

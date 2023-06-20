@@ -104,6 +104,8 @@ public enum Icons {
 	DEPTH_SECRETS,
 	CHAL_COUNT,
 
+	HAPPY_ICON,
+
 	//icons that appear in the about screen, variable spacing
 	LIBGDX,
 	ALEKS,
@@ -333,6 +335,9 @@ public enum Icons {
 				break;
 			case CHAL_COUNT:
 				icon.frame( icon.texture.uvRectBySize( 48, 72, 7, 7 ) );
+				break;
+			case HAPPY_ICON:
+				icon.frame( icon.texture.uvRectBySize( 56, 72, 7, 5 ) );
 				break;
 
 			case LIBGDX:

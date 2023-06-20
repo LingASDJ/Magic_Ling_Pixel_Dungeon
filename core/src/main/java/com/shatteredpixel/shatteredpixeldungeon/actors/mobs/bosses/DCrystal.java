@@ -41,7 +41,7 @@ public class DCrystal extends Mob {
         return super.act();
     }
 
-    private void onZapComplete(){
+    public void onZapComplete(){
         for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
             //如果宝箱王存在，且在五格范围内，给予它血量吧
             //困难模式治疗范围改为无限

@@ -3,9 +3,22 @@ package com.shatteredpixel.shatteredpixeldungeon;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
+import com.watabou.utils.Callback;
 
 public class BGMPlayer {
+
+
+    public static void playBGM(String name, boolean loop) {
+        Game.runOnRenderThread(new Callback() {
+            @Override
+            public void call() {
+                Music.INSTANCE.play(name, loop);
+            }
+        });
+    }
+
     public static void playBGMWithDepth() {
         if (Dungeon.hero != null) {
             if (Dungeon.hero.buff(LockedFloor.class) != null) {
@@ -18,44 +31,44 @@ public class BGMPlayer {
 
         if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
             if (d == -1) {
-                Music.INSTANCE.play(Assets.SNOWCYON, true);
+                playBGM(Assets.SNOWCYON, true);
             }else if (d == 0||d==27) {
-                Music.INSTANCE.play(Assets.SNOWCYON, true);
+                playBGM(Assets.SNOWCYON, true);
             } else if (d > 0 && d <= 5) {
-                Music.INSTANCE.play(Assets.BGM_1, true);
+                playBGM(Assets.BGM_1, true);
             } else if (d > 5 && d <= 10) {
-                Music.INSTANCE.play(Assets.BGM_2, true);
+                playBGM(Assets.BGM_2, true);
             } else if (d > 10 && d <= 15) {
-                Music.INSTANCE.play(Assets.BGM_3, true);
+                playBGM(Assets.BGM_3, true);
             } else if (d > 15 && d <= 20) {
-                Music.INSTANCE.play(Assets.BGM_4, true);
+                playBGM(Assets.BGM_4, true);
             } else if (d > 20 && d <= 26) {
-                Music.INSTANCE.play(Assets.BGM_5, true);
+                playBGM(Assets.BGM_5, true);
             } else if (d ==-5||d ==-15) {
-                Music.INSTANCE.play(Assets.SNOWCYON, true);
+                playBGM(Assets.SNOWCYON, true);
             } else
                 //default
-                Music.INSTANCE.play(Assets.Music.THEME, true);
+                playBGM(Assets.Music.THEME, true);
         } else {
             if (d == -1) {
-                Music.INSTANCE.play(Assets.TOWN, true);
+                playBGM(Assets.TOWN, true);
             }else if (d == 0) {
-                Music.INSTANCE.play(Assets.TOWN, true);
+                playBGM(Assets.TOWN, true);
             } else if (d > 0 && d <= 5) {
-                Music.INSTANCE.play(Assets.BGM_1, true);
+                playBGM(Assets.BGM_1, true);
             } else if (d > 5 && d <= 10) {
-                Music.INSTANCE.play(Assets.BGM_2, true);
+                playBGM(Assets.BGM_2, true);
             } else if (d > 10 && d <= 15) {
-                Music.INSTANCE.play(Assets.BGM_3, true);
+                playBGM(Assets.BGM_3, true);
             } else if (d > 15 && d <= 20) {
-                Music.INSTANCE.play(Assets.BGM_4, true);
+                playBGM(Assets.BGM_4, true);
             } else if (d > 20 && d <= 26) {
-                Music.INSTANCE.play(Assets.BGM_5, true);
+                playBGM(Assets.BGM_5, true);
             } else if (d ==-5||d ==-15) {
-                Music.INSTANCE.play(Assets.SNOWCYON, true);
+                playBGM(Assets.SNOWCYON, true);
             } else
                 //default
-                Music.INSTANCE.play(Assets.Music.THEME, true);
+                playBGM(Assets.Music.THEME, true);
         }
 
 
@@ -105,57 +118,54 @@ public class BGMPlayer {
         if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
             switch (depth){
                 case 2:
-                    Music.INSTANCE.play(Assets.BGM_BOSSA, true);
+                    playBGM(Assets.BGM_BOSSA, true);
                     break;
                 case 4:case 5:
-                    Music.INSTANCE.play(Assets.BGM_BOSSB, true);
-                break;
+                    playBGM(Assets.BGM_BOSSB, true);
+                    break;
                 case 8: case 10:
-                    Music.INSTANCE.play(Assets.BGM_BOSSC, true);
+                    playBGM(Assets.BGM_BOSSC, true);
                     break;
                 case 12: case 14:
-                    Music.INSTANCE.play(Assets.BGM_BOSSD, true);
+                    playBGM(Assets.BGM_BOSSD, true);
                     break;
                 case 16:
-                    Music.INSTANCE.play(Assets.BGM_BOSSC3, true);
+                    playBGM(Assets.BGM_BOSSC3, true);
                     break;
                 case 19: case 21:
-                    Music.INSTANCE.play(Assets.BGM_BOSSD2, true);
+                    playBGM(Assets.BGM_BOSSD2, true);
                     break;
                 case 25:
-                    Music.INSTANCE.play(Assets.BGM_FRBOSS, true);
+                    playBGM(Assets.BGM_FRBOSS, true);
                     break;
                 case 26:
-                    Music.INSTANCE.play(Assets.BGM_BOSSE3, true);
+                    playBGM(Assets.BGM_BOSSE3, true);
                     break;
                 case 28:
-                    Music.INSTANCE.play( Assets.BGM_0, true );
+                    playBGM( Assets.BGM_0, true );
                     break;
 
             }
         } else {
             if (Dungeon.bossLevel() && t == 5) {
-                Music.INSTANCE.play(Assets.BGM_BOSSA, true);
+                playBGM(Assets.BGM_BOSSA, true);
             } else if (Dungeon.bossLevel() && t == 10) {
-                Music.INSTANCE.play(Assets.BGM_BOSSB, true);
+                playBGM(Assets.BGM_BOSSB, true);
             } else if (Dungeon.bossLevel() && t == 15 && Statistics.spawnersIce > 0) {
-                Music.INSTANCE.play(Assets.BGM_BOSSC3, true);
+                playBGM(Assets.BGM_BOSSC3, true);
             } else if (Dungeon.bossLevel() && t == 15) {
-                if((Statistics.boss_enhance & 0x4) != 0)  Music.INSTANCE.play(Assets.BGM_BOSSC3, true);
-                else  Music.INSTANCE.play(Assets.BGM_BOSSC, true);
+                if((Statistics.boss_enhance & 0x4) != 0)  playBGM(Assets.BGM_BOSSC3, true);
+                else  playBGM(Assets.BGM_BOSSC, true);
             } else if (Dungeon.bossLevel() && t == 20) {
-                if((Statistics.boss_enhance & 0x8) != 0)  Music.INSTANCE.play(Assets.BGM_BOSSD2, true);
-                else  Music.INSTANCE.play(Assets.BGM_BOSSD, true);
+                if((Statistics.boss_enhance & 0x8) != 0)  playBGM(Assets.BGM_BOSSD2, true);
+                else  playBGM(Assets.BGM_BOSSD, true);
             } else if (Dungeon.bossLevel() && t == 25 && (Statistics.spawnersAlive > 0)) {
-                Music.INSTANCE.play(Assets.BGM_BOSSE3, true);
+                playBGM(Assets.BGM_BOSSE3, true);
             }else if (Dungeon.bossLevel() && t == 25){
-                Music.INSTANCE.play(Assets.BGM_BOSSE, true);
+                playBGM(Assets.BGM_BOSSE, true);
             } else if (Dungeon.bossLevel() && t == -15) {
-                Music.INSTANCE.play(Assets.BGM_FRBOSS, true);
+                playBGM(Assets.BGM_FRBOSS, true);
             }
         }
-
-
-
     }
 }

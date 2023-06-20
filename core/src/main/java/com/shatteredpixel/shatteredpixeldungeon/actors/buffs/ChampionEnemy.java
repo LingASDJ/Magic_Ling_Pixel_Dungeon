@@ -21,11 +21,16 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ConfusionGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
@@ -33,7 +38,9 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -107,21 +114,25 @@ public abstract class ChampionEnemy extends Buff {
 		Class<?extends ChampionEnemy> buffCls;
 
 
-		if (Random.Float() < 0.3f) {
-			//30%
-			buffCls = ChampionEnemy.Small.class;
-		} else if (Random.Float() < 0.25f) {
-			//25%
-			buffCls = ChampionEnemy.Bomber.class;
-		} else if (Random.Float() < 0.2f) {
-			//20%
-			buffCls = ChampionEnemy.Middle.class;
-		} else if (Random.Float() < 0.15f) {
-			//15%
-			buffCls = ChampionEnemy.Big.class;
-		} else {
-			//10%
-			buffCls = ChampionEnemy.LongSider.class;
+		switch (Random.NormalIntRange(0,6)){
+			case 0: default:
+                buffCls = ChampionEnemy.Small.class;
+                break;
+            case 1:
+                buffCls = ChampionEnemy.Bomber.class;
+                break;
+            case 2:
+                buffCls = ChampionEnemy.Middle.class;
+                break;
+            case 3:
+                buffCls = ChampionEnemy.Big.class;
+                break;
+            case 4:
+                buffCls = ChampionEnemy.Sider.class;
+                break;
+            case 5:
+                buffCls = ChampionEnemy.LongSider.class;
+                break;
 		}
 
 		if (Dungeon.mobsToStateLing <= 0 && Dungeon.isChallenged(Challenges.SBSG)) {
@@ -156,6 +167,56 @@ public abstract class ChampionEnemy extends Buff {
 				Buff.prolong( enemy, Vertigo.class, 4f);
 			}
 		}
+
+
+	}
+
+	public static class Sider extends ChampionEnemy implements Callback {
+		{
+			color = 0xe59d9d;
+		}
+
+		public static class DarkBolt{}
+
+		public void onZapComplete() {
+			next();
+		}
+
+		@Override
+		public void call() {
+			next();
+		}
+
+		@Override
+		public boolean canAttackWithExtraReach(Char enemy) {
+			//attack range of 2
+			/** 实现效果，此外还要关联CharSprite.java和Mob.java以实现远程效果*/
+
+			if(Random.Float()<0.1f) {
+				switch (Random.NormalIntRange(0,5)){
+					//默认为毒雾
+					case 1:default:
+						GameScene.add(Blob.seed(enemy.pos, 45, ToxicGas.class));
+						break;
+					case 2:
+						GameScene.add(Blob.seed(enemy.pos, 45, CorrosiveGas.class));
+						break;
+					case 3:
+						GameScene.add(Blob.seed(enemy.pos, 45, ConfusionGas.class));
+						break;
+					case 4:
+						GameScene.add(Blob.seed(enemy.pos, 45, StormCloud.class));
+						break;
+				}
+				Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
+			}
+
+			target.sprite.zaplink( enemy.pos );
+			int dmg = Random.NormalIntRange( target.damageRoll()/5+3, target.damageRoll()/5+7 );
+			enemy.damage( dmg, new DarkBolt() );
+			return target.fieldOfView[enemy.pos] && Dungeon.level.distance(target.pos, enemy.pos) <= 6;
+		}
+
 
 
 	}

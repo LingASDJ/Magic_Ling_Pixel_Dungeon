@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
@@ -11,7 +13,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Random;
 
 public class JAmuletScene extends PixelScene {
@@ -28,7 +29,7 @@ public class JAmuletScene extends PixelScene {
     @Override
     public void create() {
         super.create();
-        Music.INSTANCE.play( Assets.Music.NBPL, true );
+       playBGM( Assets.Music.NBPL, true );
         RenderedTextBlock text = null;
         if (!noText) {
             text = renderTextBlock( Messages.get(this, "text"), 8 );

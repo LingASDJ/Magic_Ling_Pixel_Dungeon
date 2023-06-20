@@ -27,6 +27,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.RED_COLOR;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -57,8 +58,10 @@ public class MenuPane extends Component {
 	private Button depthButton;
 
 	private Image challengeIcon;
+	private Image gameHappyIcon;
 	private BitmapText challengeText;
 	private Button challengeButton;
+	private Button gameHappyIconButton;
 
 	private JournalButton btnJournal;
 	private MenuButton btnMenu;
@@ -165,6 +168,18 @@ public class MenuPane extends Component {
 			add(challengeButton);
 		}
 
+		if (!Dungeon.isDLC(Conducts.Conduct.NULL)){
+			gameHappyIcon = Icons.get(Icons.HAPPY_ICON);
+			add(gameHappyIcon);
+			gameHappyIconButton = new Button(){
+				@Override
+				protected void onClick() {
+					//
+				}
+			};
+			add(gameHappyIconButton);
+		}
+
 		btnJournal = new JournalButton();
 		add( btnJournal );
 
@@ -216,6 +231,15 @@ public class MenuPane extends Component {
 			PixelScene.align(challengeText);
 
 			challengeButton.setRect(challengeIcon.x, challengeIcon.y, challengeIcon.width(), challengeIcon.height() + challengeText.height());
+		}
+
+		if (gameHappyIcon != null){
+			gameHappyIcon.x = btnJournal.left() - 20 + (7 - gameHappyIcon.width())/2f - 0.1f;
+			gameHappyIcon.y = y + 1;
+			if (SPDSettings.interfaceSize() == 0) gameHappyIcon.y++;
+			PixelScene.align(gameHappyIcon);
+
+			gameHappyIconButton.setRect(gameHappyIcon.x, gameHappyIcon.y, gameHappyIcon.width(), gameHappyIcon.height());
 		}
 
 		version.scale.set(PixelScene.align(0.5f));

@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -18,7 +20,6 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Callback;
 
 public class RenShop extends NPC {
@@ -39,7 +40,7 @@ public class RenShop extends NPC {
         if (!Dungeon.level.heroFOV[pos]) {
             BGMPlayer.playBGMWithDepth();
         } else {
-            Music.INSTANCE.play(Assets.Music.RENSHOP, true);
+           playBGM(Assets.Music.RENSHOP, true);
         }
 
         throwItem();

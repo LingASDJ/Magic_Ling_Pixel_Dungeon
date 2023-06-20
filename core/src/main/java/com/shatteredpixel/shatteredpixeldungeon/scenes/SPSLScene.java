@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -18,7 +20,6 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.PointerArea;
-import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Component;
 
@@ -30,7 +31,7 @@ public class SPSLScene extends PixelScene {
     @Override
     public void create() {
         super.create();
-        Music.INSTANCE.play( Assets.Music.SHOP, true );
+       playBGM( Assets.Music.SHOP, true );
         final float colWidth = Camera.main.width / (landscape() ? 2 : 1);
         final float colTop = (Camera.main.height / 2) - (landscape() ? 30 : 90);
         final float colOffset = landscape() ? colWidth : 0;

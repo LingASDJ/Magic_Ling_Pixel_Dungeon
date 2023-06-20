@@ -1,12 +1,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Music;
 import com.watabou.utils.GameMath;
 
 public class GoScene extends PixelScene {
@@ -26,7 +27,7 @@ public class GoScene extends PixelScene {
     @Override
     public void create() {
         super.create();
-        Music.INSTANCE.play( Assets.Music.GO, true );
+       playBGM( Assets.Music.GO, true );
         if (SPDSettings.splashScreen() < 1 || done) {
             ShatteredPixelDungeon.switchForceFade(WelcomeScene.class);
             return;

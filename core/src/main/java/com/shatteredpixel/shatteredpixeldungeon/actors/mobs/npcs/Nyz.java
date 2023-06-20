@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -25,7 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndNyzShop;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Callback;
 
 import java.util.ArrayList;
@@ -53,14 +54,14 @@ public class Nyz extends NTNPC {
             GLog.p(Messages.get(this, "greetings", Dungeon.hero.name()));
             //TODO 诡异奈亚子 早上好 中午好 晚上好
             if(!Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
-                Music.INSTANCE.play(Assets.NYZSHOP, true);
+               playBGM(Assets.NYZSHOP, true);
             }
             seenBefore = true;
         } else if (seenBefore && !Dungeon.level.heroFOV[pos] && Dungeon.depth == 0) {
-            Music.INSTANCE.play(Assets.TOWN, true);
+           playBGM(Assets.TOWN, true);
             seenBefore = false;
         } else if (seenBefore && !Dungeon.level.heroFOV[pos] && Dungeon.depth == 12) {
-            Music.INSTANCE.play(Assets.BGM_2,true);
+           playBGM(Assets.BGM_2,true);
             seenBefore = false;
         }
         throwItem();

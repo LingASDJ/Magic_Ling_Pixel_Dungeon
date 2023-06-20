@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.EmoIcon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.IceBlock;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.RoseHalo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.ShieldHalo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -93,6 +94,24 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		ROSESHIELDED,HALOMETHANEBURNING,BUTTER,SPINVISIBLE,SMOKER
 	}
 	private int stunStates = 0;
+
+	public void zaplink( int cell ) {
+
+		turnTo( ch.pos , cell );
+		play( attack );
+
+		MagicMissile.boltFromChar( parent,
+				MagicMissile.SHAMAN_BLUE,
+				this,
+				cell,
+				new Callback() {
+					@Override
+					public void call() {
+						((Mob)ch).onZapComplete();
+					}
+				} );
+		Sample.INSTANCE.play( Assets.Sounds.ZAP );
+	}
 
 	protected Animation idle;
 	protected Animation run;

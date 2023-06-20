@@ -54,6 +54,8 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_48_Changes(changeInfos);
+        add_v0_6_47_Changes(changeInfos);
         add_v0_6_46_Changes(changeInfos);
         add_v0_6_45_Changes(changeInfos);
         add_v0_6_44_Changes(changeInfos);
@@ -103,6 +105,55 @@ public class vM0_6_7_X_Changes {
         add_v0_6_0_Changes(changeInfos);
     }
 
+    public static void add_v0_6_48_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.3.0-Beta3.6", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("调整", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("基因突变改进"),
+                ("现在所有特殊敌人刷新权重一致")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X76")));
+
+    }
+
+    public static void add_v0_6_47_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.3.0-Beta3.5", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("基因突变新种类"),
+                ("突变酸液体，敌人获得远程攻击，并且更加危险。")));
+
+        changes = new ChangeInfo("平衡", false, null);
+        changes.hardlight(Window.RED_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new BruteBotSprite(), ("重甲豺狼"),
+                ("削弱重甲豺狼的属性")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X75")));
+
+    }
+
     public static void add_v0_6_46_Changes( ArrayList<ChangeInfo> changeInfos ) {
         ChangeInfo changes = new ChangeInfo("v0.6.3.0-Beta3.0", true, "");
         changes.hardlight(Window.TITLE_COLOR);
@@ -111,6 +162,9 @@ public class vM0_6_7_X_Changes {
         changes = new ChangeInfo("新内容", false, null);
         changes.hardlight(Window.GREEN_COLOR);
         changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BLACKBOOK), ("人物背景"),
+                ("四大角色的人物背景已初步加入，后续会进行文案优化。")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), ("新徽章：豺狼的复仇"),
                 ("别惹它们，我是说真的-----已逝去的冒险者")));
@@ -478,21 +532,21 @@ public class vM0_6_7_X_Changes {
         issxsaxs.scale.set(PixelScene.align(0.8f));
         changes.addButton(new ChangeButton(issxsaxs, ("精英刷怪机制调整"),
                 ("在原有基础上修改以下精英怪：\n" +
-                "魔像---》冰魔像 精英\n" +
-                "监狱守卫---》赏金猎人 精英\n"+
-                "洞穴蜘蛛---》豺狼炼药长老 精英\n" +
-                "红色怨灵---》血月火把猎人 精英\n\n" +
-                "同时现阶段有关于上面的正常刷怪被移除，也就是说冰魔像他们不再是常规刷新了。")));
+                        "魔像---》冰魔像 精英\n" +
+                        "监狱守卫---》赏金猎人 精英\n"+
+                        "洞穴蜘蛛---》豺狼炼药长老 精英\n" +
+                        "红色怨灵---》血月火把猎人 精英\n\n" +
+                        "同时现阶段有关于上面的正常刷怪被移除，也就是说冰魔像他们不再是常规刷新了。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.REDDRAGON), "核子可乐回归",
                 "核子可乐现在回归正常模式，且仅在困难难度前获得，并且效果有所减弱。"));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), "部分灯火Buff调整",
                 "部分灯火buff都进行了一定的调整：\n" +
-                "1.纯洁的祝福--前路\n调整：回血效果减半\n\n" +
-                "2.魔女的低语--无力\n调整：效果持续期间力量从-3调整至-1\n\n" +
-                "3.纯洁的祝福--安息\n调整：物理伤害从x2调整至x1.5\n\n" +
-                "4.纯洁的祝福--守护\n调整：效果持续期间每150回合获得一些护盾"));
+                        "1.纯洁的祝福--前路\n调整：回血效果减半\n\n" +
+                        "2.魔女的低语--无力\n调整：效果持续期间力量从-3调整至-1\n\n" +
+                        "3.纯洁的祝福--安息\n调整：物理伤害从x2调整至x1.5\n\n" +
+                        "4.纯洁的祝福--守护\n调整：效果持续期间每150回合获得一些护盾"));
 
         changes = new ChangeInfo("改动", false, null);
         changes.hardlight(Window.CYELLOW);
@@ -756,7 +810,7 @@ public class vM0_6_7_X_Changes {
 
         changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
                 Messages.get(ChangesScene.class,
-                "bugfixes"),
+                        "bugfixes"),
                 ("1.快捷栏翻转修复\n2.修复新生火元素无法被冰冻类buff秒杀的问题\n3.修复深蓝蝾螈会让幽灵任务错误完成的问题\n4.修复元素风暴特效错误问题")));
     }
 
@@ -931,7 +985,7 @@ public class vM0_6_7_X_Changes {
                 Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X50")));
 
     }
-    
+
 
     public static void add_v0_6_21_Changes( ArrayList<ChangeInfo> changeInfos ) {
         ChangeInfo changes = new ChangeInfo("v0.6.0.0-Beta21-p2.950", true, "");
@@ -943,8 +997,8 @@ public class vM0_6_7_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new Image("ADE.png", 0, 0, 32, 32),
-                                           ("ADE环境部署成功"),
-                                           ("AndroidIDE+AIDE综合部署，现在作者可以手机/电脑协同开发，也可以避免部分时候遇到一些重大bug没有代码而难以处理的问题")));
+                ("ADE环境部署成功"),
+                ("AndroidIDE+AIDE综合部署，现在作者可以手机/电脑协同开发，也可以避免部分时候遇到一些重大bug没有代码而难以处理的问题")));
 
         changes = new ChangeInfo("调整", false, null);
         changes.hardlight(Window.CBLACK);
@@ -952,7 +1006,7 @@ public class vM0_6_7_X_Changes {
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ICEFISHSWORD), ("尚方宝剑"),
                 ("尚方宝剑现在力量初始为16，但是必定获得一个随机诅咒，商人对它的价值提升" )));
-      
+
     }
 
     public static void add_v0_6_20_Changes(ArrayList<ChangeInfo> changeInfos) {
