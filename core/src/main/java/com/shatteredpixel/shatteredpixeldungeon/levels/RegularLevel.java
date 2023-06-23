@@ -95,6 +95,7 @@ public abstract class RegularLevel extends Level {
 
 	public enum Holiday{
 		NONE,
+		DWJ,
 		ZQJ, //TBD
 		HWEEN,//2nd week of october though first day of november
 		XMAS //3rd week of december through first week of january
@@ -110,7 +111,22 @@ public abstract class RegularLevel extends Level {
 				if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
 					holiday = XMAS;
 				break;
-			//2022 9.10-10.1
+			//6.10-7.10
+			case Calendar.JUNE:
+				if (calendar.get(Calendar.DAY_OF_MONTH) >= 10 ){
+					holiday = Holiday.DWJ;
+				} else {
+					holiday = Holiday.NONE;
+				}
+				break;
+			case Calendar.JULY:
+				if (calendar.get(Calendar.DAY_OF_MONTH) == 10 ){
+					holiday = Holiday.DWJ;
+				} else {
+					holiday = Holiday.NONE;
+				}
+				break;
+			//9.10-10.1
 			case Calendar.SEPTEMBER:
 				if (calendar.get(Calendar.DAY_OF_MONTH) >= 10 ){
 					holiday = Holiday.ZQJ;

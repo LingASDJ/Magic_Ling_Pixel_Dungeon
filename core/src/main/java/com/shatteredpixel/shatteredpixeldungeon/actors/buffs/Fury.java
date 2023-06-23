@@ -25,22 +25,41 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 public class Fury extends Buff {
-	
+	public static int level = 0;
+	private int interval = 1;
 	public static float LEVEL	= 0.5f;
 
+	public void set( int value, int time ) {
+		//decide whether to override, preferring high value + low interval
+		if (Math.sqrt(interval)*level <= Math.sqrt(time)*value) {
+			level = value;
+			interval = time;
+			spend(time - cooldown() - 1);
+		}
+	}
+	public int level() {
+		return level;
+	}
 	{
 		type = buffType.POSITIVE;
 		announced = true;
 	}
-	
+
 	@Override
 	public boolean act() {
-		if (target.HP > target.HT * LEVEL) {
+		if (target.isAlive()) {
+
+			spend( interval );
+			if (--level <= 0) {
+				detach();
+			}
+
+		} else {
+
 			detach();
+
 		}
-		
-		spend( TICK );
-		
+
 		return true;
 	}
 	
@@ -61,6 +80,7 @@ public class Fury extends Buff {
 
 	@Override
 	public String desc() {
-		return Messages.get(this, "desc");
+		return Messages.get(this, "desc", level, dispTurns(visualcooldown()));
 	}
+
 }

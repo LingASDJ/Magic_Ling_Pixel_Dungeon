@@ -27,7 +27,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.RED_COLOR;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -168,17 +167,7 @@ public class MenuPane extends Component {
 			add(challengeButton);
 		}
 
-		if (!Dungeon.isDLC(Conducts.Conduct.NULL)){
-			gameHappyIcon = Icons.get(Icons.HAPPY_ICON);
-			add(gameHappyIcon);
-			gameHappyIconButton = new Button(){
-				@Override
-				protected void onClick() {
-					//
-				}
-			};
-			add(gameHappyIconButton);
-		}
+
 
 		btnJournal = new JournalButton();
 		add( btnJournal );

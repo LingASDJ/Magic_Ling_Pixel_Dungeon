@@ -54,6 +54,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_49_Changes(changeInfos);
         add_v0_6_48_Changes(changeInfos);
         add_v0_6_47_Changes(changeInfos);
         add_v0_6_46_Changes(changeInfos);
@@ -103,6 +104,34 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_49_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.3.0-Beta3.8", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RiceDumplingsRed), ("五粽送福-端午安康"),
+                ("地牢产生了奇特的食物，据说名为粽子，有效时间：6.20-7.10（每年）")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("第九个精英-炼狱"),
+                ("炼狱精英为极为特殊的精英，小心行事！")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG24), ("秘卷回归-极度秘卷"),
+                ("霜火的审判，极度的实验。极度秘卷，现在回归")));
+
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X77")));
+
     }
 
     public static void add_v0_6_48_Changes( ArrayList<ChangeInfo> changeInfos ) {

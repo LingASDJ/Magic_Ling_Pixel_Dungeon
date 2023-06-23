@@ -683,6 +683,12 @@ public class ItemSpriteSheet {
 
 	public static final int CrivusFruitFood   = QUEST+9;
 	public static final int CrivusFruitflake   = QUEST+10;
+
+	public static final int RiceDumplingsRed   = QUEST+11;
+	public static final int RiceDumplingsPink   = QUEST+12;
+	public static final int RiceDumplingsOrange   = QUEST+13;
+	public static final int RiceDumplingsLink  = QUEST+14;
+	public static final int RiceDumplingsBottle   = QUEST+15;
 	static{
 		assignItemRect(SKULL,   16, 11);
 		assignItemRect(DUST,    12, 11);
@@ -695,6 +701,12 @@ public class ItemSpriteSheet {
 		assignItemRect(SHARD,    8, 10);
 		assignItemRect(CrivusFruitFood,    11, 14);
 		assignItemRect(CrivusFruitflake,    13, 13);
+
+		assignItemRect(RiceDumplingsRed,    14, 14);
+		assignItemRect(RiceDumplingsPink,    14, 14);
+		assignItemRect(RiceDumplingsOrange,    14, 14);
+		assignItemRect(RiceDumplingsLink,    14, 13);
+		assignItemRect(RiceDumplingsBottle,    14, 14);
 	}
 
 	private static final int BAGS       =                                   xy(1, 31);  //16 slots
@@ -1005,7 +1017,7 @@ public class ItemSpriteSheet {
 		public static final int POTION_CLEANSE  = EXOTIC_POTIONS+10;
 		public static final int POTION_DIVINE   = EXOTIC_POTIONS+11;
 		public static final int POTION_DRAGONKING= EXOTIC_POTIONS+12;
-		public static final int POTION_HOLYFUROR= EXOTIC_POTIONS+13;
+		public static final int POTION_SRTDIED= EXOTIC_POTIONS+13;
 		static {
 			assignIconRect( POTION_MASTERY,     7, 7 );
 			assignIconRect( POTION_SHIELDING,   6, 6 );
@@ -1020,7 +1032,7 @@ public class ItemSpriteSheet {
 			assignIconRect( POTION_CLEANSE,     7, 7 );
 			assignIconRect( POTION_DIVINE,      7, 7 );
 			assignIconRect( POTION_DRAGONKING,   7, 7 );
-			assignIconRect( POTION_HOLYFUROR,   5, 7 );
+			assignIconRect( POTION_SRTDIED,   6, 7 );
 		}
 
 		                                                                                //16 free slots

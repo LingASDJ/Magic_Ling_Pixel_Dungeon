@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FireGhostDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
@@ -327,7 +328,7 @@ public abstract class ChampionEnemy extends Buff {
 		//we roll for a champion enemy even if we aren't spawning one to ensure that
 		//mobsToChampion does not affect levelgen RNG (number of calls to Random.Int() is constant)
 		Class<?extends ChampionEnemy> buffCls;
-		switch (Random.Int(8)){
+		switch (Random.Int(9)){
 			case 0: default:    buffCls = Blazing.class;      break;
 			case 1:             buffCls = Projecting.class;   break;
 			case 2:             buffCls = AntiMagic.class;    break;
@@ -336,6 +337,7 @@ public abstract class ChampionEnemy extends Buff {
 			case 5:             buffCls = Growing.class;      break;
 			case 6:             buffCls = Halo.class;      	  break;
 			case 7:             buffCls = DelayMob.class;     break;
+			case 8:             buffCls = King.class;     	  break;
 		}
 
 		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES)) {
@@ -529,6 +531,38 @@ public abstract class ChampionEnemy extends Buff {
 			super.restoreFromBundle(bundle);
 			multiplier = bundle.getFloat(MULTIPLIER);
 		}
+	}
+
+	public static class King extends ChampionEnemy {
+
+		{
+			color = 0xe74032;
+		}
+
+		@Override
+		public int icon() {
+			return BuffIndicator.FIREDIED;
+		}
+
+		@Override
+		public float meleeDamageFactor() {
+
+			return 1.45f;
+		}
+
+		@Override
+		public float damageTakenFactor() {
+			return 0.70f;
+		}
+
+		@Override
+		public void onAttackProc(Char enemy) {
+			if(Random.NormalIntRange(1,8)>2){
+				new FireGhostDead().spawnAround(enemy.pos+1);
+			}
+		}
+
+
 	}
 
 	public static class DeadSoulSX extends ChampionEnemy {

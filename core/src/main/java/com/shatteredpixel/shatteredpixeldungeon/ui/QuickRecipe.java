@@ -40,8 +40,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLightningShiledX;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfNoWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
@@ -61,6 +63,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotio
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTerror;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfRoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
@@ -351,15 +355,6 @@ public class QuickRecipe extends Component {
 					ArrayList<Item> in = new ArrayList<>(Arrays.asList(pot));
 					result.add(new QuickRecipe( r, in, r.sampleOutput(in)));
 				}
-				//TODO 未来加入
-//				result.add(new QuickRecipe( new ScrollOfFlameCursed.Recipe(),
-//						new ArrayList<Item>(Arrays.asList(new PotionOfLiquidFlame(), new ScrollOfTerror(),
-//								new PotionOfFrost())),
-//						new ScrollOfFlameCursed().quantity(3)));
-				result.add(new QuickRecipe( new ScrollOfRoseShiled.Recipe(),
-						new ArrayList<Item>(Arrays.asList(new PotionOfPurity(), new  AlchemicalCatalyst(),
-								new StoneOfBlink())),
-						new ScrollOfRoseShiled().quantity(3)));
 				return result;
 			case 4:
 				r = new ExoticScroll.ScrollToExotic();
@@ -368,6 +363,14 @@ public class QuickRecipe extends Component {
 					ArrayList<Item> in = new ArrayList<>(Arrays.asList(scroll));
 					result.add(new QuickRecipe( r, in, r.sampleOutput(in)));
 				}
+				result.add(new QuickRecipe( new ScrollOfFlameCursed.Recipe(),
+						new ArrayList<Item>(Arrays.asList(new PotionOfLiquidFlame(), new ScrollOfTerror(),
+								new PotionOfFrost())),
+						new ScrollOfFlameCursed().quantity(2)));
+				result.add(new QuickRecipe( new ScrollOfRoseShiled.Recipe(),
+						new ArrayList<Item>(Arrays.asList(new PotionOfPurity(), new  AlchemicalCatalyst(),
+								new StoneOfBlink())),
+						new ScrollOfRoseShiled().quantity(3)));
 				return result;
 			case 5:
 				r = new Bomb.EnhanceBomb();

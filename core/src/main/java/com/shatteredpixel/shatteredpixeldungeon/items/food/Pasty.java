@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -38,45 +39,34 @@ import java.util.Calendar;
 
 public class Pasty extends Food {
 
-	//TODO: implement fun stuff for other holidays
-	//TODO: probably should externalize this if I want to add any more festive stuff.
-	private enum Holiday{
-		NONE,
-		ZQJ, //TBD
-		HWEEN,//2nd week of october though first day of november
-		XMAS //3rd week of december through first week of january
-	}
-
-	private static Holiday holiday;
-
 	static{
 
-		holiday = Holiday.NONE;
+		RegularLevel.holiday = RegularLevel.Holiday.NONE;
 
 		final Calendar calendar = Calendar.getInstance();
 		switch(calendar.get(Calendar.MONTH)){
 			case Calendar.JANUARY:
 				if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
-					holiday = Holiday.XMAS;
+					RegularLevel.holiday = RegularLevel.Holiday.XMAS;
 				break;
 			//2022 9.10-10.1
 			case Calendar.SEPTEMBER:
 				if (calendar.get(Calendar.DAY_OF_MONTH) >= 10 ){
-					holiday = Holiday.ZQJ;
+					RegularLevel.holiday = RegularLevel.Holiday.ZQJ;
 				} else {
-					holiday = Holiday.NONE;
+					RegularLevel.holiday = RegularLevel.Holiday.NONE;
 				}
 				break;
 			case Calendar.OCTOBER:
 				if (calendar.get(Calendar.DAY_OF_MONTH) == 1 ){
-					holiday = Holiday.ZQJ;
+					RegularLevel.holiday = RegularLevel.Holiday.ZQJ;
 				} else {
-					holiday = Holiday.NONE;
+					RegularLevel.holiday = RegularLevel.Holiday.NONE;
 				}
 				break;
 			case Calendar.DECEMBER:
 				if (calendar.get(Calendar.WEEK_OF_MONTH) >= 3)
-					holiday = Holiday.XMAS;
+					RegularLevel.holiday = RegularLevel.Holiday.XMAS;
 				break;
 		}
 	}
@@ -92,7 +82,7 @@ public class Pasty extends Food {
 	@Override
 	public void reset() {
 		super.reset();
-		switch(holiday){
+		switch(RegularLevel.holiday){
 			case NONE:
 				image = ItemSpriteSheet.PASTY;
 				break;
@@ -112,7 +102,7 @@ public class Pasty extends Food {
 	protected void satisfy(Hero hero) {
 		super.satisfy(hero);
 		
-		switch(holiday){
+		switch(RegularLevel.holiday){
 			case NONE:
 				break; //do nothing extra
 			case HWEEN:
@@ -135,7 +125,7 @@ public class Pasty extends Food {
 
 	@Override
 	public String name() {
-		switch(holiday){
+		switch(RegularLevel.holiday){
 			case NONE: default:
 				return Messages.get(this, "pasty");
 			case HWEEN:
@@ -149,7 +139,7 @@ public class Pasty extends Food {
 
 	@Override
 	public String info() {
-		switch(holiday){
+		switch(RegularLevel.holiday){
 			case NONE: default:
 				return Messages.get(this, "pasty_desc");
 			case HWEEN:

@@ -58,6 +58,11 @@ public class ScrollOfRoseShiled extends Scroll {
         return true;
     }
 
+    @Override
+    public boolean isKnown() {
+        return true;
+    }
+
 
     @Override
     public void doRead() {

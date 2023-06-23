@@ -70,6 +70,9 @@ public class ExoticPotion extends Potion {
 		regToExo.put(PotionOfLiquidFlame.class, PotionOfDragonsBreath.class);
 		exoToReg.put(PotionOfDragonsBreath.class, PotionOfLiquidFlame.class);
 
+//		regToExo.put(PotionOfLightningShiledX.class, PotionOfLightStromCloud.class);
+//		exoToReg.put(PotionOfLightStromCloud.class, PotionOfLightningShiledX.class);
+
 		regToExo.put(PotionOfLiquidFlameX.class, PotionOfDragonKingBreath.class);
 		exoToReg.put(PotionOfDragonKingBreath.class, PotionOfLiquidFlameX.class);
 

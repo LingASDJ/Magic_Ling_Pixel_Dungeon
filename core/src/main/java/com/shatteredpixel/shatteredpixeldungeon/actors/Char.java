@@ -49,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FireImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbueEX;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Fury;
@@ -624,6 +625,8 @@ public abstract class Char extends Actor {
 			speed *= buff.speedFactor();
 		}
 
+		if ( buff( FrostBurning.class ) != null) speed *= 0.7f;
+
 		for (HasteLing.MobLing mobspeed : buffs(HasteLing.MobLing.class)){
 			speed *= mobspeed.speedFactor();
 		}
@@ -658,10 +661,17 @@ public abstract class Char extends Actor {
 			return;
 		}
 
-		//TODO 减免20%伤害
+		//TODO 减免40%伤害
 		if(buff(BlessImmune.class) != null && !this.isImmune(BlessImmune.class)){
 			dmg = (int) Math.ceil(dmg * 0.6f);
 		}
+
+//		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+//			if (mob.buff(ChampionEnemy.King.class) != null && !mob.properties().contains(Property.NOBIG) ){
+//				dmg = (int) Math.ceil(dmg * 0.5f);
+//			}
+//		}
+
 
 		if(isInvulnerable(src.getClass())){
 			sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
@@ -1012,7 +1022,7 @@ public abstract class Char extends Actor {
 		return false;
 	}
 
-	protected HashSet<Property> properties = new HashSet<>();
+	public HashSet<Property> properties = new HashSet<>();
 
 	public HashSet<Property> properties() {
 		HashSet<Property> props = new HashSet<>(properties);

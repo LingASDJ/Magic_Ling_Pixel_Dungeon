@@ -41,23 +41,21 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class FireGhostDead extends Mob implements Callback {
 
-    private static final float TIME_TO_ZAP	= 1f;
+    private static final float TIME_TO_ZAP	= 2f;
 
     {
         spriteClass = FireGhostDeadSprite.class;
 
-        HP = HT = 6;
+        HP = HT = 20;
         defenseSkill = 4;
 
         EXP = 3;
         maxLvl = -228;
-
-        loot = Generator.Category.POTION;
-        lootChance = 0.1f;
 
         properties.add(Property.UNDEAD);
     }
@@ -93,6 +91,15 @@ public class FireGhostDead extends Mob implements Callback {
             return w;
         } else {
             return null;
+        }
+    }
+
+    public void spawnAround( int pos ) {
+        for (int n : PathFinder.NEIGHBOURS1) {
+            int cell = pos + n;
+            if (Dungeon.level.passable[pos+1] && Actor.findChar( cell ) == null) {
+                spawnAt( cell );
+            }
         }
     }
 

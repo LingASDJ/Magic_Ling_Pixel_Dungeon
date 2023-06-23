@@ -24,10 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
@@ -67,8 +65,7 @@ public class ScrollOfFlameCursed extends Scroll {
 
         if (mob != null){
             if (mob.isAlive() && bolt.path.size() > bolt.dist+1) {
-                Buff.prolong(mob, Chill.class, Chill.DURATION/3f);
-                Buff.affect(mob, Bleeding.class).set((float) (10));
+                Buff.affect( mob, FrostBurning.class ).reignite( mob, 25f );
             }
         }
 
@@ -84,12 +81,7 @@ public class ScrollOfFlameCursed extends Scroll {
         Mob affected = null;
         for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
             if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
-                Buff.affect( mob, Burning.class ).reignite( mob, 7f );
                 bolt(mob.pos, mob);
-                if (mob.buff(Burning.class) != null){
-                    count++;
-                    affected = mob;
-                }
             }
         }
 
@@ -116,13 +108,18 @@ public class ScrollOfFlameCursed extends Scroll {
             cost = 24;
 
             output = ScrollOfFlameCursed.class;
-            outQuantity = 3;
+            outQuantity = 2;
         }
 
     }
 
     @Override
     public boolean isIdentified() {
+        return true;
+    }
+
+    @Override
+    public boolean isKnown() {
         return true;
     }
 

@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TorchHalo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FrostFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeFlameParticle;
@@ -91,7 +92,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	public enum State {
 		BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED,
-		ROSESHIELDED,HALOMETHANEBURNING,BUTTER,SPINVISIBLE,SMOKER
+		ROSESHIELDED,HALOMETHANEBURNING,FROSTBURNING,BUTTER,SPINVISIBLE,SMOKER
 	}
 	private int stunStates = 0;
 
@@ -126,6 +127,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	protected Emitter burning;
 	protected Emitter haloburning;
+	protected Emitter frostburning;
 	protected Emitter soling;
 	protected Emitter chilled;
 	protected Emitter marked;
@@ -398,6 +400,13 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					Sample.INSTANCE.play( Assets.Sounds.BURNING );
 				}
 				break;
+			case FROSTBURNING:
+				frostburning = emitter();
+				frostburning.pour( FrostFlameParticle.FACTORY, 0.06f );
+				if (visible) {
+					Sample.INSTANCE.play( Assets.Sounds.BURNING );
+				}
+				break;
 			case SMOKER:
 				soling = emitter();
 				soling.pour( SmokeFlameParticle.FACTORY, 0.06f );
@@ -463,6 +472,12 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				if (haloburning != null) {
 					haloburning.on = false;
 					haloburning = null;
+				}
+				break;
+			case FROSTBURNING:
+				if (frostburning != null) {
+					frostburning.on = false;
+					frostburning = null;
 				}
 				break;
 			case SMOKER:

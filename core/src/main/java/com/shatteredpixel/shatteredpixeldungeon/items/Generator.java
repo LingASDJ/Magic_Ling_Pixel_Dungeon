@@ -21,6 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.DWJ;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
@@ -47,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.RiceDumplings;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
@@ -458,12 +462,21 @@ public class Generator {
 					ForceCube.class
 			};
 			MIS_T5.probs = new float[]{ 6, 5, 4 };
-			
+
+			int isDWJ = holiday == DWJ ? 3 : 0;
+
 			FOOD.classes = new Class<?>[]{
 					Food.class,
 					Pasty.class,
-					MysteryMeat.class };
-			FOOD.probs = new float[]{ 4, 1, 0 };
+					MysteryMeat.class,
+
+					RiceDumplings.RiceDumplingsLink.class,
+					RiceDumplings.RiceDumplingsBottle.class,
+					RiceDumplings.RiceDumplingsRed.class,
+					RiceDumplings.RiceDumplingsOrange.class,
+                    RiceDumplings.RiceDumplingsPink.class,
+			};
+			FOOD.probs = new float[]{ 4, 1, 0, isDWJ,isDWJ,isDWJ,isDWJ,isDWJ  };
 			
 			RING.classes = new Class<?>[]{
 					RingOfAccuracy.class,

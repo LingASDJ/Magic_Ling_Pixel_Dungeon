@@ -28,7 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
-@SuppressWarnings("all")
+
 public class MIME extends Item {
 
     public boolean isMimeSupported = false;
