@@ -191,6 +191,11 @@ public class OilLantern extends Item {
         return 0;
     }
 
+    @Override
+    public boolean isUpgradable() {
+        return false;
+    }
+
     public String status() {
         return Utils.format(TXT_STATUS, this.charge);
     }

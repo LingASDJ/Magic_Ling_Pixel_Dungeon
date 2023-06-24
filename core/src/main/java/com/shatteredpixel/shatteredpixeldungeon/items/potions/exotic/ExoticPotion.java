@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHaste;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLevitation;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLightningShiledX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
@@ -70,8 +71,8 @@ public class ExoticPotion extends Potion {
 		regToExo.put(PotionOfLiquidFlame.class, PotionOfDragonsBreath.class);
 		exoToReg.put(PotionOfDragonsBreath.class, PotionOfLiquidFlame.class);
 
-//		regToExo.put(PotionOfLightningShiledX.class, PotionOfLightStromCloud.class);
-//		exoToReg.put(PotionOfLightStromCloud.class, PotionOfLightningShiledX.class);
+		regToExo.put(PotionOfLightningShiledX.class, PotionOfLightStromCloud.class);
+		exoToReg.put(PotionOfLightStromCloud.class, PotionOfLightningShiledX.class);
 
 		regToExo.put(PotionOfLiquidFlameX.class, PotionOfDragonKingBreath.class);
 		exoToReg.put(PotionOfDragonKingBreath.class, PotionOfLiquidFlameX.class);

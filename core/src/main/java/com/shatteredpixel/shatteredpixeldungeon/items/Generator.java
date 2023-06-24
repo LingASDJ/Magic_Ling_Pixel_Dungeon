@@ -278,7 +278,7 @@ public class Generator {
 					PotionOfExperience.class,
 					PotionOfLiquidFlameX.class,
 					PotionOfLightningShiledX.class,};
-			POTION.defaultProbs = new float[]{ 0, 6, 4, 3, 3, 3, 2, 2, 2, 2, 2, 1, 1 };
+			POTION.defaultProbs = new float[]{ 0, 6, 4, 3, 3, 3, 2, 2, 2, 2, 2, 1, 2 };
 			POTION.probs = POTION.defaultProbs.clone();
 
 			SEED.classes = new Class<?>[]{

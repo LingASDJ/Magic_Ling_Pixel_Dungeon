@@ -44,9 +44,9 @@ public class SkullShaman extends Mob implements Callback {
                     GameScene.add(Blob.seed(var1.pos, 4, Fire.class));
                 }
 
-                ((Burning) Buff.affect(var1, Burning.class)).reignite(var1);
+                Buff.affect(var1, Burning.class).reignite(var1);
             } else {
-                ((Poison)Buff.affect(var1, Poison.class)).set((float)(var3 - 2));
+                Buff.affect(var1, Poison.class).set((float)(var3 - 2));
             }
         }
 
@@ -63,11 +63,7 @@ public class SkullShaman extends Mob implements Callback {
 
     protected boolean canAttack(Char var1) {
         boolean var2;
-        if ((new Ballistica(this.pos, var1.pos, 6)).collisionPos == var1.pos) {
-            var2 = true;
-        } else {
-            var2 = false;
-        }
+        var2 = (new Ballistica(this.pos, var1.pos, 6)).collisionPos == var1.pos;
 
         return var2;
     }
@@ -103,11 +99,7 @@ public class SkullShaman extends Mob implements Callback {
             return super.doAttack(var1);
         } else {
             boolean var6;
-            if (!this.fieldOfView[this.pos] && !this.fieldOfView[var1.pos]) {
-                var6 = false;
-            } else {
-                var6 = true;
-            }
+            var6 = this.fieldOfView[this.pos] || this.fieldOfView[var1.pos];
 
             if (var6) {
                 this.sprite.zap(var1.pos);
@@ -131,11 +123,11 @@ public class SkullShaman extends Mob implements Callback {
                     Camera.main.shake(2.0F, 0.3F);
                     if (!var1.isAlive()) {
                         Dungeon.fail(this.getClass());
-                        GLog.n(Messages.get(this, "zap_kill", new Object[0]), new Object[0]);
+                        GLog.n(Messages.get(this, "zap_kill"));
                     }
                 }
             } else {
-                var1.sprite.showStatus(16776960, var1.defenseVerb(), new Object[0]);
+                var1.sprite.showStatus(16776960, var1.defenseVerb());
             }
 
             if (var6) {

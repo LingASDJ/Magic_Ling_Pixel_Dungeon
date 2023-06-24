@@ -127,14 +127,19 @@ public class Waterskin extends Item {
 	public void empty() {volume = 0; updateQuickslot();}
 	protected int DewViewSword = 0;
 
-	@Override
-	public Item upgrade() {
-		DewViewSword = Math.min(DewViewSword + 1, 8);
-		return super.upgrade();
-	}
+//	@Override
+//	public Item upgrade() {
+//		DewViewSword = Math.min(DewViewSword + 1, 8);
+//		return super.upgrade();
+//	}
 	@Override
 	public boolean isIdentified() {
 		return true;
+	}
+
+	@Override
+	public boolean isUpgradable() {
+		return false;
 	}
 
 	public boolean isFull() {

@@ -107,13 +107,19 @@ public class vM0_6_7_X_Changes {
     }
 
     public static void add_v0_6_49_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.3.0-Beta3.8", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.3.0-Beta4.0", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
         changes = new ChangeInfo("新内容", false, null);
         changes.hardlight(Window.GREEN_COLOR);
         changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.POTION_JADE), ("初始物品调整"),
+                ("移除初始闪电药水和仅有一瓶治疗药水")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.POTION_SKYBLUE), ("新合剂&合剂改变"),
+                ("1.新合剂：雷霆万钧合剂\n2.龙王吐息合剂--》龙王祝福合剂")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RiceDumplingsRed), ("五粽送福-端午安康"),
                 ("地牢产生了奇特的食物，据说名为粽子，有效时间：6.20-7.10（每年）")));

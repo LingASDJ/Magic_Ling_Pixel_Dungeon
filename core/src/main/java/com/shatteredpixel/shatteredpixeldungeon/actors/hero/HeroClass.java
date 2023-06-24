@@ -75,6 +75,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlam
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonKingBreath;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfLightStromCloud;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
@@ -163,10 +165,10 @@ public enum HeroClass {
 			Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);
 			new WraithAmulet().quantity(1).identify().collect();
 			new BloodthirstyThorn().quantity(1).identify().collect();
-			//new PotionOfLightStromCloud().quantity(10).identify().collect();
+			new PotionOfLightStromCloud().quantity(10).identify().collect();
 			new WashCrime().quantity(1).identify().collect();
 			new MagicTorch().quantity(1).identify().collect();
-
+			new PotionOfDragonKingBreath().quantity(50).identify().collect();
 
 			new PotionOfHealing().quantity(50).identify().collect();
 			new PotionOfLiquidFlame().quantity(50).identify().collect();
@@ -221,10 +223,10 @@ public enum HeroClass {
 
 		new HerbBag().quantity(1).identify().collect();
 		new BookBag().quantity(1).identify().collect();
-		new PotionOfHealing().quantity(3).identify().collect();
+		new PotionOfHealing().quantity(1).identify().collect();
 
 		if (!Challenges.isItemBlocked(i)) i.collect();
-		new PotionOfLightningShiledX().quantity(2).identify().collect();
+
 		new ScrollOfIdentify().identify();
 
 		new VelvetPouch().collect();
