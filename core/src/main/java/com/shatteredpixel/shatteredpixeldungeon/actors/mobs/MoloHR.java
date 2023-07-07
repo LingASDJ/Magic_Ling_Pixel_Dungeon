@@ -48,7 +48,7 @@ public class MoloHR extends Mob {
                 "这都是你的错！",
                 "扬了你的骨灰！", "啊！", "烧死你"};
         this.combo = 0;
-        properties.add(Property.MINIBOSS);
+        properties.add(Property.BOSS);
         properties.add(Property.FIERY);
     }
 

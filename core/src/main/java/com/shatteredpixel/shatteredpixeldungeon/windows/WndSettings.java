@@ -698,6 +698,8 @@ public class WndSettings extends WndTabbed {
 		ColorBlock sep1;
 		CheckBox LockFing;
 
+		CheckBox ATBSwitch;
+
 //		RedButton ResetButton;
 
 		@Override
@@ -719,15 +721,15 @@ public class WndSettings extends WndTabbed {
 			LockFing.checked(SPDSettings.HelpSettings());
 			add(LockFing);
 
-//			ResetButton = new RedButton(Messages.get(this, "reset")) {
-//				@Override
-//				protected void onClick() {
-//					WndStartGame.showKeyInput();
-//				}
-//			};
-//			if(isAndroid()) {
-//				add(ResetButton);
-//			}
+			ATBSwitch = new CheckBox( Messages.get(this, "atbsettings") ) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					SPDSettings.ATBSettings(checked());
+				}
+			};
+			ATBSwitch.checked(SPDSettings.ATBSettings());
+			add(ATBSwitch);
 
 		}
 
@@ -744,13 +746,13 @@ public class WndSettings extends WndTabbed {
 
 			if (width > 200){
 				LockFing.setRect(0, bottom, width, SLIDER_HEIGHT);
-
+				ATBSwitch.setRect(0, LockFing.bottom() + GAP, width, SLIDER_HEIGHT);
 			} else {
 				LockFing.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
-
+				ATBSwitch.setRect(0, LockFing.bottom() + GAP, width, SLIDER_HEIGHT);
 			}
 
-			height = LockFing.bottom();
+			height = ATBSwitch.bottom();
 		}
 
 	}

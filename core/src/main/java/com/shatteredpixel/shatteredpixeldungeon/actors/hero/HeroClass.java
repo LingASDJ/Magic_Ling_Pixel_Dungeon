@@ -54,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
@@ -66,7 +67,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.TestBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.RiceDumplings;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
@@ -108,6 +108,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortswor
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
+import com.shatteredpixel.shatteredpixeldungeon.plants.SkyBlueFireBloom;
 import com.watabou.utils.Random;
 
 public enum HeroClass {
@@ -153,12 +156,7 @@ public enum HeroClass {
 		if (Dungeon.isChallenged(Challenges.PRO)){
 			new LockSword().quantity(1).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
-
-			new RiceDumplings.RiceDumplingsRed().quantity(100).identify().collect();
-			new RiceDumplings.RiceDumplingsPink().quantity(100).identify().collect();
-			new RiceDumplings.RiceDumplingsOrange().quantity(100).identify().collect();
-			new RiceDumplings.RiceDumplingsLink().quantity(100).identify().collect();
-			new RiceDumplings.RiceDumplingsBottle().quantity(100).identify().collect();
+			new SandalsOfNature().quantity(1).identify().collect();
 
 			new TimekeepersHourglass().quantity(1).identify().collect();
 
@@ -178,6 +176,10 @@ public enum HeroClass {
 			new ScrollOfUpgrade().quantity(100).identify().collect();
 			new TalismanOfForesight().quantity(1).identify().collect();
 			new MeatPie().quantity(100).identify().collect();
+
+			new SkyBlueFireBloom.Seed().quantity(51).identify().collect();
+			new AikeLaier.Seed().quantity(51).identify().collect();
+			new Firebloom.Seed().quantity(15).identify().collect();
 
 			new WandOfRegrowth().quantity(1).identify().collect();
 			new WandOfFrost().quantity(1).identify().collect();

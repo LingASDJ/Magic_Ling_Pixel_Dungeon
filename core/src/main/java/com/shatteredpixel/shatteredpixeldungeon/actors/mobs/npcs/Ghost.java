@@ -335,20 +335,17 @@ public class Ghost extends NPC {
 					itemLevel = 2;
 				} else if (itemLevelRoll < 0.90f) {
 					itemLevel = 3;
-					hero.sprite.showStatus( CharSprite.NEGATIVE, "+3!!!" );
 					if ((!Badges.isUnlocked(Badges.Badge.GHOSTDAGE))) {
 						Statistics.dageCollected = 1;
 						Badges.GhostDageCollected();
 					}
 				} else if (itemLevelRoll < 0.95f && Badges.isUnlocked(Badges.Badge.GHOSTDAGE)) {
-					hero.sprite.showStatus(CharSprite.POSITIVE, "+4!!!");
 					if ((!Badges.isUnlocked(Badges.Badge.DAGETO))) {
 						Statistics.dageCollected = 2;
 						Badges.GhostDageCollected();
 					}
 					itemLevel = 4;
 				} else {
-					hero.sprite.showStatus( CharSprite.NEGATIVE, "+3!!!" );
 					if ((!Badges.isUnlocked(Badges.Badge.GHOSTDAGE))) {
 						Statistics.dageCollected = 1;
 						Badges.GhostDageCollected();

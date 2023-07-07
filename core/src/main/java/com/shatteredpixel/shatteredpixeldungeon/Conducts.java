@@ -64,24 +64,8 @@ public class Conducts {
             }
         }
 
-        public String getDebugString(){
-            if (conducts.isEmpty()){
-                return "NULL";
-            }
-            StringBuilder str = new StringBuilder();
-            for (Conduct conduct : conducts){
-                str.append(conduct.name()).append(",");
-            }
-            str.delete(str.length() - 1, str.length());
-            return str.toString();
-        }
-
         public boolean isConductedAtAll(){
             return !conducts.isEmpty();
-        }
-
-        public boolean oneConduct(){
-            return conducts.size() == 1;
         }
 
         public boolean isConducted(Conduct mask){

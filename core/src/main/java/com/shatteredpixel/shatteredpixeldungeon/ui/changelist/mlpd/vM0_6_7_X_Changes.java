@@ -54,6 +54,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_50_Changes(changeInfos);
         add_v0_6_49_Changes(changeInfos);
         add_v0_6_48_Changes(changeInfos);
         add_v0_6_47_Changes(changeInfos);
@@ -104,6 +105,37 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_50_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.3.0-Beta4.5-6", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_SANDALS), ("自然之鞋同步"),
+                ("同步为破碎的那种了。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("生物UI迭代"),
+                ("UI进行迭代，感谢_大莲蓬头子_的建议与帮助。\n\n新UI参考说明：\n第一排：当前血量，攻击速度，掉落限制，防御力\n第二排：闪避概率，移动速度，生物属性，攻击力。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHANGES), ("字母&数值评定"),
+                ("现在血量不会立刻显示，但会进行字母评定。但如果你需要，你可以前往辅助设置中开启数值显示。")));
+
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.RANKINGS), ("排行榜进行了一些改进"),
+                ("现在排行榜会显示你每局所在的挑战数量。")));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X78")));
+
     }
 
     public static void add_v0_6_49_Changes( ArrayList<ChangeInfo> changeInfos ) {

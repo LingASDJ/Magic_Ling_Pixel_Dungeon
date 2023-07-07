@@ -23,11 +23,7 @@ public class GameUpdateNews extends GameUpdateNewsService {
         }
 
         Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
-        if (preferHTTPS) {
-            httpGet.setUrl("https://rust.coldmint.top/ftp/ling/json/gamenews.xml");
-        } else {
-            httpGet.setUrl("https://rust.coldmint.top/ftp/ling/json/gamenews.xml");
-        }
+        httpGet.setUrl("http://www.pd.qinyueqwq.top/ftp/pd/gamenews/gamenews.xml");
 
         Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {
             @Override
@@ -51,7 +47,7 @@ public class GameUpdateNews extends GameUpdateNewsService {
 
                     article.URL = xmlArticle.getChildByName("link").getAttribute("href");
                     if (!preferHTTPS) {
-                        article.URL= article.URL.replace("https://", "http://");
+                        article.URL= article.URL.replace("http://", "http://");
                     }
 
                     article.DesktopURL = xmlArticle.getChildByName("kinl").getAttribute("href");

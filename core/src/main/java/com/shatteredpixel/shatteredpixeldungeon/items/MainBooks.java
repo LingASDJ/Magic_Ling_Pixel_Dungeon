@@ -14,4 +14,6 @@ public class MainBooks extends Item {
         return 20 * quantity;
     }
     public String author = Messages.get(MainBooks.class, "mustread");
+
+    public String authorx = Messages.get(this, "author");
 }

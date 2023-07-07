@@ -9,4 +9,9 @@ public class DeYiZiBooks extends Books {
         image = ItemSpriteSheet.DEBOOKS;
         unique = true;
     }
+
+    @Override
+    public String info() {
+        return desc()+"\n\n"+authorx;
+    }
 }

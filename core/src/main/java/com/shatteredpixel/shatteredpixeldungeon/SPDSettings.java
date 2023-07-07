@@ -134,6 +134,9 @@ public class SPDSettings extends GameSettings {
 
 	private static final String HelpSettings	= "helpsettings";
 
+
+	private static final String ATBSettings	= "ATBsettings";
+
 	public static void fullscreen( boolean value ) {
 		put( KEY_FULLSCREEN, value );
 
@@ -520,6 +523,14 @@ public class SPDSettings extends GameSettings {
 
 	public static boolean HelpSettings() {
 		return getBoolean(HelpSettings, false);
+	}
+
+	public static void ATBSettings(boolean value) {
+		put( ATBSettings, value );
+	}
+
+	public static boolean ATBSettings() {
+		return getBoolean(ATBSettings, false);
 	}
 
 	public static boolean ClassSkin() {

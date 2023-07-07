@@ -111,16 +111,17 @@ public abstract class RegularLevel extends Level {
 				if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
 					holiday = XMAS;
 				break;
-			//6.10-7.10
+			//6.20-6.30
 			case Calendar.JUNE:
-				if (calendar.get(Calendar.DAY_OF_MONTH) >= 10 ){
+				if (calendar.get(Calendar.DAY_OF_MONTH) >= 20 ){
 					holiday = Holiday.DWJ;
 				} else {
 					holiday = Holiday.NONE;
 				}
 				break;
 			case Calendar.JULY:
-				if (calendar.get(Calendar.DAY_OF_MONTH) == 10 ){
+				int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+				if(dayOfMonth <= 12){
 					holiday = Holiday.DWJ;
 				} else {
 					holiday = Holiday.NONE;

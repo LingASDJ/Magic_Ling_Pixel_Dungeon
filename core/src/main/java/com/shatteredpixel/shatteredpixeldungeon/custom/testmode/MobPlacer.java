@@ -88,7 +88,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 
-public class MobPlacer extends TestItem{
+public class MobPlacer extends TestItem {
     {
         image = ItemSpriteSheet.CANDY_CANE;
         defaultAction = AC_PLACE;

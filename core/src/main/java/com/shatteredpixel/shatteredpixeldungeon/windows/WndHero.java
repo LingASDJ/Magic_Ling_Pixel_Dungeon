@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
@@ -239,7 +240,7 @@ public class WndHero extends WndTabbed {
 			};
 			add(buttonItem);
 			buttonItem.setRect(2, pos, WIDTH - 4, 16);
-			if(HelpSettings()){
+			if(HelpSettings() && Dungeon.isChallenged(PRO)){
 				buttonItem.active = true;
 			} else {
 				buttonItem.active = false;

@@ -21,6 +21,8 @@ public class BlackHost extends Mob {
         this.EXP = 8;
         this.maxLvl = 15;
         this.flying = true;
+
+        properties.add(Property.UNDEAD);
     }
 
     public int attackProc(Char var1, int var2) {

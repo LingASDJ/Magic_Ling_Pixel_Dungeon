@@ -1,5 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
+
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -27,6 +31,7 @@ public class WndScoreBreakdown extends Window {
 
         NumberFormat num = NumberFormat.getInstance(Locale.US);
 
+
         pos = statSlot(this, Messages.get(this, "progress_title"),
                     num.format(Statistics.progressScore), pos, Statistics.progressScore >= 50_000);
         pos = addInfo(this, Messages.get(this, "progress_desc"), pos);
@@ -49,11 +54,26 @@ public class WndScoreBreakdown extends Window {
         if (Statistics.chalMultiplier > 1) {
             pos = statSlot(this, Messages.get(this, "challenge_multiplier"), Statistics.chalMultiplier + "x", pos, false);
         }
+
         pos = statSlot(this, Messages.get(this, "total"), num.format(Statistics.totalScore), pos, false);
+
+
+        int chCount = 0;
+        for (int ch : Challenges.MASKS){
+            if ((Dungeon.challenges & ch) != 0 && ch <= STRONGER_BOSSES) chCount++;
+        }
 
         //评分系统
         LevelChecker result = new LevelChecker();
-        pos = statSlot(this, Messages.get(this, "total_level"), result.checkLevel(), pos, false);
+
+        if(chCount > 0){
+            pos = statSlot(this, Messages.get(this, "total_level"), ""+chCount+"x-"+result.checkLevel(), pos,
+                    false);
+        } else {
+            pos = statSlot(this, Messages.get(this, "total_level"), result.checkLevel(), pos,
+                    false);
+        }
+
 
         resize(WIDTH, (int)pos);
 

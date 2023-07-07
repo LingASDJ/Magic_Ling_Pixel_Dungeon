@@ -16,6 +16,11 @@ public class DimandBook extends Books {
     }
 
     @Override
+    public String info() {
+        return desc()+"\n\n"+authorx;
+    }
+
+    @Override
     public void execute(final Hero hero, String action) {
         super.execute(hero, action);
         if (action.equals( Read )) {

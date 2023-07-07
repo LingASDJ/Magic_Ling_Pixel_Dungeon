@@ -69,7 +69,7 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
                 Messages.get(this, "title"),
                 Messages.get(this, "update"),
                 Messages.get(this, "continue"),
-                7){
+                3){
             @Override
             public void hide() {
                 super.hide();

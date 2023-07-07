@@ -21,7 +21,7 @@ public class Salamander extends Mob {
         spriteClass = SalamanderSprites.class;
         EXP = 5;
         HP = HT = 5;
-        defenseSkill = 24;
+        defenseSkill = 25;
 
         loot = Generator.Category.SEED;
         lootChance = 0.05f;
