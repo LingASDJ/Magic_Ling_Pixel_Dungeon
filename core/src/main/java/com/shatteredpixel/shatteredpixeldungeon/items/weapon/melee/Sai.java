@@ -65,7 +65,7 @@ public class Sai extends MeleeWeapon {
 					R = (int) (attacker.HT * 0.1 + (buffedLvl() * 0.5) + 1.5);
 					attacker.HP +=attacker.HT * 0.1 + (buffedLvl()) + 1.5;
 					attacker.sprite.showStatus(CharSprite.POSITIVE, ("+" + R + "HP"));
-					GLog.p("迅猛一击，回血成功！");
+					GLog.p(attacker.name()+"的迅猛一击，回血成功！");
 				}
 				return super.proc(attacker, defender, damage);
 		}

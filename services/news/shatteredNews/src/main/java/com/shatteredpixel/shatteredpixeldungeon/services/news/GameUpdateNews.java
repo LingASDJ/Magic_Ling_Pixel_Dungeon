@@ -23,7 +23,7 @@ public class GameUpdateNews extends GameUpdateNewsService {
         }
 
         Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
-        httpGet.setUrl("http://www.pd.qinyueqwq.top/ftp/pd/gamenews/gamenews.xml");
+        httpGet.setUrl("https://www.pd.qinyueqwq.top/ftp/pd/gamenews/gamenews.xml");
 
         Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {
             @Override

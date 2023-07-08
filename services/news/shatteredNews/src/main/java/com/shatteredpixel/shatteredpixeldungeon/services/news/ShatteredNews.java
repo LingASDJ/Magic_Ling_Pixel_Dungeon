@@ -45,7 +45,7 @@ public class ShatteredNews extends NewsService {
 		}
 
 		Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
-		httpGet.setUrl("http://www.pd.qinyueqwq.top/ftp/pd/news/news.xml");
+		httpGet.setUrl("https://www.pd.qinyueqwq.top/ftp/pd/news/news.xml");
 
 		Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {
 			@Override

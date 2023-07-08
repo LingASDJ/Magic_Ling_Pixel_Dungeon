@@ -76,6 +76,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
+import com.shatteredpixel.shatteredpixeldungeon.services.analytics.Analytics;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
@@ -858,6 +859,10 @@ public abstract class Mob extends Char {
 
 	@Override
 	public void die( Object cause ) {
+
+		if (((Char) this).properties.contains(Char.Property.BOSS) && !(this instanceof YogFist)) {
+			Analytics.trackBossBeaten(this);
+		}
 
 		if (cause == Chasm.class){
 			//50% chance to round up, 50% to round down

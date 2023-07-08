@@ -40,3 +40,8 @@ desktop/replay_pid7460.log
 core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/HeroClass$1.smali
 core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/levels/ColdChestBossLevel.smali
 gradle.properties
+android/src/main/java/com/shatteredpixel/shatteredpixeldungeon/services/analytics/AnalyticsImpl.java
+android/src/main/java/com/shatteredpixel/shatteredpixeldungeon/services/analytics/AndroidFirebaseService.java
+core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/services/analytics/AnalyticsBelongingsData.java
+core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/services/analytics/AnalyticsGameData.java
+core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/services/analytics/AnalyticsService.java

@@ -32,6 +32,8 @@ import android.widget.TextView;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.shatteredpixel.shatteredpixeldungeon.services.analytics.Analytics;
+import com.shatteredpixel.shatteredpixeldungeon.services.analytics.AnalyticsImpl;
 
 public class AndroidLauncher extends Activity {
 	public FirebaseAnalytics mFirebaseAnalytics;
@@ -43,7 +45,7 @@ public class AndroidLauncher extends Activity {
 		try {
 			GdxNativesLoader.load();
 			FreeType.initFreeType();
-			
+			Analytics.service = AnalyticsImpl.getAnalyticsService();
 			Intent intent = new Intent(this, AndroidGame.class);
 			startActivity(intent);
 			finish();

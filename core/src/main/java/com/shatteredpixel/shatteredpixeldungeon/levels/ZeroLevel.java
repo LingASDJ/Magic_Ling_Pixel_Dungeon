@@ -21,9 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.items.Generator.randomArtifact;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NxhyNpc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
@@ -34,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.obSir;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 
@@ -46,7 +48,6 @@ public class ZeroLevel extends Level {
     }
 
     public ZeroLevel() {
-        Dungeon.isChallenged(32);
         this.viewDistance = 15;
     }
 
@@ -112,10 +113,8 @@ public class ZeroLevel extends Level {
         drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 20 + 17 );
         drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 19 + 16 );
 
-        drop( new Ankh(), this.width * 17 + 20  ).type =
-                Heap.Type.FOR_SALE;
-        drop( new Stylus(), this.width * 19 + 20  ).type =
-                Heap.Type.FOR_SALE;
+        drop( new Ankh(), this.width * 17 + 20  ).type = Heap.Type.FOR_SALE;
+        drop( new Stylus(), this.width * 19 + 20  ).type = Heap.Type.FOR_SALE;
 
         drop( ( Generator.randomUsingDefaults( Generator.Category.STONE ) ), this.width * 16 + 19 );
         drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), this.width * 20 + 19 );
@@ -132,7 +131,8 @@ public class ZeroLevel extends Level {
             drop(( Generator.randomUsingDefaults( Generator.Category.WEP_T2 )), this.width * 18 + 17  );
         }
         if ( Badges.isUnlocked(Badges.Badge.RLPT)){
-            drop( ( Generator.randomUsingDefaults( Generator.Category.ARTIFACT ) ), this.width * 18 + 19 );
+            Item item = randomArtifact();
+            drop(item, this.width * 18 + 19 );
         }
 
     }

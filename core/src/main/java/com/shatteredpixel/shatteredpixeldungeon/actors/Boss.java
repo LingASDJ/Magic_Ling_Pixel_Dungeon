@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
@@ -21,6 +22,7 @@ public class Boss extends Mob {
             immunities.add(Grim.class); //添加Grim类
             immunities.add(ScrollOfPsionicBlast.class); //添加ScrollOfPsionicBlast类
             immunities.add(ScrollOfRetribution.class); //添加ScrollOfRetribution类
+            immunities.add(Corruption.class);
         }
 
         protected void initBaseStatus(float min, float max, float acc, float eva, float ht, float mid, float mad) {
