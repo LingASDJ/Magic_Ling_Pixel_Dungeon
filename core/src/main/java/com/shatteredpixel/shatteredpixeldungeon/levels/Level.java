@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -265,7 +266,7 @@ public abstract class Level implements Bundlable {
 
 		Random.pushGenerator( Dungeon.seedCurDepth() );
 		
-		if (!(Dungeon.bossLevel())) {
+		if (!(Dungeon.bossLevel())  || Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 
 			addItemToSpawn(Generator.random(Generator.Category.FOOD));
 
@@ -387,10 +388,6 @@ public abstract class Level implements Bundlable {
 		}
 		createMobs();
 	}
-
-	public void playLevelMusic(){
-		//do nothing by default
-	}
 	
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
@@ -484,6 +481,10 @@ public abstract class Level implements Bundlable {
 		buildFlagMaps();
 		cleanWalls();
 
+	}
+
+	public void playLevelMusic(){
+		//do nothing by default
 	}
 	
 	@Override

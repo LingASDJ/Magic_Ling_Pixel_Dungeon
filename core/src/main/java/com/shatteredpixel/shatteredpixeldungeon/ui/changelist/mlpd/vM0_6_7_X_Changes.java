@@ -108,13 +108,17 @@ public class vM0_6_7_X_Changes {
     }
 
     public static void add_v0_6_50_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.3.0-Beta4.5-6", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.3.0-Beta4.5-7", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
         changes = new ChangeInfo("新内容", false, null);
         changes.hardlight(Window.GREEN_COLOR);
         changeInfos.add(changes);
+
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("灯火前路-V2.5"),
+                ("新增正向Buff--共生，与地牢的生物一起，携手前进吧！")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_SANDALS), ("自然之鞋同步"),
                 ("同步为破碎的那种了。")));
@@ -129,6 +133,9 @@ public class vM0_6_7_X_Changes {
         changes = new ChangeInfo("改动", false, null);
         changes.hardlight(Window.CYELLOW);
         changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LSPDA), ("闪电饭团"),
+                ("修复部分挑战情况下的仍然可以治疗的Bug")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.RANKINGS), ("排行榜进行了一些改进"),
                 ("现在排行榜会显示你每局所在的挑战数量。")));

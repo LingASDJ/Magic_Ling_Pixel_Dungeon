@@ -61,9 +61,9 @@ public class StormCloudDied extends Buff {
         }
 
         ArrayList<Integer> cells = new ArrayList<>();
-        for(int i = 10; i > 0; i--){
+        for (int i = 10; i > 0; i--) {
             int c = Random.Int(Dungeon.level.length());
-            if(hero.fieldOfView[c] && !cells.contains(c)){
+            if (c >= 0 && c < Dungeon.level.length() && hero.fieldOfView[c] && !cells.contains(c)) {
                 cells.add(c);
             }
         }

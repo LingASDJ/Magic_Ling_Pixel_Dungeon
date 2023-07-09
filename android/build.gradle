@@ -104,7 +104,7 @@ dependencies {
     implementation "com.badlogicgames.gdx-controllers:gdx-controllers-android:$gdxControllersVersion"
 
     //修复小米手表与低安卓系统的WebView冲突兼容问题
-    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.appcompat:appcompat:1.0.2'
 }
 
 // called every time gradle gets executed, takes the native dependencies of

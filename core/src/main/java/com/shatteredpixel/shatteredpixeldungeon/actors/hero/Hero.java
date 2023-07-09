@@ -56,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoRead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
@@ -154,6 +155,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -979,7 +981,7 @@ public class Hero extends Char {
 
 			Buff.affect( this, Nyctophobia.class );
 
-			switch (Random.Int(4)){
+			switch (Random.Int(5)){
 				case 0: default:
 					Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
 					break;
@@ -992,6 +994,9 @@ public class Hero extends Char {
 				case 3:
 					Buff.affect(hero, BlessGoRead.class).set( (100), 1 );
 					break;
+				case 4:
+					new WandOfAnmy().quantity(1).identify().collect();
+					Buff.affect(hero, BlessAnmy.class).set( (100), 1 );
 			}
 			GLog.b(Messages.get(WndStory.class,"letxz"));
 		}
@@ -2444,7 +2449,7 @@ public class Hero extends Char {
 
 		if(lanterfireactive){
 			if (hero.lanterfire == 100){
-				switch (Random.Int(4)){
+				switch (Random.Int(5)){
 					case 0: default:
 						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
 						break;
@@ -2459,11 +2464,14 @@ public class Hero extends Char {
 						break;
 					case 4:
 						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
+						break;
+					case 5:
+						Buff.affect(hero, BlessAnmy.class).set( (100), 1 );
 						break;
 				}
 				GLog.p(Messages.get(WndStory.class,"good"));
 			} else if (hero.lanterfire <= 99 && hero.lanterfire >= 90) {
-				switch (Random.Int(4)){
+				switch (Random.Int(5)){
 					case 0: default:
 						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
 						break;
@@ -2478,6 +2486,9 @@ public class Hero extends Char {
 						break;
 					case 4:
 						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
+						break;
+					case 5:
+						Buff.affect(hero, BlessAnmy.class).set( (100), 1 );
 						break;
 				}
 				GLog.p(Messages.get(WndStory.class,"good"));
@@ -2504,7 +2515,7 @@ public class Hero extends Char {
 				}
 				GLog.n(Messages.get(WndStory.class,"bad"));
 			} else if (hero.lanterfire <= 89 && hero.lanterfire >= 80 && Random.Float() <= 0.85f ) {
-				switch (Random.Int(4)){
+				switch (Random.Int(5)){
 					case 0: default:
 						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
 						break;
@@ -2519,6 +2530,9 @@ public class Hero extends Char {
 						break;
 					case 4:
 						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
+						break;
+					case 5:
+						Buff.affect(hero, BlessAnmy.class).set( (100), 1 );
 						break;
 				}
 				GLog.p(Messages.get(WndStory.class,"good"));
@@ -2547,7 +2561,7 @@ public class Hero extends Char {
 				}
 				GLog.n(Messages.get(WndStory.class,"bad"));
 			} else if (hero.lanterfire <= 79 && hero.lanterfire >= 60 && Random.Float() <= 0.70f ) {
-				switch (Random.Int(4)){
+				switch (Random.Int(6)){
 					case 0: default:
 						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
 						break;
@@ -2558,10 +2572,14 @@ public class Hero extends Char {
 						Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
 						break;
 					case 3:
-						Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
+						new WandOfAnmy().quantity(1).identify().collect();
+						Buff.affect(hero, BlessAnmy.class).set( (100), 1 );
 						break;
 					case 4:
 						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
+						break;
+					case 5:
+						Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
 						break;
 				}
 				GLog.p(Messages.get(WndStory.class,"good"));

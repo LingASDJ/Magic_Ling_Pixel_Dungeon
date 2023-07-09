@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
+import static com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing.heal;
+
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -37,7 +39,10 @@ public class LightFood extends Food {
     }
 
     protected void satisfy( Hero hero ){
-        if (Dungeon.isChallenged(Challenges.NO_FOOD)){
+        if (Dungeon.isChallenged(Challenges.NO_HEALING)) {
+            heal( hero );
+            Buff.affect(hero, Hunger.class).satisfy(energy/3f);
+        } else if (Dungeon.isChallenged(Challenges.NO_FOOD)){
             Buff.affect(hero, Hunger.class).satisfy(energy/3f);
             Buff.affect(hero, Healing.class).setHeal((int) (0.6f * hero.HT + 14), 0.25f, 0);
         } else {

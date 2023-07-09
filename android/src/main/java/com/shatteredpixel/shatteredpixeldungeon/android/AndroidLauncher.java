@@ -31,12 +31,11 @@ import android.widget.TextView;
 
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.utils.GdxNativesLoader;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.shatteredpixel.shatteredpixeldungeon.services.analytics.Analytics;
 import com.shatteredpixel.shatteredpixeldungeon.services.analytics.AnalyticsImpl;
 
 public class AndroidLauncher extends Activity {
-	public FirebaseAnalytics mFirebaseAnalytics;
+
 	@SuppressLint("SetTextI18n")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

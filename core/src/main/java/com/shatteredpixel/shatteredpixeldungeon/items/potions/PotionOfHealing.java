@@ -71,7 +71,7 @@ public class PotionOfHealing extends Potion {
 
 	public static void pharmacophobiaProc( Hero hero ){
 		// harms the hero for ~40% of their max HP in poison
-		Buff.affect( hero, Poison.class).set(4 + hero.lvl/2);
+		Buff.affect( hero, Poison.class).set(4 + hero.lvl/2f);
 	}
 	
 	public static void cure( Char ch ) {

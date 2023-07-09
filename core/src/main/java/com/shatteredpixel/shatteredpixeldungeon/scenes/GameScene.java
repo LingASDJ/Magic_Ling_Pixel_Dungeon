@@ -165,11 +165,11 @@ public class GameScene extends PixelScene {
 
 	private void tell(String text) {
 		Game.runOnRenderThread(new Callback() {
-								   @Override
-								   public void call() {
-									   GameScene.show(new WndQuest(new Slyl(), text));
-								   }
-							   }
+			@Override
+			public void call() {
+				GameScene.show(new WndQuest(new Slyl(), text));
+				}
+			}
 		);
 	}
 
@@ -1445,10 +1445,6 @@ public class GameScene extends PixelScene {
 						scene.showBanner(bossSlain);
 					}
 					break;
-			}
-
-			if(lanterfireactive){
-				cure( Dungeon.hero );
 			}
 
 			if (Dungeon.hero.buff(LockedFloor.class) == null) {

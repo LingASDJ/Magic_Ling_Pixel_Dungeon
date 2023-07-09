@@ -440,7 +440,7 @@ public class StatusPane extends Component {
 
 		}
 
-		if(Dungeon.hero.isAlive()){
+		if (Dungeon.hero != null && Dungeon.hero.isAlive()) {
 			Date date = new Date();
 			String strDateFormat = "yyyy-MM-dd HH:mm";
 			SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat, Locale.getDefault());

@@ -28,6 +28,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireacti
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMixShiled;
@@ -40,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.Mag
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySoftDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
+import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -208,10 +210,11 @@ public class WndStory extends Window {
 	}
 
 	public static void lanterfireRoll(){
+		SpellSprite.show( hero, SpellSprite.MASTERY );
 		if(lanterfireactive) {
 			if (Dungeon.depth == 6){
 				//TODO 首次到达6层 给予1个增益Buff
-				switch (Random.Int(5)){
+				switch (Random.Int(6)){
 					case 0: default:
 						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
 						break;
@@ -229,7 +232,7 @@ public class WndStory extends Window {
 						break;
 					case 5:
 						new WandOfAnmy().quantity(1).identify().collect();
-						Buff.affect(hero, MagicGirlSayTimeLast.class).set( (100), 1 );
+						Buff.affect(hero, BlessAnmy.class).set( (100), 1 );
 						break;
 				}
 				GLog.b(Messages.get(WndStory.class,"start"));
@@ -237,7 +240,7 @@ public class WndStory extends Window {
 			if (RollLevel()) {
 				//TODO 常规刷新
 				if (hero.lanterfire == 100){
-					switch (Random.Int(5)){
+					switch (Random.Int(6)){
 						case 0: default:
 							Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
 							break;
@@ -255,12 +258,12 @@ public class WndStory extends Window {
 							break;
 						case 5:
 							new WandOfAnmy().quantity(1).identify().collect();
-							Buff.affect(hero, MagicGirlSayTimeLast.class).set( (100), 1 );
+							Buff.affect(hero, BlessAnmy.class).set( (100), 1 );
 							break;
 					}
 					GLog.p(Messages.get(WndStory.class,"good"));
 				} else if (hero.lanterfire <= 99 && hero.lanterfire >= 90) {
-					switch (Random.Int(5)){
+					switch (Random.Int(6)){
 						case 0: default:
 							Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
 							break;
@@ -278,7 +281,7 @@ public class WndStory extends Window {
 							break;
 						case 5:
 							new WandOfAnmy().quantity(1).identify().collect();
-							Buff.affect(hero, MagicGirlSayTimeLast.class).set( (100), 1 );
+							Buff.affect(hero, BlessAnmy.class).set( (100), 1 );
 							break;
 					}
 					GLog.p(Messages.get(WndStory.class,"good"));
@@ -305,7 +308,7 @@ public class WndStory extends Window {
 					}
 					GLog.n(Messages.get(WndStory.class,"bad"));
 				} else if (hero.lanterfire <= 89 && hero.lanterfire >= 80 && Random.Float() <= 0.85f ) {
-					switch (Random.Int(5)){
+					switch (Random.Int(6)){
 						case 0: default:
 							Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
 							break;
@@ -323,7 +326,7 @@ public class WndStory extends Window {
 							break;
 						case 5:
 							new WandOfAnmy().quantity(1).identify().collect();
-							Buff.affect(hero, MagicGirlSayTimeLast.class).set( (100), 1 );
+							Buff.affect(hero, BlessAnmy.class).set( (100), 1 );
 							break;
 					}
 					GLog.p(Messages.get(WndStory.class,"good"));
@@ -352,7 +355,7 @@ public class WndStory extends Window {
 					}
 					GLog.n(Messages.get(WndStory.class,"bad"));
 				} else if (hero.lanterfire <= 79 && hero.lanterfire >= 60 && Random.Float() <= 0.50f ) {
-					switch (Random.Int(5)){
+					switch (Random.Int(6)){
 						case 0: default:
 							Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
 							break;
@@ -370,7 +373,7 @@ public class WndStory extends Window {
 							break;
 						case 5:
 							new WandOfAnmy().quantity(1).identify().collect();
-							Buff.affect(hero, MagicGirlSayTimeLast.class).set( (100), 1 );
+							Buff.affect(hero, BlessAnmy.class).set( (100), 1 );
 							break;
 					}
 					GLog.p(Messages.get(WndStory.class,"good"));
