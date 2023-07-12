@@ -32,12 +32,12 @@ public class OilLantern extends Item {
     private static final String CHARGE = "charge";
     private static final String FLASKS = "flasks";
 
-    private static final int MAX_CHARGE = 100;
+    private static final int MAX_CHARGE = 30;
     private static final float TIME_TO_USE = 2.0f;
 
     private static final String TXT_STATUS = "%d%%";
     private boolean active = false;
-    private int charge = MAX_CHARGE;
+    private int charge = 100;
     public int flasks = 0;
 
     public OilLantern() {
@@ -122,7 +122,7 @@ public class OilLantern extends Item {
 
     public void refill(Hero hero) {
         this.flasks--;
-        this.charge = MAX_CHARGE;
+        this.charge += Math.min(MAX_CHARGE,charge);
         hero.spend(TIME_TO_USE);
         hero.busy();
         Sample.INSTANCE.play(Assets.Sounds.DRINK, TIME_TO_USE, TIME_TO_USE, 1.2f);

@@ -117,11 +117,8 @@ public class BGMPlayer {
 
         if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
             switch (depth){
-                case 2:
+                case 2: case 4:case 5:
                     playBGM(Assets.BGM_BOSSA, true);
-                    break;
-                case 4:case 5:
-                    playBGM(Assets.BGM_BOSSB, true);
                     break;
                 case 8: case 10:
                     playBGM(Assets.BGM_BOSSC, true);

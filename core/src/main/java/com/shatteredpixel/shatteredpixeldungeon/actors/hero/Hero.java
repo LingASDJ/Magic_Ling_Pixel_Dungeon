@@ -66,6 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.DeadSoul;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbueEX;
@@ -1955,18 +1956,26 @@ public class Hero extends Char {
 				ankh = i;
 			}
 		}
-			//灯火值低于30死亡生成自己的邪恶面，并清空金币，将金币保存到json文件。（灵感：空洞骑士）
-			if(lanterfireactive && hero.lanterfire <= 30) {
-				BlackSoul s = new BlackSoul();
-				s.pos = Dungeon.hero.pos;
-				s.gold = Dungeon.gold;
-				Dungeon.gold = 0;
-				s.state = s.SLEEPING;
-				GameScene.add(s);
-				Buff.affect(s, ChampionEnemy.DeadSoulSX.class);
-				Buff.affect(s, DeadSoul.class);
-				GameScene.flash(0x80FF0000);
+
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+			if (mob instanceof BlackSoul) {
+				Buff.affect( mob, Dread.class );
+				Buff.prolong(mob, AnkhInvulnerability.class, 200f);
 			}
+		}
+
+		//灯火值低于35死亡生成自己的邪恶面，并清空金币，将金币保存到json文件。（灵感：空洞骑士）
+		if(lanterfireactive && hero.lanterfire <= 35) {
+			BlackSoul s = new BlackSoul();
+			s.pos = Dungeon.hero.pos;
+			s.gold = Dungeon.gold;
+			Dungeon.gold = 0;
+			s.state = s.SLEEPING;
+			GameScene.add(s);
+			Buff.affect(s, ChampionEnemy.DeadSoulSX.class);
+			Buff.affect(s, DeadSoul.class);
+			GameScene.flash(0x80FF0000);
+		}
 
 		if(Statistics.fireGirlnoshopping && Dungeon.depth < 0){
 			reallyDie( cause );
@@ -2442,6 +2451,54 @@ public class Hero extends Char {
 		
 		return smthFound;
 	}
+
+	public static void goodLanterFire(){
+		switch (Random.Int(5)){
+			case 0: default:
+				Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
+				break;
+			case 1:
+				Buff.affect(hero, BlessGoodSTR.class).set( (100), 1 );
+				break;
+			case 2:
+				Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
+				break;
+			case 3:
+				Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
+				break;
+			case 4:
+				Buff.affect(hero, BlessImmune.class).set( (100), 1 );
+				break;
+			case 5:
+				Buff.affect(hero, BlessAnmy.class).set( (100), 1 );
+				break;
+		}
+		GLog.p(Messages.get(WndStory.class,"good"));
+	}
+
+	public static void badLanterFire(){
+		switch (Random.Int(5)){
+			case 0: default:
+				Buff.affect(hero, MagicGirlSayMoneyMore.class).set( (100), 1 );
+				break;
+			case 1:
+				Buff.affect(hero, MagicGirlSaySoftDied.class).set( (100), 1 );
+				break;
+			case 2:
+				Buff.affect(hero, MagicGirlSayCursed.class).set( (100), 1 );
+				break;
+			case 3:
+				Buff.affect(hero, MagicGirlSaySlowy.class).set( (100), 1 );
+				break;
+			case 4:
+				Buff.affect(hero, MagicGirlSayKill.class).set( (100), 1 );
+				break;
+			case 5:
+				Buff.affect(hero, MagicGirlSayNoSTR.class).set( (100), 1 );
+				break;
+		}
+		GLog.n(Messages.get(WndStory.class,"bad"));
+	}
 	
 	public void resurrect() {
 		HP = HT;
@@ -2449,271 +2506,33 @@ public class Hero extends Char {
 
 		if(lanterfireactive){
 			if (hero.lanterfire == 100){
-				switch (Random.Int(5)){
-					case 0: default:
-						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
-						break;
-					case 1:
-						Buff.affect(hero, BlessGoodSTR.class).set( (100), 1 );
-						break;
-					case 2:
-						Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
-						break;
-					case 3:
-						Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
-						break;
-					case 4:
-						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
-						break;
-					case 5:
-						Buff.affect(hero, BlessAnmy.class).set( (100), 1 );
-						break;
-				}
-				GLog.p(Messages.get(WndStory.class,"good"));
+				goodLanterFire();
 			} else if (hero.lanterfire <= 99 && hero.lanterfire >= 90) {
-				switch (Random.Int(5)){
-					case 0: default:
-						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
-						break;
-					case 1:
-						Buff.affect(hero, BlessGoodSTR.class).set( (100), 1 );
-						break;
-					case 2:
-						Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
-						break;
-					case 3:
-						Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
-						break;
-					case 4:
-						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
-						break;
-					case 5:
-						Buff.affect(hero, BlessAnmy.class).set( (100), 1 );
-						break;
-				}
-				GLog.p(Messages.get(WndStory.class,"good"));
+				goodLanterFire();
 			} else if (hero.lanterfire <= 89 && hero.lanterfire >= 80 && Random.Float() <= 0.05f ) {
-				switch (Random.Int(5)){
-					case 0: default:
-						Buff.affect(hero, MagicGirlSayMoneyMore.class).set( (100), 1 );
-						break;
-					case 1:
-						Buff.affect(hero, MagicGirlSaySoftDied.class).set( (100), 1 );
-						break;
-					case 2:
-						Buff.affect(hero, MagicGirlSayCursed.class).set( (100), 1 );
-						break;
-					case 3:
-						Buff.affect(hero, MagicGirlSaySlowy.class).set( (100), 1 );
-						break;
-					case 4:
-						Buff.affect(hero, MagicGirlSayKill.class).set( (100), 1 );
-						break;
-					case 5:
-						Buff.affect(hero, MagicGirlSayNoSTR.class).set( (100), 1 );
-						break;
-				}
-				GLog.n(Messages.get(WndStory.class,"bad"));
+				badLanterFire();
 			} else if (hero.lanterfire <= 89 && hero.lanterfire >= 80 && Random.Float() <= 0.85f ) {
-				switch (Random.Int(5)){
-					case 0: default:
-						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
-						break;
-					case 1:
-						Buff.affect(hero, BlessGoodSTR.class).set( (100), 1 );
-						break;
-					case 2:
-						Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
-						break;
-					case 3:
-						Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
-						break;
-					case 4:
-						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
-						break;
-					case 5:
-						Buff.affect(hero, BlessAnmy.class).set( (100), 1 );
-						break;
-				}
-				GLog.p(Messages.get(WndStory.class,"good"));
+				goodLanterFire();
 			} else if (hero.lanterfire <= 89 && hero.lanterfire >= 80) {
 				GLog.b(Messages.get(WndStory.class,"normoal"));
 			} else if (hero.lanterfire <= 79 && hero.lanterfire >= 60 && Random.Float() <= 0.25f ) {
-				switch (Random.Int(5)){
-					case 0: default:
-						Buff.affect(hero, MagicGirlSayMoneyMore.class).set( (100), 1 );
-						break;
-					case 1:
-						Buff.affect(hero, MagicGirlSaySoftDied.class).set( (100), 1 );
-						break;
-					case 2:
-						Buff.affect(hero, MagicGirlSayCursed.class).set( (100), 1 );
-						break;
-					case 3:
-						Buff.affect(hero, MagicGirlSaySlowy.class).set( (100), 1 );
-						break;
-					case 4:
-						Buff.affect(hero, MagicGirlSayKill.class).set( (100), 1 );
-						break;
-					case 5:
-						Buff.affect(hero, MagicGirlSayNoSTR.class).set( (100), 1 );
-						break;
-				}
-				GLog.n(Messages.get(WndStory.class,"bad"));
+				badLanterFire();
 			} else if (hero.lanterfire <= 79 && hero.lanterfire >= 60 && Random.Float() <= 0.70f ) {
-				switch (Random.Int(6)){
-					case 0: default:
-						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
-						break;
-					case 1:
-						Buff.affect(hero, BlessGoodSTR.class).set( (100), 1 );
-						break;
-					case 2:
-						Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
-						break;
-					case 3:
-						new WandOfAnmy().quantity(1).identify().collect();
-						Buff.affect(hero, BlessAnmy.class).set( (100), 1 );
-						break;
-					case 4:
-						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
-						break;
-					case 5:
-						Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
-						break;
-				}
-				GLog.p(Messages.get(WndStory.class,"good"));
+				goodLanterFire();
 			} else if (hero.lanterfire <= 79 && hero.lanterfire >= 60) {
 				GLog.b(Messages.get(WndStory.class,"normoal"));
 			} else if (hero.lanterfire <= 59 && hero.lanterfire >= 35 && Random.Float() <= 0.40f ) {
-				switch (Random.Int(5)){
-					case 0: default:
-						Buff.affect(hero, MagicGirlSayMoneyMore.class).set( (100), 1 );
-						break;
-					case 1:
-						Buff.affect(hero, MagicGirlSaySoftDied.class).set( (100), 1 );
-						break;
-					case 2:
-						Buff.affect(hero, MagicGirlSayCursed.class).set( (100), 1 );
-						break;
-					case 3:
-						Buff.affect(hero, MagicGirlSaySlowy.class).set( (100), 1 );
-						break;
-					case 4:
-						Buff.affect(hero, MagicGirlSayKill.class).set( (100), 1 );
-						break;
-					case 5:
-						Buff.affect(hero, MagicGirlSayNoSTR.class).set( (100), 1 );
-						break;
-				}
-				GLog.n(Messages.get(WndStory.class,"bad"));
+				badLanterFire();
 			} else if (hero.lanterfire <= 59 && hero.lanterfire >= 35 && Random.Float() <= 0.20f ) {
-				switch (Random.Int(4)){
-					case 0: default:
-						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
-						break;
-					case 1:
-						Buff.affect(hero, BlessGoodSTR.class).set( (100), 1 );
-						break;
-					case 2:
-						Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
-						break;
-					case 3:
-						Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
-						break;
-					case 4:
-						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
-						break;
-				}
-				GLog.p(Messages.get(WndStory.class,"good"));
+				goodLanterFire();
 			} else if (hero.lanterfire <= 59 && hero.lanterfire >= 35) {
 				GLog.b(Messages.get(WndStory.class,"normoal"));
 			} else if (hero.lanterfire <= 34 && hero.lanterfire >= 1 && Random.Float() <= 0.40f ) {
-				switch (Random.Int(5)){
-					case 0: default:
-						Buff.affect(hero, MagicGirlSayMoneyMore.class).set( (100), 1 );
-						break;
-					case 1:
-						Buff.affect(hero, MagicGirlSaySoftDied.class).set( (100), 1 );
-						break;
-					case 2:
-						Buff.affect(hero, MagicGirlSayCursed.class).set( (100), 1 );
-						break;
-					case 3:
-						Buff.affect(hero, MagicGirlSaySlowy.class).set( (100), 1 );
-						break;
-					case 4:
-						Buff.affect(hero, MagicGirlSayKill.class).set( (100), 1 );
-						break;
-					case 5:
-						Buff.affect(hero, MagicGirlSayNoSTR.class).set( (100), 1 );
-						break;
-				}
-				GLog.n(Messages.get(WndStory.class,"bad"));
-			} else if (hero.lanterfire <= 34 && hero.lanterfire >= 1 && Random.Float() <= 0.35f ) {
-				switch (Random.Int(4)){
-					case 0: default:
-						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
-						break;
-					case 1:
-						Buff.affect(hero, BlessGoodSTR.class).set( (100), 1 );
-						break;
-					case 2:
-						Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
-						break;
-					case 3:
-						Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
-						break;
-					case 4:
-						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
-						break;
-				}
-				GLog.p(Messages.get(WndStory.class,"good"));
+				badLanterFire();
 			} else if (hero.lanterfire <= 34 && hero.lanterfire >= 1) {
 				GLog.b(Messages.get(WndStory.class,"normoal"));
-			} else if (hero.lanterfire <= 0 && Random.Float() <= 0.48f ) {
-				switch (Random.Int(5)){
-					case 0: default:
-						Buff.affect(hero, MagicGirlSayMoneyMore.class).set( (100), 1 );
-						break;
-					case 1:
-						Buff.affect(hero, MagicGirlSaySoftDied.class).set( (100), 1 );
-						break;
-					case 2:
-						Buff.affect(hero, MagicGirlSayCursed.class).set( (100), 1 );
-						break;
-					case 3:
-						Buff.affect(hero, MagicGirlSaySlowy.class).set( (100), 1 );
-						break;
-					case 4:
-						Buff.affect(hero, MagicGirlSayKill.class).set( (100), 1 );
-						break;
-					case 5:
-						Buff.affect(hero, MagicGirlSayNoSTR.class).set( (100), 1 );
-						break;
-				}
-				GLog.n(Messages.get(WndStory.class,"bad"));
-			} else if (hero.lanterfire <= 0 && Random.Float() <= 0.10f ) {
-				switch (Random.Int(4)){
-					case 0: default:
-						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
-						break;
-					case 1:
-						Buff.affect(hero, BlessGoodSTR.class).set( (100), 1 );
-						break;
-					case 2:
-						Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
-						break;
-					case 3:
-						Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
-						break;
-					case 4:
-						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
-						break;
-				}
-				GLog.p(Messages.get(WndStory.class,"good"));
-			} else if (hero.lanterfire <= 0 ) {
-				GLog.b(Messages.get(WndStory.class,"normoal"));
+			} else {
+				badLanterFire();
 			}
 		}
 

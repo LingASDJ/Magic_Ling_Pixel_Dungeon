@@ -254,7 +254,7 @@ public class DiamondKnight extends Boss {
         }
 
     }
-    //        当boos血量低于360时，加载第二场景
+    //当boos血量低于360时，加载第二场景
 
     @Override
     public void die( Object cause ) {

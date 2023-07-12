@@ -72,7 +72,7 @@ public class BloodBat extends Mob implements Callback {
                 Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
             }
 
-            int dmg = Random.NormalIntRange( (2+level)*Dungeon.depth/5, (2+level)*Dungeon.depth/5 );
+            int dmg = Random.NormalIntRange( (2*Dungeon.depth/5), 4*Dungeon.depth/5 );
             enemy.damage( dmg, new BloodBat.DarkBolt() );
 
             if (enemy == Dungeon.hero && !enemy.isAlive()) {
@@ -150,7 +150,10 @@ public class BloodBat extends Mob implements Callback {
     @Override
     public void damage(int dmg, Object src) {
         super.damage(dmg, src);
-        Buff.affect(Dungeon.hero, ArtifactRecharge.class).prolong(dmg*2);
+        if(Random.Int(10)==5 && hero.lvl>=10){
+            Buff.affect(Dungeon.hero, ArtifactRecharge.class).prolong(dmg/2f*2);
+        }
+
     }
 
     @Override

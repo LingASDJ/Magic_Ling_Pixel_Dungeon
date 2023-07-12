@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
@@ -410,7 +411,9 @@ public class MagesStaff extends MeleeWeapon {
 
 		@Override
 		public void onSelect( final Item item ) {
-			if (item != null) {
+			if(item instanceof WandOfAnmy){
+				GLog.n(Messages.get(MagesStaff.class,"no_wands")+item.trueName()+"!");
+			} else if (item != null) {
 
 				if (!item.isIdentified()) {
 					GLog.w(Messages.get(MagesStaff.class, "id_first"));

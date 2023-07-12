@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.ROGUE;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -1045,7 +1046,10 @@ public class Dungeon {
 	public static void fail( Class cause ) {
 		if (WndResurrect.instance == null) {
 			updateLevelExplored();
-			Rankings.INSTANCE.submit( false, cause );
+			if(!Dungeon.isChallenged(PRO)){
+				Rankings.INSTANCE.submit( false, cause );
+			}
+
 		}
 	}
 
@@ -1053,7 +1057,9 @@ public class Dungeon {
 		Statistics.gameWon = true;
 		hero.belongings.identify();
 		updateLevelExplored();
-		Rankings.INSTANCE.submit( true, cause );
+		if(!Dungeon.isChallenged(PRO)) {
+			Rankings.INSTANCE.submit(true, cause);
+		}
 	}
 
 	//default to recomputing based on max hero vision, in case vision just shrank/grew

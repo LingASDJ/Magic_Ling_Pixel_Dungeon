@@ -266,7 +266,7 @@ public abstract class Level implements Bundlable {
 
 		Random.pushGenerator( Dungeon.seedCurDepth() );
 		
-		if (!(Dungeon.bossLevel())  || Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+		if (!(Dungeon.bossLevel())  || !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
 
 			addItemToSpawn(Generator.random(Generator.Category.FOOD));
 

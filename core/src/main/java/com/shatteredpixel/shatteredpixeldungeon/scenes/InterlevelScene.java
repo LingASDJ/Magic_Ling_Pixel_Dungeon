@@ -526,7 +526,7 @@ public class InterlevelScene extends PixelScene {
 			Dungeon.hero.resurrect();
 
 			//todo 灯火少于30给予一个食物。
-			if(lanterfireactive && hero.lanterfire <= 30){
+			if(lanterfireactive && hero.lanterfire <= 35){
 				level.drop(new Food(), invPos);
 			} else {
 				level.drop(new LostBackpack(), invPos);

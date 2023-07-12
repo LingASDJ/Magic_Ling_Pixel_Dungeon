@@ -29,14 +29,15 @@ import java.util.ArrayList;
 
 public class WandOfAnmy extends DamageWand {
 
+    {
+        defaultAction = AC_ZAP;
+        usesTargeting = true;
+        bones = true;
+    }
 
     @Override
-    public ArrayList<String> actions(Hero hero ) {
-        ArrayList<String> actions = super.actions( hero );
-        actions.remove(AC_DROP);
-        actions.remove(AC_THROW);
-        actions.add(AC_ZAP);
-        return actions;
+    public ArrayList<String> actions(Hero hero) {
+        return new ArrayList<>(); //yup, no dropping this one
     }
 
     public static class AllyToRestart extends AllyBuff {

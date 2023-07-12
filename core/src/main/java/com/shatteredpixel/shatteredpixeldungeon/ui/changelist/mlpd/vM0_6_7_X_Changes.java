@@ -54,6 +54,9 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_53_Changes(changeInfos);
+        add_v0_6_52_Changes(changeInfos);
+        add_v0_6_51_Changes(changeInfos);
         add_v0_6_50_Changes(changeInfos);
         add_v0_6_49_Changes(changeInfos);
         add_v0_6_48_Changes(changeInfos);
@@ -105,6 +108,93 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_53_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.3.0-Beta5.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_15), ("灯火前行-V3.0-测试版"),
+                ("灯火全面升级，追加暗影系统，灯火随着楼层深入更加危险，你能否在祝福或诅咒中活下去？")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("MLPD-原创音乐-丛林Boss通用曲-丛林尽头"),
+                ("感谢Prohonor的制作，实装在丛林Boss区。")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKPOTION), ("油瓶"),
+                ("油瓶素材改动，并且现在加灯火一次只有30%。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_15), ("灯火前行-V3.0-测试版"),
+                ("灯火随着楼层深入将更加危险，灯油的充能仅有30%。你能否在祝福或诅咒中活下去？")));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X80")));
+
+    }
+
+    public static void add_v0_6_52_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.3.0-Beta4.9", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("调整", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WORN_SHORTSWORD), ("战士改动"),
+                ("战士初始武器攻击距离-1。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SPIRIT_ARROW), ("女猎改动"),
+                ("灵能短弓伤害面板从2-4提升到2-6,成长系数不变。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_FROST), ("法师改动"),
+                ("现在移除初始冰霜法杖&焰浪法杖，但初始老魔杖获得1级。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_CLOAK), ("盗贼改动"),
+                ("现在血影蝙蝠神器充能概率50%，且需要英雄10级以上。")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("灯火系统调整"),
+                ("在达到90灯火后，立刻进行一次正向Buff的Roll判定。")));
+
+    }
+
+    public static void add_v0_6_51_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.3.0-Beta4.8", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("削弱", false, null);
+        changes.hardlight(Window.RED_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SPIRIT_ARROW), ("女猎改动"),
+                ("灵能短弓伤害面板从4-9降低到2-4,成长系数不变")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_FROST), ("法师改动"),
+                ("现在移除初始冰霜法杖，保留0级焰浪法杖")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("BossRush改动"),
+                ("BossRush模式应该不会出现裂缝问题")));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X79")));
+
     }
 
     public static void add_v0_6_50_Changes( ArrayList<ChangeInfo> changeInfos ) {

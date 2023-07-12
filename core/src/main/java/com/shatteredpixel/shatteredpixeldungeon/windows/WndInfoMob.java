@@ -152,6 +152,8 @@ public class WndInfoMob extends WndTitledMessage {
 				level = "领袖";
 			} else if (mob.properties.contains(Char.Property.MINIBOSS)){
 				level = "精英";
+			} else if (mob.properties.contains(Char.Property.ABYSS)){
+				level = "深渊";
 			} else if (mob.properties.contains(Char.Property.UNDEAD)){
 				level = "亡灵";
 			} else if (mob.properties.contains(Char.Property.DEMONIC)){

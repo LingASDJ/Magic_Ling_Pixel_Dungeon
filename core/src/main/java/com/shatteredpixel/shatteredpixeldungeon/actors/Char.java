@@ -1052,9 +1052,12 @@ public abstract class Char extends Actor {
 				new HashSet<Class>( Arrays.asList(Ooze.class))),
 		ELECTRIC ( new HashSet<Class>( Arrays.asList(WandOfLightning.class, Shocking.class, Potential.class, Electricity.class, ShockingDart.class, Elemental.ShockElemental.class )),
 				new HashSet<Class>()),
+		ABYSS( new HashSet<Class>( Arrays.asList(Grim.class, GrimTrap.class, ScrollOfRetribution.class,
+				ScrollOfPsionicBlast.class)),new HashSet<Class>()),
 		LARGE,
 		IMMOVABLE,
 		NPC;
+
 		
 		private HashSet<Class> resistances;
 		private HashSet<Class> immunities;

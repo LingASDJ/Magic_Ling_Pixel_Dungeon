@@ -797,7 +797,7 @@ public class ItemSpriteSheet {
 		assignItemRect(REDDRAGON, 14, 14);
 		assignItemRect(LANTERNA, 10, 14);
 		assignItemRect(LANTERNB, 10, 14);
-		assignItemRect(SKPOTION, 12, 14);
+		assignItemRect(SKPOTION, 8, 15);
 		assignItemRect(SKNANO, 15, 14);
 		assignItemRect(WATERSOUL, 14, 14);
 		assignItemRect(WRALIPS, 16, 16);
@@ -847,6 +847,8 @@ public class ItemSpriteSheet {
 	public static final int CHALLANEESICON_13=			 CHALLANEESICONINDEX+12;
 
 	public static final int CHALLANEESICON_14=			 CHALLANEESICONINDEX+13;
+
+	public static final int CHALLANEESICON_15=			 CHALLANEESICONINDEX+14;
 
 	//for smaller 8x8 icons that often accompany an item sprite
 	public static class Icons {

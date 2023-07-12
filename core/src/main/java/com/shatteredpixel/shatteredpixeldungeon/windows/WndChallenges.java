@@ -329,7 +329,7 @@ public class WndChallenges extends Window {
 			case "icedied":
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14, new ItemSprite.Glowing(0x009999));
 			case "dhxd":
-				return new ItemSprite(ItemSpriteSheet.LANTERNB, new ItemSprite.Glowing(0x384976));
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_15, new ItemSprite.Glowing(0x384976));
 			case "cs":
 				return Icons.get(Icons.WARNING);
 			default:

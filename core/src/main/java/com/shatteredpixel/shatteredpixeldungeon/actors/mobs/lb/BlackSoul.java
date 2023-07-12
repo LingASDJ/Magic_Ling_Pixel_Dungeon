@@ -27,6 +27,8 @@ public class BlackSoul extends Mob {
         HP = HT = (20 + 5*(hero.lvl-1) + hero.HTBoost)/2;
 
         immunities.add(AllyBuff.class);
+
+        properties.add(Property.ABYSS);
     }
         @Override
         protected boolean act() {
@@ -41,29 +43,23 @@ public class BlackSoul extends Mob {
 
         @Override
         public int attackSkill(Char target) {
-            return defenseSkill+5; //equal to base hero attack skill
+            return hero.defenseSkill(target)+5; //equal to base hero attack skill
         }
 
     @Override
     public void die( Object cause ) {
 
         super.die( cause );
-        if (gold > 0) {
-        	Dungeon.level.drop( new Gold(gold), pos ).sprite.drop();
-        }
-        Dungeon.level.drop( new LostBackpack(), pos).sprite.drop( pos );
+            if (gold > 0) {
+                Dungeon.level.drop( new Gold(gold), pos ).sprite.drop();
+            }
+            Dungeon.level.drop( new LostBackpack(), pos).sprite.drop( pos );
+
     }
 
         @Override
         public int damageRoll() {
-            int damage = Random.NormalIntRange(1, 5);
-            int heroDamage = hero.damageRoll();
-            heroDamage /= hero.attackDelay(); //normalize hero damage based on atk speed
-            heroDamage = Math.round(0.075f * hero.pointsInTalent(Talent.SHADOW_BLADE) * heroDamage);
-            if (heroDamage > 0){
-                damage += heroDamage;
-            }
-            return damage;
+            return hero.damageRoll()/2;
         }
 
         @Override
@@ -79,35 +75,19 @@ public class BlackSoul extends Mob {
 
         @Override
         public int drRoll() {
-            int dr = super.drRoll();
-            int heroRoll = hero.drRoll();
-            heroRoll = Math.round(0.15f * hero.pointsInTalent(Talent.CLONED_ARMOR) * heroRoll);
-            if (heroRoll > 0){
-                dr += heroRoll;
-            }
-            return dr;
+            return hero.drRoll()/2;
         }
 
         @Override
         public int defenseProc(Char enemy, int damage) {
-            damage = super.defenseProc(enemy, damage);
-            if (Random.Int(4) < hero.pointsInTalent(Talent.CLONED_ARMOR)
-                    && hero.belongings.armor() != null){
-                return hero.belongings.armor().proc( enemy, this, damage );
-            } else {
-                return damage;
-            }
+            return hero.defenseProc( enemy, damage );
         }
 
         @Override
         public boolean canInteract(Char c) {
             if (super.canInteract(c)){
                 return true;
-            } else if (Dungeon.level.distance(pos, c.pos) <= hero.pointsInTalent(Talent.PERFECT_COPY)) {
-                return true;
-            } else {
-                return false;
-            }
+            } else return Dungeon.level.distance(pos, c.pos) <= hero.pointsInTalent(Talent.PERFECT_COPY);
         }
 
         @Override

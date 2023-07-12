@@ -307,6 +307,7 @@ public class Assets {
 		public static final String KEEPERKINGBOT	= "sprites/npc/autoshop.png";
 
 		//BOSS
+		public static final String FRDG	= "sprites/boss/fireDragon.png";
 
 		public static final String VSGR	= "sprites/boss/SeaVastGirl.png";
 

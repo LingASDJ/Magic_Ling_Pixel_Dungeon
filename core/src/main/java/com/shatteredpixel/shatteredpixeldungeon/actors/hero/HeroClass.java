@@ -49,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
+import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
@@ -88,7 +89,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMys
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
@@ -112,7 +112,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
 import com.shatteredpixel.shatteredpixeldungeon.plants.SkyBlueFireBloom;
-import com.watabou.utils.Random;
 
 public enum HeroClass {
 
@@ -158,7 +157,7 @@ public enum HeroClass {
 			new LockSword().quantity(1).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
 			new SandalsOfNature().quantity(1).identify().collect();
-
+			new TengusMask().quantity(1).identify().collect();
 			new TimekeepersHourglass().quantity(1).identify().collect();
 
 			Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);
@@ -300,20 +299,10 @@ public enum HeroClass {
 		MagesStaff staff;
 
 		staff = new MagesStaff(new WandOfMagicMissile());
-		//new MIME.GOLD_FIVE().quantity(1).identify().collect();
-		(hero.belongings.weapon = staff).identify();
+		(hero.belongings.weapon = staff).identify().level(1);
 		hero.belongings.weapon.activate(hero);
 
-		WandOfFireblast woc = new WandOfFireblast();
-		woc.identify().quantity(1).collect();
-
-		WandOfFrost wox = new WandOfFrost();
-		wox.level(Random.NormalIntRange(1,3));
-		wox.identify().quantity(1).collect();
-
 		Dungeon.quickslot.setSlot(0, staff);
-		Dungeon.quickslot.setSlot(1, wox);
-		Dungeon.quickslot.setSlot(2, woc);
 
 		new ScrollOfUpgrade().identify();
 		new PotionOfLiquidFlame().identify();

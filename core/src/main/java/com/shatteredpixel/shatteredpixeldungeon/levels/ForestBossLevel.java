@@ -190,6 +190,7 @@ public class ForestBossLevel extends Level {
         boss.state = boss.WANDERING;
         boss.pos = WIDTH*19+16;
         GameScene.add( boss );
+
         set( getBossDoor, Terrain.WALL );
         GameScene.updateMap( getBossDoor );
         set( HOME, Terrain.EMPTY );

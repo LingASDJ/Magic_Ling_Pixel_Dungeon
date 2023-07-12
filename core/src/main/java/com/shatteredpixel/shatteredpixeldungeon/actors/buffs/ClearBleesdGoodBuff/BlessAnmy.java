@@ -40,7 +40,9 @@ public class BlessAnmy extends Buff {
         target.remove( this );
 
         WandOfAnmy wandOfAnmy = Dungeon.hero.belongings.getItem(WandOfAnmy.class);
-        wandOfAnmy.detachAll( hero.belongings.backpack );
+        if(wandOfAnmy != null){
+            wandOfAnmy.detachAll( hero.belongings.backpack );
+        }
     }
 
     public int level() {
