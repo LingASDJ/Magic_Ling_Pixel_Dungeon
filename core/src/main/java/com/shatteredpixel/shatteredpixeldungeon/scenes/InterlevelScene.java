@@ -85,7 +85,7 @@ public class InterlevelScene extends PixelScene {
 
 	public static boolean fallIntoPit;
 
-	private static final int NUM_TIPS = 36;
+	private static final int NUM_TIPS = 37;
 
 	private static ArrayList<Integer> tipset;
 	private RenderedTextBlock tip;

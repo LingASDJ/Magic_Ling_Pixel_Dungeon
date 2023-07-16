@@ -31,7 +31,6 @@ android {
             applicationIdSuffix ".indev"
             versionNameSuffix '-INDEV'
             dependencies {
-                releaseImplementation project(':services:updates:githubUpdates')
                 releaseImplementation project(':services:news:shatteredNews')
             }
         }
@@ -46,7 +45,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             dependencies {
-                releaseImplementation project(':services:updates:githubUpdates')
                 releaseImplementation project(':services:news:shatteredNews')
             }
         }
@@ -89,7 +87,7 @@ dependencies {
 
     //noinspection GradleDependency
     implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-    implementation project(path: ':services:updates:githubUpdates')
+
     implementation project(path: ':services:news:shatteredNews')
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"

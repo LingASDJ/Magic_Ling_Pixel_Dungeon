@@ -127,6 +127,5 @@ dependencies {
     implementation "org.lwjgl:lwjgl-tinyfd:3.2.3:natives-macos"
     implementation "org.lwjgl:lwjgl-tinyfd:3.2.3:natives-linux"
 
-    implementation project(':services:updates:githubUpdates')
     implementation project(':services:news:shatteredNews')
 }

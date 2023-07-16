@@ -6,25 +6,34 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-public class BlackSoul extends Mob {
+public class BlackSoul extends Mob implements Callback {
     public int gold;
     {
         spriteClass = ShadowSprite.class;
 
         //与英雄成长阶级相同
-        HP = HT = (20 + 5*(hero.lvl-1) + hero.HTBoost)/2;
+        HP = HT = (40 + 5*(hero.lvl-1) + hero.HTBoost)/2;
 
         immunities.add(AllyBuff.class);
 
@@ -46,6 +55,16 @@ public class BlackSoul extends Mob {
             return hero.defenseSkill(target)+5; //equal to base hero attack skill
         }
 
+
+    @Override
+    protected boolean canAttack( Char enemy ) {
+        if(Dungeon.hero.lvl >= 15) {
+            return new Ballistica(pos, enemy.pos, MagicMissile.WARD).collisionPos == enemy.pos;
+        } else {
+            return super.canAttack(enemy);
+        }
+    }
+
     @Override
     public void die( Object cause ) {
 
@@ -57,6 +76,11 @@ public class BlackSoul extends Mob {
 
     }
 
+    public void onZapComplete() {
+        zap();
+        next();
+    }
+
         @Override
         public int damageRoll() {
             return hero.damageRoll()/2;
@@ -65,6 +89,9 @@ public class BlackSoul extends Mob {
         @Override
         public int attackProc( Char enemy, int damage ) {
             damage = super.attackProc( enemy, damage );
+            if(Dungeon.hero.lvl == 15) {
+                zap();
+            }
             if (Random.Int(4) < hero.pointsInTalent(Talent.SHADOW_BLADE)
                     && hero.belongings.weapon() != null){
                 return hero.belongings.weapon().proc( this, enemy, damage );
@@ -72,6 +99,54 @@ public class BlackSoul extends Mob {
                 return damage;
             }
         }
+
+    public static class DarkBolt{}
+    public static int level = 1;
+    private static final float TIME_TO_ZAP	= 2f;
+
+    protected boolean doAttack( Char enemy ) {
+
+        if (Dungeon.level.adjacent( pos, enemy.pos )) {
+
+            return super.doAttack( enemy );
+
+        } else {
+
+            if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
+                sprite.zap( enemy.pos );
+                return false;
+            } else {
+                zap();
+                return true;
+            }
+        }
+    }
+
+    @Override
+    public void call() {
+        next();
+    }
+    private void zap() {
+        spend( TIME_TO_ZAP );
+
+        if (hit( this, enemy, true )) {
+
+            if (enemy == Dungeon.hero && Random.Int( 2 ) == 0) {
+                Buff.prolong( enemy, Blindness.class, Degrade.DURATION );
+                Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
+            }
+
+            int dmg = hero.damageRoll()/2;
+            enemy.damage( dmg, new DarkBolt() );
+
+            if (enemy == Dungeon.hero && !enemy.isAlive()) {
+                Dungeon.fail( getClass() );
+                GLog.n( Messages.get(this, "died_kill") );
+            }
+        } else {
+            enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
+        }
+    }
 
         @Override
         public int drRoll() {

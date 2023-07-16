@@ -8,8 +8,6 @@ include ':desktop'
 
 //service modules
 include ':services'
-    //updates
-include ':services:updates:githubUpdates'
-    //news
-    include ':services:news:debugNews'
-    include ':services:news:shatteredNews'
+
+//news
+include ':services:news:shatteredNews'

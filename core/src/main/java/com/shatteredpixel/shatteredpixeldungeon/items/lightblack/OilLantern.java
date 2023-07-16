@@ -122,7 +122,7 @@ public class OilLantern extends Item {
 
     public void refill(Hero hero) {
         this.flasks--;
-        this.charge += Math.min(MAX_CHARGE,charge);
+        this.charge += Math.min(MAX_CHARGE,100);
         hero.spend(TIME_TO_USE);
         hero.busy();
         Sample.INSTANCE.play(Assets.Sounds.DRINK, TIME_TO_USE, TIME_TO_USE, 1.2f);

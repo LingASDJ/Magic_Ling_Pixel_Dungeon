@@ -192,7 +192,6 @@ public abstract class ChampionEnemy extends Buff {
 		public boolean canAttackWithExtraReach(Char enemy) {
 			//attack range of 2
 			/** 实现效果，此外还要关联CharSprite.java和Mob.java以实现远程效果*/
-
 			if(Random.Float()<0.1f) {
 				switch (Random.NormalIntRange(0,5)){
 					//默认为毒雾

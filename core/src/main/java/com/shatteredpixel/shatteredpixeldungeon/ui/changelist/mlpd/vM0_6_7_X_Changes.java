@@ -111,7 +111,7 @@ public class vM0_6_7_X_Changes {
     }
 
     public static void add_v0_6_53_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.3.0-Beta5.0", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.3.0-Beta5-5.1", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -124,6 +124,9 @@ public class vM0_6_7_X_Changes {
 
         changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("MLPD-原创音乐-丛林Boss通用曲-丛林尽头"),
                 ("感谢Prohonor的制作，实装在丛林Boss区。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.SKULL), ("暗影"),
+                ("暗影会学习你的属性面板，但会减半，随着楼层深入和英雄成长，暗影会变得更加强大。")));
 
         changes = new ChangeInfo("改动", false, null);
         changes.hardlight(Window.CYELLOW);
