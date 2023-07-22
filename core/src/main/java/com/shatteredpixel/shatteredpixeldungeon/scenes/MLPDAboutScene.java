@@ -25,7 +25,7 @@ public class MLPDAboutScene extends PixelScene {
 
     private static String TXT_ANSDO() { return Messages.get(MLPDAboutScene.class, "txt_ansdo") + "\n冷群怪 & 奈亚子 & Delicateloong";}
 
-    private static String LNK_MLPD_SOURCE() { return "https://github.com/AnsdoShip/Magic-Ling-Pixel-Dungeon-Ling";}
+    private static String LNK_MLPD_SOURCE() { return "https://github.com/LingASDJ/magic-ling-pixel-dungeon";}
     private static String TXT_MLPD_SOURCE() { return Messages.get(MLPDAboutScene.class,"github");}
 
     private static String LNK_QQDiscord() { return Messages.get(MLPDAboutScene.class,"joinlink");}

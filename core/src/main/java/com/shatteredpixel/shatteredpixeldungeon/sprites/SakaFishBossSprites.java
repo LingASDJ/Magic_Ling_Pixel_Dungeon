@@ -10,10 +10,10 @@ public class SakaFishBossSprites extends MobSprite {
 
         texture( Assets.Sprites.SKFS );
 
-        TextureFilm frames = new TextureFilm( texture, 29, 15 );
+        TextureFilm frames = new TextureFilm( texture, 29, 12 );
 
-        idle = new Animation( 12, true );
-        idle.frames( frames, 7,7,8,9,10 );
+        idle = new Animation( 4, true );
+        idle.frames( frames, 14,15,16,17 );
 
         run = new Animation( 10, true );
         run.frames( frames, 2,3 );

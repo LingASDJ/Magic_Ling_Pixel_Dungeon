@@ -38,7 +38,7 @@ public class LostBackpack extends Item {
 
 	{
 		image = ItemSpriteSheet.LOSTBAG;
-
+		stackable = false;
 		unique = true;
 	}
 

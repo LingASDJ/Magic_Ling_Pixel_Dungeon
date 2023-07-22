@@ -32,7 +32,7 @@ public class OilLantern extends Item {
     private static final String CHARGE = "charge";
     private static final String FLASKS = "flasks";
 
-    private static final int MAX_CHARGE = 30;
+    private static final int MAX_CHARGE = 60;
     private static final float TIME_TO_USE = 2.0f;
 
     private static final String TXT_STATUS = "%d%%";

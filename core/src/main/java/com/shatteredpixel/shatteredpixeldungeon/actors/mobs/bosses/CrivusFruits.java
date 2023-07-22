@@ -92,6 +92,7 @@ public class CrivusFruits extends Mob {
         @Override
         public void detach() {
             super.detach();
+            //遍历楼层生物，寻找CrivusFruits执行扣血，在触手死亡时强制扣除本体CrivusFruits
             for (Mob m : Dungeon.level.mobs){
                 if (m instanceof CrivusFruits){
                     m.damage((int)7.5, this);

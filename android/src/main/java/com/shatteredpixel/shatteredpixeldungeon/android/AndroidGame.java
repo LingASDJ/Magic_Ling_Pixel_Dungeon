@@ -33,6 +33,7 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidAudio;
 import com.badlogic.gdx.backends.android.AsynchronousAndroidAudio;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.GameNesImpl;
@@ -46,6 +47,8 @@ import com.watabou.utils.FileUtils;
 public class AndroidGame extends AndroidApplication {
 	
 	public static AndroidApplication instance;
+
+	public FirebaseAnalytics mFirebaseAnalytics;
 
 	private static AndroidPlatformSupport support;
 
@@ -74,6 +77,9 @@ public class AndroidGame extends AndroidApplication {
 				News.service = NewsImpl.getNewsService();
 			}
 
+
+
+
 			FileUtils.setDefaultFileProperties(Files.FileType.Local, "");
 
 			// grab preferences directly using our instance first
@@ -84,11 +90,9 @@ public class AndroidGame extends AndroidApplication {
 			//UCEHandler.Builder builder = new UCEHandler.Builder(this);
 			//builder.build();
 
-//			mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-//
-//			FirebaseCrashlytics.getInstance().setUserId(SPDSettings.customSeed());
-//
-//			FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
+
+
+
 
 		} else {
 			instance = this;

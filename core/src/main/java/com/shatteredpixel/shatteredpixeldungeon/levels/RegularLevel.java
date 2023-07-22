@@ -22,7 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
 
@@ -265,7 +265,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 		if (Dungeon.NyzshopOnLevel()) {
-			Buff.affect(hero, RandomBuff.class).set( (3 + Random.Int(9)+hero.STR/6+hero.HP/30)/Random.Int(1,2)+5, 1 );
+			Buff.affect(hero, RandomBuff.class).set( (4 + Random.Int(9)+hero.STR/6+hero.HP/30)/Random.Int(1,2)+5, 1 );
 			initRooms.add(new NyzBombAndBooksRoom());
 		}
 
@@ -294,7 +294,7 @@ public abstract class RegularLevel extends Level {
 				initRooms.add(new AutoShopRoom());
 				Buff.affect(hero, AutoRandomBuff.class).set((10), 1);
 			}
-		} else if(Dungeon.isChallenged(SBSG)){
+		} else if(Dungeon.isChallenged(EXSG)){
 			if(Dungeon.AutoShopLevel()) {
 				initRooms.add(new AutoShopRoom());
 				Buff.affect(hero, AutoRandomBuff.class).set((10), 1);

@@ -10,7 +10,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
-import com.shatteredpixel.shatteredpixeldungeon.services.updates.Updates;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
@@ -341,7 +340,6 @@ public class TitleScene extends PixelScene {
 
 		public ChangesButton( Chrome.Type type, String label ){
 			super(type, label);
-			if (SPDSettings.updates()) Updates.checkForUpdate();
 		}
 
 		@Override

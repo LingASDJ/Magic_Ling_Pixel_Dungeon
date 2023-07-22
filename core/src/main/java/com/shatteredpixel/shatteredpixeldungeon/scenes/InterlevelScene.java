@@ -33,16 +33,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.services.updates.Updates;
 import com.shatteredpixel.shatteredpixeldungeon.ui.GameLog;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
 import com.watabou.gltextures.TextureCache;
@@ -179,12 +178,8 @@ public class InterlevelScene extends PixelScene {
 		else if (loadingDepth <= 25)    loadingAsset = Assets.Interfaces.LOADING_HALLS;
 		else                            loadingAsset = Assets.Interfaces.SHADOW;
 
-		//slow down transition when displaying an install prompt
-		if (Updates.isInstallable()){
-			fadeTime += 0.9f; //adds 1 second total
-			//speed up transition when debugging
-			//本地调试+桌面
-		} else if (DeviceCompat.isDebug() && DeviceCompat.isDesktop()){
+		//本地调试+桌面
+		if (DeviceCompat.isDebug() && DeviceCompat.isDesktop()){
 			fadeTime = 0.1f;
 		} else {
 			//打包后的环境
@@ -525,9 +520,8 @@ public class InterlevelScene extends PixelScene {
 			}
 			Dungeon.hero.resurrect();
 
-			//todo 灯火少于30给予一个食物。
-			if(lanterfireactive && hero.lanterfire <= 35){
-				level.drop(new Food(), invPos);
+			if(lanterfireactive && hero.lanterfire <= 30){
+				GLog.n("你的遗物被上一世暗影吞噬了，它正在本层游荡，快去寻找它吧！");
 			} else {
 				level.drop(new LostBackpack(), invPos);
 			}

@@ -1,14 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -75,15 +69,14 @@ public class YogReal extends Boss {
     {
         initProperty();
         initBaseStatus(0, 0, 1, 0, 1200, 0, 0);
-        initStatus(500);
-        HP=800;
-        HT=800;
+        initStatus(666);
+
         spriteClass = YogSprite.class;
         properties.add(Property.IMMOVABLE);
         properties.add(Property.DEMONIC);
 
         //see all the map
-        viewDistance = 16;
+        viewDistance = 99;
         state=HUNTING;
     }
 
@@ -148,7 +141,7 @@ public class YogReal extends Boss {
             int spawnPos = -1;
             for (int i : PathFinder.NEIGHBOURS8){
                 if (Actor.findChar(pos+i) == null){
-                    if (spawnPos == -1 || Dungeon.level.trueDistance(Dungeon.hero.pos, spawnPos) > Dungeon.level.trueDistance(Dungeon.hero.pos, pos+i)){
+                    if (spawnPos == -1 || Dungeon.level.trueDistance(hero.pos, spawnPos) > Dungeon.level.trueDistance(hero.pos, pos+i)){
                         spawnPos = pos + i;
                     }
                 }
@@ -158,7 +151,7 @@ public class YogReal extends Boss {
                 summon.pos = spawnPos;
                 GameScene.add( summon );
                 Actor.addDelayed( new Pushing( summon, pos, summon.pos ), -1 );
-                summon.beckon(Dungeon.hero.pos);
+                summon.beckon(hero.pos);
                 success = true;
             }
 
@@ -178,7 +171,7 @@ public class YogReal extends Boss {
             //find nearest
             for (int i : candidates){
                 if (Actor.findChar(i) == null){
-                    if (spawnPos == -1 || Dungeon.level.trueDistance(Dungeon.hero.pos, spawnPos) > Dungeon.level.trueDistance(Dungeon.hero.pos, i)){
+                    if (spawnPos == -1 || Dungeon.level.trueDistance(hero.pos, spawnPos) > Dungeon.level.trueDistance(hero.pos, i)){
                         spawnPos = i;
                     }
                 }
@@ -188,7 +181,7 @@ public class YogReal extends Boss {
                 summon.pos = spawnPos;
                 GameScene.add( summon );
                 CellEmitter.get(spawnPos).start(ElmoParticle.FACTORY, 0.05f, 20);
-                summon.beckon(Dungeon.hero.pos);
+                summon.beckon(hero.pos);
                 success = true;
             }
 
@@ -213,7 +206,7 @@ public class YogReal extends Boss {
                 Buff.detach(this, YogScanRound.class);
                 int skill  = Random.chances(skillBalance);
                 if (skill == 0) {
-                    Char enemy = (this.enemy == null ? Dungeon.hero : this.enemy);
+                    Char enemy = (this.enemy == null ? hero : this.enemy);
                     int w = Dungeon.level.width();
                     int dx = enemy.pos % w - pos % w;
                     int dy = enemy.pos / w - pos / w;
@@ -234,7 +227,7 @@ public class YogReal extends Boss {
                     beamCD = 20 + count - (phase == 5?19:0);
                     skillBalance[skill] /= 2.25f;
                 }
-                Dungeon.hero.interrupt();
+                hero.interrupt();
                 if(skillBalance[0] < 0.1f){
                     skillBalance[0] = skillBalance[1] = skillBalance[2] = 100f;
                 }
@@ -245,8 +238,8 @@ public class YogReal extends Boss {
     private void actSummonFist(){
         //vfx
         Dungeon.level.viewDistance = Math.max(1, Dungeon.level.viewDistance-1);
-        if (Dungeon.hero.buff(Light.class) == null){
-            Dungeon.hero.viewDistance = Dungeon.level.viewDistance;
+        if (hero.buff(Light.class) == null){
+            hero.viewDistance = Dungeon.level.viewDistance;
         }
         Dungeon.observe();
         GLog.n(Messages.get(this, "darkness"));
@@ -256,7 +249,7 @@ public class YogReal extends Boss {
             int dist = Dungeon.level.distance(pos, ch.pos);
             if(dist <= 4 && dist > 0){
                 Ballistica ba = HitBack.bounceBack(ch, this);
-                WandOfBlastWave.throwChar(ch, ba, 10 - 2 * dist, false, false, getClass());
+                WandOfBlastWave.throwChar(ch, ba, 10 - 2 * dist, true, false, YogReal.class);
             }
         }
 
@@ -270,7 +263,6 @@ public class YogReal extends Boss {
             candidates[n]=prev;
         }
 
-
         for(int i=0;i<phase-1;++i) {
             YogRealFirst fist = (YogRealFirst) Reflection.newInstance(fistSummons.remove(0));
             fist.pos = pos + candidates[i];
@@ -281,9 +273,9 @@ public class YogReal extends Boss {
 
     }
     // 6, 9, 12 enemies on destroy.
-    private static final int[] destroySummon_1 = {3, 2, 1};
-    private static final int[] destroySummon_2 = {3, 3, 3};
-    private static final int[] destroySummon_3 = {0, 6, 6};
+    private static final int[] destroySummon_1 = {3, 2, 0};
+    private static final int[] destroySummon_2 = {3, 2, 2};
+    private static final int[] destroySummon_3 = {2, 4, 4};
 
     private void actDestroy(){
         if(findFist() == null && phase > destroyed + 1 && phase <= 4) {
@@ -353,16 +345,16 @@ public class YogReal extends Boss {
 
     @Override
     protected boolean act() {
+
         for (Buff buff : hero.buffs()) {
             if (buff instanceof RoseShiled) {
                 buff.detach();
-                //GLog.b("玫瑰结界的创始人是翼绫，你怎么敢用她的技能?/kill @e[type=RoseShiled] enemy!");
             }
             if (buff instanceof HaloFireImBlue ||buff instanceof FireImbue) {
                 buff.detach();
-                //GLog.b("你想免疫火的伤害？在我这里，没有可能！/kill @e[type=FireImbue=All] enemy!");
             }
         }
+
         //char logic
         if (fieldOfView == null || fieldOfView.length != Dungeon.level.length()){
             fieldOfView = new boolean[Dungeon.level.length()];
@@ -374,7 +366,7 @@ public class YogReal extends Boss {
         //mob logic
         enemy = chooseEnemy();
 
-        if(enemy == null) enemy = Dungeon.hero;
+        if(enemy == null) enemy = hero;
 
         enemySeen = enemy != null && enemy.isAlive() && fieldOfView[enemy.pos] && enemy.invisible <= 0;
         //end of char/mob logic
@@ -384,7 +376,7 @@ public class YogReal extends Boss {
         actDestroy();
 
         if (phase == 0){
-            if (Dungeon.hero.viewDistance >= Dungeon.level.distance(pos, Dungeon.hero.pos)) {
+            if (hero.viewDistance >= Dungeon.level.distance(pos, hero.pos)) {
                 Dungeon.observe();
             }
             if (Dungeon.level.heroFOV[pos]) {
@@ -410,12 +402,6 @@ public class YogReal extends Boss {
                 damage = 25;
             }
         }
-        if (damage >= 380){
-            damage = 380 + (int)(Math.sqrt(4*(damage - 14) + 1) - 1)/2;
-            hero.HT = 25;
-            Buff.affect(hero, Degrade.class, 12f);
-        }
-
 
         if(src instanceof Buff || src instanceof Blob){
             damage = Math.max(0, damage-1);
@@ -424,7 +410,7 @@ public class YogReal extends Boss {
         int preHP = HP;
         super.damage(damage, src);
         int postHP = HP;
-        int threshold = 800-200*phase;
+        int threshold = 1200-300*phase;
         if(preHP > threshold && postHP<=threshold){
             HP = threshold;
             ++phase;
@@ -436,11 +422,11 @@ public class YogReal extends Boss {
             summonCD -= dmgTaken / 8f + 1f;
         }
 
-        if(HP<=200){
+        if(HP<=600){
             BossHealthBar.bleed(true);
         }
 
-        LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+        LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null) lock.addTime(dmgTaken);
 
     }
@@ -476,44 +462,16 @@ public class YogReal extends Boss {
     @Override
     public void die( Object cause ) {
         GameScene.flash(0x80FFFFFF);
-        actScanning();
-        actSummon();
-        Statistics.bossScores[4] += 15000;
-        actDestroy();
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 
-            GetBossLoot();
-        }
         for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
-            if (mob instanceof Larva
-                    || mob instanceof RipperDemon
-                    ||mob instanceof Scorpio
-                    ||mob instanceof Succubus) {
+            if (mob.alignment == Alignment.ENEMY && mob != this) {
                 mob.die( cause );
             }
         }
 
-        if(Dungeon.isChallenged(RLPT)){
-            Badges.GOODRLPT();
-        }
-
-
-
-        if(Dungeon.isChallenged(SBSG)){
-            Badges.BIGX();
-        }
-
-        if(Dungeon.isChallenged(EXSG)){
-            Badges.EXSG();
-        }
-
-        if(Dungeon.isChallenged(AQUAPHOBIA)){
-            Badges.CLEARWATER();
-        }
-
         Dungeon.level.viewDistance = 4;
-        if (Dungeon.hero.buff(Light.class) == null){
-            Dungeon.hero.viewDistance = Dungeon.level.viewDistance;
+        if (hero.buff(Light.class) == null){
+            hero.viewDistance = Dungeon.level.viewDistance;
         }
 
         for(int i=0;i<4;++i){
@@ -571,7 +529,7 @@ public class YogReal extends Boss {
         regularSummons.clear();
         Collections.addAll(regularSummons, b.getClassArray("REGULAR_SUMMONS"));
         if(phase>0) BossHealthBar.assignBoss(this);
-        if (HP < 200) BossHealthBar.bleed(true);
+        if (HP < 600) BossHealthBar.bleed(true);
     }
 
 
@@ -619,11 +577,7 @@ public class YogReal extends Boss {
     }
 
     //used so death to yog's ripper demons have their own rankings description and are more aggro
-    public static class YogRealRipper extends BlackHost {
-        {
-            maxLvl = -999;
-            viewDistance = 8;
-        }
+    public static class YogRealRipper extends RipperDemon {
         @Override
         public void damage(int dmg, Object src){
             if(Dungeon.level.distance(pos, YogGodHardBossLevel.CENTER)<=4){
@@ -641,7 +595,7 @@ public class YogReal extends Boss {
         @Override
         public void damage(int dmg, Object src){
             if(Dungeon.level.distance(pos, YogGodHardBossLevel.CENTER)<=4){
-                dmg = Math.max(dmg/3, 2);
+                dmg = Math.max(dmg/6, 2);
             }
             super.damage(dmg, src);
         }
@@ -693,7 +647,6 @@ public class YogReal extends Boss {
         @Override
         public boolean act(){
             spend(TICK);
-
             if(left > 0){
                 renderWarning((direction & 2) == 0, (direction & 1) != 0);
                 --left;
@@ -774,8 +727,9 @@ public class YogReal extends Boss {
             if(ch.alignment == Alignment.ENEMY) return 0;
             ch.damage( Random.Int(50, 80), YogReal.class );
             ch.sprite.centerEmitter().burst( PurpleParticle.BURST, Random.IntRange( 5, 10 ) );
+            Statistics.bossScores[5] -= 500;
             ch.sprite.flash();
-            if(ch == Dungeon.hero){
+            if(ch == hero){
                 Sample.INSTANCE.play(Assets.Sounds.BLAST, Random.Float(1.1f, 1.5f));
                 Buff.affect(ch, Degrade.class, 50f);
                 if(!ch.isAlive()) Dungeon.fail(getClass());
@@ -857,11 +811,10 @@ public class YogReal extends Boss {
         public int onHitProc(Char ch) {
             if (ch.alignment == Alignment.ENEMY) return 0;
             ch.damage(Random.Int(40, 70), YogReal.class);
-            Statistics.bossScores[3] -= 500;
             ch.sprite.centerEmitter().burst(RainbowParticle.BURST, Random.Int(20, 35));
             ch.sprite.flash();
             Buff.affect(ch, Blindness.class, 50f);
-            if (ch == Dungeon.hero) {
+            if (ch == hero) {
                 Sample.INSTANCE.play(Assets.Sounds.BLAST, Random.Float(1.1f, 1.5f));
                 if (!ch.isAlive()) Dungeon.fail(getClass());
             }
@@ -931,10 +884,9 @@ public class YogReal extends Boss {
                 if (ch != null) {
                     if (ch.alignment == Alignment.ENEMY) continue;
                     ch.damage(Random.Int(30, 50), YogReal.class);
-                    Statistics.bossScores[3] -= 500;
                     Buff.affect(ch, Blindness.class, 5f);
                     ch.sprite.flash();
-                    if (ch == Dungeon.hero) {
+                    if (ch == hero) {
                         Sample.INSTANCE.play(Assets.Sounds.BLAST, Random.Float(0.9f, 1.1f));
                         if (!ch.isAlive()) Dungeon.fail(getClass());
                     }
@@ -959,7 +911,7 @@ public class YogReal extends Boss {
         private void findTarget(){
             lastAim = aim;
             //I can't get char.enemy from target, it's protected!
-            aim = Dungeon.hero.pos;
+            aim = hero.pos;
         }
 
         @Override

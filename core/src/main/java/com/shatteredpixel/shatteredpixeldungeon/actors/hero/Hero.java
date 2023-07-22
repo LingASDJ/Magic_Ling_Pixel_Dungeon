@@ -1967,7 +1967,7 @@ public class Hero extends Char {
 		//灯火值低于35死亡生成自己的邪恶面，并清空金币，将金币保存到json文件。（灵感：空洞骑士）
 		for (Ankh i : belongings.getAllItems(Ankh.class)) {
 			if (ankh == null || i.isBlessed()) {
-				if (lanterfireactive && hero.lanterfire <= 35 && !i.isBlessed()) {
+				if (lanterfireactive && hero.lanterfire <= 30 && !i.isBlessed()) {
 					BlackSoul s = new BlackSoul();
 					s.pos = Dungeon.hero.pos;
 					s.gold = Dungeon.gold;

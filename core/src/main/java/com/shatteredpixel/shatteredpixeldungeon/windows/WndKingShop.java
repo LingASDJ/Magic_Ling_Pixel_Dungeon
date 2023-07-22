@@ -281,7 +281,7 @@ public class WndKingShop extends Window {
             RedButton btnConfirm = new RedButton(Messages.get(WndKingShop.class, "buy")){
                 @Override
                 protected void onClick() {
-                    if(Dungeon.gold >500) {
+                    if(Dungeon.gold >=500) {
                         Dungeon.gold-=500;
                         WndKingShop.this.selectReward( item );
                         Buff.prolong( hero, ReloadShop.class, 1f);

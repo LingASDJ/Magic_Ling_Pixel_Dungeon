@@ -100,6 +100,7 @@ public class Challenges {
 			if (item instanceof Armor && !(item instanceof ClothArmor || item instanceof ClassArmor)) {
 				//GLog.n("这片大地吃布甲之外的护甲从不挑食,侦查到作弊行为，已移除"+item);
 				GLog.n(Messages.get(Challenges.class, "no_armorx"), item);
+				return true;
 			}
 		}
 
