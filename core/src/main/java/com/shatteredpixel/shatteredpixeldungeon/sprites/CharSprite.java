@@ -329,6 +329,13 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		jump( from, to, callback, distance * 2, distance * 0.1f );
 	}
 
+	public void dirtcar( int from, int to, Callback callback ) {
+		float distance = Dungeon.level.trueDistance( from, to );
+		jump( from, to, callback, 0, distance * 0.1f );
+	}
+
+
+
 	public void jump( int from, int to, Callback callback, float height, float duration ) {
 		jumpCallback = callback;
 

@@ -1423,7 +1423,7 @@ public class GameScene extends PixelScene {
 		Buff.detach( ch, MagicGirlSayTimeLast.class );
 	}
 
-
+	/** Boss 出场的Logo显示 灵感：泰拉瑞亚灾厄炼狱 */
 	public static void bossReady() {
 		if (Dungeon.hero.isAlive()) {
 			Banner bossSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
@@ -1438,10 +1438,10 @@ public class GameScene extends PixelScene {
 						scene.showBanner( bossSlain );
 					}
 					break;
-				case 5:
-					if(!Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ) {
-						bossSlain.texture(Assets.Interfaces.QliPhoth_Title);
-						bossSlain.show(0xFFFFFF, 0.3f, 5f);
+				case 0:
+					if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ) {
+						bossSlain.texture(Assets.Interfaces.SakaBJY_Title);
+						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
 					}
 					break;
@@ -1472,10 +1472,10 @@ public class GameScene extends PixelScene {
 						scene.showBanner( bossSlain );
 					}
 					break;
-				case 5:
-					if(!Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ) {
-						bossSlain.texture(Assets.Interfaces.QliPhoth_Clear);
-						bossSlain.show(0xFFFFFF, 0.3f, 5f);
+				case 0:
+					if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ) {
+						bossSlain.texture(Assets.Interfaces.SakaBJY_Clear);
+						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
 					}
 					break;

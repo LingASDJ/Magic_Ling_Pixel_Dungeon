@@ -23,6 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.items.spells;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -108,14 +110,21 @@ public class Alchemize extends Spell {
 			this.owner = owner;
 
 			float pos = height;
-
+			Shopkeeper shop = null;
+			for (Char ch : Actor.chars()){
+				if (ch instanceof Shopkeeper){
+					shop = (Shopkeeper) ch;
+					break;
+				}
+			}
+			final Shopkeeper finalShop = shop;
 			if (Shopkeeper.canSell(item)) {
 				if (item.quantity() == 1) {
 
 					RedButton btnSell = new RedButton(Messages.get(this, "sell", item.value())) {
 						@Override
 						protected void onClick() {
-							WndTradeItem.sell(item);
+							WndTradeItem.sell(item,finalShop);
 							hide();
 							consumeAlchemize();
 						}
@@ -143,7 +152,7 @@ public class Alchemize extends Spell {
 					RedButton btnSellAll = new RedButton(Messages.get(this, "sell_all", priceAll)) {
 						@Override
 						protected void onClick() {
-							WndTradeItem.sell(item);
+							WndTradeItem.sell(item,finalShop);
 							hide();
 							consumeAlchemize();
 						}

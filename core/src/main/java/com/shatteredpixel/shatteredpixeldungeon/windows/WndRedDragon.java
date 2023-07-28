@@ -195,7 +195,7 @@ public class WndRedDragon extends Window {
                 @Override
                 protected void onClick() {
                     RewardWindow.this.hide();
-                    if (rewardObtained == false) {
+                    if (!rewardObtained) {
                         WndRedDragon.this.selectReward(item);
                     } else {
                         GLog.b(Messages.get(this, "why"));

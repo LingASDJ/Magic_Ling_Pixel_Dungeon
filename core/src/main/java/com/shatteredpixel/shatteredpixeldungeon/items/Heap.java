@@ -21,8 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
@@ -42,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -56,7 +58,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 
 public class Heap implements Bundlable {
-	
+
 	public enum Type {
 		HEAP,
 		FOR_SALE,
@@ -64,6 +66,8 @@ public class Heap implements Bundlable {
 		LOCKED_CHEST,
 		CRYSTAL_CHEST,
 		TOMB,
+		TELECRYSTL,
+		WHITETOMB,
 		SKELETON,
 		REMAINS,
 		BLACK
@@ -84,6 +88,12 @@ public class Heap implements Bundlable {
 		switch (type) {
 		case TOMB:
 			Wraith.spawnAround( hero.pos );
+			break;
+		case WHITETOMB:
+			ScrollOfTeleportation.appear( hero,hero.pos+5 );
+			break;
+		case TELECRYSTL:
+			ScrollOfTeleportation.appear( hero,level.entrance );
 			break;
 		case REMAINS:
 		case SKELETON:
@@ -227,7 +237,7 @@ public class Heap implements Bundlable {
 		
 		if (burnt || evaporated) {
 			
-			if (Dungeon.level.heroFOV[pos]) {
+			if (level.heroFOV[pos]) {
 				if (burnt) {
 					burnFX( pos );
 				} else {
@@ -248,7 +258,7 @@ public class Heap implements Bundlable {
 	public void explode() {
 
 		//breaks open most standard containers, mimics die.
-		if (type == Type.CHEST || type == Type.SKELETON) {
+		if (type == Type.CHEST || type == Type.SKELETON || type == Type.TELECRYSTL) {
 			type = Type.HEAP;
 			sprite.link();
 			sprite.drop();
@@ -343,7 +353,7 @@ public class Heap implements Bundlable {
 	}
 	
 	public void destroy() {
-		Dungeon.level.heaps.remove( this.pos );
+		level.heaps.remove( this.pos );
 		if (sprite != null) {
 			sprite.kill();
 		}
@@ -364,10 +374,12 @@ public class Heap implements Bundlable {
 				return Messages.get(this, "chest");
 			case LOCKED_CHEST:
 				return Messages.get(this, "locked_chest");
-			case CRYSTAL_CHEST:
+			case CRYSTAL_CHEST: case TELECRYSTL:
 				return Messages.get(this, "crystal_chest");
 			case TOMB:
 				return Messages.get(this, "tomb");
+			case WHITETOMB:
+				return Messages.get(this, "wtomb");
 			case SKELETON:
 				return Messages.get(this, "skeleton");
 			case REMAINS:
@@ -381,7 +393,7 @@ public class Heap implements Bundlable {
 
 	public String info(){
 		switch(type){
-			case CHEST:
+			case CHEST:case TELECRYSTL:
 				return Messages.get(this, "chest_desc");
 			case LOCKED_CHEST:
 				return Messages.get(this, "locked_chest_desc");
@@ -396,6 +408,8 @@ public class Heap implements Bundlable {
 					return Messages.get(this, "crystal_chest_desc", Messages.get(this, "unknow") );
 			case TOMB:
 				return Messages.get(this, "tomb_desc");
+			case WHITETOMB:
+				return Messages.get(this, "wtomb_desc");
 			case BLACK:
 				return Messages.get(this, "black_chest_desc");
 			case SKELETON:

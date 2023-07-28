@@ -10,6 +10,7 @@ import com.watabou.utils.Callback;
 public class BGMPlayer {
 
 
+    //解决电脑端高质量ogg的闪退问题
     public static void playBGM(String name, boolean loop) {
         Game.runOnRenderThread(new Callback() {
             @Override
@@ -33,7 +34,7 @@ public class BGMPlayer {
             if (d == -1) {
                 playBGM(Assets.SNOWCYON, true);
             }else if (d == 0||d==27) {
-                playBGM(Assets.SNOWCYON, true);
+                playBGM(Assets.SKBJY, true);
             } else if (d > 0 && d <= 5) {
                 playBGM(Assets.BGM_1, true);
             } else if (d > 5 && d <= 10) {

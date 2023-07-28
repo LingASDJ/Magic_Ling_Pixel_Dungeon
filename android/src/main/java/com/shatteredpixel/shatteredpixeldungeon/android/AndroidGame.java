@@ -79,7 +79,6 @@ public class AndroidGame extends AndroidApplication {
 
 
 
-
 			FileUtils.setDefaultFileProperties(Files.FileType.Local, "");
 
 			// grab preferences directly using our instance first

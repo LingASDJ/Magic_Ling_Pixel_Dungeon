@@ -169,6 +169,9 @@ public enum HeroClass {
 			new PotionOfDragonKingBreath().quantity(50).identify().collect();
 
 			new PotionOfHealing().quantity(50).identify().collect();
+
+			new PotionOfMindVision().quantity(50).identify().collect();
+
 			new PotionOfLiquidFlame().quantity(50).identify().collect();
 			new DimandBook().quantity(50).identify().collect();
 			new PotionOfExperience().quantity(100).identify().collect();

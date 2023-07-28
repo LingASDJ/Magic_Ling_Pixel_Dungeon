@@ -256,6 +256,9 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new MagicDimandRoom());
 		}
 
+//		initRooms.add(new EyeRoom());
+//		initRooms.add(new YinYangRoom());
+
 		if (Dungeon.NxhyshopOnLevel()) {
 			initRooms.add(new NxhyShopRoom());
 		}

@@ -18,11 +18,17 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 public class LockSword extends MeleeWeapon {
+
+
+
+
     private int lvl = 0;
 
     public LockSword() {
         super.image = ItemSpriteSheet.DG3;
         super.tier = 5;
+//        InterlevelScene.mode = InterlevelScene.Mode.ANCITYBOSS;
+//        Game.switchScene(InterlevelScene.class);
     }
 
     @Override

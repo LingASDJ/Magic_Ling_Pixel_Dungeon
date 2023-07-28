@@ -43,35 +43,28 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
-import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
-import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LarvaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSprite;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
-import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 
 public class YogDzewa extends Mob {
 
@@ -196,98 +189,7 @@ public class YogDzewa extends Mob {
 			return true;
 		} else {
 
-			boolean terrainAffected = false;
-			HashSet<Char> affected = new HashSet<>();
-			//delay fire on a rooted hero
-			if (!Dungeon.hero.rooted) {
-				for (int i : targetedCells) {
-					Ballistica b = new Ballistica(pos, i, Ballistica.WONT_STOP);
-					//shoot beams
-					sprite.parent.add(new Beam.DeathRay(sprite.center(), DungeonTilemap.raisedTileCenterToWorld(b.collisionPos)));
-					for (int p : b.path) {
-						Char ch = Actor.findChar(p);
-						if (ch != null && (ch.alignment != alignment || ch instanceof Bee)) {
-							affected.add(ch);
-						}
-						if (Dungeon.level.flamable[p]) {
-							Dungeon.level.destroy(p);
-							GameScene.updateMap(p);
-							terrainAffected = true;
-						}
-					}
-				}
-				if (terrainAffected) {
-					Dungeon.observe();
-				}
-				for (Char ch : affected) {
-					if (ch == Dungeon.hero) {
-						Statistics.bossScores[4] -= 1000;
-					}
-					if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
-						ch.damage(Random.NormalIntRange(30, 50), new Eye.DeathGaze());
-					} else {
-						ch.damage(Random.NormalIntRange(20, 30), new Eye.DeathGaze());
-					}
 
-					if (Dungeon.level.heroFOV[pos]) {
-						ch.sprite.flash();
-						CellEmitter.center(pos).burst(PurpleParticle.BURST, Random.IntRange(1, 2));
-					}
-					if (!ch.isAlive() && ch == Dungeon.hero) {
-						Dungeon.fail(getClass());
-						GLog.n(Messages.get(Char.class, "kill", name()));
-					}
-				}
-				targetedCells.clear();
-			}
-
-			if (abilityCooldown <= 0){
-
-				int beams = 1 + (HT - HP)/400;
-				HashSet<Integer> affectedCells = new HashSet<>();
-				for (int i = 0; i < beams; i++){
-
-					int targetPos = Dungeon.hero.pos;
-					if (i != 0){
-						do {
-							targetPos = Dungeon.hero.pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
-						} while (Dungeon.level.trueDistance(pos, Dungeon.hero.pos)
-								> Dungeon.level.trueDistance(pos, targetPos));
-					}
-					targetedCells.add(targetPos);
-					Ballistica b = new Ballistica(pos, targetPos, Ballistica.WONT_STOP);
-					affectedCells.addAll(b.path);
-				}
-
-				//remove one beam if multiple shots would cause every cell next to the hero to be targeted
-				boolean allAdjTargeted = true;
-				for (int i : PathFinder.NEIGHBOURS9){
-					if (!affectedCells.contains(Dungeon.hero.pos + i) && Dungeon.level.passable[Dungeon.hero.pos + i]){
-						allAdjTargeted = false;
-						break;
-					}
-				}
-				if (allAdjTargeted){
-					targetedCells.remove(targetedCells.size()-1);
-				}
-				for (int i : targetedCells){
-					Ballistica b = new Ballistica(pos, i, Ballistica.WONT_STOP);
-					for (int p : b.path){
-						sprite.parent.add(new TargetedCell(p, 0xFF0000));
-						affectedCells.add(p);
-					}
-				}
-
-				//don't want to overly punish players with slow move or attack speed
-				spend(GameMath.gate(TICK, Dungeon.hero.cooldown(), 3*TICK));
-				Dungeon.hero.interrupt();
-
-				abilityCooldown += Random.NormalFloat(MIN_ABILITY_CD, MAX_ABILITY_CD);
-				abilityCooldown -= (phase - 1);
-
-			} else {
-				spend(TICK);
-			}
 
 			while (summonCooldown <= 0){
 
@@ -640,4 +542,6 @@ public class YogDzewa extends Mob {
 			maxLvl = -2;
 		}
 	}
+
+
 }

@@ -955,7 +955,7 @@ public class Hero extends Char {
 		}
 
 		///测试坐标用
-		//GLog.w(String.valueOf(hero.pos));
+		GLog.w(String.valueOf(hero.pos));
 
 		//携带该物品时，玩家血量低于一半后自动隐身一段回合。
 		//actMove实现
@@ -1166,7 +1166,7 @@ public class Hero extends Char {
 				}
 
 				switch (heap.type) {
-				case TOMB:
+				case TOMB: case WHITETOMB:
 					Sample.INSTANCE.play( Assets.Sounds.TOMB );
 					Camera.main.shake( 1, 0.5f );
 					break;

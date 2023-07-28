@@ -26,6 +26,8 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.shopOnLevel;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShopGuardDead;
@@ -61,13 +63,20 @@ public class WndTradeItem extends WndInfoItem {
 		this.owner = owner;
 
 		float pos = height;
-
+		Shopkeeper shop = null;
+		for (Char ch : Actor.chars()){
+			if (ch instanceof Shopkeeper){
+				shop = (Shopkeeper) ch;
+				break;
+			}
+		}
+		final Shopkeeper finalShop = shop;
 		if (item.quantity() == 1) {
 
 			RedButton btnSell = new RedButton( Messages.get(this, "sell", item.value()) ) {
 				@Override
 				protected void onClick() {
-					sell( item );
+					sell( item,finalShop );
 					hide();
 				}
 			};
@@ -93,7 +102,7 @@ public class WndTradeItem extends WndInfoItem {
 			RedButton btnSellAll = new RedButton( Messages.get(this, "sell_all", priceAll ) ) {
 				@Override
 				protected void onClick() {
-					sell( item );
+					sell( item,finalShop );
 					hide();
 				}
 			};
@@ -217,11 +226,11 @@ public class WndTradeItem extends WndInfoItem {
 		}
 		if (selling) Shopkeeper.sell();
 	}
-	
-	public static void sell( Item item ) {
-		
+
+	public static void sell( Item item, Shopkeeper shop ) {
+
 		Hero hero = Dungeon.hero;
-		
+
 		if (item.isEquipped( hero ) && !((EquipableItem)item).doUnequip( hero, false )) {
 			return;
 		}
@@ -229,24 +238,42 @@ public class WndTradeItem extends WndInfoItem {
 
 		//selling items in the sell interface doesn't spend time
 		hero.spend(-hero.cooldown());
-		Statistics.totalScore += 400;
+
 		new Gold( item.value() ).doPickUp( hero );
+
+		if (shop != null){
+			shop.buybackItems.add(item);
+			while (shop.buybackItems.size() > Shopkeeper.MAX_BUYBACK_HISTORY){
+				shop.buybackItems.remove(0);
+			}
+		}
 	}
 
 	public static void sellOne( Item item ) {
-		
+		sellOne( item, null );
+	}
+
+	public static void sellOne( Item item, Shopkeeper shop ) {
+
 		if (item.quantity() <= 1) {
-			sell( item );
+			sell( item, shop );
 		} else {
-			
+
 			Hero hero = Dungeon.hero;
-			Statistics.totalScore += 100;
+
 			item = item.detach( hero.belongings.backpack );
 
 			//selling items in the sell interface doesn't spend time
 			hero.spend(-hero.cooldown());
 
 			new Gold( item.value() ).doPickUp( hero );
+
+			if (shop != null){
+				shop.buybackItems.add(item);
+				while (shop.buybackItems.size() > Shopkeeper.MAX_BUYBACK_HISTORY){
+					shop.buybackItems.remove(0);
+				}
+			}
 		}
 	}
 	

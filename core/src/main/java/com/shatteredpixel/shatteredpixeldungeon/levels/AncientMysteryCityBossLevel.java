@@ -1,7 +1,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.SakaFishBoss;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 public class AncientMysteryCityBossLevel extends Level{
 
@@ -26,7 +32,7 @@ public class AncientMysteryCityBossLevel extends Level{
     private static final short E = Terrain.STATUE;
     private static final short C = Terrain.HIGH_GRASS;
     private static final short M = Terrain.CRYSTAL_DOOR;
-    private static final short G = Terrain.LOCKED_DOOR;
+    private static final short G = Terrain.DOOR;
 
     private static final short K = Terrain.WELL;
 
@@ -76,14 +82,54 @@ public class AncientMysteryCityBossLevel extends Level{
         return true;
     }
 
+    @Override
+    public int randomRespawnCell( Char ch ) {
+        int pos = WIDTH + 16; //random cell adjacent to the entrance.
+        int cell;
+        do {
+            cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
+        } while (!passable[cell]
+                || (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
+                || Actor.findChar(cell) != null);
+        return cell;
+    }
+
+
+
+    private static final int getBossDoor = 688;
+    private static final int LDBossDoor = 661;
+    @Override
+    public void occupyCell( Char ch ) {
+
+        super.occupyCell( ch );
+
+        boolean isTrue = ch.pos == LDBossDoor && ch == Dungeon.hero;
+
+        //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
+        if (map[getBossDoor] == Terrain.DOOR && isTrue || map[getBossDoor] == Terrain.EMBERS && isTrue) {
+            seal();
+        }
+    }
+
+    @Override
+    public void seal() {
+        super.seal();
+
+        set( getBossDoor, Terrain.WALL );
+        GameScene.updateMap( getBossDoor );
+        set( 688, Terrain.LOCKED_DOOR );
+        GameScene.updateMap( 688 );
+        Dungeon.observe();
+    }
+
     /**
      *
      */
     @Override
     protected void createMobs() {
-        SakaFishBoss saka= new SakaFishBoss();
-        saka.pos = (WIDTH*20+13);
-        mobs.add(saka);
+        SakaFishBoss boss = new SakaFishBoss();
+        boss.pos = 337;
+        mobs.add(boss);
     }
 
     /**

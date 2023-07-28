@@ -209,7 +209,11 @@ public class Badges {
 		EXSG                (135),
 		BRCLER                (136),
 
-		HIGH_SCORE_5 				( 137 );
+		HIGH_SCORE_5 				( 137 ),
+
+		SAKA_DIED 				( 138 ),
+
+		RESET_DAY 				( 139 );
 
 		public boolean meta;
 

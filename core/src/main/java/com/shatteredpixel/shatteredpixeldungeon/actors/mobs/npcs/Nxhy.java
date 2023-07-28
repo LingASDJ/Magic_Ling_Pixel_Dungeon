@@ -1,22 +1,15 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NxhySprite;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
-import com.watabou.noosa.Game;
-import com.watabou.utils.Callback;
 
-public class Nxhy extends NPC {
+public class Nxhy extends Shopkeeper {
 
     {
         spriteClass = NxhySprite.class;
@@ -73,49 +66,6 @@ public class Nxhy extends NPC {
                 }
             }
         }
-    }
-
-    @Override
-    public boolean reset() {
-        return true;
-    }
-
-    public static WndBag sell() {
-        return GameScene.selectItem( itemSelector );
-    }
-
-    private static WndBag.ItemSelector itemSelector = new WndBag.ItemSelector() {
-        @Override
-        public String textPrompt() {
-            return Messages.get(Shopkeeper.class, "sell");
-        }
-
-        @Override
-        public boolean itemSelectable(Item item) {
-            return Shopkeeper.canSell(item);
-        }
-
-        @Override
-        public void onSelect( Item item ) {
-            if (item != null) {
-                WndBag parentWnd = sell();
-                GameScene.show( new WndTradeItem( item, parentWnd ) );
-            }
-        }
-    };
-
-    @Override
-    public boolean interact(Char c) {
-        if (c != Dungeon.hero) {
-            return true;
-        }
-        Game.runOnRenderThread(new Callback() {
-            @Override
-            public void call() {
-                sell();
-            }
-        });
-        return true;
     }
 }
 
