@@ -3,28 +3,29 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.watabou.noosa.TextureFilm;
 
-public class SeaVastGirlSprites extends MobSprite {
+public class IceSlowGirlSprites extends MobSprite {
 
-    public SeaVastGirlSprites() {
+    public IceSlowGirlSprites() {
         super();
 
-        texture( Assets.Sprites.VSGR );
+        texture( Assets.Sprites.SXGR );
 
         TextureFilm frames = new TextureFilm( texture, 24, 24 );
 
         idle = new Animation( 2, true );
-        idle.frames( frames, 0, 0, 0, 1,1,1,2 );
+        idle.frames( frames, 0, 1, 0, 1,0,1 );
 
         run = new Animation( 8, true );
-        run.frames( frames, 3, 4, 5, 6 );
+        run.frames( frames, 2, 3, 4, 5 );
 
         attack = new Animation( 15, false );
-        attack.frames( frames, 7, 8, 9, 0 );
+        attack.frames( frames, 6, 7, 8, 0 );
 
         die = new Animation( 7, false );
-        die.frames( frames, 10,11,12);
+        die.frames( frames, 9,10,11 );
 
         play( idle );
     }
 
 }
+

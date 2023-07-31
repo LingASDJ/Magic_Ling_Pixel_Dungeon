@@ -286,7 +286,7 @@ public class InterlevelScene extends PixelScene {
 								exboss(2);
 								break;
 							case ANCITYBOSS:
-								exboss(3);
+								exboss(4);
 								break;
 
 						}
@@ -568,6 +568,9 @@ public class InterlevelScene extends PixelScene {
 				break;
 			case 3:
 				level=Dungeon.AncityWaterLevel();
+				break;
+			case 4:
+				level=Dungeon.AncityBossWaterLevel();
 				break;
 			default:
 				level = Dungeon.newLevel();

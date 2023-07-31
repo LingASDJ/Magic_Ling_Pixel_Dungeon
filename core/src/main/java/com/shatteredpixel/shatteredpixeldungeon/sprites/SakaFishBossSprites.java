@@ -40,7 +40,7 @@ public class SakaFishBossSprites extends MobSprite {
         zap = attack.clone();
 
         die = new Animation( 10, false );
-        die.frames( frames, 1 );
+        die.frames( frames, 23,24,25,26 );
 
         leap = new Animation( 2, true );
         leap.frames( frames, 52,53,54,55 );

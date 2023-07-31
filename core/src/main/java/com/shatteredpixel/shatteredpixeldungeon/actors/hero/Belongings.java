@@ -171,7 +171,7 @@ public class Belongings implements Iterable<Item> {
 		if (bundle.contains( ARMOR )){
 			Armor armor = ((Armor)bundle.get( ARMOR ));
 			if (armor instanceof ClassArmor){
-				info.armorTier = 6;
+				info.armorTier = 7;
 			} else {
 				info.armorTier = armor.tier;
 			}

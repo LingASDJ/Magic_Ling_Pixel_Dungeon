@@ -22,12 +22,14 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
 
 public class ImpShopkeeper extends Shopkeeper {
@@ -72,5 +74,23 @@ public class ImpShopkeeper extends Shopkeeper {
 
 		sprite.emitter().burst( Speck.factory( Speck.WOOL ), 15 );
 		sprite.killAndErase();
+	}
+
+	@Override
+	public void destroy() {
+		super.destroy();
+		for (Heap heap: Dungeon.level.heaps.valueList()) {
+			if (heap.type == Heap.Type.FOR_SALE) {
+				if (ShatteredPixelDungeon.scene() instanceof GameScene) {
+					CellEmitter.get(heap.pos).burst(ElmoParticle.FACTORY, 4);
+				}
+				if (heap.size() == 1) {
+					heap.destroy();
+				} else {
+					heap.items.remove(heap.size()-1);
+					heap.type = Heap.Type.HEAP;
+				}
+			}
+		}
 	}
 }

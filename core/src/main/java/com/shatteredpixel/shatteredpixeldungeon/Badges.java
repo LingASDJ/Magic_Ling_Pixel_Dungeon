@@ -765,7 +765,7 @@ public class Badges {
 
 	private static void validateAMZ() {
 		if (global.contains( Badge.KILL_APPLE ) &&global.contains( Badge.KILL_DM720 ) &&
-				global.contains( Badge.KILL_MG) && global.contains( Badge.FIREGIRL) && global.contains( Badge.DRAWF_HEAD)) {
+				global.contains( Badge.KILL_MG) && global.contains( Badge.FIREGIRL) && global.contains( Badge.DRAWF_HEAD) && global.contains( Badge.SAKA_DIED)) {
 
 			Badge badge = Badge.SPICEALBOSS;
 			displayBadge( badge );
@@ -945,6 +945,14 @@ public class Badges {
 		}
 	}
 
+	public void Test(){
+
+	}
+
+	public int Tests(){
+		return 4;
+	}
+
 	public static void validateVictory() {
 
 		Badge badge = Badge.VICTORY;
@@ -1030,6 +1038,15 @@ public class Badges {
 		validateAMZ();
 	}
 
+	public static void KILLSAKA() {
+		displayBadge( Badge.SAKA_DIED);
+		validateAMZ();
+	}
+
+	public static void REHOMESKY() {
+		displayBadge( Badge.RESET_DAY );
+	}
+
 	public static void STORM() {
 		displayBadge( Badge.STORM);
 	}
@@ -1091,22 +1108,22 @@ public class Badges {
 	public static void validateChampion( int challenges ) {
 		if (challenges == 0) return;
 		Badge badge = null;
-		if (challenges >= 1 && !(Dungeon.isChallenged(PRO))) {
+		if (challenges >= 1 && !(Dungeon.isChallenged(PRO)) || !Statistics.happyMode) {
 			badge = Badge.CHAMPION_1X;
 		}
-		if (challenges >= 3 && !(Dungeon.isChallenged(PRO))){
+		if (challenges >= 3 && !(Dungeon.isChallenged(PRO))|| !Statistics.happyMode){
 			addGlobal(badge);
 			badge = Badge.CHAMPION_2X;
 		}
-		if (challenges >= 6 && !(Dungeon.isChallenged(PRO))){
+		if (challenges >= 6 && !(Dungeon.isChallenged(PRO))|| !Statistics.happyMode){
 			addGlobal(badge);
 			badge = Badge.CHAMPION_3X;
 		}
-		if (challenges >= 8 && !(Dungeon.isChallenged(PRO))){
+		if (challenges >= 8 && !(Dungeon.isChallenged(PRO))||!Statistics.happyMode){
 			addGlobal(badge);
 			badge = Badge.CHAMPION_4X;
 		}
-		if (challenges >= 10 && !(Dungeon.isChallenged(PRO))){
+		if (challenges >= 10 && !(Dungeon.isChallenged(PRO))||!Statistics.happyMode){
 			addGlobal(badge);
 			badge = Badge.CHAMPION_5X;
 		}

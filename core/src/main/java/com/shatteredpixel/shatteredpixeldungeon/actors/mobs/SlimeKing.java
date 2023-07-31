@@ -61,8 +61,7 @@ public class SlimeKing extends Mob {
 
     private boolean PartCold = false;
 
-    private static final String partcold   = "partcold";
-    private static final String chainsused = "chainsused";
+
 
 
     @Override
@@ -93,6 +92,10 @@ public class SlimeKing extends Mob {
 
         return super.defenseProc(enemy, damage);
     }
+
+
+    private static final String partcold   = "partcold";
+    private static final String chainsused = "chainsused";
 
     @Override
     public void storeInBundle(Bundle bundle) {

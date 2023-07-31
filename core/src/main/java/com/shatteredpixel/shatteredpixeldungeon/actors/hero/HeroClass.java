@@ -65,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.BrokenBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.DimandBook;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.IceCityBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.TestBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
@@ -205,7 +206,8 @@ public enum HeroClass {
 			new KingBag().quantity(1).identify().collect();
 			new PotionOfLiquidFlameX().quantity(100).identify().collect();
 			new YellowSunBooks().quantity(1).identify().collect();
-			new BrokenBooks().quantity(44).identify().collect();
+			new BrokenBooks().quantity(12).identify().collect();
+			new IceCityBooks().quantity(12).identify().collect();
 			new ScrollOfFlameCursed().quantity(44).identify().collect();
 
 			new LeatherArmor().quantity(1).identify().collect();

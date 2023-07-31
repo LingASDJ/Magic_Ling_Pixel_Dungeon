@@ -728,7 +728,6 @@ public class DMZERO extends Mob
                     cell = i + j*Dungeon.level.width();
                     if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
                         if (!ch.isImmune(this.getClass())) {
-
                             ch.damage(damage, this);
                         }
                     }

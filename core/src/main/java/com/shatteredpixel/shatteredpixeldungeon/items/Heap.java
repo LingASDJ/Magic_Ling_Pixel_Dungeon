@@ -24,6 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
@@ -72,7 +74,9 @@ public class Heap implements Bundlable {
 		REMAINS,
 		BLACK
 	}
-	public Type type = Type.HEAP;
+
+	//好好好
+	public Type type =  Dungeon.isDLC(Conducts.Conduct.MONEYLETGO) ? Type.FOR_SALE : Type.HEAP;
 	
 	public int pos = 0;
 

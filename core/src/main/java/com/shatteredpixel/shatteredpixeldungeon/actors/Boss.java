@@ -8,7 +8,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.watabou.utils.Random;
 
 public class Boss extends Mob {
-
         protected static float baseMin; //最小伤害
         protected static float baseMax; //最大伤害
         protected static float baseAcc; //命中率

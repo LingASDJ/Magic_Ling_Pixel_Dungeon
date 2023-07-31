@@ -10,7 +10,8 @@ import java.util.Arrays;
 public class Conducts {
     public enum Conduct {
         NULL,
-        BOSSRUSH(1.2f);
+        BOSSRUSH(1.2f),
+        MONEYLETGO(1.5f);
 
         public float scoreMod;
 

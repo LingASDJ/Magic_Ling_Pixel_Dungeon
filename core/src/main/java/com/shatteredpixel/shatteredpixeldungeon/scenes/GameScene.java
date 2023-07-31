@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
+import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -162,7 +163,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class GameScene extends PixelScene {
-
+	public static boolean logActorThread;
 	private void tell(String text) {
 		Game.runOnRenderThread(new Callback() {
 			@Override
@@ -592,7 +593,9 @@ public class GameScene extends PixelScene {
 		if (InterlevelScene.mode != InterlevelScene.Mode.NONE) {
 			if (Dungeon.depth == Statistics.deepestFloor
 					&& (InterlevelScene.mode == InterlevelScene.Mode.DESCEND || InterlevelScene.mode == InterlevelScene.Mode.FALL)) {
-				if(Dungeon.depth < 0) {
+				if(Dungeon.depth == -30) {
+					GLog.h(Messages.get(this, "ancity"), Dungeon.depth);
+				} else if (Dungeon.depth == -15) {
 					GLog.h(Messages.get(this, "snowcynon"), Dungeon.depth);
 				} else {
 					GLog.h(Messages.get(this, "descend"), Dungeon.depth);
@@ -641,7 +644,9 @@ public class GameScene extends PixelScene {
 			} else if (InterlevelScene.mode == InterlevelScene.Mode.RESURRECT) {
 				GLog.h(Messages.get(this, "resurrect"), Dungeon.depth);
 			} else {
-				if(Dungeon.depth < 0) {
+				if(Dungeon.depth == -31) {
+					GLog.h(Messages.get(this, "ancity"), Dungeon.depth);
+				} else if (Dungeon.depth == -15) {
 					GLog.h(Messages.get(this, "snowcynon"), Dungeon.depth);
 				} else {
 					GLog.h(Messages.get(this, "return"), Dungeon.depth);
@@ -794,6 +799,27 @@ public class GameScene extends PixelScene {
 	@Override
 	public synchronized void update() {
 		lastOffset = null;
+
+		if (logActorThread){
+			if (actorThread != null){
+				logActorThread = false;
+				String s = "";
+				for (StackTraceElement t:
+						actorThread.getStackTrace()){
+					s += "\n";
+					s += t.toString();
+				}
+				Class<? extends Actor> cl =
+						Actor.getCurrentActorClass();
+				String msg = "Actor therad dump was requested." + "Seed:" + Dungeon.seed +
+						"depth:" + Dungeon.depth + "challenges:" + "current actor:" + cl +
+						"\ntrace:" + s;
+				Gdx.app.getClipboard().setContents(msg);
+				ShatteredPixelDungeon.reportException(new RuntimeException(msg)
+				);
+				add(new WndMessage(Messages.get(this,"copied")));
+			}
+		}
 
 		if (updateItemDisplays){
 			updateItemDisplays = false;
@@ -1438,12 +1464,15 @@ public class GameScene extends PixelScene {
 						scene.showBanner( bossSlain );
 					}
 					break;
-				case 0:
-					if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ) {
-						bossSlain.texture(Assets.Interfaces.SakaBJY_Title);
+				case 5:
+						bossSlain.texture(Assets.Interfaces.QliPhoth_Title);
 						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
-					}
+					break;
+				case -31:
+					bossSlain.texture(Assets.Interfaces.SakaBJY_Title);
+					bossSlain.show( Window.CYELLOW, 0.3f, 5f);
+					scene.showBanner(bossSlain);
 					break;
 			}
 
@@ -1472,12 +1501,15 @@ public class GameScene extends PixelScene {
 						scene.showBanner( bossSlain );
 					}
 					break;
-				case 0:
-					if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ) {
-						bossSlain.texture(Assets.Interfaces.SakaBJY_Clear);
+				case 5:
+						bossSlain.texture(Assets.Interfaces.QliPhoth_Clear);
 						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
-					}
+					break;
+				case -31:
+					bossSlain.texture(Assets.Interfaces.SakaBJY_Clear);
+					bossSlain.show( Window.CYELLOW, 0.3f, 5f);
+					scene.showBanner(bossSlain);
 					break;
 			}
 

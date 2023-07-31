@@ -10,9 +10,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM720;
@@ -21,9 +20,12 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.SakaMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CaveTwoBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -43,6 +45,7 @@ import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
+/**萨卡班甲鱼 Boss 难度：3.5级 */
 public class SakaFishBoss extends Boss {
     private int leapPos = -1;
     private float leapCooldown = 0;
@@ -68,6 +71,8 @@ public class SakaFishBoss extends Boss {
         HT=480;
 
         properties.add(Property.ICY);
+        properties.add(Property.ELECTRIC);
+        properties.add(Property.FIERY);
 
         viewDistance = 30;
     }
@@ -78,6 +83,11 @@ public class SakaFishBoss extends Boss {
     public void damage(int dmg, Object src) {
         if (!Dungeon.level.mobs.contains(this)){
             return;
+        }
+
+        if (dmg >= 25){
+            //takes 5/6/7/8/9/10 dmg at 5/7/10/14/19/25 incoming dmg
+            dmg = 14 + (int)(Math.sqrt(8*(dmg - 4) + 1) - 1)/2;
         }
 
         int hpBracket = HT / 8;
@@ -96,13 +106,20 @@ public class SakaFishBoss extends Boss {
             lock.addTime(dmg*3f);
         }
 
+        AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
         //phase 1 of the fight is over
-        if (HP <= HT/2){
+        if (HP <= HT/2 && level==AncientMysteryCityBossLevel.State.TWO_BOSS){
             HP = (HT/2);
             yell(Messages.get(this, "interesting"));
-//            ((PrisonBossLevel)Dungeon.level).progress();
+            ((AncientMysteryCityBossLevel)Dungeon.level).progress();
             BossHealthBar.bleed(true);
         }
+    }
+
+    @Override
+    public boolean isInvulnerable(Class effect) {
+        AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
+        return level==AncientMysteryCityBossLevel.State.END_BOSS;
     }
 
     @Override
@@ -149,12 +166,22 @@ public class SakaFishBoss extends Boss {
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(0, 2);
+        AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
+        return level == AncientMysteryCityBossLevel.State.FALL_BOSS ? 5 : 15;
     }
 
 
     public void activate(){
         ((SakaFishBossSprites) sprite).activate();
+    }
+
+    @Override
+    protected boolean getCloser( int target ) {
+        if (state == HUNTING) {
+            return enemySeen && getFurther( target );
+        } else {
+            return super.getCloser( target );
+        }
     }
 
     @Override
@@ -187,96 +214,75 @@ public class SakaFishBoss extends Boss {
 
     @Override
     protected boolean doAttack( Char enemy ) {
-
+        AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
         if (beamCooldown > 0) {
             return super.doAttack(enemy);
         } else if (!beamCharged){
             ((SakaFishBossSprites)sprite).charge( enemy.pos );
-            spend( attackDelay()*2f );
+
+            spend( level == AncientMysteryCityBossLevel.State.FALL_BOSS ? attackDelay() : attackDelay()*2f );
             beamCharged = true;
             return true;
         } else if(HP*2>=HT) {
 
-            spend( attackDelay()*3f );
+            spend( level == AncientMysteryCityBossLevel.State.FALL_BOSS ? attackDelay() : attackDelay()*3f );
 
             beam = new Ballistica(pos, beamTarget, Ballistica.STOP_SOLID);
             if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[beam.collisionPos] ) {
                 sprite.zap( beam.collisionPos );
                 return false;
             } else {
-                sprite.operate(this.pos);
+                sprite.idle();
                 deathGaze();
-
                 return true;
             }
         } else {
+            spend( level == AncientMysteryCityBossLevel.State.FALL_BOSS ? attackDelay() : attackDelay()*3f );
 
-            return true;
+            beam = new Ballistica(pos, beamTarget, Ballistica.STOP_SOLID);
+            if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[beam.collisionPos] ) {
+                sprite.zap( beam.collisionPos );
+                return false;
+            } else {
+                sprite.idle();
+                deathGaze();
+                return true;
+            }
         }
 
     }
-
-//    @Override
-//    public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti ) {
-//        boolean result = super.attack( enemy, dmgMulti, dmgBonus, accMulti );
-//        pumpedUp = 0;
-//        return result;
-//    }
-//
-//    @Override
-//    protected boolean getCloser( int target ) {
-//        if (pumpedUp != 0) {
-//            pumpedUp = 0;
-//            sprite.idle();
-//        }
-//        return super.getCloser( target );
-//    }
-//
-//    @Override
-//    public void damage(int dmg, Object src) {
-//        if (!BossHealthBar.isAssigned()){
-//            BossHealthBar.assignBoss( this );
-//            Dungeon.level.seal();
-//        }
-//        boolean bleeding = (HP*2 <= HT);
-//        super.damage(dmg, src);
-//        if ((HP*2 <= HT) && !bleeding){
-//            BossHealthBar.bleed(true);
-//            sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "enraged"));
-//            ((GooSprite)sprite).spray(true);
-//            yell(Messages.get(this, "gluuurp"));
-//        }
-//        LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-//        if (lock != null) lock.addTime(dmg*2);
-//    }
 
     @Override
     public void die( Object cause ) {
 
         super.die( cause );
 
-        if(Dungeon.depth!=28){
+
             Dungeon.level.unseal();
 
             GetBossLoot();
 
             GameScene.bossSlain();
-            Dungeon.level.drop( new SkeletonKey( Dungeon.depth ), pos ).sprite.drop();
+            Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
 
             //60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5
-            int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
-            for (int i = 0; i < blobs; i++){
+            int meets = Random.chances(new float[]{0, 0, 6, 3, 1});
+            for (int i = 0; i < meets; i++){
                 int ofs;
                 do {
                     ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
                 } while (!Dungeon.level.passable[pos + ofs]);
-                Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
+                Dungeon.level.drop( new SakaMeat(), pos + ofs ).sprite.drop( pos );
             }
 
-            Badges.validateBossSlain();
+            Dungeon.level.drop( new WaterSoul(), pos-1 ).sprite.drop();
+            Dungeon.level.drop( new SakaFishSketon(), pos ).sprite.drop();
+            Dungeon.level.drop( new WaterSoul(), pos+1 ).sprite.drop();
+
+            Badges.KILLSAKA();
 
             yell( Messages.get(this, "defeated") );
-        }
+
 
     }
 
@@ -303,6 +309,9 @@ public class SakaFishBoss extends Boss {
     private static final String BEAM_TARGET     = "beamTarget";
     private static final String BEAM_COOLDOWN   = "beamCooldown";
     private static final String BEAM_CHARGED    = "beamCharged";
+
+    //二阶段
+    private static final String TO_ATTACK   = "toattack";
 
     @Override
     public void storeInBundle( Bundle bundle ) {
@@ -338,7 +347,6 @@ public class SakaFishBoss extends Boss {
         lastEnemyPos = bundle.getInt(LAST_ENEMY_POS);
         leapPos = bundle.getInt(LEAP_POS);
         leapCooldown = bundle.getFloat(LEAP_CD);
-
     }
 
     public void dropRocks( Char target ) {
@@ -357,8 +365,6 @@ public class SakaFishBoss extends Boss {
             rockCenter = target.pos;
         }
 
-        //we handle this through an actor as it gives us fine-grainted control over when the blog acts vs. when the hero acts
-        //FIXME this is really messy to just get some fine-grained control. would be nice to build this into blob functionality, or just not use blobs for this at all
         Actor a = new Actor() {
 
             {
@@ -444,39 +450,21 @@ public class SakaFishBoss extends Boss {
                     sprite.dirtcar(pos, leapPos, new Callback() {
                         @Override
                         public void call() {
-
+                            AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
                             if (leapVictim != null && alignment != leapVictim.alignment){
-                                Buff.affect(leapVictim, Bleeding.class).set(0.75f*damageRoll());
-                                dropRocks(enemy);
+                                enemy.damage( Random.NormalIntRange( 20, 40 ), this );
+                                if(level == AncientMysteryCityBossLevel.State.FALL_BOSS){
+                                    //三阶段 魔法风暴
+                                    FishStorm(sprite.ch);
+                                }
                                 Sample.INSTANCE.play(Assets.Sounds.ROCKS);
                                 leapVictim.sprite.flash();
                                 Sample.INSTANCE.play(Assets.Sounds.HIT);
                             }
 
-                            if (endPos != leapPos){
-                                Actor.addDelayed(new Pushing(SakaFishBoss.this, leapPos, endPos), -1);
-                            }
-
-                            pos = endPos;
-                            leapPos = -1;
-                            sprite.operate(pos);
-                            Dungeon.level.occupyCell(SakaFishBoss.this);
-                            next();
-                        }
-                    });
-                    sprite.visible = Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[leapPos] || Dungeon.level.heroFOV[endPos];
-                    sprite.dirtcar(pos, leapPos, new Callback() {
-                        @Override
-                        public void call() {
-
-                            if (leapVictim != null && alignment != leapVictim.alignment){
-                                Buff.affect(leapVictim, Bleeding.class).set(0.75f*damageRoll());
-                                //TODO 魔法风暴
-                                FishStorm(enemy);
-                                enemy.damage( Random.NormalIntRange( 10, 20 ), this );
-                                Sample.INSTANCE.play(Assets.Sounds.ROCKS);
-                                leapVictim.sprite.flash();
-                                Sample.INSTANCE.play(Assets.Sounds.HIT);
+                            if (!enemy.isAlive() && enemy == hero) {
+                                Dungeon.fail( getClass() );
+                                GLog.n( Messages.get(SakaFishBoss.class, "dictcar_kill"),Dungeon.hero.name() );
                             }
 
                             if (endPos != leapPos){
@@ -569,7 +557,7 @@ public class SakaFishBoss extends Boss {
     public void deathGaze(){
         if (!beamCharged || beamCooldown > 0 || beam == null)
             return;
-
+        AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
         beamCharged = false;
         beamCooldown = Random.IntRange(4, 6);
 
@@ -592,6 +580,9 @@ public class SakaFishBoss extends Boss {
 
             if (hit( this, ch, true )) {
                 ch.damage( Random.NormalIntRange( 20, 40 ), new DeathGaze() );
+                if(level == AncientMysteryCityBossLevel.State.FALL_BOSS){
+                    dropRocks(enemy);
+                }
 
                 if (Dungeon.level.heroFOV[pos]) {
                     ch.sprite.flash();
@@ -600,7 +591,7 @@ public class SakaFishBoss extends Boss {
 
                 if (!ch.isAlive() && ch == hero) {
                     Dungeon.fail( getClass() );
-                    GLog.n( Messages.get(this, "deathgaze_kill") );
+                    GLog.n( Messages.get(this, "deathgaze_kill"),Dungeon.hero.name() );
                 }
             } else {
                 ch.sprite.showStatus( CharSprite.NEUTRAL,  ch.defenseVerb() );
@@ -615,28 +606,30 @@ public class SakaFishBoss extends Boss {
         beamTarget = -1;
     }
 
+
+
+    //萨卡班甲鱼魔法风暴
     public void FishStorm(Char ch){
         Ballistica aim;
         aim = new Ballistica(ch.pos, ch.pos - 1, Ballistica.WONT_STOP);
         int projectileProps = Ballistica.STOP_SOLID | Ballistica.STOP_TARGET;
-        int aoeSize = 4;
+        int aoeSize = 8;
         ConeAOE aoe = new ConeAOE(aim, aoeSize, 360, projectileProps);
 
         for (Ballistica ray : aoe.outerRays){
             ((MagicMissile)ch.sprite.parent.recycle( MagicMissile.class )).reset(
-                    MagicMissile.FROST,
+                    MagicMissile.HALOFIRE,
                     ch.sprite,
                     ray.path.get(ray.dist),
                     null
             );
-            if( ray.collisionPos == hero.pos){
-                Buff.prolong(enemy, Frost.class, Frost.DURATION);
-            } else {
-                GameScene.add(Blob.seed(ray.path.get(ray.dist),5, HalomethaneFire.class));
+            if( Dungeon.level.water[ray.path.get(ray.dist)] && Random.Int(10) == 2){
+                GameScene.add(Blob.seed(ray.path.get(ray.dist), 30, HalomethaneFire.class));
                 Level.set(ray.path.get(ray.dist), Terrain.EMPTY);
                 GameScene.updateMap( ray.path.get(ray.dist) );
+            } else {
+                Buff.prolong(enemy, Cripple.class, Cripple.DURATION);
             }
-
         }
     }
 

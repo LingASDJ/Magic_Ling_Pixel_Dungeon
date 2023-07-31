@@ -523,7 +523,10 @@ public abstract class RegularLevel extends Level {
 				type = Heap.Type.CHEST;
 				break;
 			default:
-				type = Heap.Type.HEAP;
+
+				type = Dungeon.isDLC(Conducts.Conduct.MONEYLETGO) ? Heap.Type.FOR_SALE : Heap.Type.HEAP;
+
+
 				break;
 			}
 
@@ -551,7 +554,7 @@ public abstract class RegularLevel extends Level {
 
 		for (Item item : itemsToSpawn) {
 			int cell = randomDropCell();
-			drop( item, cell ).type = Heap.Type.HEAP;
+			drop( item, cell ).type = Dungeon.isDLC(Conducts.Conduct.MONEYLETGO) ? Heap.Type.FOR_SALE : Heap.Type.HEAP;
 			if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
 				map[cell] = Terrain.GRASS;
 				losBlocking[cell] = false;
@@ -581,7 +584,7 @@ public abstract class RegularLevel extends Level {
 				if (rose.droppedPetals < 11) {
 					item = new DriedRose.Petal();
 					int cell = randomDropCell();
-					drop( item, cell ).type = Heap.Type.HEAP;
+					drop( item, cell ).type = Dungeon.isDLC(Conducts.Conduct.MONEYLETGO) ? Heap.Type.FOR_SALE : Heap.Type.HEAP;
 					if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
 						map[cell] = Terrain.GRASS;
 						losBlocking[cell] = false;

@@ -34,7 +34,7 @@ public class BGMPlayer {
             if (d == -1) {
                 playBGM(Assets.SNOWCYON, true);
             }else if (d == 0||d==27) {
-                playBGM(Assets.SKBJY, true);
+                playBGM(Assets.SNOWCYON, true);
             } else if (d > 0 && d <= 5) {
                 playBGM(Assets.BGM_1, true);
             } else if (d > 5 && d <= 10) {
@@ -163,6 +163,8 @@ public class BGMPlayer {
                 playBGM(Assets.BGM_BOSSE, true);
             } else if (Dungeon.bossLevel() && t == -15) {
                 playBGM(Assets.BGM_FRBOSS, true);
+            }   else if (Dungeon.bossLevel() && t == -31) {
+                playBGM(Assets.SKBJY, true);
             }
         }
     }

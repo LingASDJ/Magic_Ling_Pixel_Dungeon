@@ -38,7 +38,7 @@ public class LevelRules {
             case 17:
             case 27:
                 Buff.affect(hero, RandomBuff.class).set(5, 1);
-                return new AncientMysteryCityBossLevel();
+                return new AncityLevel();
             case 1: case 3: case 6: case 7: case 9:
             case 11: case 13: case 15: case 18: case 20: case 24:
                 return new ItemLevel();
@@ -109,7 +109,7 @@ public class LevelRules {
                     if ((Statistics.boss_enhance & 0x4) != 0) {
                         return new CavesGirlDeadLevel();
                     } else {
-                        return Random.Float() <= 0.4f ? new CaveTwoBossLevel() : new NewCavesBossLevel();
+                        return Random.Float() <= 0.4f ? new CaveTwoBossLevel() : new CaveTwoBossLevel();
                     }
                 case 16:
                 case 17:

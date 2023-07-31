@@ -21,16 +21,23 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessNoMoney;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -59,23 +66,34 @@ public class Shopkeeper extends NPC {
 
 	public static int MAX_BUYBACK_HISTORY = 4;
 	public ArrayList<Item> buybackItems = new ArrayList<>();
-
+	public static boolean seenBefore = false;
 	@Override
 	protected boolean act() {
+		if (!seenBefore && Dungeon.level.heroFOV[pos]) {
+			yell(Messages.get(this, "greetings", hero.name()));
+			seenBefore = true;
+		} else if(seenBefore && !Dungeon.level.heroFOV[pos]) {
+			seenBefore = false;
+			yell(Messages.get(this, "goodbye", hero.name()));
+		}
 
 		if (Dungeon.level.visited[pos]){
 			Notes.add(Notes.Landmark.SHOP);
 		}
 
 
-		sprite.turnTo( pos, Dungeon.hero.pos );
+		sprite.turnTo( pos, hero.pos );
 		spend( TICK );
 		return super.act();
 	}
 
 	@Override
 	public void damage( int dmg, Object src ) {
-		flee();
+	}
+
+	@Override
+	public int defenseSkill( Char enemy ) {
+		return INFINITE_EVASION;
 	}
 
 	@Override
@@ -84,31 +102,10 @@ public class Shopkeeper extends NPC {
 
 	public void flee() {
 		destroy();
-
 		Notes.remove(Notes.Landmark.SHOP);
-
-		if (sprite != null) {
-			sprite.killAndErase();
-			CellEmitter.get(pos).burst(ElmoParticle.FACTORY, 6);
-		}
-	}
-
-	@Override
-	public void destroy() {
-		super.destroy();
-		for (Heap heap: Dungeon.level.heaps.valueList()) {
-			if (heap.type == Heap.Type.FOR_SALE) {
-				if (ShatteredPixelDungeon.scene() instanceof GameScene) {
-					CellEmitter.get(heap.pos).burst(ElmoParticle.FACTORY, 4);
-				}
-				if (heap.size() == 1) {
-					heap.destroy();
-				} else {
-					heap.items.remove(heap.size()-1);
-					heap.type = Heap.Type.HEAP;
-				}
-			}
-		}
+		CellEmitter.get(pos).burst(ElmoParticle.FACTORY, 6);
+		hero.sprite.burst(15597568, 9);
+		sprite.killAndErase();
 	}
 
 	@Override
@@ -116,9 +113,35 @@ public class Shopkeeper extends NPC {
 		return true;
 	}
 
+	@Override
+	public void destroy() {
+		super.destroy();
+		for (Heap heap: Dungeon.level.heaps.valueList()) {
+			if (heap.type == Heap.Type.FOR_SALE) {
+				CellEmitter.get( heap.pos ).burst( ElmoParticle.FACTORY, 4 );
+				heap.type = Heap.Type.HEAP;
+			}
+		}
+	}
+
 	//shopkeepers are greedy!
 	public static int sellPrice(Item item){
-		return item.value() * 5 * (Dungeon.depth / 5 + 1);
+		int price = item.value() * 5 * (Dungeon.depth / 5 + 1);
+
+		if(hero.buff(MagicGirlSayMoneyMore.class) != null){
+			if(item instanceof Ankh ||item instanceof Food || item instanceof PotionOfHealing){
+				price *= 2.5;
+			}
+			price *= 0.5;
+			//todo 3折
+		} else if (hero.buff(BlessNoMoney.class) != null) {
+			price *= 0.3;
+		}
+
+		if(Dungeon.isDLC(Conducts.Conduct.MONEYLETGO)){
+			price *= 0.5;
+		}
+		return price;
 	}
 
 	public static WndBag sell() {
@@ -129,7 +152,7 @@ public class Shopkeeper extends NPC {
 		if (item.value() <= 0)                                              return false;
 		if (item.unique && !item.stackable)                                 return false;
 		if (item instanceof Armor && ((Armor) item).checkSeal() != null)    return false;
-		if (item.isEquipped(Dungeon.hero) && item.cursed)                   return false;
+		if (item.isEquipped(hero) && item.cursed)                   return false;
 		return true;
 	}
 
@@ -155,7 +178,7 @@ public class Shopkeeper extends NPC {
 
 	@Override
 	public boolean interact(Char c) {
-		if (c != Dungeon.hero) {
+		if (c != hero) {
 			return true;
 		}
 		Game.runOnRenderThread(new Callback() {
@@ -184,8 +207,8 @@ public class Shopkeeper extends NPC {
 							Item returned = buybackItems.remove(index-2);
 							Dungeon.gold -= returned.value();
 							Statistics.goldCollected -= returned.value();
-							if (!returned.doPickUp(Dungeon.hero)){
-								Dungeon.level.drop(returned, Dungeon.hero.pos);
+							if (!returned.doPickUp(hero)){
+								Dungeon.level.drop(returned, hero.pos);
 							}
 						}
 					}
@@ -220,7 +243,7 @@ public class Shopkeeper extends NPC {
 	public String chatText(){
 		switch (Dungeon.depth){
 			case 6: default:
-				return Messages.get(this, "talk_prison_intro") + "\n\n" + Messages.get(this, "talk_prison_" + Dungeon.hero.heroClass.name());
+				return Messages.get(this, "talk_prison_intro") + "\n\n" + Messages.get(this, "talk_prison_" + hero.heroClass.name());
 			case 11:case 13:
 				return Messages.get(this, "talk_caves");
 			case 16: case 18:

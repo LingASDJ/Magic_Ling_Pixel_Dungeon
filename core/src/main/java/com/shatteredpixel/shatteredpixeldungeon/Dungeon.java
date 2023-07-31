@@ -58,6 +58,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LinkLevel;
@@ -126,16 +128,36 @@ public class Dungeon {
 		Dungeon.level = null;
 		Actor.clear();
 
-		depth = -20;
+		depth = -30;
 
 		if (depth > Statistics.realdeepestFloor) {
 			Statistics.realdeepestFloor = depth;}
 
 		Level level;
-		level = new ShopBossLevel();
+		level = new AncientMysteryCityLevel();
 
 		level.create();
+		Statistics.qualifiedForNoKilling = !bossLevel();
 
+		return level;
+	}
+
+	//远古领袖
+	public static Level AncityBossWaterLevel(){
+
+
+		Dungeon.level = null;
+		Actor.clear();
+
+		depth = -31;
+
+		if (depth > Statistics.realdeepestFloor) {
+			Statistics.realdeepestFloor = depth;}
+
+		Level level;
+		level = new AncientMysteryCityBossLevel();
+
+		level.create();
 		Statistics.qualifiedForNoKilling = !bossLevel();
 
 		return level;
@@ -491,7 +513,7 @@ public class Dungeon {
 	}
 
 	public static boolean bossLevel( int depth ) {
-		return depth == 5 || depth == 10 || depth == 15 || depth == 20 || depth == 25|| depth == -15;
+		return depth == 5 || depth == 10 || depth == 15 || depth == 20 || depth == 25|| depth == -15| depth == -31;
 	}
 
 	public static void switchLevel( final Level level, int pos ) {

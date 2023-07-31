@@ -27,6 +27,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Difficulty.DifficultyConduct.HARD;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.happyMode;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.tipsgodungeon;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
@@ -145,6 +146,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
@@ -955,7 +957,7 @@ public class Hero extends Char {
 		}
 
 		///测试坐标用
-		GLog.w(String.valueOf(hero.pos));
+//		GLog.w(String.valueOf(hero.pos));
 
 		//携带该物品时，玩家血量低于一半后自动隐身一段回合。
 		//actMove实现
@@ -971,7 +973,13 @@ public class Hero extends Char {
 			if ((Dungeon.challenges & ch) != 0) chCount++;
 		}
 
-		//icehp++;
+
+		// 深度调查
+		if ((Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) || Dungeon.isDLC(Conducts.Conduct.MONEYLETGO)) && !happyMode) {
+			happyMode = true;
+			GLog.n(Messages.get(WndStory.class, "letsplay"));
+		}
+
 
 		if(chCount >= 3 && !lanterfireactive && !Dungeon.isChallenged(PRO) || Dungeon.isChallenged(DHXD) && !lanterfireactive){
 			//TODO 灯火前行
@@ -1311,6 +1319,10 @@ public class Hero extends Char {
 		} else if (Dungeon.level.map[pos] == Terrain.ENTRANCE) {
 
 			if (Dungeon.depth == 0) {
+
+				if (belongings.getItem(SakaFishSketon.class) != null) {
+					Badges.REHOMESKY();
+				}
 
 				if (belongings.getItem(Amulet.class) == null) {
 					Game.runOnRenderThread(new Callback() {
@@ -1960,7 +1972,6 @@ public class Hero extends Char {
 		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
 			if (mob instanceof BlackSoul) {
 				Buff.affect( mob, Dread.class );
-				Buff.prolong(mob, AnkhInvulnerability.class, 200f);
 			}
 		}
 

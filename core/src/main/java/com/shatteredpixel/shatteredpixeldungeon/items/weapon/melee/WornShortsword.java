@@ -24,8 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.SakaFishBoss;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class WornShortsword extends MeleeWeapon {
@@ -57,7 +57,7 @@ public class WornShortsword extends MeleeWeapon {
 			* 当是魔像的时候，返回的伤害还会追加5上去
 			* 如果希望最大值能给予5，你也可以使用Math.max(damage, 5);
 			**/
-			if(mob instanceof Golem) {
+			if(mob instanceof SakaFishBoss) {
 				damage+=5;
 			}
 		}

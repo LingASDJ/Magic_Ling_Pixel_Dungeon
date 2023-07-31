@@ -29,6 +29,10 @@ public class Statistics {
 	//统计分数
 	public static int progressScore;
 
+	public static boolean happyMode = false;
+
+	//萨卡班甲鱼二阶段
+	public static int sakaBackStage;
 	public static int readBooks;
 	public static int treasureScore;
 	public static SparseArray<Boolean> floorsExplored = new SparseArray<>();
@@ -118,12 +122,15 @@ public class Statistics {
     public static boolean TryUsedAnmy= false;
 
     public static void reset() {
-
-
 		boss_enhance = 0;
 		ChaicBlood = 0;
 		readBooks = 0;
 		HealingIsDied = 0;
+
+		happyMode = false;
+
+		//萨卡班甲鱼二阶段
+		sakaBackStage = 0;
 
 		goldCollected	= 0;
 		deepestFloor	= -1;
@@ -159,8 +166,10 @@ public class Statistics {
 
 		lanterfireactive = false;
 		bugsyncfixed =  false;
+
 		crivusfruitslevel2 = false;
 		TPDoorDieds = false;
+
 		TryUsedAnmy = false;
 
 		second_elapsed = 0f;
@@ -184,6 +193,7 @@ public class Statistics {
 	}
 	
 	private static final String GOLD		= "score";
+	private static final String HAPPY		= "happy";
 	private static final String DEEPEST		= "maxDepth";
 	private static final String SLAIN		= "enemiesSlain";
 	private static final String FOOD		= "foodEaten";
@@ -265,6 +275,8 @@ public class Statistics {
 
 	private static final String READBOOKS		= "readbooks";
 
+	private static final String SAKATWO		= "sakatwo";
+
 
 	public static void storeInBundle( Bundle bundle ) {
 
@@ -282,6 +294,9 @@ public class Statistics {
 		bundle.put( READBOOKS, readBooks);
 
 		bundle.put( EXPL_SCORE,  exploreScore );
+
+		bundle.put( HAPPY,  happyMode );
+
 		bundle.put( BOSS_SCORES, bossScores );
 		bundle.put( TOT_BOSS,    totalBossScore );
 		bundle.put( QUEST_SCORES,questScores );
@@ -343,6 +358,8 @@ public class Statistics {
 
 		bundle.put( ENBR, endingbald );
 
+		bundle.put( SAKATWO, sakaBackStage );
+
 		//SPD
 		bundle.put("real_time_passed", second_elapsed);
 		bundle.put("real_seconds_passed", real_seconds);
@@ -357,6 +374,8 @@ public class Statistics {
 		HealingIsDied   = bundle.getInt( HEALDIED );
 
 		readBooks = bundle.getInt( READBOOKS );
+
+		sakaBackStage = bundle.getInt( SAKATWO );
 
 		//分数
 		progressScore   = bundle.getInt( PROG_SCORE );
@@ -382,7 +401,7 @@ public class Statistics {
 		highestAscent   = bundle.getInt( HIGHEST );
 		gameWon         = bundle.getBoolean( WON );
 		ascended        = bundle.getBoolean( ASCENDED );
-
+		happyMode		= bundle.getBoolean(HAPPY);
 
 		dimandchestmazeCollected = bundle.getInt(DDK);
 

@@ -44,6 +44,7 @@ public class SkyShield extends MeleeWeapon {
         return 6+3*buffedLvl();    //6 extra defence, plus 3 per level;
     }
 
+    @Override
     public String statsInfo(){
         if (isIdentified()){
             return Messages.get(this, "stats_desc", 12+3*buffedLvl());

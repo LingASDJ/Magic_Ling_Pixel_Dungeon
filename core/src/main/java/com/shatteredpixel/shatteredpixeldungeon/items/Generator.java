@@ -407,7 +407,7 @@ public class Generator {
 					WashCrime.class
 
 			};
-			WEP_T5.probs = new float[]{ 1, 3, 2, 3, 2, 3,2};
+			WEP_T5.probs = new float[]{ 3, 3, 3, 3, 3, 3,3};
 
 			WEP_T6.classes = new Class<?>[]{
 					IceFishSword.class,
