@@ -9,9 +9,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.FrostFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM720;
@@ -69,7 +71,8 @@ public class SakaFishBoss extends Boss {
         HP=480;
         defenseSkill = 10;
         HT=480;
-
+        immunities.add(FrostBurning.class);
+        immunities.add(HalomethaneBurning.class);
         properties.add(Property.ICY);
         properties.add(Property.ELECTRIC);
         properties.add(Property.FIERY);
@@ -141,8 +144,8 @@ public class SakaFishBoss extends Boss {
 
     @Override
     public int damageRoll() {
-        int min = 1;
-        int max = (HP*2 <= HT) ? 12 : 8;
+        int min = 20;
+        int max = (HP*2 <= HT) ? 20 : 10;
         if (pumpedUp > 0) {
             pumpedUp = 0;
             return Random.NormalIntRange( min*3, max*3 );
@@ -291,7 +294,7 @@ public class SakaFishBoss extends Boss {
         super.notice();
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
-            Dungeon.level.seal();
+            //Dungeon.level.seal();
             yell(Messages.get(this, "notice"));
             Camera.main.shake(1f,3f);
             GameScene.bossReady();
@@ -618,13 +621,13 @@ public class SakaFishBoss extends Boss {
 
         for (Ballistica ray : aoe.outerRays){
             ((MagicMissile)ch.sprite.parent.recycle( MagicMissile.class )).reset(
-                    MagicMissile.HALOFIRE,
+                    MagicMissile.FROSTFIRE,
                     ch.sprite,
                     ray.path.get(ray.dist),
                     null
             );
-            if( Dungeon.level.water[ray.path.get(ray.dist)] && Random.Int(10) == 2){
-                GameScene.add(Blob.seed(ray.path.get(ray.dist), 30, HalomethaneFire.class));
+            if( Dungeon.level.water[ray.path.get(ray.dist)]){
+                GameScene.add(Blob.seed(ray.path.get(ray.dist), 30, FrostFire.class));
                 Level.set(ray.path.get(ray.dist), Terrain.EMPTY);
                 GameScene.updateMap( ray.path.get(ray.dist) );
             } else {

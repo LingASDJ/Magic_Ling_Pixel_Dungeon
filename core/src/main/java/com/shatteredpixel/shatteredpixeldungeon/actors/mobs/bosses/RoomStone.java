@@ -41,7 +41,7 @@ public class RoomStone extends Mob {
     {
         spriteClass = RoomStoneSprites.class;
 
-        HP = HT = 100;
+        HP = HT = 300;
         defenseSkill = 16;
 
         EXP = 9; //for corrupting
@@ -49,7 +49,7 @@ public class RoomStone extends Mob {
 
         HUNTING = new Hunting();
 
-        baseSpeed = 1.5f;
+        baseSpeed = 0.5f;
 
         properties.add(Property.BOSS); //添加BOSS属性
         immunities.add(Grim.class); //添加Grim类
@@ -67,7 +67,7 @@ public class RoomStone extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 5, 12 );
+        return Random.NormalIntRange( 15, 20 );
     }
 
     @Override

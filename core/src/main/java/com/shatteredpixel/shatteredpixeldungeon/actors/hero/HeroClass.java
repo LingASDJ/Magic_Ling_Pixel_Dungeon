@@ -52,10 +52,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
@@ -98,6 +98,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -156,8 +157,9 @@ public enum HeroClass {
 
 		if (Dungeon.isChallenged(Challenges.PRO)){
 			new LockSword().quantity(1).identify().collect();
+			new IceFishSword().quantity(1).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
-			new SandalsOfNature().quantity(1).identify().collect();
+			//new Amulet().quantity(1).identify().collect();
 			new TengusMask().quantity(1).identify().collect();
 			new TimekeepersHourglass().quantity(1).identify().collect();
 
@@ -167,6 +169,7 @@ public enum HeroClass {
 			new PotionOfLightStromCloud().quantity(10).identify().collect();
 			new WashCrime().quantity(1).identify().collect();
 			new MagicTorch().quantity(1).identify().collect();
+			new LamellarArmor().quantity(1).identify().collect();
 			new PotionOfDragonKingBreath().quantity(50).identify().collect();
 
 			new PotionOfHealing().quantity(50).identify().collect();

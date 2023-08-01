@@ -1992,7 +1992,7 @@ public class Hero extends Char {
 			}
 		}
 
-		if(Statistics.fireGirlnoshopping && Dungeon.depth < 0){
+		if(Dungeon.depth < 0){
 			reallyDie( cause );
 			GLog.n(Messages.get(this,"died"));
 		} else if (ankh != null) {

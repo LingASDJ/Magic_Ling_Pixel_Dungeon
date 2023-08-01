@@ -23,7 +23,7 @@ public class DictFish extends Mob {
     {
         spriteClass = DictFishSprites.class;
 
-        HP = HT = 100;
+        HP = HT = 200;
         defenseSkill = 4;
 
         EXP = 2;
@@ -59,7 +59,7 @@ public class DictFish extends Mob {
         if (Random.Int(10)==4 || Statistics.sakaBackStage >= 1) {
                 Buff.affect(enemy, Vulnerable.class, 6f);
             } else {
-                Buff.affect( enemy, Cripple.class, 4f);
+                Buff.affect( enemy, Cripple.class, 8f);
         }
         return damage;
     }
@@ -71,12 +71,18 @@ public class DictFish extends Mob {
         if (Statistics.sakaBackStage >= 2) {
             ((AncientMysteryCityBossLevel) Dungeon.level).progress();
         }
+        for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (boss instanceof RoomStone) {
+                boss.properties.add(Property.FIERY);
+            }
+        }
+
         super.die( cause );
     }
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 10, 20 );
+        return Random.NormalIntRange( 30, 40 );
     }
 
     @Override

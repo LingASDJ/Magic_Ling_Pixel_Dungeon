@@ -115,7 +115,7 @@ public class vM0_6_7_X_Changes {
     }
 
     public static void add_v0_6_55_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.4.0-Beta2-3", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.4.0-Beta2-4", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -129,7 +129,7 @@ public class vM0_6_7_X_Changes {
         Image a = new SakaFishBossSprites();
         a.scale.set(PixelScene.align(0.72f));
         changes.addButton(new ChangeButton(a,  "新Boss:萨卡班甲鱼",
-                "远古遗迹的领袖级Boss"));
+                "远古遗迹的领袖级Boss,欢迎前来挑战。"));
 
         changes = new ChangeInfo("改动", false, null);
         changes.hardlight(Window.CYELLOW);

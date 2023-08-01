@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLevel.State.END_BOSS;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLevel.State.FALL_BOSS;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLevel.State.ONE_BOSS;
@@ -20,6 +21,8 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+
+import java.util.HashMap;
 
 public class AncientMysteryCityBossLevel extends Level{
 
@@ -66,6 +69,7 @@ public class AncientMysteryCityBossLevel extends Level{
                             GLog.i(Messages.get(dictFish, "notice"),dictFish.name());
                             GLog.n(Messages.get(roomStone, "notice"),roomStone.name());
                             GLog.b(Messages.get(roomStone, "allget"),roomStone.name());
+                            GameScene.flash(0x8000FF00);
                         }
                     }
                 }
@@ -78,6 +82,7 @@ public class AncientMysteryCityBossLevel extends Level{
                             GLog.b(Messages.get(boss, "angry"),boss.name());
                             boss.properties.remove(Char.Property.IMMOVABLE);
                             pro = FALL_BOSS;
+                            GameScene.flash(0x80FF0000);
                         }
                     }
                 }
@@ -187,6 +192,26 @@ public class AncientMysteryCityBossLevel extends Level{
         return cell;
     }
 
+    private static final HashMap<Integer, Integer> MAIN_PORTAL = new HashMap<>(2);
+    {
+        MAIN_PORTAL.put(614,371);
+        MAIN_PORTAL.put(303,573);
+    }
+
+    private static final HashMap<Integer, Integer> IF_MAIN_PORTAL = new HashMap<>(2);
+    {
+        IF_MAIN_PORTAL.put(614,371);
+        IF_MAIN_PORTAL.put(303,573);
+    }
+
+//    @Override
+//    public void unseal() {
+//        super.unseal();
+//        set( getBossDoor, Terrain.LOCKED_DOOR );
+//        GameScene.updateMap( getBossDoor );
+//        set( 688, Terrain.EMPTY );
+//    }
+
 
 
     private static final int getBossDoor = 688;
@@ -202,6 +227,20 @@ public class AncientMysteryCityBossLevel extends Level{
         if (map[getBossDoor] == Terrain.DOOR && isTrue || map[getBossDoor] == Terrain.EMBERS && isTrue) {
             progress();
         }
+
+        if(ch == hero){
+            //指定区域
+            if(MAIN_PORTAL.containsKey(ch.pos)) {
+                ScrollOfTeleportation.appear(ch, IF_MAIN_PORTAL.get(ch.pos));
+                //传送目标区域
+                hero.interrupt();
+                Dungeon.observe();
+                GameScene.updateFog();
+            }
+        }
+
+        //GLog.w(String.valueOf(hero.pos));
+
     }
 
     @Override

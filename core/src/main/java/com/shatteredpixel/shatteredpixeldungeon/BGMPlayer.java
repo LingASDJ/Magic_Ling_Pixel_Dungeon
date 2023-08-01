@@ -142,6 +142,9 @@ public class BGMPlayer {
                 case 28:
                     playBGM( Assets.BGM_0, true );
                     break;
+                case -31:
+                    playBGM( Assets.SKBJY, true );
+                    break;
 
             }
         } else {
