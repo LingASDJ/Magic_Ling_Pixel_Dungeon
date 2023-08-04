@@ -56,7 +56,7 @@ public class AncityLevel extends Level {
             case 85:
                 return Terrain.LOCKED_EXIT;
             case 17:
-                return Dungeon.depth == 27 ? Terrain.CHASM : Terrain.EXIT;
+                return Terrain.EXIT;
             case 83:
                 return Dungeon.depth == 17 || Dungeon.depth == 27 ? Terrain.ENTRANCE : 14;
             case 99:

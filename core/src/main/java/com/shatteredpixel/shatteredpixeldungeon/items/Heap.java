@@ -40,14 +40,18 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.DocumentPage;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -93,6 +97,8 @@ public class Heap implements Bundlable {
 			break;
 		case WHITETOMB:
 			ScrollOfTeleportation.appear( hero,hero.pos+5 );
+			new PotionOfLiquidFlame().quantity(1).identify().collect();
+			GLog.n("你在探索的时候，你发现了一瓶液态火焰药水，你收集了它，但同时被传入了墓穴的中央……");
 			break;
 		case TELECRYSTL:
 			ScrollOfTeleportation.appear( hero,level.entrance );
@@ -222,6 +228,9 @@ public class Heap implements Bundlable {
 			} else if (item instanceof Dewdrop) {
 				items.remove( item );
 				evaporated = true;
+			} else if (item instanceof IceFishSword) {
+				replace( item, FireFishSword.resetling( (IceFishSword) item ) );
+				evaporated = true;
 			} else if (item instanceof MysteryMeat || item instanceof FrozenCarpaccio) {
 				replace( item, ChargrilledMeat.cook( item.quantity ) );
 				burnt = true;
@@ -320,7 +329,10 @@ public class Heap implements Bundlable {
 		boolean frozen = false;
 		for (Item item : items.toArray( new Item[0] )) {
 			if (item instanceof MysteryMeat) {
-				replace( item, FrozenCarpaccio.cook( (MysteryMeat)item ) );
+				replace(item, FrozenCarpaccio.cook((MysteryMeat) item));
+				frozen = true;
+			} else if (item instanceof FireFishSword) {
+				replace(item, IceFishSword.cook((FireFishSword) item));
 				frozen = true;
 			} else if (item instanceof Potion && !item.unique) {
 				items.remove(item);

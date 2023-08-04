@@ -38,8 +38,8 @@ public class WarHammer extends MeleeWeapon {
 		hitSoundPitch = 1f;
 
 		tier = 5;
-		ACC = 1.90f; //20% boost to accuracy
-		DLY = 1.50f; //2x speed
+		ACC = 1.90f; //90% boost to accuracy
+		DLY = 1.50f; //1.5x speed
 	}
 
 	@Override

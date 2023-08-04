@@ -17,6 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
@@ -32,6 +33,20 @@ public class IceFishSword extends Weapon {
         DLY = 1.5f; //2x speed
         cursed = true;
         enchant(Enchantment.randomCurse());
+    }
+
+    public static Weapon cook(FireFishSword ingredient ) {
+        IceFishSword result = new IceFishSword();
+        /** 传递数量，链接等级 自动鉴定 */
+        result.quantity = ingredient.quantity();
+        result.level = ingredient.level;
+        result.identify();
+        //双形态武器测试 如果有自定义名字 需要传递名字
+        if(ingredient.customName != null){
+            result.customName = ingredient.customName;
+        }
+        GLog.b(Messages.get( IceFishSword.class, "cook",result.name()));
+        return result;
     }
 
     @Override
@@ -132,20 +147,20 @@ public class IceFishSword extends Weapon {
 
     @Override
     public int min(int lvl) {
-        return  (Dungeon.depth / 5 + tier + 1)+ +     //10 base, down from 20
+        return  (tier + 2)+ +     //10 base, down from 20
                 lvl*Math.round(1.0f*(tier+1));   //scaling unchanged
     }
 
     @Override
     public int max(int lvl) {
-        return  2*(Dungeon.depth/5+tier+1) +     //10 base, down from 20
+        return  2*(tier+3) +     //10 base, down from 20
                 lvl*Math.round(1.0f*(tier+1));   //scaling unchanged
     }
 
 
 
     public int proc(Char attacker, Char defender, int damage) {
-        if(attacker instanceof Hero && Random.Float()<0.2f){
+        if(attacker instanceof Hero && Random.Int(10)==3){
             for(Mob mob : ((Hero) attacker).visibleEnemiesList()){
                 bolt(mob.pos, mob);
             }

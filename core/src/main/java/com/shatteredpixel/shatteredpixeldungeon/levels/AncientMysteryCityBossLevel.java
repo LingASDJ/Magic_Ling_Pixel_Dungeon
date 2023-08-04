@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLevel.State.END_BOSS;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLevel.State.FALL_BOSS;
@@ -134,6 +135,8 @@ public class AncientMysteryCityBossLevel extends Level{
 
     private static final short S = Terrain.BOOKSHELF;
 
+    private static final short A = Terrain.EXIT;
+
     private static final int[] WorldRoomShort = {
             L,L,L,L,L,L,L,L,L,L,L,L,W,W,W,L,L,L,L,L,L,L,L,L,L,L,L,
             L,R,R,R,R,R,R,L,R,R,R,D,E,R,E,W,R,R,R,L,R,R,R,R,R,R,L,
@@ -159,7 +162,7 @@ public class AncientMysteryCityBossLevel extends Level{
             L,R,R,R,W,R,R,W,R,R,R,R,R,R,R,R,R,R,R,W,R,R,W,R,R,R,L,
             L,L,L,L,W,W,R,R,R,R,R,R,R,R,R,R,R,R,R,R,K,D,W,L,L,L,L,
             L,R,R,L,L,W,E,C,R,R,R,R,R,R,R,R,R,R,R,C,E,W,L,L,R,R,L,
-            L,R,R,R,L,W,W,D,R,R,R,R,R,R,R,R,R,R,R,D,W,W,L,R,R,R,L,
+            L,R,R,R,L,W,W,D,R,R,R,R,R,A,R,R,R,R,R,D,W,W,L,R,R,R,L,
             L,R,L,R,L,W,W,W,W,W,W,W,W,G,W,W,W,W,W,W,W,W,L,R,L,R,L,
             L,R,R,R,L,R,R,W,L,R,R,R,E,L,E,R,R,R,R,W,R,R,L,R,R,R,L,
             L,L,R,L,L,R,W,W,W,L,R,S,S,L,S,S,R,L,W,W,W,R,L,L,R,L,L,
@@ -221,7 +224,7 @@ public class AncientMysteryCityBossLevel extends Level{
 
         super.occupyCell( ch );
 
-        boolean isTrue = ch.pos == LDBossDoor && ch == Dungeon.hero && Dungeon.level.distance(ch.pos, entrance) >= 2;
+        boolean isTrue = ch.pos == LDBossDoor && ch == hero && Dungeon.level.distance(ch.pos, entrance) >= 2;
 
         //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal() .
         if (map[getBossDoor] == Terrain.DOOR && isTrue || map[getBossDoor] == Terrain.EMBERS && isTrue) {
@@ -239,7 +242,7 @@ public class AncientMysteryCityBossLevel extends Level{
             }
         }
 
-        //GLog.w(String.valueOf(hero.pos));
+        GLog.w(String.valueOf(hero.pos));
 
     }
 

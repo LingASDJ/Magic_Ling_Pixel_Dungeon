@@ -117,7 +117,12 @@ public class YinYangRoom extends SpecialRoom {
         Painter.set(level,right - 1,bottom - 1,Terrain.WALL);
 
         for (Door door : connected.values()) {
-            door.set(Door.Type.HIDDEN);
+            if(Dungeon.depth == 1){
+                door.set(Door.Type.REGULAR);
+            } else {
+                door.set(Door.Type.HIDDEN);
+            }
+
         }
 
         level.addItemToSpawn( new CrystalKey( Dungeon.depth ) );

@@ -5,9 +5,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Game;
 
 import java.util.ArrayList;
 
@@ -37,7 +38,8 @@ public class SakaFishSketon extends Item {
                 GLog.w(Messages.get(this,"cannot_send"));
                 return;
             }
-            GameScene.show(new BackGoKey.WndSelectLevel());
+            InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+            Game.switchScene(InterlevelScene.class);
         }
     }
 

@@ -109,7 +109,7 @@ public class LevelRules {
                     if ((Statistics.boss_enhance & 0x4) != 0) {
                         return new CavesGirlDeadLevel();
                     } else {
-                        return Random.Float() <= 0.4f ? new CaveTwoBossLevel() : new CaveTwoBossLevel();
+                        return Random.Float() <= 0.4f ? new CaveTwoBossLevel() : new NewCavesBossLevel();
                     }
                 case 16:
                 case 17:

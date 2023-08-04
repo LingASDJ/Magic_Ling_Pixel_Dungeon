@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -69,7 +70,6 @@ public class ImpShopkeeper extends Shopkeeper {
 				heap.destroy();
 			}
 		}
-
 		destroy();
 
 		sprite.emitter().burst( Speck.factory( Speck.WOOL ), 15 );
@@ -78,7 +78,8 @@ public class ImpShopkeeper extends Shopkeeper {
 
 	@Override
 	public void destroy() {
-		super.destroy();
+		HP = 0;
+		Actor.remove( this );
 		for (Heap heap: Dungeon.level.heaps.valueList()) {
 			if (heap.type == Heap.Type.FOR_SALE) {
 				if (ShatteredPixelDungeon.scene() instanceof GameScene) {

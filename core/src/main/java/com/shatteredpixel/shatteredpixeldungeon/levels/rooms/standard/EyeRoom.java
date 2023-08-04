@@ -79,6 +79,8 @@ public class EyeRoom extends SpecialRoom {
         // 绘制眼瞳
         Painter.set(level, doorX, doorY - 3, Terrain.PEDESTAL);
 
+        Painter.set(level, doorX, doorY,Terrain.BARRICADE);
+
         int chestPos = (top + 6) * level.width() + left + 6;
 
         /** 套五个宝箱 */

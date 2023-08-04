@@ -87,9 +87,10 @@ public class SakaFishBoss extends Boss {
         if (!Dungeon.level.mobs.contains(this)){
             return;
         }
-
-        if (dmg >= 25){
-            //takes 5/6/7/8/9/10 dmg at 5/7/10/14/19/25 incoming dmg
+        AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
+        if (level==AncientMysteryCityBossLevel.State.FALL_BOSS){
+            dmg = 10 + (int)(Math.sqrt(2*(dmg - 4) + 1) - 1)/2;
+        } else if (dmg >= 20){
             dmg = 14 + (int)(Math.sqrt(8*(dmg - 4) + 1) - 1)/2;
         }
 
@@ -109,7 +110,7 @@ public class SakaFishBoss extends Boss {
             lock.addTime(dmg*3f);
         }
 
-        AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
+
         //phase 1 of the fight is over
         if (HP <= HT/2 && level==AncientMysteryCityBossLevel.State.TWO_BOSS){
             HP = (HT/2);
@@ -144,14 +145,11 @@ public class SakaFishBoss extends Boss {
 
     @Override
     public int damageRoll() {
-        int min = 20;
-        int max = (HP*2 <= HT) ? 20 : 10;
-        if (pumpedUp > 0) {
-            pumpedUp = 0;
-            return Random.NormalIntRange( min*3, max*3 );
-        } else {
-            return Random.NormalIntRange( min, max );
-        }
+        AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
+        if(level==AncientMysteryCityBossLevel.State.FALL_BOSS)
+            return Random.NormalIntRange(40, 75);
+        else
+            return Random.NormalIntRange(30, 40);
     }
 
     @Override
@@ -170,7 +168,7 @@ public class SakaFishBoss extends Boss {
     @Override
     public int drRoll() {
         AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
-        return level == AncientMysteryCityBossLevel.State.FALL_BOSS ? 5 : 15;
+        return level == AncientMysteryCityBossLevel.State.FALL_BOSS ? 10 : 45;
     }
 
 
@@ -263,8 +261,6 @@ public class SakaFishBoss extends Boss {
 
             Dungeon.level.unseal();
 
-            GetBossLoot();
-
             GameScene.bossSlain();
             Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
 
@@ -278,9 +274,9 @@ public class SakaFishBoss extends Boss {
                 Dungeon.level.drop( new SakaMeat(), pos + ofs ).sprite.drop( pos );
             }
 
-            Dungeon.level.drop( new WaterSoul(), pos-1 ).sprite.drop();
+            Dungeon.level.drop( new WaterSoul(), pos ).sprite.drop();
             Dungeon.level.drop( new SakaFishSketon(), pos ).sprite.drop();
-            Dungeon.level.drop( new WaterSoul(), pos+1 ).sprite.drop();
+            Dungeon.level.drop( new WaterSoul(), pos ).sprite.drop();
 
             Badges.KILLSAKA();
 
@@ -455,7 +451,7 @@ public class SakaFishBoss extends Boss {
                         public void call() {
                             AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
                             if (leapVictim != null && alignment != leapVictim.alignment){
-                                enemy.damage( Random.NormalIntRange( 20, 40 ), this );
+                                enemy.damage( Random.NormalIntRange( 40, 60 ), this );
                                 if(level == AncientMysteryCityBossLevel.State.FALL_BOSS){
                                     //三阶段 魔法风暴
                                     FishStorm(sprite.ch);
@@ -540,7 +536,7 @@ public class SakaFishBoss extends Boss {
                 int oldPos = pos;
                 if (target != -1 && getCloser( target )) {
 
-                    spend( 6f );
+                    spend( 1f );
                     return moveSprite( oldPos,  pos );
 
                 } else {
@@ -582,7 +578,7 @@ public class SakaFishBoss extends Boss {
             }
 
             if (hit( this, ch, true )) {
-                ch.damage( Random.NormalIntRange( 20, 40 ), new DeathGaze() );
+                ch.damage( Random.NormalIntRange( 30, 60 ), new DeathGaze() );
                 if(level == AncientMysteryCityBossLevel.State.FALL_BOSS){
                     dropRocks(enemy);
                 }
@@ -626,7 +622,7 @@ public class SakaFishBoss extends Boss {
                     ray.path.get(ray.dist),
                     null
             );
-            if( Dungeon.level.water[ray.path.get(ray.dist)]){
+            if( Dungeon.level.water[ray.path.get(ray.dist)] || Random.Int(10)==0){
                 GameScene.add(Blob.seed(ray.path.get(ray.dist), 30, FrostFire.class));
                 Level.set(ray.path.get(ray.dist), Terrain.EMPTY);
                 GameScene.updateMap( ray.path.get(ray.dist) );

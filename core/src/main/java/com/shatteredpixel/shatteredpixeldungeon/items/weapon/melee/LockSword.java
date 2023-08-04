@@ -32,7 +32,7 @@ import java.util.ArrayList;
 
 public class LockSword extends MeleeWeapon {
 
-    private int lvl = 0;
+    public int lvl = 0;
 
     public LockSword() {
         super.image = ItemSpriteSheet.DG3;
@@ -67,7 +67,7 @@ public class LockSword extends MeleeWeapon {
                         if (index == 0) {
                             InterlevelScene.mode = InterlevelScene.Mode.ANCITYBOSS;
                             Game.switchScene(InterlevelScene.class);
-                            lvl -= 500;
+                            lvl -= 300;
                         }
                     }
                 });
@@ -124,18 +124,18 @@ public class LockSword extends MeleeWeapon {
     public int proc(Char attacker, Char defender, int damage ) {
 
         int dmg;
-
+        LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
         if (lvl >= 1000) {
             lvl += 1;
-        } else if (defender.properties().contains(Char.Property.BOSS) && defender.HP <= damage && lvl <= 1000) {
-            //目标Boss血量小于实际伤害判定为死亡,+100
-            lvl += 50;
-        } else if (defender.properties().contains(Char.Property.MINIBOSS) && defender.HP <= damage && lvl <= 1000) {
-            //目标迷你Boss血量小于实际伤害判定为死亡,+30
-            lvl += 20;
-        } else if (defender.HP <= damage && lvl <= 1000) {
-            //目标血量小于实际伤害判定为死亡,+15
-            lvl += 10;
+        } else if (defender.properties().contains(Char.Property.BOSS) && defender.HP <= damage && lvl <= 1000 && lock == null) {
+            //目标Boss血量小于实际伤害判定为死亡,+9
+            lvl += 9;
+        } else if (defender.properties().contains(Char.Property.MINIBOSS) && defender.HP <= damage && lvl <= 1000 && lock == null) {
+            //目标迷你Boss血量小于实际伤害判定为死亡,+7
+            lvl += 7;
+        } else if (defender.HP <= damage && lvl <= 1000 && lock == null) {
+            //目标血量小于实际伤害判定为死亡,+5
+            lvl += 5;
         }
 
         if (lvl>= 900) {

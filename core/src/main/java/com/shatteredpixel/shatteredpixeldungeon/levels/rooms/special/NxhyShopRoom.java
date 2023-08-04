@@ -5,6 +5,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -29,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
@@ -144,7 +146,12 @@ public class NxhyShopRoom extends SpecialRoom {
         itemsToSpawn2.add(Generator.randomUsingDefaults(Generator.Category.WAND));
 
         if(lanterfireactive) {
-            itemsToSpawn2.add(new OilPotion());
+            if(Challenges.activeChallenges() > 6){
+                itemsToSpawn2.add(new OilPotion());
+                itemsToSpawn2.add(new OilPotion());
+            } else {
+                itemsToSpawn2.add(new OilPotion());
+            }
         }
 
         itemsToSpawn2.add(new ScrollOfIdentify());
@@ -158,8 +165,8 @@ public class NxhyShopRoom extends SpecialRoom {
                     break;
                 case 3:
                 case 4:
-                    itemsToSpawn2.add(new YellowSunBooks());
-                    itemsToSpawn2.add(new GrassKingBooks());
+                    itemsToSpawn2.add(new YellowSunBooks().quantity(3));
+                    itemsToSpawn2.add(new GrassKingBooks().quantity(3));
                     break;
                 case 5:
                     itemsToSpawn2.add(new MeatPie());
@@ -174,7 +181,7 @@ public class NxhyShopRoom extends SpecialRoom {
             }
             itemsToSpawn2.add(item);
         }
-        itemsToSpawn2.add(new SmallRation());
+        itemsToSpawn2.add(new PotionOfHealing());
         itemsToSpawn2.add(new SmallRation());
         int Int = Random.Int(4);
         if (Int == 0) {
@@ -190,13 +197,13 @@ public class NxhyShopRoom extends SpecialRoom {
             int bags = 0;
             int i3 = Dungeon.depth;
             if (i3 == 6) {
-                bags = (int) Math.ceil((double) (((float) (5 - hourglass.sandBags)) * 0.2f));
+                bags = (int) Math.ceil(((float) (5 - hourglass.sandBags)) * 0.2f);
             } else if (i3 == 11) {
-                bags = (int) Math.ceil((double) (((float) (3 - hourglass.sandBags)) * 0.25f));
+                bags = (int) Math.ceil(((float) (3 - hourglass.sandBags)) * 0.25f);
             } else if (i3 == 16) {
-                bags = (int) Math.ceil((double) (((float) (5 - hourglass.sandBags)) * 0.5f));
+                bags = (int) Math.ceil(((float) (5 - hourglass.sandBags)) * 0.5f);
             } else if (i3 == 20 || i3 == 21) {
-                bags = (int) Math.ceil((double) (((float) (5 - hourglass.sandBags)) * 0.8f));
+                bags = (int) Math.ceil(((float) (5 - hourglass.sandBags)) * 0.8f);
             }
             for (int i4 = 1; i4 <= bags; i4++) {
                 itemsToSpawn2.add(new TimekeepersHourglass.sandBag());

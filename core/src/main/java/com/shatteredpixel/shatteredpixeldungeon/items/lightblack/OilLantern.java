@@ -6,6 +6,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.lightblack;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LighS;
@@ -37,7 +38,7 @@ public class OilLantern extends Item {
 
     private static final String TXT_STATUS = "%d%%";
     private boolean active = false;
-    private int charge = 100;
+    private int charge = 100+Challenges.activeChallenges()/5*50;
     public int flasks = 0;
 
     public OilLantern() {
