@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Difficulty;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -867,6 +868,13 @@ public abstract class Mob extends Char {
 			//50% chance to round up, 50% to round down
 			if (EXP % 2 == 1) EXP += Random.Int(2);
 			EXP /= 2;
+		}
+
+		//黄金时代所有怪物都可能会掉落金币
+		if(Dungeon.isDLC(Conducts.Conduct.MONEYLETGO) && Dungeon.hero.lvl <= maxLvl && alignment == Alignment.ENEMY){
+			if(Random.Int(100) == 50-Dungeon.depth/5){
+				Dungeon.level.drop( ( new Gold().random() ), pos ).sprite.drop();
+			}
 		}
 
 		if (alignment == Alignment.ENEMY){

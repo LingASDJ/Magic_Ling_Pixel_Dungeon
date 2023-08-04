@@ -10,6 +10,7 @@ import com.watabou.utils.Callback;
 public class BGMPlayer {
 
 
+    //解决电脑端高质量ogg的闪退问题
     public static void playBGM(String name, boolean loop) {
         Game.runOnRenderThread(new Callback() {
             @Override
@@ -141,6 +142,9 @@ public class BGMPlayer {
                 case 28:
                     playBGM( Assets.BGM_0, true );
                     break;
+                case -31:
+                    playBGM( Assets.SKBJY, true );
+                    break;
 
             }
         } else {
@@ -162,6 +166,8 @@ public class BGMPlayer {
                 playBGM(Assets.BGM_BOSSE, true);
             } else if (Dungeon.bossLevel() && t == -15) {
                 playBGM(Assets.BGM_FRBOSS, true);
+            }   else if (Dungeon.bossLevel() && t == -31) {
+                playBGM(Assets.SKBJY, true);
             }
         }
     }

@@ -39,6 +39,22 @@ public abstract class Painter {
 	
 	// Static methods
 
+
+	//绘制圆形
+	public static void drawCircle(Level level, Point center, int radius, int terrain) {
+		int cx = center.x;
+		int cy = center.y;
+		for (int x = cx - radius; x <= cx + radius; x++) {
+			for (int y = cy - radius; y <= cy + radius; y++) {
+				int dx = x - cx;
+				int dy = y - cy;
+				if (dx * dx + dy * dy <= radius * radius) {
+					Painter.set(level, x, y, terrain);
+				}
+			}
+		}
+	}
+
 	public static void set( Level level, int cell, int value ) {
 		level.map[cell] = value;
 	}

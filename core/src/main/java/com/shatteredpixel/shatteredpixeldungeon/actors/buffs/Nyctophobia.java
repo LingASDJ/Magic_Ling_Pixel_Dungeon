@@ -5,6 +5,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero.badLante
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero.goodLanterFire;
 import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.cure;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
@@ -33,11 +34,9 @@ public class Nyctophobia extends Buff implements Hero.Doom {
     public boolean act() {
 
         if(hero.lanterfire == 90){
-            cure( Dungeon.hero );
             goodLanterFire();
+            spend(20f);
         }
-
-
 
         if (hero.lanterfire < 51 && hero.lanterfire>31) {
             cure( Dungeon.hero );
@@ -80,8 +79,8 @@ public class Nyctophobia extends Buff implements Hero.Doom {
                 return true;
             }
             if (hero.lanterfire >= 0 ) {
-                hero.damageLantern(1+Dungeon.depth/8);
-                spend(10f+(float) Dungeon.depth/8);
+                hero.damageLantern(1+Challenges.activeChallenges()/5);
+                spend(20f-(float) Dungeon.depth/5);
             } else {
                 spend(STEP);
             }

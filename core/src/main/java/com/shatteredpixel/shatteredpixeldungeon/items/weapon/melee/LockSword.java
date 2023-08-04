@@ -5,7 +5,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.BackGoKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.HaloBlazing;
@@ -13,17 +19,64 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kineti
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
+import java.util.ArrayList;
+
 public class LockSword extends MeleeWeapon {
-    private int lvl = 0;
+
+    public int lvl = 0;
 
     public LockSword() {
         super.image = ItemSpriteSheet.DG3;
         super.tier = 5;
     }
+
+    private static final String AC_INTER_TP = "interlevel_tp";
+
+    @Override
+    public ArrayList<String> actions(Hero hero ) {
+        ArrayList<String> actions = super.actions( hero );
+        if(Dungeon.depth >= 0 && Statistics.sakaBackStage == 0) {
+            actions.add(AC_INTER_TP);
+        }
+        return actions;
+    }
+
+    @Override
+    public void execute( Hero hero, String action ) {
+        super.execute( hero, action );
+        if(action.equals(AC_INTER_TP)){
+            if(Dungeon.hero.buff(LockedFloor.class) != null) {
+                GLog.w(Messages.get(BackGoKey.class,"cannot_send"));
+            } else  {
+                ShatteredPixelDungeon.scene().add(new WndOptions(Icons.get(Icons.WARNING),
+                        Messages.get(this, "go_interlevel"),
+                        Messages.get(this, "go_desc"),
+                        Messages.get(this, "okay"),
+                        Messages.get(this, "cancel")) {
+                    @Override
+                    protected void onSelect(int index) {
+                        if (index == 0) {
+                            InterlevelScene.mode = InterlevelScene.Mode.ANCITYBOSS;
+                            Game.switchScene(InterlevelScene.class);
+                            lvl -= 300;
+                        }
+                    }
+                });
+
+            }
+        }
+    }
+
+
 
     @Override
     public int level() {
@@ -71,18 +124,18 @@ public class LockSword extends MeleeWeapon {
     public int proc(Char attacker, Char defender, int damage ) {
 
         int dmg;
-
+        LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
         if (lvl >= 1000) {
             lvl += 1;
-        } else if (defender.properties().contains(Char.Property.BOSS) && defender.HP <= damage && lvl <= 1000) {
-            //目标Boss血量小于实际伤害判定为死亡,+100
-            lvl += 50;
-        } else if (defender.properties().contains(Char.Property.MINIBOSS) && defender.HP <= damage && lvl <= 1000) {
-            //目标迷你Boss血量小于实际伤害判定为死亡,+30
-            lvl += 20;
-        } else if (defender.HP <= damage && lvl <= 1000) {
-            //目标血量小于实际伤害判定为死亡,+15
-            lvl += 10;
+        } else if (defender.properties().contains(Char.Property.BOSS) && defender.HP <= damage && lvl <= 1000 && lock == null) {
+            //目标Boss血量小于实际伤害判定为死亡,+9
+            lvl += 9;
+        } else if (defender.properties().contains(Char.Property.MINIBOSS) && defender.HP <= damage && lvl <= 1000 && lock == null) {
+            //目标迷你Boss血量小于实际伤害判定为死亡,+7
+            lvl += 7;
+        } else if (defender.HP <= damage && lvl <= 1000 && lock == null) {
+            //目标血量小于实际伤害判定为死亡,+5
+            lvl += 5;
         }
 
         if (lvl>= 900) {

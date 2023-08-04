@@ -822,6 +822,11 @@ public class ItemSpriteSheet {
 
 	public static final int SOYBOOKS=		MAINBOOKINDEX+14;
 
+
+	private static final int EXFOODINDEX    	 = xy(1, 38);  //16 slots
+	public static final int  FISHSKELETON=		EXFOODINDEX+0;
+	public static final int  FISHBONE=			EXFOODINDEX+1;
+
 	private static final int MAINPALYBOOKS     = xy(1, 40);
 	public static final int MONEYBOOKS=		MAINPALYBOOKS+1;
 	public static final int PINKBOOKS=		MAINPALYBOOKS+2;

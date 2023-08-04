@@ -21,8 +21,8 @@ public class SeaVastGirlSprites extends MobSprite {
         attack = new Animation( 15, false );
         attack.frames( frames, 7, 8, 9, 0 );
 
-        die = new Animation( 10, false );
-        die.frames( frames, 0 );
+        die = new Animation( 7, false );
+        die.frames( frames, 10,11,12);
 
         play( idle );
     }

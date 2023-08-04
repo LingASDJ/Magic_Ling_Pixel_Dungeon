@@ -181,7 +181,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		turnTo( ch.pos, Random.Int( Dungeon.level.length() ) );
 		renderShadow = true;
 
-		//突变激素 粒子效果
+		//TODO: this is a hack to get the hero to show up in the right place
 		if (ch != Dungeon.hero) {
 			if (health == null) {
 				health = new CharHealthIndicator(ch);
@@ -328,6 +328,13 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		float distance = Dungeon.level.trueDistance( from, to );
 		jump( from, to, callback, distance * 2, distance * 0.1f );
 	}
+
+	public void dirtcar( int from, int to, Callback callback ) {
+		float distance = Dungeon.level.trueDistance( from, to );
+		jump( from, to, callback, 0, distance * 0.1f );
+	}
+
+
 
 	public void jump( int from, int to, Callback callback, float height, float duration ) {
 		jumpCallback = callback;

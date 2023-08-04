@@ -62,7 +62,8 @@ public class WndGoShop extends Window {
                 }
             }
         };
-        btnBuy.setRect( (WIDTH - BTN_GAP) / 2 - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE, BTN_SIZE );
+        btnBuy.setRect( (WIDTH - BTN_GAP) / 2f - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE,
+                BTN_SIZE );
         btnBuy.textColor(Window.ANSDO_COLOR);
         add( btnBuy );
 

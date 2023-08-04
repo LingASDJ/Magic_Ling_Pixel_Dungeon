@@ -21,21 +21,19 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper.sell;
-
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
-import com.watabou.noosa.Game;
-import com.watabou.utils.Callback;
 
-public class ImpShopkeeper extends NPC {
+public class ImpShopkeeper extends Shopkeeper {
 
 	{
 		spriteClass = ImpSprite.class;
@@ -52,20 +50,6 @@ public class ImpShopkeeper extends NPC {
 		}
 
 		return super.act();
-	}
-
-	@Override
-	public boolean interact(Char c) {
-		if (c != Dungeon.hero) {
-			return true;
-		}
-		Game.runOnRenderThread(new Callback() {
-			@Override
-			public void call() {
-				sell();
-			}
-		});
-		return true;
 	}
 
 	@Override
@@ -86,10 +70,28 @@ public class ImpShopkeeper extends NPC {
 				heap.destroy();
 			}
 		}
-
 		destroy();
 
 		sprite.emitter().burst( Speck.factory( Speck.WOOL ), 15 );
 		sprite.killAndErase();
+	}
+
+	@Override
+	public void destroy() {
+		HP = 0;
+		Actor.remove( this );
+		for (Heap heap: Dungeon.level.heaps.valueList()) {
+			if (heap.type == Heap.Type.FOR_SALE) {
+				if (ShatteredPixelDungeon.scene() instanceof GameScene) {
+					CellEmitter.get(heap.pos).burst(ElmoParticle.FACTORY, 4);
+				}
+				if (heap.size() == 1) {
+					heap.destroy();
+				} else {
+					heap.items.remove(heap.size()-1);
+					heap.type = Heap.Type.HEAP;
+				}
+			}
+		}
 	}
 }

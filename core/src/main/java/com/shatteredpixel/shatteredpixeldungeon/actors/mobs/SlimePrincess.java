@@ -16,7 +16,6 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SlimePrincessSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -88,7 +87,7 @@ public class SlimePrincess extends Mob {
             }
             if (HP*2 > HT) {
                 BossHealthBar.bleed(false);
-                ((GooSprite)sprite).spray(false);
+                //((GooSprite)sprite).spray(false);
                 HP = Math.min(HP, HT);
             }
         } else {
@@ -135,7 +134,7 @@ public class SlimePrincess extends Mob {
         super.updateSpriteState();
 
         if (pumpedUp > 0){
-            ((GooSprite)sprite).pumpUp( pumpedUp );
+            //((GooSprite)sprite).pumpUp( pumpedUp );
         }
     }
 
@@ -143,7 +142,7 @@ public class SlimePrincess extends Mob {
     protected boolean doAttack( Char enemy ) {
         if (pumpedUp == 1) {
             pumpedUp++;
-            ((GooSprite)sprite).pumpUp( pumpedUp );
+            //((GooSprite)sprite).pumpUp( pumpedUp );
 
             spend( attackDelay() );
 
@@ -154,13 +153,13 @@ public class SlimePrincess extends Mob {
 
             if (visible) {
                 if (pumpedUp >= 2) {
-                    ((GooSprite) sprite).pumpAttack();
+                    //((GooSprite) sprite).pumpAttack();
                 } else {
                     sprite.attack(enemy.pos);
                 }
             } else {
                 if (pumpedUp >= 2){
-                    ((GooSprite)sprite).triggerEmitters();
+                   // ((GooSprite)sprite).triggerEmitters();
                 }
                 attack( enemy );
                 spend( attackDelay() );
@@ -175,7 +174,7 @@ public class SlimePrincess extends Mob {
                 pumpedUp++;
             }
 
-            ((GooSprite)sprite).pumpUp( pumpedUp );
+            //((GooSprite)sprite).pumpUp( pumpedUp );
 
             if (Dungeon.level.heroFOV[pos]) {
                 sprite.showStatus( CharSprite.NEGATIVE, Messages.get(this, "!!!") );
@@ -215,7 +214,7 @@ public class SlimePrincess extends Mob {
         if ((HP*2 <= HT) && !bleeding){
             BossHealthBar.bleed(true);
             sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "enraged"));
-            ((GooSprite)sprite).spray(true);
+            //((GooSprite)sprite).spray(true);
             yell(Messages.get(this, "gluuurp"));
         }
         LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);

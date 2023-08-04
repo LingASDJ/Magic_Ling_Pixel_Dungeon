@@ -23,20 +23,19 @@ package com.shatteredpixel.shatteredpixeldungeon;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.ROGUE;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createBossRushLevel;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createStandardLevel;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LighS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
@@ -59,34 +58,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
-import com.shatteredpixel.shatteredpixeldungeon.levels.AncityLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.CaveTwoBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.CavesGirlDeadLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.CavesLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.DM920BossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.DimandKingLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.DwarfMasterBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.HallsLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.ItemLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.LastLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LinkLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.NewCityBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.NewHallsBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.SLMKingLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.YogGodHardBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.ZeroLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -143,7 +121,48 @@ public class Dungeon {
 		return level;
 	}
 
-	//雪凛峡谷B
+	//远古副本
+	public static Level AncityWaterLevel(){
+
+
+		Dungeon.level = null;
+		Actor.clear();
+
+		depth = -30;
+
+		if (depth > Statistics.realdeepestFloor) {
+			Statistics.realdeepestFloor = depth;}
+
+		Level level;
+		level = new AncientMysteryCityLevel();
+
+		level.create();
+		Statistics.qualifiedForNoKilling = !bossLevel();
+
+		return level;
+	}
+
+	//远古领袖
+	public static Level AncityBossWaterLevel(){
+
+
+		Dungeon.level = null;
+		Actor.clear();
+
+		depth = -31;
+
+		if (depth > Statistics.realdeepestFloor) {
+			Statistics.realdeepestFloor = depth;}
+
+		Level level;
+		level = new AncientMysteryCityBossLevel();
+
+		level.create();
+		Statistics.qualifiedForNoKilling = !bossLevel();
+
+		return level;
+	}
+
 	public static Level ColdFlowerCanyonDie(){
 
 
@@ -391,145 +410,9 @@ public class Dungeon {
 		Level level;
 		if (branch == 0) {
 			if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-				switch (depth) {
-					case 17:
-					case 27:
-					case 0:
-						level = new AncityLevel();
-						Buff.affect(hero, RandomBuff.class).set((5), 1);
-						break;
-					case 1:
-					case 3:
-					case 6:
-					case 7:
-					case 9:
-					case 11:
-					case 13:
-					case 15:
-					case 18:
-					case 20:
-					case 24:
-						level = new ItemLevel();
-						break;
-					case 2:
-						level = new ForestBossLevel();
-						break;
-					case 4:
-						level = new SewerBossLevel();
-						break;
-					case 5:
-						level = new SLMKingLevel();
-						break;
-					case 8:
-						level = new PrisonBossLevel();
-						break;
-					case 10:
-						level = new DimandKingLevel();
-						break;
-					case 12:
-						level = new NewCavesBossLevel();
-						break;
-					case 14:
-						level = new CaveTwoBossLevel();
-						break;
-					case 16:
-						level = new CavesGirlDeadLevel();
-						break;
-					case 19:
-						level = new ShopBossLevel();
-						break;
-					case 21:
-						level = new NewCityBossLevel();
-						break;
-					case 22:
-					case 23:
-						level = new CityLevel();
-						Buff.affect(hero, TestDwarfMasterLock.class).set((10), 1);
-						break;
-					//TODO FIXED LIST:矮人将军那里用没祝福的十字架复活,Boss会消失不见
-					case 25:
-						level = new DwarfMasterBossLevel();
-						break;
-					case 26:
-						level = new YogGodHardBossLevel();
-						break;
-					case 28:
-						level = new DM920BossLevel();
-						Buff.affect(hero, TestDwarfMasterLock.class).set((1), 1);
-						break;
-					default:
-						level = new DeadEndLevel();
-						Statistics.deepestFloor--;
-				}
+				level = createBossRushLevel();
 			} else
-				switch (depth) {
-					case 0:
-						level = new ZeroLevel();
-						break;
-					case 1:
-					case 2:
-					case 3:
-					case 4:
-						level = new SewerLevel();
-						break;
-					case 5:
-						level = new ForestBossLevel();
-						break;
-					case 6:
-					case 7:
-					case 8:
-					case 9:
-						level = new PrisonLevel();
-						break;
-					case 10:
-						if ((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) {
-							level = new ColdChestBossLevel();
-						} else
-							level = new PrisonBossLevel();
-						break;
-					case 11:
-					case 12:
-					case 13:
-					case 14:
-						level = new CavesLevel();
-						break;
-					case 15:
-						if ((Statistics.boss_enhance & 0x4) != 0) {
-							level = new CavesGirlDeadLevel();
-						} else
-							level = Random.Float() <= 0.4f ? new CaveTwoBossLevel() : new NewCavesBossLevel();
-						break;
-					case 16:
-					case 17:
-					case 18:
-					case 19:
-						level = new CityLevel();
-						break;
-					case 20:
-						if ((Statistics.boss_enhance & 0x8) != 0) {
-							Buff.affect(hero, TestDwarfMasterLock.class).set((1), 1);
-							level = new DwarfMasterBossLevel();
-							break;
-						} else
-							level = new NewCityBossLevel();
-						break;
-					case 21:
-					case 22:
-					case 23:
-					case 24:
-						level = new HallsLevel();
-						break;
-					case 25:
-						if ((Statistics.boss_enhance & 0x10) != 0) level = new YogGodHardBossLevel();
-						else level = new NewHallsBossLevel();
-						break;
-					case 26:
-						level = new LastLevel();
-						break;
-					default:
-						level = new DeadEndLevel();
-						Statistics.deepestFloor--;
-				}
+				level = createStandardLevel();
 		} else {
 			level = new DeadEndLevel();
 			Statistics.deepestFloor--;
@@ -574,7 +457,7 @@ public class Dungeon {
 	}
 
 	public static boolean NxhyshopOnLevel() {
-		return depth == 9 || depth == 18;
+		return depth == 9 || depth == 13 || depth == 18;
 	}
 
 	public static boolean FireLevel() {
@@ -630,7 +513,7 @@ public class Dungeon {
 	}
 
 	public static boolean bossLevel( int depth ) {
-		return depth == 5 || depth == 10 || depth == 15 || depth == 20 || depth == 25|| depth == -15;
+		return depth == 5 || depth == 10 || depth == 15 || depth == 20 || depth == 25|| depth == -15| depth == -31;
 	}
 
 	public static void switchLevel( final Level level, int pos ) {
@@ -738,7 +621,7 @@ public class Dungeon {
 		int souLeftThisSet;
 		//3 SOU each floor set, 1.5 (rounded) on forbidden runes challenge
 		if (isChallenged(Challenges.NO_SCROLLS)){
-			souLeftThisSet = Math.round(1.5f - (LimitedDrops.UPGRADE_SCROLLS.count - (depth / 5) * 1.5f));
+			souLeftThisSet = Math.round(1.5f - (LimitedDrops.UPGRADE_SCROLLS.count - (depth / 5f) * 1.5f));
 		} else {
 			souLeftThisSet = 3 - (LimitedDrops.UPGRADE_SCROLLS.count - (depth / 5) * 3);
 		}

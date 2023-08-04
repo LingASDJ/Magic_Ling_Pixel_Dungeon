@@ -42,6 +42,8 @@ public class Component extends Group {
 
 		return this;
 	}
+	public final Component setX( float x ) { return setPos(x, y); }
+	public final Component setY( float y ) { return setPos(x, y); }
 
 	public Component setSize( float width, float height ) {
 		this.width = width;
@@ -51,14 +53,13 @@ public class Component extends Group {
 		return this;
 	}
 
+	public final Component setHeight( float height ) { return setSize(width, height); }
+	public final Component setWidth( float width ) 	 { return setSize(width, height); }
+
 	public Component setRect( float x, float y, float width, float height ) {
 		this.x = x;
 		this.y = y;
-		this.width = width;
-		this.height = height;
-		layout();
-
-		return this;
+		return setSize(width, height);
 	}
 
 	public boolean inside( float x, float y ) {

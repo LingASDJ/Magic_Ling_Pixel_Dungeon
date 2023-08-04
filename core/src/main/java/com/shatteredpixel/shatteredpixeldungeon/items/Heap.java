@@ -21,8 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
@@ -39,13 +40,18 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.DocumentPage;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -56,7 +62,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 
 public class Heap implements Bundlable {
-	
+
 	public enum Type {
 		HEAP,
 		FOR_SALE,
@@ -64,11 +70,15 @@ public class Heap implements Bundlable {
 		LOCKED_CHEST,
 		CRYSTAL_CHEST,
 		TOMB,
+		TELECRYSTL,
+		WHITETOMB,
 		SKELETON,
 		REMAINS,
 		BLACK
 	}
-	public Type type = Type.HEAP;
+
+	//好好好
+	public Type type =  Type.HEAP;
 	
 	public int pos = 0;
 
@@ -84,6 +94,14 @@ public class Heap implements Bundlable {
 		switch (type) {
 		case TOMB:
 			Wraith.spawnAround( hero.pos );
+			break;
+		case WHITETOMB:
+			ScrollOfTeleportation.appear( hero,hero.pos+5 );
+			new PotionOfLiquidFlame().quantity(1).identify().collect();
+			GLog.n("你在探索的时候，你发现了一瓶液态火焰药水，你收集了它，但同时被传入了墓穴的中央……");
+			break;
+		case TELECRYSTL:
+			ScrollOfTeleportation.appear( hero,level.entrance );
 			break;
 		case REMAINS:
 		case SKELETON:
@@ -210,6 +228,9 @@ public class Heap implements Bundlable {
 			} else if (item instanceof Dewdrop) {
 				items.remove( item );
 				evaporated = true;
+			} else if (item instanceof IceFishSword) {
+				replace( item, FireFishSword.resetling( (IceFishSword) item ) );
+				evaporated = true;
 			} else if (item instanceof MysteryMeat || item instanceof FrozenCarpaccio) {
 				replace( item, ChargrilledMeat.cook( item.quantity ) );
 				burnt = true;
@@ -227,7 +248,7 @@ public class Heap implements Bundlable {
 		
 		if (burnt || evaporated) {
 			
-			if (Dungeon.level.heroFOV[pos]) {
+			if (level.heroFOV[pos]) {
 				if (burnt) {
 					burnFX( pos );
 				} else {
@@ -248,7 +269,7 @@ public class Heap implements Bundlable {
 	public void explode() {
 
 		//breaks open most standard containers, mimics die.
-		if (type == Type.CHEST || type == Type.SKELETON) {
+		if (type == Type.CHEST || type == Type.SKELETON || type == Type.TELECRYSTL) {
 			type = Type.HEAP;
 			sprite.link();
 			sprite.drop();
@@ -308,7 +329,10 @@ public class Heap implements Bundlable {
 		boolean frozen = false;
 		for (Item item : items.toArray( new Item[0] )) {
 			if (item instanceof MysteryMeat) {
-				replace( item, FrozenCarpaccio.cook( (MysteryMeat)item ) );
+				replace(item, FrozenCarpaccio.cook((MysteryMeat) item));
+				frozen = true;
+			} else if (item instanceof FireFishSword) {
+				replace(item, IceFishSword.cook((FireFishSword) item));
 				frozen = true;
 			} else if (item instanceof Potion && !item.unique) {
 				items.remove(item);
@@ -343,7 +367,7 @@ public class Heap implements Bundlable {
 	}
 	
 	public void destroy() {
-		Dungeon.level.heaps.remove( this.pos );
+		level.heaps.remove( this.pos );
 		if (sprite != null) {
 			sprite.kill();
 		}
@@ -364,10 +388,12 @@ public class Heap implements Bundlable {
 				return Messages.get(this, "chest");
 			case LOCKED_CHEST:
 				return Messages.get(this, "locked_chest");
-			case CRYSTAL_CHEST:
+			case CRYSTAL_CHEST: case TELECRYSTL:
 				return Messages.get(this, "crystal_chest");
 			case TOMB:
 				return Messages.get(this, "tomb");
+			case WHITETOMB:
+				return Messages.get(this, "wtomb");
 			case SKELETON:
 				return Messages.get(this, "skeleton");
 			case REMAINS:
@@ -381,7 +407,7 @@ public class Heap implements Bundlable {
 
 	public String info(){
 		switch(type){
-			case CHEST:
+			case CHEST:case TELECRYSTL:
 				return Messages.get(this, "chest_desc");
 			case LOCKED_CHEST:
 				return Messages.get(this, "locked_chest_desc");
@@ -396,6 +422,8 @@ public class Heap implements Bundlable {
 					return Messages.get(this, "crystal_chest_desc", Messages.get(this, "unknow") );
 			case TOMB:
 				return Messages.get(this, "tomb_desc");
+			case WHITETOMB:
+				return Messages.get(this, "wtomb_desc");
 			case BLACK:
 				return Messages.get(this, "black_chest_desc");
 			case SKELETON:

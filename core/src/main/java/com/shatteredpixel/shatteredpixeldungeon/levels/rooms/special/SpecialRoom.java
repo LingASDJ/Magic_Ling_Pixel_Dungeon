@@ -25,6 +25,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EyeRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.YinYangRoom;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
@@ -85,12 +87,13 @@ public abstract class SpecialRoom extends Room {
 			new ArrayList<>( Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? Arrays.asList(
 					CryptRoom.class, PoolRoom.class, ArmoryRoom.class, SentryRoom.class,
 					StatueRoom.class, CrystalVaultRoom.class, CrystalPathRoom.class, CrystalChoiceRoom.class,
-					SacrificeRoom.class
+					YinYangRoom.class,
+					SacrificeRoom.class, EyeRoom.class
 			) :
 					Arrays.asList(
 			WeakFloorRoom.class, CryptRoom.class, PoolRoom.class, ArmoryRoom.class, SentryRoom.class,
-			StatueRoom.class, CrystalVaultRoom.class, CrystalPathRoom.class, CrystalChoiceRoom.class,
-			SacrificeRoom.class
+			StatueRoom.class, CrystalVaultRoom.class, CrystalPathRoom.class, CrystalChoiceRoom.class, YinYangRoom.class,
+			SacrificeRoom.class,EyeRoom.class
 	));
 
 	//9 special rooms which give consumables more often than equipment

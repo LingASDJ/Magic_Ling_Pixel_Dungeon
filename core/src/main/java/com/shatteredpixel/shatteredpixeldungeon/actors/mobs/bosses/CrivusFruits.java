@@ -136,6 +136,14 @@ public class CrivusFruits extends Mob {
 
     @Override
     protected boolean act() {
+
+        alerted = false;
+        super.act();
+
+        if (alignment == Alignment.NEUTRAL){
+            return true;
+        }
+
         //毒雾扩散
         if(!crivusfruitslevel2){
             GameScene.add(Blob.seed(pos, HP<65 ? 50 : 30, DiedBlobs.class));
@@ -200,6 +208,7 @@ public class CrivusFruits extends Mob {
 
         //三阶段
         if(HP==36){
+            alignment = Alignment.ENEMY;
             GameScene.flash(0x80009c9c);
             HP=HT=35;
             if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){

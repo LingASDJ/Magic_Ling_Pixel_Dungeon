@@ -54,7 +54,7 @@ public class CrystalMimic extends Mimic {
 
 	{
 		spriteClass = MimicSprite.Crystal.class;
-
+		flying = true;
 		FLEEING = new Fleeing();
 	}
 

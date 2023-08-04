@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -211,8 +212,14 @@ public class ShopRoom extends SpecialRoom {
 		itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.POTION ) );
 
 		if(lanterfireactive) {
-			itemsToSpawn.add(new OilPotion());
+			if(Challenges.activeChallenges() > 6){
+				itemsToSpawn.add(new OilPotion());
+				itemsToSpawn.add(new OilPotion());
+			} else {
+				itemsToSpawn.add(new OilPotion());
+			}
 		}
+
 
 		itemsToSpawn.add( new ScrollOfIdentify() );
 		itemsToSpawn.add( new ScrollOfRemoveCurse() );

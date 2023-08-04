@@ -29,6 +29,9 @@ public class Assets {
 	public static final String BGM_5 = "music/Level5.ogg";
 	public static final String BGM_0 = "music/Level0.ogg";
 	public static final String SNOWCYON	= "music/SnowCyon.ogg";
+
+	public static final String SKBJY	= "music/Boss-Saka.ogg";
+
 	public static final String TOWN = "music/town.ogg";
 	public static final String BGM_BOSSA = "music/Boss1.ogg";
 	public static final String BGM_BOSSB = "music/Boss2.ogg";
@@ -103,7 +106,8 @@ public class Assets {
 		public static final String QliPhoth_Title  = "interfaces/bosslogo/qliphoth-title.png";
 		public static final String QliPhoth_Clear  = "interfaces/bosslogo/qliphoth-clear.png";
 
-
+		public static final String SakaBJY_Title  = "interfaces/bosslogo/sakabjy-title.png";
+		public static final String SakaBJY_Clear  = "interfaces/bosslogo/sakabjy-clear.png";
 
 		public static final String ARCS_BG  = "interfaces/arcs1.png";
 		public static final String ARCS_FG  = "interfaces/arcs2.png";
@@ -310,8 +314,12 @@ public class Assets {
 
 		//BOSS
 		public static final String FRDG	= "sprites/boss/fireDragon.png";
+		public static final String DICT		= "sprites/boss/DictFish.png";
 
+		public static final String ROOMSTONE		= "sprites/boss/RoomStone.png";
 		public static final String VSGR	= "sprites/boss/SeaVastGirl.png";
+
+		public static final String SXGR	= "sprites/boss/IceSlowGirl.png";
 
 		public static final String SKFS	= "sprites/boss/SakaFishBoss.png";
 

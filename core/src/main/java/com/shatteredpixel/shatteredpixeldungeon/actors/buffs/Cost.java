@@ -6,8 +6,6 @@ import com.watabou.utils.Bundle;
 
 public class Cost extends Buff {
 
-
-
     {
         type = buffType.POSITIVE;
     }

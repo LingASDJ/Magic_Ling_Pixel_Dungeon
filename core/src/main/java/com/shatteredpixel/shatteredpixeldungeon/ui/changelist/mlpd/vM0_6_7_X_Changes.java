@@ -36,8 +36,10 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.OGPDNQHZTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedSwarmSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SakaFishBossSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SalamanderSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SlimeKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SnakeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WFSprite;
@@ -54,6 +56,8 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_55_Changes(changeInfos);
+        add_v0_6_54_Changes(changeInfos);
         add_v0_6_53_Changes(changeInfos);
         add_v0_6_52_Changes(changeInfos);
         add_v0_6_51_Changes(changeInfos);
@@ -108,6 +112,87 @@ public class vM0_6_7_X_Changes {
         add_v0_6_2_Changes(changeInfos);
         add_v0_6_1_Changes(changeInfos);
         add_v0_6_0_Changes(changeInfos);
+    }
+
+    public static void add_v0_6_55_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.4.0-Beta2-6", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FIREFISHSWORD), ("尚方宝剑"),
+                ("尚方宝剑属性重新优化，并且拥有两个形态的弱切换。具体怎么切换，看你们自己探索了")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("深度调查"),
+                ("娱乐模式改名为深度调查，并且追加黄金时代新娱乐模式。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_LAGUZ), ("升级卷轴"),
+                ("现在追加一个使用全部升级卷轴的按钮")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("游戏内区域文本"),
+                ("现在每个大区有区域文本，给各位更加身临其境的感觉")));
+
+        Image a = new SakaFishBossSprites();
+        a.scale.set(PixelScene.align(0.72f));
+        changes.addButton(new ChangeButton(a,  "新Boss:萨卡班甲鱼",
+                "远古遗迹的领袖级Boss,欢迎前来挑战。"));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_KCX), ("再生法杖"),
+                ("修复一些问题，并且可以持续使用。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_15), ("挑战加成"),
+                ("在高挑中，提灯的容量更多，商店售卖更多灯油，但灯火的每次减少可能会加剧！")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("支离破碎"),
+                ("支离破碎进行了一些怪组优化")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GREATSHIELD), ("5阶武器"),
+                ("现在5阶武器生成平均化")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SAI), ("吸血鬼刀"),
+                ("优化数值，调整吸血权重。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), ("归溯钥剑"),
+                ("现在只能在怪物那里获得极少经验，更多经验应该通过装备此武器后拾取钥匙吸收能量。")));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X82")));
+
+    }
+
+    public static void add_v0_6_54_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.4.0-Beta1", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 48, 16
+                , 16), "房间改动",
+                "全新房间：慧眼墓碑房/太极八卦房加入"));
+
+        changes.addButton(new ChangeButton(new ShopkeeperSprite(), ("回购系统"),
+                ("商店追加回购系统，除了商人领主和奈亚子均可原价退回商品")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new PinkLingSprite(), ("杂项改动"),
+                ("优化地牢部分数据，并且为即将更新的每日狩猎等设好底层。")));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X81")));
+
     }
 
     public static void add_v0_6_53_Changes( ArrayList<ChangeInfo> changeInfos ) {

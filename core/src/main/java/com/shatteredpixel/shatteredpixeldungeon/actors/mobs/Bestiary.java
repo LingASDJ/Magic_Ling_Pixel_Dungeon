@@ -102,9 +102,8 @@ public class Bestiary {
 									DM100.class, BlackHost.class));
 						case 2:
 							return new ArrayList<>(Arrays.asList(
-									Elemental.random(),
-									Monk.class,FireGhost.class,
-									Warlock.class,Random.NormalFloat(1,6)>=3 ? BruteBot.class : Warlock.class));
+									Monk.class,
+									Warlock.class));
 						case 3:
 							return new ArrayList<>(Arrays.asList(
 									Elemental.random(),
@@ -135,19 +134,15 @@ public class Bestiary {
 						case 2:
 							return new ArrayList<>(Arrays.asList(
 									Succubus.class,
-									Eye.class,ShieldHuntsman.class,Scorpio.class,Monk.class,
+									Scorpio.class,Monk.class,
 									Golem.class));
 						case 3:
 							return new ArrayList<>(Arrays.asList(
-									Succubus.class, Succubus.class, Succubus.class,
-									Succubus.class, Succubus.class,
-									Eye.class,ShieldHuntsman.class,Albino.class,Monk.class,
+									Fire_Scorpio.class,Albino.class,Monk.class,
 									Golem.class));
 						case 4:
 							return new ArrayList<>(Arrays.asList(
-									Succubus.class,
-									Succubus.class,
-									Eye.class,ShieldHuntsman.class,
+									ShieldHuntsman.class,
 									Monk.class,
 									Golem.class));
 						case 5:

@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
+import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -162,7 +163,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class GameScene extends PixelScene {
-
+	public static boolean logActorThread;
 	private void tell(String text) {
 		Game.runOnRenderThread(new Callback() {
 			@Override
@@ -494,18 +495,25 @@ public class GameScene extends PixelScene {
 							break;
 					}
 				} else {
+					Banner mapnameSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
 					switch (Dungeon.depth) {
 						case 0:
 							WndStory.showChapter( WndStory.ID_FOREST );
 							break;
 						case 1:
 							WndStory.showChapter( WndStory.ID_SEWERS );
+							mapnameSlain.texture( "interfaces/mapname/forest.png" );
+							mapnameSlain.show( 0x00FF00, 0.6f, 3f );
+							scene.showBanner( mapnameSlain );
 							break;
 						case 5:
 							WndStory.showChapter( WndStory.ID_SEWERSBOSS );
 							break;
 						case 6:
 							WndStory.showChapter( WndStory.ID_PRISON );
+							mapnameSlain.texture( "interfaces/mapname/prison.png" );
+							mapnameSlain.show( Window.MLPD_COLOR, 0.6f, 3f );
+							scene.showBanner( mapnameSlain );
 							break;
 						case 10:
 							if((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) {
@@ -516,12 +524,21 @@ public class GameScene extends PixelScene {
 							break;
 						case 11:
 							WndStory.showChapter( WndStory.ID_CAVES );
+							mapnameSlain.texture( "interfaces/mapname/caves.png" );
+							mapnameSlain.show( Window.Pink_COLOR, 0.6f, 3f );
+							scene.showBanner( mapnameSlain );
 							break;
 						case 16:
 							WndStory.showChapter( WndStory.ID_CITY );
+							mapnameSlain.texture( "interfaces/mapname/dwarf.png" );
+							mapnameSlain.show( Window.CBLACK, 0.6f, 3f );
+							scene.showBanner( mapnameSlain );
 							break;
 						case 21:
 							WndStory.showChapter( WndStory.ID_HALLS );
+							mapnameSlain.texture( "interfaces/mapname/halls.png" );
+							mapnameSlain.show( Window.RED_COLOR, 0.6f, 3f );
+							scene.showBanner( mapnameSlain );
 							break;
 						case 26:
 							WndStory.showChapter( WndStory.ID_CHAPTONEEND );
@@ -592,7 +609,9 @@ public class GameScene extends PixelScene {
 		if (InterlevelScene.mode != InterlevelScene.Mode.NONE) {
 			if (Dungeon.depth == Statistics.deepestFloor
 					&& (InterlevelScene.mode == InterlevelScene.Mode.DESCEND || InterlevelScene.mode == InterlevelScene.Mode.FALL)) {
-				if(Dungeon.depth < 0) {
+				if(Dungeon.depth == -30) {
+					GLog.h(Messages.get(this, "ancity"), Dungeon.depth);
+				} else if (Dungeon.depth == -15) {
 					GLog.h(Messages.get(this, "snowcynon"), Dungeon.depth);
 				} else {
 					GLog.h(Messages.get(this, "descend"), Dungeon.depth);
@@ -641,7 +660,9 @@ public class GameScene extends PixelScene {
 			} else if (InterlevelScene.mode == InterlevelScene.Mode.RESURRECT) {
 				GLog.h(Messages.get(this, "resurrect"), Dungeon.depth);
 			} else {
-				if(Dungeon.depth < 0) {
+				if(Dungeon.depth == -31) {
+					GLog.h(Messages.get(this, "ancity"), Dungeon.depth);
+				} else if (Dungeon.depth == -15) {
 					GLog.h(Messages.get(this, "snowcynon"), Dungeon.depth);
 				} else {
 					GLog.h(Messages.get(this, "return"), Dungeon.depth);
@@ -794,6 +815,27 @@ public class GameScene extends PixelScene {
 	@Override
 	public synchronized void update() {
 		lastOffset = null;
+
+		if (logActorThread){
+			if (actorThread != null){
+				logActorThread = false;
+				String s = "";
+				for (StackTraceElement t:
+						actorThread.getStackTrace()){
+					s += "\n";
+					s += t.toString();
+				}
+				Class<? extends Actor> cl =
+						Actor.getCurrentActorClass();
+				String msg = "Actor therad dump was requested." + "Seed:" + Dungeon.seed +
+						"depth:" + Dungeon.depth + "challenges:" + "current actor:" + cl +
+						"\ntrace:" + s;
+				Gdx.app.getClipboard().setContents(msg);
+				ShatteredPixelDungeon.reportException(new RuntimeException(msg)
+				);
+				add(new WndMessage(Messages.get(this,"copied")));
+			}
+		}
 
 		if (updateItemDisplays){
 			updateItemDisplays = false;
@@ -1423,7 +1465,7 @@ public class GameScene extends PixelScene {
 		Buff.detach( ch, MagicGirlSayTimeLast.class );
 	}
 
-
+	/** Boss 出场的Logo显示 灵感：泰拉瑞亚灾厄炼狱 */
 	public static void bossReady() {
 		if (Dungeon.hero.isAlive()) {
 			Banner bossSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
@@ -1439,11 +1481,14 @@ public class GameScene extends PixelScene {
 					}
 					break;
 				case 5:
-					if(!Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ) {
 						bossSlain.texture(Assets.Interfaces.QliPhoth_Title);
-						bossSlain.show(0xFFFFFF, 0.3f, 5f);
+						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
-					}
+					break;
+				case -31:
+					bossSlain.texture(Assets.Interfaces.SakaBJY_Title);
+					bossSlain.show( Window.CYELLOW, 0.3f, 5f);
+					scene.showBanner(bossSlain);
 					break;
 			}
 
@@ -1473,11 +1518,14 @@ public class GameScene extends PixelScene {
 					}
 					break;
 				case 5:
-					if(!Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ) {
 						bossSlain.texture(Assets.Interfaces.QliPhoth_Clear);
-						bossSlain.show(0xFFFFFF, 0.3f, 5f);
+						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
-					}
+					break;
+				case -31:
+					bossSlain.texture(Assets.Interfaces.SakaBJY_Clear);
+					bossSlain.show( Window.CYELLOW, 0.3f, 5f);
+					scene.showBanner(bossSlain);
 					break;
 			}
 

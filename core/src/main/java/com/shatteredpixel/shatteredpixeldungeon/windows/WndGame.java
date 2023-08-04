@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -34,6 +35,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
+import com.watabou.utils.DeviceCompat;
 
 import java.io.IOException;
 
@@ -94,6 +97,19 @@ public class WndGame extends Window {
 				}
 			} );
 			curBtn.icon(Icons.get(Icons.RANKINGS));
+		}
+
+		//玩家未准备好以及为DEBUG模式
+		if(!Dungeon.hero.ready && DeviceCompat.isDebug()){
+			addButton(curBtn = new
+					RedButton("DEBUG"){
+						@Override
+						protected void onClick() {
+							GameScene.logActorThread = true;
+						}
+					});
+			curBtn.icon(new
+					Image(Assets.Sprites.SPINNER,144,0,16,16));
 		}
 
 		// Main menu

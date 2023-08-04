@@ -32,7 +32,7 @@ public class SalamanderSprites extends MobSprite {
         cast = attack.clone();
 
         die = new MovieClip.Animation( 12, false );
-        die.frames( frames, 7 );
+        die.frames( frames, 7,8,9 );
 
         play( idle );
     }

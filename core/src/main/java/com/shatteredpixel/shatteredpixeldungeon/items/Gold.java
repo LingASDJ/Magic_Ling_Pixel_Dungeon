@@ -86,7 +86,7 @@ public class Gold extends Item {
 	
 	@Override
 	public Item random() {
-		quantity = Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ?  Random.Int( 130 + Dungeon.depth * 3, 160 + Dungeon.depth * 5 ) :
+		quantity = Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? Random.Int( 130 + Dungeon.depth * 3, 160 + Dungeon.depth * 5 ) :
 				Random.Int( 30 + Dungeon.depth * 10, 60 + Dungeon.depth * 20 );
 		return this;
 	}

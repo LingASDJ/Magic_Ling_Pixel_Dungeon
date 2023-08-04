@@ -9,9 +9,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 public class FireFishSword extends MeleeWeapon{
 
@@ -22,21 +26,37 @@ public class FireFishSword extends MeleeWeapon{
         tier = 6;
         ACC = 2.90f; //20% boost to accuracy
         DLY = 1.6f; //2x speed
+        cursed = true;
+        enchant(Enchantment.randomCurse());
+    }
+
+    public static Weapon resetling(IceFishSword ingredient ) {
+        FireFishSword result = new FireFishSword();
+        result.quantity = ingredient.quantity();
+        result.identify();
+        result.level = ingredient.level;
+        if(ingredient.customName != null){
+            result.customName = ingredient.customName;
+        }
+        GLog.n(Messages.get( FireFishSword.class, "resetling"),result.name());
+        return result;
     }
 
 
-    @Override
-    public int max(int lvl) {
-        return  3*(tier+1) +    //45 base, up from 30
-                lvl*(tier+1);   //scaling unchanged
-    }
 
 
     @Override
     public int min(int lvl) {
-        return  1*(tier+5) +    //45 base, up from 30
-                lvl*(tier+1);   //scaling unchanged
+        return  (tier + 1)+ +     //10 base, down from 20
+                lvl*Math.round(1.0f*(tier+1));   //scaling unchanged
     }
+
+    @Override
+    public int max(int lvl) {
+        return  2*(tier+2) +     //10 base, down from 20
+                lvl*Math.round(1.0f*(tier+1));   //scaling unchanged
+    }
+
 
     public void bolt(Integer target, final Mob mob){
         if (target != null) {
@@ -71,7 +91,7 @@ public class FireFishSword extends MeleeWeapon{
     }
 
     public int proc(Char attacker, Char defender, int damage) {
-        if(attacker instanceof Hero){
+        if(attacker instanceof Hero && Random.Int(10)==3){
             for(Mob mob : ((Hero) attacker).visibleEnemiesList()){
                 bolt(mob.pos, mob);
             }

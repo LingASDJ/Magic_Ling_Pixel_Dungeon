@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
@@ -35,9 +34,19 @@ public class WandOfAnmy extends DamageWand {
         bones = true;
     }
 
+    public ArrayList<String> actions( Hero hero ) {
+        ArrayList<String> actions = new ArrayList<>();
+        if (curCharges > 0 || !curChargeKnown) {
+            actions.add( AC_ZAP );
+        }
+        actions.remove(AC_DROP);
+        actions.remove(AC_THROW);
+        return actions;
+    }
+
     @Override
-    public ArrayList<String> actions(Hero hero) {
-        return new ArrayList<>(); //yup, no dropping this one
+    public int value() {
+        return 0;
     }
 
     public static class AllyToRestart extends AllyBuff {
@@ -56,7 +65,7 @@ public class WandOfAnmy extends DamageWand {
         public void fx(boolean on) {
             if (on) {
                 target.sprite.add(CharSprite.State.SHIELDED);
-                Statistics.TryUsedAnmy = true;
+                //Statistics.TryUsedAnmy = true;
             }
             else
                 target.sprite.remove(CharSprite.State.SHIELDED);
@@ -129,10 +138,10 @@ public class WandOfAnmy extends DamageWand {
             ch.damage(damage, this);
             Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, 1.1f * Random.Float(0.87f, 1.15f) );
 
-            if (ch.isAlive() && !Statistics.TryUsedAnmy && (!ch.properties().contains(Char.Property.BOSS) || !ch.properties().contains(Char.Property.MINIBOSS))){
+            if (ch.isAlive() && (!ch.properties().contains(Char.Property.BOSS))){
                 Buff.affect(ch, AllyToRestart.class);
             } else {
-                GLog.n("不能影响Boss和精英怪，也不能在使用后继续在本层使用,每层仅限一次使用。");
+                GLog.n("不能影响Boss。");
             }
         } else {
             Dungeon.level.pressCell(bolt.collisionPos);

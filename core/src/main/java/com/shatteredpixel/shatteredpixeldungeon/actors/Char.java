@@ -606,6 +606,8 @@ public abstract class Char extends Actor {
 	public float speed() {
 		float speed = baseSpeed;
 
+
+
 		//提升20%移速
 		MIME.GOLD_THREE getSpeed = Dungeon.hero.belongings.getItem(MIME.GOLD_THREE.class);
 		if (getSpeed!=null) speed *= 1.2f;

@@ -73,7 +73,7 @@ public class InterlevelScene extends PixelScene {
 	public static int returnBranch;
 
 	public enum Mode {
-		DESCEND, ASCEND, CONTINUE, RESURRECT, RETURN, FALL, RESET, NONE,EXBOSS,GOBACK,FRGIRLBOSS,DR,
+		DESCEND, ASCEND, CONTINUE, RESURRECT, RETURN, FALL, RESET, NONE,EXBOSS,GOBACK,FRGIRLBOSS,ANCITYBOSS,DR,
 	}
 	public static Mode mode;
 
@@ -284,6 +284,9 @@ public class InterlevelScene extends PixelScene {
 								break;
 							case FRGIRLBOSS:
 								exboss(2);
+								break;
+							case ANCITYBOSS:
+								exboss(4);
 								break;
 
 						}
@@ -562,6 +565,12 @@ public class InterlevelScene extends PixelScene {
 				break;
 			case 2:
 				level=Dungeon.ColdFlowerCanyonDie();
+				break;
+			case 3:
+				level=Dungeon.AncityWaterLevel();
+				break;
+			case 4:
+				level=Dungeon.AncityBossWaterLevel();
 				break;
 			default:
 				level = Dungeon.newLevel();

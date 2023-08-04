@@ -22,10 +22,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.keys;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndJournal;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -54,6 +57,13 @@ public abstract class Key extends Item {
 		Sample.INSTANCE.play( Assets.Sounds.ITEM );
 		hero.spendAndNext( TIME_TO_PICK_UP );
 		GameScene.updateKeyDisplay();
+
+		if(hero.belongings.weapon instanceof LockSword){
+			LockSword weapon = (LockSword)hero.belongings.weapon;
+			weapon.lvl += 15*(Dungeon.depth/5);
+			hero.sprite.showStatus(0x123456ff, String.valueOf(15*(Dungeon.depth/5)));
+			GLog.p("归溯钥剑吸收了地牢钥匙中的残余魔力，你感觉它似乎变得更加强大了。");
+		}
 		return true;
 	}
 

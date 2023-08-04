@@ -48,7 +48,7 @@ public abstract class InventoryScroll extends Scroll {
 		GameScene.selectItem( itemSelector );
 	}
 	
-	private void confirmCancelation() {
+	void confirmCancelation() {
 		GameScene.show( new WndOptions(new ItemSprite(this),
 				Messages.titleCase(name()),
 				Messages.get(this, "warning"),
@@ -70,7 +70,7 @@ public abstract class InventoryScroll extends Scroll {
 		} );
 	}
 
-	private String inventoryTitle(){
+	String inventoryTitle(){
 		return Messages.get(this, "inv_title");
 	}
 
