@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -45,6 +46,29 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class WandOfLightning extends DamageWand {
+
+
+	public static class PlaceHolderX extends WandOfLightning {
+
+		{
+			image = ItemSpriteSheet.WAND_LIGHTNING;
+		}
+
+		@Override
+		public boolean isSimilar(Item item) {
+			return item instanceof WandOfLightning;
+		}
+
+		@Override
+		public void onZap(Ballistica attack) {}
+		public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {}
+
+		@Override
+		public String info() {
+			return "";
+		}
+	}
+
 
 	{
 		image = ItemSpriteSheet.WAND_LIGHTNING;

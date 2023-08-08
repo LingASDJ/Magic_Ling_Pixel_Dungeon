@@ -437,11 +437,9 @@ public class Hero extends Char {
 				str.append("craft_names_");
 				str.append(csname);
 				String[] enus = bundle.getStringArray(str.toString());
-				StringBuilder pre = new StringBuilder();
-				pre.append("craft_vals_");
-				pre.append(csname);
-				int[] trys = bundle.getIntArray(pre.toString());
-				LinkedHashMap<String, Integer> lname = new LinkedHashMap<String, Integer>();
+				String pre = "craft_vals_" + csname;
+				int[] trys = bundle.getIntArray(pre);
+				LinkedHashMap<String, Integer> lname = new LinkedHashMap<>();
 
 				for(int lisx = 0; lisx < enus.length && lisx < trys.length; ++lisx) {
 					lname.put(enus[lisx], trys[lisx]);

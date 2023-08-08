@@ -356,9 +356,9 @@ public class WndJournal extends WndTabbed {
 	public static class AlchemyTab extends Component {
 
 		private RedButton[] pageButtons;
-		private static final int NUM_BUTTONS = 10;
+		private static final int NUM_BUTTONS = 11;
 
-		private static final int[] spriteIndexes = {10, 12, 7, 9, 11, 8, 3, 13, 14, 15};
+		private static final int[] spriteIndexes = {10, 12, 7, 9, 11, 8, 3, 13, 14, 15, 4};
 
 		public static int currentPageIdx   = -1;
 
@@ -403,25 +403,25 @@ public class WndJournal extends WndTabbed {
 		protected void layout() {
 			super.layout();
 
-			if (PixelScene.landscape()){
-				float buttonWidth = width()/pageButtons.length;
+			if (PixelScene.landscape()) {
+				float buttonWidth = width() / pageButtons.length;
 				for (int i = 0; i < NUM_BUTTONS; i++) {
-					pageButtons[i].setRect(i*buttonWidth, 0, buttonWidth, ITEM_HEIGHT);
+					pageButtons[i].setRect(i * buttonWidth, 0, buttonWidth, ITEM_HEIGHT);
 					PixelScene.align(pageButtons[i]);
 				}
 			} else {
-				//for first row
-				float buttonWidth = width()/5;
+				// 计算每行按钮的数量和每个按钮的宽度
+				int buttonsPerRow = 5;
+				float buttonWidth = width() / buttonsPerRow;
 				float y = 0;
 				float x = 0;
 				for (int i = 0; i < NUM_BUTTONS; i++) {
 					pageButtons[i].setRect(x, y, buttonWidth, ITEM_HEIGHT);
 					PixelScene.align(pageButtons[i]);
 					x += buttonWidth;
-					if (i == 4){
+					if ((i + 1) % buttonsPerRow == 0) { // 当达到每行按钮的数量时换行
 						y += ITEM_HEIGHT;
 						x = 0;
-						buttonWidth = width()/5;
 					}
 				}
 			}

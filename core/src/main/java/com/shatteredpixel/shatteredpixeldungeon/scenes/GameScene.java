@@ -174,7 +174,7 @@ public class GameScene extends PixelScene {
 		);
 	}
 
-	static GameScene scene;
+	public static GameScene scene;
 
 	private SkinnedBlock water;
 	private DungeonTerrainTilemap tiles;
@@ -495,25 +495,19 @@ public class GameScene extends PixelScene {
 							break;
 					}
 				} else {
-					Banner mapnameSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
 					switch (Dungeon.depth) {
 						case 0:
 							WndStory.showChapter( WndStory.ID_FOREST );
 							break;
 						case 1:
 							WndStory.showChapter( WndStory.ID_SEWERS );
-							mapnameSlain.texture( "interfaces/mapname/forest.png" );
-							mapnameSlain.show( 0x00FF00, 0.6f, 3f );
-							scene.showBanner( mapnameSlain );
 							break;
 						case 5:
 							WndStory.showChapter( WndStory.ID_SEWERSBOSS );
 							break;
 						case 6:
 							WndStory.showChapter( WndStory.ID_PRISON );
-							mapnameSlain.texture( "interfaces/mapname/prison.png" );
-							mapnameSlain.show( Window.MLPD_COLOR, 0.6f, 3f );
-							scene.showBanner( mapnameSlain );
+
 							break;
 						case 10:
 							if((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) {
@@ -524,21 +518,12 @@ public class GameScene extends PixelScene {
 							break;
 						case 11:
 							WndStory.showChapter( WndStory.ID_CAVES );
-							mapnameSlain.texture( "interfaces/mapname/caves.png" );
-							mapnameSlain.show( Window.Pink_COLOR, 0.6f, 3f );
-							scene.showBanner( mapnameSlain );
 							break;
 						case 16:
 							WndStory.showChapter( WndStory.ID_CITY );
-							mapnameSlain.texture( "interfaces/mapname/dwarf.png" );
-							mapnameSlain.show( Window.CBLACK, 0.6f, 3f );
-							scene.showBanner( mapnameSlain );
 							break;
 						case 21:
 							WndStory.showChapter( WndStory.ID_HALLS );
-							mapnameSlain.texture( "interfaces/mapname/halls.png" );
-							mapnameSlain.show( Window.RED_COLOR, 0.6f, 3f );
-							scene.showBanner( mapnameSlain );
 							break;
 						case 26:
 							WndStory.showChapter( WndStory.ID_CHAPTONEEND );
@@ -1072,6 +1057,24 @@ public class GameScene extends PixelScene {
 		banner.y = align( uiCamera, (uiCamera.height - banner.height) / 2 - banner.height/2 - 16 - offset );
 
 		addToFront( banner );
+	}
+
+	public void showLogo(Banner banner) {
+		banner.camera = uiCamera;
+
+		float offset = Camera.main.centerOffset.y;
+		banner.x = align(uiCamera, (uiCamera.width - banner.width) / 2);
+		banner.y = align(uiCamera, (uiCamera.height - banner.height) / 2 - banner.height / 2 - 16 - offset);
+
+		// 修改代码开始
+		if (banner.width > uiCamera.width) {
+			banner.scale.set(uiCamera.width / banner.width * (landscape()? 0.35f:0.65f));
+			banner.x = align(uiCamera.width / banner.width * 0.25f * banner.width / 2);
+			banner.y = uiCamera.width / banner.width * 0.25f * banner.width / 2;
+		}
+		// 修改代码结束
+
+		addToFront(banner);
 	}
 	
 	// -------------------------------------------------------

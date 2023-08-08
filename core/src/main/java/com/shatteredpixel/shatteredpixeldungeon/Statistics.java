@@ -29,6 +29,9 @@ public class Statistics {
 	//统计分数
 	public static int progressScore;
 
+	//吃保底
+	public static int bossWeapons;
+
 	public static boolean happyMode = false;
 
 	//萨卡班甲鱼二阶段
@@ -277,8 +280,13 @@ public class Statistics {
 
 	private static final String SAKATWO		= "sakatwo";
 
+	private static final String BDTX		= "bdtx";
+
 
 	public static void storeInBundle( Bundle bundle ) {
+
+
+		bundle.put(BDTX,bossWeapons);
 
 		//分数
 		bundle.put( PROG_SCORE,  progressScore );
@@ -370,6 +378,8 @@ public class Statistics {
 
 		//嗜血荆棘等级处理
 		ChaicBlood   = bundle.getInt( CHACEBLOOD );
+
+		bossWeapons = bundle.getInt(BDTX);
 
 		HealingIsDied   = bundle.getInt( HEALDIED );
 
