@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -50,6 +51,27 @@ import com.watabou.utils.PathFinder;
 import java.util.ArrayList;
 
 public class WandOfFireblast extends DamageWand {
+
+	public static class PlaceHolderX extends WandOfFireblast {
+
+		{
+			image = ItemSpriteSheet.WAND_BLAST_WAVE;
+		}
+
+		@Override
+		public boolean isSimilar(Item item) {
+			return item instanceof WandOfFireblast;
+		}
+
+		@Override
+		public void onZap(Ballistica attack) {}
+		public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {}
+
+		@Override
+		public String info() {
+			return "";
+		}
+	}
 
 	{
 		image = ItemSpriteSheet.WAND_FIREBOLT;

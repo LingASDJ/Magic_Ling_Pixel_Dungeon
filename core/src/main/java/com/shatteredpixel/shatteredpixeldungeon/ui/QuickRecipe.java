@@ -83,9 +83,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlueFuck;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
@@ -329,10 +329,6 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe( new PotionOfNoWater.Recipe(),
 						new ArrayList<Item>(Arrays.asList(new Blindweed.Seed(), new Firebloom.Seed())),
 						new PotionOfNoWater()));
-				result.add(new QuickRecipe( new IceFishSword.Recipe(),
-						new ArrayList<Item>(Arrays.asList(new FrozenCarpaccio(), new MagicalInfusion(),
-								new AlchemicalCatalyst())),
-						new IceFishSword()));
 				result.add(null);
 				result.add(new QuickRecipe( new Blandfruit.CookFruit(),
 						new ArrayList<>(Arrays.asList(new Blandfruit(), new Plant.Seed.PlaceHolder())),
@@ -363,14 +359,6 @@ public class QuickRecipe extends Component {
 					ArrayList<Item> in = new ArrayList<>(Arrays.asList(scroll));
 					result.add(new QuickRecipe( r, in, r.sampleOutput(in)));
 				}
-				result.add(new QuickRecipe( new ScrollOfFlameCursed.Recipe(),
-						new ArrayList<Item>(Arrays.asList(new PotionOfLiquidFlame(), new ScrollOfTerror(),
-								new PotionOfFrost())),
-						new ScrollOfFlameCursed().quantity(2)));
-				result.add(new QuickRecipe( new ScrollOfRoseShiled.Recipe(),
-						new ArrayList<Item>(Arrays.asList(new PotionOfPurity(), new  AlchemicalCatalyst(),
-								new StoneOfBlink())),
-						new ScrollOfRoseShiled().quantity(3)));
 				return result;
 			case 5:
 				r = new Bomb.EnhanceBomb();
@@ -401,20 +389,6 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe( new ArcaneResin.Recipe(),
 						new ArrayList<Item>(Arrays.asList(new Wand.PlaceHolder())),
 						new ArcaneResin()));
-				result.add(new QuickRecipe( new WandOfBlueFuck.Recipe(),
-						new ArrayList<Item>(Arrays.asList(new PotionOfLiquidFlameX(), new WandOfFireblast(),
-								new CrivusFruitsFlake())),
-						new WandOfBlueFuck()));
-				result.add(new QuickRecipe( new WandOfHightHunderStorm.Recipe(),
-						new ArrayList<Item>(Arrays.asList(new PotionOfLightningShiledX(),
-								new WandOfLightning(),
-								new CrivusFruitsFlake())),
-						new WandOfHightHunderStorm()));
-				result.add(new QuickRecipe( new BloodthirstyThorn.Recipe(),
-						new ArrayList<Item>(Arrays.asList(new MetalShard(),
-								new ChaliceOfBlood.PlaceHolder(),
-								new LifeTreeSword.PlaceHolder())),
-						new BloodthirstyThorn()));
 				return result;
 			case 7:
 				result.add(new QuickRecipe(new AlchemicalCatalyst.Recipe(), new ArrayList<>(Arrays.asList(new Potion.PlaceHolder(), new Plant.Seed.PlaceHolder())), new AlchemicalCatalyst()));
@@ -454,6 +428,39 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe(new MagicalInfusion.Recipe()));
 				result.add(new QuickRecipe(new CurseInfusion.Recipe()));
 				result.add(new QuickRecipe(new Recycle.Recipe()));
+				return result;
+			case 10:
+				result.add(new QuickRecipe( new WandOfBlueFuck.Recipe(),
+						new ArrayList<Item>(Arrays.asList(new PotionOfLiquidFlameX(),
+								new WandOfFireblast.PlaceHolderX(),
+								new CrivusFruitsFlake())),
+						new WandOfBlueFuck()));
+				result.add(new QuickRecipe( new WandOfHightHunderStorm.Recipe(),
+						new ArrayList<Item>(Arrays.asList(new PotionOfLightningShiledX(),
+								new WandOfLightning.PlaceHolderX(),
+								new CrivusFruitsFlake())),
+						new WandOfHightHunderStorm()));
+				result.add(null);
+				result.add(null);
+				result.add(new QuickRecipe( new ScrollOfFlameCursed.Recipe(),
+						new ArrayList<Item>(Arrays.asList(new PotionOfLiquidFlame(), new ScrollOfTerror(),
+								new PotionOfFrost())),
+						new ScrollOfFlameCursed().quantity(2)));
+				result.add(new QuickRecipe( new ScrollOfRoseShiled.Recipe(),
+						new ArrayList<Item>(Arrays.asList(new PotionOfPurity(), new  AlchemicalCatalyst(),
+								new StoneOfBlink())),
+						new ScrollOfRoseShiled().quantity(3)));
+				result.add(null);
+				result.add(null);
+				result.add(new QuickRecipe( new BloodthirstyThorn.Recipe(),
+						new ArrayList<Item>(Arrays.asList(new MetalShard(),
+								new ChaliceOfBlood.PlaceHolder(),
+								new LifeTreeSword.PlaceHolder())),
+						new BloodthirstyThorn()));
+				result.add(new QuickRecipe( new IceFishSword.Recipe(),
+						new ArrayList<Item>(Arrays.asList(new FrozenCarpaccio(), new MagicalInfusion(),
+								new AlchemicalCatalyst())),
+						new IceFishSword()));
 				return result;
 		}
 	}

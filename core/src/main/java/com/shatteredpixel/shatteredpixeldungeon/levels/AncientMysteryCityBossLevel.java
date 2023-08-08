@@ -135,7 +135,7 @@ public class AncientMysteryCityBossLevel extends Level{
 
     private static final short S = Terrain.BOOKSHELF;
 
-    private static final short A = Terrain.EXIT;
+    private static final short A = Terrain.WATER;
 
     private static final int[] WorldRoomShort = {
             L,L,L,L,L,L,L,L,L,L,L,L,W,W,W,L,L,L,L,L,L,L,L,L,L,L,L,
@@ -242,7 +242,7 @@ public class AncientMysteryCityBossLevel extends Level{
             }
         }
 
-        GLog.w(String.valueOf(hero.pos));
+        //GLog.w(String.valueOf(hero.pos));
 
     }
 

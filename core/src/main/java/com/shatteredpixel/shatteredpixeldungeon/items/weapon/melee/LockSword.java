@@ -125,17 +125,19 @@ public class LockSword extends MeleeWeapon {
 
         int dmg;
         LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-        if (lvl >= 1000) {
-            lvl += 1;
-        } else if (defender.properties().contains(Char.Property.BOSS) && defender.HP <= damage && lvl <= 1000 && lock == null) {
-            //目标Boss血量小于实际伤害判定为死亡,+9
-            lvl += 9;
-        } else if (defender.properties().contains(Char.Property.MINIBOSS) && defender.HP <= damage && lvl <= 1000 && lock == null) {
-            //目标迷你Boss血量小于实际伤害判定为死亡,+7
-            lvl += 7;
-        } else if (defender.HP <= damage && lvl <= 1000 && lock == null) {
-            //目标血量小于实际伤害判定为死亡,+5
-            lvl += 5;
+        if(lock == null) {
+            if (lvl >= 1000) {
+                lvl += 1;
+            } else if (defender.properties().contains(Char.Property.BOSS) && defender.HP <= damage && lvl <= 1000) {
+                //目标Boss血量小于实际伤害判定为死亡,+9
+                lvl += 9;
+            } else if (defender.properties().contains(Char.Property.MINIBOSS) && defender.HP <= damage && lvl <= 1000) {
+                //目标迷你Boss血量小于实际伤害判定为死亡,+7
+                lvl += 7;
+            } else if (defender.HP <= damage && lvl <= 1000) {
+                //目标血量小于实际伤害判定为死亡,+5
+                lvl += 5;
+            }
         }
 
         if (lvl>= 900) {

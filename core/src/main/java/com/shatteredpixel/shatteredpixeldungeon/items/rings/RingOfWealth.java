@@ -46,7 +46,6 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -58,12 +57,12 @@ public class RingOfWealth extends Ring {
 
 	private float triesToDrop = Float.MIN_VALUE;
 	private int dropsToRare = Integer.MIN_VALUE;
-	
+
 	public String statsInfo() {
 		if (isIdentified()){
-			return Messages.get(this, "stats", new DecimalFormat("#.##").format(100f * (Math.pow(1.20f, soloBuffedBonus()) - 1f)));
+			return Messages.get(this, "stats", Messages.decimalFormat("#.##", 100f * (Math.pow(1.20f, soloBuffedBonus()) - 1f)));
 		} else {
-			return Messages.get(this, "typical_stats", new DecimalFormat("#.##").format(20f));
+			return Messages.get(this, "typical_stats", Messages.decimalFormat("#.##", 20f));
 		}
 	}
 
@@ -88,20 +87,20 @@ public class RingOfWealth extends Ring {
 	protected RingBuff buff( ) {
 		return new Wealth();
 	}
-	
+
 	public static float dropChanceMultiplier( Char target ){
 		return (float)Math.pow(1.20, getBuffedBonus(target, Wealth.class));
 	}
-	
+
 	public static ArrayList<Item> tryForBonusDrop(Char target, int tries ){
 		int bonus = getBuffedBonus(target, Wealth.class);
 
 		if (bonus <= 0) return null;
-		
+
 		HashSet<Wealth> buffs = target.buffs(Wealth.class);
 		float triesToDrop = Float.MIN_VALUE;
 		int dropsToEquip = Integer.MIN_VALUE;
-		
+
 		//find the largest count (if they aren't synced yet)
 		for (Wealth w : buffs){
 			if (w.triesToDrop() > triesToDrop){
@@ -112,8 +111,8 @@ public class RingOfWealth extends Ring {
 
 		//reset (if needed), decrement, and store counts
 		if (triesToDrop == Float.MIN_VALUE) {
-			triesToDrop = Random.NormalIntRange(0, 25);
-			dropsToEquip = Random.NormalIntRange(4, 8);
+			triesToDrop = Random.NormalIntRange(0, 20);
+			dropsToEquip = Random.NormalIntRange(5, 10);
 		}
 
 		//now handle reward logic
@@ -122,12 +121,25 @@ public class RingOfWealth extends Ring {
 		triesToDrop -= tries;
 		while ( triesToDrop <= 0 ){
 			if (dropsToEquip <= 0){
+				int equipBonus = 0;
+
+				//A second ring of wealth can be at most +1 when calculating wealth bonus for equips
+				//This is to prevent using an upgraded wealth to farm another upgraded wealth and
+				//using the two to get substantially more upgrade value than intended
+				for (Wealth w : target.buffs(Wealth.class)){
+					if (w.buffedLvl() > equipBonus){
+						equipBonus = w.buffedLvl() + Math.min(equipBonus, 2);
+					} else {
+						equipBonus += Math.min(w.buffedLvl(), 2);
+					}
+				}
+
 				Item i;
 				do {
-					i = genEquipmentDrop(bonus - 1);
+					i = genEquipmentDrop(equipBonus - 1);
 				} while (Challenges.isItemBlocked(i));
 				drops.add(i);
-				dropsToEquip = Random.NormalIntRange(4, 8);
+				dropsToEquip = Random.NormalIntRange(5, 10);
 			} else {
 				Item i;
 				do {
@@ -136,7 +148,7 @@ public class RingOfWealth extends Ring {
 				drops.add(i);
 				dropsToEquip--;
 			}
-			triesToDrop += Random.NormalIntRange(0, 25);
+			triesToDrop += Random.NormalIntRange(0, 20);
 		}
 
 		//store values back into rings
@@ -144,7 +156,7 @@ public class RingOfWealth extends Ring {
 			w.triesToDrop(triesToDrop);
 			w.dropsToRare(dropsToEquip);
 		}
-		
+
 		return drops;
 	}
 
@@ -173,18 +185,18 @@ public class RingOfWealth extends Ring {
 		}
 		latestDropTier = 0;
 	}
-	
+
 	public static Item genConsumableDrop(int level) {
 		float roll = Random.Float();
 		//60% chance - 4% per level. Starting from +15: 0%
 		if (roll < (0.6f - 0.04f * level)) {
 			latestDropTier = 1;
 			return genLowValueConsumable();
-		//30% chance + 2% per level. Starting from +15: 60%-2%*(lvl-15)
+			//30% chance + 2% per level. Starting from +15: 60%-2%*(lvl-15)
 		} else if (roll < (0.9f - 0.02f * level)) {
 			latestDropTier = 2;
 			return genMidValueConsumable();
-		//10% chance + 2% per level. Starting from +15: 40%+2%*(lvl-15)
+			//10% chance + 2% per level. Starting from +15: 40%+2%*(lvl-15)
 		} else {
 			latestDropTier = 3;
 			return genHighValueConsumable();
@@ -197,11 +209,11 @@ public class RingOfWealth extends Ring {
 				Item i = new Gold().random();
 				return i.quantity(i.quantity()/2);
 			case 1:
-				return Generator.random(Generator.Category.STONE);
+				return Generator.randomUsingDefaults(Generator.Category.STONE);
 			case 2:
-				return Generator.random(Generator.Category.POTION);
+				return Generator.randomUsingDefaults(Generator.Category.POTION);
 			case 3:
-				return Generator.random(Generator.Category.SCROLL);
+				return Generator.randomUsingDefaults(Generator.Category.SCROLL);
 		}
 	}
 
@@ -249,7 +261,7 @@ public class RingOfWealth extends Ring {
 		int floorset = (Dungeon.depth + level)/5;
 		switch (Random.Int(5)){
 			default: case 0: case 1:
-				Weapon w = Generator.randomWeapon(floorset);
+				Weapon w = Generator.randomWeapon(floorset, true);
 				if (!w.hasGoodEnchant() && Random.Int(10) < level)      w.enchant();
 				else if (w.hasCurseEnchant())                           w.enchant(null);
 				result = w;
@@ -261,15 +273,15 @@ public class RingOfWealth extends Ring {
 				result = a;
 				break;
 			case 3:
-				result = Generator.random(Generator.Category.RING);
+				result = Generator.randomUsingDefaults(Generator.Category.RING);
 				break;
 			case 4:
 				result = Generator.random(Generator.Category.ARTIFACT);
 				break;
 		}
-		//minimum level is 1/2/3/4/5/6 when ring level is 1/3/6/10/15/21
+		//minimum level is 1/2/3/4/5/6 when ring level is 1/3/5/7/9/11
 		if (result.isUpgradable()){
-			int minLevel = (int)Math.floor((Math.sqrt(8*level + 1)-1)/2f);
+			int minLevel = (level+1)/2;
 			if (result.level() < minLevel){
 				result.level(minLevel);
 			}
@@ -285,11 +297,11 @@ public class RingOfWealth extends Ring {
 	}
 
 	public class Wealth extends RingBuff {
-		
+
 		private void triesToDrop( float val ){
 			triesToDrop = val;
 		}
-		
+
 		private float triesToDrop(){
 			return triesToDrop;
 		}
@@ -301,6 +313,6 @@ public class RingOfWealth extends Ring {
 		private int dropsToRare(){
 			return dropsToRare;
 		}
-		
+
 	}
 }

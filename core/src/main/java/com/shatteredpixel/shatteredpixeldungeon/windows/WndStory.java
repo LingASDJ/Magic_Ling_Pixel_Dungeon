@@ -26,8 +26,10 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero.badLanterFire;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero.goodLanterFire;
+import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.scene;
 
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessAnmy;
@@ -36,10 +38,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMixShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessNoMoney;
+import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Banner;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -182,6 +186,44 @@ public class WndStory extends Window {
 		}
 	}
 
+
+	@Override
+	public void hide() {
+		super.hide();
+		Banner mapnameSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
+		if(!Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
+			switch (Dungeon.depth) {
+				case 1:
+					mapnameSlain.texture( "interfaces/mapname/forest.png" );
+					mapnameSlain.show( Window.GREEN_COLOR, 0.6f, 3f );
+					scene.showLogo( mapnameSlain );
+					break;
+				case 6:
+					mapnameSlain.texture( "interfaces/mapname/prison.png" );
+					mapnameSlain.show( Window.BLUE_COLOR, 0.6f, 3f );
+					scene.showLogo( mapnameSlain );
+					break;
+				case 11:
+					mapnameSlain.texture( "interfaces/mapname/caves.png" );
+					mapnameSlain.show( Window.MLPD_COLOR, 0.6f, 3f );
+					scene.showLogo( mapnameSlain );
+					break;
+				case 16:
+					mapnameSlain.texture( "interfaces/mapname/dwarf.png" );
+					mapnameSlain.show( Window.CBLACK, 0.6f, 3f );
+					scene.showLogo( mapnameSlain );
+					break;
+				case 21:
+					mapnameSlain.texture( "interfaces/mapname/halls.png" );
+					mapnameSlain.show( Window.GDX_COLOR, 0.6f, 3f );
+					scene.showLogo( mapnameSlain );
+					break;
+			}
+		}
+
+
+	}
+
 	public static void showChapter( int id ) {
 
 		if (Dungeon.chapters.contains( id )) {
@@ -190,18 +232,16 @@ public class WndStory extends Window {
 
 		String text = Messages.get(WndStory.class, CHAPTERS.get( id ));
 		if (text != null) {
-			WndStory wnd = new WndStory( text );
+			WndStory wnd = new WndStory(text);
 			if ((wnd.delay = 0.6f) > 0) {
 				wnd.shadow.visible = wnd.chrome.visible = wnd.tf.visible = false;
 				if (wnd.ttl != null) wnd.ttl.visible = false;
 			}
 
-			Game.scene().add( wnd );
+			Game.scene().add(wnd);
 			lanterfireRoll();
-			Dungeon.chapters.add( id );
+			Dungeon.chapters.add(id);
 		}
-
-		
 	}
 
 	public static void lanterfireRoll(){

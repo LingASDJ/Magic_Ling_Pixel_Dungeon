@@ -166,8 +166,8 @@ public class BloodthirstyThorn extends MeleeWeapon {
          * @param bloodthirstyThorn 读取嗜血荆棘的对象
          * @param chaliceOfBlood 读取自己背包中的圣杯
          */
-        BloodthirstyThorn bloodthirstyThorn = new BloodthirstyThorn();
-        ChaliceOfBlood chaliceOfBlood = Dungeon.hero.belongings.getItem(ChaliceOfBlood.class);
+
+
         /**
          * @param message 消息弹框控件
          */
@@ -180,6 +180,8 @@ public class BloodthirstyThorn extends MeleeWeapon {
          */
         @Override
         public Item brew(ArrayList<Item> ingredients) {
+            ChaliceOfBlood chaliceOfBlood = Dungeon.hero.belongings.getItem(ChaliceOfBlood.class);
+            BloodthirstyThorn bloodthirstyThorn = new BloodthirstyThorn();
             /**
              * @param Method brew 输出最终的炼金结果物品
              */
@@ -214,6 +216,8 @@ public class BloodthirstyThorn extends MeleeWeapon {
 
         @Override
         public Item sampleOutput(ArrayList<Item> ingredients) {
+            ChaliceOfBlood chaliceOfBlood = Dungeon.hero.belongings.getItem(ChaliceOfBlood.class);
+            BloodthirstyThorn bloodthirstyThorn = new BloodthirstyThorn();
             /**
              * @param sampleOutput 输出炼金结果物品前的预览方法
              */

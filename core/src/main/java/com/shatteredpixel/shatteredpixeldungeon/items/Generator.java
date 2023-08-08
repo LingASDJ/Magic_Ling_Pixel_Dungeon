@@ -194,7 +194,24 @@ import java.util.LinkedHashMap;
 
 public class Generator {
 
-	public enum Category {
+	public static MeleeWeapon randomWeapon(int floorSet, boolean useDefaults) {
+
+		floorSet = (int)GameMath.gate(0, floorSet, floorSetTierProbs.length-1);
+
+		MeleeWeapon w;
+		if (useDefaults){
+			w = (MeleeWeapon) randomUsingDefaults(wepTiers[Random.chances(floorSetTierProbs[floorSet])]);
+		} else {
+			w = (MeleeWeapon) random(wepTiers[Random.chances(floorSetTierProbs[floorSet])]);
+		}
+		return w;
+	}
+
+	public static MeleeWeapon randomWeapon(boolean useDefaults) {
+		return randomWeapon(Dungeon.depth / 5, useDefaults);
+	}
+
+    public enum Category {
 		WEAPON	( 2, 2, MeleeWeapon.class),
 		WEP_T1	( 0, 0, MeleeWeapon.class),
 		WEP_T2	( 0, 0, MeleeWeapon.class),

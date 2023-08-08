@@ -84,11 +84,11 @@ public class Assets {
 		public static final String CITY_BOSS        = "environment/custom_tiles/city_boss.png";
 		public static final String HALLS_SP         = "environment/custom_tiles/halls_special.png";
 
-		public static final String TILES_COLD	= "environment/Reload.png";
+		public static final String TILES_COLD	= "environment/tiles_fire.png";
 		public static final String TILES_DIED	= "environment/tiles_died.png";
 		public static final String TILES_GOLD	= "environment/tiles_gold.png";
 
-		public static final String WATER_COLD= "environment/water-1.png";
+		public static final String WATER_COLD= "environment/water2.png";
 		public static final String PRISON_EXIT_OLD  = "environment/custom_tiles/prison_exit_old.png";
 		public static final String PRISON_EXIT_NEW  = "environment/custom_tiles/prison_exit_new.png";
 		public static final String P_BOSS       = "environment/custom_tiles/p_boss.png";
@@ -425,7 +425,7 @@ public class Assets {
 		public static final String SLIME	= "sprites/slime.png";
 		public static final String SNAKE	= "sprites/snake.png";
 		public static final String NECRO	= "sprites/necromancer.png";
-		public static final String NECRORED	= "sprites/rednecromancer.png";
+		public static final String NECRORED	= "sprites/rednecromancer_ex.png";
 
 		public static final String GHOUL	= "sprites/ghoul.png";
 		public static final String RIPPER	= "sprites/ripper.png";

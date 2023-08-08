@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.bossWeapons;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel.BRatKingRoom;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel.ForestBossLasherTWOPos;
@@ -17,7 +18,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
@@ -31,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.CrivusFruitsFood;
@@ -41,8 +40,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
-import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
-import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -148,11 +145,6 @@ public class CrivusFruits extends Mob {
         if(!crivusfruitslevel2){
             GameScene.add(Blob.seed(pos, HP<65 ? 50 : 30, DiedBlobs.class));
         } else {
-            if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
-                sprite.attack( hero.pos );
-                spend( 25f );
-                shoot(this, hero.pos);
-            }
             GameScene.add(Blob.seed(pos, HP<36 ? 150 : 50, DiedBlobs.class));
         }
 
@@ -196,14 +188,6 @@ public class CrivusFruits extends Mob {
                 GameScene.updateMap( WIDTH*11+25 );
             }
 
-
-            if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
-                sprite.attack( hero.pos );
-                spend( 3f );
-                shoot(this, hero.pos);
-            }
-
-
         }
 
         //三阶段
@@ -218,11 +202,6 @@ public class CrivusFruits extends Mob {
             GLog.w(Messages.get(this,"!!!"));
             Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
             this.sprite.showStatus(CharSprite.NEGATIVE, "!!!");
-            if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
-                sprite.attack( hero.pos );
-                spend( 3f );
-                shoot(this, hero.pos);
-            }
         }
 
         return super.act();
@@ -293,11 +272,18 @@ public class CrivusFruits extends Mob {
 
         if (!Badges.isUnlocked(Badges.Badge.KILL_APPLE)){
             Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
-        } else if (Random.Float()<0.4f) {
+        } else if (Random.Float()<0.4f || Statistics.bossWeapons>=3) {
+            bossWeapons++;
             Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
+            if(Statistics.bossWeapons>=3){
+                Statistics.bossWeapons=0;
+                GLog.w("你已经连续3局未获得生命树，触发保底机制，同时你的保底机制次数重置为0");
+            }
         } else {
             Dungeon.level.drop( new Food(), pos ).sprite.drop();
         }
+
+
 
         Badges.KILLSAPPLE();
 
@@ -321,48 +307,6 @@ public class CrivusFruits extends Mob {
 
         if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
             GetBossLoot();
-        }
-    }
-
-    public void shoot(Char ch, int pos){
-        final Ballistica shot = new Ballistica( hero.pos, pos, Ballistica.MAGIC_BOLT);
-        fx(shot, ch);
-    }
-    ConeAOE cone;
-
-    protected void fx(Ballistica bolt, Char ch ) {
-        //need to perform flame spread logic here so we can determine what cells to put flames in.
-        affectedCells = new HashSet<>();
-        visualCells = new HashSet<>();
-
-        int maxDist = 2 + 4*4;
-        int dist = Math.min(bolt.dist, maxDist);
-
-        for (int i = 0; i < PathFinder.CIRCLE8.length; i++){
-            if (bolt.sourcePos+PathFinder.CIRCLE8[i] == bolt.path.get(1)){
-                break;
-            }
-        }
-
-        cone = new ConeAOE( bolt,
-                maxDist,
-                80 + 40,Ballistica.MAGIC_BOLT);
-
-        visualCells.remove(bolt.path.get(dist));
-
-        for (Ballistica ray : cone.rays){
-            ((MagicMissile)ch.sprite.parent.recycle( MagicMissile.class )).reset(
-                    MagicMissile.SHADOW_CONE,
-                    ch.sprite,
-                    ray.path.get(ray.dist),
-                    null
-            );
-        }
-
-        GameScene.add(Blob.seed(hero.pos, 120, CorrosiveGas.class));
-
-        if(Dungeon.level.heroFOV[bolt.sourcePos] || Dungeon.level.heroFOV[bolt.collisionPos]){
-            Sample.INSTANCE.play( Assets.Sounds.ZAP );
         }
     }
 

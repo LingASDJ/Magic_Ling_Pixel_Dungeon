@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearElementalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdGuardSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdRatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300AttackSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300SpiderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
@@ -22,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.FireCrystalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceFireScorpioSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.IceSlowGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceStalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -34,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MurdererSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NxhySprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.OGPDNQHZTT;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedSwarmSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SakaFishBossSprites;
@@ -56,6 +59,7 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_v0_6_56_Changes(changeInfos);
         add_v0_6_55_Changes(changeInfos);
         add_v0_6_54_Changes(changeInfos);
         add_v0_6_53_Changes(changeInfos);
@@ -114,14 +118,55 @@ public class vM0_6_7_X_Changes {
         add_v0_6_0_Changes(changeInfos);
     }
 
+    public static void add_v0_6_56_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("Coming Soon V0.6.5.0", true, "");
+        changes.hardlight(Window.CBLACK);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new RedNecromancerSprite(), ("BossRush2.0"),
+                ("地牢发生了翻天覆地的改变，一切的矛头指向了死灵军团……")));
+
+        Image s = new DM300AttackSprite();
+        s.scale.set(PixelScene.align(0.74f));
+        changes.addButton(new ChangeButton(s, ("DM-ZERO"),
+                ("时间在这里停止流动，与DMZERO正面对决的即将到来")));
+
+        Image c = new IceSlowGirlSprites();
+        c.scale.set(PixelScene.align(0.74f));
+        changes.addButton(new ChangeButton(c, ("冰雪魔女重做"),
+                ("石碑上记录了有关于她的一切，她的过去，她的现在，她的未来。而当你与她对峙时，你是否能够看清她的真实面目？")));
+
+        Image i = new Image("sprites/boss/fireDragon.png", 0, 0, 24, 24);
+        i.scale.set(PixelScene.align(0.74f));
+        changes.addButton(new ChangeButton(i, ("熔岩火龙"),
+                ("丛林暴乱的真相")));
+    }
+
     public static void add_v0_6_55_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.4.0-Beta2-6", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.4.0-Beta2-7", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
         changes = new ChangeInfo("新内容", false, null);
         changes.hardlight(Window.GREEN_COLOR);
         changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton((new Image("Ling.png", 0, 0, 16, 16)), ("开发者的话"),
+                ("你好，我应该有很久没有写开发者的话了。近期，真的很忙。\n" +
+                        "我只有晚上更新一会魔绫，但总会熬夜到很晚。\n" +
+                        "再这样下去，不清楚还能如此坚持多久。\n" +
+                        "我想，我需要休息一下。\n" +
+                        "并且降低更新频率，我想现在魔绫的更新速度已经太快了\n"+
+                        "所以后面的更新，可能会慢一点。\n"+
+                        "还是希望各位能玩的愉快吧，毕竟，人总是不能在虚拟世界里生活的。\n" +
+                        "现实仍然有很多东西，我是时候调节一下了。\n"+
+                        "那么还是祝各位游戏中冒险愉快吧！")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ALCH_PAGE), ("炼金界面优化"),
+                ("炼金指南进行优化。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_DIAMOND), ("财富之戒"),
+                ("财富戒指同步为破碎。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FIREFISHSWORD), ("尚方宝剑"),
                 ("尚方宝剑属性重新优化，并且拥有两个形态的弱切换。具体怎么切换，看你们自己探索了")));
@@ -133,7 +178,7 @@ public class vM0_6_7_X_Changes {
                 ("现在追加一个使用全部升级卷轴的按钮")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("游戏内区域文本"),
-                ("现在每个大区有区域文本，给各位更加身临其境的感觉")));
+                ("现在每个大区有区域文本，给各位更加身临其境的感觉。")));
 
         Image a = new SakaFishBossSprites();
         a.scale.set(PixelScene.align(0.72f));
@@ -152,6 +197,9 @@ public class vM0_6_7_X_Changes {
 
         changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("支离破碎"),
                 ("支离破碎进行了一些怪组优化")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项修改"),
+                ("添加Boss专武保底机制，连续三局未获得，下次必定获得")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GREATSHIELD), ("5阶武器"),
                 ("现在5阶武器生成平均化")));

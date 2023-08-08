@@ -41,9 +41,9 @@ public abstract class Key extends Item {
 		stackable = true;
 		unique = true;
 	}
-	
+
 	public int depth;
-	
+
 	@Override
 	public boolean isSimilar( Item item ) {
 		return super.isSimilar(item) && ((Key)item).depth == depth;
@@ -58,11 +58,19 @@ public abstract class Key extends Item {
 		hero.spendAndNext( TIME_TO_PICK_UP );
 		GameScene.updateKeyDisplay();
 
-		if(hero.belongings.weapon instanceof LockSword){
-			LockSword weapon = (LockSword)hero.belongings.weapon;
-			weapon.lvl += 15*(Dungeon.depth/5);
-			hero.sprite.showStatus(0x123456ff, String.valueOf(15*(Dungeon.depth/5)));
-			GLog.p("归溯钥剑吸收了地牢钥匙中的残余魔力，你感觉它似乎变得更加强大了。");
+		if(hero.belongings.weapon != null){
+			if(hero.belongings.weapon instanceof LockSword){
+				LockSword weapon = (LockSword)hero.belongings.weapon;
+				weapon.lvl += 5*(Dungeon.depth/5)+20;
+				int lvl = weapon.lvl;
+				if (lvl >= 100 && lvl <= 1000 && lvl % 100 == 0) {
+					// 提醒气泡的显示逻辑
+					GLog.p("归溯钥剑吸收了地牢钥匙中的残余魔力，你感觉它似乎变得更加强大了。");
+				}
+				int bubbleText = 15 * (Dungeon.depth / 5) + 20;
+				hero.sprite.showStatus(0x123456ff, String.valueOf(bubbleText));
+				return true;
+			}
 		}
 		return true;
 	}

@@ -28,8 +28,11 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IllegalFormatException;
 import java.util.Locale;
@@ -194,5 +197,14 @@ public class Messages {
 
 		//Otherwise, use sentence case
 		return capitalize(str);
+	}
+
+	private static HashMap<String, DecimalFormat> formatters = new HashMap<>();
+
+	public static String decimalFormat( String format, double number ){
+		if (!formatters.containsKey(format)){
+			formatters.put(format, new DecimalFormat(format, DecimalFormatSymbols.getInstance(Locale.ENGLISH)));
+		}
+		return formatters.get(format).format(number);
 	}
 }
