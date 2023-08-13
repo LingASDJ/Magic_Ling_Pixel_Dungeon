@@ -81,7 +81,7 @@ public abstract class CustomArmor extends Armor {
         return actions;
     }
 
-    /**通过检测图像，在大于目标等级后添加快捷按钮*/
+    /**通过检测图像，在大于目标等级后添加快捷按钮,使玩家快捷使用自定义护甲特殊战技*/
     @Override
     public int image() {
         super.image();
