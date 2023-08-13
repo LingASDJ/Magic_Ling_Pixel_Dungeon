@@ -20,7 +20,7 @@ public class LevelChecker {
         boolean amuletObtained = Statistics.amuletObtained;
 
         String level;
-        if (totalScore >= SSSP_SCORE * chalMultiplier * (amuletObtained ? 0.7 : 5)) {
+        if (totalScore >= SSSP_SCORE * chalMultiplier * (amuletObtained ? 1.5 : 5)) {
             level = "_SSS+_";
         } else if (totalScore >= SSS_SCORE * chalMultiplier/2 * (amuletObtained ? 1 : 4)) {
             level = "SSS";

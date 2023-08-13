@@ -22,6 +22,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.custom.AncityArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SakaMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
@@ -263,7 +264,7 @@ public class SakaFishBoss extends Boss {
 
             GameScene.bossSlain();
             Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
-
+            Dungeon.level.drop( new AncityArmor(), pos ).sprite.drop();
             //60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5
             int meets = Random.chances(new float[]{0, 0, 6, 3, 1});
             for (int i = 0; i < meets; i++){
@@ -622,7 +623,7 @@ public class SakaFishBoss extends Boss {
                     ray.path.get(ray.dist),
                     null
             );
-            if( Dungeon.level.water[ray.path.get(ray.dist)] || Random.Int(10)==0){
+            if( Dungeon.level.water[pos] || Random.Int(10)==0){
                 GameScene.add(Blob.seed(ray.path.get(ray.dist), 30, FrostFire.class));
                 Level.set(ray.path.get(ray.dist), Terrain.EMPTY);
                 GameScene.updateMap( ray.path.get(ray.dist) );

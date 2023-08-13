@@ -21,11 +21,15 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.NO_ARMOR;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -212,7 +216,11 @@ public class WndHero extends WndTabbed {
 
 			statSlot( Messages.get(this, "gold"), Statistics.goldCollected );
 			statSlot( Messages.get(this, "depth"), Statistics.deepestFloor );
-			statSlot( Messages.get(HeroStat.class, "seed_dungeon"), DungeonSeed.convertToCode(Dungeon.seed) );
+			statSlot( Messages.get(HeroStat.class, "seed_dungeon"), DungeonSeed.convertToCode(Dungeon.seed));
+
+
+			statSlot(Messages.get(HeroStat.class, "seed_type"), seedType());
+
 
 			if(lanterfireactive){
 				RestatSlot( Messages.get(this, "lanterfire"), (hero.lanterfire) + "/" + 100 );
@@ -278,6 +286,20 @@ public class WndHero extends WndTabbed {
 			add( txt );
 
 			pos += GAP + txt.height();
+		}
+
+		private String seedType(){
+			String seed;
+			if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+				seed = "BossRush";
+			}else if(Dungeon.isChallenged(NO_ARMOR)){
+				seed = "B";
+			} else if (Dungeon.isChallenged(RLPT)&&Dungeon.isChallenged(SBSG)) {
+				seed = "C";
+			} else {
+				seed = "A";
+			}
+			return seed;
 		}
 
 		private void IcestatSlot( String label, String value ) {

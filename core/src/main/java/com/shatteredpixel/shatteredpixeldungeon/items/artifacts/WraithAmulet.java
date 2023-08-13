@@ -64,7 +64,7 @@ public class WraithAmulet extends Artifact {
 
     @Override
     public int visiblyUpgraded() {
-        return levelKnown ? Math.round((level()*8)/(float)levelCap): 0;
+        return levelKnown ? Math.round((level()*10)/(float)levelCap): 0;
     }
 
 
@@ -77,10 +77,10 @@ public class WraithAmulet extends Artifact {
             } else if(useableBasic()) {
                 if(this.isEquipped(Dungeon.hero)){
                     if(this.charge > 0) {
-                        exp += 5;
+                        exp += level()>5 ? 20 : 40;
                         Buff.affect(Dungeon.hero, Invisibility.class, Invisibility.DURATION/2);
                         GLog.p(Messages.get(this,"ghost"));
-                        cooldown = 30 - (level / 2);
+                        cooldown = 20 - (level);
                         charge--;
                     } else {
                         GLog.i(Messages.get(this,"nochareup"));
@@ -211,10 +211,10 @@ public class WraithAmulet extends Artifact {
                     if (hero.rooted || Dungeon.level.distance(hero.pos, target) < 3) {
                         if(enemy != null && !(enemy instanceof NPC)){
                             final WraithAmulet amulet = (WraithAmulet) Item.curItem;
-                            amulet.exp += 10;
+                            amulet.exp += 40;
                             hero.pos = target;
                             if (enemy.properties().contains(Char.Property.BOSS)) {
-                                enemy.damage(enemy.HT/10, WraithAmulet.class);
+                                enemy.damage(enemy.HT/4, WraithAmulet.class);
                                 GLog.i(Messages.get(this, "killboss"));
                                 enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this,"koss"));
                             } else {
@@ -225,7 +225,7 @@ public class WraithAmulet extends Artifact {
                             ScrollOfTeleportation.appear(hero, target);
                             Dungeon.observe();
                             hero.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
-                            amulet.cooldown = 300;
+                            amulet.cooldown = 150 / (amulet.level() / 2);
                             amulet.charge -= 6;
                         } else {
                             GLog.w(Messages.get(this, "notnpc"));

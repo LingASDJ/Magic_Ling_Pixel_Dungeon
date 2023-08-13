@@ -23,8 +23,11 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.HaloBlazing;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
 
@@ -47,14 +50,17 @@ public class Whip extends MeleeWeapon {
 
 	@Override
 	public int proc(Char attacker, Char defender, int damage ) {
-		switch (Random.Int(2)) {
-			case 0:
-			default:
-				return Random.NormalIntRange( 1, 6 );
-			case 1:
-				Buff.prolong(defender, Chill.class, Chill.DURATION);
-				return super.proc(attacker, defender, damage);
+		if (Random.Int(2) == 1) {
+			//如果寻找到鬼磷/烈焰附魔 则换为2级流血，概率20%
+			if (Random.Int(10) == 2) {
+				if (enchantment instanceof HaloBlazing || enchantment instanceof Blazing) {
+					Buff.affect(defender, Bleeding.class).set(2);
+				} else {
+					Buff.prolong(defender, Chill.class, Chill.DURATION);
+				}
+			}
 		}
+		return super.proc(attacker, defender, damage);
 	}
 
 }

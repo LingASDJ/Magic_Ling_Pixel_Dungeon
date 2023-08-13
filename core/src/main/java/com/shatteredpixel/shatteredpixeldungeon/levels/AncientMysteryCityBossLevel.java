@@ -231,7 +231,7 @@ public class AncientMysteryCityBossLevel extends Level{
             progress();
         }
 
-        if(ch == hero){
+        if(ch == hero && Dungeon.level.locked){
             //指定区域
             if(MAIN_PORTAL.containsKey(ch.pos)) {
                 ScrollOfTeleportation.appear(ch, IF_MAIN_PORTAL.get(ch.pos));
