@@ -84,7 +84,7 @@ public class Assets {
 		public static final String CITY_BOSS        = "environment/custom_tiles/city_boss.png";
 		public static final String HALLS_SP         = "environment/custom_tiles/halls_special.png";
 
-		public static final String TILES_COLD	= "environment/tiles_fire.png";
+		public static final String TILES_COLD	= "environment/Reload.png";
 		public static final String TILES_DIED	= "environment/tiles_died.png";
 		public static final String TILES_GOLD	= "environment/tiles_gold.png";
 

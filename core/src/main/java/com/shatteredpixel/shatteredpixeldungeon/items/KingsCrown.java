@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.custom.CustomArmor;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
@@ -55,7 +56,10 @@ public class KingsCrown extends Item {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		actions.add( AC_WEAR );
+		if(!(hero.belongings.armor instanceof CustomArmor)){
+			actions.add( AC_WEAR );
+		}
+
 		return actions;
 	}
 	
@@ -104,13 +108,10 @@ public class KingsCrown extends Item {
 
 			ClassArmor classArmor = ClassArmor.upgrade(hero, armor);
 			if (hero.belongings.armor == armor) {
-
 				hero.belongings.armor = classArmor;
 				((HeroSprite) hero.sprite).updateArmor();
 				classArmor.activate(hero);
-
 			} else {
-
 				armor.detach(hero.belongings.backpack);
 				classArmor.collect(hero.belongings.backpack);
 

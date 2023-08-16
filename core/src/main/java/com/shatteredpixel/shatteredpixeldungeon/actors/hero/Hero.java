@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AdrenalineSurge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AnkhInvulnerability;
@@ -65,6 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessNoMoney;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.DeadSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
@@ -91,6 +93,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Nyctophobia;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
@@ -119,6 +122,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AlowGlyph.AncityStone;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Brimstone;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
@@ -2315,6 +2319,20 @@ public class Hero extends Char {
 		if (effect == HalomethaneBurning.class && belongings.armor() != null && belongings.armor().hasGlyph(Brimstone.class, this)){
 			return true;
 		}
+
+		//远古免疫
+		if (effect == ToxicGas.class && belongings.armor() != null && belongings.armor().hasAlowGlyph(AncityStone.class,
+				this)){
+			return true;
+		}
+		if (effect == Corrosion.class && belongings.armor() != null && belongings.armor().hasAlowGlyph(AncityStone.class, this)){
+			return true;
+		}
+		if (effect == Poison.class && belongings.armor() != null && belongings.armor().hasAlowGlyph(AncityStone.class,
+				this)){
+			return true;
+		}
+
 		return super.isImmune(effect);
 	}
 

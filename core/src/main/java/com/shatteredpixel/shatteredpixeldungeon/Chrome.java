@@ -45,9 +45,9 @@ public class Chrome {
 	public static NinePatch get( Type type ) {
 		String Asset;
 		if (SPDSettings.ClassUI()) {
-			Asset = Assets.Interfaces.CHROME_DARK;
-		} else {
 			Asset = Assets.Interfaces.CHROME;
+		} else {
+			Asset = Assets.Interfaces.CHROME_DARK;
 		}
 		switch (type) {
 		case WINDOW:

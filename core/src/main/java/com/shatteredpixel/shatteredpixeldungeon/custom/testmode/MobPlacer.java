@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bandit;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BlackHost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CausticSlime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdMagicRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
@@ -184,7 +185,9 @@ public class MobPlacer extends TestItem{
             case 3: return DataPack.DM201.ordinal() - DataPack.NEW_FIRE_ELE.ordinal() - 1;
             case 4: return DataPack.ELE_CHAOS.ordinal() - DataPack.DM201.ordinal() - 1;
             case 5: return DataPack.ACIDIC.ordinal() - DataPack.ELE_CHAOS.ordinal() - 1;
-            case 6: default: return DataPack.PIRANHA.ordinal() - DataPack.ACIDIC.ordinal() - 1;
+            case 6: return DataPack.PIRANHA.ordinal() - DataPack.ACIDIC.ordinal() - 1;
+            case 7: return DataPack.ZSLS.ordinal() - DataPack.NQHZ.ordinal() - 1;
+            case 8: default: return DataPack.SLXJ.ordinal() - DataPack.IAS.ordinal() - 1;
         }
     }
     private int dataThreshold(int tier){
@@ -201,6 +204,10 @@ public class MobPlacer extends TestItem{
                 return DataPack.ELE_CHAOS.ordinal()+1;
             case 6:
                 return DataPack.ACIDIC.ordinal()+1;
+            case 7:
+                return DataPack.ZSLS.ordinal()+1;
+            case 8:
+                return DataPack.SLXJ.ordinal()+1;
         }
     }
 
@@ -329,7 +336,7 @@ public class MobPlacer extends TestItem{
         private void updateSelectedMob(){
             int selected = mobTier;
             StringBuilder sb = new StringBuilder();
-            for(int i=1;i<=6;++i){
+            for(int i=1;i<=8;++i){
                 sb.append((i==selected? "* ":"- "));
             }
             selectedPage.text(sb.toString());
@@ -481,6 +488,7 @@ public class MobPlacer extends TestItem{
         IAX(Ice_Scorpio.class, DictSpriteSheet.IAX),
         FAX(Fire_Scorpio.class, DictSpriteSheet.FAX),
         CAX(SRPDICLR.class, DictSpriteSheet.CAX),
+        BRT(BruteBot.class, DictSpriteSheet.BRT),
         IAS(IceGolem.class, DictSpriteSheet.IAS);
 
 

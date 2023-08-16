@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.RogueArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.WarriorArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.custom.AncityArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
@@ -227,6 +228,7 @@ public enum Catalog {
 		ARMOR.seen.put( ScaleArmor.class,                   false);
 		ARMOR.seen.put( PlateArmor.class,                   false);
 		ARMOR.seen.put( LamellarArmor.class,                false);
+		ARMOR.seen.put( AncityArmor.class,                	false);
 		ARMOR.seen.put( WarriorArmor.class,                 false);
 		ARMOR.seen.put( MageArmor.class,                    false);
 		ARMOR.seen.put( RogueArmor.class,                   false);

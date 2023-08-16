@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.armor;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -43,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Metabolism;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Multiplicity;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Overgrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Stench;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.custom.CustomArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Affection;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Brimstone;
@@ -101,6 +104,9 @@ public class Armor extends EquipableItem {
 	public Augment augment = Augment.NONE;
 	
 	public Glyph glyph;
+
+	public AlowGlyph alowglyph;
+
 	public boolean curseInfusionBonus = false;
 	public boolean masteryPotionBonus = false;
 	
@@ -244,8 +250,8 @@ public class Armor extends EquipableItem {
 		if (seal.getGlyph() != null){
 			inscribe(seal.getGlyph());
 		}
-		if (isEquipped(Dungeon.hero)){
-			Buff.affect(Dungeon.hero, BrokenSeal.WarriorShield.class).setArmor(this);
+		if (isEquipped(hero)){
+			Buff.affect(hero, BrokenSeal.WarriorShield.class).setArmor(this);
 		}
 	}
 
@@ -385,7 +391,7 @@ public class Armor extends EquipableItem {
 	//other things can equip these, for now we assume only the hero can be affected by levelling debuffs
 	@Override
 	public int buffedLvl() {
-		if (isEquipped( Dungeon.hero ) || Dungeon.hero.belongings.contains( this )){
+		if (isEquipped( hero ) || hero.belongings.contains( this )){
 			return super.buffedLvl();
 		} else {
 			return level();
@@ -425,8 +431,8 @@ public class Armor extends EquipableItem {
 			damage = glyph.proc( this, attacker, defender, damage );
 		}
 		
-		if (!levelKnown && defender == Dungeon.hero) {
-			float uses = Math.min( availableUsesToID, Talent.itemIDSpeedFactor(Dungeon.hero, this) );
+		if (!levelKnown && defender == hero) {
+			float uses = Math.min( availableUsesToID, Talent.itemIDSpeedFactor(hero, this) );
 			availableUsesToID -= uses;
 			usesLeftToID -= uses;
 			if (usesLeftToID <= 0) {
@@ -450,7 +456,12 @@ public class Armor extends EquipableItem {
 	
 	@Override
 	public String name() {
-		return glyph != null && (cursedKnown || !glyph.curse()) ? glyph.name( super.name() ) : super.name();
+		if(hero.belongings.armor instanceof CustomArmor){
+			return super.name();
+		} else {
+			return glyph != null && (cursedKnown || !glyph.curse()) ? glyph.name( super.name() ) : super.name();
+		}
+
 	}
 	
 	@Override
@@ -460,13 +471,13 @@ public class Armor extends EquipableItem {
 		if (levelKnown) {
 			info += "\n\n" + Messages.get(Armor.class, "curr_absorb", DRMin(), DRMax(), STRReq());
 			
-			if (STRReq() > Dungeon.hero.STR()) {
+			if (STRReq() > hero.STR()) {
 				info += " " + Messages.get(Armor.class, "too_heavy");
 			}
 		} else {
 			info += "\n\n" + Messages.get(Armor.class, "avg_absorb", DRMin(0), DRMax(0), STRReq(0));
 
-			if (STRReq(0) > Dungeon.hero.STR()) {
+			if (STRReq(0) > hero.STR()) {
 				info += " " + Messages.get(Armor.class, "probably_too_heavy");
 			}
 		}
@@ -485,8 +496,13 @@ public class Armor extends EquipableItem {
 			info += "\n\n" +  Messages.get(Armor.class, "inscribed", glyph.name());
 			info += " " + glyph.desc();
 		}
+
+		if (alowglyph != null  && (cursedKnown || !alowglyph.curse())) {
+			info += "\n\n" +  Messages.get(Armor.class, "inscribed", alowglyph.name());
+			info += " " + alowglyph.desc();
+		}
 		
-		if (cursed && isEquipped( Dungeon.hero )) {
+		if (cursed && isEquipped( hero )) {
 			info += "\n\n" + Messages.get(Armor.class, "cursed_worn");
 		} else if (cursedKnown && cursed) {
 			info += "\n\n" + Messages.get(Armor.class, "cursed");
@@ -597,6 +613,10 @@ public class Armor extends EquipableItem {
 
 	public boolean hasGlyph(Class<?extends Glyph> type, Char owner) {
 		return glyph != null && glyph.getClass() == type && owner.buff(MagicImmune.class) == null;
+	}
+
+	public boolean hasAlowGlyph(Class<?extends AlowGlyph> type, Char owner) {
+		return alowglyph != null && alowglyph.getClass() == type && owner.buff(MagicImmune.class) == null;
 	}
 
 	//these are not used to process specific glyph effects, so magic immune doesn't affect them
@@ -723,5 +743,40 @@ public class Armor extends EquipableItem {
 			}
 		}
 		
+	}
+
+	public static abstract class AlowGlyph implements Bundlable {
+
+		public abstract int proc( Armor armor, Char attacker, Char defender, int damage );
+
+		public String name() {
+			if (!curse())
+				return name( Messages.get(this, "alowglyph") );
+			else
+				return name( Messages.get(Item.class, "curse"));
+		}
+
+		public String name( String armorName ) {
+			return Messages.get(this, "name", armorName);
+		}
+
+		public String desc() {
+			return Messages.get(this, "desc");
+		}
+
+		public boolean curse() {
+			return false;
+		}
+
+		@Override
+		public void restoreFromBundle( Bundle bundle ) {
+		}
+
+		@Override
+		public void storeInBundle( Bundle bundle ) {
+		}
+
+		//public abstract ItemSprite.Glowing glowing();
+
 	}
 }

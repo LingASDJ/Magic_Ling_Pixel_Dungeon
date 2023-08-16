@@ -148,7 +148,7 @@ public class DwarfMasterBossLevel extends Level {
     }
     private static final String IMP_SHOP = "imp_shop";
     private void spawnShop(){
-        while (impShop.itemCount() >= 10*(impShop.height()-2)){
+        while (impShop.itemCount() >= 8*(impShop.height()-2)){
             impShop.bottom++;
         }
         impShop.spawnShop(this);

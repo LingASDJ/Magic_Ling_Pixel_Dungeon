@@ -391,9 +391,9 @@ public class StatusPane extends Component {
 		int max = Dungeon.hero.HT;
 
 		if (SPDSettings.ClassUI()) {
-			bg.texture = TextureCache.get(Assets.Interfaces.STATUS_DARK);
-		} else {
 			bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
+		} else {
+			bg.texture = TextureCache.get(Assets.Interfaces.STATUS_DARK);
 		}
 
 		if(SPDSettings.TimeLimit()) {
@@ -444,6 +444,7 @@ public class StatusPane extends Component {
 			Date date = new Date();
 			String strDateFormat = "yyyy-MM-dd HH:mm";
 			SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat, Locale.getDefault());
+
 			Calendar cal=Calendar.getInstance();
 			int s=cal.get(Calendar.SECOND);
 			if(s<20) {

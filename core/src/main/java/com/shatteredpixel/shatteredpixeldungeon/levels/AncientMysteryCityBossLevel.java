@@ -161,8 +161,8 @@ public class AncientMysteryCityBossLevel extends Level{
             L,R,R,W,W,R,W,W,W,R,R,R,R,R,R,R,R,R,W,W,W,R,W,W,R,R,L,
             L,R,R,R,W,R,R,W,R,R,R,R,R,R,R,R,R,R,R,W,R,R,W,R,R,R,L,
             L,L,L,L,W,W,R,R,R,R,R,R,R,R,R,R,R,R,R,R,K,D,W,L,L,L,L,
-            L,R,R,L,L,W,E,C,R,R,R,R,R,R,R,R,R,R,R,C,E,W,L,L,R,R,L,
-            L,R,R,R,L,W,W,D,R,R,R,R,R,A,R,R,R,R,R,D,W,W,L,R,R,R,L,
+            L,R,R,L,L,W,E,C,R,R,R,R,W,W,W,R,R,R,R,C,E,W,L,L,R,R,L,
+            L,R,R,R,L,W,W,D,R,R,R,R,W,A,W,R,R,R,R,D,W,W,L,R,R,R,L,
             L,R,L,R,L,W,W,W,W,W,W,W,W,G,W,W,W,W,W,W,W,W,L,R,L,R,L,
             L,R,R,R,L,R,R,W,L,R,R,R,E,L,E,R,R,R,R,W,R,R,L,R,R,R,L,
             L,L,R,L,L,R,W,W,W,L,R,S,S,L,S,S,R,L,W,W,W,R,L,L,R,L,L,
@@ -231,7 +231,7 @@ public class AncientMysteryCityBossLevel extends Level{
             progress();
         }
 
-        if(ch == hero){
+        if(ch == hero && Dungeon.level.locked){
             //指定区域
             if(MAIN_PORTAL.containsKey(ch.pos)) {
                 ScrollOfTeleportation.appear(ch, IF_MAIN_PORTAL.get(ch.pos));
@@ -254,6 +254,10 @@ public class AncientMysteryCityBossLevel extends Level{
         GameScene.updateMap( getBossDoor );
         set( 688, Terrain.LOCKED_DOOR );
         GameScene.updateMap( 688 );
+
+        set( 634, Terrain.WATER );
+        GameScene.updateMap( 634 );
+
         Dungeon.observe();
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
             if (mob instanceof SakaFishBoss){

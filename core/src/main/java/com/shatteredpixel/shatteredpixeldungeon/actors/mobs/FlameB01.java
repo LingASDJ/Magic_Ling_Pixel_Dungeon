@@ -81,16 +81,6 @@ public class FlameB01 extends Mob {
             this.die(Burning.class);
             return true;
         }
-        if(buff(Burning.class) != null){
-            new Bomb().explode(this.pos);
-            this.die(Burning.class);
-            return true;
-        }
-        if(buff(Burning.class) != null) {
-            new Bomb().explode(this.pos);
-            this.die(Burning.class);
-            return true;
-        }
         return super.act();
     }
 

@@ -278,9 +278,10 @@ public abstract class Level implements Bundlable {
 				addItemToSpawn( new PotionOfStrength() );
 				Dungeon.LimitedDrops.STRENGTH_POTIONS.count++;
 			}
-			if (Dungeon.souNeeded()) {
+			if (Dungeon.souNeeded() && Dungeon.depth>0) {
 				addItemToSpawn( new ScrollOfUpgrade() );
 				Dungeon.LimitedDrops.UPGRADE_SCROLLS.count++;
+				//GLog.i("好好好");
 			}
 			if (Dungeon.asNeeded()) {
 				addItemToSpawn( new Stylus() );
