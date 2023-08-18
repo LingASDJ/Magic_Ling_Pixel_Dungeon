@@ -54,6 +54,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.custom.AncityArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
@@ -90,7 +94,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
@@ -162,11 +165,12 @@ public enum HeroClass {
 			new LockSword().quantity(1).identify().collect();
 			new IceFishSword().quantity(1).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
-			//new Amulet().quantity(1).identify().collect();
+			//new CommRelay().quantity(1).identify().collect();
+			new AncityArmor().quantity(1).identify().collect();
 			new TengusMask().quantity(1).identify().collect();
 			new RingOfWealth().quantity(1).identify().collect();
 			new TimekeepersHourglass().quantity(1).identify().collect();
-			new WandOfAnmy().quantity(1).identify().collect();
+			//new WandOfAnmy().quantity(1).identify().collect();
 			Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);
 			new WraithAmulet().quantity(1).identify().collect();
 			new BloodthirstyThorn().quantity(1).identify().collect();
@@ -175,6 +179,7 @@ public enum HeroClass {
 			new WashCrime().quantity(1).identify().collect();
 			new MagicTorch().quantity(1).identify().collect();
 			new LamellarArmor().quantity(1).identify().collect();
+			new MobPlacer().quantity(1).identify().collect();
 			new CrivusFruitsFlake().quantity(50).identify().collect();
 
 			new PotionOfHealing().quantity(50).identify().collect();
@@ -218,7 +223,10 @@ public enum HeroClass {
 			new IceCityBooks().quantity(12).identify().collect();
 			new ScrollOfFlameCursed().quantity(44).identify().collect();
 
+			new MailArmor().quantity(1).identify().collect();
 			new LeatherArmor().quantity(1).identify().collect();
+			new ScaleArmor().quantity(1).identify().collect();
+			new PlateArmor().quantity(1).identify().collect();
 
 			Dungeon.gold = 600000000;
 			hero.STR = 27;

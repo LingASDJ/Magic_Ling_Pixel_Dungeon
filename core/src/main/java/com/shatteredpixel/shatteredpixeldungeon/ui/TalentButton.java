@@ -85,9 +85,9 @@ public class TalentButton extends Button {
 		add(fill);
 
 		if (SPDSettings.ClassUI()) {
-			bg = new Image(Assets.Interfaces.TALENT_BUTTON_DARK);
-		} else {
 			bg = new Image(Assets.Interfaces.TALENT_BUTTON);
+		} else {
+			bg = new Image(Assets.Interfaces.TALENT_BUTTON_DARK);
 		}
 		add(bg);
 	}

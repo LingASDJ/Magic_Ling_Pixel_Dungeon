@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.dict;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BruteBotSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdRatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireAcidicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
@@ -152,6 +153,8 @@ public class DictSpriteSheet {
                 return new Image(Assets.Sprites.DM200, 0, 18, 21, 18);
             case PYLON:
                 return new Image(Assets.Sprites.PYLON, 10, 0, 10, 20);
+            case BRT:
+                return new BruteBotSprite();
 
             case GHOUL:
                 return new Image(Assets.Sprites.GHOUL, 0, 0, 12, 14);
@@ -311,6 +314,8 @@ public class DictSpriteSheet {
     public static final int DM200           = 405 + 10000;
     public static final int DM201           = 406 + 10000;
     public static final int PYLON           = 407 + 10000;
+
+    public static final int BRT           = 2007 + 10000;
 
     public static final int GHOUL           = 500 + 10000;
     public static final int ELEMENTAL_FIRE  = 501 + 10000;

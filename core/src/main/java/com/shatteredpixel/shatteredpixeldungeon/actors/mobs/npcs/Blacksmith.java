@@ -21,12 +21,18 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -73,7 +79,7 @@ public class Blacksmith extends NPC {
 		
 		sprite.turnTo( pos, c.pos );
 
-		if (c != Dungeon.hero){
+		if (c != hero){
 			return true;
 		}
 		
@@ -83,7 +89,9 @@ public class Blacksmith extends NPC {
 				@Override
 				public void call() {
 					GameScene.show( new WndQuest( Blacksmith.this,
-							Quest.alternative ? Messages.get(Blacksmith.this, "blood_1") : Messages.get(Blacksmith.this, "gold_1") ) {
+							Quest.alternative ? Messages.get(Blacksmith.this, Dungeon.isChallenged(RLPT)?"blood_a":
+									"blood_1") :
+									Messages.get(Blacksmith.this, "gold_1") ) {
 						
 						@Override
 						public void onBackPressed() {
@@ -94,10 +102,40 @@ public class Blacksmith extends NPC {
 							Notes.add( Notes.Landmark.TROLL );
 							
 							Pickaxe pick = new Pickaxe();
-							if (pick.doPickUp( Dungeon.hero )) {
-								GLog.i( Messages.get(Dungeon.hero, "you_now_have", pick.name() ));
+							if (pick.doPickUp( hero )) {
+								GLog.i( Messages.get(hero, "you_now_have", pick.name() ));
+								if(Dungeon.isChallenged(RLPT)){
+									Mob questBoss;
+									questBoss = new Bat();
+									Class<?extends ChampionEnemy> buffCls;
+
+
+									switch (Random.NormalIntRange(0,6)){
+										case 0: default:
+											buffCls = ChampionEnemy.Small.class;
+											break;
+										case 1:
+											buffCls = ChampionEnemy.Bomber.class;
+											break;
+										case 2:
+											buffCls = ChampionEnemy.Middle.class;
+											break;
+										case 3:
+											buffCls = ChampionEnemy.Big.class;
+											break;
+										case 4:
+											buffCls = ChampionEnemy.Sider.class;
+											break;
+										case 5:
+											buffCls = ChampionEnemy.LongSider.class;
+											break;
+									}
+									Buff.affect( questBoss, buffCls);
+									questBoss.pos = Dungeon.level.randomRespawnCell(questBoss);
+									GameScene.add(questBoss);
+								}
 							} else {
-								Dungeon.level.drop( pick, Dungeon.hero.pos ).sprite.drop();
+								Dungeon.level.drop( pick, hero.pos ).sprite.drop();
 							}
 						}
 					} );
@@ -107,16 +145,16 @@ public class Blacksmith extends NPC {
 		} else if (!Quest.completed) {
 			if (Quest.alternative) {
 				
-				Pickaxe pick = Dungeon.hero.belongings.getItem( Pickaxe.class );
+				Pickaxe pick = hero.belongings.getItem( Pickaxe.class );
 				if (pick == null) {
 					tell( Messages.get(this, "lost_pick") );
 				} else if (!pick.bloodStained) {
 					tell( Messages.get(this, "blood_2") );
 				} else {
-					if (pick.isEquipped( Dungeon.hero )) {
-						pick.doUnequip( Dungeon.hero, false );
+					if (pick.isEquipped( hero )) {
+						pick.doUnequip( hero, false );
 					}
-					pick.detach( Dungeon.hero.belongings.backpack );
+					pick.detach( hero.belongings.backpack );
 					tell( Messages.get(this, "completed") );
 					Statistics.questScores[2] += 3000;
 					Quest.completed = true;
@@ -125,18 +163,18 @@ public class Blacksmith extends NPC {
 				
 			} else {
 				
-				Pickaxe pick = Dungeon.hero.belongings.getItem( Pickaxe.class );
-				DarkGold gold = Dungeon.hero.belongings.getItem( DarkGold.class );
+				Pickaxe pick = hero.belongings.getItem( Pickaxe.class );
+				DarkGold gold = hero.belongings.getItem( DarkGold.class );
 				if (pick == null) {
 					tell( Messages.get(this, "lost_pick") );
 				} else if (gold == null || gold.quantity() < 15) {
 					tell( Messages.get(this, "gold_2") );
 				} else {
-					if (pick.isEquipped( Dungeon.hero )) {
-						pick.doUnequip( Dungeon.hero, false );
+					if (pick.isEquipped( hero )) {
+						pick.doUnequip( hero, false );
 					}
-					pick.detach( Dungeon.hero.belongings.backpack );
-					gold.detachAll( Dungeon.hero.belongings.backpack );
+					pick.detach( hero.belongings.backpack );
+					gold.detachAll( hero.belongings.backpack );
 					tell( Messages.get(this, "completed") );
 					Statistics.questScores[2] += 3000;
 					Quest.completed = true;
@@ -149,7 +187,7 @@ public class Blacksmith extends NPC {
 			Game.runOnRenderThread(new Callback() {
 				@Override
 				public void call() {
-					GameScene.show( new WndBlacksmith( Blacksmith.this, Dungeon.hero ) );
+					GameScene.show( new WndBlacksmith( Blacksmith.this, hero ) );
 				}
 			});
 			
@@ -216,18 +254,18 @@ public class Blacksmith extends NPC {
 		}
 
 		Sample.INSTANCE.play( Assets.Sounds.EVOKE );
-		ScrollOfUpgrade.upgrade( Dungeon.hero );
-		Item.evoke( Dungeon.hero );
+		ScrollOfUpgrade.upgrade( hero );
+		Item.evoke( hero );
 
-		if (second.isEquipped( Dungeon.hero )) {
-			((EquipableItem)second).doUnequip( Dungeon.hero, false );
+		if (second.isEquipped( hero )) {
+			((EquipableItem)second).doUnequip( hero, false );
 		}
-		second.detach( Dungeon.hero.belongings.backpack );
+		second.detach( hero.belongings.backpack );
 
 		if (second instanceof Armor){
 			BrokenSeal seal = ((Armor) second).checkSeal();
 			if (seal != null){
-				Dungeon.level.drop( seal, Dungeon.hero.pos );
+				Dungeon.level.drop( seal, hero.pos );
 			}
 		}
 
@@ -239,7 +277,7 @@ public class Blacksmith extends NPC {
 		} else {
 			first.upgrade();
 		}
-		Dungeon.hero.spendAndNext( 2f );
+		hero.spendAndNext( 2f );
 		Badges.validateItemLevelAquired( first );
 		Item.updateQuickslot();
 		

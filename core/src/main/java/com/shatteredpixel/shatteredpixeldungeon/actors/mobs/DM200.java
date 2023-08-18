@@ -67,7 +67,7 @@ public class DM200 extends Mob {
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 8);
+		return super.drRoll() + Random.NormalIntRange(0, 8);
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class DM200 extends Mob {
 		Dungeon.LimitedDrops.DM200_EQUIP.count++;
 		//uses probability tables for dwarf city
 		if (loot == Generator.Category.WEAPON){
-			return Generator.randomWeapon(4);
+			return Generator.randomWeapon(4, true);
 		} else {
 			return Generator.randomArmor(4);
 		}
@@ -127,7 +127,7 @@ public class DM200 extends Mob {
 
 	}
 
-	private boolean canVent(int target){
+	protected boolean canVent(int target){
 		if (ventCooldown > 0) return false;
 		PathFinder.buildDistanceMap(target, BArray.not(Dungeon.level.solid, null), Dungeon.level.distance(pos, target)+1);
 		//vent can go around blocking terrain, but not through it

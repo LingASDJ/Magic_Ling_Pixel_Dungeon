@@ -287,7 +287,7 @@ public class WndInfoMob extends WndTitledMessage {
 		public void createChildren() {
 			super.createChildren();
 
-			colorBlock = new ColorBlock(1,1, SPDSettings.ClassUI() ? 0xFF555555 : 0xFF462d00);
+			colorBlock = new ColorBlock(1,1, SPDSettings.ClassUI() ? 0xFF462d00 : 0xFF555555);
 			add(colorBlock);
 
 			image1 = new BuffIcon(68, false);

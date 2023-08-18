@@ -24,11 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.amuletObtained;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.chalMultiplier;
-import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.A_SCORE;
-import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.B_SCORE;
-import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.SSSP_SCORE;
-import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.SSS_SCORE;
-import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.SS_SCORE;
+
+import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.*;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;

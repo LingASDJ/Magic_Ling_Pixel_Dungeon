@@ -417,9 +417,9 @@ public class Toolbar extends Component {
 		public void update() {
 			super.update();
 			if (SPDSettings.ClassUI()) {
-				base.texture = TextureCache.get(Assets.Interfaces.TOOLBARDRAK);
-			} else {
 				base.texture = TextureCache.get(Assets.Interfaces.TOOLBAR);
+			} else {
+				base.texture = TextureCache.get(Assets.Interfaces.TOOLBARDRAK);
 			}
 		}
 

@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.custom.CustomArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -97,7 +98,7 @@ public class Challenges {
 		}
 
 		if (Dungeon.isChallenged(NO_ARMOR)) {
-			if (item instanceof Armor && !(item instanceof ClothArmor || item instanceof ClassArmor)) {
+			if (item instanceof Armor && !(item instanceof ClothArmor || item instanceof ClassArmor|| item instanceof CustomArmor)) {
 				//GLog.n("这片大地吃布甲之外的护甲从不挑食,侦查到作弊行为，已移除"+item);
 				GLog.n(Messages.get(Challenges.class, "no_armorx"), item);
 				return true;

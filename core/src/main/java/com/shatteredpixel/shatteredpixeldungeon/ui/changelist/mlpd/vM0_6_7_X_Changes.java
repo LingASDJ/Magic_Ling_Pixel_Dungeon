@@ -143,7 +143,7 @@ public class vM0_6_7_X_Changes {
     }
 
     public static void add_v0_6_55_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.4.0-Beta2-7", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.4.0-Beta2-9", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -164,6 +164,12 @@ public class vM0_6_7_X_Changes {
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ALCH_PAGE), ("炼金界面优化"),
                 ("炼金指南进行优化。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TORCH), ("火把调整"),
+                ("现在火把会在灯火中成为燃料。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARMOR_ANCITY), ("板鳖甲"),
+                ("来自远古的护甲，你是想现在使用，亦或者是收入囊中等待合适的时机？")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_DIAMOND), ("财富之戒"),
                 ("财富戒指同步为破碎。")));
@@ -189,6 +195,12 @@ public class vM0_6_7_X_Changes {
         changes.hardlight(Window.CYELLOW);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WRALIPS), ("暗金宝石护符"),
+                ("现在最高上限+10，并调整优化了一些问题")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_ODAL), ("升级卷轴"),
+                ("现在修复升级卷轴可能丢失的问题，并且采用平衡算法。例如，你在1区摸到了4个升级，在监狱只有两个。总量不变。")));
+
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_KCX), ("再生法杖"),
                 ("修复一些问题，并且可以持续使用。")));
 
@@ -196,7 +208,7 @@ public class vM0_6_7_X_Changes {
                 ("在高挑中，提灯的容量更多，商店售卖更多灯油，但灯火的每次减少可能会加剧！")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("支离破碎"),
-                ("支离破碎进行了一些怪组优化")));
+                ("支离破碎进行了一些怪组优化,并且调整了巨魔铁匠任务")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项修改"),
                 ("添加Boss专武保底机制，连续三局未获得，下次必定获得")));
