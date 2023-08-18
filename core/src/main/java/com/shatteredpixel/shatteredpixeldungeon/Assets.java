@@ -317,7 +317,10 @@ public class Assets {
 		public static final String DICT		= "sprites/boss/DictFish.png";
 
 		public static final String ROOMSTONE		= "sprites/boss/RoomStone.png";
+
 		public static final String VSGR	= "sprites/boss/SeaVastGirl.png";
+
+		public static final String FSGR	= "sprites/boss/FireWitch.png";
 
 		public static final String SXGR	= "sprites/boss/IceSlowGirl.png";
 
