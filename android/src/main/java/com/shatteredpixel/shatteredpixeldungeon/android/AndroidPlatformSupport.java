@@ -198,7 +198,8 @@ public class AndroidPlatformSupport extends PlatformSupport {
 		} else if (Gdx.files.absolute("/system/fonts/DroidSans.ttf").exists()){
 			basicFontGenerator = new FreeTypeFontGenerator(Gdx.files.absolute("/system/fonts/DroidSans.ttf"));
 		}
-		if (!systemfont) {
+
+
 			if (basicFontGenerator == null) {
 				basicFontGenerator = fallbackFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/pixel_font.ttf"));
 			}
@@ -206,7 +207,7 @@ public class AndroidPlatformSupport extends PlatformSupport {
 				fallbackFontGenerator = basicFontGenerator;
 				basicFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/pixel_font.ttf"));
 			}
-		}
+
 
 		//android 7.0+. all asian fonts are nicely contained in one spot
 		if (Gdx.files.absolute("/system/fonts/NotoSansCJK-Regular.ttc").exists()) {
@@ -216,9 +217,6 @@ public class AndroidPlatformSupport extends PlatformSupport {
 				case JAPANESE:
 					typeFace = 0;
 					break;
-//				case KOREAN:
-//					typeFace = 1;
-//					break;
 				case HARDCHINESE:
 				case CHINESE:
 				default:
@@ -284,6 +282,19 @@ public class AndroidPlatformSupport extends PlatformSupport {
 					break;
 			}
 			KRFontGenerator = SCFontGenerator = TCFontGenerator = JPFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/fusion_pixel.ttf"));
+		} else {
+			switch (SPDSettings.language()) {
+				case CHINESE:
+					fallbackFontGenerator = SCFontGenerator;
+					break;
+				case HARDCHINESE:
+					fallbackFontGenerator = TCFontGenerator;
+					break;
+				case JAPANESE:
+					fallbackFontGenerator = JPFontGenerator;
+					break;
+			}
+			KRFontGenerator = SCFontGenerator = TCFontGenerator = JPFontGenerator = new FreeTypeFontGenerator(Gdx.files.absolute("/system/fonts/NotoSansCJK-Regular.ttc"));
 		}
 
 		if (basicFontGenerator != null) fonts.put(basicFontGenerator, new HashMap<>());

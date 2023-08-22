@@ -232,7 +232,7 @@ public class Toolbar extends Component {
 		 */
 		float wMin = Game.width / PixelScene.MIN_WIDTH_FULL;
 		float hMin = Game.height / PixelScene.MIN_HEIGHT_FULL;
-		final int maxHorizontalQuickslots = PixelScene.landscape() ? 8 : 4;
+		final int maxHorizontalQuickslots = PixelScene.landscape() ? 9 : 3;
 		float right = width;
 		if (SPDSettings.interfaceSize() > 0){
 			btnInventory.setPos(right - btnInventory.width(), y);
@@ -479,7 +479,8 @@ public class Toolbar extends Component {
 		@Override
 		protected void layout() {
 			super.layout();
-			slot.setRect( x + borderLeft, y + 2, width - borderLeft-borderRight, height - 4 );
+			slot.setRect( x, y, width, height );
+			slot.slotMargins(borderLeft, 4, borderRight, 2);
 		}
 
 		@Override

@@ -11,4 +11,3 @@ include ':services'
 
 //news
 include ':services:news:shatteredNews'
-include ':services:analyticsfirebase'

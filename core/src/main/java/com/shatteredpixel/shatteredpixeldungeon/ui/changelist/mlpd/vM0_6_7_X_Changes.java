@@ -143,7 +143,7 @@ public class vM0_6_7_X_Changes {
     }
 
     public static void add_v0_6_55_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.4.0-Beta2-9", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.4.0-BetaI-XI", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -161,6 +161,9 @@ public class vM0_6_7_X_Changes {
                         "还是希望各位能玩的愉快吧，毕竟，人总是不能在虚拟世界里生活的。\n" +
                         "现实仍然有很多东西，我是时候调节一下了。\n"+
                         "那么还是祝各位游戏中冒险愉快吧！")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("快捷栏V1/V2"),
+                ("快捷栏降至9个，并且V1是魔绫原版快捷栏，V2是碳素那边借鉴优化的快捷栏。任君挑选。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ALCH_PAGE), ("炼金界面优化"),
                 ("炼金指南进行优化。")));

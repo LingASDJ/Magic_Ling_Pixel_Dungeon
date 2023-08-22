@@ -66,7 +66,7 @@ public class JoinIndicator extends Button {
         bg.hardlight(0x00ffff);
         add(bg);
 
-        add(slot = new Toolbar.Tool(48, 26, 48, 72) {
+        add(slot = new Toolbar.Tool(48, 26, 24, 72) {
 
             @Override
             protected void onClick() {

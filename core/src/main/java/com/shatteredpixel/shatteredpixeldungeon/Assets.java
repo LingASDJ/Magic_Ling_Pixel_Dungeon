@@ -131,8 +131,6 @@ public class Assets {
 		public static final String STATUS   = "interfaces/status_pane.png";
 		public static final String TOOLBARDRAK	= "interfaces/toolbar_normal.png";
 		public static final String STATUS_DARK   = "interfaces/status_pane_normal.png";
-		public static final String STATUSSOUL   = "interfaces/status_pane-puresoul.png";
-		public static final String STATUSSOUL_DARK   = "interfaces/status_pane-puresoul_dark.png";
 		public static final String MENU     = "interfaces/menu_pane.png";
 		public static final String MENU_BTN = "interfaces/menu_button.png";
 		public static final String TOOLBAR  = "interfaces/toolbar.png";

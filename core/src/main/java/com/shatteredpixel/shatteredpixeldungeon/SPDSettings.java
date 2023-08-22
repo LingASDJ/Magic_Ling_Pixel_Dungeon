@@ -137,6 +137,8 @@ public class SPDSettings extends GameSettings {
 
 	private static final String ATBSettings	= "ATBsettings";
 
+	private static final String V1TOOL = "v1tool";
+
 	public static void fullscreen( boolean value ) {
 		put( KEY_FULLSCREEN, value );
 
@@ -231,7 +233,7 @@ public class SPDSettings extends GameSettings {
 	}
 
 	public static int interfaceSize(){
-		int size = getInt( KEY_UI_SIZE, DeviceCompat.isDesktop() ? 2 : 0 );
+		int size = getInt( KEY_UI_SIZE, DeviceCompat.isDesktop() ? 1 : 0 );
 		if (size > 0){
 			//force mobile UI if there is not enough space for full UI
 			float wMin = Game.width / PixelScene.MIN_WIDTH_FULL;
@@ -239,6 +241,10 @@ public class SPDSettings extends GameSettings {
 			if (Math.min(wMin, hMin) < 2*Game.density){
 				size = 0;
 			}
+		}
+
+		if(size == 2){
+			size = 1;
 		}
 		return size;
 	}
@@ -429,6 +435,10 @@ public class SPDSettings extends GameSettings {
 		}
 	}
 
+	public static void systemFont(boolean value){
+		put(KEY_SYSTEMFONT, value);
+	}
+
 	public static boolean systemFont(){
 		return getBoolean(KEY_SYSTEMFONT,
 				(language() == Languages.CHINESE || language() == Languages.JAPANESE));
@@ -544,4 +554,10 @@ public class SPDSettings extends GameSettings {
 	public static void ClassPage(boolean value) {
 		put( KEY_PAGE, value );
 	}
+
+	public static boolean quickSwapper() {
+		return getBoolean(V1TOOL, false);
+	}
+
+	public static void quickSwapper(boolean value ){ put( V1TOOL, value ); }
 }
