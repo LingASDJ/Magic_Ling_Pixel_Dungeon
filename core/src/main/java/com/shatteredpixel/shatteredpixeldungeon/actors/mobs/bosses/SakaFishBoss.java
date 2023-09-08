@@ -169,7 +169,7 @@ public class SakaFishBoss extends Boss {
     @Override
     public int drRoll() {
         AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
-        return level == AncientMysteryCityBossLevel.State.FALL_BOSS ? 10 : 45;
+        return level == AncientMysteryCityBossLevel.State.FALL_BOSS ? 10 : 40;
     }
 
 
@@ -445,6 +445,7 @@ public class SakaFishBoss extends Boss {
                 } else {
                     endPos = leapPos;
                 }
+
                     //do leap
                     sprite.visible = Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[leapPos] || Dungeon.level.heroFOV[endPos];
                     sprite.dirtcar(pos, leapPos, new Callback() {
@@ -462,9 +463,12 @@ public class SakaFishBoss extends Boss {
                                 Sample.INSTANCE.play(Assets.Sounds.HIT);
                             }
 
-                            if (!enemy.isAlive() && enemy == hero) {
-                                Dungeon.fail( getClass() );
-                                GLog.n( Messages.get(SakaFishBoss.class, "dictcar_kill"),Dungeon.hero.name() );
+                            Char ch = hero;
+                            if(hero != null){
+                                if (!ch.isAlive()) {
+                                    Dungeon.fail( getClass() );
+                                    GLog.n( Messages.get(SakaFishBoss.class, "dictcar_kill"),Dungeon.hero.name() );
+                                }
                             }
 
                             if (endPos != leapPos){

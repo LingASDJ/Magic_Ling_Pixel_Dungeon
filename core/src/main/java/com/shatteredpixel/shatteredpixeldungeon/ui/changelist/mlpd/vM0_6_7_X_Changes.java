@@ -143,7 +143,7 @@ public class vM0_6_7_X_Changes {
     }
 
     public static void add_v0_6_55_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.4.0-BetaI-XI", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.4.0-BetaI-XIII", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -198,6 +198,9 @@ public class vM0_6_7_X_Changes {
         changes.hardlight(Window.CYELLOW);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SAI), ("吸血鬼刀-Beta13"),
+                ("修复了一些吸血权重问题。")));
+
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WRALIPS), ("暗金宝石护符"),
                 ("现在最高上限+10，并调整优化了一些问题")));
 
@@ -219,7 +222,7 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GREATSHIELD), ("5阶武器"),
                 ("现在5阶武器生成平均化")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SAI), ("吸血鬼刀"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SAI), ("吸血鬼刀-Beta12"),
                 ("优化数值，调整吸血权重。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), ("归溯钥剑"),

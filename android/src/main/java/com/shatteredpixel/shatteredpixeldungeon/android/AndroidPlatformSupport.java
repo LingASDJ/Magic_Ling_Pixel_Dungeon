@@ -294,7 +294,6 @@ public class AndroidPlatformSupport extends PlatformSupport {
 					fallbackFontGenerator = JPFontGenerator;
 					break;
 			}
-			KRFontGenerator = SCFontGenerator = TCFontGenerator = JPFontGenerator = new FreeTypeFontGenerator(Gdx.files.absolute("/system/fonts/NotoSansCJK-Regular.ttc"));
 		}
 
 		if (basicFontGenerator != null) fonts.put(basicFontGenerator, new HashMap<>());

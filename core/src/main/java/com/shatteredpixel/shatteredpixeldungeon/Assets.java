@@ -421,6 +421,9 @@ public class Assets {
 		public static final String ROT_LASH = "sprites/rot_lasher.png";
 		public static final String ROT_HEART= "sprites/rot_heart.png";
 		public static final String GUARD    = "sprites/guard.png";
+
+		public static final String HEROGNOLL    = "sprites/tribesman.png";
+
 		public static final String WARDS    = "sprites/wards.png";
 		public static final String GUARDIAN	= "sprites/guardian.png";
 		public static final String SLIME	= "sprites/slime.png";

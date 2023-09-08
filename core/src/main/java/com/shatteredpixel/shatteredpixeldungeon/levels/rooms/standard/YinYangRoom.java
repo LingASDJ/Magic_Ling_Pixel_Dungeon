@@ -121,11 +121,12 @@ public class YinYangRoom extends SpecialRoom {
             if(Dungeon.depth == 1){
                 door.set(Door.Type.REGULAR);
             } else {
+                level.addItemToSpawn( new IronKey( Dungeon.depth ) );
                 door.set(Door.Type.LOCKED);
             }
 
         }
-        level.addItemToSpawn( new IronKey( Dungeon.depth ) );
+
         level.addItemToSpawn( new CrystalKey( Dungeon.depth ) );
         level.addItemToSpawn( new PotionOfLevitation());
 
