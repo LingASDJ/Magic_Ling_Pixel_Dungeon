@@ -119,7 +119,7 @@ public class vM0_6_7_X_Changes {
     }
 
     public static void add_v0_6_56_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("Coming Soon V0.6.5.0", true, "");
+        ChangeInfo changes = new ChangeInfo("Coming Soon V0.6.5.0-Alpha3", true, "");
         changes.hardlight(Window.CBLACK);
         changeInfos.add(changes);
 
@@ -140,6 +140,40 @@ public class vM0_6_7_X_Changes {
         i.scale.set(PixelScene.align(0.74f));
         changes.addButton(new ChangeButton(i, ("熔岩火龙"),
                 ("丛林暴乱的真相")));
+
+        changes = new ChangeInfo("v0.6.5.0-Alpha1-2", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DIEDCROSSBOW), ("传奇武器"),
+                ("新类别传奇武器测试已经开始。在后续版本中需要通过货币解锁。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), ("加密徽章"),
+                ("添加了加密徽章，长按徽章按钮进入。记录一些隐藏成就。\n\n_注意：_这些成就不会在获取之前不会显示出来")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.添加了暂停更新界面的功能\n\n" +
+                        "2.少量bug修复")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        Image a = new SakaFishBossSprites();
+        a.scale.set(PixelScene.align(0.72f));
+        changes.addButton(new ChangeButton(a,  "萨卡班甲鱼",
+                "数值方面进行了一定平衡。"));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X83")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项调整"),
+                ("1.书籍现在不可堆积，且成就有一些变化\n\n" +
+                        "2.其它bug修复")));
     }
 
     public static void add_v0_6_55_Changes( ArrayList<ChangeInfo> changeInfos ) {

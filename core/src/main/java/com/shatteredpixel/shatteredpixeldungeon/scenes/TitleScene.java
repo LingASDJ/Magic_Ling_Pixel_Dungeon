@@ -202,6 +202,11 @@ public class TitleScene extends PixelScene {
 			protected void onClick() {
 				ShatteredPixelDungeon.switchNoFade(BadgesScene.class);
 			}
+			@Override
+			protected boolean onLongClick() {
+				ShatteredPixelDungeon.switchNoFade(PassWordBadgesScene.class);
+				return super.onLongClick();
+			}
 		};
 		btnBadges.icon(new ItemSprite(ItemSpriteSheet.GREENBOOKS, null));
 		add(btnBadges);

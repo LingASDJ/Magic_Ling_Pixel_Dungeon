@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -1323,7 +1324,7 @@ public class Hero extends Char {
 			if (Dungeon.depth == 0) {
 
 				if (belongings.getItem(SakaFishSketon.class) != null) {
-					Badges.REHOMESKY();
+					PaswordBadges.REHOMESKY();
 				}
 
 				if (belongings.getItem(Amulet.class) == null) {

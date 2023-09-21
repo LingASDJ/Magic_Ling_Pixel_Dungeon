@@ -25,7 +25,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
 
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GnollHero;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -48,7 +47,7 @@ public class Bestiary {
 				case 1:
 					//3x rat, 1x snake
 					return new ArrayList<>(Arrays.asList(
-							GnollHero.class, Rat.class,
+							Rat.class, Rat.class,
 							Rat.class));
 				case 2:
 					return new ArrayList<>(Arrays.asList(Rat.class,

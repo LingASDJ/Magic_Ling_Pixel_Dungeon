@@ -4,7 +4,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 
 public class MainBooks extends Item {
     //extends 相当于 copyfrom,但不同的是 它是一种继承自己
-
     @Override
     public String info() {
         return author;
@@ -13,7 +12,7 @@ public class MainBooks extends Item {
     public int value() {
         return 20 * quantity;
     }
-    public String author = Messages.get(MainBooks.class, "mustread");
+    public String author = Messages.get(MainBooks.class, "desc");
 
     public String authorx = Messages.get(this, "author");
 }

@@ -123,6 +123,7 @@ public class Assets {
 		public static final String BANNERSSD  = "interfaces/banners_sd.png";
 
 		public static final String BADGES   = "interfaces/badges.png";
+		public static final String PROBADGES   = "interfaces/passwordbadges.png";
 		public static final String LOCKED   = "interfaces/locked_badge.png";
 
 		public static final String CHROME   = "interfaces/chrome.png";

@@ -836,8 +836,10 @@ public class Dungeon {
 		Bundle badges = bundle.getBundle(BADGES);
 		if (!badges.isNull()) {
 			Badges.loadLocal( badges );
+			PaswordBadges.loadLocal( badges );
 		} else {
 			Badges.reset();
+			PaswordBadges.reset();
 		}
 
 		Notes.restoreFromBundle( bundle );

@@ -154,7 +154,7 @@ public class Artifact extends KindofMisc {
 
 		//display the current cooldown
 		if (cooldown != 0)
-			return Messages.format( "%d", cooldown );
+			return Messages.format( "CD:%d", cooldown );
 
 		//display as percent
 		if (chargeCap == 100)

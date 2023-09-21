@@ -910,27 +910,11 @@ public class WndSettings extends WndTabbed {
 				add(chkWifi);
 			}
 
-			chkFireBase = new CheckBox("firebase") {
+			chkFireBase = new CheckBox(Messages.get(this, "autoupdate")) {
 				@Override
 				protected void onClick() {
 					super.onClick();
-					if (checked()) {
-						checked(!checked());
-						ShatteredPixelDungeon.scene().add(new WndOptions(Icons.get(Icons.DATA),
-								"firebase_active",
-								"firebase_desc",
-								"cancel") {
-							@Override
-							protected void onSelect(int index) {
-								if (index == 0) {
-									checked(!checked());
-									SPDSettings.firebase(checked());
-								}
-							}
-						});
-					} else {
-						SPDSettings.firebase(checked());
-					}
+					SPDSettings.firebase(checked());
 				}
 			};
 			chkFireBase.checked( SPDSettings.firebase() );
@@ -949,14 +933,10 @@ public class WndSettings extends WndTabbed {
 				chkNews.setRect(0, sep1.y + 1 + GAP, width/2-1, BTN_HEIGHT);
 				//chkUpdates.setRect(chkNews.right() + GAP, chkNews.top(), width/2-1, BTN_HEIGHT);
 				chkFireBase.setRect(chkNews.right() + GAP, chkNews.top(), width/2-1, BTN_HEIGHT);
-				chkFireBase.visible = false;
-				chkFireBase.active = false;
 				pos = chkFireBase.bottom();
 			} else {
 				chkNews.setRect(0, sep1.y + 1 + GAP, width, BTN_HEIGHT);
 				chkFireBase.setRect(0, chkNews.bottom() + GAP, width, BTN_HEIGHT);
-				chkFireBase.visible = false;
-				chkFireBase.active = false;
 				pos = chkNews.bottom();
 			}
 
