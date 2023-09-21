@@ -65,13 +65,8 @@ public class DiedCrossBow extends LegendWeapon {
     public String status() {
 
         //display the current cooldown
-        if (cooldown != 0)
-            return Messages.format( "CD:%d", cooldown );
-
-
-        Dart missile = Dungeon.hero.belongings.getItem(Dart.class);
-        if(missile != null){
-            return ""+missile.quantity()/5;
+        if (cooldown != 0){
+            return Messages.format("CD:%d", cooldown);
         } else {
             return null;
         }
@@ -83,20 +78,12 @@ public class DiedCrossBow extends LegendWeapon {
     public void execute(Hero hero, String action ) {
 
         super.execute( hero, action );
-        Dart missile = Dungeon.hero.belongings.getItem(Dart.class);
         if (action.equals( AC_KING )) {
 
             if (!isEquipped(hero)){
                 GLog.i( Messages.get(this, "no_equip") );
             } else if(cooldown == 0) {
-                if (missile != null)
-                    if (missile.quantity() > 5) {
-                        curUser = hero;
-                        curItem = this;
-                        GameScene.selectCell(bomb);
-                    } else {
-                        GLog.w(Messages.get(this, "no_king"));
-                    }
+                GameScene.selectCell(bomb);
             } else {
                 GLog.w(Messages.get(this, "no_cooldown"));
             }

@@ -749,8 +749,9 @@ public class Badges {
 	}
 
 	public static void validateAMZ() {
-		if (global.contains( Badge.KILL_APPLE ) &&global.contains( Badge.KILL_DM720 ) &&
-				global.contains( Badge.KILL_MG) && PaswordBadges.global.contains( PaswordBadges.Badge.FIREGIRL) && PaswordBadges.global.contains( PaswordBadges.Badge.DRAWF_HEAD) && PaswordBadges.global.contains( PaswordBadges.Badge.SAKA_DIED)) {
+		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
+		if (global.contains( Badge.KILL_APPLE ) && global.contains( Badge.KILL_DM720 ) &&
+				global.contains( Badge.KILL_MG) && passwordbadges.contains(PaswordBadges.Badge.FIREGIRL) && passwordbadges.contains(PaswordBadges.Badge.DRAWF_HEAD) && passwordbadges.contains(PaswordBadges.Badge.SAKA_DIED)) {
 
 			PaswordBadges.Badge badge = PaswordBadges.Badge.SPICEALBOSS;
 			PaswordBadges.displayBadge( badge );

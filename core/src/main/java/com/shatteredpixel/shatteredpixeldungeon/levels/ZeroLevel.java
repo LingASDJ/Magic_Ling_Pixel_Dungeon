@@ -25,6 +25,8 @@ import static com.shatteredpixel.shatteredpixeldungeon.items.Generator.randomArt
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NxhyNpc;
@@ -35,7 +37,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.obSir;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
@@ -132,13 +133,14 @@ public class ZeroLevel extends Level {
             drop( ( Generator.randomUsingDefaults( Generator.Category.RING ) ), this.width * 17 + 18 );
         }
         if(passwordbadges.contains(PaswordBadges.Badge.BIG_X)){
-            drop( ( Generator.randomUsingDefaults( Generator.Category.ARMOR ) ), this.width * 19 + 18 );
+            if(Dungeon.isChallenged(Challenges.NO_ARMOR)){
+                drop( ( Generator.randomUsingDefaults( Generator.Category.WAND ) ), this.width * 19 + 18 );
+            } else {
+                drop( ( Generator.randomUsingDefaults( Generator.Category.ARMOR ) ), this.width * 19 + 18 );
+            }
         }
         if ( Badges.isUnlocked(Badges.Badge.KILL_DM720)||Badges.isUnlocked(Badges.Badge.KILL_MG)  ){
             drop(( Generator.randomUsingDefaults( Generator.Category.WEP_T2 )), this.width * 18 + 17  );
-        }
-        if(passwordbadges.contains(PaswordBadges.Badge.EXSG)){
-            drop(new Gold().quantity(720), this.width * 18 + 18 );
         }
         if ( Badges.isUnlocked(Badges.Badge.RLPT)){
             Item item = randomArtifact();
