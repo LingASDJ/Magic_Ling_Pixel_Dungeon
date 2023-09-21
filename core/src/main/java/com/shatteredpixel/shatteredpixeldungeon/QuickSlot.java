@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Constants;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -38,8 +37,12 @@ public class QuickSlot {
 	 */
 
 	//note that the current max size is coded at 4, due to UI constraints, but it could be much much bigger with no issue.
-	public static int SIZE = Constants.MAX_QUICKSLOTS;
-	private Item[] slots = new Item[SIZE];
+	public static int SIZE = 12;
+
+	public static int VSIZE = 9;
+
+    public int quickslots;
+    private Item[] slots = new Item[SIZE];
 
 
 	//direct array interaction methods, everything should build from these methods.

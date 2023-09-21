@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.custom.CustomArmor;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
@@ -85,8 +84,6 @@ public class Challenges {
 	public static boolean isItemBlocked(Item item) {
 		if (Dungeon.isChallenged(NO_FOOD)) {
 			if (item instanceof SmallRation) {
-				return true;
-			} else if (item instanceof HornOfPlenty) {
 				return true;
 			}
 		}

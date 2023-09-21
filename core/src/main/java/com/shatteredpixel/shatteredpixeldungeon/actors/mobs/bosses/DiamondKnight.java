@@ -27,6 +27,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -278,7 +279,7 @@ public class DiamondKnight extends Boss {
         Badges.KILL_SMK();
 
         if(Statistics.dimandchestmazeCollected>=3){
-            Badges.KILL_OMP();
+            PaswordBadges.validateOMP();
             Statistics.bossScores[1] += 1000;
         }
 

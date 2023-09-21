@@ -12,7 +12,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDHBLR;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -83,8 +82,7 @@ public class EyeRoom extends SpecialRoom {
 
         int chestPos = (top + 6) * level.width() + left + 6;
 
-        /** 套五个宝箱 */
-        level.drop( new Gold(),chestPos).type = Heap.Type.TELECRYSTL;
+        /** 套4个宝箱 */
         level.mobs.add(Mimic.spawnAt(chestPos,( Generator.randomUsingDefaults( Generator.Category.POTION ) ), CrystalMimic.class));
         level.mobs.add(Mimic.spawnAt(chestPos,( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), CrystalMimic.class));
         level.mobs.add(Mimic.spawnAt(chestPos,( Generator.randomUsingDefaults( Generator.Category.WEAPON ) ),

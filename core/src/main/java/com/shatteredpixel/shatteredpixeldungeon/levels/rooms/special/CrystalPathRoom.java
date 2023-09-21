@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
@@ -150,7 +151,8 @@ public class CrystalPathRoom extends SpecialRoom {
 						item = new LamellarArmor();
 					} else {
 						item = Generator.random(Random.oneOf(
-								Generator.Category.ARMOR,
+								Dungeon.isChallenged(Challenges.NO_ARMOR) ? Generator.Category.WAND :
+										Generator.Category.ARMOR,
 								Generator.Category.STONE,
 								Generator.Category.WAND,
 								Generator.Category.ARTIFACT)

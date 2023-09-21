@@ -123,6 +123,7 @@ public class Assets {
 		public static final String BANNERSSD  = "interfaces/banners_sd.png";
 
 		public static final String BADGES   = "interfaces/badges.png";
+		public static final String PROBADGES   = "interfaces/passwordbadges.png";
 		public static final String LOCKED   = "interfaces/locked_badge.png";
 
 		public static final String CHROME   = "interfaces/chrome.png";
@@ -131,8 +132,6 @@ public class Assets {
 		public static final String STATUS   = "interfaces/status_pane.png";
 		public static final String TOOLBARDRAK	= "interfaces/toolbar_normal.png";
 		public static final String STATUS_DARK   = "interfaces/status_pane_normal.png";
-		public static final String STATUSSOUL   = "interfaces/status_pane-puresoul.png";
-		public static final String STATUSSOUL_DARK   = "interfaces/status_pane-puresoul_dark.png";
 		public static final String MENU     = "interfaces/menu_pane.png";
 		public static final String MENU_BTN = "interfaces/menu_button.png";
 		public static final String TOOLBAR  = "interfaces/toolbar.png";
@@ -423,6 +422,9 @@ public class Assets {
 		public static final String ROT_LASH = "sprites/rot_lasher.png";
 		public static final String ROT_HEART= "sprites/rot_heart.png";
 		public static final String GUARD    = "sprites/guard.png";
+
+		public static final String HEROGNOLL    = "sprites/tribesman.png";
+
 		public static final String WARDS    = "sprites/wards.png";
 		public static final String GUARDIAN	= "sprites/guardian.png";
 		public static final String SLIME	= "sprites/slime.png";

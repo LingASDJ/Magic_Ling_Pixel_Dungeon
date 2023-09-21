@@ -104,7 +104,7 @@ public class StatusPane extends Component {
 	public JoinIndicator joinxxx;
 	public LanterFireCator lanter;
 
-	private static String asset = Assets.Interfaces.STATUS;
+	private static String asset = Assets.Interfaces.STATUS_DARK;
 
 	private boolean large;
 
@@ -164,8 +164,10 @@ public class StatusPane extends Component {
 		else        hg = new Image(asset, 0, 45, 49, 4);
 		add( hg );
 
-		if (large)  icehp = new Image(asset, 0, 128, 128, 7);
-		else        icehp = new Image(asset, 0, 49, 52, 4);
+		if (large)
+			icehp =  new Image(asset, 0, 135, 128, 6);
+		else     icehp = new Image(asset, 0, 49, 52, 4);
+
 		add( icehp );
 
 	 	lanterfirevae = new Image(Assets.Interfaces.LANTERLING);
@@ -174,7 +176,6 @@ public class StatusPane extends Component {
 		hpText = new BitmapText(PixelScene.pixelFont);
 		hpText.alpha(0.6f);
 		add(hpText);
-
 
 		hgText = new BitmapText(PixelScene.pixelFont);
 		hgText.alpha(0.6f);
@@ -280,14 +281,18 @@ public class StatusPane extends Component {
 			PixelScene.align(hpText);
 
 			hg.x= x + 30;
-			hg.y= y + 10;
+			hg.y= y + 10f;
 
 			hgText.x = x+80;
 			hgText.y = hg.y;
 			PixelScene.align(hgText);
 
 			icehp.x = x+ 30;
-			icehp.y = y + 4;
+			icehp.y = y + 2f;
+
+			icehpText.x = x+80;
+			icehpText.y = icehp.y-0.6f;
+			PixelScene.align(icehpText);
 
 			expText.x = exp.x + (128 - expText.width())/2f;
 			expText.y = exp.y;
@@ -377,6 +382,12 @@ public class StatusPane extends Component {
 	@Override
 	public void update() {
 		super.update();
+
+		if (SPDSettings.ClassUI()) {
+			asset = Assets.Interfaces.STATUS;
+		} else {
+			asset =  Assets.Interfaces.STATUS_DARK;
+		}
 
 		int maxHunger = (int) Hunger.STARVING;
 		int maxPureSole = Dungeon.hero.lanterfire;

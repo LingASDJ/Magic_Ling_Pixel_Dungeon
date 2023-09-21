@@ -70,8 +70,10 @@ public class WelcomeScene extends PixelScene {
 			return;
 		}
 
-		if (ShatteredPixelDungeon.versionCode == previousVersion && !SPDSettings.intro()) {
+		if (ShatteredPixelDungeon.versionCode == previousVersion && !SPDSettings.intro() && !SPDSettings.firebase()) {
 			ShatteredPixelDungeon.switchNoFade(GameNewsScene.class);
+		} else {
+			ShatteredPixelDungeon.switchNoFade(TitleScene.class);
 			return;
 		}
 

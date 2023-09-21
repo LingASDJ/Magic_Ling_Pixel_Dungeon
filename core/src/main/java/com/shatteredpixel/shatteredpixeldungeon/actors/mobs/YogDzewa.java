@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -493,11 +494,11 @@ public class YogDzewa extends Mob {
 		}
 
 		if(Dungeon.isChallenged(SBSG)){
-			Badges.BIGX();
+			PaswordBadges.BIGX();
 		}
 
 		if(Dungeon.isChallenged(EXSG)){
-			Badges.EXSG();
+			PaswordBadges.EXSG();
 		}
 
 		updateVisibility(Dungeon.level);

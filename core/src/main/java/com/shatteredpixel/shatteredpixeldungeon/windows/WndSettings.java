@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ToobarV;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.ColorBlock;
@@ -406,14 +407,12 @@ public class WndSettings extends WndTabbed {
 		RenderedTextBlock title;
 
 		ColorBlock sep1;
-		OptionSlider optUISize;
-		RenderedTextBlock barDesc;
-		RedButton btnSplit;
-		CheckBox chkFlipToolbar;
+		OptionSlider optUIMode;
+		OptionSlider optUIScale;
+		RedButton btnToolbarSettings;
 		CheckBox chkFlipTags;
 		ColorBlock sep2;
-		ColorBlock sep3;
-		RedButton btnKeyBindings;
+		CheckBox chkFont;
 
 		@Override
 		protected void createChildren() {
@@ -427,10 +426,9 @@ public class WndSettings extends WndTabbed {
 			//add slider for UI size only if device has enough space to support it
 			float wMin = Game.width / PixelScene.MIN_WIDTH_FULL;
 			float hMin = Game.height / PixelScene.MIN_HEIGHT_FULL;
-			Boolean landscape = SPDSettings.landscape();
-			if (Math.min(wMin, hMin) >= 2*Game.density){
-				optUISize = new OptionSlider(
-						Messages.get(this, "size"),
+			if (Math.min(wMin, hMin) >= 2*Game.density && !SPDSettings.quickSwapper()){
+				optUIMode = new OptionSlider(
+						Messages.get(this, "ui_mode"),
 						Messages.get(this, "mobile"),
 						Messages.get(this, "full"),
 						0,
@@ -442,141 +440,245 @@ public class WndSettings extends WndTabbed {
 						ShatteredPixelDungeon.seamlessResetScene();
 					}
 				};
-				optUISize.setSelectedValue(SPDSettings.interfaceSize());
-				add(optUISize);
+				optUIMode.setSelectedValue(SPDSettings.interfaceSize());
+				add(optUIMode);
+			}
+
+			if ((int)Math.ceil(2* Game.density) < PixelScene.maxDefaultZoom) {
+				optUIScale = new OptionSlider(Messages.get(this, "scale"),
+						(int)Math.ceil(2* Game.density)+ "X",
+						PixelScene.maxDefaultZoom + "X",
+						(int)Math.ceil(2* Game.density),
+						PixelScene.maxDefaultZoom ) {
+					@Override
+					protected void onChange() {
+						if (getSelectedValue() != SPDSettings.scale()) {
+							SPDSettings.scale(getSelectedValue());
+							ShatteredPixelDungeon.seamlessResetScene();
+						}
+					}
+				};
+				optUIScale.setSelectedValue(PixelScene.defaultZoom);
+				add(optUIScale);
 			}
 
 			if (SPDSettings.interfaceSize() == 0) {
-				barDesc = PixelScene.renderTextBlock(Messages.get(this, "mode"), 9);
-				add(barDesc);
-
-				btnSplit = new RedButton(Messages.get(this, "split")) {
+				btnToolbarSettings = new RedButton(Messages.get(this, "toolbar_settings"), 9){
 					@Override
 					protected void onClick() {
-						SPDSettings.toolbarMode(Toolbar.Mode.SPLIT.name());
-						Toolbar.updateLayout();
+						ShatteredPixelDungeon.scene().addToFront(new Window(){
+
+							RenderedTextBlock barDesc;
+							RedButton btnSplit; RedButton btnGrouped; RedButton btnCentered;
+							CheckBox chkQuickSwapper;
+							RenderedTextBlock swapperDesc;
+							CheckBox chkFlipToolbar;
+							CheckBox chkFlipTags;
+
+							{
+								barDesc = PixelScene.renderTextBlock(Messages.get(WndSettings.UITab.this, "mode"), 9);
+								add(barDesc);
+
+								btnSplit = new RedButton(Messages.get(WndSettings.UITab.this, "split")) {
+									@Override
+									protected void onClick() {
+										textColor(TITLE_COLOR);
+										btnGrouped.textColor(WHITE);
+										btnCentered.textColor(WHITE);
+										SPDSettings.toolbarMode(ToobarV.Mode.SPLIT.name());
+										ToobarV.updateLayout();
+									}
+								};
+								if (SPDSettings.toolbarMode().equals(ToobarV.Mode.SPLIT.name())) {
+									btnSplit.textColor(TITLE_COLOR);
+								}
+								add(btnSplit);
+
+								btnGrouped = new RedButton(Messages.get(WndSettings.UITab.this, "group")) {
+									@Override
+									protected void onClick() {
+										btnSplit.textColor(WHITE);
+										textColor(TITLE_COLOR);
+										btnCentered.textColor(WHITE);
+										SPDSettings.toolbarMode(ToobarV.Mode.GROUP.name());
+										ToobarV.updateLayout();
+									}
+								};
+								if (SPDSettings.toolbarMode().equals(ToobarV.Mode.GROUP.name())) {
+									btnGrouped.textColor(TITLE_COLOR);
+								}
+								add(btnGrouped);
+
+								btnCentered = new RedButton(Messages.get(WndSettings.UITab.this, "center")) {
+									@Override
+									protected void onClick() {
+										btnSplit.textColor(WHITE);
+										btnGrouped.textColor(WHITE);
+										textColor(TITLE_COLOR);
+										SPDSettings.toolbarMode(ToobarV.Mode.CENTER.name());
+										ToobarV.updateLayout();
+									}
+								};
+								if (SPDSettings.toolbarMode().equals(ToobarV.Mode.CENTER.name())) {
+									btnCentered.textColor(TITLE_COLOR);
+								}
+								add(btnCentered);
+
+								if(SPDSettings.quickSwapper()){
+									btnSplit.alpha(0.5f);
+									btnGrouped.alpha(0.5f);
+									btnCentered.alpha(0.5f);
+									btnCentered.active = false;
+									btnGrouped.active = false;
+									btnSplit.active = false;
+								}
+
+								chkQuickSwapper = new CheckBox(Messages.get(WndSettings.UITab.this, "quickslot_swapper")) {
+									@Override
+									protected void onClick() {
+										super.onClick();
+										SPDSettings.quickSwapper(checked());
+										ShatteredPixelDungeon.resetScene();
+									}
+								};
+								chkQuickSwapper.checked(SPDSettings.quickSwapper());
+								add(chkQuickSwapper);
+
+								swapperDesc = PixelScene.renderTextBlock(Messages.get(WndSettings.UITab.this, "swapper_desc"), 5);
+								swapperDesc.hardlight(0x888888);
+								add(swapperDesc);
+
+								chkFlipToolbar = new CheckBox(Messages.get(WndSettings.UITab.this, "flip_toolbar")) {
+									@Override
+									protected void onClick() {
+										super.onClick();
+										SPDSettings.flipToolbar(checked());
+										//ToobarV.updateLayout();
+									}
+								};
+								chkFlipToolbar.checked(SPDSettings.flipToolbar());
+								add(chkFlipToolbar);
+
+								chkFlipTags = new CheckBox(Messages.get(WndSettings.UITab.this, "flip_indicators")){
+									@Override
+									protected void onClick() {
+										super.onClick();
+										SPDSettings.flipTags(checked());
+										GameScene.layoutTags();
+									}
+								};
+								chkFlipTags.checked(SPDSettings.flipTags());
+								add(chkFlipTags);
+
+								//layout
+								resize(WIDTH_P, 0);
+
+								barDesc.setPos((width - barDesc.width()) / 2f, GAP);
+								PixelScene.align(barDesc);
+
+								int btnWidth = (int) (width - 2 * GAP) / 3;
+
+									btnSplit.setRect(0, barDesc.bottom() + GAP, btnWidth, BTN_HEIGHT-2);
+									btnGrouped.setRect(btnSplit.right() + GAP, btnSplit.top(), btnWidth, BTN_HEIGHT-2);
+									btnCentered.setRect(btnGrouped.right() + GAP, btnSplit.top(), btnWidth, BTN_HEIGHT-2);
+									chkQuickSwapper.setRect(0, btnGrouped.bottom() + GAP, width, BTN_HEIGHT);
+
+
+								swapperDesc.maxWidth(width);
+								swapperDesc.setPos(0, chkQuickSwapper.bottom()+1);
+
+								if (width > 200) {
+									chkFlipToolbar.setRect(0, swapperDesc.bottom() + GAP, width / 2 - 1, BTN_HEIGHT);
+									chkFlipTags.setRect(chkFlipToolbar.right() + GAP, chkFlipToolbar.top(), width / 2 - 1, BTN_HEIGHT);
+								} else {
+									chkFlipToolbar.setRect(0, swapperDesc.bottom() + GAP, width, BTN_HEIGHT);
+									chkFlipTags.setRect(0, chkFlipToolbar.bottom() + GAP, width, BTN_HEIGHT);
+								}
+
+								resize(WIDTH_P, (int)chkFlipTags.bottom());
+
+							}
+						});
 					}
 				};
-				if (SPDSettings.toolbarMode().equals(Toolbar.Mode.SPLIT.name()))
-					btnSplit.textColor(TITLE_COLOR);
-				add(btnSplit);
+				add(btnToolbarSettings);
 
-				chkFlipToolbar = new CheckBox(Messages.get(this, "flip_toolbar")) {
+			} else {
+
+				chkFlipTags = new CheckBox(Messages.get(this, "flip_indicators")) {
 					@Override
 					protected void onClick() {
 						super.onClick();
-						SPDSettings.flipToolbar(checked());
-						Toolbar.updateLayout();
+						SPDSettings.flipTags(checked());
+						GameScene.layoutTags();
 					}
 				};
-				chkFlipToolbar.checked(SPDSettings.flipToolbar());
-				add(chkFlipToolbar);
-			}
+				chkFlipTags.checked(SPDSettings.flipTags());
+				add(chkFlipTags);
 
-			chkFlipTags = new CheckBox(Messages.get(this, "flip_indicators")){
-				@Override
-				protected void onClick() {
-					super.onClick();
-					SPDSettings.flipTags(checked());
-					GameScene.layoutTags();
-				}
-			};
-			chkFlipTags.checked(SPDSettings.flipTags());
-			add(chkFlipTags);
+			}
 
 			sep2 = new ColorBlock(1, 1, 0xFF000000);
 			add(sep2);
 
-//			chkFont = new CheckBox(Messages.get(this, "system_font")){
-//				@Override
-//				protected void onClick() {
-//					super.onClick();
-//					ShatteredPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback() {
-//						@Override
-//						public void beforeCreate() {
-//							SPDSettings.systemFont();
-//						}
-//
-//						@Override
-//						public void afterCreate() {
-//							//do nothing
-//						}
-//					});
-//				}
-//			};
-//			chkFont.checked(SPDSettings.systemFont());
-//			add(chkFont);
+			chkFont = new CheckBox(Messages.get(this, "system_font")){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					ShatteredPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback() {
+						@Override
+						public void beforeCreate() {
+							SPDSettings.systemFont(checked());
+						}
 
-			if (DeviceCompat.hasHardKeyboard()){
-
-				sep3 = new ColorBlock(1, 1, 0xFF000000);
-				add(sep3);
-
-				btnKeyBindings = new RedButton(Messages.get(this, "key_bindings")){
-					@Override
-					protected void onClick() {
-						super.onClick();
-						ShatteredPixelDungeon.scene().addToFront(new WndKeyBindings());
-					}
-				};
-
-				add(btnKeyBindings);
-			}
+						@Override
+						public void afterCreate() {
+							//do nothing
+						}
+					});
+				}
+			};
+			chkFont.checked(SPDSettings.systemFont());
+			add(chkFont);
 		}
 
 		@Override
 		protected void layout() {
 			title.setPos((width - title.width())/2, y + GAP);
 			sep1.size(width, 1);
-			sep1.y = title.bottom() + 2*GAP;
+			sep1.y = title.bottom() + 3*GAP;
 
 			height = sep1.y + 1;
 
-			if (optUISize != null){
-				optUISize.setRect(0, height + GAP, width, SLIDER_HEIGHT);
-				height = optUISize.bottom();
+			if (optUIMode != null && optUIScale != null && width > 200){
+				optUIMode.setRect(0, height + GAP, width/2-1, SLIDER_HEIGHT);
+				optUIScale.setRect(width/2+1, height + GAP, width/2-1, SLIDER_HEIGHT);
+				height = optUIScale.bottom();
+			} else {
+				if (optUIMode != null) {
+					optUIMode.setRect(0, height + GAP, width, SLIDER_HEIGHT);
+					height = optUIMode.bottom();
+				}
+
+				if (optUIScale != null) {
+					optUIScale.setRect(0, height + GAP, width, SLIDER_HEIGHT);
+					height = optUIScale.bottom();
+				}
 			}
 
-			if (barDesc != null) {
-				barDesc.setPos((width - barDesc.width()) / 2f, height + GAP);
-				PixelScene.align(barDesc);
-				if(Game.scene()!=null && Game.scene().getClass() == GameScene.class) {
-					btnSplit.setRect(0, barDesc.bottom() + GAP, width, 16);
-				} else {
-					btnSplit.setRect(500, barDesc.bottom() + GAP, width, 16);
-				}
-
-				if (width > 200) {
-					chkFlipToolbar.setRect(0, btnSplit.bottom() + GAP, width / 2 - 1, BTN_HEIGHT);
-					chkFlipTags.setRect(chkFlipToolbar.right() + GAP, chkFlipToolbar.top(), width / 2 - 1, BTN_HEIGHT);
-				} else {
-					chkFlipToolbar.setRect(0, btnSplit.bottom() + GAP, width, BTN_HEIGHT);
-					chkFlipTags.setRect(0, chkFlipToolbar.bottom() + GAP, width, BTN_HEIGHT);
-				}
+			if (btnToolbarSettings != null) {
+				btnToolbarSettings.setRect(0, height + GAP, width, BTN_HEIGHT);
+				height = btnToolbarSettings.bottom();
 			} else {
 				chkFlipTags.setRect(0, height + GAP, width, BTN_HEIGHT);
+				height = chkFlipTags.bottom();
 			}
 
 			sep2.size(width, 1);
-			sep2.y = chkFlipTags.bottom() + 2;
+			sep2.y = height + GAP;
 
-			if (btnKeyBindings != null){
-				if (width > 200){
-					chkFlipTags.setSize(width/2-1, BTN_HEIGHT);
-					sep3.size(1, BTN_HEIGHT + 2*GAP);
-					sep3.x = chkFlipTags.right() + 0.5f;
-					sep3.y = sep2.y+1;
-					PixelScene.align(sep3);
-					btnKeyBindings.setRect(chkFlipTags.right()+2, chkFlipTags.top(), width/2 - 1, BTN_HEIGHT);
-				} else {
-					sep3.size(width, 1);
-					sep3.y = chkFlipTags.bottom() + 2;
-					btnKeyBindings.setRect(0, sep3.y + 1 + GAP, width, BTN_HEIGHT);
-				}
-				height = btnKeyBindings.bottom();
-			} else {
-				height = chkFlipTags.bottom();
-			}
+			chkFont.setRect(0, sep2.y + 1 + GAP, width, BTN_HEIGHT);
+			height = chkFont.bottom();
 		}
 
 	}
@@ -640,7 +742,12 @@ public class WndSettings extends WndTabbed {
 				@Override
 				protected void onChange() {
 					SPDSettings.quickslots(getSelectedValue());
-					Toolbar.updateLayout();
+					if(SPDSettings.quickSwapper()){
+						Toolbar.updateLayout();
+					} else {
+						ToobarV.updateLayout();
+					}
+
 				}
 			};
 			quickslots.setSelectedValue(SPDSettings.quickslots());
@@ -662,11 +769,16 @@ public class WndSettings extends WndTabbed {
 
 			bottom = sep1.y + 1;
 
+			if(!SPDSettings.quickSwapper()){
+				quickslots.active = false;
+				quickslots.visible = false;
+			}
+
 			if (width > 200){
 				ClassUI.setRect(0, bottom, width, SLIDER_HEIGHT);
 				optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
 				optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width/2, SLIDER_HEIGHT);
-				if(Game.scene()!=null && Game.scene().getClass() == GameScene.class) {
+				if ((Game.scene() == null || Game.scene().getClass() != GameScene.class) && SPDSettings.quickSwapper()) {
 					quickslots.setRect(optFPSLimit.right(), optFPSLimit.top(), width/2, SLIDER_HEIGHT);
 					wxts.visible = false;
 				} else {
@@ -677,7 +789,7 @@ public class WndSettings extends WndTabbed {
 					ClassUI.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
 					optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
 					optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
-				if (Game.scene() == null || Game.scene().getClass() != GameScene.class) {
+				if ((Game.scene() == null || Game.scene().getClass() != GameScene.class) && SPDSettings.quickSwapper()) {
 					quickslots.visible = false;
 				} else {
 					quickslots.setRect(0, optFPSLimit.bottom() + GAP, width, SLIDER_HEIGHT);
@@ -798,27 +910,11 @@ public class WndSettings extends WndTabbed {
 				add(chkWifi);
 			}
 
-			chkFireBase = new CheckBox("firebase") {
+			chkFireBase = new CheckBox(Messages.get(this, "autoupdate")) {
 				@Override
 				protected void onClick() {
 					super.onClick();
-					if (checked()) {
-						checked(!checked());
-						ShatteredPixelDungeon.scene().add(new WndOptions(Icons.get(Icons.DATA),
-								"firebase_active",
-								"firebase_desc",
-								"cancel") {
-							@Override
-							protected void onSelect(int index) {
-								if (index == 0) {
-									checked(!checked());
-									SPDSettings.firebase(checked());
-								}
-							}
-						});
-					} else {
-						SPDSettings.firebase(checked());
-					}
+					SPDSettings.firebase(checked());
 				}
 			};
 			chkFireBase.checked( SPDSettings.firebase() );
@@ -837,14 +933,10 @@ public class WndSettings extends WndTabbed {
 				chkNews.setRect(0, sep1.y + 1 + GAP, width/2-1, BTN_HEIGHT);
 				//chkUpdates.setRect(chkNews.right() + GAP, chkNews.top(), width/2-1, BTN_HEIGHT);
 				chkFireBase.setRect(chkNews.right() + GAP, chkNews.top(), width/2-1, BTN_HEIGHT);
-				chkFireBase.visible = false;
-				chkFireBase.active = false;
 				pos = chkFireBase.bottom();
 			} else {
 				chkNews.setRect(0, sep1.y + 1 + GAP, width, BTN_HEIGHT);
 				chkFireBase.setRect(0, chkNews.bottom() + GAP, width, BTN_HEIGHT);
-				chkFireBase.visible = false;
-				chkFireBase.active = false;
 				pos = chkNews.bottom();
 			}
 

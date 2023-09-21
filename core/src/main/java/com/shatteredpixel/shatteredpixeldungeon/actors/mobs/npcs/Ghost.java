@@ -50,7 +50,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.ItemLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
@@ -291,6 +290,35 @@ public class Ghost extends NPC {
 				reset();
 			}
 		}
+
+		private static void ghostQuest(){
+			float itemLevelRoll = Random.Float();
+			int itemLevel;
+			if (itemLevelRoll < 0.74f){
+				itemLevel = 0;
+			} else if (itemLevelRoll < 0.75f){
+				itemLevel = 1;
+			} else if (itemLevelRoll < 0.85f){
+				itemLevel = 2;
+			} else if (itemLevelRoll < 0.90f) {
+				itemLevel = 3;
+				if ((!Badges.isUnlocked(Badges.Badge.GHOSTDAGE))) {
+					Statistics.dageCollected = 1;
+				}
+			} else if (itemLevelRoll < 0.95f && Badges.isUnlocked(Badges.Badge.GHOSTDAGE)) {
+				if ((!Badges.isUnlocked(Badges.Badge.DAGETO))) {
+					Statistics.dageCollected = 2;
+				}
+				itemLevel = 4;
+			} else {
+				if ((!Badges.isUnlocked(Badges.Badge.GHOSTDAGE))) {
+					Statistics.dageCollected = 1;
+				}
+				itemLevel = 3;
+			}
+			weapon.upgrade(itemLevel);
+			armor.upgrade(itemLevel);
+		}
 		
 		public static void spawn( SewerLevel level ) {
 			if (!spawned && Dungeon.depth > 1 && Random.Int( 5 - Dungeon.depth ) == 0) {
@@ -325,35 +353,7 @@ public class Ghost extends NPC {
 				weapon = (MeleeWeapon) Reflection.newInstance(c.classes[Random.chances(c.probs)]);
 
 				//26%:+0, 25%:+1, 15%:+2, 10%:+3, 5%:+4
-				float itemLevelRoll = Random.Float();
-				int itemLevel;
-				if (itemLevelRoll < 0.74f){
-					itemLevel = 0;
-				} else if (itemLevelRoll < 0.75f){
-					itemLevel = 1;
-				} else if (itemLevelRoll < 0.85f){
-					itemLevel = 2;
-				} else if (itemLevelRoll < 0.90f) {
-					itemLevel = 3;
-					if ((!Badges.isUnlocked(Badges.Badge.GHOSTDAGE))) {
-						Statistics.dageCollected = 1;
-						Badges.GhostDageCollected();
-					}
-				} else if (itemLevelRoll < 0.95f && Badges.isUnlocked(Badges.Badge.GHOSTDAGE)) {
-					if ((!Badges.isUnlocked(Badges.Badge.DAGETO))) {
-						Statistics.dageCollected = 2;
-						Badges.GhostDageCollected();
-					}
-					itemLevel = 4;
-				} else {
-					if ((!Badges.isUnlocked(Badges.Badge.GHOSTDAGE))) {
-						Statistics.dageCollected = 1;
-						Badges.GhostDageCollected();
-					}
-					itemLevel = 3;
-				}
-				weapon.upgrade(itemLevel);
-				armor.upgrade(itemLevel);
+				ghostQuest();
 
 				//10% to be enchanted. We store it separately so enchant status isn't revealed early
 				if (Random.Int(10) == 0){
@@ -396,35 +396,7 @@ public class Ghost extends NPC {
 				Generator.Category c = Generator.wepTiers[wepTier - 1];
 				weapon = (MeleeWeapon) Reflection.newInstance(c.classes[Random.chances(c.probs)]);
 
-				//26%:+0, 25%:+1, 15%:+2, 10%:+3, 5%:+4, 5%+5
-				float itemLevelRoll = Random.Float();
-				int itemLevel;
-				if (itemLevelRoll < 0.74f){
-					itemLevel = 0;
-				} else if (itemLevelRoll < 0.75f){
-					itemLevel = 1;
-				} else if (itemLevelRoll < 0.85f){
-					itemLevel = 2;
-				} else if (itemLevelRoll < 0.90f) {
-					itemLevel = 3;
-					hero.sprite.showStatus( CharSprite.NEGATIVE, "+3!!!" );
-				} else if (itemLevelRoll < 0.95f && Badges.isUnlocked(Badges.Badge.GHOSTDAGE)){
-					hero.sprite.showStatus( CharSprite.POSITIVE, "+5!!!" );
-					if(( !Badges.isUnlocked(Badges.Badge.DAGETO))) {
-						Statistics.dageCollected = 2;
-						Badges.GhostDageCollected();
-					}
-					itemLevel = 5;
-				} else {
-					itemLevel = 4;
-					hero.sprite.showStatus( CharSprite.WARNING, "+4!!!" );
-					if(( !Badges.isUnlocked(Badges.Badge.GHOSTDAGE))) {
-						Statistics.dageCollected = 1;
-						Badges.GhostDageCollected();
-					}
-				}
-				weapon.upgrade(itemLevel);
-				armor.upgrade(itemLevel);
+				ghostQuest();
 
 				//10% to be enchanted. We store it separately so enchant status isn't revealed early
 				if (Random.Int(10) == 0){
