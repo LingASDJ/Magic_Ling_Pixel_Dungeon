@@ -748,15 +748,7 @@ public class Badges {
 		}
 	}
 
-	public static void validateAMZ() {
-		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
-		if (global.contains( Badge.KILL_APPLE ) && global.contains( Badge.KILL_DM720 ) &&
-				global.contains( Badge.KILL_MG) && passwordbadges.contains(PaswordBadges.Badge.FIREGIRL) && passwordbadges.contains(PaswordBadges.Badge.DRAWF_HEAD) && passwordbadges.contains(PaswordBadges.Badge.SAKA_DIED)) {
 
-			PaswordBadges.Badge badge = PaswordBadges.Badge.SPICEALBOSS;
-			PaswordBadges.displayBadge( badge );
-		}
-	}
 
 	private static void validateYASD() {
 		if (global.contains( Badge.DEATH_FROM_FIRE ) &&
@@ -1021,7 +1013,6 @@ public class Badges {
 
 	public static void KILLSAPPLE() {
 		displayBadge( Badge.KILL_APPLE);
-		validateAMZ();
 	}
 
 
@@ -1034,7 +1025,6 @@ public class Badges {
 
 	public static void KILLSDM720() {
 		displayBadge( Badge.KILL_DM720 );
-		validateAMZ();
 	}
 
 	public static void BOSSTHREE() {
@@ -1048,12 +1038,10 @@ public class Badges {
 
 	public static void KILLMG() {
 		displayBadge( Badge.KILL_MG );
-		validateAMZ();
 	}
 
 	public static void KILL_SMK() {
 		displayBadge( Badge.KILL_SM );
-		validateAMZ();
 	}
 
 	public static void GOODRLPT() {

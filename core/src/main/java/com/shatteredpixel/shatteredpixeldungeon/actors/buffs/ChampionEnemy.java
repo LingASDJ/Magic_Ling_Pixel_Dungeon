@@ -114,26 +114,30 @@ public abstract class ChampionEnemy extends Buff {
 
 		Class<?extends ChampionEnemy> buffCls;
 
+		int randomNumber = Random.Int(100);
 
-		switch (Random.NormalIntRange(0,6)){
-			case 0: default:
-                buffCls = ChampionEnemy.Small.class;
-                break;
-            case 1:
-                buffCls = ChampionEnemy.Bomber.class;
-                break;
-            case 2:
-                buffCls = ChampionEnemy.Middle.class;
-                break;
-            case 3:
-                buffCls = ChampionEnemy.Big.class;
-                break;
-            case 4:
-                buffCls = ChampionEnemy.Sider.class;
-                break;
-            case 5:
-                buffCls = ChampionEnemy.LongSider.class;
-                break;
+		if (randomNumber < 5) {
+			buffCls = ChampionEnemy.LongSider.class;
+		} else if (randomNumber < 10) {
+			buffCls = ChampionEnemy.Bomber.class;
+		} else {
+			switch (randomNumber % 6) {
+				case 0: default:
+					buffCls = ChampionEnemy.Small.class;
+					break;
+				case 1:
+					buffCls = ChampionEnemy.Middle.class;
+					break;
+				case 2:
+					buffCls = ChampionEnemy.Big.class;
+					break;
+				case 3:
+					buffCls = ChampionEnemy.Sider.class;
+					break;
+				case 4:
+					buffCls = ChampionEnemy.LongSider.class;
+					break;
+			}
 		}
 
 		if (Dungeon.mobsToStateLing <= 0 && Dungeon.isChallenged(Challenges.SBSG)) {
@@ -320,14 +324,14 @@ public abstract class ChampionEnemy extends Buff {
 	}
 
 	public static void rollForChampion(Mob m){
-		if (Dungeon.mobsToChampion <= 0) Dungeon.mobsToChampion = 8;
+		if (Dungeon.mobsToChampion <= 0) Dungeon.mobsToChampion = 7;
 
 		Dungeon.mobsToChampion--;
 
 		//we roll for a champion enemy even if we aren't spawning one to ensure that
 		//mobsToChampion does not affect levelgen RNG (number of calls to Random.Int() is constant)
 		Class<?extends ChampionEnemy> buffCls;
-		switch (Random.Int(9)){
+		switch (Random.Int(8)){
 			case 0: default:    buffCls = Blazing.class;      break;
 			case 1:             buffCls = Projecting.class;   break;
 			case 2:             buffCls = AntiMagic.class;    break;
@@ -336,7 +340,7 @@ public abstract class ChampionEnemy extends Buff {
 			case 5:             buffCls = Growing.class;      break;
 			case 6:             buffCls = Halo.class;      	  break;
 			case 7:             buffCls = DelayMob.class;     break;
-			case 8:             buffCls = King.class;     	  break;
+			//case 8:             buffCls = King.class;     	  break;
 		}
 
 		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES)) {

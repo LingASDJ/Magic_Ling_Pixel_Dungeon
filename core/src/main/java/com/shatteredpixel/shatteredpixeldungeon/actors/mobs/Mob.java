@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Badges.global;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Difficulty.DifficultyConduct.EASY;
 import static com.shatteredpixel.shatteredpixeldungeon.Difficulty.DifficultyConduct.HARD;
@@ -34,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Difficulty;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -89,6 +91,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 
 public abstract class Mob extends Char {
 
@@ -863,6 +866,15 @@ public abstract class Mob extends Char {
 //		if (((Char) this).properties.contains(Char.Property.BOSS) && !(this instanceof YogFist)) {
 //			Analytics.trackBossBeaten(this);
 //		}
+
+		PaswordBadges.loadGlobal();
+		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
+		if (global.contains( Badges.Badge.KILL_APPLE ) && global.contains( Badges.Badge.KILL_DM720 ) &&
+				global.contains( Badges.Badge.KILL_MG) && passwordbadges.contains(PaswordBadges.Badge.FIREGIRL) && passwordbadges.contains(PaswordBadges.Badge.DRAWF_HEAD) && passwordbadges.contains(PaswordBadges.Badge.SAKA_DIED)) {
+
+			PaswordBadges.Badge badge = PaswordBadges.Badge.SPICEALBOSS;
+			PaswordBadges.displayBadge( badge );
+		}
 
 		if (cause == Chasm.class){
 			//50% chance to round up, 50% to round down

@@ -1,6 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Badges.validateAMZ;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -22,17 +21,14 @@ public class PaswordBadges {
 
     public static void KILLDWARF() {
         displayBadge( PaswordBadges.Badge.DRAWF_HEAD );
-        validateAMZ();
     }
 
     public static void KILLFIREGIRL() {
         displayBadge( PaswordBadges.Badge.FIREGIRL );
-        validateAMZ();
     }
 
     public static void KILLSAKA() {
         displayBadge( PaswordBadges.Badge.SAKA_DIED);
-        validateAMZ();
     }
 
     public static void REHOMESKY() {
@@ -115,7 +111,7 @@ public class PaswordBadges {
         loadGlobal();
     }
 
-    public static final String BADGES_FILE	= "badges.dat";
+    public static final String ZBADGES_FILE	= "z-badges.dat";
     private static final String BADGES		= "badges";
 
     private static final HashSet<String> removedBadges = new HashSet<>();
@@ -173,7 +169,7 @@ public class PaswordBadges {
     public static void loadGlobal() {
         if (global == null) {
             try {
-                Bundle bundle = FileUtils.bundleFromFile( BADGES_FILE );
+                Bundle bundle = FileUtils.bundleFromFile( ZBADGES_FILE );
                 global = restore( bundle );
 
             } catch (IOException e) {
@@ -189,7 +185,7 @@ public class PaswordBadges {
             store( bundle, global );
 
             try {
-                FileUtils.bundleToFile(BADGES_FILE, bundle);
+                FileUtils.bundleToFile(ZBADGES_FILE, bundle);
                 saveNeeded = false;
             } catch (IOException e) {
                 ShatteredPixelDungeon.reportException(e);
@@ -210,7 +206,7 @@ public class PaswordBadges {
         if (global.contains( badge )) {
 
             if (!badge.meta) {
-                GLog.h( Messages.get(Badges.class, "endorsed", badge.desc()) );
+                GLog.h( Messages.get(Badges.class, "endorsed", badge.title()) );
             }
 
         } else {
@@ -219,9 +215,9 @@ public class PaswordBadges {
             saveNeeded = true;
 
             if (badge.meta) {
-                GLog.h( Messages.get(Badges.class, "new_super", badge.desc()) );
+                GLog.h( Messages.get(Badges.class, "new_super", badge.title()) );
             } else {
-                GLog.h( Messages.get(Badges.class, "new", badge.desc()) );
+                GLog.h( Messages.get(Badges.class, "new", badge.title()) );
             }
             PixelScene.showProBadge( badge );
         }

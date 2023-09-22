@@ -278,6 +278,8 @@ public class DiamondKnight extends Boss {
 
         Badges.KILL_SMK();
 
+
+
         if(Statistics.dimandchestmazeCollected>=3){
             PaswordBadges.validateOMP();
             Statistics.bossScores[1] += 1000;

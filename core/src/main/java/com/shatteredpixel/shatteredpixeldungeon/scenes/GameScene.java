@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -766,7 +767,7 @@ public class GameScene extends PixelScene {
 		scene = null;
 		Badges.saveGlobal();
 		Journal.saveGlobal();
-		
+		PaswordBadges.saveGlobal();
 		super.destroy();
 	}
 	
@@ -797,6 +798,7 @@ public class GameScene extends PixelScene {
 		try {
 			Dungeon.saveAll();
 			Badges.saveGlobal();
+			PaswordBadges.saveGlobal();
 			Journal.saveGlobal();
 		} catch (IOException e) {
 			ShatteredPixelDungeon.reportException(e);

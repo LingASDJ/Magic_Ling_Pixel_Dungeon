@@ -84,7 +84,7 @@ public class MenuPane extends Component {
 		add(depthIcon);
 
 		if(Dungeon.depth < 0){
-			depthText = new BitmapText( "S", PixelScene.pixelFont);
+			depthText = new BitmapText( "?", PixelScene.pixelFont);
 		} else {
 			depthText = new BitmapText(Integer.toString(Dungeon.depth), PixelScene.pixelFont);
 		}

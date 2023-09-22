@@ -147,6 +147,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WashCrime;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
 import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
@@ -210,6 +211,7 @@ public enum Catalog {
 		WEAPONS.seen.put( Greataxe.class,                   false);
 		WEAPONS.seen.put( Greatshield.class,                false);
 		WEAPONS.seen.put( Gauntlet.class,                   false);
+		WEAPONS.seen.put( DiedCrossBow.class,                   false);
 
 		WEAPONS.seen.put( LockSword.class,                  false);
 		WEAPONS.seen.put( SkyShield.class,               false);

@@ -16,6 +16,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BlackHost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CausticSlime;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ClearElemental;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdGurad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdMagicRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
@@ -52,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotHeart;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotLasher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDHBLR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDICLR;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Salamander;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Senior;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman;
@@ -67,10 +70,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.XTG100;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.XTG200;
 import com.shatteredpixel.shatteredpixeldungeon.custom.dict.DictSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -112,8 +116,8 @@ public class MobPlacer extends TestItem{
         eliteBuffs.add(ChampionEnemy.Growing.class);
         eliteBuffs.add(ChampionEnemy.Projecting.class);
         eliteBuffs.add(ChampionEnemy.Halo.class);
-        eliteBuffs.add(ChampionEnemy.King.class);
         eliteBuffs.add(ChampionEnemy.DelayMob.class);
+        eliteBuffs.add(WandOfAnmy.AllyToRestartOK.class);
 
         eliteBuffs.add(ChampionEnemy.Small.class);
         eliteBuffs.add(ChampionEnemy.Bomber.class);
@@ -121,6 +125,7 @@ public class MobPlacer extends TestItem{
         eliteBuffs.add(ChampionEnemy.Big.class);
         eliteBuffs.add(ChampionEnemy.Sider.class);
         eliteBuffs.add(ChampionEnemy.LongSider.class);
+
     }
 
     @Override
@@ -186,8 +191,8 @@ public class MobPlacer extends TestItem{
             case 4: return DataPack.ELE_CHAOS.ordinal() - DataPack.DM201.ordinal() - 1;
             case 5: return DataPack.ACIDIC.ordinal() - DataPack.ELE_CHAOS.ordinal() - 1;
             case 6: return DataPack.PIRANHA.ordinal() - DataPack.ACIDIC.ordinal() - 1;
-            case 7: return DataPack.ZSLS.ordinal() - DataPack.NQHZ.ordinal() - 1;
-            case 8: default: return DataPack.SLXJ.ordinal() - DataPack.IAS.ordinal() - 1;
+            case 7: return DataPack.NQHZ.ordinal() - DataPack.PIRANHA.ordinal() - 1;
+            case 8: default: return DataPack.IAS.ordinal() - DataPack.NQHZ.ordinal() - 1;
         }
     }
     private int dataThreshold(int tier){
@@ -205,9 +210,9 @@ public class MobPlacer extends TestItem{
             case 6:
                 return DataPack.ACIDIC.ordinal()+1;
             case 7:
-                return DataPack.ZSLS.ordinal()+1;
+                return DataPack.PIRANHA.ordinal()+1;
             case 8:
-                return DataPack.SLXJ.ordinal()+1;
+                return DataPack.NQHZ.ordinal()+1;
         }
     }
 
@@ -247,12 +252,12 @@ public class MobPlacer extends TestItem{
 
             resize(WIDTH, HEIGHT);
 
-            RedButton lhs = new RedButton("<<<", 8){
+            RedButton lhs = new RedButton("上一页", 6){
                 @Override
                 public void onClick(){
                     mobTier--;
-                    if(mobTier < 1 || mobTier>6){
-                        mobTier = 6;
+                    if(mobTier < 1 || mobTier>8){
+                        mobTier = 8;
                     }
                     mobIndex = Math.min(mobIndex, maxMobIndex(mobTier));
                     refreshImage();
@@ -262,11 +267,11 @@ public class MobPlacer extends TestItem{
             lhs.setRect(GAP, GAP, 24, 18);
             add(lhs);
 
-            RedButton rhs = new RedButton(">>>", 8){
+            RedButton rhs = new RedButton("下一页", 6){
                 @Override
                 public void onClick(){
                     mobTier++;
-                    if(mobTier < 1 || mobTier > 6){
+                    if(mobTier < 1 || mobTier > 8){
                         mobTier = 1;
                     }
                     mobIndex = Math.min(mobIndex, maxMobIndex(mobTier));
@@ -299,23 +304,25 @@ public class MobPlacer extends TestItem{
 
  */
             float pos = 92;
-            for (int i = 0; i < 15; ++i) {
-                CheckBox cb = new CheckBox(M.L(MobPlacer.class, "elite_name" + Integer.toString(i)));
+            int column = 0;
+            for (int i = 0; i < 15 && column < 3; ++i) {
+                CheckBox cb = new CheckBox(M.L(MobPlacer.class, "elite_name" + i));
                 cb.active = true;
-                cb.checked((elite & (1 << i)) > 0);
+                cb.checked((elite_op & (1<<i))>0);
                 add(cb);
                 eliteOptions.add(cb);
 
-                int row = i / 3; // 计算当前复选框所在的行数
-                int column = i % 3; // 计算当前复选框所在的列数
+                if (column == 0) {
+                    cb.setRect((WIDTH/3f - GAP)/3f * column, pos, (WIDTH/3f - GAP), 16);
+                } else if (column == 1) {
+                    cb.setRect((WIDTH/3f - GAP)/3f * column+35, pos, (WIDTH/3f - GAP), 16);
+                } else {
+                    cb.setRect((WIDTH/3f - GAP)/3f * column+70, pos, (WIDTH/3f - GAP), 16);
+                    column = -1; // 重置column的值，使其在下一次循环时为0（即第一列）
+                    pos += 16 + GAP; // 换行
+                }
 
-                float columnWidth = WIDTH / 3f - GAP * 4f / 3f;
-                float rowHeight = 16 + GAP;
-
-                float columnOffset = (WIDTH - columnWidth * 3f - GAP * 2f) / 2f;
-                float rowOffset = pos + row * rowHeight; // 根据行数计算当前行的垂直偏移量
-
-                cb.setRect(columnOffset + column * (columnWidth + GAP), rowOffset, columnWidth, 16);
+                column++;
             }
 
 
@@ -480,15 +487,17 @@ public class MobPlacer extends TestItem{
         Flame(FlameB01.class, DictSpriteSheet.FLAME),
         NQHZ(OGPDNQHZ.class, DictSpriteSheet.OGPDNQHZ),
 
-        //REDBS(RedNecromancer.class, DictSpriteSheet.REDBS),
+        CLEARS(ClearElemental.class, DictSpriteSheet.CLEARS),
         SLXJ(SpectralNecromancer.class, DictSpriteSheet.SLXJ),
         BMHR(ShieldHuntsman.class, DictSpriteSheet.BMHR),
-        XTG(XTG100.class, DictSpriteSheet.XTG),
+        STX(Salamander.class, DictSpriteSheet.STX),
         XHDD(RedMurderer.class, DictSpriteSheet.XHDD),
         IAX(Ice_Scorpio.class, DictSpriteSheet.IAX),
         FAX(Fire_Scorpio.class, DictSpriteSheet.FAX),
         CAX(SRPDICLR.class, DictSpriteSheet.CAX),
-        BRT(BruteBot.class, DictSpriteSheet.BRT),
+        GOO(XTG200.class,DictSpriteSheet.GOO),
+        IKS(ColdGurad.class,DictSpriteSheet.GKS),
+        BRTX(BruteBot.class, DictSpriteSheet.BRTX),
         IAS(IceGolem.class, DictSpriteSheet.IAS);
 
 

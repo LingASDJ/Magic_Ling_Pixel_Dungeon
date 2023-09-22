@@ -55,12 +55,17 @@ public class Assets {
 	public static class Environment {
 		public static final String TERRAIN_FEATURES = "environment/terrain_features.png";
 
+		public static final String LAVACAVE_OP  = "environment/custom_tiles/lavecave_behind.png";
+
+		public static final String LAVACAVE_PO  = "environment/custom_tiles/lavecave_above.png";
+
 		public static final String VISUAL_GRID  = "environment/visual_grid.png";
 		public static final String WALL_BLOCKING= "environment/wall_blocking.png";
 
 		public static final String TILES_SEWERS = "environment/tiles_sewers.png";
 		public static final String TILES_PRISON = "environment/tiles_prison.png";
 		public static final String TILES_COLDCHEST  = "environment/tiles_coldchest.png";
+		public static final String TILES_FIRE  = "environment/tiles_fire.png";
 		public static final String TILES_CAVES  = "environment/tiles_caves.png";
 		public static final String TILES_CITY   = "environment/tiles_city.png";
 		public static final String TILES_ANCIENT  = "environment/tiles_ancient.png";

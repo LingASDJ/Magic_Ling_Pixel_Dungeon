@@ -20,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireCrystalSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FireDragonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceFireScorpioSprite;
@@ -119,7 +120,7 @@ public class vM0_6_7_X_Changes {
     }
 
     public static void add_v0_6_56_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("Coming Soon V0.6.5.0-Alpha3", true, "");
+        ChangeInfo changes = new ChangeInfo("Coming Soon V0.6.5.0-Alpha7", true, "");
         changes.hardlight(Window.CBLACK);
         changeInfos.add(changes);
 
@@ -140,6 +141,37 @@ public class vM0_6_7_X_Changes {
         i.scale.set(PixelScene.align(0.74f));
         changes.addButton(new ChangeButton(i, ("熔岩火龙"),
                 ("丛林暴乱的真相")));
+
+        changes = new ChangeInfo("v0.6.5.0-Alpha3", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("开发者模式更新"),
+                ("添加了更多开发者选项，优化了一些问题，怪物放置器支持电子斗蛐蛐")));
+
+        Image dragonSprite = new FireDragonSprite();
+        dragonSprite.scale.set(PixelScene.align(0.72f));
+        changes.addButton(new ChangeButton(dragonSprite, ("熔岩火龙资源预载"),
+                ("丛林额外Boss-熔岩火龙资源预载，预计将在Alpha7加入。")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DIEDCROSSBOW), ("重型弩炮"),
+                ("现在不需要飞镖作为弹药，但有装填时间。")));
+
+        Image xa = new SakaFishBossSprites();
+        xa.scale.set(PixelScene.align(0.72f));
+        changes.addButton(new ChangeButton(xa,  "萨卡班甲鱼",
+                "初始防御调为35，常规伤害降低。"));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X84")));
 
         changes = new ChangeInfo("v0.6.5.0-Alpha1-2", true, "");
         changes.hardlight(Window.TITLE_COLOR);
