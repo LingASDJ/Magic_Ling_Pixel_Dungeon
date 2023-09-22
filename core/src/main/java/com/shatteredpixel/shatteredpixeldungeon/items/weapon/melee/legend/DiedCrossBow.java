@@ -11,7 +11,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -103,8 +102,7 @@ public class DiedCrossBow extends LegendWeapon {
             if (target != null) {
                 final Ballistica shot = new Ballistica( curUser.pos, target, target);
                 int cell = shot.collisionPos;
-                Dart missile = Dungeon.hero.belongings.getItem(Dart.class);
-                missile.quantity -= 5;
+
                 if (Actor.findChar(target) != null) {
                     QuickSlotButton.target(Actor.findChar(target));
                 } else {

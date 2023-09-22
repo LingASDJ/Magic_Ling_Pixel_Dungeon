@@ -121,7 +121,7 @@ public abstract class ChampionEnemy extends Buff {
 		} else if (randomNumber < 10) {
 			buffCls = ChampionEnemy.Bomber.class;
 		} else {
-			switch (randomNumber % 6) {
+			switch (randomNumber % 5) {
 				case 0: default:
 					buffCls = ChampionEnemy.Small.class;
 					break;
@@ -133,9 +133,6 @@ public abstract class ChampionEnemy extends Buff {
 					break;
 				case 3:
 					buffCls = ChampionEnemy.Sider.class;
-					break;
-				case 4:
-					buffCls = ChampionEnemy.LongSider.class;
 					break;
 			}
 		}
