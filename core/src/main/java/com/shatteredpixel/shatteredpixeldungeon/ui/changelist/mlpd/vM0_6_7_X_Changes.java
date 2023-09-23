@@ -142,6 +142,39 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(i, ("熔岩火龙"),
                 ("丛林暴乱的真相")));
 
+        changes = new ChangeInfo("v0.6.5.0-Alpha4", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("电子斗蛐蛐v0.2"),
+                ("开发者模式怪物放置器拥有更多功能，欢迎尝试！另追加黏咕，史莱姆王，豺狼炼药长老，豺狼萨满长老，Flame-C01")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("信息栏滚动"),
+                ("在游戏缩放较大或者拥有较多词条时，该项会很有用。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), ("新徽章：碎片飞溅"),
+                ("又是一个死亡徽章，新人：悲鸣 因为意味着另类死亡爱好者多了一个新徽章（未解锁该徽章的就更麻烦了）")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new SalamanderSprites(), ("深蓝蝾螈"),
+                ("修复被深蓝蝾螈击败不会记录在排行榜的问题。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DIEDCROSSBOW), ("重型弩炮"),
+                ("修复使用还会扣减飞镖的问题。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_KCX), ("共生法杖"),
+                ("修复共生法杖可能能被永续的问题。")));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X85")));
+
         changes = new ChangeInfo("v0.6.5.0-Alpha3", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
@@ -1233,7 +1266,7 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(new OGPDNQHZTT(), ("OGPD老鼠组"),
                 ("曾经的魔绫代表怪物，如今也正式退出魔绫的舞台。2021.2.21--2023.3.24（R.I.P.)")));
 
-        changes.addButton(new ChangeButton(new SnakeSprite(), ("下水道巨蛇"),
+        changes.addButton(new ChangeButton(new SnakeSprite(), ("密林巨蛇"),
                 ("破碎的代表怪物，由于不符合魔绫的世界观，故而被移除。")));
     }
 

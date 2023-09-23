@@ -1,12 +1,14 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.dict;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BombGnollTricksterSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BruteBotSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearElementalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdGuardSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdRatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireAcidicSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameC01Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceFireScorpioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceGolemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -24,6 +26,8 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDICLRTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.STenguSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SalamanderSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShieldHuntsmanSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SkullShamanSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SlimeKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SpectralNecromancerSprite;
 import com.watabou.noosa.Image;
 
@@ -80,7 +84,15 @@ public class DictSpriteSheet {
             case MOLO:
                 return new MolotovHuntsmanSprite();
             case FLAME:
-                return new FlameBoiSprite();
+                return new SlimeKingSprite();
+            case FLAMEC01:
+                return new FlameC01Sprite();
+            case GnollK:
+                return new BombGnollTricksterSprites();
+            case GnollF:
+                return new SkullShamanSprite();
+            case Goo:
+                return new GooSprite();
             case GNOLL:
                 return new Image(Assets.Sprites.GNOLL, 0, 0, 12, 15);
             case STX:
@@ -303,6 +315,14 @@ public class DictSpriteSheet {
     public static final int FAX      = 227 + 10000;
     public static final int CAX      = 228 + 10000;
     public static final int IAS      = 229 + 10000;
+
+    public static final int FLAMEC01      = 330 + 10000;
+
+    public static final int GnollK      = 331 + 10000;
+
+    public static final int GnollF      = 332 + 10000;
+
+    public static final int Goo      = 333 + 10000;
 
     public static final int BRTX      = 230 + 10000;
     public static final int GOO     = 231 + 10000;

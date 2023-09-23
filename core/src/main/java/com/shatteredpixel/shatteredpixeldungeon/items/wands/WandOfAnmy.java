@@ -1,9 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
@@ -12,7 +10,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -69,25 +66,7 @@ public class WandOfAnmy extends DamageWand {
             }
         }
 
-        //for when applying an ally buff should also cause that enemy to give exp/loot as if they had died
-        //consider that chars with the ally alignment do not drop items or award exp on death
-        public static void affectAndLoot(Mob enemy, Hero hero, Class<?extends AllyBuff> buffCls){
-            boolean droppingLoot = enemy.alignment != Char.Alignment.ALLY;
-            Buff.affect(enemy, buffCls);
 
-            if (enemy.buff(buffCls) != null){
-                if (droppingLoot) enemy.rollToDropLoot();
-                Statistics.enemiesSlain++;
-                Badges.validateMonstersSlain();
-                Statistics.qualifiedForNoKilling = false;
-                if (enemy.EXP > 0 && hero.lvl <= enemy.maxLvl) {
-                    hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(enemy, "exp", enemy.EXP));
-                    hero.earnExp(enemy.EXP, enemy.getClass());
-                } else {
-                    hero.earnExp(0, enemy.getClass());
-                }
-            }
-        }
         @Override
         public String toString() {
             return Messages.get(AllyToRestart.class, "name");
@@ -101,11 +80,11 @@ public class WandOfAnmy extends DamageWand {
         @Override
         public void fx(boolean on) {
             if (on) {
-                target.sprite.add(CharSprite.State.SHIELDED);
+                target.sprite.add(CharSprite.State.HEARTS);
                 //Statistics.TryUsedAnmy = true;
             }
             else
-                target.sprite.remove(CharSprite.State.SHIELDED);
+                target.sprite.remove(CharSprite.State.HEARTS);
         }
 
         @Override
@@ -133,11 +112,11 @@ public class WandOfAnmy extends DamageWand {
         @Override
         public void fx(boolean on) {
             if (on) {
-                target.sprite.add(CharSprite.State.SHIELDED);
+                target.sprite.add(CharSprite.State.HEARTS);
                 //Statistics.TryUsedAnmy = true;
             }
             else
-                target.sprite.remove(CharSprite.State.SHIELDED);
+                target.sprite.remove(CharSprite.State.HEARTS);
         }
 
         @Override

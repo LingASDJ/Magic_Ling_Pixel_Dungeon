@@ -58,6 +58,8 @@ public class Terrain {
 	public static final int ALCHEMY			= 28;
 
 	public static final int WATER		    = 29;
+
+	public static final int LAVA		    = 30;
 	
 	public static final int PASSABLE		= 0x01;
 	public static final int LOS_BLOCKING	= 0x02;
@@ -75,6 +77,7 @@ public class Terrain {
 		flags[GRASS]		= PASSABLE | FLAMABLE;
 		flags[EMPTY_WELL]	= PASSABLE;
 		flags[WATER]		= PASSABLE | LIQUID;
+		flags[LAVA]			= AVOID | PIT | LIQUID;
 		flags[WALL]			= LOS_BLOCKING | SOLID;
 		flags[DOOR]			= PASSABLE | LOS_BLOCKING | FLAMABLE | SOLID;
 		flags[OPEN_DOOR]	= PASSABLE | FLAMABLE;

@@ -74,7 +74,7 @@ public class Window extends Group implements Signal.Listener<KeyEvent> {
 	public static final int BLUE_COLOR = 0x0000FF;
 	public static final int CBLACK = 0x808080;
 
-	
+	public final void setHeight(int height) { resize(width, height); }
 	public Window() {
 		this( 0, 0, Chrome.get( Chrome.Type.WINDOW ) );
 	}

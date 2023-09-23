@@ -346,7 +346,7 @@ public class S_Changes {
         changes.addButton( new ChangeButton(new Image(new RatSprite()), "老鼠加强",
                 "老鼠的_攻击和生存能力_都得到了提升"));
 
-        changes.addButton( new ChangeButton(new Image(new SnakeSprite()), "下水道巨蛇加强",
+        changes.addButton( new ChangeButton(new Image(new SnakeSprite()), "密林巨蛇加强",
                 "巨蛇的_攻击和生存能力_都得到了提升"));
 
     }
@@ -492,7 +492,7 @@ public class S_Changes {
         changeInfo14.hardlight(16736000);
         arrayList.add(changeInfo14);
         changeInfo14.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), "BUG修复", "1.修复_酸蚀法杖_崩溃闪退问题\n\n2.修复_钥匙剑_变量问题[修复者:_Ren_]\n\n3.修复楼层_重置闪退_问题，理论上得到解决"));
-        changeInfo14.addButton(new ChangeButton(new Image("sprites/snake.png", 0, 0, 14, 16), "新怪物", "_下水道巨蛇_\n\n_下水道3层开始刷新_"));
+        changeInfo14.addButton(new ChangeButton(new Image("sprites/snake.png", 0, 0, 14, 16), "新怪物", "_密林巨蛇_\n\n_密林3层开始刷新_"));
         changeInfo14.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG6), "新法杖", "幻蓝_焰浪_神杖\n\n这根法杖由_蓝磷元素_制成，饰以_魔紫树叶_这使它看起来相当霸气。它的顶端噼啪作响嘶嘶而鸣，渴望着释放其_强大的魔法。_"));
         ChangeInfo changeInfo15 = new ChangeInfo("V0.2.5-6", true, "");
         changeInfo15.hardlight(65535);
@@ -530,7 +530,7 @@ public class S_Changes {
         changeInfos.add(changes);
         changes.addButton( new ChangeButton(new Image("SRPD/TorchHuntsman.png", 0, 0, 16, 16), "怪物新改动",
                 "新怪物！！！\n" +
-                        "-下水道层：\n-_棕色老鼠_，\n-_灰黑老鼠_，\n-_老年老鼠_，\n（来自OGPD)" +
+                        "-密林层：\n-_棕色老鼠_，\n-_灰黑老鼠_，\n-_老年老鼠_，\n（来自OGPD)" +
                         "\n-监狱层：_赏金猎人_\n（来自SRPD)"+
                         "\n-矿洞层：_Flame-B01_\n（来自OGPD)"+
                         "\n后续层数正在开发,敬请期待\n\n"+
@@ -556,7 +556,7 @@ public class S_Changes {
         changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 48, 16
                 , 16), "房间改动",
                 "房间数量得到了调整,具体改动如下表\n" +
-                        "-下水道层：房间数量_9个_，默认刷怪数量_20个_，额外刷怪_7个_\n" +
+                        "-密林层：房间数量_9个_，默认刷怪数量_20个_，额外刷怪_7个_\n" +
                         "-监狱层：房间数量_8个_，默认刷怪数量_26个_，额外刷怪_11个_\n"+
                         "-矿洞层：房间数量_10个_，默认刷怪数量_30个_，额外刷怪_16个_\n"+
                         "-矮人层：房间数量_12个_，默认刷怪数量_21个_，额外刷怪_6个_\n"+

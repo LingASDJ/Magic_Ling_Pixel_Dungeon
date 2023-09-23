@@ -1,6 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -9,7 +12,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -38,13 +40,17 @@ public class DiedCrossBow extends LegendWeapon {
         baseMax = 20;
         min = Lmin();
         max = Lmax();
-        usesTargeting = true;
+        usesTargeting = cooldown == 0;
     }
 
     @Override
     protected LegendWeapon.LegendWeaponBuff passiveBuff() {
         return new DiedCrossBow.Recharge();
     }
+
+    /**
+     *
+     */
 
     public class Recharge extends LegendWeapon.LegendWeaponBuff {
         @Override
@@ -142,7 +148,7 @@ public class DiedCrossBow extends LegendWeapon {
 
         @Override
         public int proc(Char attacker, Char defender, int damage) {
-            DiedCrossBow dartGun = Dungeon.hero.belongings.getItem(DiedCrossBow.class);
+            DiedCrossBow dartGun = hero.belongings.getItem(DiedCrossBow.class);
             damage = Random.NormalIntRange(dartGun.Lmin(), dartGun.Lmax());
             this.explodeBomb(defender.pos);
 
@@ -207,7 +213,7 @@ public class DiedCrossBow extends LegendWeapon {
                         continue;
                     }
 
-                    DiedCrossBow diedCrossBow =  Dungeon.hero.belongings.getItem(DiedCrossBow.class);
+                    DiedCrossBow diedCrossBow =  hero.belongings.getItem(DiedCrossBow.class);
                     int dmg = Random.NormalIntRange(diedCrossBow.Lmin(),diedCrossBow.Lmin());
 
                     //those not at the center of the blast take less damage
@@ -221,8 +227,10 @@ public class DiedCrossBow extends LegendWeapon {
                         ch.damage(dmg, this);
                     }
 
-                    if (ch == Dungeon.hero && !ch.isAlive()) {
-                        Dungeon.fail(Bomb.class);
+                    if (ch == hero && !ch.isAlive()) {
+                        Badges.BOMB();
+                        Dungeon.fail( getClass() );
+                        GLog.n( Messages.get(DiedCrossBow.class, "ondeath") );
                     }
                 }
 

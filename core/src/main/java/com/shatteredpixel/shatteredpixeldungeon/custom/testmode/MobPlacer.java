@@ -28,9 +28,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FetidRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Fire_Scorpio;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlameB01;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlameC01;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gnoll;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollTrickster;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab;
@@ -60,6 +61,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Senior;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShieldHuntsman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SkullShaman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpectralNecromancer;
@@ -71,6 +73,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.XTG200;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GooMob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SlimeKingMob;
 import com.shatteredpixel.shatteredpixeldungeon.custom.dict.DictSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -82,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -105,6 +110,9 @@ public class MobPlacer extends TestItem{
     private int mobTier = 1;
     private int mobIndex = 0;
     private int elite = 0;
+
+    private int HT = 1;
+    private int ST = 1;
     private int elite_op = 0;
 
     private final ArrayList<Class<? extends ChampionEnemy>> eliteBuffs = new ArrayList<>();
@@ -117,7 +125,7 @@ public class MobPlacer extends TestItem{
         eliteBuffs.add(ChampionEnemy.Projecting.class);
         eliteBuffs.add(ChampionEnemy.Halo.class);
         eliteBuffs.add(ChampionEnemy.DelayMob.class);
-        eliteBuffs.add(WandOfAnmy.AllyToRestartOK.class);
+        eliteBuffs.add(ChampionEnemy.King.class);
 
         eliteBuffs.add(ChampionEnemy.Small.class);
         eliteBuffs.add(ChampionEnemy.Bomber.class);
@@ -126,6 +134,7 @@ public class MobPlacer extends TestItem{
         eliteBuffs.add(ChampionEnemy.Sider.class);
         eliteBuffs.add(ChampionEnemy.LongSider.class);
 
+        eliteBuffs.add(WandOfAnmy.AllyToRestartOK.class);
     }
 
     @Override
@@ -148,9 +157,15 @@ public class MobPlacer extends TestItem{
                             try {
                                 Mob m = Reflection.newInstance(allData.get(dataThreshold(mobTier) + mobIndex).mobClass);
                                 m.pos = cell;
+                                m.state = m.HUNTING;
                                 GameScene.add(m);
+
+                                if(HT>1){
+                                    m.HT = m.HP = (m.HT*HT);
+                                }
+
                                 if(elite_op>0){
-                                    for(int i=0;i<15;++i){
+                                    for(int i=0;i<16;++i){
                                         if((elite_op & (1<<i))>0){
                                             Buff.affect(m, eliteBuffs.get(i));
                                         }
@@ -222,6 +237,8 @@ public class MobPlacer extends TestItem{
         b.put("mobTier", mobTier);
         b.put("mobIndex", mobIndex);
         b.put("eliteTags", elite);
+        b.put("htTags", HT);
+        b.put("stTags", ST);
         b.put("elite_ops", elite_op);
     }
 
@@ -231,6 +248,8 @@ public class MobPlacer extends TestItem{
         mobTier = b.getInt("mobTier");
         mobIndex = b.getInt("mobIndex");
         elite = b.getInt("eliteTags");
+        HT = b.getInt("htTags");
+        ST = b.getInt("stTags");
         elite_op = b.getInt("elite_ops");
     }
 
@@ -238,14 +257,14 @@ public class MobPlacer extends TestItem{
     private class WndSetMob extends Window{
 
         private static final int WIDTH = 150;
-        private static final int HEIGHT = 150;
+        private static final int HEIGHT = 180;
         private static final int BTN_SIZE = 18;
         private static final int GAP = 2;
 
         private RenderedTextBlock selectedPage;
         private ArrayList<IconButton> mobButtons = new ArrayList<>();
         private RenderedTextBlock selectedMob;
-        private ArrayList<CheckBox> eliteOptions = new ArrayList<>(15);
+        private ArrayList<CheckBox> eliteOptions = new ArrayList<>(16);
 
         public WndSetMob(){
             super();
@@ -290,22 +309,10 @@ public class MobPlacer extends TestItem{
             selectedMob.hardlight(0xFFFF44);
             PixelScene.align(selectedMob);
             add(selectedMob);
-/*
-            OptionSlider op = new OptionSlider
-                    (M.L(MobPlacer.class, "elite"), "0", String.valueOf(MAX_ELITE), 0, MAX_ELITE) {
-                @Override
-                protected void onChange() {
-                    elite = getSelectedValue();
-                }
-            };
-            op.setRect(GAP, 92, WIDTH - 2*GAP, 24);
-            op.setSelectedValue(elite);
-            add(op);
 
- */
-            float pos = 92;
+            float pos = 96;
             int column = 0;
-            for (int i = 0; i < 15 && column < 3; ++i) {
+            for (int i = 0; i < 16 && column < 3; ++i) {
                 CheckBox cb = new CheckBox(M.L(MobPlacer.class, "elite_name" + i));
                 cb.active = true;
                 cb.checked((elite_op & (1<<i))>0);
@@ -322,8 +329,29 @@ public class MobPlacer extends TestItem{
                     pos += 16 + GAP; // 换行
                 }
 
+                if(i==15){
+                    cb.setRect(WIDTH/2f+GAP, 78, (WIDTH/2f - GAP), 16);
+                }
+
+                OptionSlider op = new OptionSlider
+                        ("_修改血量_","1x","6x",1,6) {
+                    @Override
+                    public int getTitleTextSize(){
+                        return 6;
+                    }
+                    @Override
+                    protected void onChange() {
+                        HT = getSelectedValue();
+                    }
+                };
+                op.setRect((WIDTH/3f)/6f-8, 78, (WIDTH/2f - GAP), 16);
+                op.setSelectedValue(HT);
+                add(op);
+
                 column++;
             }
+
+
 
 
             createMobImage();
@@ -334,7 +362,7 @@ public class MobPlacer extends TestItem{
 
         private void updateEliteSettings(){
             int el = 0;
-            for(int i=0;i<15;++i){
+            for(int i=0;i<16;++i){
                 el += eliteOptions.get(i).checked() ? (1<<i) : 0;
             }
             elite_op = el;
@@ -360,7 +388,7 @@ public class MobPlacer extends TestItem{
             selectedPage.maxWidth(WIDTH / 2);
             selectedPage.setPos((WIDTH - selectedPage.width())/2, 5);
             selectedMob.maxWidth(WIDTH);
-            selectedMob.setPos((WIDTH - selectedMob.width())/2, 80);
+            selectedMob.setPos((WIDTH - selectedMob.width())/2, 16);
             resize(WIDTH, (int)eliteOptions.get(14).bottom() + 1);
         }
 
@@ -484,7 +512,13 @@ public class MobPlacer extends TestItem{
         BLACK(BlackHost.class, DictSpriteSheet.BLACK),
         HBLR(SRPDHBLR.class, DictSpriteSheet.HBLR),
         MOlO(MolotovHuntsman.class, DictSpriteSheet.MOLO),
-        Flame(FlameB01.class, DictSpriteSheet.FLAME),
+
+        GnollK(GnollShiled.class, DictSpriteSheet.GnollK),
+        GnollF(SkullShaman.class, DictSpriteSheet.GnollF),
+        FlameC(FlameC01.class, DictSpriteSheet.FLAMEC01),
+        Good_VI50(GooMob.class, DictSpriteSheet.Goo),
+
+        Flame(SlimeKingMob.class, DictSpriteSheet.FLAME),
         NQHZ(OGPDNQHZ.class, DictSpriteSheet.OGPDNQHZ),
 
         CLEARS(ClearElemental.class, DictSpriteSheet.CLEARS),

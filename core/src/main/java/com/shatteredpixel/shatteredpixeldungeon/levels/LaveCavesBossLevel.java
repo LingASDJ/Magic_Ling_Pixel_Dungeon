@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.watabou.noosa.Tilemap;
+
 /***
  * TODO LIST
  * 熔岩地块-【5层-EX子层】-火龙巢穴
@@ -74,6 +75,8 @@ public class LaveCavesBossLevel extends Level{
 
     private static final short Y = Terrain.EMPTY;
 
+    private static final short V = Terrain.EMPTY_SP;
+
     private static final short X = Terrain.ENTRANCE;
 
     private static final short G = Terrain.HIGH_GRASS;
@@ -83,16 +86,16 @@ public class LaveCavesBossLevel extends Level{
     private static final short L= Terrain.PEDESTAL;
     private static final int[] codedMap = {
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
-            W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,Y,Y,W,W,W,W,W,W,W,
-            W,W,W,W,W,W,W,W,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,Y,Y,W,W,W,W,W,W,W,
+            W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,Y,W,W,W,W,W,W,W,
+            W,W,W,W,W,W,W,W,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,W,W,W,W,W,W,W,W,W,
             W,W,W,W,W,W,R,R,R,R,R,R,R,R,R,R,R,R,R,R,Y,R,R,R,R,W,W,W,W,W,W,W,
             W,W,W,W,R,R,R,R,R,R,R,R,R,R,Y,Y,R,R,Y,R,R,R,R,R,Y,W,W,W,W,W,W,W,
             W,W,W,R,R,R,R,R,R,R,R,R,R,Y,G,Y,Y,Y,Y,R,R,R,R,Y,R,W,W,W,W,W,W,W,
             W,W,W,R,R,R,R,R,R,R,R,R,Y,Y,Y,Y,Y,Y,Y,Y,R,R,R,R,R,W,W,W,W,W,W,W,
             W,W,R,R,R,R,R,R,R,R,R,R,Y,Y,Y,Y,Y,R,R,Y,Y,R,R,R,Y,R,W,W,W,W,W,W,
             W,W,R,R,R,R,R,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,R,R,R,Y,Y,Y,Y,Y,Y,R,R,W,W,W,W,
-            W,W,R,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,R,R,R,Y,Y,Y,Y,Y,R,R,R,Y,Y,W,W,
-            W,R,Y,Y,Y,Y,R,R,Y,Y,Y,Y,Y,Y,L,Y,Y,Y,R,R,Y,Y,Y,Y,Y,R,R,R,Y,Y,W,W,
+            W,W,R,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,R,R,R,Y,Y,Y,Y,Y,R,R,R,W,W,W,W,
+            W,R,Y,Y,Y,Y,R,R,Y,Y,Y,Y,Y,Y,L,Y,Y,Y,R,R,Y,Y,Y,Y,Y,R,R,R,W,W,W,W,
             W,R,Y,R,R,R,R,R,R,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,R,R,R,W,W,
             W,Y,Y,R,R,R,R,R,R,R,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,R,R,Y,R,R,Y,Y,R,R,W,W,
             W,Y,Y,R,R,R,R,R,R,R,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,R,R,R,R,R,R,Y,Y,R,R,W,W,
@@ -132,7 +135,9 @@ public class LaveCavesBossLevel extends Level{
         vis.pos(0, 0);
         customTiles.add(vis);
         //((GameScene) RPD.scene()).addCustomTile(vis);
-
+        CustomTilemap via = new townAbove();
+        via.pos(0, 0);
+        customTiles.add(via);
 
 
         buildFlagMaps();

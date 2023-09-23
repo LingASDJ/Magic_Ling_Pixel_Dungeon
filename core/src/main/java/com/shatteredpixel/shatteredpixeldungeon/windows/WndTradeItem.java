@@ -80,6 +80,7 @@ public class WndTradeItem extends WndInfoItem {
 					hide();
 				}
 			};
+			btnSell.setHeight( BTN_HEIGHT );
 			btnSell.setRect( 0, pos + GAP, width, BTN_HEIGHT );
 			btnSell.icon(new ItemSprite(ItemSpriteSheet.GOLD));
 			add( btnSell );
@@ -163,6 +164,7 @@ public class WndTradeItem extends WndInfoItem {
 			btnStole.alpha(0.3f);
 			btnStole.active=false;
 		}
+
 		btnStole.setRect( 0, pos + GAP, width, BTN_HEIGHT );
 		btnStole.icon(Statistics.fireGirlnoshopping && !Statistics.deadshoppingdied ? new FireMagicGirlSprite() :
 				new ShopGuardDead.ShopGuardianRedSprite());

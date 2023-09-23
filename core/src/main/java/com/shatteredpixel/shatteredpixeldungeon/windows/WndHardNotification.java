@@ -53,8 +53,7 @@ public class WndHardNotification extends WndTitledMessage{
 		};
 		btnOkay.setRect(0, height + GAP, width, 16);
 		btnOkay.enable(false);
-		add(btnOkay);
-
+		addToBottom(btnOkay);
 		resize(width, (int) btnOkay.bottom());
 	}
 

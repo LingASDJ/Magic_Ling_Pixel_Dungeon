@@ -116,6 +116,12 @@ public class StatusPane extends Component {
 
 		this.large = large;
 
+		if (SPDSettings.ClassUI()) {
+			asset = Assets.Interfaces.STATUS;
+		} else {
+			asset =  Assets.Interfaces.STATUS_DARK;
+		}
+
 		if (large)  bg = new NinePatch( asset, 0, 64, 41, 39, 33, 0, 4, 0 );
 		else        bg = new NinePatch( asset, 0, 0, 128, 36, 85, 0, 45, 0 );
 		add( bg );

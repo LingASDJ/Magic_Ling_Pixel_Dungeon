@@ -117,7 +117,8 @@ public abstract class LegendWeapon extends MeleeWeapon {
                 return Messages.get(LegendWeapon.class, "stats_desc", legend, Messages.get(this, "king_desc"), Lmin(),
                         Lmax());
             } else {
-                return Messages.get(LegendWeapon.class, "typical_stats_desc", 9);
+                return Messages.get(LegendWeapon.class, "typical_stats_desc",legend, 9,Lmin(),
+                        Lmax());
             }
         } else {
            return "";
