@@ -7,6 +7,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -49,6 +51,52 @@ public class WandOfAnmy extends DamageWand {
         return 0;
     }
 
+    public static class AllyToRestartOK extends ChampionEnemy {
+
+        @Override
+        public boolean attachTo(Char target) {
+            if (super.attachTo(target)){
+                target.alignment = Char.Alignment.ALLY;
+                if (target.buff(PinCushion.class) != null){
+                    target.buff(PinCushion.class).detach();
+                }
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+
+        @Override
+        public String toString() {
+            return Messages.get(AllyToRestart.class, "name");
+        }
+
+        @Override
+        public String desc() {
+            return Messages.get(AllyToRestart.class, "desc");
+        }
+
+        @Override
+        public void fx(boolean on) {
+            if (on) {
+                target.sprite.add(CharSprite.State.HEARTS);
+                //Statistics.TryUsedAnmy = true;
+            }
+            else
+                target.sprite.remove(CharSprite.State.HEARTS);
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(0x66bbcc);
+        }
+
+        public int icon() {
+            return BuffIndicator.HEX;
+        }
+    }
+
     public static class AllyToRestart extends AllyBuff {
 
         @Override
@@ -64,11 +112,11 @@ public class WandOfAnmy extends DamageWand {
         @Override
         public void fx(boolean on) {
             if (on) {
-                target.sprite.add(CharSprite.State.SHIELDED);
+                target.sprite.add(CharSprite.State.HEARTS);
                 //Statistics.TryUsedAnmy = true;
             }
             else
-                target.sprite.remove(CharSprite.State.SHIELDED);
+                target.sprite.remove(CharSprite.State.HEARTS);
         }
 
         @Override

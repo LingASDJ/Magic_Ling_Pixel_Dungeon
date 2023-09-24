@@ -8,8 +8,4 @@ public class GameNesImpl{
         return newsChecker;
     }
 
-    public static boolean supportsNews(){
-        return true;
-    }
-
 }

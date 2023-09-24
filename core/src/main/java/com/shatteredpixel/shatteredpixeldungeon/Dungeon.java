@@ -660,6 +660,7 @@ public class Dungeon {
 	private static final String CHAPTERS	= "chapters";
 	private static final String QUESTS		= "quests";
 	private static final String BADGES		= "badges";
+	private static final String ZBADGES		= "z-badges";
 	private static final String BRANCH		= "branch";
 	private static final String MOBS_TO_STATELING	= "mobs_to_stateling";
 	private static final String INIT_VER	= "init_ver";
@@ -735,6 +736,11 @@ public class Dungeon {
 			Bundle badges = new Bundle();
 			Badges.saveLocal( badges );
 			bundle.put( BADGES, badges );
+
+			Bundle z_badges = new Bundle();
+			PaswordBadges.saveLocal( z_badges );
+			bundle.put( ZBADGES, z_badges );
+
 			BloodBat.saveLevel(bundle);
 			FileUtils.bundleToFile( GamesInProgress.gameFile(save), bundle);
 
@@ -836,8 +842,10 @@ public class Dungeon {
 		Bundle badges = bundle.getBundle(BADGES);
 		if (!badges.isNull()) {
 			Badges.loadLocal( badges );
+			PaswordBadges.loadLocal( badges );
 		} else {
 			Badges.reset();
+			PaswordBadges.reset();
 		}
 
 		Notes.restoreFromBundle( bundle );

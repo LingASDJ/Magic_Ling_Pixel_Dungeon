@@ -183,13 +183,13 @@ public class NewsScene extends PixelScene {
 		protected void createChildren() {
 			bg = Chrome.get(Chrome.Type.GREY_BUTTON_TR);
 			add(bg);
-			
+
 			String message = "";
 
 			if (Messages.lang() != Languages.CHINESE){
 				message += Messages.get(this, "english_warn");
 			}
-			
+
 			if (!News.articlesAvailable()){
 				if (SPDSettings.news()) {
 					if (SPDSettings.WiFi() && !Game.platform.connectedToUnmeteredNetwork()) {
@@ -225,7 +225,7 @@ public class NewsScene extends PixelScene {
 			}
 
 			if (message.startsWith("\n\n")) message = message.replaceFirst("\n\n", "");
-			
+
 			text = PixelScene.renderTextBlock(message, 6);
 			text.hardlight(CharSprite.WARNING);
 			add(text);
@@ -270,7 +270,7 @@ public class NewsScene extends PixelScene {
 			icon(News.parseArticleIcon(article));
 			long lastRead = SPDSettings.newsLastRead();
 			if (lastRead > 0 && article.date.getTime() > lastRead) {
-				textColor(Window.TITLE_COLOR);
+				textColor(Window.SHPX_COLOR);
 			}
 
 			Calendar cal = Calendar.getInstance();
@@ -325,9 +325,8 @@ public class NewsScene extends PixelScene {
 					ShatteredPixelDungeon.platform.openURI(link);
 				}
 			};
-			link.setRect(0, height + 2, width, BTN_HEIGHT);
-			add(link);
-			resize(width, (int) link.bottom());
+			link.setHeight(BTN_HEIGHT);
+			addToBottom(link);
 		}
 
 

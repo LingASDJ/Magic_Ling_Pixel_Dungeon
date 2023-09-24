@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -120,6 +121,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Tag;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Toast;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ToobarV;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -217,7 +219,8 @@ public class GameScene extends PixelScene {
 	private InventoryPane inventory;
 	private static boolean invVisible = true;
 
-	private Toolbar toolbar;
+	private ToobarV toolbar;
+	private Toolbar toolbarv1;
 	private Toast prompt;
 
 	private AttackIndicator attack;
@@ -414,19 +417,35 @@ public class GameScene extends PixelScene {
 			bringToFront(status);
 		}
 
-		toolbar = new Toolbar();
-		toolbar.camera = uiCamera;
-		add( toolbar );
+		/**Toolbar V1+V2 */
+		if(SPDSettings.quickSwapper()) {
+			toolbarv1 = new Toolbar();
+			toolbarv1.camera = uiCamera;
+			add(toolbarv1);
+		} else {
+			toolbar = new ToobarV();
+			toolbar.camera = uiCamera;
+			add( toolbar );
+		}
+
 
 		if (uiSize == 2) {
 			inventory = new InventoryPane();
 			inventory.camera = uiCamera;
 			inventory.setPos(uiCamera.width - inventory.width(), uiCamera.height - inventory.height());
 			add(inventory);
-
-			toolbar.setRect( 0, uiCamera.height - toolbar.height() - inventory.height(), uiCamera.width, toolbar.height() );
+			if(SPDSettings.quickSwapper()) {
+				toolbarv1.setRect(0, uiCamera.height - toolbarv1.height() - inventory.height(), uiCamera.width,
+						toolbarv1.height());
+			} else {
+				toolbar.setRect(0, uiCamera.height - toolbar.height() - inventory.height(), uiCamera.width, toolbar.height());
+			}
 		} else {
-			toolbar.setRect( 0, uiCamera.height - toolbar.height(), uiCamera.width, toolbar.height() );
+			if(SPDSettings.quickSwapper()) {
+				toolbarv1.setRect(0, uiCamera.height - toolbarv1.height(), uiCamera.width, toolbarv1.height());
+			} else {
+				toolbar.setRect(0, uiCamera.height - toolbar.height(), uiCamera.width, toolbar.height());
+			}
 		}
 
 		layoutTags();
@@ -748,7 +767,7 @@ public class GameScene extends PixelScene {
 		scene = null;
 		Badges.saveGlobal();
 		Journal.saveGlobal();
-		
+		PaswordBadges.saveGlobal();
 		super.destroy();
 	}
 	
@@ -779,6 +798,7 @@ public class GameScene extends PixelScene {
 		try {
 			Dungeon.saveAll();
 			Badges.saveGlobal();
+			PaswordBadges.saveGlobal();
 			Journal.saveGlobal();
 		} catch (IOException e) {
 			ShatteredPixelDungeon.reportException(e);
@@ -935,7 +955,9 @@ public class GameScene extends PixelScene {
 
 		float invWidth = (scene.inventory != null && scene.inventory.visible) ? scene.inventory.width() : 0;
 
-		float y = SPDSettings.interfaceSize() == 0 ? scene.toolbar.top()-2 : scene.status.top()-2;
+		float y = SPDSettings.interfaceSize() == 0 ? SPDSettings.quickSwapper()? scene.toolbarv1.top()-2:
+				scene.toolbar.top()-2 :
+				scene.status.top()-2;
 		if (tagsOnLeft) {
 			scene.log.setRect(tagWidth, y, uiCamera.width - tagWidth - insets.right - invWidth, 0);
 		} else if (invWidth > 0) {
@@ -944,7 +966,7 @@ public class GameScene extends PixelScene {
 			scene.log.setRect(insets.left, y, uiCamera.width - tagWidth - insets.left, 0);
 		}
 
-		float pos = scene.toolbar.top();
+		float pos = SPDSettings.quickSwapper()?scene.toolbarv1.top():scene.toolbar.top();
 		if (tagsOnLeft && SPDSettings.interfaceSize() > 0){
 			pos = scene.status.top();
 		}
@@ -1190,7 +1212,13 @@ public class GameScene extends PixelScene {
 	}
 	
 	public static void pickUp( Item item, int pos ) {
-		if (scene != null) scene.toolbar.pickup( item, pos );
+		if (scene != null){
+			if (SPDSettings.quickSwapper()) {
+				scene.toolbarv1.pickup(item, pos);
+			} else {
+				scene.toolbar.pickup(item, pos);
+			}
+		}
 	}
 
 	public static void pickUpJournal( Item item, int pos ) {
@@ -1308,10 +1336,19 @@ public class GameScene extends PixelScene {
 		if (scene != null && scene.inventory != null){
 			if (scene.inventory.visible){
 				scene.inventory.visible = scene.inventory.active = invVisible = false;
-				scene.toolbar.setPos(scene.toolbar.left(), uiCamera.height-scene.toolbar.height());
+				if(SPDSettings.quickSwapper()){
+					scene.toolbarv1.setPos(scene.toolbarv1.left(), uiCamera.height-scene.toolbarv1.height());
+				} else {
+					scene.toolbar.setPos(scene.toolbar.left(), uiCamera.height-scene.toolbar.height());
+				}
+
 			} else {
 				scene.inventory.visible = scene.inventory.active = invVisible = true;
-				scene.toolbar.setPos(scene.toolbar.left(), scene.inventory.top()-scene.toolbar.height());
+				if(SPDSettings.quickSwapper()) {
+					scene.toolbarv1.setPos(scene.toolbarv1.left(), scene.inventory.top() - scene.toolbarv1.height());
+				} else {
+					scene.toolbar.setPos(scene.toolbar.left(), scene.inventory.top() - scene.toolbar.height());
+				}
 			}
 			layoutTags();
 		}
@@ -1605,7 +1642,18 @@ public class GameScene extends PixelScene {
 		selectCell( defaultCellListener );
 		QuickSlotButton.cancel();
 		InventoryPane.cancelTargeting();
-		if (scene != null && scene.toolbar != null) scene.toolbar.examining = false;
+
+		if(SPDSettings.quickSwapper()){
+			if (scene != null && scene.toolbarv1 != null){
+				scene.toolbarv1.examining = false;
+			}
+		} else {
+			if (scene != null && scene.toolbar != null){
+				scene.toolbar.examining = false;
+			}
+		}
+
+
 	}
 	
 	public static void checkKeyHold(){

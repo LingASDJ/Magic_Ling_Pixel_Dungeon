@@ -20,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireCrystalSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FireDragonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceFireScorpioSprite;
@@ -119,7 +120,7 @@ public class vM0_6_7_X_Changes {
     }
 
     public static void add_v0_6_56_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("Coming Soon V0.6.5.0", true, "");
+        ChangeInfo changes = new ChangeInfo("Coming Soon V0.6.5.0-Alpha7", true, "");
         changes.hardlight(Window.CBLACK);
         changeInfos.add(changes);
 
@@ -140,10 +141,108 @@ public class vM0_6_7_X_Changes {
         i.scale.set(PixelScene.align(0.74f));
         changes.addButton(new ChangeButton(i, ("熔岩火龙"),
                 ("丛林暴乱的真相")));
+
+        changes = new ChangeInfo("v0.6.5.0-Alpha4", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("电子斗蛐蛐v0.2"),
+                ("开发者模式怪物放置器拥有更多功能，欢迎尝试！另追加黏咕，史莱姆王，豺狼炼药长老，豺狼萨满长老，Flame-C01")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("信息栏滚动"),
+                ("在游戏缩放较大或者拥有较多词条时，该项会很有用。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), ("新徽章：碎片飞溅"),
+                ("又是一个死亡徽章，新人：悲鸣 因为意味着另类死亡爱好者多了一个新徽章（未解锁该徽章的就更麻烦了）")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new SalamanderSprites(), ("深蓝蝾螈"),
+                ("修复被深蓝蝾螈击败不会记录在排行榜的问题。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DIEDCROSSBOW), ("重型弩炮"),
+                ("修复使用还会扣减飞镖的问题。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_KCX), ("共生法杖"),
+                ("修复共生法杖可能能被永续的问题。")));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X85")));
+
+        changes = new ChangeInfo("v0.6.5.0-Alpha3", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("开发者模式更新"),
+                ("添加了更多开发者选项，优化了一些问题，怪物放置器支持电子斗蛐蛐")));
+
+        Image dragonSprite = new FireDragonSprite();
+        dragonSprite.scale.set(PixelScene.align(0.72f));
+        changes.addButton(new ChangeButton(dragonSprite, ("熔岩火龙资源预载"),
+                ("丛林额外Boss-熔岩火龙资源预载，预计将在Alpha7加入。")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DIEDCROSSBOW), ("重型弩炮"),
+                ("现在不需要飞镖作为弹药，但有装填时间。")));
+
+        Image xa = new SakaFishBossSprites();
+        xa.scale.set(PixelScene.align(0.72f));
+        changes.addButton(new ChangeButton(xa,  "萨卡班甲鱼",
+                "初始防御调为35，常规伤害降低。"));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X84")));
+
+        changes = new ChangeInfo("v0.6.5.0-Alpha1-2", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DIEDCROSSBOW), ("传奇武器"),
+                ("新类别传奇武器测试已经开始。在后续版本中需要通过货币解锁。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), ("加密徽章"),
+                ("添加了加密徽章，长按徽章按钮进入。记录一些隐藏成就。\n\n_注意：_这些成就不会在获取之前不会显示出来")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.添加了暂停更新界面的功能\n\n" +
+                        "2.少量bug修复")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        Image a = new SakaFishBossSprites();
+        a.scale.set(PixelScene.align(0.72f));
+        changes.addButton(new ChangeButton(a,  "萨卡班甲鱼",
+                "数值方面进行了一定平衡。"));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X83")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项调整"),
+                ("1.书籍现在不可堆积，且成就有一些变化\n\n" +
+                        "2.其它bug修复")));
     }
 
     public static void add_v0_6_55_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.4.0-Beta2-9", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.4.0-BetaI-XIII", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -161,6 +260,9 @@ public class vM0_6_7_X_Changes {
                         "还是希望各位能玩的愉快吧，毕竟，人总是不能在虚拟世界里生活的。\n" +
                         "现实仍然有很多东西，我是时候调节一下了。\n"+
                         "那么还是祝各位游戏中冒险愉快吧！")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("快捷栏V1/V2"),
+                ("快捷栏降至9个，并且V1是魔绫原版快捷栏，V2是碳素那边借鉴优化的快捷栏。任君挑选。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ALCH_PAGE), ("炼金界面优化"),
                 ("炼金指南进行优化。")));
@@ -195,6 +297,9 @@ public class vM0_6_7_X_Changes {
         changes.hardlight(Window.CYELLOW);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SAI), ("吸血鬼刀-Beta13"),
+                ("修复了一些吸血权重问题。")));
+
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WRALIPS), ("暗金宝石护符"),
                 ("现在最高上限+10，并调整优化了一些问题")));
 
@@ -216,7 +321,7 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GREATSHIELD), ("5阶武器"),
                 ("现在5阶武器生成平均化")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SAI), ("吸血鬼刀"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SAI), ("吸血鬼刀-Beta12"),
                 ("优化数值，调整吸血权重。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), ("归溯钥剑"),
@@ -1161,7 +1266,7 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(new OGPDNQHZTT(), ("OGPD老鼠组"),
                 ("曾经的魔绫代表怪物，如今也正式退出魔绫的舞台。2021.2.21--2023.3.24（R.I.P.)")));
 
-        changes.addButton(new ChangeButton(new SnakeSprite(), ("下水道巨蛇"),
+        changes.addButton(new ChangeButton(new SnakeSprite(), ("密林巨蛇"),
                 ("破碎的代表怪物，由于不符合魔绫的世界观，故而被移除。")));
     }
 

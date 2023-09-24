@@ -53,8 +53,6 @@ public class Messages {
 		return lang;
 	}
 
-
-
 	/**
 	 * Setup Methods
 	 */

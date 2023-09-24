@@ -92,7 +92,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	public enum State {
 		BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED,
-		ROSESHIELDED,HALOMETHANEBURNING,FROSTBURNING,BUTTER,SPINVISIBLE,SMOKER
+		ROSESHIELDED,HALOMETHANEBURNING,FROSTBURNING,BUTTER,SPINVISIBLE,SMOKER,HEARTS
 	}
 	private int stunStates = 0;
 
@@ -133,7 +133,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected Emitter marked;
 	protected Emitter levitation;
 	protected Emitter healing;
-
+	protected Emitter hearts;
 	protected IceBlock iceBlock;
 	protected DarkBlock darkBlock;
 	protected TorchHalo light;
@@ -469,6 +469,10 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 			case ROSESHIELDED:
 				GameScene.effect( roseshield = new RoseHalo( this ));
 				break;
+			case HEARTS:
+				hearts = emitter();
+				hearts.pour(Speck.factory(Speck.HEART), 0.5f);
+				break;
 
 		}
 	}
@@ -567,6 +571,11 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					roseshield.putOut();
 				}
 				break;
+			case HEARTS:
+				if (hearts != null){
+					hearts.on = false;
+					hearts = null;
+				}
 		}
 	}
 
@@ -600,7 +609,9 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		if (flashTime > 0 && (flashTime -= Game.elapsed) <= 0) {
 			resetColor();
 		}
-
+		if (hearts != null){
+			hearts.visible = visible;
+		}
 		if (burning != null) {
 			burning.visible = visible;
 		}

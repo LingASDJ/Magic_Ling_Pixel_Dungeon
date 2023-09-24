@@ -1,7 +1,4 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.lightblack;
-//
-// Decompiled by Jadx - 759ms
-//
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
@@ -71,14 +68,14 @@ public class OilLantern extends Item {
     }
 
     public void storeInBundle(Bundle bundle) {
-        OilLantern.super.storeInBundle(bundle);
+        super.storeInBundle(bundle);
         bundle.put(ACTIVE, this.active);
         bundle.put(CHARGE, this.charge);
         bundle.put(FLASKS, this.flasks);
     }
 
     public void restoreFromBundle(Bundle bundle) {
-        OilLantern.super.restoreFromBundle(bundle);
+        super.restoreFromBundle(bundle);
         this.active = bundle.getBoolean(ACTIVE);
         this.charge = bundle.getInt(CHARGE);
         this.flasks = bundle.getInt(FLASKS);
@@ -146,7 +143,7 @@ public class OilLantern extends Item {
     }
 
     public void refills(Hero hero) {
-        this.flasks--;
+        this.plingks--;
         this.charge += Math.min(MIX_CHARGE,100);
         hero.spend(TIME_TO_USE);
         hero.busy();

@@ -55,12 +55,17 @@ public class Assets {
 	public static class Environment {
 		public static final String TERRAIN_FEATURES = "environment/terrain_features.png";
 
+		public static final String LAVACAVE_OP  = "environment/custom_tiles/lavecave_behind.png";
+
+		public static final String LAVACAVE_PO  = "environment/custom_tiles/lavecave_above.png";
+
 		public static final String VISUAL_GRID  = "environment/visual_grid.png";
 		public static final String WALL_BLOCKING= "environment/wall_blocking.png";
 
 		public static final String TILES_SEWERS = "environment/tiles_sewers.png";
 		public static final String TILES_PRISON = "environment/tiles_prison.png";
 		public static final String TILES_COLDCHEST  = "environment/tiles_coldchest.png";
+		public static final String TILES_FIRE  = "environment/tiles_fire.png";
 		public static final String TILES_CAVES  = "environment/tiles_caves.png";
 		public static final String TILES_CITY   = "environment/tiles_city.png";
 		public static final String TILES_ANCIENT  = "environment/tiles_ancient.png";
@@ -123,6 +128,7 @@ public class Assets {
 		public static final String BANNERSSD  = "interfaces/banners_sd.png";
 
 		public static final String BADGES   = "interfaces/badges.png";
+		public static final String PROBADGES   = "interfaces/passwordbadges.png";
 		public static final String LOCKED   = "interfaces/locked_badge.png";
 
 		public static final String CHROME   = "interfaces/chrome.png";
@@ -131,8 +137,6 @@ public class Assets {
 		public static final String STATUS   = "interfaces/status_pane.png";
 		public static final String TOOLBARDRAK	= "interfaces/toolbar_normal.png";
 		public static final String STATUS_DARK   = "interfaces/status_pane_normal.png";
-		public static final String STATUSSOUL   = "interfaces/status_pane-puresoul.png";
-		public static final String STATUSSOUL_DARK   = "interfaces/status_pane-puresoul_dark.png";
 		public static final String MENU     = "interfaces/menu_pane.png";
 		public static final String MENU_BTN = "interfaces/menu_button.png";
 		public static final String TOOLBAR  = "interfaces/toolbar.png";
@@ -317,7 +321,10 @@ public class Assets {
 		public static final String DICT		= "sprites/boss/DictFish.png";
 
 		public static final String ROOMSTONE		= "sprites/boss/RoomStone.png";
+
 		public static final String VSGR	= "sprites/boss/SeaVastGirl.png";
+
+		public static final String FSGR	= "sprites/boss/FireWitch.png";
 
 		public static final String SXGR	= "sprites/boss/IceSlowGirl.png";
 
@@ -420,6 +427,9 @@ public class Assets {
 		public static final String ROT_LASH = "sprites/rot_lasher.png";
 		public static final String ROT_HEART= "sprites/rot_heart.png";
 		public static final String GUARD    = "sprites/guard.png";
+
+		public static final String HEROGNOLL    = "sprites/tribesman.png";
+
 		public static final String WARDS    = "sprites/wards.png";
 		public static final String GUARDIAN	= "sprites/guardian.png";
 		public static final String SLIME	= "sprites/slime.png";

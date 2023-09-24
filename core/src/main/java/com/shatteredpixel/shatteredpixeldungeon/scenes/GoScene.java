@@ -38,7 +38,7 @@ public class GoScene extends PixelScene {
         int w = Camera.main.width;
         int h = Camera.main.height;
 
-        gdx = new Image(Assets.Splashes.MLPD2Y) {
+        gdx = new Image(Assets.Splashes.GDX) {
             @Override
             public void update() {
                 if (SPDSettings.splashScreen() > 0 && sec < 1f) {

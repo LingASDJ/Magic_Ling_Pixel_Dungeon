@@ -88,6 +88,8 @@ public class Badges {
 
 		BRUTE_BOT_DIED				( 25 ),
 
+		BOMBBOW_DIED				( 26 ),
+
 		//silver
 		NO_MONSTERS_SLAIN           ( 32 ),
 		GRIM_WEAPON                 ( 33 ),
@@ -144,7 +146,7 @@ public class Badges {
 		VICTORY                     ( 78 ),
 		YASD                        ( 79, true ),
 
-		GODD_MAKE					( 82 ),
+
 		CLEAR_WATER					( 83 ),
 		GHOSTDAGE					( 84 ),
 //		ENDIED					( 85 ),
@@ -190,27 +192,15 @@ public class Badges {
 		NYZ_SHOP                    ( 117 ),
 		DAGETO                    ( 118 ),
 		KILL_SM                    ( 119 ),
-
-		TAKE_ITEM                   ( 120 ),
-
 		//rudy
-		FIREGIRL                 	 ( 128 ),
-		//SLIMEPR                  	 ( 129 ),
-		DRAWF_HEAD                    ( 130 ),
-		SPICEALBOSS 				 ( 131),
+
+
 
 		STORM 				 ( 132),
 
 		KILL_MG			(133),
-		BIG_X				(134),
-		EXSG                (135),
-		BRCLER                (136),
 
-		HIGH_SCORE_5 				( 137 ),
-
-		SAKA_DIED 				( 138 ),
-
-		RESET_DAY 				( 139 );
+		HIGH_SCORE_5 				( 137 );
 
 		public boolean meta;
 
@@ -265,7 +255,7 @@ public class Badges {
 		displayBadge( badge );
 	}
 
-	private static HashSet<Badge> global;
+	public static HashSet<Badge> global;
 	private static HashSet<Badge> local = new HashSet<>();
 
 	private static boolean saveNeeded = false;
@@ -750,24 +740,23 @@ public class Badges {
 		displayBadge( badge );
 	}
 
+	public static void BOMB() {
+		Badge badge = Badge.BOMBBOW_DIED;
+		local.add( badge );
+		displayBadge( badge );
+	}
+
 	private static void validateGOODMAKE() {
 		if (global.contains( Badge.KILL_ROTHEART ) &&
 				global.contains( Badge.GET_SC ) &&
 				global.contains( Badge.KILL_COLDELE)) {
 
-			Badge badge = Badge.GODD_MAKE;
-			displayBadge( badge );
+			PaswordBadges.Badge badge = PaswordBadges.Badge.GODD_MAKE;
+			PaswordBadges.displayBadge( badge );
 		}
 	}
 
-	private static void validateAMZ() {
-		if (global.contains( Badge.KILL_APPLE ) &&global.contains( Badge.KILL_DM720 ) &&
-				global.contains( Badge.KILL_MG) && global.contains( Badge.FIREGIRL) && global.contains( Badge.DRAWF_HEAD) && global.contains( Badge.SAKA_DIED)) {
 
-			Badge badge = Badge.SPICEALBOSS;
-			displayBadge( badge );
-		}
-	}
 
 	private static void validateYASD() {
 		if (global.contains( Badge.DEATH_FROM_FIRE ) &&
@@ -775,7 +764,7 @@ public class Badges {
 				global.contains( Badge.DEATH_FROM_GAS ) &&
 				global.contains( Badge.DEATH_FROM_HUNGER) &&
 				global.contains( Badge.DEATH_FROM_GLYPH) &&
-				global.contains( Badge.DEATH_FROM_FALLING) && global.contains( Badge.HALOFIRE_DIED) && global.contains( Badge.BRUTE_BOT_DIED)) {
+				global.contains( Badge.DEATH_FROM_FALLING) && global.contains( Badge.HALOFIRE_DIED) && global.contains( Badge.BRUTE_BOT_DIED) && global.contains( Badge.BOMBBOW_DIED)) {
 
 			Badge badge = Badge.YASD;
 			displayBadge( badge );
@@ -1009,10 +998,10 @@ public class Badges {
 		if (Rankings.INSTANCE.totalNumber >= 50) {
 			badge = Badge.GAMES_PLAYED_2;
 		}
-		if (Rankings.INSTANCE.totalNumber >= 250) {
+		if (Rankings.INSTANCE.totalNumber >= 75) {
 			badge = Badge.GAMES_PLAYED_3;
 		}
-		if (Rankings.INSTANCE.totalNumber >= 1000) {
+		if (Rankings.INSTANCE.totalNumber >= 100) {
 			badge = Badge.GAMES_PLAYED_4;
 		}
 
@@ -1032,17 +1021,11 @@ public class Badges {
 
 	public static void KILLSAPPLE() {
 		displayBadge( Badge.KILL_APPLE);
-		validateAMZ();
 	}
 
-	public static void KILLSAKA() {
-		displayBadge( Badge.SAKA_DIED);
-		validateAMZ();
-	}
 
-	public static void REHOMESKY() {
-		displayBadge( Badge.RESET_DAY );
-	}
+
+
 
 	public static void STORM() {
 		displayBadge( Badge.STORM);
@@ -1050,7 +1033,6 @@ public class Badges {
 
 	public static void KILLSDM720() {
 		displayBadge( Badge.KILL_DM720 );
-		validateAMZ();
 	}
 
 	public static void BOSSTHREE() {
@@ -1061,40 +1043,13 @@ public class Badges {
 		displayBadge( Badge.CLEAR_WATER );
 	}
 
-	public static void KILLDWARF() {
-		displayBadge( Badge.DRAWF_HEAD );
-		validateAMZ();
-	}
-
-	public static void KILLFIREGIRL() {
-		displayBadge( Badge.FIREGIRL );
-		validateAMZ();
-	}
 
 	public static void KILLMG() {
 		displayBadge( Badge.KILL_MG );
-		validateAMZ();
 	}
 
 	public static void KILL_SMK() {
 		displayBadge( Badge.KILL_SM );
-		validateAMZ();
-	}
-
-	public static void KILL_OMP() {
-		displayBadge( Badge.TAKE_ITEM );
-	}
-
-
-	public static void BIGX() {
-		displayBadge( Badge.BIG_X );
-	}
-	public static void EXSG() {
-		displayBadge( Badge.EXSG );
-	}
-
-	public static void BOSSRUSH() {
-		displayBadge( Badge.BRCLER );
 	}
 
 	public static void GOODRLPT() {

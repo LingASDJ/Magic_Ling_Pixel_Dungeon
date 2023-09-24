@@ -154,6 +154,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WashCrime;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ForceCube;
@@ -211,7 +212,7 @@ public class Generator {
 		return randomWeapon(Dungeon.depth / 5, useDefaults);
 	}
 
-    public enum Category {
+	public enum Category {
 		WEAPON	( 2, 2, MeleeWeapon.class),
 		WEP_T1	( 0, 0, MeleeWeapon.class),
 		WEP_T2	( 0, 0, MeleeWeapon.class),
@@ -219,30 +220,30 @@ public class Generator {
 		WEP_T4	( 0, 0, MeleeWeapon.class),
 		WEP_T5	( 0, 0, MeleeWeapon.class),
 		WEP_T6	( 0, 0, MeleeWeapon.class),
-		
+
 		ARMOR	( 2, 1, Armor.class ),
-		
+
 		MISSILE ( 1, 2, MissileWeapon.class ),
 		MIS_T1  ( 0, 0, MissileWeapon.class ),
 		MIS_T2  ( 0, 0, MissileWeapon.class ),
 		MIS_T3  ( 0, 0, MissileWeapon.class ),
 		MIS_T4  ( 0, 0, MissileWeapon.class ),
 		MIS_T5  ( 0, 0, MissileWeapon.class ),
-		
+
 		WAND	( 1, 1, Wand.class ),
 		RING	( 1, 0, Ring.class ),
 		ARTIFACT( 0, 1, Artifact.class),
-		
+
 		FOOD	( 0, 0, Food.class ),
-		
+
 		POTION	( 8, 8, Potion.class ),
 		SEED	( 1, 1, Plant.Seed.class ),
-		
+
 		SCROLL	( 8, 8, Scroll.class ),
 		STONE   ( 1, 1, Runestone.class),
-		
+
 		GOLD	( 10, 10,   Gold.class );
-		
+
 		public Class<?>[] classes;
 
 		//some item types use a deck-based system, where the probs decrement as items are picked
@@ -257,13 +258,13 @@ public class Generator {
 		public float firstProb;
 		public float secondProb;
 		public Class<? extends Item> superClass;
-		
+
 		private Category( float firstProb, float secondProb, Class<? extends Item> superClass ) {
 			this.firstProb = firstProb;
 			this.secondProb = secondProb;
 			this.superClass = superClass;
 		}
-		
+
 		public static int order( Item item ) {
 			for (int i=0; i < values().length; i++) {
 				if (values()[i].superClass.isInstance( item )) {
@@ -421,17 +422,21 @@ public class Generator {
 					Glaive.class,
 					Greataxe.class,
 					Greatshield.class,
-					WashCrime.class
+					WashCrime.class,
+
+
+					//传奇武器
+					DiedCrossBow.class,
 
 			};
-			WEP_T5.probs = new float[]{ 3, 3, 3, 3, 3, 3,3};
+			WEP_T5.probs = new float[]{ 3, 3, 3, 3, 3, 3,3,1};
 
 			WEP_T6.classes = new Class<?>[]{
 					IceFishSword.class,
 					IceDewVialSword.class
 			};
 			WEP_T6.probs = new float[]{ 1,0 };
-			
+
 			//see Generator.randomArmor
 			ARMOR.classes = new Class<?>[]{
 					ClothArmor.class,
@@ -441,38 +446,38 @@ public class Generator {
 					PlateArmor.class,
 					LamellarArmor.class};
 			ARMOR.probs = new float[]{ 0, 0, 0, 0, 0, 0 };
-			
+
 			//see Generator.randomMissile
 			MISSILE.classes = new Class<?>[]{};
 			MISSILE.probs = new float[]{};
-			
+
 			MIS_T1.classes = new Class<?>[]{
 					ThrowingStone.class,
 					ThrowingKnife.class
 			};
 			MIS_T1.probs = new float[]{ 6, 5 };
-			
+
 			MIS_T2.classes = new Class<?>[]{
 					FishingSpear.class,
 					ThrowingClub.class,
 					Shuriken.class
 			};
 			MIS_T2.probs = new float[]{ 6, 5, 4 };
-			
+
 			MIS_T3.classes = new Class<?>[]{
 					ThrowingSpear.class,
 					Kunai.class,
 					Bolas.class
 			};
 			MIS_T3.probs = new float[]{ 6, 5, 4 };
-			
+
 			MIS_T4.classes = new Class<?>[]{
 					Javelin.class,
 					Tomahawk.class,
 					HeavyBoomerang.class
 			};
 			MIS_T4.probs = new float[]{ 6, 5, 4 };
-			
+
 			MIS_T5.classes = new Class<?>[]{
 					Trident.class,
 					ThrowingHammer.class,
@@ -491,10 +496,10 @@ public class Generator {
 					RiceDumplings.RiceDumplingsBottle.class,
 					RiceDumplings.RiceDumplingsRed.class,
 					RiceDumplings.RiceDumplingsOrange.class,
-                    RiceDumplings.RiceDumplingsPink.class,
+					RiceDumplings.RiceDumplingsPink.class,
 			};
 			FOOD.probs = new float[]{ 4, 1, 0, isDWJ,isDWJ,isDWJ,isDWJ,isDWJ  };
-			
+
 			RING.classes = new Class<?>[]{
 					RingOfAccuracy.class,
 					RingOfEvasion.class,
@@ -508,7 +513,7 @@ public class Generator {
 					RingOfTenacity.class,
 					RingOfWealth.class};
 			RING.probs = new float[]{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-			
+
 			ARTIFACT.classes = new Class<?>[]{
 					CapeOfThorns.class,
 					ChaliceOfBlood.class,
@@ -558,7 +563,7 @@ public class Generator {
 	public static void reset(Category cat){
 		if (cat.defaultProbs != null) cat.probs = cat.defaultProbs.clone();
 	}
-	
+
 	public static Item random() {
 		Category cat = Random.chances( categoryProbs );
 		if (cat == null){
@@ -569,7 +574,7 @@ public class Generator {
 		categoryProbs.put( cat, categoryProbs.get( cat ) - 1);
 		return random( cat );
 	}
-	
+
 	public static Item random( Category cat ) {
 		switch (cat) {
 			case ARMOR:
@@ -601,7 +606,7 @@ public class Generator {
 			return ((Item) Reflection.newInstance(cat.classes[Random.chances(cat.defaultProbs)])).random();
 		}
 	}
-	
+
 	public static Item random( Class<? extends Item> cl ) {
 		return Reflection.newInstance(cl).random();
 	}
@@ -609,11 +614,11 @@ public class Generator {
 	public static Armor randomArmor(){
 		return randomArmor((Dungeon.depth + 1) / 3);
 	}
-	
+
 	public static Armor randomArmor(int floorSet) {
 
 		floorSet = (int)GameMath.gate(0, floorSet, floorSetTierProbs.length-1);
-		
+
 		Armor a = (Armor)Reflection.newInstance(Category.ARMOR.classes[Random.chances(floorSetTierProbs[floorSet])]);
 		a.random();
 		return a;
@@ -631,17 +636,17 @@ public class Generator {
 	public static MeleeWeapon randomWeapon(){
 		return randomWeapon(Dungeon.depth / 5);
 	}
-	
+
 	public static MeleeWeapon randomWeapon(int floorSet) {
 
 		floorSet = (int)GameMath.gate(0, floorSet, floorSetTierProbs.length-1);
-		
+
 		Category c = wepTiers[Random.chances(floorSetTierProbs[floorSet])];
 		MeleeWeapon w = (MeleeWeapon)Reflection.newInstance(c.classes[Random.chances(c.probs)]);
 		w.random();
 		return w;
 	}
-	
+
 	public static final Category[] misTiers = new Category[]{
 			Category.MIS_T1,
 			Category.MIS_T2,
@@ -649,15 +654,15 @@ public class Generator {
 			Category.MIS_T4,
 			Category.MIS_T5
 	};
-	
+
 	public static MissileWeapon randomMissile(){
 		return randomMissile(Dungeon.depth / 5);
 	}
-	
+
 	public static MissileWeapon randomMissile(int floorSet) {
-		
+
 		floorSet = (int)GameMath.gate(0, floorSet, floorSetTierProbs.length-1);
-		
+
 		Category c = misTiers[Random.chances(floorSetTierProbs[floorSet])];
 		MissileWeapon w = (MissileWeapon)Reflection.newInstance(c.classes[Random.chances(c.probs)]);
 		w.random();
@@ -694,7 +699,7 @@ public class Generator {
 	private static final String FIRST_DECK = "first_deck";
 	private static final String GENERAL_PROBS = "general_probs";
 	private static final String CATEGORY_PROBS = "_probs";
-	
+
 	public static void storeInBundle(Bundle bundle) {
 		bundle.put(FIRST_DECK, usingFirstDeck);
 
@@ -741,6 +746,6 @@ public class Generator {
 				}
 			}
 		}
-		
+
 	}
 }

@@ -47,6 +47,7 @@
 		</activity>
 		<activity
 			android:label="${appName}"
+			android:exported="true"
 			android:name=".AndroidGame"
 			android:screenOrientation="nosensor"
 			android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize">

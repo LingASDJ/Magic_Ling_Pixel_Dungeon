@@ -76,7 +76,7 @@ public class Item implements Bundlable {
 
 	public int flasks;
 
-	protected int quantity = 1;
+	public int quantity = 1;
 	public boolean dropsDownHeap = false;
 
 	public int level = 0;

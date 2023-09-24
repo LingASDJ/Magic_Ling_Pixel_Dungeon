@@ -49,7 +49,9 @@ public abstract class OptionSlider extends Component {
 	private ColorBlock sliderBG;
 	private ColorBlock[] sliderTicks;
 	private float tickDist;
-
+	public int getTitleTextSize(){
+		return 9;
+	}
 
 	public OptionSlider(String title, String minTxt, String maxTxt, int minVal, int maxVal){
 		super();
@@ -93,7 +95,7 @@ public abstract class OptionSlider extends Component {
 		add( BG = Chrome.get(Chrome.Type.RED_BUTTON));
 		BG.alpha(0.5f);
 
-		add(title = PixelScene.renderTextBlock(9));
+		add(title = PixelScene.renderTextBlock(getTitleTextSize()));
 		add(this.minTxt = PixelScene.renderTextBlock(6));
 		add(this.maxTxt = PixelScene.renderTextBlock(6));
 

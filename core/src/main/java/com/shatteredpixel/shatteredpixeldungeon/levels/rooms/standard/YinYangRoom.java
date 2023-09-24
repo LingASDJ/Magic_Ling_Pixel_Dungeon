@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLevitation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -120,7 +121,8 @@ public class YinYangRoom extends SpecialRoom {
             if(Dungeon.depth == 1){
                 door.set(Door.Type.REGULAR);
             } else {
-                door.set(Door.Type.HIDDEN);
+                level.addItemToSpawn( new IronKey( Dungeon.depth ) );
+                door.set(Door.Type.LOCKED);
             }
 
         }

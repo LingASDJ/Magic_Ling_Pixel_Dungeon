@@ -3,8 +3,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -148,9 +148,9 @@ public class SakaFishBoss extends Boss {
     public int damageRoll() {
         AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
         if(level==AncientMysteryCityBossLevel.State.FALL_BOSS)
-            return Random.NormalIntRange(40, 75);
+            return Random.NormalIntRange(30, 55);
         else
-            return Random.NormalIntRange(30, 40);
+            return Random.NormalIntRange(20, 30);
     }
 
     @Override
@@ -169,7 +169,7 @@ public class SakaFishBoss extends Boss {
     @Override
     public int drRoll() {
         AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
-        return level == AncientMysteryCityBossLevel.State.FALL_BOSS ? 10 : 45;
+        return level == AncientMysteryCityBossLevel.State.FALL_BOSS ? 10 : 35;
     }
 
 
@@ -279,7 +279,7 @@ public class SakaFishBoss extends Boss {
             Dungeon.level.drop( new SakaFishSketon(), pos ).sprite.drop();
             Dungeon.level.drop( new WaterSoul(), pos ).sprite.drop();
 
-            Badges.KILLSAKA();
+            PaswordBadges.KILLSAKA();
 
             yell( Messages.get(this, "defeated") );
 
@@ -445,6 +445,7 @@ public class SakaFishBoss extends Boss {
                 } else {
                     endPos = leapPos;
                 }
+
                     //do leap
                     sprite.visible = Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[leapPos] || Dungeon.level.heroFOV[endPos];
                     sprite.dirtcar(pos, leapPos, new Callback() {
@@ -462,9 +463,12 @@ public class SakaFishBoss extends Boss {
                                 Sample.INSTANCE.play(Assets.Sounds.HIT);
                             }
 
-                            if (!enemy.isAlive() && enemy == hero) {
-                                Dungeon.fail( getClass() );
-                                GLog.n( Messages.get(SakaFishBoss.class, "dictcar_kill"),Dungeon.hero.name() );
+                            Char ch = hero;
+                            if(hero != null){
+                                if (!ch.isAlive()) {
+                                    Dungeon.fail( getClass() );
+                                    GLog.n( Messages.get(SakaFishBoss.class, "dictcar_kill"),Dungeon.hero.name() );
+                                }
                             }
 
                             if (endPos != leapPos){

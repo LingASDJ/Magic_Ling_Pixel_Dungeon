@@ -712,6 +712,33 @@ public class ItemSpriteSheet {
 		assignItemRect(RiceDumplingsBottle,    14, 14);
 	}
 
+	//传奇武器
+	private static final int LENGYWEAPONS    	 = xy(1, 39);  //16 slots
+
+	public static final int  MOONDAILY=		LENGYWEAPONS+1;
+
+	public static final int  DCSURANG=		LENGYWEAPONS+2;
+
+	public static final int  THEDIED=		LENGYWEAPONS+3;
+
+	public static final int  CURSEDAXE=		LENGYWEAPONS+4;
+
+	public static final int  EAGLEPOWER= 	LENGYWEAPONS+5;
+
+	public static final int  GOLDLANGGUN= 	LENGYWEAPONS+6;
+
+	public static final int  CLEARPRO= 		LENGYWEAPONS+7;
+
+	public static final int  FORESTCROSSBOW= 	LENGYWEAPONS+8;
+
+	public static final int  DIEDCROSSBOW = 	LENGYWEAPONS+9;
+
+	public static final int  DIEDBOOK= 	LENGYWEAPONS+10;
+
+	static {
+		assignItemRect(DIEDCROSSBOW, 16, 15);
+	}
+
 	private static final int BAGS       =                                   xy(1, 31);  //16 slots
 	public static final int VIAL        = BAGS+0;
 	public static final int POUCH       = BAGS+1;

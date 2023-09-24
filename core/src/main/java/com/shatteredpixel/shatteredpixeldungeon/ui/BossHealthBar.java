@@ -166,10 +166,14 @@ public class BossHealthBar extends Component {
 				float health = boss.HP;
 				float shield = boss.shielding();
 				float max = boss.HT;
-				int maxHp = boss.HP;
 				hp.scale.x = Math.max( 0, (health-shield)/max);
 				shieldedHP.scale.x = health/max;
 				rawShielding.scale.x = shield/max;
+
+
+				if (hp.scale.x < 0.25f){
+					bleed( true );
+				}
 
 				if (shield <= 0){
 					hpText.text(health + "/" + max);

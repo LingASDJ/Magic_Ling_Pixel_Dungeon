@@ -23,8 +23,10 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
+import com.shatteredpixel.shatteredpixeldungeon.effects.PasswordBadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
@@ -147,12 +149,12 @@ public class PixelScene extends Scene {
 			renderedTextPageSize = 1024;
 		}
 		//asian languages have many more unique characters, so increase texture size to anticipate that
-		if
-		(Messages.lang() == Languages.CHINESE ||
+		//asian languages have many more unique characters, so increase texture size to anticipate that
+		if (Messages.lang() == Languages.CHINESE ||
 				Messages.lang() == Languages.JAPANESE){
 			renderedTextPageSize *= 2;
 		}
-		Game.platform.setupFontGenerators(renderedTextPageSize, false);
+		Game.platform.setupFontGenerators(renderedTextPageSize, SPDSettings.systemFont());
 
 		Tooltip.resetLastUsedTime();
 
@@ -287,6 +289,31 @@ public class PixelScene extends Scene {
 	
 	protected void fadeIn( int color, boolean light ) {
 		add( new Fader( color, light ) );
+	}
+
+	public static void showProBadge( PaswordBadges.Badge badge ) {
+		Game.runOnRenderThread(new Callback() {
+			@Override
+			public void call() {
+				Scene s = Game.scene();
+				if (s != null) {
+					PasswordBadgeBanner banner = PasswordBadgeBanner.show(badge.image);
+					s.add(banner);
+					float offset = Camera.main.centerOffset.y;
+
+					int left = uiCamera.width/2 - PasswordBadgeBanner.SIZE/2;
+					left -= (PasswordBadgeBanner.SIZE * PasswordBadgeBanner.DEFAULT_SCALE * (PasswordBadgeBanner.showing.size()-1))/2;
+					for (int i = 0; i < PasswordBadgeBanner.showing.size(); i++){
+						banner = PasswordBadgeBanner.showing.get(i);
+						banner.camera = uiCamera;
+						banner.x = align(banner.camera, left);
+						banner.y = align(uiCamera, (uiCamera.height - banner.height) / 2 - banner.height / 2 - 16 - offset);
+						left += PasswordBadgeBanner.SIZE * PasswordBadgeBanner.DEFAULT_SCALE;
+					}
+
+				}
+			}
+		});
 	}
 
 	public static void showBadge( Badges.Badge badge ) {

@@ -31,6 +31,11 @@ public class CrystalDiedTower extends Mob {
     }
 
     @Override
+    public boolean interact(Char c) {
+        return true;
+    }
+
+    @Override
     public void damage( int dmg, Object src ) {
     }
 

@@ -27,7 +27,7 @@ public class BlessMixShiled extends Buff {
 
             if(Dungeon.hero.buff(BlessMixShiled.class) != null && hero.HT == hero.HP){
                 if(Dungeon.depth <= 5) {
-                    Buff.affect(hero, Barrier.class).setShield(((30)));
+                    Buff.affect(hero, Barrier.class).setShield(((20)));
                 } else {
                     Buff.affect(hero, Barrier.class).setShield(((20) * Dungeon.depth / 5));
                 }
