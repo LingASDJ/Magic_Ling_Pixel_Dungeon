@@ -15,11 +15,12 @@
 未知不代表无知，亵渎的最高境界是忘我……
 ```
 
-| - 编码：JDSA Ling,Mason,Tianscar | - 剧情设计：JDSA Ling & 冷群怪 |
-|-|-
+| - 主编码：JDSA Ling,Tianscar        | - 剧情设计：JDSA Ling & 冷群怪         |
+|:-------------------------------:|:------------------------------:|
+| - 合作编码：zxcPandora,Mason         |      博客支持:QinYue-设计支持:设寄师,冷群                 |
 | - 编码指导：SmuJB,Shower,Alexstrasza | - 外部引用：SSPD,OGPD,SRPD,CPD,SMPD |
-| - 美工：被子,Complexx,REN | - 平衡建议：怖，暗光，荨麻心绪 |
-| - 美工：Naiyazi,龙蚊| - 美工：冷群怪,落白,Om9
-| - 音乐：Prohonor | - 测试协力：所有魔绫的测试人员 |
+| - 美工：被子,Complexx,REN            | - 平衡建议：怖，暗光，荨麻心绪               |
+| - 美工：Naiyazi,龙蚊                 | - 美工：冷群怪,落白,Om9                |
+| - 音乐：Prohonor                   | - 测试协力：所有魔绫的测试人员               |
 
 </div>
