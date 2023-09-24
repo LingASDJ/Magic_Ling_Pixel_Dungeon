@@ -15,7 +15,7 @@
 未知不代表无知，亵渎的最高境界是忘我……
 ```
 
-| - 主编码：JDSA Ling,Tianscar        | - 剧情设计：JDSA Ling & 冷群怪         |
+| - 主编码：JDSA Ling,Tianscar        | - 剧情设计：JDSA Ling & 冷群         |
 |:-------------------------------:|:------------------------------:|
 | - 合作编码：zxcPandora,Mason         |      博客支持:QinYue-设计支持:设寄师,冷群                 |
 | - 编码指导：SmuJB,Shower,Alexstrasza | - 外部引用：SSPD,OGPD,SRPD,CPD,SMPD |
