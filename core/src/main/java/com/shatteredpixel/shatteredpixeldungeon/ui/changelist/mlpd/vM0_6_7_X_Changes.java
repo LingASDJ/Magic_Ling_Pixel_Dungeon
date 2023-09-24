@@ -1,8 +1,12 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM300;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PinkLingSprite;
+import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
+import com.shatteredpixel.shatteredpixeldungeon.effects.PasswordBadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -142,6 +146,42 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(i, ("熔岩火龙"),
                 ("丛林暴乱的真相")));
 
+
+        changes = new ChangeInfo("v0.6.5.0-Alpha4.5", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.GREATSWORD,
+                new ItemSprite.Glowing( 0xcc7770 )), "新附魔：爆破",
+                "这个附魔会让使用者陷入癫狂，能使爆炸的能量从武器中喷薄而出，能够使敌人目标处受到一次范围伤害亦或者给造成敌人短暂的残废效果。（PS:爆炸效果不会摧毁物品）\n"));
+
+        changes.addButton(new ChangeButton(PasswordBadgeBanner.image(PaswordBadges.Badge.ZQJ_GHOST.image), ("两个隐藏徽章资源预载"),
+                ("两个隐藏徽章资源预载，将在后续版本更新。")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        Image isa = new SlimeKingSprite();
+        isa.scale.set(PixelScene.align(0.89f));
+        changes.addButton( new ChangeButton(isa, "史莱姆王子",
+                "修复错误的继承类导致的Cast Exception错误"));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("界面修复"),
+                ("修复部分界面在新版的异常布局")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("药水癔症v0.2"),
+                ("现在全肉大饼在英雄低于12力量前必定加力量，且整体加力量的幸运度提升。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("其他改动"),
+                ("1.鬼磷和爆破现在是稀有附魔\n\n" +
+                        "2.修复了吸血鬼刀的异常吸血-贡献者：\nzxcPandora\n\n"+
+                        "3.修复了药水癔症描述问题，纯洁的祝福-守护护盾描述异常，以及开发者升降器追加探查功能-\n贡献者：zxcPandora")));
+
         changes = new ChangeInfo("v0.6.5.0-Alpha4", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
@@ -156,7 +196,7 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("信息栏滚动"),
                 ("在游戏缩放较大或者拥有较多词条时，该项会很有用。")));
 
-        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES), ("新徽章：碎片飞溅"),
+        changes.addButton(new ChangeButton(BadgeBanner.image(Badges.Badge.BOMBBOW_DIED.image), ("新徽章：碎片飞溅"),
                 ("又是一个死亡徽章，新人：悲鸣 因为意味着另类死亡爱好者多了一个新徽章（未解锁该徽章的就更麻烦了）")));
 
         changes = new ChangeInfo("改动", false, null);

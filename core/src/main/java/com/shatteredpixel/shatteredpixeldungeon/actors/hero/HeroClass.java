@@ -93,7 +93,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
@@ -156,7 +156,7 @@ public enum HeroClass {
 		if (Dungeon.isChallenged(Challenges.PRO)){
 			new LevelTeleporter().quantity(1).identify().collect();
 			new LockSword().quantity(1).identify().collect();
-			new IceFishSword().quantity(1).identify().collect();
+			new Greatsword().quantity(1).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
 			new AncityArmor().quantity(1).identify().collect();
 			new TengusMask().quantity(1).identify().collect();

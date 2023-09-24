@@ -50,7 +50,10 @@ public class MeatPie extends Food {
 	protected void satisfy(Hero hero) {
 		if (Dungeon.isChallenged(Challenges.EXSG)){
 			Buff.prolong( hero, Haste.class, 8f);
-			if(Random.Float() > (0.2f + (hero.STR/5f)/10f)){
+
+			if(hero.STR<12){
+				hero.STR++;
+			} else if(Random.Float() > (0.35f + (hero.STR/5f)/10f)){
 				hero.STR++;
 				hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
 				GLog.p(Messages.get(this, "eat_msg_2"));

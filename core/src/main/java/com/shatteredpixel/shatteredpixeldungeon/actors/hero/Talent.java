@@ -607,9 +607,11 @@ public enum Talent {
 	public static void initArmorTalents( Hero hero ){
 		initArmorTalents( hero.armorAbility, hero.talents);
 	}
-
-	public static void initArmorTalents(ArmorAbility abil, ArrayList<LinkedHashMap<Talent, Integer>> talents ){
-		if (abil == null) return;
+	public static ArrayList<LinkedHashMap<Talent, Integer>> initArmorTalents(ArmorAbility abil){
+		return initArmorTalents(abil, new ArrayList());
+	}
+	public static ArrayList<LinkedHashMap<Talent, Integer>> initArmorTalents(ArmorAbility abil, ArrayList<LinkedHashMap<Talent, Integer>> talents ){
+		if (abil == null) return talents;
 
 		while (talents.size() < MAX_TALENT_TIERS){
 			talents.add(new LinkedHashMap<>());
@@ -618,6 +620,7 @@ public enum Talent {
 		for (Talent t : abil.talents()){
 			talents.get(3).put(t, 0);
 		}
+		return talents;
 	}
 
 	private static final String TALENT_TIER = "talents_tier_";

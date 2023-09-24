@@ -45,7 +45,8 @@ import java.util.Locale;
 	This means that an object can just ask for "name" rather than, say, "items.weapon.enchantments.death.name"
  */
 public class Messages {
-
+	private static String baseNameX;
+	public static final String NO_TEXT_FOUND = baseNameX;
 	private static ArrayList<I18NBundle> bundles;
 	private static Languages lang;
 
@@ -121,6 +122,7 @@ public class Messages {
 			//Use baseName so the missing string is clear what exactly needs replacing. Otherwise, it just says java.lang.Object.[key]
 			if (baseName == null) {
 				baseName = key;
+				baseNameX = baseName;
 			}
 			//this is so child classes can inherit properties from their parents.
 			//in cases where text is commonly grabbed as a utility from classes that aren't mean to be instantiated
