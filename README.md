@@ -20,7 +20,7 @@
 | - 合作编码：zxcPandora,Mason         |-设计支持:设寄师,Complexx |      |
 | - 编码指导：SmuJB,Shower,Alexstrasza | - 外部引用：SSPD,OGPD,SRPD,CPD,SMPD |
 | - 美工A组：被子,Complexx,REN            | - 平衡建议：怖，暗光，荨麻心绪               |
-| - 博客&更新服务支持:QinYue             | - 美工B组：冷群怪,落白,Om9,奈亚,龙蚊                |
+| - 博客&更新服务支持:QinYue             | - 美工B组：Complexx,落白,Om9,奈亚,龙蚊                |
 | - 音乐：Prohonor                   | - 测试协力：所有魔绫的测试人员               |
 
 </div>
