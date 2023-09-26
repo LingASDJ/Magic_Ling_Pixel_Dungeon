@@ -11,6 +11,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Constants;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -52,6 +58,7 @@ public class LevelTeleporter extends TestItem {
     private static final String AC_VIEW = "view";
     private static final String AC_TP = "teleport";
     private static final String AC_INTER_TP = "interlevel_tp";
+    private static final String AC_RESET = "reset";
 
     @Override
     public ArrayList<String> actions(Hero hero ) {
@@ -61,6 +68,7 @@ public class LevelTeleporter extends TestItem {
         actions.add(AC_VIEW);
         actions.add(AC_TP);
         actions.add(AC_INTER_TP);
+        actions.add(AC_RESET);
         return actions;
     }
 
@@ -108,6 +116,52 @@ public class LevelTeleporter extends TestItem {
                 return;
             }
             GameScene.show(new WndSelectLevel());
+        }else if (action.equals(AC_RESET)) {
+            switch (Dungeon.depth){
+                case 2:
+                case 3:
+                case 4:
+                    for (Mob m: Dungeon.level.mobs){
+                        if (m instanceof Ghost) {
+                            Ghost.Quest.reset();
+                        }
+                    }
+                    break;
+                case 7:
+                case 8:
+                case 9:
+                    for (Mob m: Dungeon.level.mobs){
+                        if (m instanceof Wandmaker) {
+                            Wandmaker.Quest.reset();
+                        }
+                    }
+                    break;
+                case 12:
+                case 13:
+                case 14:
+                    for (Mob m: Dungeon.level.mobs){
+                        if (m instanceof Blacksmith) {
+                            Blacksmith.Quest.reset();
+                        }
+                        if(m instanceof RedDragon){
+                            RedDragon.Quest.reset();
+                        }
+                    }
+                    break;
+                case 17:
+                case 18:
+                case 19:
+                    for (Mob m: Dungeon.level.mobs){
+                        if (m instanceof Imp) {
+                            Imp.Quest.reset();
+                        }
+                    }
+                    break;
+            }
+            if(Dungeon.level.locked)
+                Dungeon.level.unseal();
+            InterlevelScene.mode = InterlevelScene.Mode.RESET;
+            Game.switchScene(InterlevelScene.class);
         }
     }
 
