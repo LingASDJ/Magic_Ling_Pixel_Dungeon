@@ -537,7 +537,6 @@ public class InterlevelScene extends PixelScene {
 	private void reset() throws IOException {
 
 		Mob.holdAllies( Dungeon.level );
-		hero.HP += 20;
 		SpecialRoom.resetPitRoom(Dungeon.depth+1);
 
 		//Boss全局布尔控制

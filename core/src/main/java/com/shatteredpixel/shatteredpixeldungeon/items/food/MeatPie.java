@@ -53,6 +53,8 @@ public class MeatPie extends Food {
 
 			if(hero.STR<12){
 				hero.STR++;
+				hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
+				GLog.p(Messages.get(this, "eat_msg_2"));
 			} else if(Random.Float() > (0.35f + (hero.STR/5f)/10f)){
 				hero.STR++;
 				hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
