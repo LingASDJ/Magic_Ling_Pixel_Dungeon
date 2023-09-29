@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Crushing;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class Greatsword extends MeleeWeapon {
@@ -31,7 +30,6 @@ public class Greatsword extends MeleeWeapon {
 		image = ItemSpriteSheet.GREATSWORD;
 		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch = 1f;
-		enchantment = new Crushing();
 		tier=5;
 	}
 

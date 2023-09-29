@@ -70,6 +70,8 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.HeartRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.LoveRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.MagicDimandRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
@@ -127,7 +129,7 @@ public abstract class RegularLevel extends Level {
 					holiday = Holiday.NONE;
 				}
 				break;
-			//9.10-10.1
+			//9.10-10.8
 			case Calendar.SEPTEMBER:
 				if (calendar.get(Calendar.DAY_OF_MONTH) >= 10 ){
 					holiday = Holiday.ZQJ;
@@ -136,7 +138,7 @@ public abstract class RegularLevel extends Level {
 				}
 				break;
 			case Calendar.OCTOBER:
-				if (calendar.get(Calendar.DAY_OF_MONTH) == 1 ){
+				if (calendar.get(Calendar.DAY_OF_MONTH) <= 8 ){
 					holiday = Holiday.ZQJ;
 				} else {
 					holiday = Holiday.NONE;
@@ -258,6 +260,15 @@ public abstract class RegularLevel extends Level {
 
 //		initRooms.add(new EyeRoom());
 //		initRooms.add(new YinYangRoom());
+
+		if(RegularLevel.holiday == Holiday.ZQJ){
+			if(Dungeon.depth == 17){
+				initRooms.add(new HeartRoom());
+			}
+			if(Statistics.findMoon && Dungeon.depth == 18){
+				initRooms.add(new LoveRoom());
+			}
+		}
 
 		if (Dungeon.NxhyshopOnLevel()) {
 			initRooms.add(new NxhyShopRoom());

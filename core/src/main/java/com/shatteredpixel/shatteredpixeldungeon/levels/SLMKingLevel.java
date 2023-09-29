@@ -28,8 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.Builder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.FigureEightBuilder;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.JunglePainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.painters.SewerPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.RatKingRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.sewerboss.SewerBossEntranceRoom;
@@ -90,7 +90,7 @@ public class SLMKingLevel extends SewerLevel {
 
     @Override
     protected Painter painter() {
-        return new SewerPainter()
+        return new JunglePainter()
                 .setWater(0.50f, 5)
                 .setGrass(0.20f, 4)
                 .setTraps(nTraps(), trapClasses(), trapChances());

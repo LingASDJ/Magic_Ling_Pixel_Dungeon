@@ -49,11 +49,15 @@ public class Challenges {
 	public static final int STRONGER_BOSSES  = 4096;
 	public static final int DHXD = 8192;
 	public static final int ICEDIED = 16384;
+
+
 	public static final int PRO  = 32768;
-	public static final int CS   = 65536;
 
+	public static final int MORELEVEL   = 65536;
 
-	public static final int MAX_VALUE = 131072;
+	public static final int CS   = 131072;
+
+	public static final int MAX_VALUE = 131072*2;
 	public static final String[] NAME_IDS = {
 			"no_food",
 			"no_armor",
@@ -71,13 +75,13 @@ public class Challenges {
 			"dhxd",
 			"icedied",
 			"pro",
-			"cs",
+			"morelevel",
 			"cs",
 	};
 
 	public static final int[] MASKS = {
 			NO_FOOD, NO_ARMOR, NO_HEALING, NO_HERBALISM, SWARM_INTELLIGENCE, DARKNESS, NO_SCROLLS
-			, AQUAPHOBIA, CHAMPION_ENEMIES,RLPT,SBSG,EXSG,STRONGER_BOSSES,DHXD,ICEDIED,PRO,CS,CS,
+			, AQUAPHOBIA, CHAMPION_ENEMIES,RLPT,SBSG,EXSG,STRONGER_BOSSES,DHXD,ICEDIED,PRO,MORELEVEL,CS,
 	};
 	public String name;
 
@@ -119,10 +123,12 @@ public class Challenges {
 
 	}
 
-	public static int activeChallenges(){
+	public static int activeChallenges() {
 		int chCount = 0;
-		for (int ch : Challenges.MASKS){
-			if ((Dungeon.challenges & ch) != 0 && ch <= STRONGER_BOSSES) chCount++;
+		for (int ch : Challenges.MASKS) {
+			if ((Dungeon.challenges & ch) != 0 && ch <= MORELEVEL && ch != PRO && ch != DHXD) {
+				chCount++;
+			}
 		}
 		return chCount;
 	}

@@ -34,6 +34,12 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class SmallRation extends Food {
 
+	public static class BlackMoon extends SmallRation{
+		{
+			image = ItemSpriteSheet.BLACKMOON;
+		}
+	}
+
 
 	@Override
 	protected void satisfy( Hero hero ){

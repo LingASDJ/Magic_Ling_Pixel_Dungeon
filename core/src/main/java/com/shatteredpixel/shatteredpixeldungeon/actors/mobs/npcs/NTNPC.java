@@ -11,12 +11,13 @@ import java.util.ArrayList;
 public class NTNPC extends NPC {
 
     {
-
         properties.add(Property.IMMOVABLE);
     }
 
     protected ArrayList<String> chat = new ArrayList<>();
     protected ArrayList<String> endChat = new ArrayList<>();
+
+    protected ArrayList<String> sChat = new ArrayList<>();
 
     @Override
     protected boolean act() {

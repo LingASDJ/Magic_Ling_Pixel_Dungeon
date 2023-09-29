@@ -91,7 +91,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Potential;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -606,12 +605,6 @@ public abstract class Char extends Actor {
 	public float speed() {
 		float speed = baseSpeed;
 
-
-
-		//提升20%移速
-		MIME.GOLD_THREE getSpeed = Dungeon.hero.belongings.getItem(MIME.GOLD_THREE.class);
-		if (getSpeed!=null) speed *= 1.2f;
-
 		//创世神之怒
 		if ( buff( AnkhInvulnerability.GodDied.class ) != null ) speed *= 2f;
 
@@ -1058,7 +1051,9 @@ public abstract class Char extends Actor {
 				ScrollOfPsionicBlast.class)),new HashSet<Class>()),
 		LARGE,
 		IMMOVABLE,
-		NPC;
+		NPC,
+		HUNTER,
+		MIMIC;
 
 		
 		private HashSet<Class> resistances;

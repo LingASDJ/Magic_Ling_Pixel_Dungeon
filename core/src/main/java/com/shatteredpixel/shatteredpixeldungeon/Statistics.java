@@ -32,6 +32,12 @@ public class Statistics {
 	//吃保底
 	public static int bossWeapons;
 
+	//中秋节幽灵特别行动
+	public static boolean findMoon = false;
+
+	//妻管严
+	public static boolean deadGo = false;
+
 	public static boolean happyMode = false;
 
 	//萨卡班甲鱼二阶段
@@ -131,6 +137,9 @@ public class Statistics {
 		HealingIsDied = 0;
 
 		happyMode = false;
+
+		findMoon = false;
+		deadGo = false;
 
 		//萨卡班甲鱼二阶段
 		sakaBackStage = 0;
@@ -282,11 +291,18 @@ public class Statistics {
 
 	private static final String BDTX		= "bdtx";
 
+	private static final String LOVE		= "love";
+
+	private static final String LOVX		= "lovx";
+
 
 	public static void storeInBundle( Bundle bundle ) {
 
 
 		bundle.put(BDTX,bossWeapons);
+
+		bundle.put(LOVE,findMoon);
+		bundle.put(LOVX,deadGo);
 
 		//分数
 		bundle.put( PROG_SCORE,  progressScore );
@@ -387,6 +403,8 @@ public class Statistics {
 
 		sakaBackStage = bundle.getInt( SAKATWO );
 
+		findMoon = bundle.getBoolean(LOVE);
+		deadGo = bundle.getBoolean(LOVX);
 		//分数
 		progressScore   = bundle.getInt( PROG_SCORE );
 		heldItemValue   = bundle.getInt( ITEM_VAL );

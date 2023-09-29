@@ -43,6 +43,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
@@ -216,13 +218,14 @@ public class Ghost extends NPC {
 		public static int depth;
 		
 		public static Weapon weapon;
+		public static Food food;
 		public static Armor armor;
 		public static Weapon.Enchantment enchant;
 		public static Armor.Glyph glyph;
 		
 		public static void reset() {
 			spawned = false;
-			
+			food = null;
 			weapon = null;
 			armor = null;
 			enchant = null;
@@ -237,6 +240,8 @@ public class Ghost extends NPC {
 		private static final String PROCESSED	= "processed";
 		private static final String DEPTH		= "depth";
 		private static final String WEAPON		= "weapon";
+
+		private static final String FOOD		= "food";
 		private static final String ARMOR		= "armor";
 		private static final String ENCHANT		= "enchant";
 		private static final String GLYPH		= "glyph";
@@ -256,6 +261,7 @@ public class Ghost extends NPC {
 				node.put( PROCESSED, processed );
 				
 				node.put( WEAPON, weapon );
+				node.put( FOOD, food );
 				node.put( ARMOR, armor );
 
 				if (enchant != null) {
@@ -281,6 +287,7 @@ public class Ghost extends NPC {
 				
 				weapon	= (Weapon)node.get( WEAPON );
 				armor	= (Armor)node.get( ARMOR );
+				food     = (Food)node.get(FOOD);
 
 				if (node.contains(ENCHANT)) {
 					enchant = (Weapon.Enchantment) node.get(ENCHANT);
@@ -351,7 +358,7 @@ public class Ghost extends NPC {
 				int wepTier = Random.chances(new float[]{0, 0, 10, 6, 3, 1});
 				Generator.Category c = Generator.wepTiers[wepTier - 1];
 				weapon = (MeleeWeapon) Reflection.newInstance(c.classes[Random.chances(c.probs)]);
-
+				food = new SmallRation.BlackMoon();
 				//26%:+0, 25%:+1, 15%:+2, 10%:+3, 5%:+4
 				ghostQuest();
 
@@ -419,7 +426,7 @@ public class Ghost extends NPC {
 		public static void complete() {
 			weapon = null;
 			armor = null;
-			
+			food = null;
 			Notes.remove( Notes.Landmark.GHOST );
 		}
 

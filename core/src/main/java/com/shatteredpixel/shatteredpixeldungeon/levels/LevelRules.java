@@ -136,6 +136,8 @@ public class LevelRules {
                     }
                 case 26:
                     return new LastLevel();
+                case 50:
+                    return new GardenLevel();
                 default:
                     Statistics.deepestFloor--;
                     return new DeadEndLevel();

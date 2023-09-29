@@ -102,6 +102,7 @@ public class MenuPane extends Component {
 					case DARK:      return Messages.get(GameScene.class, "dark");
 					case LARGE:     return Messages.get(GameScene.class, "large");
 					case TRAPS:     return Messages.get(GameScene.class, "traps");
+					case BIGTRAP:     return Messages.get(GameScene.class, "moretraps");
 					case SECRETS:   return Messages.get(GameScene.class, "secrets");
 				}
 				return null;

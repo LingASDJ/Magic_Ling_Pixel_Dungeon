@@ -55,6 +55,7 @@ public class Assets {
 	public static class Environment {
 		public static final String TERRAIN_FEATURES = "environment/terrain_features.png";
 
+		public static final String TILES_GARDEN = "environment/tiles_garden.png";
 		public static final String LAVACAVE_OP  = "environment/custom_tiles/lavecave_behind.png";
 
 		public static final String LAVACAVE_PO  = "environment/custom_tiles/lavecave_above.png";
@@ -385,6 +386,9 @@ public class Assets {
 		public static final String DM300	= "sprites/dm300.png";
 		public static final String DM720	= "sprites/dm720.png";
 		public static final String WRAITH	= "sprites/wraith.png";
+
+		public static final String REDWRAITH	= "sprites/bluewraith.png";
+
 		public static final String UNDEAD	= "sprites/undead.png";
 		public static final String KING		= "sprites/king.png";
 		public static final String PIRANHA	= "sprites/piranha.png";
@@ -417,6 +421,7 @@ public class Assets {
 		public static final String YOG		= "sprites/yog.png";
 		public static final String LARVA	= "sprites/larva.png";
 		public static final String GHOST	= "sprites/ghost.png";
+		public static final String PINKGHOST	= "sprites/pinkghost.png";
 		public static final String MAKER	= "sprites/wandmaker.png";
 		public static final String NYZD	= "Npcs/nyz.png";
 		public static final String TROLL	= "sprites/blacksmith.png";

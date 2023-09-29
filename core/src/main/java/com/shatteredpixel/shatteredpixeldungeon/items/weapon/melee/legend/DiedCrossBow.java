@@ -20,11 +20,13 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -115,9 +117,7 @@ public class DiedCrossBow extends LegendWeapon {
                     QuickSlotButton.target(Actor.findChar(cell));
                 }
                 cooldown = 60-level()*2;
-                knockArrow().cast(curUser, target-2);
                 knockArrow().cast(curUser, target);
-                knockArrow().cast(curUser, target+2);
                 QuickSlotButton.target(Actor.findChar(target));
 
             }
@@ -132,7 +132,12 @@ public class DiedCrossBow extends LegendWeapon {
         return new BombArrow();
     }
 
+
+
+
     public static class BombArrow extends TippedDart {
+        public boolean sniperSpecial = false;
+        public float sniperSpecialBonusDamage = 0f;
         @Override
         public Emitter emitter() {
             Emitter emitter = new Emitter();
@@ -146,6 +151,9 @@ public class DiedCrossBow extends LegendWeapon {
             image = ItemSpriteSheet.DISPLACING_DART;
         }
 
+        int flurryCount = -1;
+        private int targetPos;
+
         @Override
         public int proc(Char attacker, Char defender, int damage) {
             DiedCrossBow dartGun = hero.belongings.getItem(DiedCrossBow.class);
@@ -153,6 +161,48 @@ public class DiedCrossBow extends LegendWeapon {
             this.explodeBomb(defender.pos);
 
             return super.proc(attacker, defender, damage);
+        }
+
+        @Override
+        public void cast(final Hero user, final int dst) {
+            final int cell = throwPos( user, dst );
+            targetPos = cell;
+
+
+                final Char enemy = Actor.findChar( cell );
+
+                QuickSlotButton.target(enemy);
+
+
+                user.busy();
+
+                throwSound();
+
+                ((MissileSprite) user.sprite.parent.recycle(MissileSprite.class)).
+                        reset(user.sprite,
+                                cell,
+                                this,
+                                new Callback() {
+                                    @Override
+                                    public void call() {
+                                        curUser = user;
+                                        onThrow(cell);
+                                        onThrow(cell+2);
+                                        onThrow(cell-2);
+                                    }
+                                });
+
+                user.sprite.zap(cell, new Callback() {
+                    @Override
+                    public void call() {
+                        flurryCount--;
+                        if (flurryCount > 0){
+                            cast(user, dst);
+                        }
+                    }
+                });
+                super.cast(user, dst);
+
         }
 
         @Override

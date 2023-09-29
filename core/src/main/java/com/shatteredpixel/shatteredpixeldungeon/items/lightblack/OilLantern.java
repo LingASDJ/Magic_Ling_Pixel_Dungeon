@@ -105,7 +105,7 @@ public class OilLantern extends Item {
                         GLog.w(Messages.get(OilLantern.class, "lanterneedsx"));
                     }
                 } else {
-                    GLog.n("你陷入灵魂残缺的迷茫当中 无法引燃提灯");
+                    GLog.n(Messages.get(OilLantern.class, "lanternosoul"));
                 }
                 break;
             case AC_REFILL:
@@ -156,7 +156,7 @@ public class OilLantern extends Item {
     public void activate(Hero hero, boolean voluntary) {
         if (voluntary) {
             if (Dungeon.hero.buff(Light.class) != null || Dungeon.hero.buff(MagicTorch.MagicLight.class) != null) {
-                GLog.n("你已有其他光芒效果，在这些效果取消或主动失效前，暂时无法使用提灯的效果。");
+                GLog.n(Messages.get(OilLantern.class, "lantermostic"));
             } else {
                 hero.spend(TIME_TO_USE);
                 hero.busy();
@@ -190,6 +190,11 @@ public class OilLantern extends Item {
         Sample.INSTANCE.play("sounds/snd_puff.mp3");
         updateQuickslot();
         Dungeon.observe();
+    }
+
+    @Override
+    public String desc() {
+        return Messages.get(this, "desc",flasks,plingks);
     }
 
     public int price() {

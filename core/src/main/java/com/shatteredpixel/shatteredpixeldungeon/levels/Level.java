@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MORELEVEL;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -164,7 +165,8 @@ public abstract class Level implements Bundlable {
 		DARK,
 		LARGE,
 		TRAPS,
-		SECRETS
+		SECRETS,
+		BIGTRAP,
 	}
 
 	public boolean isLevelExplored( int depth ){
@@ -298,7 +300,7 @@ public abstract class Level implements Bundlable {
 				addItemToSpawn( new StoneOfIntuition() );
 			}
 			
-			if (Dungeon.depth > 1) {
+			if (Dungeon.depth > 1 && !Dungeon.bossLevel()) {
 				//50% chance of getting a level feeling
 				//~7.15% chance for each feeling
 				switch (Random.Int( 14 )) {
@@ -325,6 +327,11 @@ public abstract class Level implements Bundlable {
 						break;
 					case 6:
 						feeling = Feeling.SECRETS;
+						break;
+					case 7:
+						if(Dungeon.isChallenged(MORELEVEL)){
+							feeling = Feeling.BIGTRAP;
+						}
 						break;
 				}
 			}
@@ -546,9 +553,7 @@ public abstract class Level implements Bundlable {
 
 		Mob m = Reflection.newInstance(mobsToSpawn.remove(0));
 		ChampionEnemy.rollForChampion(m);
-		if(Dungeon.isChallenged(SBSG)){
-			ChampionEnemy.rollForStateLing(m);
-		}
+		ChampionEnemy.rollForStateLing(m);
 		Buff.affect(m, HasteLing.MobLing.class, HasteLing.MobLing.DURATION*2000f);
 		return m;
 	}
@@ -693,7 +698,6 @@ public abstract class Level implements Bundlable {
 			}
 			if (!mob.buffs(ChampionEnemy.class).isEmpty() && Dungeon.isChallenged(SBSG)){
 				GLog.n(Messages.get(ChampionEnemy.class, "warn2"));
-				GLog.w(Messages.get(ChampionEnemy.class, "warn"));
 			} else if(!mob.buffs(ChampionEnemy.class).isEmpty()) {
 				GLog.w(Messages.get(ChampionEnemy.class, "warn"));
 			}

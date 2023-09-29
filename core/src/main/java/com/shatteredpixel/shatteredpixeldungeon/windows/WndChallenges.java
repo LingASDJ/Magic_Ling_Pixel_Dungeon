@@ -109,7 +109,7 @@ public class WndChallenges extends Window {
 			cb.active = editable;
 
 			//Disable
-			if(Challenges.NAME_IDS[i].equals("cs")||(Challenges.NAME_IDS[i].equals("icedied"))){
+			if(Challenges.NAME_IDS[i].equals("cs")||(Challenges.NAME_IDS[i].equals("icedied")||(Challenges.NAME_IDS[i].equals("morelevel")))){
 				cb.active = false;
 				cb.checked(false);
 				cb.visible=false;
@@ -330,6 +330,8 @@ public class WndChallenges extends Window {
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14, new ItemSprite.Glowing(0x009999));
 			case "dhxd":
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_15, new ItemSprite.Glowing(0x384976));
+			case "morelevel":
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_16, new ItemSprite.Glowing(0x98bc76));
 			case "cs":
 				return Icons.get(Icons.WARNING);
 			default:

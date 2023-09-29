@@ -114,10 +114,23 @@ public class SakaFishBoss extends Boss {
 
         //phase 1 of the fight is over
         if (HP <= HT/2 && level==AncientMysteryCityBossLevel.State.TWO_BOSS){
-            HP = (HT/2);
-            yell(Messages.get(this, "interesting"));
-            ((AncientMysteryCityBossLevel)Dungeon.level).progress();
-            BossHealthBar.bleed(true);
+            Actor.add(new Actor() {
+
+                {
+                    actPriority = VFX_PRIO;
+                }
+
+                @Override
+                protected boolean act() {
+                    Actor.remove(this);
+                    HP = (HT/2);
+                    yell(Messages.get(this, "interesting"));
+                    ((AncientMysteryCityBossLevel)Dungeon.level).progress();
+                    BossHealthBar.bleed(true);
+                    return true;
+                }
+            });
+
         }
     }
 

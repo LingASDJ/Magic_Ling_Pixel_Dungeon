@@ -57,6 +57,7 @@ public class Mimic extends Mob {
 		spriteClass = MimicSprite.class;
 
 		properties.add(Property.DEMONIC);
+		properties.add(Property.MIMIC);
 
 		EXP = 0;
 		

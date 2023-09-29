@@ -60,7 +60,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.GardenLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LinkLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
@@ -115,6 +117,42 @@ public class Dungeon {
 		level = new LinkLevel();
 
 		level.create();
+
+		Statistics.qualifiedForNoKilling = !bossLevel();
+
+		return level;
+	}
+
+	public static Level GardenLevel(){
+
+
+		Dungeon.level = null;
+		Actor.clear();
+
+		depth = 50;
+
+		if (depth > Statistics.realdeepestFloor) {
+			Statistics.realdeepestFloor = depth;}
+
+		Level level;
+		level = new GardenLevel();
+
+		level.create();
+
+		Statistics.qualifiedForNoKilling = !bossLevel();
+
+		return level;
+	}
+
+	public static Level BackLevel(){
+		Actor.clear();
+
+		depth = 17;
+
+		Dungeon.level = new CityLevel();
+
+		if (depth > Statistics.realdeepestFloor) {
+			Statistics.realdeepestFloor = depth;}
 
 		Statistics.qualifiedForNoKilling = !bossLevel();
 

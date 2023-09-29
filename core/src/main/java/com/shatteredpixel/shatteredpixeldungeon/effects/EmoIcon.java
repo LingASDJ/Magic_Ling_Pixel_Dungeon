@@ -103,6 +103,20 @@ public class EmoIcon extends Image {
 			y = owner.y - height;
 		}
 	}
+
+	public static class Love extends EmoIcon {
+
+		public Love( CharSprite owner ) {
+
+			super( owner );
+
+			copy( Icons.get( Icons.LOVE ) );
+
+			maxSize = 1.3f;
+			timeScale = 2;
+			scale.set( Random.Float( 1, maxSize ) );
+		}
+	}
 	
 	public static class Lost extends EmoIcon {
 		

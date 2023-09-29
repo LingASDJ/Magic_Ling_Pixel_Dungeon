@@ -321,19 +321,22 @@ public class ColdChestBossLevel extends Level {
                 Dungeon.observe();
 
                 //进行Roll判定
-                switch(Random.NormalIntRange(0,3)){
-                    case 0:
-                        drop( new MIME.GOLD_ONE(),634 );
-                    break;
-                    case 1:
-                        drop( new MIME.GOLD_ONE(),660 );
-                        break;
-                    case 2:
-                        drop( new MIME.GOLD_ONE(),308 );
-                        break;
-                    case 3:
-                        drop( new MIME.GOLD_ONE(),286 );
-                        break;
+
+                if(Statistics.dimandchestmazeCollected==0) {
+                    switch (Random.NormalIntRange(0, 3)) {
+                        case 0:
+                            drop(new MIME.GOLD_ONE(), 634);
+                            break;
+                        case 1:
+                            drop(new MIME.GOLD_ONE(), 660);
+                            break;
+                        case 2:
+                            drop(new MIME.GOLD_ONE(), 308);
+                            break;
+                        case 3:
+                            drop(new MIME.GOLD_ONE(), 286);
+                            break;
+                    }
                 }
 
                 pro = START;
@@ -353,41 +356,43 @@ public class ColdChestBossLevel extends Level {
                             boss.HP = 360;
 
                             //进行Roll判定 获得一定的随机坐标
-                            if(Random.Float()<0.5f) {
-                                switch(Random.NormalIntRange(0,4)){
-                                    case 0:
-                                        drop( new MIME.GOLD_TWO(),570 );
-                                        break;
-                                    case 1:
-                                        drop( new MIME.GOLD_TWO(),472 );
-                                        break;
-                                    case 2:
-                                        drop( new MIME.GOLD_TWO(),1041 );
-                                        break;
-                                    case 3:
-                                        drop( new MIME.GOLD_TWO(),52 );
-                                        break;
-                                    case 4:
-                                        drop( new MIME.GOLD_TWO(),1096 );
-                                        break;
-                                }
-                            } else {
-                                switch(Random.NormalIntRange(0,4)){
-                                    case 0:
-                                        drop( new MIME.GOLD_THREE(),570 );
-                                        break;
-                                    case 1:
-                                        drop( new MIME.GOLD_THREE(),472 );
-                                        break;
-                                    case 2:
-                                        drop( new MIME.GOLD_THREE(),1041 );
-                                        break;
-                                    case 3:
-                                        drop( new MIME.GOLD_THREE(),52 );
-                                        break;
-                                    case 4:
-                                        drop( new MIME.GOLD_THREE(),1096 );
-                                        break;
+                            if(Statistics.dimandchestmazeCollected==1) {
+                                if (Random.Float() < 0.5f) {
+                                    switch (Random.NormalIntRange(0, 4)) {
+                                        case 0:
+                                            drop(new MIME.GOLD_TWO(), 570);
+                                            break;
+                                        case 1:
+                                            drop(new MIME.GOLD_TWO(), 472);
+                                            break;
+                                        case 2:
+                                            drop(new MIME.GOLD_TWO(), 1041);
+                                            break;
+                                        case 3:
+                                            drop(new MIME.GOLD_TWO(), 52);
+                                            break;
+                                        case 4:
+                                            drop(new MIME.GOLD_TWO(), 1096);
+                                            break;
+                                    }
+                                } else {
+                                    switch (Random.NormalIntRange(0, 4)) {
+                                        case 0:
+                                            drop(new MIME.GOLD_THREE(), 570);
+                                            break;
+                                        case 1:
+                                            drop(new MIME.GOLD_THREE(), 472);
+                                            break;
+                                        case 2:
+                                            drop(new MIME.GOLD_THREE(), 1041);
+                                            break;
+                                        case 3:
+                                            drop(new MIME.GOLD_THREE(), 52);
+                                            break;
+                                        case 4:
+                                            drop(new MIME.GOLD_THREE(), 1096);
+                                            break;
+                                    }
                                 }
                             }
 
@@ -462,23 +467,25 @@ public class ColdChestBossLevel extends Level {
                             //drop( new PotionOfPurity(),648 );
 
                             //进行Roll判定
-                            if(Random.Float()<0.5f) {
-                                switch(Random.NormalIntRange(0,1)){
-                                    case 0:
-                                        drop( new MIME.GOLD_FOUR(),217 );
-                                        break;
-                                    case 1:
-                                        drop( new MIME.GOLD_FOUR(),1042 );
-                                        break;
-                                }
-                            } else {
-                                switch(Random.NormalIntRange(0,1)){
-                                    case 0:
-                                        drop( new MIME.GOLD_FIVE(),217 );
-                                        break;
-                                    case 1:
-                                        drop( new MIME.GOLD_FIVE(),1042 );
-                                        break;
+                            if(Statistics.dimandchestmazeCollected==2) {
+                                if (Random.Float() < 0.5f) {
+                                    switch (Random.NormalIntRange(0, 1)) {
+                                        case 0:
+                                            drop(new MIME.GOLD_FOUR(), 217);
+                                            break;
+                                        case 1:
+                                            drop(new MIME.GOLD_FOUR(), 1042);
+                                            break;
+                                    }
+                                } else {
+                                    switch (Random.NormalIntRange(0, 1)) {
+                                        case 0:
+                                            drop(new MIME.GOLD_FIVE(), 217);
+                                            break;
+                                        case 1:
+                                            drop(new MIME.GOLD_FIVE(), 1042);
+                                            break;
+                                    }
                                 }
                             }
 

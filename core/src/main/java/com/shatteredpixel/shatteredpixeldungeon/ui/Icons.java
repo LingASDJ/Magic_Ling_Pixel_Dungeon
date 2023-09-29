@@ -102,9 +102,13 @@ public enum Icons {
 	DEPTH_LARGE,
 	DEPTH_TRAPS,
 	DEPTH_SECRETS,
+
+	DEPTH_BTRAPS,
 	CHAL_COUNT,
 
 	HAPPY_ICON,
+
+	LOVE,
 
 	//icons that appear in the about screen, variable spacing
 	LIBGDX,
@@ -333,11 +337,17 @@ public enum Icons {
 			case DEPTH_SECRETS:
 				icon.frame( icon.texture.uvRectBySize( 104, 64, 7, 7 ) );
 				break;
+			case DEPTH_BTRAPS:
+				icon.frame( icon.texture.uvRectBySize( 112, 64, 7, 7 ) );
+				break;
 			case CHAL_COUNT:
 				icon.frame( icon.texture.uvRectBySize( 48, 72, 7, 7 ) );
 				break;
 			case HAPPY_ICON:
 				icon.frame( icon.texture.uvRectBySize( 56, 72, 7, 5 ) );
+				break;
+			case LOVE:
+				icon.frame( icon.texture.uvRectBySize( 65, 72, 10, 6 ) );
 				break;
 
 			case LIBGDX:
@@ -409,6 +419,8 @@ public enum Icons {
 				return get(DEPTH_LARGE);
 			case TRAPS:
 				return get(DEPTH_TRAPS);
+			case BIGTRAP:
+				return get(DEPTH_BTRAPS);
 			case SECRETS:
 				return get(DEPTH_SECRETS);
 		}

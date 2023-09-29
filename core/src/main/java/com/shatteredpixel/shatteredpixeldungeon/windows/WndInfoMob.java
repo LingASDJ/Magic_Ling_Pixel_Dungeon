@@ -81,6 +81,8 @@ public class WndInfoMob extends WndTitledMessage {
 			String level;
 			if(mob.speed() == 1){
 				level = "C";
+			} else if (mob.speed() >= 2.5) {
+				level = "S+";
 			} else if (mob.speed() >= 2) {
 				level = "S";
 			} else if (mob.speed() >= 1.5) {
@@ -149,21 +151,23 @@ public class WndInfoMob extends WndTitledMessage {
 		private String ProName(Mob mob) {
 			String level;
 			if (mob.properties.contains(Char.Property.BOSS)){
-				level = "领袖";
+				level = Messages.get(WndInfoMob.class,"boss");
 			} else if (mob.properties.contains(Char.Property.MINIBOSS)){
-				level = "精英";
+				level = Messages.get(WndInfoMob.class,"miniboss");
+			} else if (mob.properties.contains(Char.Property.HUNTER)){
+				level = Messages.get(WndInfoMob.class,"hunter");
 			} else if (mob.properties.contains(Char.Property.ABYSS)){
-				level = "深渊";
+				level = Messages.get(WndInfoMob.class,"abyss");
 			} else if (mob.properties.contains(Char.Property.UNDEAD)){
-				level = "亡灵";
+				level = Messages.get(WndInfoMob.class,"undied");
 			} else if (mob.properties.contains(Char.Property.DEMONIC)){
-				level = "恶魔";
+				level = Messages.get(WndInfoMob.class,"demon");
 			} else if (mob.properties.contains(Char.Property.NPC)){
-				level = "中立";
+				level = "NPC";
 			} else if (mob.properties.contains(Char.Property.FIERY) || mob.properties.contains(Char.Property.ICY) || mob.properties.contains(Char.Property.ELECTRIC)){
-				level = "元素";
+				level = Messages.get(WndInfoMob.class,"ling");
 			} else {
-				level = "普通";
+				level = Messages.get(WndInfoMob.class,"normal");
 			}
 			return level;
 		}
@@ -172,9 +176,9 @@ public class WndInfoMob extends WndTitledMessage {
 			String level;
 
 			if(Dungeon.hero.lvl <= mob.maxLvl || mob.properties.contains(Char.Property.BOSS) || mob.properties.contains(Char.Property.MINIBOSS)){
-				level = "可掉落";
+				level = Messages.get(WndInfoMob.class,"canroll");
 			} else {
-				level = "不掉落";
+				level = Messages.get(WndInfoMob.class,"noroll");
 			}
 			return level;
 		}

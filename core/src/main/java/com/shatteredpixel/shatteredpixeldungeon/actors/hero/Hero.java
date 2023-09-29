@@ -716,6 +716,12 @@ public class Hero extends Char {
 		float speed = super.speed();
 
 		speed *= RingOfHaste.speedMultiplier(this);
+
+		//提升20%移速
+		MIME.GOLD_THREE getSpeed = Dungeon.hero.belongings.getItem(MIME.GOLD_THREE.class);
+		if (getSpeed!=null) {
+			speed *= 1.2f;
+		}
 		
 		if (belongings.armor() != null) {
 			speed = belongings.armor().speedFactor(this, speed);
@@ -959,7 +965,7 @@ public class Hero extends Char {
 			exp = Random.NormalIntRange(10,20);
 		}
 
-		///测试坐标用
+//		///测试坐标用
 //		GLog.w(String.valueOf(hero.pos));
 
 		//携带该物品时，玩家血量低于一半后自动隐身一段回合。

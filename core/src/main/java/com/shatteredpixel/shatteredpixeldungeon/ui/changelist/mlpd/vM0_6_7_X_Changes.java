@@ -146,6 +146,23 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(i, ("熔岩火龙"),
                 ("丛林暴乱的真相")));
 
+        changes = new ChangeInfo("v0.6.5.0-Alpha5-中秋", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new GhostSprite.PinkGhostSprites(), ("新限时任务：映月离合之殇"),
+                ("在中秋和国庆节这个期间一起探索悲伤幽灵它们的故事……")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.INFO), ("修复"),
+                ("修复上个版本的一些错误")));
 
         changes = new ChangeInfo("v0.6.5.0-Alpha4.5", true, "");
         changes.hardlight(Window.TITLE_COLOR);
@@ -353,7 +370,7 @@ public class vM0_6_7_X_Changes {
                 ("在高挑中，提灯的容量更多，商店售卖更多灯油，但灯火的每次减少可能会加剧！")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("支离破碎"),
-                ("支离破碎进行了一些怪组优化,并且调整了巨魔铁匠任务")));
+                ("支离破碎进行了一些怪组优化,并且调整了巨魔铁匠任务(如果在支离破碎遇到巨魔的蝙蝠任务确实有突变buff)")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项修改"),
                 ("添加Boss专武保底机制，连续三局未获得，下次必定获得")));

@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
@@ -50,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetributio
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -80,6 +82,10 @@ public class DriedRose extends Artifact {
 	{
 		image = ItemSpriteSheet.ARTIFACT_ROSE1;
 
+		if(RegularLevel.holiday == RegularLevel.Holiday.ZQJ){
+			cursed = false;
+		}
+
 		levelCap = 10;
 
 		charge = 100;
@@ -94,7 +100,7 @@ public class DriedRose extends Artifact {
 	private GhostHero ghost = null;
 	private int ghostID = 0;
 	
-	private MeleeWeapon weapon = null;
+	public MeleeWeapon weapon = null;
 	private Armor armor = null;
 
 	public int droppedPetals = 0;
@@ -557,6 +563,10 @@ public class DriedRose extends Artifact {
 			updateRose();
 			if (rose == null || !rose.isEquipped(Dungeon.hero)){
 				damage(1, this);
+			}
+
+			if(Statistics.findMoon){
+				die(true);
 			}
 			
 			if (!isAlive()) {

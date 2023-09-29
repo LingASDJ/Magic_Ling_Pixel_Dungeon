@@ -603,6 +603,10 @@ public class DwarfMaster extends Boss {
     @Override
     public void damage(int dmg, Object src) {
 
+        if(HP > 400 && dmg > 300){
+            dmg = 300;
+        }
+
         if (HP > 299 && HP <= 500 && dmg >= 9){
             dmg = 15+ (int)(Math.sqrt(8*(dmg - 4) + 1) - 1)/2;
         } else  {
@@ -630,18 +634,30 @@ public class DwarfMaster extends Boss {
 
 
         if (phase == 1) {
-
             int dmgTaken = preHP - HP;
             abilityCooldown -= dmgTaken/8f;
             summonCooldown -= dmgTaken/8f;
             if (HP <= 400) {
-                HP = 400;
-                sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
+                Actor.add(new Actor() {
+
+                    {
+                        actPriority = VFX_PRIO;
+                    }
+
+                    @Override
+                    protected boolean act() {
+                        Actor.remove(this);
+                        HP = 400;
+                        sprite.showStatus(CharSprite.POSITIVE, Messages.get(Char.class, "invulnerable"));
+                        properties.add(Property.IMMOVABLE);
+                        phase = 2;
+                        summonsMade = 0;
+                        sprite.idle();
+
+                        return true;
+                    }
+                });
                 ScrollOfTeleportation.appear(this, DwarfMasterBossLevel.throne);
-                properties.add(Property.IMMOVABLE);
-                phase = 2;
-                summonsMade = 0;
-                sprite.idle();
                 Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(12*25);
                 for (DwarfMaster.Summoning s : buffs(DwarfMaster.Summoning.class)) {
                     s.detach();
@@ -697,71 +713,82 @@ public class DwarfMaster extends Boss {
     @Override
     protected boolean act() {
         if (phase == 1) {
+            Actor.add(new Actor() {
 
-            if (summonCooldown <= 0 && summonSubject(3)){
-                summonsMade++;
-                summonCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN)-1f;
-            } else if (summonCooldown > 0){
-                summonCooldown-=1f/speed();
-            }
-
-            if (paralysed > 0){
-                spend(TICK);
-                return true;
-            }
-
-            if (abilityCooldown <= 0){
-                int alive = aliveSummons();
-                //NEVER use skills if no mobs alive.
-                if(alive == 0) {
-                    lastAbility = NONE;
-                    //summon faster when no ability is available.
-                    summonCooldown -= 2f;
-                }
-                else {
-                    do {
-                        rollForAbility();
-                    } while ((lastAbility == ENRAGE || lastAbility == SACRIFICE) && alive < 2);
-                }
-                if(buff(SacrificeSubjectListener.class)!= null){
-                    lastAbility = NONE;
-                    //cd faster while prepare to sacrifice
-                    abilityCooldown --;
+                {
+                    actPriority = VFX_PRIO;
                 }
 
-                if (lastAbility == LINK && lifeLinkSubject()){
-                    abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
-                    spend(TICK);
+                @Override
+                protected boolean act() {
+                    Actor.remove(this);
+                    if (summonCooldown <= 0 && summonSubject(3)){
+                        summonsMade++;
+                        summonCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN)-1f;
+                    } else if (summonCooldown > 0){
+                        summonCooldown-=1f/speed();
+                    }
+
+                    if (paralysed > 0){
+                        spend(TICK);
+                        return true;
+                    }
+
+                    if (abilityCooldown <= 0){
+                        int alive = aliveSummons();
+                        //NEVER use skills if no mobs alive.
+                        if(alive == 0) {
+                            lastAbility = NONE;
+                            //summon faster when no ability is available.
+                            summonCooldown -= 2f;
+                        }
+                        else {
+                            do {
+                                rollForAbility();
+                            } while ((lastAbility == ENRAGE || lastAbility == SACRIFICE) && alive < 2);
+                        }
+                        if(buff(SacrificeSubjectListener.class)!= null){
+                            lastAbility = NONE;
+                            //cd faster while prepare to sacrifice
+                            abilityCooldown --;
+                        }
+
+                        if (lastAbility == LINK && lifeLinkSubject()){
+                            abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                            spend(TICK);
+                            return true;
+                        } else if (lastAbility == TELE && teleportSubject()) {
+                            lastAbility = TELE;
+                            abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                            spend(TICK);
+                            return true;
+                        }else if(lastAbility == ENRAGE){
+                            enrageSubject();
+                            abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                            spend(TICK);
+                            return true;
+                        }else if(lastAbility == DEATHRATTLE){
+                            deathRattleSubject();
+                            lastAbility = DEATHRATTLE;
+                            abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                            spend(TICK);
+                        }else if(lastAbility == SACRIFICE){
+                            sacrificeSubject();
+                            abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                            spend(TICK);
+                        }else if(lastAbility == SUMMON){
+                            extraSummonSubject();
+                            abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                            spend(TICK);
+                        }
+
+                    } else {
+                        abilityCooldown--;
+                    }
+
                     return true;
-                } else if (lastAbility == TELE && teleportSubject()) {
-                    lastAbility = TELE;
-                    abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
-                    spend(TICK);
-                    return true;
-                }else if(lastAbility == ENRAGE){
-                    enrageSubject();
-                    abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
-                    spend(TICK);
-                    return true;
-                }else if(lastAbility == DEATHRATTLE){
-                    deathRattleSubject();
-                    lastAbility = DEATHRATTLE;
-                    abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
-                    spend(TICK);
-                }else if(lastAbility == SACRIFICE){
-                    sacrificeSubject();
-                    abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
-                    spend(TICK);
-                }else if(lastAbility == SUMMON){
-                    extraSummonSubject();
-                    abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
-                    spend(TICK);
                 }
-
-            } else {
-                abilityCooldown--;
-            }
-
+            });
         } else if (phase == 2){
             actPhaseTwoSummon();
             return true;
@@ -781,49 +808,6 @@ public class DwarfMaster extends Boss {
         targetAbilityUses += Math.max(0, arenaJumps-2);
 
         return targetAbilityUses;
-    }
-
-    public boolean useAbility(){
-        boolean abilityUsed = false;
-        int abilityToUse = -1;
-
-        while (!abilityUsed){
-
-            if (abilitiesUsed == 0){
-                abilityToUse = BOMB_ABILITY;
-            } else if (abilitiesUsed == 1){
-                abilityToUse = SHOCKER_ABILITY;
-            } else {
-                abilityToUse = Random.Int(3);
-            }
-
-            //If we roll the same ability as last time, 9/10 chance to reroll
-            if (abilityToUse != lastAbility || Random.Int(10) == 0){
-                switch (abilityToUse){
-                    case BOMB_ABILITY : default:
-                        abilityUsed = throwBomb(this, enemy);
-                        //if Tengu cannot use his bomb ability first, use fire instead.
-                        if (abilitiesUsed == 0 && !abilityUsed){
-                            abilityToUse = FIRE_ABILITY;
-                            abilityUsed = throwFire(this, enemy);
-                        }
-                        break;
-                }
-            }
-
-        }
-
-
-        //spend only 1 turn if seriously behind on ability uses
-        if (targetAbilityUses() - abilitiesUsed >= 4){
-            spend(TICK);
-        } else {
-            spend(2 * TICK);
-        }
-
-        lastAbility = abilityToUse;
-        abilitiesUsed++;
-        return lastAbility == FIRE_ABILITY;
     }
 
     public static boolean throwFire(final Char thrower, final Char target){
@@ -1301,12 +1285,24 @@ public class DwarfMaster extends Boss {
 
     private void actPhaseTwoSummon(){
         if(wave == 0){
-            yell(Messages.get(this, "wave_1"));
-            new GnollShiled().spawnAround(pos);
-            summonSubject(2, DwarfMaster.DKGhoul.class);
-            summonSubject(3, DwarfMaster.DKGhoul.class);
-            ++wave;
-            spend(TICK*9);
+            Actor.add(new Actor() {
+
+                {
+                    actPriority = VFX_PRIO;
+                }
+
+                @Override
+                protected boolean act() {
+                    Actor.remove(this);
+                    yell(Messages.get(DwarfMaster.class, "wave_1"));
+                    new GnollShiled().spawnAround(pos);
+                    summonSubject(2, DwarfMaster.DKGhoul.class);
+                    summonSubject(3, DwarfMaster.DKGhoul.class);
+                    ++wave;
+                    spend(TICK*9);
+                    return true;
+                }
+            });
         }else if(wave == 1){
             summonSubject(1, DwarfMaster.DKGhoul.class);
             summonSubject(5, DwarfMaster.DKMonk.class);
