@@ -287,6 +287,7 @@ public class InterlevelScene extends PixelScene {
 								break;
 							case ANCITYBOSS:
 								exboss(4);
+								break;
 							case GARDEN:
 								exboss(5);
 								break;

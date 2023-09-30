@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -54,7 +55,6 @@ public class CrystalMimic extends Mimic {
 
 	{
 		spriteClass = MimicSprite.Crystal.class;
-		flying = true;
 		FLEEING = new Fleeing();
 	}
 
@@ -107,6 +107,7 @@ public class CrystalMimic extends Mimic {
 
 	public void stopHiding(){
 		state = FLEEING;
+		Buff.affect(this, Levitation.class, Levitation.DURATION/2f);
 		//haste for 2 turns if attacking
 		if (alignment == Alignment.NEUTRAL){
 			Buff.affect(this, Haste.class, 2f);
