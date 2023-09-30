@@ -338,6 +338,7 @@ public class ColdChestBossLevel extends Level {
                             break;
                     }
                 }
+                Statistics.dimandchestmazeCollected++;
 
                 pro = START;
                 break;
@@ -395,6 +396,7 @@ public class ColdChestBossLevel extends Level {
                                     }
                                 }
                             }
+                            Statistics.dimandchestmazeCollected++;
 
                             switch (Random.NormalIntRange(0,8)){
                                 case 0:
@@ -488,6 +490,7 @@ public class ColdChestBossLevel extends Level {
                                     }
                                 }
                             }
+                            Statistics.dimandchestmazeCollected++;
 
                             //生成四个水晶，宝箱王持续回血
                             for (int i : FourCrystal) {

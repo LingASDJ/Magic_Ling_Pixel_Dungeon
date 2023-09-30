@@ -870,7 +870,7 @@ public abstract class Mob extends Char {
 		PaswordBadges.loadGlobal();
 		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
 		if (global.contains( Badges.Badge.KILL_APPLE ) && global.contains( Badges.Badge.KILL_DM720 ) &&
-				global.contains( Badges.Badge.KILL_MG) && passwordbadges.contains(PaswordBadges.Badge.FIREGIRL) && passwordbadges.contains(PaswordBadges.Badge.DRAWF_HEAD) && passwordbadges.contains(PaswordBadges.Badge.SAKA_DIED)) {
+				global.contains( Badges.Badge.KILL_MG) && passwordbadges.contains(PaswordBadges.Badge.FIREGIRL) && passwordbadges.contains(PaswordBadges.Badge.DRAWF_HEAD) && passwordbadges.contains(PaswordBadges.Badge.SAKA_DIED) && !passwordbadges.contains(PaswordBadges.Badge.SPICEALBOSS)) {
 
 			PaswordBadges.Badge badge = PaswordBadges.Badge.SPICEALBOSS;
 			PaswordBadges.displayBadge( badge );
