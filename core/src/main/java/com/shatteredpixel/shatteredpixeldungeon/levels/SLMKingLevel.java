@@ -75,10 +75,18 @@ public class SLMKingLevel extends SewerLevel {
     }
 
     @Override
+    public int tunnelTile() {
+        return Terrain.WATER;
+    }
+
+    @Override
     protected int standardRooms(boolean forceMax) {
-        if (forceMax) return 3;
-        //2 to 3, average 2.5
-        return 2+Random.chances(new float[]{1, 1});
+        return 0;
+    }
+
+    @Override
+    protected int specialRooms(boolean forceMax) {
+        return 0;
     }
 
     protected Builder builder(){

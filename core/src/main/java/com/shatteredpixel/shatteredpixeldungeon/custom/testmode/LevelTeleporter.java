@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.testmode;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -81,7 +82,7 @@ public class LevelTeleporter extends TestItem {
     public void execute( Hero hero, String action ) {
         super.execute( hero, action );
         if(action.equals(AC_DESCEND)) {
-            if(Dungeon.hero.buff(LockedFloor.class) != null ) {
+            if(Dungeon.hero.buff(LockedFloor.class) != null || Dungeon.depth>26 && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) || Dungeon.depth>28 && Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ) {
                 GLog.w(Messages.get(this,"cannot_send"));
                 return;
             }

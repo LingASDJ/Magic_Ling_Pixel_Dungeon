@@ -117,6 +117,9 @@ public class Statistics {
 	//珍宝
 	public static int dimandchestmazeCollected;
 
+	//宝物生成限制，避免有byd的十字架重复刷取
+	public static int fuckGeneratorAlone;
+
 	public static int dageCollected;
 
 	//首次对决
@@ -150,6 +153,7 @@ public class Statistics {
 		foodEaten		= 0;
 		goldchestmazeCollected = 0;
 		dimandchestmazeCollected =0;
+		fuckGeneratorAlone = 0;
 		itemsCrafted    = 0;
 		piranhasKilled	= 0;
 		ankhsUsed		= 0;
@@ -295,6 +299,8 @@ public class Statistics {
 
 	private static final String LOVX		= "lovx";
 
+	private static final String FUCKALONE		= "fuckplayer";
+
 
 	public static void storeInBundle( Bundle bundle ) {
 
@@ -303,6 +309,8 @@ public class Statistics {
 
 		bundle.put(LOVE,findMoon);
 		bundle.put(LOVX,deadGo);
+
+		bundle.put(FUCKALONE,fuckGeneratorAlone);
 
 		//分数
 		bundle.put( PROG_SCORE,  progressScore );
@@ -396,6 +404,8 @@ public class Statistics {
 		ChaicBlood   = bundle.getInt( CHACEBLOOD );
 
 		bossWeapons = bundle.getInt(BDTX);
+
+		fuckGeneratorAlone = bundle.getInt(FUCKALONE);
 
 		HealingIsDied   = bundle.getInt( HEALDIED );
 

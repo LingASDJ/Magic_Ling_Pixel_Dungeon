@@ -94,7 +94,7 @@ public class Assets {
 		public static final String TILES_DIED	= "environment/tiles_died.png";
 		public static final String TILES_GOLD	= "environment/tiles_gold.png";
 
-		public static final String WATER_COLD= "environment/water2.png";
+		public static final String WATER_COLD= "environment/water-1.png";
 		public static final String PRISON_EXIT_OLD  = "environment/custom_tiles/prison_exit_old.png";
 		public static final String PRISON_EXIT_NEW  = "environment/custom_tiles/prison_exit_new.png";
 		public static final String P_BOSS       = "environment/custom_tiles/p_boss.png";

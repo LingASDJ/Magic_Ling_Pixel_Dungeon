@@ -252,6 +252,10 @@ public class WndChallenges extends Window {
 			info = new IconButton(Icons.get(Icons.INFO)){
 				@Override
 				protected void onClick() {
+//					if(challenge.equals("stronger_bosses")){
+//						return;
+//					}
+
 					ShatteredPixelDungeon.scene().add(
 							new WndTitledMessage(new Image(ChallengeInfo.this.icon),
 									Messages.titleCase(Messages.get(Challenges.class, challenge)),

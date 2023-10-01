@@ -21,7 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MORELEVEL;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -167,6 +167,9 @@ public abstract class Level implements Bundlable {
 		TRAPS,
 		SECRETS,
 		BIGTRAP,
+		THREEWELL,
+		LINKROOM,
+		DIEDROOM
 	}
 
 	public boolean isLevelExplored( int depth ){
@@ -264,6 +267,60 @@ public abstract class Level implements Bundlable {
 		return 48*48;
 	}
 
+	private void initializeLevelDepthType(){
+		if(Dungeon.isChallenged(MOREROOM)){
+			int randomInt = Random.Int(10);
+			if (randomInt == 0) {
+				feeling = Feeling.CHASM;
+			} else if (randomInt == 1) {
+				feeling = Feeling.WATER;
+			} else if (randomInt == 2) {
+				feeling = Feeling.GRASS;
+			} else if (randomInt == 3) {
+				feeling = Feeling.DARK;
+				addItemToSpawn(new Torch());
+				viewDistance = Math.round(viewDistance / 2f);
+			} else if (randomInt >= 4 && randomInt <= 5) {
+				feeling = Feeling.TRAPS;
+			} else if (randomInt == 6) {
+				feeling = Feeling.SECRETS;
+			} else if (randomInt == 7) {
+				feeling = Feeling.BIGTRAP;
+			} else if (randomInt == 8) {
+				feeling = Feeling.THREEWELL;
+			} else {
+				feeling = Feeling.LINKROOM;
+			}
+		} else {
+			switch (Random.Int( 14 )) {
+				case 0:
+					feeling = Feeling.CHASM;
+					break;
+				case 1:
+					feeling = Feeling.WATER;
+					break;
+				case 2:
+					feeling = Feeling.GRASS;
+					break;
+				case 3:
+					feeling = Feeling.DARK;
+					addItemToSpawn(new Torch());
+					viewDistance = Math.round(viewDistance/2f);
+					break;
+				case 4:
+					feeling = Feeling.LARGE;
+					addItemToSpawn(Generator.random(Generator.Category.FOOD));
+					break;
+				case 5:
+					feeling = Feeling.TRAPS;
+					break;
+				case 6:
+					feeling = Feeling.SECRETS;
+					break;
+			}
+		}
+	}
+
 	public void create() {
 
 		Random.pushGenerator( Dungeon.seedCurDepth() );
@@ -300,40 +357,8 @@ public abstract class Level implements Bundlable {
 				addItemToSpawn( new StoneOfIntuition() );
 			}
 			
-			if (Dungeon.depth > 1 && !Dungeon.bossLevel()) {
-				//50% chance of getting a level feeling
-				//~7.15% chance for each feeling
-				switch (Random.Int( 14 )) {
-					case 0:
-						feeling = Feeling.CHASM;
-						break;
-					case 1:
-						feeling = Feeling.WATER;
-						break;
-					case 2:
-						feeling = Feeling.GRASS;
-						break;
-					case 3:
-						feeling = Feeling.DARK;
-						addItemToSpawn(new Torch());
-						viewDistance = Math.round(viewDistance/2f);
-						break;
-					case 4:
-						feeling = Feeling.LARGE;
-						addItemToSpawn(Generator.random(Generator.Category.FOOD));
-						break;
-					case 5:
-						feeling = Feeling.TRAPS;
-						break;
-					case 6:
-						feeling = Feeling.SECRETS;
-						break;
-					case 7:
-						if(Dungeon.isChallenged(MORELEVEL)){
-							feeling = Feeling.BIGTRAP;
-						}
-						break;
-				}
+			if (Dungeon.depth > 1 && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+				initializeLevelDepthType();
 			}
 		}
 		

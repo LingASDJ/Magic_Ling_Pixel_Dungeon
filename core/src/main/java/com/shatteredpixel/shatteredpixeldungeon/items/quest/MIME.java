@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -103,6 +104,7 @@ public class MIME extends Item {
     public boolean doPickUp(Hero hero, int pos) {
         if (super.doPickUp(hero, pos)) {
             if(!isMimeSupported){
+                Statistics.dimandchestmazeCollected++;
                 isMimeSupported = true;
             }
             return true;

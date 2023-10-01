@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.CYELLOW;
 import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.GREEN_COLOR;
 import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.RED_COLOR;
@@ -176,7 +177,8 @@ public class MenuPane extends Component {
 		btnMenu = new MenuButton();
 		add( btnMenu );
 
-		version = new BitmapText( "v" + Game.version, PixelScene.pixelFont);
+		version = new BitmapText( "v" + Game.version + (Dungeon.isChallenged(PRO)?"-DEV_MODE":""),
+				PixelScene.pixelFont);
 		version.alpha( 0.5f );
 		add(version);
 

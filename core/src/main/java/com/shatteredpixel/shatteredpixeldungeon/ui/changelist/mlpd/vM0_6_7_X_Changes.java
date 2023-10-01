@@ -146,6 +146,17 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(i, ("熔岩火龙"),
                 ("丛林暴乱的真相")));
 
+        changes = new ChangeInfo("v0.6.5.0-Alpha5.2-国庆", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X86")));
+
         changes = new ChangeInfo("v0.6.5.0-Alpha5-中秋", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);

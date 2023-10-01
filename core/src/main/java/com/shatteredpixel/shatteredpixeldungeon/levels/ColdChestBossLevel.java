@@ -322,7 +322,7 @@ public class ColdChestBossLevel extends Level {
 
                 //进行Roll判定
 
-                if(Statistics.dimandchestmazeCollected==0) {
+                if(Statistics.fuckGeneratorAlone==0) {
                     switch (Random.NormalIntRange(0, 3)) {
                         case 0:
                             drop(new MIME.GOLD_ONE(), 634);
@@ -338,7 +338,7 @@ public class ColdChestBossLevel extends Level {
                             break;
                     }
                 }
-                Statistics.dimandchestmazeCollected++;
+                Statistics.fuckGeneratorAlone++;
 
                 pro = START;
                 break;
@@ -357,7 +357,7 @@ public class ColdChestBossLevel extends Level {
                             boss.HP = 360;
 
                             //进行Roll判定 获得一定的随机坐标
-                            if(Statistics.dimandchestmazeCollected==1) {
+                            if(Statistics.fuckGeneratorAlone==1) {
                                 if (Random.Float() < 0.5f) {
                                     switch (Random.NormalIntRange(0, 4)) {
                                         case 0:
@@ -396,7 +396,7 @@ public class ColdChestBossLevel extends Level {
                                     }
                                 }
                             }
-                            Statistics.dimandchestmazeCollected++;
+                            Statistics.fuckGeneratorAlone++;
 
                             switch (Random.NormalIntRange(0,8)){
                                 case 0:
@@ -469,7 +469,7 @@ public class ColdChestBossLevel extends Level {
                             //drop( new PotionOfPurity(),648 );
 
                             //进行Roll判定
-                            if(Statistics.dimandchestmazeCollected==2) {
+                            if(Statistics.fuckGeneratorAlone==2) {
                                 if (Random.Float() < 0.5f) {
                                     switch (Random.NormalIntRange(0, 1)) {
                                         case 0:
@@ -490,7 +490,7 @@ public class ColdChestBossLevel extends Level {
                                     }
                                 }
                             }
-                            Statistics.dimandchestmazeCollected++;
+                            Statistics.fuckGeneratorAlone++;
 
                             //生成四个水晶，宝箱王持续回血
                             for (int i : FourCrystal) {

@@ -89,8 +89,8 @@ public class ShatteredPixelDungeon extends Game {
 				com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFear.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAffection" );
 		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDeepSleep.class,
-				"com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDeepenedSleep" );
+				com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDeepenedSleep.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDeepSleep" );
 
 		//v0.9.3
 		com.watabou.utils.Bundle.addAlias(

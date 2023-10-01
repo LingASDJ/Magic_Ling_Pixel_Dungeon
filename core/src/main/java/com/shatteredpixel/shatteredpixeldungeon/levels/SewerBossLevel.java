@@ -57,6 +57,11 @@ public class SewerBossLevel extends SewerLevel {
 	}
 	
 	private int stairs = 0;
+
+	@Override
+	public int tunnelTile() {
+		return Terrain.WATER;
+	}
 	
 	@Override
 	public void playLevelMusic() {
@@ -108,9 +113,12 @@ public class SewerBossLevel extends SewerLevel {
 	
 	@Override
 	protected int standardRooms(boolean forceMax) {
-		if (forceMax) return 3;
-		//2 to 3, average 2.5
-		return 2+Random.chances(new float[]{1, 1});
+		return 0;
+	}
+
+	@Override
+	protected int specialRooms(boolean forceMax) {
+		return 0;
 	}
 	
 	protected Builder builder(){

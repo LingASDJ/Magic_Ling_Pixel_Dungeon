@@ -55,7 +55,7 @@ public class WandOfFireblast extends DamageWand {
 	public static class PlaceHolderX extends WandOfFireblast {
 
 		{
-			image = ItemSpriteSheet.WAND_BLAST_WAVE;
+			image = ItemSpriteSheet.WAND_FIREBOLT;
 		}
 
 		@Override

@@ -63,10 +63,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
-import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.DimandBook;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.TestBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
@@ -179,7 +179,7 @@ public enum HeroClass {
 			new PotionOfMindVision().quantity(50).identify().collect();
 
 			new PotionOfLiquidFlame().quantity(50).identify().collect();
-			new DimandBook().quantity(50).identify().collect();
+			new SmallRation.BlackMoon().quantity(50).identify().collect();
 			new PotionOfExperience().quantity(100).identify().collect();
 			new ScrollOfMagicMapping().quantity(100).identify().collect();
 			new ScrollOfUpgrade().quantity(100).identify().collect();

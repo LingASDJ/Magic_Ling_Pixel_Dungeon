@@ -21,10 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.deadGo;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
@@ -116,7 +117,7 @@ public class DriedRose extends Artifact {
 			actions.remove(AC_EQUIP);
 			return actions;
 		}
-		if (isEquipped( hero ) && charge == chargeCap && !cursed && ghostID == 0) {
+		if (isEquipped( hero ) && charge == chargeCap && !cursed && ghostID == 0 && !deadGo) {
 			actions.add(AC_SUMMON);
 		}
 		if (ghostID != 0){
@@ -565,8 +566,9 @@ public class DriedRose extends Artifact {
 				damage(1, this);
 			}
 
-			if(Statistics.findMoon){
+			if(deadGo){
 				die(true);
+				GLog.n(Messages.get(DriedRose.class, "sorry"));
 			}
 			
 			if (!isAlive()) {

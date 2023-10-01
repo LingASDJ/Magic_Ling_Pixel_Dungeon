@@ -23,7 +23,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FetidRat;
@@ -493,7 +492,7 @@ public class MobPlacer extends TestItem{
         ELE_CHAOS(Elemental.ChaosElemental.class, DictSpriteSheet.ELEMENTAL_CHAOS),
 
         RIPPER(RipperDemon.class, DictSpriteSheet.RIPPER),
-        SPAWNER(DemonSpawner.class, DictSpriteSheet.SPAWNER),
+//        SPAWNER(DemonSpawner.class, DictSpriteSheet.SPAWNER),
         EYE(Eye.class, DictSpriteSheet.EYE),
         SUCCUBUS(Succubus.class, DictSpriteSheet.SUCCUBUS),
         SCORPIO(Scorpio.class, DictSpriteSheet.SCORPIO),

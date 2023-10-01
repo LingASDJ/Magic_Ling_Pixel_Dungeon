@@ -5,7 +5,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.FURROWED_GRASS;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.PEDESTAL;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -49,7 +48,7 @@ public class LoveRoom extends SpecialRoom {
         int centerY = center.y;
         int radius = (right - left) / 2;
 
-        int MiddlePos = (top + 7) * level.width() + left + 7;
+        int MiddlePos = (top + 8) * level.width() + left + 8;
 
         Mob n = new PinkGhostNPC();
         n.pos = MiddlePos;
@@ -60,7 +59,7 @@ public class LoveRoom extends SpecialRoom {
         Painter.drawLine(level, new Point(right, bottom), new Point(left, bottom), WATER);
         Painter.drawLine(level, new Point(left, bottom), new Point(left, top),  CHASM);
 
-        Painter.fill(level,this, WALL);
+        Painter.fill(level,this, WATER);
 
         // 绘制爱心
 
@@ -74,7 +73,7 @@ public class LoveRoom extends SpecialRoom {
         Painter.drawLine(level, new Point(centerX + radius, centerY), new Point(centerX, centerY + radius), PEDESTAL);
 
         // 绘制眼睛外圈和门
-        int eyeRadius = radius / 2;
+        int eyeRadius = radius / 4;
         Painter.drawCircle(level, center, eyeRadius + 5, EMPTY);
 
         Painter.drawCircle(level, center, eyeRadius, FURROWED_GRASS);

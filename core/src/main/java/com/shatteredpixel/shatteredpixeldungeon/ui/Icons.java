@@ -104,6 +104,13 @@ public enum Icons {
 	DEPTH_SECRETS,
 
 	DEPTH_BTRAPS,
+
+	DEPTH_WELLS,
+
+	DEPTH_LINK_ROOM,
+
+	DEPTH_DIED,
+
 	CHAL_COUNT,
 
 	HAPPY_ICON,
@@ -340,6 +347,15 @@ public enum Icons {
 			case DEPTH_BTRAPS:
 				icon.frame( icon.texture.uvRectBySize( 112, 64, 7, 7 ) );
 				break;
+			case DEPTH_WELLS:
+				icon.frame( icon.texture.uvRectBySize( 120, 64, 7, 7 ) );
+				break;
+			case DEPTH_LINK_ROOM:
+				icon.frame( icon.texture.uvRectBySize( 128, 64, 7, 7 ) );
+				break;
+			case DEPTH_DIED:
+				icon.frame( icon.texture.uvRectBySize( 136, 64, 7, 7 ) );
+				break;
 			case CHAL_COUNT:
 				icon.frame( icon.texture.uvRectBySize( 48, 72, 7, 7 ) );
 				break;
@@ -421,6 +437,12 @@ public enum Icons {
 				return get(DEPTH_TRAPS);
 			case BIGTRAP:
 				return get(DEPTH_BTRAPS);
+			case THREEWELL:
+				return get(DEPTH_WELLS);
+			case DIEDROOM:
+				return get(DEPTH_DIED);
+			case LINKROOM:
+				return get(DEPTH_LINK_ROOM);
 			case SECRETS:
 				return get(DEPTH_SECRETS);
 		}

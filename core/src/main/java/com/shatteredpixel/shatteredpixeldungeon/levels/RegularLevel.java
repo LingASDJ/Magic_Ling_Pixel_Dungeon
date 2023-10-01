@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
 
@@ -59,8 +60,10 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LoopBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretWellRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.LanFireRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicWellRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NxhyShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NyzBombAndBooksRoom;
@@ -235,8 +238,8 @@ public abstract class RegularLevel extends Level {
 		initRooms.add( roomExit = new ExitRoom());
 
 		//force max standard rooms and multiple by 1.5x for large levels
-		int standards = standardRooms(feeling == Feeling.LARGE);
-		if (feeling == Feeling.LARGE){
+		int standards = standardRooms(feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM));
+		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM)){
 			standards = (int)Math.ceil(standards * 1.5f);
 		}
 		for (int i = 0; i < standards; i++) {
@@ -259,9 +262,9 @@ public abstract class RegularLevel extends Level {
 		}
 
 //		initRooms.add(new EyeRoom());
-//		initRooms.add(new YinYangRoom());
+//		initRooms.add(new YinYangRoom());z
 
-		if(RegularLevel.holiday == Holiday.ZQJ){
+		if(RegularLevel.holiday == Holiday.ZQJ ){
 			if(Dungeon.depth == 17){
 				initRooms.add(new HeartRoom());
 			}
@@ -284,9 +287,13 @@ public abstract class RegularLevel extends Level {
 		}
 
 		//force max special rooms and add one more for large levels
-		int specials = specialRooms(feeling == Feeling.LARGE);
-		if (feeling == Feeling.LARGE){
+		int specials = specialRooms(feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM));
+		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM)){
 			specials++;
+		}
+		if(feeling == Feeling.THREEWELL){
+			initRooms.add(new SecretWellRoom());
+			initRooms.add(new MagicWellRoom());
 		}
 		SpecialRoom.initForFloor();
 		for (int i = 0; i < specials; i++) {
@@ -365,7 +372,7 @@ public abstract class RegularLevel extends Level {
 		if (Dungeon.depth <= 1) return 0;
 
 		int mobs = 3 + Dungeon.depth % 5 + Random.Int(3);
-		if (feeling == Feeling.LARGE){
+		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM)){
 			mobs = (int)Math.ceil(mobs * 1.33f);
 		}
 		return mobs;
@@ -500,7 +507,7 @@ public abstract class RegularLevel extends Level {
 		// drops 3/4/5 items 60%/30%/10% of the time
 		int nItems = 3 + Random.chances(new float[]{6, 3, 1});
 
-		if (feeling == Feeling.LARGE){
+		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM)){
 			nItems += 2;
 		}
 		

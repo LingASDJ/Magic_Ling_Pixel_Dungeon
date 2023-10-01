@@ -58,19 +58,19 @@ public class Gauntlet extends MeleeWeapon {
 		switch (Random.Int(6)) {
 			case 0:case 1:case 2:case 3:
 			default:
-				return max(buffedLvl());
+				return super.proc( attacker, defender, damage );
 			case 4: case 5:
 				Buff.affect(defender, HalomethaneBurning.class).reignite(defender);
 				if(Random.Float()<0.55f && level <3) {
 					Buff.prolong(attacker, Vertigo.class, 3f);
 				}
-				return max(buffedLvl());
+				return super.proc( attacker, defender, damage );
 		}
 	}
 
 	public String statsInfo(){
 		if (isIdentified()){
-			return Messages.get(this, "stats_desc", 1+1*buffedLvl());
+			return Messages.get(this, "stats_desc", 1+ buffedLvl());
 		} else {
 			return Messages.get(this, "typical_stats_desc", 1);
 		}

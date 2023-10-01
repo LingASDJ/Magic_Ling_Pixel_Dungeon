@@ -177,6 +177,7 @@ public class WndStartGame extends Window {
 
 
 
+
 		@Override
 		protected void layout() {
 			super.layout();
@@ -299,9 +300,10 @@ public class WndStartGame extends Window {
 					if( !visible && GamesInProgress.selectedClass != null){
 						visible = true;
 					}
-					if (parent != null) {
-						icon(Icons.get(SPDSettings.challenges() > 0 ?
-								Icons.CHALLENGE_ON : Icons.CHALLENGE_OFF));
+					if (SPDSettings.challenges() > 0) {
+						icon(Icons.get( Icons.CHALLENGE_ON));
+					} else {
+						icon(Icons.get( Icons.CHALLENGE_OFF));
 					}
 					super.update();
 				}
@@ -331,6 +333,8 @@ public class WndStartGame extends Window {
 		resize(WIDTH, HEIGHT);
 
 	}
+
+
 
 	private static class HeroBtn extends IconButton {
 
