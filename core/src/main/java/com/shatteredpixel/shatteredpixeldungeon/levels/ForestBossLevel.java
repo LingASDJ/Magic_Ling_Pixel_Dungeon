@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -197,15 +198,20 @@ public class ForestBossLevel extends Level {
         GameScene.updateMap( HOME );
         Dungeon.observe();
 
-        drop( new PotionOfPurity(),   WIDTH*11+15  );
-        drop( new PotionOfPurity(),   WIDTH*15+16  );
-        drop( new PotionOfPurity(),   WIDTH*11+17  );
+        if (!Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+            drop(new PotionOfPurity.PotionOfPurityLing().identify(), WIDTH * 11 + 15);
+            drop(new PotionOfPurity.PotionOfPurityLing().identify(), WIDTH * 15 + 16);
+            drop(new PotionOfPurity.PotionOfPurityLing().identify(), WIDTH * 11 + 17);
+        }
     }
 
     @Override
     public void unseal() {
         super.unseal();
-
+        //清理掉落物
+        for (Heap heap : heaps.valueList()){
+            heap.destroy();
+        }
         set( getBossDoor, Terrain.EMPTY );
         GameScene.updateMap( getBossDoor );
 

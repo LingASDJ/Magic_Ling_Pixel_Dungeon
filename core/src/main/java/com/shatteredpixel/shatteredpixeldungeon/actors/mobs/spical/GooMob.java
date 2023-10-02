@@ -1,7 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
+
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -10,30 +12,34 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class GooMob extends Mob {
 
+
+
     {
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-            HP = HT = 180;
-        } else {
-            HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 120 : 100;
-        }
+        HP = HT = 180;
 
         EXP = 10;
         defenseSkill = 8;
+        maxLvl = 30;
         spriteClass = GooSprite.class;
 
-        properties.add(Property.BOSS);
+        flying = Dungeon.isChallenged(MOREROOM);
+
+        properties.add(Property.MINIBOSS);
         properties.add(Property.DEMONIC);
         properties.add(Property.ACIDIC);
     }
@@ -44,7 +50,7 @@ public class GooMob extends Mob {
     @Override
     public int damageRoll() {
         int min = 1;
-        int max = (HP*2 <= HT) ? 12 : 8;
+        int max = (HP*2 <= HT) ? 16 : 10;
         if (pumpedUp > 0) {
             pumpedUp = 0;
             return Random.NormalIntRange( min*3, max*3 );
@@ -70,26 +76,26 @@ public class GooMob extends Mob {
     public int drRoll() {
         return Random.NormalIntRange(0, 2);
     }
-
+    public static boolean seenBefore = false;
     @Override
     public boolean act() {
+        LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+        if(lock == null && !seenBefore && Dungeon.level.heroFOV[pos]){
+            Dungeon.level.seal();
+            seenBefore = false;
+        }
 
         if (Dungeon.level.water[pos] && HP < HT) {
             HP += healInc;
 
-            LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+
             if (lock != null) lock.removeTime(healInc*2);
 
             if (Dungeon.level.heroFOV[pos] ){
                 sprite.emitter().burst( Speck.factory( Speck.HEALING ), healInc );
             }
-            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && healInc < 3) {
+            if (healInc < 3) {
                 healInc++;
-            }
-            if (HP*2 > HT) {
-                BossHealthBar.bleed(false);
-                ((GooSprite)sprite).spray(false);
-                HP = Math.min(HP, HT);
             }
         } else {
             healInc = 1;
@@ -167,9 +173,8 @@ public class GooMob extends Mob {
         } else {
 
             pumpedUp++;
-            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
-                pumpedUp++;
-            }
+            pumpedUp++;
+
 
             ((GooSprite)sprite).pumpUp( pumpedUp );
 
@@ -214,8 +219,29 @@ public class GooMob extends Mob {
     }
 
     @Override
+    public void notice() {
+        super.notice();
+        if (!BossHealthBar.isAssigned()) {
+            BossHealthBar.assignBoss(this);
+            yell(Messages.get(this, "notice"));
+        }
+    }
+
+    @Override
     public void die( Object cause ) {
         super.die( cause );
+        Dungeon.level.unseal();
+        //60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5
+        int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
+        for (int i = 0; i < blobs; i++){
+            int ofs;
+            do {
+                ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
+            } while (!Dungeon.level.passable[pos + ofs]);
+            Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
+        }
+        playBGM(Assets.BGM_1, true);
+        GameScene.bossSlain();
     }
 
     private final String PUMPEDUP = "pumpedup";
@@ -236,8 +262,6 @@ public class GooMob extends Mob {
         super.restoreFromBundle( bundle );
 
         pumpedUp = bundle.getInt( PUMPEDUP );
-        if (state != SLEEPING) BossHealthBar.assignBoss(this);
-        if ((HP*2 <= HT)) BossHealthBar.bleed(true);
 
         //if check is for pre-0.9.3 saves
         healInc = bundle.getInt(HEALINC);

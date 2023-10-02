@@ -109,7 +109,7 @@ public class WndChallenges extends Window {
 			cb.active = editable;
 
 			//Disable
-			if(Challenges.NAME_IDS[i].equals("cs")||(Challenges.NAME_IDS[i].equals("icedied")||(Challenges.NAME_IDS[i].equals("morelevel")))){
+			if(Challenges.NAME_IDS[i].equals("cs")||(Challenges.NAME_IDS[i].equals("icedied"))){
 				cb.active = false;
 				cb.checked(false);
 				cb.visible=false;
@@ -252,15 +252,20 @@ public class WndChallenges extends Window {
 			info = new IconButton(Icons.get(Icons.INFO)){
 				@Override
 				protected void onClick() {
-//					if(challenge.equals("stronger_bosses")){
-//						return;
-//					}
-
-					ShatteredPixelDungeon.scene().add(
-							new WndTitledMessage(new Image(ChallengeInfo.this.icon),
-									Messages.titleCase(Messages.get(Challenges.class, challenge)),
-									Messages.get(Challenges.class, challenge+"_desc"))
-					);
+					if(challenge.equals("stronger_bosses")){
+						ShatteredPixelDungeon.scene().add(new WndHardNotification( new ItemSprite(ItemSpriteSheet.CHALLANEESICON_13, new ItemSprite.Glowing(0xff0000)),
+								Messages.get(WndChallenges.class, "boss_title"),
+								Messages.get(WndChallenges.class, "boss_desc"),
+								Messages.get(WndChallenges.class, "ok"),
+								0){
+						});
+					} else {
+						ShatteredPixelDungeon.scene().add(
+								new WndTitledMessage(new Image(ChallengeInfo.this.icon),
+										Messages.titleCase(Messages.get(Challenges.class, challenge)),
+										Messages.get(Challenges.class, challenge+"_desc"))
+						);
+					}
 				}
 			};
 			add( info );

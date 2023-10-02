@@ -446,7 +446,7 @@ public abstract class RegularPainter extends Painter {
 				validCells.size()/5);
 
 		//5x traps on traps level feeling, but the extra traps are all visible
-		for (int i = 0; i < (l.feeling == Level.Feeling.BIGTRAP ? 23*nTraps : l.feeling == Level.Feeling.TRAPS ?
+		for (int i = 0; i < (l.feeling == Level.Feeling.BIGTRAP ? 30*nTraps : l.feeling == Level.Feeling.TRAPS ?
 				5*nTraps :
 				nTraps); i++) {
 

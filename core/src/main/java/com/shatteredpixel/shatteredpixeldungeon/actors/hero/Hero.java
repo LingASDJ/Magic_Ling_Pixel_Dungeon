@@ -966,7 +966,7 @@ public class Hero extends Char {
 		}
 
 //		///测试坐标用
-//		GLog.w(String.valueOf(hero.pos));
+//		GLog.w(String.valueOf(holiday));
 
 		//携带该物品时，玩家血量低于一半后自动隐身一段回合。
 		//actMove实现

@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.CrivusFruitsFood;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -345,6 +346,12 @@ public class CrivusFruits extends Mob {
     @Override
     public void die(Object cause) {
         super.die(cause);
+
+        PotionOfPurity.PotionOfPurityLing potionOfPurityLing = Dungeon.hero.belongings.getItem(PotionOfPurity.PotionOfPurityLing.class);
+        if(potionOfPurityLing != null){
+            potionOfPurityLing.detachAll( hero.belongings.backpack );
+        }
+
         Dungeon.level.unseal();
         GameScene.bossSlain();
         GLog.n(Messages.get(this,"dead"));
@@ -406,7 +413,7 @@ public class CrivusFruits extends Mob {
         immunities.add( Vertigo.class );
     }
 
-    public void doYogLasers(){
+    public void doForestLasers(){
         boolean terrainAffected = false;
         HashSet<Char> affected = new HashSet<>();
         //delay fire on a rooted hero

@@ -151,7 +151,7 @@ public class NullDiedTO extends NTNPC {
             WndQuest.chating(this,chat);
             first=false;
         }else {
-            if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && Dungeon.depth == 28){
+            if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && Dungeon.depth == 27){
                 GLog.n("冒险家，快通过水晶之心离开这里吧……");
             } else {
                 Game.runOnRenderThread(new Callback() {

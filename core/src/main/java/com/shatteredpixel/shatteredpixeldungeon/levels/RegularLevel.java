@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
 
@@ -73,9 +74,12 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.GooRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.HeartRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.LinkRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.LoveRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.MagicDimandRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.OldDM300Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BurningTrap;
@@ -264,6 +268,19 @@ public abstract class RegularLevel extends Level {
 //		initRooms.add(new EyeRoom());
 //		initRooms.add(new YinYangRoom());z
 
+		if(feeling == Feeling.DIEDROOM){
+			switch (depth){
+				case 4:
+					initRooms.add(new GooRoom());
+				break;
+				case 14:
+					initRooms.add(new OldDM300Room());
+				break;
+			}
+
+		}
+
+
 		if(RegularLevel.holiday == Holiday.ZQJ ){
 			if(Dungeon.depth == 17){
 				initRooms.add(new HeartRoom());
@@ -292,9 +309,14 @@ public abstract class RegularLevel extends Level {
 			specials++;
 		}
 		if(feeling == Feeling.THREEWELL){
-			initRooms.add(new SecretWellRoom());
 			initRooms.add(new MagicWellRoom());
+			initRooms.add(new SecretWellRoom());
 		}
+
+		if(feeling == Feeling.LINKROOM){
+			initRooms.add(new LinkRoom());
+		}
+
 		SpecialRoom.initForFloor();
 		for (int i = 0; i < specials; i++) {
 			SpecialRoom s = SpecialRoom.createRoom();
@@ -375,6 +397,12 @@ public abstract class RegularLevel extends Level {
 		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM)){
 			mobs = (int)Math.ceil(mobs * 1.33f);
 		}
+
+		// 在特定挑战中怪物生成翻倍
+		if (Dungeon.isChallenged(MOREROOM)) {
+			mobs += Random.NormalIntRange(1,3);
+		}
+
 		return mobs;
 	}
 	

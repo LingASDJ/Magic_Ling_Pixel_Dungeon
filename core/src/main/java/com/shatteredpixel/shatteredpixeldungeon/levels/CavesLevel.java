@@ -21,10 +21,17 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OldDM300;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CavesPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
@@ -43,7 +50,10 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.StormTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.audio.Music;
@@ -92,6 +102,44 @@ public class CavesLevel extends RegularLevel {
 		if (forceMax) return 3;
 		//2 to 3, average 2.2
 		return 2+Random.chances(new float[]{4, 1});
+	}
+
+	@Override
+	public void seal() {
+		super.seal();
+		updateChasmTerrain();
+	}
+
+	@Override
+	public void unseal() {
+		super.unseal();
+		updateChasmTerrain();
+	}
+
+	public void updateChasmTerrain() {
+		for (int i = 0; i < map.length; i++) {
+			if (map[i] == Terrain.EMBERS) {
+				// 将 EMPTY_DECO 地块改为新地形
+				set(i, Terrain.STATUE);
+				GameScene.updateMap(i); // 更新地图显示
+				Camera.main.shake(4f,7f);
+			} else if(hero.buff(LockedFloor.class) == null && map[i] == Terrain.STATUE) {
+				// 将 CHASM 地块改为新地形
+				set(i, Terrain.EMPTY);
+				GameScene.updateMap(i); // 更新地图显示
+				GameScene.flash(Window.WATA_COLOR);
+			}
+			for (Mob m : Dungeon.level.mobs){
+				if (m instanceof OldDM300){
+					if(m.isAlive() && hero.buff(LockedFloor.class) != null){
+						ScrollOfTeleportation.appear(hero, m.pos+8);
+						GameScene.flash(Window.SKYBULE_COLOR);
+					}
+					playBGM(Assets.BGM_BOSSC, true);
+				}
+			}
+
+		}
 	}
 	
 	@Override

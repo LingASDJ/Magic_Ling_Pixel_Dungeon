@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
@@ -481,7 +482,7 @@ public class YogReal extends Boss {
         GameScene.bossSlain();
         Dungeon.level.unseal();
         super.die( cause );
-
+        PaswordBadges.BOSSRUSH();
         yell( Messages.get(this, "defeated") );
     }
 

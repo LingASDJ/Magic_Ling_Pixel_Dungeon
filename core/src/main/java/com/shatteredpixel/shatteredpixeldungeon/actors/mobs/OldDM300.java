@@ -21,10 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
@@ -33,30 +36,33 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300SpiderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-public class OldDM300 extends Mob {
+public class OldDM300 extends DM200 {
 	
 	{
-		spriteClass = DM300Sprite.class;
+		spriteClass =  DM300SpiderSprite.class;
 		
-		HP = HT = 240;
+		HP = HT = 320;
 		EXP = 30;
 		defenseSkill = 18;
-		maxLvl=-9999;
-		baseSpeed = 4.3f;
+		maxLvl=30;
+		baseSpeed = 1.45f;
 
-		properties.add(Property.BOSS);
+		properties.add(Property.LARGE);
+		properties.add(Property.MINIBOSS);
 		properties.add(Property.INORGANIC);
 	}
 	
@@ -74,11 +80,14 @@ public class OldDM300 extends Mob {
 	public int drRoll() {
 		return Random.NormalIntRange(0, 10);
 	}
-	
+	public static boolean seenBefore = false;
 	@Override
 	public boolean act() {
-		
-		//GameScene.add( Blob.seed( pos, 30, ToxicGas.class ) );
+		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+		if(lock == null && !seenBefore && Dungeon.level.heroFOV[pos]){
+			Dungeon.level.seal();
+		}
+		GameScene.add( Blob.seed( pos, 30, ToxicGas.class ) );
 		
 		return super.act();
 	}
@@ -89,11 +98,11 @@ public class OldDM300 extends Mob {
 		
 		if (Dungeon.level.map[step] == Terrain.WATER && HP < HT) {
 			
-			HP += Random.Int( 1, HT - HP );
+			HP += Random.Int( 1, (HT - HP)/3 );
 			sprite.emitter().burst( ElmoParticle.FACTORY, 5 );
 			
 			if (Dungeon.level.heroFOV[step] && Dungeon.hero.isAlive()) {
-				GLog.n( Messages.get(this, "repair") );
+				sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "repair"));
 			}
 		}
 		
@@ -123,6 +132,43 @@ public class OldDM300 extends Mob {
 		if (ch != null && ch != this) {
 			Buff.prolong( ch, Paralysis.class, 2 );
 		}
+	}
+
+	@Override
+	public void notice() {
+		super.notice();
+		if (!BossHealthBar.isAssigned()) {
+			BossHealthBar.assignBoss(this);
+			yell(Messages.get(this, "notice"));
+		}
+	}
+
+	@Override
+	public void die( Object cause ) {
+		super.die( cause );
+		playBGM(Assets.BGM_3, true);
+		Dungeon.level.unseal();
+		//60% chance of 2 shards, 30% chance of 3, 10% chance for 4. Average of 2.5
+		int shards = Random.chances(new float[]{0, 0, 6, 3, 1});
+		for (int i = 0; i < shards; i++){
+			int ofs;
+			do {
+				ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
+			} while (!Dungeon.level.passable[pos + ofs]);
+			Dungeon.level.drop( Generator.randomUsingDefaults(Generator.Category.MIS_T3), pos + ofs ).sprite.drop( pos );
+			Dungeon.level.drop( Generator.randomUsingDefaults(Generator.Category.POTION), pos + ofs ).sprite.drop( pos );
+			Dungeon.level.drop( Generator.randomUsingDefaults(Generator.Category.FOOD), pos + ofs ).sprite.drop( pos );
+			Dungeon.level.drop( Generator.randomUsingDefaults(Generator.Category.SEED), pos + ofs ).sprite.drop( pos );
+			Dungeon.level.drop( Generator.randomUsingDefaults(Generator.Category.WAND), pos).sprite.drop( pos );
+
+		}
+		GameScene.bossSlain();
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+			if (	mob instanceof DM201 ) {
+				mob.die( cause );
+			}
+		}
+		yell( Messages.get(this, "defeated") );
 	}
 
 	@Override

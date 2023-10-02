@@ -146,6 +146,39 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(i, ("熔岩火龙"),
                 ("丛林暴乱的真相")));
 
+        changes = new ChangeInfo("v0.6.5.0-Alpha6-国庆", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("新挑战：变幻莫测V0.1"),
+                ("追加两个随机地形感觉，整体战斗全面处于大地型，怪物生成变多，追加两个迷你Boss战。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项修改"),
+                ("1.迭代了UI材质\n\n2.优化了一些代码")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DEPTH_WELLS), ("更多地形认知"),
+                ("在变幻莫测中加入了更多地形认知!")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("基因突变"),
+                ("现在蝇群和重甲豺狼无法获得基因突变效果")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("灯火平衡"),
+                ("灯火进行了一波平衡，使之游玩起来更好玩。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_9), ("梦魇领袖"),
+                ("梦魇领袖进行了一些调整，并改名为绝命头目")));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X87")));
+
         changes = new ChangeInfo("v0.6.5.0-Alpha5.2-国庆", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);

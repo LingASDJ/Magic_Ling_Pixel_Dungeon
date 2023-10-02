@@ -69,9 +69,9 @@ public class LevelRules {
                 return new DwarfMasterBossLevel();
             case 26:
                 return new YogGodHardBossLevel();
-            case 28:
-                Buff.affect(hero, TestDwarfMasterLock.class).set(1, 1);
-                return new DM920BossLevel();
+//            case 28:
+//                Buff.affect(hero, TestDwarfMasterLock.class).set(1, 1);
+//                return new DM920BossLevel();
             default:
                 Statistics.deepestFloor--;
                 return new DeadEndLevel();

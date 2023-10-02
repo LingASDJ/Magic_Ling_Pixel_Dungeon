@@ -32,6 +32,7 @@ import com.watabou.utils.Random;
 
 public abstract class GooBossRoom extends StandardRoom {
 
+
 	@Override
 	public float[] sizeCatProbs() {
 		return new float[]{0, 1, 0};

@@ -21,10 +21,17 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GooMob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Ripple;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.JunglePainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -42,6 +49,8 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.particles.Emitter;
@@ -77,6 +86,42 @@ public class SewerLevel extends RegularLevel {
 				.setWater(feeling == Feeling.WATER ? 0.85f : 0.30f, 5)
 				.setGrass(feeling == Feeling.GRASS ? 0.80f : 0.20f, 4)
 				.setTraps(nTraps(), trapClasses(), trapChances());
+	}
+
+	@Override
+	public void seal() {
+		super.seal();
+		updateChasmTerrain();
+	}
+
+	@Override
+	public void unseal() {
+		super.unseal();
+		updateChasmTerrain();
+	}
+
+	public void updateChasmTerrain() {
+		for (int i = 0; i < map.length; i++) {
+			if (map[i] == Terrain.EMPTY_DECO) {
+				// 将 EMPTY_DECO 地块改为新地形
+				set(i, Terrain.STATUE);
+				GameScene.updateMap(i); // 更新地图显示
+				Camera.main.shake(1f,3f);
+			} else if(hero.buff(LockedFloor.class) == null && map[i] == Terrain.STATUE) {
+				// 将 CHASM 地块改为新地形
+				set(i, Terrain.WATER);
+				GameScene.updateMap(i); // 更新地图显示
+			}
+			for (Mob m : Dungeon.level.mobs){
+				if (m instanceof GooMob){
+					if(m.isAlive() && hero.buff(LockedFloor.class) != null){
+						ScrollOfTeleportation.appear(hero, m.pos+1);
+					}
+					playBGM(Assets.BGM_BOSSA, true);
+				}
+			}
+			GameScene.flash(Window.CBLACK);
+		}
 	}
 	
 	@Override

@@ -39,6 +39,14 @@ import com.watabou.utils.PathFinder;
 import java.util.ArrayList;
 
 public class PotionOfPurity extends Potion {
+	public static class PotionOfPurityLing extends PotionOfPurity {
+		{
+			icon = ItemSpriteSheet.Icons.POTION_PURITY;
+			image = ItemSpriteSheet.POTION_INDIGO;
+			affectedBlobs = new ArrayList<>(new BlobImmunity().immunities());
+		}
+	}
+
 	
 	private static final int DISTANCE	= 3;
 	

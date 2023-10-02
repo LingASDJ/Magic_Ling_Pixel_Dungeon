@@ -83,8 +83,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
@@ -107,7 +107,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSt
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.HaloDart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.plants.SkyBlueFireBloom;
 
 import java.util.List;
@@ -188,11 +188,11 @@ public enum HeroClass {
 
 			new SkyBlueFireBloom.Seed().quantity(51).identify().collect();
 			new AikeLaier.Seed().quantity(51).identify().collect();
-			new Firebloom.Seed().quantity(15).identify().collect();
+			new Fadeleaf.Seed().quantity(15).identify().collect();
 			new WandOfRegrowth().quantity(1).identify().collect();
 			new WandOfFrost().quantity(1).identify().collect();
 			new MagicalInfusion().quantity(1).identify().collect();
-			new ScrollOfMysticalEnergy().quantity(1).identify().collect();
+			new ScrollOfTeleportation().quantity(1).identify().collect();
 			new AquaBlast().quantity(1).identify().collect();
 			new TestBooks().quantity(1).identify().collect();
 

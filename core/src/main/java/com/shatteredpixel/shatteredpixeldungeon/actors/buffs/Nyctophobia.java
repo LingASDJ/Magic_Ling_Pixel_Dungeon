@@ -35,7 +35,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
 
         if(hero.lanterfire == 90){
             goodLanterFire();
-            spend(20f);
+            spend(200f);
         }
 
         if (hero.lanterfire < 51 && hero.lanterfire>31) {
@@ -58,7 +58,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
                     Buff.affect(hero, MagicGirlSayNoSTR.class).set( (100), 1 );
                     break;
             }
-            spend(50f);
+            spend(90f);
         }  else if(hero.lanterfire < 0){
             hero.damage( (Dungeon.depth/5)*(Math.abs(hero.lanterfire)/2)+10, this );
             spend(24f);
@@ -80,7 +80,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
             }
             if (hero.lanterfire >= 0 ) {
                 hero.damageLantern(1+Challenges.activeChallenges()/5);
-                spend(20f-(float) Dungeon.depth/5);
+                spend(20f-(float) Dungeon.depth/5+Challenges.activeChallenges());
             } else {
                 spend(STEP);
             }
@@ -125,7 +125,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
 
     @Override
     public void onDeath() {
-        GLog.n("无尽的黑暗涌入了你的意识，你最终被黑暗拖入了深渊...");
+        GLog.n(Messages.get(this, "ondeath"));
     }
 
     @Override

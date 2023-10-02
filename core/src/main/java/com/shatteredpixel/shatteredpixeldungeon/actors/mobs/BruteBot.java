@@ -47,7 +47,7 @@ public class BruteBot extends Mob implements Callback,Hero.Doom {
 
         loot = Generator.Category.WEAPON;
         lootChance = 0.25f;
-
+        properties.add(Property.NOBIG);
         properties.add(Property.MINIBOSS);
     }
 

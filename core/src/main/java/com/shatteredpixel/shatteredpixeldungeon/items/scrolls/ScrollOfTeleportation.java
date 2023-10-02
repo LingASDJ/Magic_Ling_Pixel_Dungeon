@@ -136,6 +136,11 @@ public class ScrollOfTeleportation extends Scroll {
 		if (!(Dungeon.level instanceof RegularLevel)){
 			return teleportInNonRegularLevel( hero, true );
 		}
+
+		if(Dungeon.level.locked){
+			GLog.w( Messages.get(ScrollOfTeleportation.class, "strong_tele") );
+			return false;
+		}
 		
 		RegularLevel level = (RegularLevel) Dungeon.level;
 		ArrayList<Integer> candidates = new ArrayList<>();
