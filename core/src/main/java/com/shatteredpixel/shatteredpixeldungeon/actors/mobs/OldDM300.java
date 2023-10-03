@@ -54,7 +54,7 @@ public class OldDM300 extends DM200 {
 	
 	{
 		spriteClass =  DM300SpiderSprite.class;
-		
+		state = PASSIVE;
 		HP = HT = 320;
 		EXP = 30;
 		defenseSkill = 18;
@@ -174,6 +174,9 @@ public class OldDM300 extends DM200 {
 	@Override
 	public void damage(int dmg, Object src) {
 		super.damage(dmg, src);
+		if (state == PASSIVE) {
+			state = HUNTING;
+		}
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 		if (lock != null && !isImmune(src.getClass())) lock.addTime(dmg*1.5f);
 	}

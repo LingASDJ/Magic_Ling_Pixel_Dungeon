@@ -17,7 +17,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearElementalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdGuardSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdRatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300AttackSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300SpiderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
@@ -41,7 +40,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MurdererSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NxhySprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.OGPDNQHZTT;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedSwarmSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SakaFishBossSprites;
@@ -128,13 +126,13 @@ public class vM0_6_7_X_Changes {
         changes.hardlight(Window.CBLACK);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new RedNecromancerSprite(), ("BossRush2.0"),
-                ("地牢发生了翻天覆地的改变，一切的矛头指向了死灵军团……")));
-
-        Image s = new DM300AttackSprite();
-        s.scale.set(PixelScene.align(0.74f));
-        changes.addButton(new ChangeButton(s, ("DM-ZERO"),
-                ("时间在这里停止流动，与DMZERO正面对决的即将到来")));
+//        changes.addButton(new ChangeButton(new RedNecromancerSprite(), ("BossRush2.0"),
+//                ("地牢发生了翻天覆地的改变，一切的矛头指向了死灵军团……")));
+//
+//        Image s = new DM300AttackSprite();
+//        s.scale.set(PixelScene.align(0.74f));
+//        changes.addButton(new ChangeButton(s, ("DM-ZERO"),
+//                ("时间在这里停止流动，与DMZERO正面对决的即将到来")));
 
         Image c = new IceSlowGirlSprites();
         c.scale.set(PixelScene.align(0.74f));
@@ -146,7 +144,7 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(i, ("熔岩火龙"),
                 ("丛林暴乱的真相")));
 
-        changes = new ChangeInfo("v0.6.5.0-Alpha6-国庆", true, "");
+        changes = new ChangeInfo("v0.6.5.0-Alpha6-6.5-国庆", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -175,6 +173,9 @@ public class vM0_6_7_X_Changes {
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_9), ("梦魇领袖"),
                 ("梦魇领袖进行了一些调整，并改名为绝命头目")));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X88")));
 
         changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
                 Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X87")));

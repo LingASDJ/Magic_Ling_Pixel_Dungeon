@@ -36,7 +36,7 @@ public class GooMob extends Mob {
         defenseSkill = 8;
         maxLvl = 30;
         spriteClass = GooSprite.class;
-
+        state = PASSIVE;
         flying = Dungeon.isChallenged(MOREROOM);
 
         properties.add(Property.MINIBOSS);
@@ -209,6 +209,11 @@ public class GooMob extends Mob {
     public void damage(int dmg, Object src) {
         boolean bleeding = (HP*2 <= HT);
         super.damage(dmg, src);
+
+        if (state == PASSIVE) {
+            state = HUNTING;
+        }
+
         if ((HP*2 <= HT) && !bleeding){
             sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Goo.class, "enraged"));
             ((GooSprite)sprite).spray(true);

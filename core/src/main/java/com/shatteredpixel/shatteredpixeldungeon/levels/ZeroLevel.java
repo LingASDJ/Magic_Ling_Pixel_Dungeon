@@ -31,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NxhyNpc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PinkLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.REN;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.obSir;
@@ -190,9 +189,9 @@ public class ZeroLevel extends Level {
         npc3.pos = (this.width * 18 + 20);
         mobs.add(npc3);
 
-        PinkLing god1= new PinkLing();
-        god1.pos = (this.width * 28 + 30);
-        mobs.add(god1);
+//        PinkLing god1= new PinkLing();
+//        god1.pos = (this.width * 28 + 30);
+//        mobs.add(god1);
 
         if (Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
             Nyz npc4= new Nyz();

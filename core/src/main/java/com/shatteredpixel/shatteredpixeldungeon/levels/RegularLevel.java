@@ -311,6 +311,7 @@ public abstract class RegularLevel extends Level {
 		if(feeling == Feeling.THREEWELL){
 			initRooms.add(new MagicWellRoom());
 			initRooms.add(new SecretWellRoom());
+			initRooms.add(new MagicWellRoom());
 		}
 
 		if(feeling == Feeling.LINKROOM){

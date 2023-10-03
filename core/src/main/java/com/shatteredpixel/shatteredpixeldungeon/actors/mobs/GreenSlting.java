@@ -9,7 +9,7 @@ public class GreenSlting extends Mob {
     {
         spriteClass = GreenSltingSprite.class;
         flying = true;
-        HP = HT = 24;
+        HP = HT = 15;
         defenseSkill = 2;
         maxLvl = 7;
     }
@@ -21,12 +21,12 @@ public class GreenSlting extends Mob {
 
     @Override
     public int attackSkill( Char target ) {
-        return 12;
+        return 8;
     }
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(4, 5);
+        return Random.NormalIntRange(2, 4);
     }
 }
 

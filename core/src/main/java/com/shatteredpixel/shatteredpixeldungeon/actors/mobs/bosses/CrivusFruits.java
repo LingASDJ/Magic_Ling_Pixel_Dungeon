@@ -90,7 +90,7 @@ public class CrivusFruits extends Mob {
     }
 
     private int phase = 1;
-    private int drop = Random.Int(5);
+
     private int summonsMade = 0;
 
     private float summonCooldown = 0;

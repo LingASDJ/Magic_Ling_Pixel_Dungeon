@@ -106,7 +106,7 @@ public class SewerLevel extends RegularLevel {
 				// 将 EMPTY_DECO 地块改为新地形
 				set(i, Terrain.STATUE);
 				GameScene.updateMap(i); // 更新地图显示
-				Camera.main.shake(1f,3f);
+				Camera.main.shake(3f,6f);
 			} else if(hero.buff(LockedFloor.class) == null && map[i] == Terrain.STATUE) {
 				// 将 CHASM 地块改为新地形
 				set(i, Terrain.WATER);

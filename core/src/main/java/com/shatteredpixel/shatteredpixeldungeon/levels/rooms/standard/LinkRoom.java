@@ -5,10 +5,10 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreenSlting;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OldDM300;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDHBLR;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -20,14 +20,15 @@ import com.watabou.utils.Random;
 public class LinkRoom extends StandardRoom {
 
     @Override
-    public int minWidth() {
-        return Math.max(7, super.minWidth());
-    }
-
+    public int minWidth() { return 7; }
     @Override
     public int minHeight() {
-        return Math.max(7, super.minHeight());
+        return 7;
     }
+    @Override
+    public int maxWidth() { return 7; }
+    @Override
+    public int maxHeight() { return 7; }
 
     @Override
     public void paint(Level level) {
@@ -55,7 +56,7 @@ public class LinkRoom extends StandardRoom {
         } else if(depth >= 15) {
             n = new BruteBot();
         } else if(depth >= 10) {
-            n = new OldDM300();
+            n = new DM200();
         } else if(depth >= 6){
             n = new SRPDHBLR();
         }

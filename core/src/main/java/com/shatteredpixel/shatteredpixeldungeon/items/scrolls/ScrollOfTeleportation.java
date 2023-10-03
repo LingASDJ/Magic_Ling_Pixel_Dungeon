@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
@@ -275,7 +276,7 @@ public class ScrollOfTeleportation extends Scroll {
 
 		ch.sprite.interruptMotion();
 
-		if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[ch.pos]){
+		if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[ch.pos] || Dungeon.level.feeling != Level.Feeling.DIEDROOM){
 			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 		}
 

@@ -82,7 +82,7 @@ public class WraithAmulet extends Artifact {
                         exp += level()>5 ? 20 : 40;
                         Buff.affect(Dungeon.hero, Invisibility.class, Invisibility.DURATION/2);
                         GLog.p(Messages.get(this,"ghost"));
-                        cooldown = 20 - (level);
+                        cooldown = 40 - (level);
                         charge--;
                     } else {
                         GLog.i(Messages.get(this,"nochareup"));

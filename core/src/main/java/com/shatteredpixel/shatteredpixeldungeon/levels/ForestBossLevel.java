@@ -208,10 +208,7 @@ public class ForestBossLevel extends Level {
     @Override
     public void unseal() {
         super.unseal();
-        //清理掉落物
-        for (Heap heap : heaps.valueList()){
-            heap.destroy();
-        }
+
         set( getBossDoor, Terrain.EMPTY );
         GameScene.updateMap( getBossDoor );
 

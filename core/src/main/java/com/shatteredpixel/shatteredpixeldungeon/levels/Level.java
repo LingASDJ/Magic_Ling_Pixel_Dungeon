@@ -1140,7 +1140,6 @@ public abstract class Level implements Bundlable {
 			
 		case Terrain.HIGH_GRASS:
 		case Terrain.FURROWED_GRASS:
-		case CHASM:
 			HighGrass.trample( this, cell);
 			break;
 
