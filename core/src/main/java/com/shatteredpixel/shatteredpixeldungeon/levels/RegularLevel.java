@@ -61,14 +61,15 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LoopBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretWellRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.HealWellRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.IdenityRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.LanFireRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicWellRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NxhyShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NyzBombAndBooksRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PitRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.RandomRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
@@ -309,9 +310,9 @@ public abstract class RegularLevel extends Level {
 			specials++;
 		}
 		if(feeling == Feeling.THREEWELL){
-			initRooms.add(new MagicWellRoom());
-			initRooms.add(new SecretWellRoom());
-			initRooms.add(new MagicWellRoom());
+			initRooms.add(new HealWellRoom());
+			initRooms.add(new RandomRoom());
+			initRooms.add(new IdenityRoom());
 		}
 
 		if(feeling == Feeling.LINKROOM){

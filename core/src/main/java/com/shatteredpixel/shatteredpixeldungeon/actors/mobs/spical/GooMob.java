@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -83,6 +84,11 @@ public class GooMob extends Mob {
         if(lock == null && !seenBefore && Dungeon.level.heroFOV[pos]){
             Dungeon.level.seal();
             seenBefore = false;
+            if(Dungeon.isChallenged(MOREROOM)) {
+                AlarmTrap alarmTrap = new AlarmTrap();
+                alarmTrap.pos = pos;
+                alarmTrap.activate();
+            }
         }
 
         if (Dungeon.level.water[pos] && HP < HT) {
@@ -212,6 +218,7 @@ public class GooMob extends Mob {
 
         if (state == PASSIVE) {
             state = HUNTING;
+            notice();
         }
 
         if ((HP*2 <= HT) && !bleeding){

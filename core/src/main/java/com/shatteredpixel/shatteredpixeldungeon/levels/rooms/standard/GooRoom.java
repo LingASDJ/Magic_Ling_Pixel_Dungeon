@@ -53,7 +53,7 @@ public class GooRoom extends StandardRoom {
     public void paint( Level level ) {
 
         Painter.fill( level, this, Terrain.WALL );
-        Painter.fill( level, this, 1, Terrain.TRAP );
+        Painter.fill( level, this, 1, Terrain.EMBERS );
         Painter.fill( level, this, 2, Terrain.WATER );
 
         Point c = center();
@@ -62,7 +62,6 @@ public class GooRoom extends StandardRoom {
 
         for (Door door : connected.values()) {
             door.set( Door.Type.REGULAR );
-            Painter.drawInside( level, this, door, 1, Terrain.EMPTY );
         }
 
         for(Point p : getPoints()) {
@@ -72,7 +71,7 @@ public class GooRoom extends StandardRoom {
             }
         }
 
-        Painter.drawCircle(level, c, 7, Terrain.EMPTY_DECO);
+        Painter.drawCircle(level, c, 7, Terrain.WATER);
         Painter.drawCircle(level, c, 5, Terrain.EMPTY_SP);
         Painter.drawCircle(level, c, 2, Terrain.WATER);
 

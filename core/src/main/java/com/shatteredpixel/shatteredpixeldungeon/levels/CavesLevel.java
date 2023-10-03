@@ -120,12 +120,12 @@ public class CavesLevel extends RegularLevel {
 		for (int i = 0; i < map.length; i++) {
 			if (map[i] == Terrain.EMBERS) {
 				// 将 EMPTY_DECO 地块改为新地形
-				set(i, Terrain.STATUE);
+				set(i, Terrain.LOCKED_EXIT);
 				GameScene.updateMap(i); // 更新地图显示
 				Camera.main.shake(4f,7f);
-			} else if(hero.buff(LockedFloor.class) == null && map[i] == Terrain.STATUE) {
+			} else if(hero.buff(LockedFloor.class) == null && map[i] == Terrain.LOCKED_EXIT) {
 				// 将 CHASM 地块改为新地形
-				set(i, Terrain.EMPTY);
+				set(i, Terrain.EMBERS);
 				GameScene.updateMap(i); // 更新地图显示
 				GameScene.flash(Window.WATA_COLOR);
 			}

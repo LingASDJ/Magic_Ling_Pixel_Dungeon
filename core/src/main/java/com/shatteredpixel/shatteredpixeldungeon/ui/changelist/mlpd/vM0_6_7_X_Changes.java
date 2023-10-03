@@ -144,7 +144,7 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(i, ("熔岩火龙"),
                 ("丛林暴乱的真相")));
 
-        changes = new ChangeInfo("v0.6.5.0-Alpha6-6.5-国庆", true, "");
+        changes = new ChangeInfo("v0.6.5.0-Alpha6-6.8-国庆", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -154,6 +154,13 @@ public class vM0_6_7_X_Changes {
 
         changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("新挑战：变幻莫测V0.1"),
                 ("追加两个随机地形感觉，整体战斗全面处于大地型，怪物生成变多，追加两个迷你Boss战。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项修改2"),
+                ("1.修复三井协定的三井重复生成问题\n" +
+                        "2.改善变幻莫测迷你Boss地形以及战利品\n" +
+                        "3.种子现在分为A类，B类，BossRush类\n" +
+                        "4.部分界面UI迭代，变幻莫测挑战平衡")));
+
 
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项修改"),
                 ("1.迭代了UI材质\n\n2.优化了一些代码")));

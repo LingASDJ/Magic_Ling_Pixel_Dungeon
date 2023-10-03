@@ -102,14 +102,15 @@ public class SewerLevel extends RegularLevel {
 
 	public void updateChasmTerrain() {
 		for (int i = 0; i < map.length; i++) {
-			if (map[i] == Terrain.EMPTY_DECO) {
+			if (map[i] == Terrain.EMBERS) {
 				// 将 EMPTY_DECO 地块改为新地形
-				set(i, Terrain.STATUE);
+				set(i, Terrain.LOCKED_EXIT);
 				GameScene.updateMap(i); // 更新地图显示
 				Camera.main.shake(3f,6f);
-			} else if(hero.buff(LockedFloor.class) == null && map[i] == Terrain.STATUE) {
+
+			} else if(hero.buff(LockedFloor.class) == null && map[i] == Terrain.LOCKED_EXIT) {
 				// 将 CHASM 地块改为新地形
-				set(i, Terrain.WATER);
+				set(i, Terrain.EMBERS);
 				GameScene.updateMap(i); // 更新地图显示
 			}
 			for (Mob m : Dungeon.level.mobs){
@@ -120,7 +121,7 @@ public class SewerLevel extends RegularLevel {
 					playBGM(Assets.BGM_BOSSA, true);
 				}
 			}
-			GameScene.flash(Window.CBLACK);
+			GameScene.flash(Window.ANSDO_COLOR);
 		}
 	}
 	

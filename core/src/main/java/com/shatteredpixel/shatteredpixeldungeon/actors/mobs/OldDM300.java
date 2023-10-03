@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -39,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -86,6 +88,11 @@ public class OldDM300 extends DM200 {
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 		if(lock == null && !seenBefore && Dungeon.level.heroFOV[pos]){
 			Dungeon.level.seal();
+			if(Dungeon.isChallenged(MOREROOM)) {
+				AlarmTrap alarmTrap = new AlarmTrap();
+				alarmTrap.pos = pos;
+				alarmTrap.activate();
+			}
 		}
 		GameScene.add( Blob.seed( pos, 30, ToxicGas.class ) );
 		
@@ -176,6 +183,7 @@ public class OldDM300 extends DM200 {
 		super.damage(dmg, src);
 		if (state == PASSIVE) {
 			state = HUNTING;
+			notice();
 		}
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 		if (lock != null && !isImmune(src.getClass())) lock.addTime(dmg*1.5f);

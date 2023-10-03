@@ -21,8 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
@@ -37,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.text.HeroStat;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BadgesGrid;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BadgesList;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
@@ -164,6 +168,18 @@ public class WndRanking extends WndTabbed {
 				page.visible = page.active = selected;
 			}
 		}
+	}
+
+	private String seedType(){
+		String seed;
+		if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+			seed = "BossRush";
+		}else if(Dungeon.isChallenged(MOREROOM)){
+			seed = "B";
+		} else {
+			seed = "A";
+		}
+		return seed;
 	}
 
 	private class StatsTab extends Group {
@@ -302,7 +318,7 @@ public class WndRanking extends WndTabbed {
 				}
 
 				pos += GAP;
-
+				pos = statSlot(this, Messages.get(HeroStat.class, "seed_type"), seedType(), pos);
 				pos = statSlot(this, Messages.get(this, "enemies"), num.format(Statistics.enemiesSlain), pos);
 				pos = statSlot(this, Messages.get(this, "gold"), num.format(Statistics.goldCollected), pos);
 				pos = statSlot(this, Messages.get(this, "food"), num.format(Statistics.foodEaten), pos);
