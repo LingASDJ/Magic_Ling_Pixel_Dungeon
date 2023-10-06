@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GoldenMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Gregorian;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -103,58 +104,63 @@ public abstract class RegularLevel extends Level {
 
 	public static Holiday holiday;
 
+	public static DevBirthday birthday;
+
+	//开发团队的生日列表
+	// S直接参与Calendar类计算
+	// L参与Lunar-Java类计算
+	public enum DevBirthday {
+		DEV_BIRTHDAY,
+		//QinYue S-5.13
+		CHAPTER_BIRTHDAY,
+		//设寄师
+		DESIGN_BIRTHDAY,
+		//丹尼尔
+		ART_DC_BIRTHDAY,
+		//冷群
+		ART_LQ_BIRTHDAY,
+		//小蓝 S-3.26
+		ART_LB_BIRTHDAY,
+		//清扬 L-12.3
+		ART_CY_BIRTHDAY,
+	}
+
 	public enum Holiday{
 		NONE,
 		DWJ,
 		ZQJ, //TBD
 		HWEEN,//2nd week of october though first day of november
-		XMAS //3rd week of december through first week of january
+		XMAS,
 	}
+
+
 
 	static{
 
 		holiday = Holiday.NONE;
 
+		/**农历计算*/
+		Gregorian.LunarCheckDate();
+
 		final Calendar calendar = Calendar.getInstance();
+
+		//计算中国传统节日的代码已迁移到最上方的"Gregorian.LunarCheckDate();"方法。
 		switch(calendar.get(Calendar.MONTH)){
 			case Calendar.JANUARY:
 				if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
-					holiday = XMAS;
-				break;
-			//6.20-6.30
-			case Calendar.JUNE:
-				if (calendar.get(Calendar.DAY_OF_MONTH) >= 20 ){
-					holiday = Holiday.DWJ;
-				} else {
-					holiday = Holiday.NONE;
-				}
-				break;
-			case Calendar.JULY:
-				int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-				if(dayOfMonth <= 12){
-					holiday = Holiday.DWJ;
-				} else {
-					holiday = Holiday.NONE;
-				}
-				break;
-			//9.10-10.8
-			case Calendar.SEPTEMBER:
-				if (calendar.get(Calendar.DAY_OF_MONTH) >= 10 ){
-					holiday = Holiday.ZQJ;
-				} else {
-					holiday = Holiday.NONE;
-				}
+					holiday = Holiday.XMAS;
 				break;
 			case Calendar.OCTOBER:
-				if (calendar.get(Calendar.DAY_OF_MONTH) <= 8 ){
-					holiday = Holiday.ZQJ;
-				} else {
-					holiday = Holiday.NONE;
-				}
+				if (calendar.get(Calendar.WEEK_OF_MONTH) >= 2)
+					holiday = Holiday.HWEEN;
+				break;
+			case Calendar.NOVEMBER:
+				if (calendar.get(Calendar.DAY_OF_MONTH) == 1)
+					holiday = Holiday.HWEEN;
 				break;
 			case Calendar.DECEMBER:
 				if (calendar.get(Calendar.WEEK_OF_MONTH) >= 3)
-					holiday = XMAS;
+					holiday = Holiday.XMAS;
 				break;
 		}
 	}
@@ -243,8 +249,8 @@ public abstract class RegularLevel extends Level {
 		initRooms.add( roomExit = new ExitRoom());
 
 		//force max standard rooms and multiple by 1.5x for large levels
-		int standards = standardRooms(feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM));
-		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM)){
+		int standards = standardRooms(feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)));
+		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
 			standards = (int)Math.ceil(standards * 1.5f);
 		}
 		for (int i = 0; i < standards; i++) {
@@ -305,8 +311,8 @@ public abstract class RegularLevel extends Level {
 		}
 
 		//force max special rooms and add one more for large levels
-		int specials = specialRooms(feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM));
-		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM)){
+		int specials = specialRooms(feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)));
+		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
 			specials++;
 		}
 		if(feeling == Feeling.THREEWELL){
@@ -396,12 +402,12 @@ public abstract class RegularLevel extends Level {
 		if (Dungeon.depth <= 1) return 0;
 
 		int mobs = 3 + Dungeon.depth % 5 + Random.Int(3);
-		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM)){
+		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
 			mobs = (int)Math.ceil(mobs * 1.33f);
 		}
 
 		// 在特定挑战中怪物生成翻倍
-		if (Dungeon.isChallenged(MOREROOM)) {
+		if (Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
 			mobs += Random.NormalIntRange(1,3);
 		}
 
@@ -537,7 +543,7 @@ public abstract class RegularLevel extends Level {
 		// drops 3/4/5 items 60%/30%/10% of the time
 		int nItems = 3 + Random.chances(new float[]{6, 3, 1});
 
-		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM)){
+		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
 			nItems += 2;
 		}
 		

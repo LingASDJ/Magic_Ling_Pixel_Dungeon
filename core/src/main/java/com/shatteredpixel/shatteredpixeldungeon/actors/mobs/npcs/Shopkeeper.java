@@ -21,8 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -72,9 +75,11 @@ public class Shopkeeper extends NPC {
 		if (!seenBefore && Dungeon.level.heroFOV[pos]) {
 			yell(Messages.get(this, "greetings", hero.name()));
 			seenBefore = true;
+			playBGM(Assets.SHOP, true);
 		} else if(seenBefore && !Dungeon.level.heroFOV[pos]) {
 			seenBefore = false;
 			yell(Messages.get(this, "goodbye", hero.name()));
+			BGMPlayer.playBGMWithDepth();
 		}
 
 		if (Dungeon.level.visited[pos]){

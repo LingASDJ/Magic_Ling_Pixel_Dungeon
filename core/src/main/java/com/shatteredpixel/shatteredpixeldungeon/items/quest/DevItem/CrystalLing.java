@@ -1,30 +1,24 @@
-package com.shatteredpixel.shatteredpixeldungeon.items.quest;
+package com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 
-public class RedWhiteRose extends Item {
+public class CrystalLing extends Item {
 
     {
-        image = ItemSpriteSheet.REDWHITEROSE;
+        image = ItemSpriteSheet.CRYSTAL_LING;
         cursed = false;
     }
 
     @Override
     public ItemSprite.Glowing glowing() {
-        return new ItemSprite.Glowing(Window.GDX_COLOR, 3f);
+        return new ItemSprite.Glowing(0x008888, 6f);
     }
 
     @Override
     public boolean isUpgradable() {
         return false;
-    }
-
-    @Override
-    public int level() {
-        return 99;
     }
 
     @Override

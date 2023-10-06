@@ -174,7 +174,7 @@ public class WndRanking extends WndTabbed {
 		String seed;
 		if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 			seed = "BossRush";
-		}else if(Dungeon.isChallenged(MOREROOM)){
+		}else if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
 			seed = "B";
 		} else {
 			seed = "A";

@@ -182,6 +182,8 @@ public class ItemSpriteSheet {
 	public static final int SHRAPNEL_BOMB   = BOMBS+11;
 	public static final int BLACK_KEY    = BOMBS+12;
 
+	public static final int CRYSTAL_LING    = BOMBS+13;
+
 	static{
 		assignItemRect(BOMB,            10, 13);
 		assignItemRect(DBL_BOMB,        14, 13);

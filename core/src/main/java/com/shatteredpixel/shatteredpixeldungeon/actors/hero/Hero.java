@@ -63,9 +63,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoRead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMixShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessNoMoney;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessRedWhite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
@@ -151,7 +153,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.RedWhiteRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
@@ -300,14 +304,17 @@ public class Hero extends Char {
 	
 	public void updateHT( boolean boostHP ){
 		int curHT = HT;
-		
+
 		HT = 20 + 5*(lvl-1) + HTBoost;
+
 		float multiplier = RingOfMight.HTMultiplier(this);
 		HT = Math.round(multiplier * HT);
 		
 		if (buff(ElixirOfMight.HTBoost.class) != null){
 			HT += buff(ElixirOfMight.HTBoost.class).boost();
 		}
+
+
 		
 		if (boostHP){
 			HP += Math.max(HT - curHT, 0);
@@ -333,6 +340,10 @@ public class Hero extends Char {
 		if(Dungeon.hero.buff(MagicGirlSayNoSTR.class) != null){
 			strBonus -= 1;
 		} else if(Dungeon.hero.buff(BlessGoodSTR.class) != null) {
+			strBonus += 2;
+		}
+
+		if(Dungeon.hero.buff(BlessRedWhite.class) != null) {
 			strBonus += 2;
 		}
 
@@ -723,6 +734,10 @@ public class Hero extends Char {
 		if (getSpeed!=null) {
 			speed *= 1.2f;
 		}
+
+		if(Dungeon.hero.buff(BlessRedWhite.class) != null) {
+			speed *= 1.1f;
+		}
 		
 		if (belongings.armor() != null) {
 			speed = belongings.armor().speedFactor(this, speed);
@@ -946,8 +961,22 @@ public class Hero extends Char {
 	private boolean actMove( HeroAction.Move action ) {
 
 		PotionOfPurity.PotionOfPurityLing potionOfPurityLing = Dungeon.hero.belongings.getItem(PotionOfPurity.PotionOfPurityLing.class);
-		if(potionOfPurityLing != null){
+		if(potionOfPurityLing != null && !Dungeon.level.locked){
 			potionOfPurityLing.detachAll( hero.belongings.backpack );
+		}
+
+		RedWhiteRose redWhiteRose = Dungeon.hero.belongings.getItem(RedWhiteRose.class);
+		if(redWhiteRose != null){
+			Buff.affect(hero, BlessRedWhite.class).set( (100), 1 );
+		} else {
+			Buff.detach(hero, BlessRedWhite.class);
+		}
+
+		CrystalLing crystalLing = Dungeon.hero.belongings.getItem(CrystalLing.class);
+		if(crystalLing != null){
+			Buff.affect(hero, BlessLing.class).set( (100), 1 );
+		} else {
+			Buff.detach(hero, BlessLing.class);
 		}
 
 		MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
@@ -1555,6 +1584,11 @@ public class Hero extends Char {
 		}
 
 		dmg = (int)Math.ceil(dmg * RingOfTenacity.damageMultiplier( this ));
+
+		CrystalLing crystalLing = Dungeon.hero.belongings.getItem(CrystalLing.class);
+		if(crystalLing != null){
+			dmg = (int)Math.ceil(dmg * RingOfTenacity.damageMultiplier( this ));
+		}
 
 		//TODO improve this when I have proper damage source logic
 		if (belongings.armor() != null && belongings.armor().hasGlyph(AntiMagic.class, this)

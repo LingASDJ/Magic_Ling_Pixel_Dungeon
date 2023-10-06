@@ -53,7 +53,7 @@ public class IceHpBuff extends Buff {
             }
             if (hero.icehp < 25 && Dungeon.depth<10) {
                 hero.damageIcehp(1);
-                spend(32f-(float) Dungeon.depth/5);
+                spend(50f-(float) Dungeon.depth/5);
             } else {
                 spend(STEP);
             }

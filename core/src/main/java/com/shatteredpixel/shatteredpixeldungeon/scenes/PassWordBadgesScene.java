@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.PasswordBadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -16,7 +17,6 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndProBadge;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
@@ -26,10 +26,14 @@ public class PassWordBadgesScene extends PixelScene {
 
     @Override
     public void create() {
+        if(!Statistics.HiddenOK){
+            Badges.HDEX();
+            Statistics.HiddenOK = true;
+        }
 
         super.create();
 
-        Music.INSTANCE.play( Assets.Music.THEME, true );
+        //Music.INSTANCE.play( Assets.Music.THEME, true );
 
         uiCamera.visible = false;
 
@@ -56,7 +60,7 @@ public class PassWordBadgesScene extends PixelScene {
 
         List<PaswordBadges.Badge> badges = PaswordBadges.filtered( true );
 
-        int blankBadges = 9;
+        int blankBadges = 14;
         blankBadges -= badges.size();
         if (badges.contains(Badges.Badge.ALL_ITEMS_IDENTIFIED))	blankBadges -= 6;
         if (badges.contains(Badges.Badge.YASD)) 				blankBadges -= 5;

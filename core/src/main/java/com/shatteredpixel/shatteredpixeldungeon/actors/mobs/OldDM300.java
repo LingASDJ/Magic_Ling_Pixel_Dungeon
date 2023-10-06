@@ -23,13 +23,15 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
@@ -38,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
@@ -52,25 +55,26 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-public class OldDM300 extends DM200 {
+public class OldDM300 extends FlameB01 {
 	
 	{
 		spriteClass =  DM300SpiderSprite.class;
 		state = PASSIVE;
-		HP = HT = 320;
+		HP = HT = 270;
 		EXP = 30;
 		defenseSkill = 18;
 		maxLvl=30;
-		baseSpeed = 1.45f;
+		baseSpeed = 0.85f;
 
 		properties.add(Property.LARGE);
 		properties.add(Property.MINIBOSS);
 		properties.add(Property.INORGANIC);
+		properties.add(Property.FIERY);
 	}
-	
+
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 20, 25 );
+		return Random.NormalIntRange( 10, 20 );
 	}
 	
 	@Override
@@ -87,14 +91,25 @@ public class OldDM300 extends DM200 {
 	public boolean act() {
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 		if(lock == null && !seenBefore && Dungeon.level.heroFOV[pos]){
-			Dungeon.level.seal();
-			if(Dungeon.isChallenged(MOREROOM)) {
+			if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
 				AlarmTrap alarmTrap = new AlarmTrap();
 				alarmTrap.pos = pos;
 				alarmTrap.activate();
+				Dungeon.level.seal();
+				ScrollOfTeleportation.appear(hero, pos+8);
 			}
 		}
-		GameScene.add( Blob.seed( pos, 30, ToxicGas.class ) );
+
+		int evaporatedTiles = Random.chances(new float[]{0, 1, 2});
+
+		for (int i = 0; i < evaporatedTiles; i++) {
+			int cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
+			if (Dungeon.level.map[cell] == Terrain.WATER){
+				Level.set( cell, Terrain.EMPTY);
+				GameScene.updateMap( cell );
+				CellEmitter.get( cell ).burst( Speck.factory( Speck.STEAM ), 10 );
+			}
+		}
 		
 		return super.act();
 	}
@@ -110,6 +125,7 @@ public class OldDM300 extends DM200 {
 			
 			if (Dungeon.level.heroFOV[step] && Dungeon.hero.isAlive()) {
 				sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "repair"));
+				gasTankPressure += 20;
 			}
 		}
 		
@@ -171,7 +187,7 @@ public class OldDM300 extends DM200 {
 		}
 		GameScene.bossSlain();
 		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-			if (	mob instanceof DM201 ) {
+			if (mob instanceof DM201 ) {
 				mob.die( cause );
 			}
 		}
@@ -184,7 +200,20 @@ public class OldDM300 extends DM200 {
 		if (state == PASSIVE) {
 			state = HUNTING;
 			notice();
+			ScrollOfTeleportation.appear(hero, pos+8);
+			Dungeon.level.seal();
 		}
+
+		if(HP<50){
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+				if (mob instanceof DM201 ) {
+					mob.die(true);
+				}
+			}
+			Buff.affect(this, Barrier.class).setShield(140);
+		}
+
+
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 		if (lock != null && !isImmune(src.getClass())) lock.addTime(dmg*1.5f);
 	}

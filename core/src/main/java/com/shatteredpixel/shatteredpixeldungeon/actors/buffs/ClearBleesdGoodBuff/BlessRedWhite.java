@@ -1,7 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
@@ -10,7 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
-public class BlessGoRead extends Buff {
+public class BlessRedWhite extends Buff {
 
     {
         type = buffType.POSITIVE;
@@ -24,17 +22,14 @@ public class BlessGoRead extends Buff {
     public boolean act() {
         if (target.isAlive()) {
 
-            spend(interval);
             if (level <= 0) {
                 detach();
             }
 
-            if(hero.lanterfire > 60) {
-                //effectively 1HP at lvl 0-5, 2HP lvl 6-8, 3HP lvl 9, and 5HP lvl 10.
-                target.HP = Math.min( target.HT, target.HP + 2);
-                spend(3f);
-            }
 
+            //effectively 1HP at lvl 0-5, 2HP lvl 6-8, 3HP lvl 9, and 5HP lvl 10.
+            target.HP = Math.min( target.HT, target.HP + 1);
+            spend(5f);
 
         }
 
@@ -99,7 +94,7 @@ public class BlessGoRead extends Buff {
 
     @Override
     public int icon() {
-        return BuffIndicator.GOBUFF_UPRD;
+        return BuffIndicator.NONE;
     }
 
 

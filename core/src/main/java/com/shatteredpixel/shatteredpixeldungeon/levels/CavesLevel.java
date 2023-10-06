@@ -27,11 +27,8 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OldDM300;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CavesPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
@@ -118,27 +115,19 @@ public class CavesLevel extends RegularLevel {
 
 	public void updateChasmTerrain() {
 		for (int i = 0; i < map.length; i++) {
-			if (map[i] == Terrain.EMBERS) {
+			if (map[i] == Terrain.SIGN) {
 				// 将 EMPTY_DECO 地块改为新地形
 				set(i, Terrain.LOCKED_EXIT);
 				GameScene.updateMap(i); // 更新地图显示
 				Camera.main.shake(4f,7f);
 			} else if(hero.buff(LockedFloor.class) == null && map[i] == Terrain.LOCKED_EXIT) {
 				// 将 CHASM 地块改为新地形
-				set(i, Terrain.EMBERS);
+				set(i, Terrain.EMPTY);
 				GameScene.updateMap(i); // 更新地图显示
 				GameScene.flash(Window.WATA_COLOR);
 			}
-			for (Mob m : Dungeon.level.mobs){
-				if (m instanceof OldDM300){
-					if(m.isAlive() && hero.buff(LockedFloor.class) != null){
-						ScrollOfTeleportation.appear(hero, m.pos+8);
-						GameScene.flash(Window.SKYBULE_COLOR);
-					}
-					playBGM(Assets.BGM_BOSSC, true);
-				}
-			}
-
+			GameScene.flash(Window.SKYBULE_COLOR);
+			playBGM(Assets.BGM_BOSSC, true);
 		}
 	}
 	

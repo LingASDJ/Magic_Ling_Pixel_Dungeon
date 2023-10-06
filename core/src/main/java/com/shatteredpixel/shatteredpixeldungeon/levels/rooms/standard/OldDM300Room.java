@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OldDM300;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CursingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FrostTrap;
@@ -16,7 +17,7 @@ import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
-public class OldDM300Room extends StandardRoom {
+public class OldDM300Room extends SpecialRoom {
 
     {
         //noMobs = true;
@@ -39,7 +40,7 @@ public class OldDM300Room extends StandardRoom {
     public void paint( Level level ) {
 
         Painter.fill( level, this, Terrain.WALL );
-        Painter.fill( level, this, 1, Terrain.EMBERS );
+        Painter.fill( level, this, 1, Terrain.SIGN );
         Painter.fill( level, this, 2, Terrain.WATER );
 
         Point c = center();
@@ -50,12 +51,21 @@ public class OldDM300Room extends StandardRoom {
             door.set( Door.Type.REGULAR );
         }
 
+        int pillarW = (width()-8)/2;
+        int pillarH = (height()-8)/2;
+
+        Painter.fill(level, left+3, top+3, pillarW+1, pillarH+1, Terrain.WALL);
+        Painter.fill(level, left+3, bottom-3-pillarH, pillarW+1, pillarH+1, Terrain.WALL);
+        Painter.fill(level, right-3-pillarW, top+3, pillarW+1, pillarH+1, Terrain.WALL);
+        Painter.fill(level, right-3-pillarW, bottom-3-pillarH, pillarW+1, pillarH+1, Terrain.WALL);
+
         Painter.drawCircle(level, c, 17, Terrain.HIGH_GRASS);
         Painter.drawCircle(level, c, 16, Terrain.TRAP);
         Painter.drawCircle(level, c, 15, Terrain.HIGH_GRASS);
         Painter.drawCircle(level, c, 14, Terrain.TRAP);
         Painter.drawCircle(level, c, 13, Terrain.EMPTY);
-        Painter.drawCircle(level, c, 7, Terrain.EMPTY);
+        Painter.drawCircle(level, c, 7, Terrain.STATUE);
+        Painter.drawCircle(level, c, 6, Terrain.WATER);
         Painter.drawCircle(level, c, 5, Terrain.WATER);
         Painter.drawCircle(level, c, 2, Terrain.EMPTY);
 

@@ -111,12 +111,8 @@ public class WandOfAnmy extends DamageWand {
 
         @Override
         public void fx(boolean on) {
-            if (on) {
-                target.sprite.add(CharSprite.State.HEARTS);
-                //Statistics.TryUsedAnmy = true;
-            }
-            else
-                target.sprite.remove(CharSprite.State.HEARTS);
+            if (on) target.sprite.add(CharSprite.State.HEARTS);
+            else    target.sprite.remove(CharSprite.State.HEARTS);
         }
 
         @Override

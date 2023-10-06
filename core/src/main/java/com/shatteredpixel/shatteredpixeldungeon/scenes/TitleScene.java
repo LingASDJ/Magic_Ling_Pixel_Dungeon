@@ -1,10 +1,14 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
@@ -28,24 +32,39 @@ import com.watabou.utils.ColorMath;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class TitleScene extends PixelScene {
+	public static boolean Reusable = false;
 
 
 
 	@Override
 	public void create() {
 		super.create();
+		Calendar calendar = Calendar.getInstance();
+		int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
 
+		Dungeon.nightMode = currentHour > 7 && currentHour < 22;
 //		if(SPDSettings.startPort(false)){
 //			SPDSettings.scale(3);
 //			ShatteredPixelDungeon.seamlessResetScene();
 //			SPDSettings.startPort(true);
 //		}
 
-		Music.INSTANCE.play(Assets.Music.THEME_1, true);
+		if(Random.Int(10) == 1 && !Reusable && Statistics.winGame) {
+			Reusable = true;
+			Music.INSTANCE.play(Assets.Music.THEME_2, true);
+		} else if (!Reusable) {
+			Music.INSTANCE.play(Assets.Music.THEME_1, true);
+		} else {
+			Music.INSTANCE.play(Assets.Music.THEME_2, true);
+		}
+
+
 
 		uiCamera.visible = false;
 
@@ -171,6 +190,18 @@ public class TitleScene extends PixelScene {
 					GamesInProgress.curSlot = 1;
 				}
 				ShatteredPixelDungeon.switchNoFade( StartScene.class );
+			}
+
+			@Override
+			public void update() {
+				super.update();
+
+				if (TitleScene.Reusable){
+					textColor(ColorMath.interpolate( 0xFFFFFF, Window.CYELLOW,
+							0.5f + (float)Math.sin(Game.timeTotal*5)/2f));
+					text(Messages.get(TitleScene.class, "go"));
+					icon(BadgeBanner.image(Badges.Badge.HAPPY_END.image));
+				}
 			}
 
 			@Override

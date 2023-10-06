@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireCrystalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireDragonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FlowerSlimeSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceFireScorpioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceSlowGirlSprites;
@@ -144,6 +145,65 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(i, ("熔岩火龙"),
                 ("丛林暴乱的真相")));
 
+        changes = new ChangeInfo("v0.6.5.0-Alpha6.9-LAST", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton((new Image("Ling.png", 0, 0, 16, 16)), ("开发者的话"),
+                ("v0.6.5.0-Alpha6.9-LAST--完成于2023-10-6\n\n" +
+                        "今天对我来说是一个特别的日子，因为今天是我21岁生日。\n\n" +
+                        "回想MLPD的两年，我也从一名曾经的准大学生变成了即将毕业的大学生\n\n" +
+                        "生活的忙碌，社会的考验，实习的困难比比皆是。但好在我有一批非常爱我和这个游戏的玩家\n\n" +
+                        "Alpha6.9，是MLPD的近期的最终版本。接下来，她(代指魔绫)将进入休整期阶段，\n\n" +
+                        "但游戏的内容足够玩家游玩，当然，如果有bug，我会来修复。\n\n" +
+                        "最近只是没有大版本更新了。最后，近期是我的生日，我在游戏中为各位玩家准备了水晶项链。\n\n" +
+                        "她应该可以帮助你们更好的游玩游戏，希望水晶项链能给你们带来不错的体验。\n\n" +
+                        "最后，让我们在冬季版本大更新中相见，再会！！！\n\n" +
+                        "---MLPD主要开发者：JDSALing" )));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY_LAND), ("农历计算系统"),
+                ("现在MLPD支持农历计算系统，中秋节，端午节，以及作者的生日，均使用此系统计算。\n" +
+                        "Ling的生日：农历8.22\n\n有效时间范围：8.22-8.25\n\n" +
+                        "中秋节：农历8.15\n\n有效时间范围：中秋节前10天到中秋节后12天\n\n" +
+                        "端午节：农历5.5\n\n有效时间范围：端午节前3天到端午节后7天")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("新主题BGM"),
+                ("在玩家在新版本胜利一次后，有机会在主界面播放新BGM和下半段暗示。")));
+
+        changes.addButton(new ChangeButton(new FlowerSlimeSprites(), ("新生物：丛林繁花史莱姆"),
+                ("替代普通老鼠，老鼠现在只会在丛林边缘(第一层生成),后面都是这个新生物。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.REDWHITEROSE), ("一种载体彻底实装"),
+                ("效果:力量+2,移速+10%，每5回合回复1HP")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CRYSTAL_LING), ("新开发者物品：水晶项链"),
+                ("在每年绫的生日有效活得时间直接在开局就能获得，自带韧性之戒效果，治疗效果小幅度提升。")));
+
+        changes.addButton(new ChangeButton(PasswordBadgeBanner.image(PaswordBadges.Badge.NIGHT_CAT.image), (
+                "新隐藏徽章：不眠之夜"),
+                ("解密片段：月黑风高，古神陨落。")));
+
+        changes.addButton(new ChangeButton(BadgeBanner.image(Badges.Badge.HIDEEN_BADAGE.image), ("新徽章：隐秘探索"),
+                ("获得方式：发现隐藏徽章的位置")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("挑战：变幻莫测V0.2"),
+                ("修复了一堆问题：\n\n" +
+                        "1.可能导致钥匙丢失\n\n2.重复Boss警报\n\n3.看见人不传送\n\n4.改善了Goo和DM300原型机的属性与地形。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.优化了主题背景界面，并且植入夜间状态，在晚上22点到早上7点前是夜间状态。因此是夜间背景。反之则是白天背景。\n\n" +
+                        "2.圣境密林层改善了几个地块,部分敌人素材迭代\n\n" +
+                        "3.上个版本的一些FB-bug修复")));
+
+
         changes = new ChangeInfo("v0.6.5.0-Alpha6-6.8-国庆", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
@@ -160,6 +220,7 @@ public class vM0_6_7_X_Changes {
                         "2.改善变幻莫测迷你Boss地形以及战利品\n" +
                         "3.种子现在分为A类，B类，BossRush类\n" +
                         "4.部分界面UI迭代，变幻莫测挑战平衡")));
+
 
 
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项修改"),

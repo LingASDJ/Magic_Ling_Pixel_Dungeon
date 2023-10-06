@@ -269,7 +269,7 @@ public abstract class Level implements Bundlable {
 	}
 
 	private void initializeLevelDepthType(){
-		if(Dungeon.isChallenged(MOREROOM)){
+		if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
 			int randomInt = Random.Int(10);
 			if(Dungeon.depth == 4 || Dungeon.depth == 14){
 				feeling = Feeling.DIEDROOM;

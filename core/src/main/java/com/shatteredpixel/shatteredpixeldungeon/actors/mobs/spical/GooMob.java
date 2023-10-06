@@ -2,8 +2,10 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical;
 
 import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -11,8 +13,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.GooNPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -21,8 +25,11 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -31,7 +38,7 @@ public class GooMob extends Mob {
 
 
     {
-        HP = HT = 180;
+        HP = HT = Random.NormalIntRange(90,180);
 
         EXP = 10;
         defenseSkill = 8;
@@ -78,16 +85,30 @@ public class GooMob extends Mob {
         return Random.NormalIntRange(0, 2);
     }
     public static boolean seenBefore = false;
+
+    private void tell(String text) {
+        Game.runOnRenderThread(new Callback() {
+                                   @Override
+                                   public void call() {
+                                       GameScene.show(new WndQuest(new GooNPC(), text));
+                                   }
+                               }
+        );
+    }
+
     @Override
     public boolean act() {
         LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
         if(lock == null && !seenBefore && Dungeon.level.heroFOV[pos]){
             Dungeon.level.seal();
             seenBefore = false;
-            if(Dungeon.isChallenged(MOREROOM)) {
+            if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
                 AlarmTrap alarmTrap = new AlarmTrap();
                 alarmTrap.pos = pos;
                 alarmTrap.activate();
+                ScrollOfTeleportation.appear(hero, pos+4);
+                sprite().showAlert();
+                tell(Messages.get(this, "notice"));
             }
         }
 
@@ -219,6 +240,8 @@ public class GooMob extends Mob {
         if (state == PASSIVE) {
             state = HUNTING;
             notice();
+            ScrollOfTeleportation.appear(hero, pos+1);
+            Dungeon.level.seal();
         }
 
         if ((HP*2 <= HT) && !bleeding){
@@ -274,6 +297,11 @@ public class GooMob extends Mob {
         super.restoreFromBundle( bundle );
 
         pumpedUp = bundle.getInt( PUMPEDUP );
+
+        if(Dungeon.isChallenged(MOREROOM)){
+            if (state != SLEEPING) BossHealthBar.assignBoss(this);
+            if ((HP*2 <= HT)) BossHealthBar.bleed(true);
+        }
 
         //if check is for pre-0.9.3 saves
         healInc = bundle.getInt(HEALINC);

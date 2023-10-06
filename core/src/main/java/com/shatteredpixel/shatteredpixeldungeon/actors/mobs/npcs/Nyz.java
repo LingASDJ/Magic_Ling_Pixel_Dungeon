@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -57,12 +58,9 @@ public class Nyz extends NTNPC {
                playBGM(Assets.NYZSHOP, true);
             }
             seenBefore = true;
-        } else if (seenBefore && !Dungeon.level.heroFOV[pos] && Dungeon.depth == 0) {
-           playBGM(Assets.TOWN, true);
+        } else if(seenBefore && !Dungeon.level.heroFOV[pos]) {
             seenBefore = false;
-        } else if (seenBefore && !Dungeon.level.heroFOV[pos] && Dungeon.depth == 12) {
-           playBGM(Assets.BGM_2,true);
-            seenBefore = false;
+            BGMPlayer.playBGMWithDepth();
         }
         throwItem();
 

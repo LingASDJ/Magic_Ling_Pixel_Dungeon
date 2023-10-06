@@ -218,6 +218,8 @@ public class WraithAmulet extends Artifact {
                             if (enemy.properties().contains(Char.Property.BOSS)) {
                                 enemy.damage(enemy.HT / 4, WraithAmulet.class);
                                 GLog.i(Messages.get(this, "killboss"));
+                                amulet.cooldown = 150 / (amulet.level() / 2);
+                                amulet.charge -= 6;
                                 enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "koss"));
                             } else if (enemy.properties().contains(Char.Property.MIMIC) && enemy.alignment == Char.Alignment.NEUTRAL){
                                 for (Mob m: Dungeon.level.mobs){

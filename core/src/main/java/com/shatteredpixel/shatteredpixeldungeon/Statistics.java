@@ -133,6 +133,10 @@ public class Statistics {
 	public static float turnsPassed = 0f;
     public static boolean TryUsedAnmy= false;
 
+	public static boolean winGame = false;
+
+	public static boolean HiddenOK = false;
+
     public static void reset() {
 		boss_enhance = 0;
 		ChaicBlood = 0;
@@ -301,8 +305,16 @@ public class Statistics {
 
 	private static final String FUCKALONE		= "fuckplayer";
 
+	private static final String WINGAME		= "wingame";
+
+	private static final String HIDEEN		= "hideen";
+
 
 	public static void storeInBundle( Bundle bundle ) {
+
+		bundle.put(HIDEEN,HiddenOK);
+
+		bundle.put(WINGAME,winGame);
 
 
 		bundle.put(BDTX,bossWeapons);
@@ -399,6 +411,10 @@ public class Statistics {
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
+
+		winGame = bundle.getBoolean(WINGAME);
+
+		HiddenOK = bundle.getBoolean(HIDEEN);
 
 		//嗜血荆棘等级处理
 		ChaicBlood   = bundle.getInt( CHACEBLOOD );

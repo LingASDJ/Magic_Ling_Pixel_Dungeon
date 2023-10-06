@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.Difficulty;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -88,6 +89,12 @@ public class Healing extends Buff {
 			healingLeft = amount*2;
 			percentHealPerTick = percentPerTick*2;
 			flatHealPerTick = flatPerTick*2;
+		}
+		CrystalLing crystalLing = Dungeon.hero.belongings.getItem(CrystalLing.class);
+		if(crystalLing != null) {
+			healingLeft = amount+(amount/3);
+			percentHealPerTick = percentPerTick*1.2f;
+			flatHealPerTick = flatPerTick+(flatPerTick/5);
 		}
 	}
 	

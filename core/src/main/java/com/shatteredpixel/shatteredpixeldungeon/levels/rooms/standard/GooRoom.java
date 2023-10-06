@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ClearElemental;
@@ -11,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CorrosionTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CursingTrap;
@@ -27,9 +29,12 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WeakeningTrap;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.Tilemap;
 import com.watabou.utils.Point;
 
-public class GooRoom extends StandardRoom {
+public class GooRoom extends SpecialRoom {
 
     {
         //noMobs = true;
@@ -53,8 +58,9 @@ public class GooRoom extends StandardRoom {
     public void paint( Level level ) {
 
         Painter.fill( level, this, Terrain.WALL );
-        Painter.fill( level, this, 1, Terrain.EMBERS );
-        Painter.fill( level, this, 2, Terrain.WATER );
+        Painter.fill( level, this, 1, Terrain.SIGN );
+        Painter.fill( level, this, 2, Terrain.EMPTY_SP );
+
 
         Point c = center();
         int cx = c.x;
@@ -71,16 +77,37 @@ public class GooRoom extends StandardRoom {
             }
         }
 
+        setupGooNest(level);
+
+        int pillarW = (width()-8)/2;
+        int pillarH = (height()-8)/2;
+
+        Painter.fill(level, left+3, top+3, pillarW+1, pillarH+1, Terrain.WALL);
+        Painter.fill(level, left+3, bottom-3-pillarH, pillarW+1, pillarH+1, Terrain.WALL);
+        Painter.fill(level, right-3-pillarW, top+3, pillarW+1, pillarH+1, Terrain.WALL);
+        Painter.fill(level, right-3-pillarW, bottom-3-pillarH, pillarW+1, pillarH+1, Terrain.WALL);
+
         Painter.drawCircle(level, c, 7, Terrain.WATER);
-        Painter.drawCircle(level, c, 5, Terrain.EMPTY_SP);
-        Painter.drawCircle(level, c, 2, Terrain.WATER);
+        Painter.drawCircle(level, c, 5, Terrain.EMPTY);
+        Painter.drawCircle(level, c, 3, Terrain.WATER);
+        Painter.drawCircle(level, c, 2, Terrain.STATUE);
+        Painter.drawCircle(level, c, 0, Terrain.WATER);
+
+        Painter.set(level, cx, cy - 1, Terrain.WATER);
+        Painter.set(level, cx+1, cy - 1, Terrain.WATER);
+        Painter.set(level, cx-1, cy - 1, Terrain.WATER);
+        Painter.set(level, cx+1, cy + 1, Terrain.WATER);
+        Painter.set(level, cx-1, cy + 1, Terrain.WATER);
+        Painter.set(level, cx+1, cy, Terrain.WATER);
+        Painter.set(level, cx-1, cy, Terrain.WATER);
+        Painter.set(level, cx, cy + 1, Terrain.WATER);
 
         GooMob statue = new GooMob();
         statue.pos = cx + cy * level.width();
         level.mobs.add( statue );
 
         Guard statue2 = new Guard();
-        statue2.HT = statue2.HP = statue2.HT * 3;
+        statue2.HT = statue2.HP = statue2.HT*2;
         statue2.pos = (cx-5) + cy * level.width();
         statue2.properties.add(Char.Property.IMMOVABLE);
         level.mobs.add( statue2 );
@@ -102,6 +129,73 @@ public class GooRoom extends StandardRoom {
         statue5.HT = statue5.HP = statue5.HT * 2;
         statue5.pos = (cx) + (cy+5) * level.width();
         level.mobs.add( statue5 );
+    }
+
+    protected void setupGooNest( Level level ){
+        GooRoom.GooNest nest = new GooRoom.GooNest();
+        nest.setRect(left + width()/2 - 2, top + height()/2 - 2, 4 + width()%2, 4 + height()%2);
+
+        level.customTiles.add(nest);
+    }
+
+    public static class GooNest extends CustomTilemap {
+
+        {
+            texture = Assets.Environment.SEWER_BOSS;
+        }
+
+        @Override
+        public Tilemap create() {
+            Tilemap v = super.create();
+            int[] data = new int[tileW*tileH];
+            for (int x = 0; x < tileW; x++){
+                for (int y = 0; y < tileH; y++){
+
+                    //corners
+                    if ((x == 0 || x == tileW-1) && (y == 0 || y == tileH-1)){
+                        data[x + tileW*y] = -1;
+
+                        //adjacent to corners
+                    } else if ((x == 1 && y == 0) || (x == 0 && y == 1)){
+                        data[x + tileW*y] = 0;
+
+                    } else if ((x == tileW-2 && y == 0) || (x == tileW-1 && y == 1)){
+                        data[x + tileW*y] = 1;
+
+                    } else if ((x == 1 && y == tileH-1) || (x == 0 && y == tileH-2)){
+                        data[x + tileW*y] = 2;
+
+                    } else if ((x == tileW-2 && y == tileH-1) || (x == tileW-1 && y == tileH-2)) {
+                        data[x + tileW*y] = 3;
+
+                        //sides
+                    } else if (x == 0){
+                        data[x + tileW*y] = 4;
+
+                    } else if (y == 0){
+                        data[x + tileW*y] = 5;
+
+                    } else if (x == tileW-1){
+                        data[x + tileW*y] = 6;
+
+                    } else if (y == tileH-1){
+                        data[x + tileW*y] = 7;
+
+                        //inside
+                    } else {
+                        data[x + tileW*y] = 8;
+                    }
+
+                }
+            }
+            v.map( data, tileW );
+            return v;
+        }
+
+        @Override
+        public Image image(int tileX, int tileY) {
+            return null;
+        }
     }
 
     protected Class<? extends Trap>[] trapClasses() {

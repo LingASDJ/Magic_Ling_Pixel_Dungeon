@@ -489,6 +489,10 @@ public class YogDzewa extends Mob {
 			Badges.GOODRLPT();
 		}
 
+		if(Dungeon.nightMode){
+			PaswordBadges.NIGHT_CAT();
+		}
+
 		if(Dungeon.isChallenged(AQUAPHOBIA)){
 			Badges.CLEARWATER();
 		}

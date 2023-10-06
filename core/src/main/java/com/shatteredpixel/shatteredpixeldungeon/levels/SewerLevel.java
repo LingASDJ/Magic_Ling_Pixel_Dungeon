@@ -27,11 +27,8 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GooMob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Ripple;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.JunglePainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -102,25 +99,17 @@ public class SewerLevel extends RegularLevel {
 
 	public void updateChasmTerrain() {
 		for (int i = 0; i < map.length; i++) {
-			if (map[i] == Terrain.EMBERS) {
+			if (map[i] == Terrain.SIGN) {
 				// 将 EMPTY_DECO 地块改为新地形
 				set(i, Terrain.LOCKED_EXIT);
 				GameScene.updateMap(i); // 更新地图显示
 				Camera.main.shake(3f,6f);
-
 			} else if(hero.buff(LockedFloor.class) == null && map[i] == Terrain.LOCKED_EXIT) {
 				// 将 CHASM 地块改为新地形
-				set(i, Terrain.EMBERS);
+				set(i, Terrain.EMPTY);
 				GameScene.updateMap(i); // 更新地图显示
 			}
-			for (Mob m : Dungeon.level.mobs){
-				if (m instanceof GooMob){
-					if(m.isAlive() && hero.buff(LockedFloor.class) != null){
-						ScrollOfTeleportation.appear(hero, m.pos+1);
-					}
-					playBGM(Assets.BGM_BOSSA, true);
-				}
-			}
+			playBGM(Assets.BGM_BOSSA, true);
 			GameScene.flash(Window.ANSDO_COLOR);
 		}
 	}

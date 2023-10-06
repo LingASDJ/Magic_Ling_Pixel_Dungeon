@@ -576,6 +576,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					hearts.on = false;
 					hearts = null;
 				}
+				break;
 		}
 	}
 

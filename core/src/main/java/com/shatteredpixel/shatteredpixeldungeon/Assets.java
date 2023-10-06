@@ -43,6 +43,7 @@ public class Assets {
 	public static final String BGM_BOSSE3 = "music/Yogdead.ogg";
 	public static final String BGM_FRBOSS = "music/SnowLing.ogg";
 	public static final String RUN = "music/Run.ogg";
+	public static final String SHOP = "music/shop.ogg";
 	public static final String NYZSHOP = "music/nyzshop2.ogg";
 
 	public static class Effects {
@@ -118,6 +119,8 @@ public class Assets {
 		public static final String ARCS_BG  = "interfaces/arcs1.png";
 		public static final String ARCS_FG  = "interfaces/arcs2.png";
 
+		public static final String ARCS_FGN  = "interfaces/arcs2_night.png";
+
 		public static final String LANTERLING  = "interfaces/LanterLing.png";
 
 		public static final String BANNERS  = "interfaces/banners.png";
@@ -185,7 +188,7 @@ public class Assets {
 		public static final String GO      = "music/Open.ogg";
 		public static final String SHOP      = "music/shop.ogg";
 		public static final String THEME_1      = "music/theme.ogg";
-		public static final String THEME_2      = "music/theme.ogg";
+		public static final String THEME_2      = "music/theme_sky.ogg";
 
 		public static final String SEWERS_1     = "music/Level1.ogg";
 		public static final String SEWERS_2     = "music/Level1.ogg";
@@ -380,6 +383,8 @@ public class Assets {
 		public static final String BBAT	= "sprites/bloodbat.png";
 
 		public static final String RAT		= "sprites/rat.png";
+
+		public static final String FLOWER_SLIME		= "sprites/flowers_slime.png";
 
 		public static final String GREEN		= "sprites/greenslting.png";
 		public static final String CLEAR		= "sprites/clearelemt.png";

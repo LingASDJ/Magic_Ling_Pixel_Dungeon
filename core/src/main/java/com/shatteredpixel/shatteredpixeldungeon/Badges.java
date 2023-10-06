@@ -123,6 +123,8 @@ public class Badges {
 
 		READ_BOOK_TWO				( 56 ),
 
+		HIDEEN_BADAGE				( 57 ),
+
 		//gold
 		PIRANHAS                    ( 64 ),
 		//these names are a bit outdated, but it doesn't really matter.
@@ -941,6 +943,8 @@ public class Badges {
 
 	public static void validateVictory() {
 
+		Statistics.winGame = true;
+
 		Badge badge = Badge.VICTORY;
 		displayBadge( badge );
 
@@ -1051,6 +1055,11 @@ public class Badges {
 	public static void KILL_SMK() {
 		displayBadge( Badge.KILL_SM );
 	}
+
+	public static void HDEX() {
+		displayBadge( Badge.HIDEEN_BADAGE );
+	}
+
 
 	public static void GOODRLPT() {
 		displayBadge( Badge.RLPT );

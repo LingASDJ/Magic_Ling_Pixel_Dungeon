@@ -1,7 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -29,6 +31,7 @@ public class Nxhy extends Shopkeeper {
         if (!seenBefore && Dungeon.level.heroFOV[pos]) {
             yell(Messages.get(this, "greetings", Dungeon.hero.name()));
             seenBefore = true;
+            playBGM(Assets.SHOP, true);
         }
         if (Dungeon.level.heroFOV[pos]){
             Notes.add(Notes.Landmark.SHOP);
