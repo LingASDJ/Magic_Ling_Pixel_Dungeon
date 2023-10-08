@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FetidRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Fire_Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlameC01;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlowerSlime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gnoll;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollShiled;
@@ -451,6 +452,7 @@ public class MobPlacer extends TestItem{
 
     private enum DataPack{
         RAT(Rat.class, DictSpriteSheet.RAT),
+        FLWW(FlowerSlime.class, DictSpriteSheet.FLOWER),
         //TESTRAT(TestRat.class, DictSpriteSheet.RAT),
         GNOLL(Gnoll.class, DictSpriteSheet.GNOLL),
         SNAKE(Snake.class, DictSpriteSheet.SNAKE),
@@ -460,6 +462,9 @@ public class MobPlacer extends TestItem{
         SLIME(Slime.class, DictSpriteSheet.SLIME),
         C_SLIME(CausticSlime.class, DictSpriteSheet.CAUSTIC_SLIME),
         F_RAT(FetidRat.class, DictSpriteSheet.F_RAT),
+
+
+
         GNOLL_DARTER(GnollTrickster.class, DictSpriteSheet.GNOLL_DARTER),
         GREAT_CRAB(GreatCrab.class, DictSpriteSheet.GREAT_CRAB),
 

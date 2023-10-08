@@ -67,12 +67,12 @@ public class Nyz extends NTNPC {
         sprite.turnTo( pos, Dungeon.hero.pos );
         spend( TICK );
 
-        shop6 = (Books) new YellowSunBooks().quantity(2);
-        shop5 = (Books) new BrokenBooks().quantity(2);
-        shop4 = (Books) new IceCityBooks().quantity(2);
-        shop3 = (Books) new NoKingMobBooks().quantity(2);
-        shop2 = (Books) new DeepBloodBooks().quantity(2);
-        shop1 = (Books) new MagicGirlBooks().quantity(2);
+        shop6 = (Books) new YellowSunBooks().quantity(1);
+        shop5 = (Books) new BrokenBooks().quantity(1);
+        shop4 = (Books) new IceCityBooks().quantity(1);
+        shop3 = (Books) new NoKingMobBooks().quantity(1);
+        shop2 = (Books) new DeepBloodBooks().quantity(1);
+        shop1 = (Books) new MagicGirlBooks().quantity(1);
         bomb1 = (Bomb) new Flashbang().quantity(1);
         bomb2 = (Bomb) new Noisemaker().quantity(1);
         bomb3 = (Bomb) new RegrowthBomb().quantity(1);

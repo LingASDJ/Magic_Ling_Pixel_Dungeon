@@ -101,7 +101,7 @@ public class WraithAmulet extends Artifact {
             } else {
                 GLog.i(Messages.get(this,"nochareup"));
             }
-        } else if(cursed) {
+        } else if(cursed && isEquipped(hero)) {
             GLog.i(Messages.get(this,"must_nocursed"));
         }
     }

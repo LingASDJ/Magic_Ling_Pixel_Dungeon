@@ -116,7 +116,7 @@ public class Swarm extends Mob {
 	public int attackSkill( Char target ) {
 		return 10;
 	}
-	
+
 	private Swarm split() {
 		Swarm clone = new Swarm();
 		clone.generation = generation + 1;
@@ -130,7 +130,13 @@ public class Swarm extends Mob {
 		for (Buff b : buffs(ChampionEnemy.class)){
 			Buff.affect( clone, b.getClass());
 		}
+
 		return clone;
+	}
+
+	@Override
+	public void die( Object cause ) {
+		super.die(cause);
 	}
 
 	@Override

@@ -123,7 +123,7 @@ public class Badges {
 
 		READ_BOOK_TWO				( 56 ),
 
-		HIDEEN_BADAGE				( 57 ),
+		HIDEEN_BADAGEX( 57 ),
 
 		//gold
 		PIRANHAS                    ( 64 ),
@@ -1023,6 +1023,17 @@ public class Badges {
 		displayBadge( Badge.HAPPY_END );
 	}
 
+	public static void silentValidateHDEX() {
+		if (!local.contains( Badge.HIDEEN_BADAGEX)){
+			local.add( Badge.HIDEEN_BADAGEX);
+		}
+	}
+
+	public static void HDEX() {
+		displayBadge( Badge.HIDEEN_BADAGEX);
+	}
+
+
 	public static void KILLSAPPLE() {
 		displayBadge( Badge.KILL_APPLE);
 	}
@@ -1055,11 +1066,6 @@ public class Badges {
 	public static void KILL_SMK() {
 		displayBadge( Badge.KILL_SM );
 	}
-
-	public static void HDEX() {
-		displayBadge( Badge.HIDEEN_BADAGE );
-	}
-
 
 	public static void GOODRLPT() {
 		displayBadge( Badge.RLPT );

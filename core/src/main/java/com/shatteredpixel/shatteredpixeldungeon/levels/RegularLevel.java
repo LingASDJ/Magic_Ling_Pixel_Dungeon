@@ -28,6 +28,8 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
 
+import com.nlf.calendar.Lunar;
+import com.nlf.calendar.Solar;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -144,6 +146,12 @@ public abstract class RegularLevel extends Level {
 
 		final Calendar calendar = Calendar.getInstance();
 
+		Solar date = Solar.fromDate(calendar.getTime());
+		Lunar lunar = date.getLunar();
+
+		boolean isZQJ = lunar.getMonth() == 8 && (lunar.getDay() >= 15-10 && lunar.getDay() <= 15+12);
+
+
 		//计算中国传统节日的代码已迁移到最上方的"Gregorian.LunarCheckDate();"方法。
 		switch(calendar.get(Calendar.MONTH)){
 			case Calendar.JANUARY:
@@ -151,11 +159,11 @@ public abstract class RegularLevel extends Level {
 					holiday = Holiday.XMAS;
 				break;
 			case Calendar.OCTOBER:
-				if (calendar.get(Calendar.WEEK_OF_MONTH) >= 2)
+				if (calendar.get(Calendar.WEEK_OF_MONTH) >= 2 && !isZQJ)
 					holiday = Holiday.HWEEN;
 				break;
 			case Calendar.NOVEMBER:
-				if (calendar.get(Calendar.DAY_OF_MONTH) == 1)
+				if (calendar.get(Calendar.DAY_OF_MONTH) == 1 && !isZQJ)
 					holiday = Holiday.HWEEN;
 				break;
 			case Calendar.DECEMBER:

@@ -24,6 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CHASM;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN_SP;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -799,7 +801,12 @@ public abstract class Level implements Bundlable {
 			avoid[i]		= (flags & Terrain.AVOID) != 0;
 			water[i]		= (flags & Terrain.LIQUID) != 0;
 			pit[i]			= (flags & Terrain.PIT) != 0;
+
 		}
+
+
+
+
 
 		for (Blob b : blobs.values()){
 			b.onBuildFlagMaps(this);
@@ -1465,7 +1472,7 @@ public abstract class Level implements Bundlable {
 				return Messages.get(Level.class, "locked_exit_name");
 			case Terrain.UNLOCKED_EXIT:
 				return Messages.get(Level.class, "unlocked_exit_name");
-			case Terrain.SIGN:
+			case SIGN:case SIGN_SP:
 				return Messages.get(Level.class, "sign_name");
 			case Terrain.WELL:
 				return Messages.get(Level.class, "well_name");
@@ -1510,7 +1517,7 @@ public abstract class Level implements Bundlable {
 				return Messages.get(Level.class, "locked_exit_desc");
 			case Terrain.BARRICADE:
 				return Messages.get(Level.class, "barricade_desc");
-			case Terrain.SIGN:
+			case SIGN:case SIGN_SP:
 				return Messages.get(Level.class, "sign_desc");
 			case Terrain.INACTIVE_TRAP:
 				return Messages.get(Level.class, "inactive_trap_desc");

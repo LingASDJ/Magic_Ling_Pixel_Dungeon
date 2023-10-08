@@ -58,7 +58,7 @@ public class GooRoom extends SpecialRoom {
     public void paint( Level level ) {
 
         Painter.fill( level, this, Terrain.WALL );
-        Painter.fill( level, this, 1, Terrain.SIGN );
+        Painter.fill( level, this, 1, Terrain.SIGN_SP );
         Painter.fill( level, this, 2, Terrain.EMPTY_SP );
 
 
@@ -104,6 +104,7 @@ public class GooRoom extends SpecialRoom {
 
         GooMob statue = new GooMob();
         statue.pos = cx + cy * level.width();
+        statue.state = statue.PASSIVE;
         level.mobs.add( statue );
 
         Guard statue2 = new Guard();

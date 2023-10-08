@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdGuardSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdRatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireAcidicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameC01Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FlowerSlimeSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceFireScorpioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceGolemSprite;
@@ -131,6 +132,8 @@ public class DictSpriteSheet {
                 return new Image(Assets.Sprites.SLIME, 14, 0, 14, 12);
             case F_RAT:
                 return new Image(Assets.Sprites.RAT, 0, 30, 16, 15);
+            case FLOWER:
+                return new FlowerSlimeSprites();
             case GNOLL_DARTER:
                 return new Image(Assets.Sprites.GNOLL, 0, 15, 12, 15);
             case CAUSTIC_SLIME:
@@ -294,6 +297,8 @@ public class DictSpriteSheet {
     public static final int SLIME           = 206 + 10000;
     public static final int CAUSTIC_SLIME   = 207 + 10000;
     public static final int F_RAT           = 208 + 10000;
+
+    public static final int FLOWER           = 1608 + 10000;
     public static final int GNOLL_DARTER    = 209 + 10000;
     public static final int GREAT_CRAB      = 210 + 10000;
     public static final int OGPDNQHZ        = 211 + 10000;

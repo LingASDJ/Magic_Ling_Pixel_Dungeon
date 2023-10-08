@@ -126,7 +126,7 @@ public class NyzBombAndBooksRoom extends SpecialRoom {
         itemsToSpawn2.add (new Firebomb().quantity(1));
         itemsToSpawn2.add (new FrostBomb().quantity(1));
         itemsToSpawn2.add(new MerchantsBeacon());
-        itemsToSpawn2.add(new GrassKingBooks().quantity(2));
+        itemsToSpawn2.add(new GrassKingBooks().quantity(1));
         itemsToSpawn2.add(new ScrollOfTransmutation());
         //itemsToSpawn2.add(new DriedRose());
         itemsToSpawn2.add(new ScrollOfMagicMapping());

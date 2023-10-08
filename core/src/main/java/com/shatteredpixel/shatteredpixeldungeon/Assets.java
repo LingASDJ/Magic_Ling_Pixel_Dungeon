@@ -30,6 +30,8 @@ public class Assets {
 	public static final String BGM_0 = "music/Level0.ogg";
 	public static final String SNOWCYON	= "music/SnowCyon.ogg";
 
+	public static final String NIGHT	= "music/night.ogg";
+
 	public static final String SKBJY	= "music/Boss-Saka.ogg";
 
 	public static final String TOWN = "music/town.ogg";

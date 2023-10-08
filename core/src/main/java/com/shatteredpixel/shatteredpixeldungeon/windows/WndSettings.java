@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import static com.watabou.utils.DeviceCompat.isAndroid;
+import static com.watabou.utils.DeviceCompat.isDesktop;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
@@ -408,6 +409,7 @@ public class WndSettings extends WndTabbed {
 
 		ColorBlock sep1;
 		OptionSlider optUIMode;
+		RedButton btnKeyBindings;
 		OptionSlider optUIScale;
 		RedButton btnToolbarSettings;
 		CheckBox chkFlipTags;
@@ -640,6 +642,17 @@ public class WndSettings extends WndTabbed {
 			};
 			chkFont.checked(SPDSettings.systemFont());
 			add(chkFont);
+
+			btnKeyBindings = new RedButton(Messages.get(this, "key_bindings")){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					ShatteredPixelDungeon.scene().addToFront(new WndKeyBindings());
+				}
+			};
+
+			add(btnKeyBindings);
+
 		}
 
 		@Override
@@ -666,6 +679,8 @@ public class WndSettings extends WndTabbed {
 				}
 			}
 
+
+
 			if (btnToolbarSettings != null) {
 				btnToolbarSettings.setRect(0, height + GAP, width, BTN_HEIGHT);
 				height = btnToolbarSettings.bottom();
@@ -679,6 +694,14 @@ public class WndSettings extends WndTabbed {
 
 			chkFont.setRect(0, sep2.y + 1 + GAP, width, BTN_HEIGHT);
 			height = chkFont.bottom();
+
+			if (!isDesktop()) {
+				btnKeyBindings.active = false;
+				btnKeyBindings.alpha(0.3f);
+			}
+			btnKeyBindings.setRect(0, height + GAP, width, BTN_HEIGHT);
+			height = btnKeyBindings.bottom();
+
 		}
 
 	}

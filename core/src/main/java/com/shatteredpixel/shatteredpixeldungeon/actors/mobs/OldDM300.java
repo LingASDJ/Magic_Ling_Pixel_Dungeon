@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.levels.CavesLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
@@ -87,6 +88,29 @@ public class OldDM300 extends FlameB01 {
 		return Random.NormalIntRange(0, 10);
 	}
 	public static boolean seenBefore = false;
+
+
+	@Override
+	public void add(Buff buff) {
+		super.add(buff);
+		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+		if(lock == null && !seenBefore && Dungeon.level.heroFOV[pos]){
+			if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
+				AlarmTrap alarmTrap = new AlarmTrap();
+				alarmTrap.pos = pos;
+				alarmTrap.activate();
+				CavesLevel level = (CavesLevel) Dungeon.level;
+				level.seal();
+				level.updateChasmTerrain();
+				ScrollOfTeleportation.appear(hero, pos+8);
+			}
+		}
+
+		if (state == PASSIVE && buff.type == Buff.buffType.NEGATIVE){
+			state = HUNTING;
+		}
+	}
+
 	@Override
 	public boolean act() {
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
@@ -95,7 +119,9 @@ public class OldDM300 extends FlameB01 {
 				AlarmTrap alarmTrap = new AlarmTrap();
 				alarmTrap.pos = pos;
 				alarmTrap.activate();
-				Dungeon.level.seal();
+				CavesLevel level = (CavesLevel) Dungeon.level;
+				level.seal();
+				level.updateChasmTerrain();
 				ScrollOfTeleportation.appear(hero, pos+8);
 			}
 		}
@@ -170,7 +196,9 @@ public class OldDM300 extends FlameB01 {
 	public void die( Object cause ) {
 		super.die( cause );
 		playBGM(Assets.BGM_3, true);
-		Dungeon.level.unseal();
+		CavesLevel level = (CavesLevel) Dungeon.level;
+		Buff.detach( hero, LockedFloor.class );
+		level.updateChasmTerrain();
 		//60% chance of 2 shards, 30% chance of 3, 10% chance for 4. Average of 2.5
 		int shards = Random.chances(new float[]{0, 0, 6, 3, 1});
 		for (int i = 0; i < shards; i++){
@@ -201,16 +229,18 @@ public class OldDM300 extends FlameB01 {
 			state = HUNTING;
 			notice();
 			ScrollOfTeleportation.appear(hero, pos+8);
-			Dungeon.level.seal();
+			CavesLevel level = (CavesLevel) Dungeon.level;
+			level.seal();
+			level.updateChasmTerrain();
 		}
 
 		if(HP<50){
 			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
 				if (mob instanceof DM201 ) {
 					mob.die(true);
+					Buff.affect(this, Barrier.class).setShield(140);
 				}
 			}
-			Buff.affect(this, Barrier.class).setShield(140);
 		}
 
 

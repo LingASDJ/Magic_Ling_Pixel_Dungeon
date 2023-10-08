@@ -95,7 +95,7 @@ public class Dungeon {
 	public static int nyzbuy;
 	public static int boss;
 
-	public static boolean nightMode;
+	public static boolean whiteDaymode;
 
 	public static boolean interfloorTeleportAllowed(){
 		if (Dungeon.level.locked || (Dungeon.hero != null && Dungeon.hero.belongings.getItem(Amulet.class) != null)){
@@ -360,6 +360,11 @@ public class Dungeon {
 		difficultys =  new Difficulty.HardStorage(SPDSettings.difficulty());
 
 		TitleScene.Reusable = false;
+
+
+		TitleScene.NightDay = false;
+
+
 
 		mobsToChampion = -1;
 		mobsToStateLing = -1;

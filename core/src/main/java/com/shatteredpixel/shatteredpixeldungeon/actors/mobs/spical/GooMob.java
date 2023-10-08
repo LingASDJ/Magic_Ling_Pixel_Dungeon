@@ -17,6 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.GooNPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -97,17 +98,43 @@ public class GooMob extends Mob {
     }
 
     @Override
-    public boolean act() {
+    public void add(Buff buff) {
+        super.add(buff);
         LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+
+        if (state == PASSIVE && buff.type == Buff.buffType.NEGATIVE){
+            state = HUNTING;
+        }
+
         if(lock == null && !seenBefore && Dungeon.level.heroFOV[pos]){
-            Dungeon.level.seal();
+            SewerLevel level = (SewerLevel) Dungeon.level;
+            level.seal();
+            level.updateChasmTerrain();
             seenBefore = false;
             if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
                 AlarmTrap alarmTrap = new AlarmTrap();
                 alarmTrap.pos = pos;
                 alarmTrap.activate();
                 ScrollOfTeleportation.appear(hero, pos+4);
-                sprite().showAlert();
+                tell(Messages.get(this, "notice"));
+            }
+        }
+    }
+
+    @Override
+    public boolean act() {
+        LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+
+        if(lock == null && !seenBefore && Dungeon.level.heroFOV[pos]){
+            SewerLevel level = (SewerLevel) Dungeon.level;
+            level.seal();
+            level.updateChasmTerrain();
+            seenBefore = false;
+            if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
+                AlarmTrap alarmTrap = new AlarmTrap();
+                alarmTrap.pos = pos;
+                alarmTrap.activate();
+                ScrollOfTeleportation.appear(hero, pos+4);
                 tell(Messages.get(this, "notice"));
             }
         }
@@ -241,7 +268,9 @@ public class GooMob extends Mob {
             state = HUNTING;
             notice();
             ScrollOfTeleportation.appear(hero, pos+1);
-            Dungeon.level.seal();
+            SewerLevel level = (SewerLevel) Dungeon.level;
+            level.seal();
+            level.updateChasmTerrain();
         }
 
         if ((HP*2 <= HT) && !bleeding){
@@ -265,7 +294,9 @@ public class GooMob extends Mob {
     @Override
     public void die( Object cause ) {
         super.die( cause );
-        Dungeon.level.unseal();
+        SewerLevel level = (SewerLevel) Dungeon.level;
+        level.unseal();
+        level.updateChasmTerrain();
         //60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5
         int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
         for (int i = 0; i < blobs; i++){

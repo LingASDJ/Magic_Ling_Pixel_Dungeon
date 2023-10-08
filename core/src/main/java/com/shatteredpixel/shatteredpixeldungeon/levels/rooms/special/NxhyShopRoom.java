@@ -165,8 +165,8 @@ public class NxhyShopRoom extends SpecialRoom {
                     break;
                 case 3:
                 case 4:
-                    itemsToSpawn2.add(new YellowSunBooks().quantity(3));
-                    itemsToSpawn2.add(new GrassKingBooks().quantity(3));
+                    itemsToSpawn2.add(new YellowSunBooks().quantity(1));
+                    itemsToSpawn2.add(new GrassKingBooks().quantity(1));
                     break;
                 case 5:
                     itemsToSpawn2.add(new MeatPie());

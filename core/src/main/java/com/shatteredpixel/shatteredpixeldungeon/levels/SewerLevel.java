@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN_SP;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -85,32 +86,24 @@ public class SewerLevel extends RegularLevel {
 				.setTraps(nTraps(), trapClasses(), trapChances());
 	}
 
-	@Override
-	public void seal() {
-		super.seal();
-		updateChasmTerrain();
-	}
-
-	@Override
-	public void unseal() {
-		super.unseal();
-		updateChasmTerrain();
-	}
 
 	public void updateChasmTerrain() {
-		for (int i = 0; i < map.length; i++) {
-			if (map[i] == Terrain.SIGN) {
-				// 将 EMPTY_DECO 地块改为新地形
-				set(i, Terrain.LOCKED_EXIT);
-				GameScene.updateMap(i); // 更新地图显示
-				Camera.main.shake(3f,6f);
-			} else if(hero.buff(LockedFloor.class) == null && map[i] == Terrain.LOCKED_EXIT) {
-				// 将 CHASM 地块改为新地形
-				set(i, Terrain.EMPTY);
-				GameScene.updateMap(i); // 更新地图显示
+		synchronized (map){
+			for (int i = 0; i < map.length; i++) {
+				if (map[i] == SIGN_SP) {
+					// 将 EMPTY_DECO 地块改为新地形
+					set(i, Terrain.LOCKED_EXIT);
+					GameScene.updateMap(i); // 更新地图显示
+					Camera.main.shake(3f,6f);
+				} else if(hero.buff(LockedFloor.class) == null
+						&& map[i] == Terrain.LOCKED_EXIT) {
+					// 将 CHASM 地块改为新地形
+					set(i, Terrain.EMPTY);
+					GameScene.updateMap(i); // 更新地图显示
+				}
+				playBGM(Assets.BGM_BOSSA, true);
+				GameScene.flash(Window.DeepPK_COLOR);
 			}
-			playBGM(Assets.BGM_BOSSA, true);
-			GameScene.flash(Window.ANSDO_COLOR);
 		}
 	}
 	

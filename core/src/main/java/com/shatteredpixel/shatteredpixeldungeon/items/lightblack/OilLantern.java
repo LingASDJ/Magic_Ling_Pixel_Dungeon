@@ -30,6 +30,8 @@ public class OilLantern extends Item {
     private static final String CHARGE = "charge";
     private static final String FLASKS = "flasks";
 
+    private static final String PLASKS = "plasks";
+
     private static final int MAX_CHARGE = 60;
     private static final int MIX_CHARGE = 20;
     private static final float TIME_TO_USE = 2.0f;
@@ -72,6 +74,7 @@ public class OilLantern extends Item {
         bundle.put(ACTIVE, this.active);
         bundle.put(CHARGE, this.charge);
         bundle.put(FLASKS, this.flasks);
+        bundle.put(PLASKS, this.plingks);
     }
 
     public void restoreFromBundle(Bundle bundle) {
@@ -79,6 +82,7 @@ public class OilLantern extends Item {
         this.active = bundle.getBoolean(ACTIVE);
         this.charge = bundle.getInt(CHARGE);
         this.flasks = bundle.getInt(FLASKS);
+        this.plingks = bundle.getInt(PLASKS);
         updateSprite();
     }
 

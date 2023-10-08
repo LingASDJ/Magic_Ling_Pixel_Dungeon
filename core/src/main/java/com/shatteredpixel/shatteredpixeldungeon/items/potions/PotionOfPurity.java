@@ -42,9 +42,25 @@ public class PotionOfPurity extends Potion {
 	public static class PotionOfPurityLing extends PotionOfPurity {
 		{
 			icon = ItemSpriteSheet.Icons.POTION_PURITY;
-			image = ItemSpriteSheet.POTION_INDIGO;
+			image = ItemSpriteSheet.GREEN_LING;
 			affectedBlobs = new ArrayList<>(new BlobImmunity().immunities());
 		}
+
+		@Override
+		public int energyVal() {
+			return 0;
+		}
+
+		@Override
+		public int value() {
+			return 0;
+		}
+
+		public boolean isKnown() {
+			return true;
+		}
+
+
 	}
 
 	

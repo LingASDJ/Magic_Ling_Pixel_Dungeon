@@ -40,7 +40,7 @@ public class OldDM300Room extends SpecialRoom {
     public void paint( Level level ) {
 
         Painter.fill( level, this, Terrain.WALL );
-        Painter.fill( level, this, 1, Terrain.SIGN );
+        Painter.fill( level, this, 1, Terrain.SIGN_SP );
         Painter.fill( level, this, 2, Terrain.WATER );
 
         Point c = center();

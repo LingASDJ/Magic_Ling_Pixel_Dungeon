@@ -489,7 +489,7 @@ public class YogDzewa extends Mob {
 			Badges.GOODRLPT();
 		}
 
-		if(Dungeon.nightMode){
+		if(!Dungeon.whiteDaymode){
 			PaswordBadges.NIGHT_CAT();
 		}
 

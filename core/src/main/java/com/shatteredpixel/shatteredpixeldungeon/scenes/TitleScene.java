@@ -40,28 +40,36 @@ import java.util.Date;
 public class TitleScene extends PixelScene {
 	public static boolean Reusable = false;
 
-
+	public static boolean NightDay = false;
 
 	@Override
 	public void create() {
 		super.create();
 		Calendar calendar = Calendar.getInstance();
 		int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
-
-		Dungeon.nightMode = currentHour > 7 && currentHour < 22;
+		Badges.loadGlobal();
+		Dungeon.whiteDaymode = currentHour > 7 && currentHour < 22;
 //		if(SPDSettings.startPort(false)){
 //			SPDSettings.scale(3);
 //			ShatteredPixelDungeon.seamlessResetScene();
 //			SPDSettings.startPort(true);
 //		}
 
-		if(Random.Int(10) == 1 && !Reusable && Statistics.winGame) {
+		Badges.loadGlobal();
+		boolean whiteDaymode = currentHour > 7 && currentHour < 22;
+		if(Random.Int(10) == 1 && !NightDay && !whiteDaymode){
+			NightDay = true;
+		}
+
+		if(Random.Int(10) == 1 && !Reusable && Statistics.winGame && !NightDay) {
 			Reusable = true;
 			Music.INSTANCE.play(Assets.Music.THEME_2, true);
-		} else if (!Reusable) {
+		} else if (!Reusable && !NightDay) {
 			Music.INSTANCE.play(Assets.Music.THEME_1, true);
+		} else if(NightDay) {
+			Music.INSTANCE.play(Assets.NIGHT, true);
 		} else {
-			Music.INSTANCE.play(Assets.Music.THEME_2, true);
+			Music.INSTANCE.play(Assets.Music.THEME_1, true);
 		}
 
 
@@ -196,7 +204,12 @@ public class TitleScene extends PixelScene {
 			public void update() {
 				super.update();
 
-				if (TitleScene.Reusable){
+				if(TitleScene.NightDay){
+					textColor(ColorMath.interpolate( 0xFFFFFF, Window.CBLACK,
+							0.1f + (float)Math.sin(Game.timeTotal*5)/2f));
+					text(Messages.get(TitleScene.class, "dark"));
+					icon(BadgeBanner.image(Badges.Badge.STORM.image));
+				} else if (TitleScene.Reusable){
 					textColor(ColorMath.interpolate( 0xFFFFFF, Window.CYELLOW,
 							0.5f + (float)Math.sin(Game.timeTotal*5)/2f));
 					text(Messages.get(TitleScene.class, "go"));
@@ -235,7 +248,10 @@ public class TitleScene extends PixelScene {
 			}
 			@Override
 			protected boolean onLongClick() {
+				Badges.silentValidateHDEX();
+
 				ShatteredPixelDungeon.switchNoFade(PassWordBadgesScene.class);
+
 				return super.onLongClick();
 			}
 		};

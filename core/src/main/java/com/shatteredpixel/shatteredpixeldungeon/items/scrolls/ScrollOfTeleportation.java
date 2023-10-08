@@ -276,7 +276,7 @@ public class ScrollOfTeleportation extends Scroll {
 
 		ch.sprite.interruptMotion();
 
-		if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[ch.pos] || Dungeon.level.feeling != Level.Feeling.DIEDROOM){
+		if (Dungeon.level.heroFOV[pos] && Dungeon.level.feeling != Level.Feeling.DIEDROOM || Dungeon.level.heroFOV[ch.pos] && Dungeon.level.feeling != Level.Feeling.DIEDROOM ){
 			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 		}
 

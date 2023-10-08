@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.bossWeapons;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
@@ -11,7 +12,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -226,9 +226,17 @@ public class CrivusFruits extends Mob {
 
         //毒雾扩散
         if(!crivusfruitslevel2){
-            GameScene.add(Blob.seed(pos, HP<65 ? 50 : 30, DiedBlobs.class));
+            if(Dungeon.isChallenged(STRONGER_BOSSES)){
+                GameScene.add(Blob.seed(pos, HP<65 ? 90 : 70, DiedBlobs.class));
+            } else {
+                GameScene.add(Blob.seed(pos, HP<65 ? 50 : 30, DiedBlobs.class));
+            }
         } else {
-            GameScene.add(Blob.seed(pos, HP<36 ? 150 : 50, DiedBlobs.class));
+            if(Dungeon.isChallenged(STRONGER_BOSSES)){
+                GameScene.add(Blob.seed(pos, HP<36 ? 280 : 100, DiedBlobs.class));
+            } else {
+                GameScene.add(Blob.seed(pos, HP<36 ? 150 : 50, DiedBlobs.class));
+            }
             //doYogLasers();
         }
 
@@ -250,8 +258,8 @@ public class CrivusFruits extends Mob {
                 CrivusFruitsLasher csp = new CrivusFruitsLasher();
                 csp.pos = i;
                 GameScene.add(csp);
-                if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
-                    Buff.affect(csp, Barrier.class).setShield((int) (2.4f * csp.HT + 10));
+                if(Dungeon.isChallenged(STRONGER_BOSSES)){
+                    Buff.affect(csp, Barrier.class).setShield((int) (2.4f * csp.HT + 80));
                 }
             }
             Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
@@ -280,7 +288,7 @@ public class CrivusFruits extends Mob {
             alignment = Alignment.ENEMY;
             GameScene.flash(0x80009c9c);
             HP=HT=35;
-            if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+            if(Dungeon.isChallenged(STRONGER_BOSSES)){
                 Buff.affect(this, Barrier.class).setShield((int) (3f * this.HT + 10));
             }
             GLog.n(Messages.get(this,"died!!!"));

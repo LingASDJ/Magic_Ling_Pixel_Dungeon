@@ -79,12 +79,10 @@ public class WandOfAnmy extends DamageWand {
 
         @Override
         public void fx(boolean on) {
-            if (on) {
-                target.sprite.add(CharSprite.State.HEARTS);
-                //Statistics.TryUsedAnmy = true;
+            if(!target.properties.contains(Char.Property.NOBIG)){
+                if (on) {target.sprite.add(CharSprite.State.HEARTS);
+                } else target.sprite.remove(CharSprite.State.HEARTS);
             }
-            else
-                target.sprite.remove(CharSprite.State.HEARTS);
         }
 
         @Override
@@ -111,8 +109,10 @@ public class WandOfAnmy extends DamageWand {
 
         @Override
         public void fx(boolean on) {
-            if (on) target.sprite.add(CharSprite.State.HEARTS);
-            else    target.sprite.remove(CharSprite.State.HEARTS);
+            if(!target.properties.contains(Char.Property.NOBIG)){
+                if (on) {target.sprite.add(CharSprite.State.HEARTS);
+                } else target.sprite.remove(CharSprite.State.HEARTS);
+            }
         }
 
         @Override
@@ -121,7 +121,7 @@ public class WandOfAnmy extends DamageWand {
         }
 
         public int icon() {
-            return BuffIndicator.HEX;
+            return BuffIndicator.HEART;
         }
 
     }

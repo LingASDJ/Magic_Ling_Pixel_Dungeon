@@ -4,7 +4,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.PasswordBadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -26,13 +25,11 @@ public class PassWordBadgesScene extends PixelScene {
 
     @Override
     public void create() {
-        if(!Statistics.HiddenOK){
-            Badges.HDEX();
-            Statistics.HiddenOK = true;
-        }
 
         super.create();
 
+        Badges.HDEX();
+        fadeIn();
         //Music.INSTANCE.play( Assets.Music.THEME, true );
 
         uiCamera.visible = false;
@@ -60,7 +57,7 @@ public class PassWordBadgesScene extends PixelScene {
 
         List<PaswordBadges.Badge> badges = PaswordBadges.filtered( true );
 
-        int blankBadges = 14;
+        int blankBadges = 13;
         blankBadges -= badges.size();
         if (badges.contains(Badges.Badge.ALL_ITEMS_IDENTIFIED))	blankBadges -= 6;
         if (badges.contains(Badges.Badge.YASD)) 				blankBadges -= 5;

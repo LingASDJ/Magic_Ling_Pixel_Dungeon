@@ -65,7 +65,7 @@ public class Archs extends Component {
 		arcsBg.offsetTo( 0,  offsB );
 		add( arcsBg );
 
-		arcsFg = new SkinnedBlock( 1, 1, Dungeon.nightMode ? Assets.Interfaces.ARCS_FG : Assets.Interfaces.ARCS_FGN  ){
+		arcsFg = new SkinnedBlock( 1, 1, Dungeon.whiteDaymode ? Assets.Interfaces.ARCS_FG : Assets.Interfaces.ARCS_FGN  ){
 			@Override
 			protected NoosaScript script() {
 				return NoosaScriptNoLighting.get();

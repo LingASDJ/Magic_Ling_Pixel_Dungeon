@@ -67,6 +67,7 @@ public class CavesLevel extends RegularLevel {
 		color2 = 0xb9d661;
 	}
 
+
 	//红龙的试炼
 	@Override
 	protected void createItems() {
@@ -101,33 +102,23 @@ public class CavesLevel extends RegularLevel {
 		return 2+Random.chances(new float[]{4, 1});
 	}
 
-	@Override
-	public void seal() {
-		super.seal();
-		updateChasmTerrain();
-	}
-
-	@Override
-	public void unseal() {
-		super.unseal();
-		updateChasmTerrain();
-	}
-
 	public void updateChasmTerrain() {
-		for (int i = 0; i < map.length; i++) {
-			if (map[i] == Terrain.SIGN) {
-				// 将 EMPTY_DECO 地块改为新地形
-				set(i, Terrain.LOCKED_EXIT);
-				GameScene.updateMap(i); // 更新地图显示
-				Camera.main.shake(4f,7f);
-			} else if(hero.buff(LockedFloor.class) == null && map[i] == Terrain.LOCKED_EXIT) {
-				// 将 CHASM 地块改为新地形
-				set(i, Terrain.EMPTY);
-				GameScene.updateMap(i); // 更新地图显示
-				GameScene.flash(Window.WATA_COLOR);
+		synchronized (map){
+			for (int i = 0; i < map.length; i++) {
+				if (map[i] == Terrain.SIGN_SP) {
+					// 将 EMPTY_DECO 地块改为新地形
+					set(i, Terrain.LOCKED_EXIT);
+					GameScene.updateMap(i); // 更新地图显示
+					Camera.main.shake(4f,7f);
+				} else if(hero.buff(LockedFloor.class) == null && map[i] == Terrain.LOCKED_EXIT) {
+					// 将 CHASM 地块改为新地形
+					set(i, Terrain.EMPTY);
+					GameScene.updateMap(i); // 更新地图显示
+					GameScene.flash(Window.WATA_COLOR);
+				}
+				GameScene.flash(Window.SKYBULE_COLOR);
+				playBGM(Assets.BGM_BOSSC, true);
 			}
-			GameScene.flash(Window.SKYBULE_COLOR);
-			playBGM(Assets.BGM_BOSSC, true);
 		}
 	}
 	
