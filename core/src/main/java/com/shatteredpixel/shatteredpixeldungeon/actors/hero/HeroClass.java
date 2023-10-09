@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.He
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.LevelTeleporter;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.MobPlacer;
+import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -80,7 +81,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RedWhiteRose;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
@@ -170,7 +170,7 @@ public enum HeroClass {
 			new PotionOfInvisibility().quantity(45).identify().collect();
 			new AncityArmor().quantity(1).identify().collect();
 			new TengusMask().quantity(1).identify().collect();
-			new RingOfWealth().quantity(1).identify().collect();
+			new SpawnWeapon().quantity(1).identify().collect();
 			new DiedCrossBow().quantity(1).identify().collect();
 			new RedWhiteRose().quantity(1).identify().collect();
 			Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);

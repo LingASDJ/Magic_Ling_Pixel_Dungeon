@@ -120,10 +120,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dairikyan;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dirk;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive;
@@ -142,8 +144,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword;
@@ -400,9 +404,11 @@ public class Generator {
 					Dairikyan.class,
 					MagicTorch.class,
 					GreenSword.class,
+					SDBSword.class,
+					RedBloodMoon.class,
 
 			};
-			WEP_T3.probs = new float[]{ 1, 5, 5, 4, 4, 4 ,3,5,3,6,0};
+			WEP_T3.probs = new float[]{ 1, 5, 5, 4, 4, 4 ,3,5,3,6,0,0,0};
 
 			WEP_T4.classes = new Class<?>[]{
 					Longsword.class,
@@ -433,9 +439,11 @@ public class Generator {
 
 			WEP_T6.classes = new Class<?>[]{
 					IceFishSword.class,
-					IceDewVialSword.class
+					IceDewVialSword.class,
+					BloodthirstyThorn.class,
+					EndingBlade.class,
 			};
-			WEP_T6.probs = new float[]{ 1,0 };
+			WEP_T6.probs = new float[]{ 1,0,0,0 };
 
 			//see Generator.randomArmor
 			ARMOR.classes = new Class<?>[]{
