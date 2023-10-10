@@ -1,7 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.testmode;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
@@ -46,13 +47,14 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.WndTextNumberInput;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSadGhost;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-@SuppressWarnings("all")
+
 public class SpawnWeapon extends TestItem{
     {
         image = ItemSpriteSheet.CANDLE;
@@ -97,15 +99,17 @@ public class SpawnWeapon extends TestItem{
     public void createWeapon(){
         try{
             Weapon wpn = (Weapon) Reflection.newInstance(getWeapon(tier)[weapon_id]);
-            ((Item) wpn).level(weapon_level);
+            wpn.level(weapon_level);
             Class enchantResult = getEnchant(enchant_rarity,enchant_id);
             if(enchantResult!=null){
                 wpn.enchant((Weapon.Enchantment) Reflection.newInstance(enchantResult));
             }
-            ((Item) wpn).cursed=cursed;
+            wpn.cursed=cursed;
             wpn.identify();
             if(wpn.collect()) {
-                GLog.i(Messages.get(Dungeon.hero, "you_now_have", wpn.name()));
+                GameScene.pickUp( wpn, hero.pos );
+                Sample.INSTANCE.play( Assets.Sounds.ITEM );
+                GLog.i(Messages.get(hero, "you_now_have", wpn.name()));
             } else {
                 wpn.doDrop(Item.curUser);
             }
@@ -218,33 +222,43 @@ public class SpawnWeapon extends TestItem{
         weapon_id = b.getInt("weapon_id");
     }
 
+    /**
+     * 武器设置窗口类，继承自Window类。
+     */
     private class WeaponSetting extends Window {
 
-        private static final int WIDTH = 150;
-        private static final int HEIGHT = 250;
-        private static final int BTN_SIZE = 18;
-        private static final int GAP = 2;
+        // 定义常量
+        private static final int WIDTH = 150; // 窗口宽度
+        private static final int HEIGHT = 250; // 窗口高度
+        private static final int BTN_SIZE = 18; // 按钮尺寸
+        private static final int GAP = 2; // 间隔大小
+        private static final int MAX_ICONS_PER_LINE = 7; // 每行最大图标数量
 
-        private Class[] AllWeapon;
-        private RedButton Button_Create;
-        private CheckBox CheckBox_Curse;
-        private ArrayList<IconButton> IconButtons = new ArrayList<>();
-        private OptionSlider OptionSlider_EnchantId;
+        // 成员变量
+        private Class[] AllWeapon; // 所有武器的Class数组
+        private final RedButton Button_Create; // 创建武器按钮
+        private final CheckBox CheckBox_Curse; // 诅咒物品复选框
+        private final ArrayList<IconButton> IconButtons = new ArrayList<>(); // 图标按钮列表
+        private final OptionSlider OptionSlider_EnchantId; // 附魔编号选项滑块
+        private final OptionSlider OptionSlider_EnchantRarity; // 附魔种类选项滑块
+        private final RedButton Button_Level; // 武器等级按钮
+        private final OptionSlider OptionSlider_Tier; // 武器阶数选项滑块
+        private final RenderedTextBlock Text_EnchantInfo; // 附魔信息文本块
 
-        private OptionSlider OptionSlider_EnchantRarity;
-        private RedButton Button_Level;
-
-        private OptionSlider OptionSlider_Tier;
-        private RenderedTextBlock Text_EnchantInfo;
-        private RenderedTextBlock Text_SelectedWeapon;
-
-        public WeaponSetting(){
+        /**
+         * 构造函数，用于初始化窗口。
+         */
+        public WeaponSetting() {
             super();
 
+            // 设置窗口尺寸
             resize(WIDTH, HEIGHT);
+
+            // 创建武器列表
             createWeaponList(tier);
 
-            OptionSlider_Tier = new OptionSlider("武器阶数","1","6",1,6) {
+            // 创建武器阶数选项滑块
+            OptionSlider_Tier = new OptionSlider("武器阶数", "1", "6", 1, 6) {
                 @Override
                 protected void onChange() {
                     tier = getSelectedValue();
@@ -255,35 +269,16 @@ public class SpawnWeapon extends TestItem{
             };
             add(OptionSlider_Tier);
 
+            // 创建武器图标
             createWeaponImage(AllWeapon);
 
-            Text_SelectedWeapon = PixelScene.renderTextBlock("", 10);
-            updateWeaponText();
-            add(Text_SelectedWeapon);
-
-            Button_Level = new RedButton("test"){
-                @Override
-                protected void onClick() {
-                    Game.runOnRenderThread(()-> ShatteredPixelDungeon.scene().add(new WndTextNumberInput(
-                            "自定义武器等级","输入要生成的武器的等级",Integer.toString(weapon_level),
-                            10,false,Messages.get(WndSadGhost.class,"confirm"),
-                            Messages.get(WndSadGhost.class,"cancel")){
-                        @Override
-                        public void onSelect(boolean check, String text) {
-                            if( check && text.matches("\\d+") ){
-                                weapon_level = Integer.parseInt(text);
-                            }
-                        }
-                    }));
-                }
-            };
-            add(Button_Level);
-
-            Text_EnchantInfo = PixelScene.renderTextBlock("", 3);
-            Text_EnchantInfo.text(getEnchantInfo(getEnchant(enchant_rarity,enchant_id)));
+            // 创建附魔信息文本块
+            Text_EnchantInfo = PixelScene.renderTextBlock("", 5);
+            Text_EnchantInfo.text(getEnchantInfo(getEnchant(enchant_rarity, enchant_id)));
             add(Text_EnchantInfo);
 
-            OptionSlider_EnchantRarity = new OptionSlider("附魔种类","0","4",0,4) {
+            // 创建附魔种类选项滑块
+            OptionSlider_EnchantRarity = new OptionSlider("附魔种类", "1", "5", 0, 4) {
                 @Override
                 protected void onChange() {
                     enchant_rarity = getSelectedValue();
@@ -293,7 +288,8 @@ public class SpawnWeapon extends TestItem{
             OptionSlider_EnchantRarity.setSelectedValue(enchant_rarity);
             add(OptionSlider_EnchantRarity);
 
-            OptionSlider_EnchantId = new OptionSlider("附魔编号","0","7",0,7) {
+            // 创建附魔编号选项滑块
+            OptionSlider_EnchantId = new OptionSlider("附魔编号", "1", "8", 0, 7) {
                 @Override
                 protected void onChange() {
                     enchant_id = getSelectedValue();
@@ -303,54 +299,158 @@ public class SpawnWeapon extends TestItem{
             OptionSlider_EnchantId.setSelectedValue(enchant_id);
             add(OptionSlider_EnchantId);
 
-            CheckBox_Curse = new CheckBox("诅咒物品"){
+            // 创建诅咒物品复选框
+            CheckBox_Curse = new CheckBox("诅咒物品") {
                 @Override
                 protected void onClick() {
                     super.onClick();
-                    cursed =checked();
+                    cursed = checked();
                 }
             };
             CheckBox_Curse.checked(cursed);
             add(CheckBox_Curse);
 
-            Button_Create = new RedButton("生成武器"){
+            // 创建武器等级按钮
+            Button_Level = new RedButton(" ") {
+                @Override
+                protected void onClick() {
+                    Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextNumberInput(
+                            "自定义武器等级", "输入要生成的武器的等级", Integer.toString(weapon_level),
+                            10, false, Messages.get(WndSadGhost.class, "confirm"),
+                            Messages.get(WndSadGhost.class, "cancel")) {
+                        @Override
+                        public void onSelect(boolean check, String text) {
+                            if (check && text.matches("\\d+")) {
+                                weapon_level = Integer.parseInt(text);
+                            }
+                        }
+                    }));
+                }
+            };
+            add(Button_Level);
+
+            // 创建生成武器按钮
+            Button_Create = new RedButton("生成武器") {
                 @Override
                 protected void onClick() {
                     createWeapon();
                 }
             };
             add(Button_Create);
+
             layout();
         }
 
-        private void layout(){
-            //selectedPage.maxWidth(WIDTH / 2);
-            //selectedPage.setPos((WIDTH - selectedPage.width())/2, 5);
-            //selectedMob.maxWidth(WIDTH);
-            //selectedMob.setPos((WIDTH - selectedMob.width())/2, 16);
-//            textInput.offset(0,GAP);
+        /**
+         * 封装一个同步UI的方法，用于调整UI组件的位置和大小。
+         */
+        private void SyncUI() {
             OptionSlider_Tier.setRect(0, GAP, WIDTH, 24);
-            //createWeaponImage(all);
-            Text_SelectedWeapon.setPos(0, GAP * 2 + OptionSlider_Tier.bottom() + BTN_SIZE);
-            Button_Level.setRect(0,Text_SelectedWeapon.bottom() + GAP, WIDTH, 24);
+            int numLines = (int) Math.ceil(AllWeapon.length / (float) MAX_ICONS_PER_LINE);
+            float totalHeight = 30;
+            if (numLines > 0) {
+                totalHeight += numLines * (BTN_SIZE + GAP);
+            }
+            Button_Level.setRect(0, totalHeight, WIDTH, 24);
             Text_EnchantInfo.setPos(0, GAP + Button_Level.bottom());
             OptionSlider_EnchantRarity.setRect(0, GAP + Text_EnchantInfo.bottom(), WIDTH, 24);
             OptionSlider_EnchantId.setRect(0, GAP + OptionSlider_EnchantRarity.bottom(), WIDTH, 24);
-            CheckBox_Curse.setRect(0, GAP + OptionSlider_EnchantId.bottom(), WIDTH/2f - GAP/2f, 16);
-            Button_Create.setRect(WIDTH/2f+GAP/2f, CheckBox_Curse.top(), WIDTH/2f - GAP/2f, 16);
+            CheckBox_Curse.setRect(0, GAP + OptionSlider_EnchantId.bottom(), WIDTH / 2f - GAP / 2f, 16);
+            Button_Create.setRect(WIDTH / 2f + GAP / 2f, CheckBox_Curse.top(), WIDTH / 2f - GAP / 2f, 16);
             resize(WIDTH, (int) (CheckBox_Curse.bottom() + GAP));
         }
 
-        private String getEnchantInfo(Class enchant){
-            return Messages.get(enchant,"name", "附魔");
+        @Override
+        public synchronized void update() {
+            super.update();
+            // 实时同步UI
+            SyncUI();
         }
 
-        private void updateWeaponText(){
-            Text_SelectedWeapon.text( M.L(AllWeapon[Math.min(weapon_id,AllWeapon.length-1)], "name") );
+        private void layout(){
+            SyncUI();
         }
 
-        private int getEnchantCount(int rarity){
-            switch (rarity){
+        /**
+         * 创建武器列表，并根据阶数筛选相应的武器类。
+         *
+         * @param tier 武器的阶数
+         */
+        private void createWeaponList(int tier) {
+            AllWeapon = getWeapon(tier);
+        }
+
+        /**
+         * 更新选中的武器文本。
+         */
+        private void updateSelectedWeaponText() {
+            Weapon wpn = (Weapon) Reflection.newInstance(getWeapon(tier)[weapon_id]);
+            Button_Level.text(wpn.name());
+            layout();
+        }
+
+        /**
+         * 创建武器图标，并添加到窗口中。
+         *
+         * @param all 所有武器的Class数组
+         */
+        private void createWeaponImage(Class<? extends Weapon>[] all) {
+            float left = BTN_SIZE / 2f;
+            float top = 27;
+            int placed = 0;
+            int length = all.length;
+            for (int i = 0; i < length; ++i) {
+                final int j = i;
+                IconButton btn = new IconButton() {
+                    @Override
+                    protected void onClick() {
+                        weapon_id = Math.min(maxSlots(tier) - 1, j);
+                        updateSelectedWeaponText();
+                        super.onClick();
+                    }
+                };
+                Image im = new Image(Assets.Sprites.ITEMS);
+                im.frame(ItemSpriteSheet.film.get(Objects.requireNonNull(Reflection.newInstance(all[i])).image));
+                im.scale.set(1f);
+                btn.icon(im);
+                int row = placed / MAX_ICONS_PER_LINE;
+                int col = placed % MAX_ICONS_PER_LINE;
+                float x = left + col * (BTN_SIZE + GAP);
+                float y = top + row * (BTN_SIZE + GAP);
+                btn.setRect(x, y, BTN_SIZE, BTN_SIZE);
+                add(btn);
+                placed++;
+                IconButtons.add(btn);
+            }
+        }
+
+        /**
+         * 清除武器图标。
+         */
+        private void clearImage() {
+            for (int i = 0, len = IconButtons.size(); i < len; ++i) {
+                IconButtons.get(i).destroy();
+            }
+            IconButtons.clear();
+        }
+    /**
+    * 获取附魔信息文本。
+    *
+     * @param enchant 附魔类
+    * @return 附魔信息文本 */
+        private String getEnchantInfo(Class enchant) {
+            return Messages.get(enchant, "name", "附魔");
+        }
+
+        private int maxSlots(int t) {
+            if (t <= 1) return 5;
+            if (t == 2 || t == 3) return 1145;
+            else return 8;
+        }
+
+
+        private int getEnchantCount(int rarity) {
+            switch (rarity) {
                 case 1:
                     return 4;
                 case 2:
@@ -363,78 +463,16 @@ public class SpawnWeapon extends TestItem{
             return 0;
         }
 
-        private void updateEnchantText(){
-            String info = new String();
-            if(enchant_rarity==0){
-                info = "无附魔";
-            }
-            else{
-                for(int i=0;i<getEnchantCount(enchant_rarity);i++){
-                    info += (i+1)+":"+getEnchantInfo(getEnchant(enchant_rarity,i)) + "\n";
+        private void updateEnchantText() {
+            StringBuilder info = new StringBuilder();
+            if (enchant_rarity == 0) {
+                info = new StringBuilder("无附魔");
+            } else {
+                for (int i = 0; i < getEnchantCount(enchant_rarity); i++) {
+                    info.append(i + 1).append(":").append(getEnchantInfo(getEnchant(enchant_rarity, i))).append(" ");
                 }
             }
-            Text_EnchantInfo.text( info );
-        }
-
-        private void createWeaponList(int tier){
-            AllWeapon = getWeapon(tier);
-        }
-
-        private void updateSelectedWeaponText() {
-            Text_SelectedWeapon.text(Messages.get(this, "selected", Messages.get(AllWeapon[Math.min(weapon_id, AllWeapon.length-1)]
-                    , "name")));
-            layout();
-        }
-
-        private void createWeaponImage(Class<? extends Weapon>[] all) {
-            float left;
-            float top = OptionSlider_Tier.bottom() + GAP;
-            int placed = 0;
-            int length = all.length;
-            left = (WIDTH - BTN_SIZE * 6) / 2f; // 每行最多放置6个按钮
-            int row = 0; // 记录当前所在行数
-            for (int i = 0; i < length; ++i) {
-                final int j = i;
-                IconButton btn = new IconButton() {
-                    @Override
-                    protected void onClick() {
-                        weapon_id = Math.min(maxSlots(tier)-1, j);
-                        updateSelectedWeaponText();
-                        super.onClick();
-                    }
-                };
-                Image im = new Image(Assets.Sprites.ITEMS);
-                im.frame(ItemSpriteSheet.film.get(Objects.requireNonNull(Reflection.newInstance(all[i])).image));
-                im.scale.set(1f);
-                btn.icon(im);
-
-                // 计算按钮位置
-                float btnLeft = left + placed * BTN_SIZE;
-                float btnTop = top + row * BTN_SIZE;
-                btn.setRect(btnLeft, btnTop, BTN_SIZE, BTN_SIZE);
-
-                add(btn);
-                placed++;
-                IconButtons.add(btn);
-
-                // 当按钮数量超过6个时，换行
-                if (placed >= 6) {
-                    placed = 0; // 重置计数
-                    row++; // 移动到下一行
-                }
-            }
-        }
-
-        private int maxSlots(int t){
-            if(t <= 1) return 5;
-            if(t == 2 || t == 3) return 6;
-            else return 7;
-        }
-
-        private void clearImage(){
-            for(int i=0, len = IconButtons.size();i<len;++i){
-                IconButtons.get(i).destroy();
-            }
+            Text_EnchantInfo.text(info.toString());
         }
 
         @Override
@@ -442,4 +480,5 @@ public class SpawnWeapon extends TestItem{
             super.onBackPressed();
         }
     }
+
 }
