@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.utils.WndTextNumberInput;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSadGhost;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
@@ -57,7 +58,7 @@ import java.util.Objects;
 
 public class SpawnWeapon extends TestItem{
     {
-        image = ItemSpriteSheet.CANDLE;
+        image = ItemSpriteSheet.DG25;
         defaultAction = AC_SPAWN;
     }
 
@@ -273,7 +274,7 @@ public class SpawnWeapon extends TestItem{
             createWeaponImage(AllWeapon);
 
             // 创建附魔信息文本块
-            Text_EnchantInfo = PixelScene.renderTextBlock("", 5);
+            Text_EnchantInfo = PixelScene.renderTextBlock("", 6);
             Text_EnchantInfo.text(getEnchantInfo(getEnchant(enchant_rarity, enchant_id)));
             add(Text_EnchantInfo);
 
@@ -311,20 +312,27 @@ public class SpawnWeapon extends TestItem{
             add(CheckBox_Curse);
 
             // 创建武器等级按钮
-            Button_Level = new RedButton(" ") {
+            Button_Level = new RedButton("尚未选择武器") {
                 @Override
                 protected void onClick() {
-                    Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextNumberInput(
-                            "自定义武器等级", "输入要生成的武器的等级", Integer.toString(weapon_level),
-                            10, false, Messages.get(WndSadGhost.class, "confirm"),
-                            Messages.get(WndSadGhost.class, "cancel")) {
-                        @Override
-                        public void onSelect(boolean check, String text) {
-                            if (check && text.matches("\\d+")) {
-                                weapon_level = Integer.parseInt(text);
+                    if(!Button_Level.text().equals("尚未选择武器")){ // 修改此行代码
+                        Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextNumberInput(
+                                "自定义武器等级", "输入要生成的武器的等级，非数字会被自动处理，同时也不能超过INT的最大值2,147,483,647",
+                                Integer.toString(weapon_level),
+                                9, false, Messages.get(WndSadGhost.class, "confirm"),
+                                Messages.get(WndSadGhost.class, "cancel")) {
+                            @Override
+                            public void onSelect(boolean check, String text) {
+
+                                if (check && text.matches("\\d+")) {
+                                    int level = Integer.parseInt(text);
+                                    weapon_level = Math.min(level, Integer.MAX_VALUE);
+                                }
                             }
-                        }
-                    }));
+                        }));
+                    } else {
+                        Game.scene().add( new WndError( "必须选择武器才能打开等级设定界面！" ) );
+                    }
                 }
             };
             add(Button_Level);
@@ -466,10 +474,15 @@ public class SpawnWeapon extends TestItem{
         private void updateEnchantText() {
             StringBuilder info = new StringBuilder();
             if (enchant_rarity == 0) {
-                info = new StringBuilder("无附魔");
+                info = new StringBuilder("请先选择附魔种类，然后会出现对应的编号。\n\n通过下方滑块滑动选择对应的编号即可。");
             } else {
                 for (int i = 0; i < getEnchantCount(enchant_rarity); i++) {
                     info.append(i + 1).append(":").append(getEnchantInfo(getEnchant(enchant_rarity, i))).append(" ");
+
+                    // 添加换行判断
+                    if ((i + 1) % 4 == 0) {
+                        info.append("\n");
+                    }
                 }
             }
             Text_EnchantInfo.text(info.toString());

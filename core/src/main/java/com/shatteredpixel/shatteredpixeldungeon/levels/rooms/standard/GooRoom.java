@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ClearElemental;
@@ -8,6 +9,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Salamander;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GooMob;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -33,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.Tilemap;
 import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 
 public class GooRoom extends SpecialRoom {
 
@@ -67,8 +72,17 @@ public class GooRoom extends SpecialRoom {
         int cy = c.y;
 
         for (Door door : connected.values()) {
-            door.set( Door.Type.REGULAR );
+            door.set( Door.Type.CRYSTAL );
         }
+
+        int KeyPos = (top + 10) * level.width() + left + 10;
+
+        int L1Pos = (top + 6) * level.width() + left + 6;
+
+        level.drop( new CrystalKey( Dungeon.depth ), L1Pos).type = Heap.Type.SKELETON;
+
+        level.drop( new CrystalKey( Dungeon.depth ), KeyPos).type = Heap.Type.CHEST;
+        level.addItemToSpawn( new PotionOfMindVision());
 
         for(Point p : getPoints()) {
             int cell = level.pointToCell(p);
@@ -90,17 +104,38 @@ public class GooRoom extends SpecialRoom {
         Painter.drawCircle(level, c, 7, Terrain.WATER);
         Painter.drawCircle(level, c, 5, Terrain.EMPTY);
         Painter.drawCircle(level, c, 3, Terrain.WATER);
-        Painter.drawCircle(level, c, 2, Terrain.STATUE);
+        Painter.drawCircle(level, c, 2, Terrain.SIGN);
         Painter.drawCircle(level, c, 0, Terrain.WATER);
 
-        Painter.set(level, cx, cy - 1, Terrain.WATER);
-        Painter.set(level, cx+1, cy - 1, Terrain.WATER);
-        Painter.set(level, cx-1, cy - 1, Terrain.WATER);
-        Painter.set(level, cx+1, cy + 1, Terrain.WATER);
-        Painter.set(level, cx-1, cy + 1, Terrain.WATER);
-        Painter.set(level, cx+1, cy, Terrain.WATER);
-        Painter.set(level, cx-1, cy, Terrain.WATER);
-        Painter.set(level, cx, cy + 1, Terrain.WATER);
+        Painter.set(level, cx, cy - 4, Terrain.STATUE);
+
+        Painter.set(level, cx+4, cy,Terrain.STATUE);
+        Painter.set(level, cx-4, cy, Terrain.STATUE);
+
+        Painter.set(level, cx, cy + 4, Terrain.STATUE);
+
+        Painter.set(level, cx, cy - 7, Terrain.WALL);
+
+        Painter.set(level, cx+7, cy,Terrain.WALL);
+
+        Painter.set(level, cx-7, cy, Terrain.WALL);
+
+        Painter.set(level, cx, cy + 7, Terrain.WALL);
+
+        switch (Random.Int(4)){
+            case 0:
+            Painter.set(level, cx, cy - 7, Terrain.CRYSTAL_DOOR);
+            break;
+            case 1:
+            Painter.set(level, cx+7, cy,Terrain.CRYSTAL_DOOR);
+            break;
+            case 2:
+            Painter.set(level, cx-7, cy, Terrain.CRYSTAL_DOOR);
+            break;
+            case 3:
+            Painter.set(level, cx, cy + 7, Terrain.CRYSTAL_DOOR);
+            break;
+        }
 
         GooMob statue = new GooMob();
         statue.pos = cx + cy * level.width();

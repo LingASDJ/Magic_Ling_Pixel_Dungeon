@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.utils;
 
+import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
@@ -176,6 +177,7 @@ public class WndTextNumberInput extends Window {
         super.offset(xOffset, yOffset);
         if (textBox != null){
             textBox.setRect(textBox.left(), textBox.top(), textBox.width(), textBox.height());
+            Gdx.input.setOnscreenKeyboardVisible(false);
         }
     }
 

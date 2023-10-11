@@ -48,7 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300SpiderSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DM275Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
@@ -59,7 +59,7 @@ import com.watabou.utils.Random;
 public class OldDM300 extends FlameB01 {
 	
 	{
-		spriteClass =  DM300SpiderSprite.class;
+		spriteClass =  DM275Sprite.class;
 		state = PASSIVE;
 		HP = HT = 270;
 		EXP = 30;
@@ -189,6 +189,7 @@ public class OldDM300 extends FlameB01 {
 		if (!BossHealthBar.isAssigned()) {
 			BossHealthBar.assignBoss(this);
 			yell(Messages.get(this, "notice"));
+			GameScene.bossReady();
 		}
 	}
 
@@ -256,7 +257,10 @@ public class OldDM300 extends FlameB01 {
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
-		BossHealthBar.assignBoss(this);
+		if (state == HUNTING){
+			BossHealthBar.assignBoss(this);
+		}
+
 	}
 }
 

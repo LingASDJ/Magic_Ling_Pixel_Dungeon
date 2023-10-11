@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN_SP;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -30,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Ripple;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.JunglePainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -48,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
@@ -91,7 +94,7 @@ public class SewerLevel extends RegularLevel {
 		synchronized (map){
 			for (int i = 0; i < map.length; i++) {
 				if (map[i] == SIGN_SP) {
-					// 将 EMPTY_DECO 地块改为新地形
+					// 将 SIGN_SP 地块改为新地形
 					set(i, Terrain.LOCKED_EXIT);
 					GameScene.updateMap(i); // 更新地图显示
 					Camera.main.shake(3f,6f);
@@ -100,6 +103,17 @@ public class SewerLevel extends RegularLevel {
 					// 将 CHASM 地块改为新地形
 					set(i, Terrain.EMPTY);
 					GameScene.updateMap(i); // 更新地图显示
+				}
+				if (map[i] == SIGN) {
+					// 将 SIGN 地块改为新地形
+					set(i, Terrain.WATER);
+					GameScene.updateMap(i); // 更新地图显示
+				}
+				Ankh weapon = Dungeon.hero.belongings.getItem(Ankh.class);
+				if (weapon != null) {
+					Dungeon.level.drop(weapon, entrance).sprite.drop();
+					weapon.detachAll(hero.belongings.backpack);
+					GLog.w(Messages.get(Level.class,"weapon"));
 				}
 				playBGM(Assets.BGM_BOSSA, true);
 				GameScene.flash(Window.DeepPK_COLOR);

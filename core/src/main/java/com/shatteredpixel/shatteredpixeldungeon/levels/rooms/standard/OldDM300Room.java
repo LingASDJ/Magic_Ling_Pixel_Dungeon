@@ -1,8 +1,12 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OldDM300;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -48,8 +52,14 @@ public class OldDM300Room extends SpecialRoom {
         int cy = c.y;
 
         for (Door door : connected.values()) {
-            door.set( Door.Type.REGULAR );
+            door.set( Door.Type.CRYSTAL );
         }
+
+        int KeyPos = (top + 20) * level.width() + left + 20;
+
+        level.drop( new CrystalKey( Dungeon.depth ), KeyPos).type = Heap.Type.CHEST;
+        level.addItemToSpawn( new PotionOfMindVision());
+
 
         int pillarW = (width()-8)/2;
         int pillarH = (height()-8)/2;
@@ -67,7 +77,8 @@ public class OldDM300Room extends SpecialRoom {
         Painter.drawCircle(level, c, 7, Terrain.STATUE);
         Painter.drawCircle(level, c, 6, Terrain.WATER);
         Painter.drawCircle(level, c, 5, Terrain.WATER);
-        Painter.drawCircle(level, c, 2, Terrain.EMPTY);
+        Painter.drawCircle(level, c, 2, Terrain.SIGN);
+        Painter.drawCircle(level, c, 1, Terrain.WATER);
 
         for(Point p : getPoints()) {
             int cell = level.pointToCell(p);

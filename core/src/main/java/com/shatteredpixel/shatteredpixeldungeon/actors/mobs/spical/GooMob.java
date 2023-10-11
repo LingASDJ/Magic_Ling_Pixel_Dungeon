@@ -115,7 +115,7 @@ public class GooMob extends Mob {
                 AlarmTrap alarmTrap = new AlarmTrap();
                 alarmTrap.pos = pos;
                 alarmTrap.activate();
-                ScrollOfTeleportation.appear(hero, pos+4);
+                ScrollOfTeleportation.appear(hero, pos+3);
                 tell(Messages.get(this, "notice"));
             }
         }
@@ -134,7 +134,7 @@ public class GooMob extends Mob {
                 AlarmTrap alarmTrap = new AlarmTrap();
                 alarmTrap.pos = pos;
                 alarmTrap.activate();
-                ScrollOfTeleportation.appear(hero, pos+4);
+                ScrollOfTeleportation.appear(hero, pos+3);
                 tell(Messages.get(this, "notice"));
             }
         }
@@ -267,7 +267,7 @@ public class GooMob extends Mob {
         if (state == PASSIVE) {
             state = HUNTING;
             notice();
-            ScrollOfTeleportation.appear(hero, pos+1);
+            ScrollOfTeleportation.appear(hero, pos+3);
             SewerLevel level = (SewerLevel) Dungeon.level;
             level.seal();
             level.updateChasmTerrain();
@@ -326,13 +326,10 @@ public class GooMob extends Mob {
     public void restoreFromBundle( Bundle bundle ) {
 
         super.restoreFromBundle( bundle );
-
-        pumpedUp = bundle.getInt( PUMPEDUP );
-
-        if(Dungeon.isChallenged(MOREROOM)){
-            if (state != SLEEPING) BossHealthBar.assignBoss(this);
-            if ((HP*2 <= HT)) BossHealthBar.bleed(true);
+        if (state == HUNTING){
+            BossHealthBar.assignBoss(this);
         }
+        pumpedUp = bundle.getInt( PUMPEDUP );
 
         //if check is for pre-0.9.3 saves
         healInc = bundle.getInt(HEALINC);

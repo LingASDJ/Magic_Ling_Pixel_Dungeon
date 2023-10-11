@@ -145,6 +145,29 @@ public class vM0_6_7_X_Changes {
         changes.addButton(new ChangeButton(i, ("熔岩火龙"),
                 ("丛林暴乱的真相")));
 
+        changes = new ChangeInfo("v0.6.5.0-Alpha6-Patch4", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG25), ("开发者模式v0.5"),
+                ("新增武器生成秘卷，感谢潘多拉的代码制作和注解版的代码支持。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("挑战：变幻莫测V0.3"),
+                ("修复了一堆问题，并改善了部分体验")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项修改"),
+                ("1.修复了部分文案问题\n\n" +
+                        "2.调整了一些底层代码" )));
+
         changes = new ChangeInfo("v0.6.5.0-Alpha6.9-6.93-LAST", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);

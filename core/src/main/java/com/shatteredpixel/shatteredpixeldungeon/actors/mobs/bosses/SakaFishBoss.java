@@ -127,7 +127,7 @@ public class SakaFishBoss extends Boss {
                 protected boolean act() {
                     Actor.remove(this);
                     HP = (HT/2);
-                    yell(Messages.get(this, "interesting"));
+                    yell(Messages.get(SakaFishBoss.class, "interesting"));
                     ((AncientMysteryCityBossLevel)Dungeon.level).progress();
                     BossHealthBar.bleed(true);
                     return true;

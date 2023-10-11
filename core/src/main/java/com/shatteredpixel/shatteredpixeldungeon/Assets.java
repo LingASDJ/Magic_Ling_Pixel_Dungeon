@@ -115,6 +115,9 @@ public class Assets {
 		public static final String QliPhoth_Title  = "interfaces/bosslogo/qliphoth-title.png";
 		public static final String QliPhoth_Clear  = "interfaces/bosslogo/qliphoth-clear.png";
 
+		public static final String DMOR_Title  = "interfaces/bosslogo/dm300or-title.png";
+		public static final String DMOR_Clear  = "interfaces/bosslogo/dm300or-clear.png";
+
 		public static final String SakaBJY_Title  = "interfaces/bosslogo/sakabjy-title.png";
 		public static final String SakaBJY_Clear  = "interfaces/bosslogo/sakabjy-clear.png";
 

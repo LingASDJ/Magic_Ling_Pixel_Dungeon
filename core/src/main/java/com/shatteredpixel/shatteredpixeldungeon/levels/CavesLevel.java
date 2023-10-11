@@ -23,12 +23,14 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CavesPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
@@ -50,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
@@ -115,6 +118,17 @@ public class CavesLevel extends RegularLevel {
 					set(i, Terrain.EMPTY);
 					GameScene.updateMap(i); // 更新地图显示
 					GameScene.flash(Window.WATA_COLOR);
+				}
+				if (map[i] == SIGN) {
+					// 将 SIGN 地块改为新地形
+					set(i, Terrain.WATER);
+					GameScene.updateMap(i); // 更新地图显示
+				}
+				Ankh weapon = Dungeon.hero.belongings.getItem(Ankh.class);
+				if (weapon != null) {
+					Dungeon.level.drop(weapon, entrance).sprite.drop();
+					weapon.detachAll(hero.belongings.backpack);
+					GLog.w(Messages.get(Level.class,"weapon"));
 				}
 				GameScene.flash(Window.SKYBULE_COLOR);
 				playBGM(Assets.BGM_BOSSC, true);
