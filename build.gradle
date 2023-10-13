@@ -18,8 +18,8 @@ allprojects {
         appName = 'Magic Ling Pixel Dungeon'
         appPackageName = 'com.ansdomagiclingpixeldungeon.ling'
 
-        appVersionCode =914000
-        appVersionName = '0.6.5.0-Alpha6-Patch4'
+        appVersionCode =915000
+        appVersionName = '0.6.5.0-Alpha6-Patch5'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 

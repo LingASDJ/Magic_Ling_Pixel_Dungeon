@@ -94,6 +94,7 @@ public class OldDM300 extends FlameB01 {
 	public void add(Buff buff) {
 		super.add(buff);
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+
 		if(lock == null && !seenBefore && Dungeon.level.heroFOV[pos]){
 			if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
 				AlarmTrap alarmTrap = new AlarmTrap();
@@ -106,7 +107,7 @@ public class OldDM300 extends FlameB01 {
 			}
 		}
 
-		if (state == PASSIVE && buff.type == Buff.buffType.NEGATIVE){
+		if (state == PASSIVE && buff.type == Buff.buffType.NEGATIVE && Dungeon.level.heroFOV[pos]){
 			state = HUNTING;
 		}
 	}
@@ -114,14 +115,15 @@ public class OldDM300 extends FlameB01 {
 	@Override
 	public boolean act() {
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-		if(lock == null && !seenBefore && Dungeon.level.heroFOV[pos]){
+
+		if (lock == null && Dungeon.level.heroFOV[pos]){
+			CavesLevel level = (CavesLevel) Dungeon.level;
+			level.seal();
+			level.updateChasmTerrain();
 			if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
 				AlarmTrap alarmTrap = new AlarmTrap();
 				alarmTrap.pos = pos;
 				alarmTrap.activate();
-				CavesLevel level = (CavesLevel) Dungeon.level;
-				level.seal();
-				level.updateChasmTerrain();
 				ScrollOfTeleportation.appear(hero, pos+8);
 			}
 		}

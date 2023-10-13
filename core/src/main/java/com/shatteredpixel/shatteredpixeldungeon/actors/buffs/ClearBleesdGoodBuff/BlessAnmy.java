@@ -3,7 +3,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuf
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -11,7 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
-public class BlessAnmy extends Buff {
+public class BlessAnmy extends ClearLanterBuff {
 
     {
         type = buffType.POSITIVE;

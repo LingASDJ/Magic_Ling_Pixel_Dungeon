@@ -7,6 +7,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.cure;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.ClearLanterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
@@ -33,9 +34,13 @@ public class Nyctophobia extends Buff implements Hero.Doom {
     @Override
     public boolean act() {
 
-        if(hero.lanterfire == 90){
-            goodLanterFire();
-            spend(200f);
+        if(hero.lanterfire >= 90){
+            for (Buff b : hero.buffs(ClearLanterBuff.class)){
+               if(b == null){
+                   goodLanterFire();
+               }
+               spend(200f);
+           }
         }
 
         if (hero.lanterfire < 51 && hero.lanterfire>31) {

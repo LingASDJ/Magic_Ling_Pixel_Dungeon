@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RedWhiteRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfRoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -222,6 +223,7 @@ public class PinkGhostNPC extends NPC {
             sd = false;
         } else {
             DriedRose rose = Dungeon.hero.belongings.getItem(DriedRose.class);
+            Red red = hero.belongings.getItem(Red.class);
             GLog.i(Messages.get(PinkGhost.class, "thanks_5"));
             die(null);
             Statistics.deadGo = true;
@@ -233,6 +235,7 @@ public class PinkGhostNPC extends NPC {
             Dungeon.level.drop( new RedWhiteRose(), pos ).sprite.drop();
             Dungeon.level.drop( rose.ghostArmor(), pos ).sprite.drop();
             rose.detach(hero.belongings.backpack);
+            red.detach(hero.belongings.backpack);
             PaswordBadges.ZQJ_FLOWER();
         }
         return true;

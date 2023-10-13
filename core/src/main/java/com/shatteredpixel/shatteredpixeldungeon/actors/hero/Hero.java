@@ -155,6 +155,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMi
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RedWhiteRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
@@ -970,6 +971,15 @@ public class Hero extends Char {
 			Buff.affect(hero, BlessRedWhite.class).set( (100), 1 );
 		} else {
 			Buff.detach(hero, BlessRedWhite.class);
+		}
+
+		DriedRose rose = Dungeon.hero.belongings.getItem(DriedRose.class);
+		Red red = hero.belongings.getItem(Red.class);
+		if(red != null && Statistics.deadGo ){
+			red.detachAll(hero.belongings.backpack);
+		}
+		if(rose != null && Statistics.deadGo){
+			rose.detachAll(hero.belongings.backpack);
 		}
 
 		CrystalLing crystalLing = Dungeon.hero.belongings.getItem(CrystalLing.class);

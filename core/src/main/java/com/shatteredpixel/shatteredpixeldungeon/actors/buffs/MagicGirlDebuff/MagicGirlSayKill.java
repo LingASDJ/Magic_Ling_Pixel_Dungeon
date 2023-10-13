@@ -1,12 +1,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Bundle;
 
-public class MagicGirlSayKill extends Buff {
+public class MagicGirlSayKill extends MagicGirlDebuff {
 
     {
         type = buffType.POSITIVE;

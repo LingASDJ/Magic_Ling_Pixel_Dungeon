@@ -317,9 +317,9 @@ public class SpawnWeapon extends TestItem{
                 protected void onClick() {
                     if(!Button_Level.text().equals("尚未选择武器")){ // 修改此行代码
                         Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextNumberInput(
-                                "自定义武器等级", "输入要生成的武器的等级，非数字会被自动处理，同时也不能超过INT的最大值2,147,483,647",
+                                "自定义武器等级", "输入要生成的武器的等级，非数字会被自动处理，同时也不能超过9999级",
                                 Integer.toString(weapon_level),
-                                9, false, Messages.get(WndSadGhost.class, "confirm"),
+                                4, false, Messages.get(WndSadGhost.class, "confirm"),
                                 Messages.get(WndSadGhost.class, "cancel")) {
                             @Override
                             public void onSelect(boolean check, String text) {

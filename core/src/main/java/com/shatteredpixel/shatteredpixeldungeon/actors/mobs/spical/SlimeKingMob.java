@@ -25,7 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.SlimeKingSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SlimeKingMobSprites;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -105,7 +105,7 @@ public class SlimeKingMob extends Mob {
 
         EXP = 20;
         defenseSkill = 12;
-        spriteClass = SlimeKingSprite.class;
+        spriteClass = SlimeKingMobSprites.class;
         lootChance = 1;
         HUNTING = new Hunting();
         properties.add(Property.BOSS);

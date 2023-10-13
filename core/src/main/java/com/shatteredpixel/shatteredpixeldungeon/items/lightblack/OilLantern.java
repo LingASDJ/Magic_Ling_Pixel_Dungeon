@@ -3,24 +3,25 @@ package com.shatteredpixel.shatteredpixeldungeon.items.lightblack;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LighS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.MagicFlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
 
-public class OilLantern extends Item {
+public class OilLantern extends Artifact {
 
     private static final String ACTIVE = "active";
 
@@ -38,7 +39,6 @@ public class OilLantern extends Item {
 
     private static final String TXT_STATUS = "%d%%";
     private boolean active = false;
-    private int charge = 100+Challenges.activeChallenges()/5*50;
     public int flasks = 0;
 
     public int plingks = 0;
@@ -47,13 +47,50 @@ public class OilLantern extends Item {
         this.image = ItemSpriteSheet.LANTERNA;
         this.unique = true;
         updateSprite();
+        charge = 100;
         defaultAction = AC_LIGHT;
     }
+
+    //TODO 仍然有问题
+//    public ItemSprite itemSprite() {
+//        ItemSprite sprite = new LS();
+//        sprite.setPos(0, 0);
+//        return sprite;
+//    }
 
     public void updateSprite() {
         this.image = isActivated() ? ItemSpriteSheet.LANTERNB : ItemSpriteSheet.LANTERNA;
         defaultAction = isActivated() ? AC_SNUFF : AC_LIGHT;
+        emitter();
     }
+
+    @Override
+    public Emitter emitter() {
+        Emitter emitter = new Emitter();
+        emitter.pos(4.5f, 6);
+        emitter.fillTarget = false;
+        if(image == ItemSpriteSheet.LANTERNB){
+            emitter.pour(StaffParticleFactory, 0.1f);
+        }
+        return emitter;
+    }
+
+
+    private final Emitter.Factory StaffParticleFactory = new Emitter.Factory() {
+        /**
+         * @param emitter 目标来源
+         * @param index 特效来源
+         * @param x,y 位置
+         */
+        @Override
+        public void emit( Emitter emitter, int index, float x, float y ) {
+            ((MagicFlameParticle)emitter.recycle( MagicFlameParticle.class )).reset( x, y+3 );
+        }
+        @Override
+        public boolean lightMode() {
+            return true;
+        }
+    };
 
     public int getCharge() {
         return this.charge;
@@ -137,7 +174,7 @@ public class OilLantern extends Item {
 
     public void refill(Hero hero) {
         this.flasks--;
-        this.charge += Math.min(MAX_CHARGE,100);
+        this.charge = Math.min(this.charge + MAX_CHARGE, 100);
         hero.spend(TIME_TO_USE);
         hero.busy();
         Sample.INSTANCE.play(Assets.Sounds.DRINK, TIME_TO_USE, TIME_TO_USE, 1.2f);
@@ -148,7 +185,7 @@ public class OilLantern extends Item {
 
     public void refills(Hero hero) {
         this.plingks--;
-        this.charge += Math.min(MIX_CHARGE,100);
+        this.charge = Math.min(this.charge + MAX_CHARGE, 100);
         hero.spend(TIME_TO_USE);
         hero.busy();
         Sample.INSTANCE.play(Assets.Sounds.DRINK, TIME_TO_USE, TIME_TO_USE, 1.2f);

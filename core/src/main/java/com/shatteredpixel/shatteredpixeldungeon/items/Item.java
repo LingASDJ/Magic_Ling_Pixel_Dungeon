@@ -70,7 +70,11 @@ public class Item implements Bundlable {
 
 	//TODO should these be private and accessed through methods?
 	public int image = 0;
-	public int icon = -1; //used as an identifier for items with randomized images
+
+	public Class<? extends ItemSprite> ItemSpriteClass;
+
+	public int icon = -1;
+	//used as an identifier for items with randomized images
 
 	public boolean stackable = false;
 
@@ -82,10 +86,10 @@ public class Item implements Bundlable {
 	public int level = 0;
 
 	public boolean levelKnown = false;
-	
+
 	public boolean cursed;
 	public boolean cursedKnown;
-	
+
 	// Unique items persist through revival
 	public boolean unique = false;
 
@@ -94,14 +98,14 @@ public class Item implements Bundlable {
 
 	// whether an item can be included in heroes remains
 	public boolean bones = false;
-	
+
 	public static final Comparator<Item> itemComparator = new Comparator<Item>() {
 		@Override
 		public int compare( Item lhs, Item rhs ) {
 			return Generator.Category.order( lhs ) - Generator.Category.order( rhs );
 		}
 	};
-	
+
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = new ArrayList<>();
 		actions.add( AC_DROP );
@@ -119,17 +123,17 @@ public class Item implements Bundlable {
 
 	public boolean doPickUp(Hero hero, int pos) {
 		if (collect( hero.belongings.backpack )) {
-			
+
 			GameScene.pickUp( this, pos );
 			Sample.INSTANCE.play( Assets.Sounds.ITEM );
 			hero.spendAndNext( TIME_TO_PICK_UP );
 			return true;
-			
+
 		} else {
 			return false;
 		}
 	}
-	
+
 	public void doDrop( Hero hero ) {
 		hero.spendAndNext(TIME_TO_DROP);
 		int pos = hero.pos;
@@ -144,39 +148,39 @@ public class Item implements Bundlable {
 	public void doThrow( Hero hero ) {
 		GameScene.selectCell(thrower);
 	}
-	
+
 	public void execute( Hero hero, String action ) {
 
 		GameScene.cancel();
 		curUser = hero;
 		curItem = this;
-		
+
 		if (action.equals( AC_DROP )) {
-			
+
 			if (hero.belongings.backpack.contains(this) || isEquipped(hero)) {
 				doDrop(hero);
 			}
-			
+
 		} else if (action.equals( AC_THROW )) {
-			
+
 			if (hero.belongings.backpack.contains(this) || isEquipped(hero)) {
 				doThrow(hero);
 			}
-			
+
 		}
 	}
-	
+
 	public void execute( Hero hero ) {
 		execute( hero, defaultAction );
 	}
-	
+
 	protected void onThrow( int cell ) {
 		Heap heap = Dungeon.level.drop( this, cell );
 		if (!heap.isEmpty()) {
 			heap.sprite.drop( cell );
 		}
 	}
-	
+
 	//takes two items and merges them (if possible)
 	public Item merge( Item other ){
 		if (isSimilar( other )){
@@ -185,7 +189,7 @@ public class Item implements Bundlable {
 		}
 		return this;
 	}
-	
+
 	public boolean collect( Bag container ) {
 
 		if (quantity <= 0){
@@ -209,7 +213,7 @@ public class Item implements Bundlable {
 		if (!container.canHold(this)){
 			return false;
 		}
-		
+
 		if (stackable) {
 			for (Item item:items) {
 				if (isSimilar( item )) {
@@ -238,11 +242,11 @@ public class Item implements Bundlable {
 		return true;
 
 	}
-	
+
 	public boolean collect() {
 		return collect( Dungeon.hero.belongings.backpack );
 	}
-	
+
 	//returns a new item if the split was sucessful and there are now 2 items, otherwise null
 	public Item split( int amount ){
 		if (amount <= 0 || amount >= quantity()) {
@@ -250,27 +254,27 @@ public class Item implements Bundlable {
 		} else {
 			//pssh, who needs copy constructors?
 			Item split = Reflection.newInstance(getClass());
-			
+
 			if (split == null){
 				return null;
 			}
-			
+
 			Bundle copy = new Bundle();
 			this.storeInBundle(copy);
 			split.restoreFromBundle(copy);
 			split.quantity(amount);
 			quantity -= amount;
-			
+
 			return split;
 		}
 	}
-	
+
 	public final Item detach( Bag container ) {
-		
+
 		if (quantity <= 0) {
-			
+
 			return null;
-			
+
 		} else
 		if (quantity == 1) {
 
@@ -279,18 +283,18 @@ public class Item implements Bundlable {
 			}
 
 			return detachAll( container );
-			
+
 		} else {
-			
-			
+
+
 			Item detached = split(1);
 			updateQuickslot();
 			if (detached != null) detached.onDetach( );
 			return detached;
-			
+
 		}
 	}
-	
+
 	public final Item detachAll( Bag container ) {
 		Dungeon.quickslot.clearItem( this );
 
@@ -312,7 +316,7 @@ public class Item implements Bundlable {
 		updateQuickslot();
 		return this;
 	}
-	
+
 	public boolean isSimilar( Item item ) {
 		return level == item.level && getClass() == item.getClass();
 	}
@@ -328,7 +332,7 @@ public class Item implements Bundlable {
 	public int level(){
 		return level;
 	}
-	
+
 	//returns the level of the item, after it may have been modified by temporary boosts/reductions
 	//note that not all item properties should care about buffs/debuffs! (e.g. str requirement)
 	public int buffedLvl(){
@@ -344,39 +348,39 @@ public class Item implements Bundlable {
 
 		updateQuickslot();
 	}
-	
+
 	public Item upgrade() {
-		
+
 		this.level++;
 
 		updateQuickslot();
-		
+
 		return this;
 	}
-	
+
 	final public Item upgrade( int n ) {
 		for (int i=0; i < n; i++) {
 			upgrade();
 		}
-		
+
 		return this;
 	}
-	
+
 	public Item degrade() {
-		
+
 		this.level--;
-		
+
 		return this;
 	}
-	
+
 	final public Item degrade( int n ) {
 		for (int i=0; i < n; i++) {
 			degrade();
 		}
-		
+
 		return this;
 	}
-	
+
 	public int visiblyUpgraded() {
 		return levelKnown ? level() : 0;
 	}
@@ -384,19 +388,19 @@ public class Item implements Bundlable {
 	public int buffedVisiblyUpgraded() {
 		return levelKnown ? buffedLvl() : 0;
 	}
-	
+
 	public boolean visiblyCursed() {
 		return cursed && cursedKnown;
 	}
-	
+
 	public boolean isUpgradable() {
 		return true;
 	}
-	
+
 	public boolean isIdentified() {
 		return levelKnown && cursedKnown;
 	}
-	
+
 	public boolean isEquipped( Hero hero ) {
 		return false;
 	}
@@ -415,18 +419,18 @@ public class Item implements Bundlable {
 		levelKnown = true;
 		cursedKnown = true;
 		Item.updateQuickslot();
-		
+
 		return this;
 	}
-	
+
 	public void onHeroGainExp( float levelPercent, Hero hero ){
 		//do nothing by default
 	}
-	
+
 	public static void evoke( Hero hero ) {
 		hero.sprite.emitter().burst( Speck.factory( Speck.EVOKE ), 5 );
 	}
-	
+
 	@Override
 	public String toString() {
 
@@ -441,19 +445,23 @@ public class Item implements Bundlable {
 		return name;
 
 	}
-	
+
 	public String name() {
 		return trueName();
 	}
-	
+
 	public final String trueName() {
 		return Messages.get(this, "name");
 	}
-	
+
 	public int image() {
 		return image;
 	}
-	
+
+	public ItemSprite itemSprite() {
+		return Reflection.newInstance(ItemSpriteClass);
+	}
+
 	public ItemSprite.Glowing glowing() {
 		return null;
 	}

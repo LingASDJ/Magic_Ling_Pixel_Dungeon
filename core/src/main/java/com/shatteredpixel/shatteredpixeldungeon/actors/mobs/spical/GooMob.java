@@ -100,24 +100,8 @@ public class GooMob extends Mob {
     @Override
     public void add(Buff buff) {
         super.add(buff);
-        LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-
-        if (state == PASSIVE && buff.type == Buff.buffType.NEGATIVE){
+        if (state == PASSIVE && buff.type == Buff.buffType.NEGATIVE && Dungeon.level.heroFOV[pos]){
             state = HUNTING;
-        }
-
-        if(lock == null && !seenBefore && Dungeon.level.heroFOV[pos]){
-            SewerLevel level = (SewerLevel) Dungeon.level;
-            level.seal();
-            level.updateChasmTerrain();
-            seenBefore = false;
-            if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
-                AlarmTrap alarmTrap = new AlarmTrap();
-                alarmTrap.pos = pos;
-                alarmTrap.activate();
-                ScrollOfTeleportation.appear(hero, pos+3);
-                tell(Messages.get(this, "notice"));
-            }
         }
     }
 
@@ -125,11 +109,10 @@ public class GooMob extends Mob {
     public boolean act() {
         LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 
-        if(lock == null && !seenBefore && Dungeon.level.heroFOV[pos]){
+        if (lock == null && Dungeon.level.heroFOV[pos]){
             SewerLevel level = (SewerLevel) Dungeon.level;
             level.seal();
             level.updateChasmTerrain();
-            seenBefore = false;
             if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
                 AlarmTrap alarmTrap = new AlarmTrap();
                 alarmTrap.pos = pos;

@@ -13,7 +13,7 @@ import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
-public class MagicGirlSayTimeLast extends Buff {
+public class MagicGirlSayTimeLast extends MagicGirlDebuff {
 
     {
         type = buffType.POSITIVE;

@@ -210,7 +210,7 @@ public class PaswordBadges {
     }
 
     public static void displayBadge( Badge badge ) {
-
+        PaswordBadges.loadGlobal();
         if (badge == null) {
             return;
         }

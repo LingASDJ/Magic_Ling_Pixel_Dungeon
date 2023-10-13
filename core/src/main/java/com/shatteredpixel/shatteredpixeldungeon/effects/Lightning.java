@@ -64,7 +64,7 @@ public class Lightning extends Group {
 		super();
 
 		this.arcs = arcs;
-		for (Arc arc : this.arcs)
+		for (Arc arc : this.arcs.toArray(new Arc[arcs.size()]))
 			add(arc);
 
 		this.callback = callback;
@@ -87,7 +87,7 @@ public class Lightning extends Group {
 			
 			float alpha = life / DURATION;
 			
-			for (Arc arc : arcs) {
+			for (Arc arc : arcs.toArray(new Arc[0])) {
 				arc.alpha(alpha);
 			}
 

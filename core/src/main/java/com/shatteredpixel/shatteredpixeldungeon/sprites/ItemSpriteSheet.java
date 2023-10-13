@@ -838,8 +838,8 @@ public class ItemSpriteSheet {
 		assignItemRect(HOLSTER,     15, 16);
 		assignItemRect(DRAGONKINGHALOFIRE, 12, 14);
 		assignItemRect(REDDRAGON, 14, 14);
-		assignItemRect(LANTERNA, 10, 14);
-		assignItemRect(LANTERNB, 10, 14);
+		assignItemRect(LANTERNA, 10, 16);
+		assignItemRect(LANTERNB, 10, 16);
 		assignItemRect(SKPOTION, 8, 15);
 		assignItemRect(SKNANO, 15, 14);
 		assignItemRect(WATERSOUL, 14, 14);

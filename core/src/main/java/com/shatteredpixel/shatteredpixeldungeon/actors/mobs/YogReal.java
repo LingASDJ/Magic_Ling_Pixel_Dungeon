@@ -148,7 +148,7 @@ public class YogReal extends Boss {
                 }
             }
 
-            if (spawnPos != -1) {
+            if (spawnPos != -1 && summon != null) {
                 summon.pos = spawnPos;
                 GameScene.add( summon );
                 Actor.addDelayed( new Pushing( summon, pos, summon.pos ), -1 );
@@ -178,7 +178,7 @@ public class YogReal extends Boss {
                 }
             }
 
-            if (spawnPos != -1) {
+            if (spawnPos != -1 && summon != null) {
                 summon.pos = spawnPos;
                 GameScene.add( summon );
                 CellEmitter.get(spawnPos).start(ElmoParticle.FACTORY, 0.05f, 20);
@@ -266,10 +266,12 @@ public class YogReal extends Boss {
 
         for(int i=0;i<phase-1;++i) {
             YogRealFirst fist = (YogRealFirst) Reflection.newInstance(fistSummons.remove(0));
-            fist.pos = pos + candidates[i];
-            GameScene.add(fist, 4f);
+            if(fist != null){
+                fist.pos = pos + candidates[i];
+                GameScene.add(fist, 4f);
 
-            Actor.addDelayed(new Pushing(fist, pos, fist.pos), -1);
+                Actor.addDelayed(new Pushing(fist, pos, fist.pos), -1);
+            }
         }
 
     }

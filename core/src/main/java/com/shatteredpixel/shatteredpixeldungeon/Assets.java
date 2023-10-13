@@ -361,6 +361,9 @@ public class Assets {
 		public static final String TPDP	= "sprites/boss/TPDoor.png";
 
 		public static final String ITEMS	    = "sprites/items/items.png";
+
+		public static final String ILTRS	    = "sprites/items/lanter.png";
+
 		public static final String WFS	    = "sprites/items/wf.png";
 		public static final String ITEM_ICONS   = "sprites/item_icons.png";
 

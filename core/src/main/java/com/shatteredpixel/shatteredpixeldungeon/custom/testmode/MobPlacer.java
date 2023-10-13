@@ -73,7 +73,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.XTG200;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GooMob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SlimeKingMob;
 import com.shatteredpixel.shatteredpixeldungeon.custom.dict.DictSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
@@ -408,7 +407,7 @@ public class MobPlacer extends TestItem{
                         updateMobText();
                     }
                 };
-                btn.icon( DictSpriteSheet.miscImages(allData.get(dataThreshold(mobTier)+i).imageId) );
+                btn.icon( Reflection.newInstance(allData.get(dataThreshold(mobTier)+i).getMobClass()).sprite());
                 float max = Math.max(btn.icon().width(), btn.icon().height());
                 btn.icon().scale = new PointF(BTN_SIZE/max, BTN_SIZE/max);
                 if(i<firstLine){
@@ -520,7 +519,7 @@ public class MobPlacer extends TestItem{
         GnollK(GnollShiled.class, DictSpriteSheet.GnollK),
         GnollF(SkullShaman.class, DictSpriteSheet.GnollF),
         FlameC(FlameC01.class, DictSpriteSheet.FLAMEC01),
-        Good_VI50(GooMob.class, DictSpriteSheet.Goo),
+//        Good_VI50(GooMob.class, DictSpriteSheet.Goo),
 
         Flame(SlimeKingMob.class, DictSpriteSheet.FLAME),
         NQHZ(OGPDNQHZ.class, DictSpriteSheet.OGPDNQHZ),

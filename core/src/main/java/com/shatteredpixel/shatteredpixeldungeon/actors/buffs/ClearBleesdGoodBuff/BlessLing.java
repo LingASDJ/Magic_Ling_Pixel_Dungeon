@@ -7,7 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
-public class BlessLing extends Buff {
+public class BlessLing extends ClearLanterBuff {
 
     {
         type = Buff.buffType.POSITIVE;

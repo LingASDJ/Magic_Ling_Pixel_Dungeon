@@ -11,11 +11,11 @@ public class FlowerSlime extends Mob {
         spriteClass = FlowerSlimeSprites.class;
 
         loot = Generator.Category.SEED;
-        lootChance = 0.25f;
+        lootChance = 0.05f;
 
         HP = HT = 12;
         defenseSkill = 2;
-        maxLvl = 7;
+        maxLvl = 5;
     }
 
     @Override
