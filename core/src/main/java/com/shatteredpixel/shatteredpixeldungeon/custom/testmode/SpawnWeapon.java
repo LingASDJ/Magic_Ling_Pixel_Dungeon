@@ -111,7 +111,8 @@ public class SpawnWeapon extends TestItem{
               wpn.identify();
               GameScene.pickUp(wpn,hero.pos);
               Sample.INSTANCE.play(Assets.Sounds.ITEM);
-            } else if(wpn.collect()) {
+            }
+            if(wpn.collect()) {
                 GameScene.pickUp( wpn, hero.pos );
                 Sample.INSTANCE.play( Assets.Sounds.ITEM );
                 GLog.i(Messages.get(hero, "you_now_have", wpn.name()));
