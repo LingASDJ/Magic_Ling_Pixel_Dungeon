@@ -45,7 +45,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.utils.WndTextNumberInput;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndSadGhost;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
@@ -91,8 +90,6 @@ public class SpawnWeapon extends TestItem{
     public void execute(Hero hero, String action) {
         super.execute(hero, action);
         if (action.equals(AC_SPAWN)){
-            //createWeapon();
-            //GLog.i(Messages.get(Dungeon.hero, "you_now_have", Messages.get(getEnchant(1,0),"name",new Object[]{"附魔"})));
             GameScene.show(new WeaponSetting());
         }
     }
@@ -149,6 +146,8 @@ public class SpawnWeapon extends TestItem{
                         return Kinetic.class;
                     case 3:
                         return Shocking.class;
+                    default:
+                        return null;
                 }
             case 2:
                 switch (id){
@@ -164,6 +163,8 @@ public class SpawnWeapon extends TestItem{
                         return Projecting.class;
                     case 5:
                         return Unstable.class;
+                    default:
+                        return null;
                 }
             case 3:
                 switch (id){
@@ -177,6 +178,8 @@ public class SpawnWeapon extends TestItem{
                         return HaloBlazing.class;
                     case 4:
                         return Crushing.class;
+                    default:
+                        return null;
                 }
             case 4:
                 switch (id){
@@ -196,6 +199,8 @@ public class SpawnWeapon extends TestItem{
                         return Polarized.class;
                     case 7:
                         return Friendly.class;
+                    default:
+                        return null;
                 }
         }
         return null;
@@ -259,7 +264,7 @@ public class SpawnWeapon extends TestItem{
             createWeaponList(tier);
 
             // 创建武器阶数选项滑块
-            OptionSlider_Tier = new OptionSlider("武器阶数", "1", "6", 1, 6) {
+            OptionSlider_Tier = new OptionSlider(Messages.get(this, "weapon_tier"), "1", "6", 1, 6) {
                 @Override
                 protected void onChange() {
                     tier = getSelectedValue();
@@ -268,6 +273,7 @@ public class SpawnWeapon extends TestItem{
                     createWeaponImage(AllWeapon);
                 }
             };
+            OptionSlider_Tier.setSelectedValue(tier);
             add(OptionSlider_Tier);
 
             // 创建武器图标
@@ -275,11 +281,11 @@ public class SpawnWeapon extends TestItem{
 
             // 创建附魔信息文本块
             Text_EnchantInfo = PixelScene.renderTextBlock("", 6);
-            Text_EnchantInfo.text(getEnchantInfo(getEnchant(enchant_rarity, enchant_id)));
+            updateEnchantText();
             add(Text_EnchantInfo);
 
             // 创建附魔种类选项滑块
-            OptionSlider_EnchantRarity = new OptionSlider("附魔种类", "1", "5", 0, 4) {
+            OptionSlider_EnchantRarity = new OptionSlider(Messages.get(this, "enchant_rarity"), "1", "5", 0, 4) {
                 @Override
                 protected void onChange() {
                     enchant_rarity = getSelectedValue();
@@ -290,7 +296,7 @@ public class SpawnWeapon extends TestItem{
             add(OptionSlider_EnchantRarity);
 
             // 创建附魔编号选项滑块
-            OptionSlider_EnchantId = new OptionSlider("附魔编号", "1", "8", 0, 7) {
+            OptionSlider_EnchantId = new OptionSlider(Messages.get(this, "enchant_id"), "1", "8", 0, 7) {
                 @Override
                 protected void onChange() {
                     enchant_id = getSelectedValue();
@@ -301,7 +307,7 @@ public class SpawnWeapon extends TestItem{
             add(OptionSlider_EnchantId);
 
             // 创建诅咒物品复选框
-            CheckBox_Curse = new CheckBox("诅咒物品") {
+            CheckBox_Curse = new CheckBox(Messages.get(this, "cursed")) {
                 @Override
                 protected void onClick() {
                     super.onClick();
@@ -312,33 +318,34 @@ public class SpawnWeapon extends TestItem{
             add(CheckBox_Curse);
 
             // 创建武器等级按钮
-            Button_Level = new RedButton("尚未选择武器") {
+            Button_Level = new RedButton(Messages.get(this, "select_weapon")) {
                 @Override
                 protected void onClick() {
-                    if(!Button_Level.text().equals("尚未选择武器")){ // 修改此行代码
+                    if(!Button_Level.text().equals(Messages.get(SpawnWeapon.WeaponSetting.class, "select_weapon"))){
                         Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextNumberInput(
-                                "自定义武器等级", "输入要生成的武器的等级，非数字会被自动处理，同时也不能超过9999级",
+                                Messages.get(SpawnWeapon.WeaponSetting.class, "weapon_level"), Messages.get(SpawnWeapon.WeaponSetting.class, "weapon_level_desc"),
                                 Integer.toString(weapon_level),
-                                4, false, Messages.get(WndSadGhost.class, "confirm"),
-                                Messages.get(WndSadGhost.class, "cancel")) {
+                                4, false, Messages.get(SpawnWeapon.WeaponSetting.class, "confirm"),
+                                Messages.get(SpawnWeapon.WeaponSetting.class, "cancel")) {
                             @Override
                             public void onSelect(boolean check, String text) {
 
                                 if (check && text.matches("\\d+")) {
                                     int level = Integer.parseInt(text);
-                                    weapon_level = Math.min(level, Integer.MAX_VALUE);
+                                    weapon_level = Math.min(level, 6666);
                                 }
                             }
                         }));
                     } else {
-                        Game.scene().add( new WndError( "必须选择武器才能打开等级设定界面！" ) );
+                        Game.scene().add( new WndError( Messages.get(SpawnWeapon.WeaponSetting.class, "weapon_level_error") ) );
                     }
                 }
             };
+            Button_Level.text(((Weapon) Reflection.newInstance(getWeapon(tier)[weapon_id])).name());
             add(Button_Level);
 
             // 创建生成武器按钮
-            Button_Create = new RedButton("生成武器") {
+            Button_Create = new RedButton(Messages.get(this, "create")) {
                 @Override
                 protected void onClick() {
                     createWeapon();
@@ -447,7 +454,7 @@ public class SpawnWeapon extends TestItem{
      * @param enchant 附魔类
     * @return 附魔信息文本 */
         private String getEnchantInfo(Class enchant) {
-            return Messages.get(enchant, "name", "附魔");
+            return enchant==null?Messages.get(this, "no_enchant"):Messages.get(enchant, "name", Messages.get(this, "enchant"));
         }
 
         private int maxSlots(int t) {
@@ -474,16 +481,17 @@ public class SpawnWeapon extends TestItem{
         private void updateEnchantText() {
             StringBuilder info = new StringBuilder();
             if (enchant_rarity == 0) {
-                info = new StringBuilder("请先选择附魔种类，然后会出现对应的编号。\n\n通过下方滑块滑动选择对应的编号即可。");
+                info = new StringBuilder(Messages.get(this, "no_enchant"));
             } else {
                 for (int i = 0; i < getEnchantCount(enchant_rarity); i++) {
                     info.append(i + 1).append(":").append(getEnchantInfo(getEnchant(enchant_rarity, i))).append(" ");
 
                     // 添加换行判断
-                    if ((i + 1) % 4 == 0) {
+                    if ((i + 1) % 4 == 0 || i == (getEnchantCount(enchant_rarity)-1)) {
                         info.append("\n");
                     }
                 }
+                info.append(Messages.get(this, "current_enchant",getEnchantInfo(getEnchant(enchant_rarity, enchant_id))));
             }
             Text_EnchantInfo.text(info.toString());
         }
