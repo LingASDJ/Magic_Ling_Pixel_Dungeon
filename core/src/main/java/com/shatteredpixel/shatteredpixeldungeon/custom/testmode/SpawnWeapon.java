@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Annoying;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Displacing;
@@ -32,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projec
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -104,7 +106,12 @@ public class SpawnWeapon extends TestItem{
             }
             wpn.cursed=cursed;
             wpn.identify();
-            if(wpn.collect()) {
+            if(wpn instanceof MagesStaff){
+              wpn=new MagesStaff(new WandOfMagicMissile());
+              wpn.identify();
+              GameScene.pickUp(wpn,hero.pos);
+              Sample.INSTANCE.play(Assets.Sounds.ITEM);
+            } else if(wpn.collect()) {
                 GameScene.pickUp( wpn, hero.pos );
                 Sample.INSTANCE.play( Assets.Sounds.ITEM );
                 GLog.i(Messages.get(hero, "you_now_have", wpn.name()));
@@ -321,7 +328,7 @@ public class SpawnWeapon extends TestItem{
             Button_Level = new RedButton(Messages.get(this, "select_weapon")) {
                 @Override
                 protected void onClick() {
-                    if(!Button_Level.text().equals(Messages.get(SpawnWeapon.WeaponSetting.class, "select_weapon"))){
+                    if(!Button_Level.text().equals(Messages.get(SpawnWeapon.WeaponSetting.class, "select_weapon"))){ // 修改此行代码
                         Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextNumberInput(
                                 Messages.get(SpawnWeapon.WeaponSetting.class, "weapon_level"), Messages.get(SpawnWeapon.WeaponSetting.class, "weapon_level_desc"),
                                 Integer.toString(weapon_level),
