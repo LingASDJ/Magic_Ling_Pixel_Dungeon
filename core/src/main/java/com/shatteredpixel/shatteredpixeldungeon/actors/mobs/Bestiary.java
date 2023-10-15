@@ -25,6 +25,9 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
 
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.ApprenticeWitch;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Frankenstein;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -45,10 +48,17 @@ public class Bestiary {
 		if (Dungeon.isChallenged(RLPT) && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
 			switch (i) {
 				case 1:
-					//3x rat, 1x snake
-					return new ArrayList<>(Arrays.asList(
-							FlowerSlime.class, FlowerSlime.class,
-							FlowerSlime.class));
+					//开发者测试怪组
+					if(DeviceCompat.isDebug() && DeviceCompat.isDesktop()){
+						return new ArrayList<>(Arrays.asList(
+								Frankenstein.class, ApprenticeWitch.class,
+								FlowerSlime.class));
+					} else {
+						return new ArrayList<>(Arrays.asList(
+								FlowerSlime.class, FlowerSlime.class,
+								FlowerSlime.class));
+					}
+
 				case 2:
 					return new ArrayList<>(Arrays.asList(FlowerSlime.class,
 							FlowerSlime.class, FlowerSlime.class, Gnoll.class, Gnoll.class,

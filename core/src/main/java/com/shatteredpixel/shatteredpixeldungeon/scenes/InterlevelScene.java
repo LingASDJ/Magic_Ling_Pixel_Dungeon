@@ -178,6 +178,7 @@ public class InterlevelScene extends PixelScene {
 		else if (loadingDepth <= 25)    loadingAsset = Assets.Interfaces.LOADING_HALLS;
 		else                            loadingAsset = Assets.Interfaces.SHADOW;
 
+		//场景过渡速度
 		//本地调试+桌面
 		if (DeviceCompat.isDebug() && DeviceCompat.isDesktop()){
 			fadeTime = 0.1f;

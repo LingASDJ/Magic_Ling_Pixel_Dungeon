@@ -1036,9 +1036,13 @@ public class Hero extends Char {
 		}
 
 
+		if(chCount>=6 && !lanterfireactive && !Dungeon.isChallenged(PRO)){
+			GLog.n(Messages.get(WndStory.class, "warning"));
+		}
+
 		if(chCount >= 3 && !lanterfireactive && !Dungeon.isChallenged(PRO) || Dungeon.isChallenged(DHXD) && !lanterfireactive){
-			//TODO 灯火前行
-			lanterfire = 100;
+			//灯火前行 3.2
+			lanterfire = 100 - (chCount>=6 ? chCount*3 : 0);
 			new OilLantern().quantity(1).identify().collect();
 
 			lanterfireactive = true;

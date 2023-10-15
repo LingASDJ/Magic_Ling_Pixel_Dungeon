@@ -70,6 +70,9 @@ public class Assets {
 		public static final String TILES_PRISON = "environment/tiles_prison.png";
 		public static final String TILES_COLDCHEST  = "environment/tiles_coldchest.png";
 		public static final String TILES_FIRE  = "environment/tiles_fire.png";
+
+		public static final String TILES_HOLLOW  = "environment/tiles_halloween.png";
+
 		public static final String TILES_CAVES  = "environment/tiles_caves.png";
 		public static final String TILES_CITY   = "environment/tiles_city.png";
 		public static final String TILES_ANCIENT  = "environment/tiles_ancient.png";
@@ -82,6 +85,7 @@ public class Assets {
 
 		public static final String WATER_ANCIENT  = "environment/water5.png";
 
+		public static final String WATER_HOLLOW  = "environment/water7.png";
 
 		public static final String WEAK_FLOOR       = "environment/custom_tiles/weak_floor.png";
 		public static final String SEWER_BOSS       = "environment/custom_tiles/sewer_boss.png";
@@ -324,6 +328,11 @@ public class Assets {
 
 		//NPCS
 		public static final String KEEPERKING	= "sprites/npc/ShopKing.png";
+
+		//HOLLOW
+		public static final String APWHEEL = "sprites/hollow/apprentice_witch.png";
+
+		public static final String ZOMBIE = "sprites/hollow/frankenstein.png";
 
 		public static final String KEEPERKINGBOT	= "sprites/npc/autoshop.png";
 

@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.dict;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ApprenticeWitchSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BombGnollTricksterSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BruteBotSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearElementalSprites;
@@ -9,7 +10,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdRatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireAcidicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameC01Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlowerSlimeSprites;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceFireScorpioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceGolemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -93,7 +93,7 @@ public class DictSpriteSheet {
             case GnollF:
                 return new SkullShamanSprite();
             case Goo:
-                return new GooSprite();
+                return new ApprenticeWitchSprite();
             case GNOLL:
                 return new Image(Assets.Sprites.GNOLL, 0, 0, 12, 15);
             case STX:

@@ -100,7 +100,7 @@ public class GooMob extends Mob {
     @Override
     public void add(Buff buff) {
         super.add(buff);
-        if (state == PASSIVE && buff.type == Buff.buffType.NEGATIVE && Dungeon.level.heroFOV[pos]){
+        if (state == PASSIVE && buff.type == Buff.buffType.NEGATIVE){
             state = HUNTING;
         }
     }

@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.lightblack;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LighS;
@@ -47,7 +48,13 @@ public class OilLantern extends Artifact {
         this.image = ItemSpriteSheet.LANTERNA;
         this.unique = true;
         updateSprite();
-        charge = 100;
+
+        int chCount = 0;
+        for (int ch : Challenges.MASKS){
+            if ((Dungeon.challenges & ch) != 0) chCount++;
+        }
+
+        charge = 100 - (chCount>=6 ? chCount*4 : 0);
         defaultAction = AC_LIGHT;
     }
 

@@ -154,6 +154,8 @@ public class WndInfoMob extends WndTitledMessage {
 				level = Messages.get(WndInfoMob.class,"boss");
 			} else if (mob.properties.contains(Char.Property.MINIBOSS)){
 				level = Messages.get(WndInfoMob.class,"miniboss");
+			} else if (mob.properties.contains(Char.Property.HOLLOW)){
+				level = Messages.get(WndInfoMob.class,"hollow");
 			} else if (mob.properties.contains(Char.Property.HUNTER)){
 				level = Messages.get(WndInfoMob.class,"hunter");
 			} else if (mob.properties.contains(Char.Property.ABYSS)){

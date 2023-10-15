@@ -9,13 +9,17 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.PasswordBadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ApprenticeWitchSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300AttackSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireDragonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlowerSlimeSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FrankensteinSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceSlowGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SakaFishBossSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SalamanderSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
@@ -35,27 +39,95 @@ public class vM0_6_4_P_Changes {
         add_v0_6_54_Changes(changeInfos);
     }
     public static void add_v0_6_56_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("Coming Soon V0.6.5.0-Alpha7", true, "");
+        ChangeInfo changes = new ChangeInfo("Coming Soon V0.6.6.0", true, "");
         changes.hardlight(Window.CBLACK);
         changeInfos.add(changes);
 
-//        changes.addButton(new ChangeButton(new RedNecromancerSprite(), ("BossRush2.0"),
-//                ("地牢发生了翻天覆地的改变，一切的矛头指向了死灵军团……")));
-//
-//        Image s = new DM300AttackSprite();
-//        s.scale.set(PixelScene.align(0.74f));
-//        changes.addButton(new ChangeButton(s, ("DM-ZERO"),
-//                ("时间在这里停止流动，与DMZERO正面对决的即将到来")));
+        changes = new ChangeInfo("计划", false, null);
+        changes.hardlight(Window.CBLACK);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new RedNecromancerSprite(), ("BossRush2.0"),
+                ("地牢发生了翻天覆地的改变，一切的矛头指向了死灵军团……")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Interfaces.HAICONS, 16, 16, 16, 16), ("黄金时代改动预告"),
+                ("黄金沉入黄沙，化为金水流入地下。\n" +
+                        "黑暗的地牢就此发出了金色的光芒。\n" +
+                        "树影融入黑夜，\n" +
+                        "财富在此长眠，\n" +
+                        "流沙，黄金与鲜血交织着，\n" +
+                        "正如一首金色的华尔兹。\n" +
+                        "冒险家，地牢与财富正在等着你。\n" +
+                        "当然，你的舞伴可并不友好......\n" +
+                        "黄金时代即将重做。\n" +
+                        "策划by QinYue 不接入游戏主线剧情")));
+
+        Image i = new Image("sprites/boss/fireDragon.png", 0, 0, 24, 24);
+        i.scale.set(PixelScene.align(0.74f));
+        changes.addButton(new ChangeButton(i, ("熔岩火龙"),
+                ("丛林暴乱的真相")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14), ("寒冷系统V3.0"),
+                ("寒冷系统将会彻底实装，敬请期待冬季版本")));
+
+        changes = new ChangeInfo("改进", false, null);
+        changes.hardlight(Window.CBLACK);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new CrivusFruitsSprite(), ("克里弗斯之果重做"),
+                ("作为MLPD替代Goo的Boss,它还有很长的路要走。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHANGES), ("底层迭代"),
+                ("魔绫的底层版本现在是1.2.3,然而经过一年的维护,我们必须再一次进行底层同步。\n\n" +
+                        "至于迭代哪个破碎，敬请期待冬季版本。")));
+
+
+        Image s = new DM300AttackSprite();
+        s.scale.set(PixelScene.align(0.74f));
+        changes.addButton(new ChangeButton(s, ("DM-ZERO"),
+                ("时间在这里停止流动，与DMZERO正面对决的即将到来")));
 
         Image c = new IceSlowGirlSprites();
         c.scale.set(PixelScene.align(0.74f));
         changes.addButton(new ChangeButton(c, ("冰雪魔女重做"),
                 ("石碑上记录了有关于她的一切，她的过去，她的现在，她的未来。而当你与她对峙时，你是否能够看清她的真实面目？")));
 
-        Image i = new Image("sprites/boss/fireDragon.png", 0, 0, 24, 24);
-        i.scale.set(PixelScene.align(0.74f));
-        changes.addButton(new ChangeButton(i, ("熔岩火龙"),
-                ("丛林暴乱的真相")));
+
+
+        changes = new ChangeInfo("v0.6.5.0-Alpha6-Patch6", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("预载", false, null);
+        changes.hardlight(Window.CBLACK);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ApprenticeWitchSprite(), ("新中立怪物:见习魔女"),
+                ("魔法学院的劣等生，见习中的魔女。\n\n该数据已预载，将在万圣节活动启用。")));
+
+        changes.addButton(new ChangeButton(new FrankensteinSprite(), ("新怪物:未尽梦偶"),
+                ("它在寻找它的创造者，以及，撕碎所有拥有生命的气息。\n\n该数据已预载，将在万圣节活动启用。")));
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("灯火前路：v3.2"),
+                ("1.现在灯火在超过6挑后相当于一个强制挑战，\n\n" +
+                        "2.你的灯火和提灯在开局就会有扣减，但并不会影响你在第一大层。\n\n" +
+                        "3.修复了怪物不扣减灯火的严重问题，这是自灯火系统来一直尚未修复的问题")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG25), ("开发者模式v0.7"),
+                ("在开发模式中，支离破碎第1层是测试怪组。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BloodDied), "嗜血荆棘",
+                "1.修复在特殊情况下献祭的问题，现在最多献祭到+10\n\n" +
+                        "2.如果仍然在卡荆棘的问题，你将会在+14以上后(不包括+14)看见0伤害，且力量x5的下水道版本荆棘的处罚机制。"));
+
 
         changes = new ChangeInfo("v0.6.5.0-Alpha6-Patch5", true, "");
         changes.hardlight(Window.TITLE_COLOR);

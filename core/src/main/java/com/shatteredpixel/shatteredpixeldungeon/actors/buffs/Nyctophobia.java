@@ -35,6 +35,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
     public boolean act() {
 
         if(hero.lanterfire >= 90){
+            //灯火大于90给予一个buff 然后不叠加
             for (Buff b : hero.buffs(ClearLanterBuff.class)){
                if(b == null){
                    goodLanterFire();
