@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.HollowMimic;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -60,7 +61,7 @@ public class Mimic extends Mob {
 		properties.add(Property.MIMIC);
 
 		EXP = 0;
-		
+
 		//mimics are neutral when hidden
 		alignment = Alignment.NEUTRAL;
 		state = PASSIVE;
@@ -104,7 +105,9 @@ public class Mimic extends Mob {
 
 	@Override
 	public String name() {
-		if (alignment == Alignment.NEUTRAL){
+		if (alignment == Alignment.NEUTRAL && properties.contains(Property.HOLLOW)){
+			return Messages.get(HollowMimic.class, "minames");
+		} else if(alignment == Alignment.NEUTRAL) {
 			return Messages.get(Heap.class, "chest");
 		} else {
 			return super.name();
@@ -113,7 +116,9 @@ public class Mimic extends Mob {
 
 	@Override
 	public String description() {
-		if (alignment == Alignment.NEUTRAL){
+		if (alignment == Alignment.NEUTRAL && properties.contains(Property.HOLLOW)) {
+			return Messages.get(HollowMimic.class, "midescs");
+		} else if (alignment == Alignment.NEUTRAL){
 			return Messages.get(Heap.class, "chest_desc") + "\n\n" + Messages.get(this, "hidden_hint");
 		} else {
 			return super.description();
@@ -290,7 +295,7 @@ public class Mimic extends Mob {
 		return m;
 	}
 
-	protected void generatePrize(){
+	public void generatePrize(){
 		Item reward = null;
 		do {
 			switch (Random.Int(5)) {

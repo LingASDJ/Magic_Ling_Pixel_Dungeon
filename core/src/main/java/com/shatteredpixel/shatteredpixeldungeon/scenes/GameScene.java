@@ -1528,6 +1528,11 @@ public class GameScene extends PixelScene {
 						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
 					break;
+				case 10:
+					bossSlain.texture(Assets.Interfaces.Tengu_Title);
+					bossSlain.show( Window.R_COLOR, 0.3f, 4f);
+					scene.showBanner(bossSlain);
+					break;
 				case 14:
 					bossSlain.texture(Assets.Interfaces.DMOR_Title);
 					bossSlain.show( Window.CBLACK, 0.3f, 5f);
@@ -1569,6 +1574,11 @@ public class GameScene extends PixelScene {
 						bossSlain.texture(Assets.Interfaces.QliPhoth_Clear);
 						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
+					break;
+				case 10:
+					bossSlain.texture(Assets.Interfaces.Tengu_Clear);
+					bossSlain.show( Window.R_COLOR, 0.2f, 5f);
+					scene.showBanner(bossSlain);
 					break;
 				case 14:
 					bossSlain.texture(Assets.Interfaces.DMOR_Clear);

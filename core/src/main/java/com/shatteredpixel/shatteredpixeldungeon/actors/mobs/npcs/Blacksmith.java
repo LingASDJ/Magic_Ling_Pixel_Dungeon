@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
@@ -221,6 +222,10 @@ public class Blacksmith extends NPC {
 		
 		if (!item1.isIdentified() || !item2.isIdentified()) {
 			return Messages.get(Blacksmith.class, "un_ided");
+		}
+
+		if (item1 instanceof OilPotion || item2 instanceof OilPotion) {
+			return Messages.get(Blacksmith.class, "oil");
 		}
 		
 		if (item1.cursed || item2.cursed ||

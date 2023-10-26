@@ -26,19 +26,28 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -49,10 +58,16 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FistSprite;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 
 public abstract class YogFist extends Mob {
 
@@ -67,7 +82,11 @@ public abstract class YogFist extends Mob {
 		maxLvl = -2;
 
 		state = HUNTING;
-
+		properties.add(Property.ICY);
+		properties.add(Property.FIERY);
+		immunities.add(FrostBurning.class);
+		immunities.add(HalomethaneBurning.class);
+		immunities.add(Terror.class);
 		properties.add(Property.BOSS);
 		properties.add(Property.DEMONIC);
 	}
@@ -380,7 +399,7 @@ public abstract class YogFist extends Mob {
 				b.announced = false;
 				b.set(dmg*.6f);
 				b.attachTo(this);
-				sprite.showStatus(CharSprite.WARNING, b.toString() + " " + (int)b.level());
+				sprite.showStatus(CharSprite.WARNING, b + " " + (int)b.level());
 			} else{
 				super.damage(dmg, src);
 			}
@@ -582,5 +601,288 @@ public abstract class YogFist extends Mob {
 		}
 
 	}
+
+	public static class FreezingFist extends YogFist {
+
+		{
+			spriteClass = FistSprite.Ice.class;
+			HP = HT = 550;
+			properties.add(Property.ICY);
+
+			properties.add(Property.FIERY);
+			immunities.add(FrostBurning.class);
+			immunities.add(HalomethaneBurning.class);
+			immunities.add(Terror.class);
+
+
+			canRangedInMelee = false;
+		}
+
+		@Override
+		public boolean act() {
+			GameScene.add(Blob.seed(pos, 20, Freezing.class));
+			return super.act();
+		}
+
+
+		@Override
+		protected void incrementRangedCooldown() {
+			//ranged attack has no cooldown
+		}
+
+		//used so resistances can differentiate between melee and magical attacks
+		public static class LightBeam{}
+
+		@Override
+		protected void zap() {
+			spend( 3f );
+
+			if (hit( this, enemy, true )) {
+
+				enemy.damage( Random.NormalIntRange(10, 20), new LightBeam() );
+				Buff.prolong( enemy, Chill.class, Chill.DURATION/2f );
+
+				if (!enemy.isAlive() && enemy == Dungeon.hero) {
+					Dungeon.fail( getClass() );
+					GLog.n( Messages.get(Char.class, "kill", name()) );
+				}
+
+			} else {
+
+				enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
+			}
+
+		}
+
+		@Override
+		public void damage(int dmg, Object src) {
+			super.damage(dmg, src);
+			LockedFloor buff = Dungeon.hero.buff(LockedFloor.class);
+			if (buff != null) {
+				buff.addTime(dmg * 0.5f);
+			}
+		}
+
+	}
+
+	public static class HaloFist extends YogFist {
+
+		{
+			HP = HT = 550;
+			spriteClass = FistSprite.HaloFist.class;
+			properties.add(Property.FIERY);
+			immunities.add(FrostBurning.class);
+			immunities.add(HalomethaneBurning.class);
+			immunities.add(Terror.class);
+		}
+
+		private int phase = 1;
+
+		private int summonsMade = 0;
+		private static final int MIN_ABILITY_CD = 7;
+		private int lastHeroPos;
+		private static final int MAX_ABILITY_CD = 12;
+		private float summonCooldown = 0;
+		private float abilityCooldown = 3;
+
+		private static float[] chanceMap = {0f, 100f, 100f, 100f, 100f, 100f, 100f};
+		private int wave=0;
+
+		private int lastAbility = 0;
+
+		private static final String PHASE = "phase";
+		private static final String SUMMONS_MADE = "summons_made";
+
+		private static final String SUMMON_CD = "summon_cd";
+		private static final String ABILITY_CD = "ability_cd";
+		private static final String LAST_ABILITY = "last_ability";
+
+		private static final String TARGETED_CELLS = "targeted_cells";
+		private ArrayList<Integer> targetedCells = new ArrayList<>();
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put( PHASE, phase );
+			bundle.put( SUMMONS_MADE, summonsMade );
+			bundle.put( SUMMON_CD, summonCooldown );
+			bundle.put( ABILITY_CD, abilityCooldown );
+			bundle.put( LAST_ABILITY, lastAbility );
+			bundle.put("wavePhase2", wave);
+
+			//暴力Boss
+			int[] bundleArr = new int[targetedCells.size()];
+			for (int i = 0; i < targetedCells.size(); i++){
+				bundleArr[i] = targetedCells.get(i);
+			}
+			bundle.put(TARGETED_CELLS, bundleArr);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			phase = bundle.getInt( PHASE );
+			summonsMade = bundle.getInt( SUMMONS_MADE );
+			summonCooldown = bundle.getFloat( SUMMON_CD );
+			abilityCooldown = bundle.getFloat( ABILITY_CD );
+			lastAbility = bundle.getInt( LAST_ABILITY );
+			wave = bundle.getInt("wavePhase2");
+
+			if (phase == 2) properties.add(Property.IMMOVABLE);
+
+			//暴力Boss
+			int[] bundleArr = new int[targetedCells.size()];
+			for (int i = 0; i < targetedCells.size(); i++){
+				bundleArr[i] = targetedCells.get(i);
+			}
+			bundle.put(TARGETED_CELLS, bundleArr);
+		}
+
+		@Override
+		public void die( Object cause ) {
+			GLog.n(Messages.get(YogFist.class,"HaloFist"));
+			for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+				if (boss instanceof FreezingFist) {
+					boss.properties.remove(Property.FIERY);
+					boss.remove(FrostBurning.class);
+					boss.remove(HalomethaneBurning.class);
+				}
+			}
+			super.die( cause );
+		}
+		public static class DarkBolt{}
+		public void doDiedLasers(){
+			boolean terrainAffected = false;
+			HashSet<Char> affected = new HashSet<>();
+			//delay fire on a rooted hero
+			if(enemy != null) {
+				if (!enemy.rooted) {
+					for (int i : targetedCells) {
+						Ballistica b = new Ballistica(i, lastHeroPos, Ballistica.WONT_STOP);
+						//shoot beams
+						sprite.parent.add(new Beam.DeathRay(DungeonTilemap.raisedTileCenterToWorld(i),
+								DungeonTilemap.raisedTileCenterToWorld(b.collisionPos)));
+						for (int p : b.path) {
+							Char ch = Actor.findChar(p);
+							if (ch != null && (ch.alignment != alignment || ch instanceof Bee)) {
+								affected.add(ch);
+							}
+							if (Dungeon.level.flamable[p]) {
+								Dungeon.level.destroy(p);
+								GameScene.updateMap(p);
+								terrainAffected = true;
+							}
+						}
+					}
+					if (terrainAffected) {
+						Dungeon.observe();
+					}
+					for (Char ch : affected) {
+						ch.damage(Random.NormalIntRange(28, 42),new DarkBolt());
+
+						if (Dungeon.level.heroFOV[pos]) {
+							ch.sprite.flash();
+							CellEmitter.center(pos).burst(Speck.factory(Speck.COIN), Random.IntRange(6,12));
+						}
+						if (!ch.isAlive() && ch == Dungeon.hero) {
+							Dungeon.fail(getClass());
+							GLog.n(Messages.get(Char.class, "kill", name()));
+						}
+					}
+					targetedCells.clear();
+				}
+			}
+			if(enemy != null) {
+				if (abilityCooldown <= 0 && HP < HT * 0.8f) {
+					lastHeroPos = enemy.pos;
+
+					int beams = (int) (4 + (HP * 1.0f / HT) * 2);
+					for (int i = 0; i < beams; i++) {
+						int randompos = Random.Int(Dungeon.level.width()) + Dungeon.level.width() * 2;
+						targetedCells.add(randompos);
+					}
+
+					for (int i : targetedCells) {
+						Ballistica b = new Ballistica(i, enemy.pos, Ballistica.WONT_STOP);
+
+						for (int p : b.path) {
+							Game.scene().addToFront(new TargetedCell(p, Window.GDX_COLOR));
+						}
+					}
+
+					spend(TICK * 1.5f);
+					Dungeon.hero.interrupt();
+					abilityCooldown += Random.NormalFloat(MIN_ABILITY_CD - 2 * (1 - (HP * 1f / HT)),
+							MAX_ABILITY_CD - 5 * (1 - (HP * 1f / HT)));
+				} else {
+					spend(TICK);
+				}
+			}
+			if (abilityCooldown > 0) abilityCooldown-= 5;
+		}
+
+		@Override
+		public boolean act() {
+			GameScene.add(Blob.seed(pos, 20, HalomethaneFire.class));
+			doDiedLasers();
+			boolean result = super.act();
+
+			if (Dungeon.level.map[pos] == Terrain.WATER){
+				Level.set( pos, Terrain.EMPTY);
+				GameScene.updateMap( pos );
+				CellEmitter.get( pos ).burst( Speck.factory( Speck.STEAM ), 10 );
+			}
+
+			//1.67 evaporated tiles on average
+			int evaporatedTiles = Random.chances(new float[]{0, 1, 2});
+
+			for (int i = 0; i < evaporatedTiles; i++) {
+				int cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
+				if (Dungeon.level.map[cell] == Terrain.WATER){
+					Level.set( cell, Terrain.EMPTY);
+					GameScene.updateMap( cell );
+					CellEmitter.get( cell ).burst( Speck.factory( Speck.STEAM ), 10 );
+				}
+			}
+
+			for (int i : PathFinder.NEIGHBOURS9) {
+				int vol = HalomethaneFire.volumeAt(pos+i, HalomethaneFire.class);
+				if (vol < 4 && !Dungeon.level.water[pos + i] && !Dungeon.level.solid[pos + i]){
+					GameScene.add( Blob.seed( pos + i, 4 - vol, HalomethaneFire.class ) );
+				}
+			}
+
+			return result;
+		}
+
+		@Override
+		protected void zap() {
+			spend( 1f );
+
+			if (Dungeon.level.map[enemy.pos] == Terrain.WATER){
+				Level.set( enemy.pos, Terrain.EMPTY);
+				GameScene.updateMap( enemy.pos );
+				CellEmitter.get( enemy.pos ).burst( Speck.factory( Speck.STEAM ), 10 );
+			} else {
+				Buff.affect( enemy, HalomethaneBurning.class ).reignite( enemy );
+			}
+
+			for (int i : PathFinder.NEIGHBOURS9){
+				if (!Dungeon.level.water[enemy.pos+i] && !Dungeon.level.solid[enemy.pos+i]){
+					int vol = HalomethaneFire.volumeAt(enemy.pos+i, HalomethaneFire.class);
+					if (vol < 4){
+						GameScene.add( Blob.seed( enemy.pos + i, 4 - vol, HalomethaneFire.class ) );
+					}
+				}
+			}
+
+		}
+
+		{
+			immunities.add(Frost.class);
+		}
+
+	}
+
+
 
 }

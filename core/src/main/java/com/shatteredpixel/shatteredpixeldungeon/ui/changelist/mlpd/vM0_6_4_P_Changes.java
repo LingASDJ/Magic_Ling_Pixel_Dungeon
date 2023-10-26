@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ApprenticeWitchSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CerberusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300AttackSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireDragonSprite;
@@ -19,11 +20,13 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceSlowGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MorpheusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SakaFishBossSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SalamanderSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SlimeKingSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TyphonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ChangeButton;
@@ -92,6 +95,48 @@ public class vM0_6_4_P_Changes {
         changes.addButton(new ChangeButton(c, ("冰雪魔女重做"),
                 ("石碑上记录了有关于她的一切，她的过去，她的现在，她的未来。而当你与她对峙时，你是否能够看清她的真实面目？")));
 
+        changes = new ChangeInfo("v0.6.5.0-Alpha6-Patch7", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("预载", false, null);
+        changes.hardlight(Window.CBLACK);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new TyphonSprite(), ("万妖之祖"),
+                ("虽然这个世界不在我的管理范围之内，但古堡的一切都不应该存在于这里。\n\n该数据已预载，将在万圣节活动启用")));
+
+        Image mp = new MorpheusSprite();
+        mp.scale.set(PixelScene.align(0.7f));
+        changes.addButton(new ChangeButton(mp, ("影境之主"),
+                ("那么，盛大的剧目即将开演。\n\n该数据已预载，将在万圣节活动启用")));
+
+        Image cr = new CerberusSprite();
+        cr.scale.set(PixelScene.align(0.7f));
+        changes.addButton(new ChangeButton(cr, ("地狱噩梦"),
+                ("……\n\n该数据已预载，将在万圣节活动启用")));
+
+        changes = new ChangeInfo("新内容", false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_13), ("绝命头目大整改"),
+                ( "1.古神二阶段将额外召唤两个拳头，分别是寒冰和鬼磷之拳。\n\n" +
+                        "2.矮人国王在绝命头目中魔像替换为冰魔像，额外追加重甲豺狼。\n\n" +
+                        "3.天狗在二阶段额外获得护盾且火焰墙替换为鬼磷墙，战斗也更加频繁致命。")));
+
+        changes = new ChangeInfo("改动", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.优化了油瓶可以被巨魔铁匠合成从而无限使用的问题\n" +
+                        "2.开发者模式v0.8:修复了一些问题\n" +
+                        "3.致谢名单优化，新增迪泠，Yinura-犬羅，秦月，设寄师，罐装狐腻(部分人没有给我图标，所以里面直接是文字)\n" +
+                        "4.灯火已支持小数扣减。" )));
+
+        changes.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16),
+                Messages.get(ChangesScene.class, "bugfixes"), Messages.get(vM0_6_7_X_Changes.class, "bug_06X89")));
 
 
         changes = new ChangeInfo("v0.6.5.0-Alpha6-Patch6", true, "");
@@ -120,6 +165,17 @@ public class vM0_6_4_P_Changes {
         changes = new ChangeInfo("改动", false, null);
         changes.hardlight(Window.CYELLOW);
         changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.INFO), ("分数对照表"),
+                ("以下告诉你分数在何时会变蓝,在变蓝即为获得最高评价标准乃至以上：\n\n" +
+                        "游戏得分：50000分以上\n\n" +
+                        "寻宝得分：20000分以上\n\n" +
+                        "探索得分：20000分以上\n\n" +
+                        "Boss得分：18000分以上\n\n" +
+                        "任务得分：14000分以上。\n\n" +
+                        "SSS+评价：240000*挑战倍率*(通关 ? 1 : 5)\n\n" +
+                        "如果通关是1倍，没通关是5倍--(也就是基本无法获得)。" )));
+
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG25), ("开发者模式v0.7"),
                 ("在开发模式中，支离破碎第1层是测试怪组。")));

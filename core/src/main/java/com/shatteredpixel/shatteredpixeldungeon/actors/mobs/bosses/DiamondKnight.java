@@ -219,6 +219,10 @@ public class DiamondKnight extends Boss {
             Dungeon.level.seal();
         }
 
+        int hpBracket = HT / 6;
+
+        dmg = Math.min(hpBracket, dmg);
+
         super.damage(dmg, src);
         LockedFloor lock = hero.buff(LockedFloor.class);
         if (lock != null) lock.addTime(dmg*2);
@@ -226,6 +230,7 @@ public class DiamondKnight extends Boss {
         ColdChestBossLevel.State level = ((ColdChestBossLevel)Dungeon.level).pro();
          //血量低于360后追加phase并加载楼层的进度方法,加载迷宫
         if (level == ColdChestBossLevel.State.START && this.HP <= 360 && phase == 0) {
+            HP = 360;
             Actor.add(new Actor() {
 
                 {
@@ -243,10 +248,12 @@ public class DiamondKnight extends Boss {
                 }
             });
         } else if (level == ColdChestBossLevel.State.VSBOSS_START && this.HP <= 240 && phase == 2) {
+            HP = 240;
             ((ColdChestBossLevel)Dungeon.level).progress();
             phase++;
             //血量低于200后变成玩家的样子，伤害和防御数值与玩家一致
         } else if (level == ColdChestBossLevel.State.VSLINK_START && this.HP <= 200 && phase == 3) {
+            HP = 200;
             Actor.add(new Actor() {
 
                 {
@@ -262,13 +269,14 @@ public class DiamondKnight extends Boss {
                     GameScene.flash(0x808080);
                     ((ColdChestBossLevel)Dungeon.level).progress();
                     spriteClass=DimandKingSprite.PrismaticSprite.class;
-                    ShatteredPixelDungeon.switchNoFade(GameScene.class);
+                    ShatteredPixelDungeon.resetScene();
                     GameScene.flash(0x888888);
                     return true;
                 }
             });
             //最终决斗
         } else if (level == ColdChestBossLevel.State.VSYOU_START && this.HP <= 100 && phase == 4) {
+            HP = 100;
             Actor.add(new Actor() {
 
                 {
@@ -282,7 +290,7 @@ public class DiamondKnight extends Boss {
                     GLog.n(Messages.get(DiamondKnight.class,"ok_go"));
                     GameScene.flash(0x808080);
                     spriteClass=DimandKingSprite.class;
-                    ShatteredPixelDungeon.switchNoFade(GameScene.class);
+                    ShatteredPixelDungeon.resetScene();
                     GameScene.flash(0x888888);
                     ((ColdChestBossLevel)Dungeon.level).progress();
                     phase++;
@@ -372,11 +380,11 @@ public class DiamondKnight extends Boss {
         bundle.put( HEALINC, healInc );
         bundle.put(COMBO, combo);
 
-        if(phase == 5) {
-            spriteClass=DimandKingSprite.PrismaticSprite.class;
-        } else {
-            spriteClass=DimandKingSprite.class;
-        }
+//        if(phase == 5) {
+//            spriteClass=DimandKingSprite.PrismaticSprite.class;
+//        } else {
+//            spriteClass=DimandKingSprite.class;
+//        }
 
     }
 
@@ -391,7 +399,7 @@ public class DiamondKnight extends Boss {
         //if check is for pre-0.9.3 saves
         healInc = bundle.getInt(HEALINC);
 
-        if(phase == 5) {
+        if(phase == 5 || phase == 6) {
             spriteClass=DimandKingSprite.PrismaticSprite.class;
         } else {
             spriteClass=DimandKingSprite.class;

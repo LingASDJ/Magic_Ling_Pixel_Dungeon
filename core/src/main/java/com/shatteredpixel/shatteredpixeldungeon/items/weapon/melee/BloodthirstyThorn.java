@@ -195,6 +195,7 @@ public class BloodthirstyThorn extends MeleeWeapon {
             if(chaliceOfBlood!=null){
                 bloodthirstyThorn.level=chaliceOfBlood.level();
             } else {
+                //如果圣杯物品为空，则读取本局全局玩家献祭圣杯的次数
                 bloodthirstyThorn.level=Statistics.ChaicBlood;
             }
 

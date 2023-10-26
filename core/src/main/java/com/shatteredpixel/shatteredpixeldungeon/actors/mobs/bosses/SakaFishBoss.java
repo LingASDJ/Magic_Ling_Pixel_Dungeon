@@ -457,7 +457,7 @@ public class SakaFishBoss extends Boss {
                     endPos = leapPos;
                 }
 
-                    //do leap
+                    //do leap 泥头车
                     sprite.visible = Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[leapPos] || Dungeon.level.heroFOV[endPos];
                     sprite.dirtcar(pos, leapPos, new Callback() {
                         @Override

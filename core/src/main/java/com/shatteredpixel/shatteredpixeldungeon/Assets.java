@@ -37,6 +37,7 @@ public class Assets {
 	public static final String TOWN = "music/town.ogg";
 	public static final String BGM_BOSSA = "music/Boss1.ogg";
 	public static final String BGM_BOSSB = "music/Boss2.ogg";
+	public static final String BGM_BOSSB2 = "music/Tengu.ogg";
 	public static final String BGM_BOSSC = "music/Boss3.ogg";
 	public static final String BGM_BOSSC3 = "music/Ice.ogg";
 	public static final String BGM_BOSSD = "music/Boss4.ogg";
@@ -70,7 +71,7 @@ public class Assets {
 		public static final String TILES_PRISON = "environment/tiles_prison.png";
 		public static final String TILES_COLDCHEST  = "environment/tiles_coldchest.png";
 		public static final String TILES_FIRE  = "environment/tiles_fire.png";
-
+		public static final String TILES_TENGUS  = "environment/tiles_tengu.png";
 		public static final String TILES_HOLLOW  = "environment/tiles_halloween.png";
 
 		public static final String TILES_CAVES  = "environment/tiles_caves.png";
@@ -124,6 +125,9 @@ public class Assets {
 
 		public static final String SakaBJY_Title  = "interfaces/bosslogo/sakabjy-title.png";
 		public static final String SakaBJY_Clear  = "interfaces/bosslogo/sakabjy-clear.png";
+
+		public static final String Tengu_Title  = "interfaces/bosslogo/tengu-title.png";
+		public static final String Tengu_Clear  = "interfaces/bosslogo/tengu-clear.png";
 
 		public static final String ARCS_BG  = "interfaces/arcs1.png";
 		public static final String ARCS_FG  = "interfaces/arcs2.png";
@@ -331,8 +335,13 @@ public class Assets {
 
 		//HOLLOW
 		public static final String APWHEEL = "sprites/hollow/apprentice_witch.png";
+		public static final String CSBR = "sprites/hollow/Cerberus.png";
+		public static final String TYPHON = "sprites/hollow/typhon.png";
+		public static final String MPHON = "sprites/hollow/morpheus.png";
 
 		public static final String ZOMBIE = "sprites/hollow/frankenstein.png";
+
+		public static final String MIMICRY = "sprites/hollow/mimicry.png";
 
 		public static final String KEEPERKINGBOT	= "sprites/npc/autoshop.png";
 

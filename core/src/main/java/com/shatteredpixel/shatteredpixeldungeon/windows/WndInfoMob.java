@@ -39,7 +39,7 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Component;
 
 public class WndInfoMob extends WndTitledMessage {
-
+	public static boolean reload = false;
 	public WndInfoMob( Mob mob ) {
 
 		super( new MobTitle( mob ), mob.info() );
@@ -185,6 +185,8 @@ public class WndInfoMob extends WndTitledMessage {
 			return level;
 		}
 
+
+
 		public MobTitle( Mob mob ) {
 
 			name = PixelScene.renderTextBlock( Messages.titleCase( mob.name() ), 9 );
@@ -227,6 +229,12 @@ public class WndInfoMob extends WndTitledMessage {
 			add(mobSixInfo.info6);
 			add(mobSixInfo.info7);
 			add(mobSixInfo.info8);
+
+			if ((mob.alignment == Char.Alignment.NEUTRAL) && mob.properties.contains(Char.Property.HOLLOW)) {
+				reload = true;
+			} else {
+				reload = false;
+			}
 		}
 
 		@Override
@@ -248,12 +256,36 @@ public class WndInfoMob extends WndTitledMessage {
 					name.bottom() - BuffIndicator.SIZE_SMALL-2
 			);
 
-			height = health.bottom();
 
-			mobSixInfo.setPos(-5,Math.max(health.bottom(),image.height()+5));
-			mobSixInfo.layout();
 
-			height = mobSixInfo.bottom();
+			if(reload){
+				height = health.bottom();
+				mobSixInfo.info1.visible = false;	mobSixInfo.info2.visible = false;
+				mobSixInfo.info3.visible = false;	mobSixInfo.info4.visible = false;
+				mobSixInfo.info5.visible = false;	mobSixInfo.info6.visible = false;
+				mobSixInfo.info7.visible = false;	mobSixInfo.info8.visible = false;
+				mobSixInfo.image1.visible = false;	mobSixInfo.image2.visible = false;
+				mobSixInfo.image3.visible = false;	mobSixInfo.image4.visible = false;
+				mobSixInfo.image5.visible = false;	mobSixInfo.image6.visible = false;
+				mobSixInfo.image7.visible = false;	mobSixInfo.image8.visible = false;
+				health.visible = false;
+			} else {
+				mobSixInfo.setPos(-5,Math.max(health.bottom(),image.height()+5));
+				mobSixInfo.layout();
+				height = mobSixInfo.bottom();
+				mobSixInfo.info1.visible = true;	mobSixInfo.info2.visible = true;
+				mobSixInfo.info3.visible = true;	mobSixInfo.info4.visible = true;
+				mobSixInfo.info5.visible = true;	mobSixInfo.info6.visible = true;
+				mobSixInfo.info7.visible = true;	mobSixInfo.info8.visible = true;
+				mobSixInfo.image1.visible = true;	mobSixInfo.image2.visible = true;
+				mobSixInfo.image3.visible = true;	mobSixInfo.image4.visible = true;
+				mobSixInfo.image5.visible = true;	mobSixInfo.image6.visible = true;
+				mobSixInfo.image7.visible = true;	mobSixInfo.image8.visible = true;
+				health.visible = true;
+			}
+
+
+
 		}
 
 	}

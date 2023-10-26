@@ -47,7 +47,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDLLS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDNQHZ;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDZSLS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedMurderer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedSwarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RipperDemon;
@@ -73,6 +72,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.XTG200;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.Cerberus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SlimeKingMob;
 import com.shatteredpixel.shatteredpixeldungeon.custom.dict.DictSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
@@ -450,7 +450,7 @@ public class MobPlacer extends TestItem{
     }
 
     private enum DataPack{
-        RAT(Rat.class, DictSpriteSheet.RAT),
+        RAT(Cerberus.class, DictSpriteSheet.RAT),
         FLWW(FlowerSlime.class, DictSpriteSheet.FLOWER),
         //TESTRAT(TestRat.class, DictSpriteSheet.RAT),
         GNOLL(Gnoll.class, DictSpriteSheet.GNOLL),

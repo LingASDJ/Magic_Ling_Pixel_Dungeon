@@ -221,7 +221,7 @@ public class WndHero extends WndTabbed {
 
 
 			if(lanterfireactive){
-				RestatSlot( Messages.get(this, "lanterfire"), (hero.lanterfire) + "/" + 100 );
+				RestatSlot( Messages.get(this, "lanterfire"), (double)(hero.lanterfire) + "/" + 100 );
 			}
 
 			IcestatSlot( Messages.get(this, "icehp"), (hero.icehp) + "/" + 100 );

@@ -87,11 +87,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMappi
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfPrismaticLight;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
@@ -164,6 +166,7 @@ public enum HeroClass {
 			new LevelTeleporter().quantity(1).identify().collect();
 			new LockSword().quantity(1).identify().collect();
 			new MIME.GOLD_THREE().quantity(1).identify().collect();
+			new ScrollOfMetamorphosis().quantity(111).identify().collect();
 			new DriedRose().quantity(1).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
 			new AncityArmor().quantity(1).identify().collect();
@@ -195,6 +198,8 @@ public enum HeroClass {
 			new SkyBlueFireBloom.Seed().quantity(51).identify().collect();
 			new AikeLaier.Seed().quantity(51).identify().collect();
 			new Fadeleaf.Seed().quantity(15).identify().collect();
+
+			new WandOfPrismaticLight().quantity(1).identify().collect();
 			new WandOfRegrowth().quantity(1).identify().collect();
 			new WandOfFrost().quantity(1).identify().collect();
 			new MagicalInfusion().quantity(1).identify().collect();

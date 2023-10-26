@@ -175,7 +175,7 @@ public class CrystalMimic extends Mimic {
 	}
 
 	@Override
-	protected void generatePrize() {
+    public void generatePrize() {
 		//Crystal mimic already contains a prize item. Just guarantee it isn't cursed.
 		for (Item i : items){
 			i.cursed = false;

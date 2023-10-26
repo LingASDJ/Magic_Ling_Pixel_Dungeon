@@ -107,7 +107,7 @@ public class PrisonBossLevel extends Level {
 	
 	@Override
 	public String tilesTex() {
-		return Assets.Environment.TILES_PRISON;
+		return locked ? Assets.Environment.TILES_TENGUS : Assets.Environment.TILES_PRISON;
 	}
 	
 	@Override
@@ -300,7 +300,7 @@ public class PrisonBossLevel extends Level {
 		customWalls.add(vis);
 		GameScene.add(vis, true);
 		
-		Painter.set(this, tenguCell.left+4, tenguCell.top, Terrain.DOOR);
+		Painter.set(this, tenguCell.left+4, tenguCell.top, Terrain.CRYSTAL_DOOR);
 		
 		int cell = pointToCell(endStart);
 		int i = 0;
@@ -397,8 +397,13 @@ public class PrisonBossLevel extends Level {
 						return;
 					}
 				}
-				
+
+
 				seal();
+				GameScene.flash(0x80aaaaaa);
+				Camera.main.shake(1f,2f);
+				GameScene.bossReady();
+
 				set(pointToCell(tenguCellDoor), Terrain.LOCKED_DOOR);
 				GameScene.updateMap(pointToCell(tenguCellDoor));
 
@@ -510,6 +515,8 @@ public class PrisonBossLevel extends Level {
 				Sample.INSTANCE.play(Assets.Sounds.BLAST);
 				
 				state = State.WON;
+				GameScene.updateMap();
+				GameScene.flash(0x80FFFFFF);
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {
@@ -521,11 +528,10 @@ public class PrisonBossLevel extends Level {
 	}
 	
 	private boolean[] triggered = new boolean[]{false, false, false, false};
-	
+
 	@Override
 	public void occupyCell(Char ch) {
 		super.occupyCell(ch);
-		
 		if (ch == Dungeon.hero){
 			switch (state){
 				case START:
@@ -534,7 +540,6 @@ public class PrisonBossLevel extends Level {
 					}
 					break;
 				case FIGHT_PAUSE:
-					
 					if (cellToPoint(ch.pos).y <= startHallway.top+1){
 						progress();
 					}

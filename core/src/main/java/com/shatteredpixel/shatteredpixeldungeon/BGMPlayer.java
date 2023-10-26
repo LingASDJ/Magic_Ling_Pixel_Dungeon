@@ -150,8 +150,10 @@ public class BGMPlayer {
         } else {
             if (Dungeon.bossLevel() && t == 5 || t == 4) {
                 playBGM(Assets.BGM_BOSSA, true);
-            } else if (Dungeon.bossLevel() && t == 10) {
+            } else if (Dungeon.bossLevel() && t == 10 && Statistics.mimicking) {
                 playBGM(Assets.BGM_BOSSB, true);
+            } else if (Dungeon.bossLevel() && t == 10) {
+                playBGM(Assets.BGM_BOSSB2, true);
             } else if (t == 14) {
                 playBGM(Assets.BGM_BOSSC, true);
             } else if (Dungeon.bossLevel() && t == 15) {

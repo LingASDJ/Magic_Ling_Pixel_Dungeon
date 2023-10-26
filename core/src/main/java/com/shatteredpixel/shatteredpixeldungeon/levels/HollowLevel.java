@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.HollowMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.PrisonPainter;
@@ -104,6 +105,8 @@ public class HollowLevel extends RegularLevel {
         switch (tile) {
             case Terrain.WATER:
                 return Messages.get(PrisonLevel.class, "water_name");
+            case Terrain.WALL_DECO:
+                return Messages.get(HollowMimic.class, "minames");
             default:
                 return super.tileName( tile );
         }
@@ -112,6 +115,8 @@ public class HollowLevel extends RegularLevel {
     @Override
     public String tileDesc(int tile) {
         switch (tile) {
+            case Terrain.WALL_DECO:
+                return Messages.get(HollowMimic.class, "midescs");
             case Terrain.EMPTY_DECO:
                 return Messages.get(PrisonLevel.class, "empty_deco_desc");
             case Terrain.BOOKSHELF:

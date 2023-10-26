@@ -12,7 +12,7 @@ public class OilPotion extends Item {
 
     public OilPotion() {
         image = ItemSpriteSheet.SKPOTION;
-        stackable = true;
+        stackable = false;
     }
 
     @Override

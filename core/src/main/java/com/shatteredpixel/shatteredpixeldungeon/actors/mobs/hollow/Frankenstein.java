@@ -17,11 +17,6 @@ public class Frankenstein extends Mob {
         properties.add(Char.Property.HOLLOW);
     }
 
-//    @Override
-//    protected boolean act() {
-//        return super.act();
-//    }
-
     @Override
     public int damageRoll() {
         return Random.NormalIntRange( 15, 27 );

@@ -277,7 +277,7 @@ public class Hero extends Char {
 	public int exp = 0;
 
 	//TODO 灯火前行
-	public int lanterfire;
+	public float lanterfire;
 
 	public int icehp;
 
@@ -2675,7 +2675,7 @@ public class Hero extends Char {
 		hero.sprite.showStatus(0x808080, String.valueOf(value));
 	}
 
-	public void healLantern(int value){
+	public void healLantern(float value){
 		lanterfire = Math.min(lanterfire+value,100);
 		hero.sprite.showStatus(0x00ff00, String.valueOf(value));
 	}
