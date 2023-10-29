@@ -3,13 +3,10 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RenSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
-import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -85,16 +82,6 @@ public class REN extends NTNPC {
         }
 
         return true;
-    }
-
-    private void tell(String text) {
-        Game.runOnRenderThread(new Callback() {
-                                   @Override
-                                   public void call() {
-                                       GameScene.show(new WndQuest(new REN(), text));
-                                   }
-                               }
-        );
     }
 }
 

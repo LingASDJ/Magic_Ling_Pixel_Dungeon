@@ -7,6 +7,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.cure;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.ClearLanterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
@@ -33,9 +34,14 @@ public class Nyctophobia extends Buff implements Hero.Doom {
     @Override
     public boolean act() {
 
-        if(hero.lanterfire == 90){
-            goodLanterFire();
-            spend(20f);
+        if(hero.lanterfire >= 90){
+            //灯火大于90给予一个buff 然后不叠加
+            for (Buff b : hero.buffs(ClearLanterBuff.class)){
+               if(b == null){
+                   goodLanterFire();
+               }
+               spend(200f);
+           }
         }
 
         if (hero.lanterfire < 51 && hero.lanterfire>31) {
@@ -58,9 +64,9 @@ public class Nyctophobia extends Buff implements Hero.Doom {
                     Buff.affect(hero, MagicGirlSayNoSTR.class).set( (100), 1 );
                     break;
             }
-            spend(50f);
+            spend(90f);
         }  else if(hero.lanterfire < 0){
-            hero.damage( (Dungeon.depth/5)*(Math.abs(hero.lanterfire)/2)+10, this );
+            hero.damage( (int)((Dungeon.depth/5)*(Math.abs(hero.lanterfire)/2)+10), this );
             spend(24f);
             GLog.w( Messages.get(this, "desc6") );
         }
@@ -80,7 +86,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
             }
             if (hero.lanterfire >= 0 ) {
                 hero.damageLantern(1+Challenges.activeChallenges()/5);
-                spend(20f-(float) Dungeon.depth/5);
+                spend(20f-(float) Dungeon.depth/5+Challenges.activeChallenges());
             } else {
                 spend(STEP);
             }
@@ -125,7 +131,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
 
     @Override
     public void onDeath() {
-        GLog.n("无尽的黑暗涌入了你的意识，你最终被黑暗拖入了深渊...");
+        GLog.n(Messages.get(this, "ondeath"));
     }
 
     @Override

@@ -294,6 +294,11 @@ public class HeroSelectScene extends PixelScene {
 				if( !visible && GamesInProgress.selectedClass != null){
 					visible = true;
 				}
+				if (SPDSettings.challenges() > 0) {
+					icon(Icons.get( Icons.CHALLENGE_ON));
+				} else {
+					icon(Icons.get( Icons.CHALLENGE_OFF));
+				}
 				super.update();
 			}
 

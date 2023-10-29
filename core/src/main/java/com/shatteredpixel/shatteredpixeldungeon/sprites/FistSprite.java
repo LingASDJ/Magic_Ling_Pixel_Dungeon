@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.CorrosionParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
@@ -300,6 +301,56 @@ public abstract class FistSprite extends MobSprite {
 		@Override
 		public int blood() {
 			return 0xFF4A2F53;
+		}
+
+	}
+
+	public static class Ice extends FistSprite {
+
+		{
+			boltType = MagicMissile.FROST;
+		}
+
+		@Override
+		protected int texOffset() {
+			return 60;
+		}
+
+		@Override
+		protected Emitter createEmitter() {
+			Emitter emitter = emitter();
+			emitter.pour(MagicMissile.MagicParticle.FACTORY, 0.06f );
+			return emitter;
+		}
+
+		@Override
+		public int blood() {
+			return 0xFF26CCC2;
+		}
+
+	}
+
+	public static class HaloFist extends FistSprite {
+
+		{
+			boltType = MagicMissile.HALOFIRE;
+		}
+
+		@Override
+		protected int texOffset() {
+			return 70;
+		}
+
+		@Override
+		protected Emitter createEmitter() {
+			Emitter emitter = emitter();
+			emitter.pour(HalomethaneFlameParticle.FACTORY, 0.06f );
+			return emitter;
+		}
+
+		@Override
+		public int blood() {
+			return 0xFF34C9C9;
 		}
 
 	}

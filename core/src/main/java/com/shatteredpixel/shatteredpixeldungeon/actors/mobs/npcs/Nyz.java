@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -57,24 +58,21 @@ public class Nyz extends NTNPC {
                playBGM(Assets.NYZSHOP, true);
             }
             seenBefore = true;
-        } else if (seenBefore && !Dungeon.level.heroFOV[pos] && Dungeon.depth == 0) {
-           playBGM(Assets.TOWN, true);
+        } else if(seenBefore && !Dungeon.level.heroFOV[pos]) {
             seenBefore = false;
-        } else if (seenBefore && !Dungeon.level.heroFOV[pos] && Dungeon.depth == 12) {
-           playBGM(Assets.BGM_2,true);
-            seenBefore = false;
+            BGMPlayer.playBGMWithDepth();
         }
         throwItem();
 
         sprite.turnTo( pos, Dungeon.hero.pos );
         spend( TICK );
 
-        shop6 = (Books) new YellowSunBooks().quantity(2);
-        shop5 = (Books) new BrokenBooks().quantity(2);
-        shop4 = (Books) new IceCityBooks().quantity(2);
-        shop3 = (Books) new NoKingMobBooks().quantity(2);
-        shop2 = (Books) new DeepBloodBooks().quantity(2);
-        shop1 = (Books) new MagicGirlBooks().quantity(2);
+        shop6 = (Books) new YellowSunBooks().quantity(1);
+        shop5 = (Books) new BrokenBooks().quantity(1);
+        shop4 = (Books) new IceCityBooks().quantity(1);
+        shop3 = (Books) new NoKingMobBooks().quantity(1);
+        shop2 = (Books) new DeepBloodBooks().quantity(1);
+        shop1 = (Books) new MagicGirlBooks().quantity(1);
         bomb1 = (Bomb) new Flashbang().quantity(1);
         bomb2 = (Bomb) new Noisemaker().quantity(1);
         bomb3 = (Bomb) new RegrowthBomb().quantity(1);

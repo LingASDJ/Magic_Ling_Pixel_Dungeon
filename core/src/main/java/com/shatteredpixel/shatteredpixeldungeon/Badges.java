@@ -123,6 +123,8 @@ public class Badges {
 
 		READ_BOOK_TWO				( 56 ),
 
+		HIDEEN_BADAGEX( 57 ),
+
 		//gold
 		PIRANHAS                    ( 64 ),
 		//these names are a bit outdated, but it doesn't really matter.
@@ -394,7 +396,7 @@ public class Badges {
 			badge = Badge.HIGH_SCORE_4;
 			local.add( badge );
 		}
-		if (score >= SSSP_SCORE * chalMultiplier * (amuletObtained ? 0.7 : 5)) {
+		if (score >= SSSP_SCORE * chalMultiplier * (amuletObtained ? 1 : 5)) {
 			badge = Badge.HIGH_SCORE_5;
 			local.add( badge );
 		}
@@ -941,6 +943,8 @@ public class Badges {
 
 	public static void validateVictory() {
 
+		Statistics.winGame = true;
+
 		Badge badge = Badge.VICTORY;
 		displayBadge( badge );
 
@@ -1018,6 +1022,17 @@ public class Badges {
 	public static void validateHappyEnd() {
 		displayBadge( Badge.HAPPY_END );
 	}
+
+	public static void silentValidateHDEX() {
+		if (!local.contains( Badge.HIDEEN_BADAGEX)){
+			local.add( Badge.HIDEEN_BADAGEX);
+		}
+	}
+
+	public static void HDEX() {
+		displayBadge( Badge.HIDEEN_BADAGEX);
+	}
+
 
 	public static void KILLSAPPLE() {
 		displayBadge( Badge.KILL_APPLE);

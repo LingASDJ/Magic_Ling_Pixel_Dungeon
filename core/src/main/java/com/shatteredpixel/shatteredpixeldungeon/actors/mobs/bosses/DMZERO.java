@@ -382,7 +382,7 @@ public class DMZERO extends Mob
             GameScene.add(((Mob) (obj)));
             Actor.addDelayed(new Pushing(((Char) (obj)), pos, ((NullDiedTO) (obj)).pos), -1F);
             Statistics.bossScores[4] += 3000;
-            PaswordBadges.BOSSRUSH();
+
 
             yell( Messages.get(this, "defeated") );
         }

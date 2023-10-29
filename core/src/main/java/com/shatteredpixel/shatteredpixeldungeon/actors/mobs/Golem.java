@@ -20,7 +20,6 @@
  */
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
-
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -30,20 +29,20 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GolemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
-
 public class Golem extends Mob {
-	
+
 	{
 		spriteClass = GolemSprite.class;
-		
+
 		HP = HT = 120;
 		defenseSkill = 15;
-		
+
 		EXP = 12;
 		maxLvl = 22;
 
@@ -61,15 +60,15 @@ public class Golem extends Mob {
 	public int damageRoll() {
 		return Random.NormalIntRange( 25, 30 );
 	}
-	
+
 	@Override
 	public int attackSkill( Char target ) {
 		return 28;
 	}
-	
+
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 12);
+		return super.drRoll() + Random.NormalIntRange(0, 12);
 	}
 
 	@Override
@@ -89,7 +88,7 @@ public class Golem extends Mob {
 		Dungeon.LimitedDrops.GOLEM_EQUIP.count++;
 		//uses probability tables for demon halls
 		if (loot == Generator.Category.WEAPON){
-			return Generator.randomWeapon(5);
+			return Generator.randomWeapon(5, true);
 		} else {
 			return Generator.randomArmor(5);
 		}
@@ -149,8 +148,8 @@ public class Golem extends Mob {
 		int bestPos = enemy.pos;
 		for (int i : PathFinder.NEIGHBOURS8){
 			if (Dungeon.level.passable[pos + i]
-				&& Actor.findChar(pos+i) == null
-				&& Dungeon.level.trueDistance(pos+i, enemy.pos) > Dungeon.level.trueDistance(bestPos, enemy.pos)){
+					&& Actor.findChar(pos+i) == null
+					&& Dungeon.level.trueDistance(pos+i, enemy.pos) > Dungeon.level.trueDistance(bestPos, enemy.pos)){
 				bestPos = pos+i;
 			}
 		}
@@ -164,6 +163,7 @@ public class Golem extends Mob {
 			if (enemy instanceof Hero){
 				((Hero) enemy).interrupt();
 				Dungeon.observe();
+				GameScene.updateFog();
 			}
 		}
 

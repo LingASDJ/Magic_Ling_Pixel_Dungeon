@@ -335,7 +335,7 @@ public class S_Changes {
                 "史莱姆守卫者 10层BOSS用！"));
 
         Image a = new SlimeKingSprite();
-        a.scale.set(PixelScene.align(0.42f));
+        a.scale.set(PixelScene.align(0.82f));
         changes.addButton(new ChangeButton(a,  "史莱姆王",
                 "10层BOSS！"));
 

@@ -321,89 +321,138 @@ public class FireMagicDied extends Mob implements Callback {
     public boolean act() {
         int healInc = 1;
         if (phase == 1 && HP <= 350) {
+            Actor.add(new Actor() {
+
+                {
+                    actPriority = VFX_PRIO;
+                }
+
+                @Override
+                protected boolean act() {
+                    Actor.remove(this);
+                    if (Dungeon.level.water[pos] && HP < HT) {
+                        HP += healInc;
+
+                        if (Dungeon.level.heroFOV[pos]) {
+                            sprite.emitter().burst(Speck.factory(Speck.HEALING), healInc);
+                        }
+                        if (HP * 2 > HT) {
+                            BossHealthBar.bleed(false);
+                            ((FireMagicGirlSprite) sprite).spray(false);
+                            HP = Math.min(HP, HT);
+                        }
+                    }
+                    return true;
+                }
+            });
             //actScanning();
-            if (Dungeon.level.water[pos] && HP < HT) {
-                HP += healInc;
 
-                if (Dungeon.level.heroFOV[pos]) {
-                    sprite.emitter().burst(Speck.factory(Speck.HEALING), healInc);
-                }
-                if (HP * 2 > HT) {
-                    BossHealthBar.bleed(false);
-                    ((FireMagicGirlSprite) sprite).spray(false);
-                    HP = Math.min(HP, HT);
-                }
-            }
         }else if (phase == 2 && HP <= 300) {
+            Actor.add(new Actor() {
 
-            if (summonCooldown <= 0 && summonSubject(3)){
-                summonsMade++;
-                summonCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN)-1f;
-            } else if (summonCooldown > 0){
-                summonCooldown-=1f/speed();
-            }
-
-            if (paralysed > 0){
-                spend(TICK);
-                return true;
-            }
-
-            if (abilityCooldown <= 0){
-                int alive = aliveSummons();
-                //NEVER use skills if no mobs alive.
-                if(alive == 0) {
-                    lastAbility = NONE;
-                    //summon faster when no ability is available.
-                    summonCooldown -= 2f;
-                }
-                else {
-                    do {
-                        rollForAbility();
-                    } while ((lastAbility == ENRAGE || lastAbility == SACRIFICE) && alive < 2);
-                }
-                if(buff(DwarfMaster.SacrificeSubjectListener.class)!= null){
-                    lastAbility = NONE;
-                    //cd faster while prepare to sacrifice
-                    abilityCooldown --;
+                {
+                    actPriority = VFX_PRIO;
                 }
 
-                if (lastAbility == LINK && lifeLinkSubject()){
-                    abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
-                    spend(TICK);
+                @Override
+                protected boolean act() {
+                    Actor.remove(this);
+                    if (summonCooldown <= 0 && summonSubject(3)){
+                        summonsMade++;
+                        summonCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN)-1f;
+                    } else if (summonCooldown > 0){
+                        summonCooldown-=1f/speed();
+                    }
+
+                    if (paralysed > 0){
+                        spend(TICK);
+                        return true;
+                    }
+
+                    if (abilityCooldown <= 0){
+                        int alive = aliveSummons();
+                        //NEVER use skills if no mobs alive.
+                        if(alive == 0) {
+                            lastAbility = NONE;
+                            //summon faster when no ability is available.
+                            summonCooldown -= 2f;
+                        }
+                        else {
+                            do {
+                                rollForAbility();
+                            } while ((lastAbility == ENRAGE || lastAbility == SACRIFICE) && alive < 2);
+                        }
+                        if(buff(DwarfMaster.SacrificeSubjectListener.class)!= null){
+                            lastAbility = NONE;
+                            //cd faster while prepare to sacrifice
+                            abilityCooldown --;
+                        }
+
+                        if (lastAbility == LINK && lifeLinkSubject()){
+                            abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                            spend(TICK);
+                            return true;
+                        } else if (lastAbility == TELE && teleportSubject()) {
+                            lastAbility = TELE;
+                            abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                            spend(TICK);
+                            return true;
+                        }else if(lastAbility == ENRAGE){
+                            enrageSubject();
+                            abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                            spend(TICK);
+                            return true;
+                        }else if(lastAbility == DEATHRATTLE){
+                            deathRattleSubject();
+                            lastAbility = DEATHRATTLE;
+                            abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                            spend(TICK);
+                        }else if(lastAbility == SACRIFICE){
+                            sacrificeSubject();
+                            abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                            spend(TICK);
+                        }else if(lastAbility == SUMMON){
+                            extraSummonSubject();
+                            abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
+                            spend(TICK);
+                        }
+
+                    } else {
+                        abilityCooldown--;
+                    }
                     return true;
-                } else if (lastAbility == TELE && teleportSubject()) {
-                    lastAbility = TELE;
-                    abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
-                    spend(TICK);
-                    return true;
-                }else if(lastAbility == ENRAGE){
-                    enrageSubject();
-                    abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
-                    spend(TICK);
-                    return true;
-                }else if(lastAbility == DEATHRATTLE){
-                    deathRattleSubject();
-                    lastAbility = DEATHRATTLE;
-                    abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
-                    spend(TICK);
-                }else if(lastAbility == SACRIFICE){
-                    sacrificeSubject();
-                    abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
-                    spend(TICK);
-                }else if(lastAbility == SUMMON){
-                    extraSummonSubject();
-                    abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
-                    spend(TICK);
                 }
-
-            } else {
-                abilityCooldown--;
-            }
+            });
 
         } else if (phase == 3){
-            if (summonSubject(2)) summonsMade++;
+            Actor.add(new Actor() {
+
+                {
+                    actPriority = VFX_PRIO;
+                }
+
+                @Override
+                protected boolean act() {
+                    Actor.remove(this);
+                    if (summonSubject(2)) summonsMade++;
+                    return true;
+                }
+            });
+
         } else if (phase == 4 && buffs(FireMagicDied.Summoning.class).size() < 4){
-            actPhaseTwoSummon();
+            Actor.add(new Actor() {
+
+                {
+                    actPriority = VFX_PRIO;
+                }
+
+                @Override
+                protected boolean act() {
+                    Actor.remove(this);
+                    actPhaseTwoSummon();
+                    return true;
+                }
+            });
             return true;
         }
         //actScanning();

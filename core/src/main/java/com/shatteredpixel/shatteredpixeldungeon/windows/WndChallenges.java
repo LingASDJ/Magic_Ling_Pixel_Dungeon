@@ -252,11 +252,20 @@ public class WndChallenges extends Window {
 			info = new IconButton(Icons.get(Icons.INFO)){
 				@Override
 				protected void onClick() {
-					ShatteredPixelDungeon.scene().add(
-							new WndTitledMessage(new Image(ChallengeInfo.this.icon),
-									Messages.titleCase(Messages.get(Challenges.class, challenge)),
-									Messages.get(Challenges.class, challenge+"_desc"))
-					);
+					if(challenge.equals("stronger_bosses")){
+						ShatteredPixelDungeon.scene().add(new WndHardNotification( new ItemSprite(ItemSpriteSheet.CHALLANEESICON_13, new ItemSprite.Glowing(0xff0000)),
+								Messages.get(WndChallenges.class, "boss_title"),
+								Messages.get(WndChallenges.class, "boss_desc"),
+								Messages.get(WndChallenges.class, "ok"),
+								0){
+						});
+					} else {
+						ShatteredPixelDungeon.scene().add(
+								new WndTitledMessage(new Image(ChallengeInfo.this.icon),
+										Messages.titleCase(Messages.get(Challenges.class, challenge)),
+										Messages.get(Challenges.class, challenge+"_desc"))
+						);
+					}
 				}
 			};
 			add( info );
@@ -330,6 +339,8 @@ public class WndChallenges extends Window {
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14, new ItemSprite.Glowing(0x009999));
 			case "dhxd":
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_15, new ItemSprite.Glowing(0x384976));
+			case "morelevel":
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_16, new ItemSprite.Glowing(0x98bc76));
 			case "cs":
 				return Icons.get(Icons.WARNING);
 			default:

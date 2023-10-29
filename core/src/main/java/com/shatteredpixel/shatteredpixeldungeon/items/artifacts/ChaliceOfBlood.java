@@ -85,7 +85,8 @@ public class ChaliceOfBlood extends Artifact {
 
 		if (action.equals(AC_PRICK)){
 
-			Statistics.ChaicBlood++;
+			//修复等级问题 2023 10 15
+			Statistics.ChaicBlood = Math.min(Statistics.ChaicBlood + 1, 10);
 
 			int damage = 3*(level()*level());
 

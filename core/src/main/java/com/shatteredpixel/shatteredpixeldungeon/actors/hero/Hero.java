@@ -63,9 +63,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoRead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMixShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessNoMoney;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessRedWhite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
@@ -148,9 +150,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.RedWhiteRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
@@ -271,7 +277,7 @@ public class Hero extends Char {
 	public int exp = 0;
 
 	//TODO 灯火前行
-	public int lanterfire;
+	public float lanterfire;
 
 	public int icehp;
 
@@ -299,14 +305,17 @@ public class Hero extends Char {
 	
 	public void updateHT( boolean boostHP ){
 		int curHT = HT;
-		
+
 		HT = 20 + 5*(lvl-1) + HTBoost;
+
 		float multiplier = RingOfMight.HTMultiplier(this);
 		HT = Math.round(multiplier * HT);
 		
 		if (buff(ElixirOfMight.HTBoost.class) != null){
 			HT += buff(ElixirOfMight.HTBoost.class).boost();
 		}
+
+
 		
 		if (boostHP){
 			HP += Math.max(HT - curHT, 0);
@@ -332,6 +341,10 @@ public class Hero extends Char {
 		if(Dungeon.hero.buff(MagicGirlSayNoSTR.class) != null){
 			strBonus -= 1;
 		} else if(Dungeon.hero.buff(BlessGoodSTR.class) != null) {
+			strBonus += 2;
+		}
+
+		if(Dungeon.hero.buff(BlessRedWhite.class) != null) {
 			strBonus += 2;
 		}
 
@@ -716,6 +729,16 @@ public class Hero extends Char {
 		float speed = super.speed();
 
 		speed *= RingOfHaste.speedMultiplier(this);
+
+		//提升20%移速
+		MIME.GOLD_THREE getSpeed = Dungeon.hero.belongings.getItem(MIME.GOLD_THREE.class);
+		if (getSpeed!=null) {
+			speed *= 1.2f;
+		}
+
+		if(Dungeon.hero.buff(BlessRedWhite.class) != null) {
+			speed *= 1.1f;
+		}
 		
 		if (belongings.armor() != null) {
 			speed = belongings.armor().speedFactor(this, speed);
@@ -937,6 +960,35 @@ public class Hero extends Char {
 	}
 	
 	private boolean actMove( HeroAction.Move action ) {
+
+		PotionOfPurity.PotionOfPurityLing potionOfPurityLing = Dungeon.hero.belongings.getItem(PotionOfPurity.PotionOfPurityLing.class);
+		if(potionOfPurityLing != null && !Dungeon.level.locked){
+			potionOfPurityLing.detachAll( hero.belongings.backpack );
+		}
+
+		RedWhiteRose redWhiteRose = Dungeon.hero.belongings.getItem(RedWhiteRose.class);
+		if(redWhiteRose != null){
+			Buff.affect(hero, BlessRedWhite.class).set( (100), 1 );
+		} else {
+			Buff.detach(hero, BlessRedWhite.class);
+		}
+
+		DriedRose rose = Dungeon.hero.belongings.getItem(DriedRose.class);
+		Red red = hero.belongings.getItem(Red.class);
+		if(red != null && Statistics.deadGo ){
+			red.detachAll(hero.belongings.backpack);
+		}
+		if(rose != null && Statistics.deadGo){
+			rose.detachAll(hero.belongings.backpack);
+		}
+
+		CrystalLing crystalLing = Dungeon.hero.belongings.getItem(CrystalLing.class);
+		if(crystalLing != null){
+			Buff.affect(hero, BlessLing.class).set( (100), 1 );
+		} else {
+			Buff.detach(hero, BlessLing.class);
+		}
+
 		MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
 		if(getHeal != null && HT/4 > HP){
 			this.HP = HT;
@@ -959,8 +1011,8 @@ public class Hero extends Char {
 			exp = Random.NormalIntRange(10,20);
 		}
 
-		///测试坐标用
-//		GLog.w(String.valueOf(hero.pos));
+//		///测试坐标用
+//		GLog.w(String.valueOf(holiday));
 
 		//携带该物品时，玩家血量低于一半后自动隐身一段回合。
 		//actMove实现
@@ -984,9 +1036,13 @@ public class Hero extends Char {
 		}
 
 
+		if(chCount>=6 && !lanterfireactive && !Dungeon.isChallenged(PRO)){
+			GLog.n(Messages.get(WndStory.class, "warning"));
+		}
+
 		if(chCount >= 3 && !lanterfireactive && !Dungeon.isChallenged(PRO) || Dungeon.isChallenged(DHXD) && !lanterfireactive){
-			//TODO 灯火前行
-			lanterfire = 100;
+			//灯火前行 3.2
+			lanterfire = 100 - (chCount>=6 ? chCount*3 : 0);
 			new OilLantern().quantity(1).identify().collect();
 
 			lanterfireactive = true;
@@ -1542,6 +1598,11 @@ public class Hero extends Char {
 		}
 
 		dmg = (int)Math.ceil(dmg * RingOfTenacity.damageMultiplier( this ));
+
+		CrystalLing crystalLing = Dungeon.hero.belongings.getItem(CrystalLing.class);
+		if(crystalLing != null){
+			dmg = (int)Math.ceil(dmg * RingOfTenacity.damageMultiplier( this ));
+		}
 
 		//TODO improve this when I have proper damage source logic
 		if (belongings.armor() != null && belongings.armor().hasGlyph(AntiMagic.class, this)
@@ -2614,7 +2675,7 @@ public class Hero extends Char {
 		hero.sprite.showStatus(0x808080, String.valueOf(value));
 	}
 
-	public void healLantern(int value){
+	public void healLantern(float value){
 		lanterfire = Math.min(lanterfire+value,100);
 		hero.sprite.showStatus(0x00ff00, String.valueOf(value));
 	}

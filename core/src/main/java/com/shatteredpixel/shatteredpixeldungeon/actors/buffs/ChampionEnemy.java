@@ -137,7 +137,7 @@ public abstract class ChampionEnemy extends Buff {
 			}
 		}
 
-		if (Dungeon.mobsToStateLing <= 0 && Dungeon.isChallenged(Challenges.SBSG)) {
+		if (Dungeon.mobsToStateLing <= 0 && Dungeon.isChallenged(Challenges.SBSG) && !m.properties.contains(Char.Property.NOBIG)) {
 			Buff.affect(m, buffCls);
 			m.state = m.WANDERING;
 		}
@@ -194,7 +194,7 @@ public abstract class ChampionEnemy extends Buff {
 			//attack range of 2
 			/** 实现效果，此外还要关联CharSprite.java和Mob.java以实现远程效果*/
 			if(Random.Float()<0.1f) {
-				switch (Random.NormalIntRange(0,5)){
+				switch (Random.NormalIntRange(0,6)){
 					//默认为毒雾
 					case 1:default:
 						GameScene.add(Blob.seed(enemy.pos, 45, ToxicGas.class));
@@ -215,7 +215,7 @@ public abstract class ChampionEnemy extends Buff {
 			target.sprite.zaplink( enemy.pos );
 			int dmg = Random.NormalIntRange( target.damageRoll()/5+3, target.damageRoll()/5+7 );
 			enemy.damage( dmg, new DarkBolt() );
-			return target.fieldOfView[enemy.pos] && Dungeon.level.distance(target.pos, enemy.pos) <= 6;
+			return target.fieldOfView[enemy.pos] && Dungeon.level.distance(target.pos, enemy.pos) <= 3;
 		}
 
 

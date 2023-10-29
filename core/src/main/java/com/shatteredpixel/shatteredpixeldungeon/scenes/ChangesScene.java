@@ -131,7 +131,8 @@ public class ChangesScene extends PixelScene {
 		float nextPosY = 0;
 		boolean second = false;
 		if (changesSelected == 0) {
-			ChangeSelection selection = new ChangeSelection(Messages.get(this, "later"), Messages.get(this, "mlpd")) {
+			ChangeSelection selection2 = new ChangeSelection(Messages.get(this, "later"), Messages.get(this,
+					"mlpd-0.6.4-5")) {
 				@Override
 				public void onClick() {
 					NewChangesScene.changesSelected = 0;
@@ -139,11 +140,54 @@ public class ChangesScene extends PixelScene {
 					ShatteredPixelDungeon.switchNoFade(NewChangesScene.class);
 				}
 			};
-			selection.icon(new ItemSprite(ItemSpriteSheet.MAGICGIRLBOOKS));
+			selection2.icon(new ItemSprite(ItemSpriteSheet.REDWHITEROSE));
+			selection2.hardlight(Window.TITLE_COLOR);
+			selection2.setRect(0, posY, panel.innerWidth(), 0);
+			content.add(selection2);
+
+			ChangeSelection selection3 = new ChangeSelection(null, Messages.get(this,
+					"mlpd-0.6.0-3")) {
+				@Override
+				public void onClick() {
+					NewChangesScene.changesSelected = 1;
+					NewChangesScene.fromChangesScene = false;
+					ShatteredPixelDungeon.switchNoFade(NewChangesScene.class);
+				}
+			};
+			selection3.icon(new ItemSprite(ItemSpriteSheet.LANTERNB));
+			selection3.hardlight(Window.TITLE_COLOR);
+			selection3.setRect(0, posY+35, panel.innerWidth(), 0);
+			content.add(selection3);
+
+			ChangeSelection selection = new ChangeSelection(null, Messages.get(this,
+					"mlpd-0.5.X")) {
+				@Override
+				public void onClick() {
+					NewChangesScene.changesSelected = 2;
+					NewChangesScene.fromChangesScene = false;
+					ShatteredPixelDungeon.switchNoFade(NewChangesScene.class);
+				}
+			};
+			selection.icon(new ItemSprite(ItemSpriteSheet.DG19));
 			selection.hardlight(Window.TITLE_COLOR);
-			selection.setRect(0, posY, panel.innerWidth(), 0);
+			selection.setRect(0, posY+60, panel.innerWidth(), 0);
 			content.add(selection);
-			posY = nextPosY = selection.bottom();
+
+			ChangeSelection selection0 = new ChangeSelection(null, Messages.get(this,
+					"mlpd-0.4.X")) {
+				@Override
+				public void onClick() {
+					NewChangesScene.changesSelected = 3;
+					NewChangesScene.fromChangesScene = false;
+					ShatteredPixelDungeon.switchNoFade(NewChangesScene.class);
+				}
+			};
+			selection0.icon(new ItemSprite(ItemSpriteSheet.RedBloodMoon));
+			selection0.hardlight(Window.TITLE_COLOR);
+			selection0.setRect(0, posY+85, panel.innerWidth(), 0);
+			content.add(selection0);
+
+			posY = nextPosY = selection0.bottom();
 		}
 		for (ChangeInfo info : changeInfos){
 			if (info.major) {

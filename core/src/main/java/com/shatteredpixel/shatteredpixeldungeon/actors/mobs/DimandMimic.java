@@ -159,7 +159,7 @@ public class DimandMimic extends Mimic {
     }
 
     @Override
-    protected void generatePrize() {
+    public void generatePrize() {
         super.generatePrize();
         //all existing prize items are guaranteed uncursed, and have a 50% chance to be +1 if they were +0
         for (Item i : items){

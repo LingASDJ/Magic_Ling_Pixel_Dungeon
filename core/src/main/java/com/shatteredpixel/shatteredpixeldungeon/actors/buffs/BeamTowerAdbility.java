@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -25,8 +27,9 @@ public class BeamTowerAdbility extends Buff {
                 if (ch.alignment != Char.Alignment.ENEMY) {
                     ch.damage(Random.IntRange(6, 10), CrystalDiedTower.class);
                     Statistics.bossScores[3] -= 300;
+                    //hero.sprite.showStatus(CharSprite.NEGATIVE, "300");
                     Buff.affect(ch, Cripple.class, 2f);
-                    if (ch == Dungeon.hero && !ch.isAlive()) {
+                    if (ch == hero && !ch.isAlive()) {
                         Dungeon.fail(getClass());
                     }
                 }

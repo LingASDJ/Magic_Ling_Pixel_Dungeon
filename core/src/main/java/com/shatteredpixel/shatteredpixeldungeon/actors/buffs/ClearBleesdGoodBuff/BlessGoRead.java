@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuf
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -10,7 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
-public class BlessGoRead extends Buff {
+public class BlessGoRead extends ClearLanterBuff {
 
     {
         type = buffType.POSITIVE;
@@ -30,10 +29,9 @@ public class BlessGoRead extends Buff {
             }
 
             if(hero.lanterfire > 60) {
-                float healDelay = 10f - 10*0.5f;
-                healDelay /= 0.1f;
                 //effectively 1HP at lvl 0-5, 2HP lvl 6-8, 3HP lvl 9, and 5HP lvl 10.
-                target.HP = Math.min( target.HT, target.HP + (int)Math.ceil(5/healDelay));
+                target.HP = Math.min( target.HT, target.HP + 2);
+                spend(3f);
             }
 
 

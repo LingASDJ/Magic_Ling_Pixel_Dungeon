@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
@@ -386,6 +387,16 @@ public class YogDzewa extends Mob {
 
 			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
 				addFist((YogFist)Reflection.newInstance(challengeSummons.remove(0)));
+				if(phase == 3){
+					YogFist.FreezingFist freezingFist = new YogFist.FreezingFist();
+					freezingFist.pos = pos-3;
+					GameScene.add(freezingFist);
+					Camera.main.shake(1,3f);
+					GameScene.flash(0x808080,true);
+					YogFist.HaloFist haloFist = new YogFist.HaloFist();
+					haloFist.pos = pos+3;
+					GameScene.add(haloFist);
+				}
 			}
 
 			CellEmitter.get(Dungeon.level.exit-1).burst(ShadowParticle.UP, 25);
@@ -435,6 +446,9 @@ public class YogDzewa extends Mob {
 		GameScene.add(fist, 4);
 		Actor.addDelayed( new Pushing( fist, Dungeon.level.exit, fist.pos ), -1 );
 		Dungeon.level.occupyCell(fist);
+
+
+
 	}
 
 	public void updateVisibility( Level level ){
@@ -487,6 +501,10 @@ public class YogDzewa extends Mob {
 
 		if(Dungeon.isChallenged(RLPT)){
 			Badges.GOODRLPT();
+		}
+
+		if(!Dungeon.whiteDaymode){
+			PaswordBadges.NIGHT_CAT();
 		}
 
 		if(Dungeon.isChallenged(AQUAPHOBIA)){

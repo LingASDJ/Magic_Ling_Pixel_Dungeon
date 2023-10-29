@@ -711,12 +711,15 @@ public class GameScene extends PixelScene {
 				case LARGE:     GLog.w(Messages.get(this, "large"));    break;
 				case TRAPS:     GLog.w(Messages.get(this, "traps"));    break;
 				case SECRETS:   GLog.w(Messages.get(this, "secrets"));  break;
+				case BIGTRAP:   GLog.w(Messages.get(this, "moretraps"));  break;
+				case THREEWELL:   GLog.p(Messages.get(this, "threewells"));  break;
+				case LINKROOM:   GLog.w(Messages.get(this, "links"));  break;
+				case DIEDROOM:   GLog.n(Messages.get(this, "died"));  break;
 			}
 
 			for (Mob mob : Dungeon.level.mobs) {
 				if (!mob.buffs(ChampionEnemy.class).isEmpty() && Dungeon.isChallenged(SBSG)){
 					GLog.n(Messages.get(ChampionEnemy.class, "warn2"));
-					GLog.w(Messages.get(ChampionEnemy.class, "warn"));
 				} else if(!mob.buffs(ChampionEnemy.class).isEmpty()) {
 					GLog.w(Messages.get(ChampionEnemy.class, "warn"));
 				}
@@ -1525,6 +1528,16 @@ public class GameScene extends PixelScene {
 						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
 					break;
+				case 10:
+					bossSlain.texture(Assets.Interfaces.Tengu_Title);
+					bossSlain.show( Window.R_COLOR, 0.3f, 4f);
+					scene.showBanner(bossSlain);
+					break;
+				case 14:
+					bossSlain.texture(Assets.Interfaces.DMOR_Title);
+					bossSlain.show( Window.CBLACK, 0.3f, 5f);
+					scene.showBanner(bossSlain);
+					break;
 				case -31:
 					bossSlain.texture(Assets.Interfaces.SakaBJY_Title);
 					bossSlain.show( Window.CYELLOW, 0.3f, 5f);
@@ -1561,6 +1574,16 @@ public class GameScene extends PixelScene {
 						bossSlain.texture(Assets.Interfaces.QliPhoth_Clear);
 						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
+					break;
+				case 10:
+					bossSlain.texture(Assets.Interfaces.Tengu_Clear);
+					bossSlain.show( Window.R_COLOR, 0.2f, 5f);
+					scene.showBanner(bossSlain);
+					break;
+				case 14:
+					bossSlain.texture(Assets.Interfaces.DMOR_Clear);
+					bossSlain.show( Window.GDX_COLOR, 0.3f, 5f);
+					scene.showBanner(bossSlain);
 					break;
 				case -31:
 					bossSlain.texture(Assets.Interfaces.SakaBJY_Clear);

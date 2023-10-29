@@ -21,10 +21,16 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CavesPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
@@ -43,7 +49,11 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.StormTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.audio.Music;
@@ -59,6 +69,7 @@ public class CavesLevel extends RegularLevel {
 		color1 = 0x534f3e;
 		color2 = 0xb9d661;
 	}
+
 
 	//红龙的试炼
 	@Override
@@ -92,6 +103,37 @@ public class CavesLevel extends RegularLevel {
 		if (forceMax) return 3;
 		//2 to 3, average 2.2
 		return 2+Random.chances(new float[]{4, 1});
+	}
+
+	public void updateChasmTerrain() {
+		synchronized (map){
+			for (int i = 0; i < map.length; i++) {
+				if (map[i] == Terrain.SIGN_SP) {
+					// 将 EMPTY_DECO 地块改为新地形
+					set(i, Terrain.LOCKED_EXIT);
+					GameScene.updateMap(i); // 更新地图显示
+					Camera.main.shake(4f,7f);
+				} else if(hero.buff(LockedFloor.class) == null && map[i] == Terrain.LOCKED_EXIT) {
+					// 将 CHASM 地块改为新地形
+					set(i, Terrain.EMPTY);
+					GameScene.updateMap(i); // 更新地图显示
+					GameScene.flash(Window.WATA_COLOR);
+				}
+				if (map[i] == SIGN) {
+					// 将 SIGN 地块改为新地形
+					set(i, Terrain.WATER);
+					GameScene.updateMap(i); // 更新地图显示
+				}
+				Ankh weapon = Dungeon.hero.belongings.getItem(Ankh.class);
+				if (weapon != null) {
+					Dungeon.level.drop(weapon, entrance).sprite.drop();
+					weapon.detachAll(hero.belongings.backpack);
+					GLog.w(Messages.get(Level.class,"weapon"));
+				}
+				GameScene.flash(Window.SKYBULE_COLOR);
+				playBGM(Assets.BGM_BOSSC, true);
+			}
+		}
 	}
 	
 	@Override

@@ -32,7 +32,7 @@ public class Slime_Red extends Slime {
 
     {
         spriteClass = RedSprites.class;
-        maxLvl = 16;
+        maxLvl = 4;
         lootChance = 0.15f;
         loot = PotionOfHealing.class;
         properties.add(Property.ACIDIC);

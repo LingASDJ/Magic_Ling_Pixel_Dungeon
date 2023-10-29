@@ -23,12 +23,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FetidRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Fire_Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlameC01;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlowerSlime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gnoll;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollShiled;
@@ -47,7 +47,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDLLS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDNQHZ;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDZSLS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedMurderer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedSwarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RipperDemon;
@@ -73,7 +72,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.XTG200;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GooMob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.Cerberus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SlimeKingMob;
 import com.shatteredpixel.shatteredpixeldungeon.custom.dict.DictSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
@@ -408,7 +407,7 @@ public class MobPlacer extends TestItem{
                         updateMobText();
                     }
                 };
-                btn.icon( DictSpriteSheet.miscImages(allData.get(dataThreshold(mobTier)+i).imageId) );
+                btn.icon( Reflection.newInstance(allData.get(dataThreshold(mobTier)+i).getMobClass()).sprite());
                 float max = Math.max(btn.icon().width(), btn.icon().height());
                 btn.icon().scale = new PointF(BTN_SIZE/max, BTN_SIZE/max);
                 if(i<firstLine){
@@ -451,7 +450,8 @@ public class MobPlacer extends TestItem{
     }
 
     private enum DataPack{
-        RAT(Rat.class, DictSpriteSheet.RAT),
+        RAT(Cerberus.class, DictSpriteSheet.RAT),
+        FLWW(FlowerSlime.class, DictSpriteSheet.FLOWER),
         //TESTRAT(TestRat.class, DictSpriteSheet.RAT),
         GNOLL(Gnoll.class, DictSpriteSheet.GNOLL),
         SNAKE(Snake.class, DictSpriteSheet.SNAKE),
@@ -461,6 +461,9 @@ public class MobPlacer extends TestItem{
         SLIME(Slime.class, DictSpriteSheet.SLIME),
         C_SLIME(CausticSlime.class, DictSpriteSheet.CAUSTIC_SLIME),
         F_RAT(FetidRat.class, DictSpriteSheet.F_RAT),
+
+
+
         GNOLL_DARTER(GnollTrickster.class, DictSpriteSheet.GNOLL_DARTER),
         GREAT_CRAB(GreatCrab.class, DictSpriteSheet.GREAT_CRAB),
 
@@ -493,7 +496,7 @@ public class MobPlacer extends TestItem{
         ELE_CHAOS(Elemental.ChaosElemental.class, DictSpriteSheet.ELEMENTAL_CHAOS),
 
         RIPPER(RipperDemon.class, DictSpriteSheet.RIPPER),
-        SPAWNER(DemonSpawner.class, DictSpriteSheet.SPAWNER),
+//        SPAWNER(DemonSpawner.class, DictSpriteSheet.SPAWNER),
         EYE(Eye.class, DictSpriteSheet.EYE),
         SUCCUBUS(Succubus.class, DictSpriteSheet.SUCCUBUS),
         SCORPIO(Scorpio.class, DictSpriteSheet.SCORPIO),
@@ -516,7 +519,7 @@ public class MobPlacer extends TestItem{
         GnollK(GnollShiled.class, DictSpriteSheet.GnollK),
         GnollF(SkullShaman.class, DictSpriteSheet.GnollF),
         FlameC(FlameC01.class, DictSpriteSheet.FLAMEC01),
-        Good_VI50(GooMob.class, DictSpriteSheet.Goo),
+//        Good_VI50(GooMob.class, DictSpriteSheet.Goo),
 
         Flame(SlimeKingMob.class, DictSpriteSheet.FLAME),
         NQHZ(OGPDNQHZ.class, DictSpriteSheet.OGPDNQHZ),

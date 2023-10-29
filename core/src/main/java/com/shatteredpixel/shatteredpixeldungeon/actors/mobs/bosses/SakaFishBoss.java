@@ -15,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM720;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -48,7 +49,8 @@ import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-/**萨卡班甲鱼 Boss 难度：3.5级 */
+/**萨卡班甲鱼 Boss 难度：4级
+ * 隐藏Boss 萨卡班甲鱼*/
 public class SakaFishBoss extends Boss {
     private int leapPos = -1;
     private float leapCooldown = 0;
@@ -60,7 +62,7 @@ public class SakaFishBoss extends Boss {
     public boolean beamCharged;
 
 
-    /**隐藏Boss 萨卡班甲鱼*/
+    /***/
     {
         spriteClass = SakaFishBossSprites.class;
         initBaseStatus(19, 25, 6, 0, 480, 5, 12);
@@ -74,6 +76,7 @@ public class SakaFishBoss extends Boss {
         HT=480;
         immunities.add(FrostBurning.class);
         immunities.add(HalomethaneBurning.class);
+        immunities.add(Terror.class);
         properties.add(Property.ICY);
         properties.add(Property.ELECTRIC);
         properties.add(Property.FIERY);
@@ -114,10 +117,23 @@ public class SakaFishBoss extends Boss {
 
         //phase 1 of the fight is over
         if (HP <= HT/2 && level==AncientMysteryCityBossLevel.State.TWO_BOSS){
-            HP = (HT/2);
-            yell(Messages.get(this, "interesting"));
-            ((AncientMysteryCityBossLevel)Dungeon.level).progress();
-            BossHealthBar.bleed(true);
+            Actor.add(new Actor() {
+
+                {
+                    actPriority = VFX_PRIO;
+                }
+
+                @Override
+                protected boolean act() {
+                    Actor.remove(this);
+                    HP = (HT/2);
+                    yell(Messages.get(SakaFishBoss.class, "interesting"));
+                    ((AncientMysteryCityBossLevel)Dungeon.level).progress();
+                    BossHealthBar.bleed(true);
+                    return true;
+                }
+            });
+
         }
     }
 
@@ -282,8 +298,6 @@ public class SakaFishBoss extends Boss {
             PaswordBadges.KILLSAKA();
 
             yell( Messages.get(this, "defeated") );
-
-
     }
 
     @Override
@@ -310,8 +324,6 @@ public class SakaFishBoss extends Boss {
     private static final String BEAM_COOLDOWN   = "beamCooldown";
     private static final String BEAM_CHARGED    = "beamCharged";
 
-    //二阶段
-    private static final String TO_ATTACK   = "toattack";
 
     @Override
     public void storeInBundle( Bundle bundle ) {
@@ -370,7 +382,6 @@ public class SakaFishBoss extends Boss {
             {
                 actPriority = HERO_PRIO+1;
             }
-            private static final float TIME_TO_ZAP	= 1f;
 
             @Override
             protected boolean act() {
@@ -446,7 +457,7 @@ public class SakaFishBoss extends Boss {
                     endPos = leapPos;
                 }
 
-                    //do leap
+                    //do leap 泥头车
                     sprite.visible = Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[leapPos] || Dungeon.level.heroFOV[endPos];
                     sprite.dirtcar(pos, leapPos, new Callback() {
                         @Override

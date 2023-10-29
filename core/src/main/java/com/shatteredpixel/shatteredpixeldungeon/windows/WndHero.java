@@ -21,10 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.NO_ARMOR;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
@@ -223,7 +221,7 @@ public class WndHero extends WndTabbed {
 
 
 			if(lanterfireactive){
-				RestatSlot( Messages.get(this, "lanterfire"), (hero.lanterfire) + "/" + 100 );
+				RestatSlot( Messages.get(this, "lanterfire"), (double)(hero.lanterfire) + "/" + 100 );
 			}
 
 			IcestatSlot( Messages.get(this, "icehp"), (hero.icehp) + "/" + 100 );
@@ -292,10 +290,8 @@ public class WndHero extends WndTabbed {
 			String seed;
 			if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 				seed = "BossRush";
-			}else if(Dungeon.isChallenged(NO_ARMOR)){
+			}else if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
 				seed = "B";
-			} else if (Dungeon.isChallenged(RLPT)&&Dungeon.isChallenged(SBSG)) {
-				seed = "C";
 			} else {
 				seed = "A";
 			}

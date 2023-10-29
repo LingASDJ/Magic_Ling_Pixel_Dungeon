@@ -25,6 +25,9 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
 
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.ApprenticeWitch;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Frankenstein;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -45,18 +48,25 @@ public class Bestiary {
 		if (Dungeon.isChallenged(RLPT) && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
 			switch (i) {
 				case 1:
-					//3x rat, 1x snake
-					return new ArrayList<>(Arrays.asList(
-							Rat.class, Rat.class,
-							Rat.class));
+					//开发者测试怪组
+					if(DeviceCompat.isDebug() && DeviceCompat.isDesktop()){
+						return new ArrayList<>(Arrays.asList(
+								Frankenstein.class, ApprenticeWitch.class,
+								FlowerSlime.class));
+					} else {
+						return new ArrayList<>(Arrays.asList(
+								FlowerSlime.class, FlowerSlime.class,
+								FlowerSlime.class));
+					}
+
 				case 2:
-					return new ArrayList<>(Arrays.asList(Rat.class,
-							Rat.class, Rat.class, Gnoll.class, Gnoll.class,
+					return new ArrayList<>(Arrays.asList(FlowerSlime.class,
+							FlowerSlime.class, FlowerSlime.class, Gnoll.class, Gnoll.class,
 							Gnoll.class, Gnoll.class, Albino.class));
 				case 3:
-					return new ArrayList<>(Arrays.asList(Rat.class,
-							Rat.class, Salamander.class,
-							Salamander.class, Rat.class, Rat.class,
+					return new ArrayList<>(Arrays.asList(FlowerSlime.class,
+							FlowerSlime.class, Salamander.class,
+							Salamander.class, FlowerSlime.class, FlowerSlime.class,
 							ClearElemental.class,Crab.class,Swarm.class));
 				case 4:
 					return new ArrayList<>(Arrays.asList(Salamander.class,
@@ -153,11 +163,11 @@ public class Bestiary {
 									Golem.class));
 					}
 				default:
-					return new ArrayList<>(Arrays.asList(Rat.class, Rat.class,
-							Rat.class,
-							Rat.class, Rat.class, Rat.class,
-							Rat.class, Rat.class, Rat.class,
-							Rat.class));
+					return new ArrayList<>(Arrays.asList(FlowerSlime.class, FlowerSlime.class,
+							FlowerSlime.class,
+							FlowerSlime.class, FlowerSlime.class, FlowerSlime.class,
+							FlowerSlime.class, FlowerSlime.class, FlowerSlime.class,
+							FlowerSlime.class));
 			}
 		}
 		switch (i) {
@@ -165,23 +175,22 @@ public class Bestiary {
 			case 1:
 				//3x rat, 1x snake
 				return new ArrayList<>(Arrays.asList(
-						Rat.class, Rat.class,
-						Rat.class));
+						Rat.class, Rat.class));
 			case 2:
-				return new ArrayList<>(Arrays.asList(Rat.class,
-						Rat.class, Rat.class, Gnoll.class, Gnoll.class,
+				return new ArrayList<>(Arrays.asList(FlowerSlime.class,
+						FlowerSlime.class, FlowerSlime.class, Gnoll.class, Gnoll.class,
 						Gnoll.class, Gnoll.class));
 			case 3:
-				return new ArrayList<>(Arrays.asList(Rat.class,
-						Rat.class, Salamander.class,
-						Salamander.class, Rat.class, Rat.class,
+				return new ArrayList<>(Arrays.asList(FlowerSlime.class,
+						FlowerSlime.class, Salamander.class,
+						Salamander.class, FlowerSlime.class, FlowerSlime.class,
 						ClearElemental.class,Crab.class,Swarm.class));
 			case 4:
 				return new ArrayList<>(Arrays.asList(Salamander.class,
 						ClearElemental.class, Slime_Red.class,
 						Slime_Orange.class, Swarm.class,Crab.class));
 			case 5:
-				return new ArrayList<>(Arrays.asList(Rat.class, Rat.class,Slime.class,Slime.class,Swarm.class,Crab.class));
+				return new ArrayList<>(Arrays.asList(FlowerSlime.class, FlowerSlime.class,Slime.class,Slime.class,Swarm.class,Crab.class));
 			case 6:
 				return new ArrayList<>(Arrays.asList(Skeleton.class,
 						BlackHost.class,Guard.class, DM100.class, DM100.class, DM100.class));
@@ -203,7 +212,8 @@ public class Bestiary {
 						Brute.class, Brute.class,
 						Necromancer.class,Necromancer.class));
 			case 11:
-				return new ArrayList<>(Arrays.asList(Bat.class, DM100.class,DM100.class,ColdMagicRat.class,ColdMagicRat.class));
+				return new ArrayList<>(Arrays.asList(Bat.class, DM100.class,DM100.class,ColdMagicRat.class,
+						ColdMagicRat.class));
 			case 12:
 				//1x bat, 1x brute, 2x shaman, 2x spinner, 2x DM-300
 				return new ArrayList<>(Arrays.asList(
@@ -271,7 +281,7 @@ public class Bestiary {
 				return Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? new ArrayList<>(Arrays.asList(
 						Eye.class,ShieldHuntsman.class,RedMurderer.class,MolotovHuntsman.class)) :
 						new ArrayList<>(Arrays.asList(
-						Eye.class,ShieldHuntsman.class));
+								Eye.class,ShieldHuntsman.class));
 			case 23:
 				//1x: succubus, 2x evil eye, 3x scorpio
 				return Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? new ArrayList<>(Arrays.asList(
@@ -287,11 +297,11 @@ public class Bestiary {
 						Eye.class,
 						Scorpio.class, Succubus.class,Fire_Scorpio.class,Ice_Scorpio.class,ShieldHuntsman.class));
 			default:
-				return new ArrayList<>(Arrays.asList(Rat.class, Rat.class,
-						Rat.class,
-						Rat.class, Rat.class, Rat.class,
-						Rat.class, Rat.class, Rat.class,
-						Rat.class));
+				return new ArrayList<>(Arrays.asList(FlowerSlime.class, FlowerSlime.class,
+						FlowerSlime.class,
+						FlowerSlime.class, FlowerSlime.class, FlowerSlime.class,
+						FlowerSlime.class, FlowerSlime.class, FlowerSlime.class,
+						FlowerSlime.class));
 		}
 	}
 
@@ -329,7 +339,7 @@ public class Bestiary {
 		for (int i = 0; i < rotation.size(); i++){
 			if (Random.Int( 50 ) == 0) {
 				Class<? extends Mob> cl = rotation.get(i);
-				if (cl == Rat.class) {
+				if (cl == FlowerSlime.class) {
 					cl = Albino.class;
 				} else if (cl == Guard.class) {
 					cl = SRPDHBLR.class;

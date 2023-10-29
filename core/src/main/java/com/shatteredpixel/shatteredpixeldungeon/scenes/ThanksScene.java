@@ -78,22 +78,40 @@ public class ThanksScene extends PixelScene {
         content.add(ptr);
         //*** Special Thanks ***
 
-        CreditsBlock specialThanks = new CreditsBlock(true, 0xffffff,
-                "Original Music By Prohonor",
+        CreditsBlock specialThanksX = new CreditsBlock(true, 0x808080,
+                "Original Music One By Prohonor",
                 new Image("ptr.png", 0, 0, 32, 32),
                 null,
                 null,
                 null);
-        specialThanks.setRect((Camera.main.width - colWidth)/2f-10, ptr.bottom()+6, colWidth+20, 0);
-        content.add(specialThanks);
+        specialThanksX.setRect((Camera.main.width - colWidth)/2f-10, ptr.bottom()+6, colWidth+20, 0);
+        content.add(specialThanksX);
 
-        CreditsBlock specialThanksB = new CreditsBlock(true, 0xbe8e6e,
-                "Part Music Used Terraria",
-                new Image("tra.png", 0, 0, 17, 28),
+        CreditsBlock specialThanks = new CreditsBlock(true, 0x00899C,
+                "Original Music Two By 犬羅",
+                new Image("dog.png", 0, 0, 22, 24),
                 null,
                 null,
                 null);
-        specialThanksB.setRect((Camera.main.width - colWidth)/2f-10, specialThanks.bottom()+6, colWidth+20, 0);
+        specialThanks.setRect((Camera.main.width - colWidth)/2f-10, specialThanksX.bottom()+6, colWidth+20, 0);
+        content.add(specialThanks);
+
+        CreditsBlock specialThanks2 = new CreditsBlock(true, 0xC62BFF,
+                "Map Made 迪泠",
+                new Image("DiLing.png", 0, 0, 32, 32),
+                null,
+                null,
+                null);
+        specialThanks2.setRect((Camera.main.width - colWidth)/2f-10, specialThanks.bottom()+6, colWidth+20, 0);
+        content.add(specialThanks2);
+
+        CreditsBlock specialThanksB = new CreditsBlock(true, Window.TITLE_COLOR,
+                "Third Party Music Used:\n\nTerraria--Arknight--TitanSoul",
+                new Image("tra.png", 0, 0, 73, 28),
+                null,
+                null,
+                null);
+        specialThanksB.setRect((Camera.main.width - colWidth)/2f-10, specialThanks2.bottom()+6, colWidth+20, 0);
         content.add(specialThanksB);
 
         //*** Shattered Pixel Dungeon Credits ***

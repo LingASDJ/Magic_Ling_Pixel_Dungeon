@@ -365,8 +365,20 @@ public class MagicGirlDead extends Boss {
         super.damage(damage, src);
         int postHP = HP;
         if(preHP>healthThreshold[phase] && postHP<=healthThreshold[phase]){
-            HP = healthThreshold[phase];
-            goOnPhase();
+            Actor.add(new Actor() {
+
+                {
+                    actPriority = VFX_PRIO;
+                }
+
+                @Override
+                protected boolean act() {
+                    Actor.remove(this);
+                    HP = healthThreshold[phase];
+                    goOnPhase();
+                    return true;
+                }
+            });
         }
 
         if(phase>4) BossHealthBar.bleed(true);

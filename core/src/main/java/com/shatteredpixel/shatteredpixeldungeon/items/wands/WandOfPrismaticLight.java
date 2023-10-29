@@ -21,15 +21,19 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -69,9 +73,12 @@ public class WandOfPrismaticLight extends DamageWand {
 		affectMap(beam);
 		
 		if (Dungeon.level.viewDistance < 6 ){
-			if (Dungeon.isChallenged(Challenges.DARKNESS)){
+			if(Dungeon.isChallenged(Challenges.DHXD) && hero.buff(Talent.LanterCooldown.class) == null || Statistics.lanterfireactive && hero.buff(Talent.LanterCooldown.class) == null){
+				hero.healLantern(5f);
+				Buff.affect(curUser, Talent.LanterCooldown.class, 200f);
+			} else if (Dungeon.isChallenged(Challenges.DARKNESS) && !Dungeon.isChallenged(Challenges.DHXD)){
 				Buff.prolong( curUser, Light.class, 2f + buffedLvl());
-			} else {
+			} else if(!Dungeon.isChallenged(Challenges.DHXD)) {
 				Buff.prolong( curUser, Light.class, 10f+buffedLvl()*5);
 			}
 		}

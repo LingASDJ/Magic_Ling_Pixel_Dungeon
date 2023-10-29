@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.CYELLOW;
 import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.GREEN_COLOR;
 import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.RED_COLOR;
@@ -102,6 +103,7 @@ public class MenuPane extends Component {
 					case DARK:      return Messages.get(GameScene.class, "dark");
 					case LARGE:     return Messages.get(GameScene.class, "large");
 					case TRAPS:     return Messages.get(GameScene.class, "traps");
+					case BIGTRAP:     return Messages.get(GameScene.class, "moretraps");
 					case SECRETS:   return Messages.get(GameScene.class, "secrets");
 				}
 				return null;
@@ -175,7 +177,8 @@ public class MenuPane extends Component {
 		btnMenu = new MenuButton();
 		add( btnMenu );
 
-		version = new BitmapText( "v" + Game.version, PixelScene.pixelFont);
+		version = new BitmapText( "v" + Game.version + (Dungeon.isChallenged(PRO)?"-DEV_MODE":""),
+				PixelScene.pixelFont);
 		version.alpha( 0.5f );
 		add(version);
 

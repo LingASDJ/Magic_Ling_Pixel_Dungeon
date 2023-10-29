@@ -145,11 +145,7 @@ public class NewsScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				super.onClick();
-				String link = "https://ShatteredPixel.com";
-				//tracking codes, so that the website knows where this pageview came from
-				link += "?utm_source=shatteredpd";
-				link += "&utm_medium=news_page";
-				link += "&utm_campaign=ingame_link";
+				String link = "http://www.pd.qinyueqwq.top/";
 				ShatteredPixelDungeon.platform.openURI(link);
 			}
 		};
@@ -270,7 +266,7 @@ public class NewsScene extends PixelScene {
 			icon(News.parseArticleIcon(article));
 			long lastRead = SPDSettings.newsLastRead();
 			if (lastRead > 0 && article.date.getTime() > lastRead) {
-				textColor(Window.SHPX_COLOR);
+				textColor(Window.Pink_COLOR);
 			}
 
 			Calendar cal = Calendar.getInstance();

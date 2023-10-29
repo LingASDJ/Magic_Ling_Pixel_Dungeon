@@ -121,7 +121,7 @@ public abstract class RegularPainter extends Painter {
 			placeDoors( r );
 			r.paint( level );
 		}
-		
+
 		paintDoors( level, rooms );
 		
 		if (waterFill > 0f) {
@@ -440,10 +440,15 @@ public abstract class RegularPainter extends Painter {
 		}
 
 		//no more than one trap every 5 valid tiles.
-		nTraps = Math.min(nTraps, validCells.size()/5);
+
+		nTraps = l.feeling == Level.Feeling.BIGTRAP ? Math.min(nTraps,
+				validCells.size()/2) : Math.min(nTraps,
+				validCells.size()/5);
 
 		//5x traps on traps level feeling, but the extra traps are all visible
-		for (int i = 0; i < (l.feeling == Level.Feeling.TRAPS ? 5*nTraps : nTraps); i++) {
+		for (int i = 0; i < (l.feeling == Level.Feeling.BIGTRAP ? 30*nTraps : l.feeling == Level.Feeling.TRAPS ?
+				5*nTraps :
+				nTraps); i++) {
 
 			Trap trap = Reflection.newInstance(trapClasses[Random.chances( trapChances )]);
 

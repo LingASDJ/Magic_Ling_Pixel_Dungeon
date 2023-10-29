@@ -50,9 +50,7 @@ public class Goo extends Mob {
 		
 	{
 		if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-			HP = HT = 180;
-		} else {
-			HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 120 : 100;
+			HP = HT = 120;
 		}
 
 		EXP = 10;

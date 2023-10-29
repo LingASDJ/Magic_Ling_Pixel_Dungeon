@@ -21,18 +21,28 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.noosa.Game;
+
+import java.util.ArrayList;
 
 public class Red extends Item {
 
     {
-        image = ItemSpriteSheet.DG12;
+        image = ItemSpriteSheet.WHITEROSE;
 
         unique = true;
     }
-
+    private static final String AC_BACK = "interlevel_tp";
     @Override
     public boolean isUpgradable() {
         return false;
@@ -44,7 +54,33 @@ public class Red extends Item {
     }
 
     @Override
+    public ArrayList<String> actions(Hero hero ) {
+        ArrayList<String> actions = super.actions( hero );
+        if(Dungeon.depth == 50) {
+            actions.add(AC_BACK);
+        }
+        return actions;
+    }
+
+    @Override
+    public void execute(Hero hero, String action ) {
+        super.execute(hero, action);
+        if (action.equals(AC_BACK)) {
+            Buff buff = hero.buff(TimekeepersHourglass.timeFreeze.class);
+            if (buff != null) buff.detach();
+            buff = hero.buff(Swiftthistle.TimeBubble.class);
+            if (buff != null) buff.detach();
+            InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+            InterlevelScene.returnDepth = 17;
+            InterlevelScene.returnPos = -1;
+            Game.switchScene( InterlevelScene.class );
+        }
+    }
+
+
+
+    @Override
     public ItemSprite.Glowing glowing() {
-        return new ItemSprite.Glowing(0x00ffff, 3f);
+        return new ItemSprite.Glowing(Window.WHITE, 3f);
     }
 }

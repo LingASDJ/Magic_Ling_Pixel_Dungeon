@@ -17,7 +17,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHardNotification;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
@@ -266,59 +265,36 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
 
                 if (article.ling > Game.versionCode) {
                     // 向用户展示新文章可用的选项：下载或退出游戏
-                    ShatteredPixelDungeon.scene().add(new WndOptions(Icons.get(Icons.CHANGES),
+                    ShatteredPixelDungeon.scene().add(new WndHardNotification(Icons.get(Icons.CHANGES),
                             article.title,
                             article.summary,
-                            Messages.get(this, "download"),Messages.get(this, "stop_download")) {
+                            Messages.get(this, "download"),
+                            0){
                         @Override
-                        protected void onSelect(int index) {
-                            if (index == 0) {
-                                // 如果是桌面版就打开桌面版的下载链接，否则打开安卓版的下载链接
-                                if (DeviceCompat.isDesktop()) {
-                                    ShatteredPixelDungeon.scene().add(new WndOptions(Icons.get(Icons.CHANGES),
-                                            article.title,
-                                            article.summary,
-                                            "JAR版下载","NoJVM-版本下载") {
-                                        @Override
-                                        protected void onSelect(int index) {
-                                            if (index == 0) {
-                                                ShatteredPixelDungeon.platform.openURI(article.DesktopURL);
-                                            } else {
-                                                ShatteredPixelDungeon.platform.openURI("https://lingasdj.lanzouo.com/b05rqansf");
-                                            }
-                                            Gdx.app.exit();
-                                        }
-
-                                        @Override
-                                        public void onBackPressed() {
-                                            //
-                                        }
-                                    });
-                                } else {
-                                    ShatteredPixelDungeon.platform.openURI(article.URL);
-                                    Gdx.app.exit();
-                                }
-
+                        public void hide() {
+                            // 如果是桌面版就打开桌面版的下载链接，否则打开安卓版的下载链接
+                            if (DeviceCompat.isDesktop()) {
+                                ShatteredPixelDungeon.platform.openURI(article.DesktopURL);
                             } else {
-                                ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+                                ShatteredPixelDungeon.platform.openURI(article.URL);
                             }
+                            Gdx.app.exit();
                         }
 
                         @Override
                         public void onBackPressed() {
-                            //
+                            ShatteredPixelDungeon.switchNoFade(TitleScene.class);
                         }
                     });
                 } else {
                     // 向用户展示新版本可用的选项：强制下载或退出游戏
-                    ShatteredPixelDungeon.scene().add(new WndOptions(Icons.get(article.ling < Game.versionCode ?
-                            Icons.WARNING : Icons.CHANGES),
+                    ShatteredPixelDungeon.scene().add(new WndHardNotification(Icons.get(Icons.CHANGES),
                             article.title,
                             article.summary,
-                            Messages.get(this, "force_download")) {
+                            Messages.get(this, "force_download"),
+                            0){
                         @Override
-                        protected void onSelect(int index) {
-                            if (index == 0) {
+                        public void hide() {
                                 // 如果是桌面版就打开桌面版的下载链接，否则打开安卓版的下载链接
                                 if (DeviceCompat.isDesktop()) {
                                     ShatteredPixelDungeon.platform.openURI(article.DesktopURL);
@@ -326,7 +302,6 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
                                     ShatteredPixelDungeon.platform.openURI(article.URL);
                                 }
                                 Gdx.app.exit();
-                            }
                         }
 
                         @Override
@@ -338,15 +313,14 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
             } else {
                 // 显示天赋图标并提示用户已经更新完成
                 icon(UpdateNews.parseArticleIcon(article));
-                ShatteredPixelDungeon.scene().add(new WndOptions(Icons.get(Icons.TALENT),
-                        Messages.get(this, "update"),
-                        Messages.get(this, "desc")+"\n\n"+article.summary,
-                        Messages.get(this, "okay")) {
+                ShatteredPixelDungeon.scene().add(new WndHardNotification(Icons.get(Icons.CHANGES),
+                        article.title,
+                        article.summary,
+                        Messages.get(this, "okay"),
+                        0){
                     @Override
-                    protected void onSelect(int index) {
-                        if (index == 0) {
+                    public void hide() {
                             ShatteredPixelDungeon.switchNoFade(TitleScene.class);
-                        }
                     }
 
                     public void onBackPressed() {

@@ -417,11 +417,6 @@ public class ToobarV extends Component {
                     super.onPointerDown();
                 }
 
-                @Override
-                public GameAction keyAction() {
-                    return SPDAction.SLPD;
-                }
-
             };
             fill = new ColorBlock[9];
             for (int i = 0; i < fill.length; i ++) {

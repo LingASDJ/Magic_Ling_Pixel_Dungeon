@@ -396,7 +396,7 @@ public class StatusPane extends Component {
 		}
 
 		int maxHunger = (int) Hunger.STARVING;
-		int maxPureSole = Dungeon.hero.lanterfire;
+		float maxPureSole = Dungeon.hero.lanterfire;
 		int mtPureSole = 100;
 
 		//冰血聪明 x

@@ -60,7 +60,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.GardenLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LinkLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
@@ -69,6 +71,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
@@ -91,6 +94,8 @@ public class Dungeon {
 	public static int gold;
 	public static int nyzbuy;
 	public static int boss;
+
+	public static boolean whiteDaymode;
 
 	public static boolean interfloorTeleportAllowed(){
 		if (Dungeon.level.locked || (Dungeon.hero != null && Dungeon.hero.belongings.getItem(Amulet.class) != null)){
@@ -115,6 +120,42 @@ public class Dungeon {
 		level = new LinkLevel();
 
 		level.create();
+
+		Statistics.qualifiedForNoKilling = !bossLevel();
+
+		return level;
+	}
+
+	public static Level GardenLevel(){
+
+
+		Dungeon.level = null;
+		Actor.clear();
+
+		depth = 50;
+
+		if (depth > Statistics.realdeepestFloor) {
+			Statistics.realdeepestFloor = depth;}
+
+		Level level;
+		level = new GardenLevel();
+
+		level.create();
+
+		Statistics.qualifiedForNoKilling = !bossLevel();
+
+		return level;
+	}
+
+	public static Level BackLevel(){
+		Actor.clear();
+
+		depth = 17;
+
+		Dungeon.level = new CityLevel();
+
+		if (depth > Statistics.realdeepestFloor) {
+			Statistics.realdeepestFloor = depth;}
 
 		Statistics.qualifiedForNoKilling = !bossLevel();
 
@@ -317,6 +358,13 @@ public class Dungeon {
 
 		//难度模式
 		difficultys =  new Difficulty.HardStorage(SPDSettings.difficulty());
+
+		TitleScene.Reusable = false;
+
+
+		TitleScene.NightDay = false;
+
+
 
 		mobsToChampion = -1;
 		mobsToStateLing = -1;

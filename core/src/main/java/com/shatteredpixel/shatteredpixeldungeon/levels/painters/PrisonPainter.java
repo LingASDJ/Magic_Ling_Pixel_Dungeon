@@ -73,19 +73,26 @@ public class PrisonPainter extends RegularPainter {
 			if (map[i] == Terrain.WALL &&
 					(map[i + w] == Terrain.EMPTY || map[i + w] == Terrain.EMPTY_SP) &&
 					Random.Int( 6 ) == 0) {
-				
 				map[i] = Terrain.WALL_DECO;
+			}
+		}
+
+		for (int i = w; i < l - w; i++) {
+			if (map[i] == Terrain.WALL && map[i - w] == Terrain.WALL && map[i + w] == Terrain.WATER && Random.Int(2) == 0) {
+				map[i] = Terrain.WALL_DECO;
+
 			}
 		}
 		
-		for (int i=w; i < l - w; i++) {
-			if (map[i] == Terrain.WALL &&
-					map[i - w] == Terrain.WALL &&
-					(map[i + w] == Terrain.EMPTY || map[i + w] == Terrain.EMPTY_SP) &&
-					Random.Int( 3 ) == 0) {
-				
-				map[i] = Terrain.WALL_DECO;
-			}
-		}
+//		for (int i=w; i < l - w; i++) {
+//			if (map[i] == Terrain.WALL &&
+//					map[i - w] == Terrain.WALL &&
+//					(map[i + w] == Terrain.EMPTY || map[i + w] == Terrain.EMPTY_SP) &&
+//					Random.Int( 3 ) == 0) {
+//				level.mobs.add(HollowMimic.spawnAt(i,( Generator.randomUsingDefaults( Generator.Category.ARMOR ) ),
+//						HollowMimic.class));
+//				map[i] = Terrain.WALL;
+//			}
+//		}
 	}
 }

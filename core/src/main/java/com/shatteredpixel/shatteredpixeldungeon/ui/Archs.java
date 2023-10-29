@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.Game;
@@ -64,7 +65,7 @@ public class Archs extends Component {
 		arcsBg.offsetTo( 0,  offsB );
 		add( arcsBg );
 
-		arcsFg = new SkinnedBlock( 1, 1, Assets.Interfaces.ARCS_FG ){
+		arcsFg = new SkinnedBlock( 1, 1, Dungeon.whiteDaymode ? Assets.Interfaces.ARCS_FG : Assets.Interfaces.ARCS_FGN  ){
 			@Override
 			protected NoosaScript script() {
 				return NoosaScriptNoLighting.get();

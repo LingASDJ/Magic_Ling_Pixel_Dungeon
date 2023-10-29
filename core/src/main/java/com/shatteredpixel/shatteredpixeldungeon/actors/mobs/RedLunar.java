@@ -113,14 +113,10 @@ public class RedLunar extends Mob {
                 ratCount++;
             }
         }
-        if (ratCount < 3 && delay <= 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return ratCount < 3 && delay <= 0;
     }
 
-    private int combo = 0;
+    private final int combo = 0;
 
     @Override
     public boolean attack( Char enemy ) {
@@ -135,7 +131,7 @@ public class RedLunar extends Mob {
         else return false;
     }
 
-    private boolean chainsUsed = false;
+    private final boolean chainsUsed = false;
     private boolean chain(int target){
         if (chainsUsed || enemy.properties().contains(Property.IMMOVABLE))
             return false;
@@ -200,8 +196,8 @@ public class RedLunar extends Mob {
     public int attackProc(Char var1, int var2) {
         var2 = super.attackProc(var1, var2 / 2);
         if (Random.Int(2) == 0) {
-            ((Bleeding)Buff.affect(var1, Bleeding.class)).set((float)(var2 * 1));
-            ((Poison)Buff.affect(var1, Poison.class)).set((float)(var2 * 1));
+            Buff.affect(var1, Bleeding.class).set((float)(var2));
+            Buff.affect(var1, Poison.class).set((float)(var2));
         }
         return var2;
     }
@@ -212,7 +208,7 @@ public class RedLunar extends Mob {
         defenseSkill = attackSkill( null ) * 5;
         enemySeen = true;
     }
-    private int summonCooldown = 10;
+    private final int summonCooldown = 10;
     private static final float SPAWN_DELAY	= 2f;
     public static RedLunar spawnAt(int pos ) {
         if (!Dungeon.level.solid[pos] && Actor.findChar( pos ) == null) {

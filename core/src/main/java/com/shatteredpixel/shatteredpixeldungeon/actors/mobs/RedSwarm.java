@@ -49,6 +49,9 @@ public class RedSwarm extends Mob implements Callback {
         defenseSkill = 4;
 
         EXP = 15;
+
+        flying = true;
+
         maxLvl = 18;
 
         loot = Generator.Category.POTION;

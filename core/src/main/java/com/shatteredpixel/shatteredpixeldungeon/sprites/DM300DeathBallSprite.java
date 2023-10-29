@@ -15,21 +15,13 @@ public class DM300DeathBallSprite extends MobSprite
         texture("mobs/dm300deathballmode.png");
         TextureFilm texturefilm = new TextureFilm(texture, 21, 21);
         idle = new Animation(10, true);
-        idle.frames(texturefilm, new Object[] {
-            Integer.valueOf(0), Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3), Integer.valueOf(0), Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3)
-        });
+        idle.frames(texturefilm, 0, 1, 2, 3, 0, 1, 2, 3);
         run = new Animation(10, true);
-        run.frames(texturefilm, new Object[] {
-            Integer.valueOf(0), Integer.valueOf(1), Integer.valueOf(0), Integer.valueOf(1), Integer.valueOf(0), Integer.valueOf(1), Integer.valueOf(0), Integer.valueOf(1)
-        });
+        run.frames(texturefilm, 0, 1, 0, 1, 0, 1, 0, 1);
         attack = new Animation(15, false);
-        attack.frames(texturefilm, new Object[] {
-            Integer.valueOf(0), Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3)
-        });
+        attack.frames(texturefilm, 0, 1, 2, 3);
         die = new Animation(20, false);
-        die.frames(texturefilm, new Object[] {
-            Integer.valueOf(4), Integer.valueOf(5), Integer.valueOf(4), Integer.valueOf(5), Integer.valueOf(4), Integer.valueOf(5), Integer.valueOf(4), Integer.valueOf(5)
-        });
+        die.frames(texturefilm, 4, 5, 4, 5, 4, 5, 4, 5);
         play(idle);
     }
 

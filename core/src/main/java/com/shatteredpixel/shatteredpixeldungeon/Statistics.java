@@ -32,6 +32,12 @@ public class Statistics {
 	//吃保底
 	public static int bossWeapons;
 
+	//中秋节幽灵特别行动
+	public static boolean findMoon = false;
+
+	//妻管严
+	public static boolean deadGo = false;
+
 	public static boolean happyMode = false;
 
 	//萨卡班甲鱼二阶段
@@ -111,6 +117,9 @@ public class Statistics {
 	//珍宝
 	public static int dimandchestmazeCollected;
 
+	//宝物生成限制，避免有byd的十字架重复刷取
+	public static int fuckGeneratorAlone;
+
 	public static int dageCollected;
 
 	//首次对决
@@ -124,6 +133,10 @@ public class Statistics {
 	public static float turnsPassed = 0f;
     public static boolean TryUsedAnmy= false;
 
+	public static boolean winGame = false;
+
+	public static boolean HiddenOK = false;
+
     public static void reset() {
 		boss_enhance = 0;
 		ChaicBlood = 0;
@@ -131,6 +144,9 @@ public class Statistics {
 		HealingIsDied = 0;
 
 		happyMode = false;
+
+		findMoon = false;
+		deadGo = false;
 
 		//萨卡班甲鱼二阶段
 		sakaBackStage = 0;
@@ -141,6 +157,7 @@ public class Statistics {
 		foodEaten		= 0;
 		goldchestmazeCollected = 0;
 		dimandchestmazeCollected =0;
+		fuckGeneratorAlone = 0;
 		itemsCrafted    = 0;
 		piranhasKilled	= 0;
 		ankhsUsed		= 0;
@@ -282,11 +299,30 @@ public class Statistics {
 
 	private static final String BDTX		= "bdtx";
 
+	private static final String LOVE		= "love";
+
+	private static final String LOVX		= "lovx";
+
+	private static final String FUCKALONE		= "fuckplayer";
+
+	private static final String WINGAME		= "wingame";
+
+	private static final String HIDEEN		= "hideen";
+
 
 	public static void storeInBundle( Bundle bundle ) {
 
+		bundle.put(HIDEEN,HiddenOK);
+
+		bundle.put(WINGAME,winGame);
+
 
 		bundle.put(BDTX,bossWeapons);
+
+		bundle.put(LOVE,findMoon);
+		bundle.put(LOVX,deadGo);
+
+		bundle.put(FUCKALONE,fuckGeneratorAlone);
 
 		//分数
 		bundle.put( PROG_SCORE,  progressScore );
@@ -376,10 +412,16 @@ public class Statistics {
 	
 	public static void restoreFromBundle( Bundle bundle ) {
 
+		winGame = bundle.getBoolean(WINGAME);
+
+		HiddenOK = bundle.getBoolean(HIDEEN);
+
 		//嗜血荆棘等级处理
 		ChaicBlood   = bundle.getInt( CHACEBLOOD );
 
 		bossWeapons = bundle.getInt(BDTX);
+
+		fuckGeneratorAlone = bundle.getInt(FUCKALONE);
 
 		HealingIsDied   = bundle.getInt( HEALDIED );
 
@@ -387,6 +429,8 @@ public class Statistics {
 
 		sakaBackStage = bundle.getInt( SAKATWO );
 
+		findMoon = bundle.getBoolean(LOVE);
+		deadGo = bundle.getBoolean(LOVX);
 		//分数
 		progressScore   = bundle.getInt( PROG_SCORE );
 		heldItemValue   = bundle.getInt( ITEM_VAL );

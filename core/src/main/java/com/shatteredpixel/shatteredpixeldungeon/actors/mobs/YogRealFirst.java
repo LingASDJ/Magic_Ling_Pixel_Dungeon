@@ -37,7 +37,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
-import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
@@ -64,11 +63,15 @@ public abstract class YogRealFirst extends Mob {
         properties.add(Property.DEMONIC);
     }
 
-    private float rangedCooldown;
+    protected float rangedCooldown;
     protected boolean canRangedInMelee = true;
 
     protected void incrementRangedCooldown(){
         rangedCooldown += Random.NormalFloat(6, 10);
+    }
+
+    protected boolean canTeleport(int cell){
+        return Dungeon.level.trueDistance(cell, YogGodHardBossLevel.CENTER) < 16f;
     }
 
     @Override
@@ -143,12 +146,12 @@ public abstract class YogRealFirst extends Mob {
 
     @Override
     public int damageRoll() {
-        return (Random.NormalIntRange( 20, 39 ) +  (isNearYog()?12:0)) ;
+        return (Random.NormalIntRange( 24, 40 ) +  (isNearYog()?50:0)) ;
     }
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(0, 15);
+        return Random.NormalIntRange(6, 16);
     }
 
     @Override
@@ -176,6 +179,11 @@ public abstract class YogRealFirst extends Mob {
             spriteClass = YogRealFistSprite.Burning.class;
 
             properties.add(Property.FIERY);
+        }
+
+        @Override
+        protected void incrementRangedCooldown() {
+            rangedCooldown += Random.NormalFloat(2, 3);
         }
 
         @Override
@@ -216,12 +224,23 @@ public abstract class YogRealFirst extends Mob {
 
         }
 
+        @Override
+        public int attackProc(Char enemy, int damage) {
+            return super.attackProc(enemy, damage);
+        }
     }
 
     public static class SoiledFist extends YogRealFirst {
 
         {
             spriteClass = YogRealFistSprite.Soiled.class;
+
+            immunities.add(Burning.class);
+        }
+
+        @Override
+        protected void incrementRangedCooldown() {
+            rangedCooldown += Random.NormalFloat(6, 10);
         }
 
         @Override
@@ -304,11 +323,6 @@ public abstract class YogRealFirst extends Mob {
                     && !isNearYog();
         }
 
-        {
-            resistances.add(Burning.class);
-        }
-
-
     }
 
     public static class RottingFist extends YogRealFirst {
@@ -317,6 +331,11 @@ public abstract class YogRealFirst extends Mob {
             spriteClass = YogRealFistSprite.Rotting.class;
 
             properties.add(Property.ACIDIC);
+        }
+
+        @Override
+        protected void incrementRangedCooldown() {
+            rangedCooldown += Random.NormalFloat(5, 7);
         }
 
         @Override
@@ -385,8 +404,13 @@ public abstract class YogRealFirst extends Mob {
         }
 
         @Override
+        protected void incrementRangedCooldown() {
+            rangedCooldown += Random.NormalFloat(5, 7);
+        }
+
+        @Override
         public int damageRoll() {
-            return super.damageRoll()+Random.NormalIntRange(5, 10);
+            return super.damageRoll()+Random.NormalIntRange(10, 20);
         }
 
         @Override
@@ -457,10 +481,11 @@ public abstract class YogRealFirst extends Mob {
                 int i;
                 do {
                     i = Random.Int(Dungeon.level.length());
-                } while (Dungeon.level.heroFOV[i]
+                } while (Dungeon.level.distance(Dungeon.hero.pos, i) < 6
                         || Dungeon.level.solid[i]
                         || Actor.findChar(i) != null
-                        || PathFinder.getStep(i, Dungeon.level.exit, Dungeon.level.passable) == -1);
+                        || !canTeleport(i)
+                );
                 ScrollOfTeleportation.appear(this, i);
                 state = WANDERING;
                 GameScene.flash(0xFFFFFF);
@@ -527,10 +552,11 @@ public abstract class YogRealFirst extends Mob {
                 int i;
                 do {
                     i = Random.Int(Dungeon.level.length());
-                } while (Dungeon.level.heroFOV[i]
+                } while (Dungeon.level.distance(Dungeon.hero.pos, i) < 6
                         || Dungeon.level.solid[i]
                         || Actor.findChar(i) != null
-                        || PathFinder.getStep(i, Dungeon.level.exit, Dungeon.level.passable) == -1);
+                        || !canTeleport(i)
+                );
                 ScrollOfTeleportation.appear(this, i);
                 state = WANDERING;
                 GameScene.flash(0, false);
@@ -567,19 +593,19 @@ public abstract class YogRealFirst extends Mob {
 
             TextureFilm frames = new TextureFilm( texture, 24, 17 );
 
-            idle = new MovieClip.Animation( 2, true );
+            idle = new Animation( 2, true );
             idle.frames( frames, c+0, c+0, c+1 );
 
-            run = new MovieClip.Animation( 3, true );
+            run = new Animation( 3, true );
             run.frames( frames, c+0, c+1 );
 
-            attack = new MovieClip.Animation( Math.round(1 / SLAM_TIME), false );
+            attack = new Animation( Math.round(1 / SLAM_TIME), false );
             attack.frames( frames, c+0 );
 
-            zap = new MovieClip.Animation( 8, false );
+            zap = new Animation( 8, false );
             zap.frames( frames, c+0, c+5, c+6 );
 
-            die = new MovieClip.Animation( 10, false );
+            die = new Animation( 10, false );
             die.frames( frames, c+0, c+2, c+3, c+4 );
 
             play( idle );
@@ -619,13 +645,6 @@ public abstract class YogRealFirst extends Mob {
             }
         }
 
-        @Override
-        public void attack( int cell ) {
-            super.attack( cell );
-
-            jump(ch.pos, ch.pos, null, 9, SLAM_TIME );
-        }
-
         public void zap( int cell ) {
 
             turnTo( ch.pos , cell );
@@ -645,7 +664,7 @@ public abstract class YogRealFirst extends Mob {
         }
 
         @Override
-        public void onComplete( MovieClip.Animation anim ) {
+        public void onComplete( Animation anim ) {
             super.onComplete( anim );
             if (anim == attack) {
                 Camera.main.shake( 4, 0.2f );
@@ -814,4 +833,3 @@ public abstract class YogRealFirst extends Mob {
 
     }
 }
-

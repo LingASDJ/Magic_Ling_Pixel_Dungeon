@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -44,10 +45,9 @@ public class PotionOfMindVision extends Potion {
     public void apply(Hero hero) {
         identify();
 
-        if (Dungeon.isChallenged(EXSG)&& Random.Float()>0.4f) {
+        if (Dungeon.isChallenged(EXSG) && Random.Float()>0.4f && !(Dungeon.level.feeling == Level.Feeling.DIEDROOM)) {
             if (Dungeon.level.mobs.size() > 0) {
                 GLog.i(Messages.get(this, "can't_see_mobs"));
-
             } else {
                 GLog.i(Messages.get(this, "cant'see_none"));
             }
@@ -72,7 +72,7 @@ public class PotionOfMindVision extends Potion {
     @Override
     public String desc() {
         //三元一次逻辑运算
-        return Dungeon.isChallenged(Challenges.EXSG) ? Messages.get(this, "descx") : Messages.get(this, "desc");
+        return Dungeon.isChallenged(Challenges.EXSG) && !(Dungeon.level.feeling == Level.Feeling.DIEDROOM) ? Messages.get(this, "descx") : Messages.get(this, "desc");
     }
 
 }

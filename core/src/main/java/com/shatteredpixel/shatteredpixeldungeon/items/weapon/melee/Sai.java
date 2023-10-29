@@ -62,8 +62,8 @@ public class Sai extends MeleeWeapon {
 				if(attacker.HP >= attacker.HT){
 					GLog.p("血量已满！无法回血");
 				} else if (Random.Int(10)<=4) {
-					R = (int) (attacker.HT * 0.1 + (buffedLvl() * 0.5) + 1.5);
-					attacker.HP +=attacker.HT * 0.1 + (buffedLvl()) + 1.5;
+					R = (int) Math.min(attacker.HT-attacker.HP,(attacker.HT * 0.1 + (buffedLvl() * 0.5) + 1.5));
+					attacker.HP +=R;
 					attacker.sprite.showStatus(CharSprite.POSITIVE, ("+" + R + "HP"));
 					GLog.p(attacker.name()+"的迅猛一击，回血成功！");
 				}

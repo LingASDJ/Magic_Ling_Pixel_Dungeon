@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -102,9 +103,20 @@ public enum Icons {
 	DEPTH_LARGE,
 	DEPTH_TRAPS,
 	DEPTH_SECRETS,
+
+	DEPTH_BTRAPS,
+
+	DEPTH_WELLS,
+
+	DEPTH_LINK_ROOM,
+
+	DEPTH_DIED,
+
 	CHAL_COUNT,
 
 	HAPPY_ICON,
+
+	LOVE,
 
 	//icons that appear in the about screen, variable spacing
 	LIBGDX,
@@ -125,7 +137,7 @@ public enum Icons {
 	}
 
 	public static Image get( Icons type ) {
-		Image icon = new Image( Assets.Interfaces.ICONS );
+		Image icon = new Image(SPDSettings.ClassUI() ? Assets.Interfaces.ICONS : Assets.Interfaces.ICONS_NORMAL );
 		switch (type) {
 
 			case ENTER:
@@ -333,11 +345,26 @@ public enum Icons {
 			case DEPTH_SECRETS:
 				icon.frame( icon.texture.uvRectBySize( 104, 64, 7, 7 ) );
 				break;
+			case DEPTH_BTRAPS:
+				icon.frame( icon.texture.uvRectBySize( 112, 64, 7, 7 ) );
+				break;
+			case DEPTH_WELLS:
+				icon.frame( icon.texture.uvRectBySize( 120, 64, 7, 7 ) );
+				break;
+			case DEPTH_LINK_ROOM:
+				icon.frame( icon.texture.uvRectBySize( 128, 64, 7, 7 ) );
+				break;
+			case DEPTH_DIED:
+				icon.frame( icon.texture.uvRectBySize( 136, 64, 7, 7 ) );
+				break;
 			case CHAL_COUNT:
 				icon.frame( icon.texture.uvRectBySize( 48, 72, 7, 7 ) );
 				break;
 			case HAPPY_ICON:
 				icon.frame( icon.texture.uvRectBySize( 56, 72, 7, 5 ) );
+				break;
+			case LOVE:
+				icon.frame( icon.texture.uvRectBySize( 65, 72, 10, 6 ) );
 				break;
 
 			case LIBGDX:
@@ -409,6 +436,14 @@ public enum Icons {
 				return get(DEPTH_LARGE);
 			case TRAPS:
 				return get(DEPTH_TRAPS);
+			case BIGTRAP:
+				return get(DEPTH_BTRAPS);
+			case THREEWELL:
+				return get(DEPTH_WELLS);
+			case DIEDROOM:
+				return get(DEPTH_DIED);
+			case LINKROOM:
+				return get(DEPTH_LINK_ROOM);
 			case SECRETS:
 				return get(DEPTH_SECRETS);
 		}

@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost.Quest.food;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
@@ -29,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -46,7 +49,7 @@ import com.watabou.noosa.ui.Component;
 
 public class WndSadGhost extends Window {
 
-	private static final int WIDTH		= 120;
+	private static final int WIDTH		= RegularLevel.holiday == RegularLevel.Holiday.ZQJ ? 150 : 120;
 	private static final int BTN_SIZE	= 32;
 	private static final int BTN_GAP	= 5;
 	private static final int GAP		= 2;
@@ -54,7 +57,7 @@ public class WndSadGhost extends Window {
 	Ghost ghost;
 	
 	public WndSadGhost( final Ghost ghost, final int type ) {
-		
+
 		super();
 
 		this.ghost = ghost;
@@ -65,19 +68,21 @@ public class WndSadGhost extends Window {
 			case 1:default:
 				titlebar.icon( new FetidRatSprite() );
 				titlebar.label( Messages.get(this, "rat_title") );
-				message = PixelScene.renderTextBlock( Messages.get(this, "rat")+"\n\n"+Messages.get(this, "give_item"), 6 );
+				message = PixelScene.renderTextBlock( Messages.get(this, "rat")+"\n\n"+(RegularLevel.holiday == RegularLevel.Holiday.ZQJ ? Messages.get(this, "ask") :Messages.get(this,
+						"give_item")),6 );
 				break;
 			case 2:
 				titlebar.icon( new GnollTricksterSprite() );
 				titlebar.label( Messages.get(this, "gnoll_title") );
-				message = PixelScene.renderTextBlock( Messages.get(this, "gnoll")+"\n\n"+Messages.get(this, "give_item"), 6 );
+				message = PixelScene.renderTextBlock( Messages.get(this, "gnoll")+"\n\n"+(RegularLevel.holiday == RegularLevel.Holiday.ZQJ ? Messages.get(this, "ask") :Messages.get(this,
+						"give_item")),6 );
 				break;
 			case 3:
 				titlebar.icon( new GreatCrabSprite());
 				titlebar.label( Messages.get(this, "crab_title") );
-				message = PixelScene.renderTextBlock( Messages.get(this, "crab")+"\n\n"+Messages.get(this, "give_item"), 6 );
+				message = PixelScene.renderTextBlock( Messages.get(this, "crab")+"\n\n"+(RegularLevel.holiday == RegularLevel.Holiday.ZQJ ? Messages.get(this, "ask") :Messages.get(this,
+						"give_item")),6 );
 				break;
-
 		}
 
 		titlebar.setRect( 0, 0, WIDTH, 0 );
@@ -87,15 +92,32 @@ public class WndSadGhost extends Window {
 		message.setPos(0, titlebar.bottom() + GAP);
 		add( message );
 
-		RewardButton btnWeapon = new RewardButton( Ghost.Quest.weapon );
-		btnWeapon.setRect( (WIDTH - BTN_GAP) / 2 - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE, BTN_SIZE );
-		add( btnWeapon );
+		/** 中秋节布局变成三栏*/
+		RewardButton btnWeapon = new RewardButton(Ghost.Quest.weapon);
+		if(RegularLevel.holiday == RegularLevel.Holiday.ZQJ){
+			btnWeapon.setRect((WIDTH - BTN_GAP) / 3f - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE, BTN_SIZE);
+			add(btnWeapon);
 
-		RewardButton btnArmor = new RewardButton( Ghost.Quest.armor );
-		btnArmor.setRect( btnWeapon.right() + BTN_GAP, btnWeapon.top(), BTN_SIZE, BTN_SIZE );
-		add(btnArmor);
+			RewardButtonDouble btnFood = new RewardButtonDouble(food);
+			btnFood.setRect((WIDTH - BTN_GAP) / 3f * 1.5f - BTN_SIZE/2f, message.top() + message.height() + BTN_GAP,
+					BTN_SIZE, BTN_SIZE);
+			add(btnFood);
 
-		resize(WIDTH, (int) btnArmor.bottom() + BTN_GAP);
+			RewardButton btnArmor = new RewardButton(Ghost.Quest.armor);
+			btnArmor.setRect((WIDTH - BTN_GAP) / 3f * 2.3f - BTN_SIZE/2f, message.top() + message.height() + BTN_GAP,
+					BTN_SIZE, BTN_SIZE);
+			add(btnArmor);
+			resize(WIDTH, (int) btnArmor.bottom() + BTN_GAP);
+		} else {
+			btnWeapon.setRect( (WIDTH - BTN_GAP) / 2f - BTN_SIZE, message.top() + message.height() + BTN_GAP,
+					BTN_SIZE, BTN_SIZE );
+			add( btnWeapon );
+
+			RewardButton btnArmor = new RewardButton( Ghost.Quest.armor );
+			btnArmor.setRect( btnWeapon.right() + BTN_GAP, btnWeapon.top(), BTN_SIZE, BTN_SIZE );
+			add(btnArmor);
+			resize(WIDTH, (int) btnArmor.bottom() + BTN_GAP);
+		}
 	}
 	
 	private void selectReward( Item reward ) {
@@ -118,6 +140,11 @@ public class WndSadGhost extends Window {
 			}
 		} else {
 			Dungeon.level.drop( reward, ghost.pos ).sprite.drop();
+		}
+
+		//准备作为奖励区域
+		if(RegularLevel.holiday == RegularLevel.Holiday.ZQJ){
+			Dungeon.level.drop( food, ghost.pos ).sprite.drop();
 		}
 		
 		ghost.yell( Messages.get(this, "farewell") );
@@ -162,6 +189,63 @@ public class WndSadGhost extends Window {
 			bg.size( width, height );
 
 			slot.setRect( x + 2, y + 2, width - 4, height - 4 );
+		}
+	}
+
+	private class RewardButtonDouble extends Component {
+
+		protected NinePatch bg;
+		protected ItemSlot slot;
+
+		public RewardButtonDouble( Item item ){
+			bg = Chrome.get( Chrome.Type.WINDOW);
+			add( bg );
+
+			slot = new ItemSlot( item ){
+				@Override
+				protected void onPointerDown() {
+					bg.brightness( 1.2f );
+					Sample.INSTANCE.play( Assets.Sounds.CLICK );
+				}
+				@Override
+				protected void onPointerUp() {
+					bg.resetColor();
+				}
+				@Override
+				protected void onClick() {
+					GameScene.show(new RewardWindowDouble(item));
+				}
+			};
+			add(slot);
+		}
+
+		@Override
+		protected void layout() {
+			super.layout();
+
+			bg.x = x;
+			bg.y = y;
+			bg.size( width, height );
+
+			slot.setRect( x + 2, y + 2, width - 4, height - 4 );
+		}
+	}
+
+	private class RewardWindowDouble extends WndInfoItem {
+
+		public RewardWindowDouble( Item item ) {
+			super(item);
+
+			RedButton btnCancel = new RedButton(Messages.get(WndSadGhost.class, "look")){
+				@Override
+				protected void onClick() {
+					RewardWindowDouble.this.hide();
+				}
+			};
+			btnCancel.setRect(0, height+2, width, 16);
+			add(btnCancel);
+
+			resize(width, (int)btnCancel.bottom());
 		}
 	}
 

@@ -27,6 +27,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Difficulty.DifficultyCond
 import static com.shatteredpixel.shatteredpixeldungeon.Difficulty.DifficultyConduct.HARD;
 import static com.shatteredpixel.shatteredpixeldungeon.Difficulty.DifficultyConduct.NORMAL;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
@@ -636,7 +637,8 @@ public abstract class Mob extends Char {
 
 	@Override
 	public int attackProc(Char enemy, int damage) {
-		if(Dungeon.isChallenged(DHXD)){
+		//除了直接点击 布尔判定也应该生效
+		if(Dungeon.isChallenged(DHXD)||lanterfireactive){
 			damageAttackProcLanterMob();
 		}
 
@@ -660,25 +662,27 @@ public abstract class Mob extends Char {
 		//
 		boolean GhostQuestMob = this instanceof GreatCrab ||this instanceof GnollTrickster || this instanceof FetidRat;
 
-		//15%的老鼠 (-1) <85
-		if (isHero && this instanceof Rat && one && hero.lanterfire < 85) ((Hero) enemy).damageLantern(1);
-		//25%的监狱守卫 (-1) <85
-		if (isHero && this instanceof Guard && two && hero.lanterfire < 85) ((Hero) enemy).damageLantern(1);
-		//15%的豺狼萨满 (-2) <70
-		if (isHero && this instanceof Shaman && one && hero.lanterfire < 70) ((Hero) enemy).damageLantern(2);
-		//50%的幽灵任务怪 (-5) <95 NZND
-		if (isHero && GhostQuestMob && four && hero.lanterfire < 95) ((Hero) enemy).damageLantern(5);
+		//15%的老鼠 (-1) <95
+		if (isHero && this instanceof Rat && one && hero.lanterfire < 95) ((Hero) enemy).damageLantern(1);
+		//25%的监狱守卫 (-1) <90
+		if (isHero && this instanceof Guard && two && hero.lanterfire < 90) ((Hero) enemy).damageLantern(1);
+		//15%的豺狼萨满 (-2) <80
+		if (isHero && this instanceof Shaman && one && hero.lanterfire < 80) ((Hero) enemy).damageLantern(2);
+		//50%的幽灵任务怪 (-4) 均要扣减
+		if (isHero && GhostQuestMob && four) ((Hero) enemy).damageLantern(4);
 		//怨灵 75%的概率-6灯火 且必定死亡
 		if (isHero && this instanceof Wraith && three ){
 			((Hero) enemy).damageLantern(6);
 			this.die(true);
 		}
 		//新生火元素 25%的概率-6灯火 <80
-		if (isHero && this instanceof Elemental.NewbornFireElemental && two && hero.lanterfire < 80 ) ((Hero) enemy).damageLantern(2);
+		if (isHero && this instanceof Elemental.NewbornFireElemental && two && hero.lanterfire < 80 ) ((Hero) enemy).damageLantern(6);
 		//矿洞蜘蛛 15%的概率-3灯火 <70
 		if (isHero && this instanceof Wraith && one && hero.lanterfire < 70 ) ((Hero) enemy).damageLantern(3);
 		//矮人术士 85%的概率-5灯火 <70
-		if (isHero && this instanceof Warlock && five && hero.lanterfire < 50 ) ((Hero) enemy).damageLantern(5);
+		if (isHero && this instanceof Warlock && five && hero.lanterfire < 70 ) ((Hero) enemy).damageLantern(5);
+		//黑色怨灵 85%的概率-5灯火 <90
+		if (isHero && this instanceof BlackHost && five && hero.lanterfire < 90 ) ((Hero) enemy).damageLantern(5);
 	}
 
 
@@ -870,7 +874,7 @@ public abstract class Mob extends Char {
 		PaswordBadges.loadGlobal();
 		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
 		if (global.contains( Badges.Badge.KILL_APPLE ) && global.contains( Badges.Badge.KILL_DM720 ) &&
-				global.contains( Badges.Badge.KILL_MG) && passwordbadges.contains(PaswordBadges.Badge.FIREGIRL) && passwordbadges.contains(PaswordBadges.Badge.DRAWF_HEAD) && passwordbadges.contains(PaswordBadges.Badge.SAKA_DIED)) {
+				global.contains( Badges.Badge.KILL_MG) && passwordbadges.contains(PaswordBadges.Badge.FIREGIRL) && passwordbadges.contains(PaswordBadges.Badge.DRAWF_HEAD) && passwordbadges.contains(PaswordBadges.Badge.SAKA_DIED) && !passwordbadges.contains(PaswordBadges.Badge.SPICEALBOSS)) {
 
 			PaswordBadges.Badge badge = PaswordBadges.Badge.SPICEALBOSS;
 			PaswordBadges.displayBadge( badge );

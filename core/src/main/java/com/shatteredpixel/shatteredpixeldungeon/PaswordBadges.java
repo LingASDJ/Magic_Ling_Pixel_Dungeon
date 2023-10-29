@@ -49,10 +49,18 @@ public class PaswordBadges {
     public static void BIGX() {
         displayBadge( PaswordBadges.Badge.BIG_X );
     }
+
     public static void EXSG() {
         displayBadge( PaswordBadges.Badge.EXSG );
     }
 
+    public static void NIGHT_CAT() {
+        displayBadge( PaswordBadges.Badge.NIGHT_CAT );
+    }
+
+    public static void ZQJ_FLOWER() {
+        displayBadge( Badge.ZQJ_GHOST );
+    }
 
 
     public enum Badge {
@@ -70,7 +78,11 @@ public class PaswordBadges {
         GODD_MAKE(12),
 
         BIG_X(13),
-        EXSG(14);
+        EXSG(14),
+        NIGHT_CAT(16),
+
+        ZQJ_GHOST(17);
+
 
 
         public boolean meta;
@@ -198,7 +210,7 @@ public class PaswordBadges {
     }
 
     public static void displayBadge( Badge badge ) {
-
+        PaswordBadges.loadGlobal();
         if (badge == null) {
             return;
         }

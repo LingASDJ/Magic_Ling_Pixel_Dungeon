@@ -122,8 +122,8 @@ public class ScrollOfSirensSong extends ExoticScroll {
 
 		@Override
 		public void fx(boolean on) {
-			if (on) target.sprite.add(CharSprite.State.PARALYSED);
-			else    target.sprite.remove(CharSprite.State.PARALYSED);
+			if (on) target.sprite.add(CharSprite.State.HEARTS);
+			else    target.sprite.remove(CharSprite.State.HEARTS);
 		}
 
 		@Override

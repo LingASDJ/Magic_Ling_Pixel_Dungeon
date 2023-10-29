@@ -10,6 +10,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -80,7 +82,7 @@ public class WraithAmulet extends Artifact {
                         exp += level()>5 ? 20 : 40;
                         Buff.affect(Dungeon.hero, Invisibility.class, Invisibility.DURATION/2);
                         GLog.p(Messages.get(this,"ghost"));
-                        cooldown = 20 - (level);
+                        cooldown = 40 - (level);
                         charge--;
                     } else {
                         GLog.i(Messages.get(this,"nochareup"));
@@ -99,7 +101,7 @@ public class WraithAmulet extends Artifact {
             } else {
                 GLog.i(Messages.get(this,"nochareup"));
             }
-        } else if(cursed) {
+        } else if(cursed && isEquipped(hero)) {
             GLog.i(Messages.get(this,"must_nocursed"));
         }
     }
@@ -214,19 +216,28 @@ public class WraithAmulet extends Artifact {
                             amulet.exp += 40;
                             hero.pos = target;
                             if (enemy.properties().contains(Char.Property.BOSS)) {
-                                enemy.damage(enemy.HT/4, WraithAmulet.class);
+                                enemy.damage(enemy.HT / 4, WraithAmulet.class);
                                 GLog.i(Messages.get(this, "killboss"));
-                                enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this,"koss"));
+                                amulet.cooldown = 150 / (amulet.level() / 2);
+                                amulet.charge -= 6;
+                                enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "koss"));
+                            } else if (enemy.properties().contains(Char.Property.MIMIC) && enemy.alignment == Char.Alignment.NEUTRAL){
+                                for (Mob m: Dungeon.level.mobs){
+                                    if(m.state == m.PASSIVE && (m instanceof Mimic)){
+                                        GLog.i(Messages.get(this, "notthere2"));
+                                        return;
+                                    }
+                                }
                             } else {
                                 enemy.die(true);
                                 GLog.i(Messages.get(this, "killmobs"));
                                 enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this,"died"));
+                                ScrollOfTeleportation.appear(hero, target);
+                                Dungeon.observe();
+                                hero.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
+                                amulet.cooldown = 150 / (amulet.level() / 2);
+                                amulet.charge -= 6;
                             }
-                            ScrollOfTeleportation.appear(hero, target);
-                            Dungeon.observe();
-                            hero.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
-                            amulet.cooldown = 150 / (amulet.level() / 2);
-                            amulet.charge -= 6;
                         } else {
                             GLog.w(Messages.get(this, "notnpc"));
                         }

@@ -21,6 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.keys;
 
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class CrystalKey extends Key {
@@ -36,6 +40,14 @@ public class CrystalKey extends Key {
 	public CrystalKey( int depth ) {
 		super();
 		this.depth = depth;
+	}
+
+	@Override
+	public boolean doPickUp(Hero hero, int pos) {
+		if(depth == 10 || (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && (depth == 8))){
+			ShatteredPixelDungeon.resetScene();
+		}
+		return super.doPickUp(hero, pos);
 	}
 
 	

@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -197,9 +198,15 @@ public class ForestBossLevel extends Level {
         GameScene.updateMap( HOME );
         Dungeon.observe();
 
-        drop( new PotionOfPurity(),   WIDTH*11+15  );
-        drop( new PotionOfPurity(),   WIDTH*15+16  );
-        drop( new PotionOfPurity(),   WIDTH*11+17  );
+        if (!Dungeon.isChallenged(STRONGER_BOSSES)) {
+            Heap s = drop(new PotionOfPurity.PotionOfPurityLing().identify(), WIDTH * 23 + 15);
+            s.type = Heap.Type.SKELETON;
+            s.sprite.view(s);
+
+            Heap x = drop(new PotionOfPurity.PotionOfPurityLing().identify(), WIDTH * 15 + 17);
+            x.type = Heap.Type.SKELETON;
+            x.sprite.view(x);
+        }
     }
 
     @Override
@@ -298,6 +305,42 @@ public class ForestBossLevel extends Level {
 
     };
 
+    private static final int[] WorldHard = {
+            W,W,W,W,W,W,W,B,B,B,B,W,W,W,W,W,W,W,W,W,W,W,B,B,B,B,W,W,W,W,W,W,
+            W,M,M,M,M,M,M,C,C,C,C,L,L,W,T,M,I,M,T,W,L,L,C,C,C,C,M,M,M,M,M,W,
+            W,M,M,M,M,M,M,C,C,C,L,L,L,W,T,M,M,M,T,W,L,L,L,C,C,C,M,M,M,M,M,W,
+            W,M,M,M,M,M,M,C,C,L,L,L,L,W,T,M,H,M,T,W,L,L,L,L,C,C,M,M,M,M,M,W,
+            W,M,M,M,M,M,M,C,C,L,L,L,L,W,T,M,M,M,T,W,L,L,L,L,C,C,M,M,M,M,M,W,
+            W,M,M,M,M,M,M,C,C,L,L,L,L,W,T,M,H,M,T,W,L,L,L,L,C,C,M,M,M,M,M,W,
+            W,M,M,M,M,M,M,C,C,L,L,L,L,W,T,M,M,M,T,W,L,L,L,L,C,C,M,M,M,M,M,W,
+            W,M,M,M,M,M,M,C,C,L,L,L,L,W,T,M,H,M,T,W,L,L,L,L,C,C,M,M,M,M,M,W,
+            W,M,M,M,M,M,M,C,C,L,L,L,L,W,T,M,M,M,T,W,L,L,L,L,C,C,M,M,M,M,M,W,
+            W,M,M,M,M,M,M,C,C,L,L,L,L,W,W,W,X,W,W,W,L,L,L,L,C,C,M,M,M,M,M,W,
+            W,M,M,M,M,M,M,C,C,L,L,L,L,W,M,B,H,B,M,W,L,L,L,L,C,C,M,M,M,M,M,W,
+            W,M,M,M,M,M,M,C,C,C,L,L,L,A,M,C,H,C,M,A,L,L,L,C,C,C,M,M,M,M,M,W,
+            W,M,M,M,M,M,M,C,C,C,C,L,L,W,M,C,H,C,M,W,L,L,C,C,C,C,M,M,M,M,M,W,
+            W,B,B,B,B,B,B,W,W,W,W,B,W,B,M,C,H,C,M,B,W,B,W,W,W,B,B,B,B,B,B,W,
+            W,C,C,C,C,C,C,W,W,W,M,C,M,C,M,C,H,C,M,C,M,C,W,W,W,C,C,C,C,C,C,W,
+            W,L,L,L,W,W,W,B,M,M,M,C,M,H,M,C,H,C,M,H,M,C,M,M,B,W,W,L,L,L,L,W,
+            W,L,L,W,W,M,M,C,M,M,M,C,C,C,C,C,H,C,C,C,M,C,M,M,C,M,W,W,L,L,L,W,
+            W,W,W,W,B,M,M,W,M,M,M,H,C,C,H,H,H,H,H,C,M,H,M,M,W,M,M,B,W,W,W,W,
+            W,W,C,C,C,C,C,W,C,C,C,C,C,C,H,C,C,C,H,C,C,C,C,C,W,C,C,C,C,C,W,W,
+            W,H,H,H,W,W,W,W,W,W,W,H,H,H,H,C,D,C,H,H,H,W,W,W,W,W,W,W,H,H,H,W,
+            W,C,C,C,C,C,C,W,C,C,C,C,C,C,H,C,C,C,H,C,C,C,C,C,W,C,C,C,C,C,M,W,
+            W,M,M,M,M,M,M,W,M,M,M,H,M,C,H,H,H,H,H,C,M,H,M,M,W,M,M,M,M,M,M,W,
+            W,M,M,M,M,M,M,M,M,M,M,M,M,C,C,C,H,C,C,C,M,M,M,M,M,M,M,M,M,M,M,W,
+            W,M,M,H,M,M,M,M,M,M,M,M,M,H,M,C,H,C,M,H,M,M,M,M,M,M,M,M,M,M,M,W,
+            W,M,M,M,W,M,M,H,M,M,M,M,M,M,M,C,H,C,M,M,M,M,M,M,M,M,M,H,M,M,M,W,
+            W,M,M,M,M,M,W,M,M,M,M,W,W,W,W,W,S,W,W,W,W,W,M,H,W,M,M,M,M,M,M,W,
+            W,M,M,M,W,M,M,M,M,M,W,W,M,M,W,L,M,L,W,M,M,W,W,M,M,M,M,W,M,M,M,W,
+            W,M,M,M,H,M,M,M,W,W,W,M,M,M,W,L,M,L,W,M,M,M,W,W,M,M,M,M,M,M,M,W,
+            W,M,M,M,M,M,M,M,W,M,M,M,M,M,S,M,M,M,S,M,M,M,M,W,W,W,M,M,M,M,M,W,
+            W,M,M,M,M,M,M,M,W,M,M,M,M,M,W,L,M,L,W,M,M,M,M,M,W,M,M,H,M,M,M,W,
+            W,W,M,M,M,M,M,M,W,M,M,M,M,M,W,L,Q,L,W,M,M,M,M,M,W,M,M,M,M,M,W,W,
+            W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+
+    };
+
     private static class Sink extends Emitter {
 
         private int pos;
@@ -375,7 +418,13 @@ public class ForestBossLevel extends Level {
     //构建地图
     protected boolean build() {
         setSize(WIDTH, HEIGHT);
-        map = WorldRoomShort.clone();
+
+        if(Dungeon.isChallenged(STRONGER_BOSSES)){
+            map = WorldHard.clone();
+        } else {
+            map = WorldRoomShort.clone();
+        }
+
 
         this.entrance = WIDTH + 16 ;
         this.exit = WIDTH*30 + 16;

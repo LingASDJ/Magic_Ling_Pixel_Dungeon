@@ -60,6 +60,9 @@ public class Terrain {
 	public static final int WATER		    = 29;
 
 	public static final int LAVA		    = 30;
+
+	public static final int SIGN_SP			= 33;
+
 	
 	public static final int PASSABLE		= 0x01;
 	public static final int LOS_BLOCKING	= 0x02;
@@ -101,7 +104,15 @@ public class Terrain {
 		flags[EMPTY_DECO]	= flags[EMPTY];
 		flags[LOCKED_EXIT]	= SOLID;
 		flags[UNLOCKED_EXIT]= PASSABLE;
-		flags[SIGN]			= SOLID; //Currently these are unused except for visual tile overrides where we want terrain to be solid with no other properties
+
+		//Currently these are unused except for visual tile overrides where we want terrain to be solid with no other properties
+		flags[SIGN]			= SOLID;
+
+		flags[SIGN_SP] 		= PASSABLE;
+
+
+
+		// to be solid with no other properties
 		flags[WELL]			= AVOID;
 		flags[STATUE]		= SOLID;
 		flags[STATUE_SP]	= flags[STATUE];

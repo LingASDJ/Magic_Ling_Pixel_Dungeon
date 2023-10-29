@@ -52,7 +52,7 @@ public class YinYangRoom extends SpecialRoom {
         Item prize;
         do {
             prize = Generator.random(cat);
-            prize.level= Random.NormalIntRange(1,2);
+            prize.upgrade(Random.NormalIntRange(1,2));
             prize.cursed = false;
         } while (Challenges.isItemBlocked(prize));
         return prize;
@@ -64,7 +64,7 @@ public class YinYangRoom extends SpecialRoom {
         Item prize;
         do {
             prize = Generator.random(cat);
-            prize.level= Random.NormalIntRange(2,3);
+            prize.upgrade(Random.NormalIntRange(2,3));
             prize.cursed = true;
         } while (Challenges.isItemBlocked(prize));
         return prize;

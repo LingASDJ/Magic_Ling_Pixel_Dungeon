@@ -145,7 +145,7 @@ public class ColdGurad extends Mob implements Callback {
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(0, 5);
+        return Random.NormalIntRange(0, 2);
     }
 
     @Override

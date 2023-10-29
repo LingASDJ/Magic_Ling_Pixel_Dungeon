@@ -82,7 +82,7 @@ public class DungeonTileSheet {
 			Terrain.ENTRANCE, Terrain.EXIT, Terrain.EMBERS,
 			Terrain.BARRICADE, Terrain.HIGH_GRASS, Terrain.FURROWED_GRASS, Terrain.SECRET_TRAP,
 			Terrain.TRAP, Terrain.INACTIVE_TRAP, Terrain.EMPTY_DECO,
-			Terrain.SIGN, Terrain.WELL, Terrain.STATUE, Terrain.ALCHEMY,
+			Terrain.SIGN,Terrain.SIGN_SP, Terrain.WELL, Terrain.STATUE, Terrain.ALCHEMY,
 			Terrain.DOOR, Terrain.OPEN_DOOR, Terrain.LOCKED_DOOR, Terrain.CRYSTAL_DOOR
 	));
 
@@ -188,6 +188,8 @@ public class DungeonTileSheet {
 	public static final int FLAT_HIGH_GRASS_ALT = FLAT_OTHER+8;
 	public static final int FLAT_FURROWED_ALT   = FLAT_OTHER+9;
 
+	public static final int FLAT_FURROWED_TREE = FLAT_OTHER+11;
+
 
 	/**********************************************************************
 	 * Raised Tiles, Lower Layer
@@ -278,6 +280,8 @@ public class DungeonTileSheet {
 
 	public static final int RAISED_HIGH_GRASS_ALT   = RAISED_OTHER+9;
 	public static final int RAISED_FURROWED_ALT     = RAISED_OTHER+10;
+
+	public static final int RAISED_TREE             = RAISED_OTHER+14;
 
 
 
@@ -381,14 +385,18 @@ public class DungeonTileSheet {
 		directFlatVisuals.put(Terrain.CRYSTAL_DOOR,     FLAT_DOOR_CRYSTAL);
 		directFlatVisuals.put(Terrain.WALL_DECO,        FLAT_WALL_DECO);
 		directFlatVisuals.put(Terrain.BOOKSHELF,        FLAT_BOOKSHELF);
+
 		directFlatVisuals.put(Terrain.SIGN,             FLAT_SIGN);
+		directFlatVisuals.put(Terrain.SIGN_SP,             FLAT_SIGN);
+
+
 		directFlatVisuals.put(Terrain.STATUE,           FLAT_STATUE);
 		directFlatVisuals.put(Terrain.STATUE_SP,        FLAT_STATUE_SP);
 		directFlatVisuals.put(Terrain.ALCHEMY,          FLAT_ALCHEMY_POT);
 		directFlatVisuals.put(Terrain.BARRICADE,        FLAT_BARRICADE);
 		directFlatVisuals.put(Terrain.HIGH_GRASS,       FLAT_HIGH_GRASS);
 		directFlatVisuals.put(Terrain.FURROWED_GRASS,   FLAT_FURROWED_GRASS);
-
+		//directFlatVisuals.put(Terrain.TREE,   			FLAT_FURROWED_TREE);
 		directFlatVisuals.put(Terrain.SECRET_DOOR,      directFlatVisuals.get(Terrain.WALL));
 	}
 

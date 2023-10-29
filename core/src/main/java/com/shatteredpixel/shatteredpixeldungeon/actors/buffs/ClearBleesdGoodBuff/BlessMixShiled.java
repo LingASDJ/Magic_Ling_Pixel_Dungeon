@@ -12,7 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
-public class BlessMixShiled extends Buff {
+public class BlessMixShiled extends ClearLanterBuff {
 
     {
         type = buffType.POSITIVE;

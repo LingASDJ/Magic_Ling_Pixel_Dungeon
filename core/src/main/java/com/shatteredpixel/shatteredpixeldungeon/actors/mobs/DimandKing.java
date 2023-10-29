@@ -725,7 +725,7 @@ public class DimandKing extends Boss {
         @Override
         public void detach() {
             super.detach();
-            for (Mob m : Dungeon.level.mobs){
+            for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
                 if (m instanceof DimandKing){
                     m.damage(24, this);
                 }

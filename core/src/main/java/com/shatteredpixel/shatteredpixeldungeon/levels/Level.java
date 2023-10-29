@@ -21,7 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CHASM;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN_SP;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -164,7 +168,11 @@ public abstract class Level implements Bundlable {
 		DARK,
 		LARGE,
 		TRAPS,
-		SECRETS
+		SECRETS,
+		BIGTRAP,
+		THREEWELL,
+		LINKROOM,
+		DIEDROOM
 	}
 
 	public boolean isLevelExplored( int depth ){
@@ -262,6 +270,62 @@ public abstract class Level implements Bundlable {
 		return 48*48;
 	}
 
+	private void initializeLevelDepthType(){
+		if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
+			int randomInt = Random.Int(10);
+			if(Dungeon.depth == 4 || Dungeon.depth == 14){
+				feeling = Feeling.DIEDROOM;
+			} else if (randomInt == 0) {
+				feeling = Feeling.CHASM;
+			} else if (randomInt == 1) {
+				feeling = Feeling.WATER;
+			} else if (randomInt == 2) {
+				feeling = Feeling.GRASS;
+			} else if (randomInt == 3) {
+				feeling = Feeling.DARK;
+				addItemToSpawn(new Torch());
+				viewDistance = Math.round(viewDistance / 2f);
+			} else if (randomInt == 4) {
+				feeling = Feeling.TRAPS;
+			} else if (randomInt == 5) {
+				feeling = Feeling.BIGTRAP;
+			} else if (randomInt == 6) {
+				feeling = Feeling.SECRETS;
+			} else if (randomInt == 7) {
+				feeling = Feeling.LINKROOM;
+			} else if (randomInt == 8) {
+				feeling = Feeling.THREEWELL;
+			}
+		} else {
+			switch (Random.Int( 14 )) {
+				case 0:
+					feeling = Feeling.CHASM;
+					break;
+				case 1:
+					feeling = Feeling.WATER;
+					break;
+				case 2:
+					feeling = Feeling.GRASS;
+					break;
+				case 3:
+					feeling = Feeling.DARK;
+					addItemToSpawn(new Torch());
+					viewDistance = Math.round(viewDistance/2f);
+					break;
+				case 4:
+					feeling = Feeling.LARGE;
+					addItemToSpawn(Generator.random(Generator.Category.FOOD));
+					break;
+				case 5:
+					feeling = Feeling.TRAPS;
+					break;
+				case 6:
+					feeling = Feeling.SECRETS;
+					break;
+			}
+		}
+	}
+
 	public void create() {
 
 		Random.pushGenerator( Dungeon.seedCurDepth() );
@@ -298,35 +362,12 @@ public abstract class Level implements Bundlable {
 				addItemToSpawn( new StoneOfIntuition() );
 			}
 			
-			if (Dungeon.depth > 1) {
-				//50% chance of getting a level feeling
-				//~7.15% chance for each feeling
-				switch (Random.Int( 14 )) {
-					case 0:
-						feeling = Feeling.CHASM;
-						break;
-					case 1:
-						feeling = Feeling.WATER;
-						break;
-					case 2:
-						feeling = Feeling.GRASS;
-						break;
-					case 3:
-						feeling = Feeling.DARK;
-						addItemToSpawn(new Torch());
-						viewDistance = Math.round(viewDistance/2f);
-						break;
-					case 4:
-						feeling = Feeling.LARGE;
-						addItemToSpawn(Generator.random(Generator.Category.FOOD));
-						break;
-					case 5:
-						feeling = Feeling.TRAPS;
-						break;
-					case 6:
-						feeling = Feeling.SECRETS;
-						break;
-				}
+			if (Dungeon.depth > 0) {
+				initializeLevelDepthType();
+			}
+
+			if(Dungeon.bossLevel()){
+				feeling = Feeling.NONE;
 			}
 		}
 		
@@ -359,7 +400,7 @@ public abstract class Level implements Bundlable {
 		length = w * h;
 		
 		map = new int[length];
-		Arrays.fill( map, feeling == Level.Feeling.CHASM ? Terrain.CHASM : Terrain.WALL );
+		Arrays.fill( map, feeling == Level.Feeling.CHASM ? CHASM : Terrain.WALL );
 		
 		visited     = new boolean[length];
 		mapped      = new boolean[length];
@@ -546,9 +587,7 @@ public abstract class Level implements Bundlable {
 
 		Mob m = Reflection.newInstance(mobsToSpawn.remove(0));
 		ChampionEnemy.rollForChampion(m);
-		if(Dungeon.isChallenged(SBSG)){
-			ChampionEnemy.rollForStateLing(m);
-		}
+		ChampionEnemy.rollForStateLing(m);
 		Buff.affect(m, HasteLing.MobLing.class, HasteLing.MobLing.DURATION*2000f);
 		return m;
 	}
@@ -693,7 +732,6 @@ public abstract class Level implements Bundlable {
 			}
 			if (!mob.buffs(ChampionEnemy.class).isEmpty() && Dungeon.isChallenged(SBSG)){
 				GLog.n(Messages.get(ChampionEnemy.class, "warn2"));
-				GLog.w(Messages.get(ChampionEnemy.class, "warn"));
 			} else if(!mob.buffs(ChampionEnemy.class).isEmpty()) {
 				GLog.w(Messages.get(ChampionEnemy.class, "warn"));
 			}
@@ -763,7 +801,12 @@ public abstract class Level implements Bundlable {
 			avoid[i]		= (flags & Terrain.AVOID) != 0;
 			water[i]		= (flags & Terrain.LIQUID) != 0;
 			pit[i]			= (flags & Terrain.PIT) != 0;
+
 		}
+
+
+
+
 
 		for (Blob b : blobs.values()){
 			b.onBuildFlagMaps(this);
@@ -896,7 +939,7 @@ public abstract class Level implements Bundlable {
 			heap.seen = Dungeon.level == this && heroFOV[cell];
 			heap.pos = cell;
 			heap.drop(item);
-			if (map[cell] == Terrain.CHASM || (Dungeon.level != null && pit[cell])) {
+			if (map[cell] == CHASM || (Dungeon.level != null && pit[cell])) {
 				Dungeon.dropToChasm( item );
 				GameScene.discard( heap );
 			} else {
@@ -1073,6 +1116,9 @@ public abstract class Level implements Bundlable {
 				Door.enter( ch.pos );
 			}
 		}
+
+
+
 	}
 	
 	//public method for forcing the hard press of a cell. e.g. when an item lands on it
@@ -1103,6 +1149,8 @@ public abstract class Level implements Bundlable {
 		case Terrain.FURROWED_GRASS:
 			HighGrass.trample( this, cell);
 			break;
+
+
 			
 		case Terrain.WELL:
 			WellWater.affectCell( cell );
@@ -1383,7 +1431,7 @@ public abstract class Level implements Bundlable {
 	public String tileName( int tile ) {
 		
 		switch (tile) {
-			case Terrain.CHASM:
+			case CHASM:
 				return Messages.get(Level.class, "chasm_name");
 			case Terrain.EMPTY:
 			case Terrain.EMPTY_SP:
@@ -1424,7 +1472,7 @@ public abstract class Level implements Bundlable {
 				return Messages.get(Level.class, "locked_exit_name");
 			case Terrain.UNLOCKED_EXIT:
 				return Messages.get(Level.class, "unlocked_exit_name");
-			case Terrain.SIGN:
+			case SIGN:case SIGN_SP:
 				return Messages.get(Level.class, "sign_name");
 			case Terrain.WELL:
 				return Messages.get(Level.class, "well_name");
@@ -1447,7 +1495,7 @@ public abstract class Level implements Bundlable {
 	public String tileDesc( int tile ) {
 		
 		switch (tile) {
-			case Terrain.CHASM:
+			case CHASM:
 				return Messages.get(Level.class, "chasm_desc");
 			case Terrain.WATER:
 				return Messages.get(Level.class, "water_desc");
@@ -1469,7 +1517,7 @@ public abstract class Level implements Bundlable {
 				return Messages.get(Level.class, "locked_exit_desc");
 			case Terrain.BARRICADE:
 				return Messages.get(Level.class, "barricade_desc");
-			case Terrain.SIGN:
+			case SIGN:case SIGN_SP:
 				return Messages.get(Level.class, "sign_desc");
 			case Terrain.INACTIVE_TRAP:
 				return Messages.get(Level.class, "inactive_trap_desc");
