@@ -231,29 +231,42 @@ public class SpawnArmor extends TestItem {
         return null;
     }
 
+    /**
+     * 护甲设置窗口类，继承自Window类。
+     */
     private class ArmorSetting extends Window {
-        private static final int WIDTH = 150;
+
+        // 定义常量
+        private static final int WIDTH = 150; // 窗口宽度
         private static final int HEIGHT = 250; // 窗口高度
-        private static final int GAP = 2;
+        private static final int GAP = 2; // 间隔大小
         private static final int BTN_SIZE = 18; // 按钮尺寸
         private static final int MAX_ICONS_PER_LINE = 7; // 每行最大图标数量
 
-        private Class[] AllArmor; // 所有武器的Class数组
-        private CheckBox CheckBox_curse;
-        private RenderedTextBlock RenderedTextBlock_enchantInfo;
-        private OptionSlider OptionSlider_enchantId;
-        private OptionSlider OptionSlider_enchantRarity;
-        private RedButton RedButton_create;
-        private final ArrayList<IconButton> IconButtons = new ArrayList<>();
+        // 成员变量
+        private Class[] AllArmor; // 所有护甲的Class数组
+        private CheckBox CheckBox_curse; // 诅咒物品复选框
+        private RenderedTextBlock RenderedTextBlock_enchantInfo; // 附魔信息文本块
+        private OptionSlider OptionSlider_enchantId; // 附魔编号选项滑块
+        private OptionSlider OptionSlider_enchantRarity; // 附魔种类选项滑块
+        private RedButton RedButton_create; // 创建武器按钮
+        private final ArrayList<IconButton> IconButtons = new ArrayList<>(); // 图标按钮列表
         private final RedButton Button_Level; // 武器等级按钮
 
+        /**
+         * 构造函数，用于初始化窗口。
+         */
         public ArmorSetting() {
             super();
 
+            // 设置窗口尺寸
             resize(WIDTH, HEIGHT);
 
+            // 创建护甲列表及图标
             createArmorList();
             createArmorImage(AllArmor);
+
+            // 创建护甲等级按钮
             Button_Level = new RedButton(Messages.get(this, "select_armor")) {
                 @Override
                 protected void onClick() {
@@ -280,12 +293,14 @@ public class SpawnArmor extends TestItem {
             Button_Level.text(((Armor) Reflection.newInstance(getArmor(armor_id).getClass())).name());
             add(Button_Level);
 
+            // 创建附魔信息文本块
             RenderedTextBlock_enchantInfo = PixelScene.renderTextBlock("", 6);
             RenderedTextBlock_enchantInfo.text(infoBuilder());
             RenderedTextBlock_enchantInfo.visible = true;
             RenderedTextBlock_enchantInfo.maxWidth(WIDTH);
             add(RenderedTextBlock_enchantInfo);
 
+            // 创建附魔种类选项滑块
             OptionSlider_enchantRarity = new OptionSlider(Messages.get(this, "enchant_rarity"), "0", "4", 0, 4) {
                 @Override
                 protected void onChange() {
@@ -296,6 +311,7 @@ public class SpawnArmor extends TestItem {
             OptionSlider_enchantRarity.setSelectedValue(enchant_rarity);
             add(OptionSlider_enchantRarity);
 
+            // 创建附魔编号选项滑块
             OptionSlider_enchantId = new OptionSlider(Messages.get(this, "enchant_id"), "0", "7", 0, 7) {
                 @Override
                 protected void onChange() {
@@ -306,6 +322,7 @@ public class SpawnArmor extends TestItem {
             OptionSlider_enchantId.setSelectedValue(enchant_id);
             add(OptionSlider_enchantId);
 
+            // 创建诅咒物品复选框
             CheckBox_curse = new CheckBox(Messages.get(this, "cursed")) {
                 @Override
                 protected void onClick() {
@@ -316,6 +333,7 @@ public class SpawnArmor extends TestItem {
             CheckBox_curse.checked(cursed);
             add(CheckBox_curse);
 
+            // 创建生成护甲按钮
             RedButton_create = new RedButton(Messages.get(this, "create")) {
                 @Override
                 protected void onClick() {
@@ -327,6 +345,9 @@ public class SpawnArmor extends TestItem {
             layout();
         }
 
+        /**
+         * 封装一个同步UI的方法，用于调整UI组件的位置和大小。
+         */
         private void layout() {
             Button_Level.setRect(0, GAP , WIDTH, 24);
             RenderedTextBlock_enchantInfo.setPos(0, GAP + Button_Level.top() + Button_Level.height());
@@ -337,6 +358,16 @@ public class SpawnArmor extends TestItem {
             resize(WIDTH, (int) RedButton_create.bottom());
         }
 
+        @Override
+        public synchronized void update() {
+            super.update();
+            // 实时同步UI
+            layout();
+        }
+
+        /**
+         * 创建护甲列表
+         */
         private void createArmorList() {
             //AllArmor = Generator.Category.ARMOR.classes.clone();
             AllArmor = new Class<?>[]{
@@ -348,6 +379,12 @@ public class SpawnArmor extends TestItem {
                     LamellarArmor.class,
                     AncityArmor.class};
         }
+
+        /**
+         * 创建护甲图标，并添加到窗口中。
+         *
+         * @param all 所有护甲的Class数组
+         */
         private void createArmorImage(Class<? extends Armor>[] all) {
             float left = BTN_SIZE / 2f;
             float top = 27;
@@ -359,7 +396,7 @@ public class SpawnArmor extends TestItem {
                     @Override
                     protected void onClick() {
                         armor_id = Math.min(maxSlots(armor_id) - 1, j);
-                        updateSelectedWeaponText();
+                        updateSelectedArmorText();
                         super.onClick();
                     }
                 };
@@ -378,12 +415,19 @@ public class SpawnArmor extends TestItem {
             }
         }
 
-        private void updateSelectedWeaponText() {
+         /**
+         * 更新选中的武器文本。
+         */
+        private void updateSelectedArmorText() {
             Armor armor = (Armor) Reflection.newInstance(getArmor(armor_id).getClass());
             Button_Level.text(armor.name());
             layout();
         }
 
+        /**
+        * 获取附魔信息文本。
+        * @return 附魔信息文本 
+        */
         private String infoBuilder() {
             //String desc = Messages.get(BossRushArmor.class, "enchant_id_pre", enchant_rarity);
             String desc = "";
