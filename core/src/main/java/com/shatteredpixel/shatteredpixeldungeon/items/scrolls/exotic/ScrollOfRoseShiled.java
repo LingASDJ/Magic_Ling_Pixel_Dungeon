@@ -69,7 +69,7 @@ public class ScrollOfRoseShiled extends Scroll {
 
         Buff.prolong(hero, RoseShiled.class, 10f);
         setKnown();
-        new Flare( 5, 32 ).color( 0xFF00FF, true ).show( curUser.sprite, 2f );
+        new Flare( 5, 32 ).color( 0xFF00FF, true ).show( Item.curUser.sprite, 2f );
 
         identify();
 

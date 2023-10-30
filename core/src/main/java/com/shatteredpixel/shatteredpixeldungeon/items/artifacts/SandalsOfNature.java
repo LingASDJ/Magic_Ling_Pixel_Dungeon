@@ -316,11 +316,11 @@ public class SandalsOfNature extends Artifact {
 		public void onSelect(Integer cell) {
 			if (cell != null){
 
-				if (!Dungeon.level.heroFOV[cell] || Dungeon.level.distance(curUser.pos, cell) > 3){
+				if (!Dungeon.level.heroFOV[cell] || Dungeon.level.distance(Item.curUser.pos, cell) > 3){
 					GLog.w(Messages.get(SandalsOfNature.class, "out_of_range"));
 				} else {
 
-					Ballistica aim = new Ballistica(curUser.pos, cell, Ballistica.STOP_TARGET);
+					Ballistica aim = new Ballistica(Item.curUser.pos, cell, Ballistica.STOP_TARGET);
 					for (int c : aim.subPath(0, aim.dist)){
 						CellEmitter.get( c ).burst( LeafParticle.GENERAL, 6 );
 					}

@@ -48,7 +48,7 @@ public class PotionOfCleansing extends ExoticPotion {
 		identify();
 		
 		cleanse( hero );
-		new Flare( 6, 32 ).color(0xFF4CD2, true).show( curUser.sprite, 2f );
+		new Flare( 6, 32 ).color(0xFF4CD2, true).show( Item.curUser.sprite, 2f );
 	}
 	
 	@Override

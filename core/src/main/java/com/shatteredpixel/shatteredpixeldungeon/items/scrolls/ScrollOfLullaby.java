@@ -41,8 +41,8 @@ public class ScrollOfLullaby extends Scroll {
 	@Override
 	public void doRead() {
 
-		detach(curUser.belongings.backpack);
-		curUser.sprite.centerEmitter().start( Speck.factory( Speck.NOTE ), 0.3f, 5 );
+		detach(Item.curUser.belongings.backpack);
+		Item.curUser.sprite.centerEmitter().start( Speck.factory( Speck.NOTE ), 0.3f, 5 );
 		Sample.INSTANCE.play( Assets.Sounds.LULLABY );
 
 		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {

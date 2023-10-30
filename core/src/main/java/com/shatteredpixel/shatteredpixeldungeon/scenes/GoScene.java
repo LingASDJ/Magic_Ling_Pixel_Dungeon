@@ -33,7 +33,7 @@ public class GoScene extends PixelScene {
             return;
         }
 
-        uiCamera.visible = false;
+        PixelScene.uiCamera.visible = false;
 
         int w = Camera.main.width;
         int h = Camera.main.height;

@@ -116,7 +116,7 @@ public class SummonElemental extends Spell {
 			elemental.HP = elemental.HT = 20;
 			ScrollOfTeleportation.appear( elemental, Random.element(spawnPoints) );
 			Invisibility.dispel(curUser);
-			curUser.sprite.operate(curUser.pos);
+			Item.curUser.sprite.operate(Item.curUser.pos);
 			curUser.spendAndNext(Actor.TICK);
 
 			summonClass = Elemental.AllyNewBornElemental.class;
@@ -197,30 +197,30 @@ public class SummonElemental extends Spell {
 			item.detach(Dungeon.hero.belongings.backpack);
 			if (item instanceof PotionOfLiquidFlame) {
 				Sample.INSTANCE.play(Assets.Sounds.BURNING);
-				curUser.sprite.emitter().burst( FlameParticle.FACTORY, 12 );
+				Item.curUser.sprite.emitter().burst( FlameParticle.FACTORY, 12 );
 				summonClass = Elemental.FireElemental.class;
 
 			} else if (item instanceof PotionOfFrost){
 				Sample.INSTANCE.play(Assets.Sounds.SHATTER);
-				curUser.sprite.emitter().burst( MagicMissile.MagicParticle.FACTORY, 12 );
+				Item.curUser.sprite.emitter().burst( MagicMissile.MagicParticle.FACTORY, 12 );
 				summonClass = Elemental.FrostElemental.class;
 
 			} else if (item instanceof ScrollOfRecharging){
 				Sample.INSTANCE.play(Assets.Sounds.ZAP);
-				curUser.sprite.emitter().burst( ShaftParticle.FACTORY, 12 );
+				Item.curUser.sprite.emitter().burst( ShaftParticle.FACTORY, 12 );
 				summonClass = Elemental.ShockElemental.class;
 
 			} else if (item instanceof ScrollOfTransmutation){
 				Sample.INSTANCE.play(Assets.Sounds.READ);
-				curUser.sprite.emitter().burst( RainbowParticle.BURST, 12 );
+				Item.curUser.sprite.emitter().burst( RainbowParticle.BURST, 12 );
 				summonClass = Elemental.ChaosElemental.class;
 			} else if (item instanceof PotionOfLiquidFlameX){
 				Sample.INSTANCE.play(Assets.Sounds.READ);
-				curUser.sprite.emitter().burst( HalomethaneFlameParticle.FACTORY, 12 );
+				Item.curUser.sprite.emitter().burst( HalomethaneFlameParticle.FACTORY, 12 );
 				summonClass = Elemental.HaloWar.class;
 			}
 
-			curUser.sprite.operate(curUser.pos);
+			Item.curUser.sprite.operate(Item.curUser.pos);
 
 			updateQuickslot();
 		}

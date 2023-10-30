@@ -150,7 +150,7 @@ public class WndQuickBag extends Window {
 
 		resize((int)width, (int)height);
 
-		int bottom = GameScene.uiCamera.height;
+		int bottom = PixelScene.uiCamera.height;
 
 		//offset to be above the toolbar
 		offset(0, (int) (bottom/2 - 30 - height/2));

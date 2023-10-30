@@ -60,7 +60,7 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 	public void doRead() {
 		if (!isKnown()) {
 			identify();
-			curItem = detach(curUser.belongings.backpack);
+			curItem = detach(Item.curUser.belongings.backpack);
 			identifiedByUse = true;
 		} else {
 			identifiedByUse = false;
@@ -71,7 +71,7 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 	public static void onMetamorph( Talent oldTalent, Talent newTalent ){
 		((ScrollOfMetamorphosis) curItem).readAnimation();
 		Sample.INSTANCE.play( Assets.Sounds.READ );
-		curUser.sprite.emitter().start(Speck.factory(Speck.CHANGE), 0.2f, 10);
+		Item.curUser.sprite.emitter().start(Speck.factory(Speck.CHANGE), 0.2f, 10);
 		Transmuting.show(curUser, oldTalent, newTalent);
 
 		if (Dungeon.hero.hasTalent(newTalent)) {
@@ -196,7 +196,7 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 			super();
 
 			if (!identifiedByUse) {
-				curItem.detach(curUser.belongings.backpack);
+				curItem.detach(Item.curUser.belongings.backpack);
 			}
 			identifiedByUse = false;
 

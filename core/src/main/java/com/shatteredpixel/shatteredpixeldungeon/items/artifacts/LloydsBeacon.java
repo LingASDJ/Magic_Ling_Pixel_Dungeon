@@ -202,7 +202,7 @@ public class LloydsBeacon extends Artifact {
 				ScrollOfTeleportation.teleportChar(curUser);
 				curUser.spendAndNext(1f);
 			} else {
-				final Ballistica bolt = new Ballistica( curUser.pos, target, Ballistica.MAGIC_BOLT );
+				final Ballistica bolt = new Ballistica( Item.curUser.pos, target, Ballistica.MAGIC_BOLT );
 				final Char ch = Actor.findChar(bolt.collisionPos);
 
 				if (ch == curUser){
@@ -210,12 +210,12 @@ public class LloydsBeacon extends Artifact {
 					curUser.spendAndNext( 1f );
 				} else {
 					Sample.INSTANCE.play( Assets.Sounds.ZAP );
-					curUser.sprite.zap(bolt.collisionPos);
+					Item.curUser.sprite.zap(bolt.collisionPos);
 					curUser.busy();
 
-					MagicMissile.boltFromChar(curUser.sprite.parent,
+					MagicMissile.boltFromChar(Item.curUser.sprite.parent,
 							MagicMissile.BEACON,
-							curUser.sprite,
+							Item.curUser.sprite,
 							bolt.collisionPos,
 							new Callback() {
 								@Override

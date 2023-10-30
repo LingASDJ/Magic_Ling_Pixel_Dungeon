@@ -97,8 +97,8 @@ public class LifeTreeSword extends MeleeWeapon {
         GameScene.add(ward, 1f);
         getFood=0;
         Dungeon.level.occupyCell(ward);
-        ward.HP = ward.HT = 3 + LifeTreeSword.curItem.buffedLvl()/3;
-        ward.defenseSkill = 4 + LifeTreeSword.curItem.buffedLvl()/3;
+        ward.HP = ward.HT = 3 + Item.curItem.buffedLvl()/3;
+        ward.defenseSkill = 4 + Item.curItem.buffedLvl()/3;
         ward.sprite.emitter().burst(MagicMissile.WardParticle.UP,6);
         Dungeon.level.pressCell(pos);
         CellEmitter.get(ward.pos).burst(Speck.factory(Speck.EVOKE), 4);

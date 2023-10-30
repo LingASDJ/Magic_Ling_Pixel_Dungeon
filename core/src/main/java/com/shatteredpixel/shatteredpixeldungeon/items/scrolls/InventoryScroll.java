@@ -40,7 +40,7 @@ public abstract class InventoryScroll extends Scroll {
 		
 		if (!isKnown()) {
 			identify();
-			curItem = detach( curUser.belongings.backpack );
+			curItem = detach( Item.curUser.belongings.backpack );
 			identifiedByUse = true;
 		} else {
 			identifiedByUse = false;
@@ -112,7 +112,7 @@ public abstract class InventoryScroll extends Scroll {
 			if (item != null) {
 
 				if (!identifiedByUse) {
-					curItem = detach(curUser.belongings.backpack);
+					curItem = detach(Item.curUser.belongings.backpack);
 				}
 				((InventoryScroll)curItem).onItemSelected( item );
 				((InventoryScroll)curItem).readAnimation();
