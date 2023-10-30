@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,11 +23,11 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Reflection;
 
-import java.text.DecimalFormat;
 import java.util.HashSet;
 
 public class Buff extends Actor {
@@ -67,9 +67,8 @@ public class Buff extends Actor {
 		}
 		
 		this.target = target;
-		target.add( this );
 
-		if (target.buffs().contains(this)){
+		if (target.add( this )){
 			if (target.sprite != null) fx( true );
 			return true;
 		} else {
@@ -79,8 +78,7 @@ public class Buff extends Actor {
 	}
 	
 	public void detach() {
-		if (target.sprite != null) fx( false );
-		target.remove( this );
+		if (target.remove( this ) && target.sprite != null) fx( false );
 	}
 	
 	@Override
@@ -114,16 +112,25 @@ public class Buff extends Actor {
 	}
 
 	public String heroMessage(){
-		return null;
+		String msg = Messages.get(this, "heromsg");
+		if (msg.isEmpty()) {
+			return null;
+		} else {
+			return msg;
+		}
+	}
+
+	public String name() {
+		return Messages.get(this, "name");
 	}
 
 	public String desc(){
-		return "";
+		return Messages.get(this, "desc");
 	}
 
 	//to handle the common case of showing how many turns are remaining in a buff description.
 	protected String dispTurns(float input){
-		return new DecimalFormat("#.##").format(input);
+		return Messages.decimalFormat("#.##", input);
 	}
 
 	//buffs act after the hero, so it is often useful to use cooldown+1 when display buff time remaining

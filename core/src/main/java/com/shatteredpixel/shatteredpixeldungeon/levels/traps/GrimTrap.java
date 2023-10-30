@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.traps;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -47,75 +48,80 @@ public class GrimTrap extends Trap {
 
 	@Override
 	public void activate() {
-		Char target = Actor.findChar(pos);
 
-		//find the closest char that can be aimed at
-		if (target == null){
-			float closestDist = Float.MAX_VALUE;
-			for (Char ch : Actor.chars()){
-				float curDist = Dungeon.level.trueDistance(pos, ch.pos);
-				if (ch.invisible > 0) curDist += 1000;
-				Ballistica bolt = new Ballistica(pos, ch.pos, Ballistica.PROJECTILE);
-				if (bolt.collisionPos == ch.pos && curDist < closestDist){
-					target = ch;
-					closestDist = curDist;
-				}
-			}
-		}
+		//we handle this inside of a separate actor as the trap may produce a visual effect we need to pause for
+		Actor.add(new Actor() {
 
-		if (target != null){
-			final Char finalTarget = target;
-			final GrimTrap trap = this;
-			int damage;
-			
-			//almost kill the player
-			if (finalTarget == Dungeon.hero && ((float)finalTarget.HP/finalTarget.HT) >= 0.9f){
-				damage = finalTarget.HP-1;
-			//kill 'em
-			} else {
-				damage = finalTarget.HP;
+			{
+				actPriority = VFX_PRIO;
 			}
-			
-			final int finalDmg = damage;
-			
-			Actor.add(new Actor() {
-				
-				{
-					//it's a visual effect, gets priority no matter what
-					actPriority = VFX_PRIO;
+
+			@Override
+			protected boolean act() {
+				Actor.remove(this);
+				Char target = Actor.findChar(pos);
+
+				//find the closest char that can be aimed at
+				if (target == null){
+					float closestDist = Float.MAX_VALUE;
+					for (Char ch : Actor.chars()){
+						if (!ch.isAlive()) continue;
+						float curDist = Dungeon.level.trueDistance(pos, ch.pos);
+						if (ch.invisible > 0) curDist += 1000;
+						Ballistica bolt = new Ballistica(pos, ch.pos, Ballistica.PROJECTILE);
+						if (bolt.collisionPos == ch.pos && curDist < closestDist){
+							target = ch;
+							closestDist = curDist;
+						}
+					}
 				}
-				
-				@Override
-				protected boolean act() {
-					final Actor toRemove = this;
-					((MagicMissile)finalTarget.sprite.parent.recycle(MagicMissile.class)).reset(
-							MagicMissile.SHADOW,
-							DungeonTilemap.tileCenterToWorld(pos),
-							finalTarget.sprite.center(),
-							new Callback() {
-								@Override
-								public void call() {
-									finalTarget.damage(finalDmg, trap);
-									if (finalTarget == Dungeon.hero) {
-										Sample.INSTANCE.play(Assets.Sounds.CURSED);
-										if (!finalTarget.isAlive()) {
-											Dungeon.fail( GrimTrap.class );
-											GLog.n( Messages.get(GrimTrap.class, "ondeath") );
+
+				if (target != null) {
+					final Char finalTarget = target;
+					//instant kill, use a mix of current HP and max HP, just like psi blast (for resistances)
+					int damage = Math.round(finalTarget.HT/2f + finalTarget.HP/2f);
+
+					//can't do more than 90% HT for the hero specifically
+					if (finalTarget == Dungeon.hero){
+						damage = (int)Math.min(damage, finalTarget.HT*0.9f);
+					}
+
+					final int finalDmg = damage;
+					if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[target.pos]) {
+						((MagicMissile)finalTarget.sprite.parent.recycle(MagicMissile.class)).reset(
+								MagicMissile.SHADOW,
+								DungeonTilemap.tileCenterToWorld(pos),
+								finalTarget.sprite.center(),
+								new Callback() {
+									@Override
+									public void call() {
+										finalTarget.damage(finalDmg, GrimTrap.this);
+										if (finalTarget == Dungeon.hero) {
+											Sample.INSTANCE.play(Assets.Sounds.CURSED);
+											if (!finalTarget.isAlive()) {
+												Badges.validateDeathFromGrimOrDisintTrap();
+												Dungeon.fail( GrimTrap.this );
+												GLog.n( Messages.get(GrimTrap.class, "ondeath") );
+											}
+										} else {
+											Sample.INSTANCE.play(Assets.Sounds.BURNING);
 										}
-									} else {
-										Sample.INSTANCE.play(Assets.Sounds.BURNING);
+										finalTarget.sprite.emitter().burst(ShadowParticle.UP, 10);
+										next();
 									}
-									finalTarget.sprite.emitter().burst(ShadowParticle.UP, 10);
-									Actor.remove(toRemove);
-									next();
-								}
-							});
-					return false;
+								});
+						return false;
+					} else {
+						finalTarget.damage(finalDmg, GrimTrap.this);
+						return true;
+					}
+				} else {
+					CellEmitter.get(pos).burst(ShadowParticle.UP, 10);
+					Sample.INSTANCE.play(Assets.Sounds.BURNING);
+					return true;
 				}
-			});
-		} else {
-			CellEmitter.get(pos).burst(ShadowParticle.UP, 10);
-			Sample.INSTANCE.play(Assets.Sounds.BURNING);
-		}
+			}
+
+		});
 	}
 }

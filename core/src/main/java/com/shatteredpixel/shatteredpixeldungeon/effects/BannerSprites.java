@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2019 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,26 +21,21 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.effects;
 
-import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.watabou.noosa.Image;
 
 public class BannerSprites {
 
-	public enum Type {
+	public enum  Type {
 		PIXEL_DUNGEON,
 		BOSS_SLAIN,
 		GAME_OVER,
 		SELECT_YOUR_HERO,
-		PIXEL_DUNGEON_SIGNS,
-		SWORD,
-		NULL
-	};
+		PIXEL_DUNGEON_SIGNS
+	}
 
 	public static Image get( Type type ) {
-		Image icon = new Image( holiday == XMAS ?  Assets.Interfaces.BANNERSSD : Assets.Interfaces.BANNERS );
+		Image icon = new Image( Assets.Interfaces.BANNERS );
 		switch (type) {
 			case PIXEL_DUNGEON:
 				icon.frame( icon.texture.uvRect( 0, 0, 132, 90 ) );
@@ -55,13 +50,7 @@ public class BannerSprites {
 				icon.frame( icon.texture.uvRect( 0, 160, 128, 181 ) );
 				break;
 			case PIXEL_DUNGEON_SIGNS:
-				icon.frame( icon.texture.uvRect( 133, 0, 255, 90 ) );
-				break;
-			case SWORD:
-				icon.frame( icon.texture.uvRect( 0, 181	, 160, 206 ) );
-				break;
-			case NULL:
-				icon.frame( icon.texture.uvRect( 0, 300	, 0, 200 ) );
+				icon.frame( icon.texture.uvRect( 132, 0, 256, 90 ) );
 				break;
 		}
 		return icon;

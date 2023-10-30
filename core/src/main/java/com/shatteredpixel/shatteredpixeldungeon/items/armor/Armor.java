@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.armor;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -32,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
@@ -45,7 +44,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Metabolism;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Multiplicity;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Overgrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Stench;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.custom.CustomArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Affection;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Brimstone;
@@ -59,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Thorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
@@ -104,13 +103,11 @@ public class Armor extends EquipableItem {
 	public Augment augment = Augment.NONE;
 	
 	public Glyph glyph;
-
-	public AlowGlyph alowglyph;
-
+	public boolean glyphHardened = false;
 	public boolean curseInfusionBonus = false;
 	public boolean masteryPotionBonus = false;
 	
-	private BrokenSeal seal;
+	protected BrokenSeal seal;
 	
 	public int tier;
 	
@@ -125,6 +122,7 @@ public class Armor extends EquipableItem {
 	private static final String USES_LEFT_TO_ID = "uses_left_to_id";
 	private static final String AVAILABLE_USES  = "available_uses";
 	private static final String GLYPH			= "glyph";
+	private static final String GLYPH_HARDENED	= "glyph_hardened";
 	private static final String CURSE_INFUSION_BONUS = "curse_infusion_bonus";
 	private static final String MASTERY_POTION_BONUS = "mastery_potion_bonus";
 	private static final String SEAL            = "seal";
@@ -136,6 +134,7 @@ public class Armor extends EquipableItem {
 		bundle.put( USES_LEFT_TO_ID, usesLeftToID );
 		bundle.put( AVAILABLE_USES, availableUsesToID );
 		bundle.put( GLYPH, glyph );
+		bundle.put( GLYPH_HARDENED, glyphHardened );
 		bundle.put( CURSE_INFUSION_BONUS, curseInfusionBonus );
 		bundle.put( MASTERY_POTION_BONUS, masteryPotionBonus );
 		bundle.put( SEAL, seal);
@@ -148,6 +147,7 @@ public class Armor extends EquipableItem {
 		usesLeftToID = bundle.getInt( USES_LEFT_TO_ID );
 		availableUsesToID = bundle.getInt( AVAILABLE_USES );
 		inscribe((Glyph) bundle.get(GLYPH));
+		glyphHardened = bundle.getBoolean(GLYPH_HARDENED);
 		curseInfusionBonus = bundle.getBoolean( CURSE_INFUSION_BONUS );
 		masteryPotionBonus = bundle.getBoolean( MASTERY_POTION_BONUS );
 		seal = (BrokenSeal)bundle.get(SEAL);
@@ -186,22 +186,17 @@ public class Armor extends EquipableItem {
 			if (detaching.level() > 0){
 				degrade();
 			}
-			if (detaching.getGlyph() != null){
-				if (hero.hasTalent(Talent.RUNIC_TRANSFERENCE)
-						&& (Arrays.asList(Glyph.common).contains(detaching.getGlyph().getClass())
-							|| Arrays.asList(Glyph.uncommon).contains(detaching.getGlyph().getClass()))){
-					inscribe(null);
-				} else if (hero.pointsInTalent(Talent.RUNIC_TRANSFERENCE) == 2){
-					inscribe(null);
-				} else {
-					detaching.setGlyph(null);
-				}
+			if (detaching.canTransferGlyph()){
+				inscribe(null);
+			} else {
+				detaching.setGlyph(null);
 			}
 			GLog.i( Messages.get(Armor.class, "detach_seal") );
 			hero.sprite.operate(hero.pos);
 			if (!detaching.collect()){
 				Dungeon.level.drop(detaching, hero.pos);
 			}
+			updateQuickslot();
 		}
 	}
 
@@ -250,8 +245,8 @@ public class Armor extends EquipableItem {
 		if (seal.getGlyph() != null){
 			inscribe(seal.getGlyph());
 		}
-		if (isEquipped(hero)){
-			Buff.affect(hero, BrokenSeal.WarriorShield.class).setArmor(this);
+		if (isEquipped(Dungeon.hero)){
+			Buff.affect(Dungeon.hero, BrokenSeal.WarriorShield.class).setArmor(this);
 		}
 	}
 
@@ -357,15 +352,15 @@ public class Armor extends EquipableItem {
 					break;
 				}
 			}
-			if (!enemyNear) speed *= (1.2f + 0.04f * buffedLvl());
+			if (!enemyNear) speed *= (1.2f + 0.04f * buffedLvl()) * glyph.procChanceMultiplier(owner);
 		} else if (hasGlyph(Flow.class, owner) && Dungeon.level.water[owner.pos]){
-			speed *= (2f + 0.25f*buffedLvl());
+			speed *= (2f + 0.5f*buffedLvl()) * glyph.procChanceMultiplier(owner);
 		}
 		
 		if (hasGlyph(Bulk.class, owner) &&
 				(Dungeon.level.map[owner.pos] == Terrain.DOOR
 						|| Dungeon.level.map[owner.pos] == Terrain.OPEN_DOOR )) {
-			speed /= 3f;
+			speed /= 3f * RingOfArcana.enchantPowerMultiplier(owner);
 		}
 		
 		return speed;
@@ -375,7 +370,7 @@ public class Armor extends EquipableItem {
 	public float stealthFactor( Char owner, float stealth ){
 		
 		if (hasGlyph(Obfuscation.class, owner)){
-			stealth += 1 + buffedLvl()/3f;
+			stealth += (1 + buffedLvl()/3f) * glyph.procChanceMultiplier(owner);
 		}
 		
 		return stealth;
@@ -384,18 +379,10 @@ public class Armor extends EquipableItem {
 	@Override
 	public int level() {
 		int level = super.level();
+		//TODO warrior's seal upgrade should probably be considered here too
+		// instead of being part of true level
 		if (curseInfusionBonus) level += 1 + level/6;
 		return level;
-	}
-	
-	//other things can equip these, for now we assume only the hero can be affected by levelling debuffs
-	@Override
-	public int buffedLvl() {
-		if (isEquipped( hero ) || hero.belongings.contains( this )){
-			return super.buffedLvl();
-		} else {
-			return level();
-		}
 	}
 	
 	@Override
@@ -409,11 +396,29 @@ public class Armor extends EquipableItem {
 			if (glyph == null){
 				inscribe( Glyph.random() );
 			}
-		} else {
-			if (hasCurseGlyph()){
+		} else if (glyph != null) {
+			//chance to lose harden buff is 10/20/40/80/100% when upgrading from +6/7/8/9/10
+			if (glyphHardened) {
+				if (level() >= 6 && Random.Float(10) < Math.pow(2, level()-6)){
+					glyphHardened = false;
+				}
+
+			//chance to remove curse is a static 33%
+			} else if (hasCurseGlyph()){
 				if (Random.Int(3) == 0) inscribe(null);
-			} else if (level() >= 4 && Random.Float(10) < Math.pow(2, level()-4)){
-				inscribe(null);
+
+			//otherwise chance to lose glyph is 10/20/40/80/100% when upgrading from +4/5/6/7/8
+			} else {
+
+				//the chance from +4/5, and then +6 can be set to 0% with metamorphed runic transference
+				int lossChanceStart = 4;
+				if (Dungeon.hero != null && Dungeon.hero.heroClass != HeroClass.WARRIOR && Dungeon.hero.hasTalent(Talent.RUNIC_TRANSFERENCE)){
+					lossChanceStart += 1+Dungeon.hero.pointsInTalent(Talent.RUNIC_TRANSFERENCE);
+				}
+
+				if (level() >= lossChanceStart && Random.Float(10) < Math.pow(2, level()-4)) {
+					inscribe(null);
+				}
 			}
 		}
 		
@@ -427,12 +432,12 @@ public class Armor extends EquipableItem {
 	
 	public int proc( Char attacker, Char defender, int damage ) {
 		
-		if (glyph != null && defender.buff(MagicImmune.class) == null ) {
+		if (glyph != null && defender.buff(MagicImmune.class) == null) {
 			damage = glyph.proc( this, attacker, defender, damage );
 		}
 		
-		if (!levelKnown && defender == hero) {
-			float uses = Math.min( availableUsesToID, Talent.itemIDSpeedFactor(hero, this) );
+		if (!levelKnown && defender == Dungeon.hero) {
+			float uses = Math.min( availableUsesToID, Talent.itemIDSpeedFactor(Dungeon.hero, this) );
 			availableUsesToID -= uses;
 			usesLeftToID -= uses;
 			if (usesLeftToID <= 0) {
@@ -456,12 +461,7 @@ public class Armor extends EquipableItem {
 	
 	@Override
 	public String name() {
-		if(hero.belongings.armor instanceof CustomArmor){
-			return super.name();
-		} else {
-			return glyph != null && (cursedKnown || !glyph.curse()) ? glyph.name( super.name() ) : super.name();
-		}
-
+		return glyph != null && (cursedKnown || !glyph.curse()) ? glyph.name( super.name() ) : super.name();
 	}
 	
 	@Override
@@ -469,15 +469,16 @@ public class Armor extends EquipableItem {
 		String info = desc();
 		
 		if (levelKnown) {
-			info += "\n\n" + Messages.get(Armor.class, "curr_absorb", DRMin(), DRMax(), STRReq());
+
+			info += "\n\n" + Messages.get(Armor.class, "curr_absorb", tier, DRMin(), DRMax(), STRReq());
 			
-			if (STRReq() > hero.STR()) {
+			if (STRReq() > Dungeon.hero.STR()) {
 				info += " " + Messages.get(Armor.class, "too_heavy");
 			}
 		} else {
-			info += "\n\n" + Messages.get(Armor.class, "avg_absorb", DRMin(0), DRMax(0), STRReq(0));
+			info += "\n\n" + Messages.get(Armor.class, "avg_absorb", tier, DRMin(0), DRMax(0), STRReq(0));
 
-			if (STRReq(0) > hero.STR()) {
+			if (STRReq(0) > Dungeon.hero.STR()) {
 				info += " " + Messages.get(Armor.class, "probably_too_heavy");
 			}
 		}
@@ -493,23 +494,25 @@ public class Armor extends EquipableItem {
 		}
 		
 		if (glyph != null  && (cursedKnown || !glyph.curse())) {
-			info += "\n\n" +  Messages.get(Armor.class, "inscribed", glyph.name());
+			info += "\n\n" +  Messages.capitalize(Messages.get(Armor.class, "inscribed", glyph.name()));
+			if (glyphHardened) info += " " + Messages.get(Armor.class, "glyph_hardened");
 			info += " " + glyph.desc();
-		}
-
-		if (alowglyph != null  && (cursedKnown || !alowglyph.curse())) {
-			info += "\n\n" +  Messages.get(Armor.class, "inscribed", alowglyph.name());
-			info += " " + alowglyph.desc();
+		} else if (glyphHardened){
+			info += "\n\n" + Messages.get(Armor.class, "hardened_no_glyph");
 		}
 		
-		if (cursed && isEquipped( hero )) {
+		if (cursed && isEquipped( Dungeon.hero )) {
 			info += "\n\n" + Messages.get(Armor.class, "cursed_worn");
 		} else if (cursedKnown && cursed) {
 			info += "\n\n" + Messages.get(Armor.class, "cursed");
 		} else if (seal != null) {
 			info += "\n\n" + Messages.get(Armor.class, "seal_attached", seal.maxShield(tier, level()));
 		} else if (!isIdentified() && cursedKnown){
-			info += "\n\n" + Messages.get(Armor.class, "not_cursed");
+			if (glyph != null && glyph.curse()) {
+				info += "\n\n" + Messages.get(Armor.class, "weak_cursed");
+			} else {
+				info += "\n\n" + Messages.get(Armor.class, "not_cursed");
+			}
 		}
 		
 		return info;
@@ -615,10 +618,6 @@ public class Armor extends EquipableItem {
 		return glyph != null && glyph.getClass() == type && owner.buff(MagicImmune.class) == null;
 	}
 
-	public boolean hasAlowGlyph(Class<?extends AlowGlyph> type, Char owner) {
-		return alowglyph != null && alowglyph.getClass() == type && owner.buff(MagicImmune.class) == null;
-	}
-
 	//these are not used to process specific glyph effects, so magic immune doesn't affect them
 	public boolean hasGoodGlyph(){
 		return glyph != null && !glyph.curse();
@@ -635,17 +634,17 @@ public class Armor extends EquipableItem {
 	
 	public static abstract class Glyph implements Bundlable {
 		
-		private static final Class<?>[] common = new Class<?>[]{
+		public static final Class<?>[] common = new Class<?>[]{
 				Obfuscation.class, Swiftness.class, Viscosity.class, Potential.class };
-		
-		private static final Class<?>[] uncommon = new Class<?>[]{
+
+		public static final Class<?>[] uncommon = new Class<?>[]{
 				Brimstone.class, Stone.class, Entanglement.class,
 				Repulsion.class, Camouflage.class, Flow.class };
-		
-		private static final Class<?>[] rare = new Class<?>[]{
+
+		public static final Class<?>[] rare = new Class<?>[]{
 				Affection.class, AntiMagic.class, Thorns.class };
-		
-		private static final float[] typeChances = new float[]{
+
+		public static final float[] typeChances = new float[]{
 				50, //12.5% each
 				40, //6.67% each
 				10  //3.33% each
@@ -657,6 +656,14 @@ public class Armor extends EquipableItem {
 		};
 		
 		public abstract int proc( Armor armor, Char attacker, Char defender, int damage );
+
+		protected float procChanceMultiplier( Char defender ){
+			return genericProcChanceMultiplier( defender );
+		}
+
+		public static float genericProcChanceMultiplier( Char defender ){
+			return RingOfArcana.enchantPowerMultiplier(defender);
+		}
 		
 		public String name() {
 			if (!curse())
@@ -743,40 +750,5 @@ public class Armor extends EquipableItem {
 			}
 		}
 		
-	}
-
-	public static abstract class AlowGlyph implements Bundlable {
-
-		public abstract int proc( Armor armor, Char attacker, Char defender, int damage );
-
-		public String name() {
-			if (!curse())
-				return name( Messages.get(this, "alowglyph") );
-			else
-				return name( Messages.get(Item.class, "curse"));
-		}
-
-		public String name( String armorName ) {
-			return Messages.get(this, "name", armorName);
-		}
-
-		public String desc() {
-			return Messages.get(this, "desc");
-		}
-
-		public boolean curse() {
-			return false;
-		}
-
-		@Override
-		public void restoreFromBundle( Bundle bundle ) {
-		}
-
-		@Override
-		public void storeInBundle( Bundle bundle ) {
-		}
-
-		//public abstract ItemSprite.Glowing glowing();
-
 	}
 }

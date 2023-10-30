@@ -3,10 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2019 Evan Debenham
- *
- * Overgrown Pixel Dungeon
- * Copyright (C) 2018-2019 Anon
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,24 +19,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package  com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
+package com.shatteredpixel.shatteredpixeldungeon.services.news;
 
-import com.shatteredpixel.shatteredpixeldungeon.sprites.OGPDZSLSTT;
-import com.watabou.utils.Random;
+public class NewsImpl {
 
-public class OGPDZSLS extends Rat {
+	private static NewsService newsChecker = new DebugNews();
 
-    {
-        spriteClass = OGPDZSLSTT.class;
+	public static NewsService getNewsService(){
+		return newsChecker;
+	}
 
-        HP = HT = 8;
-        EXP = 3;
-        this.maxLvl = 12;
-        this.EXP = 3;
-    }
+	public static boolean supportsNews(){
+		return true;
+	}
 
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange( 2, 3 );
-    }
 }

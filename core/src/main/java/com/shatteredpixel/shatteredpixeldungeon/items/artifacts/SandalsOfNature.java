@@ -1,3 +1,24 @@
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015 Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2023 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -16,16 +37,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Dreamfoil;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Icecap;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Mageroyal;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Rotberry;
-import com.shatteredpixel.shatteredpixeldungeon.plants.SkyBlueFireBloom;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Sorrowmoss;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Starflower;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Stormvine;
@@ -76,13 +95,11 @@ public class SandalsOfNature extends Artifact {
 		seedColors.put(Icecap.Seed.class,       0x66B3FF);
 		seedColors.put(Stormvine.Seed.class,    0x195D80);
 		seedColors.put(Sorrowmoss.Seed.class,   0xA15CE5);
-		seedColors.put(AikeLaier.Seed.class,    0x4cd200);
+		seedColors.put(Mageroyal.Seed.class,    0xFF4CD2);
 		seedColors.put(Earthroot.Seed.class,    0x67583D);
 		seedColors.put(Starflower.Seed.class,   0x404040);
 		seedColors.put(Fadeleaf.Seed.class,     0x919999);
 		seedColors.put(Blindweed.Seed.class,    0XD9D9D9);
-		seedColors.put(SkyBlueFireBloom.Seed.class,    0X00D9D9);
-		seedColors.put(Dreamfoil.Seed.class,    0Xff00ff);
 	}
 
 	private static final HashMap<Class<? extends Plant.Seed>, Integer> seedChargeReqs = new HashMap<>();
@@ -94,13 +111,11 @@ public class SandalsOfNature extends Artifact {
 		seedChargeReqs.put(Icecap.Seed.class,       20);
 		seedChargeReqs.put(Stormvine.Seed.class,    20);
 		seedChargeReqs.put(Sorrowmoss.Seed.class,   20);
-		seedChargeReqs.put(AikeLaier.Seed.class,    24);
+		seedChargeReqs.put(Mageroyal.Seed.class,    12);
 		seedChargeReqs.put(Earthroot.Seed.class,    40);
 		seedChargeReqs.put(Starflower.Seed.class,   40);
 		seedChargeReqs.put(Fadeleaf.Seed.class,     12);
 		seedChargeReqs.put(Blindweed.Seed.class,    12);
-		seedChargeReqs.put(SkyBlueFireBloom.Seed.class,    20);
-		seedChargeReqs.put(Dreamfoil.Seed.class,    10);
 	}
 
 	@Override
@@ -146,7 +161,7 @@ public class SandalsOfNature extends Artifact {
 	protected ArtifactBuff passiveBuff() {
 		return new Naturalism();
 	}
-
+	
 	@Override
 	public void charge(Hero target, float amount) {
 		target.buff(Naturalism.class).charge(amount);
@@ -182,7 +197,7 @@ public class SandalsOfNature extends Artifact {
 		}
 
 		if (curSeedEffect != null){
-			desc += "\n\n" + Messages.get(this, "desc_ability",
+				desc += "\n\n" + Messages.get(this, "desc_ability",
 					Messages.titleCase(Messages.get(curSeedEffect, "name")),
 					seedChargeReqs.get(curSeedEffect));
 		}

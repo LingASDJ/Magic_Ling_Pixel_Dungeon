@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items.spells;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -54,8 +52,8 @@ public class Alchemize extends Spell {
 	
 	@Override
 	public int value() {
-		//prices of ingredients, divided by output quantity
-		return Math.round(quantity * (40 / 8f));
+		//prices of ingredients, divided by output quantity, rounds down
+		return (int)(40 * (quantity/8f));
 	}
 
 	//TODO also allow alchemical catalyst? Or save that for an elixir/brew?
@@ -110,21 +108,14 @@ public class Alchemize extends Spell {
 			this.owner = owner;
 
 			float pos = height;
-			Shopkeeper shop = null;
-			for (Char ch : Actor.chars()){
-				if (ch instanceof Shopkeeper){
-					shop = (Shopkeeper) ch;
-					break;
-				}
-			}
-			final Shopkeeper finalShop = shop;
+
 			if (Shopkeeper.canSell(item)) {
 				if (item.quantity() == 1) {
 
 					RedButton btnSell = new RedButton(Messages.get(this, "sell", item.value())) {
 						@Override
 						protected void onClick() {
-							WndTradeItem.sell(item,finalShop);
+							WndTradeItem.sell(item);
 							hide();
 							consumeAlchemize();
 						}
@@ -152,7 +143,7 @@ public class Alchemize extends Spell {
 					RedButton btnSellAll = new RedButton(Messages.get(this, "sell_all", priceAll)) {
 						@Override
 						protected void onClick() {
-							WndTradeItem.sell(item,finalShop);
+							WndTradeItem.sell(item);
 							hide();
 							consumeAlchemize();
 						}

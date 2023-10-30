@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -114,21 +114,21 @@ public class DistortionTrap extends Trap{
 					mob = Reflection.newInstance(Bestiary.getMobRotation(floor).get(0));
 					break;
 				case 2:
-					switch (Random.Int(4)){
+					switch (2){
 						case 0: default:
-							Wraith.spawnAt(point);
+							Wraith.spawnAt(point, true);
 							continue; //wraiths spawn themselves, no need to do more
 						case 1:
 							//yes it's intended that these are likely to die right away
-							mob = new Piranha();
+							mob = Piranha.random();
 							break;
 						case 2:
-							mob = Mimic.spawnAt(point, new ArrayList<>());
+							mob = Mimic.spawnAt(point, false);
 							((Mimic)mob).stopHiding();
 							mob.alignment = Char.Alignment.ENEMY;
 							break;
 						case 3:
-							mob = Statue.random();
+							mob = Statue.random(false);
 							break;
 					}
 					break;
@@ -141,7 +141,7 @@ public class DistortionTrap extends Trap{
 				continue;
 			}
 
-			mob.maxLvl = Hero.MAX_LEVEL;
+			mob.maxLvl = Hero.MAX_LEVEL-1;
 			mob.state = mob.WANDERING;
 			mob.pos = point;
 			GameScene.add(mob, DELAY);

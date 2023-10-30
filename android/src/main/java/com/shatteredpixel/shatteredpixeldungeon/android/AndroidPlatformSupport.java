@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ public class AndroidPlatformSupport extends PlatformSupport {
 
 	public void updateDisplaySize(){
 		if (SPDSettings.landscape() != null) {
-			AndroidGame.instance.setRequestedOrientation( SPDSettings.landscape() ?
+			AndroidLauncher.instance.setRequestedOrientation( SPDSettings.landscape() ?
 					ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE :
 					ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT );
 		}
@@ -63,7 +63,7 @@ public class AndroidPlatformSupport extends PlatformSupport {
 		Game.dispHeight = view.getMeasuredHeight();
 
 		boolean fullscreen = Build.VERSION.SDK_INT < Build.VERSION_CODES.N
-				|| !AndroidGame.instance.isInMultiWindowMode();
+				|| !AndroidLauncher.instance.isInMultiWindowMode();
 
 		if (fullscreen && SPDSettings.landscape() != null
 				&& (Game.dispWidth >= Game.dispHeight) != SPDSettings.landscape()){
@@ -107,7 +107,7 @@ public class AndroidPlatformSupport extends PlatformSupport {
 
 			}
 		} else {
-			AndroidGame.instance.runOnUiThread(new Runnable() {
+			AndroidLauncher.instance.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
 					view.getHolder().setSizeFromLayout();
@@ -126,10 +126,10 @@ public class AndroidPlatformSupport extends PlatformSupport {
 						|| !AndroidGame.instance.isInMultiWindowMode();
 
 				if (fullscreen){
-					AndroidGame.instance.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+					AndroidLauncher.instance.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 							WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 				} else {
-					AndroidGame.instance.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
+					AndroidLauncher.instance.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
 							WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 				}
 
@@ -151,7 +151,7 @@ public class AndroidPlatformSupport extends PlatformSupport {
 	@SuppressWarnings("deprecation")
 	public boolean connectedToUnmeteredNetwork() {
 		//Returns true if using unmetered connection, use shortcut method if available
-		ConnectivityManager cm = (ConnectivityManager) AndroidGame.instance.getSystemService(Context.CONNECTIVITY_SERVICE);
+		ConnectivityManager cm = (ConnectivityManager) AndroidLauncher.instance.getSystemService(Context.CONNECTIVITY_SERVICE);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
 			return !cm.isActiveNetworkMetered();
 		} else {

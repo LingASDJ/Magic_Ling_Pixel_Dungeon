@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,7 +76,7 @@ public class Surprise extends Image {
 	}
 
 	public static void hit(Char ch, float angle) {
-		if (ch.sprite.parent != null) {
+		if (ch.sprite != null && ch.sprite.parent != null) {
 			Surprise s = (Surprise) ch.sprite.parent.recycle(Surprise.class);
 			ch.sprite.parent.bringToFront(s);
 			s.reset(ch.sprite);

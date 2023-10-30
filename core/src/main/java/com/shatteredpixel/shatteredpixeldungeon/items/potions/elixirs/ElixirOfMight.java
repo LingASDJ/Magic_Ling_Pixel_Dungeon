@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,6 +58,7 @@ public class ElixirOfMight extends Elixir {
 		GLog.p( Messages.get(this, "msg_2") );
 
 		Badges.validateStrengthAttained();
+		Badges.validateDuelistUnlock();
 	}
 	
 	public String desc() {
@@ -97,7 +98,7 @@ public class ElixirOfMight extends Elixir {
 		}
 		
 		public int boost(){
-			return Math.round(left*boost(target.HT)/5f);
+			return Math.round(left*boost(15 + 5*((Hero)target).lvl)/5f);
 		}
 		
 		public static int boost(int HT){
@@ -129,11 +130,6 @@ public class ElixirOfMight extends Elixir {
 		@Override
 		public String iconTextDisplay() {
 			return Integer.toString(left);
-		}
-
-		@Override
-		public String toString() {
-			return Messages.get(this, "name");
 		}
 		
 		@Override

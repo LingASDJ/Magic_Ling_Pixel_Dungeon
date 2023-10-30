@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,7 +52,6 @@ public abstract class InventoryStone extends Runestone {
 	public void execute(Hero hero, String action) {
 		super.execute(hero, action);
 		if (action.equals(AC_USE)){
-			curItem = detach( hero.belongings.backpack );
 			activate(curUser.pos);
 		}
 	}
@@ -66,7 +65,7 @@ public abstract class InventoryStone extends Runestone {
 		curUser.spend( 1f );
 		curUser.busy();
 		curUser.sprite.operate(curUser.pos);
-		
+
 		Sample.INSTANCE.play( Assets.Sounds.READ );
 		Invisibility.dispel();
 	}
@@ -110,11 +109,9 @@ public abstract class InventoryStone extends Runestone {
 			}
 			
 			if (item != null) {
-				
+
 				((InventoryStone)curItem).onItemSelected( item );
 				
-			} else{
-				curItem.collect( curUser.belongings.backpack );
 			}
 		}
 	};

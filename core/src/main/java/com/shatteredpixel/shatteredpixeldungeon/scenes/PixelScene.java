@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import com.badlogic.gdx.Input;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
@@ -35,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.glwrap.Blending;
 import com.watabou.input.ControllerHandler;
+import com.watabou.input.KeyEvent;
 import com.watabou.input.PointerEvent;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.BitmapText.Font;
@@ -48,9 +50,11 @@ import com.watabou.noosa.Visual;
 import com.watabou.noosa.ui.Component;
 import com.watabou.noosa.ui.Cursor;
 import com.watabou.utils.Callback;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Reflection;
+import com.watabou.utils.Signal;
 
 import java.util.ArrayList;
 
@@ -83,6 +87,8 @@ public class PixelScene extends Scene {
 	public static BitmapText.Font pixelFont;
 
 	protected boolean inGameScene = false;
+
+	private Signal.Listener<KeyEvent> fullscreenListener;
 
 	@Override
 	public void create() {
@@ -162,24 +168,85 @@ public class PixelScene extends Scene {
 
 	}
 
-	private static PointF virtualCursorPos;
-
 	@Override
 	public void update() {
+		//we create this here so that it is last in the scene
+		if (DeviceCompat.isDesktop() && fullscreenListener == null){
+			KeyEvent.addKeyListener(fullscreenListener = new Signal.Listener<KeyEvent>() {
+
+				private boolean alt;
+				private boolean enter;
+
+				@Override
+				public boolean onSignal(KeyEvent keyEvent) {
+
+					//we don't use keybindings for these as we want the user to be able to
+					// bind these keys to other actions when pressed individually
+					if (keyEvent.code == Input.Keys.ALT_RIGHT){
+						alt = keyEvent.pressed;
+					} else if (keyEvent.code == Input.Keys.ENTER){
+						enter = keyEvent.pressed;
+					}
+
+					if (alt && enter){
+						SPDSettings.fullscreen(!SPDSettings.fullscreen());
+						return true;
+					}
+
+					return false;
+				}
+			});
+		}
+
 		super.update();
 		//20% deadzone
-		if (Math.abs(ControllerHandler.rightStickPosition.x) >= 0.2f
-				|| Math.abs(ControllerHandler.rightStickPosition.y) >= 0.2f) {
-			if (!ControllerHandler.controllerPointerActive()) {
-				ControllerHandler.setControllerPointer(true);
-				virtualCursorPos = PointerEvent.currentHoverPos();
+		if (!Cursor.isCursorCaptured()) {
+			if (Math.abs(ControllerHandler.rightStickPosition.x) >= 0.2f
+					|| Math.abs(ControllerHandler.rightStickPosition.y) >= 0.2f) {
+				if (!ControllerHandler.controllerPointerActive()) {
+					ControllerHandler.setControllerPointer(true);
+				}
+
+				int sensitivity = SPDSettings.controllerPointerSensitivity() * 100;
+
+				//cursor moves 100xsens scaled pixels per second at full speed
+				//35x at 50% movement, ~9x at 20% deadzone threshold
+				float xMove = (float) Math.pow(Math.abs(ControllerHandler.rightStickPosition.x), 1.5);
+				if (ControllerHandler.rightStickPosition.x < 0) xMove = -xMove;
+
+				float yMove = (float) Math.pow(Math.abs(ControllerHandler.rightStickPosition.y), 1.5);
+				if (ControllerHandler.rightStickPosition.y < 0) yMove = -yMove;
+
+				PointF virtualCursorPos = ControllerHandler.getControllerPointerPos();
+				virtualCursorPos.x += defaultZoom * sensitivity * Game.elapsed * xMove;
+				virtualCursorPos.y += defaultZoom * sensitivity * Game.elapsed * yMove;
+
+				PointF cameraShift = new PointF();
+
+				if (virtualCursorPos.x < 0){
+					cameraShift.x = virtualCursorPos.x;
+					virtualCursorPos.x = 0;
+				} else if (virtualCursorPos.x > Camera.main.screenWidth()){
+					cameraShift.x = (virtualCursorPos.x - Camera.main.screenWidth());
+					virtualCursorPos.x = Camera.main.screenWidth();
+				}
+
+				if (virtualCursorPos.y < 0){
+					cameraShift.y = virtualCursorPos.y;
+					virtualCursorPos.y = 0;
+				} else if (virtualCursorPos.y > Camera.main.screenHeight()){
+					cameraShift.y = (virtualCursorPos.y - Camera.main.screenHeight());
+					virtualCursorPos.y = Camera.main.screenHeight();
+				}
+
+				cameraShift.invScale(Camera.main.zoom);
+				cameraShift.x *= Camera.main.edgeScroll.x;
+				cameraShift.y *= Camera.main.edgeScroll.y;
+				if (cameraShift.length() > 0){
+					Camera.main.shift(cameraShift);
+				}
+				ControllerHandler.updateControllerPointer(virtualCursorPos, true);
 			}
-			//cursor moves 500 scaled pixels per second at full speed, 100 at minimum speed
-			virtualCursorPos.x += defaultZoom * 500 * Game.elapsed * ControllerHandler.rightStickPosition.x;
-			virtualCursorPos.y += defaultZoom * 500 * Game.elapsed * ControllerHandler.rightStickPosition.y;
-			virtualCursorPos.x = GameMath.gate(0, virtualCursorPos.x, Game.width);
-			virtualCursorPos.y = GameMath.gate(0, virtualCursorPos.y, Game.height);
-			PointerEvent.addPointerEvent(new PointerEvent((int) virtualCursorPos.x, (int) virtualCursorPos.y, 10_000, PointerEvent.Type.HOVER, PointerEvent.NONE));
 		}
 	}
 
@@ -195,6 +262,7 @@ public class PixelScene extends Scene {
 				cursor = new Image(Cursor.Type.CONTROLLER.file);
 			}
 
+			PointF virtualCursorPos = ControllerHandler.getControllerPointerPos();
 			cursor.x = (virtualCursorPos.x / defaultZoom) - cursor.width()/2f;
 			cursor.y = (virtualCursorPos.y / defaultZoom) - cursor.height()/2f;
 			cursor.camera = uiCamera;
@@ -236,6 +304,9 @@ public class PixelScene extends Scene {
 	public void destroy() {
 		super.destroy();
 		PointerEvent.clearListeners();
+		if (fullscreenListener != null){
+			KeyEvent.removeKeyListener(fullscreenListener);
+		}
 		if (cursor != null){
 			cursor.destroy();
 		}
@@ -339,6 +410,11 @@ public class PixelScene extends Scene {
 				}
 			}
 		});
+	}
+	
+	public static void shake( float magnitude, float duration){
+		magnitude *= SPDSettings.screenShake();
+		Camera.main.shake(magnitude, duration);
 	}
 	
 	protected static class Fader extends ColorBlock {

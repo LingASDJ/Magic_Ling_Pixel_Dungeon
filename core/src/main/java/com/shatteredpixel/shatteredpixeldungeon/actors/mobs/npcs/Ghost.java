@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,35 +21,26 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FetidRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollTrickster;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
-import com.shatteredpixel.shatteredpixeldungeon.levels.ItemLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
@@ -57,11 +48,11 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSadGhost;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
 
 public class Ghost extends NPC {
 
@@ -69,14 +60,31 @@ public class Ghost extends NPC {
 		spriteClass = GhostSprite.class;
 		
 		flying = true;
-		
+
+		WANDERING = new Wandering();
 		state = WANDERING;
+
+		//not actually large of course, but this makes the ghost stick to the exit room
+		properties.add(Property.LARGE);
+	}
+
+	protected class Wandering extends Mob.Wandering{
+		@Override
+		protected int randomDestination() {
+			int pos = super.randomDestination();
+			//cannot wander onto heaps or the level exit
+			if (Dungeon.level.heaps.get(pos) != null || pos == Dungeon.level.exit()){
+				return -1;
+			}
+			return pos;
+		}
 	}
 
 	@Override
 	protected boolean act() {
-		if (Quest.processed()) {
-			target = hero.pos;
+		if (Dungeon.hero.buff(AscensionChallenge.class) != null){
+			die(null);
+			return true;
 		}
 		if (Dungeon.level.heroFOV[pos] && !Quest.completed()){
 			Notes.add( Notes.Landmark.GHOST );
@@ -91,20 +99,22 @@ public class Ghost extends NPC {
 	
 	@Override
 	public float speed() {
-		return Quest.processed() ? 2f : 0.5f;
+		return 0.5f;
 	}
 	
 	@Override
 	protected Char chooseEnemy() {
 		return null;
 	}
-	
+
 	@Override
 	public void damage( int dmg, Object src ) {
+		//do nothing
 	}
-	
+
 	@Override
-	public void add( Buff buff ) {
+	public boolean add( Buff buff ) {
+		return false;
 	}
 	
 	@Override
@@ -118,7 +128,7 @@ public class Ghost extends NPC {
 		
 		Sample.INSTANCE.play( Assets.Sounds.GHOST );
 
-		if (c != hero){
+		if (c != Dungeon.hero){
 			return super.interact(c);
 		}
 		
@@ -141,12 +151,7 @@ public class Ghost extends NPC {
 									GameScene.show(new WndQuest(Ghost.this, Messages.get(Ghost.this, "rat_2")));
 									break;
 								case 2:
-									if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-										GameScene.show(new WndQuest(Ghost.this, Messages.get(Ghost.this, "agnoll_2")));
-									} else {
-										GameScene.show(new WndQuest(Ghost.this, Messages.get(Ghost.this, "gnoll_2")));
-									}
-
+									GameScene.show(new WndQuest(Ghost.this, Messages.get(Ghost.this, "gnoll_2")));
 									break;
 								case 3:
 									GameScene.show(new WndQuest(Ghost.this, Messages.get(Ghost.this, "crab_2")));
@@ -155,20 +160,6 @@ public class Ghost extends NPC {
 						}
 					});
 
-					int newPos = -1;
-					for (int i = 0; i < 10; i++) {
-						newPos = Dungeon.level.randomRespawnCell( this );
-						if (newPos != -1) {
-							break;
-						}
-					}
-					if (newPos != -1) {
-
-						CellEmitter.get(pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
-						pos = newPos;
-						sprite.place(pos);
-						sprite.visible = Dungeon.level.heroFOV[pos];
-					}
 				}
 			}
 		} else {
@@ -178,13 +169,13 @@ public class Ghost extends NPC {
 			switch (Quest.type){
 				case 1: default:
 					questBoss = new FetidRat();
-					txt_quest = Messages.get(this, "rat_1", hero.name()); break;
+					txt_quest = Messages.get(this, "rat_1", Messages.titleCase(Dungeon.hero.name())); break;
 				case 2:
 					questBoss = new GnollTrickster();
-					txt_quest = Messages.get(this, "gnoll_1", hero.name()); break;
+					txt_quest = Messages.get(this, "gnoll_1", Messages.titleCase(Dungeon.hero.name())); break;
 				case 3:
 					questBoss = new GreatCrab();
-					txt_quest = Messages.get(this, "crab_1", hero.name()); break;
+					txt_quest = Messages.get(this, "crab_1", Messages.titleCase(Dungeon.hero.name())); break;
 			}
 
 			questBoss.pos = Dungeon.level.randomRespawnCell( this );
@@ -196,7 +187,20 @@ public class Ghost extends NPC {
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {
-						GameScene.show( new WndQuest( Ghost.this, txt_quest ) );
+						GameScene.show( new WndQuest( Ghost.this, txt_quest ){
+							@Override
+							public void hide() {
+								super.hide();
+								Music.INSTANCE.fadeOut(1f, new Callback() {
+									@Override
+									public void call() {
+										if (Dungeon.level != null) {
+											Dungeon.level.playLevelMusic();
+										}
+									}
+								});
+							}
+						} );
 					}
 				});
 			}
@@ -215,17 +219,16 @@ public class Ghost extends NPC {
 		private static boolean given;
 		private static boolean processed;
 		
-		public static int depth;
+		private static int depth;
 		
 		public static Weapon weapon;
-		public static Food food;
 		public static Armor armor;
 		public static Weapon.Enchantment enchant;
 		public static Armor.Glyph glyph;
 		
 		public static void reset() {
 			spawned = false;
-			food = null;
+			
 			weapon = null;
 			armor = null;
 			enchant = null;
@@ -240,8 +243,6 @@ public class Ghost extends NPC {
 		private static final String PROCESSED	= "processed";
 		private static final String DEPTH		= "depth";
 		private static final String WEAPON		= "weapon";
-
-		private static final String FOOD		= "food";
 		private static final String ARMOR		= "armor";
 		private static final String ENCHANT		= "enchant";
 		private static final String GLYPH		= "glyph";
@@ -261,7 +262,6 @@ public class Ghost extends NPC {
 				node.put( PROCESSED, processed );
 				
 				node.put( WEAPON, weapon );
-				node.put( FOOD, food );
 				node.put( ARMOR, armor );
 
 				if (enchant != null) {
@@ -287,7 +287,6 @@ public class Ghost extends NPC {
 				
 				weapon	= (Weapon)node.get( WEAPON );
 				armor	= (Armor)node.get( ARMOR );
-				food     = (Food)node.get(FOOD);
 
 				if (node.contains(ENCHANT)) {
 					enchant = (Weapon.Enchantment) node.get(ENCHANT);
@@ -297,43 +296,14 @@ public class Ghost extends NPC {
 				reset();
 			}
 		}
-
-		private static void ghostQuest(){
-			float itemLevelRoll = Random.Float();
-			int itemLevel;
-			if (itemLevelRoll < 0.74f){
-				itemLevel = 0;
-			} else if (itemLevelRoll < 0.75f){
-				itemLevel = 1;
-			} else if (itemLevelRoll < 0.85f){
-				itemLevel = 2;
-			} else if (itemLevelRoll < 0.90f) {
-				itemLevel = 3;
-				if ((!Badges.isUnlocked(Badges.Badge.GHOSTDAGE))) {
-					Statistics.dageCollected = 1;
-				}
-			} else if (itemLevelRoll < 0.95f && Badges.isUnlocked(Badges.Badge.GHOSTDAGE)) {
-				if ((!Badges.isUnlocked(Badges.Badge.DAGETO))) {
-					Statistics.dageCollected = 2;
-				}
-				itemLevel = 4;
-			} else {
-				if ((!Badges.isUnlocked(Badges.Badge.GHOSTDAGE))) {
-					Statistics.dageCollected = 1;
-				}
-				itemLevel = 3;
-			}
-			weapon.upgrade(itemLevel);
-			armor.upgrade(itemLevel);
-		}
 		
-		public static void spawn( SewerLevel level ) {
+		public static void spawn( SewerLevel level, Room room ) {
 			if (!spawned && Dungeon.depth > 1 && Random.Int( 5 - Dungeon.depth ) == 0) {
 				
 				Ghost ghost = new Ghost();
 				do {
-					ghost.pos = level.randomRespawnCell( ghost );
-				} while (ghost.pos == -1);
+					ghost.pos = level.pointToCell(room.random());
+				} while (ghost.pos == -1 || ghost.pos == level.exit());
 				level.mobs.add( ghost );
 				
 				spawned = true;
@@ -346,64 +316,36 @@ public class Ghost extends NPC {
 				depth = Dungeon.depth;
 
 				//50%:tier2, 30%:tier3, 15%:tier4, 5%:tier5
-				switch (Random.chances(new float[]{0, 0, 10, 6, 3, 1,8})){
+				switch (Random.chances(new float[]{0, 0, 10, 6, 3, 1})){
 					default:
 					case 2: armor = new LeatherArmor(); break;
 					case 3: armor = new MailArmor();    break;
 					case 4: armor = new ScaleArmor();   break;
 					case 5: armor = new PlateArmor();   break;
-					case 6: armor = new LamellarArmor();   break;
 				}
 				//50%:tier2, 30%:tier3, 15%:tier4, 5%:tier5
 				int wepTier = Random.chances(new float[]{0, 0, 10, 6, 3, 1});
-				Generator.Category c = Generator.wepTiers[wepTier - 1];
-				weapon = (MeleeWeapon) Reflection.newInstance(c.classes[Random.chances(c.probs)]);
-				food = new SmallRation.BlackMoon();
-				//26%:+0, 25%:+1, 15%:+2, 10%:+3, 5%:+4
-				ghostQuest();
+				weapon = (Weapon) Generator.random(Generator.wepTiers[wepTier - 1]);
 
-				//10% to be enchanted. We store it separately so enchant status isn't revealed early
-				if (Random.Int(10) == 0){
-					enchant = Weapon.Enchantment.random();
-					glyph = Armor.Glyph.random();
+				//clear weapon's starting properties
+				weapon.level(0);
+				weapon.enchant(null);
+				weapon.cursed = false;
+
+				//50%:+0, 30%:+1, 15%:+2, 5%:+3
+				float itemLevelRoll = Random.Float();
+				int itemLevel;
+				if (itemLevelRoll < 0.5f){
+					itemLevel = 0;
+				} else if (itemLevelRoll < 0.8f){
+					itemLevel = 1;
+				} else if (itemLevelRoll < 0.95f){
+					itemLevel = 2;
+				} else {
+					itemLevel = 3;
 				}
-
-			}
-		}
-
-		public static void spawnx( ItemLevel level ) {
-			if (!spawned && Dungeon.depth == 3) {
-
-				Ghost ghost = new Ghost();
-				do {
-					ghost.pos = level.randomRespawnCell( ghost );
-				} while (ghost.pos == -1);
-				level.mobs.add( ghost );
-
-				spawned = true;
-				//dungeon depth determines type of quest.
-				//depth2=fetid rat, 3=gnoll trickster, 4=great crab
-				type = Dungeon.depth-1;
-
-				given = false;
-				processed = false;
-				depth = Dungeon.depth;
-
-				//50%:tier2, 30%:tier3, 15%:tier4, 5%:tier5
-				switch (Random.chances(new float[]{0, 0, 10, 6, 3, 1,8})){
-					default:
-					case 2: armor = new LeatherArmor(); break;
-					case 3: armor = new MailArmor();    break;
-					case 4: armor = new ScaleArmor();   break;
-					case 5: armor = new PlateArmor();   break;
-					case 6: armor = new LamellarArmor();   break;
-				}
-				//50%:tier2, 30%:tier3, 15%:tier4, 5%:tier5
-				int wepTier = Random.chances(new float[]{0, 0, 10, 6, 3, 1});
-				Generator.Category c = Generator.wepTiers[wepTier - 1];
-				weapon = (MeleeWeapon) Reflection.newInstance(c.classes[Random.chances(c.probs)]);
-
-				ghostQuest();
+				weapon.upgrade(itemLevel);
+				armor.upgrade(itemLevel);
 
 				//10% to be enchanted. We store it separately so enchant status isn't revealed early
 				if (Random.Int(10) == 0){
@@ -420,13 +362,31 @@ public class Ghost extends NPC {
 				Sample.INSTANCE.play( Assets.Sounds.GHOST );
 				processed = true;
 				Statistics.questScores[0] = 1000;
+
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						Music.INSTANCE.fadeOut(1f, new Callback() {
+							@Override
+							public void call() {
+								if (Dungeon.level != null) {
+									Dungeon.level.playLevelMusic();
+								}
+							}
+						});
+					}
+				});
 			}
+		}
+
+		public static boolean active(){
+			return spawned && given && !processed && depth == Dungeon.depth;
 		}
 		
 		public static void complete() {
 			weapon = null;
 			armor = null;
-			food = null;
+			
 			Notes.remove( Notes.Landmark.GHOST );
 		}
 

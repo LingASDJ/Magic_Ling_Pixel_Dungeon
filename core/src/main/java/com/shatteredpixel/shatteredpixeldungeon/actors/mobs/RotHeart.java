@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -37,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Rotberry;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RotHeartSprite;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class RotHeart extends Mob {
@@ -74,7 +74,15 @@ public class RotHeart extends Mob {
 
 	@Override
 	public int defenseProc(Char enemy, int damage) {
-		GameScene.add(Blob.seed(pos, 20, ToxicGas.class));
+		//rot heart spreads less gas in enclosed spaces
+		int openNearby = 0;
+		for (int i : PathFinder.NEIGHBOURS8){
+			if (!Dungeon.level.solid[pos+i]){
+				openNearby++;
+			}
+		}
+
+		GameScene.add(Blob.seed(pos, 5 + 3*openNearby, ToxicGas.class));
 
 		return super.defenseProc(enemy, damage);
 	}
@@ -103,7 +111,6 @@ public class RotHeart extends Mob {
 	public void die(Object cause) {
 		super.die(cause);
 		Dungeon.level.drop( new Rotberry.Seed(), pos ).sprite.drop();
-		Badges.KILL_ROTHEART();
 		Statistics.questScores[1] = 2000;
 	}
 
@@ -124,7 +131,7 @@ public class RotHeart extends Mob {
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 5);
+		return super.drRoll() + Random.NormalIntRange(0, 5);
 	}
 	
 	{

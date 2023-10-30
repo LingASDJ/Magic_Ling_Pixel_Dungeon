@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +27,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
+import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
 
 import java.util.ArrayList;
@@ -41,6 +42,11 @@ public class DisplacingDart extends TippedDart {
 	
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
+
+		//only display enemies when processing charge shot
+		if (processingChargedShot && attacker.alignment == defender.alignment) {
+			return super.proc(attacker, defender, damage);
+		}
 
 		//attempts to teleport the enemy to a position 8-10 cells away from the hero
 		//prioritizes the closest visible cell to the defender, or closest non-visible if no visible are present
@@ -88,10 +94,13 @@ public class DisplacingDart extends TippedDart {
 			
 			if (chosenPos != -1){
 				ScrollOfTeleportation.appear( defender, chosenPos );
-				if (!Dungeon.level.heroFOV[chosenPos]){
-					Buff.affect(attacker, TalismanOfForesight.CharAwareness.class, 5f).charID = defender.id();
-				}
 				Dungeon.level.occupyCell(defender );
+				if (defender == Dungeon.hero){
+					Dungeon.observe();
+					GameScene.updateFog();
+				} else if (!Dungeon.level.heroFOV[chosenPos]){
+					Buff.append(attacker, TalismanOfForesight.CharAwareness.class, 5f).charID = defender.id();
+				}
 			}
 		
 		}

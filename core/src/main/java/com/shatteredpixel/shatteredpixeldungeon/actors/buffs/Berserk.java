@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,29 +29,42 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
 
-import java.text.DecimalFormat;
+public class Berserk extends Buff implements ActionIndicator.Action {
 
-public class Berserk extends Buff {
+	{
+		type = buffType.POSITIVE;
+	}
 
 	private enum State{
 		NORMAL, BERSERK, RECOVERING
 	}
 	private State state = State.NORMAL;
 
-	private static final float LEVEL_RECOVER_START = 2f;
+	private static final float LEVEL_RECOVER_START = 4f;
 	private float levelRecovery;
+
+	private static final int TURN_RECOVERY_START = 100;
+	private int turnRecovery;
 
 	public int powerLossBuffer = 0;
 	private float power = 0;
 
 	private static final String STATE = "state";
 	private static final String LEVEL_RECOVERY = "levelrecovery";
+	private static final String TURN_RECOVERY = "turn_recovery";
 	private static final String POWER = "power";
 	private static final String POWER_BUFFER = "power_buffer";
 
@@ -61,7 +74,8 @@ public class Berserk extends Buff {
 		bundle.put(STATE, state);
 		bundle.put(POWER, power);
 		bundle.put(POWER_BUFFER, powerLossBuffer);
-		if (state == State.RECOVERING) bundle.put(LEVEL_RECOVERY, levelRecovery);
+		bundle.put(LEVEL_RECOVERY, levelRecovery);
+		bundle.put(TURN_RECOVERY, turnRecovery);
 	}
 
 	@Override
@@ -71,33 +85,51 @@ public class Berserk extends Buff {
 		state = bundle.getEnum(STATE, State.class);
 		power = bundle.getFloat(POWER);
 		powerLossBuffer = bundle.getInt(POWER_BUFFER);
-		if (state == State.RECOVERING) levelRecovery = bundle.getFloat(LEVEL_RECOVERY);
+		levelRecovery = bundle.getFloat(LEVEL_RECOVERY);
+		turnRecovery = bundle.getInt(TURN_RECOVERY);
+
+		if (power >= 1f && state == State.NORMAL){
+			ActionIndicator.setAction(this);
+		}
 	}
 
 	@Override
 	public boolean act() {
-		if (berserking()){
+		if (state == State.BERSERK){
 			ShieldBuff buff = target.buff(WarriorShield.class);
-			if (target.HP <= 0) {
-				int dmg = 1 + (int)Math.ceil(target.shielding() * 0.05f);
+			if (target.shielding() > 0) {
+				//lose 2.5% of shielding per turn, but no less than 1
+				int dmg = (int)Math.ceil(target.shielding() * 0.025f);
 				if (buff != null && buff.shielding() > 0) {
-					buff.absorbDamage(dmg);
-				} else {
-					//if there is no shield buff, or it is empty, then try to remove from other shielding buffs
+					dmg = buff.absorbDamage(dmg);
+				}
+
+				if (dmg > 0){
+					//if there is leftover damage, then try to remove from other shielding buffs
 					for (ShieldBuff s : target.buffs(ShieldBuff.class)){
 						dmg = s.absorbDamage(dmg);
 						if (dmg == 0) break;
 					}
 				}
-				if (target.shielding() <= 0) {
-					target.die(this);
-					if (!target.isAlive()) Dungeon.fail(this.getClass());
+
+				if (target.shielding() <= 0){
+					state = State.RECOVERING;
+					power = 0f;
+					BuffIndicator.refreshHero();
+					if (!target.isAlive()){
+						target.die(this);
+						if (!target.isAlive()) Dungeon.fail(this);
+					}
 				}
+
 			} else {
 				state = State.RECOVERING;
-				levelRecovery = LEVEL_RECOVER_START - Dungeon.hero.pointsInTalent(Talent.BERSERKING_STAMINA)/3f;
-				if (buff != null) buff.absorbDamage(buff.shielding());
 				power = 0f;
+				if (!target.isAlive()){
+					target.die(this);
+					if (!target.isAlive()) Dungeon.fail(this);
+				}
+
 			}
 		} else if (state == State.NORMAL) {
 			if (powerLossBuffer > 0){
@@ -105,59 +137,140 @@ public class Berserk extends Buff {
 			} else {
 				power -= GameMath.gate(0.1f, power, 1f) * 0.067f * Math.pow((target.HP / (float) target.HT), 2);
 
+				if (power < 1f){
+					ActionIndicator.clearAction(this);
+				} else {
+					ActionIndicator.refresh();
+				}
+
 				if (power <= 0) {
 					detach();
 				}
+			}
+		} else if (state == State.RECOVERING && levelRecovery == 0 && Regeneration.regenOn()){
+			turnRecovery--;
+			if (turnRecovery <= 0){
+				turnRecovery = 0;
+				state = State.NORMAL;
 			}
 		}
 		spend(TICK);
 		return true;
 	}
 
-	public float rageAmount(){
-		return Math.min(1f, power);
+	@Override
+	public void detach() {
+		super.detach();
+		ActionIndicator.clearAction(this);
 	}
 
-	public int damageFactor(int dmg){
-		float bonus = Math.min(1.5f, 1f + (power / 2f));
-		return Math.round(dmg * bonus);
+	public float enchantFactor(float chance){
+		return chance + ((Math.min(1f, power) * 0.15f) * ((Hero) target).pointsInTalent(Talent.ENRAGED_CATALYST));
+	}
+
+	public float damageFactor(float dmg){
+		return dmg * Math.min(1.5f, 1f + (power / 2f));
 	}
 
 	public boolean berserking(){
-		if (target.HP == 0 && state == State.NORMAL && power >= 1f){
-
-			WarriorShield shield = target.buff(WarriorShield.class);
-			if (shield != null){
-				state = State.BERSERK;
-				int shieldAmount = shield.maxShield() * 8;
-				shieldAmount = Math.round(shieldAmount * (1f + Dungeon.hero.pointsInTalent(Talent.BERSERKING_STAMINA)/4f));
-				shield.supercharge(shieldAmount);
-
-				SpellSprite.show(target, SpellSprite.BERSERK);
-				Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
-				GameScene.flash(0xFF0000);
-			}
-
+		if (target.HP == 0
+				&& state == State.NORMAL
+				&& power >= 1f
+				&& target.buff(WarriorShield.class) != null
+				&& ((Hero)target).hasTalent(Talent.DEATHLESS_FURY)){
+			startBerserking();
+			ActionIndicator.clearAction(this);
 		}
 
 		return state == State.BERSERK && target.shielding() > 0;
 	}
+
+	private void startBerserking(){
+		state = State.BERSERK;
+		SpellSprite.show(target, SpellSprite.BERSERK);
+		Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
+		GameScene.flash(0xFF0000);
+
+		if (target.HP > 0) {
+			turnRecovery = TURN_RECOVERY_START;
+			levelRecovery = 0;
+		} else {
+			levelRecovery = LEVEL_RECOVER_START - ((Hero)target).pointsInTalent(Talent.DEATHLESS_FURY);
+			turnRecovery = 0;
+		}
+
+		//base multiplier scales at 2/3/4/5/6x at 100/37/20/9/0% HP
+		float shieldMultiplier = 2f + 4*(float)Math.pow((1f-(target.HP/(float)target.HT)), 3);
+
+		//Endless rage effect on shield and cooldown
+		if (power > 1f){
+			shieldMultiplier *= power;
+			levelRecovery *= 2f - power;
+			turnRecovery *= 2f - power;
+		}
+
+		WarriorShield shield = target.buff(WarriorShield.class);
+		int shieldAmount = Math.round(shield.maxShield() * shieldMultiplier);
+		shield.supercharge(shieldAmount);
+
+		BuffIndicator.refreshHero();
+	}
 	
 	public void damage(int damage){
-		if (state == State.RECOVERING) return;
-		float maxPower = 1f + 0.1f*((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE);
+		if (state != State.NORMAL) return;
+		float maxPower = 1f + 0.1667f*((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE);
 		power = Math.min(maxPower, power + (damage/(float)target.HT)/3f );
 		BuffIndicator.refreshHero(); //show new power immediately
 		powerLossBuffer = 3; //2 turns until rage starts dropping
+		if (power >= 1f){
+			ActionIndicator.setAction(this);
+		}
 	}
 
 	public void recover(float percent){
-		if (levelRecovery > 0){
+		if (state == State.RECOVERING && levelRecovery > 0){
 			levelRecovery -= percent;
 			if (levelRecovery <= 0) {
-				state = State.NORMAL;
 				levelRecovery = 0;
+				if (turnRecovery == 0){
+					state = State.NORMAL;
+				}
 			}
+		}
+	}
+
+	@Override
+	public String actionName() {
+		return Messages.get(this, "action_name");
+	}
+
+	@Override
+	public int actionIcon() {
+		return HeroIcon.BERSERK;
+	}
+
+	@Override
+	public Visual secondaryVisual() {
+		BitmapText txt = new BitmapText(PixelScene.pixelFont);
+		txt.text((int) (power * 100) + "%");
+		txt.hardlight(CharSprite.POSITIVE);
+		txt.measure();
+		return txt;
+	}
+
+	@Override
+	public int indicatorColor() {
+		return 0x660000;
+	}
+
+	@Override
+	public void doAction() {
+		WarriorShield shield = target.buff(WarriorShield.class);
+		if (shield != null) {
+			startBerserking();
+			ActionIndicator.clearAction(this);
+		} else {
+			GLog.w(Messages.get(this, "no_seal"));
 		}
 	}
 
@@ -186,11 +299,16 @@ public class Berserk extends Buff {
 	public float iconFadePercent() {
 		switch (state){
 			case NORMAL: default:
-				return Math.max(0f, 1f - power);
+				float maxPower = 1f + 0.1667f*((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE);
+				return (maxPower - power)/maxPower;
 			case BERSERK:
 				return 0f;
 			case RECOVERING:
-				return 1f - levelRecovery/LEVEL_RECOVER_START;
+				if (levelRecovery > 0) {
+					return 1f - levelRecovery/(LEVEL_RECOVER_START-Dungeon.hero.pointsInTalent(Talent.DEATHLESS_FURY));
+				} else {
+					return 1f - turnRecovery/(float)TURN_RECOVERY_START;
+				}
 		}
 	}
 
@@ -199,12 +317,16 @@ public class Berserk extends Buff {
 			case NORMAL: case BERSERK: default:
 				return (int)(power*100) + "%";
 			case RECOVERING:
-				return new DecimalFormat("#.#").format(levelRecovery);
+				if (levelRecovery > 0) {
+					return Messages.decimalFormat("#.##", levelRecovery);
+				} else {
+					return Integer.toString(turnRecovery);
+				}
 		}
 	}
 
 	@Override
-	public String toString() {
+	public String name() {
 		switch (state){
 			case NORMAL: default:
 				return Messages.get(this, "angered");
@@ -217,14 +339,18 @@ public class Berserk extends Buff {
 
 	@Override
 	public String desc() {
-		float dispDamage = (damageFactor(10000) / 100f) - 100f;
+		float dispDamage = ((int)damageFactor(10000) / 100f) - 100f;
 		switch (state){
 			case NORMAL: default:
 				return Messages.get(this, "angered_desc", Math.floor(power * 100f), dispDamage);
 			case BERSERK:
 				return Messages.get(this, "berserk_desc");
 			case RECOVERING:
-				return Messages.get(this, "recovering_desc", levelRecovery);
+				if (levelRecovery > 0){
+					return Messages.get(this, "recovering_desc") + "\n\n" + Messages.get(this, "recovering_desc_levels", levelRecovery);
+				} else {
+					return Messages.get(this, "recovering_desc") + "\n\n" + Messages.get(this, "recovering_desc_turns", turnRecovery);
+				}
 		}
 		
 	}

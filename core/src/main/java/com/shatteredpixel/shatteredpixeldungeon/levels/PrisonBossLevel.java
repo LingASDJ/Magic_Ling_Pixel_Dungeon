@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,8 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -38,8 +38,10 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoomerang;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TenguDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
@@ -48,7 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
+import com.watabou.utils.BArray;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
@@ -92,10 +94,7 @@ public class PrisonBossLevel extends Level {
 		if (state == State.START){
 			Music.INSTANCE.end();
 		} else if (state == State.WON) {
-			Music.INSTANCE.playTracks(
-					new String[]{Assets.Music.PRISON_1, Assets.Music.PRISON_2, Assets.Music.PRISON_2},
-					new float[]{1, 1, 0.5f},
-					false);
+			Music.INSTANCE.playTracks(PrisonLevel.PRISON_TRACK_LIST, PrisonLevel.PRISON_TRACK_CHANCES, false);
 		} else {
 			Music.INSTANCE.play(Assets.Music.PRISON_BOSS, true);
 		}
@@ -107,7 +106,7 @@ public class PrisonBossLevel extends Level {
 	
 	@Override
 	public String tilesTex() {
-		return locked ? Assets.Environment.TILES_TENGUS : Assets.Environment.TILES_PRISON;
+		return Assets.Environment.TILES_PRISON;
 	}
 	
 	@Override
@@ -133,6 +132,20 @@ public class PrisonBossLevel extends Level {
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle(bundle);
 		state = bundle.getEnum( STATE, State.class );
+
+		//pre-1.3.0 saves, recreates custom exit and entrance transitions
+		if (bundle.contains("entrance")){
+			transitions.clear();
+			if (state == State.START || state == State.WON){
+				transitions.add(new LevelTransition(this, ENTRANCE_POS, LevelTransition.Type.REGULAR_ENTRANCE));
+			}
+			if (state == State.WON){
+				LevelTransition exit = new LevelTransition(this, pointToCell(levelExit), LevelTransition.Type.REGULAR_EXIT);
+				exit.right+=2;
+				exit.bottom+=3;
+				transitions.add(exit);
+			}
+		}
 		
 		//in some states tengu won't be in the world, in others he will be.
 		if (state == State.START || state == State.FIGHT_PAUSE) {
@@ -178,15 +191,14 @@ public class PrisonBossLevel extends Level {
 	                                       new Point(8, 23), new Point(12, 23)};
 	
 	private void setMapStart(){
-		entrance = ENTRANCE_POS;
-		exit = 0;
+		transitions.add(new LevelTransition(this, ENTRANCE_POS, LevelTransition.Type.REGULAR_ENTRANCE));
 		
 		Painter.fill(this, 0, 0, 32, 32, Terrain.WALL);
 		
 		//Start
 		Painter.fill(this, entranceRoom, Terrain.WALL);
 		Painter.fill(this, entranceRoom, 1, Terrain.EMPTY);
-		Painter.set(this, entrance, Terrain.ENTRANCE);
+		Painter.set(this, ENTRANCE_POS, Terrain.ENTRANCE);
 		
 		Painter.fill(this, startHallway, Terrain.WALL);
 		Painter.fill(this, startHallway, 1, Terrain.EMPTY);
@@ -218,8 +230,7 @@ public class PrisonBossLevel extends Level {
 
 	private void setMapPause(){
 		setMapStart();
-
-		exit = entrance = 0;
+		transitions.clear();
 
 		Painter.set(this, tenguCell.left+4, tenguCell.top, Terrain.DOOR);
 
@@ -235,8 +246,8 @@ public class PrisonBossLevel extends Level {
 	private static final Rect arena = new Rect(3, 1, 18, 16);
 	
 	private void setMapArena(){
-		exit = entrance = 0;
-		
+		transitions.clear();
+
 		Painter.fill(this, 0, 0, 32, 32, Terrain.WALL);
 		
 		Painter.fill(this, arena, Terrain.WALL);
@@ -251,7 +262,7 @@ public class PrisonBossLevel extends Level {
 	private static int C = Terrain.CHASM;
 	
 	private static final Point endStart = new Point( startHallway.left+2, startHallway.top+2);
-	private static final Point levelExit = new Point( endStart.x+12, endStart.y+6);
+	private static final Point levelExit = new Point( endStart.x+11, endStart.y+6);
 	private static final int[] endMap = new int[]{
 			W, W, D, W, W, W, W, W, W, W, W, W, W, W,
 			W, e, e, e, W, W, W, W, W, W, W, W, W, W,
@@ -300,7 +311,7 @@ public class PrisonBossLevel extends Level {
 		customWalls.add(vis);
 		GameScene.add(vis, true);
 		
-		Painter.set(this, tenguCell.left+4, tenguCell.top, Terrain.CRYSTAL_DOOR);
+		Painter.set(this, tenguCell.left+4, tenguCell.top, Terrain.DOOR);
 		
 		int cell = pointToCell(endStart);
 		int i = 0;
@@ -309,8 +320,11 @@ public class PrisonBossLevel extends Level {
 			i += 14;
 			cell += width();
 		}
-		
-		exit = pointToCell(levelExit);
+
+		LevelTransition exit = new LevelTransition(this, pointToCell(levelExit), LevelTransition.Type.REGULAR_EXIT);
+		exit.right+=2;
+		exit.bottom+=3;
+		transitions.add(exit);
 	}
 	
 	//keep track of removed items as the level is changed. Dump them back into the level at the end.
@@ -319,7 +333,11 @@ public class PrisonBossLevel extends Level {
 	private void clearEntities(Rect safeArea){
 		for (Heap heap : heaps.valueList()){
 			if (safeArea == null || !safeArea.inside(cellToPoint(heap.pos))){
-				storedItems.addAll(heap.items);
+				for (Item item : heap.items){
+					if (!(item instanceof Bomb) || ((Bomb)item).fuse == null){
+						storedItems.add(item);
+					}
+				}
 				heap.destroy();
 			}
 		}
@@ -397,13 +415,9 @@ public class PrisonBossLevel extends Level {
 						return;
 					}
 				}
-
-
+				
 				seal();
-				GameScene.flash(0x80aaaaaa);
-				Camera.main.shake(1f,2f);
-				GameScene.bossReady();
-
+				Statistics.qualifiedForBossChallengeBadge = true;
 				set(pointToCell(tenguCellDoor), Terrain.LOCKED_DOOR);
 				GameScene.updateMap(pointToCell(tenguCellDoor));
 
@@ -459,6 +473,7 @@ public class PrisonBossLevel extends Level {
 				tengu.state = tengu.HUNTING;
 				tengu.pos = (arena.left + arena.width()/2) + width()*(arena.top+2);
 				GameScene.add(tengu);
+				tengu.timeToNow();
 				tengu.notice();
 				
 				GameScene.flash(0x80FFFFFF);
@@ -515,12 +530,15 @@ public class PrisonBossLevel extends Level {
 				Sample.INSTANCE.play(Assets.Sounds.BLAST);
 				
 				state = State.WON;
-				GameScene.updateMap();
-				GameScene.flash(0x80FFFFFF);
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {
-						Music.INSTANCE.end();
+						Music.INSTANCE.fadeOut(5f, new Callback() {
+							@Override
+							public void call() {
+								Music.INSTANCE.end();
+							}
+						});
 					}
 				});
 				break;
@@ -528,10 +546,9 @@ public class PrisonBossLevel extends Level {
 	}
 	
 	private boolean[] triggered = new boolean[]{false, false, false, false};
-
+	
 	@Override
 	public void occupyCell(Char ch) {
-		super.occupyCell(ch);
 		if (ch == Dungeon.hero){
 			switch (state){
 				case START:
@@ -540,12 +557,15 @@ public class PrisonBossLevel extends Level {
 					}
 					break;
 				case FIGHT_PAUSE:
+					
 					if (cellToPoint(ch.pos).y <= startHallway.top+1){
 						progress();
 					}
 					break;
 			}
 		}
+
+		super.occupyCell(ch);
 	}
 	
 	@Override
@@ -563,14 +583,7 @@ public class PrisonBossLevel extends Level {
 		if (item != null) {
 			drop( item, randomRespawnCell( null ) ).setHauntedIfCursed().type = Heap.Type.REMAINS;
 		}
-
-		if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-			drop(new IronKey(8), randomPrisonCellPos());
-		} else {
-			drop(new IronKey(10), randomPrisonCellPos());
-		}
-
-
+		drop(new IronKey(10), randomPrisonCellPos());
 	}
 
 	@Override
@@ -678,14 +691,21 @@ public class PrisonBossLevel extends Level {
 	
 	@Override
 	public int randomRespawnCell( Char ch ) {
-		int pos = ENTRANCE_POS; //random cell adjacent to the entrance.
-		int cell;
-		do {
-			cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
-		} while (!passable[cell]
-				|| (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
-				|| Actor.findChar(cell) != null);
-		return cell;
+		ArrayList<Integer> candidates = new ArrayList<>();
+		for (int i : PathFinder.NEIGHBOURS8){
+			int cell = ENTRANCE_POS + i;
+			if (passable[cell]
+					&& Actor.findChar(cell) == null
+					&& (!Char.hasProp(ch, Char.Property.LARGE) || openSpace[cell])){
+				candidates.add(cell);
+			}
+		}
+
+		if (candidates.isEmpty()){
+			return -1;
+		} else {
+			return Random.element(candidates);
+		}
 	}
 	
 	@Override

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ public class ResumeIndicator extends Tag {
 	private Image icon;
 
 	public ResumeIndicator() {
-		super(0xCDD5C0);
+		super(0xA3A695);
 
 		setSize( SIZE, SIZE );
 
@@ -67,6 +67,7 @@ public class ResumeIndicator extends Tag {
 
 	@Override
 	protected void onClick() {
+		super.onClick();
 		if (Dungeon.hero.ready) {
 			Dungeon.hero.resume();
 		}

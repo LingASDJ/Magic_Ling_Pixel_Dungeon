@@ -3,8 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
- *
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +36,7 @@ import java.util.ArrayList;
 
 public class Waterskin extends Item {
 
-	private static final int MAX_VOLUME	= 16;
+	private static final int MAX_VOLUME	= 20;
 
 	private static final String AC_DRINK	= "DRINK";
 
@@ -46,7 +45,7 @@ public class Waterskin extends Item {
 	private static final String TXT_STATUS	= "%d/%d";
 
 	{
-		image = ItemSpriteSheet.VIAL;
+		image = ItemSpriteSheet.WATERSKIN;
 
 		defaultAction = AC_DRINK;
 
@@ -86,7 +85,7 @@ public class Waterskin extends Item {
 		if (action.equals( AC_DRINK )) {
 
 			if (volume > 0) {
-
+				
 				float missingHealthPercent = 1f - (hero.HP / (float)hero.HT);
 
 				int curShield = 0;
@@ -99,7 +98,7 @@ public class Waterskin extends Item {
 						missingHealthPercent += missingShieldPercent;
 					}
 				}
-
+				
 				//trimming off 0.01 drops helps with floating point errors
 				int dropsNeeded = (int)Math.ceil((missingHealthPercent / 0.05f) - 0.01f);
 				dropsNeeded = (int)GameMath.gate(1, dropsNeeded, volume);
@@ -124,22 +123,36 @@ public class Waterskin extends Item {
 		}
 	}
 
-	public void empty() {volume = 0; updateQuickslot();}
-	protected int DewViewSword = 0;
-
-//	@Override
-//	public Item upgrade() {
-//		DewViewSword = Math.min(DewViewSword + 1, 8);
-//		return super.upgrade();
-//	}
 	@Override
-	public boolean isIdentified() {
-		return true;
+	public String info() {
+		String info = desc();
+
+		if (volume == 0){
+			info += "\n\n" + Messages.get(this, "desc_water");
+		} else {
+			info += "\n\n" + Messages.get(this, "desc_heal");
+		}
+
+		if (isFull()){
+			info += "\n\n" + Messages.get(this, "desc_full");
+		}
+
+		return info;
+	}
+
+	public void empty() {
+		volume = 0;
+		updateQuickslot();
 	}
 
 	@Override
 	public boolean isUpgradable() {
 		return false;
+	}
+
+	@Override
+	public boolean isIdentified() {
+		return true;
 	}
 
 	public boolean isFull() {

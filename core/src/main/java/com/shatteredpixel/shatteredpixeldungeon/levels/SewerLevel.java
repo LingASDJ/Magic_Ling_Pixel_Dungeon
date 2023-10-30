@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,20 +21,18 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
-import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN_SP;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Ripple;
-import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
-import com.shatteredpixel.shatteredpixeldungeon.levels.painters.JunglePainter;
+import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.SewerPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ChillingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ConfusionTrap;
@@ -48,14 +46,15 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ToxicTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.SurfaceScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Camera;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.PixelParticle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.ColorMath;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
@@ -65,6 +64,23 @@ public class SewerLevel extends RegularLevel {
 	{
 		color1 = 0x48763c;
 		color2 = 0x59994a;
+	}
+
+	public static final String[] SEWER_TRACK_LIST
+			= new String[]{Assets.Music.SEWERS_1, Assets.Music.SEWERS_2, Assets.Music.SEWERS_2,
+			Assets.Music.SEWERS_1, Assets.Music.SEWERS_3, Assets.Music.SEWERS_3};
+	public static final float[] SEWER_TRACK_CHANCES = new float[]{1f, 1f, 0.5f, 0.25f, 1f, 0.5f};
+
+	public void playLevelMusic(){
+		if (Ghost.Quest.active() || Statistics.amuletObtained){
+			if (Statistics.amuletObtained && Dungeon.depth == 1){
+				Music.INSTANCE.play(Assets.Music.THEME_FINALE, true);
+			} else {
+				Music.INSTANCE.play(Assets.Music.SEWERS_TENSE, true);
+			}
+		} else {
+			Music.INSTANCE.playTracks(SEWER_TRACK_LIST, SEWER_TRACK_CHANCES, false);
+		}
 	}
 	
 	@Override
@@ -83,42 +99,10 @@ public class SewerLevel extends RegularLevel {
 	
 	@Override
 	protected Painter painter() {
-		return new JunglePainter()
+		return new SewerPainter()
 				.setWater(feeling == Feeling.WATER ? 0.85f : 0.30f, 5)
 				.setGrass(feeling == Feeling.GRASS ? 0.80f : 0.20f, 4)
 				.setTraps(nTraps(), trapClasses(), trapChances());
-	}
-
-
-	public void updateChasmTerrain() {
-		synchronized (map){
-			for (int i = 0; i < map.length; i++) {
-				if (map[i] == SIGN_SP) {
-					// 将 SIGN_SP 地块改为新地形
-					set(i, Terrain.LOCKED_EXIT);
-					GameScene.updateMap(i); // 更新地图显示
-					Camera.main.shake(3f,6f);
-				} else if(hero.buff(LockedFloor.class) == null
-						&& map[i] == Terrain.LOCKED_EXIT) {
-					// 将 CHASM 地块改为新地形
-					set(i, Terrain.EMPTY);
-					GameScene.updateMap(i); // 更新地图显示
-				}
-				if (map[i] == SIGN) {
-					// 将 SIGN 地块改为新地形
-					set(i, Terrain.WATER);
-					GameScene.updateMap(i); // 更新地图显示
-				}
-				Ankh weapon = Dungeon.hero.belongings.getItem(Ankh.class);
-				if (weapon != null) {
-					Dungeon.level.drop(weapon, entrance).sprite.drop();
-					weapon.detachAll(hero.belongings.backpack);
-					GLog.w(Messages.get(Level.class,"weapon"));
-				}
-				playBGM(Assets.BGM_BOSSA, true);
-				GameScene.flash(Window.DeepPK_COLOR);
-			}
-		}
 	}
 	
 	@Override
@@ -150,18 +134,37 @@ public class SewerLevel extends RegularLevel {
 						2, 2,
 						1, 1, 1, 1, 1};
 	}
-	
-	@Override
-	protected void createItems() {
-		Ghost.Quest.spawn( this );
 
-		if(Dungeon.depth == 1){
-			drop(new ScrollOfUpgrade(), exit-1 );
-		}
-		
-		super.createItems();
+	@Override
+	protected void createMobs() {
+		Ghost.Quest.spawn( this, roomExit );
+		super.createMobs();
 	}
 	
+	@Override
+	public boolean activateTransition(Hero hero, LevelTransition transition) {
+		if (transition.type == LevelTransition.Type.SURFACE){
+			if (hero.belongings.getItem( Amulet.class ) == null) {
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						GameScene.show( new WndMessage( Messages.get(hero, "leave") ) );
+					}
+				});
+				return false;
+			} else {
+				Statistics.ascended = true;
+				Badges.silentValidateHappyEnd();
+				Dungeon.win( Amulet.class );
+				Dungeon.deleteGame( GamesInProgress.curSlot, true );
+				Game.switchScene( SurfaceScene.class );
+				return true;
+			}
+		} else {
+			return super.activateTransition(hero, transition);
+		}
+	}
+
 	@Override
 	public Group addVisuals() {
 		super.addVisuals();

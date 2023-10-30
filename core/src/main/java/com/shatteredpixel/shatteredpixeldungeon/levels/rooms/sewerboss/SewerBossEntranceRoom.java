@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.sewerboss;
 
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
@@ -46,12 +47,14 @@ public class SewerBossEntranceRoom extends EntranceRoom {
 		
 		Painter.fill( level, left+1, top+1, width()-2, 1, Terrain.WALL_DECO);
 		Painter.fill( level, left+1, top+2, width()-2, 1, Terrain.WATER);
-		
+
+		int entrance;
 		do {
-			level.entrance = level.pointToCell(random(3));
-		} while (level.findMob(level.entrance) != null);
-		Painter.set( level, level.entrance, Terrain.ENTRANCE );
-		
+			entrance = level.pointToCell(random(3));
+		} while (level.findMob(entrance) != null);
+		Painter.set( level, entrance, Terrain.ENTRANCE );
+		level.transitions.add(new LevelTransition(level, entrance, LevelTransition.Type.REGULAR_ENTRANCE));
+
 		for (Room.Door door : connected.values()) {
 			door.set( Room.Door.Type.REGULAR );
 			

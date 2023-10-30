@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
@@ -161,7 +163,9 @@ abstract public class MissileWeapon extends Weapon {
 			}
 		}
 
-		if (projecting && !Dungeon.level.solid[dst] && Dungeon.level.distance(user.pos, dst) <= 4){
+		if (projecting
+				&& (Dungeon.level.passable[dst] || Dungeon.level.avoid[dst])
+				&& Dungeon.level.distance(user.pos, dst) <= Math.round(4 * Enchantment.genericProcChanceMultiplier(user))){
 			return dst;
 		} else {
 			return super.throwPos(user, dst);
@@ -169,12 +173,27 @@ abstract public class MissileWeapon extends Weapon {
 	}
 
 	@Override
-	public float accuracyFactor(Char owner) {
-		float accFactor = super.accuracyFactor(owner);
+	public float accuracyFactor(Char owner, Char target) {
+		float accFactor = super.accuracyFactor(owner, target);
 		if (owner instanceof Hero && owner.buff(Momentum.class) != null && owner.buff(Momentum.class).freerunning()){
 			accFactor *= 1f + 0.2f*((Hero) owner).pointsInTalent(Talent.PROJECTILE_MOMENTUM);
 		}
+
+		accFactor *= adjacentAccFactor(owner, target);
+
 		return accFactor;
+	}
+
+	protected float adjacentAccFactor(Char owner, Char target){
+		if (Dungeon.level.adjacent( owner.pos, target.pos )) {
+			if (owner instanceof Hero){
+				return (0.5f + 0.2f*((Hero) owner).pointsInTalent(Talent.POINT_BLANK));
+			} else {
+				return 0.5f;
+			}
+		} else {
+			return 1.5f;
+		}
 	}
 
 	@Override
@@ -187,8 +206,21 @@ abstract public class MissileWeapon extends Weapon {
 	protected void onThrow( int cell ) {
 		Char enemy = Actor.findChar( cell );
 		if (enemy == null || enemy == curUser) {
-				parent = null;
-				super.onThrow( cell );
+			parent = null;
+
+			//metamorphed seer shot logic
+			if (curUser.hasTalent(Talent.SEER_SHOT)
+					&& curUser.heroClass != HeroClass.HUNTRESS
+					&& curUser.buff(Talent.SeerShotCooldown.class) == null){
+				if (Actor.findChar(cell) == null) {
+					RevealedArea a = Buff.affect(curUser, RevealedArea.class, 5 * curUser.pointsInTalent(Talent.SEER_SHOT));
+					a.depth = Dungeon.depth;
+					a.pos = cell;
+					Buff.affect(curUser, Talent.SeerShotCooldown.class, 20f);
+				}
+			}
+
+			super.onThrow( cell );
 		} else {
 			if (!curUser.shoot( enemy, this )) {
 				rangedMiss( cell );
@@ -231,6 +263,11 @@ abstract public class MissileWeapon extends Weapon {
 			}
 		}
 		return this;
+	}
+
+	public String status() {
+		//show quantity even when it is 1
+		return Integer.toString( quantity );
 	}
 	
 	@Override

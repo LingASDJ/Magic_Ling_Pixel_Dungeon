@@ -1,15 +1,30 @@
-package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015 Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2023 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
+package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -42,7 +57,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
@@ -100,20 +114,20 @@ public class YogDzewa extends Mob {
 	{
 		//offset seed slightly to avoid output patterns
 		Random.pushGenerator(Dungeon.seedCurDepth()+1);
-		fistSummons.add(Random.Int(2) == 0 ? YogFist.BurningFist.class : YogFist.SoiledFist.class);
-		fistSummons.add(Random.Int(2) == 0 ? YogFist.RottingFist.class : YogFist.RustedFist.class);
-		fistSummons.add(Random.Int(2) == 0 ? YogFist.BrightFist.class : YogFist.DarkFist.class);
-		Random.shuffle(fistSummons);
-		//randomly place challenge summons so that two fists of a pair can never spawn together
-		if (Random.Int(2) == 0){
-			challengeSummons.add(getPairedFist(fistSummons.get(1)));
-			challengeSummons.add(getPairedFist(fistSummons.get(2)));
-			challengeSummons.add(getPairedFist(fistSummons.get(0)));
-		} else {
-			challengeSummons.add(getPairedFist(fistSummons.get(2)));
-			challengeSummons.add(getPairedFist(fistSummons.get(0)));
-			challengeSummons.add(getPairedFist(fistSummons.get(1)));
-		}
+			fistSummons.add(Random.Int(2) == 0 ? YogFist.BurningFist.class : YogFist.SoiledFist.class);
+			fistSummons.add(Random.Int(2) == 0 ? YogFist.RottingFist.class : YogFist.RustedFist.class);
+			fistSummons.add(Random.Int(2) == 0 ? YogFist.BrightFist.class : YogFist.DarkFist.class);
+			Random.shuffle(fistSummons);
+			//randomly place challenge summons so that two fists of a pair can never spawn together
+			if (Random.Int(2) == 0){
+				challengeSummons.add(getPairedFist(fistSummons.get(1)));
+				challengeSummons.add(getPairedFist(fistSummons.get(2)));
+				challengeSummons.add(getPairedFist(fistSummons.get(0)));
+			} else {
+				challengeSummons.add(getPairedFist(fistSummons.get(2)));
+				challengeSummons.add(getPairedFist(fistSummons.get(0)));
+				challengeSummons.add(getPairedFist(fistSummons.get(1)));
+			}
 		Random.popGenerator();
 	}
 
@@ -181,6 +195,17 @@ public class YogDzewa extends Mob {
 			summonCooldown = -15; //summon a burst of minions!
 			phase = 5;
 			BossHealthBar.bleed(true);
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					Music.INSTANCE.fadeOut(0.5f, new Callback() {
+						@Override
+						public void call() {
+							Music.INSTANCE.play(Assets.Music.HALLS_BOSS_FINALE, true);
+						}
+					});
+				}
+			});
 		}
 
 		if (phase == 0){
@@ -227,6 +252,11 @@ public class YogDzewa extends Mob {
 						if (Dungeon.level.heroFOV[pos]) {
 							ch.sprite.flash();
 							CellEmitter.center(pos).burst(PurpleParticle.BURST, Random.IntRange(1, 2));
+						}
+						if (!ch.isAlive() && ch == Dungeon.hero) {
+							Badges.validateDeathFromEnemyMagic();
+							Dungeon.fail(this);
+							GLog.n(Messages.get(Char.class, "kill", name()));
 						}
 					} else {
 						ch.sprite.showStatus( CharSprite.NEUTRAL,  ch.defenseVerb() );
@@ -315,7 +345,7 @@ public class YogDzewa extends Mob {
 				if (spawnPos != -1) {
 					summon.pos = spawnPos;
 					GameScene.add( summon );
-					Actor.addDelayed( new Pushing( summon, pos, summon.pos ), -1 );
+					Actor.add( new Pushing( summon, pos, summon.pos ) );
 					summon.beckon(Dungeon.hero.pos);
 					Dungeon.level.occupyCell(summon);
 
@@ -387,21 +417,11 @@ public class YogDzewa extends Mob {
 
 			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
 				addFist((YogFist)Reflection.newInstance(challengeSummons.remove(0)));
-				if(phase == 3){
-					YogFist.FreezingFist freezingFist = new YogFist.FreezingFist();
-					freezingFist.pos = pos-3;
-					GameScene.add(freezingFist);
-					Camera.main.shake(1,3f);
-					GameScene.flash(0x808080,true);
-					YogFist.HaloFist haloFist = new YogFist.HaloFist();
-					haloFist.pos = pos+3;
-					GameScene.add(haloFist);
-				}
 			}
 
-			CellEmitter.get(Dungeon.level.exit-1).burst(ShadowParticle.UP, 25);
-			CellEmitter.get(Dungeon.level.exit).burst(ShadowParticle.UP, 100);
-			CellEmitter.get(Dungeon.level.exit+1).burst(ShadowParticle.UP, 25);
+			CellEmitter.get(Dungeon.level.exit()-1).burst(ShadowParticle.UP, 25);
+			CellEmitter.get(Dungeon.level.exit()).burst(ShadowParticle.UP, 100);
+			CellEmitter.get(Dungeon.level.exit()+1).burst(ShadowParticle.UP, 25);
 
 			if (abilityCooldown < 5) abilityCooldown = 5;
 			if (summonCooldown < 5) summonCooldown = 5;
@@ -417,16 +437,16 @@ public class YogDzewa extends Mob {
 	}
 
 	public void addFist(YogFist fist){
-		fist.pos = Dungeon.level.exit;
+		fist.pos = Dungeon.level.exit();
 
-		CellEmitter.get(Dungeon.level.exit-1).burst(ShadowParticle.UP, 25);
-		CellEmitter.get(Dungeon.level.exit).burst(ShadowParticle.UP, 100);
-		CellEmitter.get(Dungeon.level.exit+1).burst(ShadowParticle.UP, 25);
+		CellEmitter.get(Dungeon.level.exit()-1).burst(ShadowParticle.UP, 25);
+		CellEmitter.get(Dungeon.level.exit()).burst(ShadowParticle.UP, 100);
+		CellEmitter.get(Dungeon.level.exit()+1).burst(ShadowParticle.UP, 25);
 
 		if (abilityCooldown < 5) abilityCooldown = 5;
 		if (summonCooldown < 5) summonCooldown = 5;
 
-		int targetPos = Dungeon.level.exit + Dungeon.level.width();
+		int targetPos = Dungeon.level.exit() + Dungeon.level.width();
 
 		if (!Dungeon.isChallenged(Challenges.STRONGER_BOSSES)
 				&& (Actor.findChar(targetPos) == null || Actor.findChar(targetPos) instanceof Sheep)){
@@ -444,11 +464,8 @@ public class YogDzewa extends Mob {
 		}
 
 		GameScene.add(fist, 4);
-		Actor.addDelayed( new Pushing( fist, Dungeon.level.exit, fist.pos ), -1 );
+		Actor.add( new Pushing( fist, Dungeon.level.exit(), fist.pos ) );
 		Dungeon.level.occupyCell(fist);
-
-
-
 	}
 
 	public void updateVisibility( Level level ){
@@ -480,6 +497,11 @@ public class YogDzewa extends Mob {
 	}
 
 	@Override
+	public void clearEnemy() {
+		//do nothing
+	}
+
+	@Override
 	public void aggro(Char ch) {
 		for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
 			if (Dungeon.level.distance(pos, mob.pos) <= 4 &&
@@ -499,30 +521,15 @@ public class YogDzewa extends Mob {
 			}
 		}
 
-		if(Dungeon.isChallenged(RLPT)){
-			Badges.GOODRLPT();
-		}
-
-		if(!Dungeon.whiteDaymode){
-			PaswordBadges.NIGHT_CAT();
-		}
-
-		if(Dungeon.isChallenged(AQUAPHOBIA)){
-			Badges.CLEARWATER();
-		}
-
-		if(Dungeon.isChallenged(SBSG)){
-			PaswordBadges.BIGX();
-		}
-
-		if(Dungeon.isChallenged(EXSG)){
-			PaswordBadges.EXSG();
-		}
-
 		updateVisibility(Dungeon.level);
 
 		GameScene.bossSlain();
 
+		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && Statistics.spawnersAlive == 4){
+			Badges.validateBossChallengeCompleted();
+		} else {
+			Statistics.qualifiedForBossChallengeBadge = false;
+		}
 		Statistics.bossScores[4] += 5000 + 1250*Statistics.spawnersAlive;
 
 		Dungeon.level.unseal();
@@ -644,6 +651,7 @@ public class YogDzewa extends Mob {
 			maxLvl = -2;
 
 			properties.add(Property.DEMONIC);
+			properties.add(Property.BOSS_MINION);
 		}
 
 		@Override
@@ -667,16 +675,19 @@ public class YogDzewa extends Mob {
 	public static class YogRipper extends RipperDemon {
 		{
 			maxLvl = -2;
+			properties.add(Property.BOSS_MINION);
 		}
 	}
 	public static class YogEye extends Eye {
 		{
 			maxLvl = -2;
+			properties.add(Property.BOSS_MINION);
 		}
 	}
 	public static class YogScorpio extends Scorpio {
 		{
 			maxLvl = -2;
+			properties.add(Property.BOSS_MINION);
 		}
 	}
 }

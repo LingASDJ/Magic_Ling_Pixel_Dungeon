@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,19 +50,21 @@ public class Terrain {
 	public static final int EMPTY_DECO		= 20;
 	public static final int LOCKED_EXIT		= 21;
 	public static final int UNLOCKED_EXIT	= 22;
-	public static final int SIGN			= 23;
 	public static final int WELL			= 24;
-	public static final int STATUE			= 25;
-	public static final int STATUE_SP		= 26;
 	public static final int BOOKSHELF		= 27;
 	public static final int ALCHEMY			= 28;
 
+	public static final int CUSTOM_DECO_EMPTY = 32; //regular empty tile that can't be overridden, used for custom visuals mainly
+	//solid environment decorations
+	public static final int CUSTOM_DECO	    = 23; //invisible decoration that will also be a custom visual, re-uses the old terrain ID for signs
+	public static final int STATUE			= 25;
+	public static final int STATUE_SP		= 26;
+	//These decorations are environment-specific
+	//33 and 34 are reserved for future statue-like decorations
+	public static final int MINE_CRYSTAL    = 35;
+	public static final int MINE_BOULDER    = 36;
+
 	public static final int WATER		    = 29;
-
-	public static final int LAVA		    = 30;
-
-	public static final int SIGN_SP			= 33;
-
 	
 	public static final int PASSABLE		= 0x01;
 	public static final int LOS_BLOCKING	= 0x02;
@@ -80,7 +82,6 @@ public class Terrain {
 		flags[GRASS]		= PASSABLE | FLAMABLE;
 		flags[EMPTY_WELL]	= PASSABLE;
 		flags[WATER]		= PASSABLE | LIQUID;
-		flags[LAVA]			= AVOID | PIT | LIQUID;
 		flags[WALL]			= LOS_BLOCKING | SOLID;
 		flags[DOOR]			= PASSABLE | LOS_BLOCKING | FLAMABLE | SOLID;
 		flags[OPEN_DOOR]	= PASSABLE | FLAMABLE;
@@ -104,20 +105,17 @@ public class Terrain {
 		flags[EMPTY_DECO]	= flags[EMPTY];
 		flags[LOCKED_EXIT]	= SOLID;
 		flags[UNLOCKED_EXIT]= PASSABLE;
-
-		//Currently these are unused except for visual tile overrides where we want terrain to be solid with no other properties
-		flags[SIGN]			= SOLID;
-
-		flags[SIGN_SP] 		= PASSABLE;
-
-
-
-		// to be solid with no other properties
 		flags[WELL]			= AVOID;
-		flags[STATUE]		= SOLID;
-		flags[STATUE_SP]	= flags[STATUE];
 		flags[BOOKSHELF]	= flags[BARRICADE];
 		flags[ALCHEMY]		= SOLID;
+
+		flags[CUSTOM_DECO_EMPTY] = flags[EMPTY];
+		flags[CUSTOM_DECO] = SOLID;
+		flags[STATUE] = SOLID;
+		flags[STATUE_SP] = flags[STATUE];
+
+		flags[MINE_CRYSTAL] = SOLID;
+		flags[MINE_BOULDER] = SOLID;
 
 	}
 
@@ -130,16 +128,6 @@ public class Terrain {
 		default:
 			return terr;
 		}
-	}
-
-	//removes signs, places floors instead
-	public static int[] convertTilesFrom0_6_0b(int[] map){
-		for (int i = 0; i < map.length; i++){
-			if (map[i] == 23){
-				map[i] = 1;
-			}
-		}
-		return map;
 	}
 
 }

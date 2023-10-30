@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,9 +34,9 @@ public class WalledGooRoom extends GooBossRoom {
 		Painter.fill( level, this, Terrain.WALL );
 		Painter.fill( level, this, 1 , Terrain.EMPTY_SP );
 		Painter.fill( level, this, 2 , Terrain.EMPTY );
-		
-		int pillarW = (width()-2)/3;
-		int pillarH = (height()-2)/3;
+
+		int pillarW = (width()-6)/2;
+		int pillarH = (height()-6)/2;
 		
 		Painter.fill(level, left+2, top+2, pillarW, 1, Terrain.WALL);
 		Painter.fill(level, left+2, top+2, 1, pillarH, Terrain.WALL);

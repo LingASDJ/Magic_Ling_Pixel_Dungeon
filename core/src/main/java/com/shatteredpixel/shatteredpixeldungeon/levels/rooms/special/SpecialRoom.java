@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,12 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EyeRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.YinYangRoom;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
@@ -82,26 +79,18 @@ public abstract class SpecialRoom extends Room {
 		}
 	}
 
-	//10 special rooms which give equipment more often than consumables (or as often as)
-	private static final ArrayList<Class<? extends SpecialRoom>> EQUIP_SPECIALS =
-			new ArrayList<>( Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? Arrays.asList(
-					CryptRoom.class, PoolRoom.class, ArmoryRoom.class, SentryRoom.class,
-					StatueRoom.class, CrystalVaultRoom.class, CrystalPathRoom.class, CrystalChoiceRoom.class,
-					YinYangRoom.class,
-					SacrificeRoom.class, EyeRoom.class
-			) :
-					Arrays.asList(
+	//9 special rooms which give equipment more often than consumables (or as often as)
+	private static final ArrayList<Class<? extends SpecialRoom>> EQUIP_SPECIALS = new ArrayList<>( Arrays.asList(
 			WeakFloorRoom.class, CryptRoom.class, PoolRoom.class, ArmoryRoom.class, SentryRoom.class,
-			StatueRoom.class, CrystalVaultRoom.class, CrystalPathRoom.class, CrystalChoiceRoom.class, YinYangRoom.class,
-			SacrificeRoom.class,EyeRoom.class
+			StatueRoom.class, CrystalVaultRoom.class, CrystalChoiceRoom.class, SacrificeRoom.class
 	));
 
-	//9 special rooms which give consumables more often than equipment
+	//10 special rooms which give consumables more often than equipment
 	//note that alchemy rooms are spawned separately
 	private static final ArrayList<Class<? extends SpecialRoom>> CONSUMABLE_SPECIALS = new ArrayList<>( Arrays.asList(
 			RunestoneRoom.class, GardenRoom.class, LibraryRoom.class, StorageRoom.class,
 			TreasuryRoom.class, MagicWellRoom.class, ToxicGasRoom.class, MagicalFireRoom.class,
-			TrapsRoom.class
+			TrapsRoom.class, CrystalPathRoom.class
 	) );
 
 	//only one special that uses crystal keys per floor
@@ -128,10 +117,8 @@ public abstract class SpecialRoom extends Room {
 		Random.shuffle(runEquipSpecials);
 		Random.shuffle(runConsSpecials);
 
-		// TODO currently always an equip special first as there's 1 more of them, adjust as needed if adding more
-		/*if (Random.Int(2) == 0){
-			runSpecials.add(runConsSpecials.remove(0));
-		}*/
+		// TODO currently always a consumable special first as there's 1 more of them, adjust as needed if adding more
+		runSpecials.add(runConsSpecials.remove(0));
 
 		while (!runEquipSpecials.isEmpty() || !runConsSpecials.isEmpty()){
 			if (!runEquipSpecials.isEmpty())    runSpecials.add(runEquipSpecials.remove(0));
@@ -191,7 +178,7 @@ public abstract class SpecialRoom extends Room {
 
 			Room r = Reflection.newInstance(floorSpecials.get( index ));
 
-			if (r instanceof WeakFloorRoom && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
+			if (r instanceof WeakFloorRoom){
 				pitNeededDepth = Dungeon.depth + 1;
 			}
 			

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,14 +24,13 @@ package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -47,11 +46,13 @@ public class ScrollOfMirrorImage extends Scroll {
 	
 	@Override
 	public void doRead() {
-		int spawnedImages = spawnImages(curUser, NIMAGES);
-		
-		if (spawnedImages > 0) {
-			identify();
+		detach(curUser.belongings.backpack);
+		if ( spawnImages(curUser, NIMAGES) > 0){
+			GLog.i(Messages.get(this, "copies"));
+		} else {
+			GLog.i(Messages.get(this, "no_copies"));
 		}
+		identify();
 		
 		Sample.INSTANCE.play( Assets.Sounds.READ );
 		
@@ -85,70 +86,6 @@ public class ScrollOfMirrorImage extends Scroll {
 		}
 		
 		return spawned;
-	}
-	
-	public static class DelayedImageSpawner extends Buff{
-		
-		public DelayedImageSpawner(){
-			this(NIMAGES, NIMAGES, 1);
-		}
-		
-		public DelayedImageSpawner( int total, int perRound, float delay){
-			super();
-			totImages = total;
-			imPerRound = perRound;
-			this.delay = delay;
-		}
-		
-		private int totImages;
-		private int imPerRound;
-		private float delay;
-		
-		@Override
-		public boolean attachTo(Char target) {
-			if (super.attachTo(target)){
-				spend(delay);
-				return true;
-			} else {
-				return false;
-			}
-		}
-		
-		@Override
-		public boolean act() {
-			
-			int spawned = spawnImages((Hero)target,  Math.min(totImages, imPerRound));
-			
-			totImages -= spawned;
-			
-			if (totImages <0){
-				detach();
-			} else {
-				spend( delay );
-			}
-			
-			return true;
-		}
-		
-		private static final String TOTAL = "images";
-		private static final String PER_ROUND = "per_round";
-		private static final String DELAY = "delay";
-		
-		@Override
-		public void storeInBundle(Bundle bundle) {
-			super.storeInBundle(bundle);
-			bundle.put( TOTAL, totImages );
-			bundle.put( PER_ROUND, imPerRound );
-			bundle.put( DELAY, delay );
-		}
-		
-		@Override
-		public void restoreFromBundle(Bundle bundle) {
-			super.restoreFromBundle(bundle);
-			totImages = bundle.getInt( TOTAL );
-			imPerRound = bundle.getInt( PER_ROUND );
-			delay = bundle.getFloat( DELAY );
-		}
 	}
 
 	@Override

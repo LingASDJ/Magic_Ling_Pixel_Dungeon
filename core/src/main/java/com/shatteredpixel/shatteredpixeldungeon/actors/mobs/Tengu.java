@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,13 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -39,10 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
@@ -53,7 +47,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -62,7 +55,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -74,7 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TenguSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
-import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
+import com.watabou.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
@@ -107,16 +99,6 @@ public class Tengu extends Mob {
 	}
 	
 	@Override
-	protected void onAdd() {
-		//when he's removed and re-added to the fight, his time is always set to now.
-		if (cooldown() > TICK) {
-			timeToNow();
-			spendToWhole();
-		}
-		super.onAdd();
-	}
-	
-	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( 6, 12 );
 	}
@@ -132,17 +114,18 @@ public class Tengu extends Mob {
 	
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 5);
+		return super.drRoll() + Random.NormalIntRange(0, 5);
 	}
 
 	boolean loading = false;
 
 	//Tengu is immune to debuffs and damage when removed from the level
 	@Override
-	public void add(Buff buff) {
+	public boolean add(Buff buff) {
 		if (Actor.chars().contains(this) || buff instanceof Doom || loading){
-			super.add(buff);
+			return super.add(buff);
 		}
+		return false;
 	}
 
 	@Override
@@ -166,8 +149,8 @@ public class Tengu extends Mob {
 		
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 		if (lock != null) {
-			int multiple = state == PrisonBossLevel.State.FIGHT_START ? 1 : 4;
-			lock.addTime(dmg*multiple);
+			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(2*dmg/3f);
+			else                                                    lock.addTime(dmg);
 		}
 		
 		//phase 2 of the fight is over
@@ -196,9 +179,23 @@ public class Tengu extends Mob {
 			((PrisonBossLevel)Dungeon.level).progress();
 			BossHealthBar.bleed(true);
 			
-			//if tengu has lost a certain amount of hp, jump
+		//if tengu has lost a certain amount of hp, jump
 		} else if (beforeHitHP / hpBracket != HP / hpBracket) {
-			jump();
+			//let full attack action complete first
+			Actor.add(new Actor() {
+
+				{
+					actPriority = VFX_PRIO;
+				}
+
+				@Override
+				protected boolean act() {
+					Actor.remove(this);
+					jump();
+					return true;
+				}
+			});
+			return;
 		}
 	}
 	
@@ -209,15 +206,19 @@ public class Tengu extends Mob {
 
 	@Override
 	public void die( Object cause ) {
+		
 		if (Dungeon.hero.subClass == HeroSubClass.NONE) {
 			Dungeon.level.drop( new TengusMask(), pos ).sprite.drop();
 		}
-		Dungeon.level.drop( new CrystalKey(depth), pos-1 ).sprite.drop();
-		Statistics.bossScores[1] += 2000;
+		
 		GameScene.bossSlain();
 		super.die( cause );
 		
 		Badges.validateBossSlain();
+		if (Statistics.qualifiedForBossChallengeBadge){
+			Badges.validateBossChallengeCompleted();
+		}
+		Statistics.bossScores[1] += 2000;
 		
 		LloydsBeacon beacon = Dungeon.hero.belongings.getItem(LloydsBeacon.class);
 		if (beacon != null) {
@@ -226,46 +227,9 @@ public class Tengu extends Mob {
 		
 		yell( Messages.get(this, "defeated") );
 	}
-
-	//7回合的开场动画
-	private int timeLeft = 12;
-	float incTime = 0;
+	
 	@Override
 	protected boolean canAttack( Char enemy ) {
-		/**Tengu Ready Animation
-		  天狗动画，切换地块变得河里
-		 */
-		if (timeLeft >= 0 && incTime >= 0){
-			timeLeft -= 1;
-			incTime = 0;
-
-			if(timeLeft == 11){
-				//给予玩家玫瑰结界+冰冻，保证有7回合无敌且无法行动的时间
-				Buff.affect(enemy, Frost.class, timeLeft);
-				Buff.affect(enemy, RoseShiled.class, timeLeft);
-				//给予天狗鬼磷燃烧buff，使它攻击玩家的同时也会布置陷阱。可以提前告知玩家天狗的一阶段行动策略
-				Buff.affect(this, HalomethaneBurning.class ).reignite( this, timeLeft*1000 );
-				GLog.n(Messages.get(Tengu.class, "cut_you"));
-			}
-
-			if(timeLeft == 9){
-				enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Tengu.class, "rose"));
-			}
-
-			if(timeLeft == 7){
-				this.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Tengu.class, "cut_you2",enemy.name()));
-			}
-
-			//到达0后，天狗去除磷火buff，并且血量回满
-			if(timeLeft == 0){
-				//TODO 乐，所以还是用到了resetScene()
-				ShatteredPixelDungeon.resetScene();
-				HP = HT;
-				Buff.detach(this, HalomethaneBurning.class );
-				GLog.n(Messages.get(Tengu.class, "ready",enemy.name()));
-			}
-		}
-
 		return new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos;
 	}
 	
@@ -388,10 +352,6 @@ public class Tengu extends Mob {
 	private static final String ABILITIES_USED   = "abilities_used";
 	private static final String ARENA_JUMPS      = "arena_jumps";
 	private static final String ABILITY_COOLDOWN = "ability_cooldown";
-
-	private static final String ANMONTION_TIME = "an_time";
-
-	private static final String INCE_TIME = "ince_time";
 	
 	@Override
 	public void storeInBundle(Bundle bundle) {
@@ -400,10 +360,6 @@ public class Tengu extends Mob {
 		bundle.put( ABILITIES_USED, abilitiesUsed );
 		bundle.put( ARENA_JUMPS, arenaJumps );
 		bundle.put( ABILITY_COOLDOWN, abilityCooldown );
-
-		bundle.put(ANMONTION_TIME,timeLeft);
-
-		bundle.put(INCE_TIME,incTime);
 	}
 	
 	@Override
@@ -415,9 +371,6 @@ public class Tengu extends Mob {
 		abilitiesUsed = bundle.getInt( ABILITIES_USED );
 		arenaJumps = bundle.getInt( ARENA_JUMPS );
 		abilityCooldown = bundle.getInt( ABILITY_COOLDOWN );
-
-		timeLeft =bundle.getInt( ANMONTION_TIME);
-		incTime =bundle.getInt( INCE_TIME);
 		
 		BossHealthBar.assignBoss(this);
 		if (HP <= HT/2) BossHealthBar.bleed(true);
@@ -427,14 +380,11 @@ public class Tengu extends Mob {
 	private boolean yelledCoward = false;
 	
 	//tengu is always hunting
-
-
-
 	private class Hunting extends Mob.Hunting{
-
+		
 		@Override
 		public boolean act(boolean enemyInFOV, boolean justAlerted) {
-
+			
 			enemySeen = enemyInFOV;
 			if (enemyInFOV && !isCharmedBy( enemy ) && canAttack( enemy )) {
 				
@@ -463,9 +413,8 @@ public class Tengu extends Mob {
 				}
 				
 				spend( TICK );
-
 				return true;
-
+				
 			}
 		}
 	}
@@ -607,11 +556,17 @@ public class Tengu extends Mob {
 		
 		int targetCell = -1;
 		
-		//Targets closest cell which is adjacent to target
+		//Targets closest cell which is adjacent to target and has no existing bombs
 		for (int i : PathFinder.NEIGHBOURS8){
 			int cell = target.pos + i;
-			if (targetCell == -1 ||
-					Dungeon.level.trueDistance(cell, thrower.pos) < Dungeon.level.trueDistance(targetCell, thrower.pos)){
+			boolean bombHere = false;
+			for (BombAbility b : thrower.buffs(BombAbility.class)){
+				if (b.bombPos == cell){
+					bombHere = true;
+				}
+			}
+			if (!bombHere && !Dungeon.level.solid[cell] &&
+					(targetCell == -1 || Dungeon.level.trueDistance(cell, thrower.pos) < Dungeon.level.trueDistance(targetCell, thrower.pos))){
 				targetCell = cell;
 			}
 		}
@@ -666,7 +621,7 @@ public class Tengu extends Mob {
 					if (PathFinder.distance[cell] < Integer.MAX_VALUE) {
 						Char ch = Actor.findChar(cell);
 						if (ch != null && !(ch instanceof Tengu)) {
-							int dmg = Random.NormalIntRange(5 + depth, 10 + depth * 2);
+							int dmg = Random.NormalIntRange(5 + Dungeon.scalingDepth(), 10 + Dungeon.scalingDepth() * 2);
 							dmg -= ch.drRoll();
 
 							if (dmg > 0) {
@@ -674,6 +629,7 @@ public class Tengu extends Mob {
 							}
 
 							if (ch == Dungeon.hero){
+								Statistics.qualifiedForBossChallengeBadge = false;
 								Statistics.bossScores[1] -= 100;
 
 								if (!ch.isAlive()) {
@@ -681,17 +637,17 @@ public class Tengu extends Mob {
 								}
 							}
 						}
-
-						Heap h = Dungeon.level.heaps.get(cell);
-						if (h != null) {
-							for (Item i : h.items.toArray(new Item[0])) {
-								if (i instanceof BombItem) {
-									h.remove(i);
-								}
-							}
-						}
 					}
 
+				}
+
+				Heap h = Dungeon.level.heaps.get(bombPos);
+				if (h != null) {
+					for (Item i : h.items.toArray(new Item[0])) {
+						if (i instanceof BombItem) {
+							h.remove(i);
+						}
+					}
 				}
 				Sample.INSTANCE.play(Assets.Sounds.BLAST);
 				detach();
@@ -903,12 +859,11 @@ public class Tengu extends Mob {
 							
 							Char ch = Actor.findChar( cell );
 							if (ch != null && !ch.isImmune(Fire.class) && !(ch instanceof Tengu)) {
-								if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
-									Buff.affect( ch, HalomethaneBurning.class ).reignite( ch );
-								} else {
-									Buff.affect( ch, Burning.class ).reignite( ch );
-								}
-
+								Buff.affect( ch, Burning.class ).reignite( ch );
+							}
+							if (ch == Dungeon.hero){
+								Statistics.qualifiedForBossChallengeBadge = false;
+								Statistics.bossScores[1] -= 100;
 							}
 							
 							if (Dungeon.level.flamable[cell]){
@@ -917,18 +872,9 @@ public class Tengu extends Mob {
 								observe = true;
 								GameScene.updateMap( cell );
 							}
-
-							if (ch == Dungeon.hero){
-								Statistics.bossScores[1] -= 200;
-							}
 							
 							burned = true;
-							if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
-								CellEmitter.get(cell).start(HalomethaneFlameParticle.FACTORY, 0.03f, 10);
-							} else {
-								CellEmitter.get(cell).start(FlameParticle.FACTORY, 0.03f, 10);
-							}
-
+							CellEmitter.get(cell).start(FlameParticle.FACTORY, 0.03f, 10);
 						}
 					}
 				}
@@ -1098,11 +1044,11 @@ public class Tengu extends Mob {
 							
 							Char ch = Actor.findChar(cell);
 							if (ch != null && !(ch instanceof Tengu)){
-								ch.damage(2 + depth, new Electricity());
-
+								ch.damage(2 + Dungeon.scalingDepth(), new Electricity());
+								
 								if (ch == Dungeon.hero){
-
-									Statistics.bossScores[1] -= 200;
+									Statistics.qualifiedForBossChallengeBadge = false;
+									Statistics.bossScores[1] -= 100;
 									if (!ch.isAlive()) {
 										Dungeon.fail(Tengu.class);
 										GLog.n(Messages.get(Electricity.class, "ondeath"));

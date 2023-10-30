@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import com.watabou.glwrap.Blending;
 import com.watabou.glwrap.Quad;
 import com.watabou.glwrap.Texture;
 import com.watabou.noosa.ui.Component;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.FileUtils;
 import com.watabou.utils.Point;
 
@@ -125,12 +126,20 @@ public class TextInput extends Component {
 						enterPressed();
 					}
 				}
+
 			});
 		}
 
+		textField.setOnscreenKeyboard(new TextField.OnscreenKeyboard() {
+			@Override
+			public void show(boolean visible) {
+				Game.platform.setOnscreenKeyboardVisible(visible);
+			}
+		});
+
 		container.setActor(textField);
 		stage.setKeyboardFocus(textField);
-		Gdx.input.setOnscreenKeyboardVisible(true);
+		Game.platform.setOnscreenKeyboardVisible(true);
 	}
 
 	public void enterPressed(){
@@ -148,6 +157,31 @@ public class TextInput extends Component {
 
 	public String getText(){
 		return textField.getText();
+	}
+
+	public void copyToClipboard(){
+		if (textField.getSelection().isEmpty()) {
+			textField.selectAll();
+		}
+
+		textField.copy();
+	}
+
+	public void pasteFromClipboard(){
+		String contents = Gdx.app.getClipboard().getContents();
+		if (contents == null) return;
+
+		if (!textField.getSelection().isEmpty()){
+			//just use cut, but override clipboard
+			textField.cut();
+			Gdx.app.getClipboard().setContents(contents);
+		}
+
+		String existing = textField.getText();
+		int cursorIdx = textField.getCursorPosition();
+
+		textField.setText(existing.substring(0, cursorIdx) + contents + existing.substring(cursorIdx));
+		textField.setCursorPosition(cursorIdx + contents.length());
 	}
 
 	@Override
@@ -208,8 +242,8 @@ public class TextInput extends Component {
 			stage.dispose();
 			skin.dispose();
 			Game.inputHandler.removeInputProcessor(stage);
-			Gdx.input.setOnscreenKeyboardVisible(false);
-			Game.platform.updateSystemUI();
+			Game.platform.setOnscreenKeyboardVisible(false);
+			if (!DeviceCompat.isDesktop()) Game.platform.updateSystemUI();
 		}
 	}
 }

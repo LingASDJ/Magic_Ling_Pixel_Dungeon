@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -136,7 +136,7 @@ public class FileUtils {
 
 	//replaces a file with junk data, for as many bytes as given
 	//This is helpful as some cloud sync systems do not persist deleted, empty, or zeroed files
-	public static void zeroFile( String name, int bytes ){
+	public static void overwriteFile( String name, int bytes ){
 		byte[] data = new byte[bytes];
 		Arrays.fill(data, (byte)1);
 		getFileHandle( name ).writeBytes(data, false);

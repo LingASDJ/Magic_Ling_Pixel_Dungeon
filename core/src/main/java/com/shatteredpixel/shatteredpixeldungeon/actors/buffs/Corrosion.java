@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -34,8 +36,12 @@ public class Corrosion extends Buff implements Hero.Doom {
 	private float damage = 1;
 	protected float left;
 
+	//used in specific cases where the source of the corrosion is important for death logic
+	private Class source;
+
 	private static final String DAMAGE	= "damage";
 	private static final String LEFT	= "left";
+	private static final String SOURCE	= "source";
 
 	{
 		type = buffType.NEGATIVE;
@@ -47,6 +53,7 @@ public class Corrosion extends Buff implements Hero.Doom {
 		super.storeInBundle( bundle );
 		bundle.put( DAMAGE, damage );
 		bundle.put( LEFT, left );
+		bundle.put( SOURCE, source);
 	}
 
 	@Override
@@ -54,11 +61,17 @@ public class Corrosion extends Buff implements Hero.Doom {
 		super.restoreFromBundle( bundle );
 		damage = bundle.getFloat( DAMAGE );
 		left = bundle.getFloat( LEFT );
+		source = bundle.getClass( SOURCE );
 	}
 
-	public void set(float duration, int damage) {
+	public void set(float duration, int damage){
+		set(duration, damage, null);
+	}
+
+	public void set(float duration, int damage, Class source) {
 		this.left = Math.max(duration, left);
 		if (this.damage < damage) this.damage = damage;
+		this.source = source;
 	}
 	
 	@Override
@@ -77,16 +90,6 @@ public class Corrosion extends Buff implements Hero.Doom {
 	}
 
 	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-	
-	@Override
-	public String heroMessage() {
-		return Messages.get(this, "heromsg");
-	}
-
-	@Override
 	public String desc() {
 		return Messages.get(this, "desc", dispTurns(left), (int)damage);
 	}
@@ -95,7 +98,7 @@ public class Corrosion extends Buff implements Hero.Doom {
 	public boolean act() {
 		if (target.isAlive()) {
 			target.damage((int)damage, this);
-			if (damage < (Dungeon.depth/2)+2) {
+			if (damage < (Dungeon.scalingDepth()/2)+2) {
 				damage++;
 			} else {
 				damage += 0.5f;
@@ -114,7 +117,11 @@ public class Corrosion extends Buff implements Hero.Doom {
 	
 	@Override
 	public void onDeath() {
-		Dungeon.fail( getClass() );
+		if (source == WandOfCorrosion.class){
+			Badges.validateDeathFromFriendlyMagic();
+		}
+
+		Dungeon.fail( this );
 		GLog.n(Messages.get(this, "ondeath"));
 	}
 

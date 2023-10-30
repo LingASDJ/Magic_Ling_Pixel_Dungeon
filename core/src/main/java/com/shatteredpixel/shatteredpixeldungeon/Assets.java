@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,7 +93,9 @@ public class Assets {
 		public static final String PRISON_QUEST     = "environment/custom_tiles/prison_quests.png";
 
 		public static final String PRISON_MAGIC     = "environment/custom_tiles/magic.png";
+		public static final String PRISON_QUEST     = "environment/custom_tiles/prison_quest.png";
 		public static final String PRISON_EXIT      = "environment/custom_tiles/prison_exit.png";
+		public static final String CAVES_QUEST      = "environment/custom_tiles/caves_quest.png";
 		public static final String CAVES_BOSS       = "environment/custom_tiles/caves_boss.png";
 		public static final String CITY_BOSS        = "environment/custom_tiles/city_boss.png";
 		public static final String HALLS_SP         = "environment/custom_tiles/halls_special.png";
@@ -173,8 +175,8 @@ public class Assets {
 		public static final String LOADING_CITY     = "interfaces/loading_city.png";
 		public static final String LOADING_HALLS    = "interfaces/loading_halls.png";
 
-		public static final String BUFFS_SMALL  = "interfaces/buffs.png";
-		public static final String BUFFS_LARGE  = "interfaces/large_buffs.png";
+		public static final String BUFFS_SMALL      = "interfaces/buffs.png";
+		public static final String BUFFS_LARGE      = "interfaces/large_buffs.png";
 
 		public static final String TALENT_ICONS  = "interfaces/talent_icons.png";
 		public static final String TALENT_BUTTON = "interfaces/talent_button.png";
@@ -182,6 +184,13 @@ public class Assets {
 		public static final String HERO_ICONS   = "interfaces/hero_icons.png";
 		public static final String HAICONS   = "interfaces/happymode.png";
     }
+		public static final String TALENT_ICONS     = "interfaces/talent_icons.png";
+		public static final String TALENT_BUTTON    = "interfaces/talent_button.png";
+
+		public static final String HERO_ICONS       = "interfaces/hero_icons.png";
+
+		public static final String RADIAL_MENU      = "interfaces/radial_menu.png";
+	}
 
 	//these points to resource bundles, not raw asset files
 	public static class Messages {
@@ -301,6 +310,7 @@ public class Assets {
 		public static final String SCAN     = "sounds/scan.mp3";
 		public static final String SHEEP    = "sounds/sheep.mp3";
 		public static final String ANSDOSHIP    = "sounds/ansdoship.mp3";
+		public static final String MINE    = "sounds/mine.mp3";
 
 		public static final String[] all = new String[]{
 				CLICK, BADGE, GOLD,
@@ -313,7 +323,7 @@ public class Assets {
 				DESCEND, EAT, READ, LULLABY, DRINK, SHATTER, ZAP, LIGHTNING, LEVELUP, DEATH,
 				CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
 				TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
-				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, ANSDOSHIP
+				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, ANSDOSHIP，MINE
 		};
 	}
 
@@ -326,6 +336,7 @@ public class Assets {
 		public static final String ANSDOSHIP = "splashes/ansdoship.png";
 
 		public static final String MLPD2Y = "splashes/mlpd2y.png";
+		public static final String DUELIST  = "splashes/duelist.jpg";
 	}
 
 	public static class Sprites {
@@ -441,6 +452,35 @@ public class Assets {
 		public static final String KEEPER	= "sprites/shopkeeper.png";
 		public static final String BAT		= "sprites/bat.png";
 		public static final String BATEX		= "sprites/BrownBat.png";
+		public static final String WARRIOR  = "sprites/warrior.png";
+		public static final String MAGE     = "sprites/mage.png";
+		public static final String ROGUE    = "sprites/rogue.png";
+		public static final String HUNTRESS = "sprites/huntress.png";
+		public static final String DUELIST  = "sprites/duelist.png";
+		public static final String AVATARS  = "sprites/avatars.png";
+		public static final String PET      = "sprites/pet.png";
+		public static final String AMULET   = "sprites/amulet.png";
+
+		public static final String RAT      = "sprites/rat.png";
+		public static final String BRUTE    = "sprites/brute.png";
+		public static final String SPINNER  = "sprites/spinner.png";
+		public static final String DM300    = "sprites/dm300.png";
+		public static final String WRAITH   = "sprites/wraith.png";
+		public static final String UNDEAD   = "sprites/undead.png";
+		public static final String KING     = "sprites/king.png";
+		public static final String PIRANHA  = "sprites/piranha.png";
+		public static final String EYE      = "sprites/eye.png";
+		public static final String GNOLL    = "sprites/gnoll.png";
+		public static final String CRAB     = "sprites/crab.png";
+		public static final String GOO      = "sprites/goo.png";
+		public static final String SWARM    = "sprites/swarm.png";
+		public static final String SKELETON = "sprites/skeleton.png";
+		public static final String SHAMAN   = "sprites/shaman.png";
+		public static final String THIEF    = "sprites/thief.png";
+		public static final String TENGU    = "sprites/tengu.png";
+		public static final String SHEEP    = "sprites/sheep.png";
+		public static final String KEEPER   = "sprites/shopkeeper.png";
+		public static final String BAT      = "sprites/bat.png";
 		public static final String ELEMENTAL= "sprites/elemental.png";
 		public static final String REDDRAGONPET = "sprites/petreddragon.png";
 		public static final String MONK		= "sprites/monk.png";
@@ -494,5 +534,9 @@ public class Assets {
 		public static final String RED_SENTRY= "sprites/red_sentry.png";
 
 		public static final String SWORDLING= "Boss/swordling.png";
-    }
+		public static final String CRYSTAL_WISP= "sprites/crystal_wisp.png";
+		public static final String CRYSTAL_GUARDIAN= "sprites/crystal_guardian.png";
+		public static final String CRYSTAL_SPIRE= "sprites/crystal_spire.png";
+		public static final String GNOLL_GUARD= "sprites/gnoll_guard.png";
+	}
 }

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 
@@ -47,11 +46,6 @@ public class Recharging extends FlavourBuff {
 	public float iconFadePercent() {
 		return Math.max(0, (DURATION - visualcooldown()) / DURATION);
 	}
-	
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
 
 	//want to process partial turns for this buff, and not count it when it's expiring.
 	//firstly, if this buff has half a turn left, should give out half the benefit.
@@ -60,10 +54,5 @@ public class Recharging extends FlavourBuff {
 	//otherwise this causes inconsistent behaviour where this may detach before, or after, a wand charger acts.
 	public float remainder() {
 		return Math.min(1f, this.cooldown());
-	}
-
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc", dispTurns());
 	}
 }

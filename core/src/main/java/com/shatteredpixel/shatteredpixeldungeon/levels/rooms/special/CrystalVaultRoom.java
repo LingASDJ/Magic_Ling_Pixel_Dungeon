@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,7 +71,7 @@ public class CrystalVaultRoom extends SpecialRoom {
 
 		level.drop( i1, i1Pos ).type = Heap.Type.CRYSTAL_CHEST;
 		if (Random.Int(10) == 0){
-			level.mobs.add(Mimic.spawnAt(i2Pos, i2, CrystalMimic.class));
+			level.mobs.add(Mimic.spawnAt(i2Pos, CrystalMimic.class, i2));
 		} else {
 			level.drop(i2, i2Pos).type = Heap.Type.CRYSTAL_CHEST;
 		}

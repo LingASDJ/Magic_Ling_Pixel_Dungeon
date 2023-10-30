@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,10 +66,10 @@ public class GoldenMimic extends Mimic {
 
 	public void stopHiding(){
 		state = HUNTING;
+		if (sprite != null) sprite.idle();
 		if (Actor.chars().contains(this) && Dungeon.level.heroFOV[pos]) {
 			enemy = Dungeon.hero;
 			target = Dungeon.hero.pos;
-			enemySeen = true;
 			GLog.w(Messages.get(this, "reveal") );
 			CellEmitter.get(pos).burst(Speck.factory(Speck.STAR), 10);
 			Sample.INSTANCE.play(Assets.Sounds.MIMIC, 1, 0.85f);
@@ -82,8 +82,8 @@ public class GoldenMimic extends Mimic {
 	}
 
 	@Override
-    public void generatePrize() {
-		super.generatePrize();
+	protected void generatePrize( boolean useDecks ) {
+		super.generatePrize( useDecks );
 		//all existing prize items are guaranteed uncursed, and have a 50% chance to be +1 if they were +0
 		for (Item i : items){
 			if (i instanceof EquipableItem || i instanceof Wand){

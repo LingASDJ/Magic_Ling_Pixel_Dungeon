@@ -22,10 +22,12 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
@@ -132,7 +134,7 @@ public class SentryRoom extends SpecialRoom {
 				}
 			}
 			dangerDist = 2*(height()-5);
-		} else  if (entrance.y == bottom){
+ 		} else  if (entrance.y == bottom){
 			sentryPos.set(center.x, top+1);
 			Painter.fill(level, left+1, bottom-1, width()-2, 1, Terrain.EMPTY);
 			if (entrance.x > center.x){
@@ -278,7 +280,8 @@ public class SentryRoom extends SpecialRoom {
 			if (hit(this, Dungeon.hero, true)) {
 				Dungeon.hero.damage(Random.NormalIntRange(2 + Dungeon.depth / 2, 4 + Dungeon.depth), new Eye.DeathGaze());
 				if (!Dungeon.hero.isAlive()) {
-					Dungeon.fail(getClass());
+					Badges.validateDeathFromEnemyMagic();
+					Dungeon.fail(this);
 					GLog.n(Messages.capitalize(Messages.get(Char.class, "kill", name())));
 				}
 			} else {
@@ -299,6 +302,11 @@ public class SentryRoom extends SpecialRoom {
 		@Override
 		public void damage( int dmg, Object src ) {
 			//do nothing
+		}
+
+		@Override
+		public boolean add( Buff buff ) {
+			return false;
 		}
 
 		@Override
@@ -412,6 +420,11 @@ public class SentryRoom extends SpecialRoom {
 		public void place(int cell) {
 			super.place(cell);
 			baseY = y;
+		}
+
+		@Override
+		public void turnTo(int from, int to) {
+			//do nothing
 		}
 
 		@Override

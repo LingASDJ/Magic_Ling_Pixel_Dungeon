@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
-	package="com.shatteredpixel.shatteredpixeldungeon.android"
-	android:installLocation="auto"
+    android:installLocation="auto"
 	android:targetSandboxVersion="2"
 	xmlns:dist="http://schemas.android.com/apk/distribution">
 
@@ -37,8 +36,9 @@
 		android:fullBackupOnly="true"
 		android:backupAgent=".AndroidBackupHandler">
 		<activity
-			android:label="${appName}"
 			android:name=".AndroidLauncher"
+			android:screenOrientation="nosensor"
+			android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
 			android:exported="true">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,12 +25,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -93,8 +93,7 @@ public class ArcaneResin extends Item {
 
 		@Override
 		public String textPrompt() {
-			//FIXME give this its own prompt string
-			return Messages.get(MagesStaff.class, "prompt");
+			return Messages.get(ArcaneResin.class, "prompt");
 		}
 
 		@Override
@@ -109,7 +108,7 @@ public class ArcaneResin extends Item {
 
 		@Override
 		public void onSelect( Item item ) {
-			if (item != null && item instanceof Wand && !(item instanceof WandOfAnmy)) {
+			if (item != null && item instanceof Wand) {
 				Wand w = (Wand)item;
 
 				if (w.level() >= 3){
@@ -174,7 +173,14 @@ public class ArcaneResin extends Item {
 		public Item sampleOutput(ArrayList<Item> ingredients) {
 			Wand w = (Wand)ingredients.get(0);
 			int level = w.level() - w.resinBonus;
-			return new ArcaneResin().quantity(2*(level+1));
+
+			Item output = new ArcaneResin().quantity(2*(level+1));
+
+			if (Dungeon.hero.heroClass != HeroClass.MAGE && Dungeon.hero.hasTalent(Talent.WAND_PRESERVATION)){
+				output.quantity(output.quantity() + Dungeon.hero.pointsInTalent(Talent.WAND_PRESERVATION));
+			}
+
+			return output;
 		}
 	}
 

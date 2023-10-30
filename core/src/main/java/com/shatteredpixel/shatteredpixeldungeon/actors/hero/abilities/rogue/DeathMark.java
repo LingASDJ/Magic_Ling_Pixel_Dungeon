@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,21 +37,27 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
-import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
+import com.watabou.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 
 public class DeathMark extends ArmorAbility {
 
+	{
+		baseChargeUse = 25f;
+	}
+
 	@Override
 	public String targetingPrompt() {
 		return Messages.get(this, "prompt");
 	}
 
-	{
-		baseChargeUse = 25f;
+	@Override
+	public int targetedPos(Char user, int dst) {
+		return dst;
 	}
 
 	@Override
@@ -72,7 +78,7 @@ public class DeathMark extends ArmorAbility {
 
 		Char ch = Actor.findChar(target);
 
-		if (ch == null){
+		if (ch == null || !Dungeon.level.heroFOV[target]){
 			GLog.w(Messages.get(this, "no_target"));
 			return;
 		} else if (ch.alignment != Char.Alignment.ENEMY){
@@ -81,7 +87,7 @@ public class DeathMark extends ArmorAbility {
 		}
 
 		if (ch != null){
-			Buff.affect(ch, DeathMarkTracker.class, 5f).setInitialHP(ch.HP);
+			Buff.affect(ch, DeathMarkTracker.class, DeathMarkTracker.DURATION).setInitialHP(ch.HP);
 		}
 
 		armor.charge -= chargeUse( hero );
@@ -140,6 +146,8 @@ public class DeathMark extends ArmorAbility {
 
 	public static class DeathMarkTracker extends FlavourBuff {
 
+		public static float DURATION = 5f;
+
 		int initialHP = 0;
 
 		{
@@ -149,18 +157,17 @@ public class DeathMark extends ArmorAbility {
 
 		@Override
 		public int icon() {
-			return BuffIndicator.MARK;
+			return BuffIndicator.INVERT_MARK;
 		}
 
 		@Override
-		public String toString() {
-			return Messages.get(this, "name");
+		public void tintIcon(Image icon) {
+			icon.hardlight(1f, 0.2f, 0.2f);
 		}
 
 		@Override
-		public String desc() {
-			//TODO show initial HP here?
-			return Messages.get(this, "desc", dispTurns(visualcooldown()));
+		public float iconFadePercent() {
+			return Math.max(0, (DURATION - visualcooldown()) / DURATION);
 		}
 
 		private void setInitialHP( int hp ){
