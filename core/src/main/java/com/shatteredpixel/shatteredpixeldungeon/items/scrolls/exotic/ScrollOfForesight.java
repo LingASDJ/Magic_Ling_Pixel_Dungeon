@@ -36,7 +36,7 @@ public class ScrollOfForesight extends ExoticScroll {
 	@Override
 	public void doRead() {
 
-		detach(curUser.belongings.backpack);
+		detach(Item.curUser.belongings.backpack);
 		Sample.INSTANCE.play( Assets.Sounds.READ );
 		
 		Buff.affect(curUser, Foresight.class, Foresight.DURATION);

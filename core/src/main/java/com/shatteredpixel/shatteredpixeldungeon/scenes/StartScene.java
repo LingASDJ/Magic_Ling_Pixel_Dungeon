@@ -54,7 +54,7 @@ public class StartScene extends PixelScene {
 		Badges.loadGlobal();
 		Journal.loadGlobal();
 		
-		uiCamera.visible = false;
+		PixelScene.uiCamera.visible = false;
 		
 		int w = Camera.main.width;
 		int h = Camera.main.height;

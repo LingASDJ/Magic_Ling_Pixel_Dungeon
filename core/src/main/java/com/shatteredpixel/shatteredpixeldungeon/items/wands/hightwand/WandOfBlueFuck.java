@@ -183,18 +183,18 @@ public class WandOfBlueFuck extends DamageWand {
 
         //cast to cells at the tip, rather than all cells, better performance.
         for (Ballistica ray : cone.rays){
-            ((MagicMissile)curUser.sprite.parent.recycle( MagicMissile.class )).reset(
+            ((MagicMissile)Item.curUser.sprite.parent.recycle( MagicMissile.class )).reset(
                     MagicMissile.SHAMAN_PURPLE,
-                    curUser.sprite,
+                    Item.curUser.sprite,
                     ray.path.get(ray.dist),
                     null
             );
         }
 
         //final zap at half distance, for timing of the actual wand effect
-        MagicMissile.boltFromChar( curUser.sprite.parent,
+        MagicMissile.boltFromChar( Item.curUser.sprite.parent,
                 MagicMissile.SHAMAN_PURPLE,
-                curUser.sprite,
+                Item.curUser.sprite,
                 bolt.path.get(dist/4),
                 callback );
         Sample.INSTANCE.play( Assets.Sounds.ZAP );

@@ -115,7 +115,7 @@ public class MasterThievesArmband extends Artifact {
 
 			if (target == null) {
 				return;
-			} else if (!Dungeon.level.adjacent(curUser.pos, target) || Actor.findChar(target) == null){
+			} else if (!Dungeon.level.adjacent(Item.curUser.pos, target) || Actor.findChar(target) == null){
 				GLog.w( Messages.get(MasterThievesArmband.class, "no_target") );
 			} else {
 				Char ch = Actor.findChar(target);
@@ -125,7 +125,7 @@ public class MasterThievesArmband extends Artifact {
 					GLog.w( Messages.get(MasterThievesArmband.class, "no_target") );
 				} else if (ch instanceof Mob) {
 					curUser.busy();
-					curUser.sprite.attack(target, new Callback() {
+					Item.curUser.sprite.attack(target, new Callback() {
 						@Override
 						public void call() {
 							Sample.INSTANCE.play(Assets.Sounds.HIT);
@@ -164,7 +164,7 @@ public class MasterThievesArmband extends Artifact {
 										//item collection happens instantly
 										curUser.spend(-TIME_TO_PICK_UP);
 									} else {
-										Dungeon.level.drop(loot, curUser.pos).sprite.drop();
+										Dungeon.level.drop(loot, Item.curUser.pos).sprite.drop();
 									}
 									GLog.i(Messages.get(MasterThievesArmband.class, "stole_item", loot.name()));
 									Buff.affect(ch, StolenTracker.class).setItemStolen(true);

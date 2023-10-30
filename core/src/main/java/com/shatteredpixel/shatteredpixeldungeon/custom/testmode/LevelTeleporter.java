@@ -299,7 +299,7 @@ public class LevelTeleporter extends TestItem {
             public void onSelect(Integer target) {
                 if (target != null) {
                     //time isn't spent
-                    ((HeroSprite)curUser.sprite).read();
+                    ((HeroSprite)Item.curUser.sprite).read();
                     teleportToLocation(curUser, target);
 
                 }

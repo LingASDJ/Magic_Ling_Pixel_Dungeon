@@ -60,7 +60,7 @@ public class ElixirOfHoneyedHealing extends Elixir {
 		if (ch != null){
 			PotionOfHealing.cure(ch);
 			PotionOfHealing.heal(ch);
-			if (ch instanceof Bee && ch.alignment != curUser.alignment){
+			if (ch instanceof Bee && ch.alignment != Item.curUser.alignment){
 				ch.alignment = Char.Alignment.ALLY;
 				((Bee)ch).setPotInfo(-1, null);
 			}

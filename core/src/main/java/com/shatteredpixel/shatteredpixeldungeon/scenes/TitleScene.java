@@ -65,7 +65,7 @@ public class TitleScene extends PixelScene {
 				new float[]{1, 1},
 				false);
 
-		uiCamera.visible = false;
+		PixelScene.uiCamera.visible = false;
 		
 		int w = Camera.main.width;
 		int h = Camera.main.height;

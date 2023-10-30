@@ -134,9 +134,9 @@ public class ArcaneResin extends Item {
 					w.updateLevel();
 					Item.updateQuickslot();
 
-					curUser.sprite.operate(curUser.pos);
+					Item.curUser.sprite.operate(Item.curUser.pos);
 					Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
-					curUser.sprite.emitter().start( Speck.factory( Speck.UP ), 0.2f, 3 );
+					Item.curUser.sprite.emitter().start( Speck.factory( Speck.UP ), 0.2f, 3 );
 
 					curUser.spendAndNext(Actor.TICK);
 					GLog.p(Messages.get(ArcaneResin.class, "apply"));

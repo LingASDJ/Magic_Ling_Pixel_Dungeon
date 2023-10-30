@@ -74,7 +74,7 @@ public class ScrollOfFlameCursed extends Scroll {
     @Override
     public void doRead() {
 
-        new Flare( 5, 32 ).color( 0x00FFFF, true ).show( curUser.sprite, 2f );
+        new Flare( 5, 32 ).color( 0x00FFFF, true ).show( Item.curUser.sprite, 2f );
         Sample.INSTANCE.play( Assets.Sounds.READ );
 
         int count = 0;

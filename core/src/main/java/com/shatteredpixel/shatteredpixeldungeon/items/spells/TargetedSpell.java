@@ -46,9 +46,9 @@ public abstract class TargetedSpell extends Spell {
 	protected abstract void affectTarget( Ballistica bolt, Hero hero );
 	
 	protected void fx( Ballistica bolt, Callback callback ) {
-		MagicMissile.boltFromChar( curUser.sprite.parent,
+		MagicMissile.boltFromChar( Item.curUser.sprite.parent,
 				MagicMissile.MAGIC_MISSILE,
-				curUser.sprite,
+				Item.curUser.sprite,
 				bolt.collisionPos,
 				callback);
 		Sample.INSTANCE.play( Assets.Sounds.ZAP );
@@ -70,10 +70,10 @@ public abstract class TargetedSpell extends Spell {
 					return;
 				}
 				
-				final Ballistica shot = new Ballistica( curUser.pos, target, curSpell.collisionProperties);
+				final Ballistica shot = new Ballistica( Item.curUser.pos, target, curSpell.collisionProperties);
 				int cell = shot.collisionPos;
 				
-				curUser.sprite.zap(cell);
+				Item.curUser.sprite.zap(cell);
 				
 				//attempts to target the cell aimed at if something is there, otherwise targets the collision pos.
 				if (Actor.findChar(target) != null)
@@ -86,7 +86,7 @@ public abstract class TargetedSpell extends Spell {
 				curSpell.fx(shot, new Callback() {
 					public void call() {
 						curSpell.affectTarget(shot, curUser);
-						curSpell.detach( curUser.belongings.backpack );
+						curSpell.detach( Item.curUser.belongings.backpack );
 						Invisibility.dispel();
 						curSpell.updateQuickslot();
 						curUser.spendAndNext( 1f );

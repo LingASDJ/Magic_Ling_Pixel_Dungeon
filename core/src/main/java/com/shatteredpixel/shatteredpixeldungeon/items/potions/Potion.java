@@ -288,7 +288,7 @@ public class Potion extends Item {
 		hero.sprite.operate( hero.pos );
 
 		if (!anonymous){
-			Talent.onPotionUsed(curUser, curUser.pos, talentFactor);
+			Talent.onPotionUsed(curUser, Item.curUser.pos, talentFactor);
 		}
 	}
 	

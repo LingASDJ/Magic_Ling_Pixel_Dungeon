@@ -54,7 +54,7 @@ public class CurseInfusion extends InventorySpell {
 	@Override
 	protected void onItemSelected(Item item) {
 		
-		CellEmitter.get(curUser.pos).burst(ShadowParticle.UP, 5);
+		CellEmitter.get(Item.curUser.pos).burst(ShadowParticle.UP, 5);
 		Sample.INSTANCE.play(Assets.Sounds.CURSED);
 		
 		item.cursed = true;

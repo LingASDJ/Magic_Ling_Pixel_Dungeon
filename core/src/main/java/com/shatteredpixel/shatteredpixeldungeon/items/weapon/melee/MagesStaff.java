@@ -485,12 +485,12 @@ public class MagesStaff extends MeleeWeapon {
 
 		private void applyWand(Wand wand){
 			Sample.INSTANCE.play(Assets.Sounds.BURNING);
-			curUser.sprite.emitter().burst( ElmoParticle.FACTORY, 12 );
+			Item.curUser.sprite.emitter().burst( ElmoParticle.FACTORY, 12 );
 			evoke(curUser);
 
 			Dungeon.quickslot.clearItem(wand);
 
-			wand.detach(curUser.belongings.backpack);
+			wand.detach(Item.curUser.belongings.backpack);
 
 			GLog.p( Messages.get(MagesStaff.class, "imbue", wand.name()));
 			imbueWand( wand, curUser );

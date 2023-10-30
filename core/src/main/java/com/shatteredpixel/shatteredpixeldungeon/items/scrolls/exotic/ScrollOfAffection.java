@@ -39,7 +39,7 @@ public class ScrollOfAffection extends ExoticScroll {
 	@Override
 	public void doRead() {
 		
-		curUser.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );
+		Item.curUser.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );
 		Sample.INSTANCE.play( Assets.Sounds.CHARMS );
 		
 		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {

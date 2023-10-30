@@ -50,7 +50,7 @@ public class FeatherFall extends Spell {
 		
 		GLog.p(Messages.get(this, "light"));
 		
-		detach( curUser.belongings.backpack );
+		detach( Item.curUser.belongings.backpack );
 		updateQuickslot();
 		Invisibility.dispel();
 		hero.spendAndNext( 1f );

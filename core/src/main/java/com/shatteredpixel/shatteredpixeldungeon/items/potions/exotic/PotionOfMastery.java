@@ -113,15 +113,15 @@ public class PotionOfMastery extends ExoticPotion {
 				updateQuickslot();
 
 				Sample.INSTANCE.play( Assets.Sounds.DRINK );
-				curUser.sprite.operate(curUser.pos);
+				Item.curUser.sprite.operate(Item.curUser.pos);
 
 				if (!identifiedByUse) {
-					curItem.detach(curUser.belongings.backpack);
+					curItem.detach(Item.curUser.belongings.backpack);
 				}
 				identifiedByUse = false;
 
 				if (!anonymous){
-					Talent.onPotionUsed(curUser, curUser.pos, talentFactor);
+					Talent.onPotionUsed(curUser, Item.curUser.pos, talentFactor);
 				}
 			}
 

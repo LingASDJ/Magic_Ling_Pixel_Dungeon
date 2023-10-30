@@ -156,10 +156,10 @@ public class LiquidMetal extends Item {
 					detachAll(Dungeon.hero.belongings.backpack);
 				}
 
-				curUser.sprite.operate(curUser.pos);
+				Item.curUser.sprite.operate(Item.curUser.pos);
 				Sample.INSTANCE.play(Assets.Sounds.DRINK);
 				updateQuickslot();
-				curUser.sprite.emitter().start(Speck.factory(Speck.LIGHT), 0.1f, 10);
+				Item.curUser.sprite.emitter().start(Speck.factory(Speck.LIGHT), 0.1f, 10);
 			}
 		}
 	};

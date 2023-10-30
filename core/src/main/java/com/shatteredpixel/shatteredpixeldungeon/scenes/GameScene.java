@@ -379,17 +379,17 @@ public class GameScene extends PixelScene {
 
 		menu = new MenuPane();
 		menu.camera = uiCamera;
-		menu.setPos( uiCamera.width-MenuPane.WIDTH, uiSize > 0 ? 0 : 1);
+		menu.setPos( PixelScene.uiCamera.width-MenuPane.WIDTH, uiSize > 0 ? 0 : 1);
 		add(menu);
 
 		status = new StatusPane( SPDSettings.interfaceSize() > 0 );
 		status.camera = uiCamera;
-		status.setRect(0, uiSize > 0 ? uiCamera.height-39 : 0, uiCamera.width, 0 );
+		status.setRect(0, uiSize > 0 ? PixelScene.uiCamera.height-39 : 0, PixelScene.uiCamera.width, 0 );
 		add(status);
 
 		boss = new BossHealthBar();
 		boss.camera = uiCamera;
-		boss.setPos( 6 + (uiCamera.width - boss.width())/2, 28);
+		boss.setPos( 6 + (PixelScene.uiCamera.width - boss.width())/2, 28);
 		add(boss);
 
 		attack = new AttackIndicator();
@@ -432,19 +432,19 @@ public class GameScene extends PixelScene {
 		if (uiSize == 2) {
 			inventory = new InventoryPane();
 			inventory.camera = uiCamera;
-			inventory.setPos(uiCamera.width - inventory.width(), uiCamera.height - inventory.height());
+			inventory.setPos(PixelScene.uiCamera.width - inventory.width(), PixelScene.uiCamera.height - inventory.height());
 			add(inventory);
 			if(SPDSettings.quickSwapper()) {
-				toolbarv1.setRect(0, uiCamera.height - toolbarv1.height() - inventory.height(), uiCamera.width,
+				toolbarv1.setRect(0, PixelScene.uiCamera.height - toolbarv1.height() - inventory.height(), PixelScene.uiCamera.width,
 						toolbarv1.height());
 			} else {
-				toolbar.setRect(0, uiCamera.height - toolbar.height() - inventory.height(), uiCamera.width, toolbar.height());
+				toolbar.setRect(0, PixelScene.uiCamera.height - toolbar.height() - inventory.height(), PixelScene.uiCamera.width, toolbar.height());
 			}
 		} else {
 			if(SPDSettings.quickSwapper()) {
-				toolbarv1.setRect(0, uiCamera.height - toolbarv1.height(), uiCamera.width, toolbarv1.height());
+				toolbarv1.setRect(0, PixelScene.uiCamera.height - toolbarv1.height(), PixelScene.uiCamera.width, toolbarv1.height());
 			} else {
-				toolbar.setRect(0, uiCamera.height - toolbar.height(), uiCamera.width, toolbar.height());
+				toolbar.setRect(0, PixelScene.uiCamera.height - toolbar.height(), PixelScene.uiCamera.width, toolbar.height());
 			}
 		}
 
@@ -1078,7 +1078,7 @@ public class GameScene extends PixelScene {
 		banner.camera = uiCamera;
 
 		float offset = Camera.main.centerOffset.y;
-		banner.x = align( uiCamera, (uiCamera.width - banner.width) / 2 );
+		PixelScene.x = align( uiCamera, (uiCamera.width - banner.width) / 2 );
 		banner.y = align( uiCamera, (uiCamera.height - banner.height) / 2 - banner.height/2 - 16 - offset );
 
 		addToFront( banner );

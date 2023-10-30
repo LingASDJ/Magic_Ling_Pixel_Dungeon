@@ -69,7 +69,7 @@ public class ArcaneCatalyst extends Spell {
 	@Override
 	protected void onCast(Hero hero) {
 		
-		detach( curUser.belongings.backpack );
+		detach( Item.curUser.belongings.backpack );
 		updateQuickslot();
 		
 		Scroll s = Reflection.newInstance(Random.chances(scrollChances));

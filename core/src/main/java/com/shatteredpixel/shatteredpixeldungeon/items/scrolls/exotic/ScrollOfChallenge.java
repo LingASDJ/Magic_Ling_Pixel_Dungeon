@@ -51,16 +51,16 @@ public class ScrollOfChallenge extends ExoticScroll {
 	@Override
 	public void doRead() {
 
-		detach(curUser.belongings.backpack);
+		detach(Item.curUser.belongings.backpack);
 		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
-			mob.beckon( curUser.pos );
+			mob.beckon( Item.curUser.pos );
 		}
 
-		Buff.affect(curUser, ChallengeArena.class).setup(curUser.pos);
+		Buff.affect(curUser, ChallengeArena.class).setup(Item.curUser.pos);
 
 		identify();
 		
-		curUser.sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
+		Item.curUser.sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
 		Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
 		
 		readAnimation();

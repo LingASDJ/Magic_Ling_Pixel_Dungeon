@@ -48,7 +48,7 @@ public class StoneOfEnchantment extends InventoryStone {
 	
 	@Override
 	protected void onItemSelected(Item item) {
-		curItem.detach( curUser.belongings.backpack );
+		curItem.detach( Item.curUser.belongings.backpack );
 		
 		if (item instanceof Weapon) {
 			
@@ -60,7 +60,7 @@ public class StoneOfEnchantment extends InventoryStone {
 			
 		}
 		
-		curUser.sprite.emitter().start( Speck.factory( Speck.LIGHT ), 0.1f, 5 );
+		Item.curUser.sprite.emitter().start( Speck.factory( Speck.LIGHT ), 0.1f, 5 );
 		Enchanting.show( curUser, item );
 		
 		if (item instanceof Weapon) {
