@@ -177,17 +177,22 @@ public class GamesInProgress {
 		public int level;
 		public int str;
 		public int strBonus;
-		public int exp;
-		public int hp;
-		public int ht;
-		public int shld;
-		public HeroClass heroClass;
-		public HeroSubClass subClass;
-		public int armorTier;
-		
-		public int goldCollected;
-		public int maxDepth;
-	}
+        public int exp;
+        public int hp;
+        public int ht;
+        public int shld;
+        public HeroClass heroClass;
+        public HeroSubClass subClass;
+        public int armorTier;
+
+        public int goldCollected;
+        public int maxDepth;
+
+        public Conducts.ConductStorage dlcs;
+        public Difficulty.HardStorage difficulty;
+        public String name;
+        public int icehp;
+    }
 	
 	public static final Comparator<GamesInProgress.Info> scoreComparator = new Comparator<GamesInProgress.Info>() {
 		@Override

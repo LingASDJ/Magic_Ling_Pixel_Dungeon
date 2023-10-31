@@ -72,7 +72,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.watabou.noosa.Game;
@@ -181,8 +180,8 @@ public class Dungeon {
 
 	public static int challenges;
 	public static int mobsToChampion;
-
-	public static Hero hero;
+    private static final String GENERATED_LEVELS = "generated_levels";
+    private static final String GOLD = "gold";
 	public static Level level;
 
 	public static QuickSlot quickslot = new QuickSlot();
@@ -211,76 +210,7 @@ public class Dungeon {
 	public static boolean dailyReplay;
 	public static String customSeedText = "";
 	public static long seed;
-	
-	public static void init() {
-
-		initialVersion = version = Game.versionCode;
-		challenges = SPDSettings.challenges();
-		mobsToChampion = -1;
-
-		if (daily) {
-			//Ensures that daily seeds are not in the range of user-enterable seeds
-			seed = SPDSettings.lastDaily() + DungeonSeed.TOTAL_SEEDS;
-			DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
-			format.setTimeZone(TimeZone.getTimeZone("UTC"));
-			customSeedText = format.format(new Date(SPDSettings.lastDaily()));
-		} else if (!SPDSettings.customSeed().isEmpty()){
-			customSeedText = SPDSettings.customSeed();
-			seed = DungeonSeed.convertFromText(customSeedText);
-		} else {
-			customSeedText = "";
-			seed = DungeonSeed.randomSeed();
-		}
-
-		Actor.clear();
-		Actor.resetNextID();
-
-		//offset seed slightly to avoid output patterns
-		Random.pushGenerator( seed+1 );
-
-			Scroll.initLabels();
-			Potion.initColors();
-			Ring.initGems();
-
-			SpecialRoom.initForRun();
-			SecretRoom.initForRun();
-
-			Generator.fullReset();
-
-		Random.resetGenerators();
-		
-		Statistics.reset();
-		Notes.reset();
-
-		quickslot.reset();
-		QuickSlotButton.reset();
-		Toolbar.swappedQuickslots = false;
-		
-		depth = 1;
-		branch = 0;
-		generatedLevels.clear();
-
-		gold = 0;
-		energy = 0;
-
-		droppedItems = new SparseArray<>();
-
-		LimitedDrops.reset();
-		
-		chapters = new HashSet<>();
-		
-		Ghost.Quest.reset();
-		Wandmaker.Quest.reset();
-		Blacksmith.Quest.reset();
-		Imp.Quest.reset();
-
-		hero = new Hero();
-		hero.live();
-		
-		Badges.reset();
-		
-		GamesInProgress.selectedClass.initHero( hero );
-	}
+    private static final String ENERGY = "energy";
 
 	public static boolean isChallenged( int mask ) {
 		return (challenges & mask) != 0;
@@ -561,90 +491,22 @@ public class Dungeon {
 	private static final String HERO		= "hero";
 	private static final String DEPTH		= "depth";
 	private static final String BRANCH		= "branch";
-	private static final String GENERATED_LEVELS    = "generated_levels";
-	private static final String GOLD		= "gold";
-	private static final String ENERGY		= "energy";
-	private static final String DROPPED     = "dropped%d";
-	private static final String PORTED      = "ported%d";
-	private static final String LEVEL		= "level";
-	private static final String LIMDROPS    = "limited_drops";
-	private static final String CHAPTERS	= "chapters";
-	private static final String QUESTS		= "quests";
-	private static final String BADGES		= "badges";
-	
-	public static void saveGame( int save ) {
-		try {
-			Bundle bundle = new Bundle();
-
-			bundle.put( INIT_VER, initialVersion );
-			bundle.put( VERSION, version = Game.versionCode );
-			bundle.put( SEED, seed );
-			bundle.put( CUSTOM_SEED, customSeedText );
-			bundle.put( DAILY, daily );
-			bundle.put( DAILY_REPLAY, dailyReplay );
-			bundle.put( CHALLENGES, challenges );
-			bundle.put( MOBS_TO_CHAMPION, mobsToChampion );
-			bundle.put( HERO, hero );
-			bundle.put( DEPTH, depth );
-			bundle.put( BRANCH, branch );
-
-			bundle.put( GOLD, gold );
-			bundle.put( ENERGY, energy );
-
-			for (int d : droppedItems.keyArray()) {
-				bundle.put(Messages.format(DROPPED, d), droppedItems.get(d));
-			}
-
-			quickslot.storePlaceholders( bundle );
-
-			Bundle limDrops = new Bundle();
-			LimitedDrops.store( limDrops );
-			bundle.put ( LIMDROPS, limDrops );
-			
-			int count = 0;
-			int ids[] = new int[chapters.size()];
-			for (Integer id : chapters) {
-				ids[count++] = id;
-			}
-			bundle.put( CHAPTERS, ids );
-			
-			Bundle quests = new Bundle();
-			Ghost		.Quest.storeInBundle( quests );
-			Wandmaker	.Quest.storeInBundle( quests );
-			Blacksmith	.Quest.storeInBundle( quests );
-			Imp			.Quest.storeInBundle( quests );
-			bundle.put( QUESTS, quests );
-			
-			SpecialRoom.storeRoomsInBundle( bundle );
-			SecretRoom.storeRoomsInBundle( bundle );
-			
-			Statistics.storeInBundle( bundle );
-			Notes.storeInBundle( bundle );
-			Generator.storeInBundle( bundle );
-
-			int[] bundleArr = new int[generatedLevels.size()];
-			for (int i = 0; i < generatedLevels.size(); i++){
-				bundleArr[i] = generatedLevels.get(i);
-			}
-			bundle.put( GENERATED_LEVELS, bundleArr);
-			
-			Scroll.save( bundle );
-			Potion.save( bundle );
-			Ring.save( bundle );
-
-			Actor.storeNextID( bundle );
-			
-			Bundle badges = new Bundle();
-			Badges.saveLocal( badges );
-			bundle.put( BADGES, badges );
-			
-			FileUtils.bundleToFile( GamesInProgress.gameFile(save), bundle);
-			
-		} catch (IOException e) {
-			GamesInProgress.setUnknown( save );
-			ShatteredPixelDungeon.reportException(e);
-		}
-	}
+    private static final String DROPPED = "dropped%d";
+    private static final String PORTED = "ported%d";
+    private static final String LEVEL = "level";
+    private static final String LIMDROPS = "limited_drops";
+    private static final String CHAPTERS = "chapters";
+    private static final String QUESTS = "quests";
+    private static final String BADGES = "badges";
+    private static final String MOBS_TO_STATELING = "mobs_to_stateling";
+    private static final String ZBADGES = "z-badges";
+    private static final String DLCS = "dlcs";
+    private static final String DIFFICULTY = "difficulty";
+    public static int mobsToStateLing;
+    public static Hero hero;
+    //MLPD
+    public static Conducts.ConductStorage dlcs = new Conducts.ConductStorage();
+    public static Difficulty.HardStorage difficultys = new Difficulty.HardStorage();
 	
 	public static void saveLevel( int save ) throws IOException {
 		Bundle bundle = new Bundle();
@@ -670,119 +532,74 @@ public class Dungeon {
 		loadGame( save, true );
 	}
 	
-	public static void loadGame( int save, boolean fullLoad ) throws IOException {
-		
-		Bundle bundle = FileUtils.bundleFromFile( GamesInProgress.gameFile( save ) );
+	public static void init() {
 
-		//pre-1.3.0 saves
-		if (bundle.contains(INIT_VER)){
-			initialVersion = bundle.getInt( INIT_VER );
+		initialVersion = version = Game.versionCode;
+		challenges = SPDSettings.challenges();
+        mobsToChampion = -1;
+        mobsToStateLing = -1;
+		if (daily) {
+			//Ensures that daily seeds are not in the range of user-enterable seeds
+			seed = SPDSettings.lastDaily() + DungeonSeed.TOTAL_SEEDS;
+			DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
+			format.setTimeZone(TimeZone.getTimeZone("UTC"));
+			customSeedText = format.format(new Date(SPDSettings.lastDaily()));
+		} else if (!SPDSettings.customSeed().isEmpty()){
+			customSeedText = SPDSettings.customSeed();
+			seed = DungeonSeed.convertFromText(customSeedText);
 		} else {
-			initialVersion = bundle.getInt( VERSION );
+			customSeedText = "";
+			seed = DungeonSeed.randomSeed();
 		}
 
-		version = bundle.getInt( VERSION );
-
-		seed = bundle.contains( SEED ) ? bundle.getLong( SEED ) : DungeonSeed.randomSeed();
-		customSeedText = bundle.getString( CUSTOM_SEED );
-		daily = bundle.getBoolean( DAILY );
-		dailyReplay = bundle.getBoolean( DAILY_REPLAY );
-
 		Actor.clear();
-		Actor.restoreNextID( bundle );
+		Actor.resetNextID();
+
+		//offset seed slightly to avoid output patterns
+		Random.pushGenerator( seed+1 );
+
+			Scroll.initLabels();
+			Potion.initColors();
+			Ring.initGems();
+
+			SpecialRoom.initForRun();
+			SecretRoom.initForRun();
+
+			Generator.fullReset();
+
+		Random.resetGenerators();
+
+		Statistics.reset();
+		Notes.reset();
 
 		quickslot.reset();
 		QuickSlotButton.reset();
-		Toolbar.swappedQuickslots = false;
+        //Toolbar.swappedQuickslots = false;
 
-		Dungeon.challenges = bundle.getInt( CHALLENGES );
-		Dungeon.mobsToChampion = bundle.getInt( MOBS_TO_CHAMPION );
-		
-		Dungeon.level = null;
-		Dungeon.depth = -1;
-		
-		Scroll.restore( bundle );
-		Potion.restore( bundle );
-		Ring.restore( bundle );
-
-		quickslot.restorePlaceholders( bundle );
-		
-		if (fullLoad) {
-			
-			LimitedDrops.restore( bundle.getBundle(LIMDROPS) );
-
-			chapters = new HashSet<>();
-			int ids[] = bundle.getIntArray( CHAPTERS );
-			if (ids != null) {
-				for (int id : ids) {
-					chapters.add( id );
-				}
-			}
-			
-			Bundle quests = bundle.getBundle( QUESTS );
-			if (!quests.isNull()) {
-				Ghost.Quest.restoreFromBundle( quests );
-				Wandmaker.Quest.restoreFromBundle( quests );
-				Blacksmith.Quest.restoreFromBundle( quests );
-				Imp.Quest.restoreFromBundle( quests );
-			} else {
-				Ghost.Quest.reset();
-				Wandmaker.Quest.reset();
-				Blacksmith.Quest.reset();
-				Imp.Quest.reset();
-			}
-			
-			SpecialRoom.restoreRoomsFromBundle(bundle);
-			SecretRoom.restoreRoomsFromBundle(bundle);
-		}
-		
-		Bundle badges = bundle.getBundle(BADGES);
-		if (!badges.isNull()) {
-			Badges.loadLocal( badges );
-		} else {
-			Badges.reset();
-		}
-		
-		Notes.restoreFromBundle( bundle );
-		
-		hero = null;
-		hero = (Hero)bundle.get( HERO );
-		
-		depth = bundle.getInt( DEPTH );
-		branch = bundle.getInt( BRANCH );
-
-		gold = bundle.getInt( GOLD );
-		energy = bundle.getInt( ENERGY );
-
-		Statistics.restoreFromBundle( bundle );
-		Generator.restoreFromBundle( bundle );
-
+		depth = 1;
+		branch = 0;
 		generatedLevels.clear();
-		if (bundle.contains(GENERATED_LEVELS)){
-			for (int i : bundle.getIntArray(GENERATED_LEVELS)){
-				generatedLevels.add(i);
-			}
-		//pre-v2.1.1 saves
-		} else  {
-			for (int i = 1; i <= Statistics.deepestFloor; i++){
-				generatedLevels.add(i);
-			}
-		}
+
+		gold = 0;
+		energy = 0;
 
 		droppedItems = new SparseArray<>();
-		for (int i=1; i <= 26; i++) {
-			
-			//dropped items
-			ArrayList<Item> items = new ArrayList<>();
-			if (bundle.contains(Messages.format( DROPPED, i )))
-				for (Bundlable b : bundle.getCollection( Messages.format( DROPPED, i ) ) ) {
-					items.add( (Item)b );
-				}
-			if (!items.isEmpty()) {
-				droppedItems.put( i, items );
-			}
 
-		}
+		LimitedDrops.reset();
+
+		chapters = new HashSet<>();
+
+		Ghost.Quest.reset();
+		Wandmaker.Quest.reset();
+		Blacksmith.Quest.reset();
+		Imp.Quest.reset();
+
+		hero = new Hero();
+		hero.live();
+
+		Badges.reset();
+
+		GamesInProgress.selectedClass.initHero( hero );
 	}
 	
 	public static Level loadLevel( int save ) throws IOException {
@@ -1024,6 +841,208 @@ public class Dungeon {
 
 	}
 	
+    public static void saveGame(int save) {
+        try {
+            Bundle bundle = new Bundle();
+
+            bundle.put(INIT_VER, initialVersion);
+            bundle.put(VERSION, version = Game.versionCode);
+            bundle.put(SEED, seed);
+            bundle.put(CUSTOM_SEED, customSeedText);
+            bundle.put(DAILY, daily);
+            bundle.put(DAILY_REPLAY, dailyReplay);
+            bundle.put(CHALLENGES, challenges);
+            Dungeon.challenges = bundle.getInt(CHALLENGES);
+            //DLC模式
+            bundle.put(DLCS, dlcs);
+            dlcs.storeInBundle(bundle);
+            difficultys.storeInBundle(bundle);
+            //HARD选择
+            bundle.put(DIFFICULTY, difficultys);
+            Bundle z_badges = new Bundle();
+            PaswordBadges.saveLocal(z_badges);
+            bundle.put(ZBADGES, z_badges);
+
+            bundle.put(MOBS_TO_CHAMPION, mobsToChampion);
+
+            bundle.put(MOBS_TO_STATELING, mobsToStateLing);
+            bundle.put(HERO, hero);
+            bundle.put(DEPTH, depth);
+            bundle.put(BRANCH, branch);
+
+            bundle.put(GOLD, gold);
+            bundle.put(ENERGY, energy);
+
+            for (int d : droppedItems.keyArray()) {
+                bundle.put(Messages.format(DROPPED, d), droppedItems.get(d));
+            }
+
+			quickslot.storePlaceholders( bundle );
+
+			Bundle limDrops = new Bundle();
+			LimitedDrops.store( limDrops );
+			bundle.put ( LIMDROPS, limDrops );
+
+			int count = 0;
+			int ids[] = new int[chapters.size()];
+			for (Integer id : chapters) {
+				ids[count++] = id;
+			}
+			bundle.put( CHAPTERS, ids );
+
+			Bundle quests = new Bundle();
+			Ghost		.Quest.storeInBundle( quests );
+			Wandmaker	.Quest.storeInBundle( quests );
+			Blacksmith	.Quest.storeInBundle( quests );
+			Imp			.Quest.storeInBundle( quests );
+			bundle.put( QUESTS, quests );
+
+			SpecialRoom.storeRoomsInBundle( bundle );
+			SecretRoom.storeRoomsInBundle( bundle );
+
+			Statistics.storeInBundle( bundle );
+			Notes.storeInBundle( bundle );
+			Generator.storeInBundle( bundle );
+
+			int[] bundleArr = new int[generatedLevels.size()];
+			for (int i = 0; i < generatedLevels.size(); i++){
+				bundleArr[i] = generatedLevels.get(i);
+			}
+			bundle.put( GENERATED_LEVELS, bundleArr);
+
+			Scroll.save( bundle );
+			Potion.save( bundle );
+			Ring.save( bundle );
+
+			Actor.storeNextID( bundle );
+
+			Bundle badges = new Bundle();
+			Badges.saveLocal( badges );
+			bundle.put( BADGES, badges );
+
+			FileUtils.bundleToFile( GamesInProgress.gameFile(save), bundle);
+
+		} catch (IOException e) {
+			GamesInProgress.setUnknown( save );
+			ShatteredPixelDungeon.reportException(e);
+		}
+	}
+
+	public static void loadGame( int save, boolean fullLoad ) throws IOException {
+
+		Bundle bundle = FileUtils.bundleFromFile( GamesInProgress.gameFile( save ) );
+
+		//pre-1.3.0 saves
+		if (bundle.contains(INIT_VER)){
+			initialVersion = bundle.getInt( INIT_VER );
+		} else {
+			initialVersion = bundle.getInt( VERSION );
+		}
+
+		version = bundle.getInt( VERSION );
+
+		seed = bundle.contains( SEED ) ? bundle.getLong( SEED ) : DungeonSeed.randomSeed();
+		customSeedText = bundle.getString( CUSTOM_SEED );
+		daily = bundle.getBoolean( DAILY );
+		dailyReplay = bundle.getBoolean( DAILY_REPLAY );
+
+		Actor.clear();
+		Actor.restoreNextID( bundle );
+
+		quickslot.reset();
+		QuickSlotButton.reset();
+        //Toolbar.swappedQuickslots = false;
+
+		Dungeon.challenges = bundle.getInt( CHALLENGES );
+		Dungeon.mobsToChampion = bundle.getInt( MOBS_TO_CHAMPION );
+
+		Dungeon.level = null;
+		Dungeon.depth = -1;
+
+		Scroll.restore( bundle );
+		Potion.restore( bundle );
+		Ring.restore( bundle );
+
+		quickslot.restorePlaceholders( bundle );
+
+		if (fullLoad) {
+
+			LimitedDrops.restore( bundle.getBundle(LIMDROPS) );
+
+			chapters = new HashSet<>();
+			int ids[] = bundle.getIntArray( CHAPTERS );
+			if (ids != null) {
+				for (int id : ids) {
+					chapters.add( id );
+				}
+			}
+
+			Bundle quests = bundle.getBundle( QUESTS );
+			if (!quests.isNull()) {
+				Ghost.Quest.restoreFromBundle( quests );
+				Wandmaker.Quest.restoreFromBundle( quests );
+				Blacksmith.Quest.restoreFromBundle( quests );
+				Imp.Quest.restoreFromBundle( quests );
+			} else {
+				Ghost.Quest.reset();
+				Wandmaker.Quest.reset();
+				Blacksmith.Quest.reset();
+				Imp.Quest.reset();
+			}
+
+			SpecialRoom.restoreRoomsFromBundle(bundle);
+			SecretRoom.restoreRoomsFromBundle(bundle);
+		}
+
+		Bundle badges = bundle.getBundle(BADGES);
+		if (!badges.isNull()) {
+			Badges.loadLocal( badges );
+		} else {
+			Badges.reset();
+		}
+
+		Notes.restoreFromBundle( bundle );
+
+		hero = null;
+		hero = (Hero)bundle.get( HERO );
+
+		depth = bundle.getInt( DEPTH );
+		branch = bundle.getInt( BRANCH );
+
+		gold = bundle.getInt( GOLD );
+		energy = bundle.getInt( ENERGY );
+
+		Statistics.restoreFromBundle( bundle );
+		Generator.restoreFromBundle( bundle );
+
+		generatedLevels.clear();
+		if (bundle.contains(GENERATED_LEVELS)){
+			for (int i : bundle.getIntArray(GENERATED_LEVELS)){
+				generatedLevels.add(i);
+			}
+		//pre-v2.1.1 saves
+		} else  {
+			for (int i = 1; i <= Statistics.deepestFloor; i++){
+				generatedLevels.add(i);
+			}
+		}
+
+		droppedItems = new SparseArray<>();
+		for (int i=1; i <= 26; i++) {
+
+			//dropped items
+			ArrayList<Item> items = new ArrayList<>();
+			if (bundle.contains(Messages.format( DROPPED, i )))
+				for (Bundlable b : bundle.getCollection( Messages.format( DROPPED, i ) ) ) {
+					items.add( (Item)b );
+				}
+			if (!items.isEmpty()) {
+				droppedItems.put( i, items );
+			}
+
+		}
+	}
+
 	public static int flee( Char ch, int from, boolean[] pass, boolean[] visible, boolean chars ) {
 		boolean[] passable = findPassable(ch, pass, visible, false, true);
 		passable[ch.pos] = true;
@@ -1033,14 +1052,22 @@ public class Dungeon {
 			for (Char c : Actor.chars()) {
 				if (c.pos == from || Dungeon.level.adjacent(c.pos, ch.pos)) {
 					passable[c.pos] = false;
-				}
-			}
-		}
+                }
+            }
+        }
 
-		//chars affected by terror have a shorter lookahead and can't approach the fear source
-		boolean canApproachFromPos = ch.buff(Terror.class) == null && ch.buff(Dread.class) == null;
-		return PathFinder.getStepBack( ch.pos, from, canApproachFromPos ? 8 : 4, passable, canApproachFromPos );
-		
-	}
+        //chars affected by terror have a shorter lookahead and can't approach the fear source
+        boolean canApproachFromPos = ch.buff(Terror.class) == null && ch.buff(Dread.class) == null;
+        return PathFinder.getStepBack(ch.pos, from, canApproachFromPos ? 8 : 4, passable, canApproachFromPos);
+
+    }
+
+    public static boolean isDLC(Conducts.Conduct mask) {
+        return dlcs.isConducted(mask);
+    }
+
+    public static boolean isDIFFICULTY(Difficulty.DifficultyConduct mask) {
+        return difficultys.isConducted(mask);
+    }
 
 }

@@ -21,9 +21,18 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.happyMode;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -44,17 +53,37 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessAnmy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoRead;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMixShiled;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessNoMoney;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessRedWhite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.DeadSoul;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.InvisibilityRing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayCursed;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySoftDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Nyctophobia;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
@@ -70,6 +99,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
+import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -103,13 +134,19 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.RedWhiteRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
@@ -121,6 +158,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -154,6 +192,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
@@ -201,36 +240,24 @@ public class Hero extends Char {
 	public HeroAction lastAction = null;
 
 	private Char enemy;
-	
-	public boolean resting = false;
-	
-	public Belongings belongings;
+
+    private static final String CLASS = "class";
+    private static final String SUBCLASS = "subClass";
+    private static final String ABILITY = "armorAbility";
 	
 	public int STR;
 	
 	public float awareness;
 	
 	public int lvl = 1;
-	public int exp = 0;
-	
-	public int HTBoost = 0;
-	
-	private ArrayList<Mob> visibleEnemies;
-
-	//This list is maintained so that some logic checks can be skipped
-	// for enemies we know we aren't seeing normally, resulting in better performance
-	public ArrayList<Mob> mindVisionEnemies = new ArrayList<>();
-
-	public Hero() {
-		super();
-
-		HP = HT = 20;
-		STR = STARTING_STR;
-		
-		belongings = new Belongings( this );
-		
-		visibleEnemies = new ArrayList<>();
-	}
+    private static final String ATTACK = "attackSkill";
+    private static final String DEFENSE = "defenseSkill";
+    private static final String STRENGTH = "STR";
+    private static final String LEVEL = "lvl";
+    private static final String EXPERIENCE = "exp";
+    private static final String HTBOOST = "htboost";
+    private static final String LANTERFTR = "lanterfire";
+    private static final String ICEHP = "icehp";
 	
 	public void updateHT( boolean boostHP ){
 		int curHT = HT;
@@ -265,63 +292,106 @@ public class Hero extends Char {
 
 		return STR + strBonus;
 	}
+    private static final String CAKEUSED = "cakeused";
+    public boolean resting = false;
+    public Belongings belongings;
+    public int exp = 0;
+    public int HTBoost = 0;
+    //This list is maintained so that some logic checks can be skipped
+    // for enemies we know we aren't seeing normally, resulting in better performance
+    public ArrayList<Mob> mindVisionEnemies = new ArrayList<>();
+    //灯火前行
+    public float lanterfire;
+    public int icehp;
+    //蛋糕
+    public int CakeUsed;
+    private String name = SPDSettings.heroName();
+    private ArrayList<Mob> visibleEnemies;
+    //effectively cache this buff to prevent having to call buff(...) a bunch.
+    //This is relevant because we call isAlive during drawing, which has both performance
+    //and thread coordination implications if that method calls buff(...) frequently
+    private Berserk berserk;
 
-	private static final String CLASS       = "class";
-	private static final String SUBCLASS    = "subClass";
-	private static final String ABILITY     = "armorAbility";
+    public Hero() {
+        super();
 
-	private static final String ATTACK		= "attackSkill";
-	private static final String DEFENSE		= "defenseSkill";
-	private static final String STRENGTH	= "STR";
-	private static final String LEVEL		= "lvl";
-	private static final String EXPERIENCE	= "exp";
-	private static final String HTBOOST     = "htboost";
-	
-	@Override
-	public void storeInBundle( Bundle bundle ) {
+        HP = HT = 20;
+        STR = STARTING_STR;
 
-		super.storeInBundle( bundle );
+        belongings = new Belongings(this);
 
-		bundle.put( CLASS, heroClass );
-		bundle.put( SUBCLASS, subClass );
-		bundle.put( ABILITY, armorAbility );
-		Talent.storeTalentsInBundle( bundle, this );
-		
-		bundle.put( ATTACK, attackSkill );
-		bundle.put( DEFENSE, defenseSkill );
-		
-		bundle.put( STRENGTH, STR );
-		
-		bundle.put( LEVEL, lvl );
-		bundle.put( EXPERIENCE, exp );
-		
-		bundle.put( HTBOOST, HTBoost );
-
-		belongings.storeInBundle( bundle );
+        visibleEnemies = new ArrayList<>();
 	}
 	
-	@Override
-	public void restoreFromBundle( Bundle bundle ) {
+	public static void reallyDie( Object cause ) {
 
-		lvl = bundle.getInt( LEVEL );
-		exp = bundle.getInt( EXPERIENCE );
+		int length = Dungeon.level.length();
+		int[] map = Dungeon.level.map;
+		boolean[] visited = Dungeon.level.visited;
+		boolean[] discoverable = Dungeon.level.discoverable;
 
-		HTBoost = bundle.getInt(HTBOOST);
+		for (int i=0; i < length; i++) {
 
-		super.restoreFromBundle( bundle );
+			int terr = map[i];
 
-		heroClass = bundle.getEnum( CLASS, HeroClass.class );
-		subClass = bundle.getEnum( SUBCLASS, HeroSubClass.class );
-		armorAbility = (ArmorAbility)bundle.get( ABILITY );
-		Talent.restoreTalentsFromBundle( bundle, this );
-		
-		attackSkill = bundle.getInt( ATTACK );
-		defenseSkill = bundle.getInt( DEFENSE );
-		
-		STR = bundle.getInt( STRENGTH );
+			if (discoverable[i]) {
 
-		belongings.restoreFromBundle( bundle );
-	}
+				visited[i] = true;
+				if ((Terrain.flags[terr] & Terrain.SECRET) != 0) {
+					Dungeon.level.discover( i );
+				}
+			}
+		}
+
+		Bones.leave();
+
+		Dungeon.observe();
+		GameScene.updateFog();
+
+		Dungeon.hero.belongings.identify();
+
+		int pos = Dungeon.hero.pos;
+
+		ArrayList<Integer> passable = new ArrayList<>();
+		for (Integer ofs : PathFinder.NEIGHBOURS8) {
+			int cell = pos + ofs;
+			if ((Dungeon.level.passable[cell] || Dungeon.level.avoid[cell]) && Dungeon.level.heaps.get( cell ) == null) {
+				passable.add( cell );
+			}
+		}
+		Collections.shuffle( passable );
+
+		ArrayList<Item> items = new ArrayList<>(Dungeon.hero.belongings.backpack.items);
+		for (Integer cell : passable) {
+			if (items.isEmpty()) {
+				break;
+			}
+
+			Item item = Random.element( items );
+			Dungeon.level.drop( item, cell ).sprite.drop( pos );
+			items.remove( item );
+		}
+
+		for (Char c : Actor.chars()){
+			if (c instanceof DriedRose.GhostHero){
+				((DriedRose.GhostHero) c).sayHeroKilled();
+			}
+		}
+
+		Game.runOnRenderThread(new Callback() {
+			@Override
+			public void call() {
+				GameScene.gameOver();
+				Sample.INSTANCE.play( Assets.Sounds.DEATH );
+			}
+		});
+
+		if (cause instanceof Hero.Doom) {
+			((Hero.Doom)cause).onDeath();
+        }
+
+        Dungeon.deleteGame(GamesInProgress.curSlot, true);
+    }
 	
 	public static void preview( GamesInProgress.Info info, Bundle bundle ) {
 		info.level = bundle.getInt( LEVEL );
@@ -872,23 +942,30 @@ public class Hero extends Char {
 				Dungeon.level.plants.get(pos) != null);
 	}
 	
-	private boolean actMove( HeroAction.Move action ) {
-
-		if (getCloser( action.dst )) {
-			canSelfTrample = false;
-			return true;
-
-		//Hero moves in place if there is grass to trample
-		} else if (pos == action.dst && canSelfTrample()){
-			canSelfTrample = false;
-			Dungeon.level.pressCell(pos);
-			spendAndNext( 1 / speed() );
-			return false;
-		} else {
-			ready();
-			return false;
-		}
-	}
+    public static void goodLanterFire() {
+        switch (Random.Int(5)) {
+            case 0:
+            default:
+                Buff.affect(hero, BlessNoMoney.class).set((100), 1);
+                break;
+            case 1:
+                Buff.affect(hero, BlessGoodSTR.class).set((100), 1);
+                break;
+            case 2:
+                Buff.affect(hero, BlessMobDied.class).set((100), 1);
+                break;
+            case 3:
+                Buff.affect(hero, BlessMixShiled.class).set((100), 1);
+                break;
+            case 4:
+                Buff.affect(hero, BlessImmune.class).set((100), 1);
+                break;
+            case 5:
+                Buff.affect(hero, BlessAnmy.class).set((100), 1);
+                break;
+        }
+        GLog.p(Messages.get(WndStory.class, "good"));
+    }
 	
 	private boolean actInteract( HeroAction.Interact action ) {
 		
@@ -1884,29 +1961,309 @@ public class Hero extends Char {
 		return stealth;
 	}
 	
+    public static void badLanterFire() {
+        switch (Random.Int(5)) {
+            case 0:
+            default:
+                Buff.affect(hero, MagicGirlSayMoneyMore.class).set((100), 1);
+                break;
+            case 1:
+                Buff.affect(hero, MagicGirlSaySoftDied.class).set((100), 1);
+                break;
+            case 2:
+                Buff.affect(hero, MagicGirlSayCursed.class).set((100), 1);
+                break;
+            case 3:
+                Buff.affect(hero, MagicGirlSaySlowy.class).set((100), 1);
+                break;
+            case 4:
+                Buff.affect(hero, MagicGirlSayKill.class).set((100), 1);
+                break;
+            case 5:
+                Buff.affect(hero, MagicGirlSayNoSTR.class).set((100), 1);
+                break;
+        }
+        GLog.n(Messages.get(WndStory.class, "bad"));
+    }
+	
+    @Override
+    public void storeInBundle(Bundle bundle) {
+
+        super.storeInBundle(bundle);
+
+        bundle.put(CLASS, heroClass);
+        bundle.put(SUBCLASS, subClass);
+        bundle.put(ABILITY, armorAbility);
+        Talent.storeTalentsInBundle(bundle, this);
+
+        bundle.put(ATTACK, attackSkill);
+        bundle.put(DEFENSE, defenseSkill);
+
+        bundle.put(STRENGTH, STR);
+
+        bundle.put(LEVEL, lvl);
+        bundle.put(EXPERIENCE, exp);
+
+        bundle.put(HTBOOST, HTBoost);
+
+        bundle.put(ICEHP, icehp);
+
+        bundle.put(LANTERFTR, lanterfire);
+
+        bundle.put(CAKEUSED, CakeUsed);
+
+        if (!this.name.equals("")) {
+            bundle.put("name", this.name);
+        }
+
+
+        belongings.storeInBundle(bundle);
+    }
+
+	@Override
+	public void restoreFromBundle( Bundle bundle ) {
+
+		lvl = bundle.getInt( LEVEL );
+		exp = bundle.getInt( EXPERIENCE );
+
+		HTBoost = bundle.getInt(HTBOOST);
+
+		super.restoreFromBundle( bundle );
+
+        heroClass = bundle.getEnum(CLASS, HeroClass.class);
+        subClass = bundle.getEnum(SUBCLASS, HeroSubClass.class);
+        armorAbility = (ArmorAbility) bundle.get(ABILITY);
+        Talent.restoreTalentsFromBundle(bundle, this);
+
+        attackSkill = bundle.getInt(ATTACK);
+        defenseSkill = bundle.getInt(DEFENSE);
+
+        STR = bundle.getInt(STRENGTH);
+
+        lanterfire = bundle.getInt(LANTERFTR);
+
+        icehp = bundle.getInt(ICEHP);
+
+        CakeUsed = bundle.getInt(CAKEUSED);
+
+        String name;
+        if (bundle.contains("name")) {
+            name = bundle.getString("name");
+        } else {
+            name = "";
+        }
+
+        //This Custom Name Logic
+        this.name = name;
+        int csname;
+        if (bundle.contains("up_names")) {
+            String[] unames = bundle.getStringArray("up_names");
+            int[] csname2 = bundle.getIntArray("up_vals");
+
+            for (csname = 0; csname < unames.length && csname < csname2.length; ++csname) {
+                this.upgrades.put(unames[csname], csname2[csname]);
+            }
+        }
+
+        //May Be Working
+        for (csname = 1; csname <= 5; ++csname) {
+            StringBuilder str = new StringBuilder();
+            str.append("craft_names_");
+            str.append(csname);
+            if (bundle.contains(str.toString())) {
+                str = new StringBuilder();
+                str.append("craft_names_");
+                str.append(csname);
+                String[] enus = bundle.getStringArray(str.toString());
+                String pre = "craft_vals_" + csname;
+                int[] trys = bundle.getIntArray(pre);
+                LinkedHashMap<String, Integer> lname = new LinkedHashMap<>();
+
+                for (int lisx = 0; lisx < enus.length && lisx < trys.length; ++lisx) {
+                    lname.put(enus[lisx], trys[lisx]);
+                }
+
+                this.crafted.put(csname, lname);
+            }
+        }
+
+        belongings.restoreFromBundle(bundle);
+    }
+
+	private boolean actMove( HeroAction.Move action ) {
+
+        PotionOfPurity.PotionOfPurityLing potionOfPurityLing =
+                Dungeon.hero.belongings.getItem(PotionOfPurity.PotionOfPurityLing.class);
+        if (potionOfPurityLing != null && !Dungeon.level.locked) {
+            potionOfPurityLing.detachAll(hero.belongings.backpack);
+        }
+
+        RedWhiteRose redWhiteRose = Dungeon.hero.belongings.getItem(RedWhiteRose.class);
+        if (redWhiteRose != null) {
+            Buff.affect(hero, BlessRedWhite.class).set((100), 1);
+        } else {
+            Buff.detach(hero, BlessRedWhite.class);
+        }
+
+        DriedRose rose = Dungeon.hero.belongings.getItem(DriedRose.class);
+        Red red = hero.belongings.getItem(Red.class);
+        if (red != null && Statistics.deadGo) {
+            red.detachAll(hero.belongings.backpack);
+        }
+        if (rose != null && Statistics.deadGo) {
+            rose.detachAll(hero.belongings.backpack);
+        }
+
+        CrystalLing crystalLing = Dungeon.hero.belongings.getItem(CrystalLing.class);
+        if (crystalLing != null) {
+            Buff.affect(hero, BlessLing.class).set((100), 1);
+        } else {
+            Buff.detach(hero, BlessLing.class);
+        }
+
+        MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
+        if (getHeal != null && HT / 4 > HP) {
+            this.HP = HT;
+            interrupt();
+            PotionOfHealing.cure(this);
+            Buff.prolong(this, AnkhInvulnerability.GodDied.class, AnkhInvulnerability.DURATION * 10f);
+            SpellSprite.show(this, SpellSprite.ANKH);
+            GameScene.flash(0x80FFFF40);
+            Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+            GLog.w(Messages.get(this, "heartdied"));
+            getHeal.detach(belongings.backpack);
+        }
+        for (Buff buff : Dungeon.hero.buffs()) {
+            if (HelpSettings() && !(buff instanceof GameTracker)) {
+                Buff.affect(this, GameTracker.class);
+            }
+        }
+
+        if (hero.exp < 0 && !(Dungeon.isChallenged(PRO))) {
+            exp = Random.NormalIntRange(10, 20);
+        }
+
+//		///测试坐标用
+//		GLog.w(String.valueOf(holiday));
+
+        //携带该物品时，玩家血量低于一半后自动隐身一段回合。
+        //actMove实现
+        MIME.GOLD_TWO getFalseBody = Dungeon.hero.belongings.getItem(MIME.GOLD_TWO.class);
+        if (getFalseBody != null && HT / 5 > HP) {
+            //给予一个看不见的隐形Buff,继承至Invisibility
+            Buff.affect(this, InvisibilityRing.class, InvisibilityRing.DURATION);
+        }
+
+
+        int chCount = 0;
+        for (int ch : Challenges.MASKS) {
+            if ((Dungeon.challenges & ch) != 0) chCount++;
+        }
+
+
+        // 深度调查
+        if ((Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) || Dungeon.isDLC(Conducts.Conduct.MONEYLETGO)) && !happyMode) {
+            happyMode = true;
+            GLog.n(Messages.get(WndStory.class, "letsplay"));
+        }
+
+
+        if (chCount >= 6 && !lanterfireactive && !Dungeon.isChallenged(PRO)) {
+            GLog.n(Messages.get(WndStory.class, "warning"));
+        }
+
+        if (chCount >= 3 && !lanterfireactive && !Dungeon.isChallenged(PRO) || Dungeon.isChallenged(DHXD) && !lanterfireactive) {
+            //灯火前行 3.2
+            lanterfire = 100 - (chCount >= 6 ? chCount * 3 : 0);
+            new OilLantern().quantity(1).identify().collect();
+
+            lanterfireactive = true;
+
+            Buff.affect(this, Nyctophobia.class);
+
+            switch (Random.Int(5)) {
+                case 0:
+                default:
+                    Buff.affect(hero, BlessMobDied.class).set((100), 1);
+                    break;
+                case 1:
+                    Buff.affect(hero, BlessMixShiled.class).set((100), 1);
+                    break;
+                case 2:
+                    Buff.affect(hero, BlessImmune.class).set((100), 1);
+                    break;
+                case 3:
+                    Buff.affect(hero, BlessGoRead.class).set((100), 1);
+                    break;
+                case 4:
+                    new WandOfAnmy().quantity(1).identify().collect();
+                    Buff.affect(hero, BlessAnmy.class).set((100), 1);
+            }
+            GLog.b(Messages.get(WndStory.class, "letxz"));
+        }
+
+        if (getCloser(action.dst)) {
+            canSelfTrample = false;
+            return true;
+
+            //Hero moves in place if there is grass to trample
+        } else if (pos == action.dst && canSelfTrample()) {
+            canSelfTrample = false;
+            Dungeon.level.pressCell(pos);
+            spendAndNext(1 / speed());
+			return false;
+		} else {
+			ready();
+			return false;
+		}
+	}
+
 	@Override
 	public void die( Object cause ) {
-		
+
 		curAction = null;
 
-		Ankh ankh = null;
+        Ankh ankh = null;
 
-		//look for ankhs in player inventory, prioritize ones which are blessed.
-		for (Ankh i : belongings.getAllItems(Ankh.class)){
-			if (ankh == null || i.isBlessed()) {
-				ankh = i;
-			}
-		}
+        //look for ankhs in player inventory, prioritize ones which are blessed.
+        for (Ankh i : belongings.getAllItems(Ankh.class)) {
+            if (ankh == null || i.isBlessed()) {
+                ankh = i;
+            }
+        }
 
-		if (ankh != null) {
-			interrupt();
-			resting = false;
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (mob instanceof BlackSoul) {
+                Buff.affect(mob, Dread.class);
+            }
+        }
 
-			if (ankh.isBlessed()) {
-				this.HP = HT / 4;
+        //灯火值低于35死亡生成自己的邪恶面，并清空金币，将金币保存到json文件。（灵感：空洞骑士）
+        for (Ankh i : belongings.getAllItems(Ankh.class)) {
+            if (ankh == null || i.isBlessed()) {
+                if (lanterfireactive && hero.lanterfire <= 30 && !i.isBlessed()) {
+                    BlackSoul s = new BlackSoul();
+                    s.pos = Dungeon.hero.pos;
+                    s.gold = Dungeon.gold;
+                    Dungeon.gold = 0;
+                    s.state = s.SLEEPING;
+                    GameScene.add(s);
+                    Buff.affect(s, ChampionEnemy.DeadSoulSX.class);
+                    Buff.affect(s, DeadSoul.class);
+                    GameScene.flash(0x80FF0000);
+                }
+            }
+        }
 
-				PotionOfHealing.cure(this);
-				Buff.prolong(this, AnkhInvulnerability.class, AnkhInvulnerability.DURATION);
+        if (ankh != null) {
+            interrupt();
+            resting = false;
+
+            if (ankh.isBlessed()) {
+                this.HP = HT / 4;
+
+                PotionOfHealing.cure(this);
+                Buff.prolong(this, AnkhInvulnerability.class, AnkhInvulnerability.DURATION);
 
 				SpellSprite.show(this, SpellSprite.ANKH);
 				GameScene.flash(0x80FFFF40);
@@ -1949,96 +2306,21 @@ public class Hero extends Char {
 			}
 			return;
 		}
-		
+
 		Actor.fixTime();
 		super.die( cause );
 		reallyDie( cause );
 	}
-	
-	public static void reallyDie( Object cause ) {
-		
-		int length = Dungeon.level.length();
-		int[] map = Dungeon.level.map;
-		boolean[] visited = Dungeon.level.visited;
-		boolean[] discoverable = Dungeon.level.discoverable;
-		
-		for (int i=0; i < length; i++) {
-			
-			int terr = map[i];
-			
-			if (discoverable[i]) {
-				
-				visited[i] = true;
-				if ((Terrain.flags[terr] & Terrain.SECRET) != 0) {
-					Dungeon.level.discover( i );
-				}
-			}
-		}
-		
-		Bones.leave();
-		
-		Dungeon.observe();
-		GameScene.updateFog();
-				
-		Dungeon.hero.belongings.identify();
 
-		int pos = Dungeon.hero.pos;
+    @Override
+    public boolean isAlive() {
 
-		ArrayList<Integer> passable = new ArrayList<>();
-		for (Integer ofs : PathFinder.NEIGHBOURS8) {
-			int cell = pos + ofs;
-			if ((Dungeon.level.passable[cell] || Dungeon.level.avoid[cell]) && Dungeon.level.heaps.get( cell ) == null) {
-				passable.add( cell );
-			}
-		}
-		Collections.shuffle( passable );
-
-		ArrayList<Item> items = new ArrayList<>(Dungeon.hero.belongings.backpack.items);
-		for (Integer cell : passable) {
-			if (items.isEmpty()) {
-				break;
-			}
-
-			Item item = Random.element( items );
-			Dungeon.level.drop( item, cell ).sprite.drop( pos );
-			items.remove( item );
-		}
-
-		for (Char c : Actor.chars()){
-			if (c instanceof DriedRose.GhostHero){
-				((DriedRose.GhostHero) c).sayHeroKilled();
-			}
-		}
-
-		Game.runOnRenderThread(new Callback() {
-			@Override
-			public void call() {
-				GameScene.gameOver();
-				Sample.INSTANCE.play( Assets.Sounds.DEATH );
-			}
-		});
-
-		if (cause instanceof Hero.Doom) {
-			((Hero.Doom)cause).onDeath();
-		}
-
-		Dungeon.deleteGame( GamesInProgress.curSlot, true );
-	}
-
-	//effectively cache this buff to prevent having to call buff(...) a bunch.
-	//This is relevant because we call isAlive during drawing, which has both performance
-	//and thread coordination implications if that method calls buff(...) frequently
-	private Berserk berserk;
-
-	@Override
-	public boolean isAlive() {
-		
-		if (HP <= 0){
-			if (berserk == null) berserk = buff(Berserk.class);
-			return berserk != null && berserk.berserking();
-		} else {
-			berserk = null;
-			return super.isAlive();
+        if (HP <= 0) {
+            if (berserk == null) berserk = buff(Berserk.class);
+            return berserk != null && berserk.berserking();
+        } else {
+            berserk = null;
+            return super.isAlive();
 		}
 	}
 
@@ -2339,18 +2621,50 @@ public class Hero extends Char {
 	}
 	
 	public void resurrect() {
-		HP = HT;
-		live();
+        HP = HT;
+        live();
 
-		MagicalHolster holster = belongings.getItem(MagicalHolster.class);
+        if (lanterfireactive) {
+            if (hero.lanterfire == 100) {
+                goodLanterFire();
+            } else if (hero.lanterfire <= 99 && hero.lanterfire >= 90) {
+                goodLanterFire();
+            } else if (hero.lanterfire <= 89 && hero.lanterfire >= 80 && Random.Float() <= 0.05f) {
+                badLanterFire();
+            } else if (hero.lanterfire <= 89 && hero.lanterfire >= 80 && Random.Float() <= 0.85f) {
+                goodLanterFire();
+            } else if (hero.lanterfire <= 89 && hero.lanterfire >= 80) {
+                GLog.b(Messages.get(WndStory.class, "normoal"));
+            } else if (hero.lanterfire <= 79 && hero.lanterfire >= 60 && Random.Float() <= 0.25f) {
+                badLanterFire();
+            } else if (hero.lanterfire <= 79 && hero.lanterfire >= 60 && Random.Float() <= 0.70f) {
+                goodLanterFire();
+            } else if (hero.lanterfire <= 79 && hero.lanterfire >= 60) {
+                GLog.b(Messages.get(WndStory.class, "normoal"));
+            } else if (hero.lanterfire <= 59 && hero.lanterfire >= 35 && Random.Float() <= 0.40f) {
+                badLanterFire();
+            } else if (hero.lanterfire <= 59 && hero.lanterfire >= 35 && Random.Float() <= 0.20f) {
+                goodLanterFire();
+            } else if (hero.lanterfire <= 59 && hero.lanterfire >= 35) {
+                GLog.b(Messages.get(WndStory.class, "normoal"));
+            } else if (hero.lanterfire <= 34 && hero.lanterfire >= 1 && Random.Float() <= 0.40f) {
+                badLanterFire();
+            } else if (hero.lanterfire <= 34 && hero.lanterfire >= 1) {
+                GLog.b(Messages.get(WndStory.class, "normoal"));
+            } else {
+                badLanterFire();
+            }
+        }
 
-		Buff.affect(this, LostInventory.class);
-		Buff.affect(this, Invisibility.class, 3f);
-		//lost inventory is dropped in interlevelscene
+        MagicalHolster holster = belongings.getItem(MagicalHolster.class);
 
-		//activate items that persist after lost inventory
-		//FIXME this is very messy, maybe it would be better to just have one buff that
-		// handled all items that recharge over time?
+        Buff.affect(this, LostInventory.class);
+        Buff.affect(this, Invisibility.class, 3f);
+        //lost inventory is dropped in interlevelscene
+
+        //activate items that persist after lost inventory
+        //FIXME this is very messy, maybe it would be better to just have one buff that
+        // handled all items that recharge over time?
 		for (Item i : belongings){
 			if (i instanceof EquipableItem && i.isEquipped(this)){
 				((EquipableItem) i).activate(this);
@@ -2370,13 +2684,37 @@ public class Hero extends Char {
 		updateHT(false);
 	}
 
-	@Override
-	public void next() {
-		if (isAlive())
-			super.next();
-	}
+    @Override
+    public void next() {
+        if (isAlive())
+            super.next();
+    }
 
-	public static interface Doom {
-		public void onDeath();
-	}
+    //灯火前行逻辑
+    public void damageLantern(int value) {
+        lanterfire -= value;
+        hero.sprite.showStatus(0x808080, String.valueOf(value));
+    }
+
+    public void healLantern(float value) {
+        lanterfire = Math.min(lanterfire + value, 100);
+        hero.sprite.showStatus(0x00ff00, String.valueOf(value));
+    }
+
+    //寒冰值系统
+    public void damageIcehp(int value) {
+        icehp += value;
+        hero.sprite.showStatus(0x009999, String.valueOf("-" + value));
+    }
+
+    public void healIcehp(int value) {
+        if (icehp > 0) {
+            icehp -= value;
+        }
+        hero.sprite.showStatus(0x00ffff, String.valueOf("+" + value));
+    }
+
+    public static interface Doom {
+        public void onDeath();
+    }
 }

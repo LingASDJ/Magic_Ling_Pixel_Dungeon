@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import com.nlf.calendar.Lunar;
+import com.nlf.calendar.Solar;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -36,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Gregorian;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -77,27 +80,67 @@ import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
 public abstract class RegularLevel extends Level {
-	
-	protected ArrayList<Room> rooms;
-	
-	protected Builder builder;
-	
-	protected Room roomEntrance;
-	protected Room roomExit;
-	
-	@Override
-	protected boolean build() {
-		
+
+
+    public static Holiday holiday;
+
+    public static DevBirthday birthday;
+
+    static {
+
+        holiday = Holiday.NONE;
+
+        /**农历计算*/
+        Gregorian.LunarCheckDate();
+
+        final Calendar calendar = Calendar.getInstance();
+
+        Solar date = Solar.fromDate(calendar.getTime());
+        Lunar lunar = date.getLunar();
+
+        boolean isZQJ = lunar.getMonth() == 8 && (lunar.getDay() >= 15 - 10 && lunar.getDay() <= 15 + 12);
+
+
+        //计算中国传统节日的代码已迁移到最上方的"Gregorian.LunarCheckDate();"方法。
+        switch (calendar.get(Calendar.MONTH)) {
+            case Calendar.JANUARY:
+                if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
+                    holiday = Holiday.XMAS;
+                break;
+            case Calendar.OCTOBER:
+                if (calendar.get(Calendar.WEEK_OF_MONTH) >= 2 && !isZQJ)
+                    holiday = Holiday.HWEEN;
+                break;
+            case Calendar.NOVEMBER:
+                if (calendar.get(Calendar.DAY_OF_MONTH) == 1 && !isZQJ)
+                    holiday = Holiday.HWEEN;
+                break;
+            case Calendar.DECEMBER:
+                if (calendar.get(Calendar.WEEK_OF_MONTH) >= 3)
+                    holiday = Holiday.XMAS;
+                break;
+        }
+    }
+
+    protected ArrayList<Room> rooms;
+    protected Builder builder;
+    protected Room roomEntrance;
+    protected Room roomExit;
+
+    @Override
+    protected boolean build() {
+
 		builder = builder();
-		
+
 		ArrayList<Room> initRooms = initRooms();
 		Random.shuffle(initRooms);
-		
+
 		do {
 			for (Room r : initRooms){
 				r.neigbours.clear();
@@ -105,10 +148,36 @@ public abstract class RegularLevel extends Level {
 			}
 			rooms = builder.build((ArrayList<Room>)initRooms.clone());
 		} while (rooms == null);
-		
+
 		return painter().paint(this, rooms);
-		
+
 	}
+    //开发团队的生日列表
+    // S直接参与Calendar类计算
+    // L参与Lunar-Java类计算
+    public enum DevBirthday {
+        DEV_BIRTHDAY,
+        //QinYue S-5.13
+        CHAPTER_BIRTHDAY,
+        //设寄师
+        DESIGN_BIRTHDAY,
+        //丹尼尔
+        ART_DC_BIRTHDAY,
+        //冷群
+        ART_LQ_BIRTHDAY,
+        //小蓝 S-3.26
+        ART_LB_BIRTHDAY,
+        //清扬 L-12.3
+        ART_CY_BIRTHDAY,
+    }
+
+    public enum Holiday {
+        NONE,
+        DWJ,
+        ZQJ, //TBD
+        HWEEN,//2nd week of october though first day of november
+        XMAS,
+    }
 	
 	protected ArrayList<Room> initRooms() {
 		ArrayList<Room> initRooms = new ArrayList<>();

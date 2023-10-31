@@ -111,27 +111,43 @@ public class BuffIndicator extends Component {
 	public static final int LANTERFIRE_TWO    = 59;
 	public static final int LANTERFIRE_THREE    = 60;
 	public static final int LANTERFIRE_FOUR    = 61;
-	public static final int LANTERFIRE_FIVE    = 62;
-	public static final int LANTERFIRE_SIX    = 63;
+    public static final int LANTERFIRE_FIVE = 62;
+    public static final int LANTERFIRE_SIX = 63;
 
-	public static final int DEBUFF_DOWN    = 64;
-	public static final int GOBUFF_UPRD    = 65;
+    public static final int DEBUFF_DOWN = 64;
+    public static final int GOBUFF_UPRD = 65;
 
-	public static final int ICE_SWORDDOWN    = 66;
+    public static final int ICE_SWORDDOWN = 66;
 
-	public static final int LIGHT_DIED    = 67;
+    public static final int LIGHT_DIED = 67;
 
-	public static final int SIZE_SMALL  = 7;
-	public static final int SIZE_LARGE  = 16;
 
-	private static BuffIndicator heroInstance;
-	private static BuffIndicator bossInstance;
+    //DUELIST
+    public static final int DUEL_CLEAVE = 68;
+    public static final int DUEL_GUARD = 69;
+    public static final int DUEL_SPIN = 70;
+    public static final int DUEL_EVASIVE = 71;
+    public static final int DUEL_DANCE = 72;
+    public static final int DUEL_BRAWL = 73;
+    public static final int DUEL_XBOW = 74;
+    public static final int CHALLENGE = 75;
+    public static final int MONK_ENERGY = 76;
+    public static final int DUEL_COMBO = 77;
+    public static final int DAZE = 78;
 
-	private LinkedHashMap<Buff, BuffButton> buffButtons = new LinkedHashMap<>();
-	private boolean needsRefresh;
-	private Char ch;
+    public static final int INVERT_MARK = 79;
 
-	private boolean large = false;
+    public static final int SIZE_SMALL = 7;
+    public static final int SIZE_LARGE = 16;
+
+    private static BuffIndicator heroInstance;
+    private static BuffIndicator bossInstance;
+
+    private LinkedHashMap<Buff, BuffButton> buffButtons = new LinkedHashMap<>();
+    private boolean needsRefresh;
+    private Char ch;
+
+    private boolean large;
 
 	public BuffIndicator( Char ch, boolean large ) {
 		super();

@@ -166,22 +166,23 @@ public enum Document {
 		} else {
 			//special per-page visuals for guidebook
 			switch (page){
-				case Document.GUIDE_INTRO: default:
-					return new ItemSprite(ItemSpriteSheet.MASTERY);
-				case "Examining":
-					return Icons.get(Icons.MAGNIFY);
-				case "Surprise_Attacks":
-					return Icons.get(Icons.SNAKE);
-				case "Identifying":
-					return new ItemSprite( new ScrollOfIdentify() );
-				case "Food":
-					return new ItemSprite( ItemSpriteSheet.PASTY );
-				case "Dieing":
-					return new ItemSprite( ItemSpriteSheet.TOMB );
-				case Document.GUIDE_SEARCHING:
-					return Icons.get(Icons.MAGNIFY);
-				case "Strength":
-					return new ItemSprite( ItemSpriteSheet.GREATAXE );
+                case Document.GUIDE_INTRO:
+                default:
+                    return new ItemSprite(ItemSpriteSheet.MASTERY);
+                case "Examining":
+                    return Icons.get(Icons.MAGNIFY);
+//				case "Surprise_Attacks":
+//					return Icons.get(Icons.SNAKE);
+                case "Identifying":
+                    return new ItemSprite(new ScrollOfIdentify());
+                case "Food":
+                    return new ItemSprite(ItemSpriteSheet.PASTY);
+                case "Dieing":
+                    return new ItemSprite(ItemSpriteSheet.TOMB);
+                case Document.GUIDE_SEARCHING:
+                    return Icons.get(Icons.MAGNIFY);
+                case "Strength":
+                    return new ItemSprite(ItemSpriteSheet.GREATAXE);
 				case "Upgrades":
 					return new ItemSprite( ItemSpriteSheet.RING_EMERALD );
 				case "Looting":

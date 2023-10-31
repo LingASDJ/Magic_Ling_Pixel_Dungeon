@@ -125,92 +125,17 @@ public class Statistics {
 	//首次对决
 	public static boolean mimicking = false;
 
+    private static final String LOVX = "lovx";
+    private static final String FUCKALONE = "fuckplayer";
+    private static final String WINGAME = "wingame";
+    private static final String HIDEEN = "hideen";
+    private static final String BOSS_CHALLENGE_QUALIFIED = "qualifiedForBossChallengeBadge";
 	//Directly add float time will cause accuracy lose and stop timing if time is long enough
 	//so use long to record seconds, float to count sub-seconds.
-	//SPD-V1.3.2-ITEM SPAWN CODE
-	public static long real_seconds = 0;
-	public static float second_elapsed = 0;
-	public static float turnsPassed = 0f;
-    public static boolean TryUsedAnmy= false;
-
-	public static boolean winGame = false;
-
-	public static boolean HiddenOK = false;
-
-    public static void reset() {
-		boss_enhance = 0;
-		ChaicBlood = 0;
-		readBooks = 0;
-		HealingIsDied = 0;
-
-		happyMode = false;
-
-		findMoon = false;
-		deadGo = false;
-
-		//萨卡班甲鱼二阶段
-		sakaBackStage = 0;
-
-		goldCollected	= 0;
-		deepestFloor	= -1;
-		enemiesSlain	= 0;
-		foodEaten		= 0;
-		goldchestmazeCollected = 0;
-		dimandchestmazeCollected =0;
-		fuckGeneratorAlone = 0;
-		itemsCrafted    = 0;
-		piranhasKilled	= 0;
-		ankhsUsed		= 0;
-		naiyaziCollected = 0;
-		upgradesUsed    = 0;
-		sneakAttacks    = 0;
-		thrownAssists   = 0;
-		realdeepestFloor = 0;
-		spawnersAlive   = 0;
-		
-		duration	= 0;
-		
-		qualifiedForNoKilling = false;
-
-		mimicking = false;
-		
-		amuletObtained = false;
-
-		tipsgodungeon = false;
-
-		fireGirlnoshopping = false;
-
-		deadshoppingdied = false;
-		wangzheguilai = false;
-		endingbald = false;
-
-		lanterfireactive = false;
-		bugsyncfixed =  false;
-
-		crivusfruitslevel2 = false;
-		TPDoorDieds = false;
-
-		TryUsedAnmy = false;
-
-		second_elapsed = 0f;
-		real_seconds = 0;
-		turnsPassed = 0f;
-
-
-		//得分
-		progressScore   = 0;
-		heldItemValue   = 0;
-		treasureScore   = 0;
-		floorsExplored  = new SparseArray<>();
-		exploreScore    = 0;
-		bossScores      = new int[6];
-		totalBossScore  = 0;
-		questScores     = new int[5];
-		totalQuestScore = 0;
-		winMultiplier   = 1;
-		chalMultiplier  = 1;
-		totalScore      = 0;
-	}
+    //SPD-V1.3.2-ITEM SPAWN CODE
+    public static long real_seconds = 0;
+    public static float second_elapsed = 0;
+    public static float turnsPassed = 0f;
 	
 	private static final String GOLD		= "score";
 	private static final String HAPPY		= "happy";
@@ -300,26 +225,97 @@ public class Statistics {
 	private static final String BDTX		= "bdtx";
 
 	private static final String LOVE		= "love";
+    public static boolean TryUsedAnmy = false;
+    public static boolean winGame = false;
+    public static boolean HiddenOK = false;
+    //220---SPD
+    public static boolean qualifiedForBossChallengeBadge = false;
 
-	private static final String LOVX		= "lovx";
+    public static void reset() {
+        boss_enhance = 0;
+        ChaicBlood = 0;
+        readBooks = 0;
+        HealingIsDied = 0;
 
-	private static final String FUCKALONE		= "fuckplayer";
+        happyMode = false;
 
-	private static final String WINGAME		= "wingame";
+        findMoon = false;
+		deadGo = false;
 
-	private static final String HIDEEN		= "hideen";
+		//萨卡班甲鱼二阶段
+		sakaBackStage = 0;
+
+		goldCollected	= 0;
+		deepestFloor	= -1;
+		enemiesSlain	= 0;
+		foodEaten		= 0;
+		goldchestmazeCollected = 0;
+		dimandchestmazeCollected =0;
+		fuckGeneratorAlone = 0;
+		itemsCrafted    = 0;
+		piranhasKilled	= 0;
+		ankhsUsed		= 0;
+		naiyaziCollected = 0;
+		upgradesUsed    = 0;
+		sneakAttacks    = 0;
+		thrownAssists   = 0;
+		realdeepestFloor = 0;
+		spawnersAlive   = 0;
+
+		duration	= 0;
+
+        qualifiedForNoKilling = false;
+        qualifiedForBossChallengeBadge = false;
+        mimicking = false;
+
+		amuletObtained = false;
+
+		tipsgodungeon = false;
+
+		fireGirlnoshopping = false;
+
+		deadshoppingdied = false;
+		wangzheguilai = false;
+		endingbald = false;
+
+		lanterfireactive = false;
+		bugsyncfixed =  false;
+
+		crivusfruitslevel2 = false;
+		TPDoorDieds = false;
+
+		TryUsedAnmy = false;
+
+		second_elapsed = 0f;
+		real_seconds = 0;
+		turnsPassed = 0f;
 
 
-	public static void storeInBundle( Bundle bundle ) {
+		//得分
+		progressScore   = 0;
+		heldItemValue   = 0;
+		treasureScore   = 0;
+		floorsExplored  = new SparseArray<>();
+		exploreScore    = 0;
+		bossScores      = new int[6];
+		totalBossScore  = 0;
+		questScores     = new int[5];
+		totalQuestScore = 0;
+		winMultiplier   = 1;
+		chalMultiplier  = 1;
+		totalScore      = 0;
+	}
 
-		bundle.put(HIDEEN,HiddenOK);
+    public static void storeInBundle(Bundle bundle) {
 
-		bundle.put(WINGAME,winGame);
+        bundle.put(HIDEEN, HiddenOK);
+
+        bundle.put(WINGAME, winGame);
 
 
-		bundle.put(BDTX,bossWeapons);
+        bundle.put(BDTX, bossWeapons);
 
-		bundle.put(LOVE,findMoon);
+        bundle.put(LOVE,findMoon);
 		bundle.put(LOVX,deadGo);
 
 		bundle.put(FUCKALONE,fuckGeneratorAlone);
@@ -407,7 +403,8 @@ public class Statistics {
 		//SPD
 		bundle.put("real_time_passed", second_elapsed);
 		bundle.put("real_seconds_passed", real_seconds);
-		bundle.put("turns_passed", turnsPassed);
+        bundle.put("turns_passed", turnsPassed);
+        bundle.put(BOSS_CHALLENGE_QUALIFIED, qualifiedForBossChallengeBadge);
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
@@ -510,7 +507,8 @@ public class Statistics {
 		//SPD
 		second_elapsed = bundle.getFloat("real_time_passed");
 		real_seconds =   bundle.getLong("real_seconds_passed");
-		turnsPassed =    bundle.getFloat("turns_passed");
+        turnsPassed = bundle.getFloat("turns_passed");
+        qualifiedForBossChallengeBadge = bundle.getBoolean(BOSS_CHALLENGE_QUALIFIED);
 	}
 	
 	public static void preview( GamesInProgress.Info info, Bundle bundle ){

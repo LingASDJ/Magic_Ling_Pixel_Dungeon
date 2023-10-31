@@ -25,8 +25,8 @@ import com.watabou.noosa.Group;
 
 public class Component extends Group {
 	
-	protected float x;
-	protected float y;
+	public float x;
+	public float y;
 	protected float width;
 	protected float height;
 	

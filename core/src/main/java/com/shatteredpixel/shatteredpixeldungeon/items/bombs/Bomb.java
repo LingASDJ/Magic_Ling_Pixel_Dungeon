@@ -21,8 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.bombs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -62,17 +63,88 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class Bomb extends Item {
-	
-	{
-		image = ItemSpriteSheet.BOMB;
 
-		defaultAction = AC_LIGHTTHROW;
-		usesTargeting = true;
+    public Fuse fuse;
 
-		stackable = true;
-	}
+    {
+        image = ItemSpriteSheet.BOMB;
 
-	public Fuse fuse;
+        defaultAction = AC_LIGHTTHROW;
+        usesTargeting = true;
+
+        stackable = true;
+    }
+
+    public void explodeMobs(int cell) {
+        //We're blowing up, so no need for a fuse anymore.
+        this.fuse = null;
+
+        Sample.INSTANCE.play(Assets.Sounds.BLAST);
+
+        if (explodesDestructively()) {
+
+            ArrayList<Char> affected = new ArrayList<>();
+
+            if (Dungeon.level.heroFOV[cell]) {
+                CellEmitter.center(cell).burst(BlastParticle.FACTORY, 30);
+            }
+
+            boolean terrainAffected = false;
+            for (int n : PathFinder.NEIGHBOURS9) {
+                int c = cell + n;
+                if (c >= 0 && c < Dungeon.level.length()) {
+                    if (Dungeon.level.heroFOV[c]) {
+                        CellEmitter.get(c).burst(SmokeParticle.FACTORY, 4);
+                    }
+
+                    if (Dungeon.level.flamable[c]) {
+                        Dungeon.level.destroy(c);
+                        GameScene.updateMap(c);
+                        terrainAffected = true;
+                    }
+
+                    //destroys items / triggers bombs caught in the blast.
+//					Heap heap = Dungeon.level.heaps.get(c);
+//					if (heap != null)
+//						heap.explode();
+
+                    Char ch = Actor.findChar(c);
+                    if (ch != null) {
+                        affected.add(ch);
+                    }
+                }
+            }
+
+            for (Char ch : affected) {
+
+                //if they have already been killed by another bomb
+                if (!ch.isAlive()) {
+                    continue;
+                }
+
+                int dmg = Random.NormalIntRange(5 + Dungeon.depth, 10 + Dungeon.depth * 2);
+
+                //those not at the center of the blast take less damage
+                if (ch.pos != cell) {
+                    dmg = Math.round(dmg * 0.67f);
+                }
+
+                dmg -= ch.drRoll();
+
+                if (dmg > 0) {
+                    ch.damage(dmg, this);
+                }
+
+                if (ch == hero && !ch.isAlive()) {
+                    Dungeon.fail(Bomb.class);
+                }
+            }
+
+            if (terrainAffected) {
+                Dungeon.observe();
+            }
+        }
+    }
 
 	//FIXME using a static variable for this is kinda gross, should be a better way
 	private static boolean lightingFuse = false;
@@ -197,9 +269,10 @@ public class Bomb extends Item {
 				}
 				
 				if (ch == Dungeon.hero && !ch.isAlive()) {
-					if (this instanceof MagicalBomb){
-						Badges.validateDeathFromFriendlyMagic();
-					}
+					if (this instanceof MagicalBomb) {
+                        //任何邪恶，终将绳之以法！！！
+                        //Badges.validateDeathFromFriendlyMagic();
+                    }
 					GLog.n(Messages.get(this, "ondeath"));
 					Dungeon.fail(this);
 				}

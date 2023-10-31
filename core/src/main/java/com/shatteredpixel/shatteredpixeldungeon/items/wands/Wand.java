@@ -577,7 +577,7 @@ public abstract class Wand extends Item {
 				//it would be better to eliminate the curItem static variable.
 				final Wand curWand;
 				if (curItem instanceof Wand) {
-					curWand = Item.curItem;
+					curWand = (Wand) Item.curItem;
 				} else {
 					return;
 				}

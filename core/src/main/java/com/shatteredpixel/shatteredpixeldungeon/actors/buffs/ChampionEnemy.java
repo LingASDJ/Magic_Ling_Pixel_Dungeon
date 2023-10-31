@@ -41,7 +41,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -173,26 +172,15 @@ public abstract class ChampionEnemy extends Buff {
 
 	}
 
-	public static class Sider extends ChampionEnemy implements Callback {
-		{
-			color = 0xe59d9d;
-		}
+	public static class Sider extends ChampionEnemy {
+        {
+            color = 0xe59d9d;
+        }
 
-		public static class DarkBolt{}
-
-		public void onZapComplete() {
-			next();
-		}
-
-		@Override
-		public void call() {
-			next();
-		}
-
-		@Override
-		public boolean canAttackWithExtraReach(Char enemy) {
-			//attack range of 2
-			/** 实现效果，此外还要关联CharSprite.java和Mob.java以实现远程效果*/
+        @Override
+        public boolean canAttackWithExtraReach(Char enemy) {
+            //attack range of 2
+            /** 实现效果，此外还要关联CharSprite.java和Mob.java以实现远程效果*/
 			if(Random.Float()<0.1f) {
 				switch (Random.NormalIntRange(0,6)){
 					//默认为毒雾
@@ -217,6 +205,9 @@ public abstract class ChampionEnemy extends Buff {
 			enemy.damage( dmg, new DarkBolt() );
 			return target.fieldOfView[enemy.pos] && Dungeon.level.distance(target.pos, enemy.pos) <= 3;
 		}
+
+        public static class DarkBolt {
+        }
 
 
 
