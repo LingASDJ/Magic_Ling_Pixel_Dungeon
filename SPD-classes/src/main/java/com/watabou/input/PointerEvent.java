@@ -133,7 +133,7 @@ public class PointerEvent {
 		}
 	}
 
-	public static boolean clearKeyboardThisPress = true;
+	//public static boolean clearKeyboardThisPress = true;
 	
 	public static synchronized void processPointerEvents(){
 		//handle any hover events separately first as we may need to add drag events

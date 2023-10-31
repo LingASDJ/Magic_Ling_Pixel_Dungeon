@@ -1229,9 +1229,14 @@ public class GameScene extends PixelScene {
 	}
 
 	//TODO currently only works with guidebooks
-	public static void flashForDocument( String page ){
-		if (scene != null) scene.menu.flashForPage( page );
+	public static void flashForDocument( Document doc, String page ){
+		if (scene != null) {
+			scene.menu.flashForPage( doc, page );
+		}
 	}
+//	public static void flashForDocument( String page ){
+//		if (scene != null) scene.menu.flashForPage( page );
+//	}
 	
 	public static void updateKeyDisplay(){
 		if (scene != null) scene.menu.updateKeys();
