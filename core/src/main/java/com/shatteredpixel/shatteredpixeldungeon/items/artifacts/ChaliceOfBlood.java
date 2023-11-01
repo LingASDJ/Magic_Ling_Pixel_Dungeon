@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -48,6 +50,25 @@ public class ChaliceOfBlood extends Artifact {
 		image = ItemSpriteSheet.ARTIFACT_CHALICE1;
 
 		levelCap = 10;
+	}
+
+	public static class PlaceHolder extends ChaliceOfBlood {
+
+		{
+			image = ItemSpriteSheet.ARTIFACT_CHALICE3;
+		}
+
+		@Override
+		public boolean isSimilar(Item item) {
+			return item instanceof ChaliceOfBlood && !item.isEquipped(hero);
+		}
+
+
+		@Override
+		public String info() {
+			//TODO 国际化
+			return "注意：蓄血圣杯必须是未装备的才能参与炼金";
+		}
 	}
 
 	public static final String AC_PRICK = "PRICK";

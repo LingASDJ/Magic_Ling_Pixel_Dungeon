@@ -30,6 +30,8 @@ import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.SSSP
 import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.SSS_SCORE;
 import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.SS_SCORE;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
@@ -50,6 +52,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class Badges {
@@ -1057,10 +1060,7 @@ public class Badges {
 		//gold
 		PIRANHAS                    ( 64 ),
 		//these names are a bit outdated, but it doesn't really matter.
-		BAG_BOUGHT_SEED_POUCH,
-		BAG_BOUGHT_SCROLL_HOLDER,
-		BAG_BOUGHT_POTION_BANDOLIER,
-		BAG_BOUGHT_WAND_HOLSTER,
+
 		ALL_BAGS_BOUGHT             ( 65 ),
 		MASTERY_COMBO               ( 66 ),
 		ITEM_LEVEL_4                ( 67 ),
@@ -1136,7 +1136,12 @@ public class Badges {
         BOSS_CHALLENGE_2(141),
         BOSS_CHALLENGE_3(142),
         BOSS_CHALLENGE_4(143),
-        BOSS_CHALLENGE_5(144);
+        BOSS_CHALLENGE_5(144),
+
+		BAG_BOUGHT_SEED_POUCH(145),
+		BAG_BOUGHT_SCROLL_HOLDER(146),
+		BAG_BOUGHT_POTION_BANDOLIER(147),
+		BAG_BOUGHT_WAND_HOLSTER(148);
 
 
         public boolean meta;
@@ -1330,6 +1335,103 @@ public class Badges {
 		for (Badge[] metaReplace : metaBadgeReplacements){
 			addLower( badges, metaReplace );
 		}
+
+		return badges;
+	}
+
+	private static LinkedHashMap<HeroClass, Badge> firstBossClassBadges = new LinkedHashMap<>();
+	static {
+		firstBossClassBadges.put(HeroClass.WARRIOR, Badge.BOSS_SLAIN_1_WARRIOR);
+		firstBossClassBadges.put(HeroClass.MAGE, Badge.BOSS_SLAIN_1_MAGE);
+		firstBossClassBadges.put(HeroClass.ROGUE, Badge.BOSS_SLAIN_1_ROGUE);
+		firstBossClassBadges.put(HeroClass.HUNTRESS, Badge.BOSS_SLAIN_1_HUNTRESS);
+		//firstBossClassBadges.put(HeroClass.DUELIST, Badge.BOSS_SLAIN_1_DUELIST);
+	}
+
+	private static LinkedHashMap<HeroClass, Badge> victoryClassBadges = new LinkedHashMap<>();
+	static {
+		victoryClassBadges.put(HeroClass.WARRIOR, Badge.VICTORY_WARRIOR);
+		victoryClassBadges.put(HeroClass.MAGE, Badge.VICTORY_MAGE);
+		victoryClassBadges.put(HeroClass.ROGUE, Badge.VICTORY_ROGUE);
+		victoryClassBadges.put(HeroClass.HUNTRESS, Badge.VICTORY_HUNTRESS);
+		//victoryClassBadges.put(HeroClass.DUELIST, Badge.VICTORY_DUELIST);
+	}
+
+	private static LinkedHashMap<HeroSubClass, Badge> thirdBossSubclassBadges = new LinkedHashMap<>();
+	static {
+		thirdBossSubclassBadges.put(HeroSubClass.BERSERKER, Badge.BOSS_SLAIN_3_BERSERKER);
+		thirdBossSubclassBadges.put(HeroSubClass.GLADIATOR, Badge.BOSS_SLAIN_3_GLADIATOR);
+		thirdBossSubclassBadges.put(HeroSubClass.BATTLEMAGE, Badge.BOSS_SLAIN_3_BATTLEMAGE);
+		thirdBossSubclassBadges.put(HeroSubClass.WARLOCK, Badge.BOSS_SLAIN_3_WARLOCK);
+		thirdBossSubclassBadges.put(HeroSubClass.ASSASSIN, Badge.BOSS_SLAIN_3_ASSASSIN);
+		thirdBossSubclassBadges.put(HeroSubClass.FREERUNNER, Badge.BOSS_SLAIN_3_FREERUNNER);
+		thirdBossSubclassBadges.put(HeroSubClass.SNIPER, Badge.BOSS_SLAIN_3_SNIPER);
+		thirdBossSubclassBadges.put(HeroSubClass.WARDEN, Badge.BOSS_SLAIN_3_WARDEN);
+
+//		thirdBossSubclassBadges.put(HeroSubClass.CHAMPION, Badge.BOSS_SLAIN_3_CHAMPION);
+//		thirdBossSubclassBadges.put(HeroSubClass.MONK, Badge.BOSS_SLAIN_3_MONK);
+	}
+
+	//used for badges with completion progress that would otherwise be hard to track
+	public static String showCompletionProgress( Badge badge ){
+		if (isUnlocked(badge)) return null;
+
+		String result = "\n";
+
+		if (badge == Badge.BOSS_SLAIN_1_ALL_CLASSES){
+			for (HeroClass cls : HeroClass.values()){
+				result += "\n";
+				if (isUnlocked(firstBossClassBadges.get(cls)))  result += "_" + Messages.titleCase(cls.title()) + "_";
+				else                                            result += Messages.titleCase(cls.title());
+			}
+
+			return result;
+
+		} else if (badge == Badge.VICTORY_ALL_CLASSES) {
+
+			for (HeroClass cls : HeroClass.values()){
+				result += "\n";
+				if (isUnlocked(victoryClassBadges.get(cls)))    result += "_" + Messages.titleCase(cls.title()) + "_";
+				else                                            result += Messages.titleCase(cls.title());
+			}
+
+			return result;
+
+		} else if (badge == Badge.BOSS_SLAIN_3_ALL_SUBCLASSES){
+
+			for (HeroSubClass cls : HeroSubClass.values()){
+				if (cls == HeroSubClass.NONE) continue;
+				result += "\n";
+				if (isUnlocked(thirdBossSubclassBadges.get(cls)))   result += "_" + Messages.titleCase(cls.title()) + "_";
+				else                                                result += Messages.titleCase(cls.title()) ;
+			}
+
+			return result;
+		}
+
+		return null;
+	}
+
+	//don't show the later badge if the earlier one isn't unlocked
+	private static final Badge[][] prerequisiteBadges = new Badge[][]{
+			{Badge.BOSS_SLAIN_1, Badge.BOSS_CHALLENGE_1},
+			{Badge.BOSS_SLAIN_2, Badge.BOSS_CHALLENGE_2},
+			{Badge.BOSS_SLAIN_3, Badge.BOSS_CHALLENGE_3},
+			{Badge.BOSS_SLAIN_4, Badge.BOSS_CHALLENGE_4},
+			{Badge.VICTORY,      Badge.BOSS_CHALLENGE_5},
+	};
+
+	public static List<Badge> filterBadgesWithoutPrerequisites(List<Badges.Badge> badges ) {
+
+		for (Badge[] prereqReplace : prerequisiteBadges){
+			leaveWorst( badges, prereqReplace );
+		}
+
+		for (Badge[] tierReplace : tierBadgeReplacements){
+			leaveWorst( badges, tierReplace );
+		}
+
+		Collections.sort( badges );
 
 		return badges;
 	}

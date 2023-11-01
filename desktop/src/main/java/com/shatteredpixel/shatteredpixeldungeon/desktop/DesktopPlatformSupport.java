@@ -25,11 +25,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.watabou.noosa.Game;
 import com.watabou.utils.PlatformSupport;
 import com.watabou.utils.Point;
 
+import java.awt.Desktop;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -52,8 +55,6 @@ public class DesktopPlatformSupport extends PlatformSupport {
 		if (!SPDSettings.fullscreen()) {
 			SPDSettings.windowResolution( previousSizes[0] );
 		}
-		//TODO fixes an in libGDX v1.11.0 with macOS displays
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 	}
 
 	@Override
@@ -74,6 +75,33 @@ public class DesktopPlatformSupport extends PlatformSupport {
 	@Override
 	public boolean connectedToUnmeteredNetwork() {
 		return true; //no easy way to check this in desktop, just assume user doesn't care
+	}
+
+	//TODO backported openURI fix from libGDX-1.10.1-SNAPSHOT, remove when updating libGDX
+	public boolean openURI( String uri ){
+		if (SharedLibraryLoader.isMac) {
+			try {
+				(new ProcessBuilder("open", (new URI(uri).toString()))).start();
+				return true;
+			} catch (Throwable t) {
+				return false;
+			}
+		} else if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+			try {
+				Desktop.getDesktop().browse(new URI(uri));
+				return true;
+			} catch (Throwable t) {
+				return false;
+			}
+		} else if (SharedLibraryLoader.isLinux) {
+			try {
+				(new ProcessBuilder("xdg-open", (new URI(uri).toString()))).start();
+				return true;
+			} catch (Throwable t) {
+				return false;
+			}
+		}
+		return false;
 	}
 
 	/* FONT SUPPORT */

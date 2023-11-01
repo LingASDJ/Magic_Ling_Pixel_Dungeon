@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -137,19 +139,22 @@ public class GamesInProgress {
 		info.daily = Dungeon.daily;
 		info.dailyReplay = Dungeon.dailyReplay;
 		
-		info.level = Dungeon.hero.lvl;
-		info.str = Dungeon.hero.STR;
-		info.strBonus = Dungeon.hero.STR() - Dungeon.hero.STR;
-		info.exp = Dungeon.hero.exp;
-		info.hp = Dungeon.hero.HP;
-		info.ht = Dungeon.hero.HT;
-		info.shld = Dungeon.hero.shielding();
-		info.heroClass = Dungeon.hero.heroClass;
-		info.subClass = Dungeon.hero.subClass;
-		info.armorTier = Dungeon.hero.tier();
+		info.level = hero.lvl;
+		info.str = hero.STR;
+		info.strBonus = hero.STR() - hero.STR;
+		info.exp = hero.exp;
+		info.hp = hero.HP;
+		info.ht = hero.HT;
+		info.shld = hero.shielding();
+		info.heroClass = hero.heroClass;
+		info.subClass = hero.subClass;
+		info.armorTier = hero.tier();
 		
 		info.goldCollected = Statistics.goldCollected;
 		info.maxDepth = Statistics.deepestFloor;
+		info.name = hero.name().equals(hero.className()) ? "" : hero.name();
+
+		info.icehp = hero.icehp;
 
 		slotStates.put( slot, info );
 	}

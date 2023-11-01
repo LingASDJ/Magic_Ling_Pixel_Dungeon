@@ -71,6 +71,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
@@ -600,7 +601,20 @@ public class Dungeon {
 
 		initialVersion = version = Game.versionCode;
 		challenges = SPDSettings.challenges();
-        mobsToChampion = -1;
+
+		//娱乐模式
+		dlcs =  new Conducts.ConductStorage(SPDSettings.dlc());
+
+		//难度模式
+		difficultys =  new Difficulty.HardStorage(SPDSettings.difficulty());
+
+		TitleScene.Reusable = false;
+
+
+		TitleScene.NightDay = false;
+
+
+		mobsToChampion = -1;
         mobsToStateLing = -1;
 		if (daily) {
 			//Ensures that daily seeds are not in the range of user-enterable seeds
@@ -706,7 +720,7 @@ public class Dungeon {
 		info.customSeed = bundle.getString( CUSTOM_SEED );
 		info.daily = bundle.getBoolean( DAILY );
 		info.dailyReplay = bundle.getBoolean( DAILY_REPLAY );
-
+		info.name = bundle.contains("name") ? bundle.getString("name") : "";
 		Hero.preview( info, bundle.getBundle( HERO ) );
 		Statistics.preview( info, bundle );
 	}

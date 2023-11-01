@@ -34,6 +34,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ChangeInfo;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ChangeSelection;
+import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.WndChanges;
+import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.WndChangesTabbed;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v0_1_X_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v0_2_X_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v0_3_X_Changes;
@@ -44,14 +46,21 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v0_7_X_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v0_8_X_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v0_9_X_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v1_X_Changes;
+import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v2_X_Changes;
+import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
+import com.watabou.noosa.Scene;
 import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
 
 public class ChangesScene extends PixelScene {
-
+	private NinePatch rightPanel;
+	private ScrollPane rightScroll;
+	private IconTitle changeTitle;
+	private RenderedTextBlock changeBody;
 	public static int changesSelected = 0;
 
 	@Override
@@ -89,6 +98,7 @@ public class ChangesScene extends PixelScene {
 
 		switch (changesSelected){
 			case 0: default:
+				v2_X_Changes.addAllChanges(changeInfos);
 				v1_X_Changes.addAllChanges(changeInfos);
 				v0_9_X_Changes.addAllChanges(changeInfos);
 				break;
@@ -221,7 +231,7 @@ public class ChangesScene extends PixelScene {
 				panel.innerHeight() + 2);
 		list.scrollTo(0, 0);
 
-		StyledButton btn0_9 = new StyledButton(Chrome.Type.TOAST, "1.0-0.9"){
+		StyledButton btn0_9 = new StyledButton(Chrome.Type.TOAST, "2.2-0.9"){
 			@Override
 			protected void onClick() {
 				super.onClick();
@@ -296,6 +306,46 @@ public class ChangesScene extends PixelScene {
 		addToBack( archs );
 
 		fadeIn();
+	}
+
+	private void updateChangesText(Image icon, String title, String... messages){
+		if (changeTitle != null){
+			changeTitle.icon(icon);
+			changeTitle.label(title);
+			changeTitle.setPos(changeTitle.left(), changeTitle.top());
+
+			String message = "";
+			for (int i = 0; i < messages.length; i++){
+				message += messages[i];
+				if (i != messages.length-1){
+					message += "\n\n";
+				}
+			}
+			changeBody.text(message);
+			rightScroll.content().setSize(rightScroll.width(), changeBody.bottom()+2);
+			rightScroll.setSize(rightScroll.width(), rightScroll.height());
+			rightScroll.scrollTo(0, 0);
+
+		} else {
+			if (messages.length == 1) {
+				addToFront(new WndChanges(icon, title, messages[0]));
+			} else {
+				addToFront(new WndChangesTabbed(icon, title, messages));
+			}
+		}
+	}
+
+	public static void showChangeInfo(Image icon, String title, String... messages){
+		Scene s = ShatteredPixelDungeon.scene();
+		if (s instanceof ChangesScene){
+			((ChangesScene) s).updateChangesText(icon, title, messages);
+			return;
+		}
+		if (messages.length == 1) {
+			s.addToFront(new WndChanges(icon, title, messages[0]));
+		} else {
+			s.addToFront(new WndChangesTabbed(icon, title, messages));
+		}
 	}
 
 	@Override

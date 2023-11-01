@@ -647,7 +647,7 @@ public class WndSettings extends WndTabbed {
 				@Override
 				protected void onClick() {
 					super.onClick();
-					ShatteredPixelDungeon.scene().addToFront(new WndKeyBindings());
+					ShatteredPixelDungeon.scene().addToFront(new WndKeyBindings(true));
 				}
 			};
 

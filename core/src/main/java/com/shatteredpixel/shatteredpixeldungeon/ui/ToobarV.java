@@ -563,6 +563,7 @@ public class ToobarV extends Component {
         }
     }
 
+
     public static class PickedUpItem extends ItemSprite {
 
         private static final float DURATION = 0.5f;

@@ -397,6 +397,15 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_SFX_VOL      = "sfx_vol";
 	public static final String KEY_IGNORE_SILENT= "ignore_silent";
 
+	public static final String KEY_MUSIC_BG     = "music_bg";
+	public static void playMusicInBackground( boolean value ){
+		put( KEY_MUSIC_BG, value);
+	}
+
+	public static boolean playMusicInBackground(){
+		return getBoolean( KEY_MUSIC_BG, true);
+	}
+
 	public static void music( boolean value ) {
 		Music.INSTANCE.enable( value );
 		put( KEY_MUSIC, value );
@@ -615,4 +624,5 @@ public class SPDSettings extends GameSettings {
     public static int movementHoldSensitivity() {
         return getInt(KEY_MOVE_SENS, 3, 0, 4);
     }
+
 }

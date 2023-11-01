@@ -61,7 +61,6 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
-import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.Callback;
@@ -110,18 +109,6 @@ public class SewerLevel extends RegularLevel {
 			= new String[]{Assets.Music.SEWERS_1, Assets.Music.SEWERS_2, Assets.Music.SEWERS_2,
 			Assets.Music.SEWERS_1, Assets.Music.SEWERS_3, Assets.Music.SEWERS_3};
 	public static final float[] SEWER_TRACK_CHANCES = new float[]{1f, 1f, 0.5f, 0.25f, 1f, 0.5f};
-
-	public void playLevelMusic(){
-		if (Ghost.Quest.active() || Statistics.amuletObtained){
-			if (Statistics.amuletObtained && Dungeon.depth == 1){
-				Music.INSTANCE.play(Assets.Music.THEME_FINALE, true);
-			} else {
-				Music.INSTANCE.play(Assets.Music.SEWERS_TENSE, true);
-			}
-		} else {
-			Music.INSTANCE.playTracks(SEWER_TRACK_LIST, SEWER_TRACK_CHANCES, false);
-		}
-	}
 	
 	@Override
 	protected int standardRooms(boolean forceMax) {
@@ -177,7 +164,7 @@ public class SewerLevel extends RegularLevel {
 
 	@Override
 	protected void createMobs() {
-		Ghost.Quest.spawn( this, roomExit );
+		Ghost.Quest.spawn( this );
 		super.createMobs();
 	}
 	

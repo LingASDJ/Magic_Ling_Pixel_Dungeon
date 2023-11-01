@@ -51,6 +51,7 @@ import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.ColorMath;
+import com.watabou.utils.GameMath;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -577,4 +578,19 @@ public class StatusPane extends Component {
 		emitter.burst( Speck.factory( Speck.STAR ), 12 );
 	}
 
+	public void alpha( float value ){
+		value = GameMath.gate(0, value, 1f);
+		bg.alpha(value);
+		avatar.alpha(value);
+		rawShielding.alpha(0.5f*value);
+		shieldedHP.alpha(value);
+		hp.alpha(value);
+		hpText.alpha(0.6f*value);
+		exp.alpha(value);
+		if (expText != null) expText.alpha(0.6f*value);
+		level.alpha(value);
+		compass.alpha(value);
+		busy.alpha(value);
+		counter.alpha(value);
+	}
 }

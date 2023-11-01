@@ -752,7 +752,7 @@ public class v0_6_X_Changes {
 				"_-_ Health potions now heal more than max HP at low levels, and slightly less than max HP at high levels.\n\n" +
 				"Make sure to read the dew vial changes as well."));
 		
-		changes.addButton( new ChangeButton( new ItemSprite(ItemSpriteSheet.VIAL, null), "Dew Vial",
+		changes.addButton( new ChangeButton( new ItemSprite(ItemSpriteSheet.WATERSKIN, null), "Dew Vial",
 				"The dew vial (and dew) are having their healing abilities enhanced to improve the availability of healing in the sewers, and to help offset the health potion changes.\n\n" +
 				"_-_ Dew drops now heal 5% of max HP\n\n" +
 				"_-_ Dew vial now always spawns on floor 1\n\n" +

@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
@@ -41,11 +42,14 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ItemButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ItemSlot;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
 
@@ -479,6 +483,7 @@ public class WndBlacksmith extends Window {
 			//do nothing
 		}
 
+
 		private class RewardWindow extends WndInfoItem {
 
 			public RewardWindow( Blacksmith troll, Hero hero, Item item ) {
@@ -517,5 +522,62 @@ public class WndBlacksmith extends Window {
 		}
 
 	}
+
+	public static class ItemButtonX extends Component {
+
+		protected NinePatch bg;
+		protected ItemSlot slot;
+
+		public Item item = null;
+
+		@Override
+		protected void createChildren() {
+			super.createChildren();
+
+			bg = Chrome.get( Chrome.Type.RED_BUTTON);
+			add( bg );
+
+			slot = new ItemSlot() {
+				@Override
+				protected void onPointerDown() {
+					bg.brightness( 1.2f );
+					Sample.INSTANCE.play( Assets.Sounds.CLICK );
+				}
+				@Override
+				protected void onPointerUp() {
+					bg.resetColor();
+				}
+				@Override
+				protected void onClick() {
+					ItemButtonX.this.onClick();
+				}
+			};
+			slot.enable(true);
+			add( slot );
+		}
+
+		protected void onClick() {}
+
+		@Override
+		protected void layout() {
+			super.layout();
+
+			bg.x = x;
+			bg.y = y;
+			bg.size( width, height );
+
+			slot.setRect( x + 2, y + 2, width - 4, height - 4 );
+		}
+
+		public void item( Item item ) {
+			slot.item( this.item = item );
+		}
+
+		public void clear(){
+			slot.clear();
+		}
+	}
+
+
 
 }

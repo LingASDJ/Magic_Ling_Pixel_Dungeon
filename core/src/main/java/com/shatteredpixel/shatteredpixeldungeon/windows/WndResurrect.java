@@ -52,11 +52,11 @@ public class WndResurrect extends Window {
 
 	public static Object instance;
 
-	private WndBlacksmith.ItemButton btnItem1;
-	private WndBlacksmith.ItemButton btnItem2;
-	private WndBlacksmith.ItemButton btnItem3;
-	private WndBlacksmith.ItemButton btnItem4;
-	private WndBlacksmith.ItemButton btnPressed;
+	private WndBlacksmith.ItemButtonX btnItem1;
+	private WndBlacksmith.ItemButtonX btnItem2;
+	private WndBlacksmith.ItemButtonX btnItem3;
+	private WndBlacksmith.ItemButtonX btnItem4;
+	private WndBlacksmith.ItemButtonX btnPressed;
 
 	RedButton btnContinue;
 	
@@ -77,7 +77,7 @@ public class WndResurrect extends Window {
 		message.setPos(0, titlebar.bottom() + GAP);
 		add( message );
 
-		btnItem1 = new WndBlacksmith.ItemButton() {
+		btnItem1 = new WndBlacksmith.ItemButtonX() {
 			@Override
 			protected void onClick() {
 				btnPressed = btnItem1;
@@ -88,7 +88,7 @@ public class WndResurrect extends Window {
 		btnItem1.setRect( (WIDTH - BTN_GAP) / 4 - BTN_SIZE, message.bottom() + BTN_GAP, BTN_SIZE, BTN_SIZE );
 		add( btnItem1 );
 
-		btnItem2 = new WndBlacksmith.ItemButton() {
+		btnItem2 = new WndBlacksmith.ItemButtonX() {
 			@Override
 			protected void onClick() {
 				btnPressed = btnItem2;
@@ -99,7 +99,7 @@ public class WndResurrect extends Window {
 		btnItem2.setRect( btnItem1.right() + BTN_GAP, btnItem1.top(), BTN_SIZE, BTN_SIZE );
 		add( btnItem2 );
 
-		btnItem3 = new WndBlacksmith.ItemButton() {
+		btnItem3 = new WndBlacksmith.ItemButtonX() {
 			@Override
 			protected void onClick() {
 				btnPressed = btnItem3;
@@ -111,7 +111,7 @@ public class WndResurrect extends Window {
 		add( btnItem3 );
 
 
-		btnItem4 = new WndBlacksmith.ItemButton() {
+		btnItem4 = new WndBlacksmith.ItemButtonX() {
 			@Override
 			protected void onClick() {
 				btnPressed = btnItem4;

@@ -39,6 +39,33 @@ import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
 
 public class QuickSlotButton extends Button  {
+
+
+	public static void set(Item item){
+		for (int i = 0; i < instance.length; i++) {
+			if (select(i) == null || select(i) == item) {
+				set(i, item);
+				return;
+			}
+		}
+		set(0, item);
+	}
+
+	public static void set(int slotNum, Item item){
+		Dungeon.quickslot.setSlot( slotNum , item );
+		refresh();
+
+//		//Remember if the player adds the waterskin as one of their first actions.
+//		if (Statistics.duration + Actor.now() <= 10){
+//			boolean containsWaterskin = false;
+//			for (int i = 0; i < instance.length; i++) {
+//				if (select(i) instanceof Waterskin) containsWaterskin = true;
+//			}
+//			if (containsWaterskin) SPDSettings.quickslotWaterskin(true);
+//		}
+	}
+
+
 	private static QuickSlotButton[] instance = new QuickSlotButton[Constants.MAX_QUICKSLOTS];
 
 	private int slotNum;

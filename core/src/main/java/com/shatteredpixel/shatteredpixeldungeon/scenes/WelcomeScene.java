@@ -47,7 +47,7 @@ import com.watabou.utils.FileUtils;
 
 public class WelcomeScene extends PixelScene {
 
-	private static final int LATEST_UPDATE = ShatteredPixelDungeon.v1_2_0;
+	private static final int LATEST_UPDATE = ShatteredPixelDungeon.v2_2_0;
 
 	@Override
 	public void create() {
@@ -223,7 +223,7 @@ public class WelcomeScene extends PixelScene {
 		}
 
 		//if the player has beaten Goo, automatically give all guidebook pages
-		if (previousVersion <= ShatteredPixelDungeon.v0_9_3c){
+		if (previousVersion <= ShatteredPixelDungeon.v1_2_3){
 			Badges.loadGlobal();
 			if (Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_1)){
 				for (String page : Document.ADVENTURERS_GUIDE.pageNames()){

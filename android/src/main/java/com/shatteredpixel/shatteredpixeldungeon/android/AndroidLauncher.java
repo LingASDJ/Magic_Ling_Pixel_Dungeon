@@ -41,13 +41,15 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
-import com.shatteredpixel.shatteredpixeldungeon.services.updates.UpdateImpl;
-import com.shatteredpixel.shatteredpixeldungeon.services.updates.Updates;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
 import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
 
-public class AndroidLauncher extends Activity {
+public class AndroidLauncher extends AndroidApplication {
+
+	public static AndroidApplication instance;
+
+	private static AndroidPlatformSupport support;
 
 	@SuppressLint("SetTextI18n")
 	@Override
@@ -57,7 +59,9 @@ public class AndroidLauncher extends Activity {
 		try {
 			GdxNativesLoader.load();
 			FreeType.initFreeType();
-			Intent intent = new Intent(this, AndroidGame.class);
+		} catch (Exception e){
+			AndroidMissingNativesHandler.errorMsg = e.getMessage();
+			Intent intent = new Intent(this, AndroidMissingNativesHandler.class);
 			startActivity(intent);
 			finish();
 			return;
@@ -79,9 +83,7 @@ public class AndroidLauncher extends Activity {
 				Game.versionCode = 0;
 			}
 
-			if (UpdateImpl.supportsUpdates()) {
-				Updates.service = UpdateImpl.getUpdateService();
-			}
+
 			if (NewsImpl.supportsNews()) {
 				News.service = NewsImpl.getNewsService();
 			}
@@ -97,14 +99,14 @@ public class AndroidLauncher extends Activity {
 		} else {
 			instance = this;
 		}
-		
+
 		//set desired orientation (if it exists) before initializing the app.
 		if (SPDSettings.landscape() != null) {
 			instance.setRequestedOrientation( SPDSettings.landscape() ?
 					ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE :
 					ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT );
 		}
-		
+
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.depth = 0;
 		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
@@ -113,19 +115,19 @@ public class AndroidLauncher extends Activity {
 			config.g = 6;
 			config.b = 5;
 		}
-		
+
 		config.useCompass = false;
 		config.useAccelerometer = false;
-		
+
 		if (support == null) support = new AndroidPlatformSupport();
 		else                 support.reloadGenerators();
-		
+
 		support.updateSystemUI();
 
 		Button.longClick = ViewConfiguration.getLongPressTimeout()/1000f;
-		
+
 		initialize(new ShatteredPixelDungeon(support), config);
-		
+
 	}
 
 	@Override
@@ -143,12 +145,23 @@ public class AndroidLauncher extends Activity {
 				finish();
 			}
 		}
+		super.onResume();
+	}
 
-//		FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-//		FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-//				.setMinimumFetchIntervalInSeconds(3600)
-//				.build();
-//		mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+	@Override
+	public void onBackPressed() {
+		//do nothing, game should catch all back presses
+	}
 
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+		support.updateSystemUI();
+	}
+
+	@Override
+	public void onMultiWindowModeChanged(boolean isInMultiWindowMode) {
+		super.onMultiWindowModeChanged(isInMultiWindowMode);
+		support.updateSystemUI();
 	}
 }

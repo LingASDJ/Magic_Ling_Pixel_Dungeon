@@ -129,6 +129,8 @@ public class WndClass extends WndTabbed {
 		}
 	}
 
+
+
 	private class MasteryTab extends Group {
 
 		private static final int MARGIN	= 4;

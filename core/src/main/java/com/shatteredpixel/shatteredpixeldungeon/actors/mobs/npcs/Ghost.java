@@ -372,7 +372,7 @@ public class Ghost extends NPC {
 			}
 		}
 
-		public static void spawnx( ItemLevel level ) {
+		public static void spawnBossRush( ItemLevel level ) {
 			if (!spawned && Dungeon.depth == 3) {
 
 				Ghost ghost = new Ghost();

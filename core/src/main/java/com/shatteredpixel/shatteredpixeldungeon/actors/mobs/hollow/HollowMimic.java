@@ -29,10 +29,10 @@ public class HollowMimic extends Mimic {
     }
 
     public static HollowMimic spawnAt(int pos, Item item, Class mimicType ){
-        return spawnAt( pos, Arrays.asList(item), mimicType);
+        return spawnAt( pos, Arrays.asList(item), mimicType, false);
     }
 
-    public static HollowMimic spawnAt(int pos, List<Item> items, Class mimicType ) {
+    public static HollowMimic spawnAt(int pos, List<Item> items, Class mimicType,boolean useDeck ) {
 
         HollowMimic m;
         m = new HollowMimic();
@@ -43,7 +43,7 @@ public class HollowMimic extends Mimic {
         m.pos = pos;
 
         //generate an extra reward for killing the mimic
-        m.generatePrize();
+        m.generatePrize(useDeck);
 
         return m;
     }

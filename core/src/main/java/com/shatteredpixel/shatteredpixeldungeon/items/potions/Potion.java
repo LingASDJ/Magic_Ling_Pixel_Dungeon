@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHo
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCorrosiveGas;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonKingBreath;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShroudingFog;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfSnapFreeze;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfStormClouds;
@@ -99,22 +100,25 @@ public class Potion extends Item {
 			put("charcoal",ItemSpriteSheet.POTION_CHARCOAL);
 			put("silver",ItemSpriteSheet.POTION_SILVER);
 			put("ivory",ItemSpriteSheet.POTION_IVORY);
+
+			put("skyblue",ItemSpriteSheet.POTION_SKYBLUE);
+			put("deepyellow",ItemSpriteSheet.POTION_DEEPYELLOW);
 		}
 	};
-	
+
 	private static final HashSet<Class<?extends Potion>> mustThrowPots = new HashSet<>();
 	static{
 		mustThrowPots.add(PotionOfToxicGas.class);
 		mustThrowPots.add(PotionOfLiquidFlame.class);
 		mustThrowPots.add(PotionOfParalyticGas.class);
 		mustThrowPots.add(PotionOfFrost.class);
-		
+		mustThrowPots.add(PotionOfLiquidFlameX.class);
 		//exotic
 		mustThrowPots.add(PotionOfCorrosiveGas.class);
 		mustThrowPots.add(PotionOfSnapFreeze.class);
 		mustThrowPots.add(PotionOfShroudingFog.class);
 		mustThrowPots.add(PotionOfStormClouds.class);
-		
+		mustThrowPots.add(PotionOfDragonKingBreath.class);
 		//also all brews, hardcoded
 	}
 	

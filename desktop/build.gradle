@@ -19,7 +19,6 @@ task debug(type: JavaExec) {
 
     main = appMainClass
     systemProperty 'Specification-Title', appName
-    systemProperty 'Implementation-Title', appPackageName
     systemProperty 'Specification-Version', appVersionName + "-INDEV"
     systemProperty 'Implementation-Version', appVersionCode
 
@@ -38,7 +37,6 @@ task release(type: Jar) {
     manifest {
         attributes 'Main-Class': appMainClass
         attributes 'Specification-Title': appName
-        attributes 'Implementation-Title': appPackageName
         attributes 'Specification-Version': appVersionName
         attributes 'Implementation-Version': appVersionCode
     }
@@ -66,14 +64,19 @@ runtime {
         imageName = appName
     }
 
+    //TODO everything works but there is some jank and default icons, esp. for installers and linux
+    // look into --resource-dir flag for further improvements
     if (osName.contains('windows')) {
         targetPlatform("win") {
             jdkHome = jdkDownload("https://github.com/AdoptOpenJDK/openjdk16-binaries/releases/download/jdk-16.0.1%2B9/OpenJDK16U-jdk_x64_windows_hotspot_16.0.1_9.zip")
             javaHome = file("./build/jdks/win/jdk-16.0.1+9").getAbsolutePath()
             jpackage {
                 jpackageHome = file("./build/jdks/win/jdk-16.0.1+9")
-                imageOptions = ["--icon", file("./src/main/assets/icons/windows.ico"),
-                                "--java-options", "-XX:+IgnoreUnrecognizedVMOptions"]
+                imageOptions = ["--icon", file("./src/main/assets/icons/windows.ico")]
+
+                installerType = "msi"
+                installerName = appName
+                installerOptions = ["--win-dir-chooser", "--win-menu"]
             }
         }
     } else if (osName.contains('linux')) {
@@ -82,8 +85,11 @@ runtime {
             javaHome = file("./build/jdks/linux/jdk-16.0.1+9").getAbsolutePath()
             jpackage {
                 jpackageHome = file("./build/jdks/linux/jdk-16.0.1+9")
-                imageOptions = ["--icon", file("./src/main/assets/icons/icon_256.png"),
-                                "--java-options", "-XX:+IgnoreUnrecognizedVMOptions"]
+                imageOptions = ["--icon", file("./src/main/assets/icons/icon_256.png")]
+                //assumes ubuntu linux, changes needed to generate .rpm files
+                installerType = "deb"
+                installerName = appName
+                installerOptions = ["--linux-shortcut"]
             }
         }
     } else if (osName.contains('mac')) {
@@ -94,10 +100,12 @@ runtime {
                 jpackageHome = file("./build/jdks/mac/jdk-16.0.1+9/Contents/Home/")
                 imageOptions = ["--icon", file("./src/main/assets/icons/mac.icns"),
                                 "--java-options", "-XstartOnFirstThread",
-                                "--java-options", "-XX:+IgnoreUnrecognizedVMOptions",
                                 //append .apple because com.shatteredpixel.shatteredpixeldungeon was taken =(
                                 "--mac-package-identifier", appPackageName + ".apple",
                                 "--mac-package-name", "ShattererdPD"]
+
+                installerType = "dmg"
+                installerName = appName
             }
         }
     }
@@ -113,13 +121,11 @@ dependencies {
     implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
     implementation "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
 
-    //we use LWJGL tinyFD directly to display crash messages
-    implementation "org.lwjgl:lwjgl-tinyfd:3.3.1"
-    implementation "org.lwjgl:lwjgl-tinyfd:3.3.1:natives-windows"
-    implementation "org.lwjgl:lwjgl-tinyfd:3.3.1:natives-macos"
-    implementation "org.lwjgl:lwjgl-tinyfd:3.3.1:natives-macos-arm64"
-    implementation "org.lwjgl:lwjgl-tinyfd:3.3.1:natives-linux"
-    implementation "org.lwjgl:lwjgl-tinyfd:3.3.1:natives-linux-arm64"
+    //we use LWJGL tinyFD directly to display crash messages and (for now) single-line text input
+    implementation "org.lwjgl:lwjgl-tinyfd:3.2.3"
+    implementation "org.lwjgl:lwjgl-tinyfd:3.2.3:natives-windows"
+    implementation "org.lwjgl:lwjgl-tinyfd:3.2.3:natives-macos"
+    implementation "org.lwjgl:lwjgl-tinyfd:3.2.3:natives-linux"
 
     implementation project(':services:news:shatteredNews')
 }

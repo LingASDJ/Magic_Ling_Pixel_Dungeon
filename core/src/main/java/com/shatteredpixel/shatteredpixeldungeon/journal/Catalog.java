@@ -24,6 +24,16 @@ package com.shatteredpixel.shatteredpixeldungeon.journal;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.BrokenBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.DeepBloodBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.GrassKingBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.IceCityBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.NoKingMobBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.DeYiZiBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.MoneyMoreBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.PinkRandomBooks;
 import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
@@ -40,7 +50,9 @@ public enum Catalog {
 	RINGS,
 	ARTIFACTS,
 	POTIONS,
-	SCROLLS;
+	SCROLLS,
+	BOOKS,
+	PLAYBOOKS;
 	
 	private LinkedHashMap<Class<? extends Item>, Boolean> seen = new LinkedHashMap<>();
 	
@@ -97,6 +109,18 @@ public enum Catalog {
 		for (Class scroll : Generator.Category.SCROLL.classes){
 			SCROLLS.seen.put( scroll, false);
 		}
+
+		BOOKS.seen.put( IceCityBooks.class,           	false);
+		BOOKS.seen.put( DeepBloodBooks.class,           false);
+		BOOKS.seen.put( GrassKingBooks.class,           false);
+		BOOKS.seen.put( YellowSunBooks.class,           false);
+		BOOKS.seen.put( MagicGirlBooks.class,           false);
+		BOOKS.seen.put( NoKingMobBooks.class,           false);
+		BOOKS.seen.put( BrokenBooks.class,           false);
+
+		PLAYBOOKS.seen.put( MoneyMoreBooks.class,          	 true);
+		PLAYBOOKS.seen.put( PinkRandomBooks.class,           true);
+		PLAYBOOKS.seen.put( DeYiZiBooks.class,          	 true);
 
 	}
 	
