@@ -48,33 +48,33 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class Mimic extends Mob {
-	
+
 	private int level;
-	
+
 	{
 		spriteClass = MimicSprite.class;
 
 		properties.add(Property.DEMONIC);
 
 		EXP = 0;
-		
+
 		//mimics are neutral when hidden
 		alignment = Alignment.NEUTRAL;
 		state = PASSIVE;
 	}
-	
+
 	public ArrayList<Item> items;
-	
+
 	private static final String LEVEL	= "level";
 	private static final String ITEMS	= "items";
-	
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
 		if (items != null) bundle.put( ITEMS, items );
 		bundle.put( LEVEL, level );
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
@@ -242,17 +242,17 @@ public class Mimic extends Mob {
 		this.level = level;
 		adjustStats(level);
 	}
-	
+
 	public void adjustStats( int level ) {
 		HP = HT = (1 + level) * 6;
 		defenseSkill = 2 + level/2;
-		
+
 		enemySeen = true;
 	}
-	
+
 	@Override
 	public void rollToDropLoot(){
-		
+
 		if (items != null) {
 			for (Item item : items) {
 				Dungeon.level.drop( item, pos ).sprite.drop();

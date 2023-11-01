@@ -51,7 +51,7 @@ public class ScrollOfSirensSong extends ExoticScroll {
 	public void doRead() {
 		if (!isKnown()) {
 			identify();
-			curItem = detach(Item.curUser.belongings.backpack);
+			curItem = detach(curUser.belongings.backpack);
 			identifiedByUse = true;
 		} else {
 			identifiedByUse = false;
@@ -81,7 +81,7 @@ public class ScrollOfSirensSong extends ExoticScroll {
 
 			} else {
 
-				Item.curUser.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );
+				curUser.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );
 				Sample.INSTANCE.play( Assets.Sounds.CHARMS );
 				Sample.INSTANCE.playDelayed( Assets.Sounds.LULLABY, 0.1f );
 
@@ -106,7 +106,7 @@ public class ScrollOfSirensSong extends ExoticScroll {
 				}
 
 				if (!identifiedByUse) {
-					curItem.detach(Item.curUser.belongings.backpack);
+					curItem.detach(curUser.belongings.backpack);
 				}
 				identifiedByUse = false;
 

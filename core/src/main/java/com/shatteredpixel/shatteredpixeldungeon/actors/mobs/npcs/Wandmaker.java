@@ -88,7 +88,7 @@ public class Wandmaker extends NPC {
 	}
 
 	@Override
-	public boolean add( Buff buff ) {
+	public boolean add(Buff buff ) {
 		return false;
 	}
 	

@@ -85,7 +85,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		if (result == null){
 			//This shouldn't ever trigger
 			GLog.n( Messages.get(this, "nothing") );
-			curItem.collect( Item.curUser.belongings.backpack );
+			curItem.collect( curUser.belongings.backpack );
 		} else {
 			if (result != item) {
 				int slot = Dungeon.quickslot.getSlot(item);
@@ -95,7 +95,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 						//if we turned an equipped artifact into a ring, ring goes into inventory
 						((EquipableItem) item).doUnequip(Dungeon.hero, false);
 						if (!result.collect()){
-							Dungeon.level.drop(result, Item.curUser.pos).sprite.drop();
+							Dungeon.level.drop(result, curUser.pos).sprite.drop();
 						}
 					} else if (item instanceof KindOfWeapon && Dungeon.hero.belongings.secondWep() == item){
 						((EquipableItem) item).doUnequip(Dungeon.hero, false);
@@ -108,7 +108,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 				} else {
 					item.detach(Dungeon.hero.belongings.backpack);
 					if (!result.collect()) {
-						Dungeon.level.drop(result, Item.curUser.pos).sprite.drop();
+						Dungeon.level.drop(result, curUser.pos).sprite.drop();
 					} else if (Dungeon.hero.belongings.getSimilar(result) != null){
 						result = Dungeon.hero.belongings.getSimilar(result);
 					}
@@ -124,7 +124,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 				Catalog.setSeen(result.getClass());
 			}
 			Transmuting.show(curUser, item, result);
-			Item.curUser.sprite.emitter().start(Speck.factory(Speck.CHANGE), 0.2f, 10);
+			curUser.sprite.emitter().start(Speck.factory(Speck.CHANGE), 0.2f, 10);
 			GLog.p( Messages.get(this, "morph") );
 		}
 		

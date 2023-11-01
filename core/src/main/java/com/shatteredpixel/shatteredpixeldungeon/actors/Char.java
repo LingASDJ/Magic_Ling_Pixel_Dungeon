@@ -140,7 +140,7 @@ public abstract class Char extends Actor {
 	public boolean flying = false;
 	public int invisible = 0;
 	public int viewDistance = 8;
-	protected float baseSpeed = 1;
+	public float baseSpeed = 1;
 
 	public Alignment alignment;
 	private LinkedHashSet<Buff> buffs = new LinkedHashSet<>();
@@ -360,7 +360,7 @@ public abstract class Char extends Actor {
 		}
 	}
 
-	final public boolean attack(Char enemy) {
+	public boolean attack(Char enemy) {
 		return attack(enemy, 1f, 0f, 1f);
 	}
 
@@ -1126,7 +1126,8 @@ public abstract class Char extends Actor {
 		HUNTER,
 		MIMIC,
 		HOLLOW,
-		IMMOVABLE;
+		IMMOVABLE,
+		ABYSS;
 
 		private HashSet<Class> resistances;
 		private HashSet<Class> immunities;

@@ -54,10 +54,14 @@ public class ScrollOfTeleportation extends Scroll {
 		icon = ItemSpriteSheet.Icons.SCROLL_TELEPORT;
 	}
 
+	public static boolean teleportHero( Hero hero ) {
+		return teleportChar( hero );
+	}
+
 	@Override
 	public void doRead() {
 
-		detach(Item.curUser.belongings.backpack);
+		detach(curUser.belongings.backpack);
 		Sample.INSTANCE.play( Assets.Sounds.READ );
 		
 		if (teleportPreferringUnseen( curUser )){

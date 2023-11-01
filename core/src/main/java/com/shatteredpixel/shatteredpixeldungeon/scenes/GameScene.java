@@ -166,6 +166,8 @@ import java.util.Locale;
 
 public class GameScene extends PixelScene {
 	public static boolean logActorThread;
+	public static boolean tagDisappeared = false;
+	public static boolean updateTags = false;
 	private void tell(String text) {
 		Game.runOnRenderThread(new Callback() {
 			@Override
@@ -383,6 +385,36 @@ public class GameScene extends PixelScene {
 	public synchronized void update() {
 		lastOffset = null;
 
+		if (updateTags){
+			tagAttack = attack.active;
+			tagLoot = loot.visible;
+			tagAction = action.visible;
+			tagResume = resume.visible;
+
+			layoutTags();
+
+		} else if (tagAttack != attack.active ||
+				tagLoot != loot.visible ||
+				tagAction != action.visible ||
+				tagResume != resume.visible) {
+
+			boolean tagAppearing = (attack.active && !tagAttack) ||
+					(loot.visible && !tagLoot) ||
+					(action.visible && !tagAction) ||
+					(resume.visible && !tagResume);
+
+			tagAttack = attack.active;
+			tagLoot = loot.visible;
+			tagAction = action.visible;
+			tagResume = resume.visible;
+
+			//if a new tag appears, re-layout tags immediately
+			//otherwise, wait until the hero acts, so as to not suddenly change their position
+			if (tagAppearing)   layoutTags();
+			else                tagDisappeared = true;
+
+		}
+
 		if (logActorThread){
 			if (actorThread != null){
 				logActorThread = false;
@@ -413,6 +445,8 @@ public class GameScene extends PixelScene {
 		if (Dungeon.hero == null || scene == null) {
 			return;
 		}
+
+
 
 		super.update();
 
@@ -1477,10 +1511,14 @@ public class GameScene extends PixelScene {
                 case SECRETS:
                     GLog.w(Messages.get(this, "secrets"));
                     break;
-//				case BIGTRAP:   GLog.w(Messages.get(this, "moretraps"));  break;
-//				case THREEWELL:   GLog.p(Messages.get(this, "threewells"));  break;
-//				case LINKROOM:   GLog.w(Messages.get(this, "links"));  break;
-//				case DIEDROOM:   GLog.n(Messages.get(this, "died"));  break;
+				case BIGTRAP:
+					GLog.w(Messages.get(this, "moretraps"));  break;
+				case THREEWELL:
+					GLog.p(Messages.get(this, "threewells"));  break;
+				case LINKROOM:
+					GLog.w(Messages.get(this, "links"));  break;
+				case DIEDROOM:
+					GLog.n(Messages.get(this, "died"));  break;
             }
 
 			for (Mob mob : Dungeon.level.mobs) {
@@ -1652,7 +1690,7 @@ public class GameScene extends PixelScene {
 		}
 	}
 	
-	private static boolean cancelCellSelector() {
+	static boolean cancelCellSelector() {
 		cellSelector.resetKeyHold();
 		if (cellSelector.listener != null && cellSelector.listener != defaultCellListener) {
 			cellSelector.cancel();
@@ -1698,7 +1736,10 @@ public class GameScene extends PixelScene {
 		selectCell( defaultCellListener );
 		QuickSlotButton.cancel();
 		InventoryPane.cancelTargeting();
-
+		if (tagDisappeared) {
+			tagDisappeared = false;
+			updateTags = true;
+		}
 		if(SPDSettings.quickSwapper()){
 			if (scene != null && scene.toolbarv1 != null){
 				scene.toolbarv1.examining = false;

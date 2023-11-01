@@ -41,8 +41,8 @@ public class ScrollOfDread extends ExoticScroll {
 	@Override
 	public void doRead() {
 
-		detach(Item.curUser.belongings.backpack);
-		new Flare( 5, 32 ).color( 0xFF0000, true ).show( Item.curUser.sprite, 2f );
+		detach(curUser.belongings.backpack);
+		new Flare( 5, 32 ).color( 0xFF0000, true ).show( curUser.sprite, 2f );
 		Sample.INSTANCE.play( Assets.Sounds.READ );
 
 		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {

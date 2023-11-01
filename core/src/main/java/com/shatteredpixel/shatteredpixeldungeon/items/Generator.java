@@ -176,7 +176,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Tomahawk;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Trident;
 import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Dreamfoil;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
@@ -198,6 +197,21 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class Generator {
+
+	//reverts changes to drop chances generates by this item
+	//equivalent of shuffling the card back into the deck, does not preserve order!
+	public static void undoDrop(Item item){
+		for (Category cat : Category.values()){
+			if (item.getClass().isAssignableFrom(cat.superClass)){
+				if (cat.defaultProbs == null) continue;
+				for (int i = 0; i < cat.classes.length; i++){
+					if (item.getClass() == cat.classes[i]){
+						cat.probs[i]++;
+					}
+				}
+			}
+		}
+	}
 
 	public static MeleeWeapon randomWeapon(int floorSet, boolean useDefaults) {
 
@@ -315,7 +329,7 @@ public class Generator {
 					Blindweed.Seed.class,
 					Stormvine.Seed.class,
 					Earthroot.Seed.class,
-					Dreamfoil.Seed.class,
+					//Dreamfoil.Seed.class,
 					Starflower.Seed.class,
 					AikeLaier.Seed.class,};
 			SEED.defaultProbs = new float[]{ 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4,3};
@@ -614,6 +628,10 @@ public class Generator {
 			return ((Item) Reflection.newInstance(cat.classes[Random.chances(cat.defaultProbs)])).random();
 		}
 	}
+	private static HashMap<Category,Float> defaultCatProbs = new LinkedHashMap<>();
+	public static Item randomUsingDefaults(){
+		return randomUsingDefaults(Random.chances( defaultCatProbs ));
+	}
 
 	public static Item random( Class<? extends Item> cl ) {
 		return Reflection.newInstance(cl).random();
@@ -668,12 +686,23 @@ public class Generator {
 	}
 
 	public static MissileWeapon randomMissile(int floorSet) {
+		return randomMissile(floorSet, false);
+	}
+
+	public static MissileWeapon randomMissile(boolean useDefaults) {
+		return randomMissile(Dungeon.depth / 5, useDefaults);
+	}
+
+	public static MissileWeapon randomMissile(int floorSet, boolean useDefaults) {
 
 		floorSet = (int)GameMath.gate(0, floorSet, floorSetTierProbs.length-1);
 
-		Category c = misTiers[Random.chances(floorSetTierProbs[floorSet])];
-		MissileWeapon w = (MissileWeapon)Reflection.newInstance(c.classes[Random.chances(c.probs)]);
-		w.random();
+		MissileWeapon w;
+		if (useDefaults){
+			w = (MissileWeapon)randomUsingDefaults(misTiers[Random.chances(floorSetTierProbs[floorSet])]);
+		} else {
+			w = (MissileWeapon)random(misTiers[Random.chances(floorSetTierProbs[floorSet])]);
+		}
 		return w;
 	}
 

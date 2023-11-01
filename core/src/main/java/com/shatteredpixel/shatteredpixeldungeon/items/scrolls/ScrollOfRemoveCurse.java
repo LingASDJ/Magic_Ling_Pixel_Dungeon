@@ -53,8 +53,8 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 
 		TormentedSpirit spirit = null;
 		for (int i : PathFinder.NEIGHBOURS8){
-			if (Actor.findChar(Item.curUser.pos+i) instanceof TormentedSpirit){
-				spirit = (TormentedSpirit) Actor.findChar(Item.curUser.pos+i);
+			if (Actor.findChar(curUser.pos+i) instanceof TormentedSpirit){
+				spirit = (TormentedSpirit) Actor.findChar(curUser.pos+i);
 			}
 		}
 		if (spirit != null){
@@ -62,7 +62,7 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 			Sample.INSTANCE.play( Assets.Sounds.READ );
 			readAnimation();
 
-			new Flare( 6, 32 ).show( Item.curUser.sprite, 2f );
+			new Flare( 6, 32 ).show( curUser.sprite, 2f );
 
 			if (curUser.buff(Degrade.class) != null) {
 				Degrade.detach(curUser, Degrade.class);
@@ -96,7 +96,7 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 
 	@Override
 	protected void onItemSelected(Item item) {
-		new Flare( 6, 32 ).show( Item.curUser.sprite, 2f );
+		new Flare( 6, 32 ).show( curUser.sprite, 2f );
 
 		boolean procced = uncurse( curUser, item );
 

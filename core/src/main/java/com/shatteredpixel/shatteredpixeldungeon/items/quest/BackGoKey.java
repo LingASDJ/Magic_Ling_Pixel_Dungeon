@@ -219,7 +219,7 @@ public class BackGoKey extends TestItem {
             public void onSelect(Integer target) {
                 if (target != null) {
                     //time isn't spent
-                    ((HeroSprite)Item.curUser.sprite).read();
+                    ((HeroSprite)curUser.sprite).read();
                     teleportToLocation(curUser, target);
 
                 }

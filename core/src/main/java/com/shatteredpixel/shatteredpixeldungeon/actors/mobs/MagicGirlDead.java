@@ -650,7 +650,7 @@ public class MagicGirlDead extends Boss {
                 pos++;
             }
         }
-        Buff.append(this, NewDM300.FallingRockBuff.class, Math.min(target.cooldown(), 3*TICK)).setRockPositions(rockCells);
+        Buff.append(this, DM300.FallingRockBuff.class, Math.min(target.cooldown(), 3*TICK)).setRockPositions(rockCells);
 
     }
 

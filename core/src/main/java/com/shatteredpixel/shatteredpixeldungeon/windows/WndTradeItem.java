@@ -80,7 +80,7 @@ public class WndTradeItem extends WndInfoItem {
 					hide();
 				}
 			};
-			btnSell.setHeight( BTN_HEIGHT );
+			//tnSell.setHeight( BTN_HEIGHT );
 			btnSell.setRect( 0, pos + GAP, width, BTN_HEIGHT );
 			btnSell.icon(new ItemSprite(ItemSpriteSheet.GOLD));
 			add( btnSell );

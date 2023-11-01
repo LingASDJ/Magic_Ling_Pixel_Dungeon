@@ -122,7 +122,7 @@ public class BuffIndicator extends Component {
     public static final int LIGHT_DIED = 67;
 
 
-    //DUELIST
+    //SPD 221
     public static final int DUEL_CLEAVE = 68;
     public static final int DUEL_GUARD = 69;
     public static final int DUEL_SPIN = 70;
@@ -136,6 +136,14 @@ public class BuffIndicator extends Component {
     public static final int DAZE = 78;
 
     public static final int INVERT_MARK = 79;
+
+	public static final int NATURE_POWER= 80;
+
+	public static final int IMBUE       = 81;
+
+	public static final int AMULET		= 82;
+
+	public static final int TARGETED   = 83;
 
     public static final int SIZE_SMALL = 7;
     public static final int SIZE_LARGE = 16;

@@ -136,7 +136,7 @@ public class WandOfDisintegration extends DamageWand {
 	public void fx(Ballistica beam, Callback callback) {
 		
 		int cell = beam.path.get(Math.min(beam.dist, distance()));
-		Item.curUser.sprite.parent.add(new Beam.DeathRay(Item.curUser.sprite.center(), DungeonTilemap.raisedTileCenterToWorld( cell )));
+		curUser.sprite.parent.add(new Beam.DeathRay(curUser.sprite.center(), DungeonTilemap.raisedTileCenterToWorld( cell )));
 		callback.call();
 	}
 

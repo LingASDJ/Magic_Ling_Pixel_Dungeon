@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.IntroScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -261,7 +260,7 @@ public class WndStartGame extends Window {
 //				} else
 				if (SPDSettings.intro()) {
 					SPDSettings.intro( false );
-					Game.switchScene( IntroScene.class );
+					//Game.switchScene( Inter.class );
 				} else {
 					Game.switchScene( InterlevelScene.class );
 				}

@@ -90,7 +90,7 @@ public class Shopkeeper extends NPC {
 	}
 	
 	@Override
-	public boolean add( Buff buff ) {
+	public boolean add(Buff buff ) {
 		if (buff.type == Buff.buffType.NEGATIVE){
 			processHarm();
 		}

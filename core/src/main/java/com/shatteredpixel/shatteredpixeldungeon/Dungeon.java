@@ -51,9 +51,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
-import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.NewCityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HallsBossLevel;
@@ -93,7 +93,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 public class Dungeon {
-
+	public static boolean whiteDaymode;
 	//enum of items which have limited spawns, records how many have spawned
 	//could all be their own separate numbers, but this allows iterating, much nicer for bundling/initializing.
 	public static enum LimitedDrops {
@@ -183,7 +183,7 @@ public class Dungeon {
     private static final String GENERATED_LEVELS = "generated_levels";
     private static final String GOLD = "gold";
 	public static Level level;
-
+	public static int cycle;
 	public static QuickSlot quickslot = new QuickSlot();
 	
 	public static int depth;
@@ -253,7 +253,7 @@ public class Dungeon {
 					level = new CavesLevel();
 					break;
 				case 15:
-					level = new CavesBossLevel();
+					level = new NewCavesBossLevel();
 					break;
 				case 16:
 				case 17:
@@ -262,7 +262,7 @@ public class Dungeon {
 					level = new CityLevel();
 					break;
 				case 20:
-					level = new CityBossLevel();
+					level = new NewCityBossLevel();
 					break;
 				case 21:
 				case 22:
@@ -347,17 +347,81 @@ public class Dungeon {
 		Random.popGenerator();
 		return result;
 	}
-	
+
+	public static boolean NxhyshopOnLevel() {
+		return depth == 9 || depth == 13 || depth == 18;
+	}
+
+	public static boolean FireLevel() {
+		return depth == 7 || depth == 9;
+	}
+
+	public static boolean NyzshopOnLevel() {
+		return depth == 12;
+	}
+
+
+	public static boolean AutoShopLevel() {
+		return depth == 7 || depth == 12 || depth == 17 || depth == 22;
+	}
+	//圣域保护
+	public static boolean GodWaterLevel() {
+		return depth == 1 ||depth == 2||depth == 3||depth == 4;
+	}
+
+	//监狱保护
+	public static boolean PrisonWaterLevel() {
+		return depth == 6 ||depth == 7||depth == 8||depth == 9;
+	}
+
+	//冰雪祝福
+	public static boolean ColdWaterLevel() {
+		return depth == 11 ||depth == 12||depth == 13||depth == 14;
+	}
+
+	public static boolean DiedWaterLevel() {
+		return depth == 16 ||depth == 17||depth == 18||depth == 19;
+	}
+
 	public static boolean shopOnLevel() {
 		return depth == 6 || depth == 11 || depth == 16;
 	}
-	
+
+	//Todo Roll 一下
+	public static boolean RollLevel() {
+		return depth == 6 || depth == 11 || depth == 16|| depth == 21;
+	}
+
+	public static boolean aqiLevel() {
+		return depth == 4 || depth == 8 || depth == 13 || depth == 18;
+	}
+	public static boolean sbbossLevel() {
+		return depth == 4 || depth == 9 || depth == 14 || depth == 19 || depth == 24;
+	}
+
+
 	public static boolean bossLevel() {
 		return bossLevel( depth );
 	}
-	
+
 	public static boolean bossLevel( int depth ) {
-		return depth == 5 || depth == 10 || depth == 15 || depth == 20 || depth == 25;
+		return depth == 5 || depth == 10 || depth == 15 || depth == 20 || depth == 25|| depth == -15| depth == -31;
+	}
+
+	public static int escalatingDepth() {
+		switch (cycle) {
+			case 0:
+				return depth;
+			case 1:
+				return (int) (depth * 1.4f + 31);
+			case 2:
+				return depth * 5 + 200;
+			case 3:
+				return depth * 50 + 2500;
+			case 4:
+				return depth * 100 + 4300;
+		}
+		return depth;
 	}
 
 	//value used for scaling of damage values and other effects.

@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.traps;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -78,7 +77,7 @@ public class DisintegrationTrap extends Trap {
 			if (target == Dungeon.hero){
 				Hero hero = (Hero)target;
 				if (!hero.isAlive()){
-					Badges.validateDeathFromGrimOrDisintTrap();
+					//Badges.validateDeathFromGrimOrDisintTrap();
 					Dungeon.fail( this );
 					GLog.n( Messages.get(this, "ondeath") );
 				}

@@ -118,21 +118,21 @@ public class PotionOfDragonsBreath extends ExoticPotion {
 				});
 			} else if (cell != null) {
 				if (!identifiedByUse) {
-					curItem.detach(Item.curUser.belongings.backpack);
+					curItem.detach(curUser.belongings.backpack);
 				}
 				potionAlreadyUsed = true;
 				identifiedByUse = false;
 				curUser.busy();
 				Sample.INSTANCE.play( Assets.Sounds.DRINK );
-				Item.curUser.sprite.operate(Item.curUser.pos, new Callback() {
+				curUser.sprite.operate(curUser.pos, new Callback() {
 					@Override
 					public void call() {
 
-						Item.curUser.sprite.idle();
-						Item.curUser.sprite.zap(cell);
+						curUser.sprite.idle();
+						curUser.sprite.zap(cell);
 						Sample.INSTANCE.play( Assets.Sounds.BURNING );
 
-						final Ballistica bolt = new Ballistica(Item.curUser.pos, cell, Ballistica.WONT_STOP);
+						final Ballistica bolt = new Ballistica(curUser.pos, cell, Ballistica.WONT_STOP);
 
 						int maxDist = 6;
 						int dist = Math.min(bolt.dist, maxDist);
@@ -141,17 +141,17 @@ public class PotionOfDragonsBreath extends ExoticPotion {
 
 						//cast to cells at the tip, rather than all cells, better performance.
 						for (Ballistica ray : cone.outerRays){
-							((MagicMissile)Item.curUser.sprite.parent.recycle( MagicMissile.class )).reset(
+							((MagicMissile)curUser.sprite.parent.recycle( MagicMissile.class )).reset(
 									MagicMissile.FIRE_CONE,
-									Item.curUser.sprite,
+									curUser.sprite,
 									ray.path.get(ray.dist),
 									null
 							);
 						}
 						
-						MagicMissile.boltFromChar(Item.curUser.sprite.parent,
+						MagicMissile.boltFromChar(curUser.sprite.parent,
 								MagicMissile.FIRE_CONE,
-								Item.curUser.sprite,
+								curUser.sprite,
 								bolt.path.get(dist / 2),
 								new Callback() {
 									@Override
@@ -199,7 +199,7 @@ public class PotionOfDragonsBreath extends ExoticPotion {
 										curUser.spendAndNext(1f);
 
 										if (!anonymous){
-											Talent.onPotionUsed(curUser, Item.curUser.pos, talentFactor);
+											Talent.onPotionUsed(curUser, curUser.pos, talentFactor);
 										}
 									}
 								});

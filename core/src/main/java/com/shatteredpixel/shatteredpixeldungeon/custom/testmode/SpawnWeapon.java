@@ -7,7 +7,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Annoying;
@@ -117,7 +116,7 @@ public class SpawnWeapon extends TestItem{
                 Sample.INSTANCE.play( Assets.Sounds.ITEM );
                 GLog.i(Messages.get(hero, "you_now_have", wpn.name()));
             } else {
-                wpn.doDrop(Item.curUser);
+                wpn.doDrop(curUser);
             }
         }catch (Exception e){
             GLog.w(M.L(MobPlacer.class, "forbidden"));

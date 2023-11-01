@@ -245,7 +245,7 @@ public class WndStory extends Window {
 	}
 
 	public static void lanterfireRoll(){
-		SpellSprite.show( hero, SpellSprite.MASTERY );
+		SpellSprite.show( hero, SpellSprite.VISION );
 		if(lanterfireactive) {
 			if (Dungeon.depth == 6){
 				//TODO 首次到达6层 给予1个增益Buff

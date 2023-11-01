@@ -55,7 +55,7 @@ import com.watabou.utils.Rect;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class CityBossLevel extends Level {
+public class NewCityBossLevel extends Level {
 
 	{
 		color1 = 0x4b6636;
@@ -89,7 +89,7 @@ public class CityBossLevel extends Level {
 	@Override
 	public void playLevelMusic() {
 		if (locked){
-			if (BossHealthBar.isBleeding()){
+			if (BossHealthBar.isAssigned()){
 				Music.INSTANCE.play(Assets.Music.CITY_BOSS_FINALE, true);
 			} else {
 				Music.INSTANCE.play(Assets.Music.CITY_BOSS, true);
@@ -565,9 +565,9 @@ public class CityBossLevel extends Level {
 				//DK arena tiles
 			} else {
 				if (Dungeon.level.map[cell] == Terrain.CUSTOM_DECO){
-					return Messages.get(CityBossLevel.class, "throne_name");
+					return Messages.get(NewCityBossLevel.class, "throne_name");
 				} else if (Dungeon.level.map[cell] == Terrain.PEDESTAL){
-					return Messages.get(CityBossLevel.class, "summoning_name");
+					return Messages.get(NewCityBossLevel.class, "summoning_name");
 				}
 			}
 
@@ -591,9 +591,9 @@ public class CityBossLevel extends Level {
 			//DK arena tiles
 			} else {
 				if (Dungeon.level.map[cell] == Terrain.CUSTOM_DECO){
-					return Messages.get(CityBossLevel.class, "throne_desc");
+					return Messages.get(NewCityBossLevel.class, "throne_desc");
 				} else if (Dungeon.level.map[cell] == Terrain.PEDESTAL){
-					return Messages.get(CityBossLevel.class, "summoning_desc");
+					return Messages.get(NewCityBossLevel.class, "summoning_desc");
 				}
 			}
 

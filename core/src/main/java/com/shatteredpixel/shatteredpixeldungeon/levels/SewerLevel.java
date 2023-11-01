@@ -21,18 +21,25 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN_SP;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Ripple;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.JunglePainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.painters.SewerPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ChillingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ConfusionTrap;
@@ -48,7 +55,10 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.SurfaceScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.audio.Music;
@@ -61,6 +71,36 @@ import com.watabou.utils.Random;
 
 public class SewerLevel extends RegularLevel {
 
+	public void updateChasmTerrain() {
+		synchronized (map){
+			for (int i = 0; i < map.length; i++) {
+				if (map[i] == SIGN_SP) {
+					// 将 SIGN_SP 地块改为新地形
+					set(i, Terrain.LOCKED_EXIT);
+					GameScene.updateMap(i); // 更新地图显示
+					Camera.main.shake(3f,6f);
+				} else if(hero.buff(LockedFloor.class) == null
+						&& map[i] == Terrain.LOCKED_EXIT) {
+					// 将 CHASM 地块改为新地形
+					set(i, Terrain.EMPTY);
+					GameScene.updateMap(i); // 更新地图显示
+				}
+				if (map[i] == SIGN) {
+					// 将 SIGN 地块改为新地形
+					set(i, Terrain.WATER);
+					GameScene.updateMap(i); // 更新地图显示
+				}
+				Ankh weapon = Dungeon.hero.belongings.getItem(Ankh.class);
+				if (weapon != null) {
+					Dungeon.level.drop(weapon, entrance).sprite.drop();
+					weapon.detachAll(hero.belongings.backpack);
+					GLog.w(Messages.get(Level.class,"weapon"));
+				}
+				playBGM(Assets.BGM_BOSSA, true);
+				GameScene.flash(Window.DeepPK_COLOR);
+			}
+		}
+	}
 	{
 		color1 = 0x48763c;
 		color2 = 0x59994a;
@@ -99,7 +139,7 @@ public class SewerLevel extends RegularLevel {
 	
 	@Override
 	protected Painter painter() {
-		return new SewerPainter()
+		return new JunglePainter()
 				.setWater(feeling == Feeling.WATER ? 0.85f : 0.30f, 5)
 				.setGrass(feeling == Feeling.GRASS ? 0.80f : 0.20f, 4)
 				.setTraps(nTraps(), trapClasses(), trapChances());

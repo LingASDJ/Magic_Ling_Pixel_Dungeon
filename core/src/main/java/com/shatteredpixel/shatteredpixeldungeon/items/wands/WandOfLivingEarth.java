@@ -123,14 +123,14 @@ public class WandOfLivingEarth extends DamageWand {
 				for (int n : PathFinder.NEIGHBOURS9) {
 					int c = bolt.collisionPos + n;
 					if (passable[c] && Actor.findChar( c ) == null
-						&& (closest == -1 || (Dungeon.level.trueDistance(c, Item.curUser.pos) < (Dungeon.level.trueDistance(closest, Item.curUser.pos))))) {
+						&& (closest == -1 || (Dungeon.level.trueDistance(c, curUser.pos) < (Dungeon.level.trueDistance(closest, curUser.pos))))) {
 						closest = c;
 					}
 				}
 
 				if (closest == -1){
 					if (armorToAdd > 0) {
-						Item.curUser.sprite.centerEmitter().burst(MagicMissile.EarthParticle.ATTRACT, 8 + buffedLvl() / 2);
+						curUser.sprite.centerEmitter().burst(MagicMissile.EarthParticle.ATTRACT, 8 + buffedLvl() / 2);
 					}
 					return; //do not spawn guardian or detach buff
 				} else {
@@ -166,7 +166,7 @@ public class WandOfLivingEarth extends DamageWand {
 				
 				if (guardian == null) {
 					if (armorToAdd > 0) {
-						Item.curUser.sprite.centerEmitter().burst(MagicMissile.EarthParticle.ATTRACT, 8 + buffedLvl() / 2);
+						curUser.sprite.centerEmitter().burst(MagicMissile.EarthParticle.ATTRACT, 8 + buffedLvl() / 2);
 					}
 				} else {
 					guardian.sprite.centerEmitter().burst(MagicMissile.EarthParticle.ATTRACT, 8 + buffedLvl() / 2);
@@ -185,9 +185,9 @@ public class WandOfLivingEarth extends DamageWand {
 	
 	@Override
 	public void fx(Ballistica bolt, Callback callback) {
-		MagicMissile.boltFromChar(Item.curUser.sprite.parent,
+		MagicMissile.boltFromChar(curUser.sprite.parent,
 				MagicMissile.EARTH,
-				Item.curUser.sprite,
+				curUser.sprite,
 				bolt.collisionPos,
 				callback);
 		Sample.INSTANCE.play(Assets.Sounds.ZAP);

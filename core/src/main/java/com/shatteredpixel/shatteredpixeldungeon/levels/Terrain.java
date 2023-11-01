@@ -50,6 +50,9 @@ public class Terrain {
 	public static final int EMPTY_DECO		= 20;
 	public static final int LOCKED_EXIT		= 21;
 	public static final int UNLOCKED_EXIT	= 22;
+	public static final int LAVA		    = 30;
+	public static final int SIGN			= 23;
+	public static final int SIGN_SP			= 33;
 	public static final int WELL			= 24;
 	public static final int BOOKSHELF		= 27;
 	public static final int ALCHEMY			= 28;

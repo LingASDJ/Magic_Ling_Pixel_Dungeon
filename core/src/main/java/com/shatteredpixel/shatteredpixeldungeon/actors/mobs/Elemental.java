@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -33,12 +35,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
@@ -55,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.GameMath;
@@ -523,6 +528,53 @@ public abstract class Elemental extends Mob {
 				GameScene.flash(0x80FFFFFF);
 			}
 		}
+	}
+
+	public static class HaloWar extends Elemental {
+
+		{
+			spriteClass = SFire.class;
+			loot = new ScrollOfTransmutation();
+			lootChance = 1f;
+		}
+
+		@Override
+		protected void rangedProc( Char enemy ) {
+			if (!level.water[enemy.pos]) {
+				Buff.affect( enemy, HalomethaneBurning.class ).reignite( enemy, 4f );
+			}
+			if (enemy.sprite.visible) Splash.at( enemy.sprite.center(), sprite.blood(), 5);
+		}
+
+		@Override
+		protected void meleeProc( Char enemy, int damage ) {
+			if (Random.Int( 2 ) == 0 && !level.water[enemy.pos]) {
+				Buff.affect( enemy, HalomethaneBurning.class ).reignite( enemy );
+				if (enemy.sprite.visible) Splash.at( enemy.sprite.center(), sprite.blood(), 5);
+			}
+		}
+
+		public static class SFire extends ElementalSprite.Chaos {
+
+			public SFire(){
+				super();
+				tint(0, 1, 1, 0.4f);
+			}
+
+			@Override
+			protected Emitter createEmitter() {
+				Emitter emitter = emitter();
+				emitter.pour( HalomethaneFlameParticle.FACTORY, 0.47f );
+				return emitter;
+			}
+
+			@Override
+			public void resetColor() {
+				super.resetColor();
+				tint(0, 9, 9, 0.7f);
+			}
+		}
+
 	}
 	
 	public static class ChaosElemental extends Elemental {

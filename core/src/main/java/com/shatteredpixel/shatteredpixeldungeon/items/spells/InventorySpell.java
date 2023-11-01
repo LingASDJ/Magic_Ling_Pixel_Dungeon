@@ -78,12 +78,12 @@ public abstract class InventorySpell extends Spell {
 			
 			if (item != null) {
 
-				curItem = detach(Item.curUser.belongings.backpack);
+				curItem = detach(curUser.belongings.backpack);
 				
 				((InventorySpell)curItem).onItemSelected( item );
 				curUser.spend( 1f );
 				curUser.busy();
-				(curUser.sprite).operate( Item.curUser.pos );
+				(curUser.sprite).operate( curUser.pos );
 				
 				Sample.INSTANCE.play( Assets.Sounds.READ );
 				Invisibility.dispel();

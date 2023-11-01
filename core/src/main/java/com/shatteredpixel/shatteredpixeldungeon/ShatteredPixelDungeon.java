@@ -161,6 +161,15 @@ public class ShatteredPixelDungeon extends Game {
 		updateDisplaySize();
 
 	}
+
+	public static void switchForceFade(Class<? extends PixelScene> c){
+		switchForceFade(c, null);
+	}
+
+	public static void switchForceFade(Class<? extends PixelScene> c, SceneChangeCallback callback) {
+		PixelScene.forceFade = true;
+		switchScene( c, callback );
+	}
 	
 	@Override
 	public void destroy(){

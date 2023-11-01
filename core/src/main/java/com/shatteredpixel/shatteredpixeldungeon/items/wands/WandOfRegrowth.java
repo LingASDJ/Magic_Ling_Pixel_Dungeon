@@ -261,18 +261,18 @@ public class WandOfRegrowth extends Wand {
 			if (longestRay == null || ray.dist > longestRay.dist){
 				longestRay = ray;
 			}
-			((MagicMissile)Item.curUser.sprite.parent.recycle( MagicMissile.class )).reset(
+			((MagicMissile)curUser.sprite.parent.recycle( MagicMissile.class )).reset(
 					MagicMissile.FOLIAGE_CONE,
-					Item.curUser.sprite,
+					curUser.sprite,
 					ray.path.get(ray.dist),
 					null
 			);
 		}
 
 		//final zap at half distance of the longest ray, for timing of the actual wand effect
-		MagicMissile.boltFromChar( Item.curUser.sprite.parent,
+		MagicMissile.boltFromChar( curUser.sprite.parent,
 				MagicMissile.FOLIAGE_CONE,
-				Item.curUser.sprite,
+				curUser.sprite,
 				longestRay.path.get(longestRay.dist/2),
 				callback );
 		Sample.INSTANCE.play( Assets.Sounds.ZAP );
@@ -452,7 +452,7 @@ public class WandOfRegrowth extends Wand {
 		}
 
 		@Override
-		public boolean add( Buff buff ) {
+		public boolean add(Buff buff ) {
 			return false;
 		}
 

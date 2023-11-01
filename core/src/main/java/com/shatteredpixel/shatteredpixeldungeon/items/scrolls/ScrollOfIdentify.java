@@ -44,7 +44,7 @@ public class ScrollOfIdentify extends InventoryScroll {
 	@Override
 	protected void onItemSelected( Item item ) {
 		
-		Item.curUser.sprite.parent.add( new Identification( Item.curUser.sprite.center().offset( 0, -16 ) ) );
+		curUser.sprite.parent.add( new Identification( curUser.sprite.center().offset( 0, -16 ) ) );
 		
 		item.identify();
 		GLog.i( Messages.get(this, "it_is", item.title()) );

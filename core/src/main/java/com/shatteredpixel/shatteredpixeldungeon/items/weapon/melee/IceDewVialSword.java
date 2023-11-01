@@ -40,7 +40,7 @@ public class IceDewVialSword extends MeleeWeapon {
     }
 
     protected void fx(Ballistica bolt, Callback callback) {
-        MagicMissile.boltFromChar( Item.curUser.sprite.parent, MagicMissile.WARD_CONE, Item.curUser.sprite, bolt.collisionPos, callback);
+        MagicMissile.boltFromChar( curUser.sprite.parent, MagicMissile.WARD_CONE, curUser.sprite, bolt.collisionPos, callback);
     }
 
     protected void onHit(Ballistica bolt, Mob mob) {

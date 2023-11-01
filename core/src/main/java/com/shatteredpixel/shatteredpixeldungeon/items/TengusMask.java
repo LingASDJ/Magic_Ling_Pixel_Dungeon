@@ -92,22 +92,22 @@ public class TengusMask extends Item {
 	
 	public void choose( HeroSubClass way ) {
 		
-		detach( Item.curUser.belongings.backpack );
+		detach( curUser.belongings.backpack );
 		
 		curUser.spend( Actor.TICK );
 		curUser.busy();
 		
-		Item.curUser.subClass = way;
+		curUser.subClass = way;
 		Talent.initSubclassTalents(curUser);
 
-		if (way == HeroSubClass.ASSASSIN && Item.curUser.invisible > 0){
+		if (way == HeroSubClass.ASSASSIN && curUser.invisible > 0){
 			Buff.affect(curUser, Preparation.class);
 		}
 		
-		Item.curUser.sprite.operate( Item.curUser.pos );
+		curUser.sprite.operate( curUser.pos );
 		Sample.INSTANCE.play( Assets.Sounds.MASTERY );
 		
-		Emitter e = Item.curUser.sprite.centerEmitter();
+		Emitter e = curUser.sprite.centerEmitter();
 		e.pos(e.x-2, e.y-6, 4, 4);
 		e.start(Speck.factory(Speck.MASK), 0.05f, 20);
 		GLog.p( Messages.get(this, "used"));

@@ -104,12 +104,12 @@ public class PotionOfDivineInspiration extends ExoticPotion {
 					Buff.affect(curUser, DivineInspirationTracker.class).setBoosted(index+1);
 
 					if (!identifiedByUse) {
-						curItem.detach(Item.curUser.belongings.backpack);
+						curItem.detach(curUser.belongings.backpack);
 					}
 					identifiedByUse = false;
 
 					curUser.busy();
-					Item.curUser.sprite.operate(Item.curUser.pos);
+					curUser.sprite.operate(curUser.pos);
 
 					curUser.spendAndNext(1f);
 
@@ -130,11 +130,11 @@ public class PotionOfDivineInspiration extends ExoticPotion {
 					Sample.INSTANCE.play( Assets.Sounds.DRINK );
 					Sample.INSTANCE.playDelayed(Assets.Sounds.LEVELUP, 0.3f, 0.7f, 1.2f);
 					Sample.INSTANCE.playDelayed(Assets.Sounds.LEVELUP, 0.6f, 0.7f, 1.2f);
-					new Flare( 6, 32 ).color(0xFFFF00, true).show( Item.curUser.sprite, 2f );
+					new Flare( 6, 32 ).color(0xFFFF00, true).show( curUser.sprite, 2f );
 					GLog.p(Messages.get(PotionOfDivineInspiration.class, "bonus"));
 
 					if (!anonymous){
-						Talent.onPotionUsed(curUser, Item.curUser.pos, talentFactor);
+						Talent.onPotionUsed(curUser, curUser.pos, talentFactor);
 					}
 
 				}

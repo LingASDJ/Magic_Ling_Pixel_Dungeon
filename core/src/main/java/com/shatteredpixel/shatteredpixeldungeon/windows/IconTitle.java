@@ -58,7 +58,7 @@ public class IconTitle extends Component {
 	public IconTitle( Heap heap ){
 		ItemSprite icon = new ItemSprite();
 		icon( icon );
-		label( Messages.titleCase( heap.title() ) );
+		label( Messages.titleCase( heap.info() ) );
 		icon.view( heap );
 	}
 

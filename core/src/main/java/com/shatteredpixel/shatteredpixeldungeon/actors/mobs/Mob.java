@@ -58,9 +58,12 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Surprise;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
@@ -1300,4 +1303,38 @@ public abstract class Mob extends Char {
 			}
 		}
 	}
+
+
+	//MLPD
+	//Boss Rush 掉落规则
+	public void GetBossLoot(){
+		int flakes = Random.chances(new float[]{0, 0, 6, 3, 1});
+		for (int i = 0; i < flakes; i++){
+			int ofs;
+			do {
+				ofs = PathFinder.NEIGHBOURS9[Random.Int(4)];
+			} while (!(Dungeon.level.passable[pos + ofs] || pos + ofs == this.pos));
+			switch (Random.Int(5)) {
+				case 0:
+					Dungeon.level.drop( ( Generator.random(Generator.Category.POTION)), pos+ofs );
+					break;
+				case 1:
+					Dungeon.level.drop( ( Generator.randomMissile() ), pos+ofs );
+					break;
+				case 2:
+					Dungeon.level.drop( ( Generator.randomArmor() ), pos+ofs );
+					break;
+				case 3:
+					Dungeon.level.drop( ( Generator.randomWeapon() ), pos+ofs );
+					break;
+				case 4:
+					Dungeon.level.drop( ( Generator.random(Generator.Category.RING) ), pos+ofs );
+					break;
+			}
+		}
+		Dungeon.level.drop( new Food(), pos ).sprite.drop();
+		Dungeon.level.drop( new PotionOfExperience(), pos ).sprite.drop();
+		Dungeon.level.drop( ( new Gold().random() ), pos );
+	}
+
 }

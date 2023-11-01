@@ -54,6 +54,29 @@ import java.util.List;
 
 public class Badges {
 
+	public static void validateDeathFromEnemyMagic() {
+		Badge badge = Badge.DEATH_FROM_ENEMY_MAGIC;
+		local.add( badge );
+		displayBadge( badge );
+
+		validateYASD();
+	}
+	public static void validateDeathFromFriendlyMagic() {
+		Badge badge = Badge.DEATH_FROM_FRIENDLY_MAGIC;
+		local.add( badge );
+		displayBadge( badge );
+
+		validateYASD();
+	}
+
+	public static void validateDeathFromSacrifice() {
+		Badge badge = Badge.DEATH_FROM_SACRIFICE;
+		local.add( badge );
+		displayBadge( badge );
+
+		validateYASD();
+	}
+
 	public static void KILLMG() {
 		displayBadge( Badge.KILL_MG );
     }
@@ -594,7 +617,7 @@ public class Badges {
 				global.contains( Badge.DEATH_FROM_GAS ) &&
 				global.contains( Badge.DEATH_FROM_HUNGER) &&
 				global.contains( Badge.DEATH_FROM_GLYPH) &&
-				global.contains( Badge.DEATH_FROM_FALLING) && global.contains( Badge.HALOFIRE_DIED) && global.contains( Badge.BRUTE_BOT_DIED) && global.contains( Badge.BOMBBOW_DIED)) {
+				global.contains( Badge.DEATH_FROM_FALLING) && global.contains( Badge.HALOFIRE_DIED) && global.contains( Badge.BRUTE_BOT_DIED) && global.contains( Badge.BOMBBOW_DIED) && global.contains( Badge.DEATH_FROM_FRIENDLY_MAGIC) && global.contains( Badge.DEATH_FROM_SACRIFICE)) {
 
 			Badge badge = Badge.YASD;
 			displayBadge( badge );
@@ -1020,6 +1043,16 @@ public class Badges {
 		READ_BOOK_TWO				( 56 ),
 
 		HIDEEN_BADAGEX( 57 ),
+
+		//伏法
+		DEATH_FROM_FRIENDLY_MAGIC(58),
+
+		//上好寄品
+		DEATH_FROM_SACRIFICE(59),
+
+		//死于敌方法术
+		DEATH_FROM_ENEMY_MAGIC(60),
+
 
 		//gold
 		PIRANHAS                    ( 64 ),

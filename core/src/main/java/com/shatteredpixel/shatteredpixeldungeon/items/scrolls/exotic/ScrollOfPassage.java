@@ -39,7 +39,7 @@ public class ScrollOfPassage extends ExoticScroll {
 	@Override
 	public void doRead() {
 
-		detach(Item.curUser.belongings.backpack);
+		detach(curUser.belongings.backpack);
 		identify();
 		readAnimation();
 		

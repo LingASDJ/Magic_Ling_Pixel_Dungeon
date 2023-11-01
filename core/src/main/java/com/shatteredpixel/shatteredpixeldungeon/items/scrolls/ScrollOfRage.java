@@ -42,9 +42,9 @@ public class ScrollOfRage extends Scroll {
 	@Override
 	public void doRead() {
 
-		detach(Item.curUser.belongings.backpack);
+		detach(curUser.belongings.backpack);
 		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
-			mob.beckon( Item.curUser.pos );
+			mob.beckon( curUser.pos );
 			if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
 				Buff.prolong(mob, Amok.class, 5f);
 			}
@@ -53,7 +53,7 @@ public class ScrollOfRage extends Scroll {
 		GLog.w( Messages.get(this, "roar") );
 		identify();
 		
-		Item.curUser.sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
+		curUser.sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
 		Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
 
 		readAnimation();

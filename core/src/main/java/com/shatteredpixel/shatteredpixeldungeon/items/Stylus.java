@@ -93,14 +93,14 @@ public class Stylus extends Item {
 			return;
 		}
 		
-		detach(Item.curUser.belongings.backpack);
+		detach(curUser.belongings.backpack);
 
 		GLog.w( Messages.get(this, "inscribed"));
 
 		armor.inscribe();
 		
-		Item.curUser.sprite.operate(Item.curUser.pos);
-		Item.curUser.sprite.centerEmitter().start(PurpleParticle.BURST, 0.05f, 10);
+		curUser.sprite.operate(curUser.pos);
+		curUser.sprite.centerEmitter().start(PurpleParticle.BURST, 0.05f, 10);
 		Enchanting.show(curUser, armor);
 		Sample.INSTANCE.play(Assets.Sounds.BURNING);
 		

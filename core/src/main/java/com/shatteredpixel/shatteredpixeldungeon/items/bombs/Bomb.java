@@ -208,6 +208,78 @@ public class Bomb extends Item {
 		return super.doPickUp(hero, pos);
 	}
 
+	public void explodeHeros(int cell){
+		//We're blowing up, so no need for a fuse anymore.
+		this.fuse = null;
+
+		Sample.INSTANCE.play( Assets.Sounds.BLAST );
+
+		if (explodesDestructively()) {
+
+			ArrayList<Char> affected = new ArrayList<>();
+
+			if (Dungeon.level.heroFOV[cell]) {
+				CellEmitter.center(cell).burst(BlastParticle.FACTORY, 30);
+			}
+
+			boolean terrainAffected = false;
+			for (int n : PathFinder.NEIGHBOURS9) {
+				int c = cell + n;
+				if (c >= 0 && c < Dungeon.level.length()) {
+					if (Dungeon.level.heroFOV[c]) {
+						CellEmitter.get(c).burst(SmokeParticle.FACTORY, 4);
+					}
+
+					if (Dungeon.level.flamable[c]) {
+						Dungeon.level.destroy(c);
+						GameScene.updateMap(c);
+						terrainAffected = true;
+					}
+
+					//destroys items / triggers bombs caught in the blast.
+//					Heap heap = Dungeon.level.heaps.get(c);
+//					if (heap != null)
+//						heap.explode();
+
+					Char ch = Actor.findChar(c);
+					if (ch != null) {
+						affected.add(ch);
+					}
+				}
+			}
+
+			for (Char ch : affected){
+
+				//if they have already been killed by another bomb
+				if(!ch.isAlive()){
+					continue;
+				}
+
+				int dmg = Random.NormalIntRange(2 + Dungeon.depth, 4 + Dungeon.depth*2);
+
+				//those not at the center of the blast take less damage
+
+
+				if (ch.pos != cell){
+					dmg = Math.round(dmg*0.67f);
+				}
+
+				dmg -= ch.drRoll();
+
+				if (dmg > 0) {
+					if(ch == hero){
+						return;
+					}
+					ch.damage(dmg, this);
+				}
+			}
+
+			if (terrainAffected) {
+				Dungeon.observe();
+			}
+		}
+	}
+
 	public void explode(int cell){
 		//We're blowing up, so no need for a fuse anymore.
 		this.fuse = null;

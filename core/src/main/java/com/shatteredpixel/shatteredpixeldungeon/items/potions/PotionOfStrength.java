@@ -60,7 +60,7 @@ public class PotionOfStrength extends Potion {
 		}
 
 		Badges.validateStrengthAttained();
-		Badges.validateDuelistUnlock();
+		//Badges.validateDuelistUnlock();
 	}
 
 	@Override

@@ -110,18 +110,18 @@ public class WandOfScale extends DamageWand {
 
         //cast to cells at the tip, rather than all cells, better performance.
         for (Ballistica ray : cone.rays){
-            ((MagicMissile)Item.curUser.sprite.parent.recycle( MagicMissile.class )).reset(
+            ((MagicMissile)curUser.sprite.parent.recycle( MagicMissile.class )).reset(
                     MagicMissile.SHAMAN_BLUE,
-                    Item.curUser.sprite,
+                    curUser.sprite,
                     ray.path.get(ray.dist),
                     null
             );
         }
 
         //final zap at half distance, for timing of the actual wand effect
-        MagicMissile.boltFromChar( Item.curUser.sprite.parent,
+        MagicMissile.boltFromChar( curUser.sprite.parent,
                 MagicMissile.FIRE_CONE,
-                Item.curUser.sprite,
+                curUser.sprite,
                 bolt.path.get(dist/2),
                 callback );
         Sample.INSTANCE.play( Assets.Sounds.ZAP );

@@ -522,7 +522,7 @@ public class ColdChestBossLevel extends Level {
                         //如果楼层为开始且boss血量小于200 4阶段
                         if (pro == VSLINK_START && boss.HP <= 200) {
                             Buff.detach(boss, ChampionEnemy.Halo.class);
-                            ((DiamondKnight) boss).baseSpeed *= 2;
+                            boss.baseSpeed *= 2;
                             pro = VSYOU_START;
                         }
                     }

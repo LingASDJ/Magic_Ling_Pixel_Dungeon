@@ -67,7 +67,7 @@ public class InterlevelScene extends PixelScene {
 	private static float fadeTime;
 	
 	public enum Mode {
-		DESCEND, ASCEND, CONTINUE, RESURRECT, RETURN, FALL, RESET, NONE
+		DESCEND, ASCEND, CONTINUE, RESURRECT, RETURN, FALL, RESET, NONE,EXBOSS,GOBACK,FRGIRLBOSS,ANCITYBOSS,DR,GARDEN
 	}
 	public static Mode mode;
 
@@ -154,7 +154,7 @@ public class InterlevelScene extends PixelScene {
 
 		if      (lastRegion == 1)    loadingAsset = Assets.Interfaces.LOADING_SEWERS;
 		else if (lastRegion == 2)    loadingAsset = Assets.Interfaces.LOADING_PRISON;
-		else if (lastRegion == 3)    loadingAsset = Assets.Interfaces.LOADING_CAVES;
+		else if (lastRegion == 3)    loadingAsset = Assets.Interfaces.LOADING_COLD;
 		else if (lastRegion == 4)    loadingAsset = Assets.Interfaces.LOADING_CITY;
 		else if (lastRegion == 5)    loadingAsset = Assets.Interfaces.LOADING_HALLS;
 		else                         loadingAsset = Assets.Interfaces.SHADOW;

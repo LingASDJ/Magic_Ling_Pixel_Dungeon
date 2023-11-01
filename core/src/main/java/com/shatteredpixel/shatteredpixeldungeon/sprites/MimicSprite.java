@@ -27,7 +27,7 @@ import com.watabou.noosa.TextureFilm;
 
 public class MimicSprite extends MobSprite {
 
-	private Animation hiding;
+	private static Animation hiding;
 
 	{
 		//adjust shadow slightly to account for 1 empty bottom pixel (used for border while hiding)
@@ -88,6 +88,13 @@ public class MimicSprite extends MobSprite {
 		super.showSleep();
 	}
 
+	public static class Dimand extends MimicSprite{
+		@Override
+		protected int texOffset() {
+			return 64;
+		}
+	}
+
 	public static class Golden extends MimicSprite{
 		@Override
 		protected int texOffset() {
@@ -100,6 +107,48 @@ public class MimicSprite extends MobSprite {
 		protected int texOffset() {
 			return 32;
 		}
+	}
+
+
+	public static class HollowWall extends MimicSprite{
+		@Override
+		protected int texOffset() {
+			return 80;
+		}
+
+		@Override
+		public void link(Char ch) {
+			super.link(ch);
+			ch.sprite.add(CharSprite.State.ILLUMINATED);
+		}
+
+		public HollowWall() {
+			super();
+
+			int c = texOffset();
+
+			texture( Assets.Sprites.MIMIC );
+
+			TextureFilm frames = new TextureFilm( texture, 16, 16 );
+
+			hiding = new Animation( 1, true );
+			hiding.frames( frames, 0+c, 1+c, 2+c, 3+c);
+
+			idle = new Animation( 5, true );
+			idle.frames( frames, 0+c,1+c,2+c,3+c );
+
+			run = new Animation( 10, true );
+			run.frames( frames, 0+c,1+c,2+c,3+c );
+
+			attack = new Animation( 10, false );
+			attack.frames( frames, 4+c, 5+c, 6+c );
+
+			die = new Animation( 5, false );
+			die.frames( frames, 7+c,8+c, 9+c,10+c,11+c,12+c );
+
+			play( idle );
+		}
+
 	}
 
 }

@@ -75,6 +75,46 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Armor extends EquipableItem {
+	public AlowGlyph alowglyph;
+
+	public static abstract class AlowGlyph implements Bundlable {
+
+		public abstract int proc( Armor armor, Char attacker, Char defender, int damage );
+
+		public String name() {
+			if (!curse())
+				return name( Messages.get(this, "alowglyph") );
+			else
+				return name( Messages.get(Item.class, "curse"));
+		}
+
+		public String name( String armorName ) {
+			return Messages.get(this, "name", armorName);
+		}
+
+		public String desc() {
+			return Messages.get(this, "desc");
+		}
+
+		public boolean curse() {
+			return false;
+		}
+
+		@Override
+		public void restoreFromBundle( Bundle bundle ) {
+		}
+
+		@Override
+		public void storeInBundle( Bundle bundle ) {
+		}
+
+		//public abstract ItemSprite.Glowing glowing();
+
+	}
+
+	public boolean hasAlowGlyph(Class<?extends AlowGlyph> type, Char owner) {
+		return alowglyph != null && alowglyph.getClass() == type && owner.buff(MagicImmune.class) == null;
+	}
 
 	protected static final String AC_DETACH       = "DETACH";
 	

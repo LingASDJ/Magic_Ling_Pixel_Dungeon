@@ -68,7 +68,7 @@ import com.watabou.utils.Rect;
 
 import java.util.ArrayList;
 
-public class CavesBossLevel extends Level {
+public class NewCavesBossLevel extends Level {
 
 	{
 		color1 = 0x534f3e;
@@ -78,7 +78,7 @@ public class CavesBossLevel extends Level {
 	@Override
 	public void playLevelMusic() {
 		if (locked){
-			if (BossHealthBar.isBleeding()){
+			if (BossHealthBar.isAssigned()){
 				Music.INSTANCE.play(Assets.Music.CAVES_BOSS_FINALE, true);
 			} else {
 				Music.INSTANCE.play(Assets.Music.CAVES_BOSS, true);
@@ -427,7 +427,7 @@ public class CavesBossLevel extends Level {
 	public String tileDesc( int tile ) {
 		switch (tile) {
 			case Terrain.WATER:
-				return super.tileDesc( tile ) + "\n\n" + Messages.get(CavesBossLevel.class, "water_desc");
+				return super.tileDesc( tile ) + "\n\n" + Messages.get(NewCavesBossLevel.class, "water_desc");
 			case Terrain.ENTRANCE:
 				return Messages.get(CavesLevel.class, "entrance_desc");
 			case Terrain.EXIT:
@@ -773,9 +773,9 @@ public class CavesBossLevel extends Level {
 		public String name(int tileX, int tileY) {
 			int i = tileX + tileW*(tileY + this.tileY);
 			if (Dungeon.level.map[i] == Terrain.INACTIVE_TRAP){
-				return Messages.get(CavesBossLevel.class, "wires_name");
+				return Messages.get(NewCavesBossLevel.class, "wires_name");
 			} else if (gate.inside(Dungeon.level.cellToPoint(i))){
-				return Messages.get(CavesBossLevel.class, "gate_name");
+				return Messages.get(NewCavesBossLevel.class, "gate_name");
 			}
 
 			return super.name(tileX, tileY);
@@ -785,12 +785,12 @@ public class CavesBossLevel extends Level {
 		public String desc(int tileX, int tileY) {
 			int i = tileX + tileW*(tileY + this.tileY);
 			if (Dungeon.level.map[i] == Terrain.INACTIVE_TRAP){
-				return Messages.get(CavesBossLevel.class, "wires_desc");
+				return Messages.get(NewCavesBossLevel.class, "wires_desc");
 			} else if (gate.inside(Dungeon.level.cellToPoint(i))){
 				if (Dungeon.level.solid[i]){
-					return Messages.get(CavesBossLevel.class, "gate_desc");
+					return Messages.get(NewCavesBossLevel.class, "gate_desc");
 				} else {
-					return Messages.get(CavesBossLevel.class, "gate_desc_broken");
+					return Messages.get(NewCavesBossLevel.class, "gate_desc_broken");
 				}
 			}
 			return super.desc(tileX, tileY);
@@ -894,7 +894,7 @@ public class CavesBossLevel extends Level {
 
 		@Override
 		public String tileDesc() {
-			return Messages.get(CavesBossLevel.class, "energy_desc");
+			return Messages.get(NewCavesBossLevel.class, "energy_desc");
 		}
 
 		@Override

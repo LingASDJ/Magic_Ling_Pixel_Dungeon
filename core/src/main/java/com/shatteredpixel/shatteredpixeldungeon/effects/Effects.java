@@ -35,9 +35,10 @@ public class Effects {
 		ETHEREAL_CHAIN,
 		DEATH_RAY,
 		LIGHT_RAY,
-		HEALTH_RAY
+		HEALTH_RAY,
+		BLUE_RAY,
 	}
-	
+
 	public static Image get( Type type ) {
 		Image icon = new Image( Assets.Effects.EFFECTS );
 		switch (type) {
@@ -67,6 +68,9 @@ public class Effects {
 				break;
 			case HEALTH_RAY:
 				icon.frame(icon.texture.uvRect(16, 30, 32, 38));
+				break;
+			case BLUE_RAY:
+				icon.frame(icon.texture.uvRect(16, 37, 32, 46));
 				break;
 		}
 		return icon;

@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -107,7 +106,7 @@ public class YinYangRoom extends SpecialRoom {
         Painter.set(level,chestPos2,Terrain.EMPTY_SP);
 
         if (Random.Int(10) == 0){
-            level.mobs.add(Mimic.spawnAt(chestPos2,Blackprize(), CrystalMimic.class));
+            level.mobs.add(Mimic.spawnAt(chestPos2,Blackprize()));
         } else {
             level.drop(prize(), chestPos2).type = Heap.Type.CRYSTAL_CHEST;
         }

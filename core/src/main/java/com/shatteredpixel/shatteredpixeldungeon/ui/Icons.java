@@ -49,6 +49,11 @@ public enum Icons {
 	LEFTBUTTON,
 	RIGHTBUTTON,
 
+	SEED,
+	LEFTARROW,
+	RIGHTARROW,
+	CALENDAR,
+
 	//grey icons, mainly used for buttons, spacing for 16x16
 	EXIT,
 	DISPLAY, //2 separate images, changes based on orientation
@@ -63,8 +68,6 @@ public enum Icons {
 	CHALLENGE_ON,
 	RENAME_OFF,
 	RENAME_ON,
-	LEFTARROW,
-	RIGHTARROW,
 
 	//misc icons, mainly used for buttons, spacing for 16x16 until the smaller icons at the end
 	UNCHECKED,
@@ -241,7 +244,12 @@ public enum Icons {
 			case RIGHTARROW:
 				icon.frame( icon.texture.uvRectBySize( 208, 32, 14, 8 ) );
 				break;
-
+			case SEED:
+				icon.frame( icon.texture.uvRectBySize( 208, 32, 15, 10 ) );
+				break;
+			case CALENDAR:
+				icon.frame( icon.texture.uvRectBySize( 240, 16, 15, 12 ) );
+				break;
 			case UNCHECKED:
 				icon.frame( icon.texture.uvRectBySize( 0, 48, 12, 12 ) );
 				break;

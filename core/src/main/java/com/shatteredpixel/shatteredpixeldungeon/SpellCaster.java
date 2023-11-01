@@ -148,11 +148,12 @@ public abstract class SpellCaster extends Mob {
     public abstract void spriteHardlight();
 
     @Override
-    public void add(Buff buff) {
+    public boolean add(Buff buff) {
         //immune to all buffs/debuffs when inactive
         if (alignment != Alignment.NEUTRAL) {
             super.add(buff);
         }
+        return false;
     }
 
     @Override

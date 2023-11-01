@@ -118,9 +118,9 @@ public class WandOfGodIce extends DamageWand {
 
     @Override
     public void fx( Ballistica beam, Callback callback ) {
-        MagicMissile.boltFromChar( Item.curUser.sprite.parent,
+        MagicMissile.boltFromChar( curUser.sprite.parent,
                 MagicMissile.SHAMAN_PURPLE,
-                Item.curUser.sprite,
+                curUser.sprite,
                 beam.collisionPos,
                 callback);
         Sample.INSTANCE.play( Assets.Sounds.ZAP );

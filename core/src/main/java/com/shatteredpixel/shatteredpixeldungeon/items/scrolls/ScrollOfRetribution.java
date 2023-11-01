@@ -42,11 +42,11 @@ public class ScrollOfRetribution extends Scroll {
 	@Override
 	public void doRead() {
 
-		detach(Item.curUser.belongings.backpack);
+		detach(curUser.belongings.backpack);
 		GameScene.flash( 0x80FFFFFF );
 		
 		//scales from 0x to 1x power, maxing at ~10% HP
-		float hpPercent = (Item.curUser.HT - Item.curUser.HP)/(float)(curUser.HT);
+		float hpPercent = (curUser.HT - curUser.HP)/(float)(curUser.HT);
 		float power = Math.min( 4f, 4.45f*hpPercent);
 		
 		Sample.INSTANCE.play( Assets.Sounds.BLAST );

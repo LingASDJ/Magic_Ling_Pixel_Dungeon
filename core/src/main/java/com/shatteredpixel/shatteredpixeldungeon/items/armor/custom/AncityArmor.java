@@ -60,9 +60,9 @@ public class AncityArmor extends CustomArmor{
     }
 
     public void fxs(Ballistica beam, Callback callback) {
-        MagicMissile.boltFromChar( Item.curUser.sprite.parent,
+        MagicMissile.boltFromChar( curUser.sprite.parent,
                 MagicMissile.TOXIC_VENT,
-                Item.curUser.sprite,
+                curUser.sprite,
                 beam.collisionPos,
                 callback);
         Sample.INSTANCE.play( Assets.Sounds.ZAP );
@@ -91,17 +91,17 @@ public class AncityArmor extends CustomArmor{
                 final AncityArmor curWand;
 
                 if (curItem instanceof AncityArmor) {
-                    curWand = Item.curItem;
+                    curWand = (AncityArmor) curItem;
                 } else {
                     return;
                 }
-                final Ballistica shot = new Ballistica( Item.curUser.pos, target, curWand.collisionProperties(target));
+                final Ballistica shot = new Ballistica( curUser.pos, target, curWand.collisionProperties(target));
                 int cell = shot.collisionPos;
-                if (target == Item.curUser.pos || cell == Item.curUser.pos) {
+                if (target == curUser.pos || cell == curUser.pos) {
                     GLog.i( Messages.get(Wand.class, "self_target") );
                     return;
                 }
-                Item.curUser.sprite.zap(cell);
+                curUser.sprite.zap(cell);
 
                 if (curWand.tryToZap(curUser)) {
 

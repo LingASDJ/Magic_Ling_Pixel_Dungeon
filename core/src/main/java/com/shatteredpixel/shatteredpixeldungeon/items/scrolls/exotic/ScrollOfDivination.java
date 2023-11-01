@@ -52,8 +52,8 @@ public class ScrollOfDivination extends ExoticScroll {
 	@Override
 	public void doRead() {
 
-		detach(Item.curUser.belongings.backpack);
-		Item.curUser.sprite.parent.add( new Identification( Item.curUser.sprite.center().offset( 0, -16 ) ) );
+		detach(curUser.belongings.backpack);
+		curUser.sprite.parent.add( new Identification( curUser.sprite.center().offset( 0, -16 ) ) );
 		
 		Sample.INSTANCE.play( Assets.Sounds.READ );
 		

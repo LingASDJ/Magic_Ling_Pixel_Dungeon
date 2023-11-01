@@ -52,7 +52,7 @@ public abstract class InventoryStone extends Runestone {
 	public void execute(Hero hero, String action) {
 		super.execute(hero, action);
 		if (action.equals(AC_USE)){
-			activate(Item.curUser.pos);
+			activate(curUser.pos);
 		}
 	}
 	
@@ -64,7 +64,7 @@ public abstract class InventoryStone extends Runestone {
 	protected void useAnimation() {
 		curUser.spend( 1f );
 		curUser.busy();
-		Item.curUser.sprite.operate(Item.curUser.pos);
+		curUser.sprite.operate(curUser.pos);
 
 		Sample.INSTANCE.play( Assets.Sounds.READ );
 		Invisibility.dispel();

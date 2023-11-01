@@ -91,7 +91,7 @@ public class OldDM300 extends FlameB01 {
 
 
 	@Override
-	public void add(Buff buff) {
+	public boolean add(Buff buff) {
 		super.add(buff);
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 
@@ -110,6 +110,7 @@ public class OldDM300 extends FlameB01 {
 		if (state == PASSIVE && buff.type == Buff.buffType.NEGATIVE && Dungeon.level.heroFOV[pos]){
 			state = HUNTING;
 		}
+		return false;
 	}
 
 	@Override

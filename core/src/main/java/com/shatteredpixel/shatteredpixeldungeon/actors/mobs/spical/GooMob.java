@@ -98,11 +98,12 @@ public class GooMob extends Mob {
     }
 
     @Override
-    public void add(Buff buff) {
+    public boolean add(Buff buff) {
         super.add(buff);
         if (state == PASSIVE && buff.type == Buff.buffType.NEGATIVE){
             state = HUNTING;
         }
+        return false;
     }
 
     @Override

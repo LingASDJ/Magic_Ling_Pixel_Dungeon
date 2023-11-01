@@ -300,7 +300,7 @@ public class Dart extends MissileWeapon {
 					
 					if (index == 0 && options.length == 3){
 						if (item.quantity() <= maxSeedsToUse){
-							item.detachAll( Item.curUser.belongings.backpack );
+							item.detachAll( curUser.belongings.backpack );
 						} else {
 							item.quantity(item.quantity() - maxSeedsToUse);
 						}
@@ -308,31 +308,31 @@ public class Dart extends MissileWeapon {
 						if (maxToTip < curItem.quantity()){
 							curItem.quantity(curItem.quantity() - maxToTip);
 						} else {
-							curItem.detachAll(Item.curUser.belongings.backpack);
+							curItem.detachAll(curUser.belongings.backpack);
 						}
 						
 						TippedDart newDart = TippedDart.getTipped((Plant.Seed) item, maxToTip);
-						if (!newDart.collect()) Dungeon.level.drop(newDart, Item.curUser.pos).sprite.drop();
+						if (!newDart.collect()) Dungeon.level.drop(newDart, curUser.pos).sprite.drop();
 						
 						curUser.spend( 1f );
 						curUser.busy();
-						Item.curUser.sprite.operate(Item.curUser.pos);
+						curUser.sprite.operate(curUser.pos);
 						
 					} else if ((index == 1 && options.length == 3) || (index == 0 && options.length == 2)){
-						item.detach( Item.curUser.belongings.backpack );
+						item.detach( curUser.belongings.backpack );
 						
 						if (curItem.quantity() <= singleSeedDarts){
-							curItem.detachAll( Item.curUser.belongings.backpack );
+							curItem.detachAll( curUser.belongings.backpack );
 						} else {
 							curItem.quantity(curItem.quantity() - singleSeedDarts);
 						}
 						
 						TippedDart newDart = TippedDart.getTipped((Plant.Seed) item, singleSeedDarts);
-						if (!newDart.collect()) Dungeon.level.drop(newDart, Item.curUser.pos).sprite.drop();
+						if (!newDart.collect()) Dungeon.level.drop(newDart, curUser.pos).sprite.drop();
 						
 						curUser.spend( 1f );
 						curUser.busy();
-						Item.curUser.sprite.operate(Item.curUser.pos);
+						curUser.sprite.operate(curUser.pos);
 					}
 				}
 			});

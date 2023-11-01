@@ -148,7 +148,7 @@ public abstract class Recipe {
 		}
 		
 		//ingredients are ignored, as output doesn't vary
-		public final Item sampleOutput(ArrayList<Item> ingredients){
+		public Item sampleOutput(ArrayList<Item> ingredients){
 			try {
 				Item result = Reflection.newInstance(output);
 				result.quantity(outQuantity);
