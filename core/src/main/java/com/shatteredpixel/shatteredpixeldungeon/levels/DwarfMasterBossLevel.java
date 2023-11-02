@@ -27,7 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ImpShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -105,12 +105,18 @@ public class DwarfMasterBossLevel extends Level {
         map = codedMap.clone();
 
         //小恶魔的逻辑
-        impShop = new ImpShopRoom();
-        impShop.set(end.left+4, end.top+23, end.left+11, end.top+30);
-        Painter.set(this, impShop.center(), Terrain.PEDESTAL);
+//        impShop = new ImpShopRoom();
+//        impShop.set(end.left+4, end.top+23, end.left+11, end.top+30);
+//        Painter.set(this, impShop.center(), Terrain.PEDESTAL);
 
-        this.entrance = (this.width * 31) + 18;
-        this.exit = 0;
+        int entrance = (this.width * 31) + 18;
+
+        LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
+        transitions.add(enter);
+
+        LevelTransition exit = new LevelTransition(this, 0, LevelTransition.Type.REGULAR_EXIT);
+        transitions.add(exit);
+
         return true;
     }
 

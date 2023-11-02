@@ -570,6 +570,13 @@ public class WndStartGame extends Window {
 							heroLoadout.icon(new ItemSprite(ItemSpriteSheet.GLOVES, null));
 							heroMisc.icon(new Image(Assets.Environment.TILES_SEWERS, 112, 96, 16, 16 ));
 							break;
+
+						//隶属于之外啊
+						case DUELIST:
+							heroItem.icon(new ItemSprite(ItemSpriteSheet.GREATSHIELD, null));
+							heroLoadout.icon(new ItemSprite(ItemSpriteSheet.ARMOR_DUELIST, null));
+							heroMisc.icon(new Image(Assets.Environment.TILES_CITY, 112, 96, 16, 16 ));
+							break;
 					}
 
 					layout();

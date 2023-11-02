@@ -21,8 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.tipsgodungeon;
+import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.ready;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -52,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.WindParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -83,12 +88,14 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
@@ -398,7 +405,7 @@ public abstract class Level implements Bundlable {
 				transitions.add(new LevelTransition(
 						this,
 						bundle.getInt("entrance"),
-						Dungeon.depth == 1 ? LevelTransition.Type.SURFACE : LevelTransition.Type.REGULAR_ENTRANCE));
+						Dungeon.depth == 0 ? LevelTransition.Type.SURFACE : LevelTransition.Type.REGULAR_ENTRANCE));
 			}
 			if (bundle.contains("exit")){
 				transitions.add(new LevelTransition(this, bundle.getInt("exit"), LevelTransition.Type.REGULAR_EXIT));
@@ -576,6 +583,16 @@ public abstract class Level implements Bundlable {
 		return null;
 	}
 
+	private void tell(String text) {
+		Game.runOnRenderThread(new Callback() {
+								   @Override
+								   public void call() {
+									   GameScene.show(new WndQuest(new Slyl(), text));
+								   }
+							   }
+		);
+	}
+
 	//returns true if we immediately transition, false otherwise
 	public boolean activateTransition(Hero hero, LevelTransition transition){
 		if (locked){
@@ -584,8 +601,25 @@ public abstract class Level implements Bundlable {
 
 		beforeTransition();
 		InterlevelScene.curTransition = transition;
+
+
+
 		if (transition.type == LevelTransition.Type.REGULAR_EXIT
 				|| transition.type == LevelTransition.Type.BRANCH_EXIT) {
+			if (Dungeon.depth == 0 && !tipsgodungeon && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+
+				if (!tipsgodungeon) {
+					Game.runOnRenderThread(new Callback() {
+						@Override
+						public void call() {
+							tell(Messages.get(Hero.class, "acs"));
+						}
+					});
+					ready();
+					tipsgodungeon = true;
+					return false;
+				}
+			}
 			InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
 		} else {
 			InterlevelScene.mode = InterlevelScene.Mode.ASCEND;

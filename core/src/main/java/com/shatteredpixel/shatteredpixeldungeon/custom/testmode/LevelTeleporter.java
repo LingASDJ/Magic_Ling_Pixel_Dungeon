@@ -2,28 +2,22 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.testmode;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Constants;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -42,8 +36,6 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.noosa.ui.Component;
-import com.watabou.utils.BArray;
-import com.watabou.utils.PathFinder;
 
 import java.util.ArrayList;
 
@@ -59,7 +51,6 @@ public class LevelTeleporter extends TestItem {
     private static final String AC_VIEW = "view";
     private static final String AC_TP = "teleport";
     private static final String AC_INTER_TP = "interlevel_tp";
-    private static final String AC_RESET = "reset";
 
     @Override
     public ArrayList<String> actions(Hero hero ) {
@@ -69,7 +60,6 @@ public class LevelTeleporter extends TestItem {
         actions.add(AC_VIEW);
         actions.add(AC_TP);
         actions.add(AC_INTER_TP);
-        actions.add(AC_RESET);
         return actions;
     }
 
@@ -82,29 +72,38 @@ public class LevelTeleporter extends TestItem {
     public void execute( Hero hero, String action ) {
         super.execute( hero, action );
         if(action.equals(AC_DESCEND)) {
-            if(Dungeon.hero.buff(LockedFloor.class) != null || Dungeon.depth>26 && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) || Dungeon.depth>28 && Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ) {
+            if(Dungeon.hero.buff(LockedFloor.class) != null || Dungeon.depth>= Constants.MAX_DEPTH) {
                 GLog.w(Messages.get(this,"cannot_send"));
                 return;
             }
-            Buff buff = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-            if (buff != null) buff.detach();
-            buff = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-            if (buff != null) buff.detach();
+
+            TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+            if (timeFreeze != null) timeFreeze.disarmPresses();
+            Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+            if (timeBubble != null) timeBubble.disarmPresses();
             InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+            InterlevelScene.curTransition = new LevelTransition();
+            InterlevelScene.curTransition.destDepth = Dungeon.depth + 1;
+            InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
+            InterlevelScene.curTransition.destBranch = Dungeon.branch;
+            InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+            InterlevelScene.curTransition.centerCell  = -1;
             Game.switchScene( InterlevelScene.class );
         } else if(action.equals(AC_ASCEND)){
             if(Dungeon.hero.buff(LockedFloor.class) != null || Dungeon.depth<=1) {
                 GLog.w(Messages.get(this,"cannot_send"));
                 return;
             }
-            Buff buff = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-            if (buff != null) buff.detach();
-            buff = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-            if (buff != null) buff.detach();
-            InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
+            TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+            if (timeFreeze != null) timeFreeze.disarmPresses();
+            Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+            if (timeBubble != null) timeBubble.disarmPresses();
+            InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+            InterlevelScene.returnDepth = Dungeon.depth - 1;
+            InterlevelScene.returnPos = -1;
+            InterlevelScene.returnBranch = Dungeon.branch;
             Game.switchScene( InterlevelScene.class );
         } else if(action.equals(AC_VIEW)){
-            Buff.affect( hero, Awareness.class, Awareness.DURATION );
             Buff.affect( hero, MindVision.class, MindVision.DURATION );
             Dungeon.observe();
             ScrollOfMagicMapping som = new ScrollOfMagicMapping();
@@ -117,52 +116,6 @@ public class LevelTeleporter extends TestItem {
                 return;
             }
             GameScene.show(new WndSelectLevel());
-        }else if (action.equals(AC_RESET)) {
-            switch (Dungeon.depth){
-                case 2:
-                case 3:
-                case 4:
-                    for (Mob m: Dungeon.level.mobs){
-                        if (m instanceof Ghost) {
-                            Ghost.Quest.reset();
-                        }
-                    }
-                    break;
-                case 7:
-                case 8:
-                case 9:
-                    for (Mob m: Dungeon.level.mobs){
-                        if (m instanceof Wandmaker) {
-                            Wandmaker.Quest.reset();
-                        }
-                    }
-                    break;
-                case 12:
-                case 13:
-                case 14:
-                    for (Mob m: Dungeon.level.mobs){
-                        if (m instanceof Blacksmith) {
-                            Blacksmith.Quest.reset();
-                        }
-                        if(m instanceof RedDragon){
-                            RedDragon.Quest.reset();
-                        }
-                    }
-                    break;
-                case 17:
-                case 18:
-                case 19:
-                    for (Mob m: Dungeon.level.mobs){
-                        if (m instanceof Imp) {
-                            Imp.Quest.reset();
-                        }
-                    }
-                    break;
-            }
-            if(Dungeon.level.locked)
-                Dungeon.level.unseal();
-            InterlevelScene.mode = InterlevelScene.Mode.RESET;
-            Game.switchScene(InterlevelScene.class);
         }
     }
 
@@ -227,13 +180,15 @@ public class LevelTeleporter extends TestItem {
                 @Override
                 protected void onClick() {
                     super.onClick();
-                    Buff buff = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-                    if (buff != null) buff.detach();
-                    buff = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-                    if (buff != null) buff.detach();
+                    TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+                    if (timeFreeze != null) timeFreeze.disarmPresses();
+                    Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+                    if (timeBubble != null) timeBubble.disarmPresses();
+                    InterlevelScene.curTransition = Dungeon.level.getTransition(Dungeon.hero.pos);
                     InterlevelScene.mode = InterlevelScene.Mode.RETURN;
                     InterlevelScene.returnDepth = selectedLevel;
                     InterlevelScene.returnPos = -1;
+                    InterlevelScene.returnBranch = Dungeon.branch;
                     Game.switchScene( InterlevelScene.class );
                 }
             };
@@ -259,7 +214,7 @@ public class LevelTeleporter extends TestItem {
     public static class DepthButton extends StyledButton{
         private int depth;
         public DepthButton(int depth){
-            super(Chrome.Type.GEM, String.valueOf(depth), 8);
+            super(SPDSettings.ClassUI() ? Chrome.Type.WINDOW : Chrome.Type.GEM, String.valueOf(depth), 8);
             this.depth = depth;
         }
 
@@ -313,7 +268,6 @@ public class LevelTeleporter extends TestItem {
     }
 
     public static void teleportToLocation(Hero hero, int pos){
-        PathFinder.buildDistanceMap(pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
         if (Dungeon.level.avoid[pos] || !Dungeon.level.passable[pos]
                 || Actor.findChar(pos) != null){
             GLog.w( Messages.get(ScrollOfTeleportation.class, "cant_reach") );

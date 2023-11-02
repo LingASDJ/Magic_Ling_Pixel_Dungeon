@@ -17,6 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.Game;
@@ -426,8 +427,14 @@ public class ForestBossLevel extends Level {
         }
 
 
-        this.entrance = WIDTH + 16 ;
-        this.exit = WIDTH*30 + 16;
+        int entranceCell = WIDTH + 16 ;
+        int exitCell = WIDTH*30 + 16;
+
+        LevelTransition enter = new LevelTransition(this, entranceCell, LevelTransition.Type.REGULAR_ENTRANCE);
+        transitions.add(enter);
+
+        LevelTransition exit = new LevelTransition(this, exitCell, LevelTransition.Type.REGULAR_EXIT);
+        transitions.add(exit);
 
         return true;
     }

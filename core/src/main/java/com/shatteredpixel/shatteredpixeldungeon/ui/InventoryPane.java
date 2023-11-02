@@ -131,6 +131,11 @@ public class InventoryPane extends Component {
 					updateInventory();
 				}
 			}
+
+			@Override
+			public GameAction keyAction() {
+				return null;
+			}
 		};
 		blocker.target = bg; //targets bg when there is no selector, otherwise targets itself
 		add (blocker);

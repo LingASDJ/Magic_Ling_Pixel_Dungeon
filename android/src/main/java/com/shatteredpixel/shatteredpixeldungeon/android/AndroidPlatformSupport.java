@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,7 +98,7 @@ public class AndroidPlatformSupport extends PlatformSupport {
 			final int finalH = Math.round(renderHeight);
 			if (finalW != Game.width || finalH != Game.height){
 
-				AndroidGame.instance.runOnUiThread(new Runnable() {
+				AndroidLauncher.instance.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
 						view.getHolder().setFixedSize(finalW, finalH);
@@ -118,12 +118,12 @@ public class AndroidPlatformSupport extends PlatformSupport {
 
 	public void updateSystemUI() {
 
-		AndroidGame.instance.runOnUiThread(new Runnable() {
+		AndroidLauncher.instance.runOnUiThread(new Runnable() {
 			@SuppressLint("NewApi")
 			@Override
 			public void run() {
 				boolean fullscreen = Build.VERSION.SDK_INT < Build.VERSION_CODES.N
-						|| !AndroidGame.instance.isInMultiWindowMode();
+						|| !AndroidLauncher.instance.isInMultiWindowMode();
 
 				if (fullscreen){
 					AndroidLauncher.instance.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -134,12 +134,12 @@ public class AndroidPlatformSupport extends PlatformSupport {
 				}
 
 				if (SPDSettings.fullscreen()) {
-					AndroidGame.instance.getWindow().getDecorView().setSystemUiVisibility(
+					AndroidLauncher.instance.getWindow().getDecorView().setSystemUiVisibility(
 							View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 									| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN
 									| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY );
 				} else {
-					AndroidGame.instance.getWindow().getDecorView().setSystemUiVisibility(
+					AndroidLauncher.instance.getWindow().getDecorView().setSystemUiVisibility(
 							View.SYSTEM_UI_FLAG_LAYOUT_STABLE );
 				}
 			}
@@ -200,13 +200,13 @@ public class AndroidPlatformSupport extends PlatformSupport {
 		}
 
 
-			if (basicFontGenerator == null) {
-				basicFontGenerator = fallbackFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/pixel_font.ttf"));
-			}
-			else {
-				fallbackFontGenerator = basicFontGenerator;
-				basicFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/pixel_font.ttf"));
-			}
+		if (basicFontGenerator == null) {
+			basicFontGenerator = fallbackFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/pixel_font.ttf"));
+		}
+		else {
+			fallbackFontGenerator = basicFontGenerator;
+			basicFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/pixel_font.ttf"));
+		}
 
 
 		//android 7.0+. all asian fonts are nicely contained in one spot

@@ -1995,4 +1995,8 @@ public class GameScene extends PixelScene {
 		}//double area.length;
 
 	};
+
+	public static float ToolbarHeight(){return scene.toolbar.height();}
+
+	public static float StatusHeight(){return scene.status.height();}
 }

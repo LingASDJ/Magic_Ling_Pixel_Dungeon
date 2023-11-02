@@ -39,18 +39,16 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
-import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
 import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
 
 public class AndroidLauncher extends AndroidApplication {
-
+	
 	public static AndroidApplication instance;
-
+	
 	private static AndroidPlatformSupport support;
-
+	
 	@SuppressLint("SetTextI18n")
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
@@ -84,9 +82,9 @@ public class AndroidLauncher extends AndroidApplication {
 			}
 
 
-			if (NewsImpl.supportsNews()) {
-				News.service = NewsImpl.getNewsService();
-			}
+//			if (NewsImpl.supportsNews()) {
+//				News.service = NewsImpl.getNewsService();
+//			}
 
 			FileUtils.setDefaultFileProperties(Files.FileType.Local, "");
 
@@ -99,14 +97,14 @@ public class AndroidLauncher extends AndroidApplication {
 		} else {
 			instance = this;
 		}
-
+		
 		//set desired orientation (if it exists) before initializing the app.
 		if (SPDSettings.landscape() != null) {
 			instance.setRequestedOrientation( SPDSettings.landscape() ?
 					ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE :
 					ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT );
 		}
-
+		
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.depth = 0;
 		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
@@ -118,16 +116,16 @@ public class AndroidLauncher extends AndroidApplication {
 
 		config.useCompass = false;
 		config.useAccelerometer = false;
-
+		
 		if (support == null) support = new AndroidPlatformSupport();
 		else                 support.reloadGenerators();
-
+		
 		support.updateSystemUI();
 
 		Button.longClick = ViewConfiguration.getLongPressTimeout()/1000f;
-
+		
 		initialize(new ShatteredPixelDungeon(support), config);
-
+		
 	}
 
 	@Override
@@ -158,7 +156,7 @@ public class AndroidLauncher extends AndroidApplication {
 		super.onWindowFocusChanged(hasFocus);
 		support.updateSystemUI();
 	}
-
+	
 	@Override
 	public void onMultiWindowModeChanged(boolean isInMultiWindowMode) {
 		super.onMultiWindowModeChanged(isInMultiWindowMode);

@@ -27,19 +27,30 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NxhyNpc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.REN;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.obSir;
+import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.SurfaceScene;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.watabou.noosa.Game;
+import com.watabou.utils.Callback;
 
 import java.util.List;
 
@@ -102,8 +113,15 @@ public class ZeroLevel extends Level {
 
     protected boolean build() {
         setSize(37, 37);
-        this.exit = (this.width * 18 + 18);
-        this.entrance = (this.width * 2) + 3;
+
+        int exitCell = (this.width * 18 + 18);
+        LevelTransition exit = new LevelTransition(this, exitCell, LevelTransition.Type.REGULAR_EXIT);
+        transitions.add(exit);
+
+        int enterCell = (this.width * 2) + 3;
+        LevelTransition enter = new LevelTransition(this, enterCell, LevelTransition.Type.SURFACE);
+        transitions.add(enter);
+
         for (int var1 = 0; var1 < this.map.length; var1++) {
             this.map[var1] = mapToTerrain(pre_map[var1]);
         }
@@ -129,17 +147,17 @@ public class ZeroLevel extends Level {
         List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
 
         if(passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)){
-            drop( ( Generator.randomUsingDefaults( Generator.Category.RING ) ), this.width * 17 + 18 );
+            drop( ( Generator.random( Generator.Category.RING ) ), this.width * 17 + 18 );
         }
         if(passwordbadges.contains(PaswordBadges.Badge.BIG_X)){
             if(Dungeon.isChallenged(Challenges.NO_ARMOR)){
-                drop( ( Generator.randomUsingDefaults( Generator.Category.WAND ) ), this.width * 19 + 18 );
+                drop( ( Generator.random( Generator.Category.WAND ) ), this.width * 19 + 18 );
             } else {
-                drop( ( Generator.randomUsingDefaults( Generator.Category.ARMOR ) ), this.width * 19 + 18 );
+                drop( ( Generator.random( Generator.Category.ARMOR ) ), this.width * 19 + 18 );
             }
         }
         if ( Badges.isUnlocked(Badges.Badge.KILL_DM720)||Badges.isUnlocked(Badges.Badge.KILL_MG)  ){
-            drop(( Generator.randomUsingDefaults( Generator.Category.WEP_T2 )), this.width * 18 + 17  );
+            drop(( Generator.random( Generator.Category.WEP_T2 )), this.width * 18 + 17  );
         }
         if ( Badges.isUnlocked(Badges.Badge.RLPT)){
             Item item = randomArtifact();
@@ -198,26 +216,51 @@ public class ZeroLevel extends Level {
             npc4.pos = (this.width * 28 + 7);
             mobs.add(npc4);
             for (int i : SALEPOS_ONE) {
-                drop((Generator.randomUsingDefaults(Generator.Category.MISSILE)), i).type =
+                drop((Generator.random(Generator.Category.MISSILE)), i).type =
                         Heap.Type.FOR_SALE;
             }
             for (int i : SALEPOS_TWO) {
-                drop((Generator.randomUsingDefaults(Generator.Category.POTION)), i).type =
+                drop((Generator.random(Generator.Category.POTION)), i).type =
                         Heap.Type.FOR_SALE;
             }
             for (int i : SALEPOS_THREE) {
-                drop((Generator.randomUsingDefaults(Generator.Category.WEAPON)), i).type =
+                drop((Generator.random(Generator.Category.WEAPON)), i).type =
                         Heap.Type.FOR_SALE;
             }
             for (int i : SALEPOS_FOUR) {
-                drop((Generator.randomUsingDefaults(Generator.Category.SCROLL)), i).type =
+                drop((Generator.random(Generator.Category.SCROLL)), i).type =
                         Heap.Type.FOR_SALE;
             }
             for (int i : POSSALE) {
-                drop((Generator.randomUsingDefaults(Generator.Category.SEED)), i).type =
+                drop((Generator.random(Generator.Category.SEED)), i).type =
                         Heap.Type.FOR_SALE;
             }
        }
+    }
+
+    @Override
+    public boolean activateTransition(Hero hero, LevelTransition transition) {
+        if (transition.type == LevelTransition.Type.SURFACE){
+
+            if (hero.belongings.getItem( Amulet.class ) == null) {
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show( new WndMessage( Messages.get(hero, "leave") ) );
+                    }
+                });
+                return false;
+            } else {
+                Statistics.ascended = true;
+                Badges.silentValidateHappyEnd();
+                Dungeon.win( Amulet.class );
+                Dungeon.deleteGame( GamesInProgress.curSlot, true );
+                Game.switchScene( SurfaceScene.class );
+                return true;
+            }
+        } else {
+            return super.activateTransition(hero, transition);
+        }
     }
 
     public int randomRespawnCell() {
@@ -225,7 +268,7 @@ public class ZeroLevel extends Level {
     }
 
     public String tilesTex() {
-        return Assets.Environment.TILES_COLD;
+        return Assets.Environment.TILES_CAVES;
     }
 
     public String waterTex() {

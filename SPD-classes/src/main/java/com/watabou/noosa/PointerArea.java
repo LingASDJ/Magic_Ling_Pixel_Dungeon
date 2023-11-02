@@ -21,14 +21,20 @@
 
 package com.watabou.noosa;
 
+import com.watabou.input.GameAction;
 import com.watabou.input.PointerEvent;
 import com.watabou.utils.Signal;
 
-public class PointerArea extends Visual implements Signal.Listener<PointerEvent> {
+public abstract class PointerArea extends Visual implements Signal.Listener<PointerEvent> {
 	
 	// Its target can be pointerarea itself
 	public Visual target;
-	
+	public GameAction keyAction(){
+		return null;
+	}
+
+	protected void onClick() {} //left click, default key type
+
 	protected PointerEvent curEvent = null;
 	protected boolean hovered = false;
 

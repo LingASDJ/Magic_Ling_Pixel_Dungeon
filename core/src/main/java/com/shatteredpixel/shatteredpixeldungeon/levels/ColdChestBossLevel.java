@@ -23,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.TPDoor;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
@@ -222,7 +223,14 @@ public class ColdChestBossLevel extends Level {
 
 
     private void setMapStart() {
-        entrance = HOME;
+        int entrance = HOME;
+
+        LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
+        transitions.add(enter);
+
+        LevelTransition exit = new LevelTransition(this, 0, LevelTransition.Type.REGULAR_EXIT);
+        transitions.add(exit);
+
         map = WorldRoomShort.clone();
     }
 

@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import static com.watabou.utils.DeviceCompat.isAndroid;
 import static com.watabou.utils.DeviceCompat.isDesktop;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -231,6 +230,8 @@ public class WndSettings extends WndTabbed {
 		ColorBlock sep2;
 		OptionSlider optBrightness;
 		OptionSlider optVisGrid;
+		OptionSlider optFollowIntensity;
+		OptionSlider optScreenShake;
 
 		@Override
 		protected void createChildren() {
@@ -256,25 +257,7 @@ public class WndSettings extends WndTabbed {
 			}
 			add(chkFullscreen);
 
-			if ((int)Math.ceil(2* Game.density) < PixelScene.maxDefaultZoom) {
-				optScale = new OptionSlider(Messages.get(this, "scale"),
-						(int)Math.ceil(2* Game.density)+ "X",
-						PixelScene.maxDefaultZoom + "X",
-						(int)Math.ceil(2* Game.density),
-						PixelScene.maxDefaultZoom ) {
-					@Override
-					protected void onChange() {
-						if (getSelectedValue() != SPDSettings.scale()) {
-							SPDSettings.scale(getSelectedValue());
-							ShatteredPixelDungeon.seamlessResetScene();
-						}
-					}
-				};
-				optScale.setSelectedValue(PixelScene.defaultZoom);
-				add(optScale);
-			}
-
-			if (isAndroid() && PixelScene.maxScreenZoom >= 2) {
+			if (DeviceCompat.isAndroid() && PixelScene.maxScreenZoom >= 2) {
 				chkSaver = new CheckBox(Messages.get(this, "saver")) {
 					@Override
 					protected void onClick() {
@@ -303,7 +286,7 @@ public class WndSettings extends WndTabbed {
 				add( chkSaver );
 			}
 
-			if (isAndroid()) {
+			if (DeviceCompat.isAndroid()) {
 				Boolean landscape = SPDSettings.landscape();
 				if (landscape == null){
 					landscape = Game.width > Game.height;
@@ -334,7 +317,7 @@ public class WndSettings extends WndTabbed {
 			add(optBrightness);
 
 			optVisGrid = new OptionSlider(Messages.get(this, "visual_grid"),
-					Messages.get(this, "off"), Messages.get(this, "high"), -1, 1) {
+					Messages.get(this, "off"), Messages.get(this, "high"), -1, 2) {
 				@Override
 				protected void onChange() {
 					SPDSettings.visualGrid(getSelectedValue());
@@ -342,6 +325,26 @@ public class WndSettings extends WndTabbed {
 			};
 			optVisGrid.setSelectedValue(SPDSettings.visualGrid());
 			add(optVisGrid);
+
+			optFollowIntensity = new OptionSlider(Messages.get(this, "camera_follow"),
+					Messages.get(this, "low"), Messages.get(this, "high"), 1, 4) {
+				@Override
+				protected void onChange() {
+					SPDSettings.cameraFollow(getSelectedValue());
+				}
+			};
+			optFollowIntensity.setSelectedValue(SPDSettings.cameraFollow());
+			add(optFollowIntensity);
+
+			optScreenShake = new OptionSlider(Messages.get(this, "screenshake"),
+					Messages.get(this, "off"), Messages.get(this, "high"), 0, 4) {
+				@Override
+				protected void onChange() {
+					SPDSettings.screenShake(getSelectedValue());
+				}
+			};
+			optScreenShake.setSelectedValue(SPDSettings.screenShake());
+			add(optScreenShake);
 
 		}
 
@@ -352,16 +355,12 @@ public class WndSettings extends WndTabbed {
 
 			title.setPos((width - title.width())/2, bottom + GAP);
 			sep1.size(width, 1);
-			sep1.y = title.bottom() + 2*GAP;
+			sep1.y = title.bottom() + 3*GAP;
 
 			bottom = sep1.y + 1;
 
 			if (width > 200 && chkSaver != null) {
-				if(DeviceCompat.isDesktop()){
-					chkFullscreen.setRect(0, bottom + GAP, width/2-1, BTN_HEIGHT);
-				} else {
-					chkFullscreen.setRect(999, bottom + GAP, width/2-1, BTN_HEIGHT);
-				}
+				chkFullscreen.setRect(0, bottom + GAP, width/2-1, BTN_HEIGHT);
 				chkSaver.setRect(chkFullscreen.right()+ GAP, bottom + GAP, width/2-1, BTN_HEIGHT);
 				bottom = chkFullscreen.bottom();
 			} else {
@@ -391,14 +390,18 @@ public class WndSettings extends WndTabbed {
 			if (width > 200){
 				optBrightness.setRect(0, bottom + GAP, width/2-GAP/2, SLIDER_HEIGHT);
 				optVisGrid.setRect(optBrightness.right() + GAP, optBrightness.top(), width/2-GAP/2, SLIDER_HEIGHT);
-				//optSplashScreen.setRect(optBrightness.left(), optBrightness.bottom(), width, SLIDER_HEIGHT);
+
+				optFollowIntensity.setRect(0, optVisGrid.bottom() + GAP, width/2-GAP/2, SLIDER_HEIGHT);
+				optScreenShake.setRect(optFollowIntensity.right() + GAP, optFollowIntensity.top(), width/2-GAP/2, SLIDER_HEIGHT);
 			} else {
 				optBrightness.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
 				optVisGrid.setRect(0, optBrightness.bottom() + GAP, width, SLIDER_HEIGHT);
-				//optSplashScreen.setRect(0, optVisGrid.bottom() + GAP, width, SLIDER_HEIGHT);
+
+				optFollowIntensity.setRect(0, optVisGrid.bottom() + GAP, width, SLIDER_HEIGHT);
+				optScreenShake.setRect(0, optFollowIntensity.bottom() + GAP, width, SLIDER_HEIGHT);
 			}
 
-			height = optVisGrid.bottom();
+			height = optScreenShake.bottom();
 		}
 
 	}

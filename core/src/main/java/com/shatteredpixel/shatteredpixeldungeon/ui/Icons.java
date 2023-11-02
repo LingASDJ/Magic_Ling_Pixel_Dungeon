@@ -46,6 +46,8 @@ public enum Icons {
 	MAGE,
 	ROGUE,
 	HUNTRESS,
+	DUELIST,
+
 	LEFTBUTTON,
 	RIGHTBUTTON,
 
@@ -421,8 +423,8 @@ public enum Icons {
 				return get( ROGUE );
 			case HUNTRESS:
 				return get( HUNTRESS );
-//			case COMINGSOON:
-//				return get( HUNTRESS );
+			case DUELIST:
+				return get( LIBGDX );
 			default:
 				return null;
 		}

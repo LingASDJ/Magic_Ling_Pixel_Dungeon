@@ -47,7 +47,6 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
@@ -77,21 +76,21 @@ public class HallsBossLevel extends Level {
 	private static final int ROOM_TOP		= 8;
 	private static final int ROOM_BOTTOM	= ROOM_TOP + 8;
 
-	@Override
-	public void playLevelMusic() {
-		if (locked && BossHealthBar.isAssigned()){
-			if (BossHealthBar.isAssigned()){
-				Music.INSTANCE.play(Assets.Music.HALLS_BOSS_FINALE, true);
-			} else {
-				Music.INSTANCE.play(Assets.Music.HALLS_BOSS, true);
-			}
-		//if exit isn't unlocked
-		} else if (map[exit()] != Terrain.EXIT || Statistics.amuletObtained){
-			Music.INSTANCE.end();
-		} else {
-			Music.INSTANCE.playTracks(HallsLevel.HALLS_TRACK_LIST, HallsLevel.HALLS_TRACK_CHANCES, false);
-		}
-	}
+//	@Override
+//	public void playLevelMusic() {
+//		if (locked && BossHealthBar.isAssigned()){
+//			if (BossHealthBar.isAssigned()){
+//				Music.INSTANCE.play(Assets.Music.HALLS_BOSS_FINALE, true);
+//			} else {
+//				Music.INSTANCE.play(Assets.Music.HALLS_BOSS, true);
+//			}
+//			//if exit isn't unlocked
+//		} else if (map[exit()] != Terrain.EXIT || Statistics.amuletObtained){
+//			Music.INSTANCE.end();
+//		} else {
+//			Music.INSTANCE.playTracks(HallsLevel.HALLS_TRACK_LIST, HallsLevel.HALLS_TRACK_CHANCES, false);
+//		}
+//	}
 
 	@Override
 	public String tilesTex() {
@@ -403,7 +402,7 @@ public class HallsBossLevel extends Level {
 		}
 
 		private static final int[] map = new int[]{
-				 8,  9, 10, 11, 11, 11, 12, 13, 14,
+				8,  9, 10, 11, 11, 11, 12, 13, 14,
 				16, 17, 18, 27, 19, 27, 20, 21, 22,
 				24, 25, 26, 19, 19, 19, 28, 29, 30,
 				24, 25, 26, 19, 19, 19, 28, 29, 30,

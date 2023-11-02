@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -138,8 +139,14 @@ public class CavesGirlDeadLevel extends Level {
             }
         }
 
-        entrance = 10+19*21;
-        exit = 10 + 3*21;
+        int entrance = 10+19*21;
+        int exit = 10 + 3*21;
+
+        LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
+        transitions.add(enter);
+
+        LevelTransition exits = new LevelTransition(this, exit, LevelTransition.Type.REGULAR_EXIT);
+        transitions.add(exits);
 
         map[exit] = Terrain.LOCKED_EXIT;
 

@@ -29,6 +29,12 @@ public class GameTracker extends Buff {
         actPriority = VFX_PRIO - 1;
         revivePersists = true;
     }
+
+    @Override
+    public String heroMessage() {
+        return "";
+    }
+
     private VirtualVisualTimer vvt;
     private int maxDepth = -1;
     private String allItemInfo = "";

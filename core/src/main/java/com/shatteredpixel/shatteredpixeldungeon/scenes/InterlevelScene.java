@@ -349,7 +349,7 @@ public class InterlevelScene extends PixelScene {
 			if (DeviceCompat.isDebug()){
 				int trueDepth = Dungeon.depth;
 				int trueBranch = Dungeon.branch;
-				for (int i = 1; i < trueDepth + (trueBranch == 0 ? 0 : 1); i++){
+				for (int i = 0; i < trueDepth + (trueBranch == 0 ? 0 : 1); i++){
 					if (!Dungeon.levelHasBeenGenerated(i, 0)){
 						Dungeon.depth = i;
 						Dungeon.branch = 0;

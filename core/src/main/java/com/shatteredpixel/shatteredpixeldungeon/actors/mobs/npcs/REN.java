@@ -2,11 +2,15 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.RenPlot;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RenSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -73,9 +77,14 @@ public class REN extends NTNPC {
     public boolean interact(Char c) {
 
         sprite.turnTo(pos, Dungeon.hero.pos);
-
+        RenPlot plot = new RenPlot();
         if(first){
-            WndQuest.chating(this,chat);
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndDialog(plot,false));
+                }
+            });
             first=false;
         }else {
             GLog.i(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);

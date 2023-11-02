@@ -332,7 +332,7 @@ public class Generator {
 					//Dreamfoil.Seed.class,
 					Starflower.Seed.class,
 					AikeLaier.Seed.class,};
-			SEED.defaultProbs = new float[]{ 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4,3};
+			SEED.defaultProbs = new float[]{ 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,3};
 			SEED.probs = SEED.defaultProbs.clone();
 
 			SCROLL.classes = new Class<?>[]{
@@ -627,10 +627,6 @@ public class Generator {
 		} else {
 			return ((Item) Reflection.newInstance(cat.classes[Random.chances(cat.defaultProbs)])).random();
 		}
-	}
-	private static HashMap<Category,Float> defaultCatProbs = new LinkedHashMap<>();
-	public static Item randomUsingDefaults(){
-		return randomUsingDefaults(Random.chances( defaultCatProbs ));
 	}
 
 	public static Item random( Class<? extends Item> cl ) {

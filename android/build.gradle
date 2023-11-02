@@ -24,8 +24,9 @@ android {
         //noinspection MinSdkTooLow
         minSdkVersion appAndroidMinSDK
         targetSdkVersion appAndroidTargetSDK
-        //resourceConfigurations += ['en_US', 'cs', 'de', 'el', 'es', 'fr', 'hu', 'in', 'it', 'ja', 'ko', 'nl', 'pl', 'pt', 'ru', 'tr', 'uk', 'vi', 'zh_CN']
 
+        resConfigs "en_US", "cs", "tr", "ca", "ko", "pl", "it", "ja",
+                "eo", "ru", "zh_CN", "de", "fr", "es", "pt", "fi", "hu", "in"
     }
 
     buildTypes {
@@ -98,30 +99,30 @@ dependencies {
     //修复小米手表与低安卓系统的WebView冲突兼容问题
     //noinspection GradleDependency
     implementation 'androidx.appcompat:appcompat:1.0.2'
+
+    implementation 'cat.ereza:customactivityoncrash:2.3.0'
 }
 
 // called every time gradle gets executed, takes the native dependencies of
 // the natives configuration, and extracts them to the proper libs/ folders
 // so they get packed with the APK.
 task copyAndroidNatives() {
-    doFirst {
-        file("libs/armeabi-v7a/").mkdirs()
-        file("libs/arm64-v8a/").mkdirs()
-        file("libs/x86/").mkdirs()
-        file("libs/x86_64/").mkdirs()
+    file("libs/armeabi-v7a/").mkdirs()
+    file("libs/arm64-v8a/").mkdirs()
+    file("libs/x86/").mkdirs()
+    file("libs/x86_64/").mkdirs()
 
-        configurations.natives.copy().files.each { jar ->
-            def outputDir = null
-            if (jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("libs/armeabi-v7a")
-            if (jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("libs/arm64-v8a")
-            if (jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
-            if (jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
-            if (outputDir != null) {
-                copy {
-                    from zipTree(jar)
-                    into outputDir
-                    include "*.so"
-                }
+    configurations.natives.copy().files.each { jar ->
+        def outputDir = null
+        if(jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("libs/armeabi-v7a")
+        if(jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("libs/arm64-v8a")
+        if(jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
+        if(jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
+        if(outputDir != null) {
+            copy {
+                from zipTree(jar)
+                into outputDir
+                include "*.so"
             }
         }
     }

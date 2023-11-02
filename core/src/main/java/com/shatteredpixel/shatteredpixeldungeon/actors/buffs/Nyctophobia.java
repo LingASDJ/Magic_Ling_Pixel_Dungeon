@@ -23,6 +23,11 @@ import com.watabou.utils.Random;
 
 public class Nyctophobia extends Buff implements Hero.Doom {
 
+    @Override
+    public String heroMessage() {
+        return "";
+    }
+
     private static final String LEVEL = "level";
     private static final String PARTIALDAMAGE = "partialDamage";
 
