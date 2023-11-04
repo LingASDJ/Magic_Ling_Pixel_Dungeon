@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.utils.DeviceCompat;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -49,8 +50,8 @@ public class Messages {
 	private static ArrayList<I18NBundle> bundles;
 	private static Languages lang;
 	private static Locale locale;
-	private static String baseNameX;
-	public static final String NO_TEXT_FOUND = baseNameX;
+	public static String baseNameX;
+
 
 	public static Languages lang(){
 		return lang;
@@ -143,9 +144,11 @@ public class Messages {
 			if (c != null && c.getSuperclass() != null){
 				return get(c.getSuperclass(), k, baseName, args);
 			} else {
-				String name = "Ms: "+baseName;
-				GLog.w(name);
-				return name;
+				//本地调试+桌面
+				if (DeviceCompat.isDebug() && DeviceCompat.isDesktop()){
+					GLog.debug(baseName);
+				}
+				return "Ms:"+baseName;
 			}
 		}
 	}

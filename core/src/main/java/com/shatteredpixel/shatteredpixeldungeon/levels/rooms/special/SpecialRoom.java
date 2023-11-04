@@ -24,6 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EyeRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.YinYangRoom;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
@@ -82,7 +84,8 @@ public abstract class SpecialRoom extends Room {
 	//9 special rooms which give equipment more often than consumables (or as often as)
 	private static final ArrayList<Class<? extends SpecialRoom>> EQUIP_SPECIALS = new ArrayList<>( Arrays.asList(
 			WeakFloorRoom.class, CryptRoom.class, PoolRoom.class, ArmoryRoom.class, SentryRoom.class,
-			StatueRoom.class, CrystalVaultRoom.class, CrystalChoiceRoom.class, SacrificeRoom.class
+			StatueRoom.class, CrystalVaultRoom.class, CrystalChoiceRoom.class, SacrificeRoom.class,
+			YinYangRoom.class
 	));
 
 	//10 special rooms which give consumables more often than equipment
@@ -90,8 +93,8 @@ public abstract class SpecialRoom extends Room {
 	private static final ArrayList<Class<? extends SpecialRoom>> CONSUMABLE_SPECIALS = new ArrayList<>( Arrays.asList(
 			RunestoneRoom.class, GardenRoom.class, LibraryRoom.class, StorageRoom.class,
 			TreasuryRoom.class, MagicWellRoom.class, ToxicGasRoom.class, MagicalFireRoom.class,
-			TrapsRoom.class, CrystalPathRoom.class
-	) );
+			TrapsRoom.class, CrystalPathRoom.class, EyeRoom.class
+			) );
 
 	//only one special that uses crystal keys per floor
 	private static final ArrayList<Class<? extends SpecialRoom>> CRYSTAL_KEY_SPECIALS = new ArrayList<>( Arrays.asList(

@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.tipsgodungeon;
 import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.ready;
 
@@ -40,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HasteLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
@@ -274,31 +276,59 @@ public abstract class Level implements Bundlable {
 			if (Dungeon.depth > 1) {
 				//50% chance of getting a level feeling
 				//~7.15% chance for each feeling
-				switch (Random.Int( 14 )) {
-					case 0:
+
+				if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
+					int randomInt = Random.Int(10);
+					if(Dungeon.depth == 4 || Dungeon.depth == 14){
+						feeling = Feeling.DIEDROOM;
+					} else if (randomInt == 0) {
 						feeling = Feeling.CHASM;
-						break;
-					case 1:
+					} else if (randomInt == 1) {
 						feeling = Feeling.WATER;
-						break;
-					case 2:
+					} else if (randomInt == 2) {
 						feeling = Feeling.GRASS;
-						break;
-					case 3:
+					} else if (randomInt == 3) {
 						feeling = Feeling.DARK;
 						addItemToSpawn(new Torch());
-						viewDistance = Math.round(viewDistance/2f);
-						break;
-					case 4:
-						feeling = Feeling.LARGE;
-						addItemToSpawn(Generator.random(Generator.Category.FOOD));
-						break;
-					case 5:
+						viewDistance = Math.round(viewDistance / 2f);
+					} else if (randomInt == 4) {
 						feeling = Feeling.TRAPS;
-						break;
-					case 6:
+					} else if (randomInt == 5) {
+						feeling = Feeling.BIGTRAP;
+					} else if (randomInt == 6) {
 						feeling = Feeling.SECRETS;
-						break;
+					} else if (randomInt == 7) {
+						feeling = Feeling.LINKROOM;
+					} else if (randomInt == 8) {
+						feeling = Feeling.THREEWELL;
+					}
+				} else {
+					switch (Random.Int( 14 )) {
+						case 0:
+							feeling = Feeling.CHASM;
+							break;
+						case 1:
+							feeling = Feeling.WATER;
+							break;
+						case 2:
+							feeling = Feeling.GRASS;
+							break;
+						case 3:
+							feeling = Feeling.DARK;
+							addItemToSpawn(new Torch());
+							viewDistance = Math.round(viewDistance/2f);
+							break;
+						case 4:
+							feeling = Feeling.LARGE;
+							addItemToSpawn(Generator.random(Generator.Category.FOOD));
+							break;
+						case 5:
+							feeling = Feeling.TRAPS;
+							break;
+						case 6:
+							feeling = Feeling.SECRETS;
+							break;
+					}
 				}
 			}
 		}
@@ -535,6 +565,8 @@ public abstract class Level implements Bundlable {
 
 		Mob m = Reflection.newInstance(mobsToSpawn.remove(0));
 		ChampionEnemy.rollForChampion(m);
+		ChampionEnemy.rollForStateLing(m);
+		Buff.affect(m, HasteLing.MobLing.class, HasteLing.MobLing.DURATION*2000f);
 		return m;
 	}
 

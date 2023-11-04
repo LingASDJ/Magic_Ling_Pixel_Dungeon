@@ -103,10 +103,10 @@ public class PrisonBossLevel extends Level {
 	public State state(){
 		return state;
 	}
-	
+
 	@Override
 	public String tilesTex() {
-		return Assets.Environment.TILES_PRISON;
+		return locked ? Assets.Environment.TILES_TENGUS : Assets.Environment.TILES_PRISON;
 	}
 	
 	@Override
@@ -311,7 +311,7 @@ public class PrisonBossLevel extends Level {
 		customWalls.add(vis);
 		GameScene.add(vis, true);
 		
-		Painter.set(this, tenguCell.left+4, tenguCell.top, Terrain.DOOR);
+		Painter.set(this, tenguCell.left+4, tenguCell.top, Terrain.CRYSTAL_DOOR);
 		
 		int cell = pointToCell(endStart);
 		int i = 0;

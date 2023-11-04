@@ -15,7 +15,7 @@ public class SkipIndicator extends Tag {
     private Image icon;
 
     public SkipIndicator() {
-        super( 0xFF4C4C );
+        super( 0x00FF4C4C );
 
         setSize( 24, 16 );
 
@@ -28,14 +28,14 @@ public class SkipIndicator extends Tag {
     protected void createChildren() {
         super.createChildren();
 
-        icon = Icons.STATS.get();
+        icon = Icons.SKIP.get();
         add( icon );
     }
 
     @Override
     protected void layout() {
         super.layout();
-        icon.x = x;
+        icon.x = x+1;
         icon.y = y;
     }
 

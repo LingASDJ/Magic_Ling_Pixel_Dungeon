@@ -359,27 +359,29 @@ public class ItemSpriteSheet {
     public static final int ARMOR_MAIL      = ARMOR+2;
     public static final int ARMOR_SCALE     = ARMOR+3;
     public static final int ARMOR_PLATE     = ARMOR+4;
-    public static final int ARMOR_WARRIOR   = ARMOR+5;
-    public static final int ARMOR_MAGE      = ARMOR+6;
-    public static final int ARMOR_ROGUE     = ARMOR+7;
-    public static final int ARMOR_HUNTRESS  = ARMOR+8;
-    public static final int ARMOR_DUELIST   = ARMOR+9;
 
-    public static final int ARMOR_ANCITY     = ARMOR+10;
-    public static final int ARMOR_LAMELLAR     = ARMOR+11;
+    public static final int ARMOR_LAMELLAR  = ARMOR+5;
+    public static final int ARMOR_WARRIOR   = ARMOR+6;
+    public static final int ARMOR_MAGE      = ARMOR+7;
+    public static final int ARMOR_ROGUE     = ARMOR+8;
+    public static final int ARMOR_HUNTRESS  = ARMOR+9;
+    public static final int ARMOR_DUELIST   = ARMOR+10;
+
+    public static final int ARMOR_ANCITY     = ARMOR+11;
+
     static{
-        assignItemRect(ARMOR_CLOTH,     15, 12);
-        assignItemRect(ARMOR_LEATHER,   14, 13);
-        assignItemRect(ARMOR_MAIL,      14, 12);
-        assignItemRect(ARMOR_SCALE,     14, 11);
-        assignItemRect(ARMOR_PLATE,     12, 12);
-        assignItemRect(ARMOR_WARRIOR,   12, 12);
-        assignItemRect(ARMOR_MAGE,      15, 15);
-        assignItemRect(ARMOR_ROGUE,     14, 12);
-        assignItemRect(ARMOR_HUNTRESS,  13, 15);
+        assignItemRect(ARMOR_WARRIOR,   15, 13);
+        assignItemRect(ARMOR_MAGE,      13, 13);
+        assignItemRect(ARMOR_ROGUE,     11, 13);
+        assignItemRect(ARMOR_HUNTRESS,  13, 13);
         assignItemRect(ARMOR_DUELIST,   12, 13);
 
-        assignItemRect(ARMOR_ANCITY,     15,14);
+        assignItemRect(ARMOR_CLOTH,     14, 14);
+        assignItemRect(ARMOR_LEATHER,   15, 15);
+        assignItemRect(ARMOR_MAIL,      15, 15);
+        assignItemRect(ARMOR_SCALE,     16, 16);
+        assignItemRect(ARMOR_PLATE,     15, 15);
+        assignItemRect(ARMOR_ANCITY,    15, 14);
         assignItemRect(ARMOR_LAMELLAR,  14, 14);
     }
 
@@ -564,8 +566,8 @@ public class ItemSpriteSheet {
 
     public static final int POTION_SKYBLUE  = POTIONS+12;
     public static final int POTION_DEEPYELLOW = POTIONS+13;
-    public static final int POTION_CATALYST = POTIONS+13;
-    public static final int LIQUID_METAL    = POTIONS+14;
+    public static final int POTION_CATALYST = POTIONS+14;
+    public static final int LIQUID_METAL    = POTIONS+15;
     static {
         for (int i = POTIONS; i < POTIONS+16; i++)
             assignItemRect(i, 12, 14);
@@ -614,6 +616,7 @@ public class ItemSpriteSheet {
     static{
         for (int i = SEEDS; i < SEEDS+16; i++)
             assignItemRect(i, 10, 10);
+        assignItemRect(GREEN_LING, 8, 15);
     }
 
     private static final int BREWS          =                               xy(1, 25);  //8 slots
@@ -779,9 +782,12 @@ public class ItemSpriteSheet {
 
     public static final int  FIVEREN= 	LENGYWEAPONS+11;
 
+    public static final int  SHADOWMEAT= 	LENGYWEAPONS+12;
+
     static {
         assignItemRect(DIEDCROSSBOW, 16, 15);
         assignItemRect(FIVEREN, 16, 13);
+        assignItemRect(SHADOWMEAT,15,11);
     }
 
     private static final int BAGS       =                                   xy(1, 31);  //16 slots

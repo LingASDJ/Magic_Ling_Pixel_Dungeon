@@ -104,7 +104,7 @@ public class Terrain {
 		flags[SECRET_TRAP]  = flags[EMPTY] | SECRET;
 		flags[TRAP]         = AVOID;
 		flags[INACTIVE_TRAP]= flags[EMPTY];
-
+		flags[SIGN_SP] 		= PASSABLE;
 		flags[EMPTY_DECO]	= flags[EMPTY];
 		flags[LOCKED_EXIT]	= SOLID;
 		flags[UNLOCKED_EXIT]= PASSABLE;

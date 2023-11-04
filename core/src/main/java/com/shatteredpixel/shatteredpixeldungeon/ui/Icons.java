@@ -135,7 +135,9 @@ public enum Icons {
 
 	PASTE,
 
-	COPY;
+	COPY,
+
+	SKIP;
 
 	public Image get() {
 		return get( this );
@@ -196,6 +198,9 @@ public enum Icons {
 				break;
 			case COPY:
 				icon.frame( icon.texture.uvRectBySize( 129, 16, 13, 13 ) );
+				break;
+			case SKIP:
+				icon.frame( icon.texture.uvRectBySize( 145, 16, 25, 16 ) );
 				break;
 
 			case EXIT:

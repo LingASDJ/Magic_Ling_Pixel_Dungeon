@@ -310,7 +310,7 @@ public class DwarfMasterBossLevel extends Level {
     @Override
     public void occupyCell( Char ch ) {
         super.occupyCell(ch);
-
+        int entrance = (this.width * 31) + 18;
         if (map[entrance] == Terrain.ENTRANCE && map[exit] != Terrain.EXIT
                 && ch == Dungeon.hero && (Dungeon.level.distance(ch.pos, entrance) >= 0)) {
             seal();

@@ -513,6 +513,7 @@ public class Dungeon {
     private static final String DIFFICULTY = "difficulty";
     public static int mobsToStateLing;
     public static Hero hero;
+
     //MLPD
     public static Conducts.ConductStorage dlcs = new Conducts.ConductStorage();
     public static Difficulty.HardStorage difficultys = new Difficulty.HardStorage();
@@ -532,7 +533,7 @@ public class Dungeon {
 			saveGame( GamesInProgress.curSlot );
 			saveLevel( GamesInProgress.curSlot );
 
-			GamesInProgress.set( GamesInProgress.curSlot );
+			GamesInProgress.set( GamesInProgress.curSlot,hero,dlcs,difficultys );
 
 		}
 	}
@@ -961,6 +962,9 @@ public class Dungeon {
 			initialVersion = bundle.getInt( VERSION );
 		}
 
+		dlcs.restoreFromBundle(bundle);
+		difficultys.restoreFromBundle(bundle);
+
 		version = bundle.getInt( VERSION );
 
 		seed = bundle.contains( SEED ) ? bundle.getLong( SEED ) : DungeonSeed.randomSeed();
@@ -1021,6 +1025,13 @@ public class Dungeon {
 			Badges.loadLocal( badges );
 		} else {
 			Badges.reset();
+		}
+
+		Bundle pbadges = bundle.getBundle(ZBADGES);
+		if (!pbadges.isNull()) {
+			PaswordBadges.loadLocal( pbadges );
+		} else {
+			PaswordBadges.reset();
 		}
 
 		Notes.restoreFromBundle( bundle );

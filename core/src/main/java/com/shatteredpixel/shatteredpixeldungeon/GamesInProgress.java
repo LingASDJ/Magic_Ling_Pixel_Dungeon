@@ -21,8 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -127,12 +126,16 @@ public class GamesInProgress {
 		}
 	}
 
-	public static void set(int slot) {
+	public static void set(int slot,Hero hero, Conducts.ConductStorage dlcs, Difficulty.HardStorage difficulty) {
 		Info info = new Info();
 		info.slot = slot;
-		
+
 		info.depth = Dungeon.depth;
 		info.challenges = Dungeon.challenges;
+
+		info.dlcs = dlcs;
+
+		info.difficulty= difficulty;
 
 		info.seed = Dungeon.seed;
 		info.customSeed = Dungeon.customSeedText;

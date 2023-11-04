@@ -14,7 +14,7 @@ public class Script {
     //By Teller 2021/8/20
 
     public enum Character{
-        NOBODY,CHEN,AMIYA,RED,EXUSIAI,FROSTNOVA
+        NOBODY,REN,AMIYA,RED,EXUSIAI,FROSTNOVA
     }
 
     public enum FormalPlot
@@ -59,8 +59,8 @@ public class Script {
             case NOBODY:
                 str = "Test";
                 break;
-            case CHEN:
-                str = Messages.get(Script.class,"name_chen");
+            case REN:
+                str = Messages.get(Script.class,"name_ren");
                 break;
             case AMIYA:
                 str = Messages.get(Script.class,"name_amiya");
@@ -87,7 +87,7 @@ public class Script {
             case NOBODY:
                 row = 0;
                 break;
-            case CHEN:
+            case REN:
                 row = 0;
                 break;
             case AMIYA:
@@ -103,12 +103,12 @@ public class Script {
             //    row = 4;
             //    break;
         }
-        Image image = new Image(Assets.Sprites.AMULET, 0, 35* row, 36, 35);
+        Image image = new Image("splashes/portraits.png", 0, 35* row, 36, 48);
 
         switch (character)
         {
             case FROSTNOVA:
-                image = new Image(Assets.Sprites.ASDW, 0, 35* row, 36, 35);
+                image = new Image(Assets.Sprites.ASDW, 0, 35* row, 36, 48);
 
                 AlphaTweener invisible = new AlphaTweener( image, 0.4f, 0.4f );
                 if (image.parent != null){

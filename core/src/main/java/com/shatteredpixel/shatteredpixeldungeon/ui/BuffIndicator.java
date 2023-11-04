@@ -123,27 +123,23 @@ public class BuffIndicator extends Component {
 
 
     //SPD 221
-    public static final int DUEL_CLEAVE = 68;
-    public static final int DUEL_GUARD = 69;
-    public static final int DUEL_SPIN = 70;
-    public static final int DUEL_EVASIVE = 71;
-    public static final int DUEL_DANCE = 72;
-    public static final int DUEL_BRAWL = 73;
-    public static final int DUEL_XBOW = 74;
-    public static final int CHALLENGE = 75;
-    public static final int MONK_ENERGY = 76;
-    public static final int DUEL_COMBO = 77;
-    public static final int DAZE = 78;
-
-    public static final int INVERT_MARK = 79;
-
-	public static final int NATURE_POWER= 80;
-
-	public static final int IMBUE       = 81;
-
-	public static final int AMULET		= 82;
-
-	public static final int TARGETED   = 83;
+	public static final int TARGETED    = 91;
+	public static final int IMBUE       = 92;
+	public static final int ENDURE      = 93;
+	public static final int INVERT_MARK = 94;
+	public static final int NATURE_POWER= 95;
+	public static final int AMULET      = 96;
+	public static final int DUEL_CLEAVE = 97;
+	public static final int DUEL_GUARD  = 99;
+	public static final int DUEL_SPIN   = 100;
+	public static final int DUEL_EVASIVE= 101;
+	public static final int DUEL_DANCE  = 102;
+	public static final int DUEL_BRAWL  = 103;
+	public static final int DUEL_XBOW   = 104;
+	public static final int CHALLENGE   = 105;
+	public static final int MONK_ENERGY = 106;
+	public static final int DUEL_COMBO  = 107;
+	public static final int DAZE        = 108;
 
     public static final int SIZE_SMALL = 7;
     public static final int SIZE_LARGE = 16;
@@ -328,7 +324,7 @@ public class BuffIndicator extends Component {
 
 		@Override
 		protected String hoverText() {
-			return Messages.titleCase(buff.toString());
+			return Messages.titleCase(buff.name());
 		}
 	}
 

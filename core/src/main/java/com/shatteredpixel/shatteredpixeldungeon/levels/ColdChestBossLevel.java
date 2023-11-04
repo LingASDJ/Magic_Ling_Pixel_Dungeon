@@ -236,8 +236,13 @@ public class ColdChestBossLevel extends Level {
 
 
     public void setMapEnd(){
-        this.entrance = 52;
-        this.exit = 647;
+        int entrance = 52;
+        int exit = 647;
+        LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
+        transitions.add(enter);
+
+        LevelTransition exit2 = new LevelTransition(this, exit, LevelTransition.Type.REGULAR_EXIT);
+        transitions.add(exit2);
     }
 
     private static final HashMap<Integer, Integer> MAIN_PORTAL = new HashMap<>(5);

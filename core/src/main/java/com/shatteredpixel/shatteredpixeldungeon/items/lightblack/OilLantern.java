@@ -134,7 +134,7 @@ public class OilLantern extends Artifact {
         ArrayList<String> actions = OilLantern.super.actions(hero);
         actions.add(isActivated() ? AC_SNUFF : AC_LIGHT);
         actions.add(AC_REFILL);
-
+        actions.remove(AC_EQUIP);
         actions.remove("THROW");
 
         actions.remove("DROP");

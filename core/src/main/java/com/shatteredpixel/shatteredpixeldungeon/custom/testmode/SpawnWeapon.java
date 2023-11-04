@@ -467,7 +467,7 @@ public class SpawnWeapon extends TestItem{
         private int maxSlots(int t) {
             if (t <= 1) return 5;
             if (t == 2 || t == 3) return 1145;
-            else return 8;
+            else return 12;
         }
 
 

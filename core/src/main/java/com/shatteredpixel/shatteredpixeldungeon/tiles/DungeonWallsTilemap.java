@@ -76,16 +76,18 @@ public class DungeonWallsTilemap extends DungeonTilemap {
 		} else if (pos + mapWidth < size && DungeonTileSheet.wallStitcheable(map[pos+mapWidth])) {
 
 			return DungeonTileSheet.stitchWallOverhangTile(
-                    tile,
-                    (pos + 1) % mapWidth != 0 ? map[pos + 1 + mapWidth] : -1,
-                    map[pos + mapWidth],
-                    pos % mapWidth != 0 ? map[pos - 1 + mapWidth] : -1
-            );
+					tile,
+					(pos+1) % mapWidth != 0 ?   map[pos + 1 + mapWidth] : -1,
+												map[pos + mapWidth],
+					pos % mapWidth != 0 ?       map[pos - 1 + mapWidth] : -1
+			);
 
 		} else if (Dungeon.level.insideMap(pos) && (map[pos+mapWidth] == Terrain.DOOR || map[pos+mapWidth] == Terrain.LOCKED_DOOR) ) {
 			return DungeonTileSheet.DOOR_OVERHANG;
 		} else if (Dungeon.level.insideMap(pos) && map[pos+mapWidth] == Terrain.OPEN_DOOR ) {
 			return DungeonTileSheet.DOOR_OVERHANG_OPEN;
+		} else if (tile == Terrain.SIGN ||tile == Terrain.SIGN_SP) {
+			return DungeonTileSheet.RAISED_WALL;
 		} else if (Dungeon.level.insideMap(pos) && map[pos+mapWidth] == Terrain.CRYSTAL_DOOR ) {
 			return DungeonTileSheet.DOOR_OVERHANG_CRYSTAL;
 		} else if (pos + mapWidth < size && map[pos+mapWidth] == Terrain.STATUE){
@@ -118,5 +120,5 @@ public class DungeonWallsTilemap extends DungeonTilemap {
 	public boolean overlapsScreenPoint( int x, int y ) {
 		return true;
 	}
-
+	
 }

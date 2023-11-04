@@ -68,6 +68,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
@@ -137,6 +138,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.GreenSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceDewVialSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Mace;
@@ -144,6 +146,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
@@ -151,10 +154,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SkyShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WashCrime;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
@@ -393,21 +398,22 @@ public class Generator {
 					WornShortsword.class,
 					Gloves.class,
 					Dagger.class,
-					MagesStaff.class
+					MagesStaff.class,
+					Rapier.class
 			};
-			WEP_T1.probs = new float[]{ 1, 1, 1, 0, };
+			WEP_T1.probs = new float[]{ 2, 2, 2, 0, 2 };
 
 			WEP_T2.classes = new Class<?>[]{
 					Shortsword.class,
 					HandAxe.class,
 					Spear.class,
 					Quarterstaff.class,
-					Dirk.class
+					Dirk.class,
+					Sickle.class,
 			};
 			WEP_T2.probs = new float[]{ 6, 5, 5, 4, 4 };
 
 			WEP_T3.classes = new Class<?>[]{
-					Gauntlet.class,
 					Sword.class,
 					Mace.class,
 					Scimitar.class,
@@ -431,9 +437,11 @@ public class Generator {
 					RunicBlade.class,
 					AssassinsBlade.class,
 					Crossbow.class,
-					Sai.class
+					Sai.class,
+					Katana.class,
+					Gauntlet.class,
 			};
-			WEP_T4.probs = new float[]{ 6, 5, 5, 4, 4, 4, 3 };
+			WEP_T4.probs = new float[]{ 6, 5, 5, 4, 4, 4, 3,2,2 };
 
 			WEP_T5.classes = new Class<?>[]{
 					LockSword.class,
@@ -443,13 +451,13 @@ public class Generator {
 					Greataxe.class,
 					Greatshield.class,
 					WashCrime.class,
-
-
 					//传奇武器
 					DiedCrossBow.class,
+					Sickle.class,
+					WarScythe.class,
 
 			};
-			WEP_T5.probs = new float[]{ 3, 3, 3, 3, 3, 3,3,1};
+			WEP_T5.probs = new float[]{ 3, 3, 3, 3, 3, 3,3,1,2,2};
 
 			WEP_T6.classes = new Class<?>[]{
 					IceFishSword.class,
@@ -524,17 +532,19 @@ public class Generator {
 
 			RING.classes = new Class<?>[]{
 					RingOfAccuracy.class,
-					RingOfEvasion.class,
+					RingOfArcana.class,
 					RingOfElements.class,
+					RingOfEnergy.class,
+					RingOfEvasion.class,
 					RingOfForce.class,
 					RingOfFuror.class,
 					RingOfHaste.class,
-					RingOfEnergy.class,
 					RingOfMight.class,
 					RingOfSharpshooting.class,
 					RingOfTenacity.class,
 					RingOfWealth.class};
-			RING.probs = new float[]{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+			RING.defaultProbs = new float[]{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 };
+			RING.probs = RING.defaultProbs.clone();
 
 			ARTIFACT.classes = new Class<?>[]{
 					CapeOfThorns.class,

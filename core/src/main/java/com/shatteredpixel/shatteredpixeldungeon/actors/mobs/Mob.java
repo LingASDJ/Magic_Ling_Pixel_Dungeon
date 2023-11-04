@@ -21,7 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -120,6 +125,54 @@ public abstract class Mob extends Char {
 	protected boolean alerted = false;
 
 	protected static final float TIME_TO_WAKE_UP = 1f;
+	@Override
+	public int attackProc(Char enemy, int damage) {
+		//除了直接点击 布尔判定也应该生效
+		if(Dungeon.isChallenged(DHXD)||lanterfireactive){
+			damageAttackProcLanterMob();
+		}
+
+		return super.attackProc(enemy, damage);
+	}
+	//写在Mob主类，从而方便后续维护
+	private void damageAttackProcLanterMob() {
+		//近战判定
+		boolean isHero = enemy instanceof Hero;
+		//15%
+		boolean one =  Random.Float() <= 0.15f;
+		//25%
+		boolean two =  Random.Float() <= 0.25f;
+		//75%
+		boolean three =  Random.Float() <= 0.75f;
+		//50%
+		boolean four =  Random.Float() <= 0.50f;
+		//85%
+		boolean five =  Random.Float() <= 0.85f;
+		//
+		boolean GhostQuestMob = this instanceof GreatCrab ||this instanceof GnollTrickster || this instanceof FetidRat;
+
+		//15%的老鼠 (-1) <95
+		if (isHero && this instanceof Rat && one && hero.lanterfire < 95) ((Hero) enemy).damageLantern(1);
+		//25%的监狱守卫 (-1) <90
+		if (isHero && this instanceof Guard && two && hero.lanterfire < 90) ((Hero) enemy).damageLantern(1);
+		//15%的豺狼萨满 (-2) <80
+		if (isHero && this instanceof Shaman && one && hero.lanterfire < 80) ((Hero) enemy).damageLantern(2);
+		//50%的幽灵任务怪 (-4) 均要扣减
+		if (isHero && GhostQuestMob && four) ((Hero) enemy).damageLantern(4);
+		//怨灵 75%的概率-6灯火 且必定死亡
+		if (isHero && this instanceof Wraith && three ){
+			((Hero) enemy).damageLantern(6);
+			this.die(true);
+		}
+		//新生火元素 25%的概率-6灯火 <80
+		if (isHero && this instanceof Elemental.NewbornFireElemental && two && hero.lanterfire < 80 ) ((Hero) enemy).damageLantern(6);
+		//矿洞蜘蛛 15%的概率-3灯火 <70
+		if (isHero && this instanceof Wraith && one && hero.lanterfire < 70 ) ((Hero) enemy).damageLantern(3);
+		//矮人术士 85%的概率-5灯火 <70
+		if (isHero && this instanceof Warlock && five && hero.lanterfire < 70 ) ((Hero) enemy).damageLantern(5);
+		//黑色怨灵 85%的概率-5灯火 <90
+		if (isHero && this instanceof BlackHost && five && hero.lanterfire < 90 ) ((Hero) enemy).damageLantern(5);
+	}
 
 	protected boolean firstAdded = true;
 	protected void onAdd(){
@@ -1103,6 +1156,9 @@ public abstract class Mob extends Char {
 
     public void notice() {
 		sprite.showAlert();
+		if (Dungeon.level.locked) {
+			BGMPlayer.playBoss();
+		}
 	}
 
 	protected class Passive implements AiState {

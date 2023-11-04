@@ -76,22 +76,6 @@ public class HallsBossLevel extends Level {
 	private static final int ROOM_TOP		= 8;
 	private static final int ROOM_BOTTOM	= ROOM_TOP + 8;
 
-//	@Override
-//	public void playLevelMusic() {
-//		if (locked && BossHealthBar.isAssigned()){
-//			if (BossHealthBar.isAssigned()){
-//				Music.INSTANCE.play(Assets.Music.HALLS_BOSS_FINALE, true);
-//			} else {
-//				Music.INSTANCE.play(Assets.Music.HALLS_BOSS, true);
-//			}
-//			//if exit isn't unlocked
-//		} else if (map[exit()] != Terrain.EXIT || Statistics.amuletObtained){
-//			Music.INSTANCE.end();
-//		} else {
-//			Music.INSTANCE.playTracks(HallsLevel.HALLS_TRACK_LIST, HallsLevel.HALLS_TRACK_CHANCES, false);
-//		}
-//	}
-
 	@Override
 	public String tilesTex() {
 		return Assets.Environment.TILES_HALLS;

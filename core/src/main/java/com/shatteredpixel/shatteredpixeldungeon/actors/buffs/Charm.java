@@ -23,11 +23,15 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Bundle;
 
 public class Charm extends FlavourBuff {
-
+	@Override
+	public String heroMessage() {
+		return Messages.get(this, "heromsg");
+	}
 	public int object = 0;
 	public boolean ignoreHeroAllies = false;
 

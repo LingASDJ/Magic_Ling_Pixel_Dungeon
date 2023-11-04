@@ -356,7 +356,7 @@ public class WndJournal extends WndTabbed {
 	public static class AlchemyTab extends Component {
 
 		private RedButton[] pageButtons;
-		private static final int NUM_BUTTONS = 12;
+		private static final int NUM_BUTTONS = 11;
 
 		private static final int[] spriteIndexes = {10, 12, 7, 9, 11, 8, 3, 13, 14, 15, 4};
 

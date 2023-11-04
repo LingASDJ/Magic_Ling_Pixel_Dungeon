@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
@@ -11,7 +10,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruitsLasher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RatKing;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Ripple;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -19,14 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Group;
-import com.watabou.noosa.particles.Emitter;
-import com.watabou.noosa.particles.PixelParticle;
-import com.watabou.utils.ColorMath;
 import com.watabou.utils.PathFinder;
-import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
 //克里弗斯之果 5层
@@ -342,80 +333,6 @@ public class ForestBossLevel extends Level {
 
     };
 
-    private static class Sink extends Emitter {
-
-        private int pos;
-        private float rippleDelay = 0;
-
-        private static final Emitter.Factory factory = new Factory() {
-
-            @Override
-            public void emit( Emitter emitter, int index, float x, float y ) {
-                WaterParticle p = (WaterParticle)emitter.recycle( WaterParticle.class );
-                p.reset( x, y );
-            }
-        };
-
-        public Sink( int pos ) {
-            super();
-
-            this.pos = pos;
-
-            PointF p = DungeonTilemap.tileCenterToWorld( pos );
-            pos( p.x - 2, p.y + 3, 4, 0 );
-
-            pour( factory, 0.1f );
-        }
-
-        @Override
-        public void update() {
-            if (visible == (pos < level.heroFOV.length && level.heroFOV[pos])) {
-
-                super.update();
-
-                if (!isFrozen() && (rippleDelay -= Game.elapsed) <= 0) {
-                    Ripple ripple = GameScene.ripple( pos + level.width() );
-                    if (ripple != null) {
-                        ripple.y -= DungeonTilemap.SIZE / 2f;
-                        rippleDelay = Random.Float(0.1f, 0.9f);
-                    }
-                }
-            }
-        }
-    }
-
-    public static final class WaterParticle extends PixelParticle {
-
-        public WaterParticle() {
-            super();
-
-            acc.y = 50;
-            am = 0.5f;
-
-            color( ColorMath.random( 0xb6ccc2, 0x3b6653 ) );
-            size( 2 );
-        }
-
-        public void reset( float x, float y ) {
-            revive();
-
-            this.x = x;
-            this.y = y;
-
-            speed.set( Random.Float( -1, +1 ), 0 );
-
-            left = lifespan = 0.5f;
-        }
-    }
-
-    public static void addSewerVisuals( Level level, Group group ) {
-        for (int i=0; i < level.length(); i++) {
-            if (level.map[i] == Terrain.WALL_DECO) {
-                group.add( new ForestBossLevel.Sink( i ) );
-            }
-        }
-    }
-
     //构建地图
     protected boolean build() {
         setSize(WIDTH, HEIGHT);
@@ -439,13 +356,6 @@ public class ForestBossLevel extends Level {
         return true;
     }
 
-    //加入粒子效果
-    @Override
-    public Group addVisuals() {
-        super.addVisuals();
-        addSewerVisuals(this, visuals);
-        return visuals;
-    }
 
     public String tilesTex() {
         return Assets.Environment.TILES_SEWERS;

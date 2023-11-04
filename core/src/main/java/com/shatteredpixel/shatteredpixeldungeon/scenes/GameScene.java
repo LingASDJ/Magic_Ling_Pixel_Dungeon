@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CHAMPION_ENEMIES;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
@@ -1071,6 +1072,13 @@ public class GameScene extends PixelScene {
 		super.create();
 		Camera.main.zoom( GameMath.gate(minZoom, defaultZoom + SPDSettings.zoom(), maxZoom));
 
+		switch (SPDSettings.cameraFollow()) {
+			case 4: default:    Camera.main.setFollowDeadzone(0);      break;
+			case 3:             Camera.main.setFollowDeadzone(0.2f);   break;
+			case 2:             Camera.main.setFollowDeadzone(0.5f);   break;
+			case 1:             Camera.main.setFollowDeadzone(0.9f);   break;
+		}
+
 		scene = this;
 
 		terrain = new Group();
@@ -1566,7 +1574,8 @@ public class GameScene extends PixelScene {
 			for (Mob mob : Dungeon.level.mobs) {
 				if (!mob.buffs(ChampionEnemy.class).isEmpty() && Dungeon.isChallenged(SBSG)){
 					GLog.n(Messages.get(ChampionEnemy.class, "warn2"));
-				} else if(!mob.buffs(ChampionEnemy.class).isEmpty()) {
+					GLog.w(Messages.get(ChampionEnemy.class, "warn"));
+				} else if(!mob.buffs(ChampionEnemy.class).isEmpty()  && Dungeon.isChallenged(CHAMPION_ENEMIES)) {
 					GLog.w(Messages.get(ChampionEnemy.class, "warn"));
 				}
 			}

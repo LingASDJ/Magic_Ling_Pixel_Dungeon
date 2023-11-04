@@ -87,31 +87,7 @@ public class OldDM300 extends FlameB01 {
 	public int drRoll() {
 		return Random.NormalIntRange(0, 10);
 	}
-	public static boolean seenBefore = false;
 
-
-	@Override
-	public boolean add(Buff buff) {
-		super.add(buff);
-		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-
-		if(lock == null && !seenBefore && Dungeon.level.heroFOV[pos]){
-			if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
-				AlarmTrap alarmTrap = new AlarmTrap();
-				alarmTrap.pos = pos;
-				alarmTrap.activate();
-				CavesLevel level = (CavesLevel) Dungeon.level;
-				level.seal();
-				level.updateChasmTerrain();
-				ScrollOfTeleportation.appear(hero, pos+8);
-			}
-		}
-
-		if (state == PASSIVE && buff.type == Buff.buffType.NEGATIVE && Dungeon.level.heroFOV[pos]){
-			state = HUNTING;
-		}
-		return false;
-	}
 
 	@Override
 	public boolean act() {

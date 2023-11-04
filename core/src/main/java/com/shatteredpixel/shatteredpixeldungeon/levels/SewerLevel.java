@@ -60,7 +60,6 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.Group;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.Callback;
@@ -192,20 +191,20 @@ public class SewerLevel extends RegularLevel {
 		}
 	}
 
-	@Override
-	public Group addVisuals() {
-		super.addVisuals();
-		addSewerVisuals(this, visuals);
-		return visuals;
-	}
+//	@Override
+//	public Group addVisuals() {
+//		super.addVisuals();
+//		addSewerVisuals(this, visuals);
+//		return visuals;
+//	}
 	
-	public static void addSewerVisuals( Level level, Group group ) {
-		for (int i=0; i < level.length(); i++) {
-			if (level.map[i] == Terrain.WALL_DECO) {
-				group.add( new Sink( i ) );
-			}
-		}
-	}
+//	public static void addSewerVisuals( Level level, Group group ) {
+//		for (int i=0; i < level.length(); i++) {
+//			if (level.map[i] == Terrain.WALL_DECO) {
+//				group.add( new Sink( i ) );
+//			}
+//		}
+//	}
 	
 	@Override
 	public String tileName( int tile ) {

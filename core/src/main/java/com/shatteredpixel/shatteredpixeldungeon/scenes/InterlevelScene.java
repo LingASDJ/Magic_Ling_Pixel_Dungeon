@@ -50,6 +50,7 @@ import com.watabou.noosa.NoosaScriptNoLighting;
 import com.watabou.noosa.SkinnedBlock;
 import com.watabou.utils.BArray;
 import com.watabou.utils.DeviceCompat;
+import com.watabou.utils.Random;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -95,11 +96,33 @@ public class InterlevelScene extends PixelScene {
 	{
 		inGameScene = true;
 	}
-	
-	@Override
+
+	private static final int NUM_TIPS = 37;
+
+	private static ArrayList<Integer> tipset;
+	private RenderedTextBlock tip;
+
+	private void newTipSet()
+	{
+		tipset = new ArrayList<>();
+		for(int i = 1; i <= NUM_TIPS; i++)
+			tipset.add(i);
+	}
+
 	public void create() {
 		super.create();
-		
+
+		if(tipset == null || tipset.isEmpty())
+			newTipSet();
+
+		int tip_i = tipset.remove(Random.Int(tipset.size()));
+
+		tip = PixelScene.renderTextBlock(Messages.get(this, "dialog_" + tip_i), 9);
+		tip.maxWidth((int)Math.round(Camera.main.width * 0.8));
+		tip.setPos((Camera.main.width - tip.width()) / 2, (Camera.main.height - tip.height()) / 2);
+		align(tip);
+		add(tip);
+
 		String loadingAsset;
 		int loadingDepth;
 		final float scrollSpeed;
@@ -114,13 +137,13 @@ public class InterlevelScene extends PixelScene {
 				scrollSpeed = 5;
 				break;
 			case DESCEND:
+			case FRGIRLBOSS:
 				if (Dungeon.hero == null){
 					loadingDepth = 1;
 					fadeTime = SLOW_FADE;
 				} else {
-					if (curTransition != null)  loadingDepth = curTransition.destDepth;
-					else                        loadingDepth = Dungeon.depth+1;
-					if (Statistics.deepestFloor >= loadingDepth) {
+					loadingDepth = Dungeon.depth+1;
+					if (!(Statistics.deepestFloor < loadingDepth)) {
 						fadeTime = FAST_FADE;
 					} else if (loadingDepth == 6 || loadingDepth == 11
 							|| loadingDepth == 16 || loadingDepth == 21) {
@@ -135,47 +158,48 @@ public class InterlevelScene extends PixelScene {
 				break;
 			case ASCEND:
 				fadeTime = FAST_FADE;
-				if (curTransition != null)  loadingDepth = curTransition.destDepth;
-				else                        loadingDepth = Dungeon.depth-1;
+				loadingDepth = Dungeon.depth-1;
 				scrollSpeed = -5;
 				break;
 			case RETURN:
 				loadingDepth = returnDepth;
 				scrollSpeed = returnDepth > Dungeon.depth ? 15 : -15;
 				break;
+			case EXBOSS:
+				scrollSpeed = -25;
+				loadingDepth = returnDepth;
+				break;
+		}
+		if (Dungeon.depth == 0)         	loadingAsset = Assets.Interfaces.LOADING_GOLD;
+		else if (loadingDepth <= 5)     loadingAsset = Assets.Interfaces.LOADING_SEWERS;
+		else if (loadingDepth <= 10)    loadingAsset = Assets.Interfaces.LOADING_PRISON;
+		else if (loadingDepth <= 15)    loadingAsset = Assets.Interfaces.LOADING_COLD;
+		else if (loadingDepth <= 20)    loadingAsset = Assets.Interfaces.LOADING_CITY;
+		else if (loadingDepth <= 25)    loadingAsset = Assets.Interfaces.LOADING_HALLS;
+		else                            loadingAsset = Assets.Interfaces.SHADOW;
+
+		//场景过渡速度
+		//本地调试+桌面
+		if (DeviceCompat.isDebug() && DeviceCompat.isDesktop()){
+			fadeTime = 0.1f;
+		} else {
+			//打包后的环境
+			fadeTime = 0.75f;
 		}
 
-		//flush the texture cache whenever moving between regions, helps reduce memory load
-		int region = (int)Math.ceil(loadingDepth / 5f);
-		if (region != lastRegion){
-			TextureCache.clear();
-			lastRegion = region;
-		}
-
-		if      (lastRegion == 1)    loadingAsset = Assets.Interfaces.LOADING_SEWERS;
-		else if (lastRegion == 2)    loadingAsset = Assets.Interfaces.LOADING_PRISON;
-		else if (lastRegion == 3)    loadingAsset = Assets.Interfaces.LOADING_COLD;
-		else if (lastRegion == 4)    loadingAsset = Assets.Interfaces.LOADING_CITY;
-		else if (lastRegion == 5)    loadingAsset = Assets.Interfaces.LOADING_HALLS;
-		else                         loadingAsset = Assets.Interfaces.SHADOW;
-		
-		if (DeviceCompat.isDebug()){
-			fadeTime = 0f;
-		}
-		
 		SkinnedBlock bg = new SkinnedBlock(Camera.main.width, Camera.main.height, loadingAsset ){
 			@Override
 			protected NoosaScript script() {
 				return NoosaScriptNoLighting.get();
 			}
-			
+
 			@Override
 			public void draw() {
 				Blending.disable();
 				super.draw();
 				Blending.enable();
 			}
-			
+
 			@Override
 			public void update() {
 				super.update();
@@ -185,7 +209,7 @@ public class InterlevelScene extends PixelScene {
 		bg.scale(4, 4);
 		bg.autoAdjust = true;
 		add(bg);
-		
+
 		Image im = new Image(TextureCache.createGradient(0xAA000000, 0xBB000000, 0xCC000000, 0xDD000000, 0xFF000000)){
 			@Override
 			public void update() {
@@ -200,16 +224,21 @@ public class InterlevelScene extends PixelScene {
 		im.scale.x = Camera.main.height/5f;
 		im.scale.y = Camera.main.width;
 		add(im);
-
 		String text = Messages.get(Mode.class, mode.name());
-		
-		message = PixelScene.renderTextBlock( text, 9 );
-		message.setPos(
-				(Camera.main.width - message.width()) / 2,
-				(Camera.main.height - message.height()) / 2
-		);
+		message = PixelScene.renderTextBlock(text, 9);
+		message.x = (Camera.main.width - message.width()) / 2;
+		message.y = (Camera.main.height - message.height()) / 4;
 		align(message);
-		add( message );
+		add(message);
+
+		if(tipset == null || tipset.isEmpty())
+			newTipSet();
+
+		tip = PixelScene.renderTextBlock(Messages.get(this, "dialog_" + tip_i), 7);
+		tip.maxWidth((int)Math.round(Camera.main.width * 0.8));
+		tip.setPos((Camera.main.width - tip.width()) / 2, (Camera.main.height - tip.height()) / 2);
+		align(tip);
+		add(tip);
 
 		phase = Phase.FADE_IN;
 		timeLeft = fadeTime;

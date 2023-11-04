@@ -206,8 +206,7 @@ public abstract class ChampionEnemy extends Buff {
 			return target.fieldOfView[enemy.pos] && Dungeon.level.distance(target.pos, enemy.pos) <= 3;
 		}
 
-        public static class DarkBolt {
-        }
+        public static class DarkBolt { }
 
 
 

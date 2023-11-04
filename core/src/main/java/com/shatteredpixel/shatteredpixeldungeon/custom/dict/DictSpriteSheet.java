@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ShieldHuntsmanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SkullShamanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SlimeKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SpectralNecromancerSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
 import com.watabou.noosa.Image;
 
 public class DictSpriteSheet {
@@ -224,7 +225,7 @@ public class DictSpriteSheet {
             case STATUE:
                 return new Image(Assets.Sprites.STATUE, 0, 0, 12, 15);
             case ARMORED_STATUE:
-                return new Image(Assets.Sprites.STATUE, 24, 45, 12, 15);
+                return new StatueSprite();
             case MIMIC:
                 return new Image(Assets.Sprites.MIMIC, 0, 0, 16, 16);
             case MIMIC_GOLDEN:

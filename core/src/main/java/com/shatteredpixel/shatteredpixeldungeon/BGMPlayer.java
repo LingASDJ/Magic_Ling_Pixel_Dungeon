@@ -1,6 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.watabou.noosa.Game;
@@ -28,7 +30,7 @@ public class BGMPlayer {
             }
         }
         int d = depth;
-
+        int s = branch;
 
         if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
             if (d == -1) {
@@ -51,25 +53,35 @@ public class BGMPlayer {
                 //default
                 playBGM(Assets.Music.THEME, true);
         } else {
-            if (d == -1) {
-                playBGM(Assets.TOWN, true);
-            }else if (d == 0) {
-                playBGM(Assets.TOWN, true);
-            } else if (d > 0 && d <= 5) {
-                playBGM(Assets.BGM_1, true);
-            } else if (d > 5 && d <= 10) {
-                playBGM(Assets.BGM_2, true);
-            } else if (d > 10 && d <= 15) {
-                playBGM(Assets.BGM_3, true);
-            } else if (d > 15 && d <= 20) {
-                playBGM(Assets.BGM_4, true);
-            } else if (d > 20 && d <= 26) {
-                playBGM(Assets.BGM_5, true);
-            } else if (d ==-5||d ==-15) {
-                playBGM(Assets.SNOWCYON, true);
-            } else
-                //default
-                playBGM(Assets.Music.THEME, true);
+            if(s == 1){
+                if (d == 11 || d == 12 || d == 13 || d == 14) {
+                    if(level.locked){
+                        playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
+                    } else {
+                        playBGM(Assets.Music.CAVES_TENSE, true);
+                    }
+                }
+            } else {
+                if (d == -1) {
+                    playBGM(Assets.TOWN, true);
+                }else if (d == 0) {
+                    playBGM(Assets.TOWN, true);
+                } else if (d > 0 && d <= 5) {
+                    playBGM(Assets.BGM_1, true);
+                } else if (d > 5 && d <= 10) {
+                    playBGM(Assets.BGM_2, true);
+                } else if (d > 10 && d <= 15) {
+                    playBGM(Assets.BGM_3, true);
+                } else if (d > 15 && d <= 20) {
+                    playBGM(Assets.BGM_4, true);
+                } else if (d > 20 && d <= 26) {
+                    playBGM(Assets.BGM_5, true);
+                } else if (d ==-5||d ==-15) {
+                    playBGM(Assets.SNOWCYON, true);
+                } else
+                    //default
+                    playBGM(Assets.Music.THEME, true);
+            }
         }
 
 
@@ -115,6 +127,7 @@ public class BGMPlayer {
 
     public static void playBoss() {
         int t = depth;
+        int s = branch;
 
         if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
             switch (depth){

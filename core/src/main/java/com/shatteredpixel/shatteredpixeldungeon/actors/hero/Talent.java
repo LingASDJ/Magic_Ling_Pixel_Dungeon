@@ -401,7 +401,7 @@ public enum Talent {
 	public String desc(boolean metamorphed){
 		if (metamorphed){
 			String metaDesc = Messages.get(this, name() + ".meta_desc");
-			if (!metaDesc.equals(Messages.NO_TEXT_FOUND)){
+			if (!metaDesc.equals("Ms:"+Messages.baseNameX)){
 				return Messages.get(this, name() + ".desc") + "\n\n" + metaDesc;
 			}
 		}

@@ -328,14 +328,14 @@ public class WndInfoMob extends WndTitledMessage {
 			colorBlock = new ColorBlock(1,1, SPDSettings.ClassUI() ? 0xFF462d00 : 0xFF555555);
 			add(colorBlock);
 
-			image1 = new BuffIcon(68, false);
-			image2 = new BuffIcon(69, false);
-			image3 = new BuffIcon(70, false);
-			image4 = new BuffIcon(71, false);
-			image5 = new BuffIcon(72, false);
-			image6 = new BuffIcon(73, false);
-			image7 = new BuffIcon(74, false);
-			image8 = new BuffIcon(75, false);
+			image1 = new BuffIcon(126, false);
+			image2 = new BuffIcon(127, false);
+			image3 = new BuffIcon(128, false);
+			image4 = new BuffIcon(129, false);
+			image5 = new BuffIcon(130, false);
+			image6 = new BuffIcon(131, false);
+			image7 = new BuffIcon(132, false);
+			image8 = new BuffIcon(133, false);
 			add(image1);
 			add(image2);
 			add(image3);

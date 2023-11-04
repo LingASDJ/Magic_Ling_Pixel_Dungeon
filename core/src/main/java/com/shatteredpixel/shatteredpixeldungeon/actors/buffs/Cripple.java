@@ -21,9 +21,14 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 public class Cripple extends FlavourBuff {
+	@Override
+	public String heroMessage() {
+		return Messages.get(this, "heromsg");
+	}
 
 	public static final float DURATION	= 10f;
 

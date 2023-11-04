@@ -54,11 +54,11 @@ public class IconTitle extends Component {
 		label( Messages.titleCase( item.title() ) );
 		icon.view( item );
 	}
-	
+
 	public IconTitle( Heap heap ){
 		ItemSprite icon = new ItemSprite();
 		icon( icon );
-		label( Messages.titleCase( heap.info() ) );
+		label( Messages.titleCase( heap.toString() ) );
 		icon.view( heap );
 	}
 

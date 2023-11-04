@@ -1,10 +1,12 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.REN;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.watabou.utils.Random;
 
 public class RenPlot extends Plot {
 
-    public static final String PLOT_NAME = "sewer";
 
     private final static int maxprocess = 3;
 
@@ -88,19 +90,80 @@ public class RenPlot extends Plot {
     private void process_to_1()
     {
         diagulewindow.hideAll();
-        diagulewindow.showBackground("REN:一直以来，我知道更多的灾难正在发生。你是否也是灾难中失去挚友的那一位？");
+        diagulewindow.setMainAvatar(Script.Portrait(Script.Character.REN));
+        diagulewindow.setLeftName(Script.Name(Script.Character.REN));
+        diagulewindow.changeText(Messages.get(REN.class,"message1"));
     }
 
     private void process_to_2()
     {
-        diagulewindow.hideAll();
-        diagulewindow.showBackground("REN:你好，我是REN-33!我是唯一的个体……,有一些时候，你是否在想这个世界发生了什么吗？其实，你应该试着放松，那就是你最好的方式！");
+        diagulewindow.changeText(Messages.get(REN.class,"message2"));
     }
 
     private void process_to_3()
     {
-        diagulewindow.hideAll();
-        diagulewindow.showBackground("REN:枪击毙了穹顶天上的椋鸟群落，此时即可眺望繁星、即可观测天津星肆、即可瞭望海之灯塔，为之祈祷。");
+        diagulewindow.changeText(Messages.get(REN.class,"message3"));
+    }
+
+    public static class End extends Plot {
+        private static String[] TXT_RANDOM = {Messages.get(REN.class,"roll1"),Messages.get(REN.class,"roll2"),
+                Messages.get(REN.class,"roll3")};
+        private final static int maxprocess = 1;
+
+        {
+            process = 1 ;
+        }
+
+        protected String getPlotName() {
+            return SEWER_NAME;
+        }
+
+        @Override
+        public void reachProcess(WndDialog wndDialog) {
+            diagulewindow = wndDialog;
+
+            while(this.process < needed_process )
+            {
+                this.process();
+            }
+        }
+
+        @Override
+        public void process() {
+            if(diagulewindow!=null) {
+                if (process == 1) {
+                    process_to_1();//Mostly process to 1 is made directly when creating,it might not be used,just in case
+                }
+                diagulewindow.update();
+                process ++;
+            }
+        }
+
+        @Override
+        public void initial(WndDialog wndDialog) {
+            diagulewindow = wndDialog;
+            process = 2;
+            process_to_1();
+        }
+
+        @Override
+        public boolean end() {
+            return process > maxprocess;
+        }
+
+        @Override
+        public void skip() {
+            diagulewindow.cancel();
+            WndDialog.settedPlot = null;
+        }
+
+        private void process_to_1()
+        {
+            diagulewindow.hideAll();
+            diagulewindow.setMainAvatar(Script.Portrait(Script.Character.REN));
+            diagulewindow.setLeftName(Script.Name(Script.Character.REN));
+            diagulewindow.changeText(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
+        }
     }
 
 //    private void process_to_4()

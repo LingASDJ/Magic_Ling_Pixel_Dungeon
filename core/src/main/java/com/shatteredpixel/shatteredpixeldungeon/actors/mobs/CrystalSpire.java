@@ -61,6 +61,14 @@ import java.util.ArrayList;
 
 public class CrystalSpire extends Mob {
 
+	@Override
+	public void die( Object cause ) {
+
+		super.die(cause);
+
+		Dungeon.level.unseal();
+	}
+
 	{
 		//this translates to roughly 33/27/23/20/18/16 pickaxe hits at +0/1/2/3/4/5
 		HP = HT = 300;
@@ -376,7 +384,7 @@ public class CrystalSpire extends Mob {
 							PixelScene.shake( 3, 0.7f );
 							GLog.n(Messages.get(CrystalSpire.class, "alert"));
 							BossHealthBar.assignBoss(CrystalSpire.this);
-
+							Dungeon.level.seal();
 							abilityCooldown = 1; //dely first attack by 1 turn
 						}
 

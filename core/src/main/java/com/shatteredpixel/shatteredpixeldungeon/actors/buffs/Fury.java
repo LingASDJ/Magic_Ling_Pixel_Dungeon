@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 public class Fury extends Buff {
+
 	public static int level = 0;
 	private int interval = 1;
 	public static float LEVEL	= 0.5f;

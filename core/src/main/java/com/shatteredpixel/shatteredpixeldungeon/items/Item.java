@@ -57,6 +57,21 @@ import java.util.Comparator;
 
 public class Item implements Bundlable {
 
+	@Override
+	public String toString() {
+
+		String name = name();
+
+		if (visiblyUpgraded() != 0)
+			name = Messages.format( TXT_TO_STRING_LVL, name, visiblyUpgraded()  );
+
+		if (quantity > 1)
+			name = Messages.format( TXT_TO_STRING_X, name, quantity );
+
+		return name;
+
+	}
+
 	protected static final String TXT_TO_STRING_LVL		= "%s %+d";
 	protected static final String TXT_TO_STRING_X		= "%s x%d";
 	

@@ -112,12 +112,7 @@ public class Buff extends Actor {
 	}
 
 	public String heroMessage(){
-		String msg = Messages.get(this, "heromsg");
-		if (msg.isEmpty()) {
-			return null;
-		} else {
-			return msg;
-		}
+		return null;
 	}
 
 	public String name() {

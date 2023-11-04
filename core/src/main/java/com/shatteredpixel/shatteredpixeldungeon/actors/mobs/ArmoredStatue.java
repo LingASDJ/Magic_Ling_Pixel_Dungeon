@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Brimstone;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -43,8 +44,21 @@ public class ArmoredStatue extends Statue {
 
 	protected Armor armor;
 
+	@SuppressWarnings("unchecked")
 	public ArmoredStatue(){
 		super();
+
+		//为装甲石像添加在15层后有概率穿戴札甲
+		if(Dungeon.depth >15 && Random.Int(10) == 0){
+			armor = new LamellarArmor();
+			armor.inscribe(Armor.Glyph.random());
+		} else {
+			do {
+				armor = Generator.randomArmor();
+			} while (armor.cursed);
+			armor.inscribe(Armor.Glyph.random());
+		}
+
 
 		//double HP
 		HP = HT = 30 + Dungeon.depth * 10;

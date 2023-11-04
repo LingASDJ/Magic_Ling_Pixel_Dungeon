@@ -21,13 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.happyMode;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.tipsgodungeon;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -53,9 +53,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoRead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
@@ -67,10 +69,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessRedWhite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.DeadSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbueEX;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HasteLing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -94,6 +101,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WaterSoulX;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
@@ -104,7 +112,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
@@ -197,7 +204,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
@@ -304,6 +310,17 @@ public class Hero extends Char {
 
 		if (hasTalent(Talent.STRONGMAN)){
 			strBonus += (int)Math.floor(STR * (0.03f + 0.05f*pointsInTalent(Talent.STRONGMAN)));
+		}
+
+		//无力 本大层-3力量 : 坚毅 本大层力量+2
+		if(Dungeon.hero.buff(MagicGirlSayNoSTR.class) != null){
+			strBonus -= 1;
+		} else if(Dungeon.hero.buff(BlessGoodSTR.class) != null) {
+			strBonus += 2;
+		}
+
+		if(Dungeon.hero.buff(BlessRedWhite.class) != null) {
+			strBonus += 2;
 		}
 
 		return STR + strBonus;
@@ -517,7 +534,7 @@ public class Hero extends Char {
 	public int tier() {
 		Armor armor = belongings.armor();
 		if (armor instanceof ClassArmor){
-			return 6;
+			return 7;
 		} else if (armor != null){
 			return armor.tier;
 		} else {
@@ -1493,6 +1510,20 @@ public class Hero extends Char {
 	
 	@Override
 	public void damage( int dmg, Object src ) {
+
+		MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
+		if(getHeal != null && HT/4 > HP){
+			this.HP = HT;
+			interrupt();
+			PotionOfHealing.cure(this);
+			Buff.prolong(this, AnkhInvulnerability.GodDied.class, AnkhInvulnerability.DURATION*10f);
+			SpellSprite.show(this, SpellSprite.ANKH);
+			GameScene.flash(0x80FFFF40);
+			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+			GLog.w(Messages.get(this, "heartdied"));
+			getHeal.detach(belongings.backpack);
+		}
+
 		if (buff(TimekeepersHourglass.timeStasis.class) != null)
 			return;
 
@@ -2347,6 +2378,77 @@ public class Hero extends Char {
 		boolean wasHighGrass = Dungeon.level.map[step] == Terrain.HIGH_GRASS;
 
 		super.move( step, travelling);
+
+		if(Dungeon.GodWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {
+			for (Buff buff : hero.buffs()) {
+				if (buff instanceof InvisibilityRing||buff instanceof HasteLing) {
+					buff.detach();
+				}
+			}
+		} else if (Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.hero.buff(WaterSoulX.class) == null && Dungeon.level.water[pos] && Dungeon.GodWaterLevel()){
+			Buff.prolong( hero, Cripple.class, Cripple.DURATION/5f );
+		} else if (Dungeon.GodWaterLevel()&& Dungeon.level.water[pos]){
+			Buff.affect(hero, Barkskin.class).set( 2 + hero.lvl/4, 10 );
+			Buff.prolong(this, Bless.class, Bless.GODSPOERF);
+		}
+
+		//监狱之水 祝福效果 水里隐身
+		//如果是污泥浊水则触发Debuff
+		if(Dungeon.PrisonWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {
+			for (Buff buff : hero.buffs()) {
+				if (buff instanceof InvisibilityRing||buff instanceof HasteLing) {
+					buff.detach();
+				}
+			}
+		} else if (Dungeon.PrisonWaterLevel()&& Dungeon.level.water[pos] && Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.hero.buff(WaterSoulX.class)== null){
+			Buff.prolong(hero, Blindness.class, Blindness.DURATION/5f);
+		} else if (Dungeon.PrisonWaterLevel()&& Dungeon.level.water[pos]){
+			Buff.affect(hero, Barkskin.class).set( 2 + hero.lvl/4, 10 );
+			Buff.prolong(this, Bless.class,Bless.GODSPOERF);
+			Buff.affect(this, HasteLing.class, Haste.DURATION/20);
+			Buff.affect(this, InvisibilityRing.class, InvisibilityRing.DURATION/10f);
+		} else if(Dungeon.PrisonWaterLevel()&& !Dungeon.level.water[pos])
+			for (Buff buff : hero.buffs()) {
+				if (buff instanceof InvisibilityRing||buff instanceof HasteLing) {
+					buff.detach();
+				}
+			}
+
+		//矿洞之水 祝福效果
+		//如果是污泥浊水则触发Debuff
+		if(Dungeon.ColdWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {
+			for (Buff buff : hero.buffs()) {
+				if (buff instanceof FrostImbueEX) {
+					buff.detach();
+				}
+			}
+		} else if (Dungeon.ColdWaterLevel()&& Dungeon.level.water[pos] && Dungeon.hero.buff(WaterSoulX.class)== null && Dungeon.isChallenged(AQUAPHOBIA)){
+			Buff.affect(hero, Chill.class, 2f);
+		} else if (Dungeon.ColdWaterLevel()&& Dungeon.level.water[pos]){
+			Buff.affect(this, FrostImbueEX.class, FrostImbueEX.DURATION*0.3f);
+		} else if(Dungeon.ColdWaterLevel()&& !Dungeon.level.water[pos])
+			for (Buff buff : hero.buffs()) {
+				if (buff instanceof FrostImbueEX) {
+					buff.detach();
+				}
+			}
+
+		//矮人层
+		if(Dungeon.DiedWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {
+			Buff.affect(this, HasteLing.class, Haste.DURATION/20);
+		} else if (Dungeon.DiedWaterLevel()&& Dungeon.level.water[pos] && Dungeon.hero.buff(WaterSoulX.class)== null && Dungeon.isChallenged(AQUAPHOBIA)){
+			Buff.prolong(hero, Chill.class, 2f);
+			Buff.prolong(hero, Blindness.class, Blindness.DURATION/5f);
+			Buff.prolong( hero, Cripple.class, Cripple.DURATION/5f );
+			Buff.prolong( hero, Hex.class, Hex.DURATION/10f );
+		} else if (Dungeon.DiedWaterLevel()&& Dungeon.level.water[pos] && Dungeon.isChallenged(AQUAPHOBIA)){
+			Buff.affect(this, HasteLing.class, Haste.DURATION/20);
+		} else if(Dungeon.DiedWaterLevel()&& !Dungeon.level.water[pos] && Dungeon.isChallenged(AQUAPHOBIA))
+			for (Buff buff : hero.buffs()) {
+				if (buff instanceof HasteLing) {
+					buff.detach();
+				}
+			}
 		
 		if (!flying && travelling) {
 			if (Dungeon.level.water[pos]) {

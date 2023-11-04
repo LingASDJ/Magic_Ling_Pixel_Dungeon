@@ -132,7 +132,7 @@ public class LevelRules {
                     if ((Statistics.boss_enhance & 0x10) != 0) {
                         return new YogGodHardBossLevel();
                     } else {
-                        return new NewHallsBossLevel();
+                        return new HallsBossLevel();
                     }
                 case 26:
                     return new LastLevel();
