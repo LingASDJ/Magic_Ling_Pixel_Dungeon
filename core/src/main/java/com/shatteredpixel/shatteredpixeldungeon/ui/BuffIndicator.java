@@ -123,23 +123,23 @@ public class BuffIndicator extends Component {
 
 
     //SPD 221
-	public static final int TARGETED    = 91;
-	public static final int IMBUE       = 92;
-	public static final int ENDURE      = 93;
-	public static final int INVERT_MARK = 94;
-	public static final int NATURE_POWER= 95;
-	public static final int AMULET      = 96;
-	public static final int DUEL_CLEAVE = 97;
-	public static final int DUEL_GUARD  = 99;
-	public static final int DUEL_SPIN   = 100;
-	public static final int DUEL_EVASIVE= 101;
-	public static final int DUEL_DANCE  = 102;
-	public static final int DUEL_BRAWL  = 103;
-	public static final int DUEL_XBOW   = 104;
-	public static final int CHALLENGE   = 105;
-	public static final int MONK_ENERGY = 106;
-	public static final int DUEL_COMBO  = 107;
-	public static final int DAZE        = 108;
+	public static final int TARGETED    = 68;
+	public static final int IMBUE       = 69;
+	public static final int ENDURE      = 70;
+	public static final int INVERT_MARK = 71;
+	public static final int NATURE_POWER= 72;
+	public static final int AMULET      = 73;
+	public static final int DUEL_CLEAVE = 74;
+	public static final int DUEL_GUARD  = 75;
+	public static final int DUEL_SPIN   = 76;
+	public static final int DUEL_EVASIVE= 77;
+	public static final int DUEL_DANCE  = 78;
+	public static final int DUEL_BRAWL  = 79;
+	public static final int DUEL_XBOW   = 80;
+	public static final int CHALLENGE   = 81;
+	public static final int MONK_ENERGY = 82;
+	public static final int DUEL_COMBO  = 83;
+	public static final int DAZE        = 84;
 
     public static final int SIZE_SMALL = 7;
     public static final int SIZE_LARGE = 16;

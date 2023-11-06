@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.custom.CustomArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -217,6 +218,11 @@ abstract public class ClassArmor extends Armor {
 							@Override
 							public void onSelect(Item item) {
 								if (item == null || item == ClassArmor.this) return;
+
+								if(item instanceof CustomArmor){
+									GLog.n(Messages.get(ClassArmor.class, "not_trans",item.name()));
+									return;
+								}
 
 								Armor armor = (Armor)item;
 								armor.detach(hero.belongings.backpack);

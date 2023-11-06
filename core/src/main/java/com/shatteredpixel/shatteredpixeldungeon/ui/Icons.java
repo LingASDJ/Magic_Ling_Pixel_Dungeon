@@ -171,6 +171,9 @@ public enum Icons {
 			case SHPX:
 				icon.frame( icon.texture.uvRectBySize( 119, 0, 16, 16 ) );
 				break;
+			case DUELIST:
+				icon.frame( icon.texture.uvRectBySize( 176, 0, 16, 16 ));
+				break;
 
 			case STAIRS:
 				icon.frame( icon.texture.uvRectBySize( 0, 16, 13, 16 ) );
@@ -429,7 +432,7 @@ public enum Icons {
 			case HUNTRESS:
 				return get( HUNTRESS );
 			case DUELIST:
-				return get( LIBGDX );
+				return get( DUELIST );
 			default:
 				return null;
 		}

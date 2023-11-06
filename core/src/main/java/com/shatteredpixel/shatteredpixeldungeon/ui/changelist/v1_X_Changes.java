@@ -353,7 +353,7 @@ public class v1_X_Changes {
 						"Several talents that were previously exempt from being chosen by the scroll now have alternative effects that let them be used by any hero.\n\n" +
 						"These alternative effects only appear when getting these talents via metamorphosis."));
 
-		changes.addButton( new ChangeButton(BadgeBanner.image( Badges.Badge.BAG_BOUGHT_SEED_POUCH.image ), "Badge Changes",
+		changes.addButton( new ChangeButton(BadgeBanner.image( Badges.Badge.BOSS_CHALLENGE_5.image), "Badge Changes",
 				"I'm making several changes to existing badges, based on feedback and data from Steam players:\n\n" +
 						"_-_ Several gold tier badges have been bumped up to platinum tier to better reflect their difficulty\n" +
 						"_-_ The 'grim reaper' badge has been bumped up to gold tier, from silver\n\n" +

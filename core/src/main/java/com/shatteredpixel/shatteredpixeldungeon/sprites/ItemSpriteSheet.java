@@ -205,7 +205,7 @@ public class ItemSpriteSheet {
     static{
         assignItemRect(WORN_SHORTSWORD, 13, 13);
         assignItemRect(GLOVES,          12, 16);
-        assignItemRect(RAPIER,          13, 14);
+        assignItemRect(RAPIER,          16, 16);
         assignItemRect(DAGGER,          12, 13);
         assignItemRect(MAGES_STAFF,     15, 16);
 
@@ -373,8 +373,8 @@ public class ItemSpriteSheet {
         assignItemRect(ARMOR_WARRIOR,   15, 13);
         assignItemRect(ARMOR_MAGE,      13, 13);
         assignItemRect(ARMOR_ROGUE,     11, 13);
-        assignItemRect(ARMOR_HUNTRESS,  13, 13);
-        assignItemRect(ARMOR_DUELIST,   12, 13);
+        assignItemRect(ARMOR_HUNTRESS,  14, 13);
+        assignItemRect(ARMOR_DUELIST,   13, 13);
 
         assignItemRect(ARMOR_CLOTH,     14, 14);
         assignItemRect(ARMOR_LEATHER,   15, 15);

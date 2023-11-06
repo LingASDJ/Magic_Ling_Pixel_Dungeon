@@ -504,7 +504,7 @@ public class v2_X_Changes {
 				"_-_ Dash range boost up to +3 from +2\n" +
 				"_-_ Dragon Kick damage boost up to +50% from +33%"));
 
-		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 6), "Duelist Armor Abilities",
+		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 7), "Duelist Armor Abilities",
 				"Armor abilities are also getting more minor changes, targeted at specific talents and the elemental strike ability:\n\n" +
 				"_- Elemental Strike_ AOE effect base power increased by 20-33%, varying by enchantment\n\n" +
 				"_- Expose Weakness_ turns of vulnerable increased to 2/4/6/8 from 1/2/3/4\n\n" +
@@ -553,7 +553,7 @@ public class v2_X_Changes {
 				"\n" +
 				"_The Monk_ is a master of physical technique. As she defeats enemies, she gains energy which can be used on a variety of defensive and utlity-focused abilities."));
 
-		changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 6), "Duelist Armor Abilities",
+		changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 7), "Duelist Armor Abilities",
 				"_The Duelist has three lategame armor abilities, with 3 more talents each!_\n" +
 				"\n" +
 				"_Challenge_ compels an enemy to fight the Duelist while all other enemies are temporarily frozen in time.\n" +
@@ -745,7 +745,7 @@ public class v2_X_Changes {
 				"_- Horn of Plenty_ now gains 2 levels from being fed a pasty, up from 1.5\n" +
 				"_- Horn of Plenty_ now gains 4 levels from being fed a meat pie, up from 3"));
 
-		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.MAGE, 6), "Hero Buffs",
+		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.MAGE, 7), "Hero Buffs",
 				"A couple buffs to the two worst performing armor abilities/talents:\n" +
 				"\n" +
 				"_- Shrug it Off_ now just directly boosts the damage resistance from endure to 60/68/74/80%, instead of reducing max damage taken\n" +
@@ -792,7 +792,7 @@ public class v2_X_Changes {
 				"\n" +
 				"_- Wand of Fireblast_ base damage reduced to 1-2 from 1-6 when spending 1 charge, and 2-8 from 2-12 when spending 2 charges. This is to offset the relatively high amount of DOT the wand deals at low levels."));
 
-		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.ROGUE, 6), "Hero Nerfs",
+		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.ROGUE, 7), "Hero Nerfs",
 				"T1 Talents:\n" +
 				"_-_ Warrior's T1 ID talent renamed from _Armsmaster's Intuition_ to _Veteran's Intuition_. The talent now focuses more on armor, to contrast with the Duelist.\n" +
 				"\n" +
