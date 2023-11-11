@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SmokeScreen;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Web;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WellWater;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -62,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ColdSnowParticles;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.WindParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -89,8 +91,10 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
@@ -635,8 +639,6 @@ public abstract class Level implements Bundlable {
 		beforeTransition();
 		InterlevelScene.curTransition = transition;
 
-
-
 		if (transition.type == LevelTransition.Type.REGULAR_EXIT
 				|| transition.type == LevelTransition.Type.BRANCH_EXIT) {
 			if (Dungeon.depth == 0 && !tipsgodungeon && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
@@ -651,6 +653,32 @@ public abstract class Level implements Bundlable {
 					ready();
 					tipsgodungeon = true;
 					return false;
+				} else if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
+					&& Dungeon.depth == 25
+					//ascension challenge only works on runs started on v1.3+
+					&& Dungeon.initialVersion > ShatteredPixelDungeon.v1_2_3
+					&& hero.belongings.getItem(Amulet.class) != null
+					&& hero.buff(AscensionChallenge.class) == null) {
+
+					Game.runOnRenderThread(new Callback() {
+						@Override
+						public void call() {
+							GameScene.show(new WndOptions(new ItemSprite(ItemSpriteSheet.AMULET),
+									Messages.get(Amulet.class, "ascent_title"),
+									Messages.get(Amulet.class, "ascent_desc"),
+									Messages.get(Amulet.class, "ascent_yes"),
+									Messages.get(Amulet.class, "ascent_no")) {
+								@Override
+								protected void onSelect(int index) {
+									if (index == 0) {
+										Buff.affect(hero, AscensionChallenge.class);
+										Statistics.highestAscent = 35;
+									}
+								}
+							});
+						}
+					});
+					ready();
 				}
 			}
 			InterlevelScene.mode = InterlevelScene.Mode.DESCEND;

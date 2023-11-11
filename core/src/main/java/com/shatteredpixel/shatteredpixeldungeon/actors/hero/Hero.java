@@ -121,7 +121,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
-import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
@@ -199,21 +198,15 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.AlchemyScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.SurfaceScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
@@ -1397,8 +1390,6 @@ public class Hero extends Char {
 		}
 	}
 
-
-
 	private boolean actTransition(HeroAction.LvlTransition action ) {
 		int stairs = action.dst;
 		LevelTransition transition = Dungeon.level.getTransition(stairs);
@@ -1407,67 +1398,13 @@ public class Hero extends Char {
 			PixelScene.shake(1, 1f);
 			ready();
 			return false;
+
 		} else if (!Dungeon.level.locked && transition != null && transition.inside(pos)) {
 
-			if (transition.type == LevelTransition.Type.SURFACE){
-				if (belongings.getItem( Amulet.class ) == null) {
-					Game.runOnRenderThread(new Callback() {
-						@Override
-						public void call() {
-							GameScene.show( new WndMessage( Messages.get(Hero.this, "leave") ) );
-						}
-					});
-					ready();
-				} else {
-					Statistics.ascended = true;
-					Badges.silentValidateHappyEnd();
-					Dungeon.win( Amulet.class );
-					Dungeon.deleteGame( GamesInProgress.curSlot, true );
-					Game.switchScene( SurfaceScene.class );
-				}
-
-			} else if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
-					&& Dungeon.depth == 25
-					//ascension challenge only works on runs started on v1.3+
-					&& Dungeon.initialVersion > ShatteredPixelDungeon.v1_2_3
-					&& belongings.getItem(Amulet.class) != null
-					&& buff(AscensionChallenge.class) == null) {
-
-				Game.runOnRenderThread(new Callback() {
-					@Override
-					public void call() {
-						GameScene.show( new WndOptions( new ItemSprite(ItemSpriteSheet.AMULET),
-								Messages.get(Amulet.class, "ascent_title"),
-								Messages.get(Amulet.class, "ascent_desc"),
-								Messages.get(Amulet.class, "ascent_yes"),
-								Messages.get(Amulet.class, "ascent_no")){
-							@Override
-							protected void onSelect(int index) {
-								if (index == 0){
-									Buff.affect(Hero.this, AscensionChallenge.class);
-									Statistics.highestAscent = 35;
-									actTransition(action);
-								}
-							}
-						} );
-					}
-				});
-				ready();
-
-			} else {
-
+			if (Dungeon.level.activateTransition(this, transition)){
 				curAction = null;
-
-				Level.beforeTransition();
-				InterlevelScene.curTransition = transition;
-				if (transition.type == LevelTransition.Type.REGULAR_EXIT
-						|| transition.type == LevelTransition.Type.BRANCH_EXIT) {
-					InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-				} else {
-					InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
-				}
-				Game.switchScene(InterlevelScene.class);
-
+			} else {
+				ready();
 			}
 
 			return false;
@@ -1481,6 +1418,89 @@ public class Hero extends Char {
 			return false;
 		}
 	}
+
+//	private boolean actTransition(HeroAction.LvlTransition action ) {
+//		int stairs = action.dst;
+//		LevelTransition transition = Dungeon.level.getTransition(stairs);
+//
+//		if (rooted) {
+//			PixelScene.shake(1, 1f);
+//			ready();
+//			return false;
+//		} else if (!Dungeon.level.locked && transition != null && transition.inside(pos)) {
+//
+//			if (transition.type == LevelTransition.Type.SURFACE){
+//				if (belongings.getItem( Amulet.class ) == null) {
+//					Game.runOnRenderThread(new Callback() {
+//						@Override
+//						public void call() {
+//							GameScene.show( new WndMessage( Messages.get(Hero.this, "leave") ) );
+//						}
+//					});
+//					ready();
+//				} else {
+//					Statistics.ascended = true;
+//					Badges.silentValidateHappyEnd();
+//					Dungeon.win( Amulet.class );
+//					Dungeon.deleteGame( GamesInProgress.curSlot, true );
+//					Game.switchScene( SurfaceScene.class );
+//				}
+//
+//			} else if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
+//					&& Dungeon.depth == 25
+//					//ascension challenge only works on runs started on v1.3+
+//					&& Dungeon.initialVersion > ShatteredPixelDungeon.v1_2_3
+//					&& belongings.getItem(Amulet.class) != null
+//					&& buff(AscensionChallenge.class) == null) {
+//
+//				Game.runOnRenderThread(new Callback() {
+//					@Override
+//					public void call() {
+//						GameScene.show( new WndOptions( new ItemSprite(ItemSpriteSheet.AMULET),
+//								Messages.get(Amulet.class, "ascent_title"),
+//								Messages.get(Amulet.class, "ascent_desc"),
+//								Messages.get(Amulet.class, "ascent_yes"),
+//								Messages.get(Amulet.class, "ascent_no")){
+//							@Override
+//							protected void onSelect(int index) {
+//								if (index == 0){
+//									Buff.affect(Hero.this, AscensionChallenge.class);
+//									Statistics.highestAscent = 35;
+//									actTransition(action);
+//								}
+//							}
+//						} );
+//					}
+//				});
+//				ready();
+//
+//			} else {
+//
+//				curAction = null;
+//
+//				Level.beforeTransition();
+//				InterlevelScene.curTransition = transition;
+//				if (transition.type == LevelTransition.Type.REGULAR_EXIT
+//						|| transition.type == LevelTransition.Type.BRANCH_EXIT) {
+//					InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+//				} else {
+//					InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
+//				}
+//				Game.switchScene(InterlevelScene.class);
+//
+//			}
+//
+//			return false;
+//
+//		} else if (getCloser( stairs )) {
+//
+//			return true;
+//
+//		} else {
+//			ready();
+//			return false;
+//		}
+//	}
 	
 	private boolean actAttack( HeroAction.Attack action ) {
 
