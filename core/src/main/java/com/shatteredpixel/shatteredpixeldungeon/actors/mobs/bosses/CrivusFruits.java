@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PhantomPiranha;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -52,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
@@ -258,10 +260,23 @@ public class CrivusFruits extends Mob {
                 CrivusFruitsLasher csp = new CrivusFruitsLasher();
                 csp.pos = i;
                 GameScene.add(csp);
-                if(Dungeon.isChallenged(STRONGER_BOSSES)){
-                    Buff.affect(csp, Barrier.class).setShield((int) (2.4f * csp.HT + 80));
+                if(Dungeon.isChallenged(STRONGER_BOSSES)) {
+                    Buff.affect(csp, CFBarrior.class).setShield(3 / csp.HT);
                 }
             }
+
+            if(Dungeon.isChallenged(STRONGER_BOSSES)){
+
+                PhantomPiranha p = new PhantomPiranha();
+                p.pos = 837;
+
+                GameScene.add(p);
+
+                PhantomPiranha x = new PhantomPiranha();
+                x.pos = 890;
+                GameScene.add(x);
+            }
+
             Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
             this.sprite.showStatus(CharSprite.NEGATIVE, "!!!");
 
@@ -490,5 +505,20 @@ public class CrivusFruits extends Mob {
         }
         if (abilityCooldown > 0) abilityCooldown-= 5;
     }
+
+    public static class CFBarrior extends Barrier {
+
+        @Override
+        public boolean act() {
+            incShield();
+            return super.act();
+        }
+
+        @Override
+        public int icon() {
+            return BuffIndicator.NONE;
+        }
+    }
+
 
 }

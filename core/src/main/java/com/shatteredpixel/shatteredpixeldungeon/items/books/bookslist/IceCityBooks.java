@@ -23,7 +23,7 @@ public class IceCityBooks extends Books {
     @Override
     public void execute(final Hero hero, String action) {
         super.execute(hero, action);
-        if (action.equals( Read ) && quantity>1) {
+        if (action.equals( Read ) ) {
             Sample.INSTANCE.play( Assets.Sounds.READ );
             switch (Random.Int(5)){
                 case 0: case 1: case 2:

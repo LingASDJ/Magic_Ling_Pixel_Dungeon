@@ -46,9 +46,7 @@ public class Books extends MainBooks {
     @Override
     public ArrayList<String> actions(Hero hero ) {
         ArrayList<String> actions = super.actions(hero);
-        if (hero.HP > 0) {
-            actions.add(Read);
-        }
+        actions.add(Read);
         actions.remove(AC_DROP);
         actions.remove(AC_THROW);
         return actions;

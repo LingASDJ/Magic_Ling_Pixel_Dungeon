@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
@@ -161,7 +162,7 @@ public class ForestBossLevel extends Level {
 
         super.occupyCell( ch );
 
-        boolean isTrue = ch.pos == LDBossDoor && ch == Dungeon.hero && Dungeon.level.distance(ch.pos, entrance) >= 2;
+        boolean isTrue = ch.pos == LDBossDoor && ch == hero && Dungeon.level.distance(ch.pos, entrance) >= 2;
 
         //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
         if (map[getBossDoor] == Terrain.DOOR && isTrue || map[getBossDoor] == Terrain.EMBERS && isTrue) {
@@ -319,16 +320,16 @@ public class ForestBossLevel extends Level {
             W,W,C,C,C,C,C,W,C,C,C,C,C,C,H,C,C,C,H,C,C,C,C,C,W,C,C,C,C,C,W,W,
             W,H,H,H,W,W,W,W,W,W,W,H,H,H,H,C,D,C,H,H,H,W,W,W,W,W,W,W,H,H,H,W,
             W,C,C,C,C,C,C,W,C,C,C,C,C,C,H,C,C,C,H,C,C,C,C,C,W,C,C,C,C,C,M,W,
-            W,M,M,M,M,M,M,W,M,M,M,H,M,C,H,H,H,H,H,C,M,H,M,M,W,M,M,M,M,M,M,W,
-            W,M,M,M,M,M,M,M,M,M,M,M,M,C,C,C,H,C,C,C,M,M,M,M,M,M,M,M,M,M,M,W,
-            W,M,M,H,M,M,M,M,M,M,M,M,M,H,M,C,H,C,M,H,M,M,M,M,M,M,M,M,M,M,M,W,
-            W,M,M,M,W,M,M,H,M,M,M,M,M,M,M,C,H,C,M,M,M,M,M,M,M,M,M,H,M,M,M,W,
-            W,M,M,M,M,M,W,M,M,M,M,W,W,W,W,W,S,W,W,W,W,W,M,H,W,M,M,M,M,M,M,W,
-            W,M,M,M,W,M,M,M,M,M,W,W,M,M,W,L,M,L,W,M,M,W,W,M,M,M,M,W,M,M,M,W,
-            W,M,M,M,H,M,M,M,W,W,W,M,M,M,W,L,M,L,W,M,M,M,W,W,M,M,M,M,M,M,M,W,
-            W,M,M,M,M,M,M,M,W,M,M,M,M,M,S,M,M,M,S,M,M,M,M,W,W,W,M,M,M,M,M,W,
-            W,M,M,M,M,M,M,M,W,M,M,M,M,M,W,L,M,L,W,M,M,M,M,M,W,M,M,H,M,M,M,W,
-            W,W,M,M,M,M,M,M,W,M,M,M,M,M,W,L,Q,L,W,M,M,M,M,M,W,M,M,M,M,M,W,W,
+            W,M,M,M,M,C,M,W,M,M,M,H,M,C,H,H,H,H,H,C,M,H,M,M,W,M,C,M,M,M,M,W,
+            W,M,M,M,M,C,M,M,C,M,M,M,M,C,C,C,H,C,C,C,M,M,M,M,M,M,C,M,M,M,M,W,
+            W,M,C,H,M,C,M,C,M,M,M,M,M,H,M,C,H,C,M,H,M,M,M,M,M,M,C,M,M,M,M,W,
+            W,M,C,M,W,C,C,H,M,M,M,M,M,M,M,C,H,C,M,M,M,M,M,M,C,C,C,H,M,M,M,W,
+            W,M,M,C,C,C,W,M,M,M,M,W,W,W,W,W,S,W,W,W,W,W,M,H,W,M,C,M,M,M,M,W,
+            W,M,M,M,C,C,C,M,M,M,W,W,M,M,W,L,M,L,W,M,M,W,W,M,M,M,C,W,M,M,M,W,
+            W,M,M,C,H,C,M,C,W,W,W,M,M,M,W,L,M,L,W,M,M,M,W,W,M,C,C,C,M,M,M,W,
+            W,M,C,M,M,C,M,M,W,M,M,M,M,M,S,M,M,M,S,M,M,M,M,W,W,W,C,M,C,M,M,W,
+            W,M,M,M,M,C,M,M,W,M,M,M,M,M,W,L,M,L,W,M,M,M,M,M,W,M,C,H,M,C,M,W,
+            W,W,M,M,M,C,M,M,W,M,M,M,M,M,W,L,Q,L,W,M,M,M,M,M,W,M,C,M,M,M,W,W,
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
 
     };

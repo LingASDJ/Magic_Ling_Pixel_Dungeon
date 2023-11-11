@@ -21,6 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.effects.particles;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.Emitter.Factory;
 import com.watabou.noosa.particles.PixelParticle;
@@ -45,8 +49,12 @@ public class SmokeParticle extends PixelParticle {
 	
 	public SmokeParticle() {
 		super();
-		
-		color( 0x222222 );
+
+		if(depth == 10 || (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && (depth == 8))) {
+			color(0xc0c0c0);
+		} else {
+			color(0x222222);
+		}
 		
 		acc.set( 0, -40 );
 	}

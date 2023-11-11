@@ -191,6 +191,7 @@ public class MiningLevel extends CavesLevel {
 		return randomDropCell(MineSmallRoom.class);
 	}
 
+
 	@Override
 	public String tileName( int tile ) {
 		switch (tile) {

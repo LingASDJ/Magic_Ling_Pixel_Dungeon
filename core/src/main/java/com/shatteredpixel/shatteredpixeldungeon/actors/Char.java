@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
@@ -48,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FireImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbue;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbueEX;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Fury;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HaloFireImBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
@@ -194,6 +196,9 @@ public abstract class Char extends Actor {
 		if (defender.buff(Hex.class) != null) defRoll *= 0.8f;
 		if (defender.buff(Daze.class) != null) defRoll *= 0.5f;
 		for (ChampionEnemy buff : defender.buffs(ChampionEnemy.class)) {
+			defRoll *= buff.evasionAndAccuracyFactor();
+		}
+		for (ChampionHero buff : defender.buffs(ChampionHero.class)){
 			defRoll *= buff.evasionAndAccuracyFactor();
 		}
 		defRoll *= AscensionChallenge.statModifier(defender);
@@ -491,6 +496,7 @@ public abstract class Char extends Actor {
 
 			if (buff(FireImbue.class) != null)  buff(FireImbue.class).proc(enemy);
 			if (buff(FrostImbue.class) != null) buff(FrostImbue.class).proc(enemy);
+			if (buff(FrostImbueEX.class) != null) buff(FrostImbueEX.class).proc(enemy);
 
 			if (enemy.isAlive() && enemy.alignment != alignment && prep != null && prep.canKO(enemy)) {
 				enemy.HP = 0;
@@ -609,6 +615,12 @@ public abstract class Char extends Actor {
 		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
 			buff.onAttackProc( enemy );
 		}
+
+		for (ChampionHero buff : buffs(ChampionHero.class)){
+			damage *= buff.meleeDamageFactor();
+			buff.onAttackProc( enemy );
+		}
+
 		return damage;
 	}
 
@@ -656,6 +668,10 @@ public abstract class Char extends Actor {
 
 		if(buff(BlessImmune.class) != null && !this.isImmune(BlessImmune.class)){
 			dmg = (int) Math.ceil(dmg * 0.6f);
+		}
+
+		for (ChampionHero buff : buffs(ChampionHero.class)){
+			dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
 		}
 
 		if(isInvulnerable(src.getClass())){

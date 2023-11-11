@@ -181,7 +181,7 @@ public class EtherealChains extends Artifact {
 		Sample.INSTANCE.play( Assets.Sounds.CHAINS );
 		hero.sprite.parent.add(new Chains(hero.sprite.center(),
 				enemy.sprite.center(),
-				Effects.Type.ETHEREAL_CHAIN,
+				Effects.Type.CHAIN,
 				new Callback() {
 			public void call() {
 				Actor.add(new Pushing(enemy, enemy.pos, pulledPos, new Callback() {
@@ -246,7 +246,7 @@ public class EtherealChains extends Artifact {
 		Sample.INSTANCE.play( Assets.Sounds.CHAINS );
 		hero.sprite.parent.add(new Chains(hero.sprite.center(),
 				DungeonTilemap.raisedTileCenterToWorld(newHeroPos),
-				Effects.Type.ETHEREAL_CHAIN,
+				Effects.Type.CHAIN,
 				new Callback() {
 			public void call() {
 				Actor.add(new Pushing(hero, hero.pos, newHeroPos, new Callback() {

@@ -61,8 +61,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.custom.AncityArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
@@ -70,6 +72,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.TestBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
@@ -107,9 +110,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WashCrime;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
@@ -246,11 +247,11 @@ public enum HeroClass {
 			new PotionOfLightStromCloud().quantity(10).identify().collect();
 			new WandOfLightning().quantity(1).identify().collect();
 			new WashCrime().quantity(1).identify().collect();
-			new MagicTorch().quantity(1).identify().collect();
+			new SandalsOfNature().quantity(1).identify().collect();
 			new LamellarArmor().quantity(1).identify().collect();
 			new MobPlacer().quantity(1).identify().collect();
 			new CrivusFruitsFlake().quantity(50).identify().collect();
-
+			new ChaliceOfBlood().quantity(1).identify().collect();
 			new PotionOfHealing().quantity(50).identify().collect();
 
 			new PotionOfMindVision().quantity(50).identify().collect();
@@ -278,7 +279,7 @@ public enum HeroClass {
 			new KingsCrown().quantity(1).identify().collect();
 			new PotionOfLightningShiledX().quantity(1).identify().collect();
 
-			new RedBloodMoon().quantity(1).identify().collect();
+			new Blandfruit().quantity(1).identify().collect();
 			new KingBag().quantity(1).identify().collect();
 			new HaloDart().quantity(100).identify().collect();
 			new ScrollOfFlameCursed().quantity(44).identify().collect();

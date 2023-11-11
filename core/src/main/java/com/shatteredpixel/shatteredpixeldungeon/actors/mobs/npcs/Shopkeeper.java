@@ -83,17 +83,20 @@ public class Shopkeeper extends NPC {
 		spend( TICK );
 		return super.act();
 	}
-	
+
 	@Override
 	public void damage( int dmg, Object src ) {
-		processHarm();
 	}
-	
+
+	@Override
+	public int defenseSkill( Char enemy ) {
+		return INFINITE_EVASION;
+	}
+
+
+
 	@Override
 	public boolean add(Buff buff ) {
-		if (buff.type == Buff.buffType.NEGATIVE){
-			processHarm();
-		}
 		return false;
 	}
 

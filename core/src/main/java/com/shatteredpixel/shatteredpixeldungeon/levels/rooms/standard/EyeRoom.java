@@ -5,6 +5,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
@@ -82,10 +83,10 @@ public class EyeRoom extends SpecialRoom {
         int chestPos = (top + 6) * level.width() + left + 6;
 
         /** 套4个宝箱 */
-        level.mobs.add(Mimic.spawnAt(chestPos,( Generator.randomUsingDefaults( Generator.Category.POTION ) )));
-        level.mobs.add(Mimic.spawnAt(chestPos,( Generator.randomUsingDefaults( Generator.Category.SCROLL ) )));
-        level.mobs.add(Mimic.spawnAt(chestPos,( Generator.randomUsingDefaults( Generator.Category.WEAPON ) )));
-        level.mobs.add(Mimic.spawnAt(chestPos,( Generator.randomUsingDefaults( Generator.Category.ARMOR ) )));
+        level.mobs.add(Mimic.spawnAt(chestPos, CrystalMimic.class,( Generator.randomUsingDefaults( Generator.Category.POTION ) )));
+        level.mobs.add(Mimic.spawnAt(chestPos,CrystalMimic.class,( Generator.randomUsingDefaults( Generator.Category.SCROLL ) )));
+        level.mobs.add(Mimic.spawnAt(chestPos,CrystalMimic.class,( Generator.randomUsingDefaults( Generator.Category.WEAPON ) )));
+        level.mobs.add(Mimic.spawnAt(chestPos,CrystalMimic.class,( Generator.randomUsingDefaults( Generator.Category.ARMOR ) )));
 
         //四大恶人
         int[] MBTPOS = new int[]{

@@ -56,7 +56,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-public class OldDM300 extends FlameB01 {
+public class OldDM300 extends FlameC02 {
 	
 	{
 		spriteClass =  DM275Sprite.class;

@@ -128,7 +128,7 @@ public class DistortionTrap extends Trap{
 							mob.alignment = Char.Alignment.ENEMY;
 							break;
 						case 3:
-							mob = Statue.random(false);
+							mob = Statue.random();
 							break;
 					}
 					break;

@@ -500,6 +500,7 @@ public class NewDM720 extends MolotovHuntsman {
         yell(Messages.get(this, "charging"));
         sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
         ((DM720Sprite)sprite).charge();
+        ((DM720Sprite)sprite).updateChargeState(true);
         chargeAnnounced = false;
 
     }
@@ -511,7 +512,7 @@ public class NewDM720 extends MolotovHuntsman {
     public void loseSupercharge(){
         supercharged = false;
         sprite.resetColor();
-
+        ((DM720Sprite)sprite).updateChargeState(false);
         if (pylonsActivated < 2){
             yell(Messages.get(this, "charge_lost"));
         } else {

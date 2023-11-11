@@ -21,6 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.effects.particles;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.Emitter.Factory;
 import com.watabou.noosa.particles.PixelParticle;
@@ -54,6 +58,10 @@ public class SparkParticle extends PixelParticle {
 		super();
 		
 		size( 2 );
+
+		if(depth == 10 || (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && (depth == 8))) {
+			color(0x111111);
+		}
 		
 		acc.set( 0, +50 );
 	}

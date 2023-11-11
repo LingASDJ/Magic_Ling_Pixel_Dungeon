@@ -30,11 +30,6 @@ public class GameTracker extends Buff {
         revivePersists = true;
     }
 
-    @Override
-    public String heroMessage() {
-        return "";
-    }
-
     private VirtualVisualTimer vvt;
     private int maxDepth = -1;
     private String allItemInfo = "";

@@ -76,34 +76,38 @@ import java.util.ArrayList;
 public class CavesLevel extends RegularLevel {
 
 	public void updateChasmTerrain() {
-		synchronized (map){
-			for (int i = 0; i < map.length; i++) {
-				if (map[i] == Terrain.SIGN_SP) {
-					// 将 EMPTY_DECO 地块改为新地形
-					set(i, Terrain.LOCKED_EXIT);
-					GameScene.updateMap(i); // 更新地图显示
-					Camera.main.shake(4f,7f);
-				} else if(hero.buff(LockedFloor.class) == null && map[i] == Terrain.LOCKED_EXIT) {
-					// 将 CHASM 地块改为新地形
-					set(i, Terrain.EMPTY);
-					GameScene.updateMap(i); // 更新地图显示
-					GameScene.flash(Window.WATA_COLOR);
+
+		Game.runOnRenderThread(new Callback() {
+			@Override
+			public void call() {
+				for (int i = 0; i < map.length; i++) {
+					if (map[i] == Terrain.SIGN_SP) {
+						// 将 EMPTY_DECO 地块改为新地形
+						set(i, Terrain.LOCKED_EXIT);
+						GameScene.updateMap(i); // 更新地图显示
+						Camera.main.shake(4f,7f);
+					} else if(hero.buff(LockedFloor.class) == null && map[i] == Terrain.LOCKED_EXIT) {
+						// 将 CHASM 地块改为新地形
+						set(i, Terrain.EMPTY);
+						GameScene.updateMap(i); // 更新地图显示
+						GameScene.flash(Window.WATA_COLOR);
+					}
+					if (map[i] == SIGN) {
+						// 将 SIGN 地块改为新地形
+						set(i, Terrain.WATER);
+						GameScene.updateMap(i); // 更新地图显示
+					}
+					Ankh weapon = Dungeon.hero.belongings.getItem(Ankh.class);
+					if (weapon != null) {
+						Dungeon.level.drop(weapon, entrance).sprite.drop();
+						weapon.detachAll(hero.belongings.backpack);
+						GLog.w(Messages.get(Level.class,"weapon"));
+					}
+					GameScene.flash(Window.SKYBULE_COLOR);
+					playBGM(Assets.BGM_BOSSC, true);
 				}
-				if (map[i] == SIGN) {
-					// 将 SIGN 地块改为新地形
-					set(i, Terrain.WATER);
-					GameScene.updateMap(i); // 更新地图显示
-				}
-				Ankh weapon = Dungeon.hero.belongings.getItem(Ankh.class);
-				if (weapon != null) {
-					Dungeon.level.drop(weapon, entrance).sprite.drop();
-					weapon.detachAll(hero.belongings.backpack);
-					GLog.w(Messages.get(Level.class,"weapon"));
-				}
-				GameScene.flash(Window.SKYBULE_COLOR);
-				playBGM(Assets.BGM_BOSSC, true);
 			}
-		}
+		});
 	}
 
 	{

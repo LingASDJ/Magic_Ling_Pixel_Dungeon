@@ -21,7 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -57,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -101,7 +105,7 @@ public class AscensionChallenge extends Buff {
 	}
 
 	public static float statModifier(Char ch){
-		if (Dungeon.hero == null || Dungeon.hero.buff(AscensionChallenge.class) == null){
+		if (hero == null || hero.buff(AscensionChallenge.class) == null){
 			return 1;
 		}
 
@@ -124,11 +128,11 @@ public class AscensionChallenge extends Buff {
 
 	//distant mobs get constantly beckoned to the hero at 2+ stacks
 	public static void beckonEnemies(){
-		if (Dungeon.hero.buff(AscensionChallenge.class) != null
-				&& Dungeon.hero.buff(AscensionChallenge.class).stacks >= 2f){
+		if (hero.buff(AscensionChallenge.class) != null
+				&& hero.buff(AscensionChallenge.class).stacks >= 2f){
 			for (Mob m : Dungeon.level.mobs){
-				if (m.alignment == Char.Alignment.ENEMY && m.distance(Dungeon.hero) > 8) {
-					m.beckon(Dungeon.hero.pos);
+				if (m.alignment == Char.Alignment.ENEMY && m.distance(hero) > 8) {
+					m.beckon(hero.pos);
 				}
 			}
 		}
@@ -136,9 +140,9 @@ public class AscensionChallenge extends Buff {
 
 	//mobs move at 2x speed when not hunting/fleeing at 4 stacks or higher
 	public static float enemySpeedModifier(Mob m){
-		if (Dungeon.hero.buff(AscensionChallenge.class) != null
+		if (hero.buff(AscensionChallenge.class) != null
 				&& m.alignment == Char.Alignment.ENEMY
-				&& Dungeon.hero.buff(AscensionChallenge.class).stacks >= 4f
+				&& hero.buff(AscensionChallenge.class).stacks >= 4f
 				&& m.state != m.HUNTING && m.state != m.FLEEING){
 			return 2;
 		}
@@ -148,8 +152,8 @@ public class AscensionChallenge extends Buff {
 
 	//hero speed is halved and capped at 1x at 6+ stacks
 	public static float modifyHeroSpeed(float speed){
-		if (Dungeon.hero.buff(AscensionChallenge.class) != null
-				&& Dungeon.hero.buff(AscensionChallenge.class).stacks > 6f){
+		if (hero.buff(AscensionChallenge.class) != null
+				&& hero.buff(AscensionChallenge.class).stacks > 6f){
 			return Math.min(speed/2f, 1f);
 		}
 
@@ -157,7 +161,7 @@ public class AscensionChallenge extends Buff {
 	}
 
 	public static void processEnemyKill(Char enemy){
-		AscensionChallenge chal = Dungeon.hero.buff(AscensionChallenge.class);
+		AscensionChallenge chal = hero.buff(AscensionChallenge.class);
 		if (chal == null) return;
 
 		if (enemy instanceof Ratmogrify.TransmogRat){
@@ -192,8 +196,8 @@ public class AscensionChallenge extends Buff {
 
 		//if the hero is at the max level, grant them 10 effective xp per stack cleared
 		// for the purposes of on-xp gain effects
-		if (oldStacks > chal.stacks && Dungeon.hero.lvl == Hero.MAX_LEVEL){
-			Dungeon.hero.earnExp(Math.round(10*(oldStacks - chal.stacks)), chal.getClass());
+		if (oldStacks > chal.stacks && hero.lvl == Hero.MAX_LEVEL){
+			hero.earnExp(Math.round(10*(oldStacks - chal.stacks)), chal.getClass());
 		}
 
 		BuffIndicator.refreshHero();
@@ -201,7 +205,7 @@ public class AscensionChallenge extends Buff {
 
 	public static int AscensionCorruptResist(Mob m){
 		//default to just using their EXP value if no ascent challenge is happening
-		if (Dungeon.hero.buff(AscensionChallenge.class) == null){
+		if (hero.buff(AscensionChallenge.class) == null){
 			return m.EXP;
 		}
 
@@ -239,8 +243,8 @@ public class AscensionChallenge extends Buff {
 			Statistics.highestAscent = Dungeon.depth;
 			justAscended = true;
 			if (Dungeon.bossLevel()){
-				Dungeon.hero.buff(Hunger.class).satisfy(Hunger.STARVING);
-				Buff.affect(Dungeon.hero, Healing.class).setHeal(Dungeon.hero.HT, 0, 20);
+				hero.buff(Hunger.class).satisfy(Hunger.STARVING);
+				new PotionOfHealing().quantity(1).identify().collect();
 			} else {
 				stacks += 2f;
 
@@ -251,7 +255,7 @@ public class AscensionChallenge extends Buff {
 						Dungeon.level.mobs.remove( mob );
 					}
 				}
-				Dungeon.level.spawnMob(12);
+				Dungeon.level.respawnCooldown();
 
 			}
 		}
@@ -300,6 +304,13 @@ public class AscensionChallenge extends Buff {
 	@Override
 	public boolean act() {
 
+		if(Dungeon.isChallenged(Challenges.DHXD)||Statistics.lanterfireactive){
+			if(hero.lanterfire>50){
+				hero.damageLantern(5);
+				spend(10f);
+			}
+		}
+
 		beckonEnemies();
 
 		//hero starts progressively taking damage over time at 8+ stacks
@@ -309,7 +320,7 @@ public class AscensionChallenge extends Buff {
 				target.damage((int)damageInc, this);
 				damageInc -= (int)damageInc;
 
-				if (target == Dungeon.hero && !target.isAlive()){
+				if (target == hero && !target.isAlive()){
 					Badges.validateDeathFromFriendlyMagic();
 					GLog.n(Messages.get(this, "on_kill"));
 					Dungeon.fail(Amulet.class);
@@ -325,13 +336,13 @@ public class AscensionChallenge extends Buff {
 
 	@Override
 	public int icon() {
-		return BuffIndicator.AMULET;
+		return BuffIndicator.FIREDIED;
 	}
 
 	@Override
 	public void tintIcon(Image icon) {
 		if (stacks < 2){
-			icon.hardlight(0.5f, 1, 0);
+			icon.hardlight(1f, 0, 0);
 		} else if (stacks < 4) {
 			icon.hardlight(1, 1, 0);
 		} else if (stacks < 6){
@@ -357,6 +368,10 @@ public class AscensionChallenge extends Buff {
 			if (stacks >= 4)    desc += "\n" + Messages.get(this, "desc_haste");
 			if (stacks >= 6)    desc += "\n" + Messages.get(this, "desc_slow");
 			if (stacks >= 8)    desc += "\n" + Messages.get(this, "desc_damage");
+
+			if(Dungeon.isChallenged(Challenges.DHXD)||Statistics.lanterfireactive){
+				desc += "\n" + Messages.get(this, "morelanter_damage");
+			}
 
 		}
 

@@ -5,21 +5,21 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MoloHR;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Pylon;
+import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
-import com.watabou.utils.Callback;
 
 public class BGMPlayer {
 
 
     //解决电脑端高质量ogg的闪退问题
     public static void playBGM(String name, boolean loop) {
-        Game.runOnRenderThread(new Callback() {
-            @Override
-            public void call() {
-                Music.INSTANCE.play(name, loop);
-            }
-        });
+        Game.runOnRenderThread(() -> Music.INSTANCE.play(name, loop));
     }
 
     public static void playBGMWithDepth() {
@@ -172,15 +172,44 @@ public class BGMPlayer {
             } else if (t == 14) {
                 playBGM(Assets.BGM_BOSSC, true);
             } else if (Dungeon.bossLevel() && t == 15) {
-                if((Statistics.boss_enhance & 0x4) != 0)  playBGM(Assets.BGM_BOSSC3, true);
-                else  playBGM(Assets.BGM_BOSSC, true);
+                if((Statistics.boss_enhance & 0x4) != 0) {
+                    playBGM(Assets.BGM_BOSSC3, true);
+                } else {
+                   //最抽象的一集
+                   try {
+                       CavesBossLevel level = (CavesBossLevel) Dungeon.level;
+                       for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
+                           if (m instanceof Pylon){
+                               if(BossHealthBar.isAssigned() && level.pylonsRemaining >= 2){
+                                   playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
+                               } else {
+                                   playBGM(Assets.Music.CAVES_BOSS, true);
+                               }
+                           }
+                       }
+                   } catch (Exception e) {
+                       for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
+                           if (m instanceof DM300){
+                               if(BossHealthBar.isAssigned()){
+                                   playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
+                               } else {
+                                   playBGM(Assets.Music.CAVES_BOSS, true);
+                               }
+                           } else {
+                               if(m instanceof MoloHR){
+                                   playBGM(Assets.Music.PRISON_TENSE, true);
+                               }
+                           }
+                       }
+                   }
+                }
             } else if (Dungeon.bossLevel() && t == 20) {
                 if((Statistics.boss_enhance & 0x8) != 0)  playBGM(Assets.BGM_BOSSD2, true);
                 else  playBGM(Assets.BGM_BOSSD, true);
             } else if (Dungeon.bossLevel() && t == 25 && (Statistics.spawnersAlive > 0)) {
                 playBGM(Assets.BGM_BOSSE3, true);
             }else if (Dungeon.bossLevel() && t == 25){
-                playBGM(Assets.BGM_BOSSE, true);
+                level.playLevelMusic();
             } else if (Dungeon.bossLevel() && t == -15) {
                 playBGM(Assets.BGM_FRBOSS, true);
             }   else if (Dungeon.bossLevel() && t == -31) {

@@ -136,7 +136,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.GreenSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceDewVialSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
@@ -461,7 +460,7 @@ public class Generator {
 
 			WEP_T6.classes = new Class<?>[]{
 					IceFishSword.class,
-					IceDewVialSword.class,
+					//IceDewVialSword.class,
 					BloodthirstyThorn.class,
 					EndingBlade.class,
 			};

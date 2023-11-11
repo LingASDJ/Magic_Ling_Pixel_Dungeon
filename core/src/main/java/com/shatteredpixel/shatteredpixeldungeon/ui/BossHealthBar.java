@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.CYELLOW;
-import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.R_COLOR;
 import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.TITLE_COLOR;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -33,7 +32,9 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoMob;
 import com.watabou.noosa.BitmapText;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.Visual;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.ui.Component;
 
@@ -153,7 +154,7 @@ public class BossHealthBar extends Component {
 		skull.x = bar.x+5;
 		skull.y = bar.y+5;
 	}
-
+	private float time;
 	@Override
 	public void update() {
 		super.update();
@@ -184,15 +185,20 @@ public class BossHealthBar extends Component {
 
 				//低于75%渲染成蓝色 低于35%渲染成红色
 				//Boss血量文本显示
-				//完全不符合更新为蓝色颜色
-				if (hp.scale.x > 0.75f) {
+				Visual visual = new Visual(0,0,0,0);
+				visual.am = 1f + 0.01f*Math.max(0f, (float)Math.sin( time += Game.elapsed ));
+				time += Game.elapsed / 3.5f;;
+				float r = 0.93f+0.57f*Math.max(0f, (float)Math.sin( time));
+				float g = 0.53f+0.57f*Math.max(0f, (float)Math.sin( time - 10/Math.PI/5 ));
+				float b = 0.03f+0.57f*Math.max(0f, (float)Math.sin( time + 4/Math.PI/2 ));
 
+				if (hp.scale.x > 0.75f) {
 					hpText.hardlight( TITLE_COLOR );
 				} else if (hp.scale.x > 0.35f){
-					bleed(true);
 					hpText.hardlight( CYELLOW );
 				} else {
-					hpText.hardlight( R_COLOR );
+					hpText.hardlight( r,g,b );
+					hpText.text(health + "+" + shield +  "/" + max);
 				}
 
 				if (bleeding != blood.on){
@@ -230,6 +236,10 @@ public class BossHealthBar extends Component {
 
 	public static void bleed(boolean value){
 		bleeding = value;
+	}
+
+	public static boolean isBleeding(){
+		return bleeding;
 	}
 
 }

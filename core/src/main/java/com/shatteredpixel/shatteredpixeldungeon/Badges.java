@@ -139,6 +139,8 @@ public class Badges {
 		if (bundle == null) return badges;
 
 		String[] names = bundle.getStringArray( BADGES );
+		if (names == null) return badges;
+
 		for (int i=0; i < names.length; i++) {
 			try {
 				if (renamedBadges.containsKey(names[i])){
@@ -165,6 +167,7 @@ public class Badges {
 
 		for (Badge badge:badges) {
 			names[count++] = badge.toString();
+
 		}
 		bundle.put( BADGES, names );
 	}
@@ -753,9 +756,16 @@ public class Badges {
 			case HUNTRESS:
 				badge = Badge.MASTERY_HUNTRESS;
 				break;
+			case DUELIST:
+				badge = Badge.MASTERY_DUELIST;
+				break;
 		}
 
-		if (!global.contains( badge )) {
+		unlock(badge);
+	}
+
+	public static void unlock( Badge badge ){
+		if (!isUnlocked(badge)){
 			global.add( badge );
 			saveNeeded = true;
 		}
@@ -978,6 +988,7 @@ public class Badges {
 		MASTERY_MAGE,
 		MASTERY_ROGUE,
 		MASTERY_HUNTRESS,
+		MASTERY_DUELIST,
 		FOUND_RATMOGRIFY,
 
 		//bronze

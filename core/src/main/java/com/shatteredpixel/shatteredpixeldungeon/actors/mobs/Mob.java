@@ -774,6 +774,9 @@ public abstract class Mob extends Char {
     public float attackDelay() {
 		float delay = 1f;
 		if ( buff(Adrenaline.class) != null) delay /= 1.5f;
+		if(buff(ChampionEnemy.Sider.class) != null){
+			delay = 4.0f;
+		}
 		return delay;
 	}
 
@@ -1157,7 +1160,14 @@ public abstract class Mob extends Char {
     public void notice() {
 		sprite.showAlert();
 		if (Dungeon.level.locked) {
-			BGMPlayer.playBoss();
+			switch (Dungeon.depth) {
+				case 25:
+					Dungeon.level.playLevelMusic();
+					break;
+				default:
+					BGMPlayer.playBoss();
+					break;
+			}
 		}
 	}
 

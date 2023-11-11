@@ -1,14 +1,11 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
@@ -19,7 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.BallisticaFloat;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.GME;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.timing.VirtualTimer;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.timing.VirtualActor;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BeamCustom;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
@@ -32,7 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CrstalSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.PylonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
@@ -43,7 +40,7 @@ import java.util.ArrayList;
 
 public abstract class SpellCaster extends Mob {
     {
-        spriteClass = CrstalSprite.class;
+        spriteClass = PylonSprite.class;
 
         HP = HT = 45;
 
@@ -129,13 +126,12 @@ public abstract class SpellCaster extends Mob {
 
     public void activate(){
         alignment = Alignment.ENEMY;
-        ((CrstalSprite) sprite).activate();
-        yell("水晶已经激活，请注意摧毁！");
+        ((PylonSprite) sprite).activate();
     }
 
     @Override
     public CharSprite sprite() {
-        CrstalSprite p = (CrstalSprite) super.sprite();
+        PylonSprite p = (PylonSprite) super.sprite();
         if (alignment != Alignment.NEUTRAL) p.activate();
         return p;
     }
@@ -151,7 +147,7 @@ public abstract class SpellCaster extends Mob {
     public boolean add(Buff buff) {
         //immune to all buffs/debuffs when inactive
         if (alignment != Alignment.NEUTRAL) {
-            super.add(buff);
+            return super.add(buff);
         }
         return false;
     }
@@ -186,7 +182,7 @@ public abstract class SpellCaster extends Mob {
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
-        alignment = bundle.getEnum("ALIGNMENT", Char.Alignment.class);
+        alignment = bundle.getEnum("ALIGNMENT", Alignment.class);
         lastTargeting = bundle.getInt("lastPos");
         count = bundle.getInt("countDown");
     }
@@ -250,7 +246,7 @@ public abstract class SpellCaster extends Mob {
         @Override
         protected void warn(int num) {
             //if(num==2) sprite.showStatus( 0x5050FF, "!" );
-            if(num==1) {sprite.showStatus(0x5050FF, "傲慢");
+            if(num==1) {sprite.showStatus(0x5050FF, "!!!");
                 new Flare( 6, 32 ).color( 0x5050FF, true ).show(sprite, 3f );
             }
         }
@@ -311,7 +307,7 @@ public abstract class SpellCaster extends Mob {
                                     }
                                 } );
                         m.setSpeed(400f);
-                        VirtualTimer.countTime(10f, m::destroy);
+                        VirtualActor.delay(0.25f, true, FrostPostShoot.class);
                     }
                 }
                 detach();
@@ -387,7 +383,6 @@ public abstract class SpellCaster extends Mob {
 
             for (Char ch : affected){
 
-                //if they have already been killed by another bomb
                 if(!ch.isAlive()){
                     continue;
                 }
@@ -412,7 +407,7 @@ public abstract class SpellCaster extends Mob {
         protected void warn(int num) {
             //if(num==2) sprite.showStatus( 0xFF7070, "!" );
             if(num==1) {
-                sprite.showStatus(0xFF7070, "妒忌");
+                sprite.showStatus(0xFF7070, "!!!");
                 new Flare( 6, 32 ).color( 0xFF7070, true ).show(sprite, 3f );
             }
         }
@@ -490,7 +485,7 @@ public abstract class SpellCaster extends Mob {
         @Override
         protected void warn(int num) {
             //if(num==2) sprite.showStatus( 0xFFFFFF, "!" );
-            if(num==1){ sprite.showStatus(0xFFFFFF, "暴怒");
+            if(num==1){ sprite.showStatus(0xFFFFFF, "!!!");
                 new Flare( 6, 32 ).color( 0xFFFFFF, true ).show(sprite, 3f );}
 
         }
@@ -586,7 +581,7 @@ public abstract class SpellCaster extends Mob {
         @Override
         protected void warn(int num) {
             //if(num==2) sprite.showStatus( 0x30FF30, "!" );
-            if(num==1) {sprite.showStatus(0x30FF30, "懒惰");
+            if(num==1) {sprite.showStatus(0x30FF30, "!!!");
                 new Flare( 6, 32 ).color( 0x30FF30, true ).show(sprite, 3f );}
         }
 
@@ -692,7 +687,7 @@ public abstract class SpellCaster extends Mob {
             if (ch != null) {
                 CellEmitter.center(ch.pos).burst( BloodParticle.BURST, 2 );
                 if (ch.alignment != Alignment.ENEMY) {
-                    Buff.affect( hero, HalomethaneBurning.class ).reignite( hero, 7f );
+                    Buff.affect( ch, HalomethaneBurning.class ).reignite( ch, 7f );
                     zapDamage(ch, 6, 9, 0.45f, this);
                 }
             }
@@ -725,11 +720,16 @@ public abstract class SpellCaster extends Mob {
             @Override
             public boolean act(){
                 if(source != -1){
-                    Ballistica ballistica = new Ballistica(source, to, Ballistica.STOP_SOLID);
-                    hitProc(ballistica);
-                    target.sprite.parent.add(new BeamCustom(DungeonTilemap.tileCenterToWorld(source),
-                            DungeonTilemap.tileCenterToWorld(ballistica.collisionPos),
-                            Effects.Type.DEATH_RAY).setLifespan(0.55f).setColor(0xff0000));
+                    final float[] angles = {-23f, 0f, 23f};
+                    final float sourceAngle = GME.angle(target.pos, source);
+                    for(float a: angles){
+                        BallisticaFloat bf = new BallisticaFloat(target.pos, sourceAngle + a, 25, BallisticaFloat.STOP_SOLID);
+                        Ballistica ballistica = new Ballistica(target.pos, bf.collisionPosI, Ballistica.STOP_SOLID);
+                        hitProc(ballistica);
+                        target.sprite.parent.add(new BeamCustom(DungeonTilemap.tileCenterToWorld(target.pos),
+                                DungeonTilemap.tileCenterToWorld(ballistica.collisionPos),
+                                Effects.Type.CHAIN).setLifespan(0.6f).setColor(0x00FFFFFF));
+                    }
                 }
                 detach();
                 return true;
@@ -740,7 +740,7 @@ public abstract class SpellCaster extends Mob {
                     if (ch != null) {
                         CellEmitter.center(ch.pos).burst( BloodParticle.BURST, 1 );
                         if (ch.alignment != Alignment.ENEMY) {
-                            Buff.affect( hero, Burning.class ).reignite( hero, 4f );
+                            Buff.affect( ch, HalomethaneBurning.class ).reignite( ch, 4f );
                             zapDamage(ch, 3, 6, 0.9f, HaloFireCaster.class);
                         }
                     }
@@ -749,7 +749,7 @@ public abstract class SpellCaster extends Mob {
         }
     }
 
-    public static class Marked extends FlavourBuff {
+    public static class Marked extends FlavourBuff{
         @Override
         public boolean attachTo( Char target ){
             if(target.sprite!=null) target.sprite.showStatus(0xB040B0, Messages.get(SpellCaster.class, "marked"));

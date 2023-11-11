@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createBossRushLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createStandardLevel;
 
@@ -432,7 +433,7 @@ public class Dungeon {
 		hero.viewDistance = light == null ? level.viewDistance : Math.max( Light.DISTANCE, level.viewDistance );
 		
 		hero.curAction = hero.lastAction = null;
-
+		LevelSwitchListener.onLevelSwitch();
 		observe();
 		try {
 			saveAll();
@@ -467,7 +468,7 @@ public class Dungeon {
 		else return false;
 
 	}
-	
+
 	public static boolean souNeeded() {
 		int souLeftThisSet;
 		//3 SOU each floor set
@@ -548,7 +549,7 @@ public class Dungeon {
 		challenges = SPDSettings.challenges();
 
 		//娱乐模式
-		dlcs =  new Conducts.ConductStorage(SPDSettings.dlc());
+		//dlcs =  new Conducts.ConductStorage(SPDSettings.dlc());
 
 		//难度模式
 		difficultys =  new Difficulty.HardStorage(SPDSettings.difficulty());
@@ -669,23 +670,26 @@ public class Dungeon {
 		Hero.preview( info, bundle.getBundle( HERO ) );
 		Statistics.preview( info, bundle );
 	}
-	
+
 	public static void fail( Object cause ) {
 		if (WndResurrect.instance == null) {
 			updateLevelExplored();
 			Statistics.gameWon = false;
-			Rankings.INSTANCE.submit( false, cause );
+			if(!Dungeon.isChallenged(PRO)) {
+				Rankings.INSTANCE.submit(false, cause);
+			}
 		}
 	}
-	
+
 	public static void win( Object cause ) {
 
 		updateLevelExplored();
 		Statistics.gameWon = true;
 
 		hero.belongings.identify();
-
-		Rankings.INSTANCE.submit( true, cause );
+		if(!Dungeon.isChallenged(PRO)) {
+			Rankings.INSTANCE.submit(true, cause);
+		}
 	}
 
 	public static void updateLevelExplored(){
@@ -877,8 +881,8 @@ public class Dungeon {
             bundle.put(CHALLENGES, challenges);
             Dungeon.challenges = bundle.getInt(CHALLENGES);
             //DLC模式
-            bundle.put(DLCS, dlcs);
-            dlcs.storeInBundle(bundle);
+            //bundle.put(DLCS, dlcs);
+            //dlcs.storeInBundle(bundle);
             difficultys.storeInBundle(bundle);
             //HARD选择
             bundle.put(DIFFICULTY, difficultys);
@@ -962,7 +966,7 @@ public class Dungeon {
 			initialVersion = bundle.getInt( VERSION );
 		}
 
-		dlcs.restoreFromBundle(bundle);
+		//dlcs.isConducted(Conducts.Conduct.BOSSRUSH);
 		difficultys.restoreFromBundle(bundle);
 
 		version = bundle.getInt( VERSION );
@@ -1096,7 +1100,7 @@ public class Dungeon {
     }
 
     public static boolean isDLC(Conducts.Conduct mask) {
-        return dlcs.isConducted(mask);
+        return dlcs.isConducted(Conducts.Conduct.NULL);
     }
 
     public static boolean isDIFFICULTY(Difficulty.DifficultyConduct mask) {

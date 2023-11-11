@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -47,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
@@ -66,6 +68,21 @@ public class HallsBossLevel extends Level {
 		color2 = 0xa68521;
 
 		viewDistance = Math.min(4, viewDistance);
+	}
+
+	@Override
+	public void playLevelMusic() {
+		if (locked && BossHealthBar.isAssigned()){
+			if (BossHealthBar.isBleeding()){
+				Music.INSTANCE.play(Assets.BGM_BOSSE3, true);
+			} else {
+				Music.INSTANCE.play(Assets.Music.HALLS_BOSS, true);
+			}
+		} else if (map[exit()] != Terrain.EXIT){
+			Music.INSTANCE.end();
+		} else {
+			BGMPlayer.playBGMWithDepth();
+		}
 	}
 
 	private static final int WIDTH = 32;
@@ -323,7 +340,7 @@ public class HallsBossLevel extends Level {
 						protected void onSelect(int index) {
 							if (index == 0){
 								Buff.affect(hero, AscensionChallenge.class);
-								Statistics.highestAscent = 25;
+								Statistics.highestAscent = 35;
 								HallsBossLevel.super.activateTransition(hero, transition);
 							}
 						}

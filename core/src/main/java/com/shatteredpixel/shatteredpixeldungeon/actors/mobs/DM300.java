@@ -52,7 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
-import com.shatteredpixel.shatteredpixeldungeon.levels.NewCavesBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -331,7 +331,7 @@ public class DM300 extends Mob {
 		if (Dungeon.level.map[step] == Terrain.INACTIVE_TRAP && state == HUNTING) {
 
 			//don't gain energy from cells that are energized
-			if (NewCavesBossLevel.PylonEnergy.volumeAt(pos, NewCavesBossLevel.PylonEnergy.class) > 0){
+			if (CavesBossLevel.PylonEnergy.volumeAt(pos, CavesBossLevel.PylonEnergy.class) > 0){
 				return;
 			}
 
@@ -439,7 +439,7 @@ public class DM300 extends Mob {
 			safeCell = rockCenter + PathFinder.NEIGHBOURS8[Random.Int(8)];
 		} while (safeCell == pos
 				|| (Dungeon.level.solid[safeCell] && Random.Int(2) == 0)
-				|| (Blob.volumeAt(safeCell, NewCavesBossLevel.PylonEnergy.class) > 0 && Random.Int(2) == 0));
+				|| (Blob.volumeAt(safeCell, CavesBossLevel.PylonEnergy.class) > 0 && Random.Int(2) == 0));
 
 		ArrayList<Integer> rockCells = new ArrayList<>();
 
@@ -516,7 +516,7 @@ public class DM300 extends Mob {
 
 	public void supercharge(){
 		supercharged = true;
-		((NewCavesBossLevel)Dungeon.level).activatePylon();
+		((CavesBossLevel)Dungeon.level).activatePylon();
 		pylonsActivated++;
 
 		spend(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 2f : 3f);
@@ -612,14 +612,14 @@ public class DM300 extends Mob {
 			if (bestpos != pos){
 				Sample.INSTANCE.play( Assets.Sounds.ROCKS );
 
-				Rect gate = NewCavesBossLevel.gate;
+				Rect gate = CavesBossLevel.gate;
 				for (int i : PathFinder.NEIGHBOURS9){
 					if (Dungeon.level.map[pos+i] == Terrain.WALL || Dungeon.level.map[pos+i] == Terrain.WALL_DECO){
 						Point p = Dungeon.level.cellToPoint(pos+i);
 						if (p.y < gate.bottom && p.x >= gate.left-2 && p.x < gate.right+2){
 							continue; //don't break the gate or walls around the gate
 						}
-						if (!NewCavesBossLevel.diggableArea.inside(p)){
+						if (!CavesBossLevel.diggableArea.inside(p)){
 							continue; //Don't break any walls out of the boss arena
 						}
 						Level.set(pos+i, Terrain.EMPTY_DECO);

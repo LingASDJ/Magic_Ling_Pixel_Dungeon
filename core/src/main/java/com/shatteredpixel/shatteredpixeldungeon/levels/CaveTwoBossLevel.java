@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -45,24 +46,26 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CavesPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Camera;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.Tilemap;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 import com.watabou.utils.Rect;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class CaveTwoBossLevel extends Level {
 
@@ -96,7 +99,7 @@ public class CaveTwoBossLevel extends Level {
         setSize(WIDTH, HEIGHT);
 
         //These signs are visually overridden with custom tile visuals
-        Painter.fill(this, gate, Terrain.SIGN);
+        Painter.fill(this, gate, Terrain.CUSTOM_DECO);
 
         //set up main boss arena
         Painter.fillEllipse(this, mainArena, Terrain.WATER);
@@ -202,17 +205,21 @@ public class CaveTwoBossLevel extends Level {
 
     @Override
     public int randomRespawnCell( Char ch ) {
-        //this check is mainly here for DM-300, to prevent an infinite loop
-        if (Char.hasProp(ch, Char.Property.LARGE) && map[entrance] != Terrain.ENTRANCE){
-            return -1;
+        ArrayList<Integer> candidates = new ArrayList<>();
+        for (int i : PathFinder.NEIGHBOURS8){
+            int cell = entrance() + i;
+            if (passable[cell]
+                    && Actor.findChar(cell) == null
+                    && (!Char.hasProp(ch, Char.Property.LARGE) || openSpace[cell])){
+                candidates.add(cell);
+            }
         }
-        int cell;
-        do {
-            cell = entrance + PathFinder.NEIGHBOURS8[Random.Int(8)];
-        } while (!passable[cell]
-                || (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
-                || Actor.findChar(cell) != null);
-        return cell;
+
+        if (candidates.isEmpty()){
+            return -1;
+        } else {
+            return Random.element(candidates);
+        }
     }
 
     @Override
@@ -228,8 +235,6 @@ public class CaveTwoBossLevel extends Level {
 
     @Override
     public void occupyCell(Char ch) {
-        super.occupyCell(ch);
-
         //seal the level when the hero moves near to a pylon, the level isn't already sealed, and the gate hasn't been destroyed
         int gatePos = pointToCell(new Point(gate.left, gate.top));
         if (ch == Dungeon.hero && !locked && solid[gatePos]){
@@ -240,21 +245,26 @@ public class CaveTwoBossLevel extends Level {
                 }
             }
         }
+
+        super.occupyCell(ch);
     }
 
     @Override
     public void seal() {
         super.seal();
+        Statistics.qualifiedForBossChallengeBadge = true;
 
+        int entrance = entrance();
         set( entrance, Terrain.WALL );
 
         Heap heap = Dungeon.level.heaps.get( entrance );
-        if (heap != null) {
+        while (heap != null && !heap.isEmpty()) {
             int n;
             do {
-                n = entrance + PathFinder.NEIGHBOURS8[Random.Int( 8 )];
+                n = entrance + PathFinder.NEIGHBOURS8[Random.Int(8)];
             } while (!Dungeon.level.passable[n]);
-            Dungeon.level.drop( heap.pickUp(), n ).sprite.drop( entrance );
+            Heap dropped = Dungeon.level.drop(heap.pickUp(), n);
+            dropped.seen = heap.seen;
         }
 
         Char ch = Actor.findChar( entrance );
@@ -271,28 +281,31 @@ public class CaveTwoBossLevel extends Level {
         Dungeon.observe();
 
         CellEmitter.get( entrance ).start( Speck.factory( Speck.ROCK ), 0.07f, 10 );
-        Camera.main.shake( 3, 0.7f );
+        PixelScene.shake( 3, 0.7f );
         Sample.INSTANCE.play( Assets.Sounds.ROCKS );
 
         NewDM720 boss = new NewDM720();
         boss.state = boss.WANDERING;
         do {
-            boss.pos = pointToCell(Objects.requireNonNull(Random.element(mainArena.getPoints())));
-        } while (!openSpace[boss.pos] || map[boss.pos] == Terrain.EMPTY);
+            boss.pos = pointToCell(Random.element(mainArena.getPoints()));
+        } while (!openSpace[boss.pos] || map[boss.pos] == Terrain.EMPTY_SP || Actor.findChar(boss.pos) != null);
         GameScene.add( boss );
 
+        Game.runOnRenderThread(new Callback() {
+            @Override
+            public void call() {
+                Music.INSTANCE.play(Assets.Music.CAVES_BOSS, true);
+            }
+        });
     }
 
     @Override
     public void unseal() {
         super.unseal();
 
-        PylonEnergy pylonEnergy = (PylonEnergy) blobs.get(PylonEnergy.class);
-        if (pylonEnergy != null) {
-            pylonEnergy.fullyClear();
-        }
+        blobs.get(PylonEnergy.class).fullyClear();
 
-        set( entrance, Terrain.ENTRANCE );
+        set( entrance(), Terrain.ENTRANCE );
         int i = 14 + 13*width();
         for (int j = 0; j < 5; j++){
             set( i+j, Terrain.EMPTY );
@@ -302,9 +315,21 @@ public class CaveTwoBossLevel extends Level {
         }
         GameScene.updateMap();
 
-        customArenaVisuals.updateState();
+        if (customArenaVisuals != null) customArenaVisuals.updateState();
 
         Dungeon.observe();
+
+        Game.runOnRenderThread(new Callback() {
+            @Override
+            public void call() {
+                Music.INSTANCE.fadeOut(5f, new Callback() {
+                    @Override
+                    public void call() {
+                        Music.INSTANCE.end();
+                    }
+                });
+            }
+        });
 
     }
 
@@ -374,7 +399,7 @@ public class CaveTwoBossLevel extends Level {
     public String tileDesc( int tile ) {
         switch (tile) {
             case Terrain.WATER:
-                return super.tileDesc( tile ) + "\n\n" + Messages.get(NewCavesBossLevel.class, "water_desc");
+                return super.tileDesc( tile ) + "\n\n" + Messages.get(CavesBossLevel.class, "water_desc");
             case Terrain.ENTRANCE:
                 return Messages.get(CavesLevel.class, "entrance_desc");
             case Terrain.EXIT:
@@ -462,7 +487,7 @@ public class CaveTwoBossLevel extends Level {
     };
 
     private void buildEntrance(){
-        entrance = 16 + 25*width();
+        int entrance = 16 + 25*width();
 
         //entrance area
         int NW = entrance - 7 - 7*width();
@@ -484,6 +509,7 @@ public class CaveTwoBossLevel extends Level {
         }
 
         Painter.set(this, entrance, Terrain.ENTRANCE);
+        transitions.add(new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE));
     }
 
     private static short[] corner1 = {
@@ -719,9 +745,9 @@ public class CaveTwoBossLevel extends Level {
         public String name(int tileX, int tileY) {
             int i = tileX + tileW*(tileY + this.tileY);
             if (Dungeon.level.map[i] == Terrain.INACTIVE_TRAP){
-                return Messages.get(NewCavesBossLevel.class, "wires_name");
+                return Messages.get(CavesBossLevel.class, "wires_name");
             } else if (gate.inside(Dungeon.level.cellToPoint(i))){
-                return Messages.get(NewCavesBossLevel.class, "gate_name");
+                return Messages.get(CavesBossLevel.class, "gate_name");
             }
 
             return super.name(tileX, tileY);
@@ -731,12 +757,12 @@ public class CaveTwoBossLevel extends Level {
         public String desc(int tileX, int tileY) {
             int i = tileX + tileW*(tileY + this.tileY);
             if (Dungeon.level.map[i] == Terrain.INACTIVE_TRAP){
-                return Messages.get(NewCavesBossLevel.class, "wires_desc");
+                return Messages.get(CavesBossLevel.class, "wires_desc");
             } else if (gate.inside(Dungeon.level.cellToPoint(i))){
                 if (Dungeon.level.solid[i]){
-                    return Messages.get(NewCavesBossLevel.class, "gate_desc");
+                    return Messages.get(CavesBossLevel.class, "gate_desc");
                 } else {
-                    return Messages.get(NewCavesBossLevel.class, "gate_desc_broken");
+                    return Messages.get(CavesBossLevel.class, "gate_desc_broken");
                 }
             }
             return super.desc(tileX, tileY);
@@ -838,7 +864,7 @@ public class CaveTwoBossLevel extends Level {
 
         @Override
         public String tileDesc() {
-            return Messages.get(NewCavesBossLevel.class, "energy_desc");
+            return Messages.get(CavesBossLevel.class, "energy_desc");
         }
 
         @Override

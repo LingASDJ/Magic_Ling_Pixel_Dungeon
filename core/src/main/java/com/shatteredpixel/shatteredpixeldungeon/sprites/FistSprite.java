@@ -267,8 +267,8 @@ public abstract class FistSprite extends MobSprite {
 
 		@Override
 		public void zap( int cell ) {
-			super.zap( cell, null );
-
+			turnTo( ch.pos , cell );
+			play( zap );
 			((YogFist)ch).onZapComplete();
 			parent.add( new Beam.LightRay(center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
 		}

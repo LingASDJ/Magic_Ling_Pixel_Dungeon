@@ -100,7 +100,8 @@ public class Assets {
 		public static final String CITY_BOSS        = "environment/custom_tiles/city_boss.png";
 		public static final String HALLS_SP         = "environment/custom_tiles/halls_special.png";
 
-		public static final String TILES_COLD	= "environment/Reload.png";
+		public static final String TILES_COLD	= "environment/tiles_cold.png";
+		public static final String RELOAD	= "environment/Reload.png";
 		public static final String TILES_DIED	= "environment/tiles_died.png";
 		public static final String TILES_GOLD	= "environment/tiles_gold.png";
 
@@ -217,7 +218,7 @@ public class Assets {
 
 		public static final String CAVES_1      = "music/Level3.ogg";
 		public static final String CAVES_2      = "music/Level3.ogg";
-		public static final String CAVES_BOSS   = "music/Boss3.ogg";
+		public static final String CAVES_BOSS   = "music/caves_tense.ogg";
 
 		public static final String CITY_1       = "music/Level4.ogg";
 		public static final String CITY_2       = "music/Level4.ogg";

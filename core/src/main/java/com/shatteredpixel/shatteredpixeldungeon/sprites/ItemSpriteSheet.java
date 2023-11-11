@@ -348,6 +348,10 @@ public class ItemSpriteSheet {
     //MLPD
     public static final int HALO_DART   =   DARTS+13;
     public static final int LIGT_DART   = DARTS+14;
+
+    public static final int RedBloodMoonEX     = DARTS+15;
+
+
     static {
         for (int i = DARTS; i < DARTS+16; i++)
             assignItemRect(i, 15, 15);
@@ -405,7 +409,7 @@ public class ItemSpriteSheet {
     public static final int WAND_HTR    = WANDS+14;
     public static final int WAND_KCX    = WANDS+15;
     static {
-        for (int i = WANDS; i < WANDS+16; i++)
+        for (int i = WANDS; i < WANDS+12; i++)
             assignItemRect(i, 14, 14);
     }
 
@@ -688,12 +692,11 @@ public class ItemSpriteSheet {
     public static final int BLANDFRUIT  = FOOD+10;
     public static final int BLAND_CHUNKS= FOOD+11;
     public static final int BERRY =       FOOD+12;
-    public static final int PHANTOM_MEAT= FOOD+13;
 
     //迁移
-    public static final int LSPDA =       FOOD+14;
-    public static final int CAKE =       FOOD+15;
-    public static final int SWTR =       FOOD+16;
+    public static final int LSPDA =       FOOD+13;
+    public static final int CAKE =       FOOD+14;
+    public static final int SWTR =       FOOD+15;
 
     static{
         assignItemRect(MEAT,        15, 11);
@@ -709,7 +712,6 @@ public class ItemSpriteSheet {
         assignItemRect(BLANDFRUIT,  9,  12);
         assignItemRect(BLAND_CHUNKS,14, 6);
         assignItemRect(BERRY,       9,  11);
-        assignItemRect(PHANTOM_MEAT,15, 11);
     }
 
     private static final int QUEST  =                                       xy(1, 29);  //32 slots

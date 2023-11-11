@@ -12,7 +12,11 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceSlowGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MolotovHuntsmanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ChangeButton;
@@ -80,13 +84,27 @@ public class vM0_6_6_Changes {
     }
 
     public static void add_v0_6_6_0_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.6.0-Demo1-4", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.6.0-Demo1-7", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("种子方面改动如下：" +
+                        "1.种子存档会显示绿色存档提示玩家\n" +
+                        "2.种子可以在存档信息界面直接看见\n" +
+                        "3.种子局最终结算总分减半\n" +
+                        "4.种子局排行榜的样子有所不同\n" +
+                        "\n其他方面：\n" +
+                        "1.武器/法杖重命名功能回归\n" +
+                        "2.迭代优化了一些素材" +
+                        "3.底层代码优化")));
+
+        changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.FIREDIED, true), ("水晶意志"),
+                ("魔绫的返程之旅，准备好接受考验了吗？")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.CHANGES), ("重大更新"),
                 ("魔绫现已更新底层到破碎V2.2.1版本!" +
@@ -103,12 +121,49 @@ public class vM0_6_6_Changes {
         changes.hardlight( CharSprite.POSITIVE );
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_CHALICE3), ("蓄血圣杯"),
+                ("同步回1.2.3的圣杯形式")));
+
+        changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.ARMOR, true), ("灯火前路-守护"),
+                ("现在护盾不会自然衰减，且只要护盾不消失，可以缓慢回复护盾。")));
+
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GAUNTLETS), ("碧灰双刃"),
                 ("伤害提升，并且升为四阶武器")));
 
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
-        changes.hardlight(Window.GREEN_COLOR);
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEED_AIKELAIER), ("闪电花"),
+                ("用该物品制作的无味果改名为雷暴果，拥有闪电链式反应效果。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_HTR), ("风暴雷霆法杖"),
+                ("使用法杖在水中攻击时，有10%的概率获得3次的闪电链式反应效果")));
+
+        changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.CORRUPT, true), ("鬼磷精英"),
+                ("现在死亡时会释放磷火。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight( CharSprite.NEGATIVE );
         changeInfos.add(changes);
+
+        changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.LIGHT_DIED, true), ("闪电链式反应"),
+                ("现在必须在可见范围内才能攻击敌人，" +
+                        "伤害小幅提升，并且调整为闪电链不自然衰减。")));
+
+        changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.CORRUPT, true), ("烈焰精英"),
+                ("现在必须在非水地块上面才能释放烈焰")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("DLC模式返修"),
+                ("BossRush等DLC模式返修中，敬请期待后续版本。")));
+
+        Image i = new Image(new YogSprite());
+        i.scale.set(0.8f);
+        changes.addButton(new ChangeButton(i, ("YogDzewa"),
+                ("对梦魇领袖进行了一些优化")));
+
+        changes.addButton(new ChangeButton(new MolotovHuntsmanSprite(), ("DM720&血月赏金猎人长老"),
+                ("DM720d与长老贴图优化，并修复了一些bug")));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 "修复了以下Bug:\n\n" +
@@ -145,7 +200,42 @@ public class vM0_6_6_Changes {
                         "_-_ 4.修复了部分Buff图标错位的问题",
 
                 "Demo4(内部测试):\n\n" +
-                        "_-_ 待反馈"));
+                        "1:元素怪物攻击造成栈溢出崩溃-结果判定：Mob迁移后未优化，导致爆栈\n" +
+                        "2:决斗一层天赋文本 \n-结果判定：一般问题--文本缺失\n" +
+                        "3:短柄镰在武器生成器的贴图和位置\n" +
+                        "4:新版无诅咒的诅咒附魔武器文本-结果判定：一般问题--文本缺失\n" +
+                        "5:水晶尖塔可以被十字镐以外的武器伤害-结果判定：一般问题--逻辑缺陷\n" +
+                        "6.开发者模式升降器探索物品功能缺失-结果判定：一般问题--逻辑缺陷\n" +
+                        "7.书籍一本时无法阅读-结果判定：一般问题--逻辑缺陷\n" +
+                        "8.嬗变泉房间扔东西无法转换-结果判定：一般问题--功能缺陷\n" +
+                        "9.DM275攻击策略优化-结果判定：一般问题--优化体验\n" +
+                        "10.优化那些回忆，奈亚子的对话框架（现在的比较卡顿）\n" +
+                        "结果判定：一般问题--优化体验\n" +
+                        "11.需要修复部分界面的严重贴图错乱-结果判定：一般问题--优化体验\n" +
+                        "12.需要修复一个4阶武器贴图缺失的问题-结果判定：一般问题--优化体验\n" +
+                        "13.需要修复咒缚灵生成失效的问题\n\n" +
+                        "以上问题均已修复",
+
+                "Demo5(大群首测):\n\n"+
+                "1.修复了草鞋灌注闪退的问题\n" +
+                        "2.修复了天狗闪退的问题\n" +
+                        "3.修复了新版对话框的异常问题\n" +
+                        "4.修复了幻影食人鱼鱼肉贴图和文本缺失的问题\n" +
+                        "5.修复了天赋文本缺失的问题" +
+                        "6.修复了来自FireBase报告的诸多错误",
+
+
+                "Demo6-7:\n\n" +
+                        "1.修复了幻影食人鱼文本贴图缺失的问题\n" +
+                        "2.修复了英雄精英buff尚未生效的问题\n" +
+                        "3.同步了蓄血圣杯为原版1.2.3\n" +
+                        "4.修复了BR的冲突问题\n" +
+                        "5.修复了决斗家的10层闪退bug\n" +
+                        "5.其他来自FireBase后台的Bug修复"));
+
+
+
+
     }
 
 }

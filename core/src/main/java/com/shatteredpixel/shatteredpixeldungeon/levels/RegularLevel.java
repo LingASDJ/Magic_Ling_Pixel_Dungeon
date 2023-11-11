@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
@@ -79,12 +80,14 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.RandomRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.GooRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.HeartRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.LinkRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.LoveRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.MagicDimandRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.OldDM300Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
@@ -246,6 +249,13 @@ public abstract class RegularLevel extends Level {
 		if (Dungeon.NyzshopOnLevel()) {
 			Buff.affect(hero, RandomBuff.class).set( (4 + Random.Int(9)+hero.STR/6+hero.HP/30)/Random.Int(1,2)+5, 1 );
 			initRooms.add(new NyzBombAndBooksRoom());
+		}
+
+		if (Dungeon.aqiLevel() && (Dungeon.isChallenged(AQUAPHOBIA)))
+			initRooms.add(new AquariumRoom());
+
+		if(Statistics.goldchestmazeCollected>=3 && Dungeon.depth == 9 && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
+			initRooms.add(new MagicDimandRoom());
 		}
 
 		//圣诞节

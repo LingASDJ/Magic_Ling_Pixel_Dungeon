@@ -490,9 +490,9 @@ public class MagicGirlDead extends Boss {
                 case LIGHT:
                     caster = new SpellCaster.LightCaster();
                     break;
-                case HALOFIRE:
-                    caster = new SpellCaster.HaloFireCaster();
-                    break;
+//                case HALOFIRE:
+//                    caster = new SpellCaster.HaloFireCaster();
+//                    break;
                 case BOUNCE: default:
                     caster = new SpellCaster.BounceCaster();
             }

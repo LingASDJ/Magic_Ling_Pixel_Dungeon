@@ -258,6 +258,8 @@ public enum Rankings {
 
         Statistics.totalScore *= Statistics.winMultiplier * Statistics.chalMultiplier;
 
+        Statistics.totalScore *= Statistics.seedCustom ? 0.5 : 1;
+
         return Statistics.totalScore;
     }
 
@@ -519,6 +521,7 @@ public enum Rankings {
             win = bundle.getBoolean(WIN);
             score = bundle.getInt(SCORE);
             customSeed = bundle.getString(SEED);
+
             daily = bundle.getBoolean(DAILY);
 
             heroClass = bundle.getEnum(CLASS, HeroClass.class);

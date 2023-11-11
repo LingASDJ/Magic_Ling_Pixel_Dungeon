@@ -63,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
@@ -207,6 +208,16 @@ public class YogDzewa extends Mob {
 					Music.INSTANCE.fadeOut(0.5f, new Callback() {
 						@Override
 						public void call() {
+							if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+									YogFist.FreezingFist freezingFist = new YogFist.FreezingFist();
+									freezingFist.pos = pos-3;
+									GameScene.add(freezingFist);
+									Camera.main.shake(1,3f);
+									GameScene.flash(0x808080,true);
+									YogFist.HaloFist haloFist = new YogFist.HaloFist();
+									haloFist.pos = pos+3;
+									GameScene.add(haloFist);
+							}
 							Music.INSTANCE.play(Assets.Music.HALLS_BOSS_FINALE, true);
 						}
 					});
@@ -566,26 +577,26 @@ public class YogDzewa extends Mob {
 
 	@Override
 	public void notice() {
-		if (!BossHealthBar.isAssigned()) {
-			BossHealthBar.assignBoss(this);
-			yell(Messages.get(this, "notice"));
-			for (Char ch : Actor.chars()){
-				if (ch instanceof DriedRose.GhostHero){
-					((DriedRose.GhostHero) ch).sayBoss();
+			if (!BossHealthBar.isAssigned()) {
+				BossHealthBar.assignBoss(this);
+				yell(Messages.get(this, "notice"));
+				for (Char ch : Actor.chars()) {
+					if (ch instanceof DriedRose.GhostHero) {
+						((DriedRose.GhostHero) ch).sayBoss();
+					}
+				}
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						Music.INSTANCE.play(Assets.Music.HALLS_TENSE, true);
+					}
+				});
+				if (phase == 0) {
+					phase = 1;
+					summonCooldown = Random.NormalFloat(MIN_SUMMON_CD, MAX_SUMMON_CD);
+					abilityCooldown = Random.NormalFloat(MIN_ABILITY_CD, MAX_ABILITY_CD);
 				}
 			}
-			Game.runOnRenderThread(new Callback() {
-				@Override
-				public void call() {
-					Music.INSTANCE.play(Assets.Music.HALLS_BOSS, true);
-				}
-			});
-			if (phase == 0) {
-				phase = 1;
-				summonCooldown = Random.NormalFloat(MIN_SUMMON_CD, MAX_SUMMON_CD);
-				abilityCooldown = Random.NormalFloat(MIN_ABILITY_CD, MAX_ABILITY_CD);
-			}
-		}
 	}
 
 	@Override

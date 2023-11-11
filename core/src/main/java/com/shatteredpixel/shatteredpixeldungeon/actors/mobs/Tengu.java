@@ -27,7 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -41,12 +40,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.TenguPlot;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -63,7 +59,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -76,8 +71,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.TenguSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
-import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.BArray;
@@ -216,18 +209,18 @@ public class Tengu extends Mob {
 		if (Dungeon.hero.subClass == HeroSubClass.NONE) {
 			Dungeon.level.drop( new TengusMask(), pos ).sprite.drop();
 		}
-		Dungeon.level.drop( new CrystalKey(depth), pos-1 ).sprite.drop();
+
 		Statistics.bossScores[1] += 2000;
 		GameScene.bossSlain();
 		super.die( cause );
 
-		TenguPlot plot = new TenguPlot();
-		Game.runOnRenderThread(new Callback() {
-			@Override
-			public void call() {
-				GameScene.show(new WndDialog(plot,false));
-			}
-		});
+//		TenguPlot plot = new TenguPlot();
+//		Game.runOnRenderThread(new Callback() {
+//			@Override
+//			public void call() {
+//				GameScene.show(new WndDialog(plot,false));
+//			}
+//		});
 
 		Badges.validateBossSlain();
 
@@ -239,45 +232,8 @@ public class Tengu extends Mob {
 		yell( Messages.get(this, "defeated") );
 	}
 
-	//7回合的开场动画
-	private int timeLeft = 12;
-	float incTime = 0;
 	@Override
 	protected boolean canAttack( Char enemy ) {
-		/**Tengu Ready Animation
-		 天狗动画，切换地块变得河里
-		 */
-		if (timeLeft >= 0 && incTime >= 0){
-			timeLeft -= 1;
-			incTime = 0;
-
-			if(timeLeft == 11){
-				//给予玩家玫瑰结界+冰冻，保证有7回合无敌且无法行动的时间
-				Buff.affect(enemy, Paralysis.class, timeLeft);
-				Buff.affect(enemy, RoseShiled.class, timeLeft);
-				//给予天狗鬼磷燃烧buff，使它攻击玩家的同时也会布置陷阱。可以提前告知玩家天狗的一阶段行动策略
-				Buff.affect(this, HalomethaneBurning.class ).reignite( this, timeLeft*1000 );
-				GLog.n(Messages.get(Tengu.class, "cut_you"));
-			}
-
-			if(timeLeft == 9){
-				enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Tengu.class, "rose"));
-			}
-
-			if(timeLeft == 7){
-				this.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Tengu.class, "cut_you2",enemy.name()));
-			}
-
-			//到达0后，天狗去除磷火buff，并且血量回满
-			if(timeLeft == 0){
-				//TODO 乐，所以还是用到了resetScene()
-				ShatteredPixelDungeon.resetScene();
-				HP = HT;
-				Buff.detach(this, HalomethaneBurning.class );
-				GLog.n(Messages.get(Tengu.class, "ready",enemy.name()));
-			}
-		}
-
 		return new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos;
 	}
 
@@ -412,10 +368,6 @@ public class Tengu extends Mob {
 		bundle.put( ABILITIES_USED, abilitiesUsed );
 		bundle.put( ARENA_JUMPS, arenaJumps );
 		bundle.put( ABILITY_COOLDOWN, abilityCooldown );
-
-		bundle.put(ANMONTION_TIME,timeLeft);
-
-		bundle.put(INCE_TIME,incTime);
 	}
 
 	@Override
@@ -427,9 +379,6 @@ public class Tengu extends Mob {
 		abilitiesUsed = bundle.getInt( ABILITIES_USED );
 		arenaJumps = bundle.getInt( ARENA_JUMPS );
 		abilityCooldown = bundle.getInt( ABILITY_COOLDOWN );
-
-		timeLeft =bundle.getInt( ANMONTION_TIME);
-		incTime =bundle.getInt( INCE_TIME);
 
 		BossHealthBar.assignBoss(this);
 		if (HP <= HT/2) BossHealthBar.bleed(true);
@@ -957,7 +906,6 @@ public class Tengu extends Mob {
 			@Override
 			public void use(BlobEmitter emitter) {
 				super.use(emitter);
-
 				emitter.pour( Speck.factory( Speck.STEAM ), 0.2f );
 			}
 

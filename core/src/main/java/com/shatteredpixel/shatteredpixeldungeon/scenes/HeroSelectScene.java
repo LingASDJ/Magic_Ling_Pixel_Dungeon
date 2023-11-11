@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.ui.Icons.RENAME_OFF;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
@@ -43,10 +44,10 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndDLC;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDLCX;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHeroInfo;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
@@ -75,6 +76,7 @@ import com.watabou.utils.Random;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class HeroSelectScene extends PixelScene {
@@ -123,14 +125,14 @@ public class HeroSelectScene extends PixelScene {
 	private IconButton infoButton;
 	private IconButton challengeButton;
 	private IconButton btnExit;
-
+	private ArrayList<StyledButton> buttons;
 	@Override
 	public void create() {
 
 		super.create();
 
 		Dungeon.hero = null;
-
+		buttons = new ArrayList<>();
 		Badges.loadGlobal();
 
 		Music.INSTANCE.playTracks(
@@ -390,23 +392,22 @@ public class HeroSelectScene extends PixelScene {
 		Telnetsc.setPos( frame.x + frame.width + FRAME_MARGIN_X, frame.y + frame.height - BUTTON_HEIGHT);
 		add(Telnetsc);
 
-		IconButton DevMode = new IconButton(new ItemSprite(ItemSpriteSheet.SEED_SKYBLUEFIRE)){
+		StyledButton seedButton = new StyledButton(Chrome.Type.BLANK, "", 6){
 			@Override
 			protected void onClick() {
 				String existingSeedtext = SPDSettings.customSeed();
-				ShatteredPixelDungeon.scene().addToFront(new WndTextInput(Messages.get(HeroSelectScene.class, "custom_seed_title"),
+				ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(HeroSelectScene.class, "custom_seed_title"),
 						Messages.get(HeroSelectScene.class, "custom_seed_desc"),
 						existingSeedtext,
 						20,
 						false,
 						Messages.get(HeroSelectScene.class, "custom_seed_set"),
-						Messages.get(HeroSelectScene.class, "custom_seed_clear")) {
+						Messages.get(HeroSelectScene.class, "custom_seed_clear")){
 					@Override
 					public void onSelect(boolean positive, String text) {
 						text = DungeonSeed.formatText(text);
 						long seed = DungeonSeed.convertFromText(text);
-
-						if (positive && seed != -1) {
+						if (positive && seed != -1){
 							SPDSettings.customSeed(text);
 							icon.hardlight(1f, 1.5f, 0.67f);
 						} else {
@@ -417,9 +418,13 @@ public class HeroSelectScene extends PixelScene {
 				});
 			}
 		};
-		DevMode.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
-		DevMode.setPos( frame.x + frame.width + FRAME_MARGIN_X, frame.y-14+ frame.height-14 - BUTTON_HEIGHT);
-		add(DevMode);
+		seedButton.leftJustify = true;
+		seedButton.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
+		seedButton.setPos( frame.x + frame.width + FRAME_MARGIN_X, frame.y-14+ frame.height-14 - BUTTON_HEIGHT);
+		seedButton.icon(Icons.get(Icons.ENTER));
+		if (!SPDSettings.customSeed().isEmpty()) seedButton.icon().hardlight(1f, 1.5f, 0.67f);;
+		buttons.add(seedButton);
+		add(seedButton);
 
 		IconButton Rename = new IconButton(Icons.get(Icons.RENAME_OFF)){
 			@Override
@@ -482,11 +487,11 @@ public class HeroSelectScene extends PixelScene {
 		IconButton DungeonHappyMode = new IconButton(new ItemSprite(ItemSpriteSheet.LANTERNB)) {
 			@Override
 			protected void onClick() {
-				if ( Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3)){
-					ShatteredPixelDungeon.scene().addToFront(new WndDLC(SPDSettings.dlc(), true));
-				} else {
-					ShatteredPixelDungeon.scene().addToFront(new WndMessage("击败_第三大层Boss_后解锁娱乐模式。"));
-				}
+//				if ( Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3)){
+//					ShatteredPixelDungeon.scene().addToFront(new WndDLC(SPDSettings.dlc(), true));
+//				} else {
+					ShatteredPixelDungeon.scene().addToFront(new WndMessage("DLC模式返修中，敬请期待。"));
+//				}
 
 			}
 		};

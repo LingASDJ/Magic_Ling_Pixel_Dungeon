@@ -53,7 +53,7 @@ public class LevelRules {
             case 10:
                 return new DimandKingLevel();
             case 12:
-                return new NewCavesBossLevel();
+                return new CavesBossLevel();
             case 14:
                 return new CaveTwoBossLevel();
             case 16:
@@ -109,7 +109,7 @@ public class LevelRules {
                     if ((Statistics.boss_enhance & 0x4) != 0) {
                         return new CavesGirlDeadLevel();
                     } else {
-                        return Random.Float() <= 0.4f ? new CaveTwoBossLevel() : new NewCavesBossLevel();
+                        return Random.Float() <= 0.4f ? new CaveTwoBossLevel() : new CavesBossLevel();
                     }
                 case 16:
                 case 17:

@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessAnmy;
@@ -1580,6 +1581,10 @@ public class GameScene extends PixelScene {
 				}
 			}
 
+			if (Dungeon.hero.buff(AscensionChallenge.class) != null){
+				Dungeon.hero.buff(AscensionChallenge.class).saySwitch();
+			}
+
 			InterlevelScene.mode = InterlevelScene.Mode.NONE;
 
 
@@ -2005,7 +2010,11 @@ public class GameScene extends PixelScene {
 
 	};
 
-	public static float ToolbarHeight(){return scene.toolbar.height();}
+	public static float ToolbarHeight(){
+		return SPDSettings.quickSwapper() ? scene.toolbarv1.height() : scene.toolbar.height();
+	}
 
-	public static float StatusHeight(){return scene.status.height();}
+	public static float StatusHeight(){
+		return SPDSettings.quickSwapper() ? scene.toolbarv1.height() : scene.status.height();
+	}
 }

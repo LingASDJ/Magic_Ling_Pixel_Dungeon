@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -29,24 +30,30 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.CryStalPlot;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfRoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.AmuletScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class Amulet extends Item {
-	
+
 	private static final String AC_END = "END";
-	
+
 	{
 		image = ItemSpriteSheet.AMULET;
-		
+
 		unique = true;
 	}
-	
+
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
@@ -57,7 +64,7 @@ public class Amulet extends Item {
 		}
 		return actions;
 	}
-	
+
 	@Override
 	public void execute( Hero hero, String action ) {
 
@@ -67,37 +74,42 @@ public class Amulet extends Item {
 			showAmuletScene( false );
 		}
 	}
-	
+
 	@Override
 	public boolean doPickUp(Hero hero, int pos) {
 		if (super.doPickUp( hero, pos )) {
-			
+
 			if (!Statistics.amuletObtained) {
 				Statistics.amuletObtained = true;
 				hero.spend(-TIME_TO_PICK_UP);
-
-				//delay with an actor here so pickup behaviour can fully process.
-				Actor.add(new Actor(){
-
-					{
-						actPriority = VFX_PRIO;
+				CryStalPlot plot = new CryStalPlot();
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						GameScene.show(new WndDialog(plot,false));
+						ScrollOfRoseShiled wpn = new ScrollOfRoseShiled();
+						GameScene.pickUp( wpn, hero.pos );
+						new ScrollOfRoseShiled().quantity(4).identify().collect();
+						Sample.INSTANCE.play( Assets.Sounds.ITEM );
 					}
-
+				});
+				//add a delayed actor here so pickup behaviour can fully process.
+				Actor.addDelayed(new Actor(){
 					@Override
 					protected boolean act() {
 						Actor.remove(this);
 						showAmuletScene( true );
 						return false;
 					}
-				});
+				}, -5);
 			}
-			
+
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 	private void showAmuletScene( boolean showText ) {
 		AmuletScene.noText = !showText;
 		Game.switchScene( AmuletScene.class, new Game.SceneChangeCallback() {
@@ -119,12 +131,12 @@ public class Amulet extends Item {
 			}
 		});
 	}
-	
+
 	@Override
 	public boolean isIdentified() {
 		return true;
 	}
-	
+
 	@Override
 	public boolean isUpgradable() {
 		return false;

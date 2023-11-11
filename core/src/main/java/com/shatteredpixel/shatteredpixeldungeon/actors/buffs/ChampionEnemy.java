@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ConfusionGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FireGhostDead;
@@ -346,16 +347,19 @@ public abstract class ChampionEnemy extends Buff {
 		public void onAttackProc(Char enemy) {
 			Buff.affect(enemy, Burning.class).reignite(enemy);
 		}
-
 		@Override
 		public void detach() {
-			for (int i : PathFinder.NEIGHBOURS9){
-				if (!Dungeon.level.solid[target.pos+i]){
-					GameScene.add(Blob.seed(target.pos+i, 2, Fire.class));
+			//don't trigger when killed by being knocked into a pit
+			if (target.flying || !Dungeon.level.pit[target.pos]) {
+				for (int i : PathFinder.NEIGHBOURS9) {
+					if (!Dungeon.level.solid[target.pos + i] && !Dungeon.level.water[target.pos + i]) {
+						GameScene.add(Blob.seed(target.pos + i, 2, Fire.class));
+					}
 				}
 			}
 			super.detach();
 		}
+
 
 		@Override
 		public float meleeDamageFactor() {
@@ -376,6 +380,16 @@ public abstract class ChampionEnemy extends Buff {
 		@Override
 		public void onAttackProc(Char enemy) {
 			Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy);
+		}
+
+		@Override
+		public void detach() {
+			for (int i : PathFinder.NEIGHBOURS9){
+				if (!Dungeon.level.solid[target.pos+i]){
+					GameScene.add(Blob.seed(target.pos+i, 2, HalomethaneFire.class));
+				}
+			}
+			super.detach();
 		}
 
 		@Override

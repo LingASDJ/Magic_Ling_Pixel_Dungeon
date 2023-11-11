@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
@@ -41,7 +40,7 @@ public class TreasuryRoom extends SpecialRoom {
 		
 		Painter.set( level, center(), Terrain.STATUE );
 		
-		Heap.Type heapType = Random.Int( 2 ) == 0 ? Heap.Type.CHEST : Dungeon.isDLC(Conducts.Conduct.MONEYLETGO) ? Heap.Type.FOR_SALE : Heap.Type.HEAP;
+		Heap.Type heapType = Random.Int( 2 ) == 0 ? Heap.Type.CHEST : Heap.Type.HEAP;
 		
 		int n = Random.IntRange( 2, 3 );
 		for (int i=0; i < n; i++) {

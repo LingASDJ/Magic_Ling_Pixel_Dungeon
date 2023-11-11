@@ -29,6 +29,9 @@ public class Statistics {
 	//统计分数
 	public static int progressScore;
 
+	//种子处罚
+	public static boolean seedCustom = false;
+
 	//吃保底
 	public static int bossWeapons;
 
@@ -225,6 +228,9 @@ public class Statistics {
 	private static final String BDTX		= "bdtx";
 
 	private static final String LOVE		= "love";
+
+	private static final String SEEDCUSTOM		= "seedCustom";
+
     public static boolean TryUsedAnmy = false;
     public static boolean winGame = false;
     public static boolean HiddenOK = false;
@@ -304,6 +310,7 @@ public class Statistics {
 		winMultiplier   = 1;
 		chalMultiplier  = 1;
 		totalScore      = 0;
+		seedCustom = false;
 	}
 
     public static void storeInBundle(Bundle bundle) {
@@ -319,6 +326,8 @@ public class Statistics {
 		bundle.put(LOVX,deadGo);
 
 		bundle.put(FUCKALONE,fuckGeneratorAlone);
+
+		bundle.put(SEEDCUSTOM,seedCustom);
 
 		//分数
 		bundle.put( PROG_SCORE,  progressScore );
@@ -412,6 +421,8 @@ public class Statistics {
 		winGame = bundle.getBoolean(WINGAME);
 
 		HiddenOK = bundle.getBoolean(HIDEEN);
+
+		seedCustom = bundle.getBoolean(SEEDCUSTOM);
 
 		//嗜血荆棘等级处理
 		ChaicBlood   = bundle.getInt( CHACEBLOOD );

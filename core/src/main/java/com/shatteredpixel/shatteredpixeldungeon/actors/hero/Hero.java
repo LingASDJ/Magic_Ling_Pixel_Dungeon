@@ -28,6 +28,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.happyMode;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.seedCustom;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -57,6 +58,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoRead;
@@ -83,6 +85,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.InvisibilityRing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayCursed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
@@ -118,6 +121,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
+import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
@@ -195,15 +199,21 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.AlchemyScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.SurfaceScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
@@ -529,6 +539,15 @@ public class Hero extends Char {
 		}
 		Buff.affect( this, Regeneration.class );
 		Buff.affect( this, Hunger.class );
+
+		if(HelpSettings()) {
+			Buff.affect(this, GameTracker.class);
+		}
+
+		if(lanterfireactive || Dungeon.isChallenged(DHXD)){
+			Buff.affect( this, Nyctophobia.class );
+		}
+
 	}
 	
 	public int tier() {
@@ -767,6 +786,12 @@ public class Hero extends Char {
 	public boolean canAttack(Char enemy){
 		if (enemy == null || pos == enemy.pos || !Actor.chars().contains(enemy)) {
 			return false;
+		}
+
+		for (ChampionHero buff : buffs(ChampionHero.class)){
+			if (buff.canAttackWithExtraReach( enemy )){
+				return true;
+			}
 		}
 
 		//can always attack adjacent enemies
@@ -1301,6 +1326,14 @@ public class Hero extends Char {
 
 						//1 hunger spent total
 						} else if (Dungeon.level.map[action.dst] == Terrain.MINE_CRYSTAL){
+							//开采水晶获得回合数
+							LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+							if (lock != null){
+								if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))
+									lock.addTime(0.1f);
+								else
+									lock.addTime(0.05f);
+							}
 							Splash.at(action.dst, 0xFFFFFF, 5);
 							Sample.INSTANCE.play( Assets.Sounds.SHATTER );
 							Level.set( action.dst, Terrain.EMPTY );
@@ -1365,7 +1398,7 @@ public class Hero extends Char {
 	}
 
 
-	
+
 	private boolean actTransition(HeroAction.LvlTransition action ) {
 		int stairs = action.dst;
 		LevelTransition transition = Dungeon.level.getTransition(stairs);
@@ -1374,13 +1407,67 @@ public class Hero extends Char {
 			PixelScene.shake(1, 1f);
 			ready();
 			return false;
-
 		} else if (!Dungeon.level.locked && transition != null && transition.inside(pos)) {
 
-			if (Dungeon.level.activateTransition(this, transition)){
-				curAction = null;
-			} else {
+			if (transition.type == LevelTransition.Type.SURFACE){
+				if (belongings.getItem( Amulet.class ) == null) {
+					Game.runOnRenderThread(new Callback() {
+						@Override
+						public void call() {
+							GameScene.show( new WndMessage( Messages.get(Hero.this, "leave") ) );
+						}
+					});
+					ready();
+				} else {
+					Statistics.ascended = true;
+					Badges.silentValidateHappyEnd();
+					Dungeon.win( Amulet.class );
+					Dungeon.deleteGame( GamesInProgress.curSlot, true );
+					Game.switchScene( SurfaceScene.class );
+				}
+
+			} else if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
+					&& Dungeon.depth == 25
+					//ascension challenge only works on runs started on v1.3+
+					&& Dungeon.initialVersion > ShatteredPixelDungeon.v1_2_3
+					&& belongings.getItem(Amulet.class) != null
+					&& buff(AscensionChallenge.class) == null) {
+
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						GameScene.show( new WndOptions( new ItemSprite(ItemSpriteSheet.AMULET),
+								Messages.get(Amulet.class, "ascent_title"),
+								Messages.get(Amulet.class, "ascent_desc"),
+								Messages.get(Amulet.class, "ascent_yes"),
+								Messages.get(Amulet.class, "ascent_no")){
+							@Override
+							protected void onSelect(int index) {
+								if (index == 0){
+									Buff.affect(Hero.this, AscensionChallenge.class);
+									Statistics.highestAscent = 35;
+									actTransition(action);
+								}
+							}
+						} );
+					}
+				});
 				ready();
+
+			} else {
+
+				curAction = null;
+
+				Level.beforeTransition();
+				InterlevelScene.curTransition = transition;
+				if (transition.type == LevelTransition.Type.REGULAR_EXIT
+						|| transition.type == LevelTransition.Type.BRANCH_EXIT) {
+					InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+				} else {
+					InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
+				}
+				Game.switchScene(InterlevelScene.class);
+
 			}
 
 			return false;
@@ -2139,7 +2226,74 @@ public class Hero extends Char {
         belongings.restoreFromBundle(bundle);
     }
 
+	private void MoveWater(){
+		if(Dungeon.GodWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {
+			for (Buff buff : hero.buffs()) {
+				if (buff instanceof Cripple) {
+					buff.detach();
+				}
+			}
+		} else if (Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.hero.buff(WaterSoulX.class) == null && Dungeon.level.water[pos] && Dungeon.GodWaterLevel()){
+			Buff.prolong( hero, Cripple.class, Cripple.DURATION/5f );
+		} else if (Dungeon.GodWaterLevel()&& Dungeon.level.water[pos]){
+			Buff.affect(hero, Barkskin.class).set( 2 + hero.lvl/4, 10 );
+			Buff.prolong(this, Bless.class, Bless.GODSPOERF);
+		}
+
+		//监狱之水 祝福效果 水里隐身
+		//如果是污泥浊水则触发Debuff
+		/** 第一个if 判定为 在监狱上面并且在水上面但是玩家处于漂浮状态并且含有挑战时 解除失明效果*/
+		if(Dungeon.PrisonWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {
+			for (Buff buff : hero.buffs()) {
+				if (buff instanceof Blindness) {
+					buff.detach();
+				}
+			}
+			//TODO 第2个if 判定为 在监狱上面并且在水上面但是玩家非处于漂浮状态并且含有挑战时并且水灵祝福buff为空时 添加失明效果*/
+		} else if (Dungeon.PrisonWaterLevel()&& Dungeon.level.water[pos] && Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.hero.buff(WaterSoulX.class) == null){
+			Buff.prolong(hero, Blindness.class, Blindness.DURATION/5f);
+			/** 第3个if 判定为 在监狱上面并且在水上面但是玩家处于漂浮状态并且不含有挑战时 添加监狱隐身+极速效果*/
+		} else if (Dungeon.PrisonWaterLevel()&& Dungeon.level.water[pos]){
+			Buff.affect(hero, Barkskin.class).set( 2 + hero.lvl/4, 10 );
+			Buff.prolong(this, Bless.class,Bless.GODSPOERF);
+			Buff.affect(this, HasteLing.class, Haste.DURATION/20);
+			Buff.affect(this, InvisibilityRing.class, InvisibilityRing.DURATION/10f);
+			//TODO 第4个if 判定为 在监狱上面但不在水上面 移除增益效果*/
+		} else if(Dungeon.PrisonWaterLevel()&& !Dungeon.level.water[pos])
+			for (Buff buff : hero.buffs()) {
+				if (buff instanceof InvisibilityRing||buff instanceof HasteLing) {
+					buff.detach();
+				}
+			}
+
+		//矿洞之水 祝福效果
+		//如果是污泥浊水则触发Debuff
+		if(Dungeon.ColdWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {
+			for (Buff buff : hero.buffs()) {
+				if (buff instanceof Chill) {
+					buff.detach();
+				}
+			}
+		} else if (Dungeon.ColdWaterLevel()&& Dungeon.level.water[pos] && Dungeon.hero.buff(WaterSoulX.class)== null && Dungeon.isChallenged(AQUAPHOBIA)){
+			Buff.affect(hero, Chill.class, 2f);
+		} else if (Dungeon.ColdWaterLevel()&& Dungeon.level.water[pos]){
+			Buff.affect(this, FrostImbueEX.class, FrostImbueEX.DURATION*0.3f);
+		} else if(Dungeon.ColdWaterLevel()&& !Dungeon.level.water[pos])
+			for (Buff buff : hero.buffs()) {
+				if (buff instanceof FrostImbueEX) {
+					buff.detach();
+				}
+			}
+	}
+
 	private boolean actMove( HeroAction.Move action ) {
+
+		//水中祝福
+		MoveWater();
+
+		if(!Statistics.seedCustom && !Dungeon.customSeedText.isEmpty()){
+			seedCustom = true;
+		}
 
         PotionOfPurity.PotionOfPurityLing potionOfPurityLing =
                 Dungeon.hero.belongings.getItem(PotionOfPurity.PotionOfPurityLing.class);
@@ -2171,7 +2325,7 @@ public class Hero extends Char {
         }
 
         MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
-        if (getHeal != null && HT / 4 > HP) {
+        if (getHeal != null && HT / 6 > HP) {
             this.HP = HT;
             interrupt();
             PotionOfHealing.cure(this);
@@ -2182,6 +2336,7 @@ public class Hero extends Char {
             GLog.w(Messages.get(this, "heartdied"));
             getHeal.detach(belongings.backpack);
         }
+
         for (Buff buff : Dungeon.hero.buffs()) {
             if (HelpSettings() && !(buff instanceof GameTracker)) {
                 Buff.affect(this, GameTracker.class);
@@ -2211,7 +2366,7 @@ public class Hero extends Char {
 
 
         // 深度调查
-        if ((Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) || Dungeon.isDLC(Conducts.Conduct.MONEYLETGO)) && !happyMode) {
+        if ((Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
             happyMode = true;
             GLog.n(Messages.get(WndStory.class, "letsplay"));
         }
@@ -2378,60 +2533,6 @@ public class Hero extends Char {
 		boolean wasHighGrass = Dungeon.level.map[step] == Terrain.HIGH_GRASS;
 
 		super.move( step, travelling);
-
-		if(Dungeon.GodWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {
-			for (Buff buff : hero.buffs()) {
-				if (buff instanceof InvisibilityRing||buff instanceof HasteLing) {
-					buff.detach();
-				}
-			}
-		} else if (Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.hero.buff(WaterSoulX.class) == null && Dungeon.level.water[pos] && Dungeon.GodWaterLevel()){
-			Buff.prolong( hero, Cripple.class, Cripple.DURATION/5f );
-		} else if (Dungeon.GodWaterLevel()&& Dungeon.level.water[pos]){
-			Buff.affect(hero, Barkskin.class).set( 2 + hero.lvl/4, 10 );
-			Buff.prolong(this, Bless.class, Bless.GODSPOERF);
-		}
-
-		//监狱之水 祝福效果 水里隐身
-		//如果是污泥浊水则触发Debuff
-		if(Dungeon.PrisonWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {
-			for (Buff buff : hero.buffs()) {
-				if (buff instanceof InvisibilityRing||buff instanceof HasteLing) {
-					buff.detach();
-				}
-			}
-		} else if (Dungeon.PrisonWaterLevel()&& Dungeon.level.water[pos] && Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.hero.buff(WaterSoulX.class)== null){
-			Buff.prolong(hero, Blindness.class, Blindness.DURATION/5f);
-		} else if (Dungeon.PrisonWaterLevel()&& Dungeon.level.water[pos]){
-			Buff.affect(hero, Barkskin.class).set( 2 + hero.lvl/4, 10 );
-			Buff.prolong(this, Bless.class,Bless.GODSPOERF);
-			Buff.affect(this, HasteLing.class, Haste.DURATION/20);
-			Buff.affect(this, InvisibilityRing.class, InvisibilityRing.DURATION/10f);
-		} else if(Dungeon.PrisonWaterLevel()&& !Dungeon.level.water[pos])
-			for (Buff buff : hero.buffs()) {
-				if (buff instanceof InvisibilityRing||buff instanceof HasteLing) {
-					buff.detach();
-				}
-			}
-
-		//矿洞之水 祝福效果
-		//如果是污泥浊水则触发Debuff
-		if(Dungeon.ColdWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {
-			for (Buff buff : hero.buffs()) {
-				if (buff instanceof FrostImbueEX) {
-					buff.detach();
-				}
-			}
-		} else if (Dungeon.ColdWaterLevel()&& Dungeon.level.water[pos] && Dungeon.hero.buff(WaterSoulX.class)== null && Dungeon.isChallenged(AQUAPHOBIA)){
-			Buff.affect(hero, Chill.class, 2f);
-		} else if (Dungeon.ColdWaterLevel()&& Dungeon.level.water[pos]){
-			Buff.affect(this, FrostImbueEX.class, FrostImbueEX.DURATION*0.3f);
-		} else if(Dungeon.ColdWaterLevel()&& !Dungeon.level.water[pos])
-			for (Buff buff : hero.buffs()) {
-				if (buff instanceof FrostImbueEX) {
-					buff.detach();
-				}
-			}
 
 		//矮人层
 		if(Dungeon.DiedWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {

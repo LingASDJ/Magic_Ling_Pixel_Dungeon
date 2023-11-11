@@ -40,8 +40,9 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SnowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
@@ -240,6 +241,8 @@ public class DwarfKing extends Mob {
 					} else {
 						summonSubject(3, DKGolem.class);
 						summonSubject(3, DKGolem.class);
+						summonSubject(3, DKBrute.class);
+						summonSubject(3, DKBrute.class);
 						summonsMade += 2;
 						spend(TICK);
 					}
@@ -302,8 +305,10 @@ public class DwarfKing extends Mob {
 			//every 3rd summon is always a monk or warlock, otherwise ghoul
 			//except every 9th summon, which is a golem!
 			if (summonsMade % 3 == 2) {
-				if (summonsMade % 9 == 8){
+				if (summonsMade % 9 == 8) {
 					return summonSubject(delay, DKGolem.class);
+				} else if (summonsMade % 10 == 8){
+					return summonSubject(delay, DKBrute.class);
 				} else {
 					return summonSubject(delay, Random.Int(2) == 0 ? DKMonk.class : DKWarlock.class);
 				}
@@ -498,7 +503,7 @@ public class DwarfKing extends Mob {
 					s.detach();
 				}
 				for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])) {
-					if (m instanceof Ghoul || m instanceof Monk || m instanceof Warlock || m instanceof Golem) {
+					if (m instanceof Ghoul || m instanceof Monk || m instanceof Warlock || m instanceof IceGolem || m instanceof DKBrute) {
 						m.die(null);
 					}
 				}
@@ -510,6 +515,12 @@ public class DwarfKing extends Mob {
 			sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
 			Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
 			yell(  Messages.get(this, "enraged", Dungeon.hero.name()) );
+
+			//梦魇Boss额外护盾
+			if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+				Buff.affect(this, DKBarrior.class).setShield(HT/5);
+			}
+
 			BossHealthBar.bleed(true);
 			Game.runOnRenderThread(new Callback() {
 				@Override
@@ -595,6 +606,13 @@ public class DwarfKing extends Mob {
 		}
 	}
 
+	public static class DKBrute extends BruteBot {
+		{
+			HP = HT = 75;
+			state = HUNTING;
+		}
+	}
+
 	public static class DKMonk extends Monk {
 		{
 			properties.add(Property.BOSS_MINION);
@@ -617,7 +635,7 @@ public class DwarfKing extends Mob {
 		}
 	}
 
-	public static class DKGolem extends Golem {
+	public static class DKGolem extends IceGolem {
 		{
 			properties.add(Property.BOSS_MINION);
 			state = HUNTING;
@@ -643,7 +661,10 @@ public class DwarfKing extends Mob {
 			if (delay <= 0){
 
 				if (summon == DKGolem.class){
-					particles.burst(SparkParticle.FACTORY, 10);
+					particles.burst(SnowParticle.FACTORY, 10);
+					Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
+				} else if (summon == DKBrute.class){
+					particles.burst(RainbowParticle.BURST, 10);
 					Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
 				} else if (summon == DKWarlock.class){
 					particles.burst(ShadowParticle.CURSE, 10);
@@ -713,7 +734,7 @@ public class DwarfKing extends Mob {
 				particles = CellEmitter.get(pos);
 
 				if (summon == DKGolem.class){
-					particles.pour(SparkParticle.STATIC, 0.05f);
+					particles.pour(SnowParticle.FACTORY, 0.45f);
 				} else if (summon == DKWarlock.class){
 					particles.pour(ShadowParticle.UP, 0.1f);
 				} else if (summon == DKMonk.class){

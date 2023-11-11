@@ -21,7 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.effects;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
@@ -159,7 +162,6 @@ public class Speck extends Image {
 		angularSpeed = 0;
 
 		switch (type) {
-
 			case HEALING:
 				speed.set(0, -20);
 				lifespan = 1f;
@@ -286,6 +288,10 @@ public class Speck extends Image {
 				break;
 
 			case STEAM:
+				if(depth == 10 || (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && (depth == 8))) {
+					hardlight(0x808080);
+				}
+
 				speed.y = -Random.Float(10, 15);
 				angularSpeed = Random.Float(+180);
 				angle = Random.Float(360);
