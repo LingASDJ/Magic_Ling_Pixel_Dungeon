@@ -531,7 +531,7 @@ public class NewDM720 extends MolotovHuntsman {
 //        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 //            GetBossLoot();
 //        }
-        Statistics.bossScores[2] += 1000;
+
         super.die(cause);
         cause = new MoloHR();
         ((MoloHR) cause).pos = pos;

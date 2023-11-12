@@ -21,11 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -175,10 +175,13 @@ public class OldDM300 extends FlameC02 {
 	@Override
 	public void die( Object cause ) {
 		super.die( cause );
-		playBGM(Assets.BGM_3, true);
+
 		CavesLevel level = (CavesLevel) Dungeon.level;
-		Buff.detach( hero, LockedFloor.class );
+
 		level.updateChasmTerrain();
+
+		level.unseal();
+		BGMPlayer.playBGMWithDepth();
 		//60% chance of 2 shards, 30% chance of 3, 10% chance for 4. Average of 2.5
 		int shards = Random.chances(new float[]{0, 0, 6, 3, 1});
 		for (int i = 0; i < shards; i++){

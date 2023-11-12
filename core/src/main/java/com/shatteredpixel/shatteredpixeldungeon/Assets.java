@@ -522,6 +522,8 @@ public class Assets {
 		public static final String CRYSTAL_WISP= "sprites/crystal_wisp.png";
 		public static final String CRYSTAL_GUARDIAN= "sprites/crystal_guardian.png";
 		public static final String CRYSTAL_SPIRE= "sprites/crystal_spire.png";
+
+		public static final String CRYSTAL_DIED= "sprites/crstal.png";
 		public static final String GNOLL_GUARD= "sprites/gnoll_guard.png";
 	}
 }

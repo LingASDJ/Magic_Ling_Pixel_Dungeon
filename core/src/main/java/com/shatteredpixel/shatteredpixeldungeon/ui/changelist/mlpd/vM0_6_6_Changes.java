@@ -8,11 +8,13 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300AttackSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceSlowGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MolotovHuntsmanSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.RedDragonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
@@ -84,7 +86,7 @@ public class vM0_6_6_Changes {
     }
 
     public static void add_v0_6_6_0_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.6.0-Demo1-7", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.6.0-Demo1-8", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -93,14 +95,14 @@ public class vM0_6_6_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
-                ("种子方面改动如下：" +
+                ("种子方面改动如下：\n" +
                         "1.种子存档会显示绿色存档提示玩家\n" +
                         "2.种子可以在存档信息界面直接看见\n" +
                         "3.种子局最终结算总分减半\n" +
                         "4.种子局排行榜的样子有所不同\n" +
                         "\n其他方面：\n" +
                         "1.武器/法杖重命名功能回归\n" +
-                        "2.迭代优化了一些素材" +
+                        "2.迭代优化了一些素材\n" +
                         "3.底层代码优化")));
 
         changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.FIREDIED, true), ("水晶意志"),
@@ -147,23 +149,38 @@ public class vM0_6_6_Changes {
                 ("现在必须在可见范围内才能攻击敌人，" +
                         "伤害小幅提升，并且调整为闪电链不自然衰减。")));
 
-        changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.CORRUPT, true), ("烈焰精英"),
-                ("现在必须在非水地块上面才能释放烈焰")));
+        changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.CORRUPT, true), ("精英挑战优化调整"),
+                        "_-_A.精英强敌\n\n" +
+                        "1.烈焰精英：不会在含有的水的地块上面死亡产生火焰\n\n" +
+                        "2.索敌精英：现在不再是无限格子，而是4格\n\n" +
+                        "3.鬼磷精英：现在攻击敌人不再必定追加磷火效果，调整为10%的概率，但死亡时无论有没有水都能引燃以自身为3x3的半径的鬼磷火焰。",
+                        "_-_B.基因突变\n\n" +
+                        "1.突变酸液体：现在生成概率5%，且每大层最多累计出现3个，在击败关键Boss后计算清铃。并且酸液有限，消耗完酸液后，变为常规攻击。\n\n" +
+                        "2.新的突变体：\n\n" +
+                        "突变相位体：这种突变体在前面4次攻击命中敌人后会随机传送，并且不处于你视野中时可缓慢回复生命。"));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
+        changes.addButton( new ChangeButton(new RedDragonSprite(), ("红龙任务"),
+                ("红龙任务进行了一些优化，饼正式加入0.6.6.0的游戏中。")));
+
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("DLC模式返修"),
                 ("BossRush等DLC模式返修中，敬请期待后续版本。")));
 
-        Image i = new Image(new YogSprite());
+        Image i = new YogSprite();
         i.scale.set(0.8f);
         changes.addButton(new ChangeButton(i, ("YogDzewa"),
                 ("对梦魇领袖进行了一些优化")));
 
-        changes.addButton(new ChangeButton(new MolotovHuntsmanSprite(), ("DM720&血月赏金猎人长老"),
-                ("DM720d与长老贴图优化，并修复了一些bug")));
+        Image s = new DM720Sprite();
+        s.scale.set(0.8f);
+        changes.addButton(new ChangeButton(s, ("DM720"),
+                ("现在如果在DM720中使用十字架重生不会roll到DM300战斗楼层，DM300也同理")));
+
+        changes.addButton(new ChangeButton(new MolotovHuntsmanSprite(), ("血月赏金猎人长老"),
+                ("DM720与长老贴图优化，并修复了一些bug")));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 "修复了以下Bug:\n\n" +
@@ -232,7 +249,12 @@ public class vM0_6_6_Changes {
                         "4.修复了BR的冲突问题\n" +
                         "5.修复了决斗家的10层闪退bug\n" +
                         "6.修复了子层下楼的错误问题\n" +
-                        "7.其他来自FireBase后台的Bug修复"));
+                        "7.其他来自FireBase后台报告的Bug集中修复",
+                "Demo8:\n\n" +
+                        "1.修复了Dm275和矮人将军地图的相关问题，新存档开始生效\n" +
+                        "2.修复了错误生成尚未整改的丛林毒刺问题\n" +
+                        "3.部分素材贴图迭代优化\n" +
+                        "4.其他来自FireBase后台报告的Bug集中修复"));
 
 
 

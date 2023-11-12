@@ -565,6 +565,9 @@ public class DM300 extends Mob {
 
 		super.die( cause );
 
+		//酸液体清0
+		Statistics.SiderLing = 0;
+
 		GameScene.bossSlain();
 		Dungeon.level.unseal();
 

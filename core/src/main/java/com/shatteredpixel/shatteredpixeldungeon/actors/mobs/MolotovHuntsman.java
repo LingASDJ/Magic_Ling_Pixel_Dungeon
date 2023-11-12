@@ -11,7 +11,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -33,8 +32,8 @@ public class MolotovHuntsman extends Mob {
         this.EXP = 15;
         this.state = this.SLEEPING;
         this.baseSpeed = 0.5625F;
-        this.loot = new RedBloodMoon();
-        this.lootChance = 0.005F;
+//        this.loot = new RedBloodMoon();
+//        this.lootChance = 0.005F;
         this.deathCurse = new String[]{"快停下...", "啊......", "啊.......你这个怪物", "你这怪物...", "神啊，帮帮我吧...", "最后…啊…终于能...见到家人了...", "愚蠢的人类", "为了她..."};
         this.attackCurse = new String[]{"烧起来吧，吃人的野兽！", "让火焰净化一切！", "快滚！", "我说，为什么要让我承担？", "这都是你的错！", "扬了你的骨灰！", "你们，都是贱人！", "去死，你这嗜血的人!", "啊！", "烧死你"};
         this.combo = 0;

@@ -275,6 +275,9 @@ public class Generator {
 		public float[] probs;
 		public float[] defaultProbs = null;
 
+		public Long seed = null;
+		public int dropped = 0;
+
 		//game has two decks of 35 items for overall category probs
 		//one deck has a ring and extra armor, the other has an artifact and extra thrown weapon
 		public float firstProb;
@@ -417,17 +420,19 @@ public class Generator {
 					Mace.class,
 					Scimitar.class,
 					RoundShield.class,
+
 					Sai.class,
 					Whip.class,
 					SkyShield.class,
+
 					Dairikyan.class,
 					MagicTorch.class,
 					GreenSword.class,
+
 					SDBSword.class,
 					RedBloodMoon.class,
-
 			};
-			WEP_T3.probs = new float[]{ 1, 5, 5, 4, 4, 4 ,3,5,3,6,0,0,0};
+			WEP_T3.probs = new float[]{ 1, 5, 4, 4, 4 ,3,5,3,6,0,0,0};
 
 			WEP_T4.classes = new Class<?>[]{
 					Longsword.class,
@@ -715,7 +720,18 @@ public class Generator {
 	public static Artifact randomArtifact() {
 
 		Category cat = Category.ARTIFACT;
+
+		if (cat.defaultProbs != null && cat.seed != null){
+			Random.pushGenerator(cat.seed);
+			for (int i = 0; i < cat.dropped; i++) Random.Long();
+		}
+
 		int i = Random.chances( cat.probs );
+
+		if (cat.defaultProbs != null && cat.seed != null){
+			Random.popGenerator();
+			cat.dropped++;
+		}
 
 		//if no artifacts are left, return null
 		if (i == -1){
@@ -741,6 +757,8 @@ public class Generator {
 	private static final String FIRST_DECK = "first_deck";
 	private static final String GENERAL_PROBS = "general_probs";
 	private static final String CATEGORY_PROBS = "_probs";
+	private static final String CATEGORY_SEED = "_seed";
+	private static final String CATEGORY_DROPPED = "_dropped";
 
 	public static void storeInBundle(Bundle bundle) {
 		bundle.put(FIRST_DECK, usingFirstDeck);
@@ -754,16 +772,11 @@ public class Generator {
 
 		for (Category cat : Category.values()){
 			if (cat.defaultProbs == null) continue;
-			boolean needsStore = false;
-			for (int i = 0; i < cat.probs.length; i++){
-				if (cat.probs[i] != cat.defaultProbs[i]){
-					needsStore = true;
-					break;
-				}
-			}
 
-			if (needsStore){
-				bundle.put(cat.name().toLowerCase() + CATEGORY_PROBS, cat.probs);
+			bundle.put(cat.name().toLowerCase() + CATEGORY_PROBS,   cat.probs);
+			if (cat.seed != null) {
+				bundle.put(cat.name().toLowerCase() + CATEGORY_SEED, cat.seed);
+				bundle.put(cat.name().toLowerCase() + CATEGORY_DROPPED, cat.dropped);
 			}
 		}
 	}
@@ -785,6 +798,10 @@ public class Generator {
 				float[] probs = bundle.getFloatArray(cat.name().toLowerCase() + CATEGORY_PROBS);
 				if (cat.defaultProbs != null && probs.length == cat.defaultProbs.length){
 					cat.probs = probs;
+				}
+				if (bundle.contains(cat.name().toLowerCase() + CATEGORY_SEED)){
+					cat.seed = bundle.getLong(cat.name().toLowerCase() + CATEGORY_SEED);
+					cat.dropped = bundle.getInt(cat.name().toLowerCase() + CATEGORY_DROPPED);
 				}
 			}
 		}

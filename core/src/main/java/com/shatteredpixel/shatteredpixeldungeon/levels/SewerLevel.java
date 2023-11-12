@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Ripple;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.JunglePainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -88,7 +89,7 @@ public class SewerLevel extends RegularLevel {
 					}
 					Ankh weapon = Dungeon.hero.belongings.getItem(Ankh.class);
 					if (weapon != null) {
-						Dungeon.level.drop(weapon, entrance).sprite.drop();
+						Dungeon.level.drop(weapon, entrance()).sprite.drop();
 						weapon.detachAll(hero.belongings.backpack);
 						GLog.w(Messages.get(Level.class,"weapon"));
 					}
@@ -164,6 +165,14 @@ public class SewerLevel extends RegularLevel {
 	protected void createMobs() {
 		Ghost.Quest.spawn( this );
 		super.createMobs();
+	}
+
+	@Override
+	protected void createItems() {
+		if(Dungeon.depth == 1){
+			drop(new ScrollOfUpgrade(), exit()-1 );
+		}
+		super.createItems();
 	}
 	
 	@Override

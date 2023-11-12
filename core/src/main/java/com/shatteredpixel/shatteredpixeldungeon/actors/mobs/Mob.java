@@ -361,6 +361,13 @@ public abstract class Mob extends Char {
 
 		super.act();
 
+		//相位体
+		if (!Dungeon.level.heroFOV[pos] && HP < HT && buff(ChampionEnemy.HealRight.class) != null) {
+			HP += Math.min(1, HT);
+			spend(12f);
+			return true;
+		}
+
 		boolean justAlerted = alerted;
 		alerted = false;
 

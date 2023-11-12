@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -75,6 +76,13 @@ import java.util.ArrayList;
 
 public class CavesLevel extends RegularLevel {
 
+	//红龙的试炼
+	@Override
+	protected void createItems() {
+		RedDragon.Quest.spawn(this);
+		super.createItems();
+	}
+
 	public void updateChasmTerrain() {
 
 		Game.runOnRenderThread(new Callback() {
@@ -99,7 +107,7 @@ public class CavesLevel extends RegularLevel {
 					}
 					Ankh weapon = Dungeon.hero.belongings.getItem(Ankh.class);
 					if (weapon != null) {
-						Dungeon.level.drop(weapon, entrance).sprite.drop();
+						Dungeon.level.drop(weapon, entrance()).sprite.drop();
 						weapon.detachAll(hero.belongings.backpack);
 						GLog.w(Messages.get(Level.class,"weapon"));
 					}

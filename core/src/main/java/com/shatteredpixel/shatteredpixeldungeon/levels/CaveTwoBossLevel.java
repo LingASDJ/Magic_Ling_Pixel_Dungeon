@@ -254,6 +254,8 @@ public class CaveTwoBossLevel extends Level {
         super.seal();
         Statistics.qualifiedForBossChallengeBadge = true;
 
+        Statistics.dm720Fight = true;
+
         int entrance = entrance();
         set( entrance, Terrain.WALL );
 

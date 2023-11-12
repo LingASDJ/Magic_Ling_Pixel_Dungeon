@@ -293,7 +293,7 @@ public class CavesBossLevel extends Level {
 		CellEmitter.get( entrance ).start( Speck.factory( Speck.ROCK ), 0.07f, 10 );
 		PixelScene.shake( 3, 0.7f );
 		Sample.INSTANCE.play( Assets.Sounds.ROCKS );
-
+		Statistics.dm300Fight = true;
 		DM300 boss = new DM300();
 		boss.state = boss.WANDERING;
 		do {

@@ -95,6 +95,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMappi
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
@@ -253,6 +254,7 @@ public enum HeroClass {
 			new CrivusFruitsFlake().quantity(50).identify().collect();
 			new ChaliceOfBlood().quantity(1).identify().collect();
 			new PotionOfHealing().quantity(50).identify().collect();
+			new ScrollOfTransmutation().quantity(50).identify().collect();
 
 			new PotionOfMindVision().quantity(50).identify().collect();
 

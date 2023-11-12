@@ -634,7 +634,7 @@ public abstract class YogFist extends Mob {
 
 		{
 			spriteClass = FistSprite.Ice.class;
-			HP = HT = 550;
+			HP = HT = 150;
 			properties.add(Property.ICY);
 
 			properties.add(Property.FIERY);
@@ -696,7 +696,7 @@ public abstract class YogFist extends Mob {
 	public static class HaloFist extends YogFist {
 
 		{
-			HP = HT = 550;
+			HP = HT = 320;
 			spriteClass = FistSprite.HaloFist.class;
 			properties.add(Property.FIERY);
 			immunities.add(FrostBurning.class);
@@ -820,7 +820,7 @@ public abstract class YogFist extends Mob {
 				}
 			}
 			if(enemy != null) {
-				if (abilityCooldown <= 0 && HP < HT * 0.8f) {
+				if (abilityCooldown <= 0 && HP < HT * 0.4f) {
 					lastHeroPos = enemy.pos;
 
 					int beams = (int) (4 + (HP * 1.0f / HT) * 2);

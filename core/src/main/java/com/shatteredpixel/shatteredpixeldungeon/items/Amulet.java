@@ -89,7 +89,7 @@ public class Amulet extends Item {
 						GameScene.show(new WndDialog(plot,false));
 						ScrollOfRoseShiled wpn = new ScrollOfRoseShiled();
 						GameScene.pickUp( wpn, hero.pos );
-						new ScrollOfRoseShiled().quantity(4).identify().collect();
+						new ScrollOfRoseShiled().quantity(2).identify().collect();
 						Sample.INSTANCE.play( Assets.Sounds.ITEM );
 					}
 				});

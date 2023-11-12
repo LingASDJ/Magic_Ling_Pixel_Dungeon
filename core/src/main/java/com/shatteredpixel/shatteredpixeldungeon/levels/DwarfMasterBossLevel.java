@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -28,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ImpShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -52,8 +54,22 @@ public class DwarfMasterBossLevel extends Level {
 
     public static final int CENTER = 18 + WIDTH * 17;
 
-    private static final int ENTRANCE = 18 + WIDTH * 31;
-    private static final int ENTRANC = 19 + WIDTH * 31;
+    private int status = 0;
+    private static final int START = 0;
+    private static final int FIGHTING = 1;
+    private static final int WON = 2;
+    private static final int ERROR = 9999999;
+
+    private void progress(){
+        if(status == START){
+            status = FIGHTING;
+        }else if(status == FIGHTING){
+            status = WON;
+        }else{
+            status = ERROR;
+        }
+    }
+
 
     @Override
     public String tilesTex() {
@@ -105,17 +121,20 @@ public class DwarfMasterBossLevel extends Level {
         map = codedMap.clone();
 
         //小恶魔的逻辑
-//        impShop = new ImpShopRoom();
-//        impShop.set(end.left+4, end.top+23, end.left+11, end.top+30);
-//        Painter.set(this, impShop.center(), Terrain.PEDESTAL);
+        impShop = new ImpShopRoom();
+        impShop.set(end.left+4, end.top+23, end.left+11, end.top+30);
+        Painter.set(this, impShop.center(), Terrain.PEDESTAL);
 
         int entrance = (this.width * 31) + 18;
+        int exit = 94;
 
         LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(enter);
 
-        LevelTransition exit = new LevelTransition(this, 0, LevelTransition.Type.REGULAR_EXIT);
-        transitions.add(exit);
+        LevelTransition exits = new LevelTransition(this, exit, LevelTransition.Type.REGULAR_EXIT);
+        transitions.add(exits);
+
+        map[exit] = Terrain.LOCKED_EXIT;
 
         return true;
     }
@@ -151,6 +170,7 @@ public class DwarfMasterBossLevel extends Level {
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle( bundle );
         bundle.put( IMP_SHOP, impShop );
+        bundle.put( "level_status", status );
     }
     private static final String IMP_SHOP = "imp_shop";
     private void spawnShop(){
@@ -164,6 +184,7 @@ public class DwarfMasterBossLevel extends Level {
     public void restoreFromBundle( Bundle bundle ) {
         super.restoreFromBundle( bundle );
         impShop = (ImpShopRoom) bundle.get( IMP_SHOP );
+        status = bundle.getInt("level_status");
         //pre-1.3.0 saves, modifies exit transition with custom size
         if (bundle.contains("exit")){
             LevelTransition exit = getTransition(LevelTransition.Type.REGULAR_EXIT);
@@ -318,16 +339,17 @@ public class DwarfMasterBossLevel extends Level {
     public void occupyCell( Char ch ) {
         super.occupyCell(ch);
         int entrance = (this.width * 31) + 18;
-        if (map[entrance] == Terrain.ENTRANCE && map[exit] != Terrain.EXIT
-                && ch == Dungeon.hero && (Dungeon.level.distance(ch.pos, entrance) >= 0)) {
+
+        if (status == START && ch == Dungeon.hero) {
+            progress();
             seal();
             CellEmitter.get( entrance ).start( FlameParticle.FACTORY, 0.1f, 10 );
         }
 
-        if(ch == Dungeon.hero){
+        if(ch == hero){
             if(MAIN_PORTAL.containsKey(ch.pos)) {
                 ScrollOfTeleportation.appear(ch, IF_MAIN_PORTAL.get(ch.pos));
-                Dungeon.hero.interrupt();
+                hero.interrupt();
                 Dungeon.observe();
                 GameScene.updateFog();
             }
@@ -360,8 +382,8 @@ public class DwarfMasterBossLevel extends Level {
         boss.pos = CENTER;
         GameScene.add(boss);
 
-        Level.set(ENTRANCE, Terrain.EMPTY);
-        GameScene.updateMap(ENTRANCE);
+        Level.set(entrance(), Terrain.EMPTY);
+        GameScene.updateMap(entrance());
         Dungeon.observe();
 
         GLog.p(Messages.get(this,"dead_go"));
@@ -371,8 +393,9 @@ public class DwarfMasterBossLevel extends Level {
     @Override
     public void unseal() {
         super.unseal();
-        set( ENTRANC, Terrain.ENTRANCE );
-        GameScene.updateMap( ENTRANC );
+
+        set( entrance(), Terrain.ENTRANCE );
+        GameScene.updateMap( entrance() );
         Dungeon.observe();
 
         if (Imp.Quest.isCompleted()) {

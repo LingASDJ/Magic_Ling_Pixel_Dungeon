@@ -29,7 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.PylonSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CrstalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
@@ -40,7 +40,7 @@ import java.util.ArrayList;
 
 public abstract class SpellCaster extends Mob {
     {
-        spriteClass = PylonSprite.class;
+        spriteClass = CrstalSprite.class;
 
         HP = HT = 45;
 
@@ -126,12 +126,12 @@ public abstract class SpellCaster extends Mob {
 
     public void activate(){
         alignment = Alignment.ENEMY;
-        ((PylonSprite) sprite).activate();
+        ((CrstalSprite) sprite).activate();
     }
 
     @Override
     public CharSprite sprite() {
-        PylonSprite p = (PylonSprite) super.sprite();
+        CrstalSprite p = (CrstalSprite) super.sprite();
         if (alignment != Alignment.NEUTRAL) p.activate();
         return p;
     }

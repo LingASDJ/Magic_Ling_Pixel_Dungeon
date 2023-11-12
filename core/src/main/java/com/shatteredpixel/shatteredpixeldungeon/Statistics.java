@@ -35,6 +35,8 @@ public class Statistics {
 	//吃保底
 	public static int bossWeapons;
 
+	public static int SiderLing;
+
 	//中秋节幽灵特别行动
 	public static boolean findMoon = false;
 
@@ -127,6 +129,10 @@ public class Statistics {
 
 	//首次对决
 	public static boolean mimicking = false;
+
+	public static boolean dm720Fight = false;
+
+	public static boolean dm300Fight = false;
 
     private static final String LOVX = "lovx";
     private static final String FUCKALONE = "fuckplayer";
@@ -231,6 +237,12 @@ public class Statistics {
 
 	private static final String SEEDCUSTOM		= "seedCustom";
 
+	private static final String SIDERLING      = "siderLing";
+
+	private static final String DM720FIGHT      = "dm720FIGHT";
+
+	private static final String DM300FIGHT      = "dm300FIGHT";
+
     public static boolean TryUsedAnmy = false;
     public static boolean winGame = false;
     public static boolean HiddenOK = false;
@@ -242,6 +254,9 @@ public class Statistics {
         ChaicBlood = 0;
         readBooks = 0;
         HealingIsDied = 0;
+
+		dm720Fight = false;
+		dm300Fight = false;
 
         happyMode = false;
 
@@ -311,6 +326,7 @@ public class Statistics {
 		chalMultiplier  = 1;
 		totalScore      = 0;
 		seedCustom = false;
+		SiderLing = 0;
 	}
 
     public static void storeInBundle(Bundle bundle) {
@@ -325,9 +341,15 @@ public class Statistics {
         bundle.put(LOVE,findMoon);
 		bundle.put(LOVX,deadGo);
 
+		bundle.put(SIDERLING,SiderLing);
+
 		bundle.put(FUCKALONE,fuckGeneratorAlone);
 
 		bundle.put(SEEDCUSTOM,seedCustom);
+
+		bundle.put(DM720FIGHT,dm720Fight);
+
+		bundle.put(DM300FIGHT,dm300Fight);
 
 		//分数
 		bundle.put( PROG_SCORE,  progressScore );
@@ -418,6 +440,8 @@ public class Statistics {
 	
 	public static void restoreFromBundle( Bundle bundle ) {
 
+		SiderLing = bundle.getInt( SIDERLING);
+
 		winGame = bundle.getBoolean(WINGAME);
 
 		HiddenOK = bundle.getBoolean(HIDEEN);
@@ -428,6 +452,10 @@ public class Statistics {
 		ChaicBlood   = bundle.getInt( CHACEBLOOD );
 
 		bossWeapons = bundle.getInt(BDTX);
+
+		dm720Fight = bundle.getBoolean(DM720FIGHT);
+
+		dm300Fight = bundle.getBoolean(DM300FIGHT);
 
 		fuckGeneratorAlone = bundle.getInt(FUCKALONE);
 

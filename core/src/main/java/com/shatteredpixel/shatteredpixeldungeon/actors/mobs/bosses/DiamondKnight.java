@@ -306,7 +306,8 @@ public class DiamondKnight extends Boss {
     public void die( Object cause ) {
 
         super.die( cause );
-
+        //酸液体清0
+        Statistics.SiderLing = 0;
         Dungeon.level.unseal();
         Statistics.bossScores[1] += 2500;
         Dungeon.level.drop( new TengusMask(), pos ).sprite.drop();
