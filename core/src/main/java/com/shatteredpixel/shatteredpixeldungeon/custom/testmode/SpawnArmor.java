@@ -298,9 +298,9 @@ public class SpawnArmor extends TestItem {
 
             // 创建附魔信息文本块
             RenderedTextBlock_enchantInfo = PixelScene.renderTextBlock("", 6);
-            RenderedTextBlock_enchantInfo.text(infoBuilder());
             RenderedTextBlock_enchantInfo.visible = true;
             RenderedTextBlock_enchantInfo.maxWidth(WIDTH);
+            updateEnchantText();
             add(RenderedTextBlock_enchantInfo);
 
             // 创建附魔种类选项滑块
@@ -308,7 +308,7 @@ public class SpawnArmor extends TestItem {
                 @Override
                 protected void onChange() {
                     enchant_rarity = getSelectedValue();
-                    updateText();
+                    updateEnchantText();
                 }
             };
             OptionSlider_enchantRarity.setSelectedValue(enchant_rarity);
@@ -319,7 +319,7 @@ public class SpawnArmor extends TestItem {
                 @Override
                 protected void onChange() {
                     enchant_id = getSelectedValue();
-                    updateText();
+                    updateEnchantText();
                 }
             };
             OptionSlider_enchantId.setSelectedValue(enchant_id);
@@ -439,23 +439,46 @@ public class SpawnArmor extends TestItem {
         * 获取附魔信息文本。
         * @return 附魔信息文本 
         */
-        private String infoBuilder() {
-            //String desc = Messages.get(BossRushArmor.class, "enchant_id_pre", enchant_rarity);
-            String desc = "";
-            Class<? extends Armor.Glyph> glyph = generateEnchant(enchant_rarity, enchant_id);
-            desc += Messages.get(this, "current_enchant", (glyph == null ? Messages.get(this, "no_enchant") : currentGlyphName(glyph)));
-            return desc;
+        private String getEnchantInfo(Class enchant) {
+            return enchant==null?Messages.get(this, "no_enchant"):Messages.get(enchant, "name", Messages.get(this, "enchant"));
+        }
+
+        private int getEnchantCount(int rarity) {
+            switch (rarity) {
+                case 1:
+                    return 4;
+                case 2:
+                    return 6;
+                case 3:
+                    return 3;
+                case 4:
+                    return 8;
+            }
+            return 0;
+        }
+
+        private void updateEnchantText() {
+            StringBuilder info = new StringBuilder();
+            if (enchant_rarity == 0) {
+                info = new StringBuilder(Messages.get(this, "no_enchant"));
+            } else {
+                for (int i = 0; i < getEnchantCount(enchant_rarity); i++) {
+                    info.append(i + 1).append(":").append(getEnchantInfo(generateEnchant(enchant_rarity, i))).append(" ");
+
+                    // 添加换行判断
+                    if ((i + 1) % 4 == 0 || i == (getEnchantCount(enchant_rarity)-1)) {
+                        info.append("\n");
+                    }
+                }
+                info.append(Messages.get(this, "current_enchant",getEnchantInfo(generateEnchant(enchant_rarity, enchant_id))));
+            }
+            RenderedTextBlock_enchantInfo.text(info.toString());
         }
 
         private int maxSlots(int t) {
             if (t <= 1) return 3;
             if (t == 2 || t == 3) return 8;
             else return 9;
-        }
-
-        private void updateText() {
-            RenderedTextBlock_enchantInfo.text(infoBuilder());
-            layout();
         }
     }
 }
