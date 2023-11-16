@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
-import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.AncityMiniLevel;
 import com.watabou.utils.Random;
 
 //Level Rules
@@ -84,7 +83,7 @@ public class LevelRules {
                 case 0:
                     return new ZeroLevel();
                 case 1:
-                    return new AncityMiniLevel();
+                    //return new AncityMiniLevel();
                 case 2:
                 case 3:
                 case 4:
