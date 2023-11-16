@@ -315,7 +315,7 @@
 //        Dungeon.level.drop( new SkeletonKey( Dungeon.depth ), pos ).sprite.drop();
 //
 //        //60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5
-//        for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
+//       for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
 //            if (	mob instanceof OldDM300) {
 //                mob.die( cause );
 //            }

@@ -21,18 +21,17 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -43,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Camera;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
@@ -283,7 +283,7 @@ public class Goo extends Mob {
 	public void die( Object cause ) {
 		
 		super.die( cause );
-		
+		Statistics.gooFight = true;
 		Dungeon.level.unseal();
 		
 		GameScene.bossSlain();
@@ -307,19 +307,17 @@ public class Goo extends Mob {
 		
 		yell( Messages.get(this, "defeated") );
 	}
-	
+
 	@Override
 	public void notice() {
 		super.notice();
 		if (!BossHealthBar.isAssigned()) {
 			BossHealthBar.assignBoss(this);
-			Dungeon.level.seal();
-			yell(Messages.get(this, "notice"));
-			for (Char ch : Actor.chars()){
-				if (ch instanceof DriedRose.GhostHero){
-					((DriedRose.GhostHero) ch).sayBoss();
-				}
-			}
+			GLog.n(Messages.get(this, "notice"));
+			GameScene.flash(0x8000cc00);
+			Camera.main.shake(1f,3f);
+			BGMPlayer.playBoss();
+			this.sprite.showStatus(CharSprite.NEGATIVE, "!!!");
 		}
 	}
 

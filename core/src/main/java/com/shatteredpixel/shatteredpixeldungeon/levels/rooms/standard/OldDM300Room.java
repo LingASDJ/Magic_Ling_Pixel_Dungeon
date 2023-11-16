@@ -4,7 +4,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OldDM300;
-import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -55,9 +54,8 @@ public class OldDM300Room extends SpecialRoom {
             door.set( Door.Type.CRYSTAL );
         }
 
-        int KeyPos = (top + 20) * level.width() + left + 20;
+        level.addItemToSpawn( new CrystalKey( Dungeon.depth ) );
 
-        level.drop( new CrystalKey( Dungeon.depth ), KeyPos).type = Heap.Type.CHEST;
         level.addItemToSpawn( new PotionOfMindVision());
 
 

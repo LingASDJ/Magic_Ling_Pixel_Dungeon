@@ -115,7 +115,7 @@ public class Chasm implements Hero.Doom {
 
 		Level.beforeTransition();
 
-		if (Dungeon.hero.isAlive()) {
+		if (Dungeon.hero.isAlive() && Dungeon.branch == 0) {
 			Dungeon.hero.interrupt();
 			InterlevelScene.mode = InterlevelScene.Mode.FALL;
 			if (Dungeon.level instanceof RegularLevel) {

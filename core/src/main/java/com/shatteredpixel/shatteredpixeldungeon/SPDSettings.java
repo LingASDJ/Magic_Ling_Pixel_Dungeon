@@ -487,6 +487,8 @@ public class SPDSettings extends GameSettings {
 
 	public static final String KEY_NEWS_LAST_READ = "news_last_read";
 
+	public static final String KEY_UPDATE_LAST_READ = "news_update_read";
+
 	public static void news(boolean value){
 		put(KEY_NEWS, value);
 	}
@@ -517,6 +519,14 @@ public class SPDSettings extends GameSettings {
 
 	public static boolean WiFi(){
 		return getBoolean(KEY_WIFI, true);
+	}
+
+	public static void updatenewsLastRead(long updatelastRead){
+		put(KEY_UPDATE_LAST_READ, updatelastRead);
+	}
+
+	public static long updatenewsLastRead(){
+		return getLong(KEY_UPDATE_LAST_READ, 0);
 	}
 
 	public static void newsLastRead(long lastRead){

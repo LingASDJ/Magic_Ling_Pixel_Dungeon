@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
+import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.ROGUE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createBossRushLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createStandardLevel;
 
@@ -39,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BloodBat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
@@ -58,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.MiniBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -96,7 +99,7 @@ public class Dungeon {
 		STRENGTH_POTIONS,
 		UPGRADE_SCROLLS,
 		ARCANE_STYLI,
-
+		BBAT,
 		//Health potion sources
 		//enemies
 		SWARM_HP,
@@ -233,6 +236,14 @@ public class Dungeon {
 				case 13:
 				case 14:
 					level = new MiningLevel();
+					break;
+				default:
+					level = new DeadEndLevel();
+			}
+		} else if (branch == 2) {
+			switch (depth) {
+				case 4: case 14:
+					level = new MiniBossLevel();
 					break;
 				default:
 					level = new DeadEndLevel();
@@ -412,6 +423,25 @@ public class Dungeon {
 			hero.buff(AscensionChallenge.class).onLevelSwitch();
 		}
 
+		if (!LimitedDrops.BBAT.dropped() && hero.isClass(ROGUE)){
+			LimitedDrops.BBAT.drop();
+			ArrayList<Integer> respawnPoints = new ArrayList<>();
+
+			for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+				int p = 0;
+				if (Actor.findChar( p ) == null && Dungeon.level.passable[p]) {
+					respawnPoints.add( p );
+				}
+			}
+			if (respawnPoints.size() > 0) {
+				BloodBat bat = new BloodBat();
+				bat.pos = respawnPoints.get(Random.index(respawnPoints));
+				bat.state = bat.WANDERING;
+				Dungeon.level.mobs.add( bat );
+				Actor.add( bat );
+			}
+		}
+
 		Mob.restoreAllies( level, pos );
 
 		Actor.init();
@@ -560,7 +590,7 @@ public class Dungeon {
 		difficultys =  new Difficulty.HardStorage(SPDSettings.difficulty());
 
 		TitleScene.Reusable = false;
-
+		BloodBat.level = 1;
 
 		TitleScene.NightDay = false;
 
@@ -952,6 +982,11 @@ public class Dungeon {
 			Badges.saveLocal( badges );
 			bundle.put( BADGES, badges );
 
+			Bundle passwordbadges = new Bundle();
+			PaswordBadges.saveLocal( passwordbadges );
+			bundle.put( ZBADGES, passwordbadges );
+
+			BloodBat.saveLevel(bundle);
 			FileUtils.bundleToFile( GamesInProgress.gameFile(save), bundle);
 
 		} catch (IOException e) {
@@ -963,7 +998,7 @@ public class Dungeon {
 	public static void loadGame( int save, boolean fullLoad ) throws IOException {
 
 		Bundle bundle = FileUtils.bundleFromFile( GamesInProgress.gameFile( save ) );
-
+		BloodBat.loadLevel(bundle);
 		//pre-1.3.0 saves
 		if (bundle.contains(INIT_VER)){
 			initialVersion = bundle.getInt( INIT_VER );

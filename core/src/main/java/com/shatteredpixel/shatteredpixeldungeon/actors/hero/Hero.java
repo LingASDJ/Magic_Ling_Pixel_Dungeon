@@ -110,6 +110,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Ch
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BloodBat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
@@ -226,6 +227,11 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 
 public class Hero extends Char {
+
+	public boolean isClass(HeroClass clazz){
+		if (heroClass == HeroClass.ROGUE) return true;
+		return clazz == this.heroClass;
+	}
 
 	public boolean isSubclass(HeroSubClass subClass) {
 		if (this.subClass == HeroSubClass.ASSASSIN || this.subClass == HeroSubClass.FREERUNNER) return true;
@@ -1854,6 +1860,11 @@ public class Hero extends Char {
 			if (Dungeon.level.pit[step] && !Dungeon.level.solid[step]
 					&& (!flying || buff(Levitation.class) != null && buff(Levitation.class).detachesWithinDelay(delay))){
 				if (!Chasm.jumpConfirmed){
+
+					if(Dungeon.branch != 0){
+						return false;
+					}
+
 					Chasm.heroJump(this);
 					interrupt();
 				} else {
@@ -1977,6 +1988,9 @@ public class Hero extends Char {
 		if (source != AscensionChallenge.class) {
 			this.exp += exp;
 		}
+
+		BloodBat.updateHP();
+
 		float percent = exp/(float)maxExp();
 
 		EtherealChains.chainsRecharge chains = buff(EtherealChains.chainsRecharge.class);

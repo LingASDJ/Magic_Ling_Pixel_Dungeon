@@ -88,19 +88,19 @@ public class AscensionChallenge extends Buff {
 		modifiers.put(ClearElemental.class,  7f);
 		modifiers.put(FlowerSlime.class,     9f);
 
-		modifiers.put(Salamander.class,    5f);
+		modifiers.put(Salamander.class,    2f);
 
 		modifiers.put(Snake.class,          9f);
 		modifiers.put(Gnoll.class,          9f);
-		modifiers.put(Swarm.class,          8.5f);
-		modifiers.put(Crab.class,           8f);
-		modifiers.put(Slime.class,          8f);
+		modifiers.put(Swarm.class,          7.5f);
+		modifiers.put(Crab.class,           7f);
+		modifiers.put(Slime.class,          7f);
 
 		modifiers.put(MolotovHuntsman.class,6f);
 
-		modifiers.put(ColdMagicRat.class,   8f);
+		modifiers.put(ColdMagicRat.class,   3f);
 
-		modifiers.put(SRPDHBLR.class,     8.5f);
+		modifiers.put(SRPDHBLR.class,     2.5f);
 
 		modifiers.put(Skeleton.class,       5f);
 		modifiers.put(Thief.class,          5f);
@@ -277,7 +277,7 @@ public class AscensionChallenge extends Buff {
 				Sample.INSTANCE.play( Assets.Sounds.DRINK );
 
 				PotionOfHealing.cure( hero );
-				hero.belongings.uncurseEquipped();
+
 				hero.HP = hero.HT;
 
 				Dungeon.hero.interrupt();

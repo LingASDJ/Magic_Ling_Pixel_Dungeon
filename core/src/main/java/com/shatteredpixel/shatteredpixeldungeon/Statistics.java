@@ -134,6 +134,8 @@ public class Statistics {
 
 	public static boolean dm300Fight = false;
 
+	public static boolean gooFight = false;
+
     private static final String LOVX = "lovx";
     private static final String FUCKALONE = "fuckplayer";
     private static final String WINGAME = "wingame";
@@ -243,6 +245,8 @@ public class Statistics {
 
 	private static final String DM300FIGHT      = "dm300FIGHT";
 
+	private static final String GOOFIGHT      = "gooFIGHT";
+
     public static boolean TryUsedAnmy = false;
     public static boolean winGame = false;
     public static boolean HiddenOK = false;
@@ -257,6 +261,7 @@ public class Statistics {
 
 		dm720Fight = false;
 		dm300Fight = false;
+		gooFight = false;
 
         happyMode = false;
 
@@ -350,6 +355,8 @@ public class Statistics {
 		bundle.put(DM720FIGHT,dm720Fight);
 
 		bundle.put(DM300FIGHT,dm300Fight);
+
+		bundle.put(GOOFIGHT,gooFight);
 
 		//分数
 		bundle.put( PROG_SCORE,  progressScore );
@@ -456,6 +463,8 @@ public class Statistics {
 		dm720Fight = bundle.getBoolean(DM720FIGHT);
 
 		dm300Fight = bundle.getBoolean(DM300FIGHT);
+
+		gooFight = bundle.getBoolean(GOOFIGHT);
 
 		fuckGeneratorAlone = bundle.getInt(FUCKALONE);
 

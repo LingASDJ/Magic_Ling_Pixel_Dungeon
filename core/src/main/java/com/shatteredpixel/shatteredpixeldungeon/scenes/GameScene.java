@@ -172,6 +172,27 @@ public class GameScene extends PixelScene {
 	public static boolean logActorThread;
 	public static boolean tagDisappeared = false;
 	public static boolean updateTags = false;
+
+	//ensures that mob sprites are drawn from top to bottom, in case of overlap
+	public static void sortMobSprites(){
+		if (scene != null){
+			synchronized (scene) {
+				scene.mobs.sort((a, b) -> {
+					//elements that aren't visual go to the end of the list
+					if (a instanceof Visual && b instanceof Visual) {
+						return (int) Math.signum((((Visual) a).y + ((Visual) a).height())
+								- (((Visual) b).y + ((Visual) b).height()));
+					} else if (a instanceof Visual){
+						return -1;
+					} else if (b instanceof Visual){
+						return 1;
+					} else {
+						return 0;
+					}
+				});
+			}
+		}
+	}
 	private void tell(String text) {
 		Game.runOnRenderThread(new Callback() {
 			@Override

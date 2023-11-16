@@ -24,18 +24,24 @@ package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestBatLock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BloodBat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -43,6 +49,9 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -66,17 +75,34 @@ public class CloakOfShadows extends Artifact {
 
 	public static final String AC_STEALTH = "STEALTH";
 
-	@Override
+	public static final String AC_BloodBat = "BloodBat";
+
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
 		if ((isEquipped( hero ) || hero.hasTalent(Talent.LIGHT_CLOAK))
-				&& !cursed
-				&& hero.buff(MagicImmune.class) == null
-				&& (charge > 0 || activeBuff != null)) {
+				&& !cursed && (charge > 0 || activeBuff != null)) {
 			actions.add(AC_STEALTH);
+		}
+		boolean needToSpawn = true;
+
+		for (Mob mob : Dungeon.level.mobs){
+			if (mob instanceof BloodBat) {
+				needToSpawn = false;
+				break;
+			}
+		}
+
+		if (needToSpawn) {
+			if (hero.buff(BloodBat.BloodBatRecharge.class) != null)
+				needToSpawn = false;
+		}
+
+		if (needToSpawn && Dungeon.hero.buff(TestBatLock.class) == null){
+			actions.add(AC_BloodBat);
 		}
 		return actions;
 	}
+
 
 	@Override
 	public void execute( Hero hero, String action ) {
@@ -108,8 +134,32 @@ public class CloakOfShadows extends Artifact {
 				}
 				hero.sprite.operate( hero.pos );
 			}
-
+		} else if (action.equals(AC_BloodBat)){
+			Buff.affect(hero, TestBatLock.class).set( (1), 1 );
+			hero.sprite.operate(hero.pos, new Callback() {
+				@Override
+				public void call() {
+					ArrayList<Integer> respawnPoints = new ArrayList<>();
+					for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+						int p = hero.pos + PathFinder.NEIGHBOURS8[i];
+						if (Actor.findChar( p ) == null && Dungeon.level.passable[p]) {
+							respawnPoints.add( p );
+						}
+					}
+					if (respawnPoints.size() > 0){
+						BloodBat bat = new BloodBat();
+						bat.pos = respawnPoints.get(Random.index( respawnPoints ));
+						bat.HP = bat.HT = 18 + BloodBat.level * 2;
+						bat.defenseSkill = 4 + BloodBat.level*2;
+						bat.state = bat.WANDERING;
+						GameScene.add(bat);
+						bat.sprite.emitter().burst(Speck.factory(Speck.STAR), 10);
+						hero.sprite.idle();
+					}
+				}
+			});
 		}
+
 	}
 
 	@Override

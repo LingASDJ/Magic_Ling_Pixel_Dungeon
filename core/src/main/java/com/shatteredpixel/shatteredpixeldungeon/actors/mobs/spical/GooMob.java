@@ -113,7 +113,6 @@ public class GooMob extends Mob {
         if (lock == null && Dungeon.level.heroFOV[pos]){
             SewerLevel level = (SewerLevel) Dungeon.level;
             level.seal();
-            level.updateChasmTerrain();
             if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
                 AlarmTrap alarmTrap = new AlarmTrap();
                 alarmTrap.pos = pos;
@@ -254,7 +253,6 @@ public class GooMob extends Mob {
             ScrollOfTeleportation.appear(hero, pos+3);
             SewerLevel level = (SewerLevel) Dungeon.level;
             level.seal();
-            level.updateChasmTerrain();
         }
 
         if ((HP*2 <= HT) && !bleeding){
@@ -280,7 +278,6 @@ public class GooMob extends Mob {
         super.die( cause );
         SewerLevel level = (SewerLevel) Dungeon.level;
         level.unseal();
-        level.updateChasmTerrain();
         //60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5
         int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
         for (int i = 0; i < blobs; i++){

@@ -225,8 +225,9 @@ public class WndChallenges extends Window {
 	private static class ChallengeButton extends IconButton {
 		private boolean checked = false;
 		public ChallengeButton() {
-			super( Icons.get( Icons.CHALLENGE_OFF ));
+			super( Icons.get( Icons.MISSON_OFF));
 		}
+
 		@Override
 		protected void onClick() {
 			checked(!checked);
@@ -236,7 +237,7 @@ public class WndChallenges extends Window {
 		}
 		public void checked( boolean checked ) {
 			this.checked = checked;
-			icon( Icons.get( checked ? Icons.CHALLENGE_ON : Icons.CHALLENGE_OFF ) );
+			icon( Icons.get( checked ? Icons.MISSON_ON : Icons.MISSON_OFF ) );
 		}
 	}
 
@@ -292,16 +293,15 @@ public class WndChallenges extends Window {
 			info.setRect(icon.x + icon.width, y, 16, BTN_HEIGHT);
 			PixelScene.align( info );
 			if (conflict == null) {
-				check.setRect(x + (width - 16) / 2, y + BTN_HEIGHT, 16, BTN_HEIGHT);
+				check.setRect(x + (width - 16) / 4, y + BTN_HEIGHT, 16, BTN_HEIGHT);
 				PixelScene.align( check );
-			}
-			else {
+			} else {
 				check.setRect(x + (width - 32) / 2, y + BTN_HEIGHT, 16, BTN_HEIGHT);
 				PixelScene.align( check );
 				conflict.setRect(check.right(), check.top(), 16, BTN_HEIGHT);
 				PixelScene.align( conflict );
 			}
-
+			check.setSize( 32,16 );
 			height = BTN_HEIGHT * 2;
 		}
 

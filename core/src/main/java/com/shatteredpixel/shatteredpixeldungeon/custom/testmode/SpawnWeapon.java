@@ -348,7 +348,13 @@ public class SpawnWeapon extends TestItem{
                     }
                 }
             };
-            Button_Level.text(((Weapon) Reflection.newInstance(getWeapon(tier)[weapon_id])).name());
+
+            //TC控制
+            try {
+                Button_Level.text(((Weapon) Reflection.newInstance(getWeapon(tier)[weapon_id])).name());
+            } catch (Exception e) {
+                GLog.w(M.L(MobPlacer.class, "forbidden"));
+            }
             add(Button_Level);
 
             // 创建生成武器按钮

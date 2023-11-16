@@ -161,7 +161,7 @@ public class BGMPlayer {
 
             }
         } else {
-            if (Dungeon.bossLevel() && t == 5 || t == 4) {
+            if (Dungeon.bossLevel() && t == 5 || t == 4 && s == 2) {
                 playBGM(Assets.BGM_BOSSA, true);
             } else if (Dungeon.bossLevel() && t == 10 && Statistics.mimicking) {
                 playBGM(Assets.BGM_BOSSB, true);

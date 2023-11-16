@@ -4,16 +4,15 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Albino;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CausticSlime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ClearElemental;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Salamander;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GooMob;
-import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
@@ -63,7 +62,7 @@ public class GooRoom extends SpecialRoom {
     public void paint( Level level ) {
 
         Painter.fill( level, this, Terrain.WALL );
-        Painter.fill( level, this, 1, Terrain.SIGN_SP );
+        Painter.fill( level, this, 1, Terrain.WATER );
         Painter.fill( level, this, 2, Terrain.EMPTY_SP );
 
 
@@ -75,13 +74,9 @@ public class GooRoom extends SpecialRoom {
             door.set( Door.Type.CRYSTAL );
         }
 
-        int KeyPos = (top + 10) * level.width() + left + 10;
+        level.addItemToSpawn( new CrystalKey( Dungeon.depth ) );
 
-        int L1Pos = (top + 6) * level.width() + left + 6;
-
-        level.drop( new CrystalKey( Dungeon.depth ), L1Pos).type = Heap.Type.SKELETON;
-
-        level.drop( new CrystalKey( Dungeon.depth ), KeyPos).type = Heap.Type.CHEST;
+        level.addItemToSpawn( new CrystalKey( Dungeon.depth ) );
         level.addItemToSpawn( new PotionOfMindVision());
 
         for(Point p : getPoints()) {
@@ -104,7 +99,7 @@ public class GooRoom extends SpecialRoom {
         Painter.drawCircle(level, c, 7, Terrain.WATER);
         Painter.drawCircle(level, c, 5, Terrain.EMPTY);
         Painter.drawCircle(level, c, 3, Terrain.WATER);
-        Painter.drawCircle(level, c, 2, Terrain.SIGN);
+        Painter.drawCircle(level, c, 2, Terrain.EMPTY_DECO);
         Painter.drawCircle(level, c, 0, Terrain.WATER);
 
         Painter.set(level, cx, cy - 4, Terrain.STATUE);
@@ -137,12 +132,24 @@ public class GooRoom extends SpecialRoom {
             break;
         }
 
-        GooMob statue = new GooMob();
-        statue.pos = cx + cy * level.width();
-        statue.state = statue.PASSIVE;
-        level.mobs.add( statue );
+        int entrancePos = cx + cy * level.width();
 
-        Guard statue2 = new Guard();
+//        GooMob statue = new GooMob();
+//        statue.pos = cx + cy * level.width();
+//        statue.state = statue.PASSIVE;
+//        level.mobs.add( statue );
+
+        level.transitions.add(new LevelTransition(level,
+                entrancePos,
+                LevelTransition.Type.BRANCH_EXIT,
+                Dungeon.depth,
+                Dungeon.branch + 2,
+                LevelTransition.Type.BRANCH_ENTRANCE));
+        Painter.set(level, entrancePos, Terrain.EXIT);
+
+
+
+        Albino statue2 = new Albino();
         statue2.HT = statue2.HP = statue2.HT*2;
         statue2.pos = (cx-5) + cy * level.width();
         statue2.properties.add(Char.Property.IMMOVABLE);
@@ -160,7 +167,7 @@ public class GooRoom extends SpecialRoom {
         statue4.pos = (cx) + (cy-5) * level.width();
         level.mobs.add( statue4 );
 
-        DM100 statue5 = new DM100();
+        CausticSlime statue5 = new CausticSlime();
         statue5.properties.add(Char.Property.IMMOVABLE);
         statue5.HT = statue5.HP = statue5.HT * 2;
         statue5.pos = (cx) + (cy+5) * level.width();

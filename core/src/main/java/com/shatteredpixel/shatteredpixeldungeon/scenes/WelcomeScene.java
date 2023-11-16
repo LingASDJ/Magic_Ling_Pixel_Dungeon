@@ -71,8 +71,7 @@ public class WelcomeScene extends PixelScene {
 		}
 
 		if (!SPDSettings.intro() && !SPDSettings.firebase()) {
-			ShatteredPixelDungeon.switchNoFade(TitleScene.class);
-			//ShatteredPixelDungeon.switchNoFade(GameNewsScene.class);
+			ShatteredPixelDungeon.switchNoFade(GameNewsScene.class);
 		} else {
 			ShatteredPixelDungeon.switchNoFade(TitleScene.class);
 			return;

@@ -10,8 +10,6 @@ import com.watabou.noosa.PointerArea;
 
 public class SkipIndicator extends Tag {
 
-    public static final int COLOR	= 0x00A2E8;
-
     private Image icon;
 
     public SkipIndicator() {

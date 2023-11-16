@@ -116,6 +116,8 @@ public enum Icons {
 	DEPTH_LINK_ROOM,
 
 	DEPTH_DIED,
+	MISSON_ON,
+	MISSON_OFF,
 
 	CHAL_COUNT,
 
@@ -374,6 +376,12 @@ public enum Icons {
 				break;
 			case DEPTH_DIED:
 				icon.frame( icon.texture.uvRectBySize( 136, 64, 7, 7 ) );
+				break;
+			case MISSON_OFF:
+				icon.frame( icon.texture.uvRectBySize( 144, 64, 32, 14 ) );
+				break;
+			case MISSON_ON:
+				icon.frame( icon.texture.uvRectBySize( 144, 80, 32, 14 ) );
 				break;
 			case CHAL_COUNT:
 				icon.frame( icon.texture.uvRectBySize( 48, 72, 7, 7 ) );

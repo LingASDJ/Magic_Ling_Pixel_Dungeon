@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
@@ -88,7 +89,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.HeartRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.LinkRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.LoveRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.MagicDimandRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.OldDM300Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BurningTrap;
@@ -217,17 +217,28 @@ public abstract class RegularLevel extends Level {
 
 
 		if(feeling == Feeling.DIEDROOM){
-			switch (depth){
-				case 4:
-					initRooms.add(new GooRoom());
-					break;
-				case 14:
-					initRooms.add(new OldDM300Room());
-					break;
+			switch (branch){
+				case 0:
+					switch (depth) {
+						case 4:
+							initRooms.add(new GooRoom());
+						break;
+					}
+//				case 2:
+//				switch (depth) {
+//					case 4:
+//						//initRooms.add(new GooRoom());
+//						GooBossRoom gooRoom = GooBossRoom.randomGooRoom();
+//						initRooms.add(gooRoom);
+//						((FigureEightBuilder)builder).setLandmarkRoom(gooRoom);
+//						break;
+//					case 14:
+//						initRooms.add(new OldDM300Room());
+//						break;
+//				}
+				break;
 			}
-
 		}
-
 
 		if(RegularLevel.holiday == Holiday.ZQJ ){
 			if(Dungeon.depth == 17){

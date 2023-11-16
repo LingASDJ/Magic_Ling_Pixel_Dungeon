@@ -96,7 +96,6 @@ public class OldDM300 extends FlameC02 {
 		if (lock == null && Dungeon.level.heroFOV[pos]){
 			CavesLevel level = (CavesLevel) Dungeon.level;
 			level.seal();
-			level.updateChasmTerrain();
 			if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
 				AlarmTrap alarmTrap = new AlarmTrap();
 				alarmTrap.pos = pos;
@@ -178,8 +177,6 @@ public class OldDM300 extends FlameC02 {
 
 		CavesLevel level = (CavesLevel) Dungeon.level;
 
-		level.updateChasmTerrain();
-
 		level.unseal();
 		BGMPlayer.playBGMWithDepth();
 		//60% chance of 2 shards, 30% chance of 3, 10% chance for 4. Average of 2.5
@@ -214,7 +211,6 @@ public class OldDM300 extends FlameC02 {
 			ScrollOfTeleportation.appear(hero, pos+8);
 			CavesLevel level = (CavesLevel) Dungeon.level;
 			level.seal();
-			level.updateChasmTerrain();
 		}
 
 		if(HP<50){

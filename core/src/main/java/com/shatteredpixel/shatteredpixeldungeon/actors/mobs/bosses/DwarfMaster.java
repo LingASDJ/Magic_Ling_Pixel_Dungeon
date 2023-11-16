@@ -1605,7 +1605,7 @@ public class DwarfMaster extends Boss {
         Dungeon.level.unseal();
         //酸液体清0
         Statistics.SiderLing = 0;
-        for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
+       for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
             if (	mob instanceof DwarfMaster.DKMonk ||
                     mob instanceof DwarfMaster.DKGhoul ||
                     mob instanceof DwarfMaster.DKWarlock||
