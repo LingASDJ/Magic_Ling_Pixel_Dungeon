@@ -16,6 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DictFish;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.RoomStone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.SakaFishBoss;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -177,7 +178,11 @@ public class AncientMysteryCityBossLevel extends Level{
     protected boolean build() {
         setSize(WIDTH, HEIGHT);
         map = WorldRoomShort.clone();
-        entrance = WIDTH*28+13;
+        int entrance = WIDTH*28+13;
+
+        LevelTransition enter = new LevelTransition(this,entrance, LevelTransition.Type.SURFACE);
+        transitions.add(enter);
+
         //首次构建地图
         pro = ONE_BOSS;
         return true;

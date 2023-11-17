@@ -458,42 +458,40 @@ public class SakaFishBoss extends Boss {
                 }
 
                     //do leap 泥头车
-                    sprite.visible = Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[leapPos] || Dungeon.level.heroFOV[endPos];
-                    sprite.dirtcar(pos, leapPos, new Callback() {
-                        @Override
-                        public void call() {
-                            AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
-                            if (leapVictim != null && alignment != leapVictim.alignment){
-                                enemy.damage( Random.NormalIntRange( 40, 60 ), this );
-                                if(level == AncientMysteryCityBossLevel.State.FALL_BOSS){
-                                    //三阶段 魔法风暴
-                                    FishStorm(sprite.ch);
-                                }
-                                Sample.INSTANCE.play(Assets.Sounds.ROCKS);
-                                leapVictim.sprite.flash();
-                                Sample.INSTANCE.play(Assets.Sounds.HIT);
+                sprite.jump(pos, leapPos, new Callback() {
+                    @Override
+                    public void call() {
+                        AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
+                        if (leapVictim != null && alignment != leapVictim.alignment){
+                            enemy.damage( Random.NormalIntRange( 40, 60 ), this );
+                            if(level == AncientMysteryCityBossLevel.State.FALL_BOSS){
+                                //三阶段 魔法风暴
+                                FishStorm(sprite.ch);
                             }
-
-                            Char ch = hero;
-                            if(hero != null){
-                                if (!ch.isAlive()) {
-                                    Dungeon.fail( getClass() );
-                                    GLog.n( Messages.get(SakaFishBoss.class, "dictcar_kill"),Dungeon.hero.name() );
-                                }
-                            }
-
-                            if (endPos != leapPos){
-                                Actor.addDelayed(new Pushing(SakaFishBoss.this, leapPos, endPos), -1);
-                            }
-
-                            pos = endPos;
-                            leapPos = -1;
-                            sprite.operate(pos);
-                            Dungeon.level.occupyCell(SakaFishBoss.this);
-                            next();
+                            Sample.INSTANCE.play(Assets.Sounds.ROCKS);
+                            leapVictim.sprite.flash();
+                            Sample.INSTANCE.play(Assets.Sounds.HIT);
                         }
-                    });
 
+                        Char ch = hero;
+                        if(hero != null){
+                            if (!ch.isAlive()) {
+                                Dungeon.fail( getClass() );
+                                GLog.n( Messages.get(SakaFishBoss.class, "dictcar_kill"),Dungeon.hero.name() );
+                            }
+                        }
+
+                        if (endPos != leapPos){
+                            Actor.addDelayed(new Pushing(SakaFishBoss.this, leapPos, endPos), -1);
+                        }
+
+                        pos = endPos;
+                        leapPos = -1;
+                        sprite.operate(pos);
+                        Dungeon.level.occupyCell(SakaFishBoss.this);
+                        next();
+                    }
+                });
 
                 return false;
             }

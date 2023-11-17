@@ -802,12 +802,25 @@ public class GameScene extends PixelScene {
 			scene.addDiscardedSprite( heap );
 		}
 	}
-	
+
+	/**1.3.0 add Mob*/
+	public static void add( Mob mob ) {
+		Dungeon.level.mobs.add( mob );
+		if (scene != null) {
+			scene.addMobSprite(mob);
+			Actor.add(mob);
+		}
+	}
+
+	/**1.2.3 add( Mob mob )写法 <br>
+	 * 问题：这会导致楼层场景添加粒子效果空指针 <br>
+	 * 解决策略：代码已使用上述新代码*/
+	/*
 	public static void add( Mob mob ) {
 		Dungeon.level.mobs.add( mob );
 		scene.addMobSprite( mob );
 		Actor.add( mob );
-	}
+	}*/
 
 	public static void addSprite( Mob mob ) {
 		scene.addMobSprite( mob );
@@ -1686,7 +1699,7 @@ public class GameScene extends PixelScene {
 					bossSlain.show( Window.CBLACK, 0.3f, 5f);
 					scene.showBanner(bossSlain);
 					break;
-				case -31:
+				case 0:
 					bossSlain.texture(Assets.Interfaces.SakaBJY_Title);
 					bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 					scene.showBanner(bossSlain);

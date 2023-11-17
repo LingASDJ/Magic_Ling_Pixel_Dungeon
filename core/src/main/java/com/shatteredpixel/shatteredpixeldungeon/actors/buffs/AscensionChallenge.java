@@ -41,12 +41,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Fire_Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlowerSlime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gnoll;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.IceGolem;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ice_Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MolotovHuntsman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
@@ -125,7 +127,8 @@ public class AscensionChallenge extends Buff {
 		modifiers.put(Succubus.class,       1.2f);
 		modifiers.put(Eye.class,            1.1f);
 		modifiers.put(Scorpio.class,        1.1f);
-
+		modifiers.put(Ice_Scorpio.class,        1.4f);
+		modifiers.put(Fire_Scorpio.class,        1.3f);
 		modifiers.put(ShieldHuntsman.class, 1.2f);
 	}
 
@@ -263,13 +266,13 @@ public class AscensionChallenge extends Buff {
 	private float stacks = 0;
 	private float damageInc = 0;
 
+	@SuppressWarnings("all")
 	public void onLevelSwitch(){
 		if (Dungeon.depth < Statistics.highestAscent){
 			Statistics.highestAscent = Dungeon.depth;
 			justAscended = true;
 			if (Dungeon.bossLevel()){
 				Dungeon.hero.buff(Hunger.class).satisfy(Hunger.STARVING);
-				//TODO NEED FIXED NPE
 				Buff.affect(Dungeon.hero, Healing.class).setHeal(Dungeon.hero.HT, 0, 20);
 			} else {
 				stacks += 2f;
@@ -281,7 +284,6 @@ public class AscensionChallenge extends Buff {
 						Dungeon.level.mobs.remove( mob );
 					}
 				}
-				//TODO NEED FIXED NPE
 				Dungeon.level.spawnMob(12);
 
 			}
@@ -368,7 +370,7 @@ public class AscensionChallenge extends Buff {
 	@Override
 	public void tintIcon(Image icon) {
 		if (stacks < 2){
-			icon.hardlight(1f, 0, 0);
+			icon.hardlight(0.5f, 1, 0);
 		} else if (stacks < 4) {
 			icon.hardlight(1, 1, 0);
 		} else if (stacks < 6){

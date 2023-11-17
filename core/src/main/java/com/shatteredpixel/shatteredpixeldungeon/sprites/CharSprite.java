@@ -92,11 +92,6 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected float shadowOffset    = 0.25f;
 
 
-	public void dirtcar(int from, int to, Callback callback) {
-		float distance = Dungeon.level.trueDistance(from, to);
-		jump(from, to, distance, 0, callback);
-	}
-
 	public enum State {
 		BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED,
 		ROSESHIELDED, HALOMETHANEBURNING, FROSTBURNING, BUTTER, SPINVISIBLE, SMOKER, HEARTS
