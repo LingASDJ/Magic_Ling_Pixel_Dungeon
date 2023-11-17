@@ -747,6 +747,16 @@ public class Hero extends Char {
 		float speed = super.speed();
 
 		speed *= RingOfHaste.speedMultiplier(this);
+
+		//提升20%移速
+		MIME.GOLD_THREE getSpeed = Dungeon.hero.belongings.getItem(MIME.GOLD_THREE.class);
+		if (getSpeed!=null) {
+			speed *= 1.2f;
+		}
+
+		if(Dungeon.hero.buff(BlessRedWhite.class) != null) {
+			speed *= 1.1f;
+		}
 		
 		if (belongings.armor() != null) {
 			speed = belongings.armor().speedFactor(this, speed);

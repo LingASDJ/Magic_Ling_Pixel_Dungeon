@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -70,12 +69,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 
 import java.util.HashMap;
@@ -98,7 +95,7 @@ public class AscensionChallenge extends Buff {
 
 		modifiers.put(MolotovHuntsman.class,6f);
 
-		modifiers.put(ColdMagicRat.class,   3f);
+		modifiers.put(ColdMagicRat.class,   2f);
 
 		modifiers.put(SRPDHBLR.class,     2.5f);
 
@@ -271,16 +268,9 @@ public class AscensionChallenge extends Buff {
 			Statistics.highestAscent = Dungeon.depth;
 			justAscended = true;
 			if (Dungeon.bossLevel()){
-				//超净化
-				hero.buff(Hunger.class).satisfy(Hunger.STARVING);
-
-				Sample.INSTANCE.play( Assets.Sounds.DRINK );
-
-				PotionOfHealing.cure( hero );
-
-				hero.HP = hero.HT;
-
-				Dungeon.hero.interrupt();
+				Dungeon.hero.buff(Hunger.class).satisfy(Hunger.STARVING);
+				//TODO NEED FIXED NPE
+				Buff.affect(Dungeon.hero, Healing.class).setHeal(Dungeon.hero.HT, 0, 20);
 			} else {
 				stacks += 2f;
 
@@ -291,7 +281,8 @@ public class AscensionChallenge extends Buff {
 						Dungeon.level.mobs.remove( mob );
 					}
 				}
-				Dungeon.level.respawnCooldown();
+				//TODO NEED FIXED NPE
+				Dungeon.level.spawnMob(12);
 
 			}
 		}
@@ -302,7 +293,6 @@ public class AscensionChallenge extends Buff {
 				}
 			}
 		}
-
 	}
 
 	//messages at boss levels only trigger on first ascent

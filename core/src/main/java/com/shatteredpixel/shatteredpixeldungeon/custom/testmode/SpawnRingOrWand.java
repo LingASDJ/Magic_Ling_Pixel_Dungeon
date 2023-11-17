@@ -153,7 +153,7 @@ public class SpawnRingOrWand extends TestItem {
     }
 
     private class SettingsWindow extends Window {
-        private static final int WIDTH = 120;
+        private static final int WIDTH = 145;
         private static final int BTN_SIZE = 17;
         private static final int GAP = 2;
         private final RedButton Button_Level;
@@ -231,7 +231,7 @@ public class SpawnRingOrWand extends TestItem {
         private void layout() {
             OptionSlider_category.setRect(0, GAP, WIDTH, 24);
             Button_Level.setPos(0, OptionSlider_category.bottom() + 3 * GAP + 2 * BTN_SIZE);
-            Button_Level.setRect(0, OptionSlider_category.bottom() + GAP, WIDTH, 24);
+            Button_Level.setRect(0, OptionSlider_category.bottom() + 3 * GAP + 2 * BTN_SIZE * 1.1f , WIDTH, 24);
             CheckBox_curse.setRect(0, Button_Level.bottom() + GAP, WIDTH, 18);
             RedButton_create.setRect(0, CheckBox_curse.bottom()+GAP, WIDTH, 16);
             resize(WIDTH, (int) RedButton_create.bottom() + GAP);

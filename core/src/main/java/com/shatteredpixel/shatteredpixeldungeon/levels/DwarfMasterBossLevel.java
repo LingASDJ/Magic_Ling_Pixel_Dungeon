@@ -179,6 +179,7 @@ public class DwarfMasterBossLevel extends Level {
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle( bundle );
         bundle.put( IMP_SHOP, impShop );
+        bundle.put( "level_status", status );
     }
 
     @Override
@@ -194,6 +195,7 @@ public class DwarfMasterBossLevel extends Level {
         if (map[topDoor] != Terrain.LOCKED_DOOR && Imp.Quest.isCompleted() && !impShop.shopSpawned()){
             spawnShop();
         }
+        status = bundle.getInt("level_status");
     }
 
     public Actor addRespawner() {

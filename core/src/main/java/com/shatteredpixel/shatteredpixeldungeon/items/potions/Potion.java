@@ -41,7 +41,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotio
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonKingBreath;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfLightStromCloud;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShroudingFog;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfSnapFreeze;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfStormClouds;
@@ -461,7 +460,7 @@ public class Potion extends Item {
 			types.put(Swiftthistle.Seed.class,  PotionOfHaste.class);
 
 			types.put(SkyBlueFireBloom.Seed.class,     PotionOfLiquidFlameX.class);
-			types.put(AikeLaier.Seed.class, PotionOfLightStromCloud.class);
+			types.put(AikeLaier.Seed.class, PotionOfLightningShiledX.class);
 		}
 		
 		@Override

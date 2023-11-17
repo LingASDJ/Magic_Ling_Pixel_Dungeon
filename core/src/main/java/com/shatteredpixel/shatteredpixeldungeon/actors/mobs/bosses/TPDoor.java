@@ -7,7 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TeleportationTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.RedTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TPDoorSprites;
@@ -42,7 +42,7 @@ public class TPDoor extends Mob {
             dmg = 20;
             if (hero.buff(DiamondKnight.DiedDamager.class) == null) {
                 Buff.affect(this, DiamondKnight.DiedDamager.class);
-                TeleportationTrap run = new TeleportationTrap();
+                RedTrap run = new RedTrap();
                 run.pos = super.pos;
                 run.activate();
             }

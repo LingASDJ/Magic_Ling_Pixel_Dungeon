@@ -70,13 +70,13 @@ public class WelcomeScene extends PixelScene {
 			return;
 		}
 
-		if (!SPDSettings.intro() && !SPDSettings.firebase()) {
-			ShatteredPixelDungeon.switchNoFade(GameNewsScene.class);
-		} else {
-			ShatteredPixelDungeon.switchNoFade(TitleScene.class);
-			return;
-		}
-
+//		if (!SPDSettings.intro() && !SPDSettings.firebase()) {
+//			ShatteredPixelDungeon.switchNoFade(GameNewsScene.class);
+//		} else {
+//
+//			return;
+//		}
+		ShatteredPixelDungeon.switchNoFade(TitleScene.class);
 		Music.INSTANCE.playTracks(
 				new String[]{Assets.Music.THEME_1, Assets.Music.THEME_2},
 				new float[]{1, 1},
