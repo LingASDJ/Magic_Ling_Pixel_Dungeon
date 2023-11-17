@@ -51,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.LevelTeleporter;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.MobPlacer;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnArmor;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnArtifact;
+import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnRingOrWand;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
@@ -244,6 +245,7 @@ public enum HeroClass {
 			new SpawnWeapon().quantity(1).identify().collect();
 			new SpawnArmor().quantity(1).identify().collect();
 			new SpawnArtifact().quantity(1).identify().collect();
+			new SpawnRingOrWand().quantity(1).identify().collect();
 			Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);
 			new WraithAmulet().quantity(1).identify().collect();
 			new BloodthirstyThorn().quantity(1).identify().collect();
