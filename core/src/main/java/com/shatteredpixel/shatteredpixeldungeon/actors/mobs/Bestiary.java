@@ -55,8 +55,7 @@ public class Bestiary {
 								FlowerSlime.class));
 					} else {
 						return new ArrayList<>(Arrays.asList(
-								FlowerSlime.class, FlowerSlime.class,
-								FlowerSlime.class));
+								Rat.class, Rat.class));
 					}
 
 				case 2:

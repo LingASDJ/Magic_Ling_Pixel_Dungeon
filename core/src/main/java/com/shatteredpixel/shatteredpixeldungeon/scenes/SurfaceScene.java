@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
@@ -232,7 +233,7 @@ public class SurfaceScene extends PixelScene {
 			window.add( patch );
 		}
 		
-		Image frame = new Image( Assets.Interfaces.SURFACE );
+		Image frame = new Image(SPDSettings.ClassUI() ? Assets.Interfaces.SURFACE : Assets.Interfaces.SURFACE_DARK );
 
 		frame.frame( 0, 0, FRAME_WIDTH, FRAME_HEIGHT );
 		frame.x = vx - FRAME_MARGIN_X;

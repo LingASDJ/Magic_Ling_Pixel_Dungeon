@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -241,6 +242,10 @@ public class ZeroLevel extends Level {
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
         if (transition.type == LevelTransition.Type.SURFACE){
+
+            if (hero.belongings.getItem(SakaFishSketon.class) != null) {
+                PaswordBadges.REHOMESKY();
+            }
 
             if (hero.belongings.getItem( Amulet.class ) == null) {
                 Game.runOnRenderThread(new Callback() {

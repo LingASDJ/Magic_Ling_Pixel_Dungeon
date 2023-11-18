@@ -51,9 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.Callback;
-import com.watabou.utils.ColorMath;
 import com.watabou.utils.Random;
 
 public class SewerLevel extends RegularLevel {
@@ -203,30 +201,6 @@ public class SewerLevel extends RegularLevel {
 				return Messages.get(SewerLevel.class, "bookshelf_desc");
 			default:
 				return super.tileDesc( tile );
-		}
-	}
-	
-	public static final class WaterParticle extends PixelParticle {
-		
-		public WaterParticle() {
-			super();
-			
-			acc.y = 50;
-			am = 0.5f;
-			
-			color( ColorMath.random( 0xb6ccc2, 0x3b6653 ) );
-			size( 2 );
-		}
-		
-		public void reset( float x, float y ) {
-			revive();
-			
-			this.x = x;
-			this.y = y;
-			
-			speed.set( Random.Float( -2, +2 ), 0 );
-			
-			left = lifespan = 0.4f;
 		}
 	}
 }

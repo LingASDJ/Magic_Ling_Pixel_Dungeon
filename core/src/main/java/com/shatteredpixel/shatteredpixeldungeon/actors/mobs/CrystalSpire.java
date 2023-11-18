@@ -309,7 +309,7 @@ public class CrystalSpire extends Mob {
 
 	@Override
 	public void damage(int dmg, Object src) {
-		if (!(hero.belongings.weapon instanceof Pickaxe)){
+		if (!(src instanceof Pickaxe) ){
 			dmg = 0;
 		}
 		super.damage(dmg, src);

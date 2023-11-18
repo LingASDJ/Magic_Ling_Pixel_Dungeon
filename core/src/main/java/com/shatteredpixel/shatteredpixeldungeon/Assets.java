@@ -164,10 +164,13 @@ public class Assets {
 		public static final String TOOLBAR  = "interfaces/toolbar.png";
 		public static final String SHADOW   = "interfaces/shadow.png";
 		public static final String BOSSHP   = "interfaces/boss_hp.png";
+		public static final String BOSSHP_DARK   = "interfaces/boss_hp_normal.png";
 
 		public static final String SURFACE  = "interfaces/surface.png";
+		public static final String SURFACE_DARK  = "interfaces/surface_normal.png";
 
 		public static final String NEW_MENU  = "interfaces/go-surface.png";
+		public static final String NEW_MENU_DARK  = "interfaces/go-surface_normal.png";
 
 		public static final String LOADING_GOLD   = "interfaces/loading_gold.png";
 		public static final String LOADING_SEWERS   = "interfaces/loading_sewers.png";

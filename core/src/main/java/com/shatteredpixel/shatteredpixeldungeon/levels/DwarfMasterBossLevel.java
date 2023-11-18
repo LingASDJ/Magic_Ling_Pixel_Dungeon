@@ -169,7 +169,7 @@ public class DwarfMasterBossLevel extends Level {
     private static final String IMP_SHOP = "imp_shop";
 
     private void spawnShop(){
-        while (impShop.itemCount() >= 6*(impShop.height()-2)){
+        while (impShop.itemCount() >= 7*(impShop.height()-3)){
             impShop.bottom++;
         }
         impShop.spawnShop(this);
@@ -188,7 +188,7 @@ public class DwarfMasterBossLevel extends Level {
         //pre-1.3.0 saves, modifies exit transition with custom size
         if (bundle.contains("exit")){
             LevelTransition exit = getTransition(LevelTransition.Type.REGULAR_EXIT);
-            exit.set(end.left+4, end.top+4, end.left+4+6, end.top+4+4);
+            impShop.set(end.left+4, end.top+23, end.left+11, end.top+30);
             transitions.add(exit);
         }
         impShop = (ImpShopRoom) bundle.get( IMP_SHOP );

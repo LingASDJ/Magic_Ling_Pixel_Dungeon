@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -122,6 +123,7 @@ public class Amulet extends Item {
 			public void afterCreate() {
 				Badges.validateVictory();
 				Badges.validateChampion(Challenges.activeChallenges());
+				PaswordBadges.ALLCS(Challenges.activeChallenges());
 				try {
 					Dungeon.saveAll();
 					Badges.saveGlobal();

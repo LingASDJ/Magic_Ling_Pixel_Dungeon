@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.TITLE_COLOR;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -55,7 +56,7 @@ public class BossHealthBar extends Component {
 	private Image skull;
 	private Emitter blood;
 
-	private static String asset = Assets.Interfaces.BOSSHP;
+	private static String asset = SPDSettings.ClassUI() ? Assets.Interfaces.BOSSHP : Assets.Interfaces.BOSSHP_DARK;
 
 	private static BossHealthBar instance;
 	private static boolean bleeding;
@@ -158,6 +159,11 @@ public class BossHealthBar extends Component {
 	@Override
 	public void update() {
 		super.update();
+
+
+		asset = SPDSettings.ClassUI() ? Assets.Interfaces.BOSSHP : Assets.Interfaces.BOSSHP_DARK;
+
+
 		if (boss != null){
 			if (!boss.isAlive() || !Dungeon.level.mobs.contains(boss)){
 				boss = null;
@@ -170,7 +176,6 @@ public class BossHealthBar extends Component {
 				hp.scale.x = Math.max( 0, (health-shield)/max);
 				shieldedHP.scale.x = health/max;
 				rawShielding.scale.x = shield/max;
-
 
 				if (hp.scale.x < 0.25f){
 					bleed( true );

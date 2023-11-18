@@ -216,7 +216,7 @@ public class HeroSelectScene extends PixelScene {
 			window.add( patch );
 		}
 
-		frame = new Image( Assets.Interfaces.NEW_MENU );
+		frame = new Image( SPDSettings.ClassUI() ? Assets.Interfaces.NEW_MENU : Assets.Interfaces.NEW_MENU_DARK );
 
 		frame.frame( FRAME_WIDTH + GrassPatch.WIDTH*4, 0, FRAME_WIDTH, FRAME_HEIGHT );
 		frame.x = vx - FRAME_MARGIN_X;
@@ -813,6 +813,8 @@ public class HeroSelectScene extends PixelScene {
 			super.update();
 			a += Random.Float( Game.elapsed * 5 );
 			angle = (2 + Math.cos( a )) * (forward ? +0.2 : -0.2);
+
+
 
 			scale.y = (float)Math.cos( angle );
 

@@ -515,14 +515,6 @@ public class Badges {
 //		validateYASD();
 	}
 
-	public static void DeathRedNercols() {
-		Badge badge = Badge.DEATH_FROM_FIRE;
-		local.add( badge );
-		displayBadge( badge );
-
-		validateYASD();
-	}
-
 	public static void validateDeathFromPoison() {
 		Badge badge = Badge.DEATH_FROM_POISON;
 		local.add( badge );
@@ -541,14 +533,6 @@ public class Badges {
 
 	public static void validateDeathFromHunger() {
 		Badge badge = Badge.DEATH_FROM_HUNGER;
-		local.add( badge );
-		displayBadge( badge );
-
-		validateYASD();
-	}
-
-	public static void validateDeathFromGlyph() {
-		Badge badge = Badge.DEATH_FROM_GLYPH;
 		local.add( badge );
 		displayBadge( badge );
 
@@ -622,7 +606,6 @@ public class Badges {
 				global.contains( Badge.DEATH_FROM_POISON ) &&
 				global.contains( Badge.DEATH_FROM_GAS ) &&
 				global.contains( Badge.DEATH_FROM_HUNGER) &&
-				global.contains( Badge.DEATH_FROM_GLYPH) &&
 				global.contains( Badge.DEATH_FROM_FALLING) && global.contains( Badge.HALOFIRE_DIED) && global.contains( Badge.BRUTE_BOT_DIED) && global.contains( Badge.BOMBBOW_DIED) && global.contains( Badge.DEATH_FROM_FRIENDLY_MAGIC) && global.contains( Badge.DEATH_FROM_SACRIFICE)) {
 
 			Badge badge = Badge.YASD;

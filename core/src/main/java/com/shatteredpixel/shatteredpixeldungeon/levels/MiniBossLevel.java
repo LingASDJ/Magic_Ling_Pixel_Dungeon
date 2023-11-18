@@ -1,10 +1,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gooFight;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
@@ -22,6 +22,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.NxhySprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
@@ -67,7 +68,7 @@ public class MiniBossLevel extends RegularLevel {
     public boolean activateTransition(Hero hero, LevelTransition transition) {
         if (transition.type == LevelTransition.Type.BRANCH_ENTRANCE) {
 
-            if (!Statistics.gooFight){
+            if (!gooFight){
                 Game.runOnRenderThread(new Callback() {
                     @Override
                     public void call() {
@@ -131,6 +132,14 @@ public class MiniBossLevel extends RegularLevel {
             return Assets.Environment.TILES_SEWERS;
         }
 
+    }
+
+    @Override
+    public void restoreFromBundle( Bundle bundle ) {
+        super.restoreFromBundle( bundle );
+        if (Game.versionCode > 20231118 && !gooFight){
+            gooFight = true;
+        }
     }
 
     @Override
