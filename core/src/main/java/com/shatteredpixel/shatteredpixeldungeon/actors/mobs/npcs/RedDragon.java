@@ -308,7 +308,12 @@ public class RedDragon extends NPC {
 
                 weapon = (Ring) node.get(WEAPON);
 
-                armor = (Artifact) node.get(ARMOR);
+                try {
+                    armor = (Artifact) node.get(ARMOR);
+                } catch (Exception e) {
+                    armor = (Ring) node.get(ARMOR);
+                }
+
                 RingT = (Wand) node.get(RINGT);
 
 
@@ -343,7 +348,13 @@ public class RedDragon extends NPC {
 
                 food = Generator.random(Generator.Category.WAND);
 
-                armor = Generator.random(Generator.Category.ARTIFACT);
+                try {
+                    armor = Generator.random(Generator.Category.ARTIFACT);
+                } catch (Exception e) {
+                    armor = Generator.random(Generator.Category.RING);
+                }
+
+
                 RingT = (Wand) Generator.random(Generator.Category.WAND);
 
                 switch (Random.Int(5)){

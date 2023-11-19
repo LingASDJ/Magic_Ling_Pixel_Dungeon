@@ -284,7 +284,7 @@ public class AscensionChallenge extends Buff {
 						Dungeon.level.mobs.remove( mob );
 					}
 				}
-				Dungeon.level.spawnMob(12);
+				//Dungeon.level.spawnMob();
 
 			}
 		}

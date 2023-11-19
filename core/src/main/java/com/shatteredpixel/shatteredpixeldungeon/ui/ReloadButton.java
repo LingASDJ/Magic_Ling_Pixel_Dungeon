@@ -1,6 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameNewsScene;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 
 public class ReloadButton extends IconButton{
@@ -14,7 +16,7 @@ public class ReloadButton extends IconButton{
     @Override
     protected void onClick() {
         super.onClick();
-        //ShatteredPixelDungeon.switchNoFade(GameNewsScene.class);
+        ShatteredPixelDungeon.switchNoFade(GameNewsScene.class);
     }
 
 

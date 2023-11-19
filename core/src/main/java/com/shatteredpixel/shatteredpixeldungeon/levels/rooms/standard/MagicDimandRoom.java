@@ -31,7 +31,7 @@ public class MagicDimandRoom extends StandardRoom{
         }
 
         Painter.fill(level, this, Terrain.WALL);
-        Painter.fill(level, this, 1, Terrain.WATER);
+        Painter.fill(level, this, 1, Terrain.EMPTY_SP);
 
         ChestMarker vis = new ChestMarker();
         Point c = center();

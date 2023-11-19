@@ -86,7 +86,7 @@ public class vM0_6_6_Changes {
     }
 
     public static void add_v0_6_6_0_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.6.0-Demo1-8", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.6.0", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -253,6 +253,11 @@ public class vM0_6_6_Changes {
                 "Demo8:\n\n" +
                         "1.修复了Dm275和矮人将军地图的相关问题，新存档开始生效\n" +
                         "2.修复了错误生成尚未整改的丛林毒刺问题\n" +
+                        "3.部分素材贴图迭代优化\n" +
+                        "4.其他来自FireBase后台报告的Bug集中修复",
+                "RC:\n\n" +
+                        "1.修复了返程相关问题\n" +
+                        "2.修复了变幻莫测的一些问题\n" +
                         "3.部分素材贴图迭代优化\n" +
                         "4.其他来自FireBase后台报告的Bug集中修复"));
 
