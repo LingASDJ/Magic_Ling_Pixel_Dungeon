@@ -61,16 +61,15 @@ public class ScrollOfTeleportation extends Scroll {
 	@Override
 	public void doRead() {
 
-		detach(curUser.belongings.backpack);
 		Sample.INSTANCE.play( Assets.Sounds.READ );
-		
+
 		if (teleportPreferringUnseen( curUser )){
 			readAnimation();
 		}
 		identify();
 
 	}
-	
+
 	public static boolean teleportToLocation(Char ch, int pos){
 		PathFinder.buildDistanceMap(pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
 		if (PathFinder.distance[ch.pos] == Integer.MAX_VALUE
@@ -81,7 +80,7 @@ public class ScrollOfTeleportation extends Scroll {
 			}
 			return false;
 		}
-		
+
 		appear( ch, pos );
 		Dungeon.level.occupyCell( ch );
 		Buff.detach(ch, Roots.class);
@@ -90,7 +89,7 @@ public class ScrollOfTeleportation extends Scroll {
 			GameScene.updateFog();
 		}
 		return true;
-		
+
 	}
 
 	public static boolean teleportChar( Char ch ) {
@@ -107,7 +106,7 @@ public class ScrollOfTeleportation extends Scroll {
 			GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );
 			return false;
 		}
-		
+
 		int count = 20;
 		int pos;
 		do {
@@ -116,39 +115,39 @@ public class ScrollOfTeleportation extends Scroll {
 				break;
 			}
 		} while (pos == -1 || Dungeon.level.secret[pos]);
-		
+
 		if (pos == -1) {
-			
+
 			GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );
 			return false;
-			
+
 		} else {
-			
+
 			appear( ch, pos );
 			Dungeon.level.occupyCell( ch );
 			Buff.detach(ch, Roots.class);
-			
+
 			if (ch == Dungeon.hero) {
 				GLog.i( Messages.get(ScrollOfTeleportation.class, "tele") );
-				
+
 				Dungeon.observe();
 				GameScene.updateFog();
 				Dungeon.hero.interrupt();
 			}
 			return true;
-			
+
 		}
 	}
-	
+
 	public static boolean teleportPreferringUnseen( Hero hero ){
-		
+
 		if (!(Dungeon.level instanceof RegularLevel)){
 			return teleportInNonRegularLevel( hero, true );
 		}
-		
+
 		RegularLevel level = (RegularLevel) Dungeon.level;
 		ArrayList<Integer> candidates = new ArrayList<>();
-		
+
 		for (Room r : level.rooms()){
 			if (r instanceof SpecialRoom){
 				int terr;
@@ -164,7 +163,7 @@ public class ScrollOfTeleportation extends Scroll {
 					continue;
 				}
 			}
-			
+
 			int cell;
 			for (Point p : r.charPlaceablePoints(level)){
 				cell = level.pointToCell(p);
@@ -173,7 +172,7 @@ public class ScrollOfTeleportation extends Scroll {
 				}
 			}
 		}
-		
+
 		if (candidates.isEmpty()){
 			return teleportChar( hero );
 		} else {
@@ -210,7 +209,7 @@ public class ScrollOfTeleportation extends Scroll {
 			GameScene.updateFog();
 			return true;
 		}
-		
+
 	}
 
 	//teleports to a random pathable location on the floor
@@ -291,10 +290,7 @@ public class ScrollOfTeleportation extends Scroll {
 		}
 
 		ch.move( pos, false );
-		if (ch.pos == pos) {
-			ch.sprite.interruptMotion();
-			ch.sprite.place(pos);
-		}
+		if (ch.pos == pos) ch.sprite.place( pos );
 
 		if (ch.invisible == 0) {
 			ch.sprite.alpha( 0 );
@@ -321,7 +317,7 @@ public class ScrollOfTeleportation extends Scroll {
 			ch.sprite.emitter().start(Speck.factory(Speck.LIGHT), 0.2f, 3);
 		}
 	}
-	
+
 	@Override
 	public int value() {
 		return isKnown() ? 30 * quantity : super.value();

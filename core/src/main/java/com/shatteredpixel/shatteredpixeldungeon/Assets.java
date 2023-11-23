@@ -218,37 +218,17 @@ public class Assets {
 		public static final String PRISON_1     = "music/Level2.ogg";
 		public static final String PRISON_2     = "music/Level2.ogg";
 		public static final String PRISON_BOSS  = "music/Boss2.ogg";
-
-		public static final String CAVES_1      = "music/Level3.ogg";
-		public static final String CAVES_2      = "music/Level3.ogg";
 		public static final String CAVES_BOSS   = "music/caves_tense.ogg";
 
-		public static final String CITY_1       = "music/Level4.ogg";
-		public static final String CITY_2       = "music/Level4.ogg";
 		public static final String CITY_BOSS    = "music/Boss4.ogg";
-
-        public static final String HALLS_1 = "music/halls_1.ogg";
-        public static final String HALLS_2 = "music/halls_2.ogg";
         public static final String HALLS_BOSS = "music/Boss5.ogg";
-
-        public static final String GAME = "music/game.ogg";
-        public static final String SURFACE = "music/surface.ogg";
         public static final String NBPL = "music/nbpl.ogg";
-        public static final String RENSHOP = "music/RENSHOP.ogg";
-        public static final String Dragon = "music/dragon.ogg";
-
         public static final String THEME_FINALE = "music/theme_finale.ogg";
-        public static final String SEWERS_3 = "music/sewers_3.ogg";
-        public static final String SEWERS_TENSE = "music/sewers_tense.ogg";
-        public static final String PRISON_3 = "music/prison_3.ogg";
+
         public static final String PRISON_TENSE = "music/prison_tense.ogg";
-        public static final String CAVES_3 = "music/caves_3.ogg";
         public static final String CAVES_TENSE = "music/caves_tense.ogg";
         public static final String CAVES_BOSS_FINALE = "music/caves_boss_finale.ogg";
-        public static final String CITY_3 = "music/city_3.ogg";
-        public static final String CITY_TENSE = "music/city_tense.ogg";
         public static final String CITY_BOSS_FINALE = "music/city_boss_finale.ogg";
-        public static final String HALLS_3 = "music/halls_3.ogg";
         public static final String HALLS_TENSE = "music/halls_tense.ogg";
         public static final String HALLS_BOSS_FINALE = "music/halls_boss_finale.ogg";
     }

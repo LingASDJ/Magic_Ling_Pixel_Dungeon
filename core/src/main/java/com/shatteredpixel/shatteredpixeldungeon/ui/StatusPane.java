@@ -100,7 +100,7 @@ public class StatusPane extends Component {
 	//Custom UI Left
 	public PageIndicator page;
 	public PageIndicatorB pageb;
-	public MainHandIndicator mainhand;
+
 	public BossSelectIndicator bossselect;
 	public JoinIndicator joinxxx;
 	public LanterFireCator lanter;
@@ -240,9 +240,6 @@ public class StatusPane extends Component {
 
 		pageb=new PageIndicatorB();
 		add(pageb);
-
-		mainhand=new MainHandIndicator();
-		add(mainhand);
 
 		bossselect=new BossSelectIndicator();
 		add(bossselect);
@@ -425,13 +422,13 @@ public class StatusPane extends Component {
 		if (ClassPage()) {
 			page.setPos(0, 40);
 			pageb.setPos(0, 1000);
-			mainhand.setPos(0, 51);
-			joinxxx.setPos(0, 78);
+
+			joinxxx.setPos(0, 52);
 
 			if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
 				bossselect.setPos(0, 1000);
 			} else {
-				bossselect.setPos(0, 104);
+				bossselect.setPos(0, 78);
 			}
 
 
@@ -443,7 +440,7 @@ public class StatusPane extends Component {
 		} else {
 			page.setPos(0, 1000);
 			pageb.setPos(0, 40);
-			mainhand.setPos(0, 1000);
+
 			joinxxx.setPos(0, 1000);
 			bossselect.setPos(0, 1000);
 

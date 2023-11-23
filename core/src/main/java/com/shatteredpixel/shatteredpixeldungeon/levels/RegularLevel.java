@@ -57,9 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
-import com.shatteredpixel.shatteredpixeldungeon.items.journal.DocumentPage;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.GuidePage;
-import com.shatteredpixel.shatteredpixeldungeon.items.journal.RegionLorePage;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
@@ -704,69 +702,6 @@ public abstract class RegularLevel extends Level {
 				drop( p, cell );
 			}
 		Random.popGenerator();
-
-		//lore pages
-		//TODO a fair bit going on here, I might want to refactor/externalize this in the future
-		Random.pushGenerator( Random.Long() );
-			if (Document.ADVENTURERS_GUIDE.allPagesFound()){
-
-				int region = 1+(Dungeon.depth-1)/5;
-
-				Document regionDoc;
-				switch( region ){
-					default: regionDoc = null; break;
-					case 1: regionDoc = Document.SEWERS_GUARD; break;
-					case 2: regionDoc = Document.PRISON_WARDEN; break;
-					case 3: regionDoc = Document.CAVES_EXPLORER; break;
-					case 4: regionDoc = Document.CITY_WARLOCK; break;
-					case 5: regionDoc = Document.HALLS_KING; break;
-				}
-
-				if (regionDoc != null && !regionDoc.allPagesFound()) {
-
-					Dungeon.LimitedDrops limit = limitedDocs.get(regionDoc);
-
-					if (limit == null || !limit.dropped()) {
-
-						float totalPages = 0;
-						float pagesFound = 0;
-						String pageToDrop = null;
-						for (String page : regionDoc.pageNames()) {
-							totalPages++;
-							if (!regionDoc.isPageFound(page)) {
-								if (pageToDrop == null) {
-									pageToDrop = page;
-								}
-							} else {
-								pagesFound++;
-							}
-						}
-						float percentComplete = pagesFound / totalPages;
-
-						// initial value is the first floor in a region
-						int targetFloor = 5*(region-1) + 1;
-						targetFloor += Math.round(3*percentComplete);
-
-						//TODO maybe drop last page in boss floor with custom logic?
-						if (Dungeon.depth >= targetFloor){
-							DocumentPage page = RegionLorePage.pageForDoc(regionDoc);
-							page.page(pageToDrop);
-							int cell = randomDropCell();
-							if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
-								map[cell] = Terrain.GRASS;
-								losBlocking[cell] = false;
-							}
-							drop(page, cell);
-							if (limit != null) limit.drop();
-						}
-
-					}
-
-				}
-
-			}
-		Random.popGenerator();
-
 	}
 
 	private static HashMap<Document, Dungeon.LimitedDrops> limitedDocs = new HashMap<>();

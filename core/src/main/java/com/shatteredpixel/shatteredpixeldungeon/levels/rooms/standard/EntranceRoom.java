@@ -22,9 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.GuidePage;
-import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -84,17 +82,7 @@ public class EntranceRoom extends StandardRoom {
 		//use a separate generator here so meta progression doesn't affect levelgen
 		Random.pushGenerator();
 
-		//places the first guidebook page on floor 1
-		if (Dungeon.depth == 1 &&
-				(!Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_INTRO) || SPDSettings.intro() )){
-			int pos;
-			do {
-				//can't be on bottom row of tiles
-				pos = level.pointToCell(new Point( Random.IntRange( left + 1, right - 1 ),
-						Random.IntRange( top + 1, bottom - 2 )));
-			} while (pos == level.entrance() || level.findMob(level.entrance()) != null);
-			level.drop( new Guidebook(), pos );
-		}
+
 
 		//places the third guidebook page on floor 2
 		if (Dungeon.depth == 2 && !Document.ADVENTURERS_GUIDE.isPageFound(Document.GUIDE_SEARCHING)){

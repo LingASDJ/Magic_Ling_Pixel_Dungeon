@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndNyzShop;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -51,28 +52,34 @@ public class Nyz extends NTNPC {
     private boolean seenBefore = false;
 
     protected boolean act() {
-        if (!seenBefore && Dungeon.level.heroFOV[pos]) {
-            GLog.p(Messages.get(this, "greetings", Dungeon.hero.name()));
-            //TODO 诡异奈亚子 早上好 中午好 晚上好
-            if(!Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
-               playBGM(Assets.NYZSHOP, true);
+        Game.runOnRenderThread(new Callback() {
+            @Override
+            public void call() {
+                if (!seenBefore && Dungeon.level.heroFOV[pos]) {
+                    GLog.p(Messages.get(Nyz.class, "greetings", Dungeon.hero.name()));
+                    if(!Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
+                        playBGM(Assets.NYZSHOP, true);
+                    }
+                    seenBefore = true;
+                } else if(seenBefore && !Dungeon.level.heroFOV[pos]) {
+                    seenBefore = false;
+                    BGMPlayer.playBGMWithDepth();
+                }
             }
-            seenBefore = true;
-        } else if(seenBefore && !Dungeon.level.heroFOV[pos]) {
-            seenBefore = false;
-            BGMPlayer.playBGMWithDepth();
-        }
+        });
+
+
         throwItem();
 
         sprite.turnTo( pos, Dungeon.hero.pos );
         spend( TICK );
 
-        shop6 = (Books) new YellowSunBooks().quantity(1);
-        shop5 = (Books) new BrokenBooks().quantity(1);
-        shop4 = (Books) new IceCityBooks().quantity(1);
-        shop3 = (Books) new NoKingMobBooks().quantity(1);
-        shop2 = (Books) new DeepBloodBooks().quantity(1);
-        shop1 = (Books) new MagicGirlBooks().quantity(1);
+        shop6 = (Books) new YellowSunBooks().quantity(Random.Int(1,2));
+        shop5 = (Books) new BrokenBooks().quantity(Random.Int(1,2));
+        shop4 = (Books) new IceCityBooks().quantity(Random.Int(1,2));
+        shop3 = (Books) new NoKingMobBooks().quantity(Random.Int(1,2));
+        shop2 = (Books) new DeepBloodBooks().quantity(Random.Int(1,2));
+        shop1 = (Books) new MagicGirlBooks().quantity(Random.Int(1,2));
         bomb1 = (Bomb) new Flashbang().quantity(1);
         bomb2 = (Bomb) new Noisemaker().quantity(1);
         bomb3 = (Bomb) new RegrowthBomb().quantity(1);

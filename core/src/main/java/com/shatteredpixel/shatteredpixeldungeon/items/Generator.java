@@ -141,6 +141,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.GreenSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Mace;
@@ -439,8 +440,9 @@ public class Generator {
 
 					SDBSword.class,
 					RedBloodMoon.class,
+					LifeTreeSword.class
 			};
-			WEP_T3.probs = new float[]{ 1, 5, 4, 4, 4 ,3,5,3,6,0,0,0};
+			WEP_T3.probs = new float[]{ 1, 5, 4, 4, 4 ,3,5,3,6,0, 0,0,0};
 
 			WEP_T4.classes = new Class<?>[]{
 					Longsword.class,
@@ -465,11 +467,10 @@ public class Generator {
 					WashCrime.class,
 					//传奇武器
 					DiedCrossBow.class,
-					Sickle.class,
 					WarScythe.class,
 
 			};
-			WEP_T5.probs = new float[]{ 3, 3, 3, 3, 3, 3,3,1,2,2};
+			WEP_T5.probs = new float[]{ 3, 3, 3, 3, 3, 3,3,1,2};
 
 			WEP_T6.classes = new Class<?>[]{
 					IceFishSword.class,

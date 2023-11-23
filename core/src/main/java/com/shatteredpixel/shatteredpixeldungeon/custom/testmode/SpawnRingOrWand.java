@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -75,6 +76,12 @@ public class SpawnRingOrWand extends TestItem {
                     return;
                 modifyRing(ring);
                 collect = ring.identify().collect();
+
+                //Fixed 2023.11.23 根骨之戒不能太高 否则会因为INT最大值导致游戏陷入死循环
+                if(ring instanceof RingOfMight){
+                    ring.level =Math.min( item_level, 100 );
+                }
+
                 if(collect){
                     GLog.i(Messages.get(hero, "you_now_have", ring.name()));
                 }else{
@@ -93,6 +100,8 @@ public class SpawnRingOrWand extends TestItem {
                 }else{
                     wand.doDrop(curUser);
                 }
+                //Fixed 2023.11.23 如果没有这里的代码，生成的法杖充能始终为2
+                wand.curCharges =Math.min( wand.spawninitialCharges() + item_level, 10 );
             }
         }
     }

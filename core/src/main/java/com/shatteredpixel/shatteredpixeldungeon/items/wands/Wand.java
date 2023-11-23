@@ -382,6 +382,10 @@ public abstract class Wand extends Item {
 		return 2;
 	}
 
+	public int spawninitialCharges() {
+		return 2;
+	}
+
 	protected int chargesPerCast() {
 		return 1;
 	}

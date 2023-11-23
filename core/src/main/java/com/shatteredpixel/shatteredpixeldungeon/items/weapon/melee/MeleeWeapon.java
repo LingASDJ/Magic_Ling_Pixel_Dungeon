@@ -71,6 +71,13 @@ public class MeleeWeapon extends Weapon {
 	public String defaultAction() {
 		if (Dungeon.hero != null && (Dungeon.hero.heroClass == HeroClass.DUELIST
 			|| Dungeon.hero.hasTalent(Talent.SWIFT_EQUIP))){
+			//如果继承的类没有duelistAbility方法，则代表近战武器武技还未制作完成。为此不返回技能
+			//Ling
+			try {
+				this.getClass().getDeclaredMethod("duelistAbility", Hero.class, Integer.class);
+			} catch (NoSuchMethodException e) {
+				return super.defaultAction();
+			}
 			return AC_ABILITY;
 		} else {
 			return super.defaultAction();
@@ -88,7 +95,15 @@ public class MeleeWeapon extends Weapon {
 
 	@Override
 	public String actionName(String action, Hero hero) {
+
+
+		//Ling
 		if (action.equals(AC_ABILITY)){
+			try {
+				this.getClass().getDeclaredMethod("duelistAbility", Hero.class, Integer.class);
+			} catch (NoSuchMethodException e) {
+				return Messages.upperCase(Messages.get(MeleeWeapon.class, "cs"));
+			}
 			return Messages.upperCase(Messages.get(this, "ability_name"));
 		} else {
 			return super.actionName(action, hero);
@@ -353,7 +368,7 @@ public class MeleeWeapon extends Weapon {
 	}
 	
 	@Override
-	public String info() {
+	public String info()  {
 
 		String info = desc();
 
@@ -404,8 +419,16 @@ public class MeleeWeapon extends Weapon {
 			}
 		}
 
-		//the mage's staff has no ability as it can only be gained by the mage
+
+
 		if (Dungeon.hero.heroClass == HeroClass.DUELIST && !(this instanceof MagesStaff)){
+			//如果继承的类没有duelistAbility方法，则代表武技还未制作完成。返回文本告诉玩家
+			try {
+				this.getClass().getDeclaredMethod("duelistAbility", Hero.class, Integer.class);
+			} catch (NoSuchMethodException e) {
+				info += "\n\n" + Messages.get(MeleeWeapon.class, "ability_not_desc");
+				return info;
+			}
 			info += "\n\n" + Messages.get(this, "ability_desc");
 		}
 		

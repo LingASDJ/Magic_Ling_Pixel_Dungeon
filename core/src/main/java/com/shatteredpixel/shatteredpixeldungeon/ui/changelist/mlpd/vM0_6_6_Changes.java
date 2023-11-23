@@ -9,6 +9,8 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300AttackSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FlowerSlimeSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceSlowGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -31,6 +33,7 @@ public class vM0_6_6_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
         add_CS_Changes(changeInfos);
+        add_v0_6_7_0_Changes(changeInfos);
         add_v0_6_6_0_Changes(changeInfos);
     }
 
@@ -85,13 +88,60 @@ public class vM0_6_6_Changes {
                 ("石碑上记录了有关于她的一切，她的过去，她的现在，她的未来。而当你与她对峙时，你是否能够看清她的真实面目？")));
     }
 
+    public static void add_v0_6_7_0_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.7.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 7), ("艾诺琳娜"),
+                ("现已修复决斗家的相关问题，部分武技后续实装，敬请期待")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分无用音乐删除\n" +
+                        "3.少量Bug修复\n" +
+                        "4.部分小细节优化更新")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("UI优化"),
+                ("部分页面的UI已经进行了优化，带给玩家更好的游戏体验")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY_PORT), ("快捷键优化"),
+                ("PC键位有一点问题，已进行优化处理")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MASTERY), ("新手引导&更多指南"),
+                ("1.现在如果是第一次打开魔绫，将会有新手引导\n" +
+                        "2.添加了更多引导指南，欢迎探索")));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight( CharSprite.NEGATIVE );
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new DiedMonkLoaderSprite(), ("矮人将军重做"),
+                ("矮人将军纳入重做范围，敬请期待后续更新。")));
+
+        changes.addButton(new ChangeButton(new FlowerSlimeSprites(), ("繁花史莱姆"),
+                ("为了确保玩家能更好的在前期发展，繁花史莱姆面板进行了优化。具体如下：\n\n" +
+                        "血量：12--->随机5到9\n" +
+                        "伤害：2-5--->1-5\n" +
+                        "种子掉率:5%-->9%")));
+
+        changes.addButton(new ChangeButton(new CrivusFruitsSprite(), ("克里弗斯之果"),
+                ("二阶段触手玩家攻击后，保底拥有4回合的回复回合")));
+
+    }
+
     public static void add_v0_6_6_0_Changes( ArrayList<ChangeInfo> changeInfos ) {
         ChangeInfo changes = new ChangeInfo("v0.6.6.0", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-        changes.hardlight(Window.TITLE_COLOR);
+        changes.hardlight(Window.GREEN_COLOR);
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),

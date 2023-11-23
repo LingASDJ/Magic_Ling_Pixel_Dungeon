@@ -89,16 +89,6 @@ public class PrisonBossLevel extends Level {
 	private State state;
 	private Tengu tengu;
 
-	@Override
-	public void playLevelMusic() {
-		if (state == State.START){
-			Music.INSTANCE.end();
-		} else if (state == State.WON) {
-			Music.INSTANCE.playTracks(PrisonLevel.PRISON_TRACK_LIST, PrisonLevel.PRISON_TRACK_CHANCES, false);
-		} else {
-			Music.INSTANCE.play(Assets.Music.PRISON_BOSS, true);
-		}
-	}
 
 	public State state(){
 		return state;

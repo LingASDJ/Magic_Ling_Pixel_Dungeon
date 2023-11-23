@@ -240,12 +240,7 @@ public class HeroSelectScene extends PixelScene {
 				ActionIndicator.action = null;
 				InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
 
-				if (SPDSettings.intro()) {
-					SPDSettings.intro( false );
-					Game.switchScene( IntroScene.class );
-				} else {
-					Game.switchScene( InterlevelScene.class );
-				}
+				Game.switchScene( InterlevelScene.class );
 			}
 			public void enable( boolean value ) {
 				active = value;

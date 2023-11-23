@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
@@ -62,21 +61,6 @@ public class PrisonLevel extends RegularLevel {
 	{
 		color1 = 0x6a723d;
 		color2 = 0x88924c;
-	}
-
-	public static final String[] PRISON_TRACK_LIST
-			= new String[]{Assets.Music.PRISON_1, Assets.Music.PRISON_2, Assets.Music.PRISON_2,
-			Assets.Music.PRISON_1, Assets.Music.PRISON_3, Assets.Music.PRISON_3};
-	public static final float[] PRISON_TRACK_CHANCES = new float[]{1f, 1f, 0.5f, 0.25f, 1f, 0.5f};
-
-	@Override
-	public void playLevelMusic() {
-		if (Wandmaker.Quest.active() || Statistics.amuletObtained){
-			Music.INSTANCE.play(Assets.Music.PRISON_TENSE, true);
-		} else {
-			Music.INSTANCE.playTracks(PRISON_TRACK_LIST, PRISON_TRACK_CHANCES, false);
-		}
-		wandmakerQuestWasActive = Wandmaker.Quest.active();
 	}
 
 	@Override

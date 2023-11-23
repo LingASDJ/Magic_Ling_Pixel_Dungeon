@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.Books;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
@@ -17,7 +18,7 @@ public class DimandBook extends Books {
 
     @Override
     public String info() {
-        return desc()+"\n\n"+authorx;
+        return desc();
     }
 
     @Override
@@ -26,7 +27,7 @@ public class DimandBook extends Books {
         if (action.equals( Read )) {
             Sample.INSTANCE.play( Assets.Sounds.READ );
             detach( hero.belongings.backpack );
-            GLog.n("你已接受来自未知敌人的挑战……，祝你好运！");
+            GLog.n(Messages.get(DimandBook.class,"action"));
             Statistics.mimicking = true;
         }
     }

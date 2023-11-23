@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CHAMPION_ENEMIES;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
+import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping.discover;
 
 import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -143,6 +144,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
 import com.watabou.glwrap.Blending;
+import com.watabou.input.ControllerHandler;
 import com.watabou.input.PointerEvent;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
@@ -217,7 +219,7 @@ public class GameScene extends PixelScene {
 					} else {
 						scene.status.alpha(1f);
 						scene.status.visible = scene.status.active = true;
-						//scene.toolbar.alpha((progress - 0.5f)*2);
+						scene.toolbar.alpha((progress - 0.5f)*2);
 						scene.toolbar.visible = scene.toolbar.active = true;
 						if (scene.inventory != null){
 							scene.inventory.visible = scene.inventory.active = true;
@@ -232,7 +234,31 @@ public class GameScene extends PixelScene {
 			} else {
 				GLog.p(Messages.get(GameScene.class, "tutorial_ui_desktop"));
 			}
+			Dungeon.observe();
+			int length = Dungeon.level.length();
+			int[] map = Dungeon.level.map;
+			boolean[] mapped = Dungeon.level.mapped;
+			boolean[] discoverable = Dungeon.level.discoverable;
+			for (int i=0; i < length; i++) {
 
+				int terr = map[i];
+
+				if (discoverable[i]) {
+
+					mapped[i] = true;
+					if ((Terrain.flags[terr] & Terrain.SECRET) != 0) {
+
+						Dungeon.level.discover( i );
+
+						if (Dungeon.level.heroFOV[i]) {
+							GameScene.discoverTile( i, terr );
+							discover( i );
+						}
+					}
+				}
+			}
+			SpellSprite.show( Dungeon.hero, SpellSprite.MAP );
+			GameScene.updateFog();
 			//clear hidden doors, it's floor 1 so there are only the entrance ones
 			for (int i = 0; i < Dungeon.level.length(); i++){
 				if (Dungeon.level.map[i] == Terrain.SECRET_DOOR){
@@ -1482,9 +1508,10 @@ public class GameScene extends PixelScene {
 		Camera.main.panTo(hero.center(), 2.5f);
 
 		if (InterlevelScene.mode != InterlevelScene.Mode.NONE) {
+			String abcd = null;
 			if (Dungeon.depth == Statistics.deepestFloor
 					&& (InterlevelScene.mode == InterlevelScene.Mode.DESCEND || InterlevelScene.mode == InterlevelScene.Mode.FALL)) {
-				if(Dungeon.depth == -30) {
+				if (Dungeon.depth == -30) {
 					GLog.h(Messages.get(this, "ancity"), Dungeon.depth);
 				} else if (Dungeon.depth == -15) {
 					GLog.h(Messages.get(this, "snowcynon"), Dungeon.depth);
@@ -1496,7 +1523,7 @@ public class GameScene extends PixelScene {
 				检查是否存在诅咒buff，然后在下楼的时候背刺英雄一下
 				魔女的低语：束缚 本大层每下一层穿戴的装备必定被诅咒。
 				 */
-				if(Dungeon.hero.buff(MagicGirlSayCursed.class) != null){
+				if (Dungeon.hero.buff(MagicGirlSayCursed.class) != null) {
 					CursingTrap cursed = new CursingTrap();
 					cursed.pos = Dungeon.hero.pos;
 					cursed.activate();
@@ -1507,8 +1534,8 @@ public class GameScene extends PixelScene {
 //				if(Dungeon.sbbossLevel()){
 //					tell(Messages.get(Slyl.class, "tips"));
 //				}
-				for (Char ch : Actor.chars()){
-					if (ch instanceof DriedRose.GhostHero){
+				for (Char ch : Actor.chars()) {
+					if (ch instanceof DriedRose.GhostHero) {
 						((DriedRose.GhostHero) ch).sayAppeared();
 					}
 				}
@@ -1535,87 +1562,84 @@ public class GameScene extends PixelScene {
 			} else if (InterlevelScene.mode == InterlevelScene.Mode.RESURRECT) {
 				GLog.h(Messages.get(this, "resurrect"), Dungeon.depth);
 			} else {
-				if(Dungeon.depth == -31) {
-					GLog.h(Messages.get(this, "ancity"), Dungeon.depth);
-				} else if (Dungeon.depth == -15) {
-					GLog.h(Messages.get(this, "snowcynon"), Dungeon.depth);
-				} else {
-					GLog.h(Messages.get(this, "return"), Dungeon.depth);
-				}
-
+				GLog.h(Messages.get(this, "return"), Dungeon.depth);
 			}
 
 			if (Dungeon.hero.hasTalent(Talent.ROGUES_FORESIGHT)
-					&& Dungeon.level instanceof RegularLevel){
+					&& Dungeon.level instanceof RegularLevel) {
 				int reqSecrets = Dungeon.level.feeling == Level.Feeling.SECRETS ? 2 : 1;
-				for (Room r : ((RegularLevel) Dungeon.level).rooms()){
+				for (Room r : ((RegularLevel) Dungeon.level).rooms()) {
 					if (r instanceof SecretRoom) reqSecrets--;
 				}
 
 				//50%/75% chance, use level's seed so that we get the same result for the same level
 				Random.pushGenerator(Dungeon.seedCurDepth());
-					if (reqSecrets <= 0 && Random.Int(4) <= Dungeon.hero.pointsInTalent(Talent.ROGUES_FORESIGHT)){
-						GLog.p(Messages.get(this, "secret_hint"));
-					}
+				if (reqSecrets <= 0 && Random.Int(4) <= Dungeon.hero.pointsInTalent(Talent.ROGUES_FORESIGHT)) {
+					GLog.p(Messages.get(this, "secret_hint"));
+				}
 				Random.popGenerator();
 			}
 
 			boolean unspentTalents = false;
-			for (int i = 1; i <= Dungeon.hero.talents.size(); i++){
-				if (Dungeon.hero.talentPointsAvailable(i) > 0){
+			for (int i = 1; i <= Dungeon.hero.talents.size(); i++) {
+				if (Dungeon.hero.talentPointsAvailable(i) > 0) {
 					unspentTalents = true;
 					break;
 				}
 			}
-			if (unspentTalents){
+			if (unspentTalents) {
 				GLog.newLine();
-				GLog.w( Messages.get(Dungeon.hero, "unspent") );
+				GLog.w(Messages.get(Dungeon.hero, "unspent"));
 				StatusPane.talentBlink = 10f;
 				WndHero.lastIdx = 1;
 			}
 
 			switch (Dungeon.level.feeling) {
-                case CHASM:
-                    GLog.w(Messages.get(this, "chasm"));
-                    break;
-                case WATER:
-                    GLog.w(Messages.get(this, "water"));
-                    break;
-                case GRASS:
-                    GLog.w(Messages.get(this, "grass"));
-                    break;
-                case DARK:
-                    GLog.w(Messages.get(this, "dark"));
-                    break;
-                case LARGE:
-                    GLog.w(Messages.get(this, "large"));
-                    break;
-                case TRAPS:
-                    GLog.w(Messages.get(this, "traps"));
-                    break;
-                case SECRETS:
-                    GLog.w(Messages.get(this, "secrets"));
-                    break;
+				case CHASM:
+					GLog.w(Messages.get(this, "chasm"));
+					break;
+				case WATER:
+					GLog.w(Messages.get(this, "water"));
+					break;
+				case GRASS:
+					GLog.w(Messages.get(this, "grass"));
+					break;
+				case DARK:
+					GLog.w(Messages.get(this, "dark"));
+					break;
+				case LARGE:
+					GLog.w(Messages.get(this, "large"));
+					break;
+				case TRAPS:
+					GLog.w(Messages.get(this, "traps"));
+					break;
+				case SECRETS:
+					GLog.w(Messages.get(this, "secrets"));
+					break;
 				case BIGTRAP:
-					GLog.w(Messages.get(this, "moretraps"));  break;
+					GLog.w(Messages.get(this, "moretraps"));
+					break;
 				case THREEWELL:
-					GLog.p(Messages.get(this, "threewells"));  break;
+					GLog.p(Messages.get(this, "threewells"));
+					break;
 				case LINKROOM:
-					GLog.w(Messages.get(this, "links"));  break;
+					GLog.w(Messages.get(this, "links"));
+					break;
 				case DIEDROOM:
-					GLog.n(Messages.get(this, "died"));  break;
-            }
+					GLog.n(Messages.get(this, "died"));
+					break;
+			}
 
 			for (Mob mob : Dungeon.level.mobs) {
-				if (!mob.buffs(ChampionEnemy.class).isEmpty() && Dungeon.isChallenged(SBSG)){
+				if (!mob.buffs(ChampionEnemy.class).isEmpty() && Dungeon.isChallenged(SBSG)) {
 					GLog.n(Messages.get(ChampionEnemy.class, "warn2"));
 					GLog.w(Messages.get(ChampionEnemy.class, "warn"));
-				} else if(!mob.buffs(ChampionEnemy.class).isEmpty()  && Dungeon.isChallenged(CHAMPION_ENEMIES)) {
+				} else if (!mob.buffs(ChampionEnemy.class).isEmpty() && Dungeon.isChallenged(CHAMPION_ENEMIES)) {
 					GLog.w(Messages.get(ChampionEnemy.class, "warn"));
 				}
 			}
 
-			if (Dungeon.hero.buff(AscensionChallenge.class) != null){
+			if (Dungeon.hero.buff(AscensionChallenge.class) != null) {
 				Dungeon.hero.buff(AscensionChallenge.class).saySwitch();
 			}
 
@@ -1624,9 +1648,29 @@ public class GameScene extends PixelScene {
 
 		}
 
+		//Tutorial
+		if (SPDSettings.intro()){
+
+			if (Document.ADVENTURERS_GUIDE.isPageFound(Document.GUIDE_INTRO)){
+				GLog.p(Messages.get(GameScene.class, "tutorial_guidebook"));
+				flashForDocument(Document.ADVENTURERS_GUIDE, Document.GUIDE_INTRO);
+			} else {
+				if (ControllerHandler.isControllerConnected()) {
+					GLog.p(Messages.get(GameScene.class, "tutorial_move_controller"));
+				} else if (SPDSettings.interfaceSize() == 0) {
+					GLog.p(Messages.get(GameScene.class, "tutorial_move_mobile"));
+				} else {
+					GLog.p(Messages.get(GameScene.class, "tutorial_move_desktop"));
+				}
+			}
+			toolbar.visible = toolbar.active = false;
+			status.visible = status.active = false;
+			if (inventory != null) inventory.visible = inventory.active = false;
+		}
+
 		if (Rankings.INSTANCE.totalNumber > 0 && !Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_DIEING)){
 			GLog.p(Messages.get(Guidebook.class, "hint"));
-            //GameScene.flashForDocument(Document.GUIDE_DIEING);
+			GameScene.flashForDocument(Document.ADVENTURERS_GUIDE, Document.GUIDE_DIEING);
 		}
 
 		if (!invVisible) toggleInvPane();
@@ -1821,11 +1865,12 @@ public class GameScene extends PixelScene {
 			
 		}
 	}
-	
+
 	public static void ready() {
 		selectCell( defaultCellListener );
 		QuickSlotButton.cancel();
 		InventoryPane.cancelTargeting();
+
 		if (tagDisappeared) {
 			tagDisappeared = false;
 			updateTags = true;
@@ -1839,8 +1884,6 @@ public class GameScene extends PixelScene {
 				scene.toolbar.examining = false;
 			}
 		}
-
-
 	}
 	
 	public static void checkKeyHold(){

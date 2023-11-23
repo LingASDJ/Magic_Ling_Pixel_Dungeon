@@ -142,16 +142,16 @@ public class WndKeyBindings extends Window {
 			if (action.code() < 1) {
 				actionList.remove(action);
 
-			//mouse bindings are only available to controllers
+				//mouse bindings are only available to controllers
 			} else if ((action == GameAction.LEFT_CLICK
 					|| action == GameAction.RIGHT_CLICK
 					|| action == GameAction.MIDDLE_CLICK) && !controller) {
 				actionList.remove(action);
 
-			//actions with no default binding are moved to the end of the list
+				//actions with no default binding are moved to the end of the list
 			} else if (!defaults.containsValue(action)){
-						actionList.remove(action);
-						actionList.add(action);
+				actionList.remove(action);
+				actionList.add(action);
 			}
 		}
 
@@ -360,11 +360,11 @@ public class WndKeyBindings extends Window {
 				if (x >= this.x + 4*width()/5 - 1 && key2 != 0) {
 					ShatteredPixelDungeon.scene().addToFront( new WndChangeBinding(gameAction, this, 3, key3, key1, key2));
 
-				//assigning second key
+					//assigning second key
 				} else if (x >= this.x + 3*width()/5 - 1 && key1 != 0) {
 					ShatteredPixelDungeon.scene().addToFront( new WndChangeBinding(gameAction, this, 2, key2, key1, key3));
 
-				//assigning first key
+					//assigning first key
 				} else if (x >= this.x + 2*width()/5){
 					ShatteredPixelDungeon.scene().addToFront( new WndChangeBinding(gameAction, this, 1, key1, key2, key3));
 
@@ -404,8 +404,8 @@ public class WndKeyBindings extends Window {
 			else if (keyAssigning == 2) descKey = "desc_second";
 			else if (keyAssigning == 3) descKey = "desc_third";
 			RenderedTextBlock desc = PixelScene.renderTextBlock( Messages.get(this, descKey,
-						Messages.get(WndKeyBindings.class, action.name()),
-						KeyBindings.getKeyName(curKeyCode)), 6 );
+					Messages.get(WndKeyBindings.class, action.name()),
+					KeyBindings.getKeyName(curKeyCode)), 6 );
 			desc.maxWidth(WIDTH);
 			desc.setRect(0, 0, WIDTH, desc.height());
 			add(desc);

@@ -69,7 +69,7 @@ public abstract class Key extends Item {
 					// 提醒气泡的显示逻辑
 					GLog.p(Messages.get(Key.class,"locksword"));
 				}
-				int bubbleText = 15 * (Dungeon.depth / 5) + 20;
+				int bubbleText = 5*(Dungeon.depth/5)+20;
 				hero.sprite.showStatus(0x123456ff, String.valueOf(bubbleText));
 				return true;
 			}

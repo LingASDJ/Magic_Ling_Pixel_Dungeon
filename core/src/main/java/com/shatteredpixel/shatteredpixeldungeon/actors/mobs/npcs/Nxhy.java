@@ -10,6 +10,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NxhySprite;
+import com.watabou.noosa.Game;
+import com.watabou.utils.Callback;
 
 public class Nxhy extends Shopkeeper {
 
@@ -22,15 +24,21 @@ public class Nxhy extends Shopkeeper {
 
     @Override
     protected boolean act() {
-        if (!seenBefore && Dungeon.level.heroFOV[pos]) {
-            yell(Messages.get(this, "greetings", Dungeon.hero.name()));
-            seenBefore = true;
-            playBGM(Assets.SHOP, true);
-        }  else if(seenBefore && !Dungeon.level.heroFOV[pos]) {
-            seenBefore = false;
-            yell(Messages.get(this, "goodbye", hero.name()));
-            BGMPlayer.playBGMWithDepth();
-        }
+
+        Game.runOnRenderThread(new Callback() {
+            @Override
+            public void call() {
+                if (!seenBefore && Dungeon.level.heroFOV[pos]) {
+                    yell(Messages.get(Nxhy.class, "greetings", Dungeon.hero.name()));
+                    seenBefore = true;
+                    playBGM(Assets.SHOP, true);
+                }  else if(seenBefore && !Dungeon.level.heroFOV[pos]) {
+                    seenBefore = false;
+                    yell(Messages.get(Nxhy.class, "goodbye", hero.name()));
+                    BGMPlayer.playBGMWithDepth();
+                }
+            }
+        });
 
         if (Dungeon.level.heroFOV[pos]){
             Notes.add(Notes.Landmark.SHOP);

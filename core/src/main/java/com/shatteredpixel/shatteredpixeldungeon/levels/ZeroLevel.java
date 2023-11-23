@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -44,7 +45,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
+import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -64,7 +67,7 @@ public class ZeroLevel extends Level {
     }
 
     public ZeroLevel() {
-        this.viewDistance = 15;
+        this.viewDistance = SPDSettings.intro() ? 4 : 15;
     }
 
     private int mapToTerrain(int var1) {
@@ -96,7 +99,7 @@ public class ZeroLevel extends Level {
                 case 161:
                     return 12;
                 case 80:
-                    return 5;
+                    return SPDSettings.intro() ? Terrain.SECRET_DOOR : Terrain.DOOR;
                 case 85:
                     return 11;
                 case 96:
@@ -130,6 +133,13 @@ public class ZeroLevel extends Level {
     }
 
     protected void createItems() {
+
+        //places the first guidebook page on floor 1
+        if (Dungeon.depth == 0 &&
+                (!Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_INTRO) || SPDSettings.intro() )){
+            drop( new Guidebook(),  (this.width * 2) + 4 );
+        }
+
         drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.width * 17 + 16 );
         drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.width * 16 + 17 );
 

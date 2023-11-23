@@ -23,6 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.journal;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
@@ -171,16 +173,22 @@ public enum Document {
                     return new ItemSprite(ItemSpriteSheet.MASTERY);
                 case "Examining":
                     return Icons.get(Icons.MAGNIFY);
-//				case "Surprise_Attacks":
-//					return Icons.get(Icons.SNAKE);
                 case "Identifying":
                     return new ItemSprite(new ScrollOfIdentify());
+				case "Killboss":
+					Image boss = new Image(new DM720Sprite());
+					boss.scale.set(PixelScene.align(0.75f));
+					return boss;
+				case "Waterbless":
+					return new ItemSprite(ItemSpriteSheet.WATERSOUL);
+				case "Lanterfire":
+					return new ItemSprite(ItemSpriteSheet.LANTERNB);
+				case "Readyherobook":
+					return new ItemSprite(ItemSpriteSheet.YELLOWBOOKS);
                 case "Food":
                     return new ItemSprite(ItemSpriteSheet.PASTY);
                 case "Dieing":
                     return new ItemSprite(ItemSpriteSheet.TOMB);
-                case Document.GUIDE_SEARCHING:
-                    return Icons.get(Icons.MAGNIFY);
                 case "Strength":
                     return new ItemSprite(ItemSpriteSheet.GREATAXE);
 				case "Upgrades":
@@ -245,10 +253,16 @@ public enum Document {
 		ADVENTURERS_GUIDE.pagesStates.put(GUIDE_SEARCHING,      debug ? READ : NOT_FOUND);
 		ADVENTURERS_GUIDE.pagesStates.put("Strength",           debug ? READ : NOT_FOUND);
 		ADVENTURERS_GUIDE.pagesStates.put("Upgrades",           debug ? READ : NOT_FOUND);
+		ADVENTURERS_GUIDE.pagesStates.put("Killboss",           debug ? READ : NOT_FOUND);
+		ADVENTURERS_GUIDE.pagesStates.put("Waterbless",         debug ? READ : NOT_FOUND);
+		ADVENTURERS_GUIDE.pagesStates.put("Readyherobook",      debug ? READ : NOT_FOUND);
+		ADVENTURERS_GUIDE.pagesStates.put("Lanterfire",      debug ? READ : NOT_FOUND);
 		ADVENTURERS_GUIDE.pagesStates.put("Looting",            debug ? READ : NOT_FOUND);
 		ADVENTURERS_GUIDE.pagesStates.put("Levelling",          debug ? READ : NOT_FOUND);
 		ADVENTURERS_GUIDE.pagesStates.put("Positioning",        debug ? READ : NOT_FOUND);
 		ADVENTURERS_GUIDE.pagesStates.put("Magic",              debug ? READ : NOT_FOUND);
+
+
 		
 		//given in sewers
 		ALCHEMY_GUIDE.pagesStates.put("Potions",                debug ? READ : NOT_FOUND);

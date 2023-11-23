@@ -58,7 +58,7 @@ public class SPDAction extends GameAction {
 
 	public static final GameAction INVENTORY    = new SPDAction("inventory");
 	public static final GameAction INVENTORY_SELECTOR   = new SPDAction("inventory_selector");
-	public static final GameAction QUICKSLOT_SELECTOR   = new SPDAction("quickslot_selector");
+
 	public static final GameAction QUICKSLOT_1  = new SPDAction("quickslot_1");
 	public static final GameAction QUICKSLOT_2  = new SPDAction("quickslot_2");
 	public static final GameAction QUICKSLOT_3  = new SPDAction("quickslot_3");
@@ -68,6 +68,8 @@ public class SPDAction extends GameAction {
 	public static final GameAction QUICKSLOT_7  = new SPDAction("quickslot_7");
 	public static final GameAction QUICKSLOT_8  = new SPDAction("quickslot_8");
 	public static final GameAction QUICKSLOT_9  = new SPDAction("quickslot_9");
+
+	public static final GameAction OPEN_CLOSED  = new SPDAction("open_closed");
 
 	public static final GameAction BAG_1        = new SPDAction("bag_1");
 	public static final GameAction BAG_2        = new SPDAction("bag_2");
@@ -132,6 +134,8 @@ public class SPDAction extends GameAction {
 		defaultBindings.put( Input.Keys.NUM_8,          SPDAction.QUICKSLOT_8 );
 		defaultBindings.put( Input.Keys.NUM_9,          SPDAction.QUICKSLOT_9 );
 
+		defaultBindings.put( Input.Keys.V,          SPDAction.OPEN_CLOSED );
+
 		defaultBindings.put( Input.Keys.F1,             SPDAction.BAG_1 );
 		defaultBindings.put( Input.Keys.F2,             SPDAction.BAG_2 );
 		defaultBindings.put( Input.Keys.F3,             SPDAction.BAG_3 );
@@ -181,7 +185,6 @@ public class SPDAction extends GameAction {
 
 		defaultControllerBindings.put( Input.Keys.BUTTON_A,         SPDAction.TAG_ATTACK );
 		defaultControllerBindings.put( Input.Keys.BUTTON_B,         SPDAction.EXAMINE );
-		defaultControllerBindings.put( Input.Keys.BUTTON_X,         SPDAction.QUICKSLOT_SELECTOR );
 		defaultControllerBindings.put( Input.Keys.BUTTON_Y,         SPDAction.INVENTORY_SELECTOR );
 	}
 

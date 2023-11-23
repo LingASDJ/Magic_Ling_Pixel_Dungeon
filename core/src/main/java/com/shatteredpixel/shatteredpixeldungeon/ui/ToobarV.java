@@ -39,6 +39,16 @@ public class ToobarV extends Component {
     private QuickslotTool[] btnQuick;
     private int numVisibleSlots;
 
+    public void alpha( float value ){
+        btnWait.alpha( value );
+        btnExamine.alpha( value );
+        btnInventory.alpha( value );
+        for (int i = 0; i < btnQuick.length; i++){
+            btnQuick[i].alpha(value);
+        }
+        //btnSwitchSlot.alpha( value );
+    }
+
     private PickedUpItem pickedUp;
 
     private boolean lastEnabled = true;
@@ -484,6 +494,11 @@ public class ToobarV extends Component {
 
             this.width = width;
             this.height = height;
+        }
+
+
+        public void alpha( float value ){
+            base.alpha(value);
         }
 
         @Override

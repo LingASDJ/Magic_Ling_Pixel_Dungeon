@@ -33,8 +33,10 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndGame;
@@ -74,6 +76,36 @@ public class MenuPane extends Component {
 
 	public static final int WIDTH = 32;
 
+
+	protected String displayText(){
+		InterlevelScene.curTransition = new LevelTransition();
+		String depth = Integer.toString(Dungeon.depth);
+		String abcd;
+		switch (InterlevelScene.curTransition.destDepth){
+				default:
+				case 0: abcd = "A";
+				break;
+				case 1: abcd = "B";
+				break;
+				case 2: abcd = "C";
+				break;
+				case 3: abcd = "D";
+				break;
+				case 4: abcd = "E";
+				break;
+				case 5: abcd = "F";
+				break;
+				case 6: abcd = "G";
+				break;
+		}
+
+		if(Dungeon.branch!=0){
+			depth += "-" + abcd;
+		}
+
+		return depth;
+	}
+
 	@Override
 	protected void createChildren() {
 		super.createChildren();
@@ -84,11 +116,8 @@ public class MenuPane extends Component {
 		depthIcon = Icons.get(Dungeon.level.feeling);
 		add(depthIcon);
 
-		if(Dungeon.depth < 0){
-			depthText = new BitmapText( "?", PixelScene.pixelFont);
-		} else {
-			depthText = new BitmapText(Integer.toString(Dungeon.depth), PixelScene.pixelFont);
-		}
+
+		depthText = new BitmapText(displayText(), PixelScene.pixelFont);
 		depthText.hardlight( 0xCACFC2 );
 		depthText.measure();
 		add(depthText);
@@ -199,20 +228,20 @@ public class MenuPane extends Component {
 
 		btnJournal.setPos( btnMenu.left() - btnJournal.width() + 2, y );
 
-		depthIcon.x = btnJournal.left() - 7 + (7 - depthIcon.width())/2f - 0.1f;
+		depthIcon.x = btnJournal.left() - 9 + (7 - depthIcon.width())/2f - 0.1f;
 		depthIcon.y = y + 1;
 		if (SPDSettings.interfaceSize() == 0) depthIcon.y++;
 		PixelScene.align(depthIcon);
 
 		depthText.scale.set(PixelScene.align(0.67f));
-		depthText.x = depthIcon.x + (depthIcon.width() - depthText.width())/2f;
+		depthText.x = (depthIcon.x + (depthIcon.width() - depthText.width())/2f);
 		depthText.y = depthIcon.y + depthIcon.height();
 		PixelScene.align(depthText);
 
 		depthButton.setRect(depthIcon.x, depthIcon.y, depthIcon.width(), depthIcon.height() + depthText.height());
 
 		if (challengeIcon != null){
-			challengeIcon.x = btnJournal.left() - 14 + (7 - challengeIcon.width())/2f - 0.1f;
+			challengeIcon.x = btnJournal.left() - 17 + (7 - challengeIcon.width())/2f - 0.1f;
 			challengeIcon.y = y + 1;
 			if (SPDSettings.interfaceSize() == 0) challengeIcon.y++;
 			PixelScene.align(challengeIcon);

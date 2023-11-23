@@ -26,8 +26,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.Builder;
@@ -56,29 +54,6 @@ public class SewerBossLevel extends SewerLevel {
 	{
 		color1 = 0x48763c;
 		color2 = 0x59994a;
-	}
-	
-	@Override
-	public void playLevelMusic() {
-		if (locked){
-			Music.INSTANCE.play(Assets.Music.SEWERS_BOSS, true);
-			return;
-		}
-
-		boolean gooAlive = false;
-		for (Mob m : mobs){
-			if (m instanceof Goo) {
-				gooAlive = true;
-				break;
-			}
-		}
-
-		if (gooAlive){
-			Music.INSTANCE.end();
-		} else {
-			Music.INSTANCE.playTracks(SewerLevel.SEWER_TRACK_LIST, SewerLevel.SEWER_TRACK_CHANCES, false);
-		}
-
 	}
 
 	@Override
