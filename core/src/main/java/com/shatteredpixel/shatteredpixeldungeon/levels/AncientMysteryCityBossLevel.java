@@ -155,9 +155,9 @@ public class AncientMysteryCityBossLevel extends Level{
             L,D,W,D,E,R,R,W,R,R,R,R,R,R,R,R,R,R,R,W,R,R,E,W,D,W,L,
             L,W,W,E,R,R,W,W,W,R,R,R,R,R,R,R,R,R,W,W,W,R,R,E,W,W,L,
             L,W,D,C,R,R,R,W,R,R,R,R,R,R,R,R,R,R,R,W,R,R,R,C,W,W,L,
-            L,W,W,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,D,W,L,
-            L,W,D,C,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,C,W,W,L,
-            L,W,W,E,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,D,W,W,L,
+            L,W,W,R,R,R,R,R,R,R,R,R,R,W,R,R,R,R,R,R,R,R,R,R,D,W,L,
+            L,W,D,C,R,R,R,R,R,R,R,R,W,R,W,R,R,R,R,R,R,R,R,C,W,W,L,
+            L,W,W,E,R,R,R,R,R,R,R,R,R,W,R,R,R,R,R,R,R,R,R,D,W,W,L,
             L,R,W,D,E,R,R,W,R,R,R,R,R,R,R,R,R,R,R,W,R,R,D,D,W,R,L,
             L,R,R,W,W,R,W,W,W,R,R,R,R,R,R,R,R,R,W,W,W,R,W,W,R,R,L,
             L,R,R,R,W,R,R,W,R,R,R,R,R,R,R,R,R,R,R,W,R,R,W,R,R,R,L,
@@ -180,7 +180,7 @@ public class AncientMysteryCityBossLevel extends Level{
         map = WorldRoomShort.clone();
         int entrance = WIDTH*28+13;
 
-        LevelTransition enter = new LevelTransition(this,entrance, LevelTransition.Type.SURFACE);
+        LevelTransition enter = new LevelTransition(this,entrance, LevelTransition.Type.BRANCH_ENTRANCE);
         transitions.add(enter);
 
         //首次构建地图

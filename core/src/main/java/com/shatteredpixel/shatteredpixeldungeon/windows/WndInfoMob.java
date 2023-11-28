@@ -219,7 +219,13 @@ public class WndInfoMob extends WndTitledMessage {
 					String.valueOf((double)Math.round(mob.speed()*10)/10): SPLevel(mob),6);
 
 			mobSixInfo.info7 = PixelScene.renderTextBlock(ProName(mob),6);
-			mobSixInfo.info8 = PixelScene.renderTextBlock(String.valueOf(mob.damageRoll()),6);
+			int dmg = 0;
+			int tries = 1000;
+			for (int i = 0; i < tries; i++) {
+				dmg += mob.damageRoll();
+			}
+
+			mobSixInfo.info8 = PixelScene.renderTextBlock(String.valueOf(dmg/tries),6);
 
 			add(mobSixInfo.info1);
 			add(mobSixInfo.info2);

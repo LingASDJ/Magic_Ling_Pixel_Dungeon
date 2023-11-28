@@ -26,6 +26,8 @@ public class SkipIndicator extends Tag {
     protected void createChildren() {
         super.createChildren();
 
+        bg.alpha(0f);
+        add( bg );
         icon = Icons.SKIP.get();
         add( icon );
     }

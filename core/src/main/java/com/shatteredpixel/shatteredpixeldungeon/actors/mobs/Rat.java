@@ -34,11 +34,22 @@ public class Rat extends Mob {
 
 	{
 		spriteClass = RatSprite.class;
-
+		discovered = Dungeon.discovered[0];
 		HP = HT = 8;
 		defenseSkill = 2;
 		maxLvl = 5;
 	}
+
+	@Override
+	public void die( Object cause ) {
+		if( cause instanceof Rat){
+			Dungeon.discovered[0] = true;
+			discovered = true;
+		}
+		super.die( cause );
+	}
+
+
 
 	@Override
 	protected boolean act() {

@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.CYELLOW;
 import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.GREEN_COLOR;
 import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.RED_COLOR;
@@ -81,25 +82,21 @@ public class MenuPane extends Component {
 		InterlevelScene.curTransition = new LevelTransition();
 		String depth = Integer.toString(Dungeon.depth);
 		String abcd;
-		switch (InterlevelScene.curTransition.destDepth){
+		switch (branch){
 				default:
-				case 0: abcd = "A";
+				case 1: abcd = "A";
 				break;
-				case 1: abcd = "B";
+				case 2: abcd = "B";
 				break;
-				case 2: abcd = "C";
+				case 3: abcd = "C";
 				break;
-				case 3: abcd = "D";
+				case 4: abcd = "D";
 				break;
-				case 4: abcd = "E";
-				break;
-				case 5: abcd = "F";
-				break;
-				case 6: abcd = "G";
+				case 5: abcd = "E";
 				break;
 		}
 
-		if(Dungeon.branch!=0){
+		if(branch!=0){
 			depth += "-" + abcd;
 		}
 

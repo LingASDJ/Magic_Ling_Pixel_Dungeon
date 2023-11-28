@@ -6,7 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
@@ -71,18 +71,7 @@ public class JoinIndicator extends Button {
             @Override
             protected void onClick() {
                 super.onClick();
-                ShatteredPixelDungeon.scene().add(new WndOptions(
-                        Messages.get(this, "saver"),
-                        Messages.get(this, "saver_desc"),
-                        Messages.get(this, "okay"),
-                        Messages.get(this, "cancel")) {
-                    @Override
-                    protected void onSelect(int index) {
-                        if (index == 0) {
-                            ShatteredPixelDungeon.platform.openURI( Messages.get(this, "link") );
-                        }
-                    }
-                });
+                ShatteredPixelDungeon.scene().add(add(new WndMessage(Messages.get(this,"cong"))));
             }
 
         });

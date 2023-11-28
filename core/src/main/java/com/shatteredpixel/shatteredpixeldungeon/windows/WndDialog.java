@@ -226,7 +226,7 @@ public class WndDialog extends Window {
     public SkipIndicator makeSkip()
     {
         SkipIndicator skipIndicator = new SkipIndicator();
-        skipIndicator.setPos(width - skipIndicator.width() ,40);
+        skipIndicator.setPos(width - skipIndicator.width()-5 ,160);
         return skipIndicator;
     }
 
@@ -414,7 +414,8 @@ public class WndDialog extends Window {
         {
             int half = existing.length / 2;
             float offset = (PixelScene.uiCamera.height - GameScene.ToolbarHeight() - GameScene.StatusHeight() ) / 2;
-            pos = offset - half * BUTTON_HEIGHT  - (half - 1) * MARGIN - (existing.length % 2 == 0 ? MARGIN / 2 : BUTTON_HEIGHT / 2) ;
+            pos = offset - half * BUTTON_HEIGHT  - (half - 1) * MARGIN - (existing.length % 2 == 0 ? MARGIN / 2f :
+                    BUTTON_HEIGHT / 2f) ;
         }
 
         for (int i = 0; i < existing.length; i++) {

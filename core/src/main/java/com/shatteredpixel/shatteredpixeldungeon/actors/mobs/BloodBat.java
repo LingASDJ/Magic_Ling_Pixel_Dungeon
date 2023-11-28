@@ -40,6 +40,13 @@ public class BloodBat extends Mob implements Callback {
         flying = true;
     }
 
+    @Override
+    public boolean act() {
+        if(HT>850) die(true);
+
+        return super.act();
+    }
+
     public void onZapComplete() {
         zap();
         next();

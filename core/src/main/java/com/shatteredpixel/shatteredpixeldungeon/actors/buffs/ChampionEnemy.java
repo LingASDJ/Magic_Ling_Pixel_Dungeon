@@ -24,7 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -125,11 +124,11 @@ public abstract class ChampionEnemy extends Buff {
 		int randomNumber = Random.Int(100);
 
 		if (randomNumber < 5) {
-			//开始硬性限制酸液体，每大层最多遇到3个，关键Boss战后清0
-			if(Statistics.SiderLing < 4) {
-				buffCls = ChampionEnemy.Sider.class;
-				Statistics.SiderLing++;
-			} else {
+//			//开始硬性限制酸液体，每大层最多遇到3个，关键Boss战后清0
+//			if(Statistics.SiderLing < 4) {
+//				buffCls = ChampionEnemy.Sider.class;
+//				Statistics.SiderLing++;
+//			} else {
 				switch (randomNumber % 5) {
 					case 0: default:
 						buffCls = ChampionEnemy.Small.class;
@@ -147,7 +146,7 @@ public abstract class ChampionEnemy extends Buff {
 						buffCls = ChampionEnemy.HealRight.class;
 						break;
 				}
-			}
+//			}
 		} else if (randomNumber < 10) {
 			buffCls = ChampionEnemy.Bomber.class;
 		} else {

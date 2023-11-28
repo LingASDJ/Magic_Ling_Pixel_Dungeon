@@ -1999,7 +1999,7 @@ public class Hero extends Char {
 			this.exp += exp;
 		}
 
-		BloodBat.updateHP();
+
 
 		float percent = exp/(float)maxExp();
 
@@ -2078,7 +2078,7 @@ public class Hero extends Char {
 			}
 			
 			Item.updateQuickslot();
-			
+			BloodBat.updateHP();
 			Badges.validateLevelReached();
 		}
 	}

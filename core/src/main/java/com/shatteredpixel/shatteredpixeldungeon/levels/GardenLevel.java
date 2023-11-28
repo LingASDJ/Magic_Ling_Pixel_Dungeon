@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BlueWraith;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.watabou.utils.Random;
 
 public class GardenLevel extends Level {
@@ -59,8 +60,14 @@ public class GardenLevel extends Level {
     protected boolean build() {
         setSize(WIDTH, HEIGHT);
         map = code_map.clone();
-        this.entrance = 25;
-        exit = 0;
+        int entrance = 25;
+
+        LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.BRANCH_EXIT);
+        transitions.add(enter);
+
+        int exit = 0;
+        LevelTransition exits = new LevelTransition(this, exit, LevelTransition.Type.BRANCH_ENTRANCE);
+        transitions.add(exits);
         return true;
     }
 

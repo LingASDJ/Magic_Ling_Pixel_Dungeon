@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
@@ -147,6 +148,59 @@ public class LevelRules {
                     Statistics.deepestFloor--;
                     return new DeadEndLevel();
             }
+    }
+
+    public static Level createBranchLevel() {
+
+        switch (branch){
+            default:
+            case 1:
+                switch (depth) {
+                    case 11:
+                    case 12:
+                    case 13:
+                    case 14:
+                        return new MiningLevel();
+                    case 17: case 18:
+                        return new AncientMysteryCityLevel();
+                    default:
+                        return new DeadEndLevel();
+                }
+
+            case 2:
+                switch (depth) {
+                    case 4: case 14:
+                       return new MiniBossLevel();
+                   case 17: case 18:
+                        return new AncientMysteryCityLevel();
+                    default:
+                        return new DeadEndLevel();
+                }
+
+            case 3:
+                switch (depth){
+                    case 17: case 18:
+                        return new AncientMysteryCityLevel();
+                    default:
+                        return new DeadEndLevel();
+                }
+
+            case 4:
+                switch (depth){
+                    case 17: case 18:
+                        return new AncientMysteryCityBossLevel();
+                    default:
+                        return new DeadEndLevel();
+                }
+
+            case 5:
+                switch (depth){
+                    case 17: case 18:
+                        return new GardenLevel();
+                    default:
+                        return new DeadEndLevel();
+                }
+        }
     }
 
 

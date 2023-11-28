@@ -71,7 +71,7 @@ public class Assets {
 		public static final String TILES_PRISON = "environment/tiles_prison.png";
 		public static final String TILES_COLDCHEST  = "environment/tiles_coldchest.png";
 		public static final String TILES_FIRE  = "environment/tiles_fire.png";
-		public static final String TILES_TENGUS  = "environment/tiles_tengu.png";
+		public static final String Dreamcatcher  = "environment/custom_tiles/blue_quest.png";
 		public static final String TILES_HOLLOW  = "environment/tiles_halloween.png";
 
 		public static final String TILES_CAVES  = "environment/tiles_caves.png";
@@ -230,6 +230,8 @@ public class Assets {
         public static final String CAVES_BOSS_FINALE = "music/caves_boss_finale.ogg";
         public static final String CITY_BOSS_FINALE = "music/city_boss_finale.ogg";
         public static final String HALLS_TENSE = "music/halls_tense.ogg";
+
+		public static final String ANCITY = "music/Level_Ancity.ogg";
         public static final String HALLS_BOSS_FINALE = "music/halls_boss_finale.ogg";
     }
 
@@ -402,8 +404,8 @@ public class Assets {
 		public static final String JAMULET	= "sprites/jamulet.png";
 		public static final String COLDRAT	= "sprites/coldrat.png";
 		public static final String REDSWARM	= "sprites/RedSearm.png";
-		public static final String REN		= "Ren/ren.png";
-
+		public static final String REN		= "Npcs/ren.png";
+		public static final String DragonBlueGirl		= "Npcs/smallblue.png";
 		public static final String DKGirl		= "Npcs/DKGirl.png";
 
 		public static final String LanFire		= "sprites/npc/lanfire.png";

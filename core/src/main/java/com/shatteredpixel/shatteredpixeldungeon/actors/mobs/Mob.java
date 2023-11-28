@@ -102,7 +102,8 @@ public abstract class Mob extends Char {
     //FIXME this is sort of a band-aid correction for allies needing more intelligent behaviour
 	protected boolean intelligentAlly = false;
 	protected static final String TXT_EXP		= "%+dEXP";
-
+	public static ArrayList<Mob> Mobs = new ArrayList<>();
+	public boolean discovered = false;
 	public AiState SLEEPING     = new Sleeping();
 	public AiState HUNTING		= new Hunting();
 	public AiState WANDERING	= new Wandering();
@@ -958,6 +959,8 @@ public abstract class Mob extends Char {
 
     @Override
 	public void die( Object cause ) {
+
+		discovered = true;
 
 		if (cause == Chasm.class){
 			//50% chance to round up, 50% to round down

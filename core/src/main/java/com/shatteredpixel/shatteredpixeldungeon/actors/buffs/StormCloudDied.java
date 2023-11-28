@@ -69,10 +69,22 @@ public class StormCloudDied extends Buff {
         ArrayList<Integer> cells = new ArrayList<>();
         for (int i = 4; i > 0; i--) {
             int c = Random.Int(Dungeon.level.length());
-            if (c >= 0 && c < Dungeon.level.length() && hero.fieldOfView[c] && !cells.contains(c)) {
-                cells.add(c);
+            try {
+                final boolean b = c >= 0 && c < Dungeon.level.length() && hero.fieldOfView[c] && !cells.contains(c);
+                if(b) cells.add(c);
+            } catch (Exception ignored) {
+                //因为Dungeon.level初始化可能没有正确加载，所以TC监测
             }
+
         }
+
+//        ArrayList<Integer> cells = new ArrayList<>();
+//        for (int i = 4; i > 0; i--) {
+//            int c = Random.Int(Dungeon.level.length());
+//            if (c >= 0 && c < Dungeon.level.length() && hero.fieldOfView[c] && !cells.contains(c)) {
+//                cells.add(c);
+//            }
+//        }
 
         for(int p : cells){
             arcs.add( new Lightning.Arc(hero.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(p)));

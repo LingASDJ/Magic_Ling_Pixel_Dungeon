@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.ROGUE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createBossRushLevel;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createBranchLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createStandardLevel;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -62,7 +63,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
-import com.shatteredpixel.shatteredpixeldungeon.levels.MiniBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -87,6 +87,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
@@ -212,6 +213,8 @@ public class Dungeon {
 	public static long seed;
     private static final String ENERGY = "energy";
 
+	public static boolean[] discovered = new boolean[30];
+
 	public static boolean isChallenged( int mask ) {
 		return (challenges & mask) != 0;
 	}
@@ -226,33 +229,12 @@ public class Dungeon {
 		Actor.clear();
 		
 		Level level;
-		if (branch == 0) {
-			if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+		if (branch == 0)
+			if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))
 				level = createBossRushLevel();
-			} else
-				level = createStandardLevel();
-		} else if (branch == 1) {
-			switch (depth) {
-				case 11:
-				case 12:
-				case 13:
-				case 14:
-					level = new MiningLevel();
-					break;
-				default:
-					level = new DeadEndLevel();
-			}
-		} else if (branch == 2) {
-			switch (depth) {
-				case 4: case 14:
-					level = new MiniBossLevel();
-					break;
-				default:
-					level = new DeadEndLevel();
-			}
-		} else {
-			level = new DeadEndLevel();
-		}
+			else level = createStandardLevel();
+		 	else level = createBranchLevel();
+
 
 		//dead end levels get cleared, don't count as generated
 		if (!(level instanceof DeadEndLevel)){
@@ -603,6 +585,7 @@ public class Dungeon {
 
 		TitleScene.NightDay = false;
 
+		Arrays.fill(discovered, false);
 
 		mobsToChampion = -1;
         mobsToStateLing = -1;

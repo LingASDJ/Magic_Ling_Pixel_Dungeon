@@ -6,7 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CausticSlimeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300AttackSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireGhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -94,9 +94,9 @@ public class S_Changes {
                         "攻击由_4x_变成_2x_)\n" +
                         "Dev:JDSA Ling"));
 
-        Image a = new Image(new DM300AttackSprite());
+        Image a = new Image(new DM720Sprite());
         i.scale.set(PixelScene.align(0.74f));
-        changes.addButton( new ChangeButton(new DM300AttackSprite(), "DM-720",
+        changes.addButton( new ChangeButton(new DM720Sprite(), "DM-720",
                 "削弱 _DM-720_！\n" +
                         "血量 _3000_降到_200_\n" +
                         "攻击由_2x_变成_1.3x_\n" +
@@ -153,7 +153,7 @@ public class S_Changes {
         changes.hardlight(CharSprite.POSITIVE);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new DM300AttackSprite(), "DM720",
+        changes.addButton(new ChangeButton(new DM720Sprite(), "DM720",
                 "将DM300重新进行了优化和强化\n\n" +
                         "并改名为DM-720\n\n" +
                         "DM720新特性\n" +

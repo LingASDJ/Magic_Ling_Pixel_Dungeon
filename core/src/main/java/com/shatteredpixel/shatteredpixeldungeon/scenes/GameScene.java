@@ -1743,7 +1743,7 @@ public class GameScene extends PixelScene {
 					bossSlain.show( Window.CBLACK, 0.3f, 5f);
 					scene.showBanner(bossSlain);
 					break;
-				case 0:
+				case 21:
 					bossSlain.texture(Assets.Interfaces.SakaBJY_Title);
 					bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 					scene.showBanner(bossSlain);

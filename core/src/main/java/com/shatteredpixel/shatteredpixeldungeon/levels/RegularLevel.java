@@ -80,6 +80,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.RandomRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.DreamcatcherRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.GooRoom;
@@ -247,7 +248,7 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-		if (Dungeon.NxhyshopOnLevel()) {
+		if (Dungeon.NxhyshopOnLevel() && branch == 0) {
 			initRooms.add(new NxhyShopRoom());
 		}
 
@@ -255,7 +256,7 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new LanFireRoom());
 		}
 
-		if (Dungeon.NyzshopOnLevel()) {
+		if (Dungeon.NyzshopOnLevel() && branch == 0) {
 			Buff.affect(hero, RandomBuff.class).set( (4 + Random.Int(9)+hero.STR/6+hero.HP/30)/Random.Int(1,2)+5, 1 );
 			initRooms.add(new NyzBombAndBooksRoom());
 		}
@@ -299,8 +300,10 @@ public abstract class RegularLevel extends Level {
 			i += s.sizeCat.roomValue-1;
 			initRooms.add(s);
 		}
+
+		initRooms.add(new DreamcatcherRoom());
 		
-		if (Dungeon.shopOnLevel())
+		if (Dungeon.shopOnLevel() && branch == 0)
 			initRooms.add(new ShopRoom());
 
 		//force max special rooms and add one more for large levels

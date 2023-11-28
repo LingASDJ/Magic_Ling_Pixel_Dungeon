@@ -2,20 +2,20 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.RenPlot;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.DragonBluePlot;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.RenSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DragonGirlBlueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 
-public class REN extends NTNPC {
-
-
+public class DragonGirlBlue extends NPC{
 
     {
-        spriteClass = RenSprite.class;
+        spriteClass = DragonGirlBlueSprite.class;
         properties.add(Property.IMMOVABLE);
     }
 
@@ -37,35 +37,26 @@ public class REN extends NTNPC {
 
     @Override
     protected boolean act() {
-
+        if (Dungeon.hero.buff(AscensionChallenge.class) != null){
+            die(null);
+            Notes.remove( Notes.Landmark.SMALLB);
+            return true;
+        }
+        if (Dungeon.level.visited[pos]){
+            Notes.add( Notes.Landmark.SMALLB );
+        }
         throwItem();
 
         sprite.turnTo( pos, Dungeon.hero.pos );
         spend( TICK );
-        return true;
-    }
-
-    @Override
-    public void damage( int dmg, Object src ) {
-    }
-
-    @Override
-    public int defenseSkill( Char enemy ) {
-        return INFINITE_EVASION;
-    }
-
-    @Override
-    public boolean reset() {
-        return true;
+        return super.act();
     }
 
     @Override
     public boolean interact(Char c) {
-
         sprite.turnTo(pos, Dungeon.hero.pos);
-        RenPlot plot = new RenPlot();
 
-        RenPlot.End endplot = new RenPlot.End();
+        DragonBluePlot plot = new DragonBluePlot();
 
         if(first){
             Game.runOnRenderThread(new Callback() {
@@ -76,15 +67,15 @@ public class REN extends NTNPC {
             });
             first=false;
         } else {
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    GameScene.show(new WndDialog(endplot,false));
-                }
-            });
+//            Game.runOnRenderThread(new Callback() {
+//                @Override
+//                public void call() {
+//                    GameScene.show(new WndDialog(endplot,false));
+//                }
+//            });
         }
 
         return true;
     }
-}
 
+}

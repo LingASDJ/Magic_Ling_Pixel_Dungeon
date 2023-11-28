@@ -1,5 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.testmode;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -53,8 +56,24 @@ public class LevelTeleporter extends TestItem {
         changeDefAct = true;
     }
 
+    @Override
+    public String actionName(String action, Hero hero) {
+        if (action.equals(AC_BRANCH_ASCEND)){
+            return Messages.upperCase(Messages.get(this, "ac_branch_ascend",depth));
+        } else if (action.equals(AC_BRANCH_DESCEND)){
+            return Messages.upperCase(Messages.get(this, "ac_branch_descend",depth));
+        } else {
+            return super.actionName(action, hero);
+        }
+    }
+
     private static final String AC_ASCEND = "ascend";
+
+    private static final String AC_BRANCH_ASCEND = "branch_ascend";
     private static final String AC_DESCEND = "descend";
+
+    private static final String AC_BRANCH_DESCEND = "branch_descend";
+
     private static final String AC_VIEW = "view";
     private static final String AC_TP = "teleport";
     private static final String AC_INTER_TP = "interlevel_tp";
@@ -66,10 +85,18 @@ public class LevelTeleporter extends TestItem {
         ArrayList<String> actions = super.actions( hero );
         actions.add( AC_ASCEND );
         actions.add(AC_DESCEND);
+
+
+
+
+
         actions.add(AC_VIEW);
         actions.add(AC_TP);
         actions.add(AC_INTER_TP);
         actions.add(AC_RESET );
+
+        actions.add(AC_BRANCH_ASCEND);
+        actions.add(AC_BRANCH_DESCEND);
         return actions;
     }
 
@@ -82,7 +109,7 @@ public class LevelTeleporter extends TestItem {
     public void execute( Hero hero, String action ) {
         super.execute( hero, action );
         if(action.equals(AC_DESCEND)) {
-            if(Dungeon.hero.buff(LockedFloor.class) != null || Dungeon.depth>= Constants.MAX_DEPTH) {
+            if(Dungeon.hero.buff(LockedFloor.class) != null || depth>= Constants.MAX_DEPTH) {
                 GLog.w(Messages.get(this,"cannot_send"));
                 return;
             }
@@ -93,15 +120,15 @@ public class LevelTeleporter extends TestItem {
             if (timeBubble != null) timeBubble.disarmPresses();
             InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
             InterlevelScene.curTransition = new LevelTransition();
-            InterlevelScene.curTransition.destDepth = Dungeon.depth + 1;
+            InterlevelScene.curTransition.destDepth = depth + 1;
             InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
             InterlevelScene.curTransition.destBranch = Dungeon.branch;
             InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
             InterlevelScene.curTransition.centerCell  = -1;
             Game.switchScene( InterlevelScene.class );
-        } else if(action.equals(AC_ASCEND)){
-            if(Dungeon.hero.buff(LockedFloor.class) != null || Dungeon.depth<=1) {
-                GLog.w(Messages.get(this,"cannot_send"));
+        } else if(action.equals(AC_ASCEND)) {
+            if (Dungeon.hero.buff(LockedFloor.class) != null || depth <= 1) {
+                GLog.w(Messages.get(this, "cannot_send"));
                 return;
             }
             TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
@@ -109,10 +136,41 @@ public class LevelTeleporter extends TestItem {
             Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
             if (timeBubble != null) timeBubble.disarmPresses();
             InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-            InterlevelScene.returnDepth = Dungeon.depth - 1;
+            InterlevelScene.returnDepth = depth - 1;
             InterlevelScene.returnPos = -1;
             InterlevelScene.returnBranch = Dungeon.branch;
+            Game.switchScene(InterlevelScene.class);
+        } else if (action.equals(AC_BRANCH_DESCEND)){
+            if(branch==5){
+                GLog.w(Messages.get(this, "cannot_asend_branch"));
+                return;
+            }
+            TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+            if (timeFreeze != null) timeFreeze.disarmPresses();
+            Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+            if (timeBubble != null) timeBubble.disarmPresses();
+            InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+            InterlevelScene.curTransition = new LevelTransition();
+            InterlevelScene.curTransition.destDepth = depth;
+            InterlevelScene.curTransition.destType = LevelTransition.Type.BRANCH_ENTRANCE;
+            InterlevelScene.curTransition.destBranch = Dungeon.branch+1;
+            InterlevelScene.curTransition.type = LevelTransition.Type.BRANCH_ENTRANCE;
+            InterlevelScene.curTransition.centerCell  = -1;
             Game.switchScene( InterlevelScene.class );
+        } else if (action.equals(AC_BRANCH_ASCEND)){
+            if(branch<1){
+                GLog.w(Messages.get(this, "cannot_dsend_branch"));
+                return;
+            }
+            TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+            if (timeFreeze != null) timeFreeze.disarmPresses();
+            Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+            if (timeBubble != null) timeBubble.disarmPresses();
+            InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+            InterlevelScene.returnDepth = depth;
+            InterlevelScene.returnPos = -1;
+            InterlevelScene.returnBranch = Dungeon.branch - 1;
+            Game.switchScene(InterlevelScene.class);
         } else if(action.equals(AC_VIEW)){
             Buff.affect( hero, Awareness.class, Awareness.DURATION );
             Buff.affect( hero, MindVision.class, MindVision.DURATION );
@@ -128,52 +186,52 @@ public class LevelTeleporter extends TestItem {
             }
             GameScene.show(new WndSelectLevel());
         }else if (action.equals(AC_RESET)) {
-        switch (Dungeon.depth){
-            case 2:
-            case 3:
-            case 4:
-                for (Mob m: Dungeon.level.mobs){
-                    if (m instanceof Ghost) {
-                        Ghost.Quest.reset();
+            switch (depth){
+                case 2:
+                case 3:
+                case 4:
+                    for (Mob m: Dungeon.level.mobs){
+                        if (m instanceof Ghost) {
+                            Ghost.Quest.reset();
+                        }
                     }
-                }
-                break;
-            case 7:
-            case 8:
-            case 9:
-                for (Mob m: Dungeon.level.mobs){
-                    if (m instanceof Wandmaker) {
-                        Wandmaker.Quest.reset();
+                    break;
+                case 7:
+                case 8:
+                case 9:
+                    for (Mob m: Dungeon.level.mobs){
+                        if (m instanceof Wandmaker) {
+                            Wandmaker.Quest.reset();
+                        }
                     }
-                }
-                break;
-            case 12:
-            case 13:
-            case 14:
-                for (Mob m: Dungeon.level.mobs){
-                    if (m instanceof Blacksmith) {
-                        Blacksmith.Quest.reset();
+                    break;
+                case 12:
+                case 13:
+                case 14:
+                    for (Mob m: Dungeon.level.mobs){
+                        if (m instanceof Blacksmith) {
+                            Blacksmith.Quest.reset();
+                        }
+                        if(m instanceof RedDragon){
+                            RedDragon.Quest.reset();
+                        }
                     }
-                    if(m instanceof RedDragon){
-                        RedDragon.Quest.reset();
+                    break;
+                case 17:
+                case 18:
+                case 19:
+                    for (Mob m: Dungeon.level.mobs){
+                        if (m instanceof Imp) {
+                            Imp.Quest.reset();
+                        }
                     }
-                }
-                break;
-            case 17:
-            case 18:
-            case 19:
-                for (Mob m: Dungeon.level.mobs){
-                    if (m instanceof Imp) {
-                        Imp.Quest.reset();
-                    }
-                }
-                break;
+                    break;
+            }
+            if(Dungeon.level.locked)
+                Dungeon.level.unseal();
+            InterlevelScene.mode = InterlevelScene.Mode.RESET;
+            Game.switchScene(InterlevelScene.class);
         }
-        if(Dungeon.level.locked)
-            Dungeon.level.unseal();
-        InterlevelScene.mode = InterlevelScene.Mode.RESET;
-        Game.switchScene(InterlevelScene.class);
-    }
     }
 
     public static class WndSelectLevel extends Window{

@@ -81,7 +81,9 @@ public class Notes {
 		IMP,
 		SHOP2,
 		REDAGRON,
-		DEMON_SPAWNER;
+		DEMON_SPAWNER,
+
+		SMALLB;
 
 		public String desc() {
 			return Messages.get(this, name());

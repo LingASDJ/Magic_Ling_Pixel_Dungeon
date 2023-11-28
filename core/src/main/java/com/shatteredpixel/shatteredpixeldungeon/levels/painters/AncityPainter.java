@@ -3,47 +3,21 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.painters;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
-import com.watabou.utils.PathFinder;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTileSheet;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("all")
 public class AncityPainter extends RegularPainter {
+
     @Override
     protected void decorate(Level level, ArrayList<Room> rooms) {
-        int[] map = level.map;
+
         int w = level.width();
         int l = level.length();
-
-        for (int i = 0; i < w; i++) {
-            if (map[i] == Terrain.WALL && map[i + w] == Terrain.WATER && Random.Int(4) == 0) {
-                map[i] = Terrain.WALL_DECO;
-            }
-        }
-
-        for (int i=w + 1; i < l - w - 1; i++) {
-            if (map[i] == Terrain.EMPTY) {
-
-                int count = 0;
-                for (int j = 0; j < PathFinder.NEIGHBOURS9.length; j++) {
-                    if ((Terrain.flags[map[i + PathFinder.NEIGHBOURS9[j]]] & Terrain.PASSABLE) > 0) {
-                        count++;
-                    }
-                }
-
-                if (Random.Int( 80 ) < count) {
-                    map[i] = Terrain.EMPTY_SP;
-                }
-
-            } else
-            if (map[i] == Terrain.WALL &&
-                    map[i-1] != Terrain.WALL_DECO && map[i-w] != Terrain.WALL_DECO &&
-                    Random.Int( 20 ) == 0) {
-
-                map[i] = Terrain.WALL_DECO;
-
-            }
-        }
+        int[] map = level.map;
 
         for (Room r : rooms) {
             for (Room n : r.neigbours) {
@@ -53,5 +27,91 @@ public class AncityPainter extends RegularPainter {
             }
         }
 
+        for (Room room : rooms) {
+            if (!(room instanceof StandardRoom)) {
+                continue;
+            }
+
+            if (room.width() <= 4 || room.height() <= 4) {
+                continue;
+            }
+
+            int s = room.square();
+
+            if (Random.Int( s ) > 8) {
+                int corner = (room.left + 1) + (room.top + 1) * w;
+                if (map[corner-1] == Terrain.WALL && !room.connected.containsValue(level.cellToPoint(corner-1))
+                        && map[corner-w] == Terrain.WALL && !room.connected.containsValue(level.cellToPoint(corner-w))) {
+                    map[corner] = Terrain.WATER;
+                    level.traps.remove(corner);
+                }
+            }
+
+            if (Random.Int( s ) > 8) {
+                int corner = (room.right - 1) + (room.top + 1) * w;
+                if (map[corner+1] == Terrain.WALL && !room.connected.containsValue(level.cellToPoint(corner+1))
+                        && map[corner-w] == Terrain.WALL && !room.connected.containsValue(level.cellToPoint(corner-w))) {
+                    map[corner] = Terrain.BARRICADE;
+                    level.traps.remove(corner);
+                }
+            }
+
+            if (Random.Int( s ) > 8) {
+                int corner = (room.left + 1) + (room.bottom - 1) * w;
+                if (map[corner-1] == Terrain.WALL && !room.connected.containsValue(level.cellToPoint(corner-1))
+                        && map[corner+w] == Terrain.WALL && !room.connected.containsValue(level.cellToPoint(corner+w))) {
+                    map[corner] = Terrain.EMBERS;
+                    level.traps.remove(corner);
+                }
+            }
+
+            if (Random.Int( s ) > 8) {
+                int corner = (room.right - 1) + (room.bottom - 1) * w;
+                if (map[corner+1] == Terrain.WALL && !room.connected.containsValue(level.cellToPoint(corner+1))
+                        && map[corner+w] == Terrain.WALL && !room.connected.containsValue(level.cellToPoint(corner+w))) {
+                    map[corner] = Terrain.WALL;
+                    level.traps.remove(corner);
+                }
+            }
+
+        }
+
+        for (int i=w + 1; i < l - w; i++) {
+            if (map[i] == Terrain.EMPTY) {
+                int n = 0;
+                if (map[i+1] == Terrain.WALL) {
+                    n++;
+                }
+                if (map[i-1] == Terrain.WALL) {
+                    n++;
+                }
+                if (map[i+w] == Terrain.WALL) {
+                    n++;
+                }
+                if (map[i-w] == Terrain.WALL) {
+                    n++;
+                }
+                if (Random.Int( 6 ) <= n) {
+                    map[i] = Terrain.EMPTY_DECO;
+                }
+            }
+        }
+
+        generateGold(level, rooms);
+
+    }
+
+    protected void generateGold(Level level, ArrayList<Room> rooms){
+        int w = level.width();
+        int l = level.length();
+        int[] map = level.map;
+
+        for (int i=0; i < l - w; i++) {
+            if (map[i] == Terrain.WALL &&
+                    DungeonTileSheet.floorTile(map[i + w])
+                    && Random.Int( 4 ) == 0) {
+                map[i] = Terrain.HIGH_GRASS;
+            }
+        }
     }
 }
