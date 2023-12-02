@@ -52,6 +52,15 @@ public class ShatteredPixelDungeon extends Game {
 		super( sceneClass == null ? GoScene.class : sceneClass, platform );
 
 		//pre-v2.2.0
+
+		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceLingSword.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip" );
+
+		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WitheWoodSword.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer" );
+
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.BlacksmithRoom.QuestEntrance.class,
 				"com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BlacksmithRoom$QuestEntrance" );

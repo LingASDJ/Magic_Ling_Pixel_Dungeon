@@ -26,8 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.TPDoorDieds;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
 
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
@@ -154,8 +153,9 @@ public class WndResurrect extends Window {
 					TPDoorDieds = false;
 				}
 
-				//矮人将军
-				Buff.affect(hero, TestDwarfMasterLock.class).set((10), 1);
+				DragonGirlBlue.Quest.four_used_points = 0;
+
+				Statistics.sakaBackStage = 0;
 
 				InterlevelScene.mode = InterlevelScene.Mode.RESURRECT;
 				Game.switchScene( InterlevelScene.class );

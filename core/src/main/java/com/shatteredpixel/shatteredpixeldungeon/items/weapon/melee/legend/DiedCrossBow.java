@@ -3,7 +3,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -278,7 +277,7 @@ public class DiedCrossBow extends LegendWeapon {
                     }
 
                     if (ch == hero && !ch.isAlive()) {
-                        Badges.BOMB();
+                        //Badges.BOMB();
                         Dungeon.fail( getClass() );
                         GLog.n( Messages.get(DiedCrossBow.class, "ondeath") );
                     }

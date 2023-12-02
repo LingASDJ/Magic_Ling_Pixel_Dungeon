@@ -95,15 +95,16 @@ public class Sai extends MeleeWeapon {
 				lvl*Math.round(0.65f*(tier+1));  //+2 per level, down from +4
 	}
 
+	//TODO 武技
 	@Override
 	public String targetingPrompt() {
 		return Messages.get(this, "prompt");
 	}
 
-//	@Override
-//	protected void duelistAbility(Hero hero, Integer target) {
-//		Sai.comboStrikeAbility(hero, target, 0.40f, this);
-//	}
+	@Override
+	protected void duelistAbility(Hero hero, Integer target) {
+		Sai.comboStrikeAbility(hero, target, 0.40f, this);
+	}
 
 	public static void comboStrikeAbility(Hero hero, Integer target, float boostPerHit, MeleeWeapon wep){
 		if (target == null) {

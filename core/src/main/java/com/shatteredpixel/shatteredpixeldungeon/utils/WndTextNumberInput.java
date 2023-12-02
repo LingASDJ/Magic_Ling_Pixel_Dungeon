@@ -98,7 +98,7 @@ public class WndTextNumberInput extends Window {
         float numberAreaHeight = BUTTON_HEIGHT * 4 + MARGIN * 3;
 
         // 计算每行按钮的宽度
-        float btnWidth = (width - MARGIN * 9) / 2.79f;
+        float btnWidth = (width - MARGIN * 4.6f) / 2.79f;
 
         // 创建数字按钮
         for (int i = 1; i <= 9; i++) {

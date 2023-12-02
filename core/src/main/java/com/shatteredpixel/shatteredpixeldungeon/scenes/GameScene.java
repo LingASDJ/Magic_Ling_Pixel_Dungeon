@@ -67,6 +67,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.DragonBluePlot;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.EmoIcon;
@@ -130,6 +131,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndGame;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoCell;
@@ -1355,6 +1357,7 @@ public class GameScene extends PixelScene {
 				break;
 			case FALL:
 			case DESCEND:
+			case ANCITYBOSS:
 				if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 					switch (Dungeon.depth) {
 						case 0:
@@ -1434,6 +1437,22 @@ public class GameScene extends PixelScene {
 						case 16:
 							WndStory.showChapter( WndStory.ID_CITY );
 							break;
+						case 17:case 18:
+							switch(Dungeon.branch){
+								case 1:
+									WndStory.showChapter( WndStory.ID_ANCITY );
+									break;
+								case 3:
+									DragonBluePlot.ThreeDialog plot_3 = new DragonBluePlot.ThreeDialog();
+									Game.runOnRenderThread(new Callback() {
+										@Override
+										public void call() {
+											GameScene.show(new WndDialog(plot_3,false));
+										}
+									});
+									break;
+							}
+							break;
 						case 21:
 							WndStory.showChapter( WndStory.ID_HALLS );
 							break;
@@ -1491,6 +1510,7 @@ public class GameScene extends PixelScene {
             case FALL:
             case DESCEND:
             case CONTINUE:
+			case ANCITYBOSS:
                 Camera.main.snapTo(hero.center().x,
                         hero.center().y - DungeonTilemap.SIZE * (defaultZoom / Camera.main.zoom));
                 break;
@@ -1743,10 +1763,12 @@ public class GameScene extends PixelScene {
 					bossSlain.show( Window.CBLACK, 0.3f, 5f);
 					scene.showBanner(bossSlain);
 					break;
-				case 21:
-					bossSlain.texture(Assets.Interfaces.SakaBJY_Title);
-					bossSlain.show( Window.CYELLOW, 0.3f, 5f);
-					scene.showBanner(bossSlain);
+				case 17:case 18:
+					if(Dungeon.branch == 3) {
+						bossSlain.texture(Assets.Interfaces.SakaBJY_Title);
+						bossSlain.show(Window.CYELLOW, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+					}
 					break;
 			}
 
@@ -1790,10 +1812,12 @@ public class GameScene extends PixelScene {
 					bossSlain.show( Window.GDX_COLOR, 0.3f, 5f);
 					scene.showBanner(bossSlain);
 					break;
-				case -31:
-					bossSlain.texture(Assets.Interfaces.SakaBJY_Clear);
-					bossSlain.show( Window.CYELLOW, 0.3f, 5f);
-					scene.showBanner(bossSlain);
+				case 17:case 18:
+					if(Dungeon.branch == 3){
+						bossSlain.texture(Assets.Interfaces.SakaBJY_Clear);
+						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+					}
 					break;
 			}
 

@@ -75,6 +75,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
@@ -843,11 +844,11 @@ public abstract class Mob extends Char {
     @Override
 	public int defenseProc( Char enemy, int damage ) {
 
-//		if (enemy instanceof Hero
-//				&& ((Hero) enemy).belongings.attackingWeapon() instanceof MissileWeapon){
-//			Statistics.thrownAttacks++;
-//			Badges.validateHuntressUnlock();
-//		}
+		if (enemy instanceof Hero
+				&& ((Hero) enemy).belongings.attackingWeapon() instanceof MissileWeapon){
+			Statistics.thrownAssists++;
+			Badges.validateHuntressUnlock();
+		}
 
         if (surprisedBy(enemy)) {
             Statistics.sneakAttacks++;

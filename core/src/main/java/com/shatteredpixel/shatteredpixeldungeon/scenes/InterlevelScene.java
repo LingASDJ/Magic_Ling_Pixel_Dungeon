@@ -254,6 +254,7 @@ public class InterlevelScene extends PixelScene {
 
 						switch (mode) {
 							case DESCEND:
+							case ANCITYBOSS:
 								descend();
 								break;
 							case ASCEND:

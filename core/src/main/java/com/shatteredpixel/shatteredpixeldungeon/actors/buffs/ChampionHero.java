@@ -22,6 +22,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
@@ -67,8 +69,7 @@ public abstract class ChampionHero extends FlavourBuff {
 
     @Override
     public String desc() {
-        //todo 取负数，通过绝对值获取,以显示为正数 并通过INT省略后面的小数点
-        return Messages.get(this, "desc")+(int)(Math.abs(1.0f - visualcooldown())+1f);
+        return Messages.get(this, "desc")+(int)(Math.abs(1.0f - visualcooldown()));
     }
 
 
@@ -179,6 +180,14 @@ public abstract class ChampionHero extends FlavourBuff {
 
         {
             color = 0x00FF00;
+        }
+
+        @Override
+        public void fx(boolean on) {
+            if(!Dungeon.isChallenged(PRO)){
+                if (on) target.sprite.aura( color );
+                else target.sprite.clearAura();
+            }
         }
 
         @Override

@@ -33,6 +33,7 @@ public class Effects {
 		EXCLAMATION,
 		CHAIN,
 		GLASSCHAIN,
+		ICECHAIN,
 		ETHEREAL_CHAIN,
 		DEATH_RAY,
 		LIGHT_RAY,
@@ -60,6 +61,9 @@ public class Effects {
 				break;
 			case GLASSCHAIN:
 				icon.frame(icon.texture.uvRect(11, 16, 15, 22));
+				break;
+			case ICECHAIN:
+				icon.frame(icon.texture.uvRect(11, 28, 15, 32));
 				break;
 			case ETHEREAL_CHAIN:
 				icon.frame(icon.texture.uvRect(11, 16, 16, 22));

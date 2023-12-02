@@ -27,10 +27,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
 
-public class WarHammer extends MeleeWeapon {
+public class WitheWoodSword extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.WAR_HAMMER;
@@ -38,8 +41,22 @@ public class WarHammer extends MeleeWeapon {
 		hitSoundPitch = 1f;
 
 		tier = 5;
-		ACC = 1.90f; //90% boost to accuracy
+		ACC = 2.10f; //90% boost to accuracy
 		DLY = 1.50f; //1.5x speed
+	}
+
+	@Override
+	public String targetingPrompt() {
+		return Messages.get(this, "prompt");
+	}
+
+	@Override
+	protected int baseChargeUse(Hero hero, Char target){
+		if (target == null || (target instanceof Mob && ((Mob) target).surprisedBy(hero))) {
+			return 1;
+		} else {
+			return 2;
+		}
 	}
 
 	@Override
@@ -61,6 +78,11 @@ public class WarHammer extends MeleeWeapon {
 				//Over Level 3,Not Debuff
 				return super.proc( attacker, defender, damage );
 		}
+	}
+
+	@Override
+	protected void duelistAbility(Hero hero, Integer target) {
+		Mace.heavyBlowAbility(hero, target, 1.40f, this);
 	}
 
 }

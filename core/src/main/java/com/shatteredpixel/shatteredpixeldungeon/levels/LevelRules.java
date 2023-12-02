@@ -180,14 +180,6 @@ public class LevelRules {
             case 3:
                 switch (depth){
                     case 17: case 18:
-                        return new AncientMysteryCityLevel();
-                    default:
-                        return new DeadEndLevel();
-                }
-
-            case 4:
-                switch (depth){
-                    case 17: case 18:
                         return new AncientMysteryCityBossLevel();
                     default:
                         return new DeadEndLevel();

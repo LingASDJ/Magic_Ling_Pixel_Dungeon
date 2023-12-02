@@ -1,10 +1,15 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue.Quest.four_used_points;
+import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue.Quest.survey_research_points;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -18,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM720;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
@@ -237,7 +243,7 @@ public class SakaFishBoss extends Boss {
             return super.doAttack(enemy);
         } else if (!beamCharged){
             ((SakaFishBossSprites)sprite).charge( enemy.pos );
-
+            GLog.n(Messages.get(SakaFishBoss.class,"laserwarning"));
             spend( level == AncientMysteryCityBossLevel.State.FALL_BOSS ? attackDelay() : attackDelay()*2f );
             beamCharged = true;
             return true;
@@ -273,28 +279,36 @@ public class SakaFishBoss extends Boss {
     @Override
     public void die( Object cause ) {
 
-        super.die( cause );
-
-
+            super.die( cause );
             Dungeon.level.unseal();
 
+            if(Statistics.qualifiedForBossChallengeBadge) {
+                PaswordBadges.GOOD_BLUE();
+            }
+
+            survey_research_points += 2000;
+            Statistics.questScores[2] += survey_research_points/2;
+            Badges.validateAncityProgress();
             GameScene.bossSlain();
             Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
             Dungeon.level.drop( new AncityArmor(), pos ).sprite.drop();
             //60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5
-            int meets = Random.chances(new float[]{0, 0, 6, 3, 1});
+            int meets = Math.max(4, Math.min(6, Random.chances(new float[]{0, 0, 6, 3, 1})));
             for (int i = 0; i < meets; i++){
                 int ofs;
                 do {
                     ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
                 } while (!Dungeon.level.passable[pos + ofs]);
-                Dungeon.level.drop( new SakaMeat(), pos + ofs ).sprite.drop( pos );
+                    Dungeon.level.drop( new SakaMeat(), pos + ofs ).sprite.drop( pos );
             }
 
             Dungeon.level.drop( new WaterSoul(), pos ).sprite.drop();
+            Dungeon.level.drop( new WaterSoul(), pos ).sprite.drop();
+
             Dungeon.level.drop( new SakaFishSketon(), pos ).sprite.drop();
             Dungeon.level.drop( new WaterSoul(), pos ).sprite.drop();
 
+            Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos-2 ).sprite.drop();
             PaswordBadges.KILLSAKA();
 
             yell( Messages.get(this, "defeated") );
@@ -592,9 +606,21 @@ public class SakaFishBoss extends Boss {
             }
 
             if (hit( this, ch, true )) {
-                ch.damage( Random.NormalIntRange( 30, 60 ), new DeathGaze() );
-                if(level == AncientMysteryCityBossLevel.State.FALL_BOSS){
+                if(Dungeon.isChallenged(STRONGER_BOSSES)){
+                    ch.damage( Random.NormalIntRange( 40, 60 ), new DeathGaze() );
+                } else {
+                    ch.damage( Random.NormalIntRange( 30, 60 ), new DeathGaze() );
+                }
+
+                if(DragonGirlBlue.Quest.four_used_points<2){
+                    four_used_points++;
+                } else {
+                    Statistics.qualifiedForBossChallengeBadge = false;
+                }
+
+                if(level == AncientMysteryCityBossLevel.State.FALL_BOSS || Dungeon.isChallenged(STRONGER_BOSSES)){
                     dropRocks(enemy);
+                    GLog.n( Messages.get(this, "king"),Dungeon.hero.name() );
                 }
 
                 if (Dungeon.level.heroFOV[pos]) {
@@ -643,6 +669,7 @@ public class SakaFishBoss extends Boss {
             } else {
                 Buff.prolong(enemy, Cripple.class, Cripple.DURATION);
             }
+            Statistics.qualifiedForBossChallengeBadge = false;
         }
     }
 

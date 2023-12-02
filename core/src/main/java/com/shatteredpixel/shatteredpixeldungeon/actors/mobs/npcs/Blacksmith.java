@@ -160,7 +160,7 @@ public class Blacksmith extends NPC {
 						tell(Messages.get(this, "completed"));
 
 						Quest.completed = true;
-						Statistics.questScores[2] = 3000;
+						Statistics.questScores[2] += 3000;
 					}
 
 				} else {
@@ -184,7 +184,7 @@ public class Blacksmith extends NPC {
 						tell(Messages.get(this, "completed"));
 
 						Quest.completed = true;
-						Statistics.questScores[2] = 3000;
+						Statistics.questScores[2] += 3000;
 					}
 
 				}

@@ -167,6 +167,11 @@ public class Hunger extends Buff implements Hero.Doom {
 		return level >= STARVING;
 	}
 
+	public boolean isDied() {
+		float newLevel = level + STEP;
+		return newLevel >= HUNGRY && level < HUNGRY;
+	}
+
 	public int hunger() {
 		return (int)Math.ceil(level);
 	}

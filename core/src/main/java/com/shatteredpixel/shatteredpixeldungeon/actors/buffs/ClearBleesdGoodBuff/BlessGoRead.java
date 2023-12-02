@@ -2,6 +2,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuf
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -27,8 +29,8 @@ public class BlessGoRead extends ClearLanterBuff {
             if (level <= 0) {
                 detach();
             }
-
-            if(hero.lanterfire > 60) {
+            Hunger lock = Dungeon.hero.buff(Hunger.class);
+            if(hero.lanterfire > 60 && !lock.isDied()) {
                 //effectively 1HP at lvl 0-5, 2HP lvl 6-8, 3HP lvl 9, and 5HP lvl 10.
                 target.HP = Math.min( target.HT, target.HP + 2);
                 spend(3f);

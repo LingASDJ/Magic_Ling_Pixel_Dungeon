@@ -17,18 +17,25 @@ public class DimandBook extends Books {
     }
 
     @Override
+    public int value() {
+        return quantity * 20;
+    }
+
+    @Override
     public String info() {
         return desc();
     }
 
     @Override
     public void execute(final Hero hero, String action) {
-        super.execute(hero, action);
-        if (action.equals( Read )) {
+        if (action.equals( Read ) && Statistics.deepestFloor<10) {
             Sample.INSTANCE.play( Assets.Sounds.READ );
             detach( hero.belongings.backpack );
             GLog.n(Messages.get(DimandBook.class,"action"));
             Statistics.mimicking = true;
+        } else {
+            detach( hero.belongings.backpack );
+            GLog.n(Messages.get(DimandBook.class,"action_s"));
         }
     }
 }

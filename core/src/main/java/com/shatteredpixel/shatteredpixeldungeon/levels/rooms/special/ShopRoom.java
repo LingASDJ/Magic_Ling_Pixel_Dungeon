@@ -55,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMappi
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -162,12 +163,28 @@ public class ShopRoom extends SpecialRoom {
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[1]);
 			itemsToSpawn.add( Generator.random(Generator.misTiers[1]).quantity(2).identify(false) );
 			itemsToSpawn.add( new LeatherArmor().identify(false) );
+				MeleeWeapon w2;
+			if(Random.Int(10)>2){
+				w2 = new LockSword();
+				LockSword.lvl = Random.Int(0,301);
+				itemsToSpawn.add( w2.identify(false) );
+			}
+
+
 			break;
 			
 		case 11:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[2]);
 			itemsToSpawn.add( Generator.random(Generator.misTiers[2]).quantity(2).identify(false) );
 			itemsToSpawn.add( new MailArmor().identify(false) );
+
+			if(Random.Int(10)>8){
+				w2 = new LockSword();
+				LockSword.lvl = Random.Int(100,301);
+				itemsToSpawn.add( w2.identify(false) );
+
+			}
+
 			break;
 			
 		case 16:
@@ -179,7 +196,14 @@ public class ShopRoom extends SpecialRoom {
 				itemsToSpawn.add( new ScaleArmor().identify(false) );
 			}
 
-			break;
+			if(Random.Int(10)==1){
+				w2 = new LockSword();
+				LockSword.lvl = Random.Int(200,601);
+				itemsToSpawn.add( w2.identify(false) );
+				break;
+			}
+
+
 
 		case 20: case 21:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[4]);
@@ -192,6 +216,13 @@ public class ShopRoom extends SpecialRoom {
 			itemsToSpawn.add( new Torch() );
 			itemsToSpawn.add( new Torch() );
 			itemsToSpawn.add( new Torch() );
+
+			if(Random.Float()<0.05f){
+				w2 = new LockSword();
+				LockSword.lvl = Random.Int(300,501);
+				itemsToSpawn.add( w2.identify(false) );
+
+			}
 			break;
 		}
 		w.enchant(null);
@@ -308,7 +339,7 @@ public class ShopRoom extends SpecialRoom {
 		return itemsToSpawn;
 	}
 
-	protected static Bag ChooseBag(Belongings pack){
+	public static Bag ChooseBag(Belongings pack){
 
 		//generate a hashmap of all valid bags.
 		HashMap<Bag, Integer> bags = new HashMap<>();

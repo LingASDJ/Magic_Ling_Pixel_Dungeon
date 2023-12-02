@@ -168,7 +168,7 @@ public class BGMPlayer {
 
             }
         } else {
-            if(s == 4 && t == 16 ||s == 4 && t == 17 || s == 4 && t == 18) {
+            if(s == 3 && t == 16 ||s == 3 && t == 17 || s == 3 && t == 18) {
                 playBGM(Assets.SKBJY, true);
             } else if (Dungeon.bossLevel() && t == 5 || t == 4 && s == 2) {
                 playBGM(Assets.BGM_BOSSA, true);

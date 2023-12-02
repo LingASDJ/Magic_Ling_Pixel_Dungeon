@@ -70,7 +70,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
@@ -87,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlam
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfLightStromCloud;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
@@ -112,7 +112,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WashCrime;
@@ -225,8 +224,6 @@ public enum HeroClass {
 		Dungeon.LimitedDrops.VELVET_POUCH.drop();
 
 		new HerbBag().quantity(1).identify().collect();
-		new BookBag().quantity(1).identify().collect();
-		new PotionOfHealing().quantity(1).identify().collect();
 
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
@@ -236,7 +233,7 @@ public enum HeroClass {
 		if (Dungeon.isChallenged(Challenges.PRO)){
 			new LiquidMetal().quantity(1).identify().collect();
 			new LevelTeleporter().quantity(1).identify().collect();
-			new LockSword().quantity(1).identify().collect();
+			new PotionOfDivineInspiration().quantity(1).identify().collect();
 			new MIME.GOLD_THREE().quantity(1).identify().collect();
 			new ScrollOfMetamorphosis().quantity(111).identify().collect();
 			new DriedRose().quantity(1).identify().collect();
@@ -352,7 +349,7 @@ public enum HeroClass {
 		ThrowingStone stones = new ThrowingStone();
 		stones.quantity(3).collect();
 		Dungeon.quickslot.setSlot(0, stones);
-
+		new PotionOfHealing().quantity(1).identify().collect();
 		if (hero.belongings.armor != null){
 			hero.belongings.armor.affixSeal(new BrokenSeal());
 		}
@@ -372,7 +369,7 @@ public enum HeroClass {
 		Dungeon.quickslot.setSlot(0, staff);
 
 		new ScrollOfUpgrade().identify();
-		new PotionOfLiquidFlame().identify();
+		new PotionOfLiquidFlame().quantity(1).identify().collect();
 	}
 
 	private static void initRogue( Hero hero ) {
@@ -389,7 +386,8 @@ public enum HeroClass {
 		Dungeon.quickslot.setSlot(1, knives);
 
 		new ScrollOfMagicMapping().identify();
-		new PotionOfInvisibility().identify();
+
+		new PotionOfInvisibility().quantity(1).identify().collect();
 	}
 
 	private static void initHuntress( Hero hero ) {
@@ -400,7 +398,8 @@ public enum HeroClass {
 
 		Dungeon.quickslot.setSlot(0, bow);
 
-		new PotionOfMindVision().identify();
+		new PotionOfMindVision().quantity(1).identify().collect();
+
 		new ScrollOfLullaby().identify();
 	}
 
@@ -416,7 +415,7 @@ public enum HeroClass {
 		Dungeon.quickslot.setSlot(1, spikes);
 
 		new PotionOfStrength().identify();
-		new ScrollOfMirrorImage().identify();
+		new ScrollOfMirrorImage().quantity(1).identify().collect();
 	}
 
 	public String title() {

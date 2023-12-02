@@ -32,6 +32,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.SS_S
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
@@ -378,6 +379,24 @@ public class Badges {
 		displayBadge( badge );
 	}
 
+	public static void validateAncityProgress() {
+		Badge badge = null;
+
+		if (!local.contains( Badge.ANCITY_ONE ) && DragonGirlBlue.Quest.survey_research_points >= 1200) {
+			badge = Badge.ANCITY_ONE;
+			local.add( badge );
+		}
+		if (!local.contains( Badge.ANCITY_TWO ) && DragonGirlBlue.Quest.survey_research_points >= 2400) {
+			badge = Badge.ANCITY_TWO;
+			local.add( badge );
+		}
+		if (!local.contains( Badge.ANCITY_THREE ) && DragonGirlBlue.Quest.survey_research_points >= 4000) {
+			badge = Badge.ANCITY_THREE;
+			local.add( badge );
+		}
+		displayBadge( badge );
+	}
+
 	public static void validateFoodEaten() {
 		Badge badge = null;
 
@@ -583,11 +602,11 @@ public class Badges {
 		displayBadge( badge );
 	}
 
-	public static void BOMB() {
-		Badge badge = Badge.BOMBBOW_DIED;
-		local.add( badge );
-		displayBadge( badge );
-	}
+//	public static void BOMB() {
+//		Badge badge = Badge.BOMBBOW_DIED;
+//		local.add( badge );
+//		displayBadge( badge );
+//	}
 
 	private static void validateGOODMAKE() {
 		if (global.contains( Badge.KILL_ROTHEART ) &&
@@ -606,7 +625,7 @@ public class Badges {
 				global.contains( Badge.DEATH_FROM_POISON ) &&
 				global.contains( Badge.DEATH_FROM_GAS ) &&
 				global.contains( Badge.DEATH_FROM_HUNGER) &&
-				global.contains( Badge.DEATH_FROM_FALLING) && global.contains( Badge.HALOFIRE_DIED) && global.contains( Badge.BRUTE_BOT_DIED) && global.contains( Badge.BOMBBOW_DIED) && global.contains( Badge.DEATH_FROM_FRIENDLY_MAGIC) && global.contains( Badge.DEATH_FROM_SACRIFICE)) {
+				global.contains( Badge.DEATH_FROM_FALLING) && global.contains( Badge.HALOFIRE_DIED) && global.contains( Badge.BRUTE_BOT_DIED) && global.contains( Badge.DEATH_FROM_FRIENDLY_MAGIC) && global.contains( Badge.DEATH_FROM_SACRIFICE)) {
 
 			Badge badge = Badge.YASD;
 			displayBadge( badge );
@@ -755,19 +774,19 @@ public class Badges {
 	}
 
 	public static void validateMageUnlock(){
-		if (Statistics.upgradesUsed >= 1 && !global.contains(Badge.UNLOCK_MAGE)){
+		if (Statistics.upgradesUsed >= 1 && !isUnlocked(Badge.UNLOCK_MAGE)){
 			displayBadge( Badge.UNLOCK_MAGE );
 		}
 	}
 
 	public static void validateRogueUnlock(){
-		if (Statistics.sneakAttacks >= 10 && !global.contains(Badge.UNLOCK_ROGUE)){
+		if (Statistics.sneakAttacks >= 10 && !isUnlocked(Badge.UNLOCK_ROGUE)){
 			displayBadge( Badge.UNLOCK_ROGUE );
 		}
 	}
 
 	public static void validateHuntressUnlock(){
-		if (Statistics.thrownAssists >= 15 && !global.contains(Badge.UNLOCK_HUNTRESS)){
+		if (Statistics.thrownAssists >= 10 && !isUnlocked(Badge.UNLOCK_HUNTRESS)){
 			displayBadge( Badge.UNLOCK_HUNTRESS );
 		}
 	}
@@ -916,7 +935,7 @@ public class Badges {
     public static void validateBossChallengeCompleted() {
         Badge badge = null;
         switch (Dungeon.depth) {
-            case 5:
+            case 4:
                 badge = Badge.BOSS_CHALLENGE_1;
                 break;
             case 10:
@@ -1004,7 +1023,7 @@ public class Badges {
 
 		BRUTE_BOT_DIED				( 25 ),
 
-		BOMBBOW_DIED				( 26 ),
+		ANCITY_ONE					(27),
 
 		//silver
 		NO_MONSTERS_SLAIN           ( 32 ),
@@ -1049,6 +1068,8 @@ public class Badges {
 
 		//死于敌方法术
 		DEATH_FROM_ENEMY_MAGIC(60),
+
+		ANCITY_TWO	(61),
 
 
 		//gold
@@ -1131,6 +1152,8 @@ public class Badges {
         BOSS_CHALLENGE_3(154),
         BOSS_CHALLENGE_4(155),
         BOSS_CHALLENGE_5(156),
+
+		ANCITY_THREE	(157),
 
 		BAG_BOUGHT_SEED_POUCH,
 		BAG_BOUGHT_SCROLL_HOLDER,
@@ -1241,6 +1264,7 @@ public class Badges {
 			{Badge.BOSS_SLAIN_1, Badge.BOSS_SLAIN_2, Badge.BOSS_SLAIN_3, Badge.BOSS_SLAIN_4},
 			{Badge.GAMES_PLAYED_1, Badge.GAMES_PLAYED_2, Badge.GAMES_PLAYED_3, Badge.GAMES_PLAYED_4},
 			{Badge.CHAMPION_1X, Badge.CHAMPION_2X, Badge.CHAMPION_3X,Badge.CHAMPION_4X,Badge.CHAMPION_5X},
+			{Badge.ANCITY_ONE,Badge.ANCITY_TWO, Badge.ANCITY_THREE},
 			{Badge.GHOSTDAGE,Badge.DAGETO},
 			{Badge.HIGH_SCORE_1, Badge.HIGH_SCORE_2, Badge.HIGH_SCORE_3, Badge.HIGH_SCORE_4, Badge.HIGH_SCORE_5},
 			{Badge.READ_BOOK_ONE, Badge.READ_BOOK_TWO, Badge.READ_BOOK_THREE, Badge.READ_BOOK_FOUR},

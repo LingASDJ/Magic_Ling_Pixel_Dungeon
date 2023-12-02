@@ -1027,9 +1027,6 @@ public class Hero extends Char {
             case 4:
                 Buff.affect(hero, BlessImmune.class).set((100), 1);
                 break;
-            case 5:
-                Buff.affect(hero, BlessAnmy.class).set((100), 1);
-                break;
         }
         GLog.p(Messages.get(WndStory.class, "good"));
     }
@@ -1872,11 +1869,13 @@ public class Hero extends Char {
 				if (!Chasm.jumpConfirmed){
 
 					if(Dungeon.branch != 0){
-						return false;
+						if(buff(Levitation.class) != null){
+							GLog.n(Messages.get(Hero.class, "error_no"));
+						}
+					} else {
+						Chasm.heroJump(this);
+						interrupt();
 					}
-
-					Chasm.heroJump(this);
-					interrupt();
 				} else {
 					flying = false;
 					remove(buff(Levitation.class)); //directly remove to prevent cell pressing

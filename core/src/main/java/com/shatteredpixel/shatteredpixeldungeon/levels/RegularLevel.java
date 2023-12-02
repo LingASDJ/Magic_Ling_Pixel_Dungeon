@@ -24,6 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.anCityQuestLevel;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.anCityQuestProgress;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
@@ -31,6 +33,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holid
 
 import com.nlf.calendar.Lunar;
 import com.nlf.calendar.Solar;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
@@ -48,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GoldenMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Gregorian;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -301,8 +305,30 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(s);
 		}
 
-		initRooms.add(new DreamcatcherRoom());
-		
+		if (!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)) {
+			if (anCityQuestLevel() && anCityQuestLevel == depth && !anCityQuestProgress) {
+				initRooms.add(new DreamcatcherRoom());
+				DragonGirlBlue.Quest.spawned = true;
+				anCityQuestProgress = true;
+			} else if (!anCityQuestProgress && depth == anCityQuestLevel) {
+				initRooms.add(new DreamcatcherRoom());
+				anCityQuestProgress = true;
+				DragonGirlBlue.Quest.spawned = true;
+			}
+		} else {
+			if(Random.Int(0,101) >= Random.Int(45,80)){
+				if (anCityQuestLevel() && anCityQuestLevel == depth && !anCityQuestProgress) {
+					initRooms.add(new DreamcatcherRoom());
+					DragonGirlBlue.Quest.spawned = true;
+					anCityQuestProgress = true;
+				} else if (!anCityQuestProgress && depth == anCityQuestLevel) {
+					initRooms.add(new DreamcatcherRoom());
+					anCityQuestProgress = true;
+					DragonGirlBlue.Quest.spawned = true;
+				}
+			}
+		}
+
 		if (Dungeon.shopOnLevel() && branch == 0)
 			initRooms.add(new ShopRoom());
 

@@ -389,8 +389,8 @@ public class vM0_6_4_P_Changes {
         changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("信息栏滚动"),
                 ("在游戏缩放较大或者拥有较多词条时，该项会很有用。")));
 
-        changes.addButton(new ChangeButton(BadgeBanner.image(Badges.Badge.BOMBBOW_DIED.image), ("新徽章：碎片飞溅"),
-                ("又是一个死亡徽章，新人：悲鸣 因为意味着另类死亡爱好者多了一个新徽章（未解锁该徽章的就更麻烦了）")));
+//        changes.addButton(new ChangeButton(BadgeBanner.image(Badges.Badge.BOMBBOW_DIED.image), ("新徽章：碎片飞溅"),
+//                ("又是一个死亡徽章，新人：悲鸣 因为意味着另类死亡爱好者多了一个新徽章（未解锁该徽章的就更麻烦了）")));
 
         changes = new ChangeInfo("改动", false, null);
         changes.hardlight(Window.CYELLOW);

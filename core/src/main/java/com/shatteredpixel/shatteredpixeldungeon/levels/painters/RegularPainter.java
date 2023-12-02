@@ -452,11 +452,11 @@ public abstract class RegularPainter extends Painter {
 		//no more than one trap every 5 valid tiles.
 
 		nTraps = l.feeling == Level.Feeling.BIGTRAP ? Math.min(nTraps,
-				validCells.size()/2) : Math.min(nTraps,
+				validCells.size()/4) : Math.min(nTraps,
 				validCells.size()/5);
 
 		//5x traps on traps level feeling, but the extra traps are all visible
-		for (int i = 0; i < (l.feeling == Level.Feeling.BIGTRAP ? 30*nTraps : l.feeling == Level.Feeling.TRAPS ?
+		for (int i = 0; i < (l.feeling == Level.Feeling.BIGTRAP ? 16*nTraps : l.feeling == Level.Feeling.TRAPS ?
 				5*nTraps :
 				nTraps); i++) {
 

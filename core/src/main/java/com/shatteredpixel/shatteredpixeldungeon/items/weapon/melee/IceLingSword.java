@@ -27,6 +27,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -34,13 +36,13 @@ import com.watabou.utils.Callback;
 
 import java.util.ArrayList;
 
-public class Whip extends MeleeWeapon {
+public class IceLingSword extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.WHIP;
 		hitSound = Assets.Sounds.HIT;
 		hitSoundPitch = 1.1f;
-
+		ACC = 2f;
 		tier = 3;
 		RCH = 3;    //lots of extra reach
 	}
@@ -85,7 +87,13 @@ public class Whip extends MeleeWeapon {
 				for (Char ch : targets) {
 					hero.attack(ch, 1, 0, ch == finalClosest ? Char.INFINITE_ACCURACY : 1);
 					if (!ch.isAlive()){
-						onAbilityKill(hero, ch);
+						hero.sprite.parent.add(new Chains(hero.sprite.center(), ch.sprite.destinationCenter(),
+						Effects.Type.ICECHAIN,
+						new Callback() {
+							public void call() {
+								onAbilityKill(hero, ch);
+							}
+						}));
 					}
 				}
 				Invisibility.dispel();

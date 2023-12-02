@@ -913,6 +913,7 @@ public class ItemSpriteSheet {
 
     public static final int  BLACKMOON=			EXFOODINDEX+2;
     static {
+        assignItemRect(FISHSKELETON,11,14);
         assignItemRect(BLACKMOON, 15, 12);
     }
 
@@ -948,7 +949,7 @@ public class ItemSpriteSheet {
 
 
     private static final int SCROLL_GOLD   	 		= xy(1, 46);  //16 slots
-    public static final int SCROLL_MORETR			= SCROLL_GOLD;
+    public static final int  RANDOM_CHEST			= SCROLL_GOLD+1;
     static {
         assignItemRect(SCROLL_GOLD, 15, 14);
     }

@@ -8,18 +8,27 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
 import com.watabou.utils.Point;
 
-public class AncientMysteryRoom extends EntranceRoom {
+public class AncientMysteryEnteanceRoom extends EntranceRoom {
 
     @Override
     public int minWidth() {
-        return Math.max(super.minWidth(), 7);
+        return 9;
     }
 
     @Override
     public int minHeight() {
-        return Math.max(super.minHeight(), 7);
+        return 9;
     }
 
+    @Override
+    public int maxWidth() {
+        return 9;
+    }
+
+    @Override
+    public int maxHeight() {
+        return 9;
+    }
     @Override
     public boolean canMerge(Level l, Point p, int mergeTerrain) {
         //StandardRoom.canMerge
@@ -29,21 +38,19 @@ public class AncientMysteryRoom extends EntranceRoom {
 
     @Override
     public void paint(Level level) {
-        Painter.fill( level, this, Terrain.WALL );
-        Painter.fill( level, this, 1, Terrain.EMPTY );
+        Painter.fill( level, this, Terrain.WALL_DECO );
+        Painter.fill( level, this, 1, Terrain.WATER );
 
-        int entrance;
-        do {
-            entrance = level.pointToCell(random(3));
-        } while (level.findMob(entrance) != null || level.map[entrance] == Terrain.WALL);
-        Painter.set( level, entrance, Terrain.ENTRANCE );
+        int topPos = (top + 5) * level.width() + left + 4;
+        Painter.set( level, topPos, Terrain.ENTRANCE );
 
         level.transitions.add(new LevelTransition(level,
-                entrance,
+                topPos,
                 LevelTransition.Type.BRANCH_ENTRANCE,
                 Dungeon.depth,
-                Dungeon.branch+2,
+                Dungeon.branch-1,
                 LevelTransition.Type.BRANCH_EXIT));
     }
 }
+
 

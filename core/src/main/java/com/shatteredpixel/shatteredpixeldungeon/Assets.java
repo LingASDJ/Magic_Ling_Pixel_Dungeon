@@ -340,6 +340,12 @@ public class Assets {
 		//NPCS
 		public static final String KEEPERKING	= "sprites/npc/ShopKing.png";
 
+		//ANCITY
+		public static final String TURTLE= "sprites/ancity/cltb.png";
+		public static final String ANOMALO= "sprites/ancity/anomalocaris.png";
+
+		public static final String THREEBUG = "sprites/ancity/threeleafbug.png";
+
 		//HOLLOW
 		public static final String APWHEEL = "sprites/hollow/apprentice_witch.png";
 		public static final String CSBR = "sprites/hollow/Cerberus.png";

@@ -45,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.S
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BloodBat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
@@ -198,7 +199,14 @@ public class Dungeon {
 
 	public static int gold;
 	public static int energy;
-	
+
+	public static int anCityQuestLevel;
+
+	public static boolean anCityQuestProgress;
+
+	//TODO 备用
+	public static boolean anCityQuest2Progress;
+
 	public static HashSet<Integer> chapters;
 
 	public static SparseArray<ArrayList<Item>> droppedItems;
@@ -327,6 +335,10 @@ public class Dungeon {
 
 	public static boolean shopOnLevel() {
 		return depth == 6 || depth == 11 || depth == 16;
+	}
+
+	public static boolean anCityQuestLevel() {
+		return 18 == anCityQuestLevel  || 17 == anCityQuestLevel;
 	}
 
 	//Todo Roll 一下
@@ -538,6 +550,12 @@ public class Dungeon {
     private static final String ZBADGES = "z-badges";
     private static final String DLCS = "dlcs";
     private static final String DIFFICULTY = "difficulty";
+
+	private static final String NCITY       = "NCITY";
+
+	private static final String NCITYPROGESS       = "NCITYPROGESS";
+	private static final String NCITYPROGESS2       = "NCITYPROGESS2";
+
     public static int mobsToStateLing;
     public static Hero hero;
 
@@ -631,6 +649,11 @@ public class Dungeon {
 		branch = 0;
 		generatedLevels.clear();
 
+		anCityQuestLevel = Random.Int(17,19);
+
+		anCityQuestProgress = false;
+		anCityQuest2Progress = false;
+
 		gold = 0;
 		energy = 0;
 
@@ -643,6 +666,9 @@ public class Dungeon {
 		Ghost.Quest.reset();
 		Wandmaker.Quest.reset();
 		Blacksmith.Quest.reset();
+
+		DragonGirlBlue.Quest.reset();
+
 		Imp.Quest.reset();
 		RedDragon.Quest.reset();
 		hero = new Hero();
@@ -915,6 +941,11 @@ public class Dungeon {
             bundle.put(DIFFICULTY, difficultys);
             Bundle z_badges = new Bundle();
             PaswordBadges.saveLocal(z_badges);
+			bundle.put(NCITY, anCityQuestLevel);
+
+			bundle.put(NCITYPROGESS, anCityQuestProgress);
+			bundle.put(NCITYPROGESS2, anCityQuest2Progress);
+
             bundle.put(ZBADGES, z_badges);
 
             bundle.put(MOBS_TO_CHAMPION, mobsToChampion);
@@ -948,6 +979,9 @@ public class Dungeon {
 			Ghost		.Quest.storeInBundle( quests );
 			Wandmaker	.Quest.storeInBundle( quests );
 			Blacksmith	.Quest.storeInBundle( quests );
+
+			DragonGirlBlue .Quest.storeInBundle( quests );
+
 			Imp			.Quest.storeInBundle( quests );
 			bundle.put( QUESTS, quests );
 			RedDragon	.Quest.storeInBundle( quests );
@@ -1008,6 +1042,11 @@ public class Dungeon {
 		daily = bundle.getBoolean( DAILY );
 		dailyReplay = bundle.getBoolean( DAILY_REPLAY );
 
+		anCityQuestLevel = bundle.getInt(NCITY);
+
+		anCityQuestProgress = bundle.getBoolean(NCITYPROGESS);
+		anCityQuest2Progress = bundle.getBoolean(NCITYPROGESS2);
+
 		Actor.clear();
 		Actor.restoreNextID( bundle );
 
@@ -1045,12 +1084,18 @@ public class Dungeon {
 				RedDragon.Quest.restoreFromBundle( quests );
 				Wandmaker.Quest.restoreFromBundle( quests );
 				Blacksmith.Quest.restoreFromBundle( quests );
+
+				DragonGirlBlue.Quest.restoreFromBundle( quests );
+
 				Imp.Quest.restoreFromBundle( quests );
 			} else {
 				Ghost.Quest.reset();
 				RedDragon.Quest.reset();
 				Wandmaker.Quest.reset();
 				Blacksmith.Quest.reset();
+
+				DragonGirlBlue.Quest.reset();
+
 				Imp.Quest.reset();
 			}
 

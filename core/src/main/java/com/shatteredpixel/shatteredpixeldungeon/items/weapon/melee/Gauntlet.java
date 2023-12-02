@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
@@ -75,9 +76,9 @@ public class Gauntlet extends MeleeWeapon {
 		return Messages.get(this, "prompt");
 	}
 
-//	@Override
-//	protected void duelistAbility(Hero hero, Integer target) {
-//		Sai.comboStrikeAbility(hero, target, 0.35f, this);
-//	}
+	@Override
+	protected void duelistAbility(Hero hero, Integer target) {
+		Sai.comboStrikeAbility(hero, target, 0.35f, this);
+	}
 
 }

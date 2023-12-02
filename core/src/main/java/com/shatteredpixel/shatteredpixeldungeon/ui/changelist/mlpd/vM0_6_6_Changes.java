@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300AttackSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DragonGirlBlueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlowerSlimeSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceSlowGirlSprites;
@@ -33,6 +34,7 @@ public class vM0_6_6_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
         add_CS_Changes(changeInfos);
+        add_v0_6_8_0_Changes(changeInfos);
         add_v0_6_7_0_Changes(changeInfos);
         add_v0_6_6_0_Changes(changeInfos);
     }
@@ -86,6 +88,96 @@ public class vM0_6_6_Changes {
         c.scale.set(PixelScene.align(0.74f));
         changes.addButton(new ChangeButton(c, ("冰雪魔女重做"),
                 ("石碑上记录了有关于她的一切，她的过去，她的现在，她的未来。而当你与她对峙时，你是否能够看清她的真实面目？")));
+    }
+
+    public static void add_v0_6_8_0_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.8.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 7), ("武技实装第一轮"),
+                ("部分武器武技已经实装，欢迎尝鲜")));
+
+        changes.addButton(new ChangeButton(new DragonGirlBlueSprite(), ("远古遗迹强势归来"),
+                ("远古遗迹重大更新，新增3个怪物，3+1个徽章，还有更多惊喜，欢迎前来体验。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RANDOM_CHEST), ("随机宝箱"),
+                ("现在0层十字架和刻笔换成随机宝箱，你究竟是欧皇还是酋长，快来抽抽看吧。")));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.MAGE, 7), ("英雄调整"),
+                ("人物从初始自带一瓶冶疗改为\n\n" +
+                        "1.战士初始为冶疗药剂\n" +
+                        "2.法师初始为液火药剂\n" +
+                        "3.女猎为灵视药剂\n" +
+                        "4.盗贼为隐身药剂\n" +
+                        "5.武斗为镜像卷轴")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_ROSE3), ("0层调整"),
+                ("神器初始不再给予，改为牛皮书袋。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WHIP), ("冰澪匕首"),
+                ("以前的冰霜长鞭改为冰澪匕首，伤害不变。武技视觉效果优化。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MAGIC_TORCH), ("魔法火把"),
+                ("武技视觉效果优化和完善武技")));
+
+
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分无用音乐删除\n" +
+                        "3.少量Bug修复\n" +
+                        "4.部分小细节优化更新")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "修复了以下Bug:\n\n" +
+                        "1.修复了女猎解锁异常问题\n" +
+                        "2.修复矮人国王相关问题\n" +
+                        "3.修复了暴力Boss的额外拳头血量异常\n" +
+                        "4.修复了部分文案缺失问题\n" +
+                        "5.修复了盗贼血影蝙蝠血量异常问题"
+        ));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight( CharSprite.POSITIVE );
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAR_HAMMER), ("白檩剑"),
+                ("以前的白金真银战锤大剑改为白檩剑，精准度提高，其余不变")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG2), ("蛮人战斧"),
+                ("武技视觉效果优化和完善武技，自身属性加强")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight( CharSprite.NEGATIVE );
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.YELLOWBOOKS), ("传说书籍"),
+                ("现在如果存在英雄精英效果的状态下，不能继续阅读其他传说书籍。同时传说书籍在商人售卖处价格上涨。奈亚子终端仍然是720金币。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), ("钥匙剑"),
+                ("钥匙剑现在只能通过钥匙升级，且获得途径仅在常规商人处有概率出现，且商人处可能有等级，但价钱也会上涨")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("灯火前路3.3"),
+                ("以下Buff被削弱：\n\n" +
+                        "1.前路现在在极度饥饿失去效果\n" +
+                        "2.共生仅在一区有概率出现\n" +
+                        "3.富饶从三折改为六折\n" +
+                        "4.守护护盾刷新回合从150改为270")));
+
+        changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.CORRUPT, true), ("基因突变"),
+                ("移除酸液体")));
+
     }
 
     public static void add_v0_6_7_0_Changes( ArrayList<ChangeInfo> changeInfos ) {

@@ -59,12 +59,10 @@ public abstract class Key extends Item {
 		Sample.INSTANCE.play( Assets.Sounds.ITEM );
 		hero.spendAndNext( TIME_TO_PICK_UP );
 		GameScene.updateKeyDisplay();
-
-		if(hero.belongings.weapon != null){
-			if(hero.belongings.weapon instanceof LockSword){
-				LockSword weapon = (LockSword)hero.belongings.weapon;
-				weapon.lvl += 5*(Dungeon.depth/5)+20;
-				int lvl = weapon.lvl;
+		LockSword lockSword = Dungeon.hero.belongings.getItem(LockSword.class);
+		if(lockSword != null) {
+				LockSword.lvl += 5*(Dungeon.depth/5)+20;
+				int lvl = LockSword.lvl;
 				if (lvl >= 100 && lvl <= 1000 && lvl % 100 == 0) {
 					// 提醒气泡的显示逻辑
 					GLog.p(Messages.get(Key.class,"locksword"));
@@ -72,7 +70,6 @@ public abstract class Key extends Item {
 				int bubbleText = 5*(Dungeon.depth/5)+20;
 				hero.sprite.showStatus(0x123456ff, String.valueOf(bubbleText));
 				return true;
-			}
 		}
 
 		return true;

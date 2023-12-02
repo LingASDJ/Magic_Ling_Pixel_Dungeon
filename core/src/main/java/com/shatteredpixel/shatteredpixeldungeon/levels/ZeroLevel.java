@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
-import static com.shatteredpixel.shatteredpixeldungeon.items.Generator.randomArtifact;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -39,13 +37,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.REN;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.obSir;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
-import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -146,8 +144,8 @@ public class ZeroLevel extends Level {
         drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 20 + 17 );
         drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 19 + 16 );
 
-        drop( new Ankh(), this.width * 17 + 20  ).type = Heap.Type.FOR_SALE;
-        drop( new Stylus(), this.width * 19 + 20  ).type = Heap.Type.FOR_SALE;
+        drop( new RandomChest(), this.width * 17 + 20  ).type = Heap.Type.FOR_SALE;
+        drop( new RandomChest(), this.width * 19 + 20  ).type = Heap.Type.FOR_SALE;
 
         drop( ( Generator.randomUsingDefaults( Generator.Category.STONE ) ), this.width * 16 + 19 );
         drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), this.width * 20 + 19 );
@@ -171,7 +169,7 @@ public class ZeroLevel extends Level {
             drop(( Generator.random( Generator.Category.WEP_T2 )), this.width * 18 + 17  );
         }
         if ( Badges.isUnlocked(Badges.Badge.RLPT)){
-            Item item = randomArtifact();
+            Item item =new BookBag();
             drop(item, this.width * 18 + 19 );
         }
 

@@ -22,20 +22,28 @@ public class BrokenBooks extends Books {
     @Override
     public void execute(final Hero hero, String action) {
         super.execute(hero, action);
-        if (action.equals( Read ) ) {
-            Sample.INSTANCE.play( Assets.Sounds.READ );
-            switch (Random.Int(5)){
-                case 0: case 1: case 2:
-                    Buff.affect(hero, Adrenaline.class, 30f);
-                    detach( hero.belongings.backpack );
-                    GLog.b( Messages.get(this, "blees") );
-                    break;
-                case 3: case 4: case 5:
-                    Buff.affect(hero, ChampionHero.Growing.class, 275f);
-                    detach( hero.belongings.backpack );
-                    GLog.b( Messages.get(this, "anmazing") );
-                    break;
+        for (Buff b : hero.buffs(ChampionHero.class)){
+            if(b != null){
+                GLog.w(Messages.get(Books.class, "your_character"));
+                return;
+            } else {
+                if (action.equals( Read ) ) {
+                    Sample.INSTANCE.play( Assets.Sounds.READ );
+                    switch (Random.Int(5)){
+                        case 0: case 1: case 2:
+                            Buff.affect(hero, Adrenaline.class, 30f);
+                            detach( hero.belongings.backpack );
+                            GLog.b( Messages.get(this, "blees") );
+                            break;
+                        case 3: case 4: case 5:
+                            Buff.affect(hero, ChampionHero.Growing.class, 275f);
+                            detach( hero.belongings.backpack );
+                            GLog.b( Messages.get(this, "anmazing") );
+                            break;
+                    }
+                }
             }
         }
+
     }
 }
