@@ -113,7 +113,8 @@ public class DragonGirlBlue extends NTNPC{
                                     InterlevelScene.mode = InterlevelScene.Mode.ANCITYBOSS;
                                     InterlevelScene.curTransition = new LevelTransition();
                                     InterlevelScene.curTransition.destDepth = depth;
-                                    LockSword.lvl -= 300;
+                                    LockSword lockSword = Dungeon.hero.belongings.getItem(LockSword.class);
+                                    lockSword.lvl -= 300;
                                     InterlevelScene.curTransition.destType = LevelTransition.Type.BRANCH_ENTRANCE;
                                     InterlevelScene.curTransition.destBranch = Dungeon.branch + 1;
                                     InterlevelScene.curTransition.type = LevelTransition.Type.BRANCH_ENTRANCE;

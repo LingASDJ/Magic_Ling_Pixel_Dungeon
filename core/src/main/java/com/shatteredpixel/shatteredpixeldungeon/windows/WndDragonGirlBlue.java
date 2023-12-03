@@ -182,14 +182,19 @@ public class WndDragonGirlBlue extends Window {
         if(DragonGirlBlue.Quest.one_used_points == 3 && DragonGirlBlue.Quest.two_used_points ==3) {
             int UpgradePoint = 1000;
             int OtherPoint = 400;
-            RedButton upgrade = new RedButton(Messages.get(this, "up", UpgradePoint), 6){
+
+            RedButton pro = new RedButton(Messages.get(this, "pro", OtherPoint), 6){
                 @Override
                 protected void onClick() {
-                    GameScene.selectItem(new UpgradeSelector());
+                    hide();
+                    Statistics.questScores[2] += 1000;
+                    DragonGirlBlue.Quest.survey_research_points -= OtherPoint;
+                    DragonGirlBlue.Quest.three_used_points++;
+                    GLog.p(Messages.get(WndDragonGirlBlue.class, "pro_yes"));
                 }
             };
-            upgrade.enable(DragonGirlBlue.Quest.three_used_points == 0 && DragonGirlBlue.Quest.survey_research_points>=UpgradePoint);
-            buttons.add(upgrade);
+            pro.enable(DragonGirlBlue.Quest.three_used_points == 0 && DragonGirlBlue.Quest.survey_research_points>=OtherPoint);
+            buttons.add(pro);
 
             RedButton gold = new RedButton(Messages.get(this, "gold", OtherPoint), 6){
                 @Override
@@ -204,18 +209,14 @@ public class WndDragonGirlBlue extends Window {
             gold.enable(DragonGirlBlue.Quest.three_used_points == 1 && DragonGirlBlue.Quest.survey_research_points>=OtherPoint);
             buttons.add(gold);
 
-            RedButton pro = new RedButton(Messages.get(this, "pro", OtherPoint), 6){
+            RedButton upgrade = new RedButton(Messages.get(this, "up", UpgradePoint), 6){
                 @Override
                 protected void onClick() {
-                    hide();
-                    Statistics.questScores[2] += 1000;
-                    DragonGirlBlue.Quest.survey_research_points -= OtherPoint;
-                    DragonGirlBlue.Quest.three_used_points++;
-                    GLog.p(Messages.get(WndDragonGirlBlue.class, "pro_yes"));
+                    GameScene.selectItem(new UpgradeSelector());
                 }
             };
-            pro.enable(DragonGirlBlue.Quest.three_used_points == 2 && DragonGirlBlue.Quest.survey_research_points>=OtherPoint);
-            buttons.add(pro);
+            upgrade.enable(DragonGirlBlue.Quest.three_used_points == 2 && DragonGirlBlue.Quest.survey_research_points>=UpgradePoint);
+            buttons.add(upgrade);
 
         }
 

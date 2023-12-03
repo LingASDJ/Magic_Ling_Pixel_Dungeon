@@ -50,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniSaka;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -435,6 +436,13 @@ public class Dungeon {
 				bat.state = bat.WANDERING;
 				Dungeon.level.mobs.add( bat );
 				Actor.add( bat );
+
+				//TODO PET
+				MiniSaka saka = new MiniSaka();
+				saka.pos = respawnPoints.get(Random.index(respawnPoints));
+				saka.state = bat.WANDERING;
+				Dungeon.level.mobs.add( saka );
+				Actor.add( saka );
 			}
 		}
 

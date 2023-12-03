@@ -40,6 +40,38 @@ public class BloodBat extends Mob implements Callback {
         flying = true;
     }
 
+    protected int defendingPos = -1;
+    protected boolean movingToDefendPos = false;
+
+    public void defendPos( int cell ){
+        defendingPos = cell;
+        movingToDefendPos = true;
+        aggro(null);
+        state = WANDERING;
+    }
+
+    public void clearDefensingPos(){
+        defendingPos = -1;
+        movingToDefendPos = false;
+    }
+
+    private static final String DEFEND_POS = "defend_pos_pets";
+    private static final String MOVING_TO_DEFEND = "moving_to_defend_pets";
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(DEFEND_POS, defendingPos);
+        bundle.put(MOVING_TO_DEFEND, movingToDefendPos);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        if (bundle.contains(DEFEND_POS)) defendingPos = bundle.getInt(DEFEND_POS);
+        movingToDefendPos = bundle.getBoolean(MOVING_TO_DEFEND);
+    }
+
     @Override
     public boolean act() {
         if(HT>850) die(true);

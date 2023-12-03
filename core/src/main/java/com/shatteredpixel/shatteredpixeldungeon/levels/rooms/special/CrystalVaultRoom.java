@@ -79,8 +79,12 @@ public class CrystalVaultRoom extends SpecialRoom {
 		Painter.set(level, i2Pos, Terrain.PEDESTAL);
 
 		level.addItemToSpawn( new CrystalKey( Dungeon.depth ) );
-		
-		entrance().set( Door.Type.LOCKED );
+
+		if(Dungeon.depth == 4 && Dungeon.branch == 2){
+			entrance().set( Door.Type.CRYSTAL );
+		} else {
+			entrance().set( Door.Type.LOCKED );
+		}
 		level.addItemToSpawn( new IronKey( Dungeon.depth ) );
 	}
 	

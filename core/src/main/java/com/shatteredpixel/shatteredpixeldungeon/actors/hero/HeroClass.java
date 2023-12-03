@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
@@ -58,15 +57,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
-import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.custom.AncityArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
@@ -90,7 +86,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDiv
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfLightStromCloud;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
@@ -197,13 +194,13 @@ public enum HeroClass {
 
 		if ( Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
 			Buff.affect(hero, RandomBuff.class).set( (5), 1 );
-			Dungeon.gold += 320;
+			Dungeon.gold += 400;
 		}
 
 		PaswordBadges.loadGlobal();
 		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
 		if(passwordbadges.contains(PaswordBadges.Badge.EXSG)){
-			Dungeon.gold += 720;
+			Dungeon.gold += 648;
 		}
 
 		if ( Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
@@ -231,21 +228,20 @@ public enum HeroClass {
 		new ScrollOfIdentify().identify();
 
 		if (Dungeon.isChallenged(Challenges.PRO)){
-			new LiquidMetal().quantity(1).identify().collect();
+			new Amulet().quantity(1).identify().collect();
 			new LevelTeleporter().quantity(1).identify().collect();
 			new PotionOfDivineInspiration().quantity(1).identify().collect();
-			new MIME.GOLD_THREE().quantity(1).identify().collect();
+			new SakaFishSketon().quantity(1).identify().collect();
 			new ScrollOfMetamorphosis().quantity(111).identify().collect();
-			new DriedRose().quantity(1).identify().collect();
+			new SakaFishSketon().quantity(1).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
-			new AncityArmor().quantity(1).identify().collect();
+			new RandomChest().quantity(100).identify().collect();
 			new TengusMask().quantity(1).identify().collect();
 			new SpawnWeapon().quantity(1).identify().collect();
 			new SpawnArmor().quantity(1).identify().collect();
 			new SpawnArtifact().quantity(1).identify().collect();
 			new SpawnRingOrWand().quantity(1).identify().collect();
 			new SpawnMissile().quantity(1).identify().collect();
-			Buff.affect(hero, ChampionHero.AntiMagic.class, 50000f);
 			new WraithAmulet().quantity(1).identify().collect();
 			new BloodthirstyThorn().quantity(1).identify().collect();
 			new PotionOfLightStromCloud().quantity(10).identify().collect();

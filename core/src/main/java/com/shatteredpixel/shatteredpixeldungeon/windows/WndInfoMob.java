@@ -166,6 +166,8 @@ public class WndInfoMob extends WndTitledMessage {
 				level = Messages.get(WndInfoMob.class,"demon");
 			} else if (mob.properties.contains(Char.Property.NPC)){
 				level = "NPC";
+			} else if (mob.properties.contains(Char.Property.PETS)){
+				level = Messages.get(WndInfoMob.class,"pets");
 			} else if (mob.properties.contains(Char.Property.FIERY) || mob.properties.contains(Char.Property.ICY) || mob.properties.contains(Char.Property.ELECTRIC)){
 				level = Messages.get(WndInfoMob.class,"ling");
 			} else {

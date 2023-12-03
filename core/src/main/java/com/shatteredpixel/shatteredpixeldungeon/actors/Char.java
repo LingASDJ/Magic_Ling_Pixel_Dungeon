@@ -1153,6 +1153,7 @@ public abstract class Char extends Actor {
 		MIMIC,
 		HOLLOW,
 		IMMOVABLE,
+		PETS,
 		ABYSS;
 
 		private HashSet<Class> resistances;

@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireacti
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
@@ -50,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
@@ -66,6 +68,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ShopRoom extends SpecialRoom {
 
@@ -158,18 +161,19 @@ public class ShopRoom extends SpecialRoom {
 		ArrayList<Item> itemsToSpawn = new ArrayList<>();
 
 		MeleeWeapon w;
+
+		LockSword w2 = new LockSword();
+
 		switch (Dungeon.depth) {
 		case 6: default:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[1]);
 			itemsToSpawn.add( Generator.random(Generator.misTiers[1]).quantity(2).identify(false) );
 			itemsToSpawn.add( new LeatherArmor().identify(false) );
-				MeleeWeapon w2;
-			if(Random.Int(10)>2){
-				w2 = new LockSword();
-				LockSword.lvl = Random.Int(0,301);
-				itemsToSpawn.add( w2.identify(false) );
-			}
 
+			if(Random.Int(10)>2) {
+				w2.lvl = Random.Int(0, 301);
+				itemsToSpawn.add(w2.identify(false));
+			}
 
 			break;
 			
@@ -178,12 +182,12 @@ public class ShopRoom extends SpecialRoom {
 			itemsToSpawn.add( Generator.random(Generator.misTiers[2]).quantity(2).identify(false) );
 			itemsToSpawn.add( new MailArmor().identify(false) );
 
-			if(Random.Int(10)>8){
+			if(Random.Int(10)>8) {
 				w2 = new LockSword();
-				LockSword.lvl = Random.Int(100,301);
-				itemsToSpawn.add( w2.identify(false) );
-
+				((LockSword) w2).lvl = Random.Int(100, 301);
+				itemsToSpawn.add(w2.identify(false));
 			}
+
 
 			break;
 			
@@ -196,12 +200,13 @@ public class ShopRoom extends SpecialRoom {
 				itemsToSpawn.add( new ScaleArmor().identify(false) );
 			}
 
-			if(Random.Int(10)==1){
+			if(Random.Int(10)==1) {
 				w2 = new LockSword();
-				LockSword.lvl = Random.Int(200,601);
+				((LockSword) w2).lvl = Random.Int(200, 501);
 				itemsToSpawn.add( w2.identify(false) );
-				break;
 			}
+
+			break;
 
 
 
@@ -217,11 +222,10 @@ public class ShopRoom extends SpecialRoom {
 			itemsToSpawn.add( new Torch() );
 			itemsToSpawn.add( new Torch() );
 
-			if(Random.Float()<0.05f){
+			if(Random.Int(50)==1) {
 				w2 = new LockSword();
-				LockSword.lvl = Random.Int(300,501);
-				itemsToSpawn.add( w2.identify(false) );
-
+				((LockSword) w2).lvl = Random.Int(300, 601);
+				itemsToSpawn.add(w2.identify(false));
 			}
 			break;
 		}
@@ -266,6 +270,15 @@ public class ShopRoom extends SpecialRoom {
 
 		itemsToSpawn.add( new SmallRation() );
 		itemsToSpawn.add( new SmallRation() );
+
+		PaswordBadges.loadGlobal();
+		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
+
+		if(passwordbadges.contains(PaswordBadges.Badge.RESET_DAY)) {
+			if (Random.Int(4) == 0) {
+				itemsToSpawn.add(new SakaFishSketon());
+			}
+		}
 		
 		switch (Random.Int(4)){
 			case 0:

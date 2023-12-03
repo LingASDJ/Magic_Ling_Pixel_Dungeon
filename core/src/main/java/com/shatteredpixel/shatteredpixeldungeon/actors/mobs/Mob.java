@@ -57,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Feint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.Pets;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Surprise;
@@ -65,6 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
@@ -215,11 +217,18 @@ public abstract class Mob extends Char {
 		for (Mob mob : level.mobs.toArray( new Mob[0] )) {
 			//preserve directable allies no matter where they are
 			if (mob instanceof DirectableAlly) {
-                ((DirectableAlly) mob).clearDefensingPos();
-                level.mobs.remove(mob);
-                heldAllies.add(mob);
+				((DirectableAlly) mob).clearDefensingPos();
+				level.mobs.remove(mob);
+				heldAllies.add(mob);
 
-                //preserve intelligent allies if they are near the hero
+			} else if(mob instanceof Pets){
+				((Pets) mob).clearDefensingPos();
+				level.mobs.remove(mob);
+				heldAllies.add(mob);
+			} else if(mob instanceof BloodBat){
+				((BloodBat) mob).clearDefensingPos();
+				level.mobs.remove(mob);
+				heldAllies.add(mob);
             } else if (mob.alignment == Alignment.ALLY
 					&& mob.intelligentAlly
 					&& Dungeon.level.distance(holdFromPos, mob.pos) <= 5){
@@ -905,6 +914,11 @@ public abstract class Mob extends Char {
 		}
 		if (state != HUNTING && !(src instanceof Corruption)) {
 			alerted = true;
+		}
+
+		if(this.buff(ChampionEnemy.DelayMob.class) != null && dmg> 0){
+			Viscosity.DeferedDamage deferred = Buff.affect( this, Viscosity.DeferedDamage.class );
+			deferred.prolong( dmg );
 		}
 
         super.damage( dmg, src );

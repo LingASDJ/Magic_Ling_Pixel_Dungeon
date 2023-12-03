@@ -308,7 +308,7 @@ public class SakaFishBoss extends Boss {
             Dungeon.level.drop( new SakaFishSketon(), pos ).sprite.drop();
             Dungeon.level.drop( new WaterSoul(), pos ).sprite.drop();
 
-            Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos-2 ).sprite.drop();
+            Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
             PaswordBadges.KILLSAKA();
 
             yell( Messages.get(this, "defeated") );

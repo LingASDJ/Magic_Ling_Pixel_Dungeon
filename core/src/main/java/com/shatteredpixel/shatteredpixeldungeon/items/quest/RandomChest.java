@@ -1,9 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 
-import static com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom.ChooseBag;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -11,14 +10,25 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAntiMagic;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -27,6 +37,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RandomChest  extends Item {
 
@@ -73,12 +84,12 @@ public class RandomChest  extends Item {
 
     @Override
     public int value() {
-        return 75 * quantity;
+        return 70;
     }
 
     private Item convert(){
-        Item w = new Item();
-        switch (Random.Int(1,20)){
+        Item w = new Food();
+        switch (Random.Int(1,23)){
             default:
             case 0:
                 w = Generator.random(Generator.wepTiers[1]);
@@ -98,10 +109,10 @@ public class RandomChest  extends Item {
                 w = new Alchemize().quantity(Random.IntRange(2, 3));
             break;
             case 5:
-                Bag bag = ChooseBag(Dungeon.hero.belongings);
-                if (bag != null) {
-                    w = (bag);
-                }
+                LockSword lock = new LockSword();
+                lock.cursed =false;
+                lock.enchant(null);
+                w = lock;
             break;
             case 6:
                 w = new PotionOfHealing().quantity(1);
@@ -110,7 +121,10 @@ public class RandomChest  extends Item {
                 w = Generator.randomUsingDefaults( Generator.Category.POTION );
             break;
             case 8:
+                //1%
+                boolean bless = Random.Int(100) == 1;
                 w = new Ankh();
+                ((Ankh) w).blessed = bless;
             break;
             case 9:
                 w = new StoneOfAugmentation();
@@ -156,6 +170,38 @@ public class RandomChest  extends Item {
             case 19:
                 w = Generator.randomUsingDefaults( Generator.Category.WEAPON );
                 w.level(Random.Int(0,2));
+                break;
+            case 20:
+                w = Generator.randomUsingDefaults( Generator.Category.ARMOR );
+                break;
+            case 21:
+                switch (Random.Int(6)){
+                    default:
+                    case 0: w = new ScrollOfSirensSong(); break;
+                    case 1: w = new ScrollOfChallenge(); break;
+                    case 2: w = new ScrollOfMetamorphosis(); break;
+                    case 3: w = new ScrollOfAntiMagic();    break;
+                    case 4: w = new ScrollOfPsionicBlast();   break;
+                    case 5:
+                        PaswordBadges.loadGlobal();
+                        List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
+                        if(passwordbadges.contains(PaswordBadges.Badge.RESET_DAY)) {
+                            w = new SakaFishSketon();
+                        } else {
+                            w = Generator.randomUsingDefaults( Generator.Category.FOOD );
+                        }
+                    break;
+                }
+                break;
+            case 22:
+                switch (Random.Int(5)){
+                    default:
+                    case 1: w = new WaterSoul();   break;
+                    case 2: w = new BlizzardBrew(); break;
+                    case 3: w = new CausticBrew();    break;
+                    case 4: w = new InfernalBrew();   break;
+                    case 5: w = new ShockingBrew();   break;
+                }
                 break;
         }
         return w;

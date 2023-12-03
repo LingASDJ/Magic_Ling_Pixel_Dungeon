@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruitsLasher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RatKing;
@@ -190,6 +191,12 @@ public class ForestBossLevel extends Level {
         set( HOME, Terrain.EMPTY );
         GameScene.updateMap( HOME );
         Dungeon.observe();
+
+        //moves intelligent allies with the hero, preferring closer pos to entrance door
+        int doorPos = WIDTH*16+16;
+        Mob.holdAllies(this, doorPos);
+        Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
+
 
         if (!Dungeon.isChallenged(STRONGER_BOSSES)) {
             Heap s = drop(new PotionOfPurity.PotionOfPurityLing().identify(), WIDTH * 23 + 15);

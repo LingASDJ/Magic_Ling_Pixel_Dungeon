@@ -435,6 +435,8 @@ public class Assets {
 		public static final String DM720	= "sprites/dm720.png";
 		public static final String WRAITH	= "sprites/wraith.png";
 
+		public static final String SKFSBABY	= "sprites/pets/sakababy.png";
+
 		public static final String REDWRAITH	= "sprites/bluewraith.png";
 
 		public static final String UNDEAD	= "sprites/undead.png";

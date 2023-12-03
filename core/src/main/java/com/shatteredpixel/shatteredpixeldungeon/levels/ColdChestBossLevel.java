@@ -228,6 +228,10 @@ public class ColdChestBossLevel extends Level {
         LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(enter);
 
+        int doorPos =  WIDTH*3+17;
+        Mob.holdAllies(this, doorPos);
+        Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
+
         LevelTransition exit = new LevelTransition(this, 0, LevelTransition.Type.REGULAR_EXIT);
         transitions.add(exit);
 

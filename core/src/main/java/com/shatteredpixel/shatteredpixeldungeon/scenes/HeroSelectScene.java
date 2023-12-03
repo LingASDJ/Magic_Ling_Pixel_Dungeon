@@ -136,7 +136,7 @@ public class HeroSelectScene extends PixelScene {
 		Badges.loadGlobal();
 
 		Music.INSTANCE.playTracks(
-				new String[]{Assets.Music.THEME_FINALE},
+				new String[]{Assets.Music.THEME_2},
 				new float[]{1},
 				false);
 

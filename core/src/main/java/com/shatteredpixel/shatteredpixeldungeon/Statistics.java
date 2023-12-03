@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.SparseArray;
 
@@ -271,8 +270,6 @@ public class Statistics {
 
 		//萨卡班甲鱼二阶段
 		sakaBackStage = 0;
-
-		LockSword.lvl = 0;
 
 		goldCollected	= 0;
 		deepestFloor	= -1;

@@ -1,7 +1,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
+import com.shatteredpixel.shatteredpixeldungeon.effects.PasswordBadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -16,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceSlowGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MiniSakaFishBossSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MolotovHuntsmanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedDragonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
@@ -91,7 +96,90 @@ public class vM0_6_6_Changes {
     }
 
     public static void add_v0_6_8_0_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.8.0", true, "");
+
+        ChangeInfo changes = new ChangeInfo("v0.6.8.0-Beta3", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new MiniSakaFishBossSprites(), ("宠物系统-v0.1"),
+                ("宠物系统现在开始加入游戏中，目前有观赏功能形宠物一只。快去试试看吧。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FISHSKELETON), ("萨卡班甲鱼鱼骨重做"),
+                ("重做了这个物品，现在它同时也是首个宠物道具。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分无用音乐删除\n" +
+                        "3.部分细节优化更新\n" +
+                        "4.部分界面优化迭代")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "修复了以下Bug:\n\n" +
+                        "1.修复了部分文案丢失\n" +
+                        "2.修复了部分界面浏览崩溃\n" +
+                        "3.修复了PC版本部分快捷键不生效的问题\n" +
+                        "4.部分楼层错误坐标和盟友无法加入战斗的问题\n" +
+                        "5.修复钥匙剑的全局共享问题\n" +
+                        "5.其他崩溃Bug修正"
+        ));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight( CharSprite.POSITIVE );
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RANDOM_CHEST), ("补给箱"),
+                ("价钱降低为350金币，\n\n" +
+                        "且钥匙剑\n魔药和秘卷\n萨卡班甲鱼骨头(需要前置徽章:远古生物调查员)加入池子\n\n" +
+                        "背包类型移出奖励池子。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight( CharSprite.NEGATIVE );
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), ("钥匙剑"),
+                ("钥匙剑现在只能通过钥匙升级，\n且只有以下钥匙加经验：\n\n" +
+                        "1.铁钥匙5经验\n" +
+                        "2.黄金钥匙15经验\n" +
+                        "3.水晶钥匙25经验")));
+
+        changes = new ChangeInfo("v0.6.8.0-Beta2", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分界面优化")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "修复了以下Bug:\n\n" +
+                        "1.修复了部分文案丢失\n" +
+                        "2.修复了部分界面浏览崩溃\n" +
+                        "3.修复传说书籍的相关问题"
+        ));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight( CharSprite.POSITIVE );
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(BadgeBanner.image(Badges.Badge.NYZ_SHOP.image), ("徽章调整"),
+                ("获得该徽章后初始金币从320金币-->400金币")));
+
+        changes.addButton(new ChangeButton(PasswordBadgeBanner.image(PaswordBadges.Badge.EXSG.image), ("徽章调整"),
+                ("获得该徽章后初始金币从720金币-->648金币")));
+
+        changes = new ChangeInfo("v0.6.8.0-Beta1", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -306,7 +394,7 @@ public class vM0_6_6_Changes {
         changeInfos.add(changes);
 
         changes.addButton( new ChangeButton(new RedDragonSprite(), ("红龙任务"),
-                ("红龙任务进行了一些优化，饼正式加入0.6.6.0的游戏中。")));
+                ("红龙任务进行了一些优化，并正式加入0.6.6.0的游戏中。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("DLC模式返修"),
                 ("BossRush等DLC模式返修中，敬请期待后续版本。")));

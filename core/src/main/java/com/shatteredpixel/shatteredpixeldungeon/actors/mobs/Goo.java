@@ -32,8 +32,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -286,7 +287,11 @@ public class Goo extends Mob {
 		Dungeon.level.unseal();
 
 		GameScene.bossSlain();
-		//Dungeon.level.drop( new SkeletonKey( Dungeon.depth ), pos ).sprite.drop();
+
+		//Dungeon.level.drop( Generator.random( Generator.Category.WAND), pos) .sprite.drop();
+
+		Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
+		Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
 
 		//60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5
 		int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
@@ -295,13 +300,13 @@ public class Goo extends Mob {
 			do {
 				ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
 			} while (!Dungeon.level.passable[pos + ofs]);
-			Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
+			Dungeon.level.drop( Generator.random( Generator.Category.STONE), pos + ofs ).sprite.drop( pos );
 		}
 
-		Badges.validateBossSlain();
-		if (Statistics.qualifiedForBossChallengeBadge){
-			Badges.validateBossChallengeCompleted();
-		}
+
+
+
+		Badges.GOO();
 		Statistics.bossScores[0] += 1000;
 
 		yell( Messages.get(this, "defeated") );

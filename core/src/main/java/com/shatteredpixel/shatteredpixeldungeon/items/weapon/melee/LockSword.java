@@ -29,7 +29,7 @@ import com.watabou.utils.Random;
 
 public class LockSword extends MeleeWeapon {
 
-    public static int lvl = 0;
+    public int lvl = 0;
 
     public LockSword() {
         super.image = ItemSpriteSheet.DG3;

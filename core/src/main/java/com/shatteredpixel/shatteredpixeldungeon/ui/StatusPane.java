@@ -363,7 +363,7 @@ public class StatusPane extends Component {
 		}
 
 		if(SPDSettings.TimeLimit()) {
-			timeText.x = MenuPane.version.x - 10;
+			timeText.x = MenuPane.depthButton.x;
 
 			timeText.y = MenuPane.version.y + 5;
 

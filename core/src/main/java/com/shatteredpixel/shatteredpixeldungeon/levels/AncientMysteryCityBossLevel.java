@@ -63,6 +63,9 @@ public class AncientMysteryCityBossLevel extends Level{
             case ONE_BOSS:
                 Statistics.qualifiedForBossChallengeBadge = true;
                 seal();
+                int doorPos =  WIDTH*4+13;
+                Mob.holdAllies(this, doorPos);
+                Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
                 pro = TWO_BOSS;
                 break;
             case TWO_BOSS:
@@ -266,9 +269,11 @@ public class AncientMysteryCityBossLevel extends Level{
     }
 
 
+
+
     @Override
     public int randomRespawnCell( Char ch ) {
-        int pos = WIDTH + 16; //random cell adjacent to the entrance.
+        int pos = WIDTH*28+13;
         int cell;
         do {
             cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
@@ -309,7 +314,8 @@ public class AncientMysteryCityBossLevel extends Level{
 
         boolean isTrue = ch.pos == LDBossDoor && ch == hero && Dungeon.level.distance(ch.pos, entrance) >= 2;
 
-        //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal() .
+        //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
+        //特别情况下 部分玩家可能会把门烧了 灰烬也可以作为检查点
         if (map[getBossDoor] == Terrain.DOOR && isTrue || map[getBossDoor] == Terrain.EMBERS && isTrue) {
             progress();
         }

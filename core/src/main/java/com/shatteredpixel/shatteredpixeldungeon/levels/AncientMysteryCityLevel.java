@@ -18,12 +18,12 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.WalkwayR
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.AncientMysteryEnteanceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.AncientMysteryExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretWellRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.LibraryRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.TrapsRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.PlantsRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.SewerPipeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StudyRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CorrosionTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CursingTrap;
@@ -82,8 +82,8 @@ public class AncientMysteryCityLevel extends RegularLevel {
 
         int rooms2 = 2;
         for (int i = 1; i < rooms2; i++){
-            x = new LibraryRoom();
-            initRooms.add(x);
+            s = new StudyRoom();
+            initRooms.add(s);
         }
 
         ConnectionRoom xs;

@@ -932,12 +932,13 @@ public class Badges {
         displayBadge(Badge.RLPT);
     }
 
+	public static void GOO() {
+		displayBadge(Badge.BOSS_CHALLENGE_1);
+	}
+
     public static void validateBossChallengeCompleted() {
         Badge badge = null;
         switch (Dungeon.depth) {
-            case 4:
-                badge = Badge.BOSS_CHALLENGE_1;
-                break;
             case 10:
                 badge = Badge.BOSS_CHALLENGE_2;
                 break;

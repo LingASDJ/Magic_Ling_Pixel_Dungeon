@@ -226,7 +226,7 @@ public class WndDialog extends Window {
     public SkipIndicator makeSkip()
     {
         SkipIndicator skipIndicator = new SkipIndicator();
-        skipIndicator.setPos(width - skipIndicator.width()-5,140);
+        skipIndicator.setPos(width - skipIndicator.width()-5,40);
         return skipIndicator;
     }
 

@@ -27,24 +27,25 @@ public class IceCityBooks extends Books {
             if (b != null) {
                 GLog.w(Messages.get(Books.class, "your_character"));
                 return;
-            } else if (action.equals(Read)) {
-                Sample.INSTANCE.play(Assets.Sounds.READ);
-                switch (Random.Int(5)) {
-                    case 0:
-                    case 1:
-                    case 2:
-                        Buff.affect(hero, ArcaneArmor.class).set(Dungeon.hero.lvl + 5, 5);
-                        detach(hero.belongings.backpack);
-                        GLog.b(Messages.get(this, "blees"));
-                        break;
-                    case 3:
-                    case 4:
-                    case 5:
-                        Buff.affect(hero, ChampionHero.Blazing.class, ChampionHero.DURATION);
-                        detach(hero.belongings.backpack);
-                        GLog.b(Messages.get(this, "anmazing"));
-                        break;
-                }
+            }
+        }
+        if (action.equals(Read)) {
+            Sample.INSTANCE.play(Assets.Sounds.READ);
+            switch (Random.Int(5)) {
+                case 0:
+                case 1:
+                case 2:
+                    Buff.affect(hero, ArcaneArmor.class).set(Dungeon.hero.lvl + 5, 5);
+                    detach(hero.belongings.backpack);
+                    GLog.b(Messages.get(this, "blees"));
+                    break;
+                case 3:
+                case 4:
+                case 5:
+                    Buff.affect(hero, ChampionHero.Blazing.class, ChampionHero.DURATION);
+                    detach(hero.belongings.backpack);
+                    GLog.b(Messages.get(this, "anmazing"));
+                    break;
             }
         }
     }

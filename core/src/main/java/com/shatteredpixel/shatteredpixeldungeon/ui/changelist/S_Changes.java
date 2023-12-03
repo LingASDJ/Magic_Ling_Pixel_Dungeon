@@ -433,11 +433,11 @@ public class S_Changes {
         ChangeInfo changeInfo2 = new ChangeInfo("V0.3.0.5 新NPC", true, "");
         changeInfo2.hardlight(65280);
         arrayList.add(changeInfo2);
-        changeInfo2.addButton(new ChangeButton(new Image("ren.png", 0, 0, 13, 16), "REN",
+        changeInfo2.addButton(new ChangeButton(new Image(Assets.Sprites.REN, 0, 0, 13, 16), "REN",
                 "似曾相识的面孔，你一定哪里见过他的。\n\n"));
         changeInfo2.addButton( new ChangeButton(new SlylSprite(), "霜落雨凉", "_寒冰圣都_的女帝，没有人知道她的真正力量！\n" +
                 "\n"));
-        changeInfo2.addButton(new ChangeButton(new Image("rt.png", 0, 0, 16, 16), "Observe_Sir", "来自另一个世界的旅行者。中型礼帽是他的护身武器。\n\n"));
+        changeInfo2.addButton(new ChangeButton(new Image("Npcs/rt.png", 0, 0, 16, 16), "Observe_Sir", "来自另一个世界的旅行者。中型礼帽是他的护身武器。\n\n"));
         ChangeInfo changeInfo3 = new ChangeInfo("V0.3.0.4 HotFixed 热修复", true, "");
         changeInfo3.hardlight(16711680);
         arrayList.add(changeInfo3);
@@ -455,26 +455,26 @@ public class S_Changes {
         ChangeInfo changeInfo6 = new ChangeInfo("v0.3.0.1b", true, "");
         changeInfo6.hardlight(16711935);
         arrayList.add(changeInfo6);
-        ChangeInfo changeInfo7 = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, (String) null);
+        ChangeInfo changeInfo7 = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
         changeInfo7.hardlight(16711935);
         arrayList.add(changeInfo7);
-        changeInfo7.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MAGIC_INFUSE, (ItemSprite.Glowing) null), "新怪物", "1.添加了一个怪物\n\n"));
-        changeInfo7.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CURSE_INFUSE, (ItemSprite.Glowing) null), "新机制", "地牢的一些机制改变了\n\n"));
-        ChangeInfo changeInfo8 = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, (String) null);
+        changeInfo7.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MAGIC_INFUSE, null), "新怪物", "1.添加了一个怪物\n\n"));
+        changeInfo7.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CURSE_INFUSE, null), "新机制", "地牢的一些机制改变了\n\n"));
+        ChangeInfo changeInfo8 = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changeInfo8.hardlight(16745258);
         arrayList.add(changeInfo8);
-        changeInfo8.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHEST, (ItemSprite.Glowing) null), "Bug修复", "修复了以下问题\n\n1.修复了上个版本楼层26层闪退问题\n\n2.修复了界面问题\n\n"));
-        changeInfo8.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_OPAL, (ItemSprite.Glowing) null), "武器改动详情", "武器名称:_血红魔剑_\n-首个版本属于_5阶武器_，现在已经升级了_8阶武器_\n\n"));
-        ChangeInfo changeInfo9 = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, (String) null);
+        changeInfo8.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHEST, null), "Bug修复", "修复了以下问题\n\n1.修复了上个版本楼层26层闪退问题\n\n2.修复了界面问题\n\n"));
+        changeInfo8.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_OPAL, null), "武器改动详情", "武器名称:_血红魔剑_\n-首个版本属于_5阶武器_，现在已经升级了_8阶武器_\n\n"));
+        ChangeInfo changeInfo9 = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
         changeInfo9.hardlight(16711935);
         arrayList.add(changeInfo9);
-        changeInfo9.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HOLSTER, (ItemSprite.Glowing) null), "游戏物品增强记录A", "0.2.7 加强蓝色剑\n\n0.2.8 加强蓝焰法杖\n\n"));
-        changeInfo9.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_HOURGLASS, (ItemSprite.Glowing) null), "游戏物品增强记录B", "Up\n\n"));
-        ChangeInfo changeInfo10 = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, (String) null);
+        changeInfo9.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HOLSTER, null), "游戏物品增强记录A", "0.2.7 加强蓝色剑\n\n0.2.8 加强蓝焰法杖\n\n"));
+        changeInfo9.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_HOURGLASS, null), "游戏物品增强记录B", "Up\n\n"));
+        ChangeInfo changeInfo10 = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
         changeInfo10.hardlight(16711680);
         arrayList.add(changeInfo10);
-        changeInfo10.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_FROST, (ItemSprite.Glowing) null), "武器削弱记录A", "1.蔚蓝审判之剑\n-此版本已削弱精准和伤害，现在它的伤害20-35伤害左右\n\n"));
-        changeInfo10.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_LIGHTNING, (ItemSprite.Glowing) null), "武器削弱记录B", "Up"));
+        changeInfo10.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_FROST, null), "武器削弱记录A", "1.蔚蓝审判之剑\n-此版本已削弱精准和伤害，现在它的伤害20-35伤害左右\n\n"));
+        changeInfo10.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_LIGHTNING, null), "武器削弱记录B", "Up"));
         ChangeInfo changeInfo11 = new ChangeInfo("V0.3.0.0 重大更新", true, "");
         changeInfo11.hardlight(65280);
         arrayList.add(changeInfo11);
@@ -503,7 +503,7 @@ public class S_Changes {
         ChangeInfo changeInfo16 = new ChangeInfo("V0.0.2.c-Ren-Create", true, "");
         changeInfo16.hardlight(65535);
         arrayList.add(changeInfo16);
-        changeInfo16.addButton(new ChangeButton(new Image("ren.png", 0, 0, 13, 16), "接替任务", "...." +
+        changeInfo16.addButton(new ChangeButton(new Image(Assets.Sprites.REN, 0, 0, 13, 16), "接替任务", "...." +
                 "...........\n.......\n\n.....你好....\n  我是MR.REN。\n我的LING助手哟，将要以完成一项任务的指令而匆匆离去；\n  为了完成来自远方库页岛的密语，他将环绕着负熵与居里点极限的磁场、而又向大喝彩盒里祈祷着铜线圈的拜礼...\n苦难的孩子，潜姿于月之上空气流层的你的身影啊，将身后的一切，身后的一切、都将托付于我一阵吧，互唤我的名字吧!!!...\n......信号中断....\n...........\n......"));
         changeInfo16.addButton(new ChangeButton(new Image("sprites/king.png", 0, 0, 13, 16),
                 "怪物更改", "怪物修改了一些问题，具体如下:\n-_矮人国亡\n-_小粘咕-实验体\n-_DM-3000\n-天狗-火冽烽_-_ MLPD\n均在24层刷新"));

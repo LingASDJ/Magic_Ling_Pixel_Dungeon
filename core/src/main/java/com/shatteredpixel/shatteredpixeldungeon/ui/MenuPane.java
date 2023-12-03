@@ -58,7 +58,7 @@ public class MenuPane extends Component {
 
 	private Image depthIcon;
 	private BitmapText depthText;
-	private Button depthButton;
+	public static Button depthButton;
 
 	private Image challengeIcon;
 	private Image gameHappyIcon;

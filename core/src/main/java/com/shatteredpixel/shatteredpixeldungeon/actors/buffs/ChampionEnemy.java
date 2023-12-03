@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FireGhostDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -43,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.RedTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.BArray;
@@ -205,7 +207,7 @@ public abstract class ChampionEnemy extends Buff {
 
 	}
 
-	public static class Sider extends ChampionEnemy {
+	public static class Sider extends ChampionEnemy implements Hero.Doom {
         {
             color = 0xED186E;
         }
@@ -256,7 +258,13 @@ public abstract class ChampionEnemy extends Buff {
 			return target.fieldOfView[enemy.pos] && Dungeon.level.distance(target.pos, enemy.pos) <= 3;
 		}
 
-        public static class DarkBolt { }
+		@Override
+		public void onDeath() {
+			Dungeon.fail( getClass() );
+			GLog.n( Messages.get(Sider.class, "ondeath") );
+		}
+
+		public static class DarkBolt { }
 	}
 
 	public static class HealRight extends ChampionEnemy {

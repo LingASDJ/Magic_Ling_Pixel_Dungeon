@@ -122,7 +122,11 @@ public class YinYangRoom extends SpecialRoom {
                 door.set(Door.Type.REGULAR);
             } else {
                 level.addItemToSpawn( new IronKey( Dungeon.depth ) );
-                door.set(Door.Type.LOCKED);
+                if(Dungeon.depth == 4 && Dungeon.branch == 2){
+                    entrance().set( Door.Type.CRYSTAL );
+                } else {
+                    entrance().set( Door.Type.LOCKED );
+                }
             }
 
         }
