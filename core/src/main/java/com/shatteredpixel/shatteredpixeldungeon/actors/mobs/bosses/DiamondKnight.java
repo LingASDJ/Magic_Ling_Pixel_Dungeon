@@ -328,7 +328,7 @@ public class DiamondKnight extends Boss {
             PaswordBadges.validateOMP();
             Statistics.bossScores[1] += 1000;
         }
-
+        Badges.validateBossSlain();
         phase++;
 
 //        if (!Badges.isUnlocked(Badges.Badge.KILL_SM)){
@@ -348,8 +348,6 @@ public class DiamondKnight extends Boss {
         //出口
         set( 52, Terrain.ENTRANCE );
         GameScene.updateMap( 52 );
-
-        Badges.validateBossSlain();
         yell( Messages.get(this, "defeated") );
     }
 

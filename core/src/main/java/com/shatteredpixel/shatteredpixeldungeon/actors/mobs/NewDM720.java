@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -538,7 +539,10 @@ public class NewDM720 extends MolotovHuntsman {
         GameScene.add(((Mob) (cause)));
         Buff.affect((Mob) (cause), ChampionHero.Light.class, ChampionHero.DURATION*200f);
         ((Mob) (cause)).notice();
-
+        Badges.validateBossSlain();
+        if (Statistics.qualifiedForBossChallengeBadge){
+            Badges.validateBossChallengeCompleted();
+        }
         //60% chance of 2 shards, 30% chance of 3, 10% chance for 4. Average of 2.5
         int shards = Random.chances(new float[]{0, 0, 6, 3, 1});
         for (int i = 0; i < shards; i++) {

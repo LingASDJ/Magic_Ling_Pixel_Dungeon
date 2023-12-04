@@ -400,8 +400,6 @@ public class CrivusFruits extends Mob {
             Dungeon.level.drop( new Food(), pos ).sprite.drop();
         }
 
-
-
         Badges.KILLSAPPLE();
 
         int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});

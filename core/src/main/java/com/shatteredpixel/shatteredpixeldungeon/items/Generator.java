@@ -340,7 +340,6 @@ public class Generator {
 					Blindweed.Seed.class,
 					Stormvine.Seed.class,
 					Earthroot.Seed.class,
-					//Dreamfoil.Seed.class,
 					Starflower.Seed.class,
 					AikeLaier.Seed.class,};
 			SEED.defaultProbs = new float[]{ 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,3};

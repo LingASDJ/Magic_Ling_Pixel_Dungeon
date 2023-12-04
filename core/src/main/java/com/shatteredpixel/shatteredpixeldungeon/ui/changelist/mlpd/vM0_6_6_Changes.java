@@ -9,6 +9,9 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.PasswordBadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ApprenticeWitchSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ButcherSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CerberusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300AttackSprite;
@@ -16,15 +19,21 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DragonGirlBlueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlowerSlimeSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FrankensteinSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceSlowGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MiniSakaFishBossSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MolotovHuntsmanSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MorpheusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedDragonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SliceGirlSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TyphonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ZeroBoatDiedSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
@@ -38,7 +47,7 @@ import java.util.ArrayList;
 public class vM0_6_6_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
-        add_CS_Changes(changeInfos);
+        add_SC_Changes(changeInfos);
         add_v0_6_8_0_Changes(changeInfos);
         add_v0_6_7_0_Changes(changeInfos);
         add_v0_6_6_0_Changes(changeInfos);
@@ -95,9 +104,109 @@ public class vM0_6_6_Changes {
                 ("石碑上记录了有关于她的一切，她的过去，她的现在，她的未来。而当你与她对峙时，你是否能够看清她的真实面目？")));
     }
 
+    public static void add_SC_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("即将到来-Halloween-狂欢之巅", true, "");
+        changes.hardlight(Window.CBLACK);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("新Boss", false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        Image mp = new MorpheusSprite();
+        mp.scale.set(PixelScene.align(0.6f));
+        changes.addButton(new ChangeButton(mp, ("影境之主-墨菲厄斯"),
+                ("那么，盛大的剧目即将开演。\n\n该数据已预载，将在万圣节活动启用")));
+
+        Image cr = new CerberusSprite();
+        cr.scale.set(PixelScene.align(0.7f));
+        changes.addButton(new ChangeButton(cr, ("地狱噩梦-刻耳柏洛斯"),
+                ("……\n\n该数据已预载，将在万圣节活动启用")));
+
+        changes = new ChangeInfo("新怪物", false, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new FrankensteinSprite(), ("新怪物-未尽梦偶"),
+                ("未见其名，未尽之事，被主抛弃，未知消逝……")));
+
+        changes.addButton(new ChangeButton(new ApprenticeWitchSprite(), ("新怪物-见习魔女"),
+                ("不给糖就捣蛋！")));
+
+        changes.addButton(new ChangeButton(new ButcherSprite(), ("新怪物-电锯狂人"),
+                ("Here is Johny!!!")));
+
+        changes = new ChangeInfo("新NPC", false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new SliceGirlSprite(), ("外神碎片-幽寂"),
+                ("古堡一切皆为幻想，冒险者，你真的知道自己的真实情况吗？")));
+
+        changes.addButton(new ChangeButton(new TyphonSprite(), ("万妖之祖-提丰"),
+                ("虽然这个世界不在我的管理范围之内，但古堡的一切都不应该存在于这里。\n\n该数据已预载，将在万圣节活动启用")));
+
+        Image crx = new ZeroBoatDiedSprite();
+        crx.scale.set(PixelScene.align(0.7f));
+        changes.addButton(new ChangeButton(crx, ("灵魂摆渡人-卡戎"),
+                ("想过冥河，先交钱（\n\n该数据已预载，将在万圣节活动启用")));
+
+
+        changes = new ChangeInfo("说明", false, null);
+        changes.hardlight(Window.SHPX_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new MimicSprite.HollowWall(), ("万圣节活动说明"),
+                ("万圣节内容将在12月内进行更新\n" +
+                        "以上预告内容仅为部分说明，实际情况请以游戏实装为准\n" +
+                        "完成万圣节特别行动，获得特别纪念徽章。\n" +
+                        "万圣节活动期间，中秋节幽妹特别行动限时复刻。\n" +
+                        "敬请期待，后续万圣节版本更新。")));
+
+
+    }
+
     public static void add_v0_6_8_0_Changes( ArrayList<ChangeInfo> changeInfos ) {
 
-        ChangeInfo changes = new ChangeInfo("v0.6.8.0-Beta3", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.8.0-Release", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "修复了以下Bug:\n\n" +
+                        "1.修复了新手教程完成前可以使用v1快捷栏导致的崩溃问题\n" +
+                        "2.部分文案修正\n" +
+                        "3.修复萨卡班甲鱼Boss层未祝福十字架重置楼层的相关问题\n" +
+                        "4.修复部分Boss徽章职业获得异常问题"
+        ));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分小细节优化更新")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_ROSE3), ("干枯玫瑰"),
+                ("悲伤幽灵的文本变得更加丰富，\n\n" +
+                        "包括DM720,冰雪魔女,拟态之王")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight( CharSprite.NEGATIVE );
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("灯火前路-V3.4"),
+                ("以下Buff被削弱：\n\n" +
+                        "前路现在在极度饥饿失去效果,且仅在灯火高于90(包括90)才能生效。\n" +
+                        "提灯：\n\n" +
+                        "充能文案修复，火把减低为50%充能。")));
+
+        changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 80, 16, 16 ), "房间改动",
+                "太极房间现在最高+2，\n" +
+                        "且裂缝区域必定诅咒高等级，\n水面区域必定非诅咒但有概率白板。"));
+
+        changes = new ChangeInfo("v0.6.8.0-Beta3", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -218,8 +327,6 @@ public class vM0_6_6_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MAGIC_TORCH), ("魔法火把"),
                 ("武技视觉效果优化和完善武技")));
 
-
-
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
                 ("1.部分素材优化迭代\n" +
                         "2.部分无用音乐删除\n" +
@@ -256,7 +363,7 @@ public class vM0_6_6_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), ("钥匙剑"),
                 ("钥匙剑现在只能通过钥匙升级，且获得途径仅在常规商人处有概率出现，且商人处可能有等级，但价钱也会上涨")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("灯火前路3.3"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("灯火前路-V3.3"),
                 ("以下Buff被削弱：\n\n" +
                         "1.前路现在在极度饥饿失去效果\n" +
                         "2.共生仅在一区有概率出现\n" +

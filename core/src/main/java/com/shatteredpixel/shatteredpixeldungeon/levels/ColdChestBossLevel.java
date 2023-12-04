@@ -357,6 +357,10 @@ public class ColdChestBossLevel extends Level {
                 }
                 Statistics.fuckGeneratorAlone++;
 
+                int doorPos = WIDTH*17+17;
+                Mob.holdAllies(this, doorPos);
+                Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
+
                 pro = START;
                 break;
             case START:

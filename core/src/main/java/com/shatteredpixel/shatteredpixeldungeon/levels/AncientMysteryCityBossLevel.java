@@ -273,7 +273,7 @@ public class AncientMysteryCityBossLevel extends Level{
 
     @Override
     public int randomRespawnCell( Char ch ) {
-        int pos = WIDTH*28+13;
+        int pos = WIDTH*24+13;
         int cell;
         do {
             cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
@@ -343,6 +343,10 @@ public class AncientMysteryCityBossLevel extends Level{
         GameScene.updateMap( getBossDoor );
         set( 688, Terrain.CRYSTAL_DOOR);
         GameScene.updateMap( 688 );
+
+        int doorPos = WIDTH*25+13;
+        Mob.holdAllies(this, doorPos);
+        Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
 
         set( 634, Terrain.WATER );
         GameScene.updateMap( 634 );

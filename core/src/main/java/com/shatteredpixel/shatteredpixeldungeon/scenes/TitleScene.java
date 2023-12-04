@@ -1,5 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
@@ -7,7 +10,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
@@ -16,6 +18,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SliceGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.EndButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ReloadButton;
@@ -61,18 +64,11 @@ public class TitleScene extends PixelScene {
 			NightDay = true;
 		}
 
-		if(Random.Int(10) == 1 && !Reusable && Statistics.winGame && !NightDay) {
-			Reusable = true;
-			Music.INSTANCE.play(Assets.Music.THEME_2, true);
-		} else if (!Reusable && !NightDay) {
-			Music.INSTANCE.play(Assets.Music.THEME_1, true);
-		} else if(NightDay) {
-			Music.INSTANCE.play(Assets.NIGHT, true);
+		if(holiday == XMAS){
+			Music.INSTANCE.play(Assets.Music.CHRAMSS, true);
 		} else {
 			Music.INSTANCE.play(Assets.Music.THEME_1, true);
 		}
-
-
 
 		uiCamera.visible = false;
 
@@ -229,7 +225,8 @@ public class TitleScene extends PixelScene {
 				return super.onLongClick();
 			}
 		};
-		btnPlay.icon(new ItemSprite(ItemSpriteSheet.MAGICGIRLBOOKS, null));
+		btnPlay.icon(holiday == XMAS ?  new Image(new SliceGirlSprite()) :
+				new ItemSprite(ItemSpriteSheet.MAGICGIRLBOOKS, null));
 		add(btnPlay);
 
 		StyledButton btnRankings = new StyledButton(GREY_TR,Messages.get(this, "rankings")) {

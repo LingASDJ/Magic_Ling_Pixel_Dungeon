@@ -547,6 +547,7 @@ public class WndSettings extends WndTabbed {
 									}
 								};
 								chkQuickSwapper.checked(SPDSettings.quickSwapper());
+								chkQuickSwapper.enable(!SPDSettings.intro());
 								add(chkQuickSwapper);
 
 								swapperDesc = PixelScene.renderTextBlock(Messages.get(WndSettings.UITab.this, "swapper_desc"), 5);

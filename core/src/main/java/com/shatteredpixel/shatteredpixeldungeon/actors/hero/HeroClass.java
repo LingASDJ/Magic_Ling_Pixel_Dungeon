@@ -228,12 +228,11 @@ public enum HeroClass {
 		new ScrollOfIdentify().identify();
 
 		if (Dungeon.isChallenged(Challenges.PRO)){
-			new Amulet().quantity(1).identify().collect();
+			//new Amulet().quantity(1).identify().collect();
 			new LevelTeleporter().quantity(1).identify().collect();
 			new PotionOfDivineInspiration().quantity(1).identify().collect();
 			new SakaFishSketon().quantity(1).identify().collect();
 			new ScrollOfMetamorphosis().quantity(111).identify().collect();
-			new SakaFishSketon().quantity(1).identify().collect();
 			new PotionOfInvisibility().quantity(45).identify().collect();
 			new RandomChest().quantity(100).identify().collect();
 			new TengusMask().quantity(1).identify().collect();

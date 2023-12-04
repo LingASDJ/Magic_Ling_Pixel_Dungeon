@@ -211,8 +211,7 @@ public class Assets {
 		public static final String THEME_1      = "music/theme.ogg";
 		public static final String THEME_2      = "music/theme_sky.ogg";
 
-		public static final String SEWERS_1     = "music/Level1.ogg";
-		public static final String SEWERS_2     = "music/Level1.ogg";
+		public static final String CHRAMSS     = "music/chrimas.ogg";
 		public static final String SEWERS_BOSS  = "music/Boss1.ogg";
 
 		public static final String PRISON_1     = "music/Level2.ogg";
@@ -348,6 +347,11 @@ public class Assets {
 
 		//HOLLOW
 		public static final String APWHEEL = "sprites/hollow/apprentice_witch.png";
+
+		public static final String BTSLIMH = "sprites/hollow/butcher.png";
+
+		public static final String ZEROBOAT = "sprites/hollow/death.png";
+		public static final String SWTICH = "sprites/hollow/Silence_Witch.png";
 		public static final String CSBR = "sprites/hollow/Cerberus.png";
 		public static final String TYPHON = "sprites/hollow/typhon.png";
 		public static final String MPHON = "sprites/hollow/morpheus.png";

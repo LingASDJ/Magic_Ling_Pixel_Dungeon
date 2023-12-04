@@ -394,7 +394,10 @@ public class MagicGirlDead extends Boss {
 
             GetBossLoot();
         }
-
+        Badges.validateBossSlain();
+        if (Statistics.qualifiedForBossChallengeBadge){
+            Badges.validateBossChallengeCompleted();
+        }
         //酸液体清0
         Statistics.SiderLing = 0;
 
@@ -419,7 +422,6 @@ public class MagicGirlDead extends Boss {
         Dungeon.level.drop(new SkeletonKey(Dungeon.depth), pos).sprite.drop();
         GameScene.bossSlain();
         Badges.KILLMG();
-        Badges.validateBossSlain();
 
         WandOfGodIce woc = new WandOfGodIce();
         woc.level(Random.NormalIntRange(2,6));

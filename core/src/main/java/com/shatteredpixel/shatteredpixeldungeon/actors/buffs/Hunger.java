@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
@@ -99,6 +100,9 @@ public class Hunger extends Buff implements Hero.Doom {
 
 					GLog.n( Messages.get(this, "onstarving") );
 					hero.resting = false;
+
+					if(!Statistics.noGoReadHungry) Statistics.noGoReadHungry = true;
+
 					hero.damage( 1, this );
 
 					hero.interrupt();
@@ -113,6 +117,7 @@ public class Hunger extends Buff implements Hero.Doom {
 					}
 
 				}
+
 				level = newLevel;
 
 			}
@@ -179,6 +184,7 @@ public class Hunger extends Buff implements Hero.Doom {
 	@Override
 	public int icon() {
 		if (level < HUNGRY) {
+			Statistics.noGoReadHungry = false;
 			return BuffIndicator.NONE;
 		} else if (level < STARVING) {
 			return BuffIndicator.HUNGER;

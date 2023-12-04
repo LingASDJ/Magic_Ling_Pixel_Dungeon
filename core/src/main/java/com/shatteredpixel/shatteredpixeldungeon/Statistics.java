@@ -111,7 +111,7 @@ public class Statistics {
 	public static boolean TPDoorDieds = false;
 
 	//修复同步
-	public static boolean bugsyncfixed = false;
+	public static boolean noGoReadHungry = false;
 
 	//警告
 	public static boolean tipsgodungeon = false;
@@ -305,7 +305,7 @@ public class Statistics {
 		endingbald = false;
 
 		lanterfireactive = false;
-		bugsyncfixed =  false;
+		noGoReadHungry =  false;
 
 		crivusfruitslevel2 = false;
 		TPDoorDieds = false;
@@ -404,7 +404,7 @@ public class Statistics {
 
 		bundle.put( TIPSGO, tipsgodungeon );
 
-		bundle.put( BUG_SYNC_FIXED, bugsyncfixed );
+		bundle.put( BUG_SYNC_FIXED, noGoReadHungry);
 
 		bundle.put( NAYAZICOLLECTED, naiyaziCollected );
 
@@ -544,7 +544,7 @@ public class Statistics {
 
 		lanterfireactive = bundle.getBoolean( LANTERACTIVE );
 
-		bugsyncfixed = bundle.getBoolean( BUG_SYNC_FIXED );
+		noGoReadHungry = bundle.getBoolean( BUG_SYNC_FIXED );
 
 		crivusfruitslevel2 = bundle.getBoolean( CrivusFruitsLevel2 );
 
