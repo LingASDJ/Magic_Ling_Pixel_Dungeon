@@ -1,9 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
-
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -24,7 +20,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunB
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndNyzShop;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
@@ -52,22 +47,6 @@ public class Nyz extends NTNPC {
     private boolean seenBefore = false;
 
     protected boolean act() {
-        Game.runOnRenderThread(new Callback() {
-            @Override
-            public void call() {
-                if (!seenBefore && Dungeon.level.heroFOV[pos]) {
-                    GLog.p(Messages.get(Nyz.class, "greetings", Dungeon.hero.name()));
-                    if(!Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
-                        playBGM(Assets.NYZSHOP, true);
-                    }
-                    seenBefore = true;
-                } else if(seenBefore && !Dungeon.level.heroFOV[pos]) {
-                    seenBefore = false;
-                    BGMPlayer.playBGMWithDepth();
-                }
-            }
-        });
-
 
         throwItem();
 

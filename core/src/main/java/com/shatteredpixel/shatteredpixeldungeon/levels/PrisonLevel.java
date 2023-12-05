@@ -22,7 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
@@ -105,7 +107,18 @@ public class PrisonLevel extends RegularLevel {
 	public String waterTex() {
 		return Assets.Environment.WATER_PRISON;
 	}
-	
+
+	@Override
+	public void playLevelMusic() {
+		if (Wandmaker.Quest.active() || Statistics.amuletObtained){
+			Music.INSTANCE.play(Assets.Music.PRISON_TENSE, true);
+		} else {
+			BGMPlayer.playBGMWithDepth();
+		}
+		wandmakerQuestWasActive = Wandmaker.Quest.active();
+	}
+
+
 	@Override
 	protected Class<?>[] trapClasses() {
 		return new Class[]{

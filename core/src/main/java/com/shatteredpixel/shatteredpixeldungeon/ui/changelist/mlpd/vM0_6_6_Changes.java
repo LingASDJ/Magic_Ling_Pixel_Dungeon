@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ApprenticeWitchSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ButcherSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CerberusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdRatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300AttackSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
@@ -28,9 +29,13 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MiniSakaFishBossSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MolotovHuntsmanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MorpheusSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.NxhySprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.PoltergeistSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedDragonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ShamanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SliceGirlSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SpectralNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TyphonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZeroBoatDiedSprite;
@@ -168,7 +173,72 @@ public class vM0_6_6_Changes {
 
     public static void add_v0_6_8_0_Changes( ArrayList<ChangeInfo> changeInfos ) {
 
-        ChangeInfo changes = new ChangeInfo("v0.6.8.0-Release", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.8.0-Release2", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.TALENT), ("新气体环境-圣咒"),
+                ("在圣咒气体环境中，英雄将有概率获得诅咒和虚弱效果，怪物将有概率获得护盾。\n\n" +
+                        "目前此效果与新黑色怨灵绑定，未来会出新植物和buff调整以供玩家使用。")));
+
+        changes.addButton(new ChangeButton(new SpectralNecromancerSprite(), ("新怪物-招魂法师"),
+                ("它们和死灵法师一样，也喜欢召唤死灵帮忙，不同的是，它们从不嫌自己的召唤的死灵多。")));
+
+        changes.addButton(new ChangeButton(new PoltergeistSprite(), ("黑色怨灵重做"),
+                ("黑色怨灵现在不在监狱做常规怪，转而变成精英怪。是招魂法师的精英体。\n\n" +
+                        "版本兼容性：老存档仍然是以前那个黑色怨灵。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ShamanSprite.Purple(), ("萨满组"),
+                ("在矿洞14层会生成。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分无用音乐删除\n" +
+                        "3.部分细节优化更新\n" +
+                        "4.部分界面优化迭代")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_5), ("怪组优化"),
+                ("监狱怪组进行了优化，不再会出现6层典狱长，DM100(支离破碎除外)\n\n" +
+                        "支离破碎后面要重做。")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "修复了以下Bug:\n\n" +
+                        "1.修复了警报陷阱的一些小型崩溃错误\n" +
+                        "2.部分文案修正\n" +
+                        "3.修复“净化怨灵根源”获得异常问题"
+        ));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight( CharSprite.POSITIVE );
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new DragonGirlBlueSprite(), ("远古遗迹v1.1"),
+                ("在玩家尚未获得“远古开拓者”前，固定18层生成。\n\n" +
+                        "如已获得该徽章，则会在后续以49%的概率生成。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight( CharSprite.NEGATIVE );
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ColdRatSprite(), ("寒冰魔鼠"),
+                ("护甲现在不是固定10，而是最高为10，最低为5。\n\n" +
+                        "但攻击精准度提高两点，最大等级限制从18级变成17级\n\n" +
+                        "获取经验从12变成9经验，\n\n" +
+                        "失明从30调整为6回合\n\n" +
+                        "且现在可以20%概率掉落金币。")));
+
+        changes.addButton(new ChangeButton(new NxhySprite(), ("那些回忆大商店"),
+                ("现在不再是固定刷新，仅有20%的概率生成该额外商店。")));
+
+        changes = new ChangeInfo("v0.6.8.0-Release", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -211,7 +281,7 @@ public class vM0_6_6_Changes {
         changeInfos.add(changes);
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-        changes.hardlight(Window.GREEN_COLOR);
+        changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new MiniSakaFishBossSprites(), ("宠物系统-v0.1"),
@@ -293,7 +363,7 @@ public class vM0_6_6_Changes {
         changeInfos.add(changes);
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-        changes.hardlight(Window.GREEN_COLOR);
+        changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 7), ("武技实装第一轮"),
@@ -381,7 +451,7 @@ public class vM0_6_6_Changes {
         changeInfos.add(changes);
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-        changes.hardlight(Window.GREEN_COLOR);
+        changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 7), ("艾诺琳娜"),
@@ -428,7 +498,7 @@ public class vM0_6_6_Changes {
         changeInfos.add(changes);
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-        changes.hardlight(Window.GREEN_COLOR);
+        changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),

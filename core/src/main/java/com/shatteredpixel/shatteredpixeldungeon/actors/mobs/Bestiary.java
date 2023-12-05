@@ -96,19 +96,19 @@ public class Bestiary {
 					return new ArrayList<>(Arrays.asList(FlowerSlime.class, FlowerSlime.class,Slime.class,Slime.class,Swarm.class,Crab.class));
 				case 6:
 					return new ArrayList<>(Arrays.asList(Skeleton.class,
-							BlackHost.class,Guard.class, DM100.class, DM100.class, DM100.class));
+							Skeleton.class,BrownBat.class,BrownBat.class));
 
 				case 7:
-					return new ArrayList<>(Arrays.asList(Skeleton.class, BlackHost.class,
-							Thief.class,DM100.class,Necromancer.class));
+					return new ArrayList<>(Arrays.asList(Skeleton.class,
+							Thief.class,DM100.class,Necromancer.class,Guard.class,DM100.class));
 				case 8:
 					return new ArrayList<>(Arrays.asList(Skeleton.class,
 							Skeleton.class,
-							Thief.class,BrownBat.class, Guard.class, Necromancer.class, BrownBat.class));
+							Thief.class, Guard.class,SpectralNecromancer.class, DM100.class));
 				case 9:
 					return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
-							Thief.class,Thief.class,BrownBat.class,
-							BrownBat.class, DM100.class,BrownBat.class, BlackHost.class));
+							Thief.class,Thief.class,SpectralNecromancer.class,SpectralNecromancer.class, DM100.class,
+							BrownBat.class));
 
 				case 10:
 					return new ArrayList<>(Arrays.asList(Bat.class,
@@ -127,14 +127,13 @@ public class Bestiary {
 					return new ArrayList<>(Arrays.asList(
 							Bat.class,
 							Brute.class,Spinner.class,
-							DM100.class,RedSwarm.class,MolotovHuntsman.class,
-							MolotovHuntsman.class));
+							DM100.class,RedSwarm.class));
 
 				case 14:
 					return new ArrayList<>(Arrays.asList(
 							Bat.class,
 							Spinner.class,
-							ColdMagicRat.class,RedSwarm.class));
+							ColdMagicRat.class,RedSwarm.class,Shaman.random()));
 				case 15:
 					//1x bat, 1x brute, 2x shaman, 2x spinner, 2x DM-300
 					return new ArrayList<>(Arrays.asList(
@@ -188,8 +187,7 @@ public class Bestiary {
 				case 23:
 					//1x: succubus, 2x evil eye, 3x scorpio
 					return Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? new ArrayList<>(Arrays.asList(
-							Eye.class,ShieldHuntsman.class,Fire_Scorpio.class,Ice_Scorpio.class,RedMurderer.class,
-							MolotovHuntsman.class)) :
+							Eye.class,ShieldHuntsman.class,Fire_Scorpio.class,Ice_Scorpio.class,RedMurderer.class)) :
 							new ArrayList<>(Arrays.asList(
 									Eye.class,ShieldHuntsman.class,Ice_Scorpio.class));
 				//前半段决战
@@ -249,7 +247,7 @@ public class Bestiary {
 						return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
 								Thief.class,Thief.class,Thief.class,
 								DM100.class,Necromancer.class,Necromancer.class,
-								DM100.class, BlackHost.class));
+								DM100.class));
 					case 2:
 						return new ArrayList<>(Arrays.asList(
 								Skeleton.class, Skeleton.class, Skeleton.class,
@@ -271,8 +269,8 @@ public class Bestiary {
 					case 1:
 						return new ArrayList<>(Arrays.asList(Skeleton.class,
 								Thief.class,
-								DM100.class,Necromancer.class,Necromancer.class,
-								DM100.class, BlackHost.class));
+								DM100.class,Necromancer.class,SpectralNecromancer.class,
+								DM100.class));
 					case 2:
 						return new ArrayList<>(Arrays.asList(
 								Monk.class,
@@ -295,7 +293,7 @@ public class Bestiary {
 			case 25:
 				switch (Random.Int(6)) {
 					case 0:
-						return new ArrayList<>(Arrays.asList(Skeleton.class, BlackHost.class,
+						return new ArrayList<>(Arrays.asList(Skeleton.class,
 								Thief.class,DM100.class,Necromancer.class,Monk.class,
 								Golem.class));
 					case 1:
@@ -374,6 +372,8 @@ public class Bestiary {
 					cl = SRPDHBLR.class;
 				} else if (cl == Thief.class) {
 					cl = Bandit.class;
+				} else if (cl == SpectralNecromancer.class) {
+					cl = NewBlackHost.class;
 				} else if (cl == Brute.class) {
 					cl = ArmoredBrute.class;
 				} else if (cl == DM200.class) {

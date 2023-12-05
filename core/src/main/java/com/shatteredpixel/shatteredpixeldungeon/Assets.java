@@ -46,9 +46,6 @@ public class Assets {
 	public static final String BGM_BOSSE3 = "music/Yogdead.ogg";
 	public static final String BGM_FRBOSS = "music/SnowLing.ogg";
 	public static final String RUN = "music/Run.ogg";
-	public static final String SHOP = "music/shop.ogg";
-	public static final String NYZSHOP = "music/nyzshop2.ogg";
-
 	public static class Effects {
 		public static final String EFFECTS      = "effects/effects.png";
 		public static final String FIREBALL     = "effects/fireball.png";

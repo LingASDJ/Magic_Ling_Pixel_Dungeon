@@ -40,7 +40,7 @@ public class AlarmTrap extends Trap {
 	@Override
 	public void activate() {
 
-		for (Mob mob : Dungeon.level.mobs) {
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
 				mob.beckon( pos );
 		}
 

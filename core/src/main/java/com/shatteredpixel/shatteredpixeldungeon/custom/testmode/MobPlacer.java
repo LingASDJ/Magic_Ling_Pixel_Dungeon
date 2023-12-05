@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollTrickster;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreenSlting;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.IceGolem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ice_Scorpio;
@@ -43,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MolotovHuntsman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewBlackHost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDLLS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDNQHZ;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDZSLS;
@@ -452,7 +454,7 @@ public class MobPlacer extends TestItem{
     private enum DataPack{
         RAT(Rat.class, DictSpriteSheet.RAT),
         FLWW(FlowerSlime.class, DictSpriteSheet.FLOWER),
-        //TESTRAT(TestRat.class, DictSpriteSheet.RAT),
+        TESTRAT(GreenSlting.class, DictSpriteSheet.GLTX),
         GNOLL(Gnoll.class, DictSpriteSheet.GNOLL),
         SNAKE(Snake.class, DictSpriteSheet.SNAKE),
         ALBINO(Albino.class, DictSpriteSheet.ALBINO),
@@ -479,6 +481,7 @@ public class MobPlacer extends TestItem{
 
         BAT(Bat.class, DictSpriteSheet.BAT),
         BRUTE(Brute.class, DictSpriteSheet.BRUTE),
+        NRXD(SpectralNecromancer.class, DictSpriteSheet.SLXJ),
         ARMORED_BRUTE(ArmoredBrute.class, DictSpriteSheet.ARMORED_BRUTE),
         SHAMAN(Shaman.random(), DictSpriteSheet.SHAMAN),
         SPINNER(Spinner.class, DictSpriteSheet.SPINNER),
@@ -513,6 +516,9 @@ public class MobPlacer extends TestItem{
         RED(RedSwarm.class, DictSpriteSheet.RED),
         SHOW(KagenoNusujin.class, DictSpriteSheet.SHOW),
         BLACK(BlackHost.class, DictSpriteSheet.BLACK),
+
+        BLACK2(NewBlackHost.class, DictSpriteSheet.BLACK),
+
         HBLR(SRPDHBLR.class, DictSpriteSheet.HBLR),
         MOlO(MolotovHuntsman.class, DictSpriteSheet.MOLO),
 

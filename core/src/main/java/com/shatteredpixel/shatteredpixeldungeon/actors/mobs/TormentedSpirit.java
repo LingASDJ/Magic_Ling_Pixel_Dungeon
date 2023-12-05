@@ -39,6 +39,7 @@ public class TormentedSpirit extends Wraith {
 
 	{
 		spriteClass = TormentedSpiritSprite.class;
+		HP = HT = 4;
 	}
 
 	//50% more damage scaling than regular wraiths

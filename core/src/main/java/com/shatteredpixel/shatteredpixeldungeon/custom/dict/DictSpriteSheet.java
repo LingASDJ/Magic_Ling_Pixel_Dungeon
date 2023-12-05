@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdRatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireAcidicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameC01Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlowerSlimeSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GreenSltingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceFireScorpioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceGolemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -234,6 +235,8 @@ public class DictSpriteSheet {
                 return new Image(Assets.Sprites.MIMIC, 0, 32, 16, 16);
             case WRAITH:
                 return new Image(Assets.Sprites.WRAITH, 0, 0, 14, 15);
+            case GLTX:
+                return new GreenSltingSprite();
             case BEE:
                 return new Image(Assets.Sprites.BEE, 0, 0, 16, 16);
 
@@ -382,6 +385,8 @@ public class DictSpriteSheet {
     public static final int MIMIC_GOLDEN    = 704 + 10000;
     public static final int MIMIC_CRYSTAL   = 705 + 10000;
     public static final int WRAITH = 706 + 10000;
+
+    public static final int GLTX = 906 + 10000;
     public static final int BEE             = 707 + 10000;
 
     public static final int SAD_GHOST       = 800 + 10000;

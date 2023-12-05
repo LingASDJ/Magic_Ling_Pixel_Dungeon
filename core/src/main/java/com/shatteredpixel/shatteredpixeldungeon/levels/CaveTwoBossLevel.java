@@ -305,7 +305,7 @@ public class CaveTwoBossLevel extends Level {
     public void unseal() {
         super.unseal();
 
-        blobs.get(PylonEnergy.class).fullyClear();
+        if(blobs != null) blobs.get(PylonEnergy.class).fullyClear();
 
         set( entrance(), Terrain.ENTRANCE );
         int i = 14 + 13*width();

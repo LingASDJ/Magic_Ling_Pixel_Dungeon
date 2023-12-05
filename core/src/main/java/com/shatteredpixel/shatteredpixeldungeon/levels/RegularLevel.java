@@ -252,7 +252,8 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-		if (Dungeon.NxhyshopOnLevel() && branch == 0) {
+		//20%
+		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) < 20) {
 			initRooms.add(new NxhyShopRoom());
 		}
 
@@ -306,17 +307,14 @@ public abstract class RegularLevel extends Level {
 		}
 
 		if (!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)) {
-			if (anCityQuestLevel() && anCityQuestLevel == depth && !anCityQuestProgress) {
+			if (depth == 18 && !anCityQuestProgress) {
 				initRooms.add(new DreamcatcherRoom());
 				DragonGirlBlue.Quest.spawned = true;
 				anCityQuestProgress = true;
-			} else if (!anCityQuestProgress && depth == anCityQuestLevel) {
-				initRooms.add(new DreamcatcherRoom());
-				anCityQuestProgress = true;
-				DragonGirlBlue.Quest.spawned = true;
 			}
 		} else {
-			if(Random.Int(0,101) >= Random.Int(45,80)){
+			//49% chance
+			if(Random.Int(0, 121) >= Random.Int(95, 105)){
 				if (anCityQuestLevel() && anCityQuestLevel == depth && !anCityQuestProgress) {
 					initRooms.add(new DreamcatcherRoom());
 					DragonGirlBlue.Quest.spawned = true;

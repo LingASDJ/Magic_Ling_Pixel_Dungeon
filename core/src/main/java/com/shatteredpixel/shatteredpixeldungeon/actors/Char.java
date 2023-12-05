@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AnkhInvulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArcaneArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
@@ -41,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
@@ -48,15 +50,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FireImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbueEX;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Fury;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HaloFireImBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HasteLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
@@ -616,6 +621,18 @@ public abstract class Char extends Actor {
 			buff.onAttackProc( enemy );
 		}
 
+		//削弱10%伤害
+		if ( buff(MagicGirlSayKill.class) != null ){
+			damage *= 0.90f;
+			//安息 x1.5伤害
+		} else if ( buff(BlessMobDied.class) != null ) {
+			damage *= 1.5f;
+		}
+
+		if ( buff(AnkhInvulnerability.GodDied.class) != null ) {
+			damage *= 2.25f;
+		}
+
 		for (ChampionHero buff : buffs(ChampionHero.class)){
 			damage *= buff.meleeDamageFactor();
 			buff.onAttackProc( enemy );
@@ -626,11 +643,21 @@ public abstract class Char extends Actor {
 
 	public float speed() {
 		float speed = baseSpeed;
+		//创世神之怒
+		if ( buff( AnkhInvulnerability.GodDied.class ) != null ) speed *= 2f;
+
 		if (buff(Cripple.class) != null) speed /= 2f;
 		if (buff(Stamina.class) != null) speed *= 1.5f;
 		if (buff(Adrenaline.class) != null) speed *= 2f;
 		if (buff(Haste.class) != null) speed *= 3f;
 		if (buff(Dread.class) != null) speed *= 2f;
+
+		if ( buff( FrostBurning.class ) != null) speed *= 0.7f;
+
+		for (HasteLing.MobLing mobspeed : buffs(HasteLing.MobLing.class)){
+			speed *= mobspeed.speedFactor();
+		}
+
 		return speed;
 	}
 
@@ -667,7 +694,7 @@ public abstract class Char extends Actor {
 		}
 
 		if(buff(BlessImmune.class) != null && !this.isImmune(BlessImmune.class)){
-			dmg = (int) Math.ceil(dmg * 0.6f);
+			dmg = (int) Math.ceil(dmg * 0.25f);
 		}
 
 		for (ChampionHero buff : buffs(ChampionHero.class)){
