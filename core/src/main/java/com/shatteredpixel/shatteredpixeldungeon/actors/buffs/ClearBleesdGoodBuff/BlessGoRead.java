@@ -105,7 +105,6 @@ public class BlessGoRead extends ClearLanterBuff {
             icon.hardlight(0x993333);
         } else
             icon.hardlight(0xFF1493);
-
     }
 
     @Override

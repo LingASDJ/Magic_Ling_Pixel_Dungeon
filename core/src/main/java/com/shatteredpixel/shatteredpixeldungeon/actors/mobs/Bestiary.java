@@ -104,10 +104,10 @@ public class Bestiary {
 				case 8:
 					return new ArrayList<>(Arrays.asList(Skeleton.class,
 							Skeleton.class,
-							Thief.class, Guard.class,SpectralNecromancer.class, DM100.class));
+							Thief.class, Guard.class,Necromancer.class, DM100.class));
 				case 9:
 					return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
-							Thief.class,Thief.class,SpectralNecromancer.class,SpectralNecromancer.class, DM100.class,
+							Thief.class,Thief.class,BrownBat.class,BrownBat.class, DM100.class,
 							BrownBat.class));
 
 				case 10:
@@ -372,7 +372,9 @@ public class Bestiary {
 					cl = SRPDHBLR.class;
 				} else if (cl == Thief.class) {
 					cl = Bandit.class;
-				} else if (cl == SpectralNecromancer.class) {
+				} else if (cl == Necromancer.class) {
+					cl = SpectralNecromancer.class;
+				} else if (cl == BrownBat.class) {
 					cl = NewBlackHost.class;
 				} else if (cl == Brute.class) {
 					cl = ArmoredBrute.class;

@@ -245,6 +245,11 @@ public class MagicGirlDead extends Boss {
     private static final float TIME_TO_BURN	= 6f;
     @Override
     public boolean act(){
+
+        if(HP<=0){
+            die(true);
+        }
+
         if(paralysed>0){
             spend(TICK);
             summonCD -= 1/speed();

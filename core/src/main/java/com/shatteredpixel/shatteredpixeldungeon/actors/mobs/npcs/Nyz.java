@@ -20,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunB
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndNyzShop;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
@@ -47,6 +48,18 @@ public class Nyz extends NTNPC {
     private boolean seenBefore = false;
 
     protected boolean act() {
+
+        Game.runOnRenderThread(new Callback() {
+            @Override
+            public void call() {
+                if (!seenBefore && Dungeon.level.heroFOV[pos]) {
+                    GLog.p(Messages.get(Nyz.class, "greetings", Dungeon.hero.name()));
+                    seenBefore = true;
+                } else if(seenBefore && !Dungeon.level.heroFOV[pos]) {
+                    seenBefore = false;
+                }
+            }
+        });
 
         throwItem();
 

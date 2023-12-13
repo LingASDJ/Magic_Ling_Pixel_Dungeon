@@ -151,7 +151,6 @@ public class LevelRules {
     }
 
     public static Level createBranchLevel() {
-
         switch (branch){
             default:
             case 1:

@@ -335,7 +335,7 @@ public class AscensionChallenge extends Buff {
 		if(Dungeon.isChallenged(Challenges.DHXD)||Statistics.lanterfireactive){
 			if(hero.lanterfire>50){
 				hero.damageLantern(5);
-				spend(10f);
+				spend(40f);
 			}
 		}
 
