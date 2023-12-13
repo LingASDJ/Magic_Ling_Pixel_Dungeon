@@ -27,7 +27,7 @@ import java.util.Objects;
 
 public class SpawnArtifact extends TestItem {
     {
-        image = ItemSpriteSheet.DG25;
+        image = ItemSpriteSheet.ARTIFACT_HOLDER;
         defaultAction = AC_SPAWN;
     }
 

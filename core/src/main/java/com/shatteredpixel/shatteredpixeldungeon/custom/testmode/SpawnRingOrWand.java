@@ -32,7 +32,7 @@ import java.util.Objects;
 //Also contains wand
 public class SpawnRingOrWand extends TestItem {
     {
-        image = ItemSpriteSheet.DG25;
+        image = ItemSpriteSheet.RING_HOLDER;
         defaultAction = AC_SPAWN;
     }
 
