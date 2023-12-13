@@ -61,7 +61,7 @@ import java.util.Objects;
 
 public class SpawnArmor extends TestItem {
     {
-        image = ItemSpriteSheet.DG25;
+        image = ItemSpriteSheet.ARMOR_HOLDER;
         defaultAction = AC_SPAWN;
     }
 

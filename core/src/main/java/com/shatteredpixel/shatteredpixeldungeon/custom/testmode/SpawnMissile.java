@@ -41,7 +41,7 @@ import java.util.Objects;
 
 public class SpawnMissile extends TestItem {
     {
-        image = ItemSpriteSheet.DG25;
+        image = ItemSpriteSheet.MISSILE_HOLDER;
         defaultAction = AC_SPAWN;
     }
 
@@ -189,7 +189,7 @@ public class SpawnMissile extends TestItem {
                                 Messages.get(SettingsWindow.class, "cancel")) {
                             @Override
                             public void onSelect(boolean check, String text) {
-                                if (check && item_quantity > 0 &&text.matches("\\d+")) {
+                                if (check && item_quantity > 0 &&text.matches("^[1-9]\\d*$")) {
                                     int quantity = Integer.parseInt(text);
                                     item_quantity = Math.min(quantity, 6666);
                                 }

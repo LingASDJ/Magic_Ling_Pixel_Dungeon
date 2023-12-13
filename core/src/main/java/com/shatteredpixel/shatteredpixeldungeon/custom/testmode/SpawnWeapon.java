@@ -58,7 +58,7 @@ import java.util.Objects;
 
 public class SpawnWeapon extends TestItem{
     {
-        image = ItemSpriteSheet.DG25;
+        image = ItemSpriteSheet.WEAPON_HOLDER;
         defaultAction = AC_SPAWN;
     }
 
