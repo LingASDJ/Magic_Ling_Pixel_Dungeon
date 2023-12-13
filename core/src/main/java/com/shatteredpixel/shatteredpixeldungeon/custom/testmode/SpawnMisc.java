@@ -705,7 +705,7 @@ public class SpawnMisc extends TestItem {
             RedButton_quantity.setRect(0, buttonList.get(buttonList.size() - 1).bottom() + GAP + 2 * GAP, WIDTH, 24);
             //o_quantity.setRect(0, t_select.bottom() + 2 * GAP, WIDTH, 24);
             //c_multiply.setRect(0, o_quantity.bottom() + GAP, WIDTH/2f - GAP/2f, 16);
-            RedButton_create.setRect(WIDTH/2f + GAP/2f, RedButton_quantity.bottom() + GAP, WIDTH/2f - GAP/2f, 16);
+            RedButton_create.setRect(0, RedButton_quantity.bottom() + GAP, WIDTH, 16);
             resize(WIDTH, (int) RedButton_create.bottom());
         }
 
