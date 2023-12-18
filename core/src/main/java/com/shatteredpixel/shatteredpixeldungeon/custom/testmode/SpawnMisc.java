@@ -123,7 +123,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Adre
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.BlindingDart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.ChillingDart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.CleansingDart;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.DisplacingDart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.HealingDart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.HolyDart;
@@ -150,19 +149,16 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Stormvine;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.utils.WndTextNumberInput;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Reflection;
 
@@ -213,6 +209,8 @@ public class SpawnMisc extends TestItem {
             item.identify();
             if(collect){
                 GLog.i(Messages.get(hero, "you_now_have", item.name()));
+                Sample.INSTANCE.play( Assets.Sounds.ITEM );
+                GameScene.pickUp( item, hero.pos );
             }else{
                 item.doDrop(curUser);
             }
@@ -698,13 +696,11 @@ public class SpawnMisc extends TestItem {
             };
             add(RedButton_create);
 
-            layout();
+            WindowLayout();
         }
 
-        private void layout() {
+        private void WindowLayout() {
             RedButton_quantity.setRect(0, buttonList.get(buttonList.size() - 1).bottom() + GAP + 2 * GAP, WIDTH, 24);
-            //o_quantity.setRect(0, t_select.bottom() + 2 * GAP, WIDTH, 24);
-            //c_multiply.setRect(0, o_quantity.bottom() + GAP, WIDTH/2f - GAP/2f, 16);
             RedButton_create.setRect(0, RedButton_quantity.bottom() + GAP, WIDTH, 16);
             resize(WIDTH, (int) RedButton_create.bottom());
         }
@@ -712,9 +708,8 @@ public class SpawnMisc extends TestItem {
         private void createCategoryImage(){
             float left;
             float top = GAP + TITLE_BTM;
-            int placed = 0;
             int length = 12;
-            int firstRow = (length % 2 == 0 ? length / 2 : (length / 2 + 1));
+            int maxImageCount = 6;
             for (int i = 0; i < length; ++i) {
                 final int j = i;
                 IconButton btn = new IconButton() {
@@ -723,10 +718,10 @@ public class SpawnMisc extends TestItem {
                         cateButtonList.get(cateSelected).icon().resetColor();
                         cateSelected = Math.min(j, maxCategory());
                         if(selected > maxIndex(cateSelected)) selected = maxIndex(cateSelected);
-                        cateButtonList.get(cateSelected).icon().color(0xFFFF44);
+                        cateButtonList.get(cateSelected).icon().hardlight(0xffbf00);
                         updateImage();
                         updateText();
-
+                        WindowLayout();
                         super.onClick();
                     }
                 };
@@ -735,25 +730,20 @@ public class SpawnMisc extends TestItem {
                 im.scale.set(1.0f);
                 btn.icon(im);
 
-                if (i < firstRow) {
-                    left = (WIDTH - BTN_SIZE * firstRow) / 2f;
-                    btn.setRect(left + placed * BTN_SIZE, top, BTN_SIZE, BTN_SIZE);
-                } else {
-                    left = (WIDTH - BTN_SIZE * (length - firstRow)) / 2f;
-                    btn.setRect(left + (placed - firstRow) * BTN_SIZE, top + GAP + BTN_SIZE, BTN_SIZE, BTN_SIZE);
-                }
+                int line = i / maxImageCount;
+                left = (WIDTH - BTN_SIZE * maxImageCount) / 2f;
+                btn.setRect(left + (i - maxImageCount * line) * BTN_SIZE, top + GAP * line + BTN_SIZE * line, BTN_SIZE, BTN_SIZE);
+
                 add(btn);
                 cateButtonList.add(btn);
-                placed++;
             }
         }
 
         private void createImage() {
             float left;
             float top = TITLE_BTM + 4*GAP + 2*BTN_SIZE + 3;
-            int placed = 0;
             int length = maxIndex(cateSelected)+1;
-            int firstRow = (length % 2 == 0 ? length / 2 : (length / 2 + 1));
+            int maxImageCount = 6;
             for (int i = 0; i < length; ++i) {
                 final int j = i;
                 IconButton btn = new IconButton() {
@@ -847,15 +837,11 @@ public class SpawnMisc extends TestItem {
                     }
                 }
 
-                if (i < firstRow) {
-                    left = (WIDTH - BTN_SIZE * firstRow) / 2f;
-                    btn.setRect(left + placed * BTN_SIZE, top, BTN_SIZE, BTN_SIZE);
-                } else {
-                    left = (WIDTH - BTN_SIZE * (length - firstRow)) / 2f;
-                    btn.setRect(left + (placed - firstRow) * BTN_SIZE, top + GAP + BTN_SIZE, BTN_SIZE, BTN_SIZE);
-                }
+                left = (WIDTH - BTN_SIZE * maxImageCount) / 2f;
+                int line = i / maxImageCount;
+                btn.setRect(left + (i - maxImageCount * line) * BTN_SIZE, top + GAP * line + BTN_SIZE * line, BTN_SIZE, BTN_SIZE);
+
                 add(btn);
-                placed++;
                 buttonList.add(btn);
             }
         }
