@@ -84,6 +84,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.RandomRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.CircleBasinRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.DreamcatcherRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom;
@@ -285,6 +286,8 @@ public abstract class RegularLevel extends Level {
 				Buff.affect(hero, AutoRandomBuff.class).set((10), 1);
 			}
 		}
+
+		initRooms.add(new CircleBasinRoom());
 
 
 		if(feeling == Feeling.THREEWELL){

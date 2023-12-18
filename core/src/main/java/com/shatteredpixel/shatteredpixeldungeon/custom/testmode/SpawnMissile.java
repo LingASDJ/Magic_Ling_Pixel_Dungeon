@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.WndTextNumberInput;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Reflection;
 
@@ -102,6 +103,8 @@ public class SpawnMissile extends TestItem {
         missile.quantity(item_quantity);
         if(missile.collect()){
             GLog.i(Messages.get(hero, "you_now_have", missile.name()));
+            Sample.INSTANCE.play( Assets.Sounds.ITEM );
+            GameScene.pickUp( missile, hero.pos );
         }else{
             missile.doDrop(curUser);
         }

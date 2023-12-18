@@ -51,7 +51,7 @@ public class SmokeParticle extends PixelParticle {
 		super();
 
 		if(depth == 10 || (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && (depth == 8))) {
-			color(0xc0c0c0);
+			color(0x5a5408);
 		} else {
 			color(0x222222);
 		}

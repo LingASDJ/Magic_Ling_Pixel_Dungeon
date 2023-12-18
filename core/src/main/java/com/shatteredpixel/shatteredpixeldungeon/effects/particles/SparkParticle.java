@@ -60,7 +60,7 @@ public class SparkParticle extends PixelParticle {
 		size( 2 );
 
 		if(depth == 10 || (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && (depth == 8))) {
-			color(0x111111);
+			color(0x5a0808);
 		}
 		
 		acc.set( 0, +50 );

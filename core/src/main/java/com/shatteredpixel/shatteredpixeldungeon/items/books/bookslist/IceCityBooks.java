@@ -1,7 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArcaneArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
@@ -30,6 +32,8 @@ public class IceCityBooks extends Books {
             }
         }
         if (action.equals(Read)) {
+            Statistics.readBooks++;
+            Badges.valiReadBooks();
             Sample.INSTANCE.play(Assets.Sounds.READ);
             switch (Random.Int(5)) {
                 case 0:

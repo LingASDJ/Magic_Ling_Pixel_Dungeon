@@ -177,7 +177,7 @@ public class StatusPane extends Component {
 
 		add( icehp );
 
-	 	lanterfirevae = new Image(Assets.Interfaces.LANTERLING);
+	 	lanterfirevae = SPDSettings.ClassUI() ? new Image(Assets.Interfaces.LANTERLING) : new Image(Assets.Interfaces.LANTERLING_N);
 		add(lanterfirevae);
 
 		hpText = new BitmapText(PixelScene.pixelFont);
@@ -391,7 +391,10 @@ public class StatusPane extends Component {
 			asset = Assets.Interfaces.STATUS;
 		} else {
 			asset =  Assets.Interfaces.STATUS_DARK;
+
 		}
+
+
 
 		int maxHunger = (int) Hunger.STARVING;
 		float maxPureSole = Dungeon.hero.lanterfire;

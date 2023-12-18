@@ -1,9 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.books;
 
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.MainBooks;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -50,19 +46,6 @@ public class Books extends MainBooks {
         ArrayList<String> actions = super.actions(hero);
         actions.add(Read);
         return actions;
-    }
-
-    @Override
-    public void execute(final Hero hero, String action ) {
-        super.execute(hero, action);
-        if (action.equals( Read )) {
-            for (Buff b : hero.buffs(ChampionHero.class)) {
-                if (b == null) {
-                    Statistics.readBooks++;
-                    Badges.valiReadBooks();
-                }
-            }
-        }
     }
 
 }

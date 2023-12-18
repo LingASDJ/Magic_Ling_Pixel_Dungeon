@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.AnomaloCaris;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.ThreeLeafBug;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.Turtle;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.ApprenticeWitch;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Butcher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Frankenstein;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Random;
@@ -197,6 +198,11 @@ public class Bestiary {
 							Succubus.class,
 							Eye.class,
 							Scorpio.class, Succubus.class,Fire_Scorpio.class,Ice_Scorpio.class,ShieldHuntsman.class));
+
+				case 27:
+					return new ArrayList<>(Arrays.asList(
+							Frankenstein.class, Frankenstein.class, Butcher.class));
+
 				default:
 					return new ArrayList<>(Arrays.asList(FlowerSlime.class, FlowerSlime.class,
 							FlowerSlime.class,

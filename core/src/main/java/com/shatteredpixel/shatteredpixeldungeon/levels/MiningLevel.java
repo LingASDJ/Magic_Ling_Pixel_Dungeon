@@ -69,6 +69,12 @@ import java.util.Arrays;
 public class MiningLevel extends CavesLevel {
 
 	@Override
+	public String tilesTex() {
+		return Assets.Environment.TILES_COLD_MINE;
+	}
+
+
+	@Override
 	protected ArrayList<Room> initRooms() {
 		ArrayList<Room> initRooms = new ArrayList<>();
 		initRooms.add ( roomEntrance = new MineEntrance());

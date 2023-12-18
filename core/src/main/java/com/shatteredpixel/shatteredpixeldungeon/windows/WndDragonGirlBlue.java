@@ -215,7 +215,7 @@ public class WndDragonGirlBlue extends Window {
                     GameScene.selectItem(new UpgradeSelector());
                 }
             };
-            upgrade.enable(DragonGirlBlue.Quest.three_used_points == 2 && DragonGirlBlue.Quest.survey_research_points>=UpgradePoint);
+            upgrade.enable( DragonGirlBlue.Quest.survey_research_points>=UpgradePoint);
             buttons.add(upgrade);
 
         }

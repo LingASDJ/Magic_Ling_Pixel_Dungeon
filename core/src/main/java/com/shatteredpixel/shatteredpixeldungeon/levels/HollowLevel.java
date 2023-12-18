@@ -3,10 +3,20 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.HollowMimic;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.PrisonPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.BridgeRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.ConnectionRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.PerimeterRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.WalkwayRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.AncientMysteryEnteanceRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.AncientMysteryExitRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretWellRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.PlantsRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.SewerPipeRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StudyRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BurningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ChillingTrap;
@@ -49,23 +59,54 @@ public class HollowLevel extends RegularLevel {
 
     @Override
     protected ArrayList<Room> initRooms() {
-        return Wandmaker.Quest.spawnRoom(super.initRooms());
-    }
+        ArrayList<Room> initRooms = new ArrayList<>();
+        initRooms.add ( roomEntrance = new AncientMysteryEnteanceRoom());
+        initRooms.add ( roomExit = new AncientMysteryExitRoom());
 
-    @Override
-    protected int standardRooms(boolean forceMax) {
-        if (forceMax) return 6;
-        //5 to 6, average 5.5
-        return 5+ Random.chances(new float[]{1, 1});
-    }
+        //spawns 1 giant, 3 large, 6-8 small, and 1-2 secret cave rooms
+        StandardRoom s;
+        s = new PlantsRoom();
+        s.setSizeCat();
+        initRooms.add(s);
 
-    @Override
-    protected int specialRooms(boolean forceMax) {
-        if (forceMax) return 3;
-        //1 to 3, average 2.0
-        return 1+Random.chances(new float[]{1, 3, 1});
-    }
+        int rooms = 2;
+        for (int i = 0; i < rooms; i++){
+            s = new SewerPipeRoom();
+            s.setSizeCat();
+            initRooms.add(s);
+        }
 
+//        SpecialRoom x;
+//        rooms = Random.NormalIntRange(1, 2);
+
+        int rooms2 = 2;
+        for (int i = 1; i < rooms2; i++){
+            s = new StudyRoom();
+            initRooms.add(s);
+        }
+
+        ConnectionRoom xs;
+        rooms = Random.NormalIntRange(2, 4);
+        for (int i = 0; i < rooms; i++){
+            xs = new BridgeRoom();
+            initRooms.add(xs);
+        }
+        for (int i = 1; i < rooms; i++){
+            xs = new PerimeterRoom();
+            initRooms.add(xs);
+        }
+        for (int i = 2; i < rooms; i++){
+            xs = new WalkwayRoom();
+            initRooms.add(xs);
+        }
+
+        rooms = 2;
+        for (int i = 0; i < rooms; i++){
+            initRooms.add(new SecretWellRoom());
+        }
+
+        return initRooms;
+    }
     @Override
     protected Painter painter() {
         return new PrisonPainter()

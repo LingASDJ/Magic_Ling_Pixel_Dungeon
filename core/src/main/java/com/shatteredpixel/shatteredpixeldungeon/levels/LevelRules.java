@@ -142,6 +142,17 @@ public class LevelRules {
                     }
                 case 26:
                     return new LastLevel();
+                case 27:
+                case 28:
+                case 29:
+                case 30:
+                    return new HollowLevel();
+                case 31:
+                    if ((Statistics.boss_enhance & 0x12) != 0) {
+                        return new LastLevel();
+                    } else {
+                        return new LaveCavesBossLevel();
+                    }
                 case 50:
                     return new GardenLevel();
                 default:

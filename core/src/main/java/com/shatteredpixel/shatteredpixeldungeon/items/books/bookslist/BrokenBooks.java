@@ -1,6 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
@@ -30,6 +32,8 @@ public class BrokenBooks extends Books {
         }
         if (action.equals( Read ) ) {
             Sample.INSTANCE.play( Assets.Sounds.READ );
+            Statistics.readBooks++;
+            Badges.valiReadBooks();
             switch (Random.Int(5)){
                 case 0: case 1: case 2:
                     Buff.affect(hero, Adrenaline.class, 30f);

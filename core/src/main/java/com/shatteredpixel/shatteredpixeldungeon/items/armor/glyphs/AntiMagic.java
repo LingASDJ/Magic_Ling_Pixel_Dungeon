@@ -21,9 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor.AlowGlyph.genericProcChanceMultiplier;
-
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
@@ -33,12 +32,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.ElementalBlast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WarpBeacon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdGurad;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdMagicRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalWisp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.IceGolem;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedSwarm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Salamander;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
@@ -107,12 +112,24 @@ public class AntiMagic extends Armor.Glyph {
 		RESISTS.add( WarpBeacon.class );
 		
 		RESISTS.add( DM100.LightningBolt.class );
+
 		RESISTS.add( Shaman.EarthenBolt.class );
 		RESISTS.add( CrystalWisp.LightBeam.class );
 		RESISTS.add( Warlock.DarkBolt.class );
 		RESISTS.add( Eye.DeathGaze.class );
 		RESISTS.add( YogFist.BrightFist.LightBeam.class );
 		RESISTS.add( YogFist.DarkFist.DarkBolt.class );
+
+		//Magic Attack
+		RESISTS.add(ColdMagicRat.DarkBolt.class);
+		RESISTS.add(Salamander.DarkBolt.class);
+		RESISTS.add(ChampionEnemy.Sider.DarkBolt.class);
+		RESISTS.add(ColdGurad.DarkBolt.class);
+		RESISTS.add(RedSwarm.DarkBolt.class);
+		RESISTS.add(BlackSoul.DarkBolt.class);
+		RESISTS.add(IceGolem.DarkBolt.class);
+		RESISTS.add(YogFist.HaloFist.DarkBolt.class);
+		RESISTS.add(YogFist.FreezingFist.LightBeam.class);
 	}
 	
 	@Override

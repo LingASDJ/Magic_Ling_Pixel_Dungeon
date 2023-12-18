@@ -123,7 +123,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Adre
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.BlindingDart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.ChillingDart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.CleansingDart;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.DisplacingDart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.HealingDart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.HolyDart;
@@ -150,19 +149,16 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Stormvine;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.utils.WndTextNumberInput;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Reflection;
 
@@ -213,6 +209,8 @@ public class SpawnMisc extends TestItem {
             item.identify();
             if(collect){
                 GLog.i(Messages.get(hero, "you_now_have", item.name()));
+                Sample.INSTANCE.play( Assets.Sounds.ITEM );
+                GameScene.pickUp( item, hero.pos );
             }else{
                 item.doDrop(curUser);
             }
@@ -648,7 +646,7 @@ public class SpawnMisc extends TestItem {
         private RedButton RedButton_create;
         private ArrayList<IconButton> buttonList = new ArrayList<>();
         private ArrayList<IconButton> cateButtonList = new ArrayList<>();
-        private static final int WIDTH = 120;
+        private static final int WIDTH = 170;
         private static final int BTN_SIZE = 16;
         private static final int GAP = 2;
         private static final int TITLE_BTM = 8;
@@ -723,7 +721,7 @@ public class SpawnMisc extends TestItem {
                         cateButtonList.get(cateSelected).icon().resetColor();
                         cateSelected = Math.min(j, maxCategory());
                         if(selected > maxIndex(cateSelected)) selected = maxIndex(cateSelected);
-                        cateButtonList.get(cateSelected).icon().color(0xFFFF44);
+                        cateButtonList.get(cateSelected).icon().hardlight(0xffbf00);
                         updateImage();
                         updateText();
 

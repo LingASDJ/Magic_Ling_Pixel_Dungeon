@@ -86,7 +86,7 @@ public class ThreeLeafBug extends Mob {
     @Override
     public void die( Object cause ) {
         super.die(cause);
-        DragonGirlBlue.Quest.survey_research_points += Math.min(800, 80);
+        DragonGirlBlue.Quest.survey_research_points = Math.min(DragonGirlBlue.Quest.survey_research_points + 110, 1100);
         Badges.validateAncityProgress();
     }
 

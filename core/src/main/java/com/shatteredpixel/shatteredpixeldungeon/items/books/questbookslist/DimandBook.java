@@ -1,4 +1,4 @@
-package com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist;
+package com.shatteredpixel.shatteredpixeldungeon.items.books.questbookslist;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;

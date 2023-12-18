@@ -24,6 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.WndTextNumberInput;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Reflection;
 
@@ -84,6 +85,8 @@ public class SpawnRingOrWand extends TestItem {
 
                 if(collect){
                     GLog.i(Messages.get(hero, "you_now_have", ring.name()));
+                    Sample.INSTANCE.play( Assets.Sounds.ITEM );
+                    GameScene.pickUp(ring, hero.pos );
                 }else{
                     ring.doDrop(curUser);
                 }
@@ -97,6 +100,8 @@ public class SpawnRingOrWand extends TestItem {
                 collect = wand.identify().collect();
                 if(collect){
                     GLog.i(Messages.get(hero, "you_now_have", wand.name()));
+                    Sample.INSTANCE.play( Assets.Sounds.ITEM );
+                    GameScene.pickUp( wand, hero.pos );
                 }else{
                     wand.doDrop(curUser);
                 }

@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -31,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.JAmulet;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.questbookslist.HollowCityBook;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -101,6 +103,8 @@ public class LastLevel extends Level {
 	private static final int WIDTH = 16;
 	private static final int MID = WIDTH/2;
 	public static int AMULET_POS = 12*WIDTH + MID;
+
+	public static int HOLIDAY_POS = 13*WIDTH + MID;
 
 	@Override
 	protected boolean build() {
@@ -173,6 +177,10 @@ public class LastLevel extends Level {
 			drop( new JAmulet(), AMULET_POS );
 		} else {
 			drop( new Amulet(), AMULET_POS );
+		}
+
+		if(holiday == RegularLevel.Holiday.XMAS){
+			drop( new HollowCityBook(), AMULET_POS );
 		}
 
 	}

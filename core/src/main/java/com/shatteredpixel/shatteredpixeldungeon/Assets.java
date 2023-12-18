@@ -98,6 +98,8 @@ public class Assets {
 		public static final String HALLS_SP         = "environment/custom_tiles/halls_special.png";
 
 		public static final String TILES_COLD	= "environment/tiles_cold.png";
+
+		public static final String TILES_COLD_MINE	= "environment/tiles_cold_mine.png";
 		public static final String RELOAD	= "environment/Reload.png";
 		public static final String TILES_DIED	= "environment/tiles_died.png";
 		public static final String TILES_GOLD	= "environment/tiles_gold.png";
@@ -135,6 +137,8 @@ public class Assets {
 		public static final String ARCS_FGN  = "interfaces/arcs2_night.png";
 
 		public static final String LANTERLING  = "interfaces/LanterLing.png";
+
+		public static final String LANTERLING_N  = "interfaces/LanterLing_N.png";
 
 		public static final String BANNERS  = "interfaces/banners.png";
 

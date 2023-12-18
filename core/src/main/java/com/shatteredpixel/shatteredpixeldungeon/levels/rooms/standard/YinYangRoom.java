@@ -24,6 +24,21 @@ import java.util.Arrays;
 public class YinYangRoom extends SpecialRoom {
 
     @Override
+    public boolean canConnect(Point p) {
+        if (!super.canConnect(p)){
+            return false;
+        }
+        //only place doors in the center
+        if (Math.abs(p.x - (right - (width()-1)/4f)) < 1f){
+            return true;
+        }
+        if (Math.abs(p.y - (bottom - (height()-1)/4f)) < 1f){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public int minWidth() { return 11; }
     @Override
     public int minHeight() {

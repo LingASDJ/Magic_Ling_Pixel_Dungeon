@@ -29,6 +29,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.happyMode;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.seedCustom;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -191,6 +192,7 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -1970,7 +1972,7 @@ public class Hero extends Char {
 				//moving to a transition doesn't automatically trigger it when enemies are near
 				&& (visibleEnemies.size() == 0 || cell == pos)
 				&& !Dungeon.level.locked
-				&& (Dungeon.depth < 26 || Dungeon.level.getTransition(cell).type == LevelTransition.Type.REGULAR_ENTRANCE) ) {
+				&& ( HolidayEvent() || Dungeon.level.getTransition(cell).type == LevelTransition.Type.REGULAR_ENTRANCE) ) {
 
 			curAction = new HeroAction.LvlTransition( cell );
 			
@@ -1990,7 +1992,18 @@ public class Hero extends Char {
 
 		return true;
 	}
-	
+
+	/** 节日深度 */
+	private boolean HolidayEvent() {
+		boolean result;
+		if(holiday == RegularLevel.Holiday.XMAS){
+			result = Dungeon.depth < 31;
+		} else {
+			result = Dungeon.depth < 26;
+		}
+		return result;
+	}
+
 	public void earnExp( int exp, Class source ) {
 
 		//xp granted by ascension challenge is only for on-exp gain effects

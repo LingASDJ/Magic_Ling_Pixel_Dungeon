@@ -19,6 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Reflection;
 
@@ -75,6 +76,8 @@ public class SpawnArtifact extends TestItem {
             artifact.identify();
             if(artifact.collect()){
                 GLog.i(Messages.get(hero, "you_now_have", artifact.name()));
+                Sample.INSTANCE.play( Assets.Sounds.ITEM );
+                GameScene.pickUp( artifact, hero.pos );
             }else{
                 artifact.doDrop(curUser);
             }

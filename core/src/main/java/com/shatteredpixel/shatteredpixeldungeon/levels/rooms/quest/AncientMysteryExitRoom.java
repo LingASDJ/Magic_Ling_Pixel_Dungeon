@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -43,17 +42,15 @@ public class AncientMysteryExitRoom extends ExitRoom {
         Painter.fill( level, this, 1, Terrain.WATER );
 
         for (Door door : connected.values()) {
-            door.set( Door.Type.REGULAR );
+            door.set( Door.Type.HIDDEN );
         }
-
-        level.addItemToSpawn( new CrystalKey( Dungeon.depth ) );
 
         Point c = center();
 
         Painter.fill( level, c.x-1, c.y-1, 3, 4, Terrain.WALL_DECO );
         Painter.fill( level, c.x-1, c.y+1, 3, 1, Terrain.WALL );
         Painter.set ( level,c.x, c.y+1, Terrain.EMPTY_SP);
-        Painter.set ( level,c.x, c.y+2, Terrain.CRYSTAL_DOOR);
+        Painter.set ( level,c.x, c.y+2, Terrain.DOOR);
 
         int topPos = (top + 5) * level.width() + left + 4;
         Painter.set( level, topPos, Terrain.EXIT );

@@ -50,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.LevelTeleporter;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.MobPlacer;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnArmor;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnArtifact;
+import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnMisc;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnMissile;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnRingOrWand;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnWeapon;
@@ -229,6 +230,7 @@ public enum HeroClass {
 		new ScrollOfIdentify().identify();
 
 		if (Dungeon.isChallenged(Challenges.PRO)){
+			new SpawnMisc().quantity(1).identify().collect();
 			new MIME.GOLD_FIVE().quantity(1).identify().collect();
 			new LevelTeleporter().quantity(1).identify().collect();
 			new PotionOfDivineInspiration().quantity(1).identify().collect();

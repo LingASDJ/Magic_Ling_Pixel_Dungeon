@@ -289,7 +289,7 @@ public class Speck extends Image {
 
 			case STEAM:
 				if(depth == 10 || (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && (depth == 8))) {
-					hardlight(0x808080);
+					hardlight(0x231d10);
 				}
 
 				speed.y = -Random.Float(10, 15);

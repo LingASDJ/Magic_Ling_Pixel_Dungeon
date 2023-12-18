@@ -42,6 +42,9 @@ public class Gregorian {
         boolean isDevBirthday = lunar.getMonth() == 8 && lunar.getDay() >= 22 && lunar.getDay() <= 25;
         boolean isDWJ = lunar.getMonth() == 5 && (lunar.getDay() >= 5-3 && lunar.getDay() <= 5+7);
 
+        //春节逻辑追加
+        boolean isSF = lunar.getMonth() == 1 && (lunar.getDay() >= 1 && lunar.getDay() <= 1+16);
+
         //判断是否是开发组的开发者Ling的当天生日到后续三天-8-22--8.25*/
         if(isDevBirthday) {
             birthday = RegularLevel.DevBirthday.DEV_BIRTHDAY;
