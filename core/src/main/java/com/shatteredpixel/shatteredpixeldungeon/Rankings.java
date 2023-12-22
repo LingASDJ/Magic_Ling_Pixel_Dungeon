@@ -78,7 +78,6 @@ public enum Rankings {
     public static final Comparator<Record> scoreComparator = new Comparator<Rankings.Record>() {
         @Override
         public int compare(Record lhs, Record rhs) {
-            //this covers custom seeded runs and dailies
             if (rhs.customSeed.isEmpty() && !lhs.customSeed.isEmpty()) {
                 return +1;
             } else if (lhs.customSeed.isEmpty() && !rhs.customSeed.isEmpty()) {
@@ -182,12 +181,12 @@ public enum Rankings {
 			size = records.size();
 		}
 
-		if (rec.customSeed.isEmpty()) {
+
 			totalNumber++;
 			if (win) {
 				wonNumber++;
 			}
-		}
+
 
         Badges.validateGamesPlayed();
 

@@ -80,11 +80,11 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFire
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NxhyShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NyzBombAndBooksRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PitRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PumpkinRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.RandomRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.CircleBasinRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.DreamcatcherRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom;
@@ -262,6 +262,10 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new LanFireRoom());
 		}
 
+		initRooms.add(new PumpkinRoom());
+
+		//initRooms.add(new HeartRoom());
+
 		if (Dungeon.NyzshopOnLevel() && branch == 0) {
 			Buff.affect(hero, RandomBuff.class).set( (4 + Random.Int(9)+hero.STR/6+hero.HP/30)/Random.Int(1,2)+5, 1 );
 			initRooms.add(new NyzBombAndBooksRoom());
@@ -286,9 +290,6 @@ public abstract class RegularLevel extends Level {
 				Buff.affect(hero, AutoRandomBuff.class).set((10), 1);
 			}
 		}
-
-		initRooms.add(new CircleBasinRoom());
-
 
 		if(feeling == Feeling.THREEWELL){
 			initRooms.add(new HealWellRoom());

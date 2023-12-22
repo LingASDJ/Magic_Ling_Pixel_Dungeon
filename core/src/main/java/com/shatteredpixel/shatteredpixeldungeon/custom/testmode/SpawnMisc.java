@@ -27,6 +27,16 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.RegrowthBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ShockBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ShrapnelBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.WoollyBomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.BrokenBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.DeepBloodBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.GrassKingBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.IceCityBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.NoKingMobBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.TestBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.questbookslist.DimandBook;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.questbookslist.HollowCityBook;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Cake;
@@ -41,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.RiceDumplings;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Switch;
+import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
@@ -523,6 +534,18 @@ public class SpawnMisc extends TestItem {
             case 16: return MIME.GOLD_THREE.class;
             case 17: return MIME.GOLD_FOUR.class;
             case 18: return MIME.GOLD_FIVE.class;
+            case 19: return OilPotion.class;
+
+            case 20: return MagicGirlBooks.class;
+            case 21: return BrokenBooks.class;
+            case 22: return GrassKingBooks.class;
+            case 23: return IceCityBooks.class;
+            case 24: return NoKingMobBooks.class;
+            case 25: return HollowCityBook.class;
+            case 26: return DeepBloodBooks.class;
+            case 27: return DimandBook.class;
+            case 28: return TestBooks.class;
+            case 29: return YellowSunBooks.class;
         }
     }
 
@@ -545,7 +568,7 @@ public class SpawnMisc extends TestItem {
             case 10:
                 return 17;
             case 11:
-                return 18;
+                return 29;
             default:
                 return 11;
         }

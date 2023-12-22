@@ -201,7 +201,7 @@ public class Bestiary {
 
 				case 27:
 					return new ArrayList<>(Arrays.asList(
-							Frankenstein.class, Frankenstein.class, Butcher.class));
+							Frankenstein.class, ApprenticeWitch.class, Butcher.class));
 
 				default:
 					return new ArrayList<>(Arrays.asList(FlowerSlime.class, FlowerSlime.class,

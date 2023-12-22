@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.DarkBlock;
@@ -30,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.EmoIcon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.IceBlock;
+import com.shatteredpixel.shatteredpixeldungeon.effects.IconFloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.RoseHalo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.ShieldHalo;
@@ -223,20 +225,41 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		point( worldToCamera( cell ) );
 	}
 
-	public void showStatus( int color, String text, Object... args ) {
-		if (visible) {
-			if (args.length > 0) {
-				text = Messages.format( text, args );
-			}
-			float x = destinationCenter().x;
-			float y = destinationCenter().y - height()/2f;
-			if (ch != null) {
-				FloatingText.show( x, y, ch.pos, text, color );
-			} else {
-				FloatingText.show( x, y, text, color );
+	public void showStatus(int color, String text, Object... args) {
+		//TODO 实验性功能 ICONTYPE
+		if(SPDSettings.ClassSkin()){
+			showStatusWithIcon(color, text, IconFloatingText.NO_ICON, args);
+		} else {
+			if (visible) {
+				if (args.length > 0) {
+					text = Messages.format( text, args );
+				}
+				float x = destinationCenter().x;
+				float y = destinationCenter().y - height()/2f;
+				if (ch != null) {
+					FloatingText.show( x, y, ch.pos, text, color );
+				} else {
+					FloatingText.show( x, y, text, color );
+				}
 			}
 		}
 	}
+
+	public void showStatusWithIcon(int color, String text, int icon, Object... args) {
+		if (this.visible) {
+			if (args.length > 0) {
+				text = Messages.format(text, args);
+			}
+			float x = destinationCenter().x;
+			float y = destinationCenter().y - (height() / 2.0f);
+			if (ch != null) {
+				IconFloatingText.show(x, y, ch.pos, text, color, icon, true);
+			} else {
+				IconFloatingText.show(x, y, -1, text, color, icon, true);
+			}
+		}
+	}
+
 
 	public void idle() {
 		play(idle);

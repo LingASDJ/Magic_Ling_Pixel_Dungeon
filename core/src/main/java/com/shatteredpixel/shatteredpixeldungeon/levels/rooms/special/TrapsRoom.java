@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FlockTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrippingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PoisonDartTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.RedTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TeleportationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
@@ -142,7 +143,7 @@ public class TrapsRoom extends SpecialRoom {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static Class<?extends Trap>[][] levelTraps = new Class[][]{
+	public static Class<?extends Trap>[][] levelTraps = new Class[][]{
 			//sewers
 			{GrippingTrap.class, TeleportationTrap.class, FlockTrap.class},
 			//prison
@@ -152,6 +153,8 @@ public class TrapsRoom extends SpecialRoom {
 			//city
 			{WarpingTrap.class, FlashingTrap.class, DisintegrationTrap.class},
 			//halls, muahahahaha
-			{GrimTrap.class}
+			{GrimTrap.class},
+			//Holiday
+			{GrimTrap.class, DisintegrationTrap.class, RedTrap.class},
 	};
 }

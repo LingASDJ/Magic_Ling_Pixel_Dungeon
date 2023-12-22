@@ -127,7 +127,7 @@ public class SPDSettings extends GameSettings {
 	private static final String KEY_TIME = "fps";
 
 	private static final String KEY_DARK	= "dark_ui";
-	//暗色系统
+
 	private static final String KEY_SKIN	= "skin_ui";
 
 	private static final String KEY_PAGE	= "page_ui";
@@ -589,6 +589,10 @@ public class SPDSettings extends GameSettings {
 
 	public static boolean ClassSkin() {
 		return getBoolean(KEY_SKIN, false);
+	}
+
+	public static void ClassSkin(boolean value) {
+		put( KEY_SKIN, value );
 	}
 
 	public static boolean ClassPage() {

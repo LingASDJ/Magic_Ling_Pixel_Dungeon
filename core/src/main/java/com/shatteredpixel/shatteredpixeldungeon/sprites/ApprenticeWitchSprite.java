@@ -12,17 +12,17 @@ public class ApprenticeWitchSprite extends MobSprite {
 
         TextureFilm frames = new TextureFilm( texture, 16, 16 );
 
-        idle = new Animation( 6, true );
-        idle.frames( frames, 0, 1, 2, 3, 2 ,1 );
+        idle = new Animation( 8, true );
+        idle.frames( frames, 0, 0, 0, 0, 0,1,2,3,3,3,3,3,2,1 );
 
-        run = new Animation( 12, true );
+        run = new Animation( 16, true );
         run.frames( frames, 14,15,16,17 );
 
-        attack = new Animation( 18, false );
-        attack.frames( frames, 4,5,6,7,8,9,0 );
+        attack = new Animation( 16, false );
+        attack.frames( frames, 4,5,6,7,8,9 );
 
-        die = new Animation( 18, false );
-        die.frames( frames, 10, 12, 13 );
+        die = new Animation( 16, false );
+        die.frames( frames, 10, 11,12, 13 );
 
         play( idle );
     }

@@ -24,7 +24,9 @@ package com.shatteredpixel.shatteredpixeldungeon.actors;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
@@ -44,10 +46,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FireImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
@@ -55,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbueEX;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Fury;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HaloFireImBlue;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HasteLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
@@ -87,8 +92,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.Deat
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
+import com.shatteredpixel.shatteredpixeldungeon.effects.IconFloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
@@ -96,6 +103,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Potential;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -115,6 +123,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Shoc
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Door;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
@@ -131,6 +140,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 
@@ -152,10 +162,9 @@ public abstract class Char extends Actor {
 	public float baseSpeed = 1;
 
 	public Alignment alignment;
-	private LinkedHashSet<Buff> buffs = new LinkedHashSet<>();
+	private final LinkedHashSet<Buff> buffs = new LinkedHashSet<>();
 
 	public boolean[] fieldOfView = null;
-
 	final public static boolean hit( Char attacker, Char defender, boolean magic ) {
 		return hit(attacker, defender, magic ? 2f : 1f, magic);
 	}
@@ -249,13 +258,9 @@ public abstract class Char extends Actor {
 	public boolean canInteract(Char c){
 		if (Dungeon.level.adjacent( pos, c.pos )){
 			return true;
-		} else if (c instanceof Hero
+		} else return c instanceof Hero
 				&& alignment == Alignment.ALLY
-				&& Dungeon.level.distance(pos, c.pos) <= 2 * Dungeon.hero.pointsInTalent(Talent.ALLY_WARP)) {
-			return true;
-		} else {
-			return false;
-		}
+				&& Dungeon.level.distance(pos, c.pos) <= 2 * Dungeon.hero.pointsInTalent(Talent.ALLY_WARP);
 	}
 
 	//swaps places by default
@@ -831,11 +836,90 @@ public abstract class Char extends Actor {
 			}
 		}
 
+		//位置：public void damage( int dmg, Object src ) {
 		if (sprite != null) {
-			sprite.showStatus(HP > HT / 2 ?
-							CharSprite.WARNING :
-							CharSprite.NEGATIVE,
-					Integer.toString(dmg + shielded));
+
+			int icon = IconFloatingText.PHYS_DMG;
+			//无来源物理伤害暂时不显示
+//			if (NO_ARMOR_PHYSICAL_SOURCES.contains(src.getClass())) {
+//				icon = IconFloatingText.PHYS_DMG_NO_BLOCK;
+//			}
+			if (AntiMagic.RESISTS.contains(src.getClass())) {
+				icon = IconFloatingText.MAGIC_DMG;
+			}
+			if (src instanceof Pickaxe) {
+				icon = IconFloatingText.PICK_DMG;
+			}
+			if (src == Dungeon.hero && Dungeon.hero.subClass == HeroSubClass.SNIPER && !Dungeon.level.adjacent(Dungeon.hero.pos, this.pos) && (Dungeon.hero.belongings.attackingWeapon() instanceof MissileWeapon)) {
+				icon = IconFloatingText.PHYS_DMG_NO_BLOCK;
+			}
+			if (src instanceof Hunger) {
+				icon = IconFloatingText.HUNGER;
+			}
+			if (src instanceof Burning) {
+				icon = IconFloatingText.BURNING;
+			}
+			if ((src instanceof Chill) || (src instanceof Frost)) {
+				icon = IconFloatingText.FROST;
+			}
+			if ((src instanceof GeyserTrap) || (src instanceof StormCloud)) {
+				icon = IconFloatingText.WATER;
+			}
+			if (src instanceof Burning) {
+				icon = IconFloatingText.BURNING;
+			}
+			if (src instanceof Electricity) {
+				icon = IconFloatingText.SHOCKING;
+			}
+			if (src instanceof Bleeding) {
+				icon = IconFloatingText.BLEEDING;
+			}
+			if (src instanceof ToxicGas) {
+				icon = IconFloatingText.TOXIC;
+			}
+			if (src instanceof CrivusFruits.DiedBlobs) {
+				icon = IconFloatingText.REDGAS;
+			}
+
+			if (src instanceof HalomethaneBurning) {
+				icon = IconFloatingText.HALO;
+			}
+
+			if(src instanceof ScaryBuff){
+				icon = IconFloatingText.HEARTDEMON;
+			}
+
+			if (src instanceof Corrosion) {
+				icon = IconFloatingText.CORROSION;
+			}
+			if (src instanceof Poison) {
+				icon = IconFloatingText.POISON;
+			}
+			if (src instanceof Ooze) {
+				icon = IconFloatingText.OOZE;
+			}
+			if (src instanceof Viscosity.DeferedDamage) {
+				icon = IconFloatingText.DEFERRED;
+			}
+			if (src instanceof Corruption) {
+				icon = IconFloatingText.CORRUPTION;
+			}
+			if (src instanceof AscensionChallenge) {
+				icon = IconFloatingText.AMULET;
+			}
+
+			//换成你自己的布尔控制
+			if(SPDSettings.ClassSkin()){
+				sprite.showStatusWithIcon(CharSprite.NEGATIVE, Integer.toString(dmg + shielded), icon);
+			} else {
+				sprite.showStatus(HP > HT / 2 ?
+								CharSprite.WARNING :
+								CharSprite.NEGATIVE,
+						Integer.toString(dmg + shielded));
+			}
+
+
+
 		}
 
 		if (HP < 0) HP = 0;
@@ -1167,14 +1251,14 @@ public abstract class Char extends Actor {
 				new HashSet<Class>(Arrays.asList(Burning.class, Blazing.class))),
 		ICY(new HashSet<Class>(Arrays.asList(WandOfFrost.class, Elemental.FrostElemental.class)),
 				new HashSet<Class>(Arrays.asList(Frost.class, Chill.class))),
-		ACIDIC(new HashSet<Class>(Arrays.asList(Corrosion.class)),
-				new HashSet<Class>(Arrays.asList(Ooze.class))),
+		ACIDIC(new HashSet<Class>(Collections.singletonList(Corrosion.class)),
+				new HashSet<Class>(Collections.singletonList(Ooze.class))),
 		ELECTRIC(new HashSet<Class>(Arrays.asList(WandOfLightning.class, Shocking.class, Potential.class,
                 Electricity.class, ShockingDart.class, Elemental.ShockElemental.class)),
 				new HashSet<Class>()),
 		LARGE,
 		NOBIG(new HashSet<Class>(),
-				new HashSet<Class>(Arrays.asList(HaloFireImBlue.class))),
+				new HashSet<Class>(Collections.singletonList(HaloFireImBlue.class))),
 		NPC,
 		HUNTER,
 		MIMIC,
@@ -1183,8 +1267,8 @@ public abstract class Char extends Actor {
 		PETS,
 		ABYSS;
 
-		private HashSet<Class> resistances;
-		private HashSet<Class> immunities;
+		private final HashSet<Class> resistances;
+		private final HashSet<Class> immunities;
 
 		Property() {
 			this(new HashSet<Class>(), new HashSet<Class>());

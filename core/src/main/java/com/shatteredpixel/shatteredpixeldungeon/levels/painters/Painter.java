@@ -40,7 +40,22 @@ public abstract class Painter {
 	// Static methods
 
 
-	//绘制圆形
+/*这是一个更多地形轮子 请放入Painter.java中即可使用
+/*目前已支持 圆形 矩形填充(支持四角替换)
+* 十字四点填充 绘制横线 绘制间隔横线 绘制竖线
+*/
+	/**绘制圆形
+	 * 使用方法：<br>
+	 * Painter.drawCircle(level, center, eyeRadius - 2, EMPTY_SP);<br>
+	 * <br>
+	 * Author:BinJie GPT<br>
+	 * 注意：此代码使用AI生成<br>
+	 * AIModel-Author：JDSA-Ling<br>
+	 * @param level 楼层
+	 * @param center 中心点
+	 * @param radius 半径
+	 * @param terrain 所需要的地形
+	 */
 	public static void drawCircle(Level level, Point center, int radius, int terrain) {
 		int cx = center.x;
 		int cy = center.y;
@@ -52,6 +67,122 @@ public abstract class Painter {
 					Painter.set(level, x, y, terrain);
 				}
 			}
+		}
+	}
+
+	/**矩形填充(支持四角替换)*<br>
+	 * 使用方法：<br>
+	 * Painter.drawRectangle(level, new Point(centerX - 3, centerY - 3), 5, 5, EMPTY_SP,true,CHASM);<br>
+	 * <br>
+	 * Author:BinJie GPT<br>
+	 * 注意：此代码使用AI生成<br>
+	 * AIModel-Author：JDSA-Ling<br>
+	 * @param level 楼层
+	 * @param center 中心坐标点
+	 * @param width 长
+	 * @param height 宽
+	 * @param terrain 所需要的地形
+	 * @param fillCorners 四角是否需要其他地形
+	 * @param cornerTerrain 四角地形 如上面为false,则直接设置一个任意INT进行占位符
+	 */
+	public static void drawRectangle(Level level, Point center, int width, int height, int terrain, boolean fillCorners, int cornerTerrain) {
+		int left = center.x - width / 2;
+		int right = center.x + width / 2;
+		int top = center.y - height / 2;
+		int bottom = center.y + height / 2;
+
+		fill(level, left, top, width, 1, terrain); // 上边界
+		fill(level, left, bottom, width, 1, terrain); // 下边界
+		fill(level, left, top + 1, 1, height - 2, terrain); // 左边界
+		fill(level, right, top + 1, 1, height - 2, terrain); // 右边界
+
+		if (fillCorners) {
+			set(level, left, top, cornerTerrain); // 左上角
+			set(level, right, top, cornerTerrain); // 右上角
+			set(level, left, bottom, cornerTerrain); // 左下角
+			set(level, right, bottom, cornerTerrain); // 右下角
+		}
+	}
+
+	/**十字四点填充 *<br>
+	 * 使用方法：<br>drawCrossWithOuterFill(level, point, size, terrain,pointcenter,pointterrain);<br>
+	 * <br>
+	 * Author:BinJie GPT<br>
+	 * 注意：此代码使用AI生成<br>
+	 * AIModel-Author：JDSA-Ling<br>
+	 * @param level 楼层
+	 * @param center 中心坐标点
+	 * @param size 大小
+	 * @param terrain 所要填充的地形
+	 * @param pointcenter 是否填充中心点?
+	 * @param pointterrain 中心点地块 如果上面为false 则请随便输入一个INT数作为占位符
+	 */
+	public static void drawCrossWithOuterFill(Level level, Point center, int size, int terrain,boolean pointcenter,int pointterrain) {
+		if (pointcenter) set(level, center.x, center.y, pointterrain); // 中心点
+
+		int left = center.x - size / 2;
+		int right = center.x + size / 2;
+		int top = center.y - size / 2;
+		int bottom = center.y + size / 2;
+
+		set(level, left, center.y, terrain); // 左边点
+		set(level, right, center.y, terrain); // 右边点
+		set(level, center.x, top, terrain); // 上边点
+		set(level, center.x, bottom, terrain); // 下边点
+	}
+
+	/**绘制横线
+	 * 使用例子：<br>
+	 * Painter.drawHorizontalLine(level, new Point(centerX-3,centerY+3),6,EMPTY_SP);
+	 * Author:BinJie GPT<br>
+	 * 注意：此代码使用AI生成<br>
+	 * AIModel-Author：JDSA-Ling<br>
+	 * @param level 楼层
+	 * @param start 起始点
+	 * @param length 长度
+	 * @param terrain 所要填充的地形
+	 */
+	public static void drawHorizontalLine(Level level, Point start, int length, int terrain) {
+		for (int x = start.x; x <= start.x + length; x++) {
+			set(level, x, start.y, terrain);
+		}
+	}
+
+	/**绘制间隔横线 例如制作牙齿<br>
+	 * 效果：101010101(1代表有地形,0代表无,即为填充)  <br>
+	 * 使用例子：<br>
+	 * Painter.drawHorizontalLineWithGaps(level, new Point(centerX-3,centerY+4),8,EMPTY_SP);
+	 * <br>
+	 * Author:BinJie GPT<br>
+	 * 注意：此代码使用AI生成<br>
+	 * AIModel-Author：JDSA-Ling<br>
+	 * @param level 楼层
+	 * @param start 起始点
+	 * @param length 长度
+	 * @param terrain 所要填充的地形
+	 */
+	public static void drawHorizontalLineWithGaps(Level level, Point start, int length, int terrain) {
+		for (int x = start.x; x < start.x + length; x++) {
+			if ((x - start.x) % 2 == 0) {
+				set(level, x, start.y, terrain);
+			}
+		}
+	}
+
+	/**绘制竖线
+	 * 使用例子：<br>
+	 * Painter.drawVerticalLine(level, new Point(centerX+5,centerY-1),6,WATER);
+	 * Author:BinJie GPT<br>
+	 * 注意：此代码使用AI生成<br>
+	 * AIModel-Author：JDSA-Ling<br>
+	 * @param level 楼层
+	 * @param start 起始点
+	 * @param length 长度
+	 * @param terrain 所要填充的地形
+	 */
+	public static void drawVerticalLine(Level level, Point start, int length, int terrain) {
+		for (int y = start.y; y <= start.y + length; y++) {
+			set(level, start.x, y, terrain);
 		}
 	}
 

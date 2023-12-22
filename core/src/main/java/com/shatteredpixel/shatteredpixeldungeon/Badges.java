@@ -1047,7 +1047,6 @@ public class Badges {
 		BOSS_SLAIN_3                ( 49 ),
 		ALL_POTIONS_IDENTIFIED      ( 50 ),
 		ALL_SCROLLS_IDENTIFIED      ( 51 ),
-		DEATH_FROM_GLYPH            ( 52 ),
 		BOSS_SLAIN_1_WARRIOR,
 		BOSS_SLAIN_1_MAGE,
 		BOSS_SLAIN_1_ROGUE,
@@ -1276,7 +1275,7 @@ public class Badges {
 			{Badge.DEATH_FROM_GAS, Badge.YASD},
 			{Badge.DEATH_FROM_HUNGER, Badge.YASD},
 			{Badge.DEATH_FROM_POISON, Badge.YASD},
-			{Badge.DEATH_FROM_GLYPH, Badge.YASD},
+//			{Badge.DEATH_FROM_GLYPH, Badge.YASD},
 			{Badge.DEATH_FROM_FALLING, Badge.YASD },
 
 			{Badge.ALL_WEAPONS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},

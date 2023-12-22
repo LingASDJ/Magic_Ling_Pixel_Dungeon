@@ -58,7 +58,7 @@ public class DistortionTrap extends Trap{
 		shape = LARGE_DOT;
 	}
 
-	private static final ArrayList<Class<?extends Mob>> RARE = new ArrayList<>(Arrays.asList(
+	public static final ArrayList<Class<?extends Mob>> RARE = new ArrayList<>(Arrays.asList(
 			Albino.class, CausticSlime.class,
 			Bandit.class,
 			ArmoredBrute.class, DM201.class,

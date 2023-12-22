@@ -73,6 +73,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.EmoIcon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.IconFloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Ripple;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
@@ -921,6 +922,10 @@ public class GameScene extends PixelScene {
 	
 	public static FloatingText status() {
 		return scene != null ? (FloatingText)scene.statuses.recycle( FloatingText.class ) : null;
+	}
+
+	public static IconFloatingText iconstatus() {
+		return scene != null ? (IconFloatingText)scene.statuses.recycle( IconFloatingText.class ) : null;
 	}
 	
 	public static void pickUp( Item item, int pos ) {
@@ -1821,7 +1826,7 @@ public class GameScene extends PixelScene {
 					break;
 			}
 
-			if(lanterfireactive){
+			if(lanterfireactive && Dungeon.branch == 0){
 				cure( Dungeon.hero );
 			}
 

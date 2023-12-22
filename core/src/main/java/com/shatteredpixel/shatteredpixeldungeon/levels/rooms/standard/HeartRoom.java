@@ -77,8 +77,14 @@ public class HeartRoom extends SpecialRoom {
         Painter.drawCircle(level, center, eyeRadius + 5, EMPTY);
 
         Painter.drawCircle(level, center, eyeRadius, CHASM);
+
         for (Door door : connected.values()) {
-            door.set(Door.Type.HIDDEN);
+            door.set( Door.Type.EMPTY );
+            if (door.x == left || door.x == right){
+                Painter.drawInside(level, this, door, width()/2, FURROWED_GRASS);
+            } else {
+                Painter.drawInside(level, this, door, height()/2, FURROWED_GRASS);
+            }
         }
 
         Painter.drawCircle(level, center, eyeRadius - 2, EMPTY_SP);

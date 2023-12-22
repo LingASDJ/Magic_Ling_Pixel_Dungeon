@@ -10,9 +10,11 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.BridgeRo
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.ConnectionRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.PerimeterRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.WalkwayRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.AncientMysteryEnteanceRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.AncientMysteryExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretWellRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.TrapsRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.PlantsRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.SewerPipeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
@@ -60,8 +62,8 @@ public class HollowLevel extends RegularLevel {
     @Override
     protected ArrayList<Room> initRooms() {
         ArrayList<Room> initRooms = new ArrayList<>();
-        initRooms.add ( roomEntrance = new AncientMysteryEnteanceRoom());
-        initRooms.add ( roomExit = new AncientMysteryExitRoom());
+        initRooms.add ( roomEntrance = new EntranceRoom());
+        initRooms.add ( roomExit = new ExitRoom());
 
         //spawns 1 giant, 3 large, 6-8 small, and 1-2 secret cave rooms
         StandardRoom s;
@@ -76,8 +78,12 @@ public class HollowLevel extends RegularLevel {
             initRooms.add(s);
         }
 
-//        SpecialRoom x;
-//        rooms = Random.NormalIntRange(1, 2);
+        SpecialRoom x;
+        rooms = Random.NormalIntRange(1, 2);
+        for (int i = 0; i < rooms; i++){
+            x = new TrapsRoom();
+            initRooms.add(x);
+        }
 
         int rooms2 = 2;
         for (int i = 1; i < rooms2; i++){

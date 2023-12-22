@@ -76,6 +76,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.DeadSoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.DamageBuff.ScaryDamageBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbueEX;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
@@ -147,6 +148,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesi
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.BlackKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
@@ -332,6 +334,10 @@ public class Hero extends Char {
 
 		if(Dungeon.hero.buff(BlessRedWhite.class) != null) {
 			strBonus += 2;
+		}
+
+		if(Dungeon.hero.buff(ScaryDamageBuff.class) != null) {
+			strBonus -= 2;
 		}
 
 		return STR + strBonus;
@@ -1194,7 +1200,7 @@ public class Hero extends Char {
 			if (heap != null && (heap.type != Type.HEAP && heap.type != Type.FOR_SALE)) {
 				
 				if ((heap.type == Type.LOCKED_CHEST && Notes.keyCount(new GoldenKey(Dungeon.depth)) < 1)
-					|| (heap.type == Type.CRYSTAL_CHEST && Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1)){
+					|| (heap.type == Type.CRYSTAL_CHEST && Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1)|| (heap.type == Type.BLACK && Notes.keyCount(new BlackKey(Dungeon.depth)) < 1)){
 
 						GLog.w( Messages.get(this, "locked_chest") );
 						ready();
@@ -2439,6 +2445,12 @@ public class Hero extends Char {
 
             lanterfireactive = true;
 
+
+			Buff.affect(hero, BlessNoMoney.class).set((100), 1);
+				Buff.affect(hero, BlessGoodSTR.class).set((100), 1);
+				Buff.affect(hero, BlessMobDied.class).set((100), 1);
+				Buff.affect(hero, BlessMixShiled.class).set((100), 1);
+				Buff.affect(hero, BlessImmune.class).set((100), 1);
             Buff.affect(this, Nyctophobia.class);
 
             switch (Random.Int(5)) {
@@ -2718,6 +2730,8 @@ public class Hero extends Char {
 					hasKey = Notes.remove(new GoldenKey(Dungeon.depth));
 				} else if (heap.type == Type.CRYSTAL_CHEST){
 					hasKey = Notes.remove(new CrystalKey(Dungeon.depth));
+				} else if (heap.type == Type.BLACK){
+					hasKey = Notes.remove(new BlackKey(Dungeon.depth));
 				}
 				
 				if (hasKey) {

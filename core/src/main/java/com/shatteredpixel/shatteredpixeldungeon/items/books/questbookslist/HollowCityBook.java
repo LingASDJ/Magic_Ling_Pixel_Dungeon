@@ -1,7 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.books.questbookslist;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
-
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -30,7 +28,7 @@ public class HollowCityBook extends Books {
             if (timeBubble != null) timeBubble.disarmPresses();
             InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
             InterlevelScene.curTransition = new LevelTransition();
-            InterlevelScene.curTransition.destDepth = depth + 1;
+            InterlevelScene.curTransition.destDepth = 27;
             InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
             InterlevelScene.curTransition.destBranch = Dungeon.branch;
             InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;

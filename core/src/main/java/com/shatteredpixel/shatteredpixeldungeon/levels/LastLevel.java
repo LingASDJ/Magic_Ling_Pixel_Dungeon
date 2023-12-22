@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -32,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.JAmulet;
-import com.shatteredpixel.shatteredpixeldungeon.items.books.questbookslist.HollowCityBook;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -179,9 +177,9 @@ public class LastLevel extends Level {
 			drop( new Amulet(), AMULET_POS );
 		}
 
-		if(holiday == RegularLevel.Holiday.XMAS){
-			drop( new HollowCityBook(), AMULET_POS );
-		}
+//		if(holiday == RegularLevel.Holiday.XMAS){
+//			drop( new HollowCityBook(), AMULET_POS );
+//		}
 
 	}
 

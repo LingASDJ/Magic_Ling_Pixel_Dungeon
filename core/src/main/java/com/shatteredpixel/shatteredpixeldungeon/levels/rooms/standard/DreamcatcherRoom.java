@@ -110,7 +110,11 @@ public class DreamcatcherRoom extends SpecialRoom {
     private void drawCenter(Level level) {
         for (Door door : connected.values()) {
             door.set( Door.Type.REGULAR );
-            Painter.drawInside( level, this, door, 2, Terrain.EMPTY );
+            if (door.x == left || door.x == right){
+                Painter.drawInside(level, this, door, width()/2, FURROWED_GRASS);
+            } else {
+                Painter.drawInside(level, this, door, height()/2, FURROWED_GRASS);
+            }
         }
     }
 }

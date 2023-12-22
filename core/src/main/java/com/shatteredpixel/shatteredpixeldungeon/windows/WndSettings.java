@@ -721,6 +721,8 @@ public class WndSettings extends WndTabbed {
 
 		CheckBox optFPSLimit;
 
+		CheckBox optIcon;
+
 		@Override
 		protected void createChildren() {
 			title = PixelScene.renderTextBlock(Messages.get(this, "title"), 9);
@@ -764,6 +766,16 @@ public class WndSettings extends WndTabbed {
 			optFPSLimit.checked(SPDSettings.TimeLimit());
 			add(optFPSLimit);
 
+			optIcon = new CheckBox( Messages.get(this, "iconv2") ) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					SPDSettings.ClassSkin(checked());
+				}
+			};
+			optIcon.checked(SPDSettings.ClassSkin());
+			add(optIcon);
+
 			quickslots = new OptionSlider(Messages.get(this, "quickslots"), "" + Constants.MIN_QUICKSLOTS,
 					"" + Constants.MAX_QUICKSLOTS, Constants.MIN_QUICKSLOTS, Constants.MAX_QUICKSLOTS) {
 				@Override
@@ -805,6 +817,7 @@ public class WndSettings extends WndTabbed {
 				ClassUI.setRect(0, bottom, width, SLIDER_HEIGHT);
 				optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
 				optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width/2, SLIDER_HEIGHT);
+				optIcon.setRect(optFPSLimit.right(), optSplashScreen.bottom() + GAP, width/2, SLIDER_HEIGHT);
 				if ((Game.scene() == null || Game.scene().getClass() != GameScene.class) && SPDSettings.quickSwapper()) {
 					quickslots.setRect(optFPSLimit.right(), optFPSLimit.top(), width/2, SLIDER_HEIGHT);
 					wxts.visible = false;
@@ -816,6 +829,7 @@ public class WndSettings extends WndTabbed {
 					ClassUI.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
 					optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
 					optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+					optIcon.setRect(0, optFPSLimit.bottom() + GAP, width, SLIDER_HEIGHT);
 				if ((Game.scene() == null || Game.scene().getClass() != GameScene.class) && SPDSettings.quickSwapper()) {
 					quickslots.visible = false;
 				} else {
