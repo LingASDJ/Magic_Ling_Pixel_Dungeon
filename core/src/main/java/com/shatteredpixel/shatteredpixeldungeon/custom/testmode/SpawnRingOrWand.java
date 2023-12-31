@@ -201,7 +201,7 @@ public class SpawnRingOrWand extends TestItem {
                 @Override
                 protected void onClick() {
                     if(!Button_Level.text().equals(Messages.get(SettingsWindow.class, "select_item"))){ // 修改此行代码
-                        Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextNumberInput(
+                        Game.runOnRenderThread(() ->GameScene.show(new WndTextNumberInput(
                                 Messages.get(SettingsWindow.class, "item_level"), Messages.get(SettingsWindow.class, "item_level_desc"),
                                 Integer.toString(item_level),
                                 4, false, Messages.get(SettingsWindow.class, "confirm"),

@@ -176,6 +176,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
@@ -976,7 +977,7 @@ public class Hero extends Char {
 		ready = false;
 	}
 	
-	private void ready() {
+	public void ready() {
 		if (sprite.looping()) sprite.idle();
 		curAction = null;
 		damageInterrupt = true;
@@ -2005,7 +2006,7 @@ public class Hero extends Char {
 		if(holiday == RegularLevel.Holiday.XMAS){
 			result = Dungeon.depth < 31;
 		} else {
-			result = Dungeon.depth < 26;
+			result = Dungeon.depth < 31;
 		}
 		return result;
 	}
@@ -2057,7 +2058,7 @@ public class Hero extends Char {
 		boolean levelUp = false;
 		while (this.exp >= maxExp()) {
 			this.exp -= maxExp();
-			if (lvl < MAX_LEVEL) {
+			if (lvl < MAX_LEVEL || Dungeon.depth>25 && lvl < 40) {
 				lvl++;
 				levelUp = true;
 				
@@ -2087,11 +2088,13 @@ public class Hero extends Char {
 				GLog.p( Messages.get(this, "new_level") );
 				sprite.showStatus( CharSprite.POSITIVE, Messages.get(Hero.class, "level_up") );
 				Sample.INSTANCE.play( Assets.Sounds.LEVELUP );
-				if (lvl < Talent.tierLevelThresholds[Talent.MAX_TALENT_TIERS+1]){
-					GLog.newLine();
-					GLog.p( Messages.get(this, "new_talent") );
-					StatusPane.talentBlink = 10f;
-					WndHero.lastIdx = 1;
+				if(lvl<31){
+					if (lvl < Talent.tierLevelThresholds[Talent.MAX_TALENT_TIERS+1]){
+						GLog.newLine();
+						GLog.p( Messages.get(this, "new_talent") );
+						StatusPane.talentBlink = 10f;
+						WndHero.lastIdx = 1;
+					}
 				}
 			}
 			
@@ -2348,29 +2351,34 @@ public class Hero extends Char {
 			}
 	}
 
+
+	public void moves(int step) {
+		ScrollOfTeleportation.appear(hero, step);
+	}
+
 	private boolean actMove( HeroAction.Move action ) {
 
 		//水中祝福
 		MoveWater();
 
-		if(!Statistics.seedCustom && !Dungeon.customSeedText.isEmpty()){
+		if(!seedCustom && !Dungeon.customSeedText.isEmpty()){
 			seedCustom = true;
 		}
 
         PotionOfPurity.PotionOfPurityLing potionOfPurityLing =
-                Dungeon.hero.belongings.getItem(PotionOfPurity.PotionOfPurityLing.class);
+                hero.belongings.getItem(PotionOfPurity.PotionOfPurityLing.class);
         if (potionOfPurityLing != null && !Dungeon.level.locked) {
             potionOfPurityLing.detachAll(hero.belongings.backpack);
         }
 
-        RedWhiteRose redWhiteRose = Dungeon.hero.belongings.getItem(RedWhiteRose.class);
+        RedWhiteRose redWhiteRose = hero.belongings.getItem(RedWhiteRose.class);
         if (redWhiteRose != null) {
             Buff.affect(hero, BlessRedWhite.class).set((100), 1);
         } else {
             Buff.detach(hero, BlessRedWhite.class);
         }
 
-        DriedRose rose = Dungeon.hero.belongings.getItem(DriedRose.class);
+        DriedRose rose = hero.belongings.getItem(DriedRose.class);
         Red red = hero.belongings.getItem(Red.class);
         if (red != null && Statistics.deadGo) {
             red.detachAll(hero.belongings.backpack);
@@ -2379,14 +2387,14 @@ public class Hero extends Char {
             rose.detachAll(hero.belongings.backpack);
         }
 
-        CrystalLing crystalLing = Dungeon.hero.belongings.getItem(CrystalLing.class);
+        CrystalLing crystalLing = hero.belongings.getItem(CrystalLing.class);
         if (crystalLing != null) {
             Buff.affect(hero, BlessLing.class).set((100), 1);
         } else {
             Buff.detach(hero, BlessLing.class);
         }
 
-        MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
+        MIME.GOLD_FIVE getHeal = hero.belongings.getItem(MIME.GOLD_FIVE.class);
         if (getHeal != null && HT / 6 > HP) {
             this.HP = HT;
             interrupt();
@@ -2399,7 +2407,7 @@ public class Hero extends Char {
             getHeal.detach(belongings.backpack);
         }
 
-        for (Buff buff : Dungeon.hero.buffs()) {
+        for (Buff buff : hero.buffs()) {
             if (HelpSettings() && !(buff instanceof GameTracker)) {
                 Buff.affect(this, GameTracker.class);
             }
@@ -2414,7 +2422,7 @@ public class Hero extends Char {
 
         //携带该物品时，玩家血量低于一半后自动隐身一段回合。
         //actMove实现
-        MIME.GOLD_TWO getFalseBody = Dungeon.hero.belongings.getItem(MIME.GOLD_TWO.class);
+        MIME.GOLD_TWO getFalseBody = hero.belongings.getItem(MIME.GOLD_TWO.class);
         if (getFalseBody != null && HT / 5 > HP) {
             //给予一个看不见的隐形Buff,继承至Invisibility
             Buff.affect(this, InvisibilityRing.class, InvisibilityRing.DURATION);
@@ -2444,14 +2452,6 @@ public class Hero extends Char {
             new OilLantern().quantity(1).identify().collect();
 
             lanterfireactive = true;
-
-
-			Buff.affect(hero, BlessNoMoney.class).set((100), 1);
-				Buff.affect(hero, BlessGoodSTR.class).set((100), 1);
-				Buff.affect(hero, BlessMobDied.class).set((100), 1);
-				Buff.affect(hero, BlessMixShiled.class).set((100), 1);
-				Buff.affect(hero, BlessImmune.class).set((100), 1);
-            Buff.affect(this, Nyctophobia.class);
 
             switch (Random.Int(5)) {
                 case 0:

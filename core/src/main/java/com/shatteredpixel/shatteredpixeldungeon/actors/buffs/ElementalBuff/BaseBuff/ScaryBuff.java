@@ -4,7 +4,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.DamageBuff.ScaryDamageBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.ElementalBuff;
 import com.shatteredpixel.shatteredpixeldungeon.effects.IconFloatingText;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -40,10 +39,12 @@ public class ScaryBuff extends ElementalBuff {
 
         if(Scary>=100){
             detach();
-            Buff.affect(target, ScaryDamageBuff.class, 50f);
-            AlarmTrap am = new AlarmTrap();
-            am.pos = target.pos;
-            am.activate();
+            Buff.affect(target, ScaryDamageBuff.class).set((40),1);
+        } else if(Scary>0) {
+            Scary--;
+            spend(12f);
+        } else {
+            detach();
         }
 
         return true;

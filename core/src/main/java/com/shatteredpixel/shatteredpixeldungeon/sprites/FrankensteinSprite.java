@@ -13,16 +13,16 @@ public class FrankensteinSprite extends MobSprite {
 
         TextureFilm frames = new TextureFilm( texture, 16, 20 );
 
-        idle = new MovieClip.Animation( 2, true );
+        idle = new MovieClip.Animation( 1, true );
         idle.frames( frames, 0, 1 );
 
-        run = new MovieClip.Animation( 9, true );
+        run = new MovieClip.Animation( 14, true );
         run.frames( frames, 2,3,4,5 );
 
-        attack = new MovieClip.Animation( 6, false );
+        attack = new MovieClip.Animation( 14, false );
         attack.frames( frames, 6,7,8,9,0 );
 
-        die = new MovieClip.Animation( 6, false );
+        die = new MovieClip.Animation( 14, false );
         die.frames( frames, 10, 12, 13 );
 
         play( idle );

@@ -118,7 +118,11 @@ public class StatusPane extends Component {
 		this.large = large;
 
 		if (SPDSettings.ClassUI()) {
-			asset = Assets.Interfaces.STATUS;
+			if(Dungeon.depth>25) {
+				asset = Assets.Interfaces.STATUS_HOLLOW;
+			} else {
+				asset = Assets.Interfaces.STATUS;
+			}
 		} else {
 			asset =  Assets.Interfaces.STATUS_DARK;
 		}
@@ -388,10 +392,13 @@ public class StatusPane extends Component {
 		super.update();
 
 		if (SPDSettings.ClassUI()) {
-			asset = Assets.Interfaces.STATUS;
+			if(Dungeon.depth>25) {
+				asset = Assets.Interfaces.STATUS_HOLLOW;
+			} else {
+				asset = Assets.Interfaces.STATUS;
+			}
 		} else {
 			asset =  Assets.Interfaces.STATUS_DARK;
-
 		}
 
 
@@ -409,7 +416,12 @@ public class StatusPane extends Component {
 		int max = Dungeon.hero.HT;
 
 		if (SPDSettings.ClassUI()) {
-			bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
+			if(Dungeon.depth>25){
+				bg.texture = TextureCache.get(Assets.Interfaces.STATUS_HOLLOW);
+			} else {
+				bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
+			}
+
 		} else {
 			bg.texture = TextureCache.get(Assets.Interfaces.STATUS_DARK);
 		}

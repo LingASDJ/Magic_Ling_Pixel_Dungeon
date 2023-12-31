@@ -30,7 +30,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.ThreeLeafBug;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.Turtle;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.ApprenticeWitch;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Butcher;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Crumb;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Frankenstein;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.PumkingBomber;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Random;
 
@@ -69,6 +71,11 @@ public class Bestiary {
 							ThreeLeafBug.class,ThreeLeafBug.class, AnomaloCaris.class, AnomaloCaris.class,
 							ThreeLeafBug.class));
 				}
+				case 5:
+					if(Dungeon.depth == 17){
+						return new ArrayList<>(Arrays.asList(BlueWraith.class));
+					}
+
 			}
 		}else if (Dungeon.isChallenged(RLPT) && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
 			Dungeon_RLPT();
@@ -199,9 +206,21 @@ public class Bestiary {
 							Eye.class,
 							Scorpio.class, Succubus.class,Fire_Scorpio.class,Ice_Scorpio.class,ShieldHuntsman.class));
 
+				case 26:
+					return new ArrayList<>(Arrays.asList(
+							Frankenstein.class, Crumb.class));
+
 				case 27:
 					return new ArrayList<>(Arrays.asList(
-							Frankenstein.class, ApprenticeWitch.class, Butcher.class));
+							Frankenstein.class, Crumb.class, Butcher.class,Butcher.class,Crumb.class));
+
+				case 28:
+					return new ArrayList<>(Arrays.asList(
+							ApprenticeWitch.class, Crumb.class, ApprenticeWitch.class,Butcher.class,Crumb.class));
+
+				case 29:
+					return new ArrayList<>(Arrays.asList(
+							ApprenticeWitch.class, Crumb.class, PumkingBomber.class, ApprenticeWitch.class));
 
 				default:
 					return new ArrayList<>(Arrays.asList(FlowerSlime.class, FlowerSlime.class,

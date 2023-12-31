@@ -101,6 +101,8 @@ public class EntranceRoom extends StandardRoom {
 
 	}
 
+
+
 	@Override
 	public boolean connect(Room room) {
 		//cannot connect to exit, otherwise works normally

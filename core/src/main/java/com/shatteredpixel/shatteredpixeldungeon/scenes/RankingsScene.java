@@ -192,12 +192,12 @@ public class RankingsScene extends PixelScene {
 		private BitmapText depth;
 		private Image classIcon;
 		private BitmapText level;
-		
+
 		public Record( int pos, boolean latest, Rankings.Record rec ) {
 			super();
-			
+
 			this.rec = rec;
-			
+
 			if (latest) {
 				flare = new Flare( 6, 24 );
 				flare.angularSpeed = 90;
@@ -210,13 +210,13 @@ public class RankingsScene extends PixelScene {
 			} else
 				position.text(" ");
 			position.measure();
-			
+
 			desc.text( Messages.titleCase(rec.desc()) );
 
 			int odd = pos % 2;
-			
+
 			if (rec.win) {
-				shield.copy( new ItemSprite(ItemSpriteSheet.AMULET, null) );
+				shield.copy( new ItemSprite(ItemSpriteSheet.AMULET) );
 				position.hardlight( TEXT_WIN[odd] );
 				desc.hardlight( TEXT_WIN[odd] );
 				depth.hardlight( TEXT_WIN[odd] );
@@ -236,11 +236,18 @@ public class RankingsScene extends PixelScene {
 					add(depth);
 				}
 
-				if (rec.ascending){
-					shield.copy( new ItemSprite(ItemSpriteSheet.AMULET, null) );
-					shield.hardlight(0.4f, 0.4f, 0.7f);
-				}
+			}
 
+			if (rec.herolevel != 0){
+				level.text( Integer.toString(rec.herolevel) );
+				level.measure();
+				add(level);
+			}
+
+			classIcon.copy( Icons.get( rec.heroClass ) );
+			if (rec.heroClass == HeroClass.ROGUE){
+				//cloak of shadows needs to be brightened a bit
+				classIcon.brightness(2f);
 			}
 
 			if (rec.daily){
@@ -251,24 +258,13 @@ public class RankingsScene extends PixelScene {
 				shield.hardlight(1f, 1.5f, 0.67f);
 			}
 
-			if (rec.herolevel != 0){
-				level.text( Integer.toString(rec.herolevel) );
-				level.measure();
-				add(level);
-			}
-			
-			classIcon.copy( Icons.get( rec.heroClass ) );
-			if (rec.heroClass == HeroClass.ROGUE){
-				//cloak of shadows needs to be brightened a bit
-				classIcon.brightness(2f);
-			}
 		}
 		
 		@Override
 		protected void createChildren() {
 			
 			super.createChildren();
-			
+
 			shield = new Image(new ItemSprite( ItemSpriteSheet.TOMB, null ));
 			add( shield );
 			

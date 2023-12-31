@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.effects.IconFloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
@@ -32,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfCha
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
@@ -62,6 +64,18 @@ public class Hunger extends Buff implements Hero.Doom {
 		super.restoreFromBundle( bundle );
 		level = bundle.getFloat( LEVEL );
 		partialDamage = bundle.getFloat(PARTIALDAMAGE);
+	}
+
+	/** 额外饥饿加剧
+	 * Author:JDSA Ling
+	 * Date:2023-12-24
+	 * @param value 传额外饥饿整形值
+	 */
+	public void damgeExtraHungry(int value) {
+		float newLevel = level + STEP;
+		newLevel -= Math.min(newLevel + value, 450f);
+		target.sprite.showStatusWithIcon(CharSprite.NEGATIVE, String.valueOf(value), IconFloatingText.HUNGRY_EXTRA);
+		level -= newLevel;
 	}
 
 	@Override

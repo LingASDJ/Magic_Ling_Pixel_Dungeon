@@ -13,10 +13,10 @@ public class Butcher extends Mob {
     {
         spriteClass = ButcherSprite.class;
 
-        HP = HT = 120;
+        HP = HT = 80;
         defenseSkill = 18;
 
-        maxLvl = 40;
+        maxLvl = 35;
 
         EXP = 16;
 

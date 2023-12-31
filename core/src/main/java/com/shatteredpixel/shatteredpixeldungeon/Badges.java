@@ -799,7 +799,11 @@ public class Badges {
 		}
 	}
 
-	public void Test(){
+    public static void KILL_DOG() {
+		displayBadge( Badge.KILL_DOG );
+    }
+
+    public void Test(){
 
 	}
 
@@ -1111,6 +1115,15 @@ public class Badges {
 
 		READ_BOOK_THREE				( 87 ),
 
+
+		HOLLOWCITY					( 88 ),
+		MASTER						( 89 ),
+		RED_DRAMATICUL				( 90 ),
+		GOD_PLEASE					( 91),
+
+		NOW_ANTATTCK				(92),
+
+
 		//platinum
 		HAPPY_END                   ( 96 ),
 		ALL_ITEMS_IDENTIFIED        ( 97, true ),
@@ -1136,7 +1149,7 @@ public class Badges {
 		CHAMPION_4X                  ( 115 ),
 		CHAMPION_5X                  ( 116 ),
 		NYZ_SHOP                    ( 117 ),
-        DAGETO(118),
+        DAGETO						(118),
         KILL_SM(119),
         //rudy
 
@@ -1146,6 +1159,8 @@ public class Badges {
         KILL_MG(133),
 
         HIGH_SCORE_5(137),
+
+		KILL_DOG(138),
 
         BOSS_CHALLENGE_1(152),
         BOSS_CHALLENGE_2(153),

@@ -329,7 +329,7 @@ public class SpawnWeapon extends TestItem{
                 @Override
                 protected void onClick() {
                     if(!Button_Level.text().equals(Messages.get(SpawnWeapon.WeaponSetting.class, "select_weapon"))){ // 修改此行代码
-                        Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextNumberInput(
+                        Game.runOnRenderThread(() ->GameScene.show(new WndTextNumberInput(
                                 Messages.get(SpawnWeapon.WeaponSetting.class, "weapon_level"), Messages.get(SpawnWeapon.WeaponSetting.class, "weapon_level_desc"),
                                 Integer.toString(weapon_level),
                                 4, false, Messages.get(SpawnWeapon.WeaponSetting.class, "confirm"),

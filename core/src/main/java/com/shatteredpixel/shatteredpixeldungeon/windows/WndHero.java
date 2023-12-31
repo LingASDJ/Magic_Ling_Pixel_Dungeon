@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.ClearLanterBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.ElementalBaseBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.ElementalBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.ElementalFABuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
@@ -604,8 +605,9 @@ public class WndHero extends WndTabbed {
 			content.setSize(buffList.width(), pos);
 			buffList.setSize(buffList.width(), buffList.height());
 
+			//遍历buff 既不是None 但是ElementalBuff ElementalFABuff ElementalBaseBuff
 			for (Buff ebuff : hero.buffs()) {
-				if (ebuff.icon() != BuffIndicator.NONE && (ebuff instanceof ElementalBuff || ebuff instanceof ElementalFABuff)) {
+				if (ebuff.icon() != BuffIndicator.NONE && (ebuff instanceof ElementalBuff || ebuff instanceof ElementalFABuff || ebuff instanceof ElementalBaseBuff)) {
 					EBuffSlot slot = new EBuffSlot(ebuff);
 					slot.setRect(0, pos, WIDTH, slot.icon.height());
 					content.add(slot);

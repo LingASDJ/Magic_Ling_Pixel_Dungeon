@@ -68,6 +68,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.DragonBluePlot;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.HollowPlot;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.EmoIcon;
@@ -1363,6 +1364,8 @@ public class GameScene extends PixelScene {
 			case FALL:
 			case DESCEND:
 			case ANCITYBOSS:
+			case AMULET:
+			case GARDEN:
 				if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 					switch (Dungeon.depth) {
 						case 0:
@@ -1461,8 +1464,17 @@ public class GameScene extends PixelScene {
 						case 21:
 							WndStory.showChapter( WndStory.ID_HALLS );
 							break;
+						case 25:
+							if(Dungeon.branch == 5) WndStory.showChapter( WndStory.ID_CHAPTONEEND );
+							break;
 						case 26:
-							WndStory.showChapter( WndStory.ID_CHAPTONEEND );
+							HollowPlot plot = new HollowPlot();
+							Game.runOnRenderThread(new Callback() {
+								@Override
+								public void call() {
+									GameScene.show(new WndDialog(plot,false));
+								}
+							});
 							break;
 					}
 				}
@@ -1516,6 +1528,8 @@ public class GameScene extends PixelScene {
             case DESCEND:
             case CONTINUE:
 			case ANCITYBOSS:
+			case AMULET:
+			case GARDEN:
                 Camera.main.snapTo(hero.center().x,
                         hero.center().y - DungeonTilemap.SIZE * (defaultZoom / Camera.main.zoom));
                 break;
@@ -1725,6 +1739,7 @@ public class GameScene extends PixelScene {
 		Buff.detach( ch, BlessGoRead.class );
 		Buff.detach( ch, BlessImmune.class );
 		Buff.detach( ch, BlessMixShiled.class );
+		Buff.detach( ch, BlessMixShiled.LanterBarrier.class );
 		Buff.detach( ch, BlessMobDied.class );
 		Buff.detach( ch, BlessNoMoney.class );
 		Buff.detach( ch, BlessAnmy.class );
@@ -1775,6 +1790,11 @@ public class GameScene extends PixelScene {
 						scene.showBanner(bossSlain);
 					}
 					break;
+				case 30:
+					bossSlain.texture(Assets.Interfaces.Cerdog_Title);
+					bossSlain.show(Window.CYELLOW, 0.3f, 5f);
+					scene.showBanner(bossSlain);
+					break;
 			}
 
 			if (Dungeon.hero.buff(LockedFloor.class) == null) {
@@ -1823,6 +1843,11 @@ public class GameScene extends PixelScene {
 						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
 					}
+					break;
+				case 30:
+					bossSlain.texture(Assets.Interfaces.Cerdog_Clear);
+					bossSlain.show( 0xF7941D, 0.3f, 5f);
+					scene.showBanner(bossSlain);
 					break;
 			}
 

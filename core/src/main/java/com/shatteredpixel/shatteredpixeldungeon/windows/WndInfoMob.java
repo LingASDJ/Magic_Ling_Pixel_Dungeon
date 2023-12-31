@@ -253,6 +253,8 @@ public class WndInfoMob extends WndTitledMessage {
 
 			float w = width - image.width() - GAP;
 
+			mobSixInfo.WIDTH = width;
+
 			name.maxWidth((int)w);
 			name.setPos(x + image.width + GAP,
 					image.height() > name.height() ? y +(image.height() - name.height()) / 2 : y);

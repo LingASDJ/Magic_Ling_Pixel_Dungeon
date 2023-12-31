@@ -166,7 +166,7 @@ public enum HeroClass {
 			Buff.affect(hero, RandomBuff.class).set( (5), 1 );
 			Dungeon.gold += 400;
 		}
-
+		//Buff.affect(hero, ScaryDamageBuff.class).set((50),1);
 		PaswordBadges.loadGlobal();
 		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
 		if(passwordbadges.contains(PaswordBadges.Badge.EXSG)){

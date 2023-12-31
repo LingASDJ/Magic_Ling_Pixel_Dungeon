@@ -45,15 +45,27 @@ public class BGMPlayer {
                 playBGM(Assets.BGM_3, true);
             } else if (d > 15 && d <= 20) {
                 playBGM(Assets.BGM_4, true);
-            } else if (d > 20 && d <= 26) {
+            } else if (d > 20 && d <= 25) {
                 playBGM(Assets.BGM_5, true);
+            } else if (d >= 26 && d <= 30) {
+                playBGM(Assets.HOLLOW_CITY, true);
             } else if (d ==-5||d ==-15) {
                 playBGM(Assets.SNOWCYON, true);
             } else
                 //default
                 playBGM(Assets.Music.THEME, true);
         } else {
-            if(s == 2 || s == 3 || s == 4 || s == 5 ){
+            if(s == 5){
+                if(d == 17){
+                    playBGM(Assets.FL_CITY, true);
+                }
+                if(d == 25){
+                    playBGM(Assets.Music.RESET_FINALE, true);
+                }
+            } else if(s == 2 || s == 3 || s == 4){
+                if(d == 25){
+                    playBGM(Assets.Music.RESET_FINALE, true);
+                }
                 if(d == 16 ||d == 17 || d == 18 || d == 19 ){
                     playBGM(Assets.Music.ANCITY, true);
                 }
@@ -81,8 +93,10 @@ public class BGMPlayer {
                     playBGM(Assets.BGM_3, true);
                 } else if (d > 15 && d <= 20) {
                     playBGM(Assets.BGM_4, true);
-                } else if (d > 20 && d <= 26) {
+                } else if (d > 20 && d <= 25) {
                     playBGM(Assets.BGM_5, true);
+                } else if (d >= 26 && d <= 30) {
+                    playBGM(Assets.HOLLOW_CITY, true);
                 } else if (d ==-5||d ==-15) {
                     playBGM(Assets.SNOWCYON, true);
                 } else
@@ -219,6 +233,8 @@ public class BGMPlayer {
                 playBGM(Assets.BGM_BOSSE3, true);
             }else if (Dungeon.bossLevel() && t == 25){
                 level.playLevelMusic();
+            } else if (Dungeon.bossLevel() && t == 30) {
+                playBGM(Assets.BOSSDOG, true);
             } else if (Dungeon.bossLevel() && t == -15) {
                 playBGM(Assets.BGM_FRBOSS, true);
             }   else if (Dungeon.bossLevel() && t == -31) {

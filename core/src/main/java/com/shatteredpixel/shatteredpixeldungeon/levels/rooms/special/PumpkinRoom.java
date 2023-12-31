@@ -28,7 +28,6 @@ import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class PumpkinRoom extends SpecialRoom {
 
@@ -171,20 +170,22 @@ public class PumpkinRoom extends SpecialRoom {
         n = Reflection.newInstance(Random.element(RARE));
         n.flying = true;
 
-        Class<? extends ChampionEnemy>[] buffClsArray = new Class[]{
-                ChampionEnemy.Small.class,
-                ChampionEnemy.Middle.class,
-                ChampionEnemy.Big.class,
-                ChampionEnemy.LongSider.class
-        };
-
-        List<Class<? extends ChampionEnemy>> buffs = new ArrayList<>();
-        Random.shuffle(buffs);
-        buffs.addAll(Arrays.asList(buffClsArray).subList(0, 2));
-
-        for (Class<? extends ChampionEnemy> buffCls : buffs) {
-            Buff.affect(n, buffCls);
+        Class<?extends ChampionEnemy> buffCls0;
+        switch (Random.Int(2)){
+            case 0: default:    buffCls0 = ChampionEnemy.Small.class;      break;
+            case 1:             buffCls0 = ChampionEnemy.Middle.class;   break;
         }
+
+        Buff.affect( n, buffCls0);
+
+        Class<?extends ChampionEnemy> buffCls1;
+        switch (Random.Int(2)){
+            case 0: default:             buffCls1 = ChampionEnemy.Big.class;    break;
+            case 1:             buffCls1 = ChampionEnemy.LongSider.class;        break;
+        }
+
+        Buff.affect( n, buffCls1);
+
 
         Class<?extends ChampionEnemy> buffCls2;
         switch (Random.Int(8)){

@@ -56,7 +56,7 @@ public class Red extends Item {
     @Override
     public ArrayList<String> actions(Hero hero ) {
         ArrayList<String> actions = super.actions( hero );
-        if(Dungeon.depth == 50) {
+        if(Dungeon.depth == 17 && Dungeon.branch == 5) {
             actions.add(AC_BACK);
         }
         return actions;

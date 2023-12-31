@@ -58,7 +58,7 @@ public class FlameParticle extends PixelParticle.Shrinking {
 		size = 4;
 		speed.set( 0 );
 	}
-	
+
 	@Override
 	public void update() {
 		super.update();

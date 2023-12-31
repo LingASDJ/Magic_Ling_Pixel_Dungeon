@@ -8,7 +8,7 @@ public abstract class ElementalBuff extends Buff {
 
     public static int level = 0;
 
-    public int Scary = 0;
+    public int Scary = 1;
 
     public int elementalIcon;
 

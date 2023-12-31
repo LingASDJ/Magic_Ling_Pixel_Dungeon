@@ -131,19 +131,19 @@ public class MimicSprite extends MobSprite {
 
 			TextureFilm frames = new TextureFilm( texture, 16, 16 );
 
-			hiding = new Animation( 1, true );
+			hiding = new Animation( 8, true );
 			hiding.frames( frames, 0+c, 1+c, 2+c, 3+c);
 
-			idle = new Animation( 5, true );
+			idle = new Animation( 8, true );
 			idle.frames( frames, 0+c,1+c,2+c,3+c );
 
-			run = new Animation( 10, true );
+			run = new Animation( 16, true );
 			run.frames( frames, 0+c,1+c,2+c,3+c );
 
-			attack = new Animation( 10, false );
+			attack = new Animation( 16, false );
 			attack.frames( frames, 4+c, 5+c, 6+c );
 
-			die = new Animation( 5, false );
+			die = new Animation( 16, false );
 			die.frames( frames, 7+c,8+c, 9+c,10+c,11+c,12+c );
 
 			play( idle );

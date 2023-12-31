@@ -274,7 +274,7 @@ public class SpawnArmor extends TestItem {
                 @Override
                 protected void onClick() {
                     if(!Button_Level.text().equals(Messages.get(SpawnArmor.ArmorSetting.class, "select_armor"))){ // 修改此行代码
-                        Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextNumberInput(
+                        Game.runOnRenderThread(() ->GameScene.show(new WndTextNumberInput(
                                 Messages.get(SpawnArmor.ArmorSetting.class, "armor_level"), Messages.get(SpawnArmor.ArmorSetting.class, "armor_level_desc"),
                                 Integer.toString(armor_level),
                                 4, false, Messages.get(SpawnArmor.ArmorSetting.class, "confirm"),

@@ -264,9 +264,17 @@ public class WndDialog extends Window {
         this.mainAvatar.visible = true;
     }
 
+    public void setMainColor(int alpha) {
+        this.mainAvatar.color(alpha);
+    }
+
     public void setSecondAvatar(Image secondAvatar) {
         this.secondAvatar.copy(secondAvatar);
         this.secondAvatar.visible = true;
+    }
+
+    public void setSecondColor(int alpha) {
+        this.secondAvatar.color(alpha);
     }
 
     public void setThirdAvatar(Image thirdAvatar) {

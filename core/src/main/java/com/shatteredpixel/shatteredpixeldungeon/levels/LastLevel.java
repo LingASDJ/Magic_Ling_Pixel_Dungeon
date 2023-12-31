@@ -22,24 +22,31 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.JAmulet;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTileSheet;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -102,11 +109,35 @@ public class LastLevel extends Level {
 	private static final int MID = WIDTH/2;
 	public static int AMULET_POS = 12*WIDTH + MID;
 
-	public static int HOLIDAY_POS = 13*WIDTH + MID;
+	@Override
+	public boolean activateTransition(Hero hero, LevelTransition transition) {
+		if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE) {
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+					if (timeFreeze != null) timeFreeze.disarmPresses();
+					Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+					if (timeBubble != null) timeBubble.disarmPresses();
+					InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
+					InterlevelScene.curTransition = new LevelTransition();
+					InterlevelScene.curTransition.destDepth = depth;
+					InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+					InterlevelScene.curTransition.destBranch = 0;
+					InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+					InterlevelScene.curTransition.centerCell  = -1;
+					Game.switchScene( InterlevelScene.class );
+				}
+			});
+			return false;
+		} else {
+			return super.activateTransition(hero, transition);
+		}
+	}
 
 	@Override
 	protected boolean build() {
-		
+
 		setSize(16, 64);
 		Arrays.fill( map, Terrain.CHASM );
 
@@ -155,12 +186,12 @@ public class LastLevel extends Level {
 
 		return true;
 	}
-	
+
 	@Override
 	public Mob createMob() {
 		return null;
 	}
-	
+
 	@Override
 	protected void createMobs() {
 	}

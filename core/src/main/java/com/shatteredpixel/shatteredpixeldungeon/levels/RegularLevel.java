@@ -133,27 +133,34 @@ public abstract class RegularLevel extends Level {
         Lunar lunar = date.getLunar();
 
         boolean isZQJ = lunar.getMonth() == 8 && (lunar.getDay() >= 15 - 10 && lunar.getDay() <= 15 + 12);
-
+		boolean isZQJ_FK = lunar.getMonth() == 11 && (lunar.getDay() >= 17 && lunar.getDay() <= 17+9);
 
         //计算中国传统节日的代码已迁移到最上方的"Gregorian.LunarCheckDate();"方法。
-        switch (calendar.get(Calendar.MONTH)) {
-            case Calendar.JANUARY:
-                if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
-                    holiday = Holiday.XMAS;
-                break;
-            case Calendar.OCTOBER:
-                if (calendar.get(Calendar.WEEK_OF_MONTH) >= 2 && !isZQJ)
-                    holiday = Holiday.HWEEN;
-                break;
-            case Calendar.NOVEMBER:
-                if (calendar.get(Calendar.DAY_OF_MONTH) == 1 && !isZQJ)
-                    holiday = Holiday.HWEEN;
-                break;
-            case Calendar.DECEMBER:
-                if (calendar.get(Calendar.WEEK_OF_MONTH) >= 3)
-                    holiday = Holiday.XMAS;
-                break;
-        }
+
+		if(isZQJ || isZQJ_FK){
+			holiday = RegularLevel.Holiday.ZQJ;
+		} else {
+			switch (calendar.get(Calendar.MONTH)) {
+				case Calendar.JANUARY:
+					if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
+						holiday = Holiday.XMAS;
+					break;
+				case Calendar.OCTOBER:
+					if (calendar.get(Calendar.WEEK_OF_MONTH) >= 2)
+						holiday = Holiday.HWEEN;
+					break;
+				case Calendar.NOVEMBER:
+					if (calendar.get(Calendar.DAY_OF_MONTH) == 1)
+						holiday = Holiday.HWEEN;
+					break;
+				case Calendar.DECEMBER:
+					if (calendar.get(Calendar.WEEK_OF_MONTH) >= 3)
+						holiday = Holiday.XMAS;
+					break;
+			}
+		}
+
+
     }
 
     protected ArrayList<Room> rooms;
@@ -245,7 +252,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 		if(RegularLevel.holiday == Holiday.ZQJ ){
-			if(Dungeon.depth == 17){
+			if(Dungeon.depth == 17 && branch == 0){
 				initRooms.add(new HeartRoom());
 			}
 			if(Statistics.findMoon && Dungeon.depth == 18){
@@ -262,7 +269,12 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new LanFireRoom());
 		}
 
-		initRooms.add(new PumpkinRoom());
+		if(depth>27 && depth <30){
+			if(Random.Float() < 0.5f){
+				initRooms.add(new PumpkinRoom());
+			}
+		}
+
 
 		//initRooms.add(new HeartRoom());
 
@@ -318,7 +330,7 @@ public abstract class RegularLevel extends Level {
 			}
 		} else {
 			//49% chance
-			if(Random.Int(0, 121) >= Random.Int(95, 105)){
+			if(Random.Float() <= 0.49f){
 				if (anCityQuestLevel() && anCityQuestLevel == depth && !anCityQuestProgress) {
 					initRooms.add(new DreamcatcherRoom());
 					DragonGirlBlue.Quest.spawned = true;

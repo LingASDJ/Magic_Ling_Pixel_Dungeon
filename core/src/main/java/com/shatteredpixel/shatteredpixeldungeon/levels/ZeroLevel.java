@@ -251,10 +251,6 @@ public class ZeroLevel extends Level {
     public boolean activateTransition(Hero hero, LevelTransition transition) {
         if (transition.type == LevelTransition.Type.SURFACE){
 
-            if (hero.belongings.getItem(SakaFishSketon.class) != null) {
-                PaswordBadges.REHOMESKY();
-            }
-
             if (hero.belongings.getItem( Amulet.class ) == null) {
                 Game.runOnRenderThread(new Callback() {
                     @Override
@@ -269,6 +265,9 @@ public class ZeroLevel extends Level {
                 Dungeon.win( Amulet.class );
                 Dungeon.deleteGame( GamesInProgress.curSlot, true );
                 Game.switchScene( SurfaceScene.class );
+                if (hero.belongings.getItem(SakaFishSketon.class) != null) {
+                    PaswordBadges.REHOMESKY();
+                }
                 return true;
             }
         } else {

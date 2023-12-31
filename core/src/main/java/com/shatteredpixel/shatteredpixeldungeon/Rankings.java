@@ -36,7 +36,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
-import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -75,23 +74,17 @@ public enum Rankings {
     public static final String LATEST_DAILY = "latest_daily";
     public static final String DAILY_HISTORY_DATES = "daily_history_dates";
     public static final String DAILY_HISTORY_SCORES = "daily_history_scores";
-    public static final Comparator<Record> scoreComparator = new Comparator<Rankings.Record>() {
+    private static final Comparator<Record> scoreComparator = new Comparator<Rankings.Record>() {
         @Override
-        public int compare(Record lhs, Record rhs) {
-            if (rhs.customSeed.isEmpty() && !lhs.customSeed.isEmpty()) {
-                return +1;
-            } else if (lhs.customSeed.isEmpty() && !rhs.customSeed.isEmpty()) {
-                return -1;
-            }
-
-            int result = (int) Math.signum(rhs.score - lhs.score);
+        public int compare( Record lhs, Record rhs ) {
+            int result = (int)Math.signum( rhs.score - lhs.score );
             if (result == 0) {
-                return (int) Math.signum(rhs.gameID.hashCode() - lhs.gameID.hashCode());
-            } else {
+                return (int)Math.signum( rhs.gameID.hashCode() - lhs.gameID.hashCode());
+            } else{
                 return result;
             }
         }
-	};
+    };
     private static final String RECORDS = "records";
     private static final String LATEST = "latest";
     private static final String TOTAL = "total";
@@ -147,25 +140,25 @@ public enum Rankings {
 
         rec.gameID = UUID.randomUUID().toString();
 
-        if (rec.daily) {
-            if (Dungeon.dailyReplay) {
-                latestDailyReplay = rec;
-                return;
-            }
-
-            latestDaily = rec;
-            if (Dungeon.seed <= DungeonSeed.TOTAL_SEEDS) {
-                dailyScoreHistory.put(Dungeon.seed, rec.score);
-            } else {
-                dailyScoreHistory.put(Dungeon.seed - DungeonSeed.TOTAL_SEEDS, rec.score);
-            }
-            save();
-            return;
-        }
+//        if (rec.daily) {
+//            if (Dungeon.dailyReplay) {
+//                latestDailyReplay = rec;
+//                return;
+//            }
+//
+//            latestDaily = rec;
+//            if (Dungeon.seed <= DungeonSeed.TOTAL_SEEDS) {
+//                dailyScoreHistory.put(Dungeon.seed, rec.score);
+//            } else {
+//                dailyScoreHistory.put(Dungeon.seed - DungeonSeed.TOTAL_SEEDS, rec.score);
+//            }
+//            save();
+//            return;
+//        }
 
         records.add(rec);
 
-        Collections.sort(records, scoreComparator);
+        Collections.sort( records, scoreComparator );
 
         lastRecord = records.indexOf(rec);
         int size = records.size();

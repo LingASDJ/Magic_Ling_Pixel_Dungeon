@@ -3,7 +3,6 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.testmode;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
@@ -159,7 +158,7 @@ public class SpawnMissile extends TestItem {
                 @Override
                 protected void onClick() {
                     if(!RedButton_level.text().equals(Messages.get(SettingsWindow.class, "select_item"))){ // 修改此行代码
-                        Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextNumberInput(
+                        Game.runOnRenderThread(() ->GameScene.show(new WndTextNumberInput(
                                 Messages.get(SettingsWindow.class, "item_level"), Messages.get(SettingsWindow.class, "item_level_desc"),
                                 Integer.toString(item_level),
                                 4, false, Messages.get(SettingsWindow.class, "confirm"),
@@ -185,7 +184,7 @@ public class SpawnMissile extends TestItem {
                 @Override
                 protected void onClick() {
                     if(!RedButton_quantity.text().equals(Messages.get(SettingsWindow.class, "select_item"))){ // 修改此行代码
-                        Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextNumberInput(
+                        Game.runOnRenderThread(() ->GameScene.show(new WndTextNumberInput(
                                 Messages.get(SettingsWindow.class, "item_level"), Messages.get(SettingsWindow.class, "item_level_desc"),
                                 Integer.toString(item_quantity),
                                 4, false, Messages.get(SettingsWindow.class, "confirm"),

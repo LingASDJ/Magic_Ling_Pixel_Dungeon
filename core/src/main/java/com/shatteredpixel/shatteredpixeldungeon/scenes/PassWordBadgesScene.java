@@ -57,7 +57,7 @@ public class PassWordBadgesScene extends PixelScene {
 
         List<PaswordBadges.Badge> badges = PaswordBadges.filtered( true );
 
-        int blankBadges = 9;
+        int blankBadges = 10;
         blankBadges -= badges.size();
         if (badges.contains(Badges.Badge.ALL_ITEMS_IDENTIFIED))	blankBadges -= 6;
         if (badges.contains(Badges.Badge.YASD)) 				blankBadges -= 5;

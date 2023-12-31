@@ -78,6 +78,7 @@ public class WitheWoodSword extends MeleeWeapon {
 				//Over Level 3,Not Debuff
 				return super.proc( attacker, defender, damage );
 		}
+
 	}
 
 	@Override

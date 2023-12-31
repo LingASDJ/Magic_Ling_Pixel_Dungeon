@@ -266,6 +266,8 @@ public class MagicalFireRoom extends SpecialRoom {
 			return Messages.get(this, "desc");
 		}
 
+
+
 		@Override
 		public void onBuildFlagMaps( Level l ) {
 			if (volume > 0){

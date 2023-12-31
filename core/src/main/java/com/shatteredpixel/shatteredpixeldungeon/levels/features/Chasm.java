@@ -119,7 +119,7 @@ public class Chasm implements Hero.Doom {
 
 		Level.beforeTransition();
 
-		if (Dungeon.hero.isAlive() && Dungeon.branch == 0) {
+		if (Dungeon.hero.isAlive() && Dungeon.branch == 0 && Dungeon.depth!=30) {
 			Dungeon.hero.interrupt();
 			InterlevelScene.mode = InterlevelScene.Mode.FALL;
 			if (Dungeon.level instanceof RegularLevel) {
@@ -130,7 +130,7 @@ public class Chasm implements Hero.Doom {
 			}
 			Game.switchScene( InterlevelScene.class );
 		} else {
-			ScrollOfTeleportation.appear(hero, level.randomRespawnCell(hero));
+			ScrollOfTeleportation.appear(hero, level.entrance());
 			Dungeon.hero.interrupt();
 			Dungeon.observe();
 		}

@@ -68,7 +68,7 @@ public class InterlevelScene extends PixelScene {
 	private static float fadeTime;
 	
 	public enum Mode {
-		DESCEND, ASCEND, CONTINUE, RESURRECT, RETURN, FALL, RESET, NONE,EXBOSS,GOBACK,FRGIRLBOSS,ANCITYBOSS,DR,GARDEN
+		DESCEND, ASCEND, CONTINUE, RESURRECT, RETURN, FALL, RESET, NONE,EXBOSS,GOBACK,FRGIRLBOSS,ANCITYBOSS,DR,GARDEN,AMULET
 	}
 	public static Mode mode;
 
@@ -255,6 +255,8 @@ public class InterlevelScene extends PixelScene {
 						switch (mode) {
 							case DESCEND:
 							case ANCITYBOSS:
+							case AMULET:
+							case GARDEN:
 								descend();
 								break;
 							case ASCEND:

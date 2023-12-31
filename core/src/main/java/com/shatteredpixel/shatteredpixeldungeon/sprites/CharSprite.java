@@ -95,7 +95,8 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 
 	public enum State {
-		BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED,
+		BURNING, LEVITATING, INVISIBLE,TRUE_INVISIBLE,
+		PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED,
 		ROSESHIELDED, HALOMETHANEBURNING, FROSTBURNING, BUTTER, SPINVISIBLE, SMOKER, HEARTS
 	}
 	private int stunStates = 0;
@@ -432,6 +433,16 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				} else
 					alpha( 0.4f );
 				break;
+			case TRUE_INVISIBLE:
+				if (invisible != null) {
+					invisible.killAndErase();
+				}
+				invisible = new AlphaTweener( this, 0f, 0f );
+				if (parent != null){
+					parent.add(invisible);
+				} else
+					alpha( 0f );
+				break;
 			case PARALYSED:
 				paused = true;
 				break;
@@ -504,7 +515,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					levitation = null;
 				}
 				break;
-			case INVISIBLE:
+			case INVISIBLE:case TRUE_INVISIBLE:
 				if (invisible != null) {
 					invisible.killAndErase();
 					invisible = null;
@@ -584,6 +595,11 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					invisible = null;
 				}
 				alpha(4f);
+				break;
+			case ROSESHIELDED:
+				if(roseshield != null) {
+					roseshield.putOut();
+				}
 				break;
 		}
 	}

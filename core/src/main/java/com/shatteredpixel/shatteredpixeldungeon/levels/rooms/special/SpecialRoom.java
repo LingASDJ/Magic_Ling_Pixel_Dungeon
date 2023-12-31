@@ -24,6 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BigEyeRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.CoinRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EyeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.YinYangRoom;
 import com.watabou.utils.Bundle;
@@ -90,11 +92,10 @@ public abstract class SpecialRoom extends Room {
 
 	//10 special rooms which give consumables more often than equipment
 	//note that alchemy rooms are spawned separately
-	private static final ArrayList<Class<? extends SpecialRoom>> CONSUMABLE_SPECIALS = new ArrayList<>( Arrays.asList(
+	private static final ArrayList<Class<? extends SpecialRoom>> CONSUMABLE_SPECIALS = new ArrayList<>(Arrays.asList(
 			RunestoneRoom.class, GardenRoom.class, LibraryRoom.class, StorageRoom.class,
 			TreasuryRoom.class, MagicWellRoom.class, ToxicGasRoom.class, MagicalFireRoom.class,
-			TrapsRoom.class, CrystalPathRoom.class, EyeRoom.class
-			) );
+			TrapsRoom.class, CrystalPathRoom.class));
 
 	//only one special that uses crystal keys per floor
 	private static final ArrayList<Class<? extends SpecialRoom>> CRYSTAL_KEY_SPECIALS = new ArrayList<>( Arrays.asList(
@@ -135,9 +136,19 @@ public abstract class SpecialRoom extends Room {
 		floorSpecials = (ArrayList<Class<?extends Room>>) runSpecials.clone();
 		
 		//laboratory rooms spawn at set intervals every chapter
+
+		//Eye Room
+
 		if (Dungeon.depth%5 == (Dungeon.seed%3 + 2)){
 			floorSpecials.add(0, LaboratoryRoom.class);
+			if (Dungeon.depth >= 26 && Random.Float() <= 0.45f) {
+				floorSpecials.add(0, BigEyeRoom.class);
+				floorSpecials.add(0, CoinRoom.class);
+			} else {
+				floorSpecials.add(0, EyeRoom.class);
+			}
 		}
+
 	}
 	
 	private static void useType( Class<?extends Room> type ) {

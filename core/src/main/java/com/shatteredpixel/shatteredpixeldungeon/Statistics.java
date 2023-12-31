@@ -43,6 +43,8 @@ public class Statistics {
 	//妻管严
 	public static boolean deadGo = false;
 
+	public static boolean doNotLookLing = false;
+
 	public static boolean happyMode = false;
 
 	//萨卡班甲鱼二阶段
@@ -137,6 +139,9 @@ public class Statistics {
 	public static boolean gooFight = false;
 
     private static final String LOVX = "lovx";
+
+	private static final String LOCD = "locd";
+
     private static final String FUCKALONE = "fuckplayer";
     private static final String WINGAME = "wingame";
     private static final String HIDEEN = "hideen";
@@ -267,7 +272,7 @@ public class Statistics {
 
         findMoon = false;
 		deadGo = false;
-
+		doNotLookLing = false;
 		//萨卡班甲鱼二阶段
 		sakaBackStage = 0;
 
@@ -340,6 +345,7 @@ public class Statistics {
 
         bundle.put(WINGAME, winGame);
 
+		bundle.put(LOCD,doNotLookLing);
 
         bundle.put(BDTX, bossWeapons);
 
@@ -452,6 +458,8 @@ public class Statistics {
 		winGame = bundle.getBoolean(WINGAME);
 
 		HiddenOK = bundle.getBoolean(HIDEEN);
+
+		doNotLookLing = bundle.getBoolean(LOCD);
 
 		seedCustom = bundle.getBoolean(SEEDCUSTOM);
 

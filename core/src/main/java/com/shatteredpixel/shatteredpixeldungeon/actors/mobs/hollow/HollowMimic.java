@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -16,6 +18,8 @@ public class HollowMimic extends Mimic {
         spriteClass = MimicSprite.HollowWall.class;
         properties.add( Property.HOLLOW );
         HP = HT= Random.Int(35,60);
+        EXP = 30;
+        maxLvl = 40;
     }
 
     @Override
@@ -46,5 +50,17 @@ public class HollowMimic extends Mimic {
         m.generatePrize(useDeck);
 
         return m;
+    }
+
+    @Override
+    public void rollToDropLoot(){
+
+        if (items != null) {
+            for (Item item : items) {
+                Dungeon.level.drop( item, hero.pos ).sprite.drop();
+            }
+            items = null;
+        }
+
     }
 }

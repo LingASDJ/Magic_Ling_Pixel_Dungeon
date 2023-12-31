@@ -28,15 +28,13 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MiniSakaFishBossSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MolotovHuntsmanSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.MorpheusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NxhySprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PoltergeistSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.PumkingBomberSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedDragonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShamanSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.SliceGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SpectralNecromancerSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.TyphonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZeroBoatDiedSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
@@ -110,23 +108,30 @@ public class vM0_6_6_Changes {
     }
 
     public static void add_SC_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("即将到来-Halloween-狂欢之巅", true, "");
-        changes.hardlight(Window.CBLACK);
+        ChangeInfo changes = new ChangeInfo("v0.6.9.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.TALENT), ("元损机制"),
+                ("添加了元损机制，小心行事。")));
 
         changes = new ChangeInfo("新Boss", false, null);
         changes.hardlight(Window.R_COLOR);
         changeInfos.add(changes);
 
-        Image mp = new MorpheusSprite();
-        mp.scale.set(PixelScene.align(0.6f));
-        changes.addButton(new ChangeButton(mp, ("影境之主-墨菲厄斯"),
-                ("那么，盛大的剧目即将开演。\n\n该数据已预载，将在万圣节活动启用")));
+//        Image mp = new MorpheusSprite();
+//        mp.scale.set(PixelScene.align(0.6f));
+//        changes.addButton(new ChangeButton(mp, ("影境之主-墨菲厄斯"),
+//                ("那么，盛大的剧目即将开演。\n\n该数据已预载，将在万圣节活动启用")));
 
         Image cr = new CerberusSprite();
         cr.scale.set(PixelScene.align(0.7f));
         changes.addButton(new ChangeButton(cr, ("地狱噩梦-刻耳柏洛斯"),
-                ("……\n\n该数据已预载，将在万圣节活动启用")));
+                ("死亡会找到每一个人，而你，则会优先死去。")));
 
         changes = new ChangeInfo("新怪物", false, null);
         changes.hardlight(Window.CYELLOW);
@@ -141,34 +146,52 @@ public class vM0_6_6_Changes {
         changes.addButton(new ChangeButton(new ButcherSprite(), ("新怪物-电锯狂人"),
                 ("Here is Johny!!!")));
 
+        changes.addButton(new ChangeButton(new PumkingBomberSprite(), ("新怪物-南瓜姜饼自爆人"),
+                ("Happy Happy Happy")));
+
         changes = new ChangeInfo("新NPC", false, null);
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new SliceGirlSprite(), ("外神碎片-幽寂"),
-                ("古堡一切皆为幻想，冒险者，你真的知道自己的真实情况吗？")));
-
-        changes.addButton(new ChangeButton(new TyphonSprite(), ("万妖之祖-提丰"),
-                ("虽然这个世界不在我的管理范围之内，但古堡的一切都不应该存在于这里。\n\n该数据已预载，将在万圣节活动启用")));
+//        changes.addButton(new ChangeButton(new SliceGirlSprite(), ("外神碎片-幽寂"),
+//                ("古堡一切皆为幻想，冒险者，你真的知道自己的真实情况吗？")));
+//
+//        changes.addButton(new ChangeButton(new TyphonSprite(), ("万妖之祖-提丰"),
+//                ("虽然这个世界不在我的管理范围之内，但古堡的一切都不应该存在于这里。\n\n该数据已预载，将在万圣节活动启用")));
 
         Image crx = new ZeroBoatDiedSprite();
         crx.scale.set(PixelScene.align(0.7f));
         changes.addButton(new ChangeButton(crx, ("灵魂摆渡人-卡戎"),
-                ("想过冥河，先交钱（\n\n该数据已预载，将在万圣节活动启用")));
+                ("想过冥河，先交钱（")));
 
 
         changes = new ChangeInfo("说明", false, null);
         changes.hardlight(Window.SHPX_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new MimicSprite.HollowWall(), ("万圣节活动说明"),
-                ("万圣节内容将在12月内进行更新\n" +
-                        "以上预告内容仅为部分说明，实际情况请以游戏实装为准\n" +
-                        "完成万圣节特别行动，获得特别纪念徽章。\n" +
-                        "万圣节活动期间，中秋节幽妹特别行动限时复刻。\n" +
-                        "敬请期待，后续万圣节版本更新。")));
+        changes.addButton(new ChangeButton(new MimicSprite.HollowWall(), ("六区说明"),
+                ("六区属于特别区域，皆在为挑战极限的朋友进行。")));
 
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分无用音乐删除\n" +
+                        "3.部分细节优化更新\n" +
+                        "4.部分界面优化迭代\n" +
+                        "5.字体数据源更新")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "修复了以下Bug:\n\n" +
+                        "1.修复了玫瑰卷轴使用异常问题\n" +
+                        "2.修复了部分特效异常问题\n" +
+                        "3.修复了部分灯火异常问题\n" +
+                        "4.修复了沉睡符石的异常问题\n" +
+                        "5.修复了很多崩溃错误\n" +
+                        "6.现在种子局可以被计入排行榜，但最终得分减半"
+        ));
     }
 
     public static void add_v0_6_8_0_Changes( ArrayList<ChangeInfo> changeInfos ) {

@@ -750,6 +750,7 @@ public abstract class Level implements Bundlable {
 			visuals.clear();
 			visuals.camera = null;
 		}
+
 		for (int i=0; i < length(); i++) {
 			if (pit[i]) {
 				visuals.add( new WindParticle.Wind( i ) );
@@ -760,6 +761,7 @@ public abstract class Level implements Bundlable {
 			if(Dungeon.depth >= 0 && Dungeon.depth <= 10){
 				visuals.add( new ColdSnowParticles.Snow(i));
 			}
+
 		}
 		return visuals;
 	}

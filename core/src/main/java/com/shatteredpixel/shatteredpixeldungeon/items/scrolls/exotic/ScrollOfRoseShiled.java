@@ -66,7 +66,7 @@ public class ScrollOfRoseShiled extends Scroll {
 
     @Override
     public void doRead() {
-
+        detach(curUser.belongings.backpack);
         Buff.prolong(hero, RoseShiled.class, 10f);
         setKnown();
         new Flare( 5, 32 ).color( 0xFF00FF, true ).show( curUser.sprite, 2f );

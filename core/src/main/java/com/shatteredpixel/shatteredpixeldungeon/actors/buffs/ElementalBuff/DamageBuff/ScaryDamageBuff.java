@@ -1,64 +1,69 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.DamageBuff;
 
-import static com.watabou.utils.Random.NormalFloat;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.ElementalFABuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.ElementalBaseBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.Immunities.ScaryImmunitiesBuff;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
-public class ScaryDamageBuff extends ElementalFABuff {
+public class ScaryDamageBuff extends ElementalBaseBuff {
 
     {
         type = buffType.NEGATIVE;
         announced = true;
     }
 
+    public static void beckonEnemies(){
+        if (hero.buff(ScaryDamageBuff.class) != null){
+            for (Mob m : Dungeon.level.mobs){
+                if (m.alignment == Char.Alignment.ENEMY && m.distance(hero) > 8) {
+                    m.beckon(hero.pos);
+                }
+            }
+        }
+    }
+
     {
         immunities.add( ScaryBuff.class );
     }
 
-    public static final float DURATION	= 20f;
+    public static final float DURATION	= 50f;
     private float damageInc = 0;
     @Override
     public boolean act() {
         if (target.isAlive()) {
 
-            damageInc = NormalFloat(damageInc / 2f, damageInc);
-            int dmg = Math.round(damageInc);
 
-            if (dmg > 0) {
-
-                target.damage( dmg, this );
-                if (target.sprite.visible) {
-                    Splash.at( target.sprite.center(), -PointF.PI / 2, PointF.PI / 6,
-                            target.sprite.blood(), Math.min( 10 * dmg / target.HT, 10 ) );
-                }
-
-                if (target == Dungeon.hero && !target.isAlive()) {
-                    Dungeon.fail( getClass() );
-                    GLog.n( Messages.get(this, "ondeath") );
-                }
-
-                spend( TICK );
-            } else {
+            if (--level <= 0) {
                 detach();
+                Buff.affect(target, ScaryImmunitiesBuff.class, ScaryImmunitiesBuff.DURATION);
             }
 
+            damageInc = Random.Int(1,5);
+            target.damage((int)damageInc, this);
+            damageInc -= (int)damageInc;
+            beckonEnemies();
+            spend(interval);
+
+            if (target == hero && !target.isAlive()){
+                GLog.n(Messages.get(this, "on_kill"));
+            }
+
+
         } else {
-
             detach();
-
         }
+
         return true;
     }
 
@@ -67,13 +72,6 @@ public class ScaryDamageBuff extends ElementalFABuff {
         return BuffIndicator.SCARY;
     }
 
-    @Override
-    public void detach() {
-        super.detach();
-        Buff.affect(target, ScaryImmunitiesBuff.class, Random.Int(100,201));
-    }
-
-    public static final String STACKS = "enemy_stacks";
     public static final String DAMAGE = "damage_inc";
 
     @Override
@@ -91,11 +89,6 @@ public class ScaryDamageBuff extends ElementalFABuff {
     @Override
     public void tintIcon(Image icon) {
         icon.hardlight(1f, 0f, 0f);
-    }
-
-    @Override
-    public float iconFadePercent() {
-        return Math.max(0, (DURATION - visualcooldown()) / DURATION);
     }
 
 }

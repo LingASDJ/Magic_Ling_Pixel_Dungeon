@@ -141,12 +141,12 @@ public class LevelRules {
                         return new HallsBossLevel();
                     }
                 case 26:
-                    return new LastLevel();
                 case 27:
                 case 28:
                 case 29:
-                case 30:
                     return new HollowLevel();
+                case 30:
+                    return new CerDogBossLevel();
                 case 31:
                     if ((Statistics.boss_enhance & 0x12) != 0) {
                         return new LastLevel();
@@ -195,8 +195,20 @@ public class LevelRules {
                         return new DeadEndLevel();
                 }
 
+            case 4:
+                switch (depth){
+                    case 25:
+                        return new OpenLastLevel();
+                    case 17: case 18:
+                        return new GardenLevel();
+                    default:
+                        return new DeadEndLevel();
+                }
+
             case 5:
                 switch (depth){
+                    case 25:
+                        return Statistics.endingbald ? new OpenLastLevel() : new NewLastLevel();
                     case 17: case 18:
                         return new GardenLevel();
                     default:

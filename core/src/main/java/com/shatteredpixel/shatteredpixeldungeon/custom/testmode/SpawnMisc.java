@@ -685,7 +685,7 @@ public class SpawnMisc extends TestItem {
                 @Override
                 protected void onClick() {
                     if(!RedButton_quantity.text().equals(Messages.get(SpawnMisc.SettingsWindow.class, "select_item"))){ // 修改此行代码
-                        Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextNumberInput(
+                        Game.runOnRenderThread(() ->GameScene.show(new WndTextNumberInput(
                                 Messages.get(SpawnMisc.SettingsWindow.class, "item_level"), Messages.get(SpawnMisc.SettingsWindow.class, "item_level_desc"),
                                 Integer.toString(item_quantity),
                                 4, false, Messages.get(SpawnMisc.SettingsWindow.class, "confirm"),
