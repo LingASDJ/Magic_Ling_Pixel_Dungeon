@@ -172,7 +172,6 @@ public class ZeroLevel extends Level {
             Item item =new BookBag();
             drop(item, this.width * 18 + 19 );
         }
-
     }
 
     public Mob createMob() {

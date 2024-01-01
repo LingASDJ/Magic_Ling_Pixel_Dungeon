@@ -29,10 +29,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DeathRong;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Typhon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
@@ -59,6 +61,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CerberusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Game;
@@ -156,9 +159,16 @@ public class Cerberus extends Boss {
     private boolean secnod=true;
     private boolean rd=true;
 
+    private boolean ref=true;
+
+    protected boolean hasRaged = false;
+
     private static final String FIRST = "first";
     private static final String SECNOD = "secnod";
     private static final String RD = "rd";
+    private static final String REF = "ref";
+
+    private static final String HAS_RAGED = "has_raged";
 
     @Override
     protected boolean canAttack( Char enemy ) {
@@ -304,8 +314,6 @@ public class Cerberus extends Boss {
             yell(Messages.get(this,"your_must_died"));
         }
 
-
-
         return super.act();
     }
 
@@ -337,7 +345,7 @@ public class Cerberus extends Boss {
                 if(!((DeathRong) mob).rd){
                     for (Buff buff : hero.buffs()) {
                         if (buff instanceof ScaryBuff) {
-                            ((ScaryBuff) buff).damgeScary( Random.NormalIntRange(2,4));
+                            ((ScaryBuff) buff).damgeScary( Random.NormalIntRange(9,12));
                         } else {
                             Buff.affect( enemy, ScaryBuff.class ).set( (100), 1 );
                         }
@@ -607,6 +615,8 @@ public class Cerberus extends Boss {
         bundle.put(FIRST, first);
         bundle.put(SECNOD, secnod);
         bundle.put(RD, rd);
+        bundle.put(REF, ref);
+        bundle.put(HAS_RAGED, hasRaged);
     }
 
 
@@ -642,6 +652,8 @@ public class Cerberus extends Boss {
         first = bundle.getBoolean(FIRST);
         secnod = bundle.getBoolean(SECNOD);
         rd = bundle.getBoolean(RD);
+        ref = bundle.getBoolean(REF);
+        hasRaged = bundle.getBoolean(HAS_RAGED);
     }
 
     @Override
@@ -652,7 +664,6 @@ public class Cerberus extends Boss {
             int multiple = 3;
             lock.addTime(dmg*multiple);
         }
-
 
         if (HP <= 300){
             dmg = Math.min(dmg, 20);
@@ -677,6 +688,74 @@ public class Cerberus extends Boss {
                     ((DriedRose.GhostHero) ch).sayBoss();
                 }
             }
+        }
+    }
+
+    @Override
+    public synchronized boolean isAlive() {
+        if (super.isAlive()){
+            return true;
+        } else {
+            if (!hasRaged){
+                triggerEnrage();
+            }
+            return !buffs(Rage.class).isEmpty();
+        }
+    }
+
+    protected void triggerEnrage(){
+        Buff.affect(this, Rage.class).setShield(666666);
+        Typhon typhon = new Typhon();
+        typhon.pos = 356;
+        GameScene.add(typhon);
+        ref = false;
+        spend( TICK );
+        hasRaged = true;
+    }
+
+
+    public static class Rage extends ShieldBuff {
+
+        {
+            type = buffType.POSITIVE;
+        }
+
+        @Override
+        public boolean act() {
+
+            if (target.HP > 0){
+                detach();
+                return true;
+            }
+
+            absorbDamage( 2);
+
+            if (shielding() <= 0){
+                target.die(null);
+            }
+
+            spend( TICK );
+
+            return true;
+        }
+
+        @Override
+        public int icon () {
+            return BuffIndicator.FURY;
+        }
+
+        @Override
+        public String toString () {
+            return Messages.get(this, "name");
+        }
+
+        @Override
+        public String desc () {
+            return Messages.get(this, "desc", shielding());
+        }
+
+        {
+            immunities.add(Terror.class);
         }
     }
 

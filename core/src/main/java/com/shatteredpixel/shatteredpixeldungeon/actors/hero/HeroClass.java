@@ -212,14 +212,14 @@ public enum HeroClass {
 			new MobPlacer().quantity(1).identify().collect();
 
 			new PotionOfMindVision().quantity(50).identify().collect();
-
+			new PotionOfHealing().quantity(50).identify().collect();
 			new PotionOfLiquidFlame().quantity(50).identify().collect();
 			new ScrollOfMagicMapping().quantity(100).identify().collect();
 			new ScrollOfUpgrade().quantity(100).identify().collect();
 
 			new TestBooks().quantity(1).identify().collect();
 
-			new ScrollOfFlameCursed().quantity(44).identify().collect();
+			new ScrollOfFlameCursed().quantity(50).identify().collect();
 
 			Dungeon.gold = 600000000;
 			hero.STR = 27;

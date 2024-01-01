@@ -85,9 +85,12 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.RandomRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BigEyeRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.CoinRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.DreamcatcherRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EyeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.GooRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.HeartRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.LinkRoom;
@@ -303,6 +306,13 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
+		if (Dungeon.depth >= 26 && Random.Int(10) <= 4) {
+			initRooms.add(new BigEyeRoom());
+			initRooms.add(new CoinRoom());
+		} else if(Dungeon.depth<26 && Random.Int(10) == 1) {
+			initRooms.add(new EyeRoom());
+		}
+
 		if(feeling == Feeling.THREEWELL){
 			initRooms.add(new HealWellRoom());
 			initRooms.add(new RandomRoom());
@@ -330,15 +340,17 @@ public abstract class RegularLevel extends Level {
 			}
 		} else {
 			//49% chance
-			if(Random.Float() <= 0.49f){
-				if (anCityQuestLevel() && anCityQuestLevel == depth && !anCityQuestProgress) {
-					initRooms.add(new DreamcatcherRoom());
-					DragonGirlBlue.Quest.spawned = true;
-					anCityQuestProgress = true;
-				} else if (!anCityQuestProgress && depth == anCityQuestLevel) {
-					initRooms.add(new DreamcatcherRoom());
-					anCityQuestProgress = true;
-					DragonGirlBlue.Quest.spawned = true;
+			if(branch == 0){
+				if(Random.Float() <= 0.49f){
+					if (anCityQuestLevel() && anCityQuestLevel == depth && !anCityQuestProgress) {
+						initRooms.add(new DreamcatcherRoom());
+						DragonGirlBlue.Quest.spawned = true;
+						anCityQuestProgress = true;
+					} else if (!anCityQuestProgress && depth == anCityQuestLevel) {
+						initRooms.add(new DreamcatcherRoom());
+						anCityQuestProgress = true;
+						DragonGirlBlue.Quest.spawned = true;
+					}
 				}
 			}
 		}

@@ -26,7 +26,7 @@ public class PumkingBomber extends Mob {
     {
         spriteClass = PumkingBomberSprite.class;
 
-        HP = HT = 90;
+        HP = HT = 120;
         defenseSkill = 22;
         viewDistance = Light.DISTANCE;
 
@@ -39,7 +39,7 @@ public class PumkingBomber extends Mob {
 
         HUNTING = new Hunting();
 
-        baseSpeed = 1f;
+        baseSpeed = 0.75f;
 
         properties.add(Char.Property.DEMONIC);
         properties.add(Char.Property.UNDEAD);

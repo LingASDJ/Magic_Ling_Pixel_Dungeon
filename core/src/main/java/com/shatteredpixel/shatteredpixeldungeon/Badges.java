@@ -803,6 +803,15 @@ public class Badges {
 		displayBadge( Badge.KILL_DOG );
     }
 
+
+	public static void CITY_END() {
+		displayBadge( Badge.HOLLOWCITY );
+	}
+
+	public static void WOC() {
+		displayBadge( Badge.WOC_MONEY_GIRL);
+	}
+
     public void Test(){
 
 	}
@@ -1122,6 +1131,7 @@ public class Badges {
 		GOD_PLEASE					( 91),
 
 		NOW_ANTATTCK				(92),
+		WOC_MONEY_GIRL				(93),
 
 
 		//platinum

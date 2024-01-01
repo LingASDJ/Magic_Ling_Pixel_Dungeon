@@ -700,7 +700,7 @@ public abstract class Char extends Actor {
 		}
 
 		if(buff(BlessImmune.class) != null && !this.isImmune(BlessImmune.class)){
-			dmg = (int) Math.ceil(dmg * 0.25f);
+			dmg = (int) Math.ceil(dmg * 0.75f);
 		}
 
 		for (ChampionHero buff : buffs(ChampionHero.class)){

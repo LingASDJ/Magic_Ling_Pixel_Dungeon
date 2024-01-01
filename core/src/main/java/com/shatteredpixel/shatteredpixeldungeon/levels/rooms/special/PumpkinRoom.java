@@ -6,6 +6,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.IceGolem;
@@ -19,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.BlackKey;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -161,6 +163,25 @@ public class PumpkinRoom extends SpecialRoom {
             Heap h = level.drop(item, Lpos);
             h.setHauntedIfCursed();
             h.type = Heap.Type.SKELETON;
+        }
+
+        ArrayList<Item> itemss = new ArrayList<>();
+        itemss.add(new BlackKey( Dungeon.depth ));
+        int count = 0; // 计数器
+        for (Item item : itemss){
+
+            if (count >= 2) {
+                break; // 达到两次后跳出循环
+            }
+
+            int Lpos;
+            do {
+                Lpos = level.pointToCell(random());
+            } while (level.map[Lpos] != EMPTY_SP || level.heaps.get(Lpos) != null);
+            Heap h = level.drop(item, Lpos);
+            h.setHauntedIfCursed();
+            h.type = Heap.Type.TOMB;
+            count++;
         }
 
         Mob n;

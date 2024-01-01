@@ -1,6 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CUSTOM_DECO;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
@@ -17,8 +16,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FrostFlameParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
-import com.shatteredpixel.shatteredpixeldungeon.items.JAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.questbookslist.HollowCityBook;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -71,10 +68,10 @@ public class NewLastLevel extends Level {
             E,E,O,O,O,O,O,O,O,O,O,E,E,
             E,O,X,O,O,O,O,O,O,O,X,O,E,
             E,O,O,O,O,O,O,O,O,O,O,O,E,
-            E,E,E,E,E,O,O,O,E,E,E,E,E,
-            E,E,E,E,E,O,O,O,E,E,E,E,E,
-            E,O,O,E,E,O,O,O,E,E,O,O,E,
-            E,O,O,O,E,O,O,O,E,O,O,O,E,
+            K,K,K,K,K,O,O,O,K,K,K,K,K,
+            K,K,K,K,K,O,O,O,K,K,K,K,K,
+            E,O,O,K,K,O,O,O,K,K,O,O,E,
+            E,O,O,O,K,O,O,O,K,O,O,O,E,
             E,O,G,O,O,O,O,O,O,O,G,O,E,
             E,E,O,O,X,O,O,O,X,O,O,E,E,
             W,E,E,O,O,O,O,O,O,O,E,E,W,
@@ -170,12 +167,6 @@ public class NewLastLevel extends Level {
     public static int BOOK_POS = 58;
     @Override
     protected void createItems() {
-        if(Dungeon.isChallenged(PRO)){
-            drop( new JAmulet(), AMULET_POS );
-        } else {
-            drop( new Amulet(), AMULET_POS );
-        }
-
         drop( new HollowCityBook(), BOOK_POS );
 
     }
@@ -338,11 +329,11 @@ public class NewLastLevel extends Level {
 
             PointF p = DungeonTilemap.tileCenterToWorld( pos );
 
-            pos( p.x + 5.2f, p.y - 10, 0.5f, 0 );
+            pos( p.x + 5.2f, p.y - 10, 0.3f, 0 );
 
             pour(FlameParticle.FACTORY, 0.1f );
 
-            add( new Halo( 6, 0xFFa500, 0.4f ).point( p.x + 5.2f, p.y - 10 ) );
+            add( new Halo( 3, 0xFFa500, 0.4f ).point( p.x + 5.2f, p.y - 10 ) );
 
         }
 
@@ -365,10 +356,10 @@ public class NewLastLevel extends Level {
 
             PointF p = DungeonTilemap.tileCenterToWorld( pos );
 
-            pos( p.x - 6.8f, p.y - 10, 0.5f, 0 );
+            pos( p.x - 6.8f, p.y - 10, 0.3f, 0 );
 
             pour(FlameParticle.FACTORY, 0.1f );
-            add( new Halo( 6, 0xFFa500, 0.4f ).point( p.x - 6.8f, p.y - 10 ) );
+            add( new Halo( 3, 0xFFa500, 0.4f ).point( p.x - 6.8f, p.y - 10 ) );
         }
 
         @Override
@@ -390,10 +381,10 @@ public class NewLastLevel extends Level {
 
             PointF p = DungeonTilemap.tileCenterToWorld( pos );
 
-            pos( p.x + 11.5f, p.y - 7, 0.5f, 0 );
+            pos( p.x + 11.5f, p.y - 7, 0.3f, 0 );
 
             pour(FlameParticle.FACTORY, 0.1f );
-            add( new Halo( 6, 0xFFa500, 0.4f ).point( p.x + 11.5f, p.y - 7 ) );
+            add( new Halo( 3, 0xFFa500, 0.4f ).point( p.x + 11.5f, p.y - 7 ) );
         }
 
         @Override
@@ -415,10 +406,10 @@ public class NewLastLevel extends Level {
 
             PointF p = DungeonTilemap.tileCenterToWorld( pos );
 
-            pos( p.x - 12.8f, p.y - 7, 0.5f, 0 );
+            pos( p.x - 12.8f, p.y - 7, 0.3f, 0 );
 
             pour(FlameParticle.FACTORY, 0.1f );
-            add( new Halo( 6, 0xFFa500, 0.4f ).point( p.x - 12.8f, p.y - 7 ) );
+            add( new Halo( 3, 0xFFa500, 0.4f ).point( p.x - 12.8f, p.y - 7 ) );
         }
 
         @Override
@@ -440,10 +431,10 @@ public class NewLastLevel extends Level {
 
             PointF p = DungeonTilemap.tileCenterToWorld( pos );
 
-            pos( p.x + 6, p.y, 0.5f, 0 );
+            pos( p.x + 6, p.y, 0.3f, 0 );
 
             pour(FlameParticle.FACTORY, 0.1f );
-            add( new Halo( 6, 0xFFa500, 0.4f ).point( p.x + 6, p.y ) );
+            add( new Halo( 3, 0xFFa500, 0.4f ).point( p.x + 6, p.y ) );
         }
 
         @Override
@@ -465,10 +456,10 @@ public class NewLastLevel extends Level {
 
             PointF p = DungeonTilemap.tileCenterToWorld( pos );
 
-            pos( p.x - 7.5f, p.y, 0.5f, 0 );
+            pos( p.x - 7.5f, p.y, 0.3f, 0 );
 
             pour(FlameParticle.FACTORY, 0.1f );
-            add( new Halo( 6, 0xFFa500, 0.4f ).point( p.x - 7.5f, p.y ) );
+            add( new Halo( 3, 0xFFa500, 0.4f ).point( p.x - 7.5f, p.y ) );
         }
 
         @Override

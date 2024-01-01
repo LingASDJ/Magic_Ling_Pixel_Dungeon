@@ -153,8 +153,6 @@ public class LevelRules {
                     } else {
                         return new LaveCavesBossLevel();
                     }
-                case 50:
-                    return new GardenLevel();
                 default:
                     Statistics.deepestFloor--;
                     return new DeadEndLevel();

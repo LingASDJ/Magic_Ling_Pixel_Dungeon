@@ -251,8 +251,7 @@ public class Bestiary {
 						Gnoll.class, Gnoll.class, Albino.class));
 			case 3:
 				return new ArrayList<>(Arrays.asList(FlowerSlime.class,
-						FlowerSlime.class, Salamander.class,
-						Salamander.class, FlowerSlime.class, FlowerSlime.class,
+						FlowerSlime.class, Salamander.class, FlowerSlime.class, FlowerSlime.class,
 						ClearElemental.class,Crab.class,Swarm.class));
 			case 4:
 				return new ArrayList<>(Arrays.asList(Salamander.class,

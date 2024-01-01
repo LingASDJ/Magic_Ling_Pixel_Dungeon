@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Typhon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -178,6 +179,7 @@ public class RankingsScene extends PixelScene {
 		private static final float GAP	= 4;
 		
 		private static final int[] TEXT_WIN	= {0xFFFF88, 0xB2B25F};
+		private static final int[] TEXT_WIN2	= {0xCF6E28, 0xC66c28};
 		private static final int[] TEXT_LOSE= {0xDDDDDD, 0x888888};
 		private static final int FLARE_WIN	= 0x888866;
 		private static final int FLARE_LOSE	= 0x666666;
@@ -201,7 +203,12 @@ public class RankingsScene extends PixelScene {
 			if (latest) {
 				flare = new Flare( 6, 24 );
 				flare.angularSpeed = 90;
-				flare.color( rec.win ? FLARE_WIN : FLARE_LOSE );
+				if (rec.cause == Typhon.class){
+					flare.color( 0xCF6E28 );
+				} else {
+					flare.color( rec.win ? FLARE_WIN : FLARE_LOSE );
+				}
+
 				addToBack( flare );
 			}
 
@@ -215,12 +222,22 @@ public class RankingsScene extends PixelScene {
 
 			int odd = pos % 2;
 
+
+
 			if (rec.win) {
-				shield.copy( new ItemSprite(ItemSpriteSheet.AMULET) );
-				position.hardlight( TEXT_WIN[odd] );
-				desc.hardlight( TEXT_WIN[odd] );
-				depth.hardlight( TEXT_WIN[odd] );
-				level.hardlight( TEXT_WIN[odd] );
+				if (rec.cause == Typhon.class){
+					shield.copy( new ItemSprite(ItemSpriteSheet.CITY_HOOD));
+					position.hardlight( TEXT_WIN2[odd] );
+					desc.hardlight( TEXT_WIN2[odd] );
+					depth.hardlight( TEXT_WIN2[odd] );
+					level.hardlight( TEXT_WIN2[odd] );
+				} else {
+					shield.copy( new ItemSprite(ItemSpriteSheet.AMULET) );
+					position.hardlight( TEXT_WIN[odd] );
+					desc.hardlight( TEXT_WIN[odd] );
+					depth.hardlight( TEXT_WIN[odd] );
+					level.hardlight( TEXT_WIN[odd] );
+				}
 			} else {
 				position.hardlight( TEXT_LOSE[odd] );
 				desc.hardlight( TEXT_LOSE[odd] );

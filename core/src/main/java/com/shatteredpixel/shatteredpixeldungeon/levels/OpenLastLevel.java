@@ -67,15 +67,15 @@ public class OpenLastLevel extends Level {
 
     private static final int[] code_map = {
             K,K,K,K,K,K,K,K,K,K,K,K,K,
-            W,O,K,K,K,W,W,W,K,K,K,O,W,
-            W,O,O,O,S,W,O,W,S,O,O,O,W,
+            W,K,K,K,K,K,K,K,K,K,K,K,W,
+            W,K,O,O,S,O,O,O,S,O,O,K,W,
             E,E,O,O,O,O,O,O,O,O,O,E,E,
             E,O,X,O,O,O,O,O,O,O,X,O,E,
             E,O,O,O,O,O,O,O,O,O,O,O,E,
-            E,E,E,E,E,O,O,O,E,E,E,E,E,
-            E,E,E,E,E,O,O,O,E,E,E,E,E,
-            E,O,O,E,E,O,O,O,E,E,O,O,E,
-            E,O,O,O,E,O,O,O,E,O,O,O,E,
+            K,K,K,K,K,O,O,O,K,K,K,K,K,
+            K,K,K,K,K,O,O,O,K,K,K,K,K,
+            E,O,O,K,K,O,O,O,K,K,O,O,E,
+            E,O,O,O,K,O,O,O,K,O,O,O,E,
             E,O,G,O,O,O,O,O,O,O,G,O,E,
             E,E,O,O,X,O,O,O,X,O,O,E,E,
             W,E,E,O,O,O,O,O,O,O,E,E,W,
@@ -360,11 +360,11 @@ public class OpenLastLevel extends Level {
 
             PointF p = DungeonTilemap.tileCenterToWorld( pos );
 
-            pos( p.x + 5.2f, p.y - 10, 0.5f, 0 );
+            pos( p.x + 5.2f, p.y - 10, 0.3f, 0 );
 
             pour(FlameParticle.FACTORY, 0.1f );
 
-            add( new Halo( 6, 0xFFa500, 0.4f ).point( p.x + 5.2f, p.y - 10 ) );
+            add( new Halo( 3, 0xFFa500, 0.4f ).point( p.x + 5.2f, p.y - 10 ) );
 
         }
 
@@ -387,10 +387,10 @@ public class OpenLastLevel extends Level {
 
             PointF p = DungeonTilemap.tileCenterToWorld( pos );
 
-            pos( p.x - 6.8f, p.y - 10, 0.5f, 0 );
+            pos( p.x - 6.8f, p.y - 10, 0.3f, 0 );
 
             pour(FlameParticle.FACTORY, 0.1f );
-            add( new Halo( 6, 0xFFa500, 0.4f ).point( p.x - 6.8f, p.y - 10 ) );
+            add( new Halo( 3, 0xFFa500, 0.4f ).point( p.x - 6.8f, p.y - 10 ) );
         }
 
         @Override
@@ -412,10 +412,10 @@ public class OpenLastLevel extends Level {
 
             PointF p = DungeonTilemap.tileCenterToWorld( pos );
 
-            pos( p.x + 11.5f, p.y - 7, 0.5f, 0 );
+            pos( p.x + 11.5f, p.y - 7, 0.3f, 0 );
 
             pour(FlameParticle.FACTORY, 0.1f );
-            add( new Halo( 6, 0xFFa500, 0.4f ).point( p.x + 11.5f, p.y - 7 ) );
+            add( new Halo( 3, 0xFFa500, 0.4f ).point( p.x + 11.5f, p.y - 7 ) );
         }
 
         @Override
@@ -437,10 +437,10 @@ public class OpenLastLevel extends Level {
 
             PointF p = DungeonTilemap.tileCenterToWorld( pos );
 
-            pos( p.x - 12.8f, p.y - 7, 0.5f, 0 );
+            pos( p.x - 12.8f, p.y - 7, 0.3f, 0 );
 
             pour(FlameParticle.FACTORY, 0.1f );
-            add( new Halo( 6, 0xFFa500, 0.4f ).point( p.x - 12.8f, p.y - 7 ) );
+            add( new Halo( 3, 0xFFa500, 0.4f ).point( p.x - 12.8f, p.y - 7 ) );
         }
 
         @Override
@@ -462,10 +462,10 @@ public class OpenLastLevel extends Level {
 
             PointF p = DungeonTilemap.tileCenterToWorld( pos );
 
-            pos( p.x + 6, p.y, 0.5f, 0 );
+            pos( p.x + 6, p.y, 0.3f, 0 );
 
             pour(FlameParticle.FACTORY, 0.1f );
-            add( new Halo( 6, 0xFFa500, 0.4f ).point( p.x + 6, p.y ) );
+            add( new Halo( 3, 0xFFa500, 0.4f ).point( p.x + 6, p.y ) );
         }
 
         @Override
@@ -487,10 +487,10 @@ public class OpenLastLevel extends Level {
 
             PointF p = DungeonTilemap.tileCenterToWorld( pos );
 
-            pos( p.x - 7.5f, p.y, 0.5f, 0 );
+            pos( p.x - 7.5f, p.y, 0.3f, 0 );
 
             pour(FlameParticle.FACTORY, 0.1f );
-            add( new Halo( 6, 0xFFa500, 0.4f ).point( p.x - 7.5f, p.y ) );
+            add( new Halo( 3, 0xFFa500, 0.4f ).point( p.x - 7.5f, p.y ) );
         }
 
         @Override

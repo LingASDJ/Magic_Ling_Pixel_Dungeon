@@ -207,12 +207,14 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
@@ -1022,7 +1024,9 @@ public class Hero extends Char {
         switch (Random.Int(5)) {
             case 0:
             default:
-                Buff.affect(hero, BlessNoMoney.class).set((100), 1);
+				if(Dungeon.depth < 20){
+					Buff.affect(hero, BlessNoMoney.class).set((100), 1);
+				}
                 break;
             case 1:
                 Buff.affect(hero, BlessGoodSTR.class).set((100), 1);
@@ -1034,7 +1038,9 @@ public class Hero extends Char {
                 Buff.affect(hero, BlessMixShiled.class).set((100), 1);
                 break;
             case 4:
-                Buff.affect(hero, BlessImmune.class).set((100), 1);
+				if(Dungeon.depth < 20){
+					Buff.affect(hero, BlessImmune.class).set((100), 1);
+				}
                 break;
         }
         GLog.p(Messages.get(WndStory.class, "good"));
@@ -2733,8 +2739,24 @@ public class Hero extends Char {
 				} else if (heap.type == Type.BLACK){
 					hasKey = Notes.remove(new BlackKey(Dungeon.depth));
 				}
-				
-				if (hasKey) {
+
+				if(hasKey && heap.type == Type.WHITETOMB && Dungeon.depth>25){
+					GameScene.show(new WndOptions(new ItemSprite(heap),
+							Messages.titleCase(Messages.get(heap.type == Type.WHITETOMB, "name")),
+							Messages.get(heap.type == Type.WHITETOMB, "start_prompt"),
+							Messages.get(heap.type == Type.WHITETOMB, "enter_yes"),
+							Messages.get(heap.type == Type.WHITETOMB, "enter_no")) {
+						@Override
+						protected void onSelect(int index) {
+							if (index == 0) {
+								GameScene.updateKeyDisplay();
+								heap.open(hero);
+								Badges.WOC();
+								spend(Key.TIME_TO_UNLOCK);
+							}
+						}
+					});
+				} else if (hasKey) {
 					GameScene.updateKeyDisplay();
 					heap.open(this);
 					spend(Key.TIME_TO_UNLOCK);

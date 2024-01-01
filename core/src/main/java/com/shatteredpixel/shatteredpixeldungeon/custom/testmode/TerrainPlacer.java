@@ -13,7 +13,9 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
+import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +47,7 @@ public class TerrainPlacer extends TestItem {
                 @Override
                 public void onSelect(final Integer cell) {
                     if (chosen == 17 || chosen == 18 || chosen == 19) {
-//                        GLog.i("不能放置此类型的地形");
+                        GLog.i("不能放置此类型的地形");
                     } else if (cell != null) {
                         Level.set(cell,chosen);
                         GameScene.updateMap(cell);
@@ -64,17 +66,17 @@ public class TerrainPlacer extends TestItem {
         }
     }
 
-//    @Override
-//    public void storeInBundle(Bundle bundle) {
-//        super.storeInBundle(bundle);
-//        bundle.put("chosen", chosen);
-//    }
-//
-//    @Override
-//    public void restoreFromBundle(Bundle bundle) {
-//        super.restoreFromBundle(bundle);
-//        chosen = bundle.getInt("chosen");
-//    }
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put("chosen", chosen);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        chosen = bundle.getInt("chosen");
+    }
 
     private class SettingsWindow extends Window {
 

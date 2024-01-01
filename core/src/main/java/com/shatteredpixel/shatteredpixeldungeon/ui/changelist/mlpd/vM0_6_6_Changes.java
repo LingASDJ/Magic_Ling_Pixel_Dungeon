@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.RedDragonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShamanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SpectralNecromancerSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TyphonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZeroBoatDiedSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
@@ -50,6 +51,7 @@ import java.util.ArrayList;
 public class vM0_6_6_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_SC1_Changes(changeInfos);
         add_SC_Changes(changeInfos);
         add_v0_6_8_0_Changes(changeInfos);
         add_v0_6_7_0_Changes(changeInfos);
@@ -106,6 +108,45 @@ public class vM0_6_6_Changes {
         changes.addButton(new ChangeButton(c, ("冰雪魔女重做"),
                 ("石碑上记录了有关于她的一切，她的过去，她的现在，她的未来。而当你与她对峙时，你是否能够看清她的真实面目？")));
     }
+
+    public static void add_SC1_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.9.1", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化\n" +
+                        "2.开发者模式优化")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "修复了以下Bug:\n\n" +
+                        "1.修复了六区的越界问题\n" +
+                        "2.修复了仙人跳房间在六区是非特别版本\n" +
+                        "3.修复了部分房间缺少钥匙的问题"
+        ));
+
+        Image cr = new CerberusSprite();
+        cr.scale.set(PixelScene.align(0.7f));
+        changes.addButton(new ChangeButton(cr, ("地狱噩梦-刻耳柏洛斯"),
+                ("添加死亡处刑动画，和提丰相关对话。")));
+
+        changes.addButton(new ChangeButton(new PumkingBomberSprite(), ("新怪物-南瓜姜饼自爆人"),
+                ("速度降低，血量提升")));
+
+        changes = new ChangeInfo("新NPC", false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new TyphonSprite(), ("万妖之祖-提丰"),
+                ("虽然这个世界不在我的管理范围之内，但古堡的一切都不应该存在于这里。")));
+
+
+    }
+
 
     public static void add_SC_Changes( ArrayList<ChangeInfo> changeInfos ) {
         ChangeInfo changes = new ChangeInfo("v0.6.9.0", true, "");

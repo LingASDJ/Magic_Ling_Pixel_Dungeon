@@ -129,7 +129,7 @@ public class DeathRong extends NTNPC {
         return true;
     }
 
-    private void tell(String text) {
+    public static void tell(String text) {
         Game.runOnRenderThread(new Callback() {
                   @Override
                   public void call() {

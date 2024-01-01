@@ -24,9 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BigEyeRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.CoinRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EyeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.YinYangRoom;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -141,12 +138,6 @@ public abstract class SpecialRoom extends Room {
 
 		if (Dungeon.depth%5 == (Dungeon.seed%3 + 2)){
 			floorSpecials.add(0, LaboratoryRoom.class);
-			if (Dungeon.depth >= 26 && Random.Float() <= 0.45f) {
-				floorSpecials.add(0, BigEyeRoom.class);
-				floorSpecials.add(0, CoinRoom.class);
-			} else {
-				floorSpecials.add(0, EyeRoom.class);
-			}
 		}
 
 	}
@@ -169,7 +160,7 @@ public abstract class SpecialRoom extends Room {
 	}
 	
 	public static SpecialRoom createRoom(){
-		if (Dungeon.depth == pitNeededDepth){
+		if (Dungeon.depth == pitNeededDepth && Dungeon.branch == 0){
 			pitNeededDepth = -1;
 			
 			useType( PitRoom.class );

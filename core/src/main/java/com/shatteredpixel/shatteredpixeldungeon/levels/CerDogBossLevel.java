@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
@@ -26,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SentryRoom;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
@@ -38,6 +40,7 @@ import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Callback;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.PointF;
 
 public class CerDogBossLevel extends Level{
@@ -78,9 +81,12 @@ public class CerDogBossLevel extends Level{
     public void occupyCell(Char ch) {
         super.occupyCell(ch);
 
-        //GLog.w(String.valueOf(hero.pos));
+        if(DeviceCompat.isDebug()){
+            //GLog.w(String.valueOf(hero.pos));
+        }
 
-        boolean isTrue = ch.pos == LDBossDoor && ch == hero && Dungeon.level.distance(ch.pos, entrance) >= 2;
+
+        boolean isTrue = ch.pos == LDBossDoor && ch == hero && level.distance(ch.pos, entrance) >= 2;
 
         //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
         if (map[getBossDoor] == Terrain.DOOR && isTrue || map[getBossDoor] == Terrain.EMBERS && isTrue) {
@@ -110,7 +116,7 @@ public class CerDogBossLevel extends Level{
 
         int doorPos = 449;
 
-        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+        for (Mob mob : level.mobs.toArray(new Mob[0])){
             if ( mob instanceof DeathRong) {
                 if(((DeathRong) mob).secnod){
                     ((DeathRong) mob).secnod = false;
@@ -135,7 +141,7 @@ public class CerDogBossLevel extends Level{
             }
         });
 
-        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+        for (Mob mob : level.mobs.toArray(new Mob[0])){
             if (mob instanceof YellowStar){
 
                 mob.sprite.jump(46, 356, 145, 12f,new Callback() {
@@ -170,10 +176,11 @@ public class CerDogBossLevel extends Level{
 
                                 Buff.detach( hero, MindVision.class );
 
-                                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                                for (Mob mob : level.mobs.toArray(new Mob[0])){
                                     if ( mob instanceof DeathRong) {
                                         if(!((DeathRong) mob).rd){
                                             Buff.affect( ncx, DiedCrused.class);
+                                            DeathRong.tell(Messages.get(DeathRong.class, "fuck",hero.name()));
                                         }
                                     }
                                 }
@@ -376,7 +383,7 @@ public class CerDogBossLevel extends Level{
 
         @Override
         public void update() {
-            if (visible == (pos < Dungeon.level.heroFOV.length && Dungeon.level.heroFOV[pos])) {
+            if (visible == (pos < level.heroFOV.length && level.heroFOV[pos])) {
                 super.update();
             }
         }
