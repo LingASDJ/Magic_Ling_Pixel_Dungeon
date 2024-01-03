@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -55,6 +57,21 @@ import java.util.Comparator;
 
 public class Item implements Bundlable {
 
+	@Override
+	public String toString() {
+
+		String name = name();
+
+		if (visiblyUpgraded() != 0)
+			name = Messages.format( TXT_TO_STRING_LVL, name, visiblyUpgraded()  );
+
+		if (quantity > 1)
+			name = Messages.format( TXT_TO_STRING_X, name, quantity );
+
+		return name;
+
+	}
+
 	protected static final String TXT_TO_STRING_LVL		= "%s %+d";
 	protected static final String TXT_TO_STRING_X		= "%s x%d";
 	
@@ -71,14 +88,11 @@ public class Item implements Bundlable {
 	//TODO should these be private and accessed through methods?
 	public int image = 0;
 	public int icon = -1; //used as an identifier for items with randomized images
-
+	
 	public boolean stackable = false;
-
-	public int flasks;
-
 	protected int quantity = 1;
 	public boolean dropsDownHeap = false;
-
+	
 	public int level = 0;
 
 	public boolean levelKnown = false;
@@ -90,6 +104,7 @@ public class Item implements Bundlable {
 	public boolean unique = false;
 
 	// These items are preserved even if the hero's inventory is lost via unblessed ankh
+	// this is largely set by the resurrection window, items can override this to always be kept
 	public boolean keptThoughLostInvent = false;
 
 	// whether an item can be included in heroes remains
@@ -141,6 +156,10 @@ public class Item implements Bundlable {
 		keptThoughLostInvent = false;
 	}
 
+	public boolean keptThroughLostInventory(){
+		return keptThoughLostInvent;
+	}
+
 	public void doThrow( Hero hero ) {
 		GameScene.selectCell(thrower);
 	}
@@ -165,9 +184,17 @@ public class Item implements Bundlable {
 			
 		}
 	}
+
+	//can be overridden if default action is variable
+	public String defaultAction(){
+		return defaultAction;
+	}
 	
 	public void execute( Hero hero ) {
-		execute( hero, defaultAction );
+		String action = defaultAction();
+		if (action != null) {
+			execute(hero, defaultAction());
+		}
 	}
 	
 	protected void onThrow( int cell ) {
@@ -219,6 +246,23 @@ public class Item implements Bundlable {
 						Badges.validateItemLevelAquired( this );
 						Talent.onItemCollected(Dungeon.hero, item);
 						if (isIdentified()) Catalog.setSeen(getClass());
+					}
+					if (TippedDart.lostDarts > 0){
+						Dart d = new Dart();
+						d.quantity(TippedDart.lostDarts);
+						TippedDart.lostDarts = 0;
+						if (!d.collect()){
+							//have to handle this in an actor as we can't manipulate the heap during pickup
+							Actor.add(new Actor() {
+								{ actPriority = VFX_PRIO; }
+								@Override
+								protected boolean act() {
+									Dungeon.level.drop(d, Dungeon.hero.pos).sprite.drop();
+									Actor.remove(this);
+									return true;
+								}
+							});
+						}
 					}
 					return true;
 				}
@@ -332,7 +376,9 @@ public class Item implements Bundlable {
 	//returns the level of the item, after it may have been modified by temporary boosts/reductions
 	//note that not all item properties should care about buffs/debuffs! (e.g. str requirement)
 	public int buffedLvl(){
-		if (Dungeon.hero.buff( Degrade.class ) != null) {
+		//only the hero can be affected by Degradation
+		if (Dungeon.hero.buff( Degrade.class ) != null
+			&& (isEquipped( Dungeon.hero ) || Dungeon.hero.belongings.contains( this ))) {
 			return Degrade.reduceLevel(level());
 		} else {
 			return level();
@@ -426,9 +472,8 @@ public class Item implements Bundlable {
 	public static void evoke( Hero hero ) {
 		hero.sprite.emitter().burst( Speck.factory( Speck.EVOKE ), 5 );
 	}
-	
-	@Override
-	public String toString() {
+
+	public String title() {
 
 		String name = name();
 
@@ -628,7 +673,7 @@ public class Item implements Bundlable {
 		return TIME_TO_THROW;
 	}
 	
-	public static Hero curUser = null;
+	protected static Hero curUser = null;
 	protected static Item curItem = null;
 	protected static CellSelector.Listener thrower = new CellSelector.Listener() {
 		@Override

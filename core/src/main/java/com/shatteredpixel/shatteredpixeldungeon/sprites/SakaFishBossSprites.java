@@ -10,10 +10,11 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Callback;
 
 public class SakaFishBossSprites extends MobSprite {
     private Animation leap;
-
+    private Animation prep;
     private int zapPos;
     private Animation activeIdle;
 
@@ -29,7 +30,7 @@ public class SakaFishBossSprites extends MobSprite {
         idle = new Animation( 4, true );
         idle.frames( frames, 14,15,16,17 );
 
-        activeIdle = new Animation( 4, true );
+        activeIdle = new Animation( 8, true );
         activeIdle.frames( frames, 18,19,20,21);
 
         run = new Animation( 10, true );
@@ -37,10 +38,14 @@ public class SakaFishBossSprites extends MobSprite {
 
         attack = new Animation( 15, false );
         attack.frames( frames, 4,5,6 );
+
         zap = attack.clone();
 
-        die = new Animation( 10, false );
-        die.frames( frames, 23,24,25,26 );
+        die = new Animation( 8, false );
+        die.frames( frames, 23,24,25,26,26,26,26,26,26,26,26,26 );
+
+        prep = new Animation( 1, true );
+        prep.frames( frames,  52,53,54,55 );
 
         leap = new Animation( 2, true );
         leap.frames( frames, 52,53,54,55 );
@@ -55,6 +60,12 @@ public class SakaFishBossSprites extends MobSprite {
     //哦 创死你
     public void leapPrep( int cell ){
         turnTo( ch.pos, cell );
+        play( prep );
+    }
+
+    @Override
+    public void jump( int from, int to, float height, float duration,  Callback callback ) {
+        super.jump( from, to, 0, duration, callback );
         play( leap );
     }
 

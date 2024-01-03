@@ -103,7 +103,7 @@ public class FlameB01 extends Mob {
                 sprite.attack( enemy.pos );
                 spend( TIME_TO_BURN );
                 shoot(this, enemy.pos);
-                gasTankPressure -= Random.Int(1, 10);
+                gasTankPressure -= 60;
             }
 
             return !visible;

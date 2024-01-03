@@ -5,14 +5,20 @@ import com.watabou.noosa.TextureFilm;
 
 public class RenSprite extends MobSprite {
     public RenSprite() {
+
         texture( Assets.Sprites.REN );
+
         TextureFilm ren = new TextureFilm(this.texture, 12, 14);
-        this.idle = new Animation(2, true);
-        this.idle.frames(ren, 0, 1, 2, 3);
-        this.run = new Animation(10, true);
-        this.run.frames(ren, 0);
-        this.die = new Animation(10, false);
-        this.die.frames(ren, 0);
-        this.play(this.idle);
+
+        idle = new Animation(2, true);
+        idle.frames(ren, 0, 1, 2, 3);
+
+        run = new Animation(10, true);
+        run.frames(ren, 0);
+
+        die = new Animation(10, false);
+        die.frames(ren, 0);
+
+        play(this.idle);
     }
 }

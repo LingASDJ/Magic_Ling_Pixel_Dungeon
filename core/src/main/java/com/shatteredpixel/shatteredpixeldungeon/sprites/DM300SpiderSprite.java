@@ -7,10 +7,13 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OldDM300;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
@@ -66,16 +69,26 @@ public class DM300SpiderSprite extends MobSprite
         play( zap );
 
         MagicMissile.boltFromChar( parent,
-                MagicMissile.MAGIC_MISSILE,
+                MagicMissile.CORROSION,
                 this,
                 cell,
                 new Callback() {
                     @Override
                     public void call() {
-                        ((Spinner)ch).shootWeb();
+                        Sample.INSTANCE.play( Assets.Sounds.GAS );
+                        ((DM200)ch).onZapComplete();
                     }
                 } );
-        Sample.INSTANCE.play( Assets.Sounds.MISS );
+        Sample.INSTANCE.play( Assets.Sounds.MISS, 1f, 1.5f );
+        GLog.w(Messages.get(OldDM300.class, "vent"));
+    }
+
+    @Override
+    public void onComplete( Animation anim ) {
+        if (anim == zap) {
+            idle();
+        }
+        super.onComplete( anim );
     }
 
     public void attack(int var1) {

@@ -23,14 +23,14 @@ public class DimandKingSprite extends MobSprite {
 
         TextureFilm frames = new TextureFilm( texture, 24, 24 );
 
-        idle = new Animation( 7, true );
+        idle = new Animation( 11, true );
         idle.frames( frames, 0, 0, 0, 1 );
 
-        run = new Animation( 10, true );
-        run.frames( frames, 2, 3, 4);
+        run = new Animation( 7, true );
+        run.frames( frames, 2, 3);
 
         attack = new Animation( 15, false );
-        attack.frames( frames, 5,6,7,8);
+        attack.frames( frames, 4,5,6,7,8);
 
         cast = attack.clone();
 
@@ -157,7 +157,7 @@ public class DimandKingSprite extends MobSprite {
         }
 
         public void updateArmor( int tier ) {
-            TextureFilm film = new TextureFilm( HeroSprite.tiers(), 6, FRAME_WIDTH, FRAME_HEIGHT );
+            TextureFilm film = new TextureFilm( HeroSprite.tiers(), 7, FRAME_WIDTH, FRAME_HEIGHT );
 
             idle = new Animation( 1, true );
             idle.frames( film, 0, 0, 0, 1, 0, 0, 1, 1 );

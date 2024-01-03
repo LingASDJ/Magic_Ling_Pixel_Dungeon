@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,7 +79,9 @@ public class v0_7_X_Changes {
 				"_-_ Released October 2nd, 2019\n" +
 				"_-_ 76 days after Shattered v0.7.4\n" +
 				"\n" +
-				"Dev commentary will be added here in the next update."));
+				"v0.7.5 was a precursor update to v0.8.0, with reworks and expansions to enemies and bosses in the first two regions of the game. I focused on the first two regions for this update as I was already reasonably happy with them after improvements from much earlier updates, and so the changes needed were more minor. I was originally planning to do each future region in its own update, but ended up balling them all up into v0.8.0, which took half a year as a result!\n" +
+				"\n" +
+				"The only major correction to these changes that I needed to make in the future were to Tengu's boss fight. In the second phase of the fight in v0.7.5 the player had to navigate around traps while Tengu was offscreen. I wanted this to be a bit of a break, but it felt more like it interrupted the fight than anything else. After v0.8.0 it was clear to me that multi-phase bosses did not need break phases, and so I removed the second phase from Tengu."));
 		
 		changes.addButton( new ChangeButton(new Image(Assets.Sprites.SNAKE, 12, 0, 12, 11), "Sewer Enemies",
 				"Two new enemies have been added to the sewers!\n\n" +
@@ -193,7 +195,11 @@ public class v0_7_X_Changes {
 				"_-_ Released July 18th, 2019\n" +
 				"_-_ 56 days after Shattered v0.7.3\n" +
 				"\n" +
-				"Dev commentary will be added here in the next update."));
+				"v0.7.4 was mainly focused around allies, featuring two new ally-focused wands and a bunch of changes to existing ally-granting items. In particular, the changes to ally AI made a huge impact on how usable they were as dedicated partners through the dungeon. Disposable allies (such as mirror images) always worked decently, but prior to v0.7.4 it was usually a liability to invest upgrades into ally-granting items.\n" +
+				"\n" +
+				"The two wands added in this update were actually originally concepted all the way back in v0.3.0. I ended up shelving them at the time as I wasn't confident that I would be able to implement them well.\n" +
+				"\n" +
+				"v0.7.4 was also the first update to begin laying groundwork for releasing Shattered on other platforms! While it would still take a while after this to actually release there, these technical changes were an important first step."));
 
 		changes.addButton( new ChangeButton(new WandOfWarding(),
 				"This brand new wand spawns autonomous wards which attack enemies. Wards can be upgraded by being zapped again, and eventually form up into sentry turrets.\n\n" +
@@ -319,7 +325,9 @@ public class v0_7_X_Changes {
 				"_-_ Released May 23rd, 2019\n" +
 				"_-_ 66 days after Shattered v0.7.2\n" +
 				"\n" +
-				"Dev commentary will be added here in the next update."));
+				"v0.7.3 was another variety update, focused on several incremental additions, improvements, buffs, and nerfs. This update came out relatively quickly as I wanted to respond to feedback from the enchantment changes in v0.7.2. Several of the new enchantments added in v0.7.2 were adjusted or replaced entirely, as I came up with better ideas for enchantments that weren't just damage boosts.\n" +
+				"\n" +
+				"There were also significant additions and improvements to alchemy and thrown weapons. Just like with enchantments, I was still working on finding the best balancing for many alchemy recipes. v0.7.3 helped, but more changes were needed to the system itself in future updates. One notable change was allowing players to create tipped darts anywhere, instead of having it by part of the alchemy system. This led to a huge increase to the usage of tipped darts."));
 		
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.LONGSWORD, new ItemSprite.Glowing(0xFFFF00)), "Enchantment Changes",
 				"Several changes have been made to enchantments, based on feedback from 0.7.2:\n\n" +
@@ -499,7 +507,15 @@ public class v0_7_X_Changes {
 				"_-_ Recipe changed to: strength + catalyst + 5 energy\n" +
 				"_-_ Health boost now scales up with level, but fades after the hero gains a few levels\n\n" +
 				"_-_ Meat Pie recipe cost reduced from 9 to 6, total healing reduced from 45 to 25\n\n" +
-				"_-_ Added a privacy policy link to the Google Play edition of Shattered."));
+				"_-_ Added a privacy policy link to the Google Play edition of Shattered.",
+
+				"Major internal improvements to service integrations for Google Play version of the game:\n" +
+				"_-_ 'Share Gameplay Data' now uses Google Firebase Analytics instead of older Google Analytics. Data collected is unchanged.\n" +
+				"_-_ Many internal improvements to Google Play Games sync and Google Payment integration.\n" +
+				"_-_ Item renaming donation perk now applies to wands.\n\n" +
+				"_-_ Added support for adaptive icons in Android 8.0+.\n" +
+				"_-_ Improved how the game handles orientation changes and window resizing.\n" +
+				"_-_ Shocking enchantment no longer visually arcs lightning to the hero."));
 		
 		changes.addButton( new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
 				"Fixed:\n" +
@@ -518,23 +534,8 @@ public class v0_7_X_Changes {
 				"_-_ Thieves rarely escaping when they are close\n" +
 				"_-_ Beacon of returning losing set location when scroll holder is picked up\n" +
 				"_-_ Recycle not giving an item if inventory is full\n" +
-				"_-_ Rare cases where the game wouldn't save during alchemy"));
-		
-		changes.addButton( new ChangeButton(Icons.get(Icons.LANGS), Messages.get(ChangesScene.class, "language"),
-				"Updated Translations\n\n" +
-				"Updated Translator Credits"));
-		
-		changes.addButton( new ChangeButton(Icons.get(Icons.PREFS), Messages.get(ChangesScene.class, "misc"),
-				"Major internal improvements to service integrations for Google Play version of the game:\n" +
-				"_-_ 'Share Gameplay Data' now uses Google Firebase Analytics instead of older Google Analytics. Data collected is unchanged.\n" +
-				"_-_ Many internal improvements to Google Play Games sync and Google Payment integration.\n" +
-				"_-_ Item renaming donation perk now applies to wands.\n\n" +
-				"_-_ Added support for adaptive icons in Android 8.0+.\n" +
-				"_-_ Improved how the game handles orientation changes and window resizing.\n" +
-				"_-_ Shocking enchantment no longer visually arcs lightning to the hero."));
-		
-		changes.addButton( new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
-				"Fixed (existed before 0.7.2):\n" +
+				"_-_ Rare cases where the game wouldn't save during alchemy",
+
 				"_-_ Cloak of Shadows very rarely consuming more charges than it should\n" +
 				"_-_ Assassin's blink not working on enemies standing on traps\n" +
 				"_-_ Glyph of stone blocking an incorrect amount of damage (too low) in some cases\n" +
@@ -548,6 +549,10 @@ public class v0_7_X_Changes {
 				"_-_ Crashes and other odd behaviour when a berserking hero is affected by shielding buffs\n" +
 				"_-_ Tengu spawning on top of other characters\n" +
 				"_-_ Cloak of shadows only being usable from quickslots if it has 1 charge"));
+		
+		changes.addButton( new ChangeButton(Icons.get(Icons.LANGS), Messages.get(ChangesScene.class, "language"),
+				"Updated Translations\n\n" +
+				"Updated Translator Credits"));
 		
 		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
 		changes.hardlight( CharSprite.POSITIVE );
@@ -739,16 +744,16 @@ public class v0_7_X_Changes {
 		
 		changes.addButton( new ChangeButton(Icons.get(Icons.SHPX), "Developer Commentary",
 				"_-_ Released Oct 18th, 2018\n" +
-				"_-_ 501 days after Shattered v0.6.0\n" +
 				"_-_ 168 days after Shattered v0.6.5\n" +
+				"_-_ 501 days after Shattered v0.6.0\n" +
 				"\n" +
 				"v0.7.0 was Shattered's second longest-developed update at almost 6 months! This update took so long because it included my first attempt at an entirely new gameplay system: item crafting via alchemy!\n" +
 				"\n" +
-				"Crafting was actually something I wanted to do for years but I kept ended up scrapping my plans because they were too complex. Finally I settled on a system that was aimed at giving consumable items new uses, and that didn't interact with equipment at all. Despite my best efforts the system still ended up not quite doing its job while also being too complex. I've ended up steadily improving the system over future updates.\n" +
+				"Crafting was actually something I wanted to do for years but I kept ending up scrapping my plans because they were too complex. Finally I settled on a system that was aimed at giving consumable items new uses, and that didn't interact with equipment at all. Despite my best efforts the system still ended up not quite doing its job while also being too complex. I've ended up steadily improving the system over future updates.\n" +
 				"\n" +
 				"Also, before v0.7.0 there were a few unique artifacts which only dropped from particular enemies. I standardized these items in v0.7.0 to either be universal, or scrapped them entirely and put some of their functionality into other game systems."));
 		
-		changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 96, 16, 16 ), "Alchemy Overhaul!",
+		changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 0, 64, 16, 16 ), "Alchemy Overhaul!",
 				"The game's alchemy system has been entirely overhauled!\n\n" +
 				"Alchemy is now a full consumable crafting system which lets you create all kinds of new items.\n\n" +
 				"There is also a new resource: alchemical energy. Every alchemy pot has some energy within it. Some recipes require this energy, so make sure to use it wisely!\n\n" +
@@ -851,14 +856,12 @@ public class v0_7_X_Changes {
 				"_-_ Augmented weapons rarely having inconsistent speed\n" +
 				"_-_ Scroll of upgrade revealing curses on unidentified items\n" +
 				"_-_ Item curses rarely not being revealed when they should be\n" +
-				"_-_ Assassin buffs not being cleared when they should in some cases\n" +
+				"_-_ Assassin buffs not being cleared when they should in some cases",
+
 				"_-_ Rooting not working correctly on retreating enemies\n" +
 				"_-_ Searching spending hunger in a locked level\n" +
 				"_-_ 'Faith is my armor' deleting class armors\n" +
-				"_-_ Various cases where the player can be ontop of enemies"));
-		
-		changes.addButton( new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
-				"Fixed:\n" +
+				"_-_ Various cases where the player can be ontop of enemies\n" +
 				"_-_ Various screen layout issues in power saver mode\n" +
 				"_-_ Crashes when tengu is healed above 1/2 health\n" +
 				"_-_ Bolas incorrectly requiring 15 strength\n" +

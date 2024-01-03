@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -95,13 +96,16 @@ public class Guard extends Mob {
 					yell(Messages.get(this, "scorpion"));
 					new Item().throwSound();
 					Sample.INSTANCE.play(Assets.Sounds.CHAINS);
-					sprite.parent.add(new Chains(sprite.center(), enemy.sprite.destinationCenter(), new Callback() {
+					sprite.parent.add(new Chains(sprite.center(),
+							enemy.sprite.destinationCenter(),
+							Effects.Type.CHAIN,
+							new Callback() {
 						public void call() {
-							Actor.addDelayed(new Pushing(enemy, enemy.pos, newPosFinal, new Callback() {
+							Actor.add(new Pushing(enemy, enemy.pos, newPosFinal, new Callback() {
 								public void call() {
 									pullEnemy(enemy, newPosFinal);
 								}
-							}), -1);
+							}));
 							next();
 						}
 					}));
@@ -133,7 +137,7 @@ public class Guard extends Mob {
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 7);
+		return super.drRoll() + Random.NormalIntRange(0, 7);
 	}
 
 	@Override

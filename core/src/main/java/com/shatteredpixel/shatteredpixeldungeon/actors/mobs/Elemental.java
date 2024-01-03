@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,18 +27,23 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
+import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
@@ -47,12 +52,19 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutat
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ElementalSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
+import com.watabou.utils.GameMath;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -69,14 +81,14 @@ public abstract class Elemental extends Mob {
 		flying = true;
 	}
 
-	private boolean summonedALly;
+	protected boolean summonedALly;
 	
 	@Override
 	public int damageRoll() {
 		if (!summonedALly) {
 			return Random.NormalIntRange(20, 25);
 		} else {
-			int regionScale = Math.max(2, (1 + Dungeon.depth/5));
+			int regionScale = Math.max(2, (1 + Dungeon.scalingDepth()/5));
 			return Random.NormalIntRange(5*regionScale, 5 + 5*regionScale);
 		}
 	}
@@ -86,7 +98,7 @@ public abstract class Elemental extends Mob {
 		if (!summonedALly) {
 			return 25;
 		} else {
-			int regionScale = Math.max(2, (1 + Dungeon.depth/5));
+			int regionScale = Math.max(2, (1 + Dungeon.scalingDepth()/5));
 			return 5 + 5*regionScale;
 		}
 	}
@@ -94,14 +106,14 @@ public abstract class Elemental extends Mob {
 	public void setSummonedALly(){
 		summonedALly = true;
 		//sewers are prison are equivalent, otherwise scales as normal (2/2/3/4/5)
-		int regionScale = Math.max(2, (1 + Dungeon.depth/5));
+		int regionScale = Math.max(2, (1 + Dungeon.scalingDepth()/5));
 		defenseSkill = 5*regionScale;
 		HT = 15*regionScale;
 	}
 	
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 5);
+		return super.drRoll() + Random.NormalIntRange(0, 5);
 	}
 	
 	protected int rangedCooldown = Random.NormalIntRange( 3, 5 );
@@ -117,16 +129,18 @@ public abstract class Elemental extends Mob {
 	
 	@Override
 	protected boolean canAttack( Char enemy ) {
-		if (rangedCooldown <= 0) {
-			return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT ).collisionPos == enemy.pos;
+		if (super.canAttack(enemy)){
+			return true;
 		} else {
-			return super.canAttack( enemy );
+			return rangedCooldown < 0 && new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT ).collisionPos == enemy.pos;
 		}
 	}
 	
 	protected boolean doAttack( Char enemy ) {
 		
-		if (Dungeon.level.adjacent( pos, enemy.pos ) || rangedCooldown > 0) {
+		if (Dungeon.level.adjacent( pos, enemy.pos )
+				|| rangedCooldown > 0
+				|| new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT ).collisionPos != enemy.pos) {
 			
 			return super.doAttack( enemy );
 			
@@ -150,9 +164,11 @@ public abstract class Elemental extends Mob {
 		return damage;
 	}
 	
-	private void zap() {
+	protected void zap() {
 		spend( 1f );
-		
+
+		Invisibility.dispel(this);
+		Char enemy = this.enemy;
 		if (hit( this, enemy, true )) {
 			
 			rangedProc( enemy );
@@ -170,11 +186,12 @@ public abstract class Elemental extends Mob {
 	}
 	
 	@Override
-	public void add( Buff buff ) {
+	public boolean add( Buff buff ) {
 		if (harmfulBuffs.contains( buff.getClass() )) {
 			damage( Random.NormalIntRange( HT/2, HT * 3/5 ), buff );
+			return false;
 		} else {
-			super.add( buff );
+			return super.add( buff );
 		}
 	}
 	
@@ -204,117 +221,236 @@ public abstract class Elemental extends Mob {
 			setSummonedALly();
 		}
 	}
-
+	
 	public static class FireElemental extends Elemental {
-
+		
 		{
 			spriteClass = ElementalSprite.Fire.class;
-
+			
 			loot = new PotionOfLiquidFlame();
 			lootChance = 1/8f;
-
+			
 			properties.add( Property.FIERY );
+			
+			harmfulBuffs.add( com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost.class );
+			harmfulBuffs.add( Chill.class );
 		}
-
+		
 		@Override
 		protected void meleeProc( Char enemy, int damage ) {
-			if (Random.Int( 2 ) == 0 && !level.water[enemy.pos]) {
+			if (Random.Int( 2 ) == 0 && !Dungeon.level.water[enemy.pos]) {
 				Buff.affect( enemy, Burning.class ).reignite( enemy );
 				if (enemy.sprite.visible) Splash.at( enemy.sprite.center(), sprite.blood(), 5);
 			}
 		}
-		private float resurrectChance = 0.01f;
-		@Override
-		public void die(Object cause) {
-
-			//TODO 1%
-			if(!Statistics.endingbald && Random.Float() <= resurrectChance) {
-				//Dungeon.level.drop(new EndingBlade(), pos).sprite.drop();
-				Statistics.endingbald = true;
-				//TODO 1%
-				super.die(cause);
-			} else if(Statistics.endingbald && Random.Float() <= resurrectChance) {
-				Dungeon.level.drop(new Gold().quantity(Random.Int(12, 24)), pos).sprite.drop();
-				super.die(cause);
-			} else {
-				super.die(cause);
-			}
-		}
-
+		
 		@Override
 		protected void rangedProc( Char enemy ) {
-			if (!level.water[enemy.pos]) {
+			if (!Dungeon.level.water[enemy.pos]) {
 				Buff.affect( enemy, Burning.class ).reignite( enemy, 4f );
 			}
 			if (enemy.sprite.visible) Splash.at( enemy.sprite.center(), sprite.blood(), 5);
 		}
 	}
 	
-	//used in wandmaker quest
+	//used in wandmaker quest, a fire elemental with lower ACC/EVA/DMG, no on-hit fire
+	// and a unique 'fireball' style ranged attack, which can be dodged
 	public static class NewbornFireElemental extends FireElemental {
 		
 		{
 			spriteClass = ElementalSprite.NewbornFire.class;
-			
-			HT = 60;
-			HP = HT/2; //30
-			
+
 			defenseSkill = 12;
 			
-			EXP = 7;
-			
 			properties.add(Property.MINIBOSS);
-
-			//newborn elementals do not have ranged attacks
-			rangedCooldown = Integer.MAX_VALUE;
 		}
 
+		private int targetingPos = -1;
 
 		@Override
-		protected void meleeProc( Char enemy, int damage ) {
-			if (Random.Int( 2 ) == 0 && !level.water[enemy.pos]) {
-				Buff.affect( enemy, Burning.class ).reignite( enemy );
-				if (enemy.sprite.visible) Splash.at( enemy.sprite.center(), sprite.blood(), 5);
+		protected boolean act() {
+			if (targetingPos != -1){
+				if (sprite != null && (sprite.visible || Dungeon.level.heroFOV[targetingPos])) {
+					sprite.zap( targetingPos );
+					return false;
+				} else {
+					zap();
+					return true;
+				}
+			} else {
+				return super.act();
+			}
+		}
+
+		@Override
+		protected boolean canAttack( Char enemy ) {
+			if (super.canAttack(enemy)){
+				return true;
+			} else {
+				return rangedCooldown < 0 && new Ballistica( pos, enemy.pos, Ballistica.STOP_SOLID | Ballistica.STOP_TARGET ).collisionPos == enemy.pos;
+			}
+		}
+
+		protected boolean doAttack( Char enemy ) {
+
+			if (rangedCooldown > 0) {
+
+				return super.doAttack( enemy );
+
+			} else if (new Ballistica( pos, enemy.pos, Ballistica.STOP_SOLID | Ballistica.STOP_TARGET ).collisionPos == enemy.pos) {
+
+				//set up an attack for next turn
+				ArrayList<Integer> candidates = new ArrayList<>();
+				for (int i : PathFinder.NEIGHBOURS8){
+					int target = enemy.pos + i;
+					if (target != pos && new Ballistica(pos, target, Ballistica.STOP_SOLID | Ballistica.STOP_TARGET).collisionPos == target){
+						candidates.add(target);
+					}
+				}
+
+				if (!candidates.isEmpty()){
+					targetingPos = Random.element(candidates);
+
+					for (int i : PathFinder.NEIGHBOURS9){
+						if (!Dungeon.level.solid[targetingPos + i]) {
+							sprite.parent.addToBack(new TargetedCell(targetingPos + i, 0xFF0000));
+						}
+					}
+
+					GLog.n(Messages.get(this, "charging"));
+					spend(GameMath.gate(TICK, (int)Math.ceil(Dungeon.hero.cooldown()), 3*TICK));
+					Dungeon.hero.interrupt();
+					return true;
+				} else {
+					rangedCooldown = 1;
+					return super.doAttack(enemy);
+				}
+
+
+			} else {
+				rangedCooldown = 1;
+				return super.doAttack(enemy);
+			}
+		}
+
+		@Override
+		protected void zap() {
+			if (targetingPos != -1) {
+				spend(1f);
+
+				Invisibility.dispel(this);
+
+				for (int i : PathFinder.NEIGHBOURS9) {
+					if (!Dungeon.level.solid[targetingPos + i]) {
+						CellEmitter.get(targetingPos + i).burst(ElmoParticle.FACTORY, 5);
+						if (Dungeon.level.water[targetingPos + i]) {
+							GameScene.add(Blob.seed(targetingPos + i, 2, Fire.class));
+						} else {
+							GameScene.add(Blob.seed(targetingPos + i, 8, Fire.class));
+						}
+
+						Char target = Actor.findChar(targetingPos + i);
+						if (target != null && target != this) {
+							Buff.affect(target, Burning.class).reignite(target);
+						}
+					}
+				}
+				Sample.INSTANCE.play(Assets.Sounds.BURNING);
+			}
+
+			targetingPos = -1;
+			rangedCooldown = Random.NormalIntRange( 3, 5 );
+		}
+
+		@Override
+		public int attackSkill(Char target) {
+			if (!summonedALly) {
+				return 15;
+			} else {
+				return super.attackSkill(target);
+			}
+		}
+
+		@Override
+		public int damageRoll() {
+			if (!summonedALly) {
+				return Random.NormalIntRange(10, 12);
+			} else {
+				return super.damageRoll();
+			}
+		}
+
+		@Override
+		protected void meleeProc(Char enemy, int damage) {
+			//no fiery on-hit unless it is an ally summon
+			if (summonedALly) {
+				super.meleeProc(enemy, damage);
 			}
 		}
 
 		@Override
 		public void die(Object cause) {
 			super.die(cause);
-			if (alignment == Alignment.ENEMY){
+			if (alignment == Alignment.ENEMY) {
 				Dungeon.level.drop( new Embers(), pos ).sprite.drop();
 				Statistics.questScores[1] = 2000;
 				Badges.KILL_COLDELE();
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						Music.INSTANCE.fadeOut(1f, new Callback() {
+							@Override
+							public void call() {
+								if (Dungeon.level != null) {
+									Dungeon.level.playLevelMusic();
+								}
+							}
+						});
+					}
+				});
 			}
-		}
-
-		@Override
-		protected boolean act() {
-			if(buff(Frost.class) != null || buff(Chill.class) != null) {
-				this.die(Frost.class);
-				return true;
-			}
-			return super.act();
 		}
 
 		@Override
 		public boolean reset() {
-			return true;
+			return !summonedALly;
 		}
-		
+
+		@Override
+		public String description() {
+			String desc = super.description();
+
+			if (summonedALly){
+				desc += " " + Messages.get(this, "desc_ally");
+			} else {
+				desc += " " + Messages.get(this, "desc_boss");
+			}
+
+			return desc;
+		}
+
+		private static final String TARGETING_POS = "targeting_pos";
+
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put(TARGETING_POS, targetingPos);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			targetingPos = bundle.getInt(TARGETING_POS);
+		}
 	}
 
-	//not a miniboss, fully HP, otherwise a newborn elemental
+	//not a miniboss, no ranged attack, otherwise a newborn elemental
 	public static class AllyNewBornElemental extends NewbornFireElemental {
 
 		{
-			HP = HT;
-			properties.remove(Property.MINIBOSS);
-		}
+			rangedCooldown = Integer.MAX_VALUE;
 
-		@Override
-		public boolean reset() {
-			return false;
+			properties.remove(Property.MINIBOSS);
 		}
 
 	}
@@ -369,7 +505,11 @@ public abstract class Elemental extends Mob {
 			}
 			
 			for (Char ch : affected) {
-				ch.damage( Math.round( damage * 0.4f ), this );
+				ch.damage( Math.round( damage * 0.4f ), Shocking.class );
+				if (ch == Dungeon.hero && !ch.isAlive()){
+					Dungeon.fail(this);
+					GLog.n( Messages.capitalize(Messages.get(Char.class, "kill", name())) );
+				}
 			}
 
 			boolean visible = sprite.visible || enemy.sprite.visible;
@@ -389,26 +529,6 @@ public abstract class Elemental extends Mob {
 			if (enemy == Dungeon.hero) {
 				GameScene.flash(0x80FFFFFF);
 			}
-		}
-	}
-	
-	public static class ChaosElemental extends Elemental {
-		
-		{
-			spriteClass = ElementalSprite.Chaos.class;
-			
-			loot = new ScrollOfTransmutation();
-			lootChance = 1f;
-		}
-		
-		@Override
-		protected void meleeProc( Char enemy, int damage ) {
-			CursedWand.cursedEffect(null, this, enemy);
-		}
-		
-		@Override
-		protected void rangedProc( Char enemy ) {
-			CursedWand.cursedEffect(null, this, enemy);
 		}
 	}
 
@@ -457,6 +577,26 @@ public abstract class Elemental extends Mob {
 			}
 		}
 
+	}
+	
+	public static class ChaosElemental extends Elemental {
+		
+		{
+			spriteClass = ElementalSprite.Chaos.class;
+			
+			loot = new ScrollOfTransmutation();
+			lootChance = 1f;
+		}
+		
+		@Override
+		protected void meleeProc( Char enemy, int damage ) {
+			CursedWand.cursedEffect(null, this, enemy);
+		}
+		
+		@Override
+		protected void rangedProc( Char enemy ) {
+			CursedWand.cursedEffect(null, this, enemy);
+		}
 	}
 	
 	public static Class<? extends Elemental> random(){

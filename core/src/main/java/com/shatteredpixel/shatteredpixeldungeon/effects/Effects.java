@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,10 @@ public class Effects {
 		WOUND,
 		EXCLAMATION,
 		CHAIN,
+		GLASSCHAIN,
+		ICECHAIN,
+		RED_CHAIN,
+		ETHEREAL_CHAIN,
 		DEATH_RAY,
 		LIGHT_RAY,
 		HEALTH_RAY,
@@ -55,6 +59,18 @@ public class Effects {
 				break;
 			case CHAIN:
 				icon.frame(icon.texture.uvRect(6, 16, 11, 22));
+				break;
+			case GLASSCHAIN:
+				icon.frame(icon.texture.uvRect(11, 16, 15, 22));
+				break;
+			case RED_CHAIN:
+				icon.frame(icon.texture.uvRect(11, 22, 16, 28));
+				break;
+			case ICECHAIN:
+				icon.frame(icon.texture.uvRect(11, 28, 15, 32));
+				break;
+			case ETHEREAL_CHAIN:
+				icon.frame(icon.texture.uvRect(11, 16, 16, 22));
 				break;
 			case DEATH_RAY:
 				icon.frame(icon.texture.uvRect(16, 16, 32, 24));

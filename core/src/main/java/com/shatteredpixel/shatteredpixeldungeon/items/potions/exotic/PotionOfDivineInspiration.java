@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -41,13 +43,23 @@ public class PotionOfDivineInspiration extends ExoticPotion {
 	
 	{
 		icon = ItemSpriteSheet.Icons.POTION_DIVINE;
+
+		talentFactor = 2f;
 	}
+
+	protected static boolean identifiedByUse = false;
 
 	@Override
 	//need to override drink so that time isn't spent right away
 	protected void drink(final Hero hero) {
-		curUser = hero;
-		curItem = this;
+
+		if (!isKnown()) {
+			identify();
+			curItem = detach( hero.belongings.backpack );
+			identifiedByUse = true;
+		} else {
+			identifiedByUse = false;
+		}
 
 		boolean[] enabled = new boolean[5];
 		enabled[1] = enabled[2] = enabled[3] = enabled[4] = true;
@@ -68,10 +80,6 @@ public class PotionOfDivineInspiration extends ExoticPotion {
 				GLog.w(Messages.get(this, "no_more_points"));
 				return;
 			}
-		}
-
-		if (!isIdentified()) {
-			curItem.detach(curUser.belongings.backpack);
 		}
 
 		GameScene.show(new WndOptions(
@@ -95,11 +103,11 @@ public class PotionOfDivineInspiration extends ExoticPotion {
 				if (index != -1){
 					Buff.affect(curUser, DivineInspirationTracker.class).setBoosted(index+1);
 
-					if (isIdentified()) {
+					if (!identifiedByUse) {
 						curItem.detach(curUser.belongings.backpack);
 					}
+					identifiedByUse = false;
 
-					identify();
 					curUser.busy();
 					curUser.sprite.operate(curUser.pos);
 
@@ -122,14 +130,22 @@ public class PotionOfDivineInspiration extends ExoticPotion {
 					Sample.INSTANCE.play( Assets.Sounds.DRINK );
 					Sample.INSTANCE.playDelayed(Assets.Sounds.LEVELUP, 0.3f, 0.7f, 1.2f);
 					Sample.INSTANCE.playDelayed(Assets.Sounds.LEVELUP, 0.6f, 0.7f, 1.2f);
+					new Flare( 6, 32 ).color(0xFFFF00, true).show( curUser.sprite, 2f );
 					GLog.p(Messages.get(PotionOfDivineInspiration.class, "bonus"));
+
+					if (!anonymous){
+						Talent.onPotionUsed(curUser, curUser.pos, talentFactor);
+					}
 
 				}
 			}
 
 			@Override
 			public void onBackPressed() {
-				//do nothing, prevents accidentally closing
+				//window can be closed if potion is already IDed
+				if (!identifiedByUse){
+					super.onBackPressed();
+				}
 			}
 		});
 

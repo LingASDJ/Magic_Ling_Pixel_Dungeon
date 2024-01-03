@@ -23,7 +23,9 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.effects.IconFloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
@@ -31,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfCha
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
@@ -61,6 +64,18 @@ public class Hunger extends Buff implements Hero.Doom {
 		super.restoreFromBundle( bundle );
 		level = bundle.getFloat( LEVEL );
 		partialDamage = bundle.getFloat(PARTIALDAMAGE);
+	}
+
+	/** 额外饥饿加剧
+	 * Author:JDSA Ling
+	 * Date:2023-12-24
+	 * @param value 传额外饥饿整形值
+	 */
+	public void damgeExtraHungry(int value) {
+		float newLevel = level + STEP;
+		newLevel -= Math.min(newLevel + value, 450f);
+		target.sprite.showStatusWithIcon(CharSprite.NEGATIVE, String.valueOf(value), IconFloatingText.HUNGRY_EXTRA);
+		level -= newLevel;
 	}
 
 	@Override
@@ -99,6 +114,9 @@ public class Hunger extends Buff implements Hero.Doom {
 
 					GLog.n( Messages.get(this, "onstarving") );
 					hero.resting = false;
+
+					if(!Statistics.noGoReadHungry) Statistics.noGoReadHungry = true;
+
 					hero.damage( 1, this );
 
 					hero.interrupt();
@@ -109,10 +127,11 @@ public class Hunger extends Buff implements Hero.Doom {
 
 					if (!Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_FOOD)){
 						GLog.p(Messages.get(Guidebook.class, "hint"));
-						GameScene.flashForDocument(Document.GUIDE_FOOD);
+						GameScene.flashForDocument(Document.ADVENTURERS_GUIDE, Document.GUIDE_FOOD);
 					}
 
 				}
+
 				level = newLevel;
 
 			}
@@ -167,6 +186,11 @@ public class Hunger extends Buff implements Hero.Doom {
 		return level >= STARVING;
 	}
 
+	public boolean isDied() {
+		float newLevel = level + STEP;
+		return newLevel >= HUNGRY && level < HUNGRY;
+	}
+
 	public int hunger() {
 		return (int)Math.ceil(level);
 	}
@@ -174,8 +198,10 @@ public class Hunger extends Buff implements Hero.Doom {
 	@Override
 	public int icon() {
 		if (level < HUNGRY) {
+			if(Statistics.noGoReadHungry) Statistics.noGoReadHungry = false;
 			return BuffIndicator.NONE;
 		} else if (level < STARVING) {
+			if(Statistics.noGoReadHungry) Statistics.noGoReadHungry = false;
 			return BuffIndicator.HUNGER;
 		} else {
 			return BuffIndicator.STARVATION;
@@ -183,7 +209,7 @@ public class Hunger extends Buff implements Hero.Doom {
 	}
 
 	@Override
-	public String toString() {
+	public String name() {
 		if (level < STARVING) {
 			return Messages.get(this, "hungry");
 		} else {

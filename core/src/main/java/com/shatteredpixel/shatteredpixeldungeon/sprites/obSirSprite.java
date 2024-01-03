@@ -16,11 +16,11 @@ public class obSirSprite extends MobSprite {
         this.texture("Npcs/rt.png");
         TextureFilm var1 = new TextureFilm(this.texture, 16, 16);
         this.idle = new MovieClip.Animation(1, true);
-        this.idle.frames(var1, new Object[]{0, 1,2,3});
+        this.idle.frames(var1, 0, 1,2,3);
         this.run = new MovieClip.Animation(10, true);
-        this.run.frames(var1, new Object[]{0});
+        this.run.frames(var1, 0);
         this.die = new MovieClip.Animation(10, false);
-        this.die.frames(var1, new Object[]{0});
+        this.die.frames(var1, 0);
         this.play(this.idle);
     }
 

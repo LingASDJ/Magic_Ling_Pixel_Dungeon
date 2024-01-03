@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,8 +115,8 @@ public class ReclaimTrap extends TargetedSpell {
 	
 	@Override
 	public int value() {
-		//prices of ingredients, divided by output quantity
-		return Math.round(quantity * ((40 + 50) / 4f));
+		//prices of ingredients, divided by output quantity, rounds down
+		return (int)((40 + 50) * (quantity/4f));
 	}
 	
 	private static final String STORED_TRAP = "stored_trap";

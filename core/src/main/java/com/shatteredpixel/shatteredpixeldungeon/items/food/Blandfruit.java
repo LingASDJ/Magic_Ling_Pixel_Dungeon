@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,12 +41,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticG
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfLightStromCloud;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant.Seed;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUseItem;
 import com.watabou.utils.Bundle;
@@ -81,6 +83,17 @@ public class Blandfruit extends Food {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public String defaultAction() {
+		if (potionAttrib == null){
+			return null;
+		} else if (potionAttrib.defaultAction().equals(Potion.AC_DRINK)) {
+			return AC_EAT;
+		} else {
+			return potionAttrib.defaultAction();
+		}
 	}
 
 	@Override
@@ -124,7 +137,7 @@ public class Blandfruit extends Food {
 		if (potionAttrib instanceof PotionOfExperience)     return Messages.get(this, "starfruit");
 		if (potionAttrib instanceof PotionOfHaste)          return Messages.get(this, "swiftfruit");
 		if (potionAttrib instanceof PotionOfLiquidFlameX)          return Messages.get(this, "halofruit");
-		if (potionAttrib instanceof PotionOfLightningShiledX)          return Messages.get(this, "lightfruit");
+		if (potionAttrib instanceof PotionOfLightStromCloud)          return Messages.get(this, "lightfruit");
 		return super.name();
 	}
 
@@ -178,11 +191,7 @@ public class Blandfruit extends Food {
 		if (potionAttrib instanceof PotionOfLiquidFlameX)          potionGlow = new ItemSprite.Glowing( 0x00ffff );
 		if (potionAttrib instanceof PotionOfLightningShiledX)          potionGlow = new ItemSprite.Glowing( 0xFF4500 );
 
-		potionAttrib.setAction();
-		defaultAction = potionAttrib.defaultAction;
-		if (defaultAction.equals(Potion.AC_DRINK)){
-			defaultAction = AC_EAT;
-		}
+		if (potionAttrib instanceof PotionOfLightStromCloud)          potionGlow = new ItemSprite.Glowing(Window.CYELLOW);
 
 		return this;
 	}

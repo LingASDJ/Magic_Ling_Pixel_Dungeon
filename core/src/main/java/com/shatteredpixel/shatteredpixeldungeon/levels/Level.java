@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.tipsgodungeon;
+import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.ready;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -35,15 +37,16 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SmokeScreen;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Web;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WellWater;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HasteLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Shadows;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -52,11 +55,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ColdSnowParticles;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.WindParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -74,6 +80,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoome
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Door;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.HighGrass;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
@@ -81,15 +88,21 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
+import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
@@ -104,21 +117,6 @@ import java.util.HashSet;
 
 public abstract class Level implements Bundlable {
 
-	//some buff effects have special logic or are cancelled from the hero before transitioning levels
-	public static void beforeTransition(){
-
-		//time freeze effects need to resolve their pressed cells before transitioning
-//		TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-//		if (timeFreeze != null) timeFreeze.disarmPresses();
-//		Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-//		if (timeBubble != null) timeBubble.disarmPresses();
-
-		//iron stomach does not persist through chasm falling
-		Talent.WarriorFoodImmunity foodImmune = Dungeon.hero.buff(Talent.WarriorFoodImmunity.class);
-		if (foodImmune != null) foodImmune.detach();
-	}
-
-
 	//静态地图改变的轮子调用
 	public void changeMap(int[] map){
 		//构建全新地图，通过MAPCSV构建，并清理当前地块
@@ -128,7 +126,7 @@ public abstract class Level implements Bundlable {
 
 		//清理掉落物
 		for (Heap heap : heaps.valueList()){
-				heap.destroy();
+			heap.destroy();
 		}
 
 		//自动获取出入口
@@ -154,8 +152,7 @@ public abstract class Level implements Bundlable {
 		GameScene.resetMap();
 		Dungeon.observe();
 	}
-
-
+	
 	public static enum Feeling {
 		NONE,
 		CHASM,
@@ -164,11 +161,11 @@ public abstract class Level implements Bundlable {
 		DARK,
 		LARGE,
 		TRAPS,
-		SECRETS
-	}
-
-	public boolean isLevelExplored( int depth ){
-		return false;
+		SECRETS,
+		BIGTRAP,
+		THREEWELL,
+		LINKROOM,
+		DIEDROOM
 	}
 
 	protected int width;
@@ -204,11 +201,11 @@ public abstract class Level implements Bundlable {
 	public int entrance;
 	public int exit;
 
+	public ArrayList<LevelTransition> transitions;
+
 	//when a boss level has become locked.
 	public boolean locked = false;
-
-	public boolean batlocked = false;
-
+	
 	public HashSet<Mob> mobs;
 	public SparseArray<Heap> heaps;
 	public HashMap<Class<? extends Blob>,Blob> blobs;
@@ -220,6 +217,7 @@ public abstract class Level implements Bundlable {
 	protected ArrayList<Item> itemsToSpawn = new ArrayList<>();
 
 	protected Group visuals;
+	protected Group wallVisuals;
 	
 	public int color1 = 0x004400;
 	public int color2 = 0x88CC44;
@@ -230,8 +228,7 @@ public abstract class Level implements Bundlable {
 	private static final String MAP			= "map";
 	private static final String VISITED		= "visited";
 	private static final String MAPPED		= "mapped";
-	private static final String ENTRANCE	= "entrance";
-	private static final String EXIT		= "exit";
+	private static final String TRANSITIONS	= "transitions";
 	private static final String LOCKED      = "locked";
 	private static final String HEAPS		= "heaps";
 	private static final String PLANTS		= "plants";
@@ -242,50 +239,32 @@ public abstract class Level implements Bundlable {
 	private static final String BLOBS		= "blobs";
 	private static final String FEELING		= "feeling";
 
-
-	//自用的地块查找
-	public static int distancex(int a, int b) {
-		int ax = a % getWidth();
-		int ay = a / getWidth();
-		int bx = b % getWidth();
-		int by = b / getWidth();
-		return Math.max( Math.abs( ax - bx ), Math.abs( ay - by ) );
-	}
-
-	public static final int WIDTHX = 48;
-	public static final int HEIGHTX = 48;
-	public static int getWidth() {
-		return WIDTHX;
-	}
-	public static boolean[] fieldOfView = new boolean[getLength()];
-	public static int getLength() {
-		return 48*48;
-	}
-
 	public void create() {
 
 		Random.pushGenerator( Dungeon.seedCurDepth() );
-		
-		if (!(Dungeon.bossLevel())  || !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
+
+		//TODO maybe just make this part of RegularLevel?
+		if (!Dungeon.bossLevel() && Dungeon.branch == 0) {
 
 			addItemToSpawn(Generator.random(Generator.Category.FOOD));
 
-			if (Dungeon.isChallenged(Challenges.DARKNESS)){
-				addItemToSpawn( new Torch() );
-			}
-
 			if (Dungeon.posNeeded()) {
-				addItemToSpawn( new PotionOfStrength() );
 				Dungeon.LimitedDrops.STRENGTH_POTIONS.count++;
+				addItemToSpawn( new PotionOfStrength() );
 			}
 			if (Dungeon.souNeeded() && Dungeon.depth>0) {
-				addItemToSpawn( new ScrollOfUpgrade() );
 				Dungeon.LimitedDrops.UPGRADE_SCROLLS.count++;
-				//GLog.i("好好好");
+				//every 2nd scroll of upgrade is removed with forbidden runes challenge on
+				//TODO while this does significantly reduce this challenge's levelgen impact, it doesn't quite remove it
+				//for 0 levelgen impact, we need to do something like give the player all SOU, but nerf them
+				//or give a random scroll (from a separate RNG) instead of every 2nd SOU
+				if (!Dungeon.isChallenged(Challenges.NO_SCROLLS) || Dungeon.LimitedDrops.UPGRADE_SCROLLS.count%2 != 0){
+					addItemToSpawn(new ScrollOfUpgrade());
+				}
 			}
 			if (Dungeon.asNeeded()) {
-				addItemToSpawn( new Stylus() );
 				Dungeon.LimitedDrops.ARCANE_STYLI.count++;
+				addItemToSpawn( new Stylus() );
 			}
 			//one scroll of transmutation is guaranteed to spawn somewhere on chapter 2-4
 			int enchChapter = (int)((Dungeon.seed / 10) % 3) + 1;
@@ -301,37 +280,67 @@ public abstract class Level implements Bundlable {
 			if (Dungeon.depth > 1) {
 				//50% chance of getting a level feeling
 				//~7.15% chance for each feeling
-				switch (Random.Int( 14 )) {
-					case 0:
+
+				if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
+					int randomInt = Random.Int(10);
+					if(Dungeon.depth == 4 || Dungeon.depth == 14){
+						feeling = Feeling.DIEDROOM;
+					} else if (randomInt == 0) {
 						feeling = Feeling.CHASM;
-						break;
-					case 1:
+					} else if (randomInt == 1) {
 						feeling = Feeling.WATER;
-						break;
-					case 2:
+					} else if (randomInt == 2) {
 						feeling = Feeling.GRASS;
-						break;
-					case 3:
+					} else if (randomInt == 3) {
 						feeling = Feeling.DARK;
 						addItemToSpawn(new Torch());
-						viewDistance = Math.round(viewDistance/2f);
-						break;
-					case 4:
-						feeling = Feeling.LARGE;
-						addItemToSpawn(Generator.random(Generator.Category.FOOD));
-						break;
-					case 5:
+						viewDistance = Math.round(viewDistance / 2f);
+					} else if (randomInt == 4) {
 						feeling = Feeling.TRAPS;
-						break;
-					case 6:
+					} else if (randomInt == 5) {
+						feeling = Feeling.BIGTRAP;
+					} else if (randomInt == 6) {
 						feeling = Feeling.SECRETS;
-						break;
+					} else if (randomInt == 7) {
+						feeling = Feeling.LINKROOM;
+					} else if (randomInt == 8) {
+						feeling = Feeling.THREEWELL;
+					}
+				} else {
+					switch (Random.Int( 14 )) {
+						case 0:
+							feeling = Feeling.CHASM;
+							break;
+						case 1:
+							feeling = Feeling.WATER;
+							break;
+						case 2:
+							feeling = Feeling.GRASS;
+							break;
+						case 3:
+							feeling = Feeling.DARK;
+							addItemToSpawn(new Torch());
+							viewDistance = Math.round(viewDistance/2f);
+							break;
+						case 4:
+							feeling = Feeling.LARGE;
+							addItemToSpawn(Generator.random(Generator.Category.FOOD));
+							break;
+						case 5:
+							feeling = Feeling.TRAPS;
+							break;
+						case 6:
+							feeling = Feeling.SECRETS;
+							break;
+					}
 				}
 			}
 		}
 		
 		do {
 			width = height = length = 0;
+
+			transitions = new ArrayList<>();
 
 			mobs = new HashSet<>();
 			heaps = new SparseArray<>();
@@ -389,14 +398,18 @@ public abstract class Level implements Bundlable {
 		}
 		createMobs();
 	}
+
+	public void playLevelMusic(){
+		//do nothing by default
+	}
 	
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 
 		version = bundle.getInt( VERSION );
 		
-		//saves from before v0.9.2b are not supported
-		if (version < ShatteredPixelDungeon.v0_9_2b){
+		//saves from before v1.2.3 are not supported
+		if (version < ShatteredPixelDungeon.v1_2_3){
 			throw new RuntimeException("old save");
 		}
 
@@ -414,9 +427,24 @@ public abstract class Level implements Bundlable {
 
 		visited	= bundle.getBooleanArray( VISITED );
 		mapped	= bundle.getBooleanArray( MAPPED );
-		
-		entrance	= bundle.getInt( ENTRANCE );
-		exit		= bundle.getInt( EXIT );
+
+		transitions = new ArrayList<>();
+		if (bundle.contains(TRANSITIONS)){
+			for (Bundlable b : bundle.getCollection( TRANSITIONS )){
+				transitions.add((LevelTransition) b);
+			}
+		//pre-1.3.0 saves, converts old entrance/exit to new transitions
+		} else {
+			if (bundle.contains("entrance")){
+				transitions.add(new LevelTransition(
+						this,
+						bundle.getInt("entrance"),
+						Dungeon.depth == 0 ? LevelTransition.Type.SURFACE : LevelTransition.Type.REGULAR_ENTRANCE));
+			}
+			if (bundle.contains("exit")){
+				transitions.add(new LevelTransition(this, bundle.getInt("exit"), LevelTransition.Type.REGULAR_EXIT));
+			}
+		}
 
 		locked      = bundle.getBoolean( LOCKED );
 		
@@ -483,10 +511,6 @@ public abstract class Level implements Bundlable {
 		cleanWalls();
 
 	}
-
-	public void playLevelMusic(){
-		//do nothing by default
-	}
 	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -496,8 +520,7 @@ public abstract class Level implements Bundlable {
 		bundle.put( MAP, map );
 		bundle.put( VISITED, visited );
 		bundle.put( MAPPED, mapped );
-		bundle.put( ENTRANCE, entrance );
-		bundle.put( EXIT, exit );
+		bundle.put( TRANSITIONS, transitions );
 		bundle.put( LOCKED, locked );
 		bundle.put( HEAPS, heaps.valueList() );
 		bundle.put( PLANTS, plants.valueList() );
@@ -546,16 +569,147 @@ public abstract class Level implements Bundlable {
 
 		Mob m = Reflection.newInstance(mobsToSpawn.remove(0));
 		ChampionEnemy.rollForChampion(m);
-		if(Dungeon.isChallenged(SBSG)){
-			ChampionEnemy.rollForStateLing(m);
-		}
-		Buff.affect(m, HasteLing.MobLing.class, HasteLing.MobLing.DURATION*2000f);
+		ChampionEnemy.rollForStateLing(m);
+		//Buff.affect(m, HasteLing.MobLing.class, HasteLing.MobLing.DURATION*2000f);
 		return m;
 	}
 
 	abstract protected void createMobs();
 
 	abstract protected void createItems();
+
+	public int entrance(){
+		LevelTransition l = getTransition(null);
+		if (l != null){
+			return l.cell();
+		}
+		return 0;
+	}
+
+	public int exit(){
+		LevelTransition l = getTransition(LevelTransition.Type.REGULAR_EXIT);
+		if (l != null){
+			return l.cell();
+		}
+		return 0;
+	}
+
+	public LevelTransition getTransition(LevelTransition.Type type){
+		if (transitions.isEmpty()){
+			return null;
+		}
+		for (LevelTransition transition : transitions){
+			//if we don't specify a type, prefer to return any entrance
+			if (type == null &&
+					(transition.type == LevelTransition.Type.REGULAR_ENTRANCE || transition.type == LevelTransition.Type.SURFACE)){
+				return transition;
+			} else if (transition.type == type){
+				return transition;
+			}
+		}
+		return type != null ? getTransition(null) : transitions.get(0);
+	}
+
+	public LevelTransition getTransition(int cell){
+		for (LevelTransition transition : transitions){
+			if (transition.inside(cell)){
+				return transition;
+			}
+		}
+		return null;
+	}
+
+	private void tell(String text) {
+		Game.runOnRenderThread(new Callback() {
+								   @Override
+								   public void call() {
+									   GameScene.show(new WndQuest(new Slyl(), text));
+								   }
+							   }
+		);
+	}
+
+	//returns true if we immediately transition, false otherwise
+	public boolean activateTransition(Hero hero, LevelTransition transition){
+		if (locked){
+			return false;
+		}
+
+		beforeTransition();
+		InterlevelScene.curTransition = transition;
+
+		if (transition.type == LevelTransition.Type.REGULAR_EXIT
+				|| transition.type == LevelTransition.Type.BRANCH_EXIT) {
+			if (Dungeon.depth == 0 && !tipsgodungeon && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+
+				if (!tipsgodungeon) {
+					Game.runOnRenderThread(new Callback() {
+						@Override
+						public void call() {
+							tell(Messages.get(Hero.class, "acs"));
+						}
+					});
+					ready();
+					tipsgodungeon = true;
+					return false;
+				} else if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
+					&& Dungeon.depth == 25
+					//ascension challenge only works on runs started on v1.3+
+					&& Dungeon.initialVersion > ShatteredPixelDungeon.v1_2_3
+					&& hero.belongings.getItem(Amulet.class) != null
+					&& hero.buff(AscensionChallenge.class) == null) {
+
+					Game.runOnRenderThread(new Callback() {
+						@Override
+						public void call() {
+							GameScene.show(new WndOptions(new ItemSprite(ItemSpriteSheet.AMULET),
+									Messages.get(Amulet.class, "ascent_title"),
+									Messages.get(Amulet.class, "ascent_desc"),
+									Messages.get(Amulet.class, "ascent_yes"),
+									Messages.get(Amulet.class, "ascent_no")) {
+								@Override
+								protected void onSelect(int index) {
+									if (index == 0) {
+										Buff.affect(hero, AscensionChallenge.class);
+										Statistics.highestAscent = 25;
+									}
+								}
+							});
+						}
+					});
+					ready();
+				}
+			}
+			InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+		} else {
+			InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
+		}
+		Game.switchScene(InterlevelScene.class);
+		return true;
+	}
+
+	//some buff effects have special logic or are cancelled from the hero before transitioning levels
+	public static void beforeTransition(){
+
+		//time freeze effects need to resolve their pressed cells before transitioning
+		TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+		if (timeFreeze != null) timeFreeze.disarmPresses();
+		Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+		if (timeBubble != null) timeBubble.disarmPresses();
+
+		//iron stomach does not persist through chasm falling
+		Talent.WarriorFoodImmunity foodImmune = Dungeon.hero.buff(Talent.WarriorFoodImmunity.class);
+		if (foodImmune != null) foodImmune.detach();
+
+		//spend the hero's partial turns,  so the hero cannot take partial turns between floors
+		Dungeon.hero.spendToWhole();
+		for (Char ch : Actor.chars()){
+			//also adjust any mobs that are now ahead of the hero due to this
+			if (ch.cooldown() < Dungeon.hero.cooldown()){
+				ch.spendToWhole();
+			}
+		}
+	}
 
 	public void seal(){
 		if (!locked) {
@@ -596,6 +750,7 @@ public abstract class Level implements Bundlable {
 			visuals.clear();
 			visuals.camera = null;
 		}
+
 		for (int i=0; i < length(); i++) {
 			if (pit[i]) {
 				visuals.add( new WindParticle.Wind( i ) );
@@ -603,25 +758,38 @@ public abstract class Level implements Bundlable {
 					visuals.add( new FlowParticle.Flow( i - width() ) );
 				}
 			}
-			if(Dungeon.depth >= 6 && Dungeon.depth <= 10){
+			if(Dungeon.depth >= 0 && Dungeon.depth <= 10){
 				visuals.add( new ColdSnowParticles.Snow(i));
 			}
+
 		}
 		return visuals;
 	}
+
+	//for visual effects that should render above wall overhang tiles
+	public Group addWallVisuals(){
+		if (wallVisuals == null || wallVisuals.parent == null){
+			wallVisuals = new Group();
+		} else {
+			wallVisuals.clear();
+			wallVisuals.camera = null;
+		}
+		return wallVisuals;
+	}
+
 	
 	public int mobLimit() {
 		return 0;
 	}
 
 	public int mobCount(){
-		int count = 0;
+		float count = 0;
 		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
 			if (mob.alignment == Char.Alignment.ENEMY && !mob.properties().contains(Char.Property.MINIBOSS)) {
 				count += mob.spawningWeight();
 			}
 		}
-		return count;
+		return Math.round(count);
 	}
 
 	public Mob findMob( int pos ){
@@ -641,6 +809,9 @@ public abstract class Level implements Bundlable {
 			Actor.addDelayed(respawner, respawnCooldown());
 		} else {
 			Actor.add(respawner);
+			if (respawner.cooldown() > respawnCooldown()){
+				respawner.resetCooldown();
+			}
 		}
 		return respawner;
 	}
@@ -668,11 +839,22 @@ public abstract class Level implements Bundlable {
 
 			return true;
 		}
+
+		protected void resetCooldown(){
+			spend(-cooldown());
+			spend(Dungeon.level.respawnCooldown());
+		}
 	}
 
 	public float respawnCooldown(){
 		if (Statistics.amuletObtained){
-			return TIME_TO_RESPAWN/2f;
+			if (Dungeon.depth == 1){
+				//very fast spawns on floor 1! 0/2/4/6/8/10/12, etc.
+				return (Dungeon.level.mobCount()) * (TIME_TO_RESPAWN / 25f);
+			} else {
+				//respawn time is 5/5/10/15/20/25/25, etc.
+				return Math.round(GameMath.gate( TIME_TO_RESPAWN/10f, Dungeon.level.mobCount() * (TIME_TO_RESPAWN / 10f), TIME_TO_RESPAWN / 2f));
+			}
 		} else if (Dungeon.level.feeling == Feeling.DARK){
 			return 2*TIME_TO_RESPAWN/3f;
 		} else {
@@ -681,20 +863,19 @@ public abstract class Level implements Bundlable {
 	}
 
 	public boolean spawnMob(int disLimit){
-		PathFinder.buildDistanceMap(Dungeon.hero.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
+		PathFinder.buildDistanceMap(Dungeon.hero.pos, BArray.or(passable, avoid, null));
 
-		Mob mob = Dungeon.level.createMob();
+		Mob mob = createMob();
 		mob.state = mob.WANDERING;
-		mob.pos = Dungeon.level.randomRespawnCell( mob );
+		int tries = 30;
+		do {
+			mob.pos = randomRespawnCell(mob);
+			tries--;
+		} while ((mob.pos == -1 || PathFinder.distance[mob.pos] < disLimit) && tries > 0);
+
 		if (Dungeon.hero.isAlive() && mob.pos != -1 && PathFinder.distance[mob.pos] >= disLimit) {
 			GameScene.add( mob );
-			if (Statistics.amuletObtained && Dungeon.depth>0) {
-				mob.beckon( Dungeon.hero.pos );
-			}
-			if (!mob.buffs(ChampionEnemy.class).isEmpty() && Dungeon.isChallenged(SBSG)){
-				GLog.n(Messages.get(ChampionEnemy.class, "warn2"));
-				GLog.w(Messages.get(ChampionEnemy.class, "warn"));
-			} else if(!mob.buffs(ChampionEnemy.class).isEmpty()) {
+			if (!mob.buffs(ChampionEnemy.class).isEmpty()){
 				GLog.w(Messages.get(ChampionEnemy.class, "warn"));
 			}
 			return true;
@@ -705,8 +886,15 @@ public abstract class Level implements Bundlable {
 	
 	public int randomRespawnCell( Char ch ) {
 		int cell;
+		int count = 0;
 		do {
+
+			if (++count > 30) {
+				return -1;
+			}
+
 			cell = Random.Int( length() );
+
 		} while ((Dungeon.level == this && heroFOV[cell])
 				|| !passable[cell]
 				|| (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
@@ -924,10 +1112,6 @@ public abstract class Level implements Bundlable {
 	}
 	
 	public Plant plant( Plant.Seed seed, int pos ) {
-		
-		if (Dungeon.isChallenged(Challenges.NO_HERBALISM)){
-			return null;
-		}
 
 		Plant plant = plants.get( pos );
 		if (plant != null) {
@@ -941,6 +1125,11 @@ public abstract class Level implements Bundlable {
 				map[pos] == Terrain.EMPTY_DECO) {
 			set(pos, Terrain.GRASS, this);
 			GameScene.updateMap(pos);
+		}
+
+		//we have to get this far as grass placement has RNG implications in levelgen
+		if (Dungeon.isChallenged(Challenges.NO_HERBALISM)){
+			return null;
 		}
 		
 		plant = seed.couch( pos, this );
@@ -1028,6 +1217,7 @@ public abstract class Level implements Bundlable {
 		int result;
 		do {
 			result = randomRespawnCell( null );
+			if (result == -1) return -1;
 		} while (traps.get(result) != null
 				|| findMob(result) != null);
 		return result;
@@ -1045,7 +1235,7 @@ public abstract class Level implements Bundlable {
 					&& ch == Dungeon.hero && Dungeon.hero.hasTalent(Talent.REJUVENATING_STEPS)
 					&& ch.buff(Talent.RejuvenatingStepsCooldown.class) == null){
 
-				if (Dungeon.hero.buff(LockedFloor.class) != null && !Dungeon.hero.buff(LockedFloor.class).regenOn()){
+				if (!Regeneration.regenOn()){
 					set(ch.pos, Terrain.FURROWED_GRASS);
 				} else if (ch.buff(Talent.RejuvenatingStepsFurrow.class) != null && ch.buff(Talent.RejuvenatingStepsFurrow.class).count() >= 200) {
 					set(ch.pos, Terrain.FURROWED_GRASS);
@@ -1072,6 +1262,10 @@ public abstract class Level implements Bundlable {
 			if (map[ch.pos] == Terrain.DOOR){
 				Door.enter( ch.pos );
 			}
+		}
+
+		if (ch.isAlive() && ch instanceof Piranha && !water[ch.pos]){
+			((Piranha) ch).dieOnLand();
 		}
 	}
 	
@@ -1113,36 +1307,27 @@ public abstract class Level implements Bundlable {
 			break;
 		}
 
+		TimekeepersHourglass.timeFreeze timeFreeze =
+				Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+
+		Swiftthistle.TimeBubble bubble =
+				Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+
 		if (trap != null) {
-			
-			TimekeepersHourglass.timeFreeze timeFreeze =
-					Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-			
-			Swiftthistle.TimeBubble bubble =
-					Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-			
 			if (bubble != null){
-				
 				Sample.INSTANCE.play(Assets.Sounds.TRAP);
-				
 				discover(cell);
-				
 				bubble.setDelayedPress(cell);
 				
 			} else if (timeFreeze != null){
-				
 				Sample.INSTANCE.play(Assets.Sounds.TRAP);
-				
 				discover(cell);
-				
 				timeFreeze.setDelayedPress(cell);
 				
 			} else {
-
 				if (Dungeon.hero.pos == cell) {
 					Dungeon.hero.interrupt();
 				}
-
 				trap.trigger();
 
 			}
@@ -1150,7 +1335,18 @@ public abstract class Level implements Bundlable {
 		
 		Plant plant = plants.get( cell );
 		if (plant != null) {
-			plant.trigger();
+			if (bubble != null){
+				Sample.INSTANCE.play(Assets.Sounds.TRAMPLE, 1, Random.Float( 0.96f, 1.05f ) );
+				bubble.setDelayedPress(cell);
+
+			} else if (timeFreeze != null){
+				Sample.INSTANCE.play(Assets.Sounds.TRAMPLE, 1, Random.Float( 0.96f, 1.05f ) );
+				timeFreeze.setDelayedPress(cell);
+
+			} else {
+				plant.trigger();
+
+			}
 		}
 
 		if (hard && Blob.volumeAt(cell, Web.class) > 0){
@@ -1170,7 +1366,7 @@ public abstract class Level implements Bundlable {
 		boolean sighted = c.buff( Blindness.class ) == null && c.buff( Shadows.class ) == null
 						&& c.buff( TimekeepersHourglass.timeStasis.class ) == null && c.isAlive();
 		if (sighted) {
-			boolean[] blocking;
+			boolean[] blocking = null;
 
 			if (modifiableBlocking == null || modifiableBlocking.length != Dungeon.level.losBlocking.length){
 				modifiableBlocking = new boolean[Dungeon.level.losBlocking.length];
@@ -1178,25 +1374,33 @@ public abstract class Level implements Bundlable {
 			
 			if ((c instanceof Hero && ((Hero) c).subClass == HeroSubClass.WARDEN)
 				|| c instanceof YogFist.SoiledFist) {
-				System.arraycopy(Dungeon.level.losBlocking, 0, modifiableBlocking, 0, modifiableBlocking.length);
-				blocking = modifiableBlocking;
+				if (blocking == null) {
+					System.arraycopy(Dungeon.level.losBlocking, 0, modifiableBlocking, 0, modifiableBlocking.length);
+					blocking = modifiableBlocking;
+				}
 				for (int i = 0; i < blocking.length; i++){
 					if (blocking[i] && (Dungeon.level.map[i] == Terrain.HIGH_GRASS || Dungeon.level.map[i] == Terrain.FURROWED_GRASS)){
 						blocking[i] = false;
 					}
 				}
-			} else if (c.alignment != Char.Alignment.ALLY
+			}
+
+			if (c.alignment != Char.Alignment.ALLY
 					&& Dungeon.level.blobs.containsKey(SmokeScreen.class)
 					&& Dungeon.level.blobs.get(SmokeScreen.class).volume > 0) {
-				System.arraycopy(Dungeon.level.losBlocking, 0, modifiableBlocking, 0, modifiableBlocking.length);
-				blocking = modifiableBlocking;
+				if (blocking == null) {
+					System.arraycopy(Dungeon.level.losBlocking, 0, modifiableBlocking, 0, modifiableBlocking.length);
+					blocking = modifiableBlocking;
+				}
 				Blob s = Dungeon.level.blobs.get(SmokeScreen.class);
 				for (int i = 0; i < blocking.length; i++){
 					if (!blocking[i] && s.cur[i] > 0){
 						blocking[i] = true;
 					}
 				}
-			} else {
+			}
+
+			if (blocking == null){
 				blocking = Dungeon.level.losBlocking;
 			}
 			
@@ -1303,7 +1507,7 @@ public abstract class Level implements Bundlable {
 			}
 
 			for (TalismanOfForesight.HeapAwareness h : c.buffs(TalismanOfForesight.HeapAwareness.class)){
-				if (Dungeon.depth != h.depth) continue;
+				if (Dungeon.depth != h.depth || Dungeon.branch != h.branch) continue;
 				for (int i : PathFinder.NEIGHBOURS9) heroMindFov[h.pos+i] = true;
 			}
 
@@ -1320,7 +1524,7 @@ public abstract class Level implements Bundlable {
 			}
 
 			for (RevealedArea a : c.buffs(RevealedArea.class)){
-				if (Dungeon.depth != a.depth) continue;
+				if (Dungeon.depth != a.depth || Dungeon.branch != a.branch) continue;
 				for (int i : PathFinder.NEIGHBOURS9) heroMindFov[a.pos+i] = true;
 			}
 
@@ -1341,6 +1545,10 @@ public abstract class Level implements Bundlable {
 					heap.seen = true;
 		}
 
+	}
+
+	public boolean isLevelExplored( int depth ){
+		return false;
 	}
 	
 	public int distance( int a, int b ) {
@@ -1388,6 +1596,7 @@ public abstract class Level implements Bundlable {
 			case Terrain.EMPTY:
 			case Terrain.EMPTY_SP:
 			case Terrain.EMPTY_DECO:
+			case Terrain.CUSTOM_DECO_EMPTY:
 			case Terrain.SECRET_TRAP:
 				return Messages.get(Level.class, "floor_name");
 			case Terrain.GRASS:
@@ -1424,8 +1633,6 @@ public abstract class Level implements Bundlable {
 				return Messages.get(Level.class, "locked_exit_name");
 			case Terrain.UNLOCKED_EXIT:
 				return Messages.get(Level.class, "unlocked_exit_name");
-			case Terrain.SIGN:
-				return Messages.get(Level.class, "sign_name");
 			case Terrain.WELL:
 				return Messages.get(Level.class, "well_name");
 			case Terrain.EMPTY_WELL:
@@ -1469,8 +1676,6 @@ public abstract class Level implements Bundlable {
 				return Messages.get(Level.class, "locked_exit_desc");
 			case Terrain.BARRICADE:
 				return Messages.get(Level.class, "barricade_desc");
-			case Terrain.SIGN:
-				return Messages.get(Level.class, "sign_desc");
 			case Terrain.INACTIVE_TRAP:
 				return Messages.get(Level.class, "inactive_trap_desc");
 			case Terrain.STATUE:

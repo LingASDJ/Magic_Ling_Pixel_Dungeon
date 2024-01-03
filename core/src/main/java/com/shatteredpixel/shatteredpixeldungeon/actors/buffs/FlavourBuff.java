@@ -21,11 +21,17 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.noosa.Image;
 
 //buff whose only internal logic is to wait and detach after a time.
 public class FlavourBuff extends Buff {
-	
+
+	@Override
+	public String desc() {
+		return Messages.get(this, "desc", dispTurns());
+	}
+
 	@Override
 	public boolean act() {
 		detach();

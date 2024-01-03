@@ -1,10 +1,16 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
@@ -12,6 +18,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SliceGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.EndButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ReloadButton;
@@ -28,24 +35,40 @@ import com.watabou.utils.ColorMath;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class TitleScene extends PixelScene {
+	public static boolean Reusable = false;
 
-
+	public static boolean NightDay = false;
 
 	@Override
 	public void create() {
 		super.create();
-
+		Calendar calendar = Calendar.getInstance();
+		int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+		Badges.loadGlobal();
+		Dungeon.whiteDaymode = currentHour > 7 && currentHour < 22;
 //		if(SPDSettings.startPort(false)){
 //			SPDSettings.scale(3);
 //			ShatteredPixelDungeon.seamlessResetScene();
 //			SPDSettings.startPort(true);
 //		}
 
-		Music.INSTANCE.play(Assets.Music.THEME_1, true);
+		Badges.loadGlobal();
+		boolean whiteDaymode = currentHour > 7 && currentHour < 22;
+		if(Random.Int(10) == 1 && !NightDay && !whiteDaymode){
+			NightDay = true;
+		}
+
+		if(holiday == XMAS){
+			Music.INSTANCE.play(Assets.Music.CHRAMSS, true);
+		} else {
+			Music.INSTANCE.play(Assets.Music.THEME_1, true);
+		}
 
 		uiCamera.visible = false;
 
@@ -174,6 +197,23 @@ public class TitleScene extends PixelScene {
 			}
 
 			@Override
+			public void update() {
+				super.update();
+
+				if(TitleScene.NightDay){
+					textColor(ColorMath.interpolate( 0xFFFFFF, Window.CBLACK,
+							0.1f + (float)Math.sin(Game.timeTotal*5)/2f));
+					text(Messages.get(TitleScene.class, "dark"));
+					icon(BadgeBanner.image(Badges.Badge.STORM.image));
+				} else if (TitleScene.Reusable){
+					textColor(ColorMath.interpolate( 0xFFFFFF, Window.CYELLOW,
+							0.5f + (float)Math.sin(Game.timeTotal*5)/2f));
+					text(Messages.get(TitleScene.class, "go"));
+					icon(BadgeBanner.image(Badges.Badge.HAPPY_END.image));
+				}
+			}
+
+			@Override
 			protected boolean onLongClick() {
 				//making it easier to start runs quickly while debugging
 				if (DeviceCompat.isDebug()) {
@@ -185,7 +225,8 @@ public class TitleScene extends PixelScene {
 				return super.onLongClick();
 			}
 		};
-		btnPlay.icon(new ItemSprite(ItemSpriteSheet.MAGICGIRLBOOKS, null));
+		btnPlay.icon(holiday == XMAS ?  new Image(new SliceGirlSprite()) :
+				new ItemSprite(ItemSpriteSheet.MAGICGIRLBOOKS, null));
 		add(btnPlay);
 
 		StyledButton btnRankings = new StyledButton(GREY_TR,Messages.get(this, "rankings")) {
@@ -201,6 +242,14 @@ public class TitleScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				ShatteredPixelDungeon.switchNoFade(BadgesScene.class);
+			}
+			@Override
+			protected boolean onLongClick() {
+				Badges.silentValidateHDEX();
+
+				ShatteredPixelDungeon.switchNoFade(PassWordBadgesScene.class);
+
+				return super.onLongClick();
 			}
 		};
 		btnBadges.icon(new ItemSprite(ItemSpriteSheet.GREENBOOKS, null));
@@ -283,18 +332,6 @@ public class TitleScene extends PixelScene {
 		add( fb2 );
 	}
 
-	private void placeTorch2( float x, float y ) {
-		Image fb = (new ItemSprite(ItemSpriteSheet.CAKE));
-		fb.setPos( x, y );
-		add( fb );
-	}
-
-	private void placeTorch3( float x, float y ) {
-		Image fb = (new ItemSprite(ItemSpriteSheet.SWTR));
-		fb.setPos( x, y );
-		add( fb );
-	}
-
 	private static class NewsButton extends StyledButton {
 
 		public NewsButton(Chrome.Type type, String label ){
@@ -344,7 +381,7 @@ public class TitleScene extends PixelScene {
 
 		@Override
 		protected void onClick() {
-				ShatteredPixelDungeon.switchNoFade( ChangesScene.class );
+			ShatteredPixelDungeon.switchNoFade( ChangesScene.class );
 		}
 
 	}

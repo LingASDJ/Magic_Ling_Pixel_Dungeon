@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,6 @@
 
 package com.watabou.glwrap;
 
-//TODO libGDX offer matrix classes as well, which might give better performance.
-//should investigate using them
 public class Matrix {
 
 	public static final float G2RAD = 0.01745329251994329576923690768489f;

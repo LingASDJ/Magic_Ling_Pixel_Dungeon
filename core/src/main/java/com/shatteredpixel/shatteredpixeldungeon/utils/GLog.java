@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.utils;
 
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.DeviceCompat;
@@ -30,7 +29,7 @@ import com.watabou.utils.Signal;
 public class GLog {
 
 	public static final String TAG = "GAME";
-	public static final String DEBUG   		= "[DEBUG]: ";
+	public static final String DEBUG   		= "[MissString]: ";
 	public static final String POSITIVE		= "++ ";
 	public static final String BLUETEXT		= "$$ ";
 	public static final String PINKTEXT		= "// ";
@@ -47,9 +46,8 @@ public class GLog {
 		}
 		ShatteredPixelDungeon.appendLog(addToLog.toString());
 
-		if (SPDSettings.debugReport()) {
-			info(DEBUG + text, args);
-		}
+		info(DEBUG + text, args);
+
 	}
 
 	public static void info(String text, Object... args ) {

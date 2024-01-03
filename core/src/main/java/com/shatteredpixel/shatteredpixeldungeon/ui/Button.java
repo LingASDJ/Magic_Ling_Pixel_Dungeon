@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,37 +32,41 @@ import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Signal;
 
-import java.util.ArrayList;
-
 public class Button extends Component {
 
 	public static float longClick = 0.5f;
 	
 	protected PointerArea hotArea;
 	protected Tooltip hoverTip;
-	
-	protected boolean pressed;
+
+	//only one button should be pressed at a time
+	protected static Button pressedButton;
 	protected float pressTime;
-	protected boolean processed;
+	protected boolean clickReady;
 
 	@Override
 	protected void createChildren() {
 		hotArea = new PointerArea( 0, 0, 0, 0 ) {
 			@Override
 			protected void onPointerDown( PointerEvent event ) {
-				pressed = true;
+				pressedButton = Button.this;
 				pressTime = 0;
-				processed = false;
+				clickReady = true;
 				Button.this.onPointerDown();
 			}
 			@Override
 			protected void onPointerUp( PointerEvent event ) {
-				pressed = false;
+				if (pressedButton == Button.this){
+					pressedButton = null;
+				} else {
+					//cancel any potential click, only one button can be activated at a time
+					clickReady = false;
+				}
 				Button.this.onPointerUp();
 			}
 			@Override
 			protected void onClick( PointerEvent event ) {
-				if (!processed) {
+				if (clickReady) {
 					killTooltip();
 					switch (event.button){
 						case PointerEvent.LEFT: default:
@@ -83,21 +87,17 @@ public class Button extends Component {
 			protected void onHoverStart(PointerEvent event) {
 				String text = hoverText();
 				if (text != null){
+					int key = 0;
 					if (keyAction() != null){
-						ArrayList<Integer> bindings = KeyBindings.getBoundKeysForAction(keyAction());
-						if (!bindings.isEmpty()){
-							int key = bindings.get(0);
-							//prefer controller buttons if we are using a controller
-							if (ControllerHandler.controllerPointerActive()){
-								for (int code : bindings){
-									if (ControllerHandler.icControllerKey(code)){
-										key = code;
-										break;
-									}
-								}
-							}
-							text += " _(" + KeyBindings.getKeyName(key) + ")_";
-						}
+						key = KeyBindings.getFirstKeyForAction(keyAction(), ControllerHandler.controllerActive);
+					}
+
+					if (key == 0 && secondaryTooltipAction() != null){
+						key = KeyBindings.getFirstKeyForAction(secondaryTooltipAction(), ControllerHandler.controllerActive);
+					}
+
+					if (key != 0){
+						text += " _(" + KeyBindings.getKeyName(key) + ")_";
 					}
 					hoverTip = new Tooltip(Button.this, text, 80);
 					Button.this.parent.addToFront(hoverTip);
@@ -118,14 +118,16 @@ public class Button extends Component {
 			public boolean onSignal ( KeyEvent event ) {
 				if ( active && KeyBindings.getActionForKey( event ) == keyAction()){
 					if (event.pressed){
-						pressed = true;
+						pressedButton = Button.this;
 						pressTime = 0;
-						processed = false;
+						clickReady = true;
 						Button.this.onPointerDown();
 					} else {
 						Button.this.onPointerUp();
-						if (pressed && !processed) onClick();
-						pressed = false;
+						if (pressedButton == Button.this) {
+							pressedButton = null;
+							if (clickReady) onClick();
+						}
 					}
 					return true;
 				}
@@ -139,24 +141,27 @@ public class Button extends Component {
 	public GameAction keyAction(){
 		return null;
 	}
-	
+
+	//used in cases where the main key action isn't bound, but a secondary action can be used for the tooltip
+	public GameAction secondaryTooltipAction(){
+		return null;
+	}
+
 	@Override
 	public void update() {
 		super.update();
 		
 		hotArea.active = visible;
 		
-		if (pressed) {
-			if ((pressTime += Game.elapsed) >= longClick) {
-				pressed = false;
-				if (onLongClick()) {
+		if (pressedButton == this && (pressTime += Game.elapsed) >= longClick) {
+			pressedButton = null;
+			if (onLongClick()) {
 
-					hotArea.reset();
-					processed = true;
-					onPointerUp();
-					
-					Game.vibrate( 50 );
-				}
+				hotArea.reset();
+				clickReady = false; //did a long click, can't do a regular one
+				onPointerUp();
+
+				Game.vibrate( 50 );
 			}
 		}
 	}
@@ -207,6 +212,11 @@ public class Button extends Component {
 	public synchronized void destroy () {
 		super.destroy();
 		KeyEvent.removeKeyListener( keyListener );
+		killTooltip();
+	}
+
+	public void givePointerPriority(){
+		hotArea.givePointerPriority();
 	}
 	
 }

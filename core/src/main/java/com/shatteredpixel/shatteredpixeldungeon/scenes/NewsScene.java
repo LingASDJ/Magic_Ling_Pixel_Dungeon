@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ public class NewsScene extends PixelScene {
 	public void create() {
 		super.create();
 
-		uiCamera.visible = false;
+		PixelScene.uiCamera.visible = false;
 
 		int w = Camera.main.width;
 		int h = Camera.main.height;
@@ -145,11 +145,7 @@ public class NewsScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				super.onClick();
-				String link = "https://ShatteredPixel.com";
-				//tracking codes, so that the website knows where this pageview came from
-				link += "?utm_source=shatteredpd";
-				link += "&utm_medium=news_page";
-				link += "&utm_campaign=ingame_link";
+				String link = "http://www.pd.qinyueqwq.top/";
 				ShatteredPixelDungeon.platform.openURI(link);
 			}
 		};
@@ -183,13 +179,13 @@ public class NewsScene extends PixelScene {
 		protected void createChildren() {
 			bg = Chrome.get(Chrome.Type.GREY_BUTTON_TR);
 			add(bg);
-			
+
 			String message = "";
 
 			if (Messages.lang() != Languages.CHINESE){
 				message += Messages.get(this, "english_warn");
 			}
-			
+
 			if (!News.articlesAvailable()){
 				if (SPDSettings.news()) {
 					if (SPDSettings.WiFi() && !Game.platform.connectedToUnmeteredNetwork()) {
@@ -225,7 +221,7 @@ public class NewsScene extends PixelScene {
 			}
 
 			if (message.startsWith("\n\n")) message = message.replaceFirst("\n\n", "");
-			
+
 			text = PixelScene.renderTextBlock(message, 6);
 			text.hardlight(CharSprite.WARNING);
 			add(text);
@@ -270,7 +266,7 @@ public class NewsScene extends PixelScene {
 			icon(News.parseArticleIcon(article));
 			long lastRead = SPDSettings.newsLastRead();
 			if (lastRead > 0 && article.date.getTime() > lastRead) {
-				textColor(Window.TITLE_COLOR);
+				textColor(Window.Pink_COLOR);
 			}
 
 			Calendar cal = Calendar.getInstance();
@@ -325,9 +321,8 @@ public class NewsScene extends PixelScene {
 					ShatteredPixelDungeon.platform.openURI(link);
 				}
 			};
-			link.setRect(0, height + 2, width, BTN_HEIGHT);
-			add(link);
-			resize(width, (int) link.bottom());
+			link.setHeight(BTN_HEIGHT);
+			addToBottom(link);
 		}
 
 

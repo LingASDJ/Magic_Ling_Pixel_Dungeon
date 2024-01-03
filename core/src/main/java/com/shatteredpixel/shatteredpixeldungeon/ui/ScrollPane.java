@@ -118,7 +118,7 @@ public class ScrollPane extends Component {
 			super( 0, 0, 0, 0 );
 			dragThreshold = PixelScene.defaultZoom * 8;
 		}
-		
+
 		@Override
 		protected void onScroll(ScrollEvent event) {
 			PointF newPt = new PointF(lastPos);
@@ -159,11 +159,11 @@ public class ScrollPane extends Component {
 
 			}
 		}
-		
+
 		private void scroll( PointF current ){
-			
+
 			Camera c = content.camera;
-			
+
 			c.shift( PointF.diff( lastPos, current ).invScale( c.zoom ) );
 			if (c.scroll.x + width > content.width()) {
 				c.scroll.x = content.width() - width;
@@ -177,12 +177,12 @@ public class ScrollPane extends Component {
 			if (c.scroll.y < 0) {
 				c.scroll.y = 0;
 			}
-			
+
 			thumb.y = y + height * c.scroll.y / content.height();
-			
+
 			lastPos.set( current );
-			
+
 		}
-		
+
 	}
 }

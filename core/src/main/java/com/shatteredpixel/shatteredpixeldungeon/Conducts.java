@@ -5,13 +5,11 @@ import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Conducts {
     public enum Conduct {
         NULL,
-        BOSSRUSH,
-        MONEYLETGO;
+        BOSSRUSH;
         /**深海副本*/
         //SEADLC
 
@@ -32,8 +30,6 @@ public class Conducts {
         public ConductStorage() {
             conducts = new ArrayList<>();
         }
-
-        public ConductStorage(Conduct... conducts) {this.conducts = new ArrayList<>(Arrays.asList(conducts));}
 
         public ConductStorage(ConductStorage storage) {this.conducts = new ArrayList<>(storage.conducts);}
 

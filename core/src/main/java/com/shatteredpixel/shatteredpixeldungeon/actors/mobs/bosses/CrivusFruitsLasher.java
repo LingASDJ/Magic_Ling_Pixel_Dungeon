@@ -212,7 +212,7 @@ public class CrivusFruitsLasher extends Mob {
     @Override
     public void damage(int dmg, Object src) {
         LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-        if (lock != null) lock.addTime(dmg*2);
+        if (lock != null) lock.addTime(dmg*2+4);
         int damage = Random.Int(1,3);
         if (src instanceof Burning && ! Statistics.crivusfruitslevel2) {
             //一阶段如果触手着火会给予它100回合磷火燃烧（永久燃烧）

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,10 +24,12 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.watabou.noosa.Image;
 
 public class Levitation extends FlavourBuff {
 	
@@ -57,10 +59,28 @@ public class Levitation extends FlavourBuff {
 			Dungeon.level.occupyCell(target );
 		}
 	}
+
+	//used to determine if levitation is about to end
+	public boolean detachesWithinDelay(float delay){
+		if (target.buff(Swiftthistle.TimeBubble.class) != null){
+			return false;
+		}
+
+		if (target.buff(TimekeepersHourglass.timeFreeze.class) != null){
+			return false;
+		}
+
+		return cooldown() < delay;
+	}
 	
 	@Override
 	public int icon() {
 		return BuffIndicator.LEVITATION;
+	}
+
+	@Override
+	public void tintIcon(Image icon) {
+		icon.hardlight(1f, 2.1f, 2.5f);
 	}
 
 	@Override
@@ -72,15 +92,5 @@ public class Levitation extends FlavourBuff {
 	public void fx(boolean on) {
 		if (on) target.sprite.add(CharSprite.State.LEVITATING);
 		else target.sprite.remove(CharSprite.State.LEVITATING);
-	}
-
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc", dispTurns());
 	}
 }

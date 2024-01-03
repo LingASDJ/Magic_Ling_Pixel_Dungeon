@@ -1,10 +1,15 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue.Quest.four_used_points;
+import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue.Quest.survey_research_points;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -15,8 +20,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM720;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
@@ -48,7 +55,8 @@ import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-/**萨卡班甲鱼 Boss 难度：3.5级 */
+/**萨卡班甲鱼 Boss 难度：4级
+ * 隐藏Boss 萨卡班甲鱼*/
 public class SakaFishBoss extends Boss {
     private int leapPos = -1;
     private float leapCooldown = 0;
@@ -60,7 +68,7 @@ public class SakaFishBoss extends Boss {
     public boolean beamCharged;
 
 
-    /**隐藏Boss 萨卡班甲鱼*/
+    /***/
     {
         spriteClass = SakaFishBossSprites.class;
         initBaseStatus(19, 25, 6, 0, 480, 5, 12);
@@ -74,6 +82,7 @@ public class SakaFishBoss extends Boss {
         HT=480;
         immunities.add(FrostBurning.class);
         immunities.add(HalomethaneBurning.class);
+        immunities.add(Terror.class);
         properties.add(Property.ICY);
         properties.add(Property.ELECTRIC);
         properties.add(Property.FIERY);
@@ -114,10 +123,23 @@ public class SakaFishBoss extends Boss {
 
         //phase 1 of the fight is over
         if (HP <= HT/2 && level==AncientMysteryCityBossLevel.State.TWO_BOSS){
-            HP = (HT/2);
-            yell(Messages.get(this, "interesting"));
-            ((AncientMysteryCityBossLevel)Dungeon.level).progress();
-            BossHealthBar.bleed(true);
+            Actor.add(new Actor() {
+
+                {
+                    actPriority = VFX_PRIO;
+                }
+
+                @Override
+                protected boolean act() {
+                    Actor.remove(this);
+                    HP = (HT/2);
+                    yell(Messages.get(SakaFishBoss.class, "interesting"));
+                    ((AncientMysteryCityBossLevel)Dungeon.level).progress();
+                    BossHealthBar.bleed(true);
+                    return true;
+                }
+            });
+
         }
     }
 
@@ -148,9 +170,9 @@ public class SakaFishBoss extends Boss {
     public int damageRoll() {
         AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
         if(level==AncientMysteryCityBossLevel.State.FALL_BOSS)
-            return Random.NormalIntRange(40, 75);
+            return Random.NormalIntRange(30, 55);
         else
-            return Random.NormalIntRange(30, 40);
+            return Random.NormalIntRange(20, 30);
     }
 
     @Override
@@ -169,7 +191,7 @@ public class SakaFishBoss extends Boss {
     @Override
     public int drRoll() {
         AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
-        return level == AncientMysteryCityBossLevel.State.FALL_BOSS ? 10 : 40;
+        return level == AncientMysteryCityBossLevel.State.FALL_BOSS ? 10 : 35;
     }
 
 
@@ -221,7 +243,7 @@ public class SakaFishBoss extends Boss {
             return super.doAttack(enemy);
         } else if (!beamCharged){
             ((SakaFishBossSprites)sprite).charge( enemy.pos );
-
+            GLog.n(Messages.get(SakaFishBoss.class,"laserwarning"));
             spend( level == AncientMysteryCityBossLevel.State.FALL_BOSS ? attackDelay() : attackDelay()*2f );
             beamCharged = true;
             return true;
@@ -257,33 +279,39 @@ public class SakaFishBoss extends Boss {
     @Override
     public void die( Object cause ) {
 
-        super.die( cause );
-
-
+            super.die( cause );
             Dungeon.level.unseal();
 
+            if(Statistics.qualifiedForBossChallengeBadge) {
+                PaswordBadges.GOOD_BLUE();
+            }
+
+            survey_research_points += 2000;
+            Statistics.questScores[2] += survey_research_points/2;
+            Badges.validateAncityProgress();
             GameScene.bossSlain();
             Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
             Dungeon.level.drop( new AncityArmor(), pos ).sprite.drop();
             //60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5
-            int meets = Random.chances(new float[]{0, 0, 6, 3, 1});
+            int meets = Math.max(4, Math.min(6, Random.chances(new float[]{0, 0, 6, 3, 1})));
             for (int i = 0; i < meets; i++){
                 int ofs;
                 do {
                     ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
                 } while (!Dungeon.level.passable[pos + ofs]);
-                Dungeon.level.drop( new SakaMeat(), pos + ofs ).sprite.drop( pos );
+                    Dungeon.level.drop( new SakaMeat(), pos + ofs ).sprite.drop( pos );
             }
 
             Dungeon.level.drop( new WaterSoul(), pos ).sprite.drop();
+            Dungeon.level.drop( new WaterSoul(), pos ).sprite.drop();
+
             Dungeon.level.drop( new SakaFishSketon(), pos ).sprite.drop();
             Dungeon.level.drop( new WaterSoul(), pos ).sprite.drop();
 
-            Badges.KILLSAKA();
+            Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
+            PaswordBadges.KILLSAKA();
 
             yell( Messages.get(this, "defeated") );
-
-
     }
 
     @Override
@@ -310,8 +338,6 @@ public class SakaFishBoss extends Boss {
     private static final String BEAM_COOLDOWN   = "beamCooldown";
     private static final String BEAM_CHARGED    = "beamCharged";
 
-    //二阶段
-    private static final String TO_ATTACK   = "toattack";
 
     @Override
     public void storeInBundle( Bundle bundle ) {
@@ -370,7 +396,6 @@ public class SakaFishBoss extends Boss {
             {
                 actPriority = HERO_PRIO+1;
             }
-            private static final float TIME_TO_ZAP	= 1f;
 
             @Override
             protected boolean act() {
@@ -446,43 +471,41 @@ public class SakaFishBoss extends Boss {
                     endPos = leapPos;
                 }
 
-                    //do leap
-                    sprite.visible = Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[leapPos] || Dungeon.level.heroFOV[endPos];
-                    sprite.dirtcar(pos, leapPos, new Callback() {
-                        @Override
-                        public void call() {
-                            AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
-                            if (leapVictim != null && alignment != leapVictim.alignment){
-                                enemy.damage( Random.NormalIntRange( 40, 60 ), this );
-                                if(level == AncientMysteryCityBossLevel.State.FALL_BOSS){
-                                    //三阶段 魔法风暴
-                                    FishStorm(sprite.ch);
-                                }
-                                Sample.INSTANCE.play(Assets.Sounds.ROCKS);
-                                leapVictim.sprite.flash();
-                                Sample.INSTANCE.play(Assets.Sounds.HIT);
+                    //do leap 泥头车
+                sprite.jump(pos, leapPos, new Callback() {
+                    @Override
+                    public void call() {
+                        AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
+                        if (leapVictim != null && alignment != leapVictim.alignment){
+                            enemy.damage( Random.NormalIntRange( 40, 60 ), this );
+                            if(level == AncientMysteryCityBossLevel.State.FALL_BOSS){
+                                //三阶段 魔法风暴
+                                FishStorm(sprite.ch);
                             }
-
-                            Char ch = hero;
-                            if(hero != null){
-                                if (!ch.isAlive()) {
-                                    Dungeon.fail( getClass() );
-                                    GLog.n( Messages.get(SakaFishBoss.class, "dictcar_kill"),Dungeon.hero.name() );
-                                }
-                            }
-
-                            if (endPos != leapPos){
-                                Actor.addDelayed(new Pushing(SakaFishBoss.this, leapPos, endPos), -1);
-                            }
-
-                            pos = endPos;
-                            leapPos = -1;
-                            sprite.operate(pos);
-                            Dungeon.level.occupyCell(SakaFishBoss.this);
-                            next();
+                            Sample.INSTANCE.play(Assets.Sounds.ROCKS);
+                            leapVictim.sprite.flash();
+                            Sample.INSTANCE.play(Assets.Sounds.HIT);
                         }
-                    });
 
+                        Char ch = hero;
+                        if(hero != null){
+                            if (!ch.isAlive()) {
+                                Dungeon.fail( getClass() );
+                                GLog.n( Messages.get(SakaFishBoss.class, "dictcar_kill"),Dungeon.hero.name() );
+                            }
+                        }
+
+                        if (endPos != leapPos){
+                            Actor.addDelayed(new Pushing(SakaFishBoss.this, leapPos, endPos), -1);
+                        }
+
+                        pos = endPos;
+                        leapPos = -1;
+                        sprite.operate(pos);
+                        Dungeon.level.occupyCell(SakaFishBoss.this);
+                        next();
+                    }
+                });
 
                 return false;
             }
@@ -583,9 +606,21 @@ public class SakaFishBoss extends Boss {
             }
 
             if (hit( this, ch, true )) {
-                ch.damage( Random.NormalIntRange( 30, 60 ), new DeathGaze() );
-                if(level == AncientMysteryCityBossLevel.State.FALL_BOSS){
+                if(Dungeon.isChallenged(STRONGER_BOSSES)){
+                    ch.damage( Random.NormalIntRange( 40, 60 ), new DeathGaze() );
+                } else {
+                    ch.damage( Random.NormalIntRange( 30, 60 ), new DeathGaze() );
+                }
+
+                if(DragonGirlBlue.Quest.four_used_points<2){
+                    four_used_points++;
+                } else {
+                    Statistics.qualifiedForBossChallengeBadge = false;
+                }
+
+                if(level == AncientMysteryCityBossLevel.State.FALL_BOSS || Dungeon.isChallenged(STRONGER_BOSSES)){
                     dropRocks(enemy);
+                    GLog.n( Messages.get(this, "king"),Dungeon.hero.name() );
                 }
 
                 if (Dungeon.level.heroFOV[pos]) {
@@ -634,6 +669,7 @@ public class SakaFishBoss extends Boss {
             } else {
                 Buff.prolong(enemy, Cripple.class, Cripple.DURATION);
             }
+            Statistics.qualifiedForBossChallengeBadge = false;
         }
     }
 

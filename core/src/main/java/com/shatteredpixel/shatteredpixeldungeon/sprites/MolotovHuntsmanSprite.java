@@ -12,7 +12,13 @@ import com.watabou.utils.Callback;
 
 public class MolotovHuntsmanSprite extends MobSprite {
     public MolotovHuntsmanSprite() {
-        this.texture("SRPD/MolotovHuntsman.png");
+        if(Dungeon.depth == 15 || Dungeon.hero == null){
+            this.texture("sprites/boss/huntsman.png");
+        } else {
+            this.texture("SRPD/MolotovHuntsman.png");
+        }
+
+
         TextureFilm var1 = new TextureFilm(this.texture, 16, 16);
         this.idle = new Animation(2, true);
         this.idle.frames(var1, 0, 0, 0, 1, 0, 0, 1, 1);
@@ -27,7 +33,8 @@ public class MolotovHuntsmanSprite extends MobSprite {
 
     public void attack(int var1) {
         if (!Dungeon.level.adjacent(var1, this.ch.pos)) {
-            ((MissileSprite)this.parent.recycle(MissileSprite.class)).reset(this.ch.pos, var1, new RedBloodMoon(), new Callback() {
+            ((MissileSprite)this.parent.recycle(MissileSprite.class)).reset(this.ch.pos, var1, new RedBloodMoon.RedBloodMoonEX(),
+                    new Callback() {
                 public void call() {
                     MolotovHuntsmanSprite.this.ch.onAttackComplete();
                 }

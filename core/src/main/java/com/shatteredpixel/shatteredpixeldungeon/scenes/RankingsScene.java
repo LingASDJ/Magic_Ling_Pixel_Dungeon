@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Typhon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -31,10 +33,11 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDailies;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndRanking;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
@@ -57,7 +60,7 @@ public class RankingsScene extends PixelScene {
 		
 		super.create();
 
-		uiCamera.visible = false;
+		PixelScene.uiCamera.visible = false;
 		
 		int w = Camera.main.width;
 		int h = Camera.main.height;
@@ -80,7 +83,7 @@ public class RankingsScene extends PixelScene {
 		if (Rankings.INSTANCE.records.size() > 0) {
 
 			//attempts to give each record as much space as possible, ideally as much space as portrait mode
-			float rowHeight = GameMath.gate(ROW_HEIGHT_MIN, (uiCamera.height - 26)/Rankings.INSTANCE.records.size(), ROW_HEIGHT_MAX);
+			float rowHeight = GameMath.gate(ROW_HEIGHT_MIN, (PixelScene.uiCamera.height - 26)/Rankings.INSTANCE.records.size(), ROW_HEIGHT_MAX);
 
 			float left = (w - Math.min( MAX_ROW_WIDTH, w )) / 2 + GAP;
 			float top = (h - rowHeight  * Rankings.INSTANCE.records.size()) / 2;
@@ -132,9 +135,40 @@ public class RankingsScene extends PixelScene {
 		btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
 		add( btnExit );
 
+		int left = 0;
+
+		if (Rankings.INSTANCE.latestDaily != null) {
+			IconButton btnDailies = new IconButton(Icons.CALENDAR.get()) {
+				@Override
+				protected void onClick() {
+					ShatteredPixelDungeon.scene().addToFront(new WndDailies());
+				}
+
+				@Override
+				protected void onPointerUp() {
+					icon.hardlight(0.5f, 1f, 2f);
+				}
+			};
+			btnDailies.icon().hardlight(0.5f, 1f, 2f);
+			btnDailies.setRect( left, 0, 20, 20 );
+			left += 20;
+			add(btnDailies);
+		}
+
+		if (Dungeon.daily){
+			addToFront(new WndDailies());
+		}
+
 		fadeIn();
 	}
-	
+
+	@Override
+	public void destroy() {
+		super.destroy();
+		//so that opening daily records does not trigger WndDailies opening on future visits
+		Dungeon.daily = Dungeon.dailyReplay = false;
+	}
+
 	@Override
 	protected void onBackPressed() {
 		ShatteredPixelDungeon.switchNoFade(TitleScene.class);
@@ -145,13 +179,14 @@ public class RankingsScene extends PixelScene {
 		private static final float GAP	= 4;
 		
 		private static final int[] TEXT_WIN	= {0xFFFF88, 0xB2B25F};
+		private static final int[] TEXT_WIN2	= {0xCF6E28, 0xC66c28};
 		private static final int[] TEXT_LOSE= {0xDDDDDD, 0x888888};
 		private static final int FLARE_WIN	= 0x888866;
 		private static final int FLARE_LOSE	= 0x666666;
 		
 		private Rankings.Record rec;
 		
-		protected ItemSprite shield;
+		protected Image shield;
 		private Flare flare;
 		private BitmapText position;
 		private RenderedTextBlock desc;
@@ -159,16 +194,21 @@ public class RankingsScene extends PixelScene {
 		private BitmapText depth;
 		private Image classIcon;
 		private BitmapText level;
-		
+
 		public Record( int pos, boolean latest, Rankings.Record rec ) {
 			super();
-			
+
 			this.rec = rec;
-			
+
 			if (latest) {
 				flare = new Flare( 6, 24 );
 				flare.angularSpeed = 90;
-				flare.color( rec.win ? FLARE_WIN : FLARE_LOSE );
+				if (rec.cause == Typhon.class){
+					flare.color( 0xCF6E28 );
+				} else {
+					flare.color( rec.win ? FLARE_WIN : FLARE_LOSE );
+				}
+
 				addToBack( flare );
 			}
 
@@ -177,17 +217,27 @@ public class RankingsScene extends PixelScene {
 			} else
 				position.text(" ");
 			position.measure();
-			
+
 			desc.text( Messages.titleCase(rec.desc()) );
 
 			int odd = pos % 2;
-			
+
+
+
 			if (rec.win) {
-				shield.view( ItemSpriteSheet.AMULET, null );
-				position.hardlight( TEXT_WIN[odd] );
-				desc.hardlight( TEXT_WIN[odd] );
-				depth.hardlight( TEXT_WIN[odd] );
-				level.hardlight( TEXT_WIN[odd] );
+				if (rec.cause == Typhon.class){
+					shield.copy( new ItemSprite(ItemSpriteSheet.CITY_HOOD));
+					position.hardlight( TEXT_WIN2[odd] );
+					desc.hardlight( TEXT_WIN2[odd] );
+					depth.hardlight( TEXT_WIN2[odd] );
+					level.hardlight( TEXT_WIN2[odd] );
+				} else {
+					shield.copy( new ItemSprite(ItemSpriteSheet.AMULET) );
+					position.hardlight( TEXT_WIN[odd] );
+					desc.hardlight( TEXT_WIN[odd] );
+					depth.hardlight( TEXT_WIN[odd] );
+					level.hardlight( TEXT_WIN[odd] );
+				}
 			} else {
 				position.hardlight( TEXT_LOSE[odd] );
 				desc.hardlight( TEXT_LOSE[odd] );
@@ -210,20 +260,29 @@ public class RankingsScene extends PixelScene {
 				level.measure();
 				add(level);
 			}
-			
+
 			classIcon.copy( Icons.get( rec.heroClass ) );
 			if (rec.heroClass == HeroClass.ROGUE){
 				//cloak of shadows needs to be brightened a bit
 				classIcon.brightness(2f);
 			}
+
+			if (rec.daily){
+				shield.copy( Icons.get(Icons.CALENDAR) );
+				shield.hardlight(0.5f, 1f, 2f);
+			} else if (!rec.customSeed.isEmpty()){
+				shield.copy(new Image(new ItemSprite( ItemSpriteSheet.GRAVE, null )));
+				shield.hardlight(1f, 1.5f, 0.67f);
+			}
+
 		}
 		
 		@Override
 		protected void createChildren() {
 			
 			super.createChildren();
-			
-			shield = new ItemSprite( ItemSpriteSheet.TOMB, null );
+
+			shield = new Image(new ItemSprite( ItemSpriteSheet.TOMB, null ));
 			add( shield );
 			
 			position = new BitmapText( PixelScene.pixelFont);
@@ -247,7 +306,7 @@ public class RankingsScene extends PixelScene {
 			
 			super.layout();
 			
-			shield.x = x;
+			shield.x = x + (16 - shield.width) / 2f;
 			shield.y = y + (height - shield.height) / 2f;
 			align(shield);
 			
@@ -275,18 +334,14 @@ public class RankingsScene extends PixelScene {
 			depth.y = steps.y + (steps.height - depth.height()) / 2f + 1;
 			align(depth);
 
-			desc.maxWidth((int)(steps.x - (shield.x + shield.width + GAP)));
-			desc.setPos(shield.x + shield.width + GAP, shield.y + (shield.height - desc.height()) / 2f + 1);
+			desc.maxWidth((int)(steps.x - (x + 16 + GAP)));
+			desc.setPos(x + 16 + GAP, shield.y + (shield.height - desc.height()) / 2f + 1);
 			align(desc);
 		}
 		
 		@Override
 		protected void onClick() {
-			if (rec.gameData != null) {
-				parent.add( new WndRanking( rec ) );
-			} else {
-				parent.add( new WndError( Messages.get(RankingsScene.class, "no_info") ) );
-			}
+			parent.add( new WndRanking( rec ) );
 		}
 	}
 }

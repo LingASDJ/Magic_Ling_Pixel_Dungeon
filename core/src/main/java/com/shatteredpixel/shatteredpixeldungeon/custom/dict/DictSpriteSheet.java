@@ -1,10 +1,16 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.dict;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ApprenticeWitchSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BombGnollTricksterSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BruteBotSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearElementalSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdGuardSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdRatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireAcidicSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameC01Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FlowerSlimeSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GreenSltingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceFireScorpioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceGolemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -16,13 +22,16 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.OGPDLLSTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.OGPDNQHZTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.OGPDZSLSTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PoltergeistSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedSwarmSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDICLRTT;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.STenguSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SalamanderSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShieldHuntsmanSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SkullShamanSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SlimeKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SpectralNecromancerSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.TenguSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
 import com.watabou.noosa.Image;
 
 public class DictSpriteSheet {
@@ -78,11 +87,19 @@ public class DictSpriteSheet {
             case MOLO:
                 return new MolotovHuntsmanSprite();
             case FLAME:
-                return new FlameBoiSprite();
+                return new SlimeKingSprite();
+            case FLAMEC01:
+                return new FlameC01Sprite();
+            case GnollK:
+                return new BombGnollTricksterSprites();
+            case GnollF:
+                return new SkullShamanSprite();
+            case Goo:
+                return new ApprenticeWitchSprite();
             case GNOLL:
                 return new Image(Assets.Sprites.GNOLL, 0, 0, 12, 15);
-            case XTG:
-                 return new TenguSprite();
+            case STX:
+                 return new SalamanderSprites();
             case XHDD:
                 return new MurdererSprite.RedMuderer();
             case IAX:
@@ -91,10 +108,16 @@ public class DictSpriteSheet {
                 return new FireAcidicSprite();
             case IAS:
                 return new IceGolemSprite();
+            case BRTX:
+                return new BruteBotSprite();
+            case GOO:
+                return new STenguSprite();
+            case GKS:
+                return new ColdGuardSprite();
             case CAX:
                 return new SRPDICLRTT();
-            case REDBS:
-                return new RedNecromancerSprite();
+            case CLEARS:
+                return new ClearElementalSprites();
             case SLXJ:
                 return new SpectralNecromancerSprite();
             case BMHR:
@@ -111,6 +134,8 @@ public class DictSpriteSheet {
                 return new Image(Assets.Sprites.SLIME, 14, 0, 14, 12);
             case F_RAT:
                 return new Image(Assets.Sprites.RAT, 0, 30, 16, 15);
+            case FLOWER:
+                return new FlowerSlimeSprites();
             case GNOLL_DARTER:
                 return new Image(Assets.Sprites.GNOLL, 0, 15, 12, 15);
             case CAUSTIC_SLIME:
@@ -201,7 +226,7 @@ public class DictSpriteSheet {
             case STATUE:
                 return new Image(Assets.Sprites.STATUE, 0, 0, 12, 15);
             case ARMORED_STATUE:
-                return new Image(Assets.Sprites.STATUE, 24, 45, 12, 15);
+                return new StatueSprite();
             case MIMIC:
                 return new Image(Assets.Sprites.MIMIC, 0, 0, 16, 16);
             case MIMIC_GOLDEN:
@@ -210,6 +235,8 @@ public class DictSpriteSheet {
                 return new Image(Assets.Sprites.MIMIC, 0, 32, 16, 16);
             case WRAITH:
                 return new Image(Assets.Sprites.WRAITH, 0, 0, 14, 15);
+            case GLTX:
+                return new GreenSltingSprite();
             case BEE:
                 return new Image(Assets.Sprites.BEE, 0, 0, 16, 16);
 
@@ -274,6 +301,8 @@ public class DictSpriteSheet {
     public static final int SLIME           = 206 + 10000;
     public static final int CAUSTIC_SLIME   = 207 + 10000;
     public static final int F_RAT           = 208 + 10000;
+
+    public static final int FLOWER           = 1608 + 10000;
     public static final int GNOLL_DARTER    = 209 + 10000;
     public static final int GREAT_CRAB      = 210 + 10000;
     public static final int OGPDNQHZ        = 211 + 10000;
@@ -286,8 +315,8 @@ public class DictSpriteSheet {
     public static final int BLACK      = 218 + 10000;
     public static final int MOLO      = 219 + 10000;
     public static final int FLAME      = 220 + 10000;
-    public static final int XTG      = 221 + 10000;
-    public static final int REDBS      = 222 + 10000;
+    public static final int STX      = 221 + 10000;
+    public static final int CLEARS      = 222 + 10000;
     public static final int SLXJ      = 223 + 10000;
     public static final int BMHR      = 224 + 10000;
     public static final int XHDD      = 225 + 10000;
@@ -296,6 +325,17 @@ public class DictSpriteSheet {
     public static final int CAX      = 228 + 10000;
     public static final int IAS      = 229 + 10000;
 
+    public static final int FLAMEC01      = 330 + 10000;
+
+    public static final int GnollK      = 331 + 10000;
+
+    public static final int GnollF      = 332 + 10000;
+
+    public static final int Goo      = 333 + 10000;
+
+    public static final int BRTX      = 230 + 10000;
+    public static final int GOO     = 231 + 10000;
+    public static final int GKS     = 232 + 10000;
     public static final int THIEF           = 300 + 10000;
     public static final int BANDIT          = 301 + 10000;
     public static final int SKELETON        = 302 + 10000;
@@ -345,6 +385,8 @@ public class DictSpriteSheet {
     public static final int MIMIC_GOLDEN    = 704 + 10000;
     public static final int MIMIC_CRYSTAL   = 705 + 10000;
     public static final int WRAITH = 706 + 10000;
+
+    public static final int GLTX = 906 + 10000;
     public static final int BEE             = 707 + 10000;
 
     public static final int SAD_GHOST       = 800 + 10000;

@@ -7,6 +7,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.cure;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.ClearLanterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
@@ -22,6 +23,11 @@ import com.watabou.utils.Random;
 
 public class Nyctophobia extends Buff implements Hero.Doom {
 
+    @Override
+    public String heroMessage() {
+        return "";
+    }
+
     private static final String LEVEL = "level";
     private static final String PARTIALDAMAGE = "partialDamage";
 
@@ -33,16 +39,21 @@ public class Nyctophobia extends Buff implements Hero.Doom {
     @Override
     public boolean act() {
 
-        if(hero.lanterfire == 90){
-            goodLanterFire();
-            spend(20f);
+        if(hero.lanterfire >= 90){
+            //灯火大于90给予一个buff 然后不叠加
+            for (Buff b : hero.buffs(ClearLanterBuff.class)){
+               if(b == null){
+                   goodLanterFire();
+               }
+               spend(200f);
+           }
         }
 
         if (hero.lanterfire < 51 && hero.lanterfire>31) {
             cure( Dungeon.hero );
             badLanterFire();
             spend(100f);
-        } else if (hero.lanterfire < 31 && hero.lanterfire > 0) {
+        } else if (hero.lanterfire < 31 && hero.lanterfire >= 0) {
             cure( Dungeon.hero );
             switch (Random.Int(5)){
                 case 0: case 1:
@@ -58,9 +69,9 @@ public class Nyctophobia extends Buff implements Hero.Doom {
                     Buff.affect(hero, MagicGirlSayNoSTR.class).set( (100), 1 );
                     break;
             }
-            spend(50f);
-        }  else if(hero.lanterfire < 0){
-            hero.damage( (Dungeon.depth/5)*(Math.abs(hero.lanterfire)/2)+10, this );
+            spend(90f);
+        }  else if(hero.lanterfire == 0){
+            hero.damage( (int)((Dungeon.depth/5)*(Math.abs(hero.lanterfire)/2)+10), this );
             spend(24f);
             GLog.w( Messages.get(this, "desc6") );
         }
@@ -80,7 +91,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
             }
             if (hero.lanterfire >= 0 ) {
                 hero.damageLantern(1+Challenges.activeChallenges()/5);
-                spend(20f-(float) Dungeon.depth/5);
+                spend(20f-(float) Dungeon.depth/5+Challenges.activeChallenges());
             } else {
                 spend(STEP);
             }
@@ -125,7 +136,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
 
     @Override
     public void onDeath() {
-        GLog.n("无尽的黑暗涌入了你的意识，你最终被黑暗拖入了深渊...");
+        GLog.n(Messages.get(this, "ondeath"));
     }
 
     @Override
@@ -142,7 +153,8 @@ public class Nyctophobia extends Buff implements Hero.Doom {
         bundle.put(PARTIALDAMAGE, this.partialDamage);
     }
 
-    public String toString() {
+    @Override
+    public String name() {
         if (hero.lanterfire >= 90 && hero.lanterfire <= 100) {
             return Messages.get(this, "name");
         } else if (hero.lanterfire >= 80 && hero.lanterfire <= 89) {

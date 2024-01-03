@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -101,6 +101,20 @@ public class EmoIcon extends Image {
 
 			x = owner.x + owner.width - width / 2;
 			y = owner.y - height;
+		}
+	}
+
+	public static class Love extends EmoIcon {
+
+		public Love( CharSprite owner ) {
+
+			super( owner );
+
+			copy( Icons.get( Icons.LOVE ) );
+
+			maxSize = 1.3f;
+			timeScale = 2;
+			scale.set( Random.Float( 1, maxSize ) );
 		}
 	}
 	

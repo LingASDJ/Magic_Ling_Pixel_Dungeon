@@ -24,9 +24,15 @@ package com.shatteredpixel.shatteredpixeldungeon;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.amuletObtained;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.chalMultiplier;
+import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.A_SCORE;
+import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.B_SCORE;
+import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.SSSP_SCORE;
+import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.SSS_SCORE;
+import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.SS_SCORE;
 
-import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.*;
-
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
@@ -47,196 +53,37 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class Badges {
 
-	public enum Badge {
-		MASTERY_WARRIOR,
-		MASTERY_MAGE,
-		MASTERY_ROGUE,
-		MASTERY_HUNTRESS,
-		FOUND_RATMOGRIFY,
+	public static void validateDeathFromEnemyMagic() {
+		Badge badge = Badge.DEATH_FROM_ENEMY_MAGIC;
+		local.add( badge );
+		displayBadge( badge );
 
-		//bronze
-		UNLOCK_MAGE                 ( 1 ),
-		UNLOCK_ROGUE                ( 2 ),
-		UNLOCK_HUNTRESS             ( 3 ),
-		MONSTERS_SLAIN_1            ( 4 ),
-		MONSTERS_SLAIN_2            ( 5 ),
-		GOLD_COLLECTED_1            ( 6 ),
-		GOLD_COLLECTED_2            ( 7 ),
-		ITEM_LEVEL_1                ( 8 ),
-		LEVEL_REACHED_1             ( 9 ),
-		STRENGTH_ATTAINED_1         ( 10 ),
-		FOOD_EATEN_1                ( 11 ),
-		ITEMS_CRAFTED_1             ( 12 ),
-		BOSS_SLAIN_1                ( 13 ),
-		DEATH_FROM_FIRE             ( 14 ),
-		DEATH_FROM_POISON           ( 15 ),
-		DEATH_FROM_GAS              ( 16 ),
-		DEATH_FROM_HUNGER           ( 17 ),
-		DEATH_FROM_FALLING          ( 18 ),
-		HIGH_SCORE_1 				( 19 ),
-		KILL_ROTHEART         			( 20 ),
-		GET_SC        			( 21 ),
-		KILL_COLDELE        			( 22 ),
-
-		HALOFIRE_DIED					( 23 ),
-
-		READ_BOOK_ONE				( 24 ),
-
-		BRUTE_BOT_DIED				( 25 ),
-
-		//silver
-		NO_MONSTERS_SLAIN           ( 32 ),
-		GRIM_WEAPON                 ( 33 ),
-		MONSTERS_SLAIN_3            ( 34 ),
-		MONSTERS_SLAIN_4            ( 35 ),
-		GOLD_COLLECTED_3            ( 36 ),
-		GOLD_COLLECTED_4            ( 37 ),
-		ITEM_LEVEL_2                ( 38 ),
-		ITEM_LEVEL_3                ( 39 ),
-		LEVEL_REACHED_2             ( 40 ),
-		LEVEL_REACHED_3             ( 41 ),
-		STRENGTH_ATTAINED_2         ( 42 ),
-		STRENGTH_ATTAINED_3         ( 43 ),
-		FOOD_EATEN_2                ( 44 ),
-		FOOD_EATEN_3                ( 45 ),
-		ITEMS_CRAFTED_2             ( 46 ),
-		ITEMS_CRAFTED_3             ( 47 ),
-		BOSS_SLAIN_2                ( 48 ),
-		BOSS_SLAIN_3                ( 49 ),
-		ALL_POTIONS_IDENTIFIED      ( 50 ),
-		ALL_SCROLLS_IDENTIFIED      ( 51 ),
-		DEATH_FROM_GLYPH            ( 52 ),
-		BOSS_SLAIN_1_WARRIOR,
-		BOSS_SLAIN_1_MAGE,
-		BOSS_SLAIN_1_ROGUE,
-		BOSS_SLAIN_1_HUNTRESS,
-		BOSS_SLAIN_1_ALL_CLASSES    ( 53, true ),
-		GAMES_PLAYED_1              ( 54, true ),
-
-		HIGH_SCORE_2				( 55 ),
-
-		READ_BOOK_TWO				( 56 ),
-
-		//gold
-		PIRANHAS                    ( 64 ),
-		//these names are a bit outdated, but it doesn't really matter.
-		BAG_BOUGHT_SEED_POUCH,
-		BAG_BOUGHT_SCROLL_HOLDER,
-		BAG_BOUGHT_POTION_BANDOLIER,
-		BAG_BOUGHT_WAND_HOLSTER,
-		ALL_BAGS_BOUGHT             ( 65 ),
-		MASTERY_COMBO               ( 66 ),
-		ITEM_LEVEL_4                ( 67 ),
-		LEVEL_REACHED_4             ( 68 ),
-		STRENGTH_ATTAINED_4         ( 69 ),
-		FOOD_EATEN_4                ( 70 ),
-		ITEMS_CRAFTED_4            ( 71 ),
-		BOSS_SLAIN_4                ( 72 ),
-		ALL_WEAPONS_IDENTIFIED      ( 73 ),
-		ALL_ARMOR_IDENTIFIED        ( 74 ),
-		ALL_WANDS_IDENTIFIED        ( 75 ),
-		ALL_RINGS_IDENTIFIED        ( 76 ),
-		ALL_ARTIFACTS_IDENTIFIED    ( 77 ),
-		VICTORY                     ( 78 ),
-		YASD                        ( 79, true ),
-
-		GODD_MAKE					( 82 ),
-		CLEAR_WATER					( 83 ),
-		GHOSTDAGE					( 84 ),
-//		ENDIED					( 85 ),
-
-		HIGH_SCORE_3 				( 86 ),
-		BOSS_SLAIN_3_GLADIATOR,
-		BOSS_SLAIN_3_BERSERKER,
-		BOSS_SLAIN_3_WARLOCK,
-		BOSS_SLAIN_3_BATTLEMAGE,
-		BOSS_SLAIN_3_FREERUNNER,
-		BOSS_SLAIN_3_ASSASSIN,
-		BOSS_SLAIN_3_SNIPER,
-		BOSS_SLAIN_3_WARDEN,
-		BOSS_SLAIN_3_ALL_SUBCLASSES ( 80, true ),
-		GAMES_PLAYED_2              ( 81, true ),
-
-		READ_BOOK_THREE				( 87 ),
-
-		//platinum
-		HAPPY_END                   ( 96 ),
-		ALL_ITEMS_IDENTIFIED        ( 97, true ),
-		VICTORY_WARRIOR,
-		VICTORY_MAGE,
-		VICTORY_ROGUE,
-		VICTORY_HUNTRESS,
-		VICTORY_ALL_CLASSES         ( 98, true ),
-		GAMES_PLAYED_3              ( 99, true ),
-		CHAMPION_1X                  ( 100 ),
-		KILL_APPLE(101),
-		KILL_DM720				(102),
-		RLPT				(103),
-
-		HIGH_SCORE_4 				( 104 ),
-
-		READ_BOOK_FOUR				( 105 ),
-
-		//diamond
-		GAMES_PLAYED_4              ( 112, true ),
-		CHAMPION_2X                  ( 113 ),
-		CHAMPION_3X                  ( 114 ),
-		CHAMPION_4X                  ( 115 ),
-		CHAMPION_5X                  ( 116 ),
-		NYZ_SHOP                    ( 117 ),
-		DAGETO                    ( 118 ),
-		KILL_SM                    ( 119 ),
-
-		TAKE_ITEM                   ( 120 ),
-
-		//rudy
-		FIREGIRL                 	 ( 128 ),
-		//SLIMEPR                  	 ( 129 ),
-		DRAWF_HEAD                    ( 130 ),
-		SPICEALBOSS 				 ( 131),
-
-		STORM 				 ( 132),
-
-		KILL_MG			(133),
-		BIG_X				(134),
-		EXSG                (135),
-		BRCLER                (136),
-
-		HIGH_SCORE_5 				( 137 ),
-
-		SAKA_DIED 				( 138 ),
-
-		RESET_DAY 				( 139 );
-
-		public boolean meta;
-
-		public int image;
-
-		public String title(){
-			return Messages.get(this, name()+".title");
-		}
-
-		public String desc(){
-			return Messages.get(this, name()+".desc");
-		}
-
-		Badge( int image ) {
-			this( image, false );
-		}
-
-		Badge( int image, boolean meta ) {
-			this.image = image;
-			this.meta = meta;
-		}
-
-		Badge() {
-			this( -1 );
-		}
+		validateYASD();
 	}
+	public static void validateDeathFromFriendlyMagic() {
+		Badge badge = Badge.DEATH_FROM_FRIENDLY_MAGIC;
+		local.add( badge );
+		displayBadge( badge );
+
+		validateYASD();
+	}
+
+	public static void validateDeathFromSacrifice() {
+		Badge badge = Badge.DEATH_FROM_SACRIFICE;
+		local.add( badge );
+		displayBadge( badge );
+
+		validateYASD();
+	}
+
+	public static void KILLMG() {
+		displayBadge( Badge.KILL_MG );
+    }
 
 	public static void validateRatmogrify(){
 		addGlobal(Badge.FOUND_RATMOGRIFY);
@@ -265,7 +112,7 @@ public class Badges {
 		displayBadge( badge );
 	}
 
-	private static HashSet<Badge> global;
+	public static HashSet<Badge> global;
 	private static HashSet<Badge> local = new HashSet<>();
 
 	private static boolean saveNeeded = false;
@@ -293,6 +140,8 @@ public class Badges {
 		if (bundle == null) return badges;
 
 		String[] names = bundle.getStringArray( BADGES );
+		if (names == null) return badges;
+
 		for (int i=0; i < names.length; i++) {
 			try {
 				if (renamedBadges.containsKey(names[i])){
@@ -319,6 +168,7 @@ public class Badges {
 
 		for (Badge badge:badges) {
 			names[count++] = badge.toString();
+
 		}
 		bundle.put( BADGES, names );
 	}
@@ -404,7 +254,7 @@ public class Badges {
 			badge = Badge.HIGH_SCORE_4;
 			local.add( badge );
 		}
-		if (score >= SSSP_SCORE * chalMultiplier * (amuletObtained ? 0.7 : 5)) {
+		if (score >= SSSP_SCORE * chalMultiplier * (amuletObtained ? 1 : 5)) {
 			badge = Badge.HIGH_SCORE_5;
 			local.add( badge );
 		}
@@ -526,6 +376,24 @@ public class Badges {
 			local.add( badge );
 		}
 
+		displayBadge( badge );
+	}
+
+	public static void validateAncityProgress() {
+		Badge badge = null;
+
+		if (!local.contains( Badge.ANCITY_ONE ) && DragonGirlBlue.Quest.survey_research_points >= 1200) {
+			badge = Badge.ANCITY_ONE;
+			local.add( badge );
+		}
+		if (!local.contains( Badge.ANCITY_TWO ) && DragonGirlBlue.Quest.survey_research_points >= 2400) {
+			badge = Badge.ANCITY_TWO;
+			local.add( badge );
+		}
+		if (!local.contains( Badge.ANCITY_THREE ) && DragonGirlBlue.Quest.survey_research_points >= 4000) {
+			badge = Badge.ANCITY_THREE;
+			local.add( badge );
+		}
 		displayBadge( badge );
 	}
 
@@ -666,14 +534,6 @@ public class Badges {
 //		validateYASD();
 	}
 
-	public static void DeathRedNercols() {
-		Badge badge = Badge.DEATH_FROM_FIRE;
-		local.add( badge );
-		displayBadge( badge );
-
-		validateYASD();
-	}
-
 	public static void validateDeathFromPoison() {
 		Badge badge = Badge.DEATH_FROM_POISON;
 		local.add( badge );
@@ -692,14 +552,6 @@ public class Badges {
 
 	public static void validateDeathFromHunger() {
 		Badge badge = Badge.DEATH_FROM_HUNGER;
-		local.add( badge );
-		displayBadge( badge );
-
-		validateYASD();
-	}
-
-	public static void validateDeathFromGlyph() {
-		Badge badge = Badge.DEATH_FROM_GLYPH;
 		local.add( badge );
 		displayBadge( badge );
 
@@ -750,32 +602,30 @@ public class Badges {
 		displayBadge( badge );
 	}
 
+//	public static void BOMB() {
+//		Badge badge = Badge.BOMBBOW_DIED;
+//		local.add( badge );
+//		displayBadge( badge );
+//	}
+
 	private static void validateGOODMAKE() {
 		if (global.contains( Badge.KILL_ROTHEART ) &&
 				global.contains( Badge.GET_SC ) &&
 				global.contains( Badge.KILL_COLDELE)) {
 
-			Badge badge = Badge.GODD_MAKE;
-			displayBadge( badge );
+			PaswordBadges.Badge badge = PaswordBadges.Badge.GODD_MAKE;
+			PaswordBadges.displayBadge( badge );
 		}
 	}
 
-	private static void validateAMZ() {
-		if (global.contains( Badge.KILL_APPLE ) &&global.contains( Badge.KILL_DM720 ) &&
-				global.contains( Badge.KILL_MG) && global.contains( Badge.FIREGIRL) && global.contains( Badge.DRAWF_HEAD) && global.contains( Badge.SAKA_DIED)) {
 
-			Badge badge = Badge.SPICEALBOSS;
-			displayBadge( badge );
-		}
-	}
 
 	private static void validateYASD() {
 		if (global.contains( Badge.DEATH_FROM_FIRE ) &&
 				global.contains( Badge.DEATH_FROM_POISON ) &&
 				global.contains( Badge.DEATH_FROM_GAS ) &&
 				global.contains( Badge.DEATH_FROM_HUNGER) &&
-				global.contains( Badge.DEATH_FROM_GLYPH) &&
-				global.contains( Badge.DEATH_FROM_FALLING) && global.contains( Badge.HALOFIRE_DIED) && global.contains( Badge.BRUTE_BOT_DIED)) {
+				global.contains( Badge.DEATH_FROM_FALLING) && global.contains( Badge.HALOFIRE_DIED) && global.contains( Badge.BRUTE_BOT_DIED) && global.contains( Badge.DEATH_FROM_FRIENDLY_MAGIC) && global.contains( Badge.DEATH_FROM_SACRIFICE)) {
 
 			Badge badge = Badge.YASD;
 			displayBadge( badge );
@@ -908,28 +758,35 @@ public class Badges {
 			case HUNTRESS:
 				badge = Badge.MASTERY_HUNTRESS;
 				break;
+			case DUELIST:
+				badge = Badge.MASTERY_DUELIST;
+				break;
 		}
 
-		if (!global.contains( badge )) {
+		unlock(badge);
+	}
+
+	public static void unlock( Badge badge ){
+		if (!isUnlocked(badge)){
 			global.add( badge );
 			saveNeeded = true;
 		}
 	}
 
 	public static void validateMageUnlock(){
-		if (Statistics.upgradesUsed >= 1 && !global.contains(Badge.UNLOCK_MAGE)){
+		if (Statistics.upgradesUsed >= 1 && !isUnlocked(Badge.UNLOCK_MAGE)){
 			displayBadge( Badge.UNLOCK_MAGE );
 		}
 	}
 
 	public static void validateRogueUnlock(){
-		if (Statistics.sneakAttacks >= 10 && !global.contains(Badge.UNLOCK_ROGUE)){
+		if (Statistics.sneakAttacks >= 10 && !isUnlocked(Badge.UNLOCK_ROGUE)){
 			displayBadge( Badge.UNLOCK_ROGUE );
 		}
 	}
 
 	public static void validateHuntressUnlock(){
-		if (Statistics.thrownAssists >= 15 && !global.contains(Badge.UNLOCK_HUNTRESS)){
+		if (Statistics.thrownAssists >= 10 && !isUnlocked(Badge.UNLOCK_HUNTRESS)){
 			displayBadge( Badge.UNLOCK_HUNTRESS );
 		}
 	}
@@ -942,7 +799,20 @@ public class Badges {
 		}
 	}
 
-	public void Test(){
+    public static void KILL_DOG() {
+		displayBadge( Badge.KILL_DOG );
+    }
+
+
+	public static void CITY_END() {
+		displayBadge( Badge.HOLLOWCITY );
+	}
+
+	public static void WOC() {
+		displayBadge( Badge.WOC_MONEY_GIRL);
+	}
+
+    public void Test(){
 
 	}
 
@@ -951,6 +821,8 @@ public class Badges {
 	}
 
 	public static void validateVictory() {
+
+		Statistics.winGame = true;
 
 		Badge badge = Badge.VICTORY;
 		displayBadge( badge );
@@ -1030,19 +902,24 @@ public class Badges {
 		displayBadge( Badge.HAPPY_END );
 	}
 
+	public static void silentValidateHDEX() {
+		if (!local.contains( Badge.HIDEEN_BADAGEX)){
+			local.add( Badge.HIDEEN_BADAGEX);
+		}
+	}
+
+	public static void HDEX() {
+		displayBadge( Badge.HIDEEN_BADAGEX);
+	}
+
+
 	public static void KILLSAPPLE() {
 		displayBadge( Badge.KILL_APPLE);
-		validateAMZ();
 	}
 
-	public static void KILLSAKA() {
-		displayBadge( Badge.SAKA_DIED);
-		validateAMZ();
-	}
 
-	public static void REHOMESKY() {
-		displayBadge( Badge.RESET_DAY );
-	}
+
+
 
 	public static void STORM() {
 		displayBadge( Badge.STORM);
@@ -1050,7 +927,6 @@ public class Badges {
 
 	public static void KILLSDM720() {
 		displayBadge( Badge.KILL_DM720 );
-		validateAMZ();
 	}
 
 	public static void BOSSTHREE() {
@@ -1061,55 +937,49 @@ public class Badges {
 		displayBadge( Badge.CLEAR_WATER );
 	}
 
-	public static void KILLDWARF() {
-		displayBadge( Badge.DRAWF_HEAD );
-		validateAMZ();
+    public static void KILL_SMK() {
+        displayBadge(Badge.KILL_SM);
+    }
+
+    public static void GOODRLPT() {
+        displayBadge(Badge.RLPT);
+    }
+
+	public static void GOO() {
+		displayBadge(Badge.BOSS_CHALLENGE_1);
 	}
 
-	public static void KILLFIREGIRL() {
-		displayBadge( Badge.FIREGIRL );
-		validateAMZ();
-	}
+    public static void validateBossChallengeCompleted() {
+        Badge badge = null;
+        switch (Dungeon.depth) {
+            case 10:
+                badge = Badge.BOSS_CHALLENGE_2;
+                break;
+            case 15:
+                badge = Badge.BOSS_CHALLENGE_3;
+                break;
+            case 20:
+                badge = Badge.BOSS_CHALLENGE_4;
+                break;
+            case 25:
+                badge = Badge.BOSS_CHALLENGE_5;
+                break;
+        }
 
-	public static void KILLMG() {
-		displayBadge( Badge.KILL_MG );
-		validateAMZ();
-	}
+        if (badge != null) {
+            local.add(badge);
+            displayBadge(badge);
+        }
+    }
 
-	public static void KILL_SMK() {
-		displayBadge( Badge.KILL_SM );
-		validateAMZ();
-	}
-
-	public static void KILL_OMP() {
-		displayBadge( Badge.TAKE_ITEM );
-	}
-
-
-	public static void BIGX() {
-		displayBadge( Badge.BIG_X );
-	}
-	public static void EXSG() {
-		displayBadge( Badge.EXSG );
-	}
-
-	public static void BOSSRUSH() {
-		displayBadge( Badge.BRCLER );
-	}
-
-	public static void GOODRLPT() {
-		displayBadge( Badge.RLPT );
-	}
-
-
-	public static void validateChampion( int challenges ) {
-		if (challenges == 0) return;
-		Badge badge = null;
-		if (challenges >= 1 && !(Dungeon.isChallenged(PRO)) || !Statistics.happyMode && challenges >= 1) {
-			badge = Badge.CHAMPION_1X;
-		}
-		if (challenges >= 3 && !(Dungeon.isChallenged(PRO))|| !Statistics.happyMode && challenges >= 3){
-			addGlobal(badge);
+    public static void validateChampion(int challenges) {
+        if (challenges == 0) return;
+        Badge badge = null;
+        if (challenges >= 1 && !(Dungeon.isChallenged(PRO)) || !Statistics.happyMode && challenges >= 1) {
+            badge = Badge.CHAMPION_1X;
+        }
+        if (challenges >= 3 && !(Dungeon.isChallenged(PRO)) || !Statistics.happyMode && challenges >= 3) {
+            addGlobal(badge);
 			badge = Badge.CHAMPION_2X;
 		}
 		if (challenges >= 6 && !(Dungeon.isChallenged(PRO))|| !Statistics.happyMode && challenges >= 6){
@@ -1126,6 +996,220 @@ public class Badges {
 		}
 		local.add(badge);
 		displayBadge( badge );
+	}
+
+
+	public enum Badge {
+		MASTERY_WARRIOR,
+		MASTERY_MAGE,
+		MASTERY_ROGUE,
+		MASTERY_HUNTRESS,
+		MASTERY_DUELIST,
+		FOUND_RATMOGRIFY,
+
+		//bronze
+		UNLOCK_MAGE                 ( 1 ),
+		UNLOCK_ROGUE                ( 2 ),
+		UNLOCK_HUNTRESS             ( 3 ),
+		MONSTERS_SLAIN_1            ( 4 ),
+		MONSTERS_SLAIN_2            ( 5 ),
+		GOLD_COLLECTED_1            ( 6 ),
+		GOLD_COLLECTED_2            ( 7 ),
+		ITEM_LEVEL_1                ( 8 ),
+		LEVEL_REACHED_1             ( 9 ),
+		STRENGTH_ATTAINED_1         ( 10 ),
+		FOOD_EATEN_1                ( 11 ),
+		ITEMS_CRAFTED_1             ( 12 ),
+		BOSS_SLAIN_1                ( 13 ),
+		DEATH_FROM_FIRE             ( 14 ),
+		DEATH_FROM_POISON           ( 15 ),
+		DEATH_FROM_GAS              ( 16 ),
+		DEATH_FROM_HUNGER           ( 17 ),
+		DEATH_FROM_FALLING          ( 18 ),
+		HIGH_SCORE_1 				( 19 ),
+		KILL_ROTHEART         			( 20 ),
+		GET_SC        			( 21 ),
+		KILL_COLDELE        			( 22 ),
+
+		HALOFIRE_DIED					( 23 ),
+
+		READ_BOOK_ONE				( 24 ),
+
+		BRUTE_BOT_DIED				( 25 ),
+
+		ANCITY_ONE					(27),
+
+		//silver
+		NO_MONSTERS_SLAIN           ( 32 ),
+		GRIM_WEAPON                 ( 33 ),
+		MONSTERS_SLAIN_3            ( 34 ),
+		MONSTERS_SLAIN_4            ( 35 ),
+		GOLD_COLLECTED_3            ( 36 ),
+		GOLD_COLLECTED_4            ( 37 ),
+		ITEM_LEVEL_2                ( 38 ),
+		ITEM_LEVEL_3                ( 39 ),
+		LEVEL_REACHED_2             ( 40 ),
+		LEVEL_REACHED_3             ( 41 ),
+		STRENGTH_ATTAINED_2         ( 42 ),
+		STRENGTH_ATTAINED_3         ( 43 ),
+		FOOD_EATEN_2                ( 44 ),
+		FOOD_EATEN_3                ( 45 ),
+		ITEMS_CRAFTED_2             ( 46 ),
+		ITEMS_CRAFTED_3             ( 47 ),
+		BOSS_SLAIN_2                ( 48 ),
+		BOSS_SLAIN_3                ( 49 ),
+		ALL_POTIONS_IDENTIFIED      ( 50 ),
+		ALL_SCROLLS_IDENTIFIED      ( 51 ),
+		BOSS_SLAIN_1_WARRIOR,
+		BOSS_SLAIN_1_MAGE,
+		BOSS_SLAIN_1_ROGUE,
+		BOSS_SLAIN_1_HUNTRESS,
+		BOSS_SLAIN_1_ALL_CLASSES    ( 53, true ),
+		GAMES_PLAYED_1              ( 54, true ),
+
+		HIGH_SCORE_2				( 55 ),
+
+		READ_BOOK_TWO				( 56 ),
+
+		HIDEEN_BADAGEX( 57 ),
+
+		//伏法
+		DEATH_FROM_FRIENDLY_MAGIC(58),
+
+		//上好寄品
+		DEATH_FROM_SACRIFICE(59),
+
+		//死于敌方法术
+		DEATH_FROM_ENEMY_MAGIC(60),
+
+		ANCITY_TWO	(61),
+
+
+		//gold
+		PIRANHAS                    ( 64 ),
+		//these names are a bit outdated, but it doesn't really matter.
+
+		ALL_BAGS_BOUGHT             ( 65 ),
+		MASTERY_COMBO               ( 66 ),
+		ITEM_LEVEL_4                ( 67 ),
+		LEVEL_REACHED_4             ( 68 ),
+		STRENGTH_ATTAINED_4         ( 69 ),
+		FOOD_EATEN_4                ( 70 ),
+		ITEMS_CRAFTED_4            ( 71 ),
+		BOSS_SLAIN_4                ( 72 ),
+		ALL_WEAPONS_IDENTIFIED      ( 73 ),
+		ALL_ARMOR_IDENTIFIED        ( 74 ),
+		ALL_WANDS_IDENTIFIED        ( 75 ),
+		ALL_RINGS_IDENTIFIED        ( 76 ),
+		ALL_ARTIFACTS_IDENTIFIED    ( 77 ),
+		VICTORY                     ( 78 ),
+		YASD                        ( 79, true ),
+
+
+		CLEAR_WATER					( 83 ),
+		GHOSTDAGE					( 84 ),
+//		ENDIED					( 85 ),
+
+		HIGH_SCORE_3 				( 86 ),
+		BOSS_SLAIN_3_GLADIATOR,
+		BOSS_SLAIN_3_BERSERKER,
+		BOSS_SLAIN_3_WARLOCK,
+		BOSS_SLAIN_3_BATTLEMAGE,
+		BOSS_SLAIN_3_FREERUNNER,
+		BOSS_SLAIN_3_ASSASSIN,
+		BOSS_SLAIN_3_SNIPER,
+		BOSS_SLAIN_3_WARDEN,
+		BOSS_SLAIN_3_ALL_SUBCLASSES ( 80, true ),
+		GAMES_PLAYED_2              ( 81, true ),
+
+		READ_BOOK_THREE				( 87 ),
+
+
+		HOLLOWCITY					( 88 ),
+		MASTER						( 89 ),
+		RED_DRAMATICUL				( 90 ),
+		GOD_PLEASE					( 91),
+
+		NOW_ANTATTCK				(92),
+		WOC_MONEY_GIRL				(93),
+
+
+		//platinum
+		HAPPY_END                   ( 96 ),
+		ALL_ITEMS_IDENTIFIED        ( 97, true ),
+		VICTORY_WARRIOR,
+		VICTORY_MAGE,
+		VICTORY_ROGUE,
+		VICTORY_HUNTRESS,
+		VICTORY_ALL_CLASSES         ( 98, true ),
+		GAMES_PLAYED_3              ( 99, true ),
+		CHAMPION_1X                  ( 100 ),
+		KILL_APPLE(101),
+		KILL_DM720				(102),
+		RLPT				(103),
+
+		HIGH_SCORE_4 				( 104 ),
+
+		READ_BOOK_FOUR				( 105 ),
+
+		//diamond
+		GAMES_PLAYED_4              ( 112, true ),
+		CHAMPION_2X                  ( 113 ),
+		CHAMPION_3X                  ( 114 ),
+		CHAMPION_4X                  ( 115 ),
+		CHAMPION_5X                  ( 116 ),
+		NYZ_SHOP                    ( 117 ),
+        DAGETO						(118),
+        KILL_SM(119),
+        //rudy
+
+
+        STORM(132),
+
+        KILL_MG(133),
+
+        HIGH_SCORE_5(137),
+
+		KILL_DOG(138),
+
+        BOSS_CHALLENGE_1(152),
+        BOSS_CHALLENGE_2(153),
+        BOSS_CHALLENGE_3(154),
+        BOSS_CHALLENGE_4(155),
+        BOSS_CHALLENGE_5(156),
+
+		ANCITY_THREE	(157),
+
+		BAG_BOUGHT_SEED_POUCH,
+		BAG_BOUGHT_SCROLL_HOLDER,
+		BAG_BOUGHT_POTION_BANDOLIER,
+		BAG_BOUGHT_WAND_HOLSTER;
+
+
+        public boolean meta;
+
+        public int image;
+
+        public String title() {
+            return Messages.get(this, name() + ".title");
+        }
+
+        public String desc(){
+			return Messages.get(this, name()+".desc");
+		}
+
+		Badge( int image ) {
+			this( image, false );
+		}
+
+		Badge( int image, boolean meta ) {
+			this.image = image;
+			this.meta = meta;
+		}
+
+		Badge() {
+			this( -1 );
+		}
 	}
 
 	private static void displayBadge( Badge badge ) {
@@ -1205,6 +1289,7 @@ public class Badges {
 			{Badge.BOSS_SLAIN_1, Badge.BOSS_SLAIN_2, Badge.BOSS_SLAIN_3, Badge.BOSS_SLAIN_4},
 			{Badge.GAMES_PLAYED_1, Badge.GAMES_PLAYED_2, Badge.GAMES_PLAYED_3, Badge.GAMES_PLAYED_4},
 			{Badge.CHAMPION_1X, Badge.CHAMPION_2X, Badge.CHAMPION_3X,Badge.CHAMPION_4X,Badge.CHAMPION_5X},
+			{Badge.ANCITY_ONE,Badge.ANCITY_TWO, Badge.ANCITY_THREE},
 			{Badge.GHOSTDAGE,Badge.DAGETO},
 			{Badge.HIGH_SCORE_1, Badge.HIGH_SCORE_2, Badge.HIGH_SCORE_3, Badge.HIGH_SCORE_4, Badge.HIGH_SCORE_5},
 			{Badge.READ_BOOK_ONE, Badge.READ_BOOK_TWO, Badge.READ_BOOK_THREE, Badge.READ_BOOK_FOUR},
@@ -1215,7 +1300,7 @@ public class Badges {
 			{Badge.DEATH_FROM_GAS, Badge.YASD},
 			{Badge.DEATH_FROM_HUNGER, Badge.YASD},
 			{Badge.DEATH_FROM_POISON, Badge.YASD},
-			{Badge.DEATH_FROM_GLYPH, Badge.YASD},
+//			{Badge.DEATH_FROM_GLYPH, Badge.YASD},
 			{Badge.DEATH_FROM_FALLING, Badge.YASD },
 
 			{Badge.ALL_WEAPONS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
@@ -1293,6 +1378,103 @@ public class Badges {
 		for (Badge[] metaReplace : metaBadgeReplacements){
 			addLower( badges, metaReplace );
 		}
+
+		return badges;
+	}
+
+	private static LinkedHashMap<HeroClass, Badge> firstBossClassBadges = new LinkedHashMap<>();
+	static {
+		firstBossClassBadges.put(HeroClass.WARRIOR, Badge.BOSS_SLAIN_1_WARRIOR);
+		firstBossClassBadges.put(HeroClass.MAGE, Badge.BOSS_SLAIN_1_MAGE);
+		firstBossClassBadges.put(HeroClass.ROGUE, Badge.BOSS_SLAIN_1_ROGUE);
+		firstBossClassBadges.put(HeroClass.HUNTRESS, Badge.BOSS_SLAIN_1_HUNTRESS);
+		//firstBossClassBadges.put(HeroClass.DUELIST, Badge.BOSS_SLAIN_1_DUELIST);
+	}
+
+	private static LinkedHashMap<HeroClass, Badge> victoryClassBadges = new LinkedHashMap<>();
+	static {
+		victoryClassBadges.put(HeroClass.WARRIOR, Badge.VICTORY_WARRIOR);
+		victoryClassBadges.put(HeroClass.MAGE, Badge.VICTORY_MAGE);
+		victoryClassBadges.put(HeroClass.ROGUE, Badge.VICTORY_ROGUE);
+		victoryClassBadges.put(HeroClass.HUNTRESS, Badge.VICTORY_HUNTRESS);
+		//victoryClassBadges.put(HeroClass.DUELIST, Badge.VICTORY_DUELIST);
+	}
+
+	private static LinkedHashMap<HeroSubClass, Badge> thirdBossSubclassBadges = new LinkedHashMap<>();
+	static {
+		thirdBossSubclassBadges.put(HeroSubClass.BERSERKER, Badge.BOSS_SLAIN_3_BERSERKER);
+		thirdBossSubclassBadges.put(HeroSubClass.GLADIATOR, Badge.BOSS_SLAIN_3_GLADIATOR);
+		thirdBossSubclassBadges.put(HeroSubClass.BATTLEMAGE, Badge.BOSS_SLAIN_3_BATTLEMAGE);
+		thirdBossSubclassBadges.put(HeroSubClass.WARLOCK, Badge.BOSS_SLAIN_3_WARLOCK);
+		thirdBossSubclassBadges.put(HeroSubClass.ASSASSIN, Badge.BOSS_SLAIN_3_ASSASSIN);
+		thirdBossSubclassBadges.put(HeroSubClass.FREERUNNER, Badge.BOSS_SLAIN_3_FREERUNNER);
+		thirdBossSubclassBadges.put(HeroSubClass.SNIPER, Badge.BOSS_SLAIN_3_SNIPER);
+		thirdBossSubclassBadges.put(HeroSubClass.WARDEN, Badge.BOSS_SLAIN_3_WARDEN);
+
+//		thirdBossSubclassBadges.put(HeroSubClass.CHAMPION, Badge.BOSS_SLAIN_3_CHAMPION);
+//		thirdBossSubclassBadges.put(HeroSubClass.MONK, Badge.BOSS_SLAIN_3_MONK);
+	}
+
+	//used for badges with completion progress that would otherwise be hard to track
+	public static String showCompletionProgress( Badge badge ){
+		if (isUnlocked(badge)) return null;
+
+		String result = "\n";
+
+		if (badge == Badge.BOSS_SLAIN_1_ALL_CLASSES){
+			for (HeroClass cls : HeroClass.values()){
+				result += "\n";
+				if (isUnlocked(firstBossClassBadges.get(cls)))  result += "_" + Messages.titleCase(cls.title()) + "_";
+				else                                            result += Messages.titleCase(cls.title());
+			}
+
+			return result;
+
+		} else if (badge == Badge.VICTORY_ALL_CLASSES) {
+
+			for (HeroClass cls : HeroClass.values()){
+				result += "\n";
+				if (isUnlocked(victoryClassBadges.get(cls)))    result += "_" + Messages.titleCase(cls.title()) + "_";
+				else                                            result += Messages.titleCase(cls.title());
+			}
+
+			return result;
+
+		} else if (badge == Badge.BOSS_SLAIN_3_ALL_SUBCLASSES){
+
+			for (HeroSubClass cls : HeroSubClass.values()){
+				if (cls == HeroSubClass.NONE) continue;
+				result += "\n";
+				if (isUnlocked(thirdBossSubclassBadges.get(cls)))   result += "_" + Messages.titleCase(cls.title()) + "_";
+				else                                                result += Messages.titleCase(cls.title()) ;
+			}
+
+			return result;
+		}
+
+		return null;
+	}
+
+	//don't show the later badge if the earlier one isn't unlocked
+	private static final Badge[][] prerequisiteBadges = new Badge[][]{
+			{Badge.BOSS_SLAIN_1, Badge.BOSS_CHALLENGE_1},
+			{Badge.BOSS_SLAIN_2, Badge.BOSS_CHALLENGE_2},
+			{Badge.BOSS_SLAIN_3, Badge.BOSS_CHALLENGE_3},
+			{Badge.BOSS_SLAIN_4, Badge.BOSS_CHALLENGE_4},
+			{Badge.VICTORY,      Badge.BOSS_CHALLENGE_5},
+	};
+
+	public static List<Badge> filterBadgesWithoutPrerequisites(List<Badges.Badge> badges ) {
+
+		for (Badge[] prereqReplace : prerequisiteBadges){
+			leaveWorst( badges, prereqReplace );
+		}
+
+		for (Badge[] tierReplace : tierBadgeReplacements){
+			leaveWorst( badges, tierReplace );
+		}
+
+		Collections.sort( badges );
 
 		return badges;
 	}

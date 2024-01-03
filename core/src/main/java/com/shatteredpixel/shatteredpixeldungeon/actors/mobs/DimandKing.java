@@ -504,7 +504,7 @@ public class DimandKing extends Boss {
             Dungeon.level.drop( new TengusMask(), pos ).sprite.drop();
         }
         int dropPos = this.pos;
-        for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
+       for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
             if (	mob instanceof DKMonk||
                     mob instanceof DKGhoul||
                     mob instanceof DKWarlock) {
@@ -725,7 +725,7 @@ public class DimandKing extends Boss {
         @Override
         public void detach() {
             super.detach();
-            for (Mob m : Dungeon.level.mobs){
+            for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
                 if (m instanceof DimandKing){
                     m.damage(24, this);
                 }

@@ -24,11 +24,9 @@ public class obSir extends NPC {
 
     private boolean first=true;
     private boolean secnod=true;
-    private boolean rd=true;
 
     private static final String FIRST = "first";
     private static final String SECNOD = "secnod";
-    private static final String RD = "rd";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -41,7 +39,6 @@ public class obSir extends NPC {
         super.restoreFromBundle(bundle);
         first = bundle.getBoolean(FIRST);
         secnod = bundle.getBoolean(SECNOD);
-        rd = bundle.getBoolean(RD);
     }
 
     @Override
@@ -79,9 +76,6 @@ public class obSir extends NPC {
         }else if(secnod) {
             secnod=false;
             tell(Messages.get(obSir.class, "message2"));
-        } else if(secnod) {
-            rd=false;
-            tell(Messages.get(obSir.class, "message3"));
         } else {
             GLog.p(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
         }

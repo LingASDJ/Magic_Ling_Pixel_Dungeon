@@ -51,7 +51,7 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class LifeTreeSword extends MeleeWeapon {
-
+    private int getFood;
     {
         image = ItemSpriteSheet.LifeTreeSword;
         hitSoundPitch = 1f;
@@ -97,8 +97,8 @@ public class LifeTreeSword extends MeleeWeapon {
         GameScene.add(ward, 1f);
         getFood=0;
         Dungeon.level.occupyCell(ward);
-        ward.HP = ward.HT = 3 + LifeTreeSword.curItem.buffedLvl()/3;
-        ward.defenseSkill = 4 + LifeTreeSword.curItem.buffedLvl()/3;
+        ward.HP = ward.HT = 3 + curItem.buffedLvl()/3;
+        ward.defenseSkill = 4 + curItem.buffedLvl()/3;
         ward.sprite.emitter().burst(MagicMissile.WardParticle.UP,6);
         Dungeon.level.pressCell(pos);
         CellEmitter.get(ward.pos).burst(Speck.factory(Speck.EVOKE), 4);
@@ -133,7 +133,7 @@ public class LifeTreeSword extends MeleeWeapon {
         return super.proc(attacker, defender, damage);
     }
 
-    private int getFood;
+
 
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
@@ -159,6 +159,9 @@ public class LifeTreeSword extends MeleeWeapon {
             spriteClass = CrivusFruitsRedSprites.class;
             alignment = Alignment.ALLY;
 
+
+            HT = HP = 10+level();
+
             state = WANDERING = new Waiting();
 
             properties.add(Property.IMMOVABLE);
@@ -171,12 +174,12 @@ public class LifeTreeSword extends MeleeWeapon {
 
         @Override
         public int damageRoll() {
-            return Random.NormalIntRange( 5, 8 );
+            return Random.NormalIntRange( 5+level(), 8+level() );
         }
 
         @Override
         public int attackSkill( Char target ) {
-            return 6;
+            return 6+level();
         }
 
         @Override

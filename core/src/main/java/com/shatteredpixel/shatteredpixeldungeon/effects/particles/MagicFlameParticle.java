@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.effects.particles;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.PointF;
@@ -9,7 +10,7 @@ public class MagicFlameParticle extends PixelParticle.Shrinking {
     public static final Emitter.Factory FACTORY = new Emitter.Factory() {
         @Override
         public void emit( Emitter emitter, int index, float x, float y ) {
-            ((FlameParticle)emitter.recycle( FlameParticle.class )).reset( x, y );
+            ((MagicFlameParticle)emitter.recycle( MagicFlameParticle.class )).reset( x, y );
         }
         @Override
         public boolean lightMode() {
@@ -20,7 +21,12 @@ public class MagicFlameParticle extends PixelParticle.Shrinking {
     public MagicFlameParticle() {
         super();
 
-        color( 0xEE7722 );
+        if(Dungeon.depth == 30){
+            color( 0xC792EA );
+        } else {
+            color( 0xEE7722 );
+        }
+
         lifespan = 0.6f;
         revive();
 

@@ -38,7 +38,7 @@ public class Slime_Orange extends Slime {
         lootChance = 0.25f; //by default, see rollToDropLoot()
         loot = PotionOfLiquidFlame.class;
         properties.add(Property.ACIDIC);
-        maxLvl = 12;
+        maxLvl = 4;
         EXP=3;
     }
     private int combo = 0;

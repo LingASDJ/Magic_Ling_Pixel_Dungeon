@@ -2,17 +2,17 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.windows.PageWindows;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.watabou.input.GameAction;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
 
+@SuppressWarnings("all")
 public class PageIndicator extends Button {
-
-    public static Char lastTarget = null;
 
     protected NinePatch bg;
     protected float lightness = 0;
@@ -22,18 +22,10 @@ public class PageIndicator extends Button {
 
     public void flash() {
         lightness = 1f;
-    }//although it sounds damn stupid,but extends tag means unable to auto-target,so I have had to copy its visual and add the auto-targeting feature,may create a father class for these two later
-
-    public void flip(boolean value) {
-        bg.flipHorizontal(value);
     }
-
-    Image icon;
-
     private static Image crossB;
     private static Image crossM;
     private static boolean targeting = false;
-    //private static Image crossM=Icons.TARGET.get();;
 
     private Toolbar.Tool slot;
 
@@ -51,7 +43,7 @@ public class PageIndicator extends Button {
         bg.gm = ((0x7C8072 >> 8) & 0xFF) / 255f;
         bg.bm = (0x7C8072 & 0xFF) / 255f;
 
-        setSize( 21, 12 );
+        setSize( 24, 12 );
 
         visible=false;
     }
@@ -62,16 +54,23 @@ public class PageIndicator extends Button {
         super.createChildren();
 
         bg = Chrome.get(Chrome.Type.SCROLL);
-        bg.hardlight(0x00ffff);
         add(bg);
 
         add(slot = new Toolbar.Tool(24, 52, 24, 12) {
-
             @Override
             protected void onClick() {
                 super.onClick();
-                GameScene.show(new PageWindows());
+                SPDSettings.ClassPage(!SPDSettings.ClassPage());
             }
+            @Override
+            public GameAction keyAction() {
+                return SPDAction.OPEN_CLOSED;
+            }
+            @Override
+            protected String hoverText() {
+                return Messages.get(PageIndicator.class,"closed");
+            }
+
         });
 
     }
@@ -118,6 +117,7 @@ public class PageIndicator extends Button {
         return targeting;
     }
 
+
     public static void cancel() {
         if (targeting) {
             crossB.visible = true;
@@ -126,5 +126,6 @@ public class PageIndicator extends Button {
         }
     }
 }
+
 
 

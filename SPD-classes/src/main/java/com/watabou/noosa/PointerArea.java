@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,14 +21,20 @@
 
 package com.watabou.noosa;
 
+import com.watabou.input.GameAction;
 import com.watabou.input.PointerEvent;
 import com.watabou.utils.Signal;
 
-public class PointerArea extends Visual implements Signal.Listener<PointerEvent> {
+public abstract class PointerArea extends Visual implements Signal.Listener<PointerEvent> {
 	
 	// Its target can be pointerarea itself
 	public Visual target;
-	
+	public GameAction keyAction(){
+		return null;
+	}
+
+	protected void onClick() {} //left click, default key type
+
 	protected PointerEvent curEvent = null;
 	protected boolean hovered = false;
 
@@ -128,6 +134,12 @@ public class PointerArea extends Visual implements Signal.Listener<PointerEvent>
 	
 	public void reset() {
 		curEvent = null;
+	}
+
+	//moves this pointer area to the front of the pointer event order
+	public void givePointerPriority(){
+		PointerEvent.removePointerListener( this );
+		PointerEvent.addPointerListener( this );
 	}
 	
 	@Override

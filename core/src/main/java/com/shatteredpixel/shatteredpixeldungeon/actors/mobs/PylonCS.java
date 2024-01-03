@@ -86,12 +86,12 @@ public class PylonCS extends Mob {
     }
 
     private void shockChar( Char ch ){
-        if (ch != null && !(ch instanceof NewDM300)){
+        if (ch != null && !(ch instanceof NewDM720)){
             ch.sprite.flash();
             ch.damage(Random.NormalIntRange(10, 20), new Electricity());
 
             if (ch == Dungeon.hero && !ch.isAlive()){
-                Dungeon.fail(NewDM300.class);
+                Dungeon.fail(NewDM720.class);
                 GLog.n( Messages.get(Electricity.class, "ondeath") );
             }
         }
@@ -129,11 +129,12 @@ public class PylonCS extends Mob {
     }
 
     @Override
-    public void add(Buff buff) {
+    public boolean add(Buff buff) {
         //immune to all buffs/debuffs when inactive
         if (alignment != Alignment.NEUTRAL) {
-            super.add(buff);
+            return super.add(buff);
         }
+        return false;
     }
 
     @Override

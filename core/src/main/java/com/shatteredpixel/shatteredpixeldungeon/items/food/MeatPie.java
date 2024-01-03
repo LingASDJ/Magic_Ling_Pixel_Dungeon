@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,12 @@ public class MeatPie extends Food {
 	protected void satisfy(Hero hero) {
 		if (Dungeon.isChallenged(Challenges.EXSG)){
 			Buff.prolong( hero, Haste.class, 8f);
-			if(Random.Float() > (0.2f + (hero.STR/5f)/10f)){
+
+			if(hero.STR<12){
+				hero.STR++;
+				hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
+				GLog.p(Messages.get(this, "eat_msg_2"));
+			} else if(Random.Float() > (0.35f + (hero.STR/5f)/10f)){
 				hero.STR++;
 				hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
 				GLog.p(Messages.get(this, "eat_msg_2"));
@@ -75,7 +80,7 @@ public class MeatPie extends Food {
 			
 			for (Item ingredient : ingredients){
 				if (ingredient.quantity() > 0) {
-					if (ingredient instanceof Pasty) {
+					if (ingredient instanceof Pasty || ingredient instanceof PhantomMeat) {
 						pasty = true;
 					} else if (ingredient.getClass() == Food.class) {
 						ration = true;

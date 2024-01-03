@@ -4,7 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 
 public class LevelChecker {
 
-    public static final int SSSP_SCORE = 250000;
+    public static final int SSSP_SCORE = 240000;
     public static final int SSS_SCORE = 200000;
     public static final int SS_SCORE = 100000;
     private static final int S_SCORE = 50000;
@@ -20,7 +20,7 @@ public class LevelChecker {
         boolean amuletObtained = Statistics.amuletObtained;
 
         String level;
-        if (totalScore >= SSSP_SCORE * chalMultiplier * (amuletObtained ? 1.5 : 5)) {
+        if (totalScore >= SSSP_SCORE * chalMultiplier * (amuletObtained ? 1 : 5)) {
             level = "_SSS+_";
         } else if (totalScore >= SSS_SCORE * chalMultiplier/2 * (amuletObtained ? 1 : 4)) {
             level = "SSS";

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
@@ -48,6 +48,7 @@ public class PotionOfCleansing extends ExoticPotion {
 		identify();
 		
 		cleanse( hero );
+		new Flare( 6, 32 ).color(0xFF4CD2, true).show( curUser.sprite, 2f );
 	}
 	
 	@Override
@@ -87,6 +88,10 @@ public class PotionOfCleansing extends ExoticPotion {
 
 	public static class Cleanse extends FlavourBuff {
 
+		{
+			type = buffType.POSITIVE;
+		}
+
 		public static final float DURATION = 5f;
 
 		@Override
@@ -102,16 +107,6 @@ public class PotionOfCleansing extends ExoticPotion {
 		@Override
 		public float iconFadePercent() {
 			return Math.max(0, (DURATION - visualcooldown()) / DURATION);
-		}
-
-		@Override
-		public String toString() {
-			return Messages.get(this, "name");
-		}
-
-		@Override
-		public String desc() {
-			return Messages.get(this, "desc", dispTurns(visualcooldown()));
 		}
 
 	}

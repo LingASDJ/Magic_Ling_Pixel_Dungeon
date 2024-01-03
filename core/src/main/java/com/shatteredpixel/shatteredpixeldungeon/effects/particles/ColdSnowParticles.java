@@ -25,7 +25,17 @@ public class ColdSnowParticles extends PixelParticle {
     private float size;
 
     public ColdSnowParticles() {
-        texture("snowflake.png");
+
+
+        switch (Dungeon.depth){
+            case 1:case 2:case 3:case 4:case 5:
+                texture("leaf.png");
+            break;
+            case 10:case 6:case 7:case 8:case 9:
+                texture("snowflake.png");
+            break;
+        }
+
         lifespan = Random.Float( 1,2);
         scale.set( size = Random.Float() );
         origin.set(width/4,height/4);
@@ -34,19 +44,41 @@ public class ColdSnowParticles extends PixelParticle {
     public void reset(float x, float y) {
         revive();
 
-        left = lifespan;
 
-        super.speed.set(speed);
-        super.speed.scale( size );
+        switch (Dungeon.depth){
+            case 1:case 2:case 3:case 4:case 5:
+                left = lifespan;
+                texture("leaf.png");
+                super.speed.set(speed);
+                super.speed.scale( size );
 
-        this.x = x - super.speed.x * lifespan / 2;
-        this.y = y - super.speed.y * lifespan / 2;
-        origin.set(width/2,height/2);
-        angle = 0.85F;
-        angularSpeed=120;
-        speed = (new PointF()).polar(angle, 16.0F);
-        am=0;
-        color(0x8780FFFF);
+                this.x = x - super.speed.x * lifespan / 2;
+                this.y = y - super.speed.y * lifespan / 2;
+                origin.set(width/2,height/2);
+                angle = 0.85F;
+                angularSpeed=Random.IntRange(-20,50);
+                speed = (new PointF()).polar(angle, 16.0F);
+                am = 0; // 保持这个属性不变
+                color(0x8780FF80);
+                break;
+            case 10:case 6:case 7:case 8:case 9:
+                left = lifespan;
+
+                super.speed.set(speed);
+                super.speed.scale( size );
+
+                this.x = x - super.speed.x * lifespan / 2;
+                this.y = y - super.speed.y * lifespan / 2;
+                origin.set(width/2,height/2);
+                angle = 0.85F;
+                angularSpeed=60;
+                speed = (new PointF()).polar(angle, 16.0F);
+                am=0;
+                color(0x8700FFFF);
+                break;
+        }
+
+
     }
 
     //

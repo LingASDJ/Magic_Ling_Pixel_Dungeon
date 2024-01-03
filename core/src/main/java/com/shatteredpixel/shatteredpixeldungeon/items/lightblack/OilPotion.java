@@ -12,19 +12,22 @@ public class OilPotion extends Item {
 
     public OilPotion() {
         image = ItemSpriteSheet.SKPOTION;
-        stackable = true;
+        stackable = false;
     }
 
+    @Override
     public boolean isIdentified() {
         return true;
     }
 
+    @Override
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = OilPotion.super.actions(hero);
         actions.add(AC_REFILL);
         return actions;
     }
 
+    @Override
     public void execute(Hero hero, String action) {
         OilPotion.super.execute(hero, action);
         if (action.equals(AC_REFILL)) {
@@ -37,11 +40,6 @@ public class OilPotion extends Item {
         lantern.flasks++;
         detach(Dungeon.hero.belongings.backpack);
     }
-
-//    public int proc(Char attacker, Char defender, int damage) {
-//        Buff.prolong(defender, Slow.class, 10.0f);
-//        return OilPotion.super.proc(attacker, defender, damage);
-//    }
 
     @Override
     public int value() {

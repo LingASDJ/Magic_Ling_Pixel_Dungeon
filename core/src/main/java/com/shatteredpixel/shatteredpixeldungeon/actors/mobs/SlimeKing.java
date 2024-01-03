@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
@@ -264,16 +265,19 @@ public class SlimeKing extends Mob {
                     yell(Messages.get(this, "scorpion"));
                     new Item().throwSound();
                     Sample.INSTANCE.play(Assets.Sounds.CHAINS);
-                    sprite.parent.add(new Chains(sprite.center(), enemy.sprite.destinationCenter(), new Callback() {
-                        public void call() {
-                            Actor.addDelayed(new Pushing(enemy, enemy.pos, newPosFinal, new Callback() {
-                                public void call() {
-                                    pullEnemy(enemy, newPosFinal);
-                                }
-                            }), -1);
-                            next();
-                        }
-                    }));
+                   sprite.parent.add(new Chains(sprite.center(),
+							enemy.sprite.destinationCenter(),
+							Effects.Type.CHAIN,
+							new Callback() {
+						public void call() {
+							Actor.add(new Pushing(enemy, enemy.pos, newPosFinal, new Callback() {
+								public void call() {
+									pullEnemy(enemy, newPosFinal);
+								}
+							}));
+							next();
+						}
+					}));
                 } else {
                     pullEnemy(enemy, newPos);
                 }

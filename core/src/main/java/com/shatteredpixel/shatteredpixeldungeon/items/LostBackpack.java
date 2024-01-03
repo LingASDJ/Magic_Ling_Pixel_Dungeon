@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ public class LostBackpack extends Item {
 
 		MagicalHolster holster = hero.belongings.getItem(MagicalHolster.class);
 		for (Item i : hero.belongings){
-			if (i.keptThoughLostInvent){
+			if (i.keptThroughLostInventory()){
 				i.keptThoughLostInvent = false; //don't reactivate, was previously activated
 			} else {
 				if (i instanceof EquipableItem && i.isEquipped(hero)){

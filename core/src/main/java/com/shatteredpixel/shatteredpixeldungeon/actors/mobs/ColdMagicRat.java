@@ -49,11 +49,11 @@ public class ColdMagicRat extends Mob implements Callback {
         HP = HT = 30;
         defenseSkill = 4;
 
-        EXP = 13;
-        maxLvl = 18;
+        EXP = 9;
+        maxLvl = 17;
 
-        loot = Generator.Category.POTION;
-        lootChance = 0.1f;
+        loot = Generator.Category.GOLD;
+        lootChance = 0.2f;
 
         properties.add(Property.UNDEAD);
     }
@@ -65,12 +65,12 @@ public class ColdMagicRat extends Mob implements Callback {
 
     @Override
     public int attackSkill( Char target ) {
-        return 8;
+        return 12;
     }
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(10, 8);
+        return Random.NormalIntRange(5, 11);
     }
 
     @Override
@@ -103,9 +103,9 @@ public class ColdMagicRat extends Mob implements Callback {
         spend( TIME_TO_ZAP );
 
         if (hit( this, enemy, true )) {
-            //TODO would be nice for this to work on ghost/statues too
+
             if (enemy == Dungeon.hero && Random.Int( 2 ) == 0) {
-                Buff.prolong( enemy, Blindness.class, Degrade.DURATION );
+                Buff.prolong( enemy, Blindness.class, Degrade.DURATION/5 );
                 Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
             }
 

@@ -7,7 +7,10 @@ import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
 public class IceHealHP extends Buff {
-
+    @Override
+    public String heroMessage() {
+        return "";
+    }
     {
         type = buffType.POSITIVE;
     }

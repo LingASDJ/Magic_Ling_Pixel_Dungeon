@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,15 +21,14 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -48,7 +47,7 @@ public class Warlock extends Mob implements Callback {
 	
 	{
 		spriteClass = WarlockSprite.class;
-
+		
 		HP = HT = 70;
 		defenseSkill = 18;
 		
@@ -73,17 +72,19 @@ public class Warlock extends Mob implements Callback {
 	
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 8);
+		return super.drRoll() + Random.NormalIntRange(0, 8);
 	}
 	
 	@Override
 	protected boolean canAttack( Char enemy ) {
-		return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
+		return super.canAttack(enemy)
+				|| new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 	}
 	
 	protected boolean doAttack( Char enemy ) {
 
-		if (Dungeon.level.adjacent( pos, enemy.pos )) {
+		if (Dungeon.level.adjacent( pos, enemy.pos )
+				|| new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos != enemy.pos) {
 			
 			return super.doAttack( enemy );
 			
@@ -104,27 +105,23 @@ public class Warlock extends Mob implements Callback {
 	
 	protected void zap() {
 		spend( TIME_TO_ZAP );
-		
+
+		Invisibility.dispel(this);
+		Char enemy = this.enemy;
 		if (hit( this, enemy, true )) {
 			//TODO would be nice for this to work on ghost/statues too
 			if (enemy == Dungeon.hero && Random.Int( 2 ) == 0) {
 				Buff.prolong( enemy, Degrade.class, Degrade.DURATION );
 				Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
-				//TODO 远程攻击必定扣减两灯火
-				if(lanterfireactive){
-					if (enemy instanceof Hero && hero.lanterfire < 50) {
-						((Hero) enemy).damageLantern(2);
-						hero.sprite.showStatus( 0x808080, "2");
-						die(true);
-					}
-				}
 			}
 			
 			int dmg = Random.NormalIntRange( 12, 18 );
+			dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
 			enemy.damage( dmg, new DarkBolt() );
 			
 			if (enemy == Dungeon.hero && !enemy.isAlive()) {
-				Dungeon.fail( getClass() );
+				Badges.validateDeathFromEnemyMagic();
+				Dungeon.fail( this );
 				GLog.n( Messages.get(this, "bolt_kill") );
 			}
 		} else {
@@ -136,7 +133,7 @@ public class Warlock extends Mob implements Callback {
 		zap();
 		next();
 	}
-
+	
 	@Override
 	public void call() {
 		next();
@@ -150,22 +147,10 @@ public class Warlock extends Mob implements Callback {
 			Dungeon.LimitedDrops.WARLOCK_HP.count++;
 			return new PotionOfHealing();
 		} else {
-			Item i = Generator.random(Generator.Category.POTION);
-			int healingTried = 0;
-			while (i instanceof PotionOfHealing){
-				healingTried++;
-				i = Generator.random(Generator.Category.POTION);
-			}
-
-			//return the attempted healing potion drops to the pool
-			if (healingTried > 0){
-				for (int j = 0; j < Generator.Category.POTION.classes.length; j++){
-					if (Generator.Category.POTION.classes[j] == PotionOfHealing.class){
-						Generator.Category.POTION.probs[j] += healingTried;
-					}
-				}
-			}
-
+			Item i;
+			do {
+				i = Generator.randomUsingDefaults(Generator.Category.POTION);
+			} while (i instanceof PotionOfHealing);
 			return i;
 		}
 

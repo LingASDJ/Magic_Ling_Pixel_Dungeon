@@ -28,8 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.Builder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.FigureEightBuilder;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.JunglePainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.painters.SewerPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.RatKingRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.sewerboss.SewerBossEntranceRoom;
@@ -37,7 +37,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.sewerboss.SewerBoss
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.slimeking.SlimeKingBossRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.watabou.noosa.Group;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
@@ -75,10 +74,18 @@ public class SLMKingLevel extends SewerLevel {
     }
 
     @Override
+    public int tunnelTile() {
+        return Terrain.WATER;
+    }
+
+    @Override
     protected int standardRooms(boolean forceMax) {
-        if (forceMax) return 3;
-        //2 to 3, average 2.5
-        return 2+Random.chances(new float[]{1, 1});
+        return 0;
+    }
+
+    @Override
+    protected int specialRooms(boolean forceMax) {
+        return 0;
     }
 
     protected Builder builder(){
@@ -90,7 +97,7 @@ public class SLMKingLevel extends SewerLevel {
 
     @Override
     protected Painter painter() {
-        return new SewerPainter()
+        return new JunglePainter()
                 .setWater(0.50f, 5)
                 .setGrass(0.20f, 4)
                 .setTraps(nTraps(), trapClasses(), trapChances());
@@ -151,14 +158,6 @@ public class SLMKingLevel extends SewerLevel {
             GameScene.updateMap( entrance );
 
         }
-    }
-
-    @Override
-    public Group addVisuals() {
-        super.addVisuals();
-        if (map[exit-1] != Terrain.WALL_DECO) visuals.add(new PrisonLevel.Torch(exit-1));
-        if (map[exit+1] != Terrain.WALL_DECO) visuals.add(new PrisonLevel.Torch(exit+1));
-        return visuals;
     }
 
     private static final String STAIRS	= "stairs";

@@ -91,7 +91,7 @@ public class AncityArmor extends CustomArmor{
                 final AncityArmor curWand;
 
                 if (curItem instanceof AncityArmor) {
-                    curWand = (AncityArmor) AncityArmor.curItem;
+                    curWand = (AncityArmor) curItem;
                 } else {
                     return;
                 }

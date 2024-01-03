@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,12 @@ public class Lucky extends Weapon.Enchantment {
 		// lvl 2 ~ 14%
 		float procChance = (level+4f)/(level+40f) * procChanceMultiplier(attacker);
 		if (defender.HP <= damage && Random.Float() < procChance){
-			Buff.affect(defender, LuckProc.class);
+
+			float powerMulti = Math.max(1f, procChance);
+
+			//default is -5: 80% common, 20% uncommon, 0% rare
+			//ring level increases by 1 for each 20% above 100% proc rate
+			Buff.affect(defender, LuckProc.class).ringLevel = -10 + Math.round(5*powerMulti);
 		}
 		
 		return damage;
@@ -67,11 +72,18 @@ public class Lucky extends Weapon.Enchantment {
 	
 	//used to keep track of whether a luck proc is incoming. see Mob.die()
 	public static class LuckProc extends Buff {
+
+		private int ringLevel = -5;
 		
 		@Override
 		public boolean act() {
 			detach();
 			return true;
+		}
+
+		public Item genLoot(){
+			detach();
+			return RingOfWealth.genConsumableDrop(ringLevel);
 		}
 	}
 	

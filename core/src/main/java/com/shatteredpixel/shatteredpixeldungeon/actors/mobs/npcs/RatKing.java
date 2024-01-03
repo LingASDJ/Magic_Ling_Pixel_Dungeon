@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,12 +21,15 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.custom.CustomArmor;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatKingSprite;
@@ -57,13 +60,15 @@ public class RatKing extends NPC {
 	protected Char chooseEnemy() {
 		return null;
 	}
-	
+
 	@Override
 	public void damage( int dmg, Object src ) {
+		//do nothing
 	}
-	
+
 	@Override
-	public void add( Buff buff ) {
+	public boolean add(Buff buff ) {
+		return false;
 	}
 	
 	@Override
@@ -76,7 +81,7 @@ public class RatKing extends NPC {
 	@Override
 	protected void onAdd() {
 		super.onAdd();
-		if (Dungeon.depth != 5){
+		if (firstAdded && Dungeon.depth != 5){
 			yell(Messages.get(this, "confused"));
 		}
 	}
@@ -84,18 +89,18 @@ public class RatKing extends NPC {
 	@Override
 	protected boolean act() {
 		if (Dungeon.depth < 5){
-			if (pos == Dungeon.level.exit){
+			if (pos == Dungeon.level.exit()){
 				destroy();
 				sprite.killAndErase();
 			} else {
-				target = Dungeon.level.exit;
+				target = Dungeon.level.exit();
 			}
 		} else if (Dungeon.depth > 5){
-			if (pos == Dungeon.level.entrance){
+			if (pos == Dungeon.level.entrance()){
 				destroy();
 				sprite.killAndErase();
 			} else {
-				target = Dungeon.level.entrance;
+				target = Dungeon.level.entrance();
 			}
 		}
 		return super.act();
@@ -107,18 +112,20 @@ public class RatKing extends NPC {
 	public boolean interact(Char c) {
 		sprite.turnTo( pos, c.pos );
 
-		if (c != Dungeon.hero){
+		if (c != hero){
 			return super.interact(c);
 		}
 
-		KingsCrown crown = Dungeon.hero.belongings.getItem(KingsCrown.class);
+		KingsCrown crown = hero.belongings.getItem(KingsCrown.class);
 		if (state == SLEEPING) {
 			notice();
-			yell( Messages.get(this, "not_sleeping") );
+			yell(Messages.get(this, "not_sleeping"));
 			state = WANDERING;
 		} else if (crown != null){
-			if (Dungeon.hero.belongings.armor() == null){
-				yell( Messages.get(RatKing.class, "crown_clothes") );
+			if (hero.belongings.armor() == null) {
+				yell(Messages.get(RatKing.class, "crown_clothes"));
+			} else if(hero.belongings.armor instanceof CustomArmor) {
+					yell(Messages.get(RatKing.class, "what",hero.belongings.armor.name()));
 			} else {
 				Badges.validateRatmogrify();
 				Game.runOnRenderThread(new Callback() {
@@ -135,11 +142,11 @@ public class RatKing extends NPC {
 							@Override
 							protected void onSelect(int index) {
 								if (index == 0){
-									crown.upgradeArmor(Dungeon.hero, Dungeon.hero.belongings.armor(), new Ratmogrify());
+									crown.upgradeArmor(hero, hero.belongings.armor(), new Ratmogrify());
 									((RatKingSprite)sprite).resetAnims();
 									yell(Messages.get(RatKing.class, "crown_thankyou"));
 								} else if (index == 1) {
-									GameScene.show(new WndInfoArmorAbility(Dungeon.hero.heroClass, new Ratmogrify()));
+									GameScene.show(new WndInfoArmorAbility(hero.heroClass, new Ratmogrify()));
 								} else {
 									yell(Messages.get(RatKing.class, "crown_fine"));
 								}
@@ -148,7 +155,7 @@ public class RatKing extends NPC {
 					}
 				});
 			}
-		} else if (Dungeon.hero.armorAbility instanceof Ratmogrify) {
+		} else if (hero.armorAbility instanceof Ratmogrify) {
 			yell( Messages.get(RatKing.class, "crown_after") );
 		} else {
 			yell( Messages.get(this, "what_is_it") );

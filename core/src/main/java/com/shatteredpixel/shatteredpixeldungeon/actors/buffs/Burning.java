@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Brimstone;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.ChargrilledMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
@@ -47,7 +49,10 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class Burning extends Buff implements Hero.Doom {
-	
+	@Override
+	public String heroMessage() {
+		return Messages.get(this, "heromsg");
+	}
 	private static final float DURATION = 8f;
 	
 	private float left;
@@ -89,7 +94,7 @@ public class Burning extends Buff implements Hero.Doom {
 		
 		if (target.isAlive() && !target.isImmune(getClass())) {
 			
-			int damage = Random.NormalIntRange( 1, 3 + Dungeon.depth/4 );
+			int damage = Random.NormalIntRange( 1, 3 + Dungeon.scalingDepth()/4 );
 			Buff.detach( target, Chill.class);
 
 			if (target instanceof Hero && target.buff(TimekeepersHourglass.timeStasis.class) == null) {
@@ -115,7 +120,7 @@ public class Burning extends Buff implements Hero.Doom {
 
 					if (!burnable.isEmpty()){
 						Item toBurn = Random.element(burnable).detach(hero.belongings.backpack);
-						GLog.w( Messages.get(this, "burnsup", Messages.capitalize(toBurn.toString())) );
+						GLog.w( Messages.capitalize(Messages.get(this, "burnsup", toBurn.title())) );
 						if (toBurn instanceof MysteryMeat || toBurn instanceof FrozenCarpaccio){
 							ChargrilledMeat steak = new ChargrilledMeat();
 							if (!steak.collect( hero.belongings.backpack )) {
@@ -170,6 +175,23 @@ public class Burning extends Buff implements Hero.Doom {
 	}
 	
 	public void reignite( Char ch, float duration ) {
+		if (ch.isImmune(Burning.class)){
+			//TODO this only works for the hero, not others who can have brimstone+arcana effect
+			// e.g. prismatic image, shadow clone
+			if (ch instanceof Hero
+					&& ((Hero) ch).belongings.armor() != null
+					&& ((Hero) ch).belongings.armor().hasGlyph(Brimstone.class, ch)){
+				//has a 2*boost/50% chance to generate 1 shield per turn, to a max of 4x boost
+				float shieldChance = 2*(Armor.Glyph.genericProcChanceMultiplier(ch) - 1f);
+				int shieldCap = Math.round(shieldChance*4f);
+				if (shieldCap > 0 && Random.Float() < shieldChance){
+					Barrier barrier = Buff.affect(ch, Barrier.class);
+					if (barrier.shielding() < shieldCap){
+						barrier.incShield(1);
+					}
+				}
+			}
+		}
 		left = duration;
 	}
 	
@@ -195,16 +217,6 @@ public class Burning extends Buff implements Hero.Doom {
 	}
 
 	@Override
-	public String heroMessage() {
-		return Messages.get(this, "heromsg");
-	}
-
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-
-	@Override
 	public String desc() {
 		return Messages.get(this, "desc", dispTurns(left));
 	}
@@ -214,7 +226,7 @@ public class Burning extends Buff implements Hero.Doom {
 		
 		Badges.validateDeathFromFire();
 		
-		Dungeon.fail( getClass() );
+		Dungeon.fail( this );
 		GLog.n( Messages.get(this, "ondeath") );
 	}
 }

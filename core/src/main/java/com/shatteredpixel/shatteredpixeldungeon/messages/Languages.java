@@ -25,12 +25,11 @@ import java.util.Locale;
 
 public enum Languages {
 	CHINESE("中文",      "",   Status.REVIEWED,  null, null),
-	ENGLISH("English",          "en", Status.INCOMPLETE, new String[]{"JDSALing","Noodlemire","Aeonius"}, null),
-	HARDCHINESE("繁體中文",          "zh_TW", Status.INCOMPLETE, new String[]{"JDSALing"},
+	ENGLISH("English",          "en", Status.INCOMPLETE, new String[]{"JDSALing","Catand"},
+			new String[]{"Noodlemire","Aeonius"}),
+	HARDCHINESE("繁體中文","zh-TW", Status.INCOMPLETE, new String[]{"JDSALing"},
 			new String[]{"那些回忆","冷群"}),
-//	GREEK("ελληνικά",       "el", Status.INCOMPLETE,   new String[]{"JDSALing","Aeonius", "Saxy"}, new String[]{
-//			"DU_Clouds",
-//			"VasKyr", "YiorgosH", "fr3sh", "stefboi", "toumbo", "val.exe"}),
+	RUSSIAN("Russian", "ru", Status.INCOMPLETE, new String[]{"JDSALing"},null),
 	JAPANESE("日本語","ja", Status.INCOMPLETE, new String[]{"JDSALing","Gosamaru","FromBeyond"}, new String[]{
 			"Gosamaru",
 			"Otogiri",

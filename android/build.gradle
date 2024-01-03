@@ -82,8 +82,6 @@ dependencies {
     //noinspection GradleDependency
     implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
 
-    implementation project(path: ':services:news:shatteredNews')
-
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
@@ -99,6 +97,10 @@ dependencies {
     //修复小米手表与低安卓系统的WebView冲突兼容问题
     //noinspection GradleDependency
     implementation 'androidx.appcompat:appcompat:1.0.2'
+
+    implementation 'cat.ereza:customactivityoncrash:2.3.0'
+
+    implementation project(':services:news:shatteredNews')
 }
 
 // called every time gradle gets executed, takes the native dependencies of

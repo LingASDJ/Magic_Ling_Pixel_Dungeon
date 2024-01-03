@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -29,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -86,7 +88,7 @@ public class WandOfBlastWave extends DamageWand {
 				if (ch.pos == bolt.collisionPos + i) {
 					Ballistica trajectory = new Ballistica(ch.pos, ch.pos + i, Ballistica.MAGIC_BOLT);
 					int strength = 1 + Math.round(buffedLvl() / 2f);
-					throwChar(ch, trajectory, strength, false, true, getClass());
+					throwChar(ch, trajectory, strength, false, true, this);
 				}
 
 			}
@@ -101,16 +103,16 @@ public class WandOfBlastWave extends DamageWand {
 			if (bolt.path.size() > bolt.dist+1 && ch.pos == bolt.collisionPos) {
 				Ballistica trajectory = new Ballistica(ch.pos, bolt.path.get(bolt.dist + 1), Ballistica.MAGIC_BOLT);
 				int strength = buffedLvl() + 3;
-				throwChar(ch, trajectory, strength, false, true, getClass());
+				throwChar(ch, trajectory, strength, false, true, this);
 			}
 		}
-
+		
 	}
 
 	public static void throwChar(final Char ch, final Ballistica trajectory, int power,
-								 boolean closeDoors, boolean collideDmg, Class cause){
+	                             boolean closeDoors, boolean collideDmg, Object cause){
 		if (ch.properties().contains(Char.Property.BOSS)) {
-			power /= 2;
+			power = (power+1)/2;
 		}
 
 		int dist = Math.min(trajectory.dist, power);
@@ -147,7 +149,7 @@ public class WandOfBlastWave extends DamageWand {
 		final boolean finalCollided = collided && collideDmg;
 		final int initialpos = ch.pos;
 
-		Actor.addDelayed(new Pushing(ch, ch.pos, newPos, new Callback() {
+		Actor.add(new Pushing(ch, ch.pos, newPos, new Callback() {
 			public void call() {
 				if (initialpos != ch.pos || Actor.findChar(newPos) != null) {
 					//something caused movement or added chars before pushing resolved, cancel to be safe.
@@ -156,11 +158,14 @@ public class WandOfBlastWave extends DamageWand {
 				}
 				int oldPos = ch.pos;
 				ch.pos = newPos;
-				if (finalCollided && ch.isAlive()) {
+				if (finalCollided && ch.isActive()) {
 					ch.damage(Random.NormalIntRange(finalDist, 2*finalDist), this);
-					if (ch.isAlive()) {
+					if (ch.isActive()) {
 						Paralysis.prolong(ch, Paralysis.class, 1 + finalDist/2f);
 					} else if (ch == Dungeon.hero){
+						if (cause instanceof WandOfBlastWave || cause instanceof AquaBlast){
+							Badges.validateDeathFromFriendlyMagic();
+						}
 						Dungeon.fail(cause);
 					}
 				}
@@ -173,12 +178,35 @@ public class WandOfBlastWave extends DamageWand {
 					GameScene.updateFog();
 				}
 			}
-		}), -1);
+		}));
 	}
 
 	@Override
 	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
-		new Elastic().proc(staff, attacker, defender, damage);
+		//acts like elastic enchantment
+		//we delay this with an actor to prevent conflicts with regular elastic
+		//so elastic always fully resolves first, then this effect activates
+		Actor.add(new Actor() {
+			{
+				actPriority = VFX_PRIO+9; //act after pushing effects
+			}
+
+			@Override
+			protected boolean act() {
+				Actor.remove(this);
+				if (defender.isAlive()) {
+					new BlastWaveOnHit().proc(staff, attacker, defender, damage);
+				}
+				return true;
+			}
+		});
+	}
+
+	private static class BlastWaveOnHit extends Elastic{
+		@Override
+		protected float procChanceMultiplier(Char attacker) {
+			return Wand.procChanceMultiplier(attacker);
+		}
 	}
 
 	@Override

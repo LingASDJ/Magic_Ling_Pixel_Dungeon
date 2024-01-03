@@ -30,11 +30,6 @@ public class WndDLC extends Window {
     private boolean editable;
     private ArrayList<IconButton> infos = new ArrayList<>();
     private ArrayList<ConduitBox> boxes = new ArrayList<>();
-    private ScrollPane pane;
-
-    public WndDLC( Conducts.Conduct conduct, boolean editable){
-        new WndDLC(new Conducts.ConductStorage(conduct), editable);
-    }
 
     public WndDLC(Conducts.ConductStorage conducts, boolean editable ) {
 

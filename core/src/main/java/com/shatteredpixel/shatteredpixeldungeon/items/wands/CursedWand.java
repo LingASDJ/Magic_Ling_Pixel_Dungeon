@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -50,10 +50,10 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CursingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ShockingTrap;
@@ -62,7 +62,6 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
@@ -145,24 +144,21 @@ public class CursedWand {
 
 			//random teleportation
 			case 2:
-				if(!Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
-					if(Random.Int(2) == 0) {
-						if (user != null && !user.properties().contains(Char.Property.IMMOVABLE)) {
-							ScrollOfTeleportation.teleportChar(user);
-						} else {
-							return cursedEffect(origin, user, targetPos);
-						}
+				if(Random.Int(2) == 0) {
+					if (user != null && !user.properties().contains(Char.Property.IMMOVABLE)) {
+						ScrollOfTeleportation.teleportChar(user);
 					} else {
-						Char ch = Actor.findChar( targetPos );
-						if (ch != null && !ch.properties().contains(Char.Property.IMMOVABLE)) {
-							ScrollOfTeleportation.teleportChar(ch);
-							tryForWandProc(ch, origin);
-						} else {
-							return cursedEffect(origin, user, targetPos);
-						}
+						return cursedEffect(origin, user, targetPos);
+					}
+				} else {
+					Char ch = Actor.findChar( targetPos );
+					if (ch != null && !ch.properties().contains(Char.Property.IMMOVABLE)) {
+						ScrollOfTeleportation.teleportChar(ch);
+						tryForWandProc(ch, origin);
+					} else {
+						return cursedEffect(origin, user, targetPos);
 					}
 				}
-				//ＴＯＤＯ
 				return true;
 
 			//random gas at location
@@ -207,7 +203,7 @@ public class CursedWand {
 			case 1:
 				final Char target = Actor.findChar( targetPos );
 				if (target != null) {
-					int damage = Dungeon.depth * 2;
+					int damage = Dungeon.scalingDepth() * 2;
 					Char toHeal, toDamage;
 
 					if (Random.Int(2) == 0){
@@ -219,17 +215,19 @@ public class CursedWand {
 					}
 					toHeal.HP = Math.min(toHeal.HT, toHeal.HP + damage);
 					toHeal.sprite.emitter().burst(Speck.factory(Speck.HEALING), 3);
-					toDamage.damage(damage, origin == null ? toHeal : origin);
+					toDamage.damage(damage, new CursedWand());
 					toDamage.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
 
 					if (toDamage == Dungeon.hero){
 						Sample.INSTANCE.play(Assets.Sounds.CURSED);
 						if (!toDamage.isAlive()) {
-							if (origin != null) {
-								Dungeon.fail( origin.getClass() );
+							if (user == Dungeon.hero && origin != null) {
+								Badges.validateDeathFromFriendlyMagic();
+								Dungeon.fail( origin );
 								GLog.n( Messages.get( CursedWand.class, "ondeath", origin.name() ) );
 							} else {
-								Dungeon.fail( toHeal.getClass() );
+								Badges.validateDeathFromEnemyMagic();
+								Dungeon.fail( toHeal );
 							}
 						}
 					} else {
@@ -243,7 +241,7 @@ public class CursedWand {
 
 			//Bomb explosion
 			case 2:
-				new Bomb().explode(targetPos);
+				new Bomb.MagicalBomb().explode(targetPos);
 				tryForWandProc(Actor.findChar(targetPos), origin);
 				return true;
 
@@ -295,25 +293,23 @@ public class CursedWand {
 
 			//inter-level teleportation
 			case 2:
-				if (Dungeon.depth > 1 && !Dungeon.bossLevel() && user == Dungeon.hero && Dungeon.isDLC(Conducts.Conduct.NULL)) {
+				if (Dungeon.depth > 1 && Dungeon.interfloorTeleportAllowed() && user == Dungeon.hero) {
 
 					//each depth has 1 more weight than the previous depth.
 					float[] depths = new float[Dungeon.depth-1];
 					for (int i = 1; i < Dungeon.depth; i++) depths[i-1] = i;
 					int depth = 1+Random.chances(depths);
 
-					TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-					if (timeFreeze != null) timeFreeze.disarmPressedTraps();
-					Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-					if (timeBubble != null) timeBubble.disarmPressedTraps();
-
+					Level.beforeTransition();
 					InterlevelScene.mode = InterlevelScene.Mode.RETURN;
 					InterlevelScene.returnDepth = depth;
+					InterlevelScene.returnBranch = 0;
 					InterlevelScene.returnPos = -1;
 					Game.switchScene(InterlevelScene.class);
 
 				} else {
 					ScrollOfTeleportation.teleportChar(user);
+
 				}
 				return true;
 
@@ -361,12 +357,12 @@ public class CursedWand {
 					}
 				}
 
-				Mimic mimic = Mimic.spawnAt(spawnCell, new ArrayList<Item>(), GoldenMimic.class);
+				Mimic mimic = Mimic.spawnAt(spawnCell, GoldenMimic.class, false);
 				mimic.stopHiding();
 				mimic.alignment = Char.Alignment.ENEMY;
 				Item reward;
 				do {
-					reward = Generator.random(Random.oneOf(Generator.Category.WEAPON, Generator.Category.ARMOR,
+					reward = Generator.randomUsingDefaults(Random.oneOf(Generator.Category.WEAPON, Generator.Category.ARMOR,
 							Generator.Category.RING, Generator.Category.WAND));
 				} while (reward.level() < 1);
 				//play vfx/sfx manually as mimic isn't in the scene yet
@@ -386,22 +382,29 @@ public class CursedWand {
 						//Don't bother doing this joke to none-english speakers, I doubt it would translate.
 						return cursedEffect(origin, user, targetPos);
 					} else {
-						GameScene.show(
-								new WndOptions(Icons.get(Icons.WARNING),
-										"CURSED WAND ERROR",
-										"this application will now self-destruct",
-										"abort",
-										"retry",
-										"fail") {
-									
+						ShatteredPixelDungeon.runOnRenderThread(
+								new Callback() {
 									@Override
-									protected void onSelect(int index) {
-										Game.instance.finish();
-									}
-									
-									@Override
-									public void onBackPressed() {
-										//do nothing
+									public void call() {
+										GameScene.show(
+												new WndOptions(Icons.get(Icons.WARNING),
+														"CURSED WAND ERROR",
+														"this application will now self-destruct",
+														"abort",
+														"retry",
+														"fail") {
+
+													@Override
+													protected void onSelect(int index) {
+														Game.instance.finish();
+													}
+
+													@Override
+													public void onBackPressed() {
+														//do nothing
+													}
+												}
+										);
 									}
 								}
 						);
@@ -422,7 +425,7 @@ public class CursedWand {
 				origin.detach(Dungeon.hero.belongings.backpack);
 				Item result;
 				do {
-					result = Generator.random(Random.oneOf(Generator.Category.WEAPON, Generator.Category.ARMOR,
+					result = Generator.randomUsingDefaults(Random.oneOf(Generator.Category.WEAPON, Generator.Category.ARMOR,
 							Generator.Category.RING, Generator.Category.ARTIFACT));
 				} while (result.cursed);
 				if (result.isUpgradable()) result.upgrade();

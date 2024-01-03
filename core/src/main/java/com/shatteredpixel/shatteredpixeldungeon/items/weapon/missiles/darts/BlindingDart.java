@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,8 +35,11 @@ public class BlindingDart extends TippedDart {
 	
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
-		
-		Buff.affect(defender, Blindness.class, Blindness.DURATION);
+
+		//when processing charged shot, only blind enemies
+		if (!processingChargedShot || attacker.alignment != defender.alignment) {
+			Buff.affect(defender, Blindness.class, Blindness.DURATION);
+		}
 		
 		return super.proc(attacker, defender, damage);
 	}

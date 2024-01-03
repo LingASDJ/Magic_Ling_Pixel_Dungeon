@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,19 +63,19 @@ public class Recycle extends InventorySpell {
 		Item result;
 		do {
 			if (item instanceof Potion) {
-				result = Generator.random(Generator.Category.POTION);
+				result = Generator.randomUsingDefaults(Generator.Category.POTION);
 				if (item instanceof ExoticPotion){
 					result = Reflection.newInstance(ExoticPotion.regToExo.get(result.getClass()));
 				}
 			} else if (item instanceof Scroll) {
-				result = Generator.random(Generator.Category.SCROLL);
+				result = Generator.randomUsingDefaults(Generator.Category.SCROLL);
 				if (item instanceof ExoticScroll){
 					result = Reflection.newInstance(ExoticScroll.regToExo.get(result.getClass()));
 				}
 			} else if (item instanceof Plant.Seed) {
-				result = Generator.random(Generator.Category.SEED);
+				result = Generator.randomUsingDefaults(Generator.Category.SEED);
 			} else if (item instanceof Runestone) {
-				result = Generator.random(Generator.Category.STONE);
+				result = Generator.randomUsingDefaults(Generator.Category.STONE);
 			} else {
 				result = TippedDart.randomTipped(1);
 			}
@@ -92,8 +92,8 @@ public class Recycle extends InventorySpell {
 	
 	@Override
 	public int value() {
-		//prices of ingredients, divided by output quantity
-		return Math.round(quantity * ((50 + 40) / 12f));
+		//prices of ingredients, divided by output quantity, rounds down
+		return (int)((50 + 40) * (quantity/12f));
 	}
 	
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,11 +35,14 @@ public class ChillingDart extends TippedDart {
 	
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
-		
-		if (Dungeon.level.water[defender.pos]){
-			Buff.prolong(defender, Chill.class, Chill.DURATION);
-		} else {
-			Buff.prolong(defender, Chill.class, 6f);
+
+		//when processing charged shot, only chill enemies
+		if (!processingChargedShot || attacker.alignment != defender.alignment) {
+			if (Dungeon.level.water[defender.pos]) {
+				Buff.prolong(defender, Chill.class, Chill.DURATION);
+			} else {
+				Buff.prolong(defender, Chill.class, 6f);
+			}
 		}
 		
 		return super.proc(attacker, defender, damage);

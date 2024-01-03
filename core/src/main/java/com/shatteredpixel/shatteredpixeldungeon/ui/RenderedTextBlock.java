@@ -126,7 +126,7 @@ public class RenderedTextBlock extends Component {
 			/*
 			{ = 红色
 			} = 绿色
-			Θ = 蓝色
+			* = 蓝色
 			[ = 粉色
 			] = 紫色
 			| = 黑色

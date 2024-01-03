@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -146,7 +146,7 @@ public class v0_3_X_Changes {
 				"\n" +
 				"Google Play Games was the first online functionality ever added to Shattered. Some people were worried that this was the start of me turning Shattered into a game that would require internet. I tried to address this worry by making the functionality as optional as possible and heavily emphasizing that it was only for tiny extras like cloud sync and play games badges. Nowadays things are much more relaxed and Shattered has several internet-enabled features, but still none of them are needed to play the game itself."));
 		
-		changes.addButton( new ChangeButton(Icons.get(Icons.PREFS), "Google Play Games",
+		changes.addButton( new ChangeButton(Icons.get(Icons.CONTROLLER), "Google Play Games",
 				"Added support for Google Play Games in the Google Play version:\n\n" +
 				"- Badges can now sync across devices\n" +
 				"- Five Google Play Achievements added\n" +
@@ -279,8 +279,8 @@ public class v0_3_X_Changes {
 		
 		changes.addButton( new ChangeButton(Icons.get(Icons.SHPX), "Developer Commentary",
 				"_-_ Released May 26th, 2015\n" +
-				"_-_ 253 days after Shattered v0.2.0\n" +
 				"_-_ 92 days after Shattered v0.2.4\n" +
+				"_-_ 253 days after Shattered v0.2.0\n" +
 				"\n" +
 				"v0.3.0 was Shattered's second major item category rework, and Shattered's first real class rework!\n" +
 				"\n" +

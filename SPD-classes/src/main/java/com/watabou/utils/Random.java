@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,7 +49,20 @@ public class Random {
 	}
 
 	public static synchronized void pushGenerator( long seed ){
-		generators.push( new java.util.Random( seed ) );
+		generators.push( new java.util.Random( scrambleSeed(seed) ) );
+	}
+
+	//scrambles a given seed, this helps eliminate patterns between the outputs of similar seeds
+	//Algorithm used is MX3 by Jon Maiga (jonkagstrom.com), CC0 license.
+	private static synchronized long scrambleSeed( long seed ){
+		seed ^= seed >>> 32;
+		seed *= 0xbea225f9eb34556dL;
+		seed ^= seed >>> 29;
+		seed *= 0xbea225f9eb34556dL;
+		seed ^= seed >>> 32;
+		seed *= 0xbea225f9eb34556dL;
+		seed ^= seed >>> 29;
+		return seed;
 	}
 
 	public static synchronized void popGenerator(){

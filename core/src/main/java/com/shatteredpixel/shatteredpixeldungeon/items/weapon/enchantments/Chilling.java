@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,12 +43,14 @@ public class Chilling extends Weapon.Enchantment {
 		// lvl 2 - 50%
 		float procChance = (level+1f)/(level+4f) * procChanceMultiplier(attacker);
 		if (Random.Float() < procChance) {
-			
+
+			float powerMulti = Math.max(1f, procChance);
+
 			//adds 3 turns of chill per proc, with a cap of 6 turns
-			float durationToAdd = 3f;
+			float durationToAdd = 3f * powerMulti;
 			Chill existing = defender.buff(Chill.class);
 			if (existing != null){
-				durationToAdd = Math.min(durationToAdd, 6f-existing.cooldown());
+				durationToAdd = Math.min(durationToAdd, (6f*powerMulti)-existing.cooldown());
 			}
 			
 			Buff.affect( defender, Chill.class, durationToAdd );

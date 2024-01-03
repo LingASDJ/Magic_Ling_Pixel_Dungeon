@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,7 +89,11 @@ public class Bundle {
 	}
 
 	public boolean contains( String key ) {
-		return !data.isNull( key );
+		return !isNull() && !data.isNull( key );
+	}
+
+	public boolean remove( String key ){
+		return data.remove(key) != null;
 	}
 
 	//JSONObject.keyset() doesn't exist on Android/iOS
@@ -183,6 +187,21 @@ public class Bundle {
 			int[] result = new int[length];
 			for (int i=0; i < length; i++) {
 				result[i] = array.getInt( i );
+			}
+			return result;
+		} catch (JSONException e) {
+			Game.reportException(e);
+			return null;
+		}
+	}
+
+	public long[] getLongArray( String key ) {
+		try {
+			JSONArray array = data.getJSONArray( key );
+			int length = array.length();
+			long[] result = new long[length];
+			for (int i=0; i < length; i++) {
+				result[i] = array.getLong( i );
 			}
 			return result;
 		} catch (JSONException e) {
@@ -383,6 +402,18 @@ public class Bundle {
 		}
 	}
 
+	public void put( String key, long[] array ) {
+		try {
+			JSONArray jsonArray = new JSONArray();
+			for (int i=0; i < array.length; i++) {
+				jsonArray.put( i, array[i] );
+			}
+			data.put( key, jsonArray );
+		} catch (JSONException e) {
+			Game.reportException(e);
+		}
+	}
+
 	public void put( String key, float[] array ) {
 		try {
 			JSONArray jsonArray = new JSONArray();
@@ -506,6 +537,7 @@ public class Bundle {
 				// Some of these are written in a 'minified' format, some have duplicate keys.
 				// We read them in with the libGDX JSON code, fix duplicates, write as full JSON
 				// and then try to read again with org.json
+				Game.reportException(e);
 				JsonValue gdxJSON = new JsonReader().parse(jsonString);
 				killDuplicateKeysInLibGDXJSON(gdxJSON);
 				json = new JSONTokener(gdxJSON.prettyPrint(JsonWriter.OutputType.json, 0)).nextValue();

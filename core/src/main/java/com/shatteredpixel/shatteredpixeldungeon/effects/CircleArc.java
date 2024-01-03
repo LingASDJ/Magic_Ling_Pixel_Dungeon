@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,6 +107,10 @@ public class CircleArc extends Visual {
 	public void setSweep( float sweep ){
 		this.sweep = sweep;
 		dirty = true;
+	}
+
+	public float getSweep(){
+		return sweep;
 	}
 	
 	private void updateTriangles(){

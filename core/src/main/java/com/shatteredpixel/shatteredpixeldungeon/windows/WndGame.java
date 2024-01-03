@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -35,8 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.Image;
-import com.watabou.utils.DeviceCompat;
+import com.watabou.noosa.audio.Music;
 
 import java.io.IOException;
 
@@ -82,7 +82,7 @@ public class WndGame extends Window {
 				@Override
 				protected void onClick() {
 					GamesInProgress.selectedClass = Dungeon.hero.heroClass;
-					InterlevelScene.noStory = false;
+					GamesInProgress.curSlot = GamesInProgress.firstEmpty();
 					ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
 				}
 			} );
@@ -93,27 +93,18 @@ public class WndGame extends Window {
 				@Override
 				protected void onClick() {
 					InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+					Music.INSTANCE.playTracks(
+							new String[]{Assets.Music.THEME_1, Assets.Music.THEME_2},
+							new float[]{1, 1},
+							false);
 					Game.switchScene( RankingsScene.class );
 				}
 			} );
 			curBtn.icon(Icons.get(Icons.RANKINGS));
 		}
 
-		//玩家未准备好以及为DEBUG模式
-		if(!Dungeon.hero.ready && DeviceCompat.isDebug()){
-			addButton(curBtn = new
-					RedButton("DEBUG"){
-						@Override
-						protected void onClick() {
-							GameScene.logActorThread = true;
-						}
-					});
-			curBtn.icon(new
-					Image(Assets.Sprites.SPINNER,144,0,16,16));
-		}
-
 		// Main menu
-		addButton(curBtn = new RedButton( Messages.get(this, "menu") ) {
+		addButton(curBtn = new RedButton(Messages.get(this, "menu")) {
 			@Override
 			protected void onClick() {
 				try {
@@ -123,8 +114,9 @@ public class WndGame extends Window {
 				}
 				Game.switchScene(TitleScene.class);
 			}
-		} );
+		});
 		curBtn.icon(Icons.get(Icons.DISPLAY));
+		if (SPDSettings.intro()) curBtn.enable(false);
 
 		resize( WIDTH, pos );
 	}

@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -76,7 +77,7 @@ public class CavesGirlDeadLevel extends Level {
 
     @Override
     public String waterTex() {
-        return Assets.Environment.WATER_COLD;
+        return Assets.Environment.WATER_CAVES;
     }
 
     @Override
@@ -138,8 +139,14 @@ public class CavesGirlDeadLevel extends Level {
             }
         }
 
-        entrance = 10+19*21;
-        exit = 10 + 3*21;
+        int entrance = 10+19*21;
+        int exit = 10 + 3*21;
+
+        LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
+        transitions.add(enter);
+
+        LevelTransition exits = new LevelTransition(this, exit, LevelTransition.Type.REGULAR_EXIT);
+        transitions.add(exits);
 
         map[exit] = Terrain.LOCKED_EXIT;
 
@@ -150,28 +157,28 @@ public class CavesGirlDeadLevel extends Level {
     public void seal(){
         super.seal();
 
-        set( entrance, Terrain.WALL );
+        set( entrance(), Terrain.WALL );
 
-        Heap heap = Dungeon.level.heaps.get( entrance );
+        Heap heap = Dungeon.level.heaps.get( entrance() );
         if (heap != null) {
             int n;
             do {
-                n = entrance + PathFinder.NEIGHBOURS8[Random.Int( 8 )];
+                n = entrance() + PathFinder.NEIGHBOURS8[Random.Int( 8 )];
             } while (!Dungeon.level.passable[n]);
-            Dungeon.level.drop( heap.pickUp(), n ).sprite.drop( entrance );
+            Dungeon.level.drop( heap.pickUp(), n ).sprite.drop( entrance() );
         }
 
-        Char ch = Actor.findChar( entrance );
+        Char ch = Actor.findChar( entrance() );
         if (ch != null) {
             int n;
             do {
-                n = entrance + PathFinder.NEIGHBOURS8[Random.Int( 8 )];
+                n = entrance() + PathFinder.NEIGHBOURS8[Random.Int( 8 )];
             } while (!Dungeon.level.passable[n]);
             ch.pos = n;
             ch.sprite.place(n);
         }
 
-        GameScene.updateMap( entrance );
+        GameScene.updateMap( entrance() );
         Dungeon.observe();
     }
 
@@ -179,7 +186,7 @@ public class CavesGirlDeadLevel extends Level {
     public void unseal(){
         super.unseal();
 
-        set( entrance, Terrain.ENTRANCE );
+        set( entrance(), Terrain.ENTRANCE );
 
         GameScene.updateMap();
 
@@ -207,7 +214,7 @@ public class CavesGirlDeadLevel extends Level {
             int pos;
             do {
                 pos = randomRespawnCell(null);
-            } while (pos == entrance || pos == exit);
+            } while (pos == entrance || pos == exit());
             drop( item, pos ).setHauntedIfCursed().type = Heap.Type.REMAINS;
         }
     }
@@ -267,7 +274,7 @@ public class CavesGirlDeadLevel extends Level {
 
             MagicGirlDead boss = new MagicGirlDead();
             boss.state = boss.WANDERING;
-            boss.pos = exit + WIDTH*2;
+            boss.pos = exit() + WIDTH*2;
             GameScene.add( boss );
 
             Dungeon.observe();

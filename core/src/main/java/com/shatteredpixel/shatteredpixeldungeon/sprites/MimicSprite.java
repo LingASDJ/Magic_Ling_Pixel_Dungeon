@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2019 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ import com.watabou.noosa.TextureFilm;
 
 public class MimicSprite extends MobSprite {
 
-	private Animation hiding;
+	private static Animation hiding;
 
 	{
 		//adjust shadow slightly to account for 1 empty bottom pixel (used for border while hiding)
@@ -66,7 +66,7 @@ public class MimicSprite extends MobSprite {
 
 		play( idle );
 	}
-
+	
 	@Override
 	public void linkVisuals(Char ch) {
 		super.linkVisuals(ch);
@@ -88,6 +88,13 @@ public class MimicSprite extends MobSprite {
 		super.showSleep();
 	}
 
+	public static class Dimand extends MimicSprite{
+		@Override
+		protected int texOffset() {
+			return 64;
+		}
+	}
+
 	public static class Golden extends MimicSprite{
 		@Override
 		protected int texOffset() {
@@ -102,12 +109,46 @@ public class MimicSprite extends MobSprite {
 		}
 	}
 
-	public static class Dimand extends MimicSprite{
+
+	public static class HollowWall extends MimicSprite{
 		@Override
 		protected int texOffset() {
-			return 64;
+			return 80;
 		}
-	}
 
+		@Override
+		public void link(Char ch) {
+			super.link(ch);
+			ch.sprite.add(CharSprite.State.ILLUMINATED);
+		}
+
+		public HollowWall() {
+			super();
+
+			int c = texOffset();
+
+			texture( Assets.Sprites.MIMIC );
+
+			TextureFilm frames = new TextureFilm( texture, 16, 16 );
+
+			hiding = new Animation( 8, true );
+			hiding.frames( frames, 0+c, 1+c, 2+c, 3+c);
+
+			idle = new Animation( 8, true );
+			idle.frames( frames, 0+c,1+c,2+c,3+c );
+
+			run = new Animation( 16, true );
+			run.frames( frames, 0+c,1+c,2+c,3+c );
+
+			attack = new Animation( 16, false );
+			attack.frames( frames, 4+c, 5+c, 6+c );
+
+			die = new Animation( 16, false );
+			die.frames( frames, 7+c,8+c, 9+c,10+c,11+c,12+c );
+
+			play( idle );
+		}
+
+	}
 
 }

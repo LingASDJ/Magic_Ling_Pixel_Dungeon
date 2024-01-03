@@ -40,6 +40,7 @@ public class BloodthirstyThorn extends MeleeWeapon {
         hitSoundPitch = 0.9f;
         ACC = 1.75f;
         RCH=1;
+
         tier=6;
 
     }
@@ -48,7 +49,6 @@ public class BloodthirstyThorn extends MeleeWeapon {
     public boolean isUpgradable() {
         return false;
     }
-
     public static final String AC_PRICK = "PRICK";
 
     @Override
@@ -195,6 +195,7 @@ public class BloodthirstyThorn extends MeleeWeapon {
             if(chaliceOfBlood!=null){
                 bloodthirstyThorn.level=chaliceOfBlood.level();
             } else {
+                //如果圣杯物品为空，则读取本局全局玩家献祭圣杯的次数
                 bloodthirstyThorn.level=Statistics.ChaicBlood;
             }
 
@@ -235,16 +236,26 @@ public class BloodthirstyThorn extends MeleeWeapon {
 
     @Override
     public int min(int lvl) {
-        return 2 +lvl*2;
+        if (lvl > 14) {
+            return 0;
+        }
+        return 2 + lvl * 2;
     }
 
     @Override
     public int max(int lvl) {
-        return  6 + lvl*4;
+        if (lvl > 14) {
+            return 0;
+        }
+        return 6 + lvl * 4;
     }
 
+
     @Override
-    public int STRReq(int lvl){
+    public int STRReq(int lvl) {
+        if (lvl > 14) {
+            return lvl * 5;
+        }
         return 14;
     }
 

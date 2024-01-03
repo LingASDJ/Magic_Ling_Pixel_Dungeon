@@ -31,9 +31,10 @@ public class CrossDiedTower extends Mob {
     }
 
     @Override
-    public void add( Buff buff ) {
-    }
+    public boolean add(Buff buff ) {
 
+        return false;
+    }
     @Override
     public boolean act() {
 
@@ -41,7 +42,7 @@ public class CrossDiedTower extends Mob {
             spend(TICK);
         } else {
             //失去范围
-            for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
+           for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
                 if (mob instanceof CrossDiedTower) {
                     mob.die( true );
                 }

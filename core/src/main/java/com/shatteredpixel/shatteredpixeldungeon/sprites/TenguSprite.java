@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,13 +53,18 @@ public class TenguSprite extends MobSprite {
 		
 		play( run.clone() );
 	}
-	
+
 	@Override
-	public void idle() {
-		isMoving = false;
-		super.idle();
+	public void play(Animation anim) {
+		if (isMoving && anim != run){
+			synchronized (this){
+				isMoving = false;
+				notifyAll();
+			}
+		}
+		super.play(anim);
 	}
-	
+
 	@Override
 	public void move( int from, int to ) {
 		
@@ -75,7 +80,13 @@ public class TenguSprite extends MobSprite {
 		}
 
 	}
-	
+
+	@Override
+	public void update() {
+		if (paused) isMoving = false;
+		super.update();
+	}
+
 	@Override
 	public void attack( int cell ) {
 		if (!Dungeon.level.adjacent( cell, ch.pos )) {
@@ -88,8 +99,7 @@ public class TenguSprite extends MobSprite {
 					}
 				} );
 			
-			play( zap );
-			turnTo( ch.pos , cell );
+			zap( ch.pos );
 			
 		} else {
 			

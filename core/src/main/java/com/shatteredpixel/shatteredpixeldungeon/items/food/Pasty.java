@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,41 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
-import java.util.Calendar;
-
 public class Pasty extends Food {
-
-	static{
-
-		RegularLevel.holiday = RegularLevel.Holiday.NONE;
-
-		final Calendar calendar = Calendar.getInstance();
-		switch(calendar.get(Calendar.MONTH)){
-			case Calendar.JANUARY:
-				if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
-					RegularLevel.holiday = RegularLevel.Holiday.XMAS;
-				break;
-			//2022 9.10-10.1
-			case Calendar.SEPTEMBER:
-				if (calendar.get(Calendar.DAY_OF_MONTH) >= 10 ){
-					RegularLevel.holiday = RegularLevel.Holiday.ZQJ;
-				} else {
-					RegularLevel.holiday = RegularLevel.Holiday.NONE;
-				}
-				break;
-			case Calendar.OCTOBER:
-				if (calendar.get(Calendar.DAY_OF_MONTH) == 1 ){
-					RegularLevel.holiday = RegularLevel.Holiday.ZQJ;
-				} else {
-					RegularLevel.holiday = RegularLevel.Holiday.NONE;
-				}
-				break;
-			case Calendar.DECEMBER:
-				if (calendar.get(Calendar.WEEK_OF_MONTH) >= 3)
-					RegularLevel.holiday = RegularLevel.Holiday.XMAS;
-				break;
-		}
-	}
 
 	{
 		reset();

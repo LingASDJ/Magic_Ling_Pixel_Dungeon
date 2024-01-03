@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,11 +34,22 @@ public class Rat extends Mob {
 
 	{
 		spriteClass = RatSprite.class;
-
+		discovered = Dungeon.discovered[0];
 		HP = HT = 8;
 		defenseSkill = 2;
 		maxLvl = 5;
 	}
+
+	@Override
+	public void die( Object cause ) {
+		if( cause instanceof Rat){
+			Dungeon.discovered[0] = true;
+			discovered = true;
+		}
+		super.die( cause );
+	}
+
+
 
 	@Override
 	protected boolean act() {
@@ -61,7 +72,7 @@ public class Rat extends Mob {
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 1);
+		return super.drRoll() + Random.NormalIntRange(0, 1);
 	}
 
 	private static final String RAT_ALLY = "rat_ally";

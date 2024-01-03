@@ -5,6 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDiedTO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 
 public class AncityLevel extends Level {
     private static final int[] pre_map = {
@@ -56,9 +57,9 @@ public class AncityLevel extends Level {
             case 85:
                 return Terrain.LOCKED_EXIT;
             case 17:
-                return Terrain.EXIT;
+                return Dungeon.depth == 27 ? Terrain.EMPTY_SP :  Terrain.EXIT;
             case 83:
-                return Dungeon.depth == 17 || Dungeon.depth == 27 ? Terrain.ENTRANCE : 14;
+                return Dungeon.depth == 17 ? Terrain.ENTRANCE : 14;
             case 99:
                 return Terrain.STATUE_SP;
             case 20:
@@ -68,8 +69,18 @@ public class AncityLevel extends Level {
 
     protected boolean build() {
         setSize(17, 17);
-        this.exit = (this.width * 8 + 8);
-        this.entrance = (this.width * 14) + 8;
+
+
+        int entranceCell =  (this.width * 8 + 8);
+        int exitCell =  (this.width * 8 + 8);
+
+        LevelTransition enter = new LevelTransition(this, entranceCell, LevelTransition.Type.REGULAR_ENTRANCE);
+        transitions.add(enter);
+
+        LevelTransition exit = new LevelTransition(this, exitCell, LevelTransition.Type.REGULAR_ENTRANCE);
+        transitions.add(exit);
+
+
         for (int var1 = 0; var1 < this.map.length; var1++) {
             this.map[var1] = mapToTerrain(pre_map[var1]);
         }

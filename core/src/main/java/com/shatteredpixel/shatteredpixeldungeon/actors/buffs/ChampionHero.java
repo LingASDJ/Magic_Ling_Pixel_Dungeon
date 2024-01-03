@@ -22,6 +22,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
@@ -67,8 +69,7 @@ public abstract class ChampionHero extends FlavourBuff {
 
     @Override
     public String desc() {
-        //todo 取负数，通过绝对值获取,以显示为正数 并通过INT省略后面的小数点
-        return Messages.get(this, "desc")+(int)(Math.abs(1.0f - visualcooldown())+1f);
+        return Messages.get(this, "desc")+(int)(Math.abs(1.0f - visualcooldown()));
     }
 
 
@@ -101,10 +102,7 @@ public abstract class ChampionHero extends FlavourBuff {
         {
             color = 0xFF8800;
         }
-        @Override
-        public void fx(boolean on) {
-            //解决光斑问题
-        }
+
         @Override
         public void onAttackProc(Char hero) {
             Buff.affect(hero, Burning.class).reignite(hero);
@@ -125,10 +123,7 @@ public abstract class ChampionHero extends FlavourBuff {
         {
             color = 0x007777;
         }
-        @Override
-        public void fx(boolean on) {
-            //
-        }
+
 
         @Override
         public float meleeDamageFactor() {
@@ -143,10 +138,7 @@ public abstract class ChampionHero extends FlavourBuff {
     }
 
     public static class Halo extends ChampionHero {
-        @Override
-        public void fx(boolean on) {
-            //
-        }
+
         {
             color = 0x00FFFF;
         }
@@ -168,10 +160,7 @@ public abstract class ChampionHero extends FlavourBuff {
     }
 
     public static class Projecting extends ChampionHero {
-        @Override
-        public void fx(boolean on) {
-            //
-        }
+
         {
             color = 0x8800FF;
         }
@@ -188,12 +177,17 @@ public abstract class ChampionHero extends FlavourBuff {
     }
 
     public static class AntiMagic extends ChampionHero {
-        @Override
-        public void fx(boolean on) {
-            //
-        }
+
         {
             color = 0x00FF00;
+        }
+
+        @Override
+        public void fx(boolean on) {
+            if(!Dungeon.isChallenged(PRO)){
+                if (on) target.sprite.aura( color );
+                else target.sprite.clearAura();
+            }
         }
 
         @Override
@@ -209,10 +203,7 @@ public abstract class ChampionHero extends FlavourBuff {
 
     //Also makes target large, see Char.properties()
     public static class Giant extends ChampionHero {
-        @Override
-        public void fx(boolean on) {
-            //
-        }
+
         {
             color = 0x0088FF;
         }
@@ -230,10 +221,7 @@ public abstract class ChampionHero extends FlavourBuff {
     }
 
     public static class Blessed extends ChampionHero {
-        @Override
-        public void fx(boolean on) {
-            //
-        }
+
         {
             color = 0xFFFF00;
         }
@@ -250,10 +238,7 @@ public abstract class ChampionHero extends FlavourBuff {
             color = 0xFF0000;
         }
 
-        @Override
-        public void fx(boolean on) {
-            //
-        }
+
 
         private float multiplier = 1.85f;
 

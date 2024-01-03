@@ -88,18 +88,6 @@ public class SRPDICLRPRO extends Mob {
         }
     }
 
-    @Override
-    protected boolean act() {
-        super.act();
-
-        if (--HP <= 0){
-            destroy();
-            sprite.die();
-        }
-
-        return true;
-    }
-
     public int attackSkill(Char target) {
         return 16;
     }
@@ -110,7 +98,7 @@ public class SRPDICLRPRO extends Mob {
 
     public int attackProc(Char enemy, int damage) {
         if (Random.Int(0, 10) > 7) {
-            this.sprite.showStatus(0x009999, this.attackCurse[Random.Int(this.attackCurse.length)], new Object[0]);
+            this.sprite.showStatus(0x009999, this.attackCurse[Random.Int(this.attackCurse.length)]);
         }
         int damage2 = SRPDICLRPRO.super.attackProc(enemy, this.combo + damage);
         this.combo++;

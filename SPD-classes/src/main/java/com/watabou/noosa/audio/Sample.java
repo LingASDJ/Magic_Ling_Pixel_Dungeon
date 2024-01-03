@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,9 +79,13 @@ public enum Sample {
 			@Override
 			public void run() {
 				for (String asset : toLoad) {
-					Sound newSound = Gdx.audio.newSound(Gdx.files.internal(asset));
-					synchronized (INSTANCE) {
-						ids.put(asset, newSound);
+					try {
+						Sound newSound = Gdx.audio.newSound(Gdx.files.internal(asset));
+						synchronized (INSTANCE) {
+							ids.put(asset, newSound);
+						}
+					} catch (Exception e){
+						Game.reportException(e);
 					}
 				}
 			}

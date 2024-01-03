@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,6 @@ public class PitRoom extends SpecialRoom {
 		
 		int remains = level.pointToCell(center());
 		
-		level.drop( new CrystalKey( Dungeon.depth ), remains ).type = Heap.Type.SKELETON;
 		Item mainLoot = null;
 		do {
 			switch (Random.Int(3)){
@@ -82,12 +81,14 @@ public class PitRoom extends SpecialRoom {
 					break;
 			}
 		} while ( mainLoot == null || Challenges.isItemBlocked(mainLoot));
-		level.drop(mainLoot, remains).setHauntedIfCursed();
+		level.drop(mainLoot, remains).setHauntedIfCursed().type = Heap.Type.SKELETON;
 		
 		int n = Random.IntRange( 1, 2 );
 		for (int i=0; i < n; i++) {
 			level.drop( prize( level ), remains ).setHauntedIfCursed();
 		}
+
+		level.drop( new CrystalKey( Dungeon.depth ), remains );
 	}
 	
 	private static Item prize( Level level ) {

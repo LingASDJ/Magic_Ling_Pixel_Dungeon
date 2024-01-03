@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
@@ -348,6 +349,16 @@ public class WndJournal extends WndTabbed {
 					return new ItemSprite( ItemSpriteSheet.SPIRIT_BOW );
 				case "Magic":
 					return new ItemSprite( ItemSpriteSheet.WAND_FIREBOLT );
+				case "Killboss":
+					Image boss = new Image(new DM720Sprite());
+					boss.scale.set(PixelScene.align(0.75f));
+					return boss;
+				case "Waterbless":
+					return new ItemSprite(ItemSpriteSheet.WATERSOUL);
+				case "Lanterfire":
+					return new ItemSprite(ItemSpriteSheet.LANTERNB);
+				case "Readyherobook":
+					return new ItemSprite(ItemSpriteSheet.YELLOWBOOKS);
 			}
 		}
 

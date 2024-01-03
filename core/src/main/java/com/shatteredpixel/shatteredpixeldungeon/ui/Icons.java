@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -45,8 +46,15 @@ public enum Icons {
 	MAGE,
 	ROGUE,
 	HUNTRESS,
+	DUELIST,
+
 	LEFTBUTTON,
 	RIGHTBUTTON,
+
+	SEED,
+	LEFTARROW,
+	RIGHTARROW,
+	CALENDAR,
 
 	//grey icons, mainly used for buttons, spacing for 16x16
 	EXIT,
@@ -62,8 +70,6 @@ public enum Icons {
 	CHALLENGE_ON,
 	RENAME_OFF,
 	RENAME_ON,
-	LEFTARROW,
-	RIGHTARROW,
 
 	//misc icons, mainly used for buttons, spacing for 16x16 until the smaller icons at the end
 	UNCHECKED,
@@ -102,9 +108,22 @@ public enum Icons {
 	DEPTH_LARGE,
 	DEPTH_TRAPS,
 	DEPTH_SECRETS,
+
+	DEPTH_BTRAPS,
+
+	DEPTH_WELLS,
+
+	DEPTH_LINK_ROOM,
+
+	DEPTH_DIED,
+	MISSON_ON,
+	MISSON_OFF,
+
 	CHAL_COUNT,
 
 	HAPPY_ICON,
+
+	LOVE,
 
 	//icons that appear in the about screen, variable spacing
 	LIBGDX,
@@ -118,14 +137,16 @@ public enum Icons {
 
 	PASTE,
 
-	COPY;
+	COPY,
+
+	SKIP;
 
 	public Image get() {
 		return get( this );
 	}
 
 	public static Image get( Icons type ) {
-		Image icon = new Image( Assets.Interfaces.ICONS );
+		Image icon = new Image(SPDSettings.ClassUI() ? Assets.Interfaces.ICONS : Assets.Interfaces.ICONS_NORMAL );
 		switch (type) {
 
 			case ENTER:
@@ -151,6 +172,9 @@ public enum Icons {
 				break;
 			case SHPX:
 				icon.frame( icon.texture.uvRectBySize( 119, 0, 16, 16 ) );
+				break;
+			case DUELIST:
+				icon.frame( icon.texture.uvRectBySize( 176, 0, 16, 16 ));
 				break;
 
 			case STAIRS:
@@ -179,6 +203,9 @@ public enum Icons {
 				break;
 			case COPY:
 				icon.frame( icon.texture.uvRectBySize( 129, 16, 13, 13 ) );
+				break;
+			case SKIP:
+				icon.frame( icon.texture.uvRectBySize( 145, 16, 25, 16 ) );
 				break;
 
 			case EXIT:
@@ -229,7 +256,12 @@ public enum Icons {
 			case RIGHTARROW:
 				icon.frame( icon.texture.uvRectBySize( 208, 32, 14, 8 ) );
 				break;
-
+			case SEED:
+				icon.frame( icon.texture.uvRectBySize( 208, 32, 15, 10 ) );
+				break;
+			case CALENDAR:
+				icon.frame( icon.texture.uvRectBySize( 240, 16, 15, 12 ) );
+				break;
 			case UNCHECKED:
 				icon.frame( icon.texture.uvRectBySize( 0, 48, 12, 12 ) );
 				break;
@@ -333,11 +365,32 @@ public enum Icons {
 			case DEPTH_SECRETS:
 				icon.frame( icon.texture.uvRectBySize( 104, 64, 7, 7 ) );
 				break;
+			case DEPTH_BTRAPS:
+				icon.frame( icon.texture.uvRectBySize( 112, 64, 7, 7 ) );
+				break;
+			case DEPTH_WELLS:
+				icon.frame( icon.texture.uvRectBySize( 120, 64, 7, 7 ) );
+				break;
+			case DEPTH_LINK_ROOM:
+				icon.frame( icon.texture.uvRectBySize( 128, 64, 7, 7 ) );
+				break;
+			case DEPTH_DIED:
+				icon.frame( icon.texture.uvRectBySize( 136, 64, 7, 7 ) );
+				break;
+			case MISSON_OFF:
+				icon.frame( icon.texture.uvRectBySize( 144, 64, 32, 14 ) );
+				break;
+			case MISSON_ON:
+				icon.frame( icon.texture.uvRectBySize( 144, 80, 32, 14 ) );
+				break;
 			case CHAL_COUNT:
 				icon.frame( icon.texture.uvRectBySize( 48, 72, 7, 7 ) );
 				break;
 			case HAPPY_ICON:
 				icon.frame( icon.texture.uvRectBySize( 56, 72, 7, 5 ) );
+				break;
+			case LOVE:
+				icon.frame( icon.texture.uvRectBySize( 65, 72, 10, 6 ) );
 				break;
 
 			case LIBGDX:
@@ -386,8 +439,8 @@ public enum Icons {
 				return get( ROGUE );
 			case HUNTRESS:
 				return get( HUNTRESS );
-//			case COMINGSOON:
-//				return get( HUNTRESS );
+			case DUELIST:
+				return get( DUELIST );
 			default:
 				return null;
 		}
@@ -409,6 +462,14 @@ public enum Icons {
 				return get(DEPTH_LARGE);
 			case TRAPS:
 				return get(DEPTH_TRAPS);
+			case BIGTRAP:
+				return get(DEPTH_BTRAPS);
+			case THREEWELL:
+				return get(DEPTH_WELLS);
+			case DIEDROOM:
+				return get(DEPTH_DIED);
+			case LINKROOM:
+				return get(DEPTH_LINK_ROOM);
 			case SECRETS:
 				return get(DEPTH_SECRETS);
 		}

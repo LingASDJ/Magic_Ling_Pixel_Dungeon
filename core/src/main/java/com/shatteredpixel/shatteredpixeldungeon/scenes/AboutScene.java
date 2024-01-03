@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,8 +110,8 @@ public class AboutScene extends PixelScene {
 				"Music:",
 				Icons.KRISTJAN.get(),
 				"Kristjan Haaristo",
-				"youtube.com/user/...",
-				"https://www.youtube.com/channel/UCL1e7SgzSWbD_DQxB_5YcLA");
+				"youtube.com/@kristjan...",
+				"https://www.youtube.com/@kristjanthomashaaristo");
 		kristjan.setRect(alex.right() - colWidth/4f, alex.bottom() + 5, colWidth/2f, 0);
 		content.add(kristjan);
 
@@ -122,8 +122,8 @@ public class AboutScene extends PixelScene {
 				"Pixel Dungeon",
 				Icons.WATA.get(),
 				"Developed by: _Watabou_\nInspired by Brian Walker's Brogue",
-				"pixeldungeon.watabou.ru",
-				"http://pixeldungeon.watabou.ru");
+				"watabou.itch.io",
+				"https://watabou.itch.io/");
 		if (landscape()){
 			wata.setRect(shpx.left(), kristjan.bottom() + 8, colWidth, 0);
 		} else {
@@ -155,8 +155,8 @@ public class AboutScene extends PixelScene {
 				"libGDX",
 				Icons.LIBGDX.get(),
 				"ShatteredPD is powered by _libGDX_!",
-				"libGDX.com",
-				"https://libGDX.com/");
+				"libgdx.com",
+				"https://libgdx.com/");
 		if (landscape()){
 			gdx.setRect(wata.left(), wata.bottom() + 8, colWidth, 0);
 		} else {
@@ -170,8 +170,8 @@ public class AboutScene extends PixelScene {
 				"Pixel Dungeon GDX:",
 				Icons.ARCNOR.get(),
 				"Edu García",
-				"twitter.com/arcnor",
-				"https://twitter.com/arcnor");
+				"gamedev.place/@arcnor",
+				"https://mastodon.gamedev.place/@arcnor");
 		arcnor.setSize(colWidth/2f, 0);
 		if (landscape()){
 			arcnor.setPos(gdx.right(), gdx.top() + (gdx.height() - arcnor.height())/2f);
@@ -196,8 +196,8 @@ public class AboutScene extends PixelScene {
 				null,
 				null,
 				"ShatteredPD is community-translated via _Transifex_! Thank you so much to all of Shattered's volunteer translators!",
-				"www.transifex.com/shattered-pixel/",
-				"https://www.transifex.com/shattered-pixel/shattered-pixel-dungeon/");
+				"transifex.com/shattered-pixel/...",
+				"https://explore.transifex.com/shattered-pixel/shattered-pixel-dungeon/");
 		transifex.setRect((Camera.main.width - colWidth)/2f, purigro.bottom() + 12, colWidth, 0);
 		content.add(transifex);
 
@@ -356,12 +356,14 @@ public class AboutScene extends PixelScene {
 					avatar.x = x;
 					body.maxWidth((int)(width() - avatar.width - 1));
 
-					if (avatar.height() > body.height()){
-						avatar.y = topY;
-						body.setPos( avatar.x + avatar.width() + 1, topY + (avatar.height() - body.height())/2f);
-						topY += avatar.height() + 1;
+					float fullAvHeight = Math.max(avatar.height(), 16);
+					if (fullAvHeight > body.height()){
+						avatar.y = topY + (fullAvHeight - avatar.height())/2f;
+						PixelScene.align(avatar);
+						body.setPos( avatar.x + avatar.width() + 1, topY + (fullAvHeight - body.height())/2f);
+						topY += fullAvHeight + 1;
 					} else {
-						avatar.y = topY + (body.height() - avatar.height())/2f;
+						avatar.y = topY + (body.height() - fullAvHeight)/2f;
 						PixelScene.align(avatar);
 						body.setPos( avatar.x + avatar.width() + 1, topY);
 						topY += body.height() + 2;

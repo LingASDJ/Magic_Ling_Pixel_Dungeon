@@ -126,20 +126,20 @@ public class DesktopLauncher {
 		String basePath = "";
 		if (SharedLibraryLoader.isWindows) {
 			if (System.getProperties().getProperty("os.name").equals("Windows XP")) {
-				basePath = "Application Data/.shatteredpixel/Shattered Pixel Dungeon/";
+				basePath = "Application Data/.shatteredpixel/Magic Ling Pixel Dungeon";
 			} else {
 				basePath = "AppData/Roaming/.shatteredpixel/Magic Ling Pixel Dungeon/";
 			}
 		} else if (SharedLibraryLoader.isMac) {
-			basePath = "Library/Application Support/Shattered Pixel Dungeon/";
+			basePath = "Library/Application Support/Magic Ling Pixel Dungeon/";
 		} else if (SharedLibraryLoader.isLinux) {
 			String XDGHome = System.getenv().get("XDG_DATA_HOME");
 			if (XDGHome == null) XDGHome = ".local/share/";
-			basePath = XDGHome + ".shatteredpixel/shattered-pixel-dungeon/";
+			basePath = XDGHome + ".shatteredpixel/magicling-pixel-dungeon/";
 
 			//copy over files from old linux save DIR, pre-1.2.0
-			FileHandle oldBase = new Lwjgl3FileHandle(".shatteredpixel/shattered-pixel-dungeon/", Files.FileType.External);
-			FileHandle newBase = new Lwjgl3FileHandle(XDGHome + ".shatteredpixel/shattered-pixel-dungeon/", Files.FileType.External);
+			FileHandle oldBase = new Lwjgl3FileHandle(".shatteredpixel/magicling-pixel-dungeon/", Files.FileType.External);
+			FileHandle newBase = new Lwjgl3FileHandle(XDGHome + ".shatteredpixel/magicling-pixel-dungeon/", Files.FileType.External);
 			if (oldBase.exists()){
 				if (!newBase.exists()) {
 					oldBase.copyTo(newBase.parent());

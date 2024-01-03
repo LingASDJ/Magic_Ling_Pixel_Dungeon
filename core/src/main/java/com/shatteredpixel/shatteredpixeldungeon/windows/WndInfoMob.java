@@ -39,7 +39,7 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Component;
 
 public class WndInfoMob extends WndTitledMessage {
-
+	public static boolean reload = false;
 	public WndInfoMob( Mob mob ) {
 
 		super( new MobTitle( mob ), mob.info() );
@@ -81,6 +81,8 @@ public class WndInfoMob extends WndTitledMessage {
 			String level;
 			if(mob.speed() == 1){
 				level = "C";
+			} else if (mob.speed() >= 2.5) {
+				level = "S+";
 			} else if (mob.speed() >= 2) {
 				level = "S";
 			} else if (mob.speed() >= 1.5) {
@@ -149,21 +151,27 @@ public class WndInfoMob extends WndTitledMessage {
 		private String ProName(Mob mob) {
 			String level;
 			if (mob.properties.contains(Char.Property.BOSS)){
-				level = "领袖";
+				level = Messages.get(WndInfoMob.class,"boss");
 			} else if (mob.properties.contains(Char.Property.MINIBOSS)){
-				level = "精英";
+				level = Messages.get(WndInfoMob.class,"miniboss");
+			} else if (mob.properties.contains(Char.Property.HOLLOW)){
+				level = Messages.get(WndInfoMob.class,"hollow");
+			} else if (mob.properties.contains(Char.Property.HUNTER)){
+				level = Messages.get(WndInfoMob.class,"hunter");
 			} else if (mob.properties.contains(Char.Property.ABYSS)){
-				level = "深渊";
+				level = Messages.get(WndInfoMob.class,"abyss");
 			} else if (mob.properties.contains(Char.Property.UNDEAD)){
-				level = "亡灵";
+				level = Messages.get(WndInfoMob.class,"undied");
 			} else if (mob.properties.contains(Char.Property.DEMONIC)){
-				level = "恶魔";
+				level = Messages.get(WndInfoMob.class,"demon");
 			} else if (mob.properties.contains(Char.Property.NPC)){
-				level = "中立";
+				level = "NPC";
+			} else if (mob.properties.contains(Char.Property.PETS)){
+				level = Messages.get(WndInfoMob.class,"pets");
 			} else if (mob.properties.contains(Char.Property.FIERY) || mob.properties.contains(Char.Property.ICY) || mob.properties.contains(Char.Property.ELECTRIC)){
-				level = "元素";
+				level = Messages.get(WndInfoMob.class,"ling");
 			} else {
-				level = "普通";
+				level = Messages.get(WndInfoMob.class,"normal");
 			}
 			return level;
 		}
@@ -172,12 +180,14 @@ public class WndInfoMob extends WndTitledMessage {
 			String level;
 
 			if(Dungeon.hero.lvl <= mob.maxLvl || mob.properties.contains(Char.Property.BOSS) || mob.properties.contains(Char.Property.MINIBOSS)){
-				level = "可掉落";
+				level = Messages.get(WndInfoMob.class,"canroll");
 			} else {
-				level = "不掉落";
+				level = Messages.get(WndInfoMob.class,"noroll");
 			}
 			return level;
 		}
+
+
 
 		public MobTitle( Mob mob ) {
 
@@ -211,7 +221,13 @@ public class WndInfoMob extends WndTitledMessage {
 					String.valueOf((double)Math.round(mob.speed()*10)/10): SPLevel(mob),6);
 
 			mobSixInfo.info7 = PixelScene.renderTextBlock(ProName(mob),6);
-			mobSixInfo.info8 = PixelScene.renderTextBlock(String.valueOf(mob.damageRoll()),6);
+			int dmg = 0;
+			int tries = 1000;
+			for (int i = 0; i < tries; i++) {
+				dmg += mob.damageRoll();
+			}
+
+			mobSixInfo.info8 = PixelScene.renderTextBlock(String.valueOf(dmg/tries),6);
 
 			add(mobSixInfo.info1);
 			add(mobSixInfo.info2);
@@ -221,6 +237,12 @@ public class WndInfoMob extends WndTitledMessage {
 			add(mobSixInfo.info6);
 			add(mobSixInfo.info7);
 			add(mobSixInfo.info8);
+
+			if ((mob.alignment == Char.Alignment.NEUTRAL) && mob.properties.contains(Char.Property.HOLLOW)) {
+				reload = true;
+			} else {
+				reload = false;
+			}
 		}
 
 		@Override
@@ -230,6 +252,8 @@ public class WndInfoMob extends WndTitledMessage {
 			image.y = Math.max( 0, name.height() + health.height() - image.height() );
 
 			float w = width - image.width() - GAP;
+
+			mobSixInfo.WIDTH = width;
 
 			name.maxWidth((int)w);
 			name.setPos(x + image.width + GAP,
@@ -242,12 +266,36 @@ public class WndInfoMob extends WndTitledMessage {
 					name.bottom() - BuffIndicator.SIZE_SMALL-2
 			);
 
-			height = health.bottom();
 
-			mobSixInfo.setPos(-5,Math.max(health.bottom(),image.height()+5));
-			mobSixInfo.layout();
 
-			height = mobSixInfo.bottom();
+			if(reload){
+				height = health.bottom();
+				mobSixInfo.info1.visible = false;	mobSixInfo.info2.visible = false;
+				mobSixInfo.info3.visible = false;	mobSixInfo.info4.visible = false;
+				mobSixInfo.info5.visible = false;	mobSixInfo.info6.visible = false;
+				mobSixInfo.info7.visible = false;	mobSixInfo.info8.visible = false;
+				mobSixInfo.image1.visible = false;	mobSixInfo.image2.visible = false;
+				mobSixInfo.image3.visible = false;	mobSixInfo.image4.visible = false;
+				mobSixInfo.image5.visible = false;	mobSixInfo.image6.visible = false;
+				mobSixInfo.image7.visible = false;	mobSixInfo.image8.visible = false;
+				health.visible = false;
+			} else {
+				mobSixInfo.setPos(-5,Math.max(health.bottom(),image.height()+5));
+				mobSixInfo.layout();
+				height = mobSixInfo.bottom();
+				mobSixInfo.info1.visible = true;	mobSixInfo.info2.visible = true;
+				mobSixInfo.info3.visible = true;	mobSixInfo.info4.visible = true;
+				mobSixInfo.info5.visible = true;	mobSixInfo.info6.visible = true;
+				mobSixInfo.info7.visible = true;	mobSixInfo.info8.visible = true;
+				mobSixInfo.image1.visible = true;	mobSixInfo.image2.visible = true;
+				mobSixInfo.image3.visible = true;	mobSixInfo.image4.visible = true;
+				mobSixInfo.image5.visible = true;	mobSixInfo.image6.visible = true;
+				mobSixInfo.image7.visible = true;	mobSixInfo.image8.visible = true;
+				health.visible = true;
+			}
+
+
+
 		}
 
 	}
@@ -290,14 +338,14 @@ public class WndInfoMob extends WndTitledMessage {
 			colorBlock = new ColorBlock(1,1, SPDSettings.ClassUI() ? 0xFF462d00 : 0xFF555555);
 			add(colorBlock);
 
-			image1 = new BuffIcon(68, false);
-			image2 = new BuffIcon(69, false);
-			image3 = new BuffIcon(70, false);
-			image4 = new BuffIcon(71, false);
-			image5 = new BuffIcon(72, false);
-			image6 = new BuffIcon(73, false);
-			image7 = new BuffIcon(74, false);
-			image8 = new BuffIcon(75, false);
+			image1 = new BuffIcon(126, false);
+			image2 = new BuffIcon(127, false);
+			image3 = new BuffIcon(128, false);
+			image4 = new BuffIcon(129, false);
+			image5 = new BuffIcon(130, false);
+			image6 = new BuffIcon(131, false);
+			image7 = new BuffIcon(132, false);
+			image8 = new BuffIcon(133, false);
 			add(image1);
 			add(image2);
 			add(image3);

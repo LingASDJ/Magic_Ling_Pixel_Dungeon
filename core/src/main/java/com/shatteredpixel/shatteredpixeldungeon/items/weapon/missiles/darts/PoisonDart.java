@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,8 +35,11 @@ public class PoisonDart extends TippedDart {
 	
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
-		
-		Buff.affect( defender, Poison.class ).set( 3 + Dungeon.depth / 2 );
+
+		//when processing charged shot, only poison enemies
+		if (!processingChargedShot || attacker.alignment != defender.alignment) {
+			Buff.affect(defender, Poison.class).set(3 + Dungeon.scalingDepth() / 2);
+		}
 		
 		return super.proc(attacker, defender, damage);
 	}

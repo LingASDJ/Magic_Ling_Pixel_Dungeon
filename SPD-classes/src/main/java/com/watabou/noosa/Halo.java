@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +22,7 @@
 package com.watabou.noosa;
 
 import com.badlogic.gdx.graphics.Pixmap;
-import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
-import com.watabou.glwrap.Texture;
 
 public class Halo extends Image {
 	
@@ -69,8 +67,14 @@ public class Halo extends Image {
 		this.y = y - (height()/2f);
 		return this;
 	}
-	
-	public void radius( float value ) {
+
+	@Override
+	public void alpha( float value) {
+		brightness = value;
+		super.alpha(value);
+	}
+
+	public void radius(float value ) {
 		scale.set(  (this.radius = value) / RADIUS );
 	}
 }

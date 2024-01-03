@@ -31,11 +31,18 @@ public class CrystalDiedTower extends Mob {
     }
 
     @Override
+    public boolean interact(Char c) {
+        return true;
+    }
+
+    @Override
     public void damage( int dmg, Object src ) {
     }
 
     @Override
-    public void add( Buff buff ) {
+    public boolean add(Buff buff ) {
+
+        return false;
     }
 
     protected enum State{

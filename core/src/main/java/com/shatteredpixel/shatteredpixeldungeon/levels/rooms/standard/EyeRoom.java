@@ -83,11 +83,10 @@ public class EyeRoom extends SpecialRoom {
         int chestPos = (top + 6) * level.width() + left + 6;
 
         /** 套4个宝箱 */
-        level.mobs.add(Mimic.spawnAt(chestPos,( Generator.randomUsingDefaults( Generator.Category.POTION ) ), CrystalMimic.class));
-        level.mobs.add(Mimic.spawnAt(chestPos,( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), CrystalMimic.class));
-        level.mobs.add(Mimic.spawnAt(chestPos,( Generator.randomUsingDefaults( Generator.Category.WEAPON ) ),
-                CrystalMimic.class));
-        level.mobs.add(Mimic.spawnAt(chestPos,( Generator.randomUsingDefaults( Generator.Category.ARMOR ) ), CrystalMimic.class));
+        level.mobs.add(Mimic.spawnAt(chestPos, CrystalMimic.class,( Generator.randomUsingDefaults( Generator.Category.POTION ) )));
+        level.mobs.add(Mimic.spawnAt(chestPos,CrystalMimic.class,( Generator.randomUsingDefaults( Generator.Category.SCROLL ) )));
+        level.mobs.add(Mimic.spawnAt(chestPos,CrystalMimic.class,( Generator.randomUsingDefaults( Generator.Category.WEAPON ) )));
+        level.mobs.add(Mimic.spawnAt(chestPos,CrystalMimic.class,( Generator.randomUsingDefaults( Generator.Category.ARMOR ) )));
 
         //四大恶人
         int[] MBTPOS = new int[]{
@@ -126,10 +125,10 @@ public class EyeRoom extends SpecialRoom {
         /** 小时候诋毁cocoa，长大后质疑cocoa，成年后认可cocoa，现在成为cocoa
         /** Watabou看看你的房间是多么的恶心
         /** 由于房间类的特殊性质，无法直接从外部调用 */
-        level.drop( ( Generator.randomUsingDefaults( Generator.Category.ARTIFACT )),LeftPos).type = Heap.Type.WHITETOMB;
-        level.drop( ( Generator.randomUsingDefaults( Generator.Category.GOLD )),RightPos).type = Heap.Type.TOMB;
-        level.drop( ( Generator.randomUsingDefaults( Generator.Category.GOLD )),BotPos).type = Heap.Type.TOMB;
-        level.drop( ( Generator.randomUsingDefaults( Generator.Category.GOLD )),TopPos).type = Heap.Type.TOMB;
+        level.drop( ( Generator.random( Generator.Category.ARTIFACT )),LeftPos).type = Heap.Type.WHITETOMB;
+        level.drop( ( Generator.random( Generator.Category.GOLD )),RightPos).type = Heap.Type.TOMB;
+        level.drop( ( Generator.random( Generator.Category.GOLD )),BotPos).type = Heap.Type.TOMB;
+        level.drop( ( Generator.random( Generator.Category.GOLD )),TopPos).type = Heap.Type.TOMB;
 
         // 添加边界检查
         browStart.x = Math.max(browStart.x, left + 1);

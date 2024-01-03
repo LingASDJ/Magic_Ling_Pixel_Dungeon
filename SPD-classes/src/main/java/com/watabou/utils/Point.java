@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,6 +71,20 @@ public class Point {
 		x += d.x;
 		y += d.y;
 		return this;
+	}
+
+	public boolean isZero(){
+		return x == 0 && y == 0;
+	}
+
+	public float length() {
+		return (float)Math.sqrt( x * x + y * y );
+	}
+
+	public static float distance( Point a, Point b ) {
+		float dx = a.x - b.x;
+		float dy = a.y - b.y;
+		return (float)Math.sqrt( dx * dx + dy * dy );
 	}
 	
 	@Override

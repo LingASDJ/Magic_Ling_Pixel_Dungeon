@@ -111,27 +111,53 @@ public class BuffIndicator extends Component {
 	public static final int LANTERFIRE_TWO    = 59;
 	public static final int LANTERFIRE_THREE    = 60;
 	public static final int LANTERFIRE_FOUR    = 61;
-	public static final int LANTERFIRE_FIVE    = 62;
-	public static final int LANTERFIRE_SIX    = 63;
+    public static final int LANTERFIRE_FIVE = 62;
+    public static final int LANTERFIRE_SIX = 63;
 
-	public static final int DEBUFF_DOWN    = 64;
-	public static final int GOBUFF_UPRD    = 65;
+    public static final int DEBUFF_DOWN = 64;
+    public static final int GOBUFF_UPRD = 65;
 
-	public static final int ICE_SWORDDOWN    = 66;
+    public static final int ICE_SWORDDOWN = 66;
 
-	public static final int LIGHT_DIED    = 67;
+    public static final int LIGHT_DIED = 67;
 
-	public static final int SIZE_SMALL  = 7;
-	public static final int SIZE_LARGE  = 16;
 
-	private static BuffIndicator heroInstance;
-	private static BuffIndicator bossInstance;
+    //SPD 221
+	public static final int TARGETED    = 68;
+	public static final int IMBUE       = 69;
+	public static final int ENDURE      = 70;
+	public static final int INVERT_MARK = 71;
+	public static final int NATURE_POWER= 72;
+	public static final int AMULET      = 73;
+	public static final int DUEL_CLEAVE = 74;
+	public static final int DUEL_GUARD  = 75;
+	public static final int DUEL_SPIN   = 76;
+	public static final int DUEL_EVASIVE= 77;
+	public static final int DUEL_DANCE  = 78;
+	public static final int DUEL_BRAWL  = 79;
+	public static final int DUEL_XBOW   = 80;
+	public static final int CHALLENGE   = 81;
+	public static final int MONK_ENERGY = 82;
+	public static final int DUEL_COMBO  = 83;
+	public static final int DAZE        = 84;
 
-	private LinkedHashMap<Buff, BuffButton> buffButtons = new LinkedHashMap<>();
-	private boolean needsRefresh;
-	private Char ch;
+	public static final int IMELSAZE        = 85;
 
-	private boolean large = false;
+
+	//ELEMENTS
+	public static final int SCARY        = 112;
+
+    public static final int SIZE_SMALL = 7;
+    public static final int SIZE_LARGE = 16;
+
+    private static BuffIndicator heroInstance;
+    private static BuffIndicator bossInstance;
+
+    private LinkedHashMap<Buff, BuffButton> buffButtons = new LinkedHashMap<>();
+    private boolean needsRefresh;
+    private Char ch;
+
+    private boolean large;
 
 	public BuffIndicator( Char ch, boolean large ) {
 		super();
@@ -304,7 +330,7 @@ public class BuffIndicator extends Component {
 
 		@Override
 		protected String hoverText() {
-			return Messages.titleCase(buff.toString());
+			return Messages.titleCase(buff.name());
 		}
 	}
 

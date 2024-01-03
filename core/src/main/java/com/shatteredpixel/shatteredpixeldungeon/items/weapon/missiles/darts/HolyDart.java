@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,10 +21,15 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 
 public class HolyDart extends TippedDart {
 
@@ -34,11 +39,24 @@ public class HolyDart extends TippedDart {
 	
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
-		
-		Buff.affect(defender, Bless.class, Math.round(3.33f*Bless.DURATION));
-		
+
+		//do nothing to the hero when processing charged shot
+		if (processingChargedShot && defender == attacker){
+			return super.proc(attacker, defender, damage);
+		}
+
 		if (attacker.alignment == defender.alignment){
+			Buff.affect(defender, Bless.class, Math.round(Bless.DURATION));
 			return 0;
+		}
+
+		if (Char.hasProp(defender, Char.Property.UNDEAD) || Char.hasProp(defender, Char.Property.DEMONIC)){
+			defender.sprite.emitter().start( ShadowParticle.UP, 0.05f, 10+buffedLvl() );
+			Sample.INSTANCE.play(Assets.Sounds.BURNING);
+			defender.damage(Random.NormalIntRange(10 + Dungeon.scalingDepth()/3, 20 + Dungeon.scalingDepth()/3), this);
+		//also do not bless enemies if processing charged shot
+		} else if (!processingChargedShot){
+			Buff.affect(defender, Bless.class, Math.round(Bless.DURATION));
 		}
 		
 		return super.proc(attacker, defender, damage);

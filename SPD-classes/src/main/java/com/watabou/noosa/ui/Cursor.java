@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,10 @@ package com.watabou.noosa.ui;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.watabou.input.ControllerHandler;
+import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
+import com.watabou.utils.PointF;
 
 public class Cursor {
 
@@ -84,6 +87,31 @@ public class Cursor {
 		lastType = type;
 		lastZoom = zoom;
 
+	}
+
+	private static boolean cursorCaptured = false;
+
+	public static void captureCursor(boolean captured){
+		cursorCaptured = captured;
+
+		if (captured) {
+			Gdx.input.setCursorCatched(true);
+		} else {
+			if (ControllerHandler.controllerPointerActive()) {
+				ControllerHandler.setControllerPointer(true);
+				ControllerHandler.updateControllerPointer(new PointF(Game.width/2f, Game.height/2f), false);
+			} else {
+				Gdx.input.setCursorCatched(false);
+			}
+		}
+	}
+
+	public static PointF getCursorDelta(){
+		return new PointF(Gdx.input.getDeltaX(), Gdx.input.getDeltaY());
+	}
+
+	public static boolean isCursorCaptured(){
+		return cursorCaptured;
 	}
 
 }

@@ -1,6 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -51,6 +53,11 @@ public class WndScoreBreakdown extends Window {
         if (Statistics.winMultiplier > 1) {
             pos = statSlot(this, Messages.get(this, "win_multiplier"), Statistics.winMultiplier + "x", pos, false);
         }
+
+        if(Statistics.seedCustom){
+            pos = statSlot(this, Messages.get(this, "seed_multiplier"), "0.5" + "x", pos, false);
+        }
+
         if (Statistics.chalMultiplier > 1) {
             pos = statSlot(this, Messages.get(this, "challenge_multiplier"), Statistics.chalMultiplier + "x", pos, false);
         }
@@ -60,7 +67,9 @@ public class WndScoreBreakdown extends Window {
 
         int chCount = 0;
         for (int ch : Challenges.MASKS){
-            if ((Dungeon.challenges & ch) != 0 && ch <= STRONGER_BOSSES) chCount++;
+            if ((Dungeon.challenges & ch) != 0 && ch <= MOREROOM && ch != PRO && ch != DHXD) {
+                chCount++;
+            }
         }
 
         //评分系统

@@ -10,7 +10,10 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Bundle;
 
 public class IceHpBuff extends Buff {
-
+    @Override
+    public String heroMessage() {
+        return "";
+    }
     private static final String LEVEL = "level";
     private static final String PARTIALDAMAGE = "partialDamage";
 
@@ -53,7 +56,7 @@ public class IceHpBuff extends Buff {
             }
             if (hero.icehp < 25 && Dungeon.depth<10) {
                 hero.damageIcehp(1);
-                spend(32f-(float) Dungeon.depth/5);
+                spend(50f-(float) Dungeon.depth/5);
             } else {
                 spend(STEP);
             }

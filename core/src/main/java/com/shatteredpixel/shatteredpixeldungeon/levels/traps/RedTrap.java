@@ -29,7 +29,7 @@ public class RedTrap extends Trap {
         Char ch = Actor.findChar( pos);
         if (ch != null && !ch.flying) {
             if (ch instanceof Hero) {
-                ScrollOfTeleportation.teleportHero((Hero) ch);
+                ScrollOfTeleportation.teleportChar((Hero) ch);
             } else {
                 int count = 20;
                 int pos;

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -124,13 +124,16 @@ public class Bee extends Mob {
 	}
 
 	@Override
-	public void add(Buff buff) {
-		super.add(buff);
-		//TODO maybe handle honeyed bees with their own ally buff?
-		if (buff instanceof AllyBuff){
-			intelligentAlly = false;
-			setPotInfo(-1, null);
+	public boolean add(Buff buff) {
+		if (super.add(buff)) {
+			//TODO maybe handle honeyed bees with their own ally buff?
+			if (buff instanceof AllyBuff) {
+				intelligentAlly = false;
+				setPotInfo(-1, null);
+			}
+			return true;
 		}
+		return false;
 	}
 
 	@Override

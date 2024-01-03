@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,23 +22,30 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Music;
+import com.watabou.noosa.tweeners.Delayer;
 import com.watabou.utils.Random;
 
 public class AmuletScene extends PixelScene {
 	
 	private static final int WIDTH			= 120;
-	private static final int BTN_HEIGHT		= 18;
+	private static final int BTN_HEIGHT		= 20;
 	private static final float SMALL_GAP	= 2;
 	private static final float LARGE_GAP	= 8;
 	
@@ -49,6 +56,9 @@ public class AmuletScene extends PixelScene {
 	{
 		inGameScene = true;
 	}
+
+	StyledButton btnExit = null;
+	StyledButton btnStay = null;
 	
 	@Override
 	public void create() {
@@ -57,30 +67,54 @@ public class AmuletScene extends PixelScene {
 		RenderedTextBlock text = null;
 		if (!noText) {
 			text = renderTextBlock( Messages.get(this, "text"), 8 );
-			text.maxWidth(WIDTH);
-			add( text );
+			text.maxWidth( PixelScene.landscape() ? 2*WIDTH-4 : WIDTH);
 		}
 		
 		amulet = new Image( Assets.Sprites.AMULET );
 		add( amulet );
-		
-		RedButton btnExit = new RedButton( Messages.get(this, "exit") ) {
+
+		btnExit = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this, "exit") ) {
 			@Override
 			protected void onClick() {
 				Dungeon.win( Amulet.class );
 				Dungeon.deleteGame( GamesInProgress.curSlot, true );
-				Game.switchScene( RankingsScene.class );
+				btnExit.enable(false);
+				btnStay.enable(false);
+
+				AmuletScene.this.add(new Delayer(0.1f){
+					@Override
+					protected void onComplete() {
+						if (BadgeBanner.isShowingBadges()){
+							AmuletScene.this.add(new Delayer(3f){
+								@Override
+								protected void onComplete() {
+									Game.switchScene( RankingsScene.class );
+								}
+							});
+						} else {
+							Game.switchScene( RankingsScene.class );
+						}
+					}
+				});
+				Music.INSTANCE.playTracks(
+						new String[]{Assets.Music.THEME_2, Assets.Music.THEME_1},
+						new float[]{1, 1},
+						false);
 			}
 		};
+		btnExit.icon(new ItemSprite(ItemSpriteSheet.AMULET));
 		btnExit.setSize( WIDTH, BTN_HEIGHT );
 		add( btnExit );
 		
-		RedButton btnStay = new RedButton( Messages.get(this, "stay") ) {
+		btnStay = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this, "stay") ) {
 			@Override
 			protected void onClick() {
 				onBackPressed();
+				btnExit.enable(false);
+				btnStay.enable(false);
 			}
 		};
+		btnStay.icon(Icons.CLOSE.get());
 		btnStay.setSize( WIDTH, BTN_HEIGHT );
 		add( btnStay );
 		
@@ -104,6 +138,7 @@ public class AmuletScene extends PixelScene {
 
 			text.setPos((Camera.main.width - text.width()) / 2, amulet.y + amulet.height + LARGE_GAP);
 			align(text);
+			add(text);
 			
 			btnExit.setPos( (Camera.main.width - btnExit.width()) / 2, text.top() + text.height() + LARGE_GAP );
 			btnStay.setPos( btnExit.left(), btnExit.bottom() + SMALL_GAP );
@@ -116,8 +151,10 @@ public class AmuletScene extends PixelScene {
 	
 	@Override
 	protected void onBackPressed() {
-		InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
-		Game.switchScene( InterlevelScene.class );
+		if (btnExit.isActive()) {
+			InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
+			Game.switchScene(InterlevelScene.class);
+		}
 	}
 	
 	private float timer = 0;

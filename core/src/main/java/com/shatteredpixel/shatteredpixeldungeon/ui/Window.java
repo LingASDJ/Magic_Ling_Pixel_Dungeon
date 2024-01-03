@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ public class Window extends Group implements Signal.Listener<KeyEvent> {
 	public static final int BLUE_COLOR = 0x0000FF;
 	public static final int CBLACK = 0x808080;
 
-	
+	public final void setHeight(int height) { resize(width, height); }
 	public Window() {
 		this( 0, 0, Chrome.get( Chrome.Type.WINDOW ) );
 	}
@@ -279,8 +279,6 @@ public class Window extends Group implements Signal.Listener<KeyEvent> {
 			}
 		}
 		
-		//TODO currently always eats the key event as windows always take full focus
-		// if they are ever made more flexible, might not want to do this in all cases
 		return true;
 	}
 	

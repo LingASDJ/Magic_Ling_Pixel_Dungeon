@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2019 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * Overgrown Pixel Dungeon
  * Copyright (C) 2018-2019 Anon
@@ -29,17 +29,15 @@ import com.watabou.utils.Random;
 
 public class OGPDZSLS extends Rat {
 
-    {
-        spriteClass = OGPDZSLSTT.class;
+	{
+		spriteClass = OGPDZSLSTT.class;
+		HP = HT = 8;
+		maxLvl = 12;
+		EXP = 3;
+	}
 
-        HP = HT = 8;
-        EXP = 3;
-        this.maxLvl = 12;
-        this.EXP = 3;
-    }
-
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange( 2, 3 );
-    }
+	@Override
+	public int damageRoll() {
+		return Random.NormalIntRange( 2, 3 );
+	}
 }

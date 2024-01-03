@@ -14,7 +14,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.MerchantsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -137,7 +136,7 @@ public class NxhyShopRoom extends SpecialRoom {
         w.identify();
         itemsToSpawn2.add(w);
         itemsToSpawn2.add(TippedDart.randomTipped(2));
-        itemsToSpawn2.add(new MerchantsBeacon());
+        //itemsToSpawn2.add(new MerchantsBeacon());
         itemsToSpawn2.add(ChooseBag(Dungeon.hero.belongings));
         itemsToSpawn2.add(new ScrollOfTransmutation());
         //itemsToSpawn2.add(new DriedRose());
@@ -165,8 +164,8 @@ public class NxhyShopRoom extends SpecialRoom {
                     break;
                 case 3:
                 case 4:
-                    itemsToSpawn2.add(new YellowSunBooks().quantity(3));
-                    itemsToSpawn2.add(new GrassKingBooks().quantity(3));
+                    itemsToSpawn2.add(new YellowSunBooks().quantity(1));
+                    itemsToSpawn2.add(new GrassKingBooks().quantity(1));
                     break;
                 case 5:
                     itemsToSpawn2.add(new MeatPie());

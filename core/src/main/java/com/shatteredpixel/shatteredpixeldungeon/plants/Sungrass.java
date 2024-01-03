@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,8 +45,8 @@ public class Sungrass extends Plant {
 	@Override
 	public void activate( Char ch ) {
 		
-		if (ch == Dungeon.hero) {
-			if (Dungeon.hero.subClass == HeroSubClass.WARDEN) {
+		if (ch != null){
+			if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN) {
 				Buff.affect(ch, Healing.class).setHeal(ch.HT, 0, 1);
 			} else {
 				Buff.affect(ch, Health.class).boost(ch.HT);
@@ -134,11 +134,6 @@ public class Sungrass extends Plant {
 		@Override
 		public String iconTextDisplay() {
 			return Integer.toString(level);
-		}
-		
-		@Override
-		public String toString() {
-			return Messages.get(this, "name");
 		}
 
 		@Override

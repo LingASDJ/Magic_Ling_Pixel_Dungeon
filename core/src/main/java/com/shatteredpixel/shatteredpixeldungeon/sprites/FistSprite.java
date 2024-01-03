@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,11 +29,12 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.CorrosionParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
-import com.watabou.noosa.Camera;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
@@ -115,13 +116,13 @@ public abstract class FistSprite extends MobSprite {
 	public void attack( int cell ) {
 		super.attack( cell );
 
-		jump(ch.pos, ch.pos, null, 9, SLAM_TIME );
+		jump(ch.pos, ch.pos, 9, SLAM_TIME, null );
 	}
 
+	//different bolt, so overrides zap
 	public void zap( int cell ) {
 
-		turnTo( ch.pos , cell );
-		play( zap );
+		super.zap( cell );
 
 		MagicMissile.boltFromChar( parent,
 				boltType,
@@ -140,7 +141,7 @@ public abstract class FistSprite extends MobSprite {
 	public void onComplete( Animation anim ) {
 		super.onComplete( anim );
 		if (anim == attack) {
-			Camera.main.shake( 4, 0.2f );
+			PixelScene.shake( 4, 0.2f );
 		} else if (anim == zap) {
 			idle();
 		}
@@ -268,7 +269,6 @@ public abstract class FistSprite extends MobSprite {
 		public void zap( int cell ) {
 			turnTo( ch.pos , cell );
 			play( zap );
-
 			((YogFist)ch).onZapComplete();
 			parent.add( new Beam.LightRay(center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
 		}
@@ -300,6 +300,56 @@ public abstract class FistSprite extends MobSprite {
 		@Override
 		public int blood() {
 			return 0xFF4A2F53;
+		}
+
+	}
+
+	public static class Ice extends FistSprite {
+
+		{
+			boltType = MagicMissile.FROST;
+		}
+
+		@Override
+		protected int texOffset() {
+			return 60;
+		}
+
+		@Override
+		protected Emitter createEmitter() {
+			Emitter emitter = emitter();
+			emitter.pour(MagicMissile.MagicParticle.FACTORY, 0.06f );
+			return emitter;
+		}
+
+		@Override
+		public int blood() {
+			return 0xFF26CCC2;
+		}
+
+	}
+
+	public static class HaloFist extends FistSprite {
+
+		{
+			boltType = MagicMissile.HALOFIRE;
+		}
+
+		@Override
+		protected int texOffset() {
+			return 70;
+		}
+
+		@Override
+		protected Emitter createEmitter() {
+			Emitter emitter = emitter();
+			emitter.pour(HalomethaneFlameParticle.FACTORY, 0.06f );
+			return emitter;
+		}
+
+		@Override
+		public int blood() {
+			return 0xFF34C9C9;
 		}
 
 	}

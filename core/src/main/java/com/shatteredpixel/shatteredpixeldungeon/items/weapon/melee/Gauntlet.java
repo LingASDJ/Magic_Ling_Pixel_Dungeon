@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
@@ -37,8 +38,9 @@ public class Gauntlet extends MeleeWeapon {
 		hitSound = Assets.Sounds.HIT_CRUSH;
 		hitSoundPitch = 1.2f;
 
-		tier = 3;
-		DLY = 0.25f; //2x speed
+		//加强
+		tier = 4;
+		DLY = 0.35f; //2x speed
 	}
 
 	@Override
@@ -47,33 +49,36 @@ public class Gauntlet extends MeleeWeapon {
 	}
 
 	@Override
-	public int max(int lvl) {
-
-		return  Math.round(2.5f*(tier+1)) +     //15 base, down from 30
-				lvl*Math.round(0.5f*(tier+1));  //+3 per level, down from +6
-	}
-
-	@Override
 	public int proc(Char attacker, Char defender, int damage ) {
 		switch (Random.Int(6)) {
 			case 0:case 1:case 2:case 3:
 			default:
-				return max(buffedLvl());
+				return super.proc( attacker, defender, damage );
 			case 4: case 5:
 				Buff.affect(defender, HalomethaneBurning.class).reignite(defender);
 				if(Random.Float()<0.55f && level <3) {
 					Buff.prolong(attacker, Vertigo.class, 3f);
 				}
-				return max(buffedLvl());
+				return super.proc( attacker, defender, damage );
 		}
 	}
 
 	public String statsInfo(){
 		if (isIdentified()){
-			return Messages.get(this, "stats_desc", 1+1*buffedLvl());
+			return Messages.get(this, "stats_desc", 1+ buffedLvl());
 		} else {
 			return Messages.get(this, "typical_stats_desc", 1);
 		}
+	}
+
+	@Override
+	public String targetingPrompt() {
+		return Messages.get(this, "prompt");
+	}
+
+	@Override
+	protected void duelistAbility(Hero hero, Integer target) {
+		Sai.comboStrikeAbility(hero, target, 0.35f, this);
 	}
 
 }

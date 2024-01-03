@@ -97,7 +97,10 @@ public class MoloHR extends Mob {
             int var2 = Random.Int(this.deathCurse.length);
             this.sprite.showStatus(16711680, this.deathCurse[var2]);
         }
-        Statistics.bossScores[2] += 1000;
+        //酸液体清0
+        Statistics.SiderLing = 0;
+
+        Statistics.bossScores[2] += 4000;
         Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.pos );
         Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.pos );
         Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.WAND ) ), this.pos );

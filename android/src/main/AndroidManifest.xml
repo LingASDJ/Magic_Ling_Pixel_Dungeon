@@ -48,7 +48,7 @@
 		<activity
 			android:label="${appName}"
 			android:exported="true"
-			android:name=".AndroidGame"
+			android:name=".AndroidMissingNativesHandler"
 			android:screenOrientation="nosensor"
 			android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize">
 			<intent-filter>
@@ -58,6 +58,7 @@
 				<data android:scheme="um.62aafe4488ccdf4b7e9b49ff" />
 			</intent-filter>
 		</activity>
+		<!-- Demo版本-期间不反馈到服务器 D5开始反馈-->
 		<meta-data
 			android:name="firebase_crashlytics_collection_enabled"
 			android:value="true" />

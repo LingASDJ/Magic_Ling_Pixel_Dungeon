@@ -9,7 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
-public class BlessImmune extends Buff {
+public class BlessImmune extends ClearLanterBuff {
 
     {
         type = buffType.POSITIVE;
@@ -18,6 +18,11 @@ public class BlessImmune extends Buff {
 
     public static int level = 0;
     private int interval = 1;
+
+    public void detach() {
+        super.detach();
+        immunities.removeAll(AntiMagic.RESISTS);
+    }
 
     @Override
     public boolean act() {

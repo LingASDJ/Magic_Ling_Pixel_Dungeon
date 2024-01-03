@@ -97,7 +97,7 @@ public class MagicGirlSprite extends MobSprite {
         play( zap );
 
         MagicMissile.boltFromChar( parent,
-                MagicMissile.TOXIC_VENT,
+                MagicMissile.FROST,
                 this,
                 cell,
                 new Callback() {

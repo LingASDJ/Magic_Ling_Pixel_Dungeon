@@ -6,7 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CausticSlimeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300AttackSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireGhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -94,9 +94,9 @@ public class S_Changes {
                         "攻击由_4x_变成_2x_)\n" +
                         "Dev:JDSA Ling"));
 
-        Image a = new Image(new DM300AttackSprite());
+        Image a = new Image(new DM720Sprite());
         i.scale.set(PixelScene.align(0.74f));
-        changes.addButton( new ChangeButton(new DM300AttackSprite(), "DM-720",
+        changes.addButton( new ChangeButton(new DM720Sprite(), "DM-720",
                 "削弱 _DM-720_！\n" +
                         "血量 _3000_降到_200_\n" +
                         "攻击由_2x_变成_1.3x_\n" +
@@ -153,7 +153,7 @@ public class S_Changes {
         changes.hardlight(CharSprite.POSITIVE);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new DM300AttackSprite(), "DM720",
+        changes.addButton(new ChangeButton(new DM720Sprite(), "DM720",
                 "将DM300重新进行了优化和强化\n\n" +
                         "并改名为DM-720\n\n" +
                         "DM720新特性\n" +
@@ -335,7 +335,7 @@ public class S_Changes {
                 "史莱姆守卫者 10层BOSS用！"));
 
         Image a = new SlimeKingSprite();
-        a.scale.set(PixelScene.align(0.42f));
+        a.scale.set(PixelScene.align(0.82f));
         changes.addButton(new ChangeButton(a,  "史莱姆王",
                 "10层BOSS！"));
 
@@ -346,7 +346,7 @@ public class S_Changes {
         changes.addButton( new ChangeButton(new Image(new RatSprite()), "老鼠加强",
                 "老鼠的_攻击和生存能力_都得到了提升"));
 
-        changes.addButton( new ChangeButton(new Image(new SnakeSprite()), "下水道巨蛇加强",
+        changes.addButton( new ChangeButton(new Image(new SnakeSprite()), "密林巨蛇加强",
                 "巨蛇的_攻击和生存能力_都得到了提升"));
 
     }
@@ -433,11 +433,11 @@ public class S_Changes {
         ChangeInfo changeInfo2 = new ChangeInfo("V0.3.0.5 新NPC", true, "");
         changeInfo2.hardlight(65280);
         arrayList.add(changeInfo2);
-        changeInfo2.addButton(new ChangeButton(new Image("ren.png", 0, 0, 13, 16), "REN",
+        changeInfo2.addButton(new ChangeButton(new Image(Assets.Sprites.REN, 0, 0, 13, 16), "REN",
                 "似曾相识的面孔，你一定哪里见过他的。\n\n"));
         changeInfo2.addButton( new ChangeButton(new SlylSprite(), "霜落雨凉", "_寒冰圣都_的女帝，没有人知道她的真正力量！\n" +
                 "\n"));
-        changeInfo2.addButton(new ChangeButton(new Image("rt.png", 0, 0, 16, 16), "Observe_Sir", "来自另一个世界的旅行者。中型礼帽是他的护身武器。\n\n"));
+        changeInfo2.addButton(new ChangeButton(new Image("Npcs/rt.png", 0, 0, 16, 16), "Observe_Sir", "来自另一个世界的旅行者。中型礼帽是他的护身武器。\n\n"));
         ChangeInfo changeInfo3 = new ChangeInfo("V0.3.0.4 HotFixed 热修复", true, "");
         changeInfo3.hardlight(16711680);
         arrayList.add(changeInfo3);
@@ -455,26 +455,26 @@ public class S_Changes {
         ChangeInfo changeInfo6 = new ChangeInfo("v0.3.0.1b", true, "");
         changeInfo6.hardlight(16711935);
         arrayList.add(changeInfo6);
-        ChangeInfo changeInfo7 = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, (String) null);
+        ChangeInfo changeInfo7 = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
         changeInfo7.hardlight(16711935);
         arrayList.add(changeInfo7);
-        changeInfo7.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MAGIC_INFUSE, (ItemSprite.Glowing) null), "新怪物", "1.添加了一个怪物\n\n"));
-        changeInfo7.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CURSE_INFUSE, (ItemSprite.Glowing) null), "新机制", "地牢的一些机制改变了\n\n"));
-        ChangeInfo changeInfo8 = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, (String) null);
+        changeInfo7.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MAGIC_INFUSE, null), "新怪物", "1.添加了一个怪物\n\n"));
+        changeInfo7.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CURSE_INFUSE, null), "新机制", "地牢的一些机制改变了\n\n"));
+        ChangeInfo changeInfo8 = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changeInfo8.hardlight(16745258);
         arrayList.add(changeInfo8);
-        changeInfo8.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHEST, (ItemSprite.Glowing) null), "Bug修复", "修复了以下问题\n\n1.修复了上个版本楼层26层闪退问题\n\n2.修复了界面问题\n\n"));
-        changeInfo8.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_OPAL, (ItemSprite.Glowing) null), "武器改动详情", "武器名称:_血红魔剑_\n-首个版本属于_5阶武器_，现在已经升级了_8阶武器_\n\n"));
-        ChangeInfo changeInfo9 = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, (String) null);
+        changeInfo8.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHEST, null), "Bug修复", "修复了以下问题\n\n1.修复了上个版本楼层26层闪退问题\n\n2.修复了界面问题\n\n"));
+        changeInfo8.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_OPAL, null), "武器改动详情", "武器名称:_血红魔剑_\n-首个版本属于_5阶武器_，现在已经升级了_8阶武器_\n\n"));
+        ChangeInfo changeInfo9 = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
         changeInfo9.hardlight(16711935);
         arrayList.add(changeInfo9);
-        changeInfo9.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HOLSTER, (ItemSprite.Glowing) null), "游戏物品增强记录A", "0.2.7 加强蓝色剑\n\n0.2.8 加强蓝焰法杖\n\n"));
-        changeInfo9.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_HOURGLASS, (ItemSprite.Glowing) null), "游戏物品增强记录B", "Up\n\n"));
-        ChangeInfo changeInfo10 = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, (String) null);
+        changeInfo9.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HOLSTER, null), "游戏物品增强记录A", "0.2.7 加强蓝色剑\n\n0.2.8 加强蓝焰法杖\n\n"));
+        changeInfo9.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_HOURGLASS, null), "游戏物品增强记录B", "Up\n\n"));
+        ChangeInfo changeInfo10 = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
         changeInfo10.hardlight(16711680);
         arrayList.add(changeInfo10);
-        changeInfo10.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_FROST, (ItemSprite.Glowing) null), "武器削弱记录A", "1.蔚蓝审判之剑\n-此版本已削弱精准和伤害，现在它的伤害20-35伤害左右\n\n"));
-        changeInfo10.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_LIGHTNING, (ItemSprite.Glowing) null), "武器削弱记录B", "Up"));
+        changeInfo10.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_FROST, null), "武器削弱记录A", "1.蔚蓝审判之剑\n-此版本已削弱精准和伤害，现在它的伤害20-35伤害左右\n\n"));
+        changeInfo10.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_LIGHTNING, null), "武器削弱记录B", "Up"));
         ChangeInfo changeInfo11 = new ChangeInfo("V0.3.0.0 重大更新", true, "");
         changeInfo11.hardlight(65280);
         arrayList.add(changeInfo11);
@@ -492,7 +492,7 @@ public class S_Changes {
         changeInfo14.hardlight(16736000);
         arrayList.add(changeInfo14);
         changeInfo14.addButton(new ChangeButton(new Image("sprites/spinner.png", 144, 0, 16, 16), "BUG修复", "1.修复_酸蚀法杖_崩溃闪退问题\n\n2.修复_钥匙剑_变量问题[修复者:_Ren_]\n\n3.修复楼层_重置闪退_问题，理论上得到解决"));
-        changeInfo14.addButton(new ChangeButton(new Image("sprites/snake.png", 0, 0, 14, 16), "新怪物", "_下水道巨蛇_\n\n_下水道3层开始刷新_"));
+        changeInfo14.addButton(new ChangeButton(new Image("sprites/snake.png", 0, 0, 14, 16), "新怪物", "_密林巨蛇_\n\n_密林3层开始刷新_"));
         changeInfo14.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG6), "新法杖", "幻蓝_焰浪_神杖\n\n这根法杖由_蓝磷元素_制成，饰以_魔紫树叶_这使它看起来相当霸气。它的顶端噼啪作响嘶嘶而鸣，渴望着释放其_强大的魔法。_"));
         ChangeInfo changeInfo15 = new ChangeInfo("V0.2.5-6", true, "");
         changeInfo15.hardlight(65535);
@@ -503,7 +503,7 @@ public class S_Changes {
         ChangeInfo changeInfo16 = new ChangeInfo("V0.0.2.c-Ren-Create", true, "");
         changeInfo16.hardlight(65535);
         arrayList.add(changeInfo16);
-        changeInfo16.addButton(new ChangeButton(new Image("ren.png", 0, 0, 13, 16), "接替任务", "...." +
+        changeInfo16.addButton(new ChangeButton(new Image(Assets.Sprites.REN, 0, 0, 13, 16), "接替任务", "...." +
                 "...........\n.......\n\n.....你好....\n  我是MR.REN。\n我的LING助手哟，将要以完成一项任务的指令而匆匆离去；\n  为了完成来自远方库页岛的密语，他将环绕着负熵与居里点极限的磁场、而又向大喝彩盒里祈祷着铜线圈的拜礼...\n苦难的孩子，潜姿于月之上空气流层的你的身影啊，将身后的一切，身后的一切、都将托付于我一阵吧，互唤我的名字吧!!!...\n......信号中断....\n...........\n......"));
         changeInfo16.addButton(new ChangeButton(new Image("sprites/king.png", 0, 0, 13, 16),
                 "怪物更改", "怪物修改了一些问题，具体如下:\n-_矮人国亡\n-_小粘咕-实验体\n-_DM-3000\n-天狗-火冽烽_-_ MLPD\n均在24层刷新"));
@@ -530,7 +530,7 @@ public class S_Changes {
         changeInfos.add(changes);
         changes.addButton( new ChangeButton(new Image("SRPD/TorchHuntsman.png", 0, 0, 16, 16), "怪物新改动",
                 "新怪物！！！\n" +
-                        "-下水道层：\n-_棕色老鼠_，\n-_灰黑老鼠_，\n-_老年老鼠_，\n（来自OGPD)" +
+                        "-密林层：\n-_棕色老鼠_，\n-_灰黑老鼠_，\n-_老年老鼠_，\n（来自OGPD)" +
                         "\n-监狱层：_赏金猎人_\n（来自SRPD)"+
                         "\n-矿洞层：_Flame-B01_\n（来自OGPD)"+
                         "\n后续层数正在开发,敬请期待\n\n"+
@@ -556,7 +556,7 @@ public class S_Changes {
         changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 48, 16
                 , 16), "房间改动",
                 "房间数量得到了调整,具体改动如下表\n" +
-                        "-下水道层：房间数量_9个_，默认刷怪数量_20个_，额外刷怪_7个_\n" +
+                        "-密林层：房间数量_9个_，默认刷怪数量_20个_，额外刷怪_7个_\n" +
                         "-监狱层：房间数量_8个_，默认刷怪数量_26个_，额外刷怪_11个_\n"+
                         "-矿洞层：房间数量_10个_，默认刷怪数量_30个_，额外刷怪_16个_\n"+
                         "-矮人层：房间数量_12个_，默认刷怪数量_21个_，额外刷怪_6个_\n"+

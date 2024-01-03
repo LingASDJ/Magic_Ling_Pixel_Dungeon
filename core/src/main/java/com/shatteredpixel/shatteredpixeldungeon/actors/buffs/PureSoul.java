@@ -29,7 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
@@ -112,7 +111,7 @@ public class PureSoul extends Buff implements Hero.Doom {
 
                     if (!Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_FOOD)){
                         GLog.p(Messages.get(Guidebook.class, "hint"));
-                        GameScene.flashForDocument(Document.GUIDE_FOOD);
+                        //GameScene.flashForDocument(Document.GUIDE_FOOD);
                     }
 
                 }

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -321,7 +321,7 @@ public class v0_6_X_Changes {
 				"\n" +
 				"This means that after taking around half current HP in damage, breaking from paralysis becomes very likely, and immediately re-applying paralysis will not reset this resist chance."));
 		
-		changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 48, 16, 16), "Chasm changes",
+		changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 176, 16, 16, 16), "Chasm changes",
 				"Dropping enemies into chasms is a very fun way to deal with enemies, but killing an enemy instantly and getting almost the full reward is simply too strong. This change should keep killing via chasms fun and useful, without it being as strong.\n" +
 				"\n" +
 				"_-_ Enemies killed via chasms now only award 50% exp"));
@@ -752,7 +752,7 @@ public class v0_6_X_Changes {
 				"_-_ Health potions now heal more than max HP at low levels, and slightly less than max HP at high levels.\n\n" +
 				"Make sure to read the dew vial changes as well."));
 		
-		changes.addButton( new ChangeButton( new ItemSprite(ItemSpriteSheet.VIAL, null), "Dew Vial",
+		changes.addButton( new ChangeButton( new ItemSprite(ItemSpriteSheet.WATERSKIN, null), "Dew Vial",
 				"The dew vial (and dew) are having their healing abilities enhanced to improve the availability of healing in the sewers, and to help offset the health potion changes.\n\n" +
 				"_-_ Dew drops now heal 5% of max HP\n\n" +
 				"_-_ Dew vial now always spawns on floor 1\n\n" +

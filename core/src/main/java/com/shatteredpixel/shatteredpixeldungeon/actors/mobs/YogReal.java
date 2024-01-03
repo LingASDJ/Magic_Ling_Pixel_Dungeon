@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
@@ -147,7 +148,7 @@ public class YogReal extends Boss {
                 }
             }
 
-            if (spawnPos != -1) {
+            if (spawnPos != -1 && summon != null) {
                 summon.pos = spawnPos;
                 GameScene.add( summon );
                 Actor.addDelayed( new Pushing( summon, pos, summon.pos ), -1 );
@@ -177,7 +178,7 @@ public class YogReal extends Boss {
                 }
             }
 
-            if (spawnPos != -1) {
+            if (spawnPos != -1 && summon != null) {
                 summon.pos = spawnPos;
                 GameScene.add( summon );
                 CellEmitter.get(spawnPos).start(ElmoParticle.FACTORY, 0.05f, 20);
@@ -265,10 +266,12 @@ public class YogReal extends Boss {
 
         for(int i=0;i<phase-1;++i) {
             YogRealFirst fist = (YogRealFirst) Reflection.newInstance(fistSummons.remove(0));
-            fist.pos = pos + candidates[i];
-            GameScene.add(fist, 4f);
+            if(fist != null){
+                fist.pos = pos + candidates[i];
+                GameScene.add(fist, 4f);
 
-            Actor.addDelayed(new Pushing(fist, pos, fist.pos), -1);
+                Actor.addDelayed(new Pushing(fist, pos, fist.pos), -1);
+            }
         }
 
     }
@@ -450,7 +453,7 @@ public class YogReal extends Boss {
 
     @Override
     public void aggro(Char ch) {
-        for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
+       for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
             if (Dungeon.level.distance(pos, mob.pos) <= 8 &&
                     (mob instanceof Larva || mob instanceof RipperDemon)) {
                 mob.aggro(ch);
@@ -463,7 +466,7 @@ public class YogReal extends Boss {
     public void die( Object cause ) {
         GameScene.flash(0x80FFFFFF);
 
-        for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
+       for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
             if (mob.alignment == Alignment.ENEMY && mob != this) {
                 mob.die( cause );
             }
@@ -481,7 +484,7 @@ public class YogReal extends Boss {
         GameScene.bossSlain();
         Dungeon.level.unseal();
         super.die( cause );
-
+        PaswordBadges.BOSSRUSH();
         yell( Messages.get(this, "defeated") );
     }
 
