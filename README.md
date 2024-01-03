@@ -14,11 +14,8 @@
 ![](/SCS/list.png)
 ![](/SCS/game1.jpg)
 
-```
-CN:结局虽然早已注定，但不甘命运之人定会反抗……
-EN：Although the outcome has long been predetermined, those who are unwilling to accept fate will surely resist
-```
-</div>
+
+
 <div align="center"> 
   
 | - 主编码：JDSA Ling,Tianscar        | - 剧情设计：JDSA Ling & Complexx         |
@@ -31,3 +28,10 @@ EN：Although the outcome has long been predetermined, those who are unwilling t
 | - 音乐：Prohonor                   | - 测试协力：所有魔绫的测试人员               |
 
 </div>
+
+```
+CN:结局虽然早已注定，但不甘命运之人定会反抗……
+EN：Although the outcome has long been predetermined, those who are unwilling to accept fate will surely resist
+```
+</div>
+
