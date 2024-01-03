@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -500,6 +501,7 @@ public class NewDM720 extends MolotovHuntsman {
         yell(Messages.get(this, "charging"));
         sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
         ((DM720Sprite)sprite).charge();
+        ((DM720Sprite)sprite).updateChargeState(true);
         chargeAnnounced = false;
 
     }
@@ -511,7 +513,7 @@ public class NewDM720 extends MolotovHuntsman {
     public void loseSupercharge(){
         supercharged = false;
         sprite.resetColor();
-
+        ((DM720Sprite)sprite).updateChargeState(false);
         if (pylonsActivated < 2){
             yell(Messages.get(this, "charge_lost"));
         } else {
@@ -530,14 +532,17 @@ public class NewDM720 extends MolotovHuntsman {
 //        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 //            GetBossLoot();
 //        }
-        Statistics.bossScores[2] += 1000;
+
         super.die(cause);
         cause = new MoloHR();
         ((MoloHR) cause).pos = pos;
         GameScene.add(((Mob) (cause)));
         Buff.affect((Mob) (cause), ChampionHero.Light.class, ChampionHero.DURATION*200f);
         ((Mob) (cause)).notice();
-
+        Badges.validateBossSlain();
+        if (Statistics.qualifiedForBossChallengeBadge){
+            Badges.validateBossChallengeCompleted();
+        }
         //60% chance of 2 shards, 30% chance of 3, 10% chance for 4. Average of 2.5
         int shards = Random.chances(new float[]{0, 0, 6, 3, 1});
         for (int i = 0; i < shards; i++) {

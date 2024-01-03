@@ -23,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.TPDoor;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
@@ -222,14 +223,30 @@ public class ColdChestBossLevel extends Level {
 
 
     private void setMapStart() {
-        entrance = HOME;
+        int entrance = HOME;
+
+        LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
+        transitions.add(enter);
+
+        int doorPos =  WIDTH*3+17;
+        Mob.holdAllies(this, doorPos);
+        Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
+
+        LevelTransition exit = new LevelTransition(this, 0, LevelTransition.Type.REGULAR_EXIT);
+        transitions.add(exit);
+
         map = WorldRoomShort.clone();
     }
 
 
     public void setMapEnd(){
-        this.entrance = 52;
-        this.exit = 647;
+        int entrance = 52;
+        int exit = 647;
+        LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
+        transitions.add(enter);
+
+        LevelTransition exit2 = new LevelTransition(this, exit, LevelTransition.Type.REGULAR_EXIT);
+        transitions.add(exit2);
     }
 
     private static final HashMap<Integer, Integer> MAIN_PORTAL = new HashMap<>(5);
@@ -339,6 +356,10 @@ public class ColdChestBossLevel extends Level {
                     }
                 }
                 Statistics.fuckGeneratorAlone++;
+
+                int doorPos = WIDTH*17+17;
+                Mob.holdAllies(this, doorPos);
+                Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
 
                 pro = START;
                 break;
@@ -522,7 +543,7 @@ public class ColdChestBossLevel extends Level {
                         //如果楼层为开始且boss血量小于200 4阶段
                         if (pro == VSLINK_START && boss.HP <= 200) {
                             Buff.detach(boss, ChampionEnemy.Halo.class);
-                            ((DiamondKnight) boss).baseSpeed *= 2;
+                            boss.baseSpeed *= 2;
                             pro = VSYOU_START;
                         }
                     }

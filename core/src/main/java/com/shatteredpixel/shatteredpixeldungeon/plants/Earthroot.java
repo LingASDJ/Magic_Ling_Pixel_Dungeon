@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,17 +25,18 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EarthParticle;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Camera;
 import com.watabou.utils.Bundle;
 
 public class Earthroot extends Plant {
-
+	
 	{
 		image = 8;
 		seedClass = Seed.class;
@@ -43,18 +44,18 @@ public class Earthroot extends Plant {
 	
 	@Override
 	public void activate( Char ch ) {
-		
-		if (ch == Dungeon.hero) {
-			if (Dungeon.hero.subClass == HeroSubClass.WARDEN){
-				Buff.affect(ch, Barkskin.class).set(Dungeon.hero.lvl + 5, 5);
+
+		if (ch != null){
+			if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN) {
+				Barkskin.conditionallyAppend(Dungeon.hero, Dungeon.hero.lvl + 5, 5);
 			} else {
-				Buff.affect(ch, Armor.class).level(ch.HT,ch);
+				Buff.affect(ch, Armor.class).level(ch.HT);
 			}
 		}
 		
 		if (Dungeon.level.heroFOV[pos]) {
 			CellEmitter.bottom( pos ).start( EarthParticle.FACTORY, 0.05f, 8 );
-			Camera.main.shake( 1, 0.4f );
+			PixelScene.shake( 1, 0.4f );
 		}
 	}
 	
@@ -81,12 +82,6 @@ public class Earthroot extends Plant {
 		}
 		
 		@Override
-		public boolean attachTo( Char target ) {
-			pos = target.pos;
-			return super.attachTo( target );
-		}
-		
-		@Override
 		public boolean act() {
 			if (target.pos != pos) {
 				detach();
@@ -96,10 +91,14 @@ public class Earthroot extends Plant {
 		}
 		
 		private static int blocking(){
-			return (Dungeon.depth + 5)/2;
+			return (Dungeon.scalingDepth() + 5)/2;
 		}
 		
 		public int absorb( int damage ) {
+			if (pos != target.pos){
+				detach();
+				return damage;
+			}
 			int block = Math.min( damage, blocking());
 			if (level <= block) {
 				detach();
@@ -109,12 +108,14 @@ public class Earthroot extends Plant {
 				return damage - block;
 			}
 		}
-
-		public void level( int value,Char enemy ) {
-			if (level < value) {
-				level = value;
+		
+		public void level( int value ) {
+			if (target != null) {
+				if (level < value) {
+					level = value;
+				}
+				pos = target.pos;
 			}
-			pos = enemy.pos;
 		}
 		
 		@Override
@@ -130,11 +131,6 @@ public class Earthroot extends Plant {
 		@Override
 		public String iconTextDisplay() {
 			return Integer.toString(level);
-		}
-		
-		@Override
-		public String toString() {
-			return Messages.get(this, "name");
 		}
 
 		@Override

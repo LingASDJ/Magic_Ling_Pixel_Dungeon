@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ public class PathFinder {
 	
 	private static boolean[] goals;
 	private static int[] queue;
+	private static boolean[] queued; //currently only used in getStepBack, other can piggyback on distance
 	
 	private static int size = 0;
 	private static int width = 0;
@@ -45,6 +46,10 @@ public class PathFinder {
 	public static int[] NEIGHBOURS8;
 	public static int[] NEIGHBOURS9;
 
+	public static int[] CROSS;
+
+	public static int[] CROSS_7x7;
+
 	//similar to their equivalent neighbour arrays, but the order is clockwise.
 	//Useful for some logic functions, but is slower due to lack of array-access order.
 	public static int[] CIRCLE4;
@@ -58,6 +63,7 @@ public class PathFinder {
 		distance = new int[size];
 		goals = new boolean[size];
 		queue = new int[size];
+		queued = new boolean[size];
 
 		maxVal = new int[size];
 		Arrays.fill(maxVal, Integer.MAX_VALUE);
@@ -69,6 +75,10 @@ public class PathFinder {
 		NEIGHBOURS4 = new int[]{-width, -1, +1, +width};
 		NEIGHBOURS8 = new int[]{-width-1, -width, -width+1, -1, +1, +width-1, +width, +width+1};
 		NEIGHBOURS9 = new int[]{-width-1, -width, -width+1, -1, 0, +1, +width-1, +width, +width+1};
+
+		CROSS = new int[]{-width, -1, 0, +1, +width};
+
+		CIRCLE8 = new int[]{-7*width, -1, 0, +1, +7*width};
 
 		CIRCLE4 = new int[]{-width, +1, +width, -1};
 		CIRCLE8 = new int[]{-width-1, -width, -width+1, +1, +width+1, +width, +width-1, -1};
@@ -129,9 +139,51 @@ public class PathFinder {
 		return best;
 	}
 	
-	public static int getStepBack( int cur, int from, boolean[] passable ) {
+	public static int getStepBack( int cur, int from, int lookahead, boolean[] passable, boolean canApproachFromPos ) {
 
-		int d = buildEscapeDistanceMap( cur, from, 5, passable );
+		int d = buildEscapeDistanceMap( cur, from, lookahead, passable );
+		if (d == 0) return -1;
+
+		if (!canApproachFromPos) {
+			//We can't approach the position we are retreating from
+			//re-calculate based on this, and reduce the target distance if need-be
+			int head = 0;
+			int tail = 0;
+
+			int newD = distance[cur];
+			BArray.setFalse(queued);
+
+			queue[tail++] = cur;
+			queued[cur] = true;
+
+			while (head < tail) {
+				int step = queue[head++];
+
+				if (distance[step] > newD) {
+					newD = distance[step];
+				}
+
+				int start = (step % width == 0 ? 3 : 0);
+				int end = ((step + 1) % width == 0 ? 3 : 0);
+				for (int i = start; i < dirLR.length - end; i++) {
+
+					int n = step + dirLR[i];
+					if (n >= 0 && n < size && passable[n]) {
+						if (distance[n] < distance[cur]) {
+							passable[n] = false;
+						} else if (distance[n] >= distance[step] && !queued[n]) {
+							// Add to queue
+							queue[tail++] = n;
+							queued[n] = true;
+						}
+					}
+				}
+
+			}
+
+			d = Math.min(newD, d);
+		}
+
 		for (int i=0; i < size; i++) {
 			goals[i] = distance[i] == d;
 		}
@@ -286,7 +338,9 @@ public class PathFinder {
 		
 		return pathFound;
 	}
-	
+
+	//the lookahead is the target number of cells to retreat toward from our current position's
+	// distance from the position we are escaping from. Returns the highest found distance, up to the lookahead
 	private static int buildEscapeDistanceMap( int cur, int from, int lookAhead, boolean[] passable ) {
 		
 		System.arraycopy(maxVal, 0, distance, 0, maxVal.length);

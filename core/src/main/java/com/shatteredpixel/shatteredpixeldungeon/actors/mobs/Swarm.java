@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,7 +87,9 @@ public class Swarm extends Mob {
 			
 			int[] neighbours = {pos + 1, pos - 1, pos + Dungeon.level.width(), pos - Dungeon.level.width()};
 			for (int n : neighbours) {
-				if (!Dungeon.level.solid[n] && Actor.findChar( n ) == null
+				if (!Dungeon.level.solid[n]
+						&& Actor.findChar( n ) == null
+						&& (Dungeon.level.passable[n] || Dungeon.level.avoid[n])
 						&& (!properties().contains(Property.LARGE) || Dungeon.level.openSpace[n])) {
 					candidates.add( n );
 				}
@@ -96,12 +98,12 @@ public class Swarm extends Mob {
 			if (candidates.size() > 0) {
 				
 				Swarm clone = split();
-				clone.HP = (HP - damage) / 2;
 				clone.pos = Random.element( candidates );
 				clone.state = clone.HUNTING;
+				GameScene.add( clone, SPLIT_DELAY ); //we add before assigning HP due to ascension
 
-				GameScene.add( clone, SPLIT_DELAY );
-				Actor.addDelayed( new Pushing( clone, pos, clone.pos ), -1 );
+				clone.HP = (HP - damage) / 2;
+				Actor.add( new Pushing( clone, pos, clone.pos ) );
 
 				Dungeon.level.occupyCell(clone);
 				

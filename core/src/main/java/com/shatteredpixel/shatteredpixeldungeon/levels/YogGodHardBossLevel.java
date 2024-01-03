@@ -19,6 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.utils.Random;
 
@@ -104,8 +105,14 @@ public class YogGodHardBossLevel extends Level {
             map[i] = codeToTerrain(codedMap[i]);
         }
 
-        entrance=ENTRANCE;
-        exit=EXIT;
+        int entrance=ENTRANCE;
+        int exits=EXIT;
+
+        LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
+        transitions.add(enter);
+
+        LevelTransition exit = new LevelTransition(this, exits, LevelTransition.Type.REGULAR_EXIT);
+        transitions.add(exit);
 
         return true;
     }

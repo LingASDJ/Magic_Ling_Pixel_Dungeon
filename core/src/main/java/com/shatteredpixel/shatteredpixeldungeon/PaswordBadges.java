@@ -59,20 +59,24 @@ public class PaswordBadges {
     }
 
     public static void ZQJ_FLOWER() {
-        displayBadge( Badge.ZQJ_GHOST );
+        displayBadge( Badge.ZQJ_GHOST);
+    }
+
+    public static void GOOD_BLUE() {
+        displayBadge( Badge.GOOD_BLUE);
     }
 
 
     public enum Badge {
 
         TAKE_ITEM( 0 ),
-        FIREGIRL(1),
+        FIREGIRL,
         SLIMEPRS(2),
         DRAWF_HEAD(3),
         SPICEALBOSS 				 (4),
         SAKA_DIED(5),
         RESET_DAY(6),
-        BRCLER(7),
+        BRCLER,
         ALLCHSX(8),
 
         GODD_MAKE(12),
@@ -80,8 +84,10 @@ public class PaswordBadges {
         BIG_X(13),
         EXSG(14),
         NIGHT_CAT(16),
+        ZQJ_GHOST(17),
+        GOOD_BLUE(18);
 
-        ZQJ_GHOST(17);
+
 
 
 

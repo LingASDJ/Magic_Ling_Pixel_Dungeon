@@ -9,7 +9,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.MerchantsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Firebomb;
@@ -125,7 +124,7 @@ public class NyzBombAndBooksRoom extends SpecialRoom {
         itemsToSpawn2.add (new HolyBomb().quantity(1));
         itemsToSpawn2.add (new Firebomb().quantity(1));
         itemsToSpawn2.add (new FrostBomb().quantity(1));
-        itemsToSpawn2.add(new MerchantsBeacon());
+        //itemsToSpawn2.add(new MerchantsBeacon());
         itemsToSpawn2.add(new GrassKingBooks().quantity(1));
         itemsToSpawn2.add(new ScrollOfTransmutation());
         //itemsToSpawn2.add(new DriedRose());

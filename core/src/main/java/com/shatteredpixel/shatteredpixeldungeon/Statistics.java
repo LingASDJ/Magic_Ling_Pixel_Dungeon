@@ -29,14 +29,21 @@ public class Statistics {
 	//统计分数
 	public static int progressScore;
 
+	//种子处罚
+	public static boolean seedCustom = false;
+
 	//吃保底
 	public static int bossWeapons;
+
+	public static int SiderLing;
 
 	//中秋节幽灵特别行动
 	public static boolean findMoon = false;
 
 	//妻管严
 	public static boolean deadGo = false;
+
+	public static boolean doNotLookLing = false;
 
 	public static boolean happyMode = false;
 
@@ -106,7 +113,7 @@ public class Statistics {
 	public static boolean TPDoorDieds = false;
 
 	//修复同步
-	public static boolean bugsyncfixed = false;
+	public static boolean noGoReadHungry = false;
 
 	//警告
 	public static boolean tipsgodungeon = false;
@@ -125,92 +132,26 @@ public class Statistics {
 	//首次对决
 	public static boolean mimicking = false;
 
+	public static boolean dm720Fight = false;
+
+	public static boolean dm300Fight = false;
+
+	public static boolean gooFight = false;
+
+    private static final String LOVX = "lovx";
+
+	private static final String LOCD = "locd";
+
+    private static final String FUCKALONE = "fuckplayer";
+    private static final String WINGAME = "wingame";
+    private static final String HIDEEN = "hideen";
+    private static final String BOSS_CHALLENGE_QUALIFIED = "qualifiedForBossChallengeBadge";
 	//Directly add float time will cause accuracy lose and stop timing if time is long enough
 	//so use long to record seconds, float to count sub-seconds.
-	//SPD-V1.3.2-ITEM SPAWN CODE
-	public static long real_seconds = 0;
-	public static float second_elapsed = 0;
-	public static float turnsPassed = 0f;
-    public static boolean TryUsedAnmy= false;
-
-	public static boolean winGame = false;
-
-	public static boolean HiddenOK = false;
-
-    public static void reset() {
-		boss_enhance = 0;
-		ChaicBlood = 0;
-		readBooks = 0;
-		HealingIsDied = 0;
-
-		happyMode = false;
-
-		findMoon = false;
-		deadGo = false;
-
-		//萨卡班甲鱼二阶段
-		sakaBackStage = 0;
-
-		goldCollected	= 0;
-		deepestFloor	= -1;
-		enemiesSlain	= 0;
-		foodEaten		= 0;
-		goldchestmazeCollected = 0;
-		dimandchestmazeCollected =0;
-		fuckGeneratorAlone = 0;
-		itemsCrafted    = 0;
-		piranhasKilled	= 0;
-		ankhsUsed		= 0;
-		naiyaziCollected = 0;
-		upgradesUsed    = 0;
-		sneakAttacks    = 0;
-		thrownAssists   = 0;
-		realdeepestFloor = 0;
-		spawnersAlive   = 0;
-		
-		duration	= 0;
-		
-		qualifiedForNoKilling = false;
-
-		mimicking = false;
-		
-		amuletObtained = false;
-
-		tipsgodungeon = false;
-
-		fireGirlnoshopping = false;
-
-		deadshoppingdied = false;
-		wangzheguilai = false;
-		endingbald = false;
-
-		lanterfireactive = false;
-		bugsyncfixed =  false;
-
-		crivusfruitslevel2 = false;
-		TPDoorDieds = false;
-
-		TryUsedAnmy = false;
-
-		second_elapsed = 0f;
-		real_seconds = 0;
-		turnsPassed = 0f;
-
-
-		//得分
-		progressScore   = 0;
-		heldItemValue   = 0;
-		treasureScore   = 0;
-		floorsExplored  = new SparseArray<>();
-		exploreScore    = 0;
-		bossScores      = new int[6];
-		totalBossScore  = 0;
-		questScores     = new int[5];
-		totalQuestScore = 0;
-		winMultiplier   = 1;
-		chalMultiplier  = 1;
-		totalScore      = 0;
-	}
+    //SPD-V1.3.2-ITEM SPAWN CODE
+    public static long real_seconds = 0;
+    public static float second_elapsed = 0;
+    public static float turnsPassed = 0f;
 	
 	private static final String GOLD		= "score";
 	private static final String HAPPY		= "happy";
@@ -301,28 +242,127 @@ public class Statistics {
 
 	private static final String LOVE		= "love";
 
-	private static final String LOVX		= "lovx";
+	private static final String SEEDCUSTOM		= "seedCustom";
 
-	private static final String FUCKALONE		= "fuckplayer";
+	private static final String SIDERLING      = "siderLing";
 
-	private static final String WINGAME		= "wingame";
+	private static final String DM720FIGHT      = "dm720FIGHT";
 
-	private static final String HIDEEN		= "hideen";
+	private static final String DM300FIGHT      = "dm300FIGHT";
+
+	private static final String GOOFIGHT      = "gooFIGHT";
+
+    public static boolean TryUsedAnmy = false;
+    public static boolean winGame = false;
+    public static boolean HiddenOK = false;
+    //220---SPD
+    public static boolean qualifiedForBossChallengeBadge = false;
+
+    public static void reset() {
+        boss_enhance = 0;
+        ChaicBlood = 0;
+        readBooks = 0;
+        HealingIsDied = 0;
+
+		dm720Fight = false;
+		dm300Fight = false;
+		gooFight = false;
+
+        happyMode = false;
+
+        findMoon = false;
+		deadGo = false;
+		doNotLookLing = false;
+		//萨卡班甲鱼二阶段
+		sakaBackStage = 0;
+
+		goldCollected	= 0;
+		deepestFloor	= -1;
+		enemiesSlain	= 0;
+		foodEaten		= 0;
+		goldchestmazeCollected = 0;
+		dimandchestmazeCollected =0;
+		fuckGeneratorAlone = 0;
+		itemsCrafted    = 0;
+		piranhasKilled	= 0;
+		ankhsUsed		= 0;
+		naiyaziCollected = 0;
+		upgradesUsed    = 0;
+		sneakAttacks    = 0;
+		thrownAssists   = 0;
+		realdeepestFloor = 0;
+		spawnersAlive   = 0;
+
+		duration	= 0;
+
+        qualifiedForNoKilling = false;
+        qualifiedForBossChallengeBadge = false;
+        mimicking = false;
+
+		amuletObtained = false;
+
+		tipsgodungeon = false;
+
+		fireGirlnoshopping = false;
+
+		deadshoppingdied = false;
+		wangzheguilai = false;
+		endingbald = false;
+
+		lanterfireactive = false;
+		noGoReadHungry =  false;
+
+		crivusfruitslevel2 = false;
+		TPDoorDieds = false;
+
+		TryUsedAnmy = false;
+
+		second_elapsed = 0f;
+		real_seconds = 0;
+		turnsPassed = 0f;
 
 
-	public static void storeInBundle( Bundle bundle ) {
+		//得分
+		progressScore   = 0;
+		heldItemValue   = 0;
+		treasureScore   = 0;
+		floorsExplored  = new SparseArray<>();
+		exploreScore    = 0;
+		bossScores      = new int[6];
+		totalBossScore  = 0;
+		questScores     = new int[5];
+		totalQuestScore = 0;
+		winMultiplier   = 1;
+		chalMultiplier  = 1;
+		totalScore      = 0;
+		seedCustom = false;
+		SiderLing = 0;
+	}
 
-		bundle.put(HIDEEN,HiddenOK);
+    public static void storeInBundle(Bundle bundle) {
 
-		bundle.put(WINGAME,winGame);
+        bundle.put(HIDEEN, HiddenOK);
 
+        bundle.put(WINGAME, winGame);
 
-		bundle.put(BDTX,bossWeapons);
+		bundle.put(LOCD,doNotLookLing);
 
-		bundle.put(LOVE,findMoon);
+        bundle.put(BDTX, bossWeapons);
+
+        bundle.put(LOVE,findMoon);
 		bundle.put(LOVX,deadGo);
 
+		bundle.put(SIDERLING,SiderLing);
+
 		bundle.put(FUCKALONE,fuckGeneratorAlone);
+
+		bundle.put(SEEDCUSTOM,seedCustom);
+
+		bundle.put(DM720FIGHT,dm720Fight);
+
+		bundle.put(DM300FIGHT,dm300Fight);
+
+		bundle.put(GOOFIGHT,gooFight);
 
 		//分数
 		bundle.put( PROG_SCORE,  progressScore );
@@ -370,7 +410,7 @@ public class Statistics {
 
 		bundle.put( TIPSGO, tipsgodungeon );
 
-		bundle.put( BUG_SYNC_FIXED, bugsyncfixed );
+		bundle.put( BUG_SYNC_FIXED, noGoReadHungry);
 
 		bundle.put( NAYAZICOLLECTED, naiyaziCollected );
 
@@ -407,19 +447,32 @@ public class Statistics {
 		//SPD
 		bundle.put("real_time_passed", second_elapsed);
 		bundle.put("real_seconds_passed", real_seconds);
-		bundle.put("turns_passed", turnsPassed);
+        bundle.put("turns_passed", turnsPassed);
+        bundle.put(BOSS_CHALLENGE_QUALIFIED, qualifiedForBossChallengeBadge);
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
+
+		SiderLing = bundle.getInt( SIDERLING);
 
 		winGame = bundle.getBoolean(WINGAME);
 
 		HiddenOK = bundle.getBoolean(HIDEEN);
 
+		doNotLookLing = bundle.getBoolean(LOCD);
+
+		seedCustom = bundle.getBoolean(SEEDCUSTOM);
+
 		//嗜血荆棘等级处理
 		ChaicBlood   = bundle.getInt( CHACEBLOOD );
 
 		bossWeapons = bundle.getInt(BDTX);
+
+		dm720Fight = bundle.getBoolean(DM720FIGHT);
+
+		dm300Fight = bundle.getBoolean(DM300FIGHT);
+
+		gooFight = bundle.getBoolean(GOOFIGHT);
 
 		fuckGeneratorAlone = bundle.getInt(FUCKALONE);
 
@@ -499,7 +552,7 @@ public class Statistics {
 
 		lanterfireactive = bundle.getBoolean( LANTERACTIVE );
 
-		bugsyncfixed = bundle.getBoolean( BUG_SYNC_FIXED );
+		noGoReadHungry = bundle.getBoolean( BUG_SYNC_FIXED );
 
 		crivusfruitslevel2 = bundle.getBoolean( CrivusFruitsLevel2 );
 
@@ -510,7 +563,8 @@ public class Statistics {
 		//SPD
 		second_elapsed = bundle.getFloat("real_time_passed");
 		real_seconds =   bundle.getLong("real_seconds_passed");
-		turnsPassed =    bundle.getFloat("turns_passed");
+        turnsPassed = bundle.getFloat("turns_passed");
+        qualifiedForBossChallengeBadge = bundle.getBoolean(BOSS_CHALLENGE_QUALIFIED);
 	}
 	
 	public static void preview( GamesInProgress.Info info, Bundle bundle ){

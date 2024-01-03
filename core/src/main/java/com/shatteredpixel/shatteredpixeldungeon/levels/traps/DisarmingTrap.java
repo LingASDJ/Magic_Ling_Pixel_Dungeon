@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,10 +29,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
@@ -48,18 +50,23 @@ public class DisarmingTrap extends Trap{
 	public void activate() {
 		Heap heap = Dungeon.level.heaps.get( pos );
 
-		if (heap != null){
-			int cell = Dungeon.level.randomRespawnCell( null );
+		if (heap != null && heap.type == Heap.Type.HEAP){
+
+			int cell;
+			do {
+				cell = Dungeon.level.randomRespawnCell(null);
+			} while (cell != -1 && Dungeon.level.heaps.get( pos ) != null
+						&& Dungeon.level.heaps.get( pos ).type != Heap.Type.HEAP);
 
 			if (cell != -1) {
 				Item item = heap.pickUp();
 				Heap dropped = Dungeon.level.drop( item, cell );
-				dropped.type = heap.type;
-				dropped.sprite.view( dropped );
 				dropped.seen = true;
+				if (item instanceof Honeypot.ShatteredPot){
+					((Honeypot.ShatteredPot)item).movePot(pos, cell);
+				}
 				for (int i : PathFinder.NEIGHBOURS9) Dungeon.level.visited[cell+i] = true;
 				GameScene.updateFog();
-
 				Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 				CellEmitter.get(pos).burst(Speck.factory(Speck.LIGHT), 4);
 			}
@@ -88,6 +95,7 @@ public class DisarmingTrap extends Trap{
 
 				hero.belongings.weapon = null;
 				Dungeon.quickslot.clearItem(weapon);
+				ActionIndicator.refresh();
 				weapon.updateQuickslot();
 
 				Dungeon.level.drop(weapon, cell).seen = true;

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,12 +25,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -42,7 +38,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
@@ -55,6 +50,7 @@ public class CrystalMimic extends Mimic {
 
 	{
 		spriteClass = MimicSprite.Crystal.class;
+
 		FLEEING = new Fleeing();
 	}
 
@@ -107,7 +103,7 @@ public class CrystalMimic extends Mimic {
 
 	public void stopHiding(){
 		state = FLEEING;
-		Buff.affect(this, Levitation.class, Levitation.DURATION/2f);
+		if (sprite != null) sprite.idle();
 		//haste for 2 turns if attacking
 		if (alignment == Alignment.NEUTRAL){
 			Buff.affect(this, Haste.class, 2f);
@@ -117,7 +113,6 @@ public class CrystalMimic extends Mimic {
 		if (Actor.chars().contains(this) && Dungeon.level.heroFOV[pos]) {
 			enemy = Dungeon.hero;
 			target = Dungeon.hero.pos;
-			enemySeen = true;
 			GLog.w(Messages.get(this, "reveal") );
 			CellEmitter.get(pos).burst(Speck.factory(Speck.STAR), 10);
 			Sample.INSTANCE.play(Assets.Sounds.MIMIC, 1, 1.25f);
@@ -175,7 +170,7 @@ public class CrystalMimic extends Mimic {
 	}
 
 	@Override
-    public void generatePrize() {
+	protected void generatePrize( boolean useDecks ) {
 		//Crystal mimic already contains a prize item. Just guarantee it isn't cursed.
 		for (Item i : items){
 			i.cursed = false;
@@ -183,25 +178,23 @@ public class CrystalMimic extends Mimic {
 		}
 	}
 
-	private class Fleeing extends Mob.Fleeing{
+	private class Fleeing extends Mob.Fleeing {
+		@Override
+		protected void escaped() {
+			if (!Dungeon.level.heroFOV[pos] && Dungeon.level.distance(Dungeon.hero.pos, pos) >= 6) {
+				GLog.n(Messages.get(CrystalMimic.class, "escaped"));
+				destroy();
+				sprite.killAndErase();
+			} else {
+				state = WANDERING;
+			}
+		}
+
 		@Override
 		protected void nowhereToRun() {
-			if (buff( Terror.class ) == null
-					&& buffs( AllyBuff.class ).isEmpty()
-					&& buff( Dread.class ) == null) {
-				if (enemySeen) {
-					sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Mob.class, "rage"));
-					state = HUNTING;
-				} else if (!Dungeon.level.heroFOV[pos] && Dungeon.level.distance(Dungeon.hero.pos, pos) >= 6) {
-					GLog.n( Messages.get(CrystalMimic.class, "escaped"));
-					if (Dungeon.level.heroFOV[pos]) CellEmitter.get(pos).burst(Speck.factory(Speck.WOOL), 6);
-					destroy();
-					sprite.killAndErase();
-				} else {
-					state = WANDERING;
-				}
-			} else {
-				super.nowhereToRun();
+			super.nowhereToRun();
+			if (state == HUNTING){
+				spend(-TICK); //crystal mimics are fast!
 			}
 		}
 	}

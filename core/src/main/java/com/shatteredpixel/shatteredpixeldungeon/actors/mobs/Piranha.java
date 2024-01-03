@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ public class Piranha extends Mob {
 	protected boolean act() {
 		
 		if (!Dungeon.level.water[pos]) {
-			die( null );
+			dieOnLand();
 			return true;
 		} else {
 			return super.act();
@@ -91,7 +91,7 @@ public class Piranha extends Mob {
 	
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, Dungeon.depth);
+		return super.drRoll() + Random.NormalIntRange(0, Dungeon.depth);
 	}
 
 	@Override
@@ -105,7 +105,11 @@ public class Piranha extends Mob {
 		}
 		return super.surprisedBy(enemy, attacking);
 	}
-	
+
+	public void dieOnLand(){
+		die( null );
+	}
+
 	@Override
 	public void die( Object cause ) {
 		super.die( cause );
@@ -195,6 +199,14 @@ public class Piranha extends Mob {
 			}
 			
 			return super.act(enemyInFOV, justAlerted);
+		}
+	}
+
+	public static Piranha random(){
+		if (Random.Int(50) == 0){
+			return new PhantomPiranha();
+		} else {
+			return new Piranha();
 		}
 	}
 }

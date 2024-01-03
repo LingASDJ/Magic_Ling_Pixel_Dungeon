@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,6 @@ public class ElixirOfHoneyedHealing extends Elixir {
 	public void apply(Hero hero) {
 		PotionOfHealing.cure(hero);
 		PotionOfHealing.heal(hero);
-		Talent.onHealingPotionUsed( hero );
 		Buff.affect(hero, Hunger.class).satisfy(Hunger.HUNGRY/2f);
 		Talent.onFoodEaten(hero, Hunger.HUNGRY/2f, this);
 	}

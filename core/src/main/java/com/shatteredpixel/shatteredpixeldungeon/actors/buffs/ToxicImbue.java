@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,11 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
 public class ToxicImbue extends Buff {
@@ -73,7 +75,12 @@ public class ToxicImbue extends Buff {
 
 	@Override
 	public int icon() {
-		return BuffIndicator.IMMUNITY;
+		return BuffIndicator.IMBUE;
+	}
+
+	@Override
+	public void tintIcon(Image icon) {
+		icon.hardlight(1f, 1.5f, 0f);
 	}
 
 	@Override
@@ -87,11 +94,6 @@ public class ToxicImbue extends Buff {
 	}
 
 	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-
-	@Override
 	public String desc() {
 		return Messages.get(this, "desc", dispTurns(left));
 	}
@@ -99,5 +101,15 @@ public class ToxicImbue extends Buff {
 	{
 		immunities.add( ToxicGas.class );
 		immunities.add( Poison.class );
+	}
+
+	@Override
+	public boolean attachTo(Char target) {
+		if (super.attachTo(target)){
+			Buff.detach(target, Poison.class);
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

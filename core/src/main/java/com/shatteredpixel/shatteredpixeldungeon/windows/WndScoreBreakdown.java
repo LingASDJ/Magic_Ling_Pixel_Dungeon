@@ -53,6 +53,11 @@ public class WndScoreBreakdown extends Window {
         if (Statistics.winMultiplier > 1) {
             pos = statSlot(this, Messages.get(this, "win_multiplier"), Statistics.winMultiplier + "x", pos, false);
         }
+
+        if(Statistics.seedCustom){
+            pos = statSlot(this, Messages.get(this, "seed_multiplier"), "0.5" + "x", pos, false);
+        }
+
         if (Statistics.chalMultiplier > 1) {
             pos = statSlot(this, Messages.get(this, "challenge_multiplier"), Statistics.chalMultiplier + "x", pos, false);
         }

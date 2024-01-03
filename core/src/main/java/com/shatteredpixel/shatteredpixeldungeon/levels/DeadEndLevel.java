@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +22,14 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Bones;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 
 public class DeadEndLevel extends Level {
 
@@ -64,10 +69,20 @@ public class DeadEndLevel extends Level {
 				Terrain.WATER;
 		}
 		
-		entrance = SIZE * width() + SIZE / 2 + 1;
+		int entrance = SIZE * width() + SIZE / 2 + 1;
+
+		//different exit behaviour depending on main branch or side one
+		if (Dungeon.branch == 0) {
+			transitions.add(new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE));
+		} else {
+			transitions.add(new LevelTransition(this,
+					entrance,
+					LevelTransition.Type.BRANCH_ENTRANCE,
+					Dungeon.depth,
+					0,
+					LevelTransition.Type.BRANCH_EXIT));
+		}
 		map[entrance] = Terrain.ENTRANCE;
-		
-		exit = 0;
 		
 		return true;
 	}
@@ -87,11 +102,15 @@ public class DeadEndLevel extends Level {
 
 	@Override
 	protected void createItems() {
+		Item item = Bones.get();
+		if (item != null) {
+			drop( item, entrance()-width() ).setHauntedIfCursed().type = Heap.Type.REMAINS;
+		}
 	}
 	
 	@Override
 	public int randomRespawnCell( Char ch ) {
-		return entrance-width();
+		return entrance()-width();
 	}
 
 }

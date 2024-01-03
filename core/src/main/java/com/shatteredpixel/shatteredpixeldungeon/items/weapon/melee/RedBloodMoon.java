@@ -22,6 +22,12 @@ import com.watabou.utils.Random;
 
 public class RedBloodMoon extends MeleeWeapon {
 
+    public static class RedBloodMoonEX extends RedBloodMoon {
+        {
+            image = ItemSpriteSheet.RedBloodMoonEX;
+        }
+    }
+
     public static int deadking=0;
 
     public RedBloodMoon() {

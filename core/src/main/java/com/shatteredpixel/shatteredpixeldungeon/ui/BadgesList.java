@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@ public class BadgesList extends ScrollPane {
 
 	private class ListItem extends Component {
 		
-		private static final float HEIGHT	= 20;
+		private static final float HEIGHT	= 18;
 		
 		private Badges.Badge badge;
 		

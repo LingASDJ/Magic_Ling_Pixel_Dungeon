@@ -1,18 +1,18 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard;
 
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CHASM;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.FURROWED_GRASS;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.PEDESTAL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PinkGhost;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 
 public class HeartRoom extends SpecialRoom {
 
@@ -55,28 +55,28 @@ public class HeartRoom extends SpecialRoom {
         level.mobs.add(n);
 
         Painter.drawLine(level, new Point(left, top), new Point(right, top), WATER);
-        Painter.drawLine(level, new Point(right, top), new Point(right, bottom), CHASM);
+        Painter.drawLine(level, new Point(right, top), new Point(right, bottom), WATER);
         Painter.drawLine(level, new Point(right, bottom), new Point(left, bottom), WATER);
-        Painter.drawLine(level, new Point(left, bottom), new Point(left, top),  CHASM);
+        Painter.drawLine(level, new Point(left, bottom), new Point(left, top),  WATER);
 
-        Painter.fill(level,this, FURROWED_GRASS);
+        Painter.fill( level, this,0, Random.Int(10) == 1 ? Terrain.FURROWED_GRASS : Terrain.WALL );
+        Painter.fill( level, this,1, FURROWED_GRASS );
 
         // 绘制爱心
-
-
-        Painter.drawLine(level, new Point(centerX - radius, centerY), new Point(centerX, centerY - radius), PEDESTAL);
-
-        Painter.drawLine(level, new Point(centerX + radius, centerY), new Point(centerX, centerY - radius),  PEDESTAL);
-
-        Painter.drawLine(level, new Point(centerX - radius, centerY), new Point(centerX, centerY + radius), PEDESTAL);
-
-        Painter.drawLine(level, new Point(centerX + radius, centerY), new Point(centerX, centerY + radius), PEDESTAL);
-
         // 绘制眼睛外圈和门
         int eyeRadius = radius /4;
         Painter.drawCircle(level, center, eyeRadius + 5, EMPTY);
 
-        Painter.drawCircle(level, center, eyeRadius, CHASM);
+        Painter.drawCircle(level, center, eyeRadius, WATER);
+
+        for (Door door : connected.values()) {
+            door.set( Door.Type.REGULAR );
+            if (door.x == left || door.x == right){
+                Painter.drawInside(level, this, door, width()/2, FURROWED_GRASS);
+            } else {
+                Painter.drawInside(level, this, door, height()/2, FURROWED_GRASS);
+            }
+        }
 
         Painter.drawCircle(level, center, eyeRadius - 2, EMPTY_SP);
 

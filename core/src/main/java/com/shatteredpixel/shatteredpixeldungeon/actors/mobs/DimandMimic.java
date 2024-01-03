@@ -9,15 +9,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -130,22 +126,18 @@ public class DimandMimic extends Mimic {
                 this.target = newPos;
                 new Item().throwSound();
                 Sample.INSTANCE.play( Assets.Sounds.CHAINS );
-                sprite.parent.add(new Chains(sprite.center(), enemy.sprite.center(), new Callback() {
-                    public void call() {
-                        Actor.addDelayed(new Pushing(enemy, enemy.pos, newPosFinal, new Callback(){
+                sprite.parent.add(new Chains(sprite.center(),
+                        enemy.sprite.destinationCenter(),
+                        Effects.Type.CHAIN,
+                        new Callback() {
                             public void call() {
-                                enemy.pos = newPosFinal;
-                                Dungeon.level.occupyCell(enemy);
-                                Cripple.prolong(enemy, Cripple.class, 4f);
-                                if (enemy == Dungeon.hero) {
-                                    Dungeon.hero.interrupt();
-                                    Dungeon.observe();
-                                    GameScene.updateFog();
-                                }
+                                Actor.add(new Pushing(enemy, enemy.pos, newPosFinal, new Callback() {
+                                    public void call() {
+                                        pullEnemy(enemy, newPosFinal);
+                                    }
+                                }));
+                                next();
                             }
-                        }), -1);
-                        next();
-                    }
                 }));
             }
         }
@@ -153,30 +145,23 @@ public class DimandMimic extends Mimic {
         return true;
     }
 
+    private void pullEnemy(Char enemy, int pullPos ){
+        enemy.pos = pullPos;
+        enemy.sprite.place(pullPos);
+        Dungeon.level.occupyCell(enemy);
+        Cripple.prolong(enemy, Cripple.class, 4f);
+        if (enemy == Dungeon.hero) {
+            Dungeon.hero.interrupt();
+            Dungeon.observe();
+            GameScene.updateFog();
+        }
+    }
+
     @Override
     public void setLevel(int level) {
         super.setLevel(Math.round(level*1.33f));
     }
 
-    @Override
-    public void generatePrize() {
-        super.generatePrize();
-        //all existing prize items are guaranteed uncursed, and have a 50% chance to be +1 if they were +0
-        for (Item i : items){
-            if (i instanceof EquipableItem || i instanceof Wand){
-                i.cursed = false;
-                i.cursedKnown = true;
-                if (i instanceof Weapon && ((Weapon) i).hasCurseEnchant()){
-                    ((Weapon) i).enchant(null);
-                }
-                if (i instanceof Armor && ((Armor) i).hasCurseGlyph()){
-                    ((Armor) i).inscribe(null);
-                }
-                if (!(i instanceof MissileWeapon) && i.level() == 6 && Random.Int(4) == 0){
-                    i.upgrade();
-                }
-            }
-        }
-    }
+
 }
 

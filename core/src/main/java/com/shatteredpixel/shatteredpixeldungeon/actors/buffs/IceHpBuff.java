@@ -10,7 +10,10 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Bundle;
 
 public class IceHpBuff extends Buff {
-
+    @Override
+    public String heroMessage() {
+        return "";
+    }
     private static final String LEVEL = "level";
     private static final String PARTIALDAMAGE = "partialDamage";
 

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,10 +57,16 @@ public class RingOfWealth extends Ring {
 
 	private float triesToDrop = Float.MIN_VALUE;
 	private int dropsToRare = Integer.MIN_VALUE;
-
+	
 	public String statsInfo() {
 		if (isIdentified()){
-			return Messages.get(this, "stats", Messages.decimalFormat("#.##", 100f * (Math.pow(1.20f, soloBuffedBonus()) - 1f)));
+			String info = Messages.get(this, "stats",
+					Messages.decimalFormat("#.##", 100f * (Math.pow(1.20f, soloBuffedBonus()) - 1f)));
+			if (isEquipped(Dungeon.hero) && soloBuffedBonus() != combinedBuffedBonus(Dungeon.hero, Wealth.class)){
+				info += "\n\n" + Messages.get(this, "combined_stats",
+						Messages.decimalFormat("#.##", 100f * (Math.pow(1.20f, combinedBuffedBonus(Dungeon.hero, Wealth.class)) - 1f)));
+			}
+			return info;
 		} else {
 			return Messages.get(this, "typical_stats", Messages.decimalFormat("#.##", 20f));
 		}
@@ -87,20 +93,20 @@ public class RingOfWealth extends Ring {
 	protected RingBuff buff( ) {
 		return new Wealth();
 	}
-
+	
 	public static float dropChanceMultiplier( Char target ){
 		return (float)Math.pow(1.20, getBuffedBonus(target, Wealth.class));
 	}
-
+	
 	public static ArrayList<Item> tryForBonusDrop(Char target, int tries ){
 		int bonus = getBuffedBonus(target, Wealth.class);
 
 		if (bonus <= 0) return null;
-
+		
 		HashSet<Wealth> buffs = target.buffs(Wealth.class);
 		float triesToDrop = Float.MIN_VALUE;
 		int dropsToEquip = Integer.MIN_VALUE;
-
+		
 		//find the largest count (if they aren't synced yet)
 		for (Wealth w : buffs){
 			if (w.triesToDrop() > triesToDrop){
@@ -156,7 +162,7 @@ public class RingOfWealth extends Ring {
 			w.triesToDrop(triesToDrop);
 			w.dropsToRare(dropsToEquip);
 		}
-
+		
 		return drops;
 	}
 
@@ -185,18 +191,18 @@ public class RingOfWealth extends Ring {
 		}
 		latestDropTier = 0;
 	}
-
+	
 	public static Item genConsumableDrop(int level) {
 		float roll = Random.Float();
 		//60% chance - 4% per level. Starting from +15: 0%
 		if (roll < (0.6f - 0.04f * level)) {
 			latestDropTier = 1;
 			return genLowValueConsumable();
-			//30% chance + 2% per level. Starting from +15: 60%-2%*(lvl-15)
+		//30% chance + 2% per level. Starting from +15: 60%-2%*(lvl-15)
 		} else if (roll < (0.9f - 0.02f * level)) {
 			latestDropTier = 2;
 			return genMidValueConsumable();
-			//10% chance + 2% per level. Starting from +15: 40%+2%*(lvl-15)
+		//10% chance + 2% per level. Starting from +15: 40%+2%*(lvl-15)
 		} else {
 			latestDropTier = 3;
 			return genHighValueConsumable();
@@ -297,11 +303,11 @@ public class RingOfWealth extends Ring {
 	}
 
 	public class Wealth extends RingBuff {
-
+		
 		private void triesToDrop( float val ){
 			triesToDrop = val;
 		}
-
+		
 		private float triesToDrop(){
 			return triesToDrop;
 		}
@@ -313,6 +319,6 @@ public class RingOfWealth extends Ring {
 		private int dropsToRare(){
 			return dropsToRare;
 		}
-
+		
 	}
 }

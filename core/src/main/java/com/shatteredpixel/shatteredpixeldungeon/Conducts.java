@@ -9,8 +9,7 @@ import java.util.ArrayList;
 public class Conducts {
     public enum Conduct {
         NULL,
-        BOSSRUSH,
-        MONEYLETGO;
+        BOSSRUSH;
         /**深海副本*/
         //SEADLC
 

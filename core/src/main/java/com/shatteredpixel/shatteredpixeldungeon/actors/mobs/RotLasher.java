@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,15 +36,16 @@ public class RotLasher extends Mob {
 	{
 		spriteClass = RotLasherSprite.class;
 
-		HP = HT = 40;
+		HP = HT = 80;
 		defenseSkill = 0;
 
 		EXP = 1;
 
 		loot = Generator.Category.SEED;
-		lootChance = 1f;
+		lootChance = 0.75f;
 
 		state = WANDERING = new Waiting();
+		viewDistance = 1;
 
 		properties.add(Property.IMMOVABLE);
 		properties.add(Property.MINIBOSS);
@@ -53,7 +54,7 @@ public class RotLasher extends Mob {
 	@Override
 	protected boolean act() {
 		if (enemy == null || !Dungeon.level.adjacent(pos, enemy.pos)) {
-			HP = Math.min(HT, HP + 3);
+			HP = Math.min(HT, HP + 5);
 		}
 		return super.act();
 	}
@@ -82,32 +83,39 @@ public class RotLasher extends Mob {
 
 	@Override
 	protected boolean getCloser(int target) {
-		return true;
+		return false;
 	}
 
 	@Override
 	protected boolean getFurther(int target) {
-		return true;
+		return false;
 	}
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange(8, 15);
+		return Random.NormalIntRange(10, 20);
 	}
 
 	@Override
 	public int attackSkill( Char target ) {
-		return 15;
+		return 25;
 	}
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 8);
+		return super.drRoll() + Random.NormalIntRange(0, 8);
 	}
 	
 	{
 		immunities.add( ToxicGas.class );
 	}
 
-	private class Waiting extends Mob.Wandering{}
+	private class Waiting extends Mob.Wandering{
+
+		@Override
+		protected boolean noticeEnemy() {
+			spend(TICK);
+			return super.noticeEnemy();
+		}
+	}
 }

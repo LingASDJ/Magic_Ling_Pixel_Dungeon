@@ -13,7 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
+import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -49,24 +49,42 @@ public class StormCloudDied extends Buff {
         this.left = duration;
     }
     public static class LightningBolt{}
+
+
+
     @Override
     public boolean act() {
 
+        int totalDamage = 3+Dungeon.hero.lvl/5+Dungeon.depth/5;
         for(Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-            if (mob != null) {
+            if (mob != null && Dungeon.level.heroFOV[mob.pos]) {
                 arcs.add( new Lightning.Arc(hero.sprite.center(), mob.sprite.center()));
-                mob.damage( 3+Dungeon.hero.lvl/5, new LightningBolt() );
+                mob.damage( totalDamage, new LightningBolt() );
                 arc(mob);
+                left -= TICK;
+
             }
         }
 
         ArrayList<Integer> cells = new ArrayList<>();
-        for (int i = 10; i > 0; i--) {
+        for (int i = 4; i > 0; i--) {
             int c = Random.Int(Dungeon.level.length());
-            if (c >= 0 && c < Dungeon.level.length() && hero.fieldOfView[c] && !cells.contains(c)) {
-                cells.add(c);
+            try {
+                final boolean b = c >= 0 && c < Dungeon.level.length() && hero.fieldOfView[c] && !cells.contains(c);
+                if(b) cells.add(c);
+            } catch (Exception ignored) {
+                //因为Dungeon.level初始化可能没有正确加载，所以TC监测
             }
+
         }
+
+//        ArrayList<Integer> cells = new ArrayList<>();
+//        for (int i = 4; i > 0; i--) {
+//            int c = Random.Int(Dungeon.level.length());
+//            if (c >= 0 && c < Dungeon.level.length() && hero.fieldOfView[c] && !cells.contains(c)) {
+//                cells.add(c);
+//            }
+//        }
 
         for(int p : cells){
             arcs.add( new Lightning.Arc(hero.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(p)));
@@ -76,12 +94,12 @@ public class StormCloudDied extends Buff {
         //don't want to wait for the effect before processing damage.
         hero.sprite.parent.addToFront( new Lightning( arcs, null ) );
 
-
         spend(TICK);
-        left -= TICK;
+
         if (left <= 0){
             detach();
         }
+
 
         return true;
     }
@@ -116,7 +134,8 @@ public class StormCloudDied extends Buff {
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc", dispTurns(left));
+        int totalDamage = 3+Dungeon.hero.lvl/5+Dungeon.depth/5;
+        return Messages.get(this, "desc",totalDamage,dispTurns(left),(int)(totalDamage*left));
     }
 
     {

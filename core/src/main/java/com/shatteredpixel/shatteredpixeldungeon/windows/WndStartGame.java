@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.IntroScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -261,7 +260,7 @@ public class WndStartGame extends Window {
 //				} else
 				if (SPDSettings.intro()) {
 					SPDSettings.intro( false );
-					Game.switchScene( IntroScene.class );
+					//Game.switchScene( Inter.class );
 				} else {
 					Game.switchScene( InterlevelScene.class );
 				}
@@ -570,6 +569,13 @@ public class WndStartGame extends Window {
 							heroItem.icon(new ItemSprite(ItemSpriteSheet.SPIRIT_BOW, null));
 							heroLoadout.icon(new ItemSprite(ItemSpriteSheet.GLOVES, null));
 							heroMisc.icon(new Image(Assets.Environment.TILES_SEWERS, 112, 96, 16, 16 ));
+							break;
+
+						//隶属于之外啊
+						case DUELIST:
+							heroItem.icon(new ItemSprite(ItemSpriteSheet.GREATSHIELD, null));
+							heroLoadout.icon(new ItemSprite(ItemSpriteSheet.ARMOR_DUELIST, null));
+							heroMisc.icon(new Image(Assets.Environment.TILES_CITY, 112, 96, 16, 16 ));
 							break;
 					}
 

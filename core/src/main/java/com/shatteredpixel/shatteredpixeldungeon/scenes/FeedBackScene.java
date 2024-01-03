@@ -16,7 +16,7 @@ public class FeedBackScene extends PixelScene {
     @Override
     public void create() {
         super.create();
-       playBGM( Assets.Music.SHOP, true );
+       playBGM( Assets.Music.CITY_BOSS_FINALE, true );
         wndFeedback = new WndFeedback(false) {
             @Override
             public void onBackPressed() {

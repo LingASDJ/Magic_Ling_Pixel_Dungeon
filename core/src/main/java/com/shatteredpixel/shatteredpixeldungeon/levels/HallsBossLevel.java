@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,22 +21,40 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogDzewa;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Tilemap;
@@ -45,6 +63,8 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class HallsBossLevel extends Level {
 
@@ -55,6 +75,22 @@ public class HallsBossLevel extends Level {
 		viewDistance = Math.min(4, viewDistance);
 	}
 
+
+	@Override
+	public void playLevelMusic() {
+		if (locked && BossHealthBar.isAssigned()){
+			if (BossHealthBar.isBleeding()){
+				Music.INSTANCE.play(Assets.Music.HALLS_BOSS_FINALE, true);
+			} else {
+				Music.INSTANCE.play(Assets.Music.HALLS_TENSE, true);
+			}
+		} else if (map[exit()] != Terrain.EXIT){
+			Music.INSTANCE.end();
+		} else {
+			BGMPlayer.playBGMWithDepth();
+		}
+	}
+
 	private static final int WIDTH = 32;
 	private static final int HEIGHT = 32;
 
@@ -62,21 +98,6 @@ public class HallsBossLevel extends Level {
 	private static final int ROOM_RIGHT		= WIDTH / 2 + 4;
 	private static final int ROOM_TOP		= 8;
 	private static final int ROOM_BOTTOM	= ROOM_TOP + 8;
-
-	@Override
-	public void playLevelMusic() {
-		if (locked){
-			Music.INSTANCE.play(Assets.Music.HALLS_BOSS, true);
-		//if exit isn't unlocked
-		} else if (map[exit] != Terrain.EXIT){
-			Music.INSTANCE.end();
-		} else {
-			Music.INSTANCE.playTracks(
-					new String[]{Assets.Music.HALLS_1, Assets.Music.HALLS_2, Assets.Music.HALLS_2},
-					new float[]{1, 1, 0.5f},
-					false);
-		}
-	}
 
 	@Override
 	public String tilesTex() {
@@ -112,7 +133,8 @@ public class HallsBossLevel extends Level {
 			Painter.fill(this, 4 + i * 5, top, 5, bottom - top + 1, Terrain.EMPTY);
 
 			if (i == 2) {
-				entrance = (6 + i * 5) + (bottom - 1) * width();
+				int entrance = (6 + i * 5) + (bottom - 1) * width();
+				transitions.add(new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE));
 			}
 
 		}
@@ -124,7 +146,7 @@ public class HallsBossLevel extends Level {
 			}
 		}
 
-		map[entrance] = Terrain.ENTRANCE;
+		map[entrance()] = Terrain.ENTRANCE;
 
 		Painter.fill(this, ROOM_LEFT-1, ROOM_TOP-1, 11, 11, Terrain.EMPTY );
 
@@ -149,7 +171,12 @@ public class HallsBossLevel extends Level {
 
 		Painter.fill(this, ROOM_LEFT+3, ROOM_TOP+2, 3, 4, Terrain.EMPTY );
 
-		exit = width/2 + ((ROOM_TOP+1) * width);
+		int exitCell = width/2 + ((ROOM_TOP+1) * width);
+		LevelTransition exit = new LevelTransition(this, exitCell, LevelTransition.Type.REGULAR_EXIT);
+		exit.top--;
+		exit.left--;
+		exit.right++;
+		transitions.add(exit);
 
 		CustomTilemap vis = new CenterPieceVisuals();
 		vis.pos(ROOM_LEFT, ROOM_TOP+1);
@@ -165,7 +192,7 @@ public class HallsBossLevel extends Level {
 		}
 
 		//ensures a path to the exit exists
-		return (PathFinder.getStep(entrance, exit, passable) != -1);
+		return (PathFinder.getStep(entrance(), exit(), passable) != -1);
 	}
 
 	@Override
@@ -183,36 +210,45 @@ public class HallsBossLevel extends Level {
 			int pos;
 			do {
 				pos = randomRespawnCell(null);
-			} while (pos == entrance);
+			} while (pos == entrance());
 			drop( item, pos ).setHauntedIfCursed().type = Heap.Type.REMAINS;
 		}
 	}
 
 	@Override
 	public int randomRespawnCell( Char ch ) {
-		int pos = entrance;
-		int cell;
-		do {
-			cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
-		} while (!passable[cell]
-				|| (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
-				|| Actor.findChar(cell) != null);
-		return cell;
+		ArrayList<Integer> candidates = new ArrayList<>();
+		for (int i : PathFinder.NEIGHBOURS8){
+			int cell = entrance() + i;
+			if (passable[cell]
+					&& Actor.findChar(cell) == null
+					&& (!Char.hasProp(ch, Char.Property.LARGE) || openSpace[cell])){
+				candidates.add(cell);
+			}
+		}
+
+		if (candidates.isEmpty()){
+			return -1;
+		} else {
+			return Random.element(candidates);
+		}
 	}
 
 	@Override
 	public void occupyCell( Char ch ) {
-		super.occupyCell( ch );
-
-		if (map[entrance] == Terrain.ENTRANCE && map[exit] != Terrain.EXIT
-				&& ch == Dungeon.hero && Dungeon.level.distance(ch.pos, entrance) >= 2) {
+		if (map[entrance()] == Terrain.ENTRANCE && map[exit()] != Terrain.EXIT
+				&& ch == Dungeon.hero && Dungeon.level.distance(ch.pos, entrance()) >= 2) {
 			seal();
 		}
+
+		super.occupyCell( ch );
 	}
 
 	@Override
 	public void seal() {
 		super.seal();
+		Statistics.qualifiedForBossChallengeBadge = true;
+		int entrance = entrance();
 		set( entrance, Terrain.EMPTY_SP );
 		GameScene.updateMap( entrance );
 		CellEmitter.get( entrance ).start( FlameParticle.FACTORY, 0.1f, 10 );
@@ -220,22 +256,40 @@ public class HallsBossLevel extends Level {
 		Dungeon.observe();
 
 		YogDzewa boss = new YogDzewa();
-		boss.pos = exit + width*3;
+		boss.pos = exit() + width*3;
+
+		//push any char that is already here away
+		if (Actor.findChar(boss.pos) != null){
+			ArrayList<Integer> candidates = new ArrayList<>();
+			for (int i : PathFinder.NEIGHBOURS8){
+				if (Actor.findChar(boss.pos + i) == null){
+					candidates.add(boss.pos + i);
+				}
+			}
+			Char ch = Actor.findChar(boss.pos);
+			if (!candidates.isEmpty()){
+				ch.pos = Random.element(candidates);
+			} else {
+				ch.pos = boss.pos+2*width;
+			}
+			Actor.add(new Pushing(ch, boss.pos, ch.pos));
+		}
+
 		GameScene.add( boss );
 	}
 
 	@Override
 	public void unseal() {
 		super.unseal();
-		set( entrance, Terrain.ENTRANCE );
-		GameScene.updateMap( entrance );
+		set( entrance(), Terrain.ENTRANCE );
+		GameScene.updateMap( entrance() );
 
-		set( exit, Terrain.EXIT );
-		GameScene.updateMap( exit );
+		set( exit(), Terrain.EXIT );
+		GameScene.updateMap( exit() );
 
-		CellEmitter.get(exit-1).burst(ShadowParticle.UP, 25);
-		CellEmitter.get(exit).burst(ShadowParticle.UP, 100);
-		CellEmitter.get(exit+1).burst(ShadowParticle.UP, 25);
+		CellEmitter.get(exit()-1).burst(ShadowParticle.UP, 25);
+		CellEmitter.get(exit()).burst(ShadowParticle.UP, 100);
+		CellEmitter.get(exit()+1).burst(ShadowParticle.UP, 25);
 		for( CustomTilemap t : customTiles){
 			if (t instanceof CenterPieceVisuals){
 				((CenterPieceVisuals) t).updateState();
@@ -252,7 +306,12 @@ public class HallsBossLevel extends Level {
 		Game.runOnRenderThread(new Callback() {
 			@Override
 			public void call() {
-				Music.INSTANCE.end();
+				Music.INSTANCE.fadeOut(5f, new Callback() {
+					@Override
+					public void call() {
+						Music.INSTANCE.play(Assets.Music.THEME_FINALE, true);
+					}
+				});
 			}
 		});
 	}
@@ -264,6 +323,65 @@ public class HallsBossLevel extends Level {
 			if (m instanceof YogDzewa){
 				((YogDzewa) m).updateVisibility(this);
 			}
+		}
+	}
+
+	@Override
+	public boolean activateTransition(Hero hero, LevelTransition transition) {
+		if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
+				//ascension challenge only works on runs started on v1.3+
+				&& Dungeon.initialVersion > ShatteredPixelDungeon.v1_2_3
+				&& hero.belongings.getItem(Amulet.class) != null
+				&& hero.buff(AscensionChallenge.class) == null) {
+
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					GameScene.show( new WndOptions( new ItemSprite(ItemSpriteSheet.AMULET),
+							Messages.get(Amulet.class, "ascent_title"),
+							Messages.get(Amulet.class, "ascent_desc"),
+							Messages.get(Amulet.class, "ascent_yes"),
+							Messages.get(Amulet.class, "ascent_no")){
+						@Override
+						protected void onSelect(int index) {
+							if (index == 0){
+								Buff.affect(hero, AscensionChallenge.class);
+								Statistics.highestAscent = 25;
+								HallsBossLevel.super.activateTransition(hero, transition);
+							}
+						}
+					} );
+				}
+			});
+			return false;
+
+		} else if (transition.type == LevelTransition.Type.REGULAR_EXIT) {
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+					if (timeFreeze != null) timeFreeze.disarmPresses();
+					Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+					if (timeBubble != null) timeBubble.disarmPresses();
+					InterlevelScene.mode = InterlevelScene.Mode.AMULET;
+					InterlevelScene.curTransition = new LevelTransition();
+					InterlevelScene.curTransition.destDepth = depth;
+					InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+
+					if(Statistics.endingbald){
+						InterlevelScene.curTransition.destBranch = 4;
+					} else {
+						InterlevelScene.curTransition.destBranch = 5;
+					}
+
+					InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+					InterlevelScene.curTransition.centerCell  = -1;
+					Game.switchScene( InterlevelScene.class );
+				}
+			});
+			return false;
+		} else {
+			return super.activateTransition(hero, transition);
 		}
 	}
 
@@ -316,7 +434,7 @@ public class HallsBossLevel extends Level {
 		}
 
 		private static final int[] map = new int[]{
-				 8,  9, 10, 11, 11, 11, 12, 13, 14,
+				8,  9, 10, 11, 11, 11, 12, 13, 14,
 				16, 17, 18, 27, 19, 27, 20, 21, 22,
 				24, 25, 26, 19, 19, 19, 28, 29, 30,
 				24, 25, 26, 19, 19, 19, 28, 29, 30,
@@ -336,7 +454,7 @@ public class HallsBossLevel extends Level {
 		private void updateState(){
 			if (vis != null){
 				int[] data = map.clone();
-				if (Dungeon.level.map[Dungeon.level.exit] == Terrain.EXIT) {
+				if (Dungeon.level.map[Dungeon.level.exit()] == Terrain.EXIT) {
 					data[4] = 19;
 					data[12] = data[14] = 31;
 				}
@@ -375,7 +493,7 @@ public class HallsBossLevel extends Level {
 		private void updateState(){
 			if (vis != null){
 				int[] data = map.clone();
-				if (Dungeon.level.map[Dungeon.level.exit] == Terrain.EXIT) {
+				if (Dungeon.level.map[Dungeon.level.exit()] == Terrain.EXIT) {
 					data[3] = 1;
 					data[4] = 0;
 					data[5] = 2;

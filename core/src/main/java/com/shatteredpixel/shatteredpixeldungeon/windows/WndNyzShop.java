@@ -44,13 +44,13 @@ public class WndNyzShop extends Window {
         titlebar.icon(new NyzSprites());
         titlebar.label(Messages.get(WndNyzShop.class,"nayazi"));
         add( titlebar );
-        RenderedTextBlock message = PixelScene.renderTextBlock( (Messages.get(WndNyzShop.class,"nayaziwelcome")), 6 );
+        RenderedTextBlock message = PixelScene.renderTextBlock( NyzBadages(), 6 );
         message.maxWidth(WIDTH);
         message.setPos(0, titlebar.bottom() + GAP);
         add( message );
 
         WndNyzShop.RewardButton shop1 = new WndNyzShop.RewardButton( Nyz.shop1 );
-        shop1.setRect( (WIDTH - BTN_GAP) / 6 - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE,
+        shop1.setRect( (WIDTH - BTN_GAP) / 6f - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE,
                 BTN_SIZE );
         add( shop1 );
 
@@ -116,6 +116,14 @@ public class WndNyzShop extends Window {
         add(btnSite);
 
         resize(WIDTH, (int) bomb6.bottom());
+    }
+
+    private String NyzBadages() {
+        String message = Messages.get(WndNyzShop.class,"nayaziwelcome",Statistics.naiyaziCollected);
+        if (!Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
+            message = Messages.get(WndNyzShop.class,"notgetbadges",Statistics.naiyaziCollected);
+        }
+        return message;
     }
 
     public static WndBag sell() {
@@ -190,8 +198,6 @@ public class WndNyzShop extends Window {
                     } else if(Dungeon.gold >= 720) {
                         Dungeon.gold-=720*Random.Int(2)+hero.lvl/5+100;
                         WndNyzShop.this.selectReward( item );
-                        if (RandomBuff.level-- >= 0) {
-                        }
                         Buff.prolong( hero, ReloadShop.class, 1f);
                         Statistics.naiyaziCollected += 1;
                         WndNyzShop.RewardWindow.this.hide();
@@ -202,7 +208,7 @@ public class WndNyzShop extends Window {
                     }
                 }
             };
-            btnConfirm.setRect(0, height+2, width/2-1, 16);
+            btnConfirm.setRect(0, height+2, width/2f-1, 16);
             add(btnConfirm);
 
             RedButton btnCancel = new RedButton(Messages.get(WndNyzShop.class, "cancel")){
@@ -234,11 +240,9 @@ public class WndNyzShop extends Window {
                             }
                         }
                     } else if(Dungeon.gold >= 270) {
-                        Dungeon.gold-=270*Random.Int(3);
+                        Dungeon.gold-=270*Random.Int(3)+50;
                         Buff.prolong( hero, ReloadShop.class, 1f);
                         WndNyzShop.this.selectReward( item );
-                        if (RandomBuff.level-- >= 0) {
-                        }
                         Badges.nyzvalidateGoldCollected();
                         Statistics.naiyaziCollected += 1;
                         WndNyzShop.RewardWindow2.this.hide();
@@ -247,7 +251,7 @@ public class WndNyzShop extends Window {
                     }
                 }
             };
-            btnConfirm.setRect(0, height+2, width/2-1, 16);
+            btnConfirm.setRect(0, height+2, width/2f-1, 16);
             add(btnConfirm);
 
             RedButton btnCancel = new RedButton(Messages.get(WndNyzShop.class, "cancel")){

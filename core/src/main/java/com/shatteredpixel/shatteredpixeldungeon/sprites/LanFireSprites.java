@@ -11,16 +11,16 @@ public class LanFireSprites extends MobSprite {
 
         texture( Assets.Sprites.LanFire );
 
-        TextureFilm frames = new TextureFilm( texture, 24, 20 );
+        TextureFilm frames = new TextureFilm( texture, 24, 24 );
 
-        idle = new Animation( 16, true );
-        idle.frames( frames, 0,1,1,2,2,3,3,4,4,3,3,2,2,1,1,0 );
+        idle = new Animation( 24, true );
+        idle.frames( frames, 0,1,1,2,2,3,3,4,4,0 );
 
         play( idle );
     }
 
-    public void link(Char var1) {
-        super.link(var1);
+    public void link(Char ch) {
+        super.link(ch);
         this.add(State.SMOKER);
     }
 

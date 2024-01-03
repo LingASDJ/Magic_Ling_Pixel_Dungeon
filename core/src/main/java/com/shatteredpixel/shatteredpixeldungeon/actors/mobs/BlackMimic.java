@@ -56,8 +56,8 @@ public class BlackMimic extends Mimic {
     }
 
     @Override
-    public void generatePrize() {
-        super.generatePrize();
+    protected void generatePrize( boolean useDecks ) {
+        super.generatePrize(true);
         //all existing prize items are guaranteed uncursed, and have a 50% chance to be +1 if they were +0
         for (Item i : items){
             i.cursed = false;

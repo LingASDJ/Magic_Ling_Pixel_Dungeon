@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.armor.curses;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import static com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand.procChanceMultiplier;
+
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -35,8 +36,9 @@ public class Displacement extends Armor.Glyph {
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage ) {
 
-		if (defender == Dungeon.hero && Random.Int(20) == 0 && !Dungeon.level.locked){
-			ScrollOfTeleportation.teleportChar(Dungeon.hero);
+		float procChance = 1/20f * procChanceMultiplier(defender);
+		if ( Random.Float() < procChance ) {
+			ScrollOfTeleportation.teleportChar(defender);
 			return 0;
 		}
 

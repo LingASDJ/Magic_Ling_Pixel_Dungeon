@@ -21,11 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -56,7 +56,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-public class OldDM300 extends FlameB01 {
+public class OldDM300 extends FlameC02 {
 	
 	{
 		spriteClass =  DM275Sprite.class;
@@ -87,30 +87,7 @@ public class OldDM300 extends FlameB01 {
 	public int drRoll() {
 		return Random.NormalIntRange(0, 10);
 	}
-	public static boolean seenBefore = false;
 
-
-	@Override
-	public void add(Buff buff) {
-		super.add(buff);
-		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-
-		if(lock == null && !seenBefore && Dungeon.level.heroFOV[pos]){
-			if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
-				AlarmTrap alarmTrap = new AlarmTrap();
-				alarmTrap.pos = pos;
-				alarmTrap.activate();
-				CavesLevel level = (CavesLevel) Dungeon.level;
-				level.seal();
-				level.updateChasmTerrain();
-				ScrollOfTeleportation.appear(hero, pos+8);
-			}
-		}
-
-		if (state == PASSIVE && buff.type == Buff.buffType.NEGATIVE && Dungeon.level.heroFOV[pos]){
-			state = HUNTING;
-		}
-	}
 
 	@Override
 	public boolean act() {
@@ -119,7 +96,6 @@ public class OldDM300 extends FlameB01 {
 		if (lock == null && Dungeon.level.heroFOV[pos]){
 			CavesLevel level = (CavesLevel) Dungeon.level;
 			level.seal();
-			level.updateChasmTerrain();
 			if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
 				AlarmTrap alarmTrap = new AlarmTrap();
 				alarmTrap.pos = pos;
@@ -198,10 +174,11 @@ public class OldDM300 extends FlameB01 {
 	@Override
 	public void die( Object cause ) {
 		super.die( cause );
-		playBGM(Assets.BGM_3, true);
+
 		CavesLevel level = (CavesLevel) Dungeon.level;
-		Buff.detach( hero, LockedFloor.class );
-		level.updateChasmTerrain();
+
+		level.unseal();
+		BGMPlayer.playBGMWithDepth();
 		//60% chance of 2 shards, 30% chance of 3, 10% chance for 4. Average of 2.5
 		int shards = Random.chances(new float[]{0, 0, 6, 3, 1});
 		for (int i = 0; i < shards; i++){
@@ -234,7 +211,6 @@ public class OldDM300 extends FlameB01 {
 			ScrollOfTeleportation.appear(hero, pos+8);
 			CavesLevel level = (CavesLevel) Dungeon.level;
 			level.seal();
-			level.updateChasmTerrain();
 		}
 
 		if(HP<50){

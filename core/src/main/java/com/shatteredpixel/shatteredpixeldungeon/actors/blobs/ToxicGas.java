@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ public class ToxicGas extends Blob implements Hero.Doom {
 	protected void evolve() {
 		super.evolve();
 
-		int damage = 1 + Dungeon.depth/5;
+		int damage = 1 + Dungeon.scalingDepth()/5;
 
 		Char ch;
 		int cell;
@@ -72,7 +72,7 @@ public class ToxicGas extends Blob implements Hero.Doom {
 		
 		Badges.validateDeathFromGas();
 		
-		Dungeon.fail( getClass() );
+		Dungeon.fail( this );
 		GLog.n( Messages.get(this, "ondeath") );
 	}
 }

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.effects.particles;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.Emitter.Factory;
 import com.watabou.noosa.particles.PixelParticle;
@@ -54,6 +58,10 @@ public class SparkParticle extends PixelParticle {
 		super();
 		
 		size( 2 );
+
+		if(depth == 10 || (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && (depth == 8))) {
+			color(0x5a0808);
+		}
 		
 		acc.set( 0, +50 );
 	}

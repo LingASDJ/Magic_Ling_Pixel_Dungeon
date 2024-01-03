@@ -32,7 +32,7 @@ public class PassWordBadgesScene extends PixelScene {
         fadeIn();
         //Music.INSTANCE.play( Assets.Music.THEME, true );
 
-        uiCamera.visible = false;
+        PixelScene.uiCamera.visible = false;
 
         int w = Camera.main.width;
         int h = Camera.main.height;
@@ -57,7 +57,7 @@ public class PassWordBadgesScene extends PixelScene {
 
         List<PaswordBadges.Badge> badges = PaswordBadges.filtered( true );
 
-        int blankBadges = 13;
+        int blankBadges = 10;
         blankBadges -= badges.size();
         if (badges.contains(Badges.Badge.ALL_ITEMS_IDENTIFIED))	blankBadges -= 6;
         if (badges.contains(Badges.Badge.YASD)) 				blankBadges -= 5;

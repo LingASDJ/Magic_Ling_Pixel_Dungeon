@@ -18,6 +18,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SlimeKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
@@ -246,16 +247,19 @@ public class SlimeKingMob extends Mob {
                     yell(Messages.get(SlimeKing.class, "scorpion"));
                     new Item().throwSound();
                     Sample.INSTANCE.play(Assets.Sounds.CHAINS);
-                    sprite.parent.add(new Chains(sprite.center(), enemy.sprite.destinationCenter(), new Callback() {
-                        public void call() {
-                            Actor.addDelayed(new Pushing(enemy, enemy.pos, newPosFinal, new Callback() {
+                    sprite.parent.add(new Chains(sprite.center(),
+                            enemy.sprite.destinationCenter(),
+                            Effects.Type.CHAIN,
+                            new Callback() {
                                 public void call() {
-                                    pullEnemy(enemy, newPosFinal);
+                                    Actor.add(new Pushing(enemy, enemy.pos, newPosFinal, new Callback() {
+                                        public void call() {
+                                            pullEnemy(enemy, newPosFinal);
+                                        }
+                                    }));
+                                    next();
                                 }
-                            }), -1);
-                            next();
-                        }
-                    }));
+                            }));
                 } else {
                     pullEnemy(enemy, newPos);
                 }

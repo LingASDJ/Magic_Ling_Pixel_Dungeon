@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,36 +23,35 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Camera;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class Goo extends Mob {
-		
-	{
-		if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-			HP = HT = 120;
-		}
 
+	{
+		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 120 : 100;
 		EXP = 10;
 		defenseSkill = 8;
 		spriteClass = GooSprite.class;
@@ -71,6 +70,10 @@ public class Goo extends Mob {
 		int max = (HP*2 <= HT) ? 12 : 8;
 		if (pumpedUp > 0) {
 			pumpedUp = 0;
+			if (enemy == Dungeon.hero) {
+				Statistics.qualifiedForBossChallengeBadge = false;
+				Statistics.bossScores[0] -= 100;
+			}
 			return Random.NormalIntRange( min*3, max*3 );
 		} else {
 			return Random.NormalIntRange( min, max );
@@ -92,17 +95,26 @@ public class Goo extends Mob {
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 2);
+		return super.drRoll() + Random.NormalIntRange(0, 2);
 	}
 
 	@Override
 	public boolean act() {
 
+		if (state != HUNTING && pumpedUp > 0){
+			pumpedUp = 0;
+			sprite.idle();
+		}
+
 		if (Dungeon.level.water[pos] && HP < HT) {
 			HP += healInc;
+			Statistics.qualifiedForBossChallengeBadge = false;
 
 			LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-			if (lock != null) lock.removeTime(healInc*2);
+			if (lock != null){
+				if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.removeTime(healInc);
+				else                                                    lock.removeTime(healInc*1.5f);
+			}
 
 			if (Dungeon.level.heroFOV[pos] ){
 				sprite.emitter().burst( Speck.factory( Speck.HEALING ), healInc );
@@ -118,7 +130,7 @@ public class Goo extends Mob {
 		} else {
 			healInc = 1;
 		}
-		
+
 		if (state != SLEEPING){
 			Dungeon.level.seal();
 		}
@@ -132,8 +144,8 @@ public class Goo extends Mob {
 			//we check both from and to in this case as projectile logic isn't always symmetrical.
 			//this helps trim out BS edge-cases
 			return Dungeon.level.distance(enemy.pos, pos) <= 2
-						&& new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos
-						&& new Ballistica( enemy.pos, pos, Ballistica.PROJECTILE).collisionPos == pos;
+					&& new Ballistica( pos, enemy.pos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID).collisionPos == enemy.pos
+					&& new Ballistica( enemy.pos, pos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID).collisionPos == pos;
 		} else {
 			return super.canAttack(enemy);
 		}
@@ -148,7 +160,7 @@ public class Goo extends Mob {
 		}
 
 		if (pumpedUp > 0) {
-			Camera.main.shake( 3, 0.2f );
+			PixelScene.shake( 3, 0.2f );
 		}
 
 		return damage;
@@ -187,6 +199,7 @@ public class Goo extends Mob {
 					((GooSprite)sprite).triggerEmitters();
 				}
 				attack( enemy );
+				Invisibility.dispel(this);
 				spend( attackDelay() );
 			}
 
@@ -194,9 +207,13 @@ public class Goo extends Mob {
 
 		} else {
 
-			pumpedUp++;
 			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+				pumpedUp += 2;
+				//don't want to overly punish players with slow move or attack speed
+				spend(GameMath.gate(attackDelay(), Dungeon.hero.cooldown(), 3*attackDelay()));
+			} else {
 				pumpedUp++;
+				spend( attackDelay() );
 			}
 
 			((GooSprite)sprite).pumpUp( pumpedUp );
@@ -206,8 +223,6 @@ public class Goo extends Mob {
 				GLog.n( Messages.get(this, "pumpup") );
 			}
 
-			spend( attackDelay() );
-
 			return true;
 		}
 	}
@@ -215,7 +230,13 @@ public class Goo extends Mob {
 	@Override
 	public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti ) {
 		boolean result = super.attack( enemy, dmgMulti, dmgBonus, accMulti );
-		pumpedUp = 0;
+		if (pumpedUp > 0) {
+			pumpedUp = 0;
+			if (enemy == Dungeon.hero) {
+				Statistics.qualifiedForBossChallengeBadge = false;
+				Statistics.bossScores[0] -= 100;
+			}
+		}
 		return result;
 	}
 
@@ -226,6 +247,15 @@ public class Goo extends Mob {
 			sprite.idle();
 		}
 		return super.getCloser( target );
+	}
+
+	@Override
+	protected boolean getFurther(int target) {
+		if (pumpedUp != 0) {
+			pumpedUp = 0;
+			sprite.idle();
+		}
+		return super.getFurther( target );
 	}
 
 	@Override
@@ -243,39 +273,45 @@ public class Goo extends Mob {
 			yell(Messages.get(this, "gluuurp"));
 		}
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-		if (lock != null) lock.addTime(dmg*2);
+		if (lock != null){
+			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg);
+			else                                                    lock.addTime(dmg*1.5f);
+		}
 	}
 
 	@Override
 	public void die( Object cause ) {
-		
+
 		super.die( cause );
+		Statistics.gooFight = true;
+		Dungeon.level.unseal();
 
-		if(Dungeon.depth!=28){
-			Dungeon.level.unseal();
+		GameScene.bossSlain();
 
-			GetBossLoot();
+		//Dungeon.level.drop( Generator.random( Generator.Category.WAND), pos) .sprite.drop();
 
-			GameScene.bossSlain();
-			Dungeon.level.drop( new SkeletonKey( Dungeon.depth ), pos ).sprite.drop();
+		Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
+		Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
 
-			//60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5
-			int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
-			for (int i = 0; i < blobs; i++){
-				int ofs;
-				do {
-					ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
-				} while (!Dungeon.level.passable[pos + ofs]);
-				Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
-			}
-
-			Badges.validateBossSlain();
-
-			yell( Messages.get(this, "defeated") );
+		//60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5
+		int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
+		for (int i = 0; i < blobs; i++){
+			int ofs;
+			do {
+				ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
+			} while (!Dungeon.level.passable[pos + ofs]);
+			Dungeon.level.drop( Generator.random( Generator.Category.STONE), pos + ofs ).sprite.drop( pos );
 		}
 
+
+
+
+		Badges.GOO();
+		Statistics.bossScores[0] += 1000;
+
+		yell( Messages.get(this, "defeated") );
 	}
-	
+
 	@Override
 	public void notice() {
 		super.notice();
@@ -312,9 +348,7 @@ public class Goo extends Mob {
 		if (state != SLEEPING) BossHealthBar.assignBoss(this);
 		if ((HP*2 <= HT)) BossHealthBar.bleed(true);
 
-		//if check is for pre-0.9.3 saves
 		healInc = bundle.getInt(HEALINC);
-
 	}
-	
+
 }

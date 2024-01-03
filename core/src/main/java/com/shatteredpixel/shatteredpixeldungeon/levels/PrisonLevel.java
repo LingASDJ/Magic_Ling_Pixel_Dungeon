@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -44,10 +47,12 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TeleportationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ToxicTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Halo;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
@@ -61,18 +66,16 @@ public class PrisonLevel extends RegularLevel {
 	}
 
 	@Override
-	public void playLevelMusic() {
-		Music.INSTANCE.playTracks(
-				new String[]{Assets.Music.PRISON_1, Assets.Music.PRISON_2, Assets.Music.PRISON_2},
-				new float[]{1, 1, 0.5f},
-				false);
-	}
-
-	@Override
 	protected ArrayList<Room> initRooms() {
 		return Wandmaker.Quest.spawnRoom(super.initRooms());
 	}
-	
+
+	@Override
+	protected void createMobs() {
+		Wandmaker.Quest.spawnWandmaker(this, roomEntrance);
+		super.createMobs();
+	}
+
 	@Override
 	protected int standardRooms(boolean forceMax) {
 		if (forceMax) return 6;
@@ -104,7 +107,18 @@ public class PrisonLevel extends RegularLevel {
 	public String waterTex() {
 		return Assets.Environment.WATER_PRISON;
 	}
-	
+
+	@Override
+	public void playLevelMusic() {
+		if (Wandmaker.Quest.active() || Statistics.amuletObtained){
+			Music.INSTANCE.play(Assets.Music.PRISON_TENSE, true);
+		} else {
+			BGMPlayer.playBGMWithDepth();
+		}
+		wandmakerQuestWasActive = Wandmaker.Quest.active();
+	}
+
+
 	@Override
 	protected Class<?>[] trapClasses() {
 		return new Class[]{
@@ -119,6 +133,40 @@ public class PrisonLevel extends RegularLevel {
 				4, 4, 4, 4, 4,
 				2, 2, 2,
 				1, 1, 1, 1, 1, 1 };
+	}
+
+	@Override
+	public void occupyCell(Char ch) {
+		super.occupyCell(ch);
+		if (ch == Dungeon.hero) {
+			updateWandmakerQuestMusic();
+		}
+	}
+
+	private Boolean wandmakerQuestWasActive = null;
+
+	public void updateWandmakerQuestMusic(){
+		if (wandmakerQuestWasActive == null) {
+			wandmakerQuestWasActive = Wandmaker.Quest.active();
+			return;
+		}
+		if (Wandmaker.Quest.active() != wandmakerQuestWasActive) {
+			wandmakerQuestWasActive = Wandmaker.Quest.active();
+
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					Music.INSTANCE.fadeOut(1f, new Callback() {
+						@Override
+						public void call() {
+							if (Dungeon.level != null) {
+								Dungeon.level.playLevelMusic();
+							}
+						}
+					});
+				}
+			});
+		}
 	}
 
 	@Override

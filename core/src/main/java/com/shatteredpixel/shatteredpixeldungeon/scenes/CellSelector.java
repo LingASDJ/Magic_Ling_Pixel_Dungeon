@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.ScrollArea;
 import com.watabou.utils.GameMath;
+import com.watabou.utils.Point;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Signal;
 
@@ -141,12 +142,17 @@ public class CellSelector extends ScrollArea {
 		SPDSettings.zoom((int) (value - PixelScene.defaultZoom));
 		camera.zoom( value );
 
-		//Resets character sprite positions with the new camera zoom
-		//This is important as characters are centered on a 16x16 tile, but may have any sprite size
+		//Resets char and item sprite positions with the new camera zoom
+		//This is important as sprites are centered on a 16x16 tile, but may have any sprite size
 		//This can lead to none-whole coordinate, which need to be aligned with the zoom
 		for (Char c : Actor.chars()){
 			if (c.sprite != null && !c.sprite.isMoving){
 				c.sprite.point(c.sprite.worldToCamera(c.pos));
+			}
+		}
+		for (Heap heap : Dungeon.level.heaps.valueList()){
+			if (heap.sprite != null){
+				heap.sprite.point(heap.sprite.worldToCamera(heap.pos));
 			}
 		}
 
@@ -181,7 +187,7 @@ public class CellSelector extends ScrollArea {
 	
 	@Override
 	protected void onPointerDown( PointerEvent event ) {
-
+		camera.edgeScroll.set(-1);
 		if (event != curEvent && another == null) {
 					
 			if (curEvent.type == PointerEvent.Type.UP) {
@@ -204,6 +210,7 @@ public class CellSelector extends ScrollArea {
 	
 	@Override
 	protected void onPointerUp( PointerEvent event ) {
+		camera.edgeScroll.set(1);
 		if (pinching && (event == curEvent || event == another)) {
 			
 			pinching = false;
@@ -256,10 +263,24 @@ public class CellSelector extends ScrollArea {
 	private GameAction heldAction3 = SPDAction.NONE;
 
 	private float heldDelay = 0f;
-	//note that delay starts ticking down on the frame it is processed
-	// so in most cases the actual wait is 50-58ms
-	private static final float INITIAL_DELAY = 0.06f;
 	private boolean delayingForRelease = false;
+
+	private static float initialDelay(){
+		switch (SPDSettings.movementHoldSensitivity()){
+			case 0:
+				return Float.POSITIVE_INFINITY;
+			case 1:
+				return 0.13f;
+			case 2:
+				return 0.09f;
+			//note that delay starts ticking down on the frame it is processed
+			// so in most cases the actual default wait is 50-58ms
+			case 3: default:
+				return 0.06f;
+			case 4:
+				return 0.03f;
+		}
+	}
 	
 	private Signal.Listener<KeyEvent> keyListener = new Signal.Listener<KeyEvent>() {
 		@Override
@@ -312,16 +333,16 @@ public class CellSelector extends ScrollArea {
 					delayingForRelease = true;
 					//in case more keys are being released
 					//note that this delay can tick down while the hero is moving
-					heldDelay = INITIAL_DELAY;
+					heldDelay = initialDelay();
 				}
 
-			} else if (directionFromAction(action) != 0) {
+			} else if (!directionFromAction(action).isZero()) {
 
 				Dungeon.hero.resting = false;
 				lastCellMoved = -1;
 				if (heldAction1 == SPDAction.NONE){
 					heldAction1 = action;
-					heldDelay = INITIAL_DELAY;
+					heldDelay = initialDelay();
 					delayingForRelease = false;
 				} else if (heldAction2 == SPDAction.NONE){
 					heldAction2 = action;
@@ -330,7 +351,7 @@ public class CellSelector extends ScrollArea {
 				}
 
 				return true;
-			} else if (Dungeon.hero.resting){
+			} else if (Dungeon.hero != null && Dungeon.hero.resting){
 				Dungeon.hero.resting = false;
 				return true;
 			}
@@ -354,7 +375,7 @@ public class CellSelector extends ScrollArea {
 
 		if (newLeftStick != leftStickAction){
 			if (leftStickAction == SPDAction.NONE){
-				heldDelay = INITIAL_DELAY;
+				heldDelay = initialDelay();
 				Dungeon.hero.resting = false;
 			} else if (newLeftStick == SPDAction.NONE && heldDelay > 0f){
 				heldDelay = 0f;
@@ -382,10 +403,18 @@ public class CellSelector extends ScrollArea {
 			return false;
 		}
 
-		int cell = Dungeon.hero.pos;
-		for (GameAction action : actions) {
-			cell += directionFromAction(action);
+		if (GameScene.cancelCellSelector()){
+			return false;
 		}
+
+		Point direction = new Point();
+		for (GameAction action : actions) {
+			direction.offset(directionFromAction(action));
+		}
+		int cell = Dungeon.hero.pos;
+		//clamp to adjacent values (-1 to +1)
+		cell += GameMath.gate(-1, direction.x, +1);
+		cell += GameMath.gate(-1, direction.y, +1) * Dungeon.level.width();
 
 		if (cell != Dungeon.hero.pos && cell != lastCellMoved){
 			lastCellMoved = cell;
@@ -400,16 +429,16 @@ public class CellSelector extends ScrollArea {
 
 	}
 
-	private int directionFromAction(GameAction action){
-		if (action == SPDAction.N)  return -Dungeon.level.width();
-		if (action == SPDAction.NE) return +1-Dungeon.level.width();
-		if (action == SPDAction.E)  return +1;
-		if (action == SPDAction.SE) return +1+Dungeon.level.width();
-		if (action == SPDAction.S)  return +Dungeon.level.width();
-		if (action == SPDAction.SW) return -1+Dungeon.level.width();
-		if (action == SPDAction.W)  return -1;
-		if (action == SPDAction.NW) return -1-Dungeon.level.width();
-		else                        return 0;
+	private Point directionFromAction(GameAction action){
+		if (action == SPDAction.N)  return new Point( 0, -1);
+		if (action == SPDAction.NE) return new Point(+1, -1);
+		if (action == SPDAction.E)  return new Point(+1,  0);
+		if (action == SPDAction.SE) return new Point(+1, +1);
+		if (action == SPDAction.S)  return new Point( 0, +1);
+		if (action == SPDAction.SW) return new Point(-1, +1);;
+		if (action == SPDAction.W)  return new Point(-1,  0);
+		if (action == SPDAction.NW) return new Point(-1, -1);
+		else                        return new Point();
 	}
 
 	//~80% deadzone
@@ -440,13 +469,13 @@ public class CellSelector extends ScrollArea {
 
 	public void processKeyHold() {
 		//prioritize moving by controller stick over moving via keys
-		if (directionFromAction(leftStickAction) != 0 && heldDelay < 0) {
+		if (!directionFromAction(leftStickAction).isZero() && heldDelay < 0) {
 			enabled = Dungeon.hero.ready = true;
 			Dungeon.observe();
 			if (moveFromActions(leftStickAction)) {
 				Dungeon.hero.ready = false;
 			}
-		} else if (directionFromAction(heldAction1) + directionFromAction(heldAction2) != 0
+		} else if (!(directionFromAction(heldAction1).offset(directionFromAction(heldAction2)).isZero())
 				&& heldDelay <= 0){
 			enabled = Dungeon.hero.ready = true;
 			Dungeon.observe();

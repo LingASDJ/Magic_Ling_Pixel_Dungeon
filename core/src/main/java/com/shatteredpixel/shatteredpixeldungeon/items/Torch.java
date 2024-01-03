@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
@@ -74,9 +75,9 @@ public class Torch extends Item {
 			if(Statistics.lanterfireactive){
 				OilLantern lantern = Dungeon.hero.belongings.getItem(OilLantern.class);
 				Refill(lantern);
-				GLog.p("在提灯的照耀下，你的火把被提灯汲取，你可以通过装填添加由火把提供的20%的燃料。");
+				GLog.p(Messages.get(Torch.class,"lanterfireactive"));
 			} else if (Dungeon.hero.buff(LighS.class) != null || Dungeon.hero.buff(MagicTorch.MagicLight.class) != null) {
-				GLog.n("你已有其他光芒效果，在这些效果取消或主动失效前，暂时无法使用火把。");
+				GLog.n(Messages.get(Torch.class,"mustload"));
 			} else {
 				hero.spend( TIME_TO_LIGHT );
 				hero.busy();

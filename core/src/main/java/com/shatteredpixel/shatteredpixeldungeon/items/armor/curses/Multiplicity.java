@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,16 +21,21 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.armor.curses;
 
+import static com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand.procChanceMultiplier;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -49,7 +54,8 @@ public class Multiplicity extends Armor.Glyph {
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage) {
 
-		if (Random.Int(20) == 0){
+		float procChance = 1/20f * procChanceMultiplier(defender);
+		if ( Random.Float() < procChance ) {
 			ArrayList<Integer> spawnPoints = new ArrayList<>();
 
 			for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
@@ -67,15 +73,21 @@ public class Multiplicity extends Armor.Glyph {
 					((MirrorImage)m).duplicate( (Hero)defender );
 
 				} else {
+					Char toDuplicate = attacker;
+
+					if (toDuplicate instanceof Ratmogrify.TransmogRat){
+						toDuplicate = ((Ratmogrify.TransmogRat)attacker).getOriginal();
+					}
+
 					//FIXME should probably have a mob property for this
-					if (!(attacker instanceof Mob)
-							|| attacker.properties().contains(Char.Property.BOSS) || attacker.properties().contains(Char.Property.MINIBOSS)
-							|| attacker instanceof Mimic || attacker instanceof Statue){
+					if (!(toDuplicate instanceof Mob)
+							|| toDuplicate.properties().contains(Char.Property.BOSS) || toDuplicate.properties().contains(Char.Property.MINIBOSS)
+							|| toDuplicate instanceof Mimic || toDuplicate instanceof Statue || toDuplicate instanceof NPC) {
 						m = Dungeon.level.createMob();
 					} else {
 						Actor.fixTime();
-						
-						m = (Mob)Reflection.newInstance(attacker.getClass());
+
+						m = (Mob)Reflection.newInstance(toDuplicate.getClass());
 						
 						if (m != null) {
 							
@@ -84,9 +96,11 @@ public class Multiplicity extends Armor.Glyph {
 							m.restoreFromBundle(store);
 							m.pos = 0;
 							m.HP = m.HT;
-							if (m.buff(PinCushion.class) != null) {
-								m.remove(m.buff(PinCushion.class));
-							}
+
+							//don't duplicate stuck projectiles
+							m.remove(m.buff(PinCushion.class));
+							//don't duplicate pending damage to dwarf king
+							m.remove(DwarfKing.KingDamager.class);
 							
 							//If a thief has stolen an item, that item is not duplicated.
 							if (m instanceof Thief) {
@@ -108,8 +122,9 @@ public class Multiplicity extends Armor.Glyph {
 					}
 
 					if (!spawnPoints.isEmpty()) {
+						m.pos = Random.element(spawnPoints);
 						GameScene.add(m);
-						ScrollOfTeleportation.appear(m, Random.element(spawnPoints));
+						ScrollOfTeleportation.appear(m, m.pos);
 					}
 				}
 

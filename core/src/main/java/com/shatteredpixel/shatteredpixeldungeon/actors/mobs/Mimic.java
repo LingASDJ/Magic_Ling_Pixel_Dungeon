@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,17 +48,15 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 public class Mimic extends Mob {
-	
+
 	private int level;
-	
+
 	{
 		spriteClass = MimicSprite.class;
 
 		properties.add(Property.DEMONIC);
-		properties.add(Property.MIMIC);
 
 		EXP = 0;
 
@@ -66,19 +64,19 @@ public class Mimic extends Mob {
 		alignment = Alignment.NEUTRAL;
 		state = PASSIVE;
 	}
-	
+
 	public ArrayList<Item> items;
-	
+
 	private static final String LEVEL	= "level";
 	private static final String ITEMS	= "items";
-	
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
 		if (items != null) bundle.put( ITEMS, items );
 		bundle.put( LEVEL, level );
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
@@ -94,13 +92,16 @@ public class Mimic extends Mob {
 	}
 
 	@Override
-	public void add(Buff buff) {
-		super.add(buff);
-		if (buff.type == Buff.buffType.NEGATIVE && alignment == Alignment.NEUTRAL){
-			alignment = Alignment.ENEMY;
-			stopHiding();
-			if (sprite != null) sprite.idle();
+	public boolean add(Buff buff) {
+		if (super.add(buff)) {
+			if (buff.type == Buff.buffType.NEGATIVE && alignment == Alignment.NEUTRAL) {
+				alignment = Alignment.ENEMY;
+				stopHiding();
+				if (sprite != null) sprite.idle();
+			}
+			return true;
 		}
+		return false;
 	}
 
 	@Override
@@ -129,9 +130,12 @@ public class Mimic extends Mob {
 	protected boolean act() {
 		if (alignment == Alignment.NEUTRAL && state != PASSIVE){
 			alignment = Alignment.ENEMY;
-			GLog.w(Messages.get(this, "reveal") );
-			CellEmitter.get(pos).burst(Speck.factory(Speck.STAR), 10);
-			Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+			if (sprite != null) sprite.idle();
+			if (Dungeon.level.heroFOV[pos]) {
+				GLog.w(Messages.get(this, "reveal") );
+				CellEmitter.get(pos).burst(Speck.factory(Speck.STAR), 10);
+				Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+			}
 		}
 		return super.act();
 	}
@@ -174,6 +178,15 @@ public class Mimic extends Mob {
 	}
 
 	@Override
+	public int defenseProc(Char enemy, int damage) {
+		if (state == PASSIVE){
+			alignment = Alignment.ENEMY;
+			stopHiding();
+		}
+		return super.defenseProc(enemy, damage);
+	}
+
+	@Override
 	public void damage(int dmg, Object src) {
 		if (state == PASSIVE){
 			alignment = Alignment.ENEMY;
@@ -182,13 +195,21 @@ public class Mimic extends Mob {
 		super.damage(dmg, src);
 	}
 
+	@Override
+	public void die(Object cause) {
+		if (state == PASSIVE){
+			alignment = Alignment.ENEMY;
+			stopHiding();
+		}
+		super.die(cause);
+	}
+
 	public void stopHiding(){
 		state = HUNTING;
 		if (sprite != null) sprite.idle();
 		if (Actor.chars().contains(this) && Dungeon.level.heroFOV[pos]) {
 			enemy = Dungeon.hero;
 			target = Dungeon.hero.pos;
-			enemySeen = true;
 			GLog.w(Messages.get(this, "reveal") );
 			CellEmitter.get(pos).burst(Speck.factory(Speck.STAR), 10);
 			Sample.INSTANCE.play(Assets.Sounds.MIMIC);
@@ -206,7 +227,7 @@ public class Mimic extends Mob {
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 1 + level/2);
+		return super.drRoll() + Random.NormalIntRange(0, 1 + level/2);
 	}
 
 	@Override
@@ -227,27 +248,25 @@ public class Mimic extends Mob {
 		this.level = level;
 		adjustStats(level);
 	}
-	
+
 	public void adjustStats( int level ) {
 		HP = HT = (1 + level) * 6;
 		defenseSkill = 2 + level/2;
-		
+
 		enemySeen = true;
 	}
-	
+
 	@Override
 	public void rollToDropLoot(){
-		
+
 		if (items != null) {
 			for (Item item : items) {
 				Dungeon.level.drop( item, pos ).sprite.drop();
 			}
 			items = null;
 		}
-
 		//宝藏迷宫
 		Statistics.goldchestmazeCollected++;
-
 		super.rollToDropLoot();
 	}
 
@@ -262,20 +281,19 @@ public class Mimic extends Mob {
 		return true;
 	}
 
-	public static Mimic spawnAt( int pos, Item item ){
-		return spawnAt( pos, Arrays.asList(item), Mimic.class);
+	public static Mimic spawnAt( int pos, Item... items){
+		return spawnAt(pos, Mimic.class, items);
 	}
 
-	public static Mimic spawnAt( int pos, Item item, Class mimicType ){
-		return spawnAt( pos, Arrays.asList(item), mimicType);
+	public static Mimic spawnAt( int pos, Class mimicType, Item... items){
+		return spawnAt(pos, mimicType, true, items);
 	}
 
-	public static Mimic spawnAt( int pos, List<Item> items ) {
-		return spawnAt( pos, items, Mimic.class);
+	public static Mimic spawnAt( int pos, boolean useDecks, Item... items){
+		return spawnAt(pos, Mimic.class, useDecks, items);
 	}
 
-	public static Mimic spawnAt( int pos, List<Item> items, Class mimicType ) {
-
+	public static Mimic spawnAt( int pos, Class mimicType, boolean useDecks, Item... items){
 		Mimic m;
 		if (mimicType == GoldenMimic.class){
 			m = new GoldenMimic();
@@ -285,17 +303,17 @@ public class Mimic extends Mob {
 			m = new Mimic();
 		}
 
-		m.items = new ArrayList<>( items );
+		m.items = new ArrayList<>( Arrays.asList(items) );
 		m.setLevel( Dungeon.depth );
 		m.pos = pos;
 
 		//generate an extra reward for killing the mimic
-		m.generatePrize();
-		
+		m.generatePrize(useDecks);
+
 		return m;
 	}
 
-	public void generatePrize(){
+	protected void generatePrize( boolean useDecks ){
 		Item reward = null;
 		do {
 			switch (Random.Int(5)) {
@@ -303,16 +321,16 @@ public class Mimic extends Mob {
 					reward = new Gold().random();
 					break;
 				case 1:
-					reward = Generator.randomMissile();
+					reward = Generator.randomMissile(!useDecks);
 					break;
 				case 2:
 					reward = Generator.randomArmor();
 					break;
 				case 3:
-					reward = Generator.randomWeapon();
+					reward = Generator.randomWeapon(!useDecks);
 					break;
 				case 4:
-					reward = Generator.random(Generator.Category.RING);
+					reward = useDecks ? Generator.random(Generator.Category.RING) : Generator.randomUsingDefaults(Generator.Category.RING);
 					break;
 			}
 		} while (reward == null || Challenges.isItemBlocked(reward));

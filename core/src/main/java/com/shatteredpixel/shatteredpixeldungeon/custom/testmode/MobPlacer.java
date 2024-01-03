@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollTrickster;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreenSlting;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.IceGolem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ice_Scorpio;
@@ -43,10 +44,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MolotovHuntsman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewBlackHost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDLLS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDNQHZ;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDZSLS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedMurderer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedSwarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RipperDemon;
@@ -72,7 +75,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.XTG200;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.Cerberus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SlimeKingMob;
 import com.shatteredpixel.shatteredpixeldungeon.custom.dict.DictSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
@@ -450,9 +452,9 @@ public class MobPlacer extends TestItem{
     }
 
     private enum DataPack{
-        RAT(Cerberus.class, DictSpriteSheet.RAT),
+        RAT(Rat.class, DictSpriteSheet.RAT),
         FLWW(FlowerSlime.class, DictSpriteSheet.FLOWER),
-        //TESTRAT(TestRat.class, DictSpriteSheet.RAT),
+        TESTRAT(GreenSlting.class, DictSpriteSheet.GLTX),
         GNOLL(Gnoll.class, DictSpriteSheet.GNOLL),
         SNAKE(Snake.class, DictSpriteSheet.SNAKE),
         ALBINO(Albino.class, DictSpriteSheet.ALBINO),
@@ -479,6 +481,7 @@ public class MobPlacer extends TestItem{
 
         BAT(Bat.class, DictSpriteSheet.BAT),
         BRUTE(Brute.class, DictSpriteSheet.BRUTE),
+        NRXD(SpectralNecromancer.class, DictSpriteSheet.SLXJ),
         ARMORED_BRUTE(ArmoredBrute.class, DictSpriteSheet.ARMORED_BRUTE),
         SHAMAN(Shaman.random(), DictSpriteSheet.SHAMAN),
         SPINNER(Spinner.class, DictSpriteSheet.SPINNER),
@@ -513,6 +516,9 @@ public class MobPlacer extends TestItem{
         RED(RedSwarm.class, DictSpriteSheet.RED),
         SHOW(KagenoNusujin.class, DictSpriteSheet.SHOW),
         BLACK(BlackHost.class, DictSpriteSheet.BLACK),
+
+        BLACK2(NewBlackHost.class, DictSpriteSheet.BLACK),
+
         HBLR(SRPDHBLR.class, DictSpriteSheet.HBLR),
         MOlO(MolotovHuntsman.class, DictSpriteSheet.MOLO),
 

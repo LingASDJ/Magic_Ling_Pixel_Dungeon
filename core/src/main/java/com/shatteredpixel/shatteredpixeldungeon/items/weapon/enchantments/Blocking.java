@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,16 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
-import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 public class Blocking extends Weapon.Enchantment {
@@ -40,8 +42,18 @@ public class Blocking extends Weapon.Enchantment {
 	public int proc(Weapon weapon, Char attacker, Char defender, int damage) {
 		
 		int level = Math.max( 0, weapon.buffedLvl() );
-		
-		Buff.prolong(attacker, BlockBuff.class, 2 + level/2).setBlocking(level + 1);
+
+		// lvl 0 - 10%
+		// lvl 1 ~ 12%
+		// lvl 2 ~ 14%
+		float procChance = (level+4f)/(level+40f) * procChanceMultiplier(attacker);
+		if (Random.Float() < procChance){
+			float powerMulti = Math.max(1f, procChance);
+
+			BlockBuff b = Buff.affect(attacker, BlockBuff.class);
+			b.setShield(Math.round(powerMulti * (2 + weapon.buffedLvl())));
+			attacker.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 5);
+		}
 		
 		return damage;
 	}
@@ -51,18 +63,33 @@ public class Blocking extends Weapon.Enchantment {
 		return BLUE;
 	}
 	
-	public static class BlockBuff extends FlavourBuff {
-		
-		private int blocking = 0;
-		
-		public void setBlocking( int blocking ){
-			this.blocking = blocking;
+	public static class BlockBuff extends ShieldBuff {
+
+		{
+			type = buffType.POSITIVE;
 		}
-		
-		public int blockingRoll(){
-			return Random.NormalIntRange(0, blocking);
+
+		@Override
+		public boolean act() {
+			detach();
+			return true;
 		}
-		
+
+		@Override
+		public void setShield(int shield) {
+			super.setShield(shield);
+			postpone(5f);
+		}
+
+		@Override
+		public void fx(boolean on) {
+			if (on) {
+				target.sprite.add(CharSprite.State.SHIELDED);
+			} else if (target.buff(Barrier.class) == null) {
+				target.sprite.remove(CharSprite.State.SHIELDED);
+			}
+		}
+
 		@Override
 		public int icon() {
 			return BuffIndicator.ARMOR;
@@ -77,29 +104,15 @@ public class Blocking extends Weapon.Enchantment {
 		public float iconFadePercent() {
 			return Math.max(0, (5f - visualcooldown()) / 5f);
 		}
-		
+
 		@Override
-		public String toString() {
-			return Messages.get(this, "name");
+		public String iconTextDisplay() {
+			return Integer.toString((int)visualcooldown());
 		}
-		
+
 		@Override
 		public String desc() {
-			return Messages.get(this, "desc", blocking, dispTurns());
-		}
-		
-		private static final String BLOCKING = "blocking";
-		
-		@Override
-		public void storeInBundle(Bundle bundle) {
-			super.storeInBundle(bundle);
-			bundle.put(BLOCKING, blocking);
-		}
-		
-		@Override
-		public void restoreFromBundle(Bundle bundle) {
-			super.restoreFromBundle(bundle);
-			blocking = bundle.getInt(BLOCKING);
+			return Messages.get(this, "desc", shielding(), dispTurns(visualcooldown()));
 		}
 	
 	}

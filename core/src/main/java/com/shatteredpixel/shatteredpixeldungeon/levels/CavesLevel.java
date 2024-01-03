@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,16 +21,15 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
-import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
-import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CavesPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
@@ -50,26 +49,22 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTileSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Camera;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
-import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.PixelParticle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
 public class CavesLevel extends RegularLevel {
-
-	{
-		color1 = 0x534f3e;
-		color2 = 0xb9d661;
-	}
-
 
 	//红龙的试炼
 	@Override
@@ -78,12 +73,9 @@ public class CavesLevel extends RegularLevel {
 		super.createItems();
 	}
 
-	@Override
-	public void playLevelMusic() {
-		Music.INSTANCE.playTracks(
-				new String[]{Assets.Music.CAVES_1, Assets.Music.CAVES_2, Assets.Music.CAVES_2},
-				new float[]{1, 1, 0.5f},
-				false);
+	{
+		color1 = 0x534f3e;
+		color2 = 0xb9d661;
 	}
 
 	@Override
@@ -104,37 +96,6 @@ public class CavesLevel extends RegularLevel {
 		//2 to 3, average 2.2
 		return 2+Random.chances(new float[]{4, 1});
 	}
-
-	public void updateChasmTerrain() {
-		synchronized (map){
-			for (int i = 0; i < map.length; i++) {
-				if (map[i] == Terrain.SIGN_SP) {
-					// 将 EMPTY_DECO 地块改为新地形
-					set(i, Terrain.LOCKED_EXIT);
-					GameScene.updateMap(i); // 更新地图显示
-					Camera.main.shake(4f,7f);
-				} else if(hero.buff(LockedFloor.class) == null && map[i] == Terrain.LOCKED_EXIT) {
-					// 将 CHASM 地块改为新地形
-					set(i, Terrain.EMPTY);
-					GameScene.updateMap(i); // 更新地图显示
-					GameScene.flash(Window.WATA_COLOR);
-				}
-				if (map[i] == SIGN) {
-					// 将 SIGN 地块改为新地形
-					set(i, Terrain.WATER);
-					GameScene.updateMap(i); // 更新地图显示
-				}
-				Ankh weapon = Dungeon.hero.belongings.getItem(Ankh.class);
-				if (weapon != null) {
-					Dungeon.level.drop(weapon, entrance).sprite.drop();
-					weapon.detachAll(hero.belongings.backpack);
-					GLog.w(Messages.get(Level.class,"weapon"));
-				}
-				GameScene.flash(Window.SKYBULE_COLOR);
-				playBGM(Assets.BGM_BOSSC, true);
-			}
-		}
-	}
 	
 	@Override
 	protected Painter painter() {
@@ -145,13 +106,66 @@ public class CavesLevel extends RegularLevel {
 	}
 	
 	@Override
+	public boolean activateTransition(Hero hero, LevelTransition transition) {
+		if (transition.type == LevelTransition.Type.BRANCH_EXIT
+				&& (!Blacksmith.Quest.given() || Blacksmith.Quest.oldQuestMineBlocked() || Blacksmith.Quest.completed() || !Blacksmith.Quest.started())) {
+
+			Blacksmith smith = null;
+			for (Char c : Actor.chars()){
+				if (c instanceof Blacksmith){
+					smith = (Blacksmith) c;
+					break;
+				}
+			}
+
+			if (Blacksmith.Quest.oldQuestMineBlocked()){
+				GLog.w(Messages.get(Blacksmith.class, "cant_enter_old"));
+			} else if (smith == null || !Blacksmith.Quest.given() || Blacksmith.Quest.completed()) {
+				GLog.w(Messages.get(Blacksmith.class, "entrance_blocked"));
+			} else if (!Blacksmith.Quest.started() && Blacksmith.Quest.Type() != 0){
+				final Pickaxe pick = hero.belongings.getItem(Pickaxe.class);
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						if (pick == null){
+							GameScene.show( new WndTitledMessage(new BlacksmithSprite(),
+									Messages.titleCase(Messages.get(Blacksmith.class, "name")),
+									Messages.get(Blacksmith.class, "lost_pick"))
+							);
+						} else {
+							GameScene.show( new WndOptions( new BlacksmithSprite(),
+									Messages.titleCase(Messages.get(Blacksmith.class, "name")),
+									Messages.get(Blacksmith.class, "quest_start_prompt"),
+									Messages.get(Blacksmith.class, "enter_yes"),
+									Messages.get(Blacksmith.class, "enter_no")){
+								@Override
+								protected void onSelect(int index) {
+									if (index == 0){
+										Blacksmith.Quest.start();
+										CavesLevel.super.activateTransition(hero, transition);
+									}
+								}
+							} );
+						}
+
+					}
+				});
+			}
+			return false;
+
+		} else {
+			return super.activateTransition(hero, transition);
+		}
+	}
+
+	@Override
 	public String tilesTex() {
 		return Assets.Environment.TILES_COLD;
 	}
 	
 	@Override
 	public String waterTex() {
-		return Assets.Environment.WATER_COLD;
+		return Assets.Environment.WATER_CAVES;
 	}
 	
 	@Override
@@ -208,11 +222,15 @@ public class CavesLevel extends RegularLevel {
 		addCavesVisuals( this, visuals );
 		return visuals;
 	}
-	
+
 	public static void addCavesVisuals( Level level, Group group ) {
+		addCavesVisuals(level, group, false);
+	}
+	
+	public static void addCavesVisuals( Level level, Group group, boolean overHang ) {
 		for (int i=0; i < level.length(); i++) {
 			if (level.map[i] == Terrain.WALL_DECO) {
-				group.add( new Vein( i ) );
+				group.add( new Vein( i, overHang ) );
 			}
 		}
 	}
@@ -220,13 +238,20 @@ public class CavesLevel extends RegularLevel {
 	private static class Vein extends Group {
 		
 		private int pos;
+
+		private boolean includeOverhang;
 		
 		private float delay;
-		
+
 		public Vein( int pos ) {
+			this(pos, false);
+		}
+
+		public Vein( int pos, boolean includeOverhang ) {
 			super();
 			
 			this.pos = pos;
+			this.includeOverhang = includeOverhang;
 			
 			delay = Random.Float( 2 );
 		}
@@ -247,11 +272,20 @@ public class CavesLevel extends RegularLevel {
 					}
 					
 					delay = Random.Float();
-					
+
 					PointF p = DungeonTilemap.tileToWorld( pos );
-					((Sparkle)recycle( Sparkle.class )).reset(
-						p.x + Random.Float( DungeonTilemap.SIZE ),
-						p.y + Random.Float( DungeonTilemap.SIZE ) );
+					if (includeOverhang && !DungeonTileSheet.wallStitcheable(Dungeon.level.map[pos-Dungeon.level.width()])){
+						//also sparkles in the bottom 1/2 of the upper tile. Increases particle frequency by 50% accordingly.
+						delay *= 0.67f;
+						p.y -= DungeonTilemap.SIZE/2f;
+						((Sparkle)recycle( Sparkle.class )).reset(
+								p.x + Random.Float( DungeonTilemap.SIZE ),
+								p.y + Random.Float( DungeonTilemap.SIZE*1.5f ) );
+					} else {
+						((Sparkle)recycle( Sparkle.class )).reset(
+								p.x + Random.Float( DungeonTilemap.SIZE ),
+								p.y + Random.Float( DungeonTilemap.SIZE ) );
+					}
 				}
 			}
 		}

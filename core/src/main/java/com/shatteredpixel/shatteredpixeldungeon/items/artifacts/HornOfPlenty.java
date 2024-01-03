@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -36,6 +37,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -71,6 +75,7 @@ public class HornOfPlenty extends Artifact {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
+		if (hero.buff(MagicImmune.class) != null) return actions;
 		if (isEquipped( hero ) && charge > 0) {
 			actions.add(AC_SNACK);
 			actions.add(AC_EAT);
@@ -85,6 +90,8 @@ public class HornOfPlenty extends Artifact {
 	public void execute( Hero hero, String action ) {
 
 		super.execute(hero, action);
+
+		if (hero.buff(MagicImmune.class) != null) return;
 
 		if (action.equals(AC_EAT) || action.equals(AC_SNACK)){
 
@@ -122,7 +129,8 @@ public class HornOfPlenty extends Artifact {
 				if (Dungeon.hero.hasTalent(Talent.IRON_STOMACH)
 						|| Dungeon.hero.hasTalent(Talent.ENERGIZING_MEAL)
 						|| Dungeon.hero.hasTalent(Talent.MYSTICAL_MEAL)
-						|| Dungeon.hero.hasTalent(Talent.INVIGORATING_MEAL)){
+						|| Dungeon.hero.hasTalent(Talent.INVIGORATING_MEAL)
+						|| Dungeon.hero.hasTalent(Talent.FOCUSED_MEAL)){
 					hero.spend(Food.TIME_TO_EAT - 2);
 				} else {
 					hero.spend(Food.TIME_TO_EAT);
@@ -132,10 +140,9 @@ public class HornOfPlenty extends Artifact {
 
 				Badges.validateFoodEaten();
 
-				int oldImage = image;
-				if (charge >= 15)       image = ItemSpriteSheet.ARTIFACT_HORN4;
-				else if (charge >= 10)  image = ItemSpriteSheet.ARTIFACT_HORN3;
-				else if (charge >= 5)   image = ItemSpriteSheet.ARTIFACT_HORN2;
+				if (charge >= 8)        image = ItemSpriteSheet.ARTIFACT_HORN4;
+				else if (charge >= 5)   image = ItemSpriteSheet.ARTIFACT_HORN3;
+				else if (charge >= 2)   image = ItemSpriteSheet.ARTIFACT_HORN2;
 				else                    image = ItemSpriteSheet.ARTIFACT_HORN1;
 
 				updateQuickslot();
@@ -155,7 +162,7 @@ public class HornOfPlenty extends Artifact {
 	
 	@Override
 	public void charge(Hero target, float amount) {
-		if (charge < chargeCap){
+		if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null){
 			partialCharge += 0.25f*amount;
 			if (partialCharge >= 1){
 				partialCharge--;
@@ -166,10 +173,9 @@ public class HornOfPlenty extends Artifact {
 					partialCharge = 0;
 				}
 
-				int oldImage = image;
-				if (charge >= 15)       image = ItemSpriteSheet.ARTIFACT_HORN4;
-				else if (charge >= 10)  image = ItemSpriteSheet.ARTIFACT_HORN3;
-				else if (charge >= 5)   image = ItemSpriteSheet.ARTIFACT_HORN2;
+				if (charge >= 8)        image = ItemSpriteSheet.ARTIFACT_HORN4;
+				else if (charge >= 5)   image = ItemSpriteSheet.ARTIFACT_HORN3;
+				else if (charge >= 2)   image = ItemSpriteSheet.ARTIFACT_HORN2;
 				else                    image = ItemSpriteSheet.ARTIFACT_HORN1;
 
 				updateQuickslot();
@@ -210,6 +216,12 @@ public class HornOfPlenty extends Artifact {
 		if (level() >= 10) return;
 		
 		storedFoodEnergy += food.energy;
+		//Pasties and phantom meat are worth two upgrades instead of 1.5, meat pies are worth 4 instead of 3!
+		if (food instanceof Pasty || food instanceof PhantomMeat){
+			storedFoodEnergy += Hunger.HUNGRY/2;
+		} else if (food instanceof MeatPie){
+			storedFoodEnergy += Hunger.HUNGRY;
+		}
 		if (storedFoodEnergy >= Hunger.HUNGRY){
 			int upgrades = storedFoodEnergy / (int)Hunger.HUNGRY;
 			upgrades = Math.min(upgrades, 10 - level());
@@ -237,6 +249,12 @@ public class HornOfPlenty extends Artifact {
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
+
+		//pre-2.0.0 saves
+		if (partialCharge > 1){
+			partialCharge /= Hunger.STARVING/5f;
+		}
+
 		storedFoodEnergy = bundle.getInt(STORED);
 		
 		if (charge >= 8)       image = ItemSpriteSheet.ARTIFACT_HORN4;
@@ -247,7 +265,7 @@ public class HornOfPlenty extends Artifact {
 	public class hornRecharge extends ArtifactBuff{
 
 		public void gainCharge(float levelPortion) {
-			if (cursed) return;
+			if (cursed || target.buff(MagicImmune.class) != null) return;
 			
 			if (charge < chargeCap) {
 
@@ -256,14 +274,16 @@ public class HornOfPlenty extends Artifact {
 				//This means that a standard ration will be recovered in ~5.333 hero levels
 				float chargeGain = Hunger.STARVING * levelPortion * (0.25f + (0.125f*level()));
 				chargeGain *= RingOfEnergy.artifactChargeMultiplier(target);
+
+				//each charge is equal to 1/5 the max hunger value
+				chargeGain /= Hunger.STARVING/5;
 				partialCharge += chargeGain;
 
 				//charge is in increments of 1/5 max hunger value.
-				while (partialCharge >= Hunger.STARVING/5) {
+				while (partialCharge >= 1) {
 					charge++;
-					partialCharge -= Hunger.STARVING/5;
+					partialCharge -= 1;
 
-					int oldImage = image;
 					if (charge >= 8)        image = ItemSpriteSheet.ARTIFACT_HORN4;
 					else if (charge >= 5)   image = ItemSpriteSheet.ARTIFACT_HORN3;
 					else if (charge >= 2)   image = ItemSpriteSheet.ARTIFACT_HORN2;
@@ -276,8 +296,9 @@ public class HornOfPlenty extends Artifact {
 						partialCharge = 0;
 					}
 				}
-			} else
+			} else {
 				partialCharge = 0;
+			}
 		}
 
 	}

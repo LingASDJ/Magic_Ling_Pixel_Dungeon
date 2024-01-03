@@ -1,7 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM300;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PinkLingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
@@ -1487,7 +1487,7 @@ public class vM0_6_7_X_Changes {
 
         Image i = new Image(new DM300Sprite());
         i.scale.set(PixelScene.align(0.74f));
-        changes.addButton( new ChangeButton(i, Messages.get(NewDM300.class, "name"),
+        changes.addButton( new ChangeButton(i, Messages.get(DM300.class, "name"),
                 "DM300每次激活能量塔玩家获得20回合灵视和7回合极速"));
 
         changes.addButton(new ChangeButton(new ColdGuardSprite(), ("雪凛守卫"),

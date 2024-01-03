@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.ui.Icons.RENAME_OFF;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
@@ -43,10 +44,10 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndDLC;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDLCX;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHeroInfo;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
@@ -68,12 +69,14 @@ import com.watabou.noosa.NoosaScript;
 import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.Visual;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class HeroSelectScene extends PixelScene {
@@ -82,7 +85,9 @@ public class HeroSelectScene extends PixelScene {
 			HeroClass.WARRIOR,
 			HeroClass.MAGE,
 			HeroClass.ROGUE,
-			HeroClass.HUNTRESS
+			HeroClass.HUNTRESS,
+
+			HeroClass.DUELIST
 	};
 	private static int heroClassIndex = 0;
 	private static void addHeroClassIndex(int add) {
@@ -120,22 +125,22 @@ public class HeroSelectScene extends PixelScene {
 	private IconButton infoButton;
 	private IconButton challengeButton;
 	private IconButton btnExit;
-
+	private ArrayList<StyledButton> buttons;
 	@Override
 	public void create() {
 
 		super.create();
 
 		Dungeon.hero = null;
-
+		buttons = new ArrayList<>();
 		Badges.loadGlobal();
 
-//		Music.INSTANCE.playTracks(
-//				new String[]{Assets.Music.THEME},
-//				new float[]{1},
-//				false);
+		Music.INSTANCE.playTracks(
+				new String[]{Assets.Music.THEME_2},
+				new float[]{1},
+				false);
 
-		uiCamera.visible = false;
+		PixelScene.uiCamera.visible = false;
 
 		int w = Camera.main.width;
 		int h = Camera.main.height;
@@ -211,7 +216,7 @@ public class HeroSelectScene extends PixelScene {
 			window.add( patch );
 		}
 
-		frame = new Image( Assets.Interfaces.NEW_MENU );
+		frame = new Image( SPDSettings.ClassUI() ? Assets.Interfaces.NEW_MENU : Assets.Interfaces.NEW_MENU_DARK );
 
 		frame.frame( FRAME_WIDTH + GrassPatch.WIDTH*4, 0, FRAME_WIDTH, FRAME_HEIGHT );
 		frame.x = vx - FRAME_MARGIN_X;
@@ -235,12 +240,7 @@ public class HeroSelectScene extends PixelScene {
 				ActionIndicator.action = null;
 				InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
 
-				if (SPDSettings.intro()) {
-					SPDSettings.intro( false );
-					Game.switchScene( IntroScene.class );
-				} else {
-					Game.switchScene( InterlevelScene.class );
-				}
+				Game.switchScene( InterlevelScene.class );
 			}
 			public void enable( boolean value ) {
 				active = value;
@@ -387,23 +387,22 @@ public class HeroSelectScene extends PixelScene {
 		Telnetsc.setPos( frame.x + frame.width + FRAME_MARGIN_X, frame.y + frame.height - BUTTON_HEIGHT);
 		add(Telnetsc);
 
-		IconButton DevMode = new IconButton(new ItemSprite(ItemSpriteSheet.SEED_SKYBLUEFIRE)){
+		StyledButton seedButton = new StyledButton(Chrome.Type.BLANK, "", 6){
 			@Override
 			protected void onClick() {
 				String existingSeedtext = SPDSettings.customSeed();
-				ShatteredPixelDungeon.scene().addToFront(new WndTextInput(Messages.get(HeroSelectScene.class, "custom_seed_title"),
+				ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(HeroSelectScene.class, "custom_seed_title"),
 						Messages.get(HeroSelectScene.class, "custom_seed_desc"),
 						existingSeedtext,
 						20,
 						false,
 						Messages.get(HeroSelectScene.class, "custom_seed_set"),
-						Messages.get(HeroSelectScene.class, "custom_seed_clear")) {
+						Messages.get(HeroSelectScene.class, "custom_seed_clear")){
 					@Override
 					public void onSelect(boolean positive, String text) {
 						text = DungeonSeed.formatText(text);
 						long seed = DungeonSeed.convertFromText(text);
-
-						if (positive && seed != -1) {
+						if (positive && seed != -1){
 							SPDSettings.customSeed(text);
 							icon.hardlight(1f, 1.5f, 0.67f);
 						} else {
@@ -414,9 +413,13 @@ public class HeroSelectScene extends PixelScene {
 				});
 			}
 		};
-		DevMode.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
-		DevMode.setPos( frame.x + frame.width + FRAME_MARGIN_X, frame.y-14+ frame.height-14 - BUTTON_HEIGHT);
-		add(DevMode);
+		seedButton.leftJustify = true;
+		seedButton.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
+		seedButton.setPos( frame.x + frame.width + FRAME_MARGIN_X, frame.y-14+ frame.height-14 - BUTTON_HEIGHT);
+		seedButton.icon(Icons.get(Icons.ENTER));
+		if (!SPDSettings.customSeed().isEmpty()) seedButton.icon().hardlight(1f, 1.5f, 0.67f);;
+		buttons.add(seedButton);
+		add(seedButton);
 
 		IconButton Rename = new IconButton(Icons.get(Icons.RENAME_OFF)){
 			@Override
@@ -479,11 +482,11 @@ public class HeroSelectScene extends PixelScene {
 		IconButton DungeonHappyMode = new IconButton(new ItemSprite(ItemSpriteSheet.LANTERNB)) {
 			@Override
 			protected void onClick() {
-				if ( Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3)){
-					ShatteredPixelDungeon.scene().addToFront(new WndDLC(SPDSettings.dlc(), true));
-				} else {
-					ShatteredPixelDungeon.scene().addToFront(new WndMessage("击败_第三大层Boss_后解锁娱乐模式。"));
-				}
+//				if ( Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3)){
+//					ShatteredPixelDungeon.scene().addToFront(new WndDLC(SPDSettings.dlc(), true));
+//				} else {
+					ShatteredPixelDungeon.scene().addToFront(new WndMessage("DLC模式返修中，敬请期待。"));
+//				}
 
 			}
 		};
@@ -805,6 +808,8 @@ public class HeroSelectScene extends PixelScene {
 			super.update();
 			a += Random.Float( Game.elapsed * 5 );
 			angle = (2 + Math.cos( a )) * (forward ? +0.2 : -0.2);
+
+
 
 			scale.y = (float)Math.cos( angle );
 

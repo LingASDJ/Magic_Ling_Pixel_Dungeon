@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,7 +86,7 @@ public class PrismaticGuard extends Buff {
 		}
 		
 		LockedFloor lock = target.buff(LockedFloor.class);
-		if (HP < maxHP() && (lock == null || lock.regenOn())){
+		if (HP < maxHP() && Regeneration.regenOn()){
 			HP += 0.1f;
 		}
 		
@@ -123,11 +123,6 @@ public class PrismaticGuard extends Buff {
 	@Override
 	public String iconTextDisplay() {
 		return Integer.toString((int)HP);
-	}
-
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
 	}
 	
 	@Override

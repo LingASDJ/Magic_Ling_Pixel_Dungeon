@@ -21,17 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.JAmuletScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.Game;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class JAmulet extends Item {
@@ -72,20 +67,7 @@ public class JAmulet extends Item {
     public boolean doPickUp(Hero hero) {
         if (super.doPickUp( hero)) {
 
-            if (!Statistics.amuletObtained) {
-                Statistics.amuletObtained = true;
-                hero.spend(-TIME_TO_PICK_UP);
-
-                //add a delayed actor here so pickup behaviour can fully process.
-                Actor.addDelayed(new Actor(){
-                    @Override
-                    protected boolean act() {
-                        Actor.remove(this);
-                        showAmuletScene( true );
-                        return false;
-                    }
-                }, -5);
-            }
+            showAmuletScene( true );
 
             return true;
         } else {
@@ -94,10 +76,9 @@ public class JAmulet extends Item {
     }
 
     private void showAmuletScene( boolean showText ) {
-        try {
-            Dungeon.saveAll();
+
             JAmuletScene.noText = !showText;
-            Game.switchScene( JAmuletScene.class, new Game.SceneChangeCallback() {
+            Game.switchScene(JAmuletScene.class, new Game.SceneChangeCallback() {
                 @Override
                 public void beforeCreate() {
 
@@ -105,12 +86,10 @@ public class JAmulet extends Item {
 
                 @Override
                 public void afterCreate() {
-                   System.out.println("你被骗啦！！！");
+
                 }
             });
-        } catch (IOException e) {
-            ShatteredPixelDungeon.reportException(e);
-        }
+
     }
 
     @Override

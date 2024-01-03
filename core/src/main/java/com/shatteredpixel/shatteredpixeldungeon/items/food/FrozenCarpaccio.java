@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ public class FrozenCarpaccio extends Food {
 		if (Dungeon.isChallenged(Challenges.EXSG)) {
 				//~75% of a potion of healing
 				Buff.affect(hero, Barrier.class).setShield((int) (0.6f * hero.HT + 10));
-				Talent.onHealingPotionUsed( hero );
+				Talent.onPotionUsed(curUser, curUser.pos, energy/10f );
 		}
 		super.satisfy(hero);
 
@@ -70,7 +70,7 @@ public class FrozenCarpaccio extends Food {
 				break;
 			case 1:
 				GLog.i( Messages.get(FrozenCarpaccio.class, "hard") );
-				Buff.affect( hero, Barkskin.class ).set( hero.HT / 4, 1 );
+				Barkskin.conditionallyAppend( hero, hero.HT / 4, 1 );
 				break;
 			case 2:
 				GLog.i( Messages.get(FrozenCarpaccio.class, "refresh") );

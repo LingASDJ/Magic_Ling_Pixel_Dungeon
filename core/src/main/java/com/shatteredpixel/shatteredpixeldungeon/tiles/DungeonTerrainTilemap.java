@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,12 +66,16 @@ public class DungeonTerrainTilemap extends DungeonTilemap {
 						pos + mapWidth < size ?     map[pos + mapWidth] : -1,
 						pos % mapWidth != 0 ?       map[pos - 1] : -1
 						);
-			} else if (tile == Terrain.SIGN ||tile == Terrain.SIGN_SP) {
-				return DungeonTileSheet.RAISED_SIGN;
 			} else if (tile == Terrain.STATUE) {
 				return DungeonTileSheet.RAISED_STATUE;
 			} else if (tile == Terrain.STATUE_SP) {
 				return DungeonTileSheet.RAISED_STATUE_SP;
+			} else if (tile == Terrain.MINE_CRYSTAL) {
+				return DungeonTileSheet.getVisualWithAlts(
+						DungeonTileSheet.RAISED_MINE_CRYSTAL,
+						pos);
+			} else if (tile == Terrain.MINE_BOULDER) {
+				return DungeonTileSheet.RAISED_MINE_BOULDER;
 			} else if (tile == Terrain.ALCHEMY) {
 				return DungeonTileSheet.RAISED_ALCHEMY_POT;
 			} else if (tile == Terrain.BARRICADE) {

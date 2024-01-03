@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,17 +25,29 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite.Glowing;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -44,7 +56,8 @@ import com.watabou.utils.PathFinder;
 
 import java.util.ArrayList;
 
-public class Pickaxe extends Weapon {
+//various code in here supports old blacksmith quest logic from before v2.2.0
+public class Pickaxe extends MeleeWeapon {
 	
 	public static final String AC_MINE	= "MINE";
 	
@@ -59,32 +72,27 @@ public class Pickaxe extends Weapon {
 		
 		unique = true;
 		bones = false;
-		
-		defaultAction = AC_MINE;
 
+		tier = 2;
 	}
 	
 	public boolean bloodStained = false;
 
 	@Override
-	public int min(int lvl) {
-		return 2;   //tier 2
-	}
-
-	@Override
-	public int max(int lvl) {
-		return 15;  //tier 2
-	}
-
-	@Override
 	public int STRReq(int lvl) {
-		return STRReq(3, lvl); //tier 3
+		return super.STRReq(lvl) + 2; //tier 3 strength requirement with tier 2 damage stats
 	}
 
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		actions.add( AC_MINE );
+		if (Blacksmith.Quest.oldMiningQuest()) {
+			actions.add(AC_MINE);
+		}
+		if (Dungeon.level instanceof MiningLevel){
+			actions.remove(AC_DROP);
+			actions.remove(AC_THROW);
+		}
 		return actions;
 	}
 	
@@ -121,7 +129,7 @@ public class Pickaxe extends Weapon {
 							
 							DarkGold gold = new DarkGold();
 							if (gold.doPickUp( Dungeon.hero )) {
-								GLog.i( Messages.get(Dungeon.hero, "you_now_have", gold.name()) );
+								GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", gold.name())) );
 							} else {
 								Dungeon.level.drop( gold, hero.pos ).sprite.drop();
 							}
@@ -140,18 +148,8 @@ public class Pickaxe extends Weapon {
 	}
 	
 	@Override
-	public boolean isUpgradable() {
-		return false;
-	}
-	
-	@Override
-	public boolean isIdentified() {
-		return true;
-	}
-	
-	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
-		if (!bloodStained && defender instanceof Bat) {
+		if (Blacksmith.Quest.oldBloodQuest() && !bloodStained && defender instanceof Bat) {
 			Actor.add(new Actor() {
 
 				{
@@ -170,9 +168,80 @@ public class Pickaxe extends Weapon {
 				}
 			});
 		}
-		return damage;
+		return super.proc( attacker, defender, damage );
 	}
-	
+
+	@Override
+	public boolean keptThroughLostInventory() {
+		//pickaxe is always kept when it's needed for the mining level
+		return super.keptThroughLostInventory() || Dungeon.level instanceof MiningLevel;
+	}
+
+	@Override
+	public String defaultAction() {
+		if (Dungeon.hero.heroClass == HeroClass.DUELIST && isEquipped(Dungeon.hero)){
+			return AC_ABILITY;
+		} else if (Blacksmith.Quest.oldMiningQuest()) {
+			return AC_MINE;
+		} else {
+			return super.defaultAction();
+		}
+	}
+
+	@Override
+	public String targetingPrompt() {
+		return Messages.get(this, "prompt");
+	}
+
+	@Override
+	protected void duelistAbility(Hero hero, Integer target) {
+		if (target == null) {
+			return;
+		}
+
+		Char enemy = Actor.findChar(target);
+		if (enemy == null || enemy == hero || hero.isCharmedBy(enemy) || !Dungeon.level.heroFOV[target]) {
+			GLog.w(Messages.get(this, "ability_no_target"));
+			return;
+		}
+
+		hero.belongings.abilityWeapon = this;
+		if (!hero.canAttack(enemy)){
+			GLog.w(Messages.get(this, "ability_bad_position"));
+			hero.belongings.abilityWeapon = null;
+			return;
+		}
+		hero.belongings.abilityWeapon = null;
+
+		hero.sprite.attack(enemy.pos, new Callback() {
+			@Override
+			public void call() {
+				float damageMulti = 1f;
+				if (Char.hasProp(enemy, Char.Property.INORGANIC)
+						|| enemy instanceof Swarm
+						|| enemy instanceof Bee
+						|| enemy instanceof Crab
+						|| enemy instanceof Spinner
+						|| enemy instanceof Scorpio) {
+					damageMulti = 2f;
+				}
+				beforeAbilityUsed(hero, enemy);
+				AttackIndicator.target(enemy);
+				if (hero.attack(enemy, damageMulti, 0, Char.INFINITE_ACCURACY)) {
+					if (enemy.isAlive()) {
+						Buff.affect(enemy, Vulnerable.class, 3f);
+					} else {
+						onAbilityKill(hero, enemy);
+					}
+					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+				}
+				Invisibility.dispel();
+				hero.spendAndNext(hero.attackDelay());
+				afterAbilityUsed(hero);
+			}
+		});
+	}
+
 	private static final String BLOODSTAINED = "bloodStained";
 	
 	@Override
@@ -191,7 +260,11 @@ public class Pickaxe extends Weapon {
 	
 	@Override
 	public Glowing glowing() {
-		return bloodStained ? BLOODY : null;
+		if (super.glowing() == null) {
+			return bloodStained ? BLOODY : null;
+		} else {
+			return super.glowing();
+		}
 	}
 
 }

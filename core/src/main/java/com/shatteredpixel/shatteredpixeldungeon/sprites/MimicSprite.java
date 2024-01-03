@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2019 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ public class MimicSprite extends MobSprite {
 
 		play( idle );
 	}
-
+	
 	@Override
 	public void linkVisuals(Char ch) {
 		super.linkVisuals(ch);
@@ -88,6 +88,13 @@ public class MimicSprite extends MobSprite {
 		super.showSleep();
 	}
 
+	public static class Dimand extends MimicSprite{
+		@Override
+		protected int texOffset() {
+			return 64;
+		}
+	}
+
 	public static class Golden extends MimicSprite{
 		@Override
 		protected int texOffset() {
@@ -102,19 +109,6 @@ public class MimicSprite extends MobSprite {
 		}
 	}
 
-	public static class Black extends MimicSprite{
-		@Override
-		protected int texOffset() {
-			return 48;
-		}
-	}
-
-	public static class Dimand extends MimicSprite{
-		@Override
-		protected int texOffset() {
-			return 64;
-		}
-	}
 
 	public static class HollowWall extends MimicSprite{
 		@Override
@@ -137,27 +131,24 @@ public class MimicSprite extends MobSprite {
 
 			TextureFilm frames = new TextureFilm( texture, 16, 16 );
 
-			hiding = new Animation( 1, true );
+			hiding = new Animation( 8, true );
 			hiding.frames( frames, 0+c, 1+c, 2+c, 3+c);
 
-			idle = new Animation( 5, true );
+			idle = new Animation( 8, true );
 			idle.frames( frames, 0+c,1+c,2+c,3+c );
 
-			run = new Animation( 10, true );
+			run = new Animation( 16, true );
 			run.frames( frames, 0+c,1+c,2+c,3+c );
 
-			attack = new Animation( 10, false );
+			attack = new Animation( 16, false );
 			attack.frames( frames, 4+c, 5+c, 6+c );
 
-			die = new Animation( 5, false );
+			die = new Animation( 16, false );
 			die.frames( frames, 7+c,8+c, 9+c,10+c,11+c,12+c );
 
 			play( idle );
 		}
 
-
-
 	}
-
 
 }

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,9 +61,8 @@ public abstract class ShamanSprite extends MobSprite {
 	}
 	
 	public void zap( int cell ) {
-		
-		turnTo( ch.pos , cell );
-		play( zap );
+
+		super.zap( cell );
 		
 		MagicMissile.boltFromChar( parent,
 				boltType,

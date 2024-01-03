@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ public class StudyRoom extends StandardRoom {
 			door.set( Door.Type.REGULAR );
 		}
 		
-		//TODO add support for giant size as well
+		//TODO add support for giant size as well?
 		if (sizeCat == SizeCategory.LARGE){
 			int pillarW = (width()-7)/2;
 			int pillarH = (height()-7)/2;

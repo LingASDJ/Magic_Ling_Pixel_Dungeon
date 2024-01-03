@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc;
@@ -82,6 +83,10 @@ public class Artifact extends KindofMisc {
 	}
 
 	public void activate( Char ch ) {
+		if (passiveBuff != null){
+			passiveBuff.detach();
+			passiveBuff = null;
+		}
 		passiveBuff = passiveBuff();
 		passiveBuff.attachTo(ch);
 	}
@@ -211,12 +216,24 @@ public class Artifact extends KindofMisc {
 
 	public class ArtifactBuff extends Buff {
 
+		@Override
+		public boolean attachTo( Char target ) {
+			if (super.attachTo( target )) {
+				//if we're loading in and the hero has partially spent a turn, delay for 1 turn
+				if (target instanceof Hero && Dungeon.hero == null && cooldown() == 0 && target.cooldown() > 0) {
+					spend(TICK);
+				}
+				return true;
+			}
+			return false;
+		}
+
 		public int itemLevel() {
 			return level();
 		}
 
 		public boolean isCursed() {
-			return cursed;
+			return target.buff(MagicImmune.class) == null && cursed;
 		}
 
 		public void charge(Hero target, float amount){

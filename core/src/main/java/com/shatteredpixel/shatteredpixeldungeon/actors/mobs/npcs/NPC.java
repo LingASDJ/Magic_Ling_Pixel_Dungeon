@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,8 +51,9 @@ public abstract class NPC extends Mob {
 	}
 
 	@Override
-	public void add( Buff buff ) {
+	public boolean add(Buff buff ) {
 		//lee();
+		return false;
 	}
 
 }

@@ -12,7 +12,7 @@ public class SlylSprite extends MobSprite {
         this.texture("Rb.png");
         TextureFilm var1 = new TextureFilm(this.texture, 16, 16);
         this.idle = new Animation(1, true);
-        this.idle.frames(var1, new Object[]{0, 0, 0, 1, 0, 0, 0, 0, 1});
+        this.idle.frames(var1, 0, 0, 0, 1, 0, 0, 0, 0, 1);
         this.idle();
     }
 }

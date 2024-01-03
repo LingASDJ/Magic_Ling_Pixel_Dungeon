@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,58 +21,37 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.potions;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
-
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.utils.Random;
 
 public class PotionOfMindVision extends Potion {
 
-    {
-        icon = ItemSpriteSheet.Icons.POTION_MINDVIS;
-    }
+	{
+		icon = ItemSpriteSheet.Icons.POTION_MINDVIS;
+	}
 
-    @Override
-    public void apply(Hero hero) {
-        identify();
-
-        if (Dungeon.isChallenged(EXSG) && Random.Float()>0.4f && !(Dungeon.level.feeling == Level.Feeling.DIEDROOM)) {
-            if (Dungeon.level.mobs.size() > 0) {
-                GLog.i(Messages.get(this, "can't_see_mobs"));
-            } else {
-                GLog.i(Messages.get(this, "cant'see_none"));
-            }
-            Buff.affect(hero, Blindness.class, 5f);
-        } else {
-            Buff.affect(hero, MindVision.class, MindVision.DURATION);
-            Dungeon.observe();
-            if (Dungeon.level.mobs.size() > 0) {
-                GLog.i(Messages.get(this, "see_mobs"));
-            } else {
-                GLog.i(Messages.get(this, "see_none"));
-            }
-        }
-    }
-
-
-    @Override
-    public int value() {
-        return isKnown() ? 30 * quantity : super.value();
-    }
-
-    @Override
-    public String desc() {
-        //三元一次逻辑运算
-        return Dungeon.isChallenged(Challenges.EXSG) && !(Dungeon.level.feeling == Level.Feeling.DIEDROOM) ? Messages.get(this, "descx") : Messages.get(this, "desc");
-    }
-
+	@Override
+	public void apply( Hero hero ) {
+		identify();
+		Buff.affect( hero, MindVision.class, MindVision.DURATION );
+		SpellSprite.show(hero, SpellSprite.VISION, 1, 0.77f, 0.9f);
+		Dungeon.observe();
+		
+		if (Dungeon.level.mobs.size() > 0) {
+			GLog.i( Messages.get(this, "see_mobs") );
+		} else {
+			GLog.i( Messages.get(this, "see_none") );
+		}
+	}
+	
+	@Override
+	public int value() {
+		return isKnown() ? 30 * quantity : super.value();
+	}
 }

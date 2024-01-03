@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,9 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -56,6 +58,12 @@ public class Corrupting extends Weapon.Enchantment {
 			Corruption.corruptionHeal(enemy);
 
 			AllyBuff.affectAndLoot(enemy, hero, Corruption.class);
+
+			float powerMulti = Math.max(1f, procChance);
+			if (powerMulti > 1.1f){
+				//1 turn of adrenaline for each 20% above 100% proc rate
+				Buff.affect(enemy, Adrenaline.class, Math.round(5*(powerMulti-1f)));
+			}
 			
 			return 0;
 		}

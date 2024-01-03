@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
@@ -53,7 +54,7 @@ public class LevelRules {
             case 10:
                 return new DimandKingLevel();
             case 12:
-                return new NewCavesBossLevel();
+                return new CavesBossLevel();
             case 14:
                 return new CaveTwoBossLevel();
             case 16:
@@ -83,6 +84,7 @@ public class LevelRules {
                 case 0:
                     return new ZeroLevel();
                 case 1:
+                    //return new AncityMiniLevel();
                 case 2:
                 case 3:
                 case 4:
@@ -109,7 +111,11 @@ public class LevelRules {
                     if ((Statistics.boss_enhance & 0x4) != 0) {
                         return new CavesGirlDeadLevel();
                     } else {
-                        return Random.Float() <= 0.4f ? new CaveTwoBossLevel() : new NewCavesBossLevel();
+                        if(Random.Float() <= 0.4f && !Statistics.dm300Fight || Statistics.dm720Fight){
+                           return new CaveTwoBossLevel();
+                        } else {
+                            return new CavesBossLevel();
+                        }
                     }
                 case 16:
                 case 17:
@@ -132,16 +138,81 @@ public class LevelRules {
                     if ((Statistics.boss_enhance & 0x10) != 0) {
                         return new YogGodHardBossLevel();
                     } else {
-                        return new NewHallsBossLevel();
+                        return new HallsBossLevel();
                     }
                 case 26:
-                    return new LastLevel();
-                case 50:
-                    return new GardenLevel();
+                case 27:
+                case 28:
+                case 29:
+                    return new HollowLevel();
+                case 30:
+                    return new CerDogBossLevel();
+                case 31:
+                    if ((Statistics.boss_enhance & 0x12) != 0) {
+                        return new LastLevel();
+                    } else {
+                        return new LaveCavesBossLevel();
+                    }
                 default:
                     Statistics.deepestFloor--;
                     return new DeadEndLevel();
             }
+    }
+
+    public static Level createBranchLevel() {
+        switch (branch){
+            default:
+            case 1:
+                switch (depth) {
+                    case 11:
+                    case 12:
+                    case 13:
+                    case 14:
+                        return new MiningLevel();
+                    case 17: case 18:
+                        return new AncientMysteryCityLevel();
+                    default:
+                        return new DeadEndLevel();
+                }
+
+            case 2:
+                switch (depth) {
+                    case 4: case 14:
+                       return new MiniBossLevel();
+                   case 17: case 18:
+                        return new AncientMysteryCityLevel();
+                    default:
+                        return new DeadEndLevel();
+                }
+
+            case 3:
+                switch (depth){
+                    case 17: case 18:
+                        return new AncientMysteryCityBossLevel();
+                    default:
+                        return new DeadEndLevel();
+                }
+
+            case 4:
+                switch (depth){
+                    case 25:
+                        return new OpenLastLevel();
+                    case 17: case 18:
+                        return new GardenLevel();
+                    default:
+                        return new DeadEndLevel();
+                }
+
+            case 5:
+                switch (depth){
+                    case 25:
+                        return Statistics.endingbald ? new OpenLastLevel() : new NewLastLevel();
+                    case 17: case 18:
+                        return new GardenLevel();
+                    default:
+                        return new DeadEndLevel();
+                }
+        }
     }
 
 

@@ -306,7 +306,8 @@ public class DiamondKnight extends Boss {
     public void die( Object cause ) {
 
         super.die( cause );
-
+        //酸液体清0
+        Statistics.SiderLing = 0;
         Dungeon.level.unseal();
         Statistics.bossScores[1] += 2500;
         Dungeon.level.drop( new TengusMask(), pos ).sprite.drop();
@@ -327,7 +328,7 @@ public class DiamondKnight extends Boss {
             PaswordBadges.validateOMP();
             Statistics.bossScores[1] += 1000;
         }
-
+        Badges.validateBossSlain();
         phase++;
 
 //        if (!Badges.isUnlocked(Badges.Badge.KILL_SM)){
@@ -347,8 +348,6 @@ public class DiamondKnight extends Boss {
         //出口
         set( 52, Terrain.ENTRANCE );
         GameScene.updateMap( 52 );
-
-        Badges.validateBossSlain();
         yell( Messages.get(this, "defeated") );
     }
 

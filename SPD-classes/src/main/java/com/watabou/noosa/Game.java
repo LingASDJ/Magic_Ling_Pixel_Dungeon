@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -146,9 +146,9 @@ public class Game implements ApplicationListener {
 		}
 	}
 
-	//FIXME this is a temporary workaround to improve start times on android (first frame is 'cheated' and skips rendering)
-	//this is partly to improve stats on google play, and partly to try and diagnose what the cause of slow loading times is
-	//ultimately once the cause is found it should be fixed and this should no longer be needed
+	//FIXME this is a hack to improve start times on android (first frame is 'cheated' and skips rendering)
+	//This is mainly to improve stats on google play, as lots of texture refreshing leads to slow warm starts
+	//Would be nice to accomplish this goal in a less hacky way
 	private boolean justResumed = true;
 
 	@Override
@@ -277,6 +277,7 @@ public class Game implements ApplicationListener {
 
 		inputHandler.processAllEvents();
 
+		Music.INSTANCE.update();
 		Sample.INSTANCE.update();
 		scene.update();
 		Camera.updateAll();

@@ -36,6 +36,10 @@ public class Salamander extends Mob {
     private void zap() {
         spend( 1f );
 
+        if(enemy == null){
+            return;
+        }
+
         if (hit( this, enemy, true )) {
             int dmg = Random.NormalIntRange(2, 4);
             enemy.damage( dmg, new DarkBolt() );

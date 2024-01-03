@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,24 +21,25 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.TormentedSpirit;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.PathFinder;
 
 public class ScrollOfRemoveCurse extends InventoryScroll {
 
@@ -48,12 +49,39 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 	}
 
 	@Override
+	public void doRead() {
+
+		TormentedSpirit spirit = null;
+		for (int i : PathFinder.NEIGHBOURS8){
+			if (Actor.findChar(curUser.pos+i) instanceof TormentedSpirit){
+				spirit = (TormentedSpirit) Actor.findChar(curUser.pos+i);
+			}
+		}
+		if (spirit != null){
+			identify();
+			Sample.INSTANCE.play( Assets.Sounds.READ );
+			readAnimation();
+
+			new Flare( 6, 32 ).show( curUser.sprite, 2f );
+
+			if (curUser.buff(Degrade.class) != null) {
+				Degrade.detach(curUser, Degrade.class);
+			}
+
+			GLog.p(Messages.get(this, "spirit"));
+			spirit.cleanse();
+		} else {
+			super.doRead();
+		}
+	}
+
+	@Override
 	protected boolean usableOnItem(Item item) {
 		return uncursable(item);
 	}
 
 	public static boolean uncursable( Item item ){
-		if (item.isEquipped(hero) && hero.buff(Degrade.class) != null) {
+		if (item.isEquipped(Dungeon.hero) && Dungeon.hero.buff(Degrade.class) != null) {
 			return true;
 		} if ((item instanceof EquipableItem || item instanceof Wand) && ((!item.isIdentified() && !item.cursedKnown) || item.cursed)){
 			return true;
@@ -68,12 +96,7 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 
 	@Override
 	protected void onItemSelected(Item item) {
-
-		if(item instanceof EndingBlade) {
-			new Flare( 6, 32 ).color( 0xff0000, true ).show( curUser.sprite, 2f );
-		} else {
-			new Flare(6, 32).show(curUser.sprite, 2f);
-		}
+		new Flare( 6, 32 ).show( curUser.sprite, 2f );
 
 		boolean procced = uncurse( curUser, item );
 
@@ -84,8 +107,6 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 
 		if (procced) {
 			GLog.p( Messages.get(this, "cleansed") );
-		} else if(item instanceof EndingBlade) {
-			GLog.n(Messages.get(ScrollOfRemoveCurse.class, "strmagic"));
 		} else {
 			GLog.i( Messages.get(this, "not_cleansed") );
 		}
@@ -97,17 +118,9 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 		for (Item item : items) {
 			if (item != null) {
 				item.cursedKnown = true;
-				if (item instanceof WraithAmulet) {
-					Buff.detach(hero, WraithAmulet.CursedAmulet.class);
+				if (item.cursed) {
 					procced = true;
 					item.cursed = false;
-				} else if (item instanceof EndingBlade) {
-						item.cursed = true;
-				} else {
-					if (item.cursed) {
-						procced = true;
-						item.cursed = false;
-					}
 				}
 			}
 			if (item instanceof Weapon){
@@ -128,7 +141,7 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 				((Wand) item).updateLevel();
 			}
 		}
-
+		
 		if (procced && hero != null) {
 			hero.sprite.emitter().start( ShadowParticle.UP, 0.05f, 10 );
 			hero.updateHT( false ); //for ring of might
