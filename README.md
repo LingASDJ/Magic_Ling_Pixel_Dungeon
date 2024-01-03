@@ -15,7 +15,8 @@
 ![](/SCS/game1.jpg)
 
 ```
-结局虽然早已注定，但不甘命运之人定会反抗……
+CN:结局虽然早已注定，但不甘命运之人定会反抗……
+EN：Although the outcome has long been predetermined, those who are unwilling to accept fate will surely resist
 ```
 </div>
 <div align="center"> 
