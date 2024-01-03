@@ -81,6 +81,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImag
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVenom;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
@@ -206,7 +207,7 @@ public enum HeroClass {
 			new SpawnArtifact().quantity(1).identify().collect();
 			new SpawnRingOrWand().quantity(1).identify().collect();
 			new SpawnMissile().quantity(1).identify().collect();
-
+			new WandOfVenom().quantity(1).identify().collect();
 			new TerrainPlacer().quantity(1).identify().collect();
 
 			new MobPlacer().quantity(1).identify().collect();

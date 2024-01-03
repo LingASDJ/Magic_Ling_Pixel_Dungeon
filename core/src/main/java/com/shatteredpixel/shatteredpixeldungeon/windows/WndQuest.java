@@ -61,10 +61,10 @@ public class WndQuest extends WndTitledMessage {
 		if(text != null && !text.isEmpty()){
 			Game.runOnRenderThread(new Callback() {
 									   @Override
-									   public void call() {
-										   GameScene.show(new WndQuest(questgiver, text, 0));
-									   }
-								   }
+					 public void call() {
+							 GameScene.show(new WndQuest(questgiver, text, 0));
+					 }
+				}
 			);
 
 		}
