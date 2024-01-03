@@ -158,6 +158,11 @@ public class BloodthirstyThorn extends MeleeWeapon {
             return chice && demoncrystal && dm300ts;
         }
 
+        /**
+         * cost 炼金花费
+         * @param ingredients
+         * @return
+         */
         @Override
         public int cost(ArrayList<Item> ingredients) {
             return 18;
@@ -175,16 +180,15 @@ public class BloodthirstyThorn extends MeleeWeapon {
             Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndMessage(message)));
         }
 
-        /**
+        /*
          * @param ingredients 数组遍历物品
+         * @param Method brew 输出最终的炼金结果物品
          */
         @Override
         public Item brew(ArrayList<Item> ingredients) {
             ChaliceOfBlood chaliceOfBlood = Dungeon.hero.belongings.getItem(ChaliceOfBlood.class);
             BloodthirstyThorn bloodthirstyThorn = new BloodthirstyThorn();
-            /**
-             * @param Method brew 输出最终的炼金结果物品
-             */
+
             if (!testIngredients(ingredients)) return null;
 
             for (Item ingredient : ingredients){
@@ -215,13 +219,14 @@ public class BloodthirstyThorn extends MeleeWeapon {
             return sampleOutput(null);
         }
 
+        /**
+         * @param ingredients 输出炼金结果物品前的预览方法
+         */
         @Override
         public Item sampleOutput(ArrayList<Item> ingredients) {
             ChaliceOfBlood chaliceOfBlood = Dungeon.hero.belongings.getItem(ChaliceOfBlood.class);
             BloodthirstyThorn bloodthirstyThorn = new BloodthirstyThorn();
-            /**
-             * @param sampleOutput 输出炼金结果物品前的预览方法
-             */
+
             bloodthirstyThorn.identify();
 
             if(chaliceOfBlood!=null){
