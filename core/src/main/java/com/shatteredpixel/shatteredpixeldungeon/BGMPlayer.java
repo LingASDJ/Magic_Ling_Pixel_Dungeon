@@ -1,23 +1,25 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MoloHR;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Pylon;
+import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
-import com.watabou.utils.Callback;
 
 public class BGMPlayer {
 
 
     //解决电脑端高质量ogg的闪退问题
     public static void playBGM(String name, boolean loop) {
-        Game.runOnRenderThread(new Callback() {
-            @Override
-            public void call() {
-                Music.INSTANCE.play(name, loop);
-            }
-        });
+        Game.runOnRenderThread(() -> Music.INSTANCE.play(name, loop));
     }
 
     public static void playBGMWithDepth() {
@@ -28,7 +30,7 @@ public class BGMPlayer {
             }
         }
         int d = depth;
-
+        int s = branch;
 
         if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
             if (d == -1) {
@@ -43,33 +45,64 @@ public class BGMPlayer {
                 playBGM(Assets.BGM_3, true);
             } else if (d > 15 && d <= 20) {
                 playBGM(Assets.BGM_4, true);
-            } else if (d > 20 && d <= 26) {
+            } else if (d > 20 && d <= 25) {
                 playBGM(Assets.BGM_5, true);
+            } else if (d >= 26 && d <= 30) {
+                playBGM(Assets.HOLLOW_CITY, true);
             } else if (d ==-5||d ==-15) {
                 playBGM(Assets.SNOWCYON, true);
             } else
                 //default
                 playBGM(Assets.Music.THEME, true);
         } else {
-            if (d == -1) {
-                playBGM(Assets.TOWN, true);
-            }else if (d == 0) {
-                playBGM(Assets.TOWN, true);
-            } else if (d > 0 && d <= 5) {
-                playBGM(Assets.BGM_1, true);
-            } else if (d > 5 && d <= 10) {
-                playBGM(Assets.BGM_2, true);
-            } else if (d > 10 && d <= 15) {
-                playBGM(Assets.BGM_3, true);
-            } else if (d > 15 && d <= 20) {
-                playBGM(Assets.BGM_4, true);
-            } else if (d > 20 && d <= 26) {
-                playBGM(Assets.BGM_5, true);
-            } else if (d ==-5||d ==-15) {
-                playBGM(Assets.SNOWCYON, true);
-            } else
-                //default
-                playBGM(Assets.Music.THEME, true);
+            if(s == 5){
+                if(d == 17){
+                    playBGM(Assets.FL_CITY, true);
+                }
+                if(d == 25){
+                    playBGM(Assets.Music.RESET_FINALE, true);
+                }
+            } else if(s == 2 || s == 3 || s == 4){
+                if(d == 25){
+                    playBGM(Assets.Music.RESET_FINALE, true);
+                }
+                if(d == 16 ||d == 17 || d == 18 || d == 19 ){
+                    playBGM(Assets.Music.ANCITY, true);
+                }
+            } else if(s == 1){
+                if(d == 16 || d == 17 || d == 18 || d == 19  ){
+                    playBGM(Assets.Music.ANCITY, true);
+                }
+                if (d == 11 || d == 12 || d == 13 || d == 14) {
+                    if(level.locked){
+                        playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
+                    } else {
+                        playBGM(Assets.Music.CAVES_TENSE, true);
+                    }
+                }
+            } else {
+                if (d == -1) {
+                    playBGM(Assets.TOWN, true);
+                }else if (d == 0) {
+                    playBGM(Assets.TOWN, true);
+                } else if (d > 0 && d <= 5) {
+                    playBGM(Assets.BGM_1, true);
+                } else if (d > 5 && d <= 10) {
+                    playBGM(Assets.BGM_2, true);
+                } else if (d > 10 && d <= 15) {
+                    playBGM(Assets.BGM_3, true);
+                } else if (d > 15 && d <= 20) {
+                    playBGM(Assets.BGM_4, true);
+                } else if (d > 20 && d <= 25) {
+                    playBGM(Assets.BGM_5, true);
+                } else if (d >= 26 && d <= 30) {
+                    playBGM(Assets.HOLLOW_CITY, true);
+                } else if (d ==-5||d ==-15) {
+                    playBGM(Assets.SNOWCYON, true);
+                } else
+                    //default
+                    playBGM(Assets.Music.THEME, true);
+            }
         }
 
 
@@ -115,6 +148,7 @@ public class BGMPlayer {
 
     public static void playBoss() {
         int t = depth;
+        int s = branch;
 
         if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
             switch (depth){
@@ -148,24 +182,59 @@ public class BGMPlayer {
 
             }
         } else {
-            if (Dungeon.bossLevel() && t == 5 || t == 4) {
+            if(s == 3 && t == 16 ||s == 3 && t == 17 || s == 3 && t == 18) {
+                playBGM(Assets.SKBJY, true);
+            } else if (Dungeon.bossLevel() && t == 5 || t == 4 && s == 2) {
                 playBGM(Assets.BGM_BOSSA, true);
             } else if (Dungeon.bossLevel() && t == 10 && Statistics.mimicking) {
                 playBGM(Assets.BGM_BOSSB, true);
             } else if (Dungeon.bossLevel() && t == 10) {
                 playBGM(Assets.BGM_BOSSB2, true);
+            } else if ((t == 11 || t == 12 || t == 13 || t == 14) && s == 1)  {
+                playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
             } else if (t == 14) {
                 playBGM(Assets.BGM_BOSSC, true);
             } else if (Dungeon.bossLevel() && t == 15) {
-                if((Statistics.boss_enhance & 0x4) != 0)  playBGM(Assets.BGM_BOSSC3, true);
-                else  playBGM(Assets.BGM_BOSSC, true);
+                if((Statistics.boss_enhance & 0x4) != 0) {
+                    playBGM(Assets.BGM_BOSSC3, true);
+                } else {
+                   //最抽象的一集
+                   try {
+                       CavesBossLevel level = (CavesBossLevel) Dungeon.level;
+                       for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
+                           if (m instanceof Pylon){
+                               if(BossHealthBar.isAssigned() && level.pylonsRemaining >= 2){
+                                   playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
+                               } else {
+                                   playBGM(Assets.Music.CAVES_BOSS, true);
+                               }
+                           }
+                       }
+                   } catch (Exception e) {
+                       for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
+                           if (m instanceof DM300){
+                               if(BossHealthBar.isAssigned()){
+                                   playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
+                               } else {
+                                   playBGM(Assets.Music.CAVES_BOSS, true);
+                               }
+                           } else {
+                               if(m instanceof MoloHR){
+                                   playBGM(Assets.Music.PRISON_TENSE, true);
+                               }
+                           }
+                       }
+                   }
+                }
             } else if (Dungeon.bossLevel() && t == 20) {
                 if((Statistics.boss_enhance & 0x8) != 0)  playBGM(Assets.BGM_BOSSD2, true);
                 else  playBGM(Assets.BGM_BOSSD, true);
             } else if (Dungeon.bossLevel() && t == 25 && (Statistics.spawnersAlive > 0)) {
                 playBGM(Assets.BGM_BOSSE3, true);
             }else if (Dungeon.bossLevel() && t == 25){
-                playBGM(Assets.BGM_BOSSE, true);
+                level.playLevelMusic();
+            } else if (Dungeon.bossLevel() && t == 30) {
+                playBGM(Assets.BOSSDOG, true);
             } else if (Dungeon.bossLevel() && t == -15) {
                 playBGM(Assets.BGM_FRBOSS, true);
             }   else if (Dungeon.bossLevel() && t == -31) {

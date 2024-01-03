@@ -26,8 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.TPDoorDieds;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
 
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
@@ -52,11 +51,11 @@ public class WndResurrect extends Window {
 
 	public static Object instance;
 
-	private WndBlacksmith.ItemButton btnItem1;
-	private WndBlacksmith.ItemButton btnItem2;
-	private WndBlacksmith.ItemButton btnItem3;
-	private WndBlacksmith.ItemButton btnItem4;
-	private WndBlacksmith.ItemButton btnPressed;
+	private WndBlacksmith.ItemButtonX btnItem1;
+	private WndBlacksmith.ItemButtonX btnItem2;
+	private WndBlacksmith.ItemButtonX btnItem3;
+	private WndBlacksmith.ItemButtonX btnItem4;
+	private WndBlacksmith.ItemButtonX btnPressed;
 
 	RedButton btnContinue;
 	
@@ -77,7 +76,7 @@ public class WndResurrect extends Window {
 		message.setPos(0, titlebar.bottom() + GAP);
 		add( message );
 
-		btnItem1 = new WndBlacksmith.ItemButton() {
+		btnItem1 = new WndBlacksmith.ItemButtonX() {
 			@Override
 			protected void onClick() {
 				btnPressed = btnItem1;
@@ -88,7 +87,7 @@ public class WndResurrect extends Window {
 		btnItem1.setRect( (WIDTH - BTN_GAP) / 4 - BTN_SIZE, message.bottom() + BTN_GAP, BTN_SIZE, BTN_SIZE );
 		add( btnItem1 );
 
-		btnItem2 = new WndBlacksmith.ItemButton() {
+		btnItem2 = new WndBlacksmith.ItemButtonX() {
 			@Override
 			protected void onClick() {
 				btnPressed = btnItem2;
@@ -99,7 +98,7 @@ public class WndResurrect extends Window {
 		btnItem2.setRect( btnItem1.right() + BTN_GAP, btnItem1.top(), BTN_SIZE, BTN_SIZE );
 		add( btnItem2 );
 
-		btnItem3 = new WndBlacksmith.ItemButton() {
+		btnItem3 = new WndBlacksmith.ItemButtonX() {
 			@Override
 			protected void onClick() {
 				btnPressed = btnItem3;
@@ -111,7 +110,7 @@ public class WndResurrect extends Window {
 		add( btnItem3 );
 
 
-		btnItem4 = new WndBlacksmith.ItemButton() {
+		btnItem4 = new WndBlacksmith.ItemButtonX() {
 			@Override
 			protected void onClick() {
 				btnPressed = btnItem4;
@@ -154,8 +153,9 @@ public class WndResurrect extends Window {
 					TPDoorDieds = false;
 				}
 
-				//矮人将军
-				Buff.affect(hero, TestDwarfMasterLock.class).set((10), 1);
+				DragonGirlBlue.Quest.four_used_points = 0;
+
+				Statistics.sakaBackStage = 0;
 
 				InterlevelScene.mode = InterlevelScene.Mode.RESURRECT;
 				Game.switchScene( InterlevelScene.class );

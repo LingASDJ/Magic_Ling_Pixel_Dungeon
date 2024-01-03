@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,12 +28,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfFuror;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Annoying;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Dazzling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Displacing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Exhausting;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Explosive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Fragile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Friendly;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Polarized;
@@ -44,16 +49,16 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocki
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blooming;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Chilling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Corrupting;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Crushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.HaloBlazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -72,9 +77,9 @@ abstract public class Weapon extends KindOfWeapon {
 	public int      RCH = 1;    // Reach modifier (only applies to melee hits)
 
 	public enum Augment {
-		SPEED   (0.7f, 0.6667f),
-		DAMAGE  (1.5f, 1.6667f),
-		NONE	(1.0f, 1.0000f);
+		SPEED   (0.7f, 2/3f),
+		DAMAGE  (1.5f, 5/3f),
+		NONE	(1.0f, 1f);
 
 		private float damageFactor;
 		private float delayFactor;
@@ -100,6 +105,7 @@ abstract public class Weapon extends KindOfWeapon {
 	private float availableUsesToID = USES_TO_ID/2f;
 	
 	public Enchantment enchantment;
+	public boolean enchantHardened = false;
 	public boolean curseInfusionBonus = false;
 	public boolean masteryPotionBonus = false;
 	
@@ -135,6 +141,7 @@ abstract public class Weapon extends KindOfWeapon {
 	private static final String USES_LEFT_TO_ID = "uses_left_to_id";
 	private static final String AVAILABLE_USES  = "available_uses";
 	private static final String ENCHANTMENT	    = "enchantment";
+	private static final String ENCHANT_HARDENED = "enchant_hardened";
 	private static final String CURSE_INFUSION_BONUS = "curse_infusion_bonus";
 	private static final String MASTERY_POTION_BONUS = "mastery_potion_bonus";
 	private static final String AUGMENT	        = "augment";
@@ -145,6 +152,7 @@ abstract public class Weapon extends KindOfWeapon {
 		bundle.put( USES_LEFT_TO_ID, usesLeftToID );
 		bundle.put( AVAILABLE_USES, availableUsesToID );
 		bundle.put( ENCHANTMENT, enchantment );
+		bundle.put( ENCHANT_HARDENED, enchantHardened );
 		bundle.put( CURSE_INFUSION_BONUS, curseInfusionBonus );
 		bundle.put( MASTERY_POTION_BONUS, masteryPotionBonus );
 		bundle.put( AUGMENT, augment );
@@ -156,6 +164,7 @@ abstract public class Weapon extends KindOfWeapon {
 		usesLeftToID = bundle.getFloat( USES_LEFT_TO_ID );
 		availableUsesToID = bundle.getFloat( AVAILABLE_USES );
 		enchantment = (Enchantment)bundle.get( ENCHANTMENT );
+		enchantHardened = bundle.getBoolean( ENCHANT_HARDENED );
 		curseInfusionBonus = bundle.getBoolean( CURSE_INFUSION_BONUS );
 		masteryPotionBonus = bundle.getBoolean( MASTERY_POTION_BONUS );
 
@@ -170,7 +179,7 @@ abstract public class Weapon extends KindOfWeapon {
 	}
 	
 	@Override
-	public float accuracyFactor( Char owner ) {
+	public float accuracyFactor(Char owner, Char target) {
 		
 		int encumbrance = 0;
 		
@@ -178,10 +187,11 @@ abstract public class Weapon extends KindOfWeapon {
 			encumbrance = STRReq() - ((Hero)owner).STR();
 		}
 
-		if (hasEnchant(Wayward.class, owner))
-			encumbrance = Math.max(2, encumbrance+2);
-
 		float ACC = this.ACC;
+
+		if (owner.buff(Wayward.WaywardBuff.class) != null && enchantment instanceof Wayward){
+			ACC /= 5;
+		}
 
 		return encumbrance > 0 ? (float)(ACC / Math.pow( 1.5, encumbrance )) : ACC;
 	}
@@ -204,12 +214,29 @@ abstract public class Weapon extends KindOfWeapon {
 	}
 
 	protected float speedMultiplier(Char owner ){
-		return RingOfFuror.attackSpeedMultiplier(owner);
+		float multi = RingOfFuror.attackSpeedMultiplier(owner);
+
+		if (owner.buff(Scimitar.SwordDance.class) != null){
+			multi += 0.6f;
+		}
+
+		return multi;
 	}
 
 	@Override
 	public int reachFactor(Char owner) {
-		return hasEnchant(Projecting.class, owner) ? RCH+1 : RCH;
+		int reach = RCH;
+		if (owner instanceof Hero && RingOfForce.fightingUnarmed((Hero) owner)){
+			reach = 1; //brawlers stance benefits from enchantments, but not innate reach
+			if (!RingOfForce.unarmedGetsWeaponEnchantment((Hero) owner)){
+				return reach;
+			}
+		}
+		if (hasEnchant(Projecting.class, owner)){
+			return reach + Math.round(enchantment.procChanceMultiplier(owner));
+		} else {
+			return reach;
+		}
 	}
 
 	public int STRReq(){
@@ -236,16 +263,6 @@ abstract public class Weapon extends KindOfWeapon {
 		return level;
 	}
 	
-	//overrides as other things can equip these
-	@Override
-	public int buffedLvl() {
-		if (isEquipped( Dungeon.hero ) || Dungeon.hero.belongings.contains( this )){
-			return super.buffedLvl();
-		} else {
-			return level();
-		}
-	}
-	
 	@Override
 	public Item upgrade() {
 		return upgrade(false);
@@ -257,16 +274,25 @@ abstract public class Weapon extends KindOfWeapon {
 			if (enchantment == null){
 				enchant(Enchantment.random());
 			}
-		} else {
-			if (hasCurseEnchant()){
+		} else if (enchantment != null) {
+			//chance to lose harden buff is 10/20/40/80/100% when upgrading from +6/7/8/9/10
+			if (enchantHardened){
+				if (level() >= 6 && Random.Float(10) < Math.pow(2, level()-6)){
+					enchantHardened = false;
+				}
+
+			//chance to remove curse is a static 33%
+			} else if (hasCurseEnchant()) {
 				if (Random.Int(3) == 0) enchant(null);
+
+			//otherwise chance to lose enchant is 10/20/40/80/100% when upgrading from +4/5/6/7/8
 			} else if (level() >= 4 && Random.Float(10) < Math.pow(2, level()-4)){
 				enchant(null);
 			}
 		}
 		
 		cursed = false;
-		
+
 		return super.upgrade();
 	}
 	
@@ -336,41 +362,53 @@ abstract public class Weapon extends KindOfWeapon {
 	}
 
 	public static abstract class Enchantment implements Bundlable {
-		
-		private static final Class<?>[] common = new Class<?>[]{
+
+		public static final Class<?>[] common = new Class<?>[]{
 				Blazing.class, Chilling.class, Kinetic.class, Shocking.class};
-		
-		private static final Class<?>[] uncommon = new Class<?>[]{
+
+		public static final Class<?>[] uncommon = new Class<?>[]{
 				Blocking.class, Blooming.class, Elastic.class,
 				Lucky.class, Projecting.class, Unstable.class};
-		
-		private static final Class<?>[] rare = new Class<?>[]{
-				Corrupting.class, Grim.class, Vampiric.class,
-				HaloBlazing.class,
-				Crushing.class};
-		
-		private static final float[] typeChances = new float[]{
+
+		public static final Class<?>[] rare = new Class<?>[]{
+				Corrupting.class, Grim.class, Vampiric.class};
+
+		public static final float[] typeChances = new float[]{
 				50, //12.5% each
 				40, //6.67% each
 				10  //3.33% each
 		};
 		
 		private static final Class<?>[] curses = new Class<?>[]{
-				Annoying.class, Displacing.class, Exhausting.class, Fragile.class,
-				Sacrificial.class, Wayward.class, Polarized.class, Friendly.class
+				Annoying.class, Displacing.class, Dazzling.class, Explosive.class,
+				Sacrificial.class, Wayward.class, Polarized.class, Friendly.class,
+				Fragile.class, Exhausting.class
 		};
 		
 			
 		public abstract int proc( Weapon weapon, Char attacker, Char defender, int damage );
 
 		protected float procChanceMultiplier( Char attacker ){
-			float multi = 1f;
-			if (attacker instanceof Hero && ((Hero) attacker).hasTalent(Talent.ENRAGED_CATALYST)){
-				Berserk rage = attacker.buff(Berserk.class);
-				if (rage != null) {
-					multi += (rage.rageAmount() * 0.15f) * ((Hero) attacker).pointsInTalent(Talent.ENRAGED_CATALYST);
-				}
+			return genericProcChanceMultiplier( attacker );
+		}
+
+		public static float genericProcChanceMultiplier( Char attacker ){
+			float multi = RingOfArcana.enchantPowerMultiplier(attacker);
+			Berserk rage = attacker.buff(Berserk.class);
+			if (rage != null) {
+				multi = rage.enchantFactor(multi);
 			}
+
+			if (attacker.buff(RunicBlade.RunicSlashTracker.class) != null){
+				multi += 3f;
+				attacker.buff(RunicBlade.RunicSlashTracker.class).detach();
+			}
+
+			if (attacker.buff(ElementalStrike.DirectedPowerTracker.class) != null){
+				multi += attacker.buff(ElementalStrike.DirectedPowerTracker.class).enchBoost;
+				attacker.buff(ElementalStrike.DirectedPowerTracker.class).detach();
+			}
+
 			if (attacker.buff(Talent.SpiritBladesTracker.class) != null
 					&& ((Hero)attacker).pointsInTalent(Talent.SPIRIT_BLADES) == 4){
 				multi += 0.1f;
@@ -379,6 +417,7 @@ abstract public class Weapon extends KindOfWeapon {
 					&& ((Hero)attacker).pointsInTalent(Talent.STRIKING_WAVE) == 4){
 				multi += 0.2f;
 			}
+
 			return multi;
 		}
 

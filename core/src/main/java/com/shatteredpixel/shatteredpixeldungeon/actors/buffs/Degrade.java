@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -28,7 +29,10 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 public class Degrade extends FlavourBuff {
-
+	@Override
+	public String heroMessage() {
+		return Messages.get(this, "heromsg");
+	}
 	public static final float DURATION = 30f;
 	public static final float ADURATION = 5f;
 	{
@@ -40,7 +44,7 @@ public class Degrade extends FlavourBuff {
 	public boolean attachTo(Char target) {
 		if (super.attachTo(target)){
 			Item.updateQuickslot();
-			if (target instanceof Hero) ((Hero) target).updateHT(false);
+			if (target == Dungeon.hero) ((Hero) target).updateHT(false);
 			return true;
 		}
 		return false;
@@ -49,7 +53,7 @@ public class Degrade extends FlavourBuff {
 	@Override
 	public void detach() {
 		super.detach();
-		if (target instanceof Hero) ((Hero) target).updateHT(false);
+		if (target == Dungeon.hero) ((Hero) target).updateHT(false);
 		Item.updateQuickslot();
 	}
 
@@ -75,21 +79,6 @@ public class Degrade extends FlavourBuff {
 	@Override
 	public float iconFadePercent() {
 		return (DURATION - visualcooldown())/DURATION;
-	}
-
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-	
-	@Override
-	public String heroMessage() {
-		return Messages.get(this, "heromsg");
-	}
-	
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc", dispTurns());
 	}
 	
 }

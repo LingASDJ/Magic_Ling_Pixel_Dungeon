@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -35,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
@@ -49,7 +49,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewCityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -58,9 +61,13 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
@@ -93,7 +100,7 @@ public class DwarfKing extends Mob {
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 10);
+		return super.drRoll() + Random.NormalIntRange(0, 10);
 	}
 
 	private int phase = 1;
@@ -136,6 +143,9 @@ public class DwarfKing extends Mob {
 		lastAbility = bundle.getInt( LAST_ABILITY );
 
 		if (phase == 2) properties.add(Property.IMMOVABLE);
+
+		BossHealthBar.assignBoss(this);
+		if (phase == 3) BossHealthBar.bleed(true);
 	}
 
 	@Override
@@ -329,7 +339,7 @@ public class DwarfKing extends Mob {
 	private HashSet<Mob> getSubjects(){
 		HashSet<Mob> subjects = new HashSet<>();
 		for (Mob m : Dungeon.level.mobs){
-			if (m.alignment == alignment && (m instanceof Ghoul || m instanceof Monk || m instanceof Warlock || m instanceof IceGolem||m instanceof BruteBot)){
+			if (m.alignment == alignment && (m instanceof Ghoul || m instanceof Monk || m instanceof Warlock || m instanceof Golem ||m instanceof IceGolem || m instanceof BruteBot)){
 				subjects.add(m);
 			}
 		}
@@ -436,11 +446,25 @@ public class DwarfKing extends Mob {
 
 	@Override
 	public boolean isInvulnerable(Class effect) {
-		return phase == 2 && effect != KingDamager.class;
+		if (effect == KingDamager.class){
+			return false;
+		} else {
+			return phase == 2 || super.isInvulnerable(effect);
+		}
 	}
 
 	@Override
 	public void damage(int dmg, Object src) {
+		//hero only counts as unarmed if they have no weapon and aren't benefiting from force
+		if (src == Dungeon.hero && (Dungeon.hero.belongings.weapon() != null || Dungeon.hero.buff(RingOfForce.Force.class) != null)){
+			Statistics.qualifiedForBossChallengeBadge = false;
+		//Corrosion, corruption, and regrowth do no direct damage and so have their own custom logic
+		//Transfusion damages DK and so doesn't need custom logic
+		//Lightning has custom logic so that chaining it doesn't DQ for the badge
+		} else if (src instanceof Wand && !(src instanceof WandOfLightning)){
+			Statistics.qualifiedForBossChallengeBadge = false;
+		}
+
 		if (isInvulnerable(src.getClass())){
 			super.damage(dmg, src);
 			return;
@@ -457,7 +481,10 @@ public class DwarfKing extends Mob {
 		super.damage(dmg, src);
 
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-		if (lock != null && !isImmune(src.getClass())) lock.addTime(dmg/3);
+		if (lock != null && !isImmune(src.getClass())){
+			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg/5f);
+			else                                                    lock.addTime(dmg/3f);
+		}
 
 		if (phase == 1) {
 			int dmgTaken = preHP - HP;
@@ -476,7 +503,7 @@ public class DwarfKing extends Mob {
 					s.detach();
 				}
 				for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])) {
-					if (m instanceof Ghoul || m instanceof Monk || m instanceof Warlock || m instanceof Golem) {
+					if (m instanceof Ghoul || m instanceof Monk || m instanceof Warlock || m instanceof IceGolem || m instanceof DKBrute) {
 						m.die(null);
 					}
 				}
@@ -488,6 +515,24 @@ public class DwarfKing extends Mob {
 			sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
 			Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
 			yell(  Messages.get(this, "enraged", Dungeon.hero.name()) );
+
+			//梦魇Boss额外护盾
+			if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+				Buff.affect(this, DKBarrior.class).setShield(HT/5);
+			}
+
+			BossHealthBar.bleed(true);
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					Music.INSTANCE.fadeOut(0.5f, new Callback() {
+						@Override
+						public void call() {
+							Music.INSTANCE.play(Assets.Music.CITY_BOSS_FINALE, true);
+						}
+					});
+				}
+			});
 		} else if (phase == 3 && preHP > 20 && HP < 20){
 			yell( Messages.get(this, "losing") );
 		}
@@ -500,28 +545,31 @@ public class DwarfKing extends Mob {
 
 	@Override
 	public void die(Object cause) {
-		if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 
-			GetBossLoot();
-		}
 		GameScene.bossSlain();
-		Statistics.bossScores[3] += 4000;
+		//酸液体清0
+		Statistics.SiderLing = 0;
 		super.die( cause );
 
-		if (Dungeon.level.solid[pos]){
-			Heap h = Dungeon.level.heaps.get(pos);
-			if (h != null) {
-				for (Item i : h.items) {
-					Dungeon.level.drop(i, pos + Dungeon.level.width());
-				}
-				h.destroy();
+		Heap h = Dungeon.level.heaps.get(NewCityBossLevel.throne);
+		if (h != null) {
+			for (Item i : h.items) {
+				Dungeon.level.drop(i, NewCityBossLevel.throne + Dungeon.level.width());
 			}
+			h.destroy();
+		}
+
+		if (Dungeon.level.solid[pos]){
 			Dungeon.level.drop(new KingsCrown(), pos + Dungeon.level.width()).sprite.drop(pos);
 		} else {
 			Dungeon.level.drop(new KingsCrown(), pos).sprite.drop();
 		}
 
 		Badges.validateBossSlain();
+		if (Statistics.qualifiedForBossChallengeBadge){
+			Badges.validateBossChallengeCompleted();
+		}
+		Statistics.bossScores[3] += 4000;
 
 		Dungeon.level.unseal();
 
@@ -548,6 +596,7 @@ public class DwarfKing extends Mob {
 
 	public static class DKGhoul extends Ghoul {
 		{
+			properties.add(Property.BOSS_MINION);
 			state = HUNTING;
 		}
 
@@ -558,16 +607,26 @@ public class DwarfKing extends Mob {
 		}
 	}
 
+	public static class DKBrute extends BruteBot {
+		{
+			HP = HT = 75;
+			state = HUNTING;
+		}
+	}
+
 	public static class DKMonk extends Monk {
 		{
+			properties.add(Property.BOSS_MINION);
 			state = HUNTING;
 		}
 	}
 
 	public static class DKWarlock extends Warlock {
 		{
+			properties.add(Property.BOSS_MINION);
 			state = HUNTING;
 		}
+
 		@Override
 		protected void zap() {
 			if (enemy == Dungeon.hero){
@@ -579,13 +638,7 @@ public class DwarfKing extends Mob {
 
 	public static class DKGolem extends IceGolem {
 		{
-			state = HUNTING;
-		}
-	}
-
-	public static class DKBrute extends BruteBot {
-		{
-			HP = HT = 75;
+			properties.add(Property.BOSS_MINION);
 			state = HUNTING;
 		}
 	}
@@ -607,6 +660,7 @@ public class DwarfKing extends Mob {
 			delay--;
 
 			if (delay <= 0){
+
 				if (summon == DKGolem.class){
 					particles.burst(SnowParticle.FACTORY, 10);
 					Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
@@ -637,6 +691,11 @@ public class DwarfKing extends Mob {
 					}
 				}
 
+				//kill sheep that are right on top of the spawner instead of failing to spawn
+				if (Actor.findChar(pos) instanceof Sheep){
+					Actor.findChar(pos).die(null);
+				}
+
 				if (Actor.findChar(pos) == null) {
 					Mob m = Reflection.newInstance(summon);
 					m.pos = pos;
@@ -659,6 +718,7 @@ public class DwarfKing extends Mob {
 					}
 					if (!ch.isAlive() && ch == Dungeon.hero) {
 						Dungeon.fail(DwarfKing.class);
+						GLog.n( Messages.capitalize(Messages.get(Char.class, "kill", Messages.get(DwarfKing.class, "name"))));
 					}
 				}
 
@@ -671,13 +731,11 @@ public class DwarfKing extends Mob {
 
 		@Override
 		public void fx(boolean on) {
-			if (on && particles == null) {
+			if (on && (particles == null || particles.parent == null)) {
 				particles = CellEmitter.get(pos);
 
-				if (summon == DKBrute.class) {
-					particles.pour(RainbowParticle.BURST, 0.55f);
-				} else if (summon == DKGolem.class){
-					particles.pour(SnowParticle.FACTORY, 0.05f);
+				if (summon == DKGolem.class){
+					particles.pour(SnowParticle.FACTORY, 0.45f);
 				} else if (summon == DKWarlock.class){
 					particles.pour(ShadowParticle.UP, 0.1f);
 				} else if (summon == DKMonk.class){

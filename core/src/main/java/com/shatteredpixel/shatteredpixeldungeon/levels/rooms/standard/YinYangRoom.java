@@ -24,6 +24,21 @@ import java.util.Arrays;
 public class YinYangRoom extends SpecialRoom {
 
     @Override
+    public boolean canConnect(Point p) {
+        if (!super.canConnect(p)){
+            return false;
+        }
+        //only place doors in the center
+        if (Math.abs(p.x - (right - (width()-1)/4f)) < 1f){
+            return true;
+        }
+        if (Math.abs(p.y - (bottom - (height()-1)/4f)) < 1f){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public int minWidth() { return 11; }
     @Override
     public int minHeight() {
@@ -52,7 +67,7 @@ public class YinYangRoom extends SpecialRoom {
         Item prize;
         do {
             prize = Generator.random(cat);
-            prize.upgrade(Random.NormalIntRange(1,2));
+            prize.level(Random.NormalIntRange(0,2));
             prize.cursed = false;
         } while (Challenges.isItemBlocked(prize));
         return prize;
@@ -64,7 +79,7 @@ public class YinYangRoom extends SpecialRoom {
         Item prize;
         do {
             prize = Generator.random(cat);
-            prize.upgrade(Random.NormalIntRange(2,3));
+            prize.level(Random.NormalIntRange(1,3));
             prize.cursed = true;
         } while (Challenges.isItemBlocked(prize));
         return prize;
@@ -107,7 +122,7 @@ public class YinYangRoom extends SpecialRoom {
         Painter.set(level,chestPos2,Terrain.EMPTY_SP);
 
         if (Random.Int(10) == 0){
-            level.mobs.add(Mimic.spawnAt(chestPos2,Blackprize(), CrystalMimic.class));
+            level.mobs.add(Mimic.spawnAt(chestPos2,CrystalMimic.class,Blackprize()));
         } else {
             level.drop(prize(), chestPos2).type = Heap.Type.CRYSTAL_CHEST;
         }
@@ -122,7 +137,11 @@ public class YinYangRoom extends SpecialRoom {
                 door.set(Door.Type.REGULAR);
             } else {
                 level.addItemToSpawn( new IronKey( Dungeon.depth ) );
-                door.set(Door.Type.LOCKED);
+                if(Dungeon.depth == 4 && Dungeon.branch == 2){
+                    entrance().set( Door.Type.CRYSTAL );
+                } else {
+                    entrance().set( Door.Type.LOCKED );
+                }
             }
 
         }

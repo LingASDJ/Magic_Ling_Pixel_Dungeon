@@ -24,24 +24,31 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ConfusionGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FireGhostDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.RedTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -107,6 +114,8 @@ public abstract class ChampionEnemy extends Buff {
 		immunities.add(Corruption.class);
 	}
 
+
+
 	public static void rollForStateLing(Mob m){
 		if (Dungeon.mobsToStateLing <= 0) Dungeon.mobsToStateLing = 8;
 
@@ -117,7 +126,29 @@ public abstract class ChampionEnemy extends Buff {
 		int randomNumber = Random.Int(100);
 
 		if (randomNumber < 5) {
-			buffCls = ChampionEnemy.LongSider.class;
+//			//开始硬性限制酸液体，每大层最多遇到3个，关键Boss战后清0
+//			if(Statistics.SiderLing < 4) {
+//				buffCls = ChampionEnemy.Sider.class;
+//				Statistics.SiderLing++;
+//			} else {
+				switch (randomNumber % 5) {
+					case 0: default:
+						buffCls = ChampionEnemy.Small.class;
+						break;
+					case 1:
+						buffCls = ChampionEnemy.Middle.class;
+						break;
+					case 2:
+						buffCls = ChampionEnemy.Big.class;
+						break;
+					case 3:
+						buffCls = ChampionEnemy.LongSider.class;
+						break;
+					case 4:
+						buffCls = ChampionEnemy.HealRight.class;
+						break;
+				}
+//			}
 		} else if (randomNumber < 10) {
 			buffCls = ChampionEnemy.Bomber.class;
 		} else {
@@ -132,7 +163,10 @@ public abstract class ChampionEnemy extends Buff {
 					buffCls = ChampionEnemy.Big.class;
 					break;
 				case 3:
-					buffCls = ChampionEnemy.Sider.class;
+					buffCls = ChampionEnemy.LongSider.class;
+					break;
+				case 4:
+					buffCls = ChampionEnemy.HealRight.class;
 					break;
 			}
 		}
@@ -173,53 +207,97 @@ public abstract class ChampionEnemy extends Buff {
 
 	}
 
-	public static class Sider extends ChampionEnemy implements Callback {
-		{
-			color = 0xe59d9d;
-		}
+	public static class Sider extends ChampionEnemy implements Hero.Doom {
+        {
+            color = 0xED186E;
+        }
 
-		public static class DarkBolt{}
+		int scount = 0;
+		private final String SCOUNT = "counts";
 
-		public void onZapComplete() {
-			next();
+		@Override
+		public void storeInBundle( Bundle bundle ) {
+			super.storeInBundle(bundle);
+			bundle.put( SCOUNT , scount );
 		}
 
 		@Override
-		public void call() {
-			next();
+		public void restoreFromBundle( Bundle bundle ) {
+			super.restoreFromBundle(bundle);
+			scount = bundle.getInt( SCOUNT );
 		}
 
-		@Override
-		public boolean canAttackWithExtraReach(Char enemy) {
-			//attack range of 2
-			/** 实现效果，此外还要关联CharSprite.java和Mob.java以实现远程效果*/
-			if(Random.Float()<0.1f) {
-				switch (Random.NormalIntRange(0,6)){
-					//默认为毒雾
-					case 1:default:
-						GameScene.add(Blob.seed(enemy.pos, 45, ToxicGas.class));
-						break;
-					case 2:
-						GameScene.add(Blob.seed(enemy.pos, 45, CorrosiveGas.class));
-						break;
-					case 3:
-						GameScene.add(Blob.seed(enemy.pos, 45, ConfusionGas.class));
-						break;
-					case 4:
-						GameScene.add(Blob.seed(enemy.pos, 45, StormCloud.class));
-						break;
+        @Override
+        public boolean canAttackWithExtraReach(Char enemy) {
+            //attack range of 2
+            /** 实现效果，此外还要关联CharSprite.java和Mob.java以实现远程效果*/
+			if(scount<Random.NormalIntRange(6,24)){
+				if(Random.Float()<0.1f) {
+					switch (Random.NormalIntRange(0,6)){
+						//默认为毒雾
+						case 1:default:
+							GameScene.add(Blob.seed(enemy.pos, 45, ToxicGas.class));
+							break;
+						case 2:
+							GameScene.add(Blob.seed(enemy.pos, 45, CorrosiveGas.class));
+							break;
+						case 3:
+							GameScene.add(Blob.seed(enemy.pos, 45, ConfusionGas.class));
+							break;
+						case 4:
+							GameScene.add(Blob.seed(enemy.pos, 45, StormCloud.class));
+							break;
+					}
+					Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
 				}
-				Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
+				scount++;
+				target.sprite.zaplink( enemy.pos );
+				int dmg = Random.NormalIntRange( target.damageRoll()/5+3, target.damageRoll()/5+7 );
+				enemy.damage( dmg, new DarkBolt() );
 			}
-
-			target.sprite.zaplink( enemy.pos );
-			int dmg = Random.NormalIntRange( target.damageRoll()/5+3, target.damageRoll()/5+7 );
-			enemy.damage( dmg, new DarkBolt() );
 			return target.fieldOfView[enemy.pos] && Dungeon.level.distance(target.pos, enemy.pos) <= 3;
 		}
 
+		@Override
+		public void onDeath() {
+			Dungeon.fail( getClass() );
+			GLog.n( Messages.get(Sider.class, "ondeath") );
+		}
 
+		public static class DarkBolt { }
+	}
 
+	public static class HealRight extends ChampionEnemy {
+
+		int count = 0;
+		private final String COUNT = "count";
+
+		@Override
+		public void storeInBundle( Bundle bundle ) {
+			super.storeInBundle(bundle);
+			bundle.put( COUNT , count );
+		}
+
+		@Override
+		public void restoreFromBundle( Bundle bundle ) {
+			super.restoreFromBundle(bundle);
+			count = bundle.getInt( COUNT );
+		}
+
+		{
+			color = 0xB085D5;
+		}
+
+		@Override
+		public void onAttackProc(Char enemy) {
+			if(count<4) {
+				count++;
+				RedTrap run = new RedTrap();
+				run.pos = target.pos;
+				run.activate();
+				CellEmitter.get(target.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
+			}
+		}
 	}
 
 	public static class Small extends ChampionEnemy {
@@ -356,16 +434,19 @@ public abstract class ChampionEnemy extends Buff {
 		public void onAttackProc(Char enemy) {
 			Buff.affect(enemy, Burning.class).reignite(enemy);
 		}
-
 		@Override
 		public void detach() {
-			for (int i : PathFinder.NEIGHBOURS9){
-				if (!Dungeon.level.solid[target.pos+i]){
-					GameScene.add(Blob.seed(target.pos+i, 2, Fire.class));
+			//don't trigger when killed by being knocked into a pit
+			if (target.flying || !Dungeon.level.pit[target.pos]) {
+				for (int i : PathFinder.NEIGHBOURS9) {
+					if (!Dungeon.level.solid[target.pos + i] && !Dungeon.level.water[target.pos + i]) {
+						GameScene.add(Blob.seed(target.pos + i, 2, Fire.class));
+					}
 				}
 			}
 			super.detach();
 		}
+
 
 		@Override
 		public float meleeDamageFactor() {
@@ -385,7 +466,19 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public void onAttackProc(Char enemy) {
-			Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy);
+			if(Random.Int(10)==1){
+				Buff.affect(enemy, HalomethaneBurning.class).reignite(enemy);
+			}
+		}
+
+		@Override
+		public void detach() {
+			for (int i : PathFinder.NEIGHBOURS9){
+				if (!Dungeon.level.solid[target.pos+i]){
+					GameScene.add(Blob.seed(target.pos+i, 2, HalomethaneFire.class));
+				}
+			}
+			super.detach();
 		}
 
 		@Override
@@ -430,8 +523,20 @@ public abstract class ChampionEnemy extends Buff {
 		}
 
 		@Override
-		public boolean canAttackWithExtraReach( Char enemy ) {
-			return target.fieldOfView[enemy.pos]; //if it can see it, it can attack it.
+		public boolean canAttackWithExtraReach(Char enemy) {
+			if (Dungeon.level.distance( target.pos, enemy.pos ) > 4){
+				return false;
+			} else {
+				boolean[] passable = BArray.not(Dungeon.level.solid, null);
+				for (Char ch : Actor.chars()) {
+					//our own tile is always passable
+					passable[ch.pos] = ch == target;
+				}
+
+				PathFinder.buildDistanceMap(enemy.pos, passable, 4);
+
+				return PathFinder.distance[target.pos] <= 4;
+			}
 		}
 	}
 

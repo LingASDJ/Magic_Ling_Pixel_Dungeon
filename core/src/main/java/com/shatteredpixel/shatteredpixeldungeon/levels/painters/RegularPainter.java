@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.painters;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -72,6 +73,10 @@ public abstract class RegularPainter extends Painter {
 		trapChances = chances;
 		return this;
 	}
+
+	protected int padding(Level level){
+		return level.feeling == Level.Feeling.CHASM ? 2 : 1;
+	}
 	
 	@Override
 	public boolean paint(Level level, ArrayList<Room> rooms) {
@@ -79,7 +84,7 @@ public abstract class RegularPainter extends Painter {
 		//painter can be used without rooms
 		if (rooms != null) {
 			
-			int padding = level.feeling == Level.Feeling.CHASM ? 2 : 1;
+			int padding = padding(level);
 			
 			int leftMost = Integer.MAX_VALUE, topMost = Integer.MAX_VALUE;
 			
@@ -244,11 +249,13 @@ public abstract class RegularPainter extends Painter {
 						d.type = Room.Door.Type.UNLOCKED;
 					}
 
+					//entrance doors on floor 1 are hidden during tutorial
 					//entrance doors on floor 2 are hidden if the player hasn't picked up 2nd guidebook page
-					if (Dungeon.depth == 2
-							&& !Document.ADVENTURERS_GUIDE.isPageFound(Document.GUIDE_SEARCHING)
-							&& r instanceof EntranceRoom){
-						d.type = Room.Door.Type.HIDDEN;
+					if (r instanceof EntranceRoom || n instanceof EntranceRoom){
+						if ((Dungeon.depth == 1 && SPDSettings.intro())
+							|| (Dungeon.depth == 2 && !Document.ADVENTURERS_GUIDE.isPageFound(Document.GUIDE_SEARCHING))) {
+							d.type = Room.Door.Type.HIDDEN;
+						}
 					}
 				}
 				
@@ -277,6 +284,9 @@ public abstract class RegularPainter extends Painter {
 					case CRYSTAL:
 						l.map[door] = Terrain.CRYSTAL_DOOR;
 						break;
+					case WALL:
+						l.map[door] = Terrain.WALL;
+						break;
 				}
 			}
 		}
@@ -303,7 +313,7 @@ public abstract class RegularPainter extends Painter {
 			}
 
 			if (merge.height() >= 3) {
-				Painter.fill(l, merge.left, merge.top + 1, 1, merge.height()-1, mergeTerrain);
+				r.merge(l, n, new Rect(merge.left, merge.top + 1, merge.left+1, merge.bottom), mergeTerrain);
 				return true;
 			} else {
 				return false;
@@ -327,7 +337,7 @@ public abstract class RegularPainter extends Painter {
 			}
 
 			if (merge.width() >= 3) {
-				Painter.fill(l, merge.left + 1, merge.top, merge.width()-1, 1, mergeTerrain);
+				r.merge(l, n, new Rect(merge.left + 1, merge.top, merge.right, merge.top+1), mergeTerrain);
 				return true;
 			} else {
 				return false;
@@ -442,11 +452,11 @@ public abstract class RegularPainter extends Painter {
 		//no more than one trap every 5 valid tiles.
 
 		nTraps = l.feeling == Level.Feeling.BIGTRAP ? Math.min(nTraps,
-				validCells.size()/2) : Math.min(nTraps,
+				validCells.size()/4) : Math.min(nTraps,
 				validCells.size()/5);
 
 		//5x traps on traps level feeling, but the extra traps are all visible
-		for (int i = 0; i < (l.feeling == Level.Feeling.BIGTRAP ? 30*nTraps : l.feeling == Level.Feeling.TRAPS ?
+		for (int i = 0; i < (l.feeling == Level.Feeling.BIGTRAP ? 16*nTraps : l.feeling == Level.Feeling.TRAPS ?
 				5*nTraps :
 				nTraps); i++) {
 

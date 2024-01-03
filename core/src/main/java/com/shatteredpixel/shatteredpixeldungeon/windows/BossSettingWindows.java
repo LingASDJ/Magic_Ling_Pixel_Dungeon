@@ -49,7 +49,7 @@ public class BossSettingWindows extends Window {
             cbs.add(cb);
             pos += BOX_HEIGHT + GAP;
 
-            if(i == 1 && !Badges.isUnlocked(Badges.Badge.KILL_SM) || i == 0 || i==4){
+            if(i == 1 && !Badges.isUnlocked(Badges.Badge.KILL_SM) || i == 0 || i==3 || i==4){
                 cb.alpha(0.4f);
                 cb.active=false;
                 cb.checked(false);

@@ -126,7 +126,7 @@ public class WndChallenges extends Window {
 			}
 		}
 		RedButton btnPrev; RedButton btnNext; RedButton btnFirst; RedButton btnLast;
-		btnPrev = new RedButton("上页" /*需要替换为国际化文本*/) {
+		btnPrev = new RedButton(Messages.get(WndChallenges.class,"prev")) {
 			@Override
 			protected void onClick() {
 				final int lastIndex = WndChallenges.this.index;
@@ -139,7 +139,7 @@ public class WndChallenges extends Window {
 		pos += GAP;
 
 		btnPrev.setRect(0, pos, (WIDTH - GAP) * 0.5f, BTN_HEIGHT);
-		btnNext = new RedButton("下页" /*需要替换为国际化文本*/) {
+		btnNext = new RedButton(Messages.get(WndChallenges.class,"prex")) {
 			@Override
 			protected void onClick() {
 				final int lastIndex = WndChallenges.this.index;
@@ -153,7 +153,7 @@ public class WndChallenges extends Window {
 
 		pos += BTN_HEIGHT;
 
-		btnFirst = new RedButton("首页" /*需要替换为国际化文本*/) {
+		btnFirst = new RedButton(Messages.get(WndChallenges.class,"main")) {
 			@Override
 			protected void onClick() {
 				WndChallenges.this.hide();
@@ -164,7 +164,7 @@ public class WndChallenges extends Window {
 		pos += GAP;
 
 		btnFirst.setRect(0, pos, (WIDTH - GAP) * 0.5f, BTN_HEIGHT);
-		btnLast = new RedButton("末页" /*需要替换为国际化文本*/) {
+		btnLast = new RedButton(Messages.get(WndChallenges.class,"last")) {
 			@Override
 			protected void onClick() {
 				WndChallenges.this.hide();
@@ -175,7 +175,7 @@ public class WndChallenges extends Window {
 		add( btnLast );
 		btnLast.setRect(btnFirst.right() + GAP, pos, (WIDTH - GAP) * 0.5f, BTN_HEIGHT);
 
-		RedButton btnClear = new RedButton("清空本页挑战", 7) {
+		RedButton btnClear = new RedButton(Messages.get(WndChallenges.class,"clear"), 7) {
 			@Override
 			protected void onClick() {
 				for (int i = 0; i < boxes.size(); i++) {
@@ -225,8 +225,9 @@ public class WndChallenges extends Window {
 	private static class ChallengeButton extends IconButton {
 		private boolean checked = false;
 		public ChallengeButton() {
-			super( Icons.get( Icons.CHALLENGE_OFF ));
+			super( Icons.get( Icons.MISSON_OFF));
 		}
+
 		@Override
 		protected void onClick() {
 			checked(!checked);
@@ -236,7 +237,7 @@ public class WndChallenges extends Window {
 		}
 		public void checked( boolean checked ) {
 			this.checked = checked;
-			icon( Icons.get( checked ? Icons.CHALLENGE_ON : Icons.CHALLENGE_OFF ) );
+			icon( Icons.get( checked ? Icons.MISSON_ON : Icons.MISSON_OFF ) );
 		}
 	}
 
@@ -292,16 +293,15 @@ public class WndChallenges extends Window {
 			info.setRect(icon.x + icon.width, y, 16, BTN_HEIGHT);
 			PixelScene.align( info );
 			if (conflict == null) {
-				check.setRect(x + (width - 16) / 2, y + BTN_HEIGHT, 16, BTN_HEIGHT);
+				check.setRect(x + (width - 16) / 4, y + BTN_HEIGHT, 16, BTN_HEIGHT);
 				PixelScene.align( check );
-			}
-			else {
+			} else {
 				check.setRect(x + (width - 32) / 2, y + BTN_HEIGHT, 16, BTN_HEIGHT);
 				PixelScene.align( check );
 				conflict.setRect(check.right(), check.top(), 16, BTN_HEIGHT);
 				PixelScene.align( conflict );
 			}
-
+			check.setSize( 32,16 );
 			height = BTN_HEIGHT * 2;
 		}
 

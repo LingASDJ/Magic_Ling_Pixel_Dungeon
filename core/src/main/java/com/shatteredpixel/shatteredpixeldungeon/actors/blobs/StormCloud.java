@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.blobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -41,7 +43,15 @@ public class StormCloud extends Blob {
 				if (cur[cell] > 0) {
 					Dungeon.level.setCellToWater(true, cell);
 					if (fire != null){
-						fire.clear(i);
+						fire.clear(cell);
+					}
+
+					//fiery enemies take damage as if they are in toxic gas
+					Char ch = Actor.findChar(cell);
+					if (ch != null
+							&& !ch.isImmune(getClass())
+							&& Char.hasProp(ch, Char.Property.FIERY)){
+						ch.damage(1 + Dungeon.scalingDepth()/5, this);
 					}
 				}
 			}

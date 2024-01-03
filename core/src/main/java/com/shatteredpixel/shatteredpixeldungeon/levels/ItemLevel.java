@@ -65,7 +65,7 @@ public class ItemLevel extends RegularLevel {
 
     @Override
     protected void createItems() {
-        Ghost.Quest.spawnx( this );
+        Ghost.Quest.spawnBossRush( this );
        switch (depth){
            //T1 补给层
           case 1: case 3: case 6: case 7:

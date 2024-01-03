@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,16 +78,6 @@ public class Poison extends Buff implements Hero.Doom {
 	public String iconTextDisplay(){
 		return Integer.toString((int) left);
 	}
-	
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-
-	@Override
-	public String heroMessage() {
-		return Messages.get(this, "heromsg");
-	}
 
 	@Override
 	public String desc() {
@@ -127,7 +117,7 @@ public class Poison extends Buff implements Hero.Doom {
 	public void onDeath() {
 		Badges.validateDeathFromPoison();
 		
-		Dungeon.fail( getClass() );
+		Dungeon.fail( this );
 		GLog.n( Messages.get(this, "ondeath") );
 	}
 }

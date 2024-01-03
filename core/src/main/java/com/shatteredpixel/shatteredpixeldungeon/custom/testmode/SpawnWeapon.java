@@ -7,7 +7,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Annoying;
@@ -59,7 +58,7 @@ import java.util.Objects;
 
 public class SpawnWeapon extends TestItem{
     {
-        image = ItemSpriteSheet.DG25;
+        image = ItemSpriteSheet.WEAPON_HOLDER;
         defaultAction = AC_SPAWN;
     }
 
@@ -117,7 +116,7 @@ public class SpawnWeapon extends TestItem{
                 Sample.INSTANCE.play( Assets.Sounds.ITEM );
                 GLog.i(Messages.get(hero, "you_now_have", wpn.name()));
             } else {
-                wpn.doDrop(Item.curUser);
+                wpn.doDrop(curUser);
             }
         }catch (Exception e){
             GLog.w(M.L(MobPlacer.class, "forbidden"));
@@ -330,7 +329,7 @@ public class SpawnWeapon extends TestItem{
                 @Override
                 protected void onClick() {
                     if(!Button_Level.text().equals(Messages.get(SpawnWeapon.WeaponSetting.class, "select_weapon"))){ // 修改此行代码
-                        Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextNumberInput(
+                        Game.runOnRenderThread(() ->GameScene.show(new WndTextNumberInput(
                                 Messages.get(SpawnWeapon.WeaponSetting.class, "weapon_level"), Messages.get(SpawnWeapon.WeaponSetting.class, "weapon_level_desc"),
                                 Integer.toString(weapon_level),
                                 4, false, Messages.get(SpawnWeapon.WeaponSetting.class, "confirm"),
@@ -349,7 +348,13 @@ public class SpawnWeapon extends TestItem{
                     }
                 }
             };
-            Button_Level.text(((Weapon) Reflection.newInstance(getWeapon(tier)[weapon_id])).name());
+
+            //TC控制
+            try {
+                Button_Level.text(((Weapon) Reflection.newInstance(getWeapon(tier)[weapon_id])).name());
+            } catch (Exception e) {
+                GLog.w(M.L(MobPlacer.class, "forbidden"));
+            }
             add(Button_Level);
 
             // 创建生成武器按钮
@@ -468,7 +473,7 @@ public class SpawnWeapon extends TestItem{
         private int maxSlots(int t) {
             if (t <= 1) return 5;
             if (t == 2 || t == 3) return 1145;
-            else return 8;
+            else return 12;
         }
 
 

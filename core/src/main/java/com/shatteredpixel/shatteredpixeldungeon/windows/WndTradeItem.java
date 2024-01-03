@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.shopOnLevel;
 
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -80,7 +79,7 @@ public class WndTradeItem extends WndInfoItem {
 					hide();
 				}
 			};
-			btnSell.setHeight( BTN_HEIGHT );
+			//tnSell.setHeight( BTN_HEIGHT );
 			btnSell.setRect( 0, pos + GAP, width, BTN_HEIGHT );
 			btnSell.icon(new ItemSprite(ItemSpriteSheet.GOLD));
 			add( btnSell );
@@ -160,10 +159,10 @@ public class WndTradeItem extends WndInfoItem {
 			}
 		};
 
-		if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+		//if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 			btnStole.alpha(0.3f);
 			btnStole.active=false;
-		}
+		//}
 
 		btnStole.setRect( 0, pos + GAP, width, BTN_HEIGHT );
 		btnStole.icon(Statistics.fireGirlnoshopping && !Statistics.deadshoppingdied ? new FireMagicGirlSprite() :

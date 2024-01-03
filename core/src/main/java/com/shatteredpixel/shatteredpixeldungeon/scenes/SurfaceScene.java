@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +24,11 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -34,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EarthGuardianSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MiniSakaFishBossSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WardSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
@@ -54,7 +57,6 @@ import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Point;
-import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
 import java.nio.Buffer;
@@ -90,7 +92,7 @@ public class SurfaceScene extends PixelScene {
 				new float[]{1, 1},
 				false);
 		
-		uiCamera.visible = false;
+		PixelScene.uiCamera.visible = false;
 		
 		int w = Camera.main.width;
 		int h = Camera.main.height;
@@ -172,6 +174,8 @@ public class SurfaceScene extends PixelScene {
 		//allies. Attempts to pick highest level, but prefers rose > earth > ward.
 		//Rose level is halved because it's easier to upgrade
 		CharSprite allySprite = null;
+
+		final SakaHappy sakaHappy = new SakaHappy();
 		
 		//picks the highest between ghost's weapon, armor, and rose level/2
 		int roseLevel = 0;
@@ -190,6 +194,9 @@ public class SurfaceScene extends PixelScene {
 		int wardLevel = Dungeon.hero.belongings.getItem(WandOfWarding.class) == null ? 0 : Dungeon.hero.belongings.getItem(WandOfWarding.class).level();
 		
 		MagesStaff staff = Dungeon.hero.belongings.getItem(MagesStaff.class);
+
+		SakaFishSketon sakaFishSketon = Dungeon.hero.belongings.getItem(SakaFishSketon.class);
+
 		if (staff != null){
 			if (staff.wandClass() == WandOfLivingEarth.class){
 				earthLevel = Math.max(earthLevel, staff.level());
@@ -209,14 +216,20 @@ public class SurfaceScene extends PixelScene {
 		}
 		
 		if (allySprite != null){
-			allySprite.add(CharSprite.State.PARALYSED);
-			allySprite.scale = new PointF(2, 2);
-			allySprite.x = a.x - allySprite.width()*0.75f;
+			allySprite.scale.set(0.9f);
+			allySprite.x = a.x - allySprite.width()*0.55f;
 			allySprite.y = SKY_HEIGHT - allySprite.height();
 			align(allySprite);
 			window.add(allySprite);
 		}
-		
+		if(sakaFishSketon!=null) {
+			sakaHappy.x = 10;
+			sakaHappy.y = 40;
+			align(sakaHappy);
+			sakaHappy.jump();
+			window.add(sakaHappy);
+		}
+
 		window.add( a );
 		window.add( pet );
 		
@@ -232,7 +245,7 @@ public class SurfaceScene extends PixelScene {
 			window.add( patch );
 		}
 		
-		Image frame = new Image( Assets.Interfaces.SURFACE );
+		Image frame = new Image(SPDSettings.ClassUI() ? Assets.Interfaces.SURFACE : Assets.Interfaces.SURFACE_DARK );
 
 		frame.frame( 0, 0, FRAME_WIDTH, FRAME_HEIGHT );
 		frame.x = vx - FRAME_MARGIN_X;
@@ -433,6 +446,12 @@ public class SurfaceScene extends PixelScene {
 		public Avatar( HeroClass cl ) {
 			super( Assets.Sprites.AVATARS );
 			frame( new TextureFilm( texture, WIDTH, HEIGHT ).get( cl.ordinal() ) );
+		}
+	}
+
+	private static class SakaHappy extends MiniSakaFishBossSprites {
+		public void jump() {
+			play( run );
 		}
 	}
 	

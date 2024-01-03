@@ -46,8 +46,15 @@ public enum Icons {
 	MAGE,
 	ROGUE,
 	HUNTRESS,
+	DUELIST,
+
 	LEFTBUTTON,
 	RIGHTBUTTON,
+
+	SEED,
+	LEFTARROW,
+	RIGHTARROW,
+	CALENDAR,
 
 	//grey icons, mainly used for buttons, spacing for 16x16
 	EXIT,
@@ -63,8 +70,6 @@ public enum Icons {
 	CHALLENGE_ON,
 	RENAME_OFF,
 	RENAME_ON,
-	LEFTARROW,
-	RIGHTARROW,
 
 	//misc icons, mainly used for buttons, spacing for 16x16 until the smaller icons at the end
 	UNCHECKED,
@@ -111,6 +116,8 @@ public enum Icons {
 	DEPTH_LINK_ROOM,
 
 	DEPTH_DIED,
+	MISSON_ON,
+	MISSON_OFF,
 
 	CHAL_COUNT,
 
@@ -130,7 +137,9 @@ public enum Icons {
 
 	PASTE,
 
-	COPY;
+	COPY,
+
+	SKIP;
 
 	public Image get() {
 		return get( this );
@@ -164,6 +173,9 @@ public enum Icons {
 			case SHPX:
 				icon.frame( icon.texture.uvRectBySize( 119, 0, 16, 16 ) );
 				break;
+			case DUELIST:
+				icon.frame( icon.texture.uvRectBySize( 176, 0, 16, 16 ));
+				break;
 
 			case STAIRS:
 				icon.frame( icon.texture.uvRectBySize( 0, 16, 13, 16 ) );
@@ -191,6 +203,9 @@ public enum Icons {
 				break;
 			case COPY:
 				icon.frame( icon.texture.uvRectBySize( 129, 16, 13, 13 ) );
+				break;
+			case SKIP:
+				icon.frame( icon.texture.uvRectBySize( 145, 16, 25, 16 ) );
 				break;
 
 			case EXIT:
@@ -241,7 +256,12 @@ public enum Icons {
 			case RIGHTARROW:
 				icon.frame( icon.texture.uvRectBySize( 208, 32, 14, 8 ) );
 				break;
-
+			case SEED:
+				icon.frame( icon.texture.uvRectBySize( 208, 32, 15, 10 ) );
+				break;
+			case CALENDAR:
+				icon.frame( icon.texture.uvRectBySize( 240, 16, 15, 12 ) );
+				break;
 			case UNCHECKED:
 				icon.frame( icon.texture.uvRectBySize( 0, 48, 12, 12 ) );
 				break;
@@ -357,6 +377,12 @@ public enum Icons {
 			case DEPTH_DIED:
 				icon.frame( icon.texture.uvRectBySize( 136, 64, 7, 7 ) );
 				break;
+			case MISSON_OFF:
+				icon.frame( icon.texture.uvRectBySize( 144, 64, 32, 14 ) );
+				break;
+			case MISSON_ON:
+				icon.frame( icon.texture.uvRectBySize( 144, 80, 32, 14 ) );
+				break;
 			case CHAL_COUNT:
 				icon.frame( icon.texture.uvRectBySize( 48, 72, 7, 7 ) );
 				break;
@@ -413,8 +439,8 @@ public enum Icons {
 				return get( ROGUE );
 			case HUNTRESS:
 				return get( HUNTRESS );
-//			case COMINGSOON:
-//				return get( HUNTRESS );
+			case DUELIST:
+				return get( DUELIST );
 			default:
 				return null;
 		}

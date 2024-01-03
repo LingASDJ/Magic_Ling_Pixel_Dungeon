@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.armor.curses;
 
+import static com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand.procChanceMultiplier;
+
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
@@ -36,7 +38,8 @@ public class Stench extends Armor.Glyph {
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage) {
 
-		if ( Random.Int( 8 ) == 0) {
+		float procChance = 1/8f * procChanceMultiplier(defender);
+		if ( Random.Float() < procChance ) {
 
 			GameScene.add( Blob.seed( defender.pos, 250, ToxicGas.class ) );
 

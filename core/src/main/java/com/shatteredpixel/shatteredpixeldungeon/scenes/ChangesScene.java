@@ -34,6 +34,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ChangeInfo;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ChangeSelection;
+import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.WndChanges;
+import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.WndChangesTabbed;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v0_1_X_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v0_2_X_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v0_3_X_Changes;
@@ -44,14 +46,21 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v0_7_X_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v0_8_X_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v0_9_X_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v1_X_Changes;
+import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v2_X_Changes;
+import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
+import com.watabou.noosa.Scene;
 import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
 
 public class ChangesScene extends PixelScene {
-
+	private NinePatch rightPanel;
+	private ScrollPane rightScroll;
+	private IconTitle changeTitle;
+	private RenderedTextBlock changeBody;
 	public static int changesSelected = 0;
 
 	@Override
@@ -89,6 +98,7 @@ public class ChangesScene extends PixelScene {
 
 		switch (changesSelected){
 			case 0: default:
+				v2_X_Changes.addAllChanges(changeInfos);
 				v1_X_Changes.addAllChanges(changeInfos);
 				v0_9_X_Changes.addAllChanges(changeInfos);
 				break;
@@ -131,8 +141,9 @@ public class ChangesScene extends PixelScene {
 		float nextPosY = 0;
 		boolean second = false;
 		if (changesSelected == 0) {
-			ChangeSelection selection2 = new ChangeSelection(Messages.get(this, "later"), Messages.get(this,
-					"mlpd-0.6.4-5")) {
+
+			ChangeSelection selection1 = new ChangeSelection(Messages.get(this, "later"), Messages.get(this,
+					"mlpd-0.6.6")) {
 				@Override
 				public void onClick() {
 					NewChangesScene.changesSelected = 0;
@@ -140,13 +151,12 @@ public class ChangesScene extends PixelScene {
 					ShatteredPixelDungeon.switchNoFade(NewChangesScene.class);
 				}
 			};
-			selection2.icon(new ItemSprite(ItemSpriteSheet.REDWHITEROSE));
-			selection2.hardlight(Window.TITLE_COLOR);
-			selection2.setRect(0, posY, panel.innerWidth(), 0);
-			content.add(selection2);
-
-			ChangeSelection selection3 = new ChangeSelection(null, Messages.get(this,
-					"mlpd-0.6.0-3")) {
+			selection1.icon(new ItemSprite(ItemSpriteSheet.RAPIER));
+			selection1.hardlight(Window.TITLE_COLOR);
+			selection1.setRect(0, posY, panel.innerWidth(), 0);
+			content.add(selection1);
+			ChangeSelection selection2 = new ChangeSelection(null, Messages.get(this,
+					"mlpd-0.6.4-5")) {
 				@Override
 				public void onClick() {
 					NewChangesScene.changesSelected = 1;
@@ -154,13 +164,13 @@ public class ChangesScene extends PixelScene {
 					ShatteredPixelDungeon.switchNoFade(NewChangesScene.class);
 				}
 			};
-			selection3.icon(new ItemSprite(ItemSpriteSheet.LANTERNB));
-			selection3.hardlight(Window.TITLE_COLOR);
-			selection3.setRect(0, posY+35, panel.innerWidth(), 0);
-			content.add(selection3);
+			selection2.icon(new ItemSprite(ItemSpriteSheet.REDWHITEROSE));
+			selection2.hardlight(Window.TITLE_COLOR);
+			selection2.setRect(0, posY+35, panel.innerWidth(), 0);
+			content.add(selection2);
 
-			ChangeSelection selection = new ChangeSelection(null, Messages.get(this,
-					"mlpd-0.5.X")) {
+			ChangeSelection selection3 = new ChangeSelection(null, Messages.get(this,
+					"mlpd-0.6.0-3")) {
 				@Override
 				public void onClick() {
 					NewChangesScene.changesSelected = 2;
@@ -168,13 +178,13 @@ public class ChangesScene extends PixelScene {
 					ShatteredPixelDungeon.switchNoFade(NewChangesScene.class);
 				}
 			};
-			selection.icon(new ItemSprite(ItemSpriteSheet.DG19));
-			selection.hardlight(Window.TITLE_COLOR);
-			selection.setRect(0, posY+60, panel.innerWidth(), 0);
-			content.add(selection);
+			selection3.icon(new ItemSprite(ItemSpriteSheet.LANTERNB));
+			selection3.hardlight(Window.TITLE_COLOR);
+			selection3.setRect(0, posY+60, panel.innerWidth(), 0);
+			content.add(selection3);
 
-			ChangeSelection selection0 = new ChangeSelection(null, Messages.get(this,
-					"mlpd-0.4.X")) {
+			ChangeSelection selection = new ChangeSelection(null, Messages.get(this,
+					"mlpd-0.5.X")) {
 				@Override
 				public void onClick() {
 					NewChangesScene.changesSelected = 3;
@@ -182,9 +192,23 @@ public class ChangesScene extends PixelScene {
 					ShatteredPixelDungeon.switchNoFade(NewChangesScene.class);
 				}
 			};
+			selection.icon(new ItemSprite(ItemSpriteSheet.DG19));
+			selection.hardlight(Window.TITLE_COLOR);
+			selection.setRect(0, posY+85, panel.innerWidth(), 0);
+			content.add(selection);
+
+			ChangeSelection selection0 = new ChangeSelection(null, Messages.get(this,
+					"mlpd-0.4.X")) {
+				@Override
+				public void onClick() {
+					NewChangesScene.changesSelected = 4;
+					NewChangesScene.fromChangesScene = false;
+					ShatteredPixelDungeon.switchNoFade(NewChangesScene.class);
+				}
+			};
 			selection0.icon(new ItemSprite(ItemSpriteSheet.RedBloodMoon));
 			selection0.hardlight(Window.TITLE_COLOR);
-			selection0.setRect(0, posY+85, panel.innerWidth(), 0);
+			selection0.setRect(0, posY+110, panel.innerWidth(), 0);
 			content.add(selection0);
 
 			posY = nextPosY = selection0.bottom();
@@ -221,7 +245,7 @@ public class ChangesScene extends PixelScene {
 				panel.innerHeight() + 2);
 		list.scrollTo(0, 0);
 
-		StyledButton btn0_9 = new StyledButton(Chrome.Type.TOAST, "1.0-0.9"){
+		StyledButton btn0_9 = new StyledButton(Chrome.Type.TOAST, "2.2-0.9"){
 			@Override
 			protected void onClick() {
 				super.onClick();
@@ -296,6 +320,46 @@ public class ChangesScene extends PixelScene {
 		addToBack( archs );
 
 		fadeIn();
+	}
+
+	private void updateChangesText(Image icon, String title, String... messages){
+		if (changeTitle != null){
+			changeTitle.icon(icon);
+			changeTitle.label(title);
+			changeTitle.setPos(changeTitle.left(), changeTitle.top());
+
+			String message = "";
+			for (int i = 0; i < messages.length; i++){
+				message += messages[i];
+				if (i != messages.length-1){
+					message += "\n\n";
+				}
+			}
+			changeBody.text(message);
+			rightScroll.content().setSize(rightScroll.width(), changeBody.bottom()+2);
+			rightScroll.setSize(rightScroll.width(), rightScroll.height());
+			rightScroll.scrollTo(0, 0);
+
+		} else {
+			if (messages.length == 1) {
+				addToFront(new WndChanges(icon, title, messages[0]));
+			} else {
+				addToFront(new WndChangesTabbed(icon, title, messages));
+			}
+		}
+	}
+
+	public static void showChangeInfo(Image icon, String title, String... messages){
+		Scene s = ShatteredPixelDungeon.scene();
+		if (s instanceof ChangesScene){
+			((ChangesScene) s).updateChangesText(icon, title, messages);
+			return;
+		}
+		if (messages.length == 1) {
+			s.addToFront(new WndChanges(icon, title, messages[0]));
+		} else {
+			s.addToFront(new WndChangesTabbed(icon, title, messages));
+		}
 	}
 
 	@Override

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,7 +133,6 @@ public abstract class StandardRoom extends Room {
 		rooms.add(ChasmRoom.class);
 		rooms.add(SkullsRoom.class);
 
-
 		rooms.add(PlantsRoom.class);
 		rooms.add(AquariumRoom.class);
 		rooms.add(PlatformRoom.class);
@@ -144,26 +143,35 @@ public abstract class StandardRoom extends Room {
 		rooms.add(StudyRoom.class);
 		rooms.add(SuspiciousChestRoom.class);
 		rooms.add(MinefieldRoom.class);
+
+		rooms.add(MinefieldRoom.class);
 	}
 	
-	private static float[][] chances = new float[27][];
+	private static float[][] chances = new float[31][];
 	static {
-		chances[1] =  new float[]{10,  10,10,5, 0,0,0, 0,0,0, 0,0,0, 0,0,0,  1,0,1,0,1,0,1,1,0,0};
-		chances[2] =  new float[]{10,  10,10,5, 0,0,0, 0,0,0, 0,0,0, 0,0,0,  1,1,1,1,1,1,1,1,1,1};
-		chances[4] =  chances[3] = chances[2];
-		chances[5] =  new float[]{10,  10,10,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0,  0,0,0,0,0,0,0,0,0,0};
+		chances[1] = new float[]{10, 10, 10, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0};
+		chances[2] = new float[]{10, 10, 10, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+		chances[4] = chances[3] = chances[2];
+		chances[5] = new float[]{10, 10, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-		chances[6] =  new float[]{10,  0,0,0, 10,10,5, 0,0,0, 0,0,0, 0,0,0,  1,1,1,1,1,1,1,1,1,1};
+		chances[6] = new float[]{10, 0, 0, 0, 10, 10, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 		chances[10] = chances[9] = chances[8] = chances[7] = chances[6];
 
-		chances[11] = new float[]{10,  0,0,0, 0,0,0, 10,10,5, 0,0,0, 0,0,0,  1,1,1,1,1,1,1,1,1,1};
+		chances[11] = new float[]{10, 0, 0, 0, 0, 0, 0, 10, 10, 5, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 		chances[15] = chances[14] = chances[13] = chances[12] = chances[11];
 
-		chances[16] = new float[]{10,  0,0,0, 0,0,0, 0,0,0, 10,10,5, 0,0,0,  1,1,1,1,1,1,1,1,1,1};
+		if (Dungeon.branch != 0) {
+			chances[16] = new float[]{10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 5, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+		} else {
+			chances[16] = new float[]{10, 0, 0, 0, 0, 0, 0, 10, 10, 5, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+		}
 		chances[20] = chances[19] = chances[18] = chances[17] = chances[16];
 
-		chances[21] = new float[]{10,  0,0,0, 0,0,0, 0,0,0, 0,0,0, 10,10,5,  1,1,1,1,1,1,1,1,1,1};
-		chances[26] = chances[25] = chances[24] = chances[23] = chances[22] = chances[21];
+		chances[21] = new float[]{10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+		chances[25] = chances[24] = chances[23] = chances[22] = chances[21];
+
+		chances[26] = new float[]{10, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 10, 10, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2};
+		chances[30] = chances[29] = chances[28] = chances[27] = chances[26];
 	}
 	
 	

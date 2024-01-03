@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,11 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.keys;
 
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 public class CrystalKey extends Key {
 	
@@ -44,10 +45,21 @@ public class CrystalKey extends Key {
 
 	@Override
 	public boolean doPickUp(Hero hero, int pos) {
-		if(depth == 10 || (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && (depth == 8))){
-			ShatteredPixelDungeon.resetScene();
+		super.doPickUp(hero, pos);
+		LockSword lockSword = Dungeon.hero.belongings.getItem(LockSword.class);
+		if(lockSword != null) {
+			int index = 25;
+			lockSword.lvl += index;
+			int lvl = lockSword.lvl;
+			if (lvl >= 100 && lvl <= 1000 && lvl % 100 == 0) {
+				// 提醒气泡的显示逻辑
+				GLog.p(Messages.get(Key.class,"locksword"));
+			}
+			hero.sprite.showStatus(0x123456ff, String.valueOf(index));
+			return true;
 		}
-		return super.doPickUp(hero, pos);
+
+		return true;
 	}
 
 	

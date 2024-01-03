@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,10 +24,15 @@ package com.shatteredpixel.shatteredpixeldungeon.tiles;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 
+import java.util.HashSet;
+
 public class DungeonWallsTilemap extends DungeonTilemap {
+
+	public static HashSet<Integer> skipCells = new HashSet<>();
 
 	public DungeonWallsTilemap(){
 		super(Dungeon.level.tilesTex());
+		skipCells.clear();
 		map( Dungeon.level.map, Dungeon.level.width() );
 	}
 
@@ -62,7 +67,13 @@ public class DungeonWallsTilemap extends DungeonTilemap {
 
 		}
 
-		if (pos + mapWidth < size && DungeonTileSheet.wallStitcheable(map[pos+mapWidth])) {
+		if (skipCells.contains(pos)){
+			return -1;
+		}
+
+		if (map[pos] == Terrain.LOCKED_EXIT || map[pos] == Terrain.UNLOCKED_EXIT){
+			return DungeonTileSheet.EXIT_UNDERHANG;
+		} else if (pos + mapWidth < size && DungeonTileSheet.wallStitcheable(map[pos+mapWidth])) {
 
 			return DungeonTileSheet.stitchWallOverhangTile(
 					tile,
@@ -75,10 +86,18 @@ public class DungeonWallsTilemap extends DungeonTilemap {
 			return DungeonTileSheet.DOOR_OVERHANG;
 		} else if (Dungeon.level.insideMap(pos) && map[pos+mapWidth] == Terrain.OPEN_DOOR ) {
 			return DungeonTileSheet.DOOR_OVERHANG_OPEN;
+		} else if (tile == Terrain.SIGN ||tile == Terrain.SIGN_SP) {
+			return DungeonTileSheet.RAISED_WALL;
 		} else if (Dungeon.level.insideMap(pos) && map[pos+mapWidth] == Terrain.CRYSTAL_DOOR ) {
 			return DungeonTileSheet.DOOR_OVERHANG_CRYSTAL;
-		} else if (pos + mapWidth < size && (map[pos+mapWidth] == Terrain.STATUE || map[pos+mapWidth] == Terrain.STATUE_SP)){
+		} else if (pos + mapWidth < size && map[pos+mapWidth] == Terrain.STATUE){
 			return DungeonTileSheet.STATUE_OVERHANG;
+		} else if (pos + mapWidth < size && map[pos+mapWidth] == Terrain.STATUE_SP){
+			return DungeonTileSheet.STATUE_SP_OVERHANG;
+		} else if (pos + mapWidth < size && map[pos+mapWidth] == Terrain.MINE_CRYSTAL){
+			return DungeonTileSheet.getVisualWithAlts(DungeonTileSheet.MINE_CRYSTAL_OVERHANG, pos + mapWidth);
+		} else if (pos + mapWidth < size && map[pos+mapWidth] == Terrain.MINE_BOULDER){
+			return DungeonTileSheet.MINE_BOULDER_OVERHANG;
 		} else if (pos + mapWidth < size && map[pos+mapWidth] == Terrain.ALCHEMY){
 			return DungeonTileSheet.ALCHEMY_POT_OVERHANG;
 		} else if (pos + mapWidth < size && map[pos+mapWidth] == Terrain.BARRICADE){

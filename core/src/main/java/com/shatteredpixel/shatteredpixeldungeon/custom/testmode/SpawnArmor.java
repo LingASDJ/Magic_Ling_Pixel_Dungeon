@@ -52,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.WndTextNumberInput;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Reflection;
 
@@ -60,7 +61,7 @@ import java.util.Objects;
 
 public class SpawnArmor extends TestItem {
     {
-        image = ItemSpriteSheet.DG25;
+        image = ItemSpriteSheet.ARMOR_HOLDER;
         defaultAction = AC_SPAWN;
     }
 
@@ -121,6 +122,8 @@ public class SpawnArmor extends TestItem {
         armor = modifyArmor(armor);
         armor.identify();
         if (armor.collect()) {
+            GameScene.pickUp( armor, hero.pos );
+            Sample.INSTANCE.play( Assets.Sounds.ITEM );
             GLog.i(Messages.get(hero, "you_now_have", armor.name()));
         } else {
             armor.doDrop(curUser);
@@ -238,10 +241,10 @@ public class SpawnArmor extends TestItem {
 
         // 定义常量
         private static final int WIDTH = 150; // 窗口宽度
-        private static final int HEIGHT = 250; // 窗口高度
+        private static final int HEIGHT = 220; // 窗口高度
         private static final int GAP = 2; // 间隔大小
         private static final int BTN_SIZE = 18; // 按钮尺寸
-        private static final int MAX_ICONS_PER_LINE = 7; // 每行最大图标数量
+        private static final int MAX_ICONS_PER_LINE = 4; // 每行最大图标数量
 
         // 成员变量
         private Class[] AllArmor; // 所有护甲的Class数组
@@ -271,7 +274,7 @@ public class SpawnArmor extends TestItem {
                 @Override
                 protected void onClick() {
                     if(!Button_Level.text().equals(Messages.get(SpawnArmor.ArmorSetting.class, "select_armor"))){ // 修改此行代码
-                        Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextNumberInput(
+                        Game.runOnRenderThread(() ->GameScene.show(new WndTextNumberInput(
                                 Messages.get(SpawnArmor.ArmorSetting.class, "armor_level"), Messages.get(SpawnArmor.ArmorSetting.class, "armor_level_desc"),
                                 Integer.toString(armor_level),
                                 4, false, Messages.get(SpawnArmor.ArmorSetting.class, "confirm"),
@@ -295,9 +298,9 @@ public class SpawnArmor extends TestItem {
 
             // 创建附魔信息文本块
             RenderedTextBlock_enchantInfo = PixelScene.renderTextBlock("", 6);
-            RenderedTextBlock_enchantInfo.text(infoBuilder());
             RenderedTextBlock_enchantInfo.visible = true;
             RenderedTextBlock_enchantInfo.maxWidth(WIDTH);
+            updateEnchantText();
             add(RenderedTextBlock_enchantInfo);
 
             // 创建附魔种类选项滑块
@@ -305,7 +308,7 @@ public class SpawnArmor extends TestItem {
                 @Override
                 protected void onChange() {
                     enchant_rarity = getSelectedValue();
-                    updateText();
+                    updateEnchantText();
                 }
             };
             OptionSlider_enchantRarity.setSelectedValue(enchant_rarity);
@@ -316,7 +319,7 @@ public class SpawnArmor extends TestItem {
                 @Override
                 protected void onChange() {
                     enchant_id = getSelectedValue();
-                    updateText();
+                    updateEnchantText();
                 }
             };
             OptionSlider_enchantId.setSelectedValue(enchant_id);
@@ -349,7 +352,15 @@ public class SpawnArmor extends TestItem {
          * 封装一个同步UI的方法，用于调整UI组件的位置和大小。
          */
         private void layout() {
-            Button_Level.setRect(0, GAP , WIDTH, 24);
+
+            //
+            int numLines = (int) Math.ceil(AllArmor.length / (float) MAX_ICONS_PER_LINE);
+            float totalHeight = 2;
+            if (numLines > 0) {
+                totalHeight += numLines * (BTN_SIZE + GAP);
+            }
+
+            Button_Level.setRect(0, totalHeight , WIDTH, 24);
             RenderedTextBlock_enchantInfo.setPos(0, GAP + Button_Level.top() + Button_Level.height());
             OptionSlider_enchantRarity.setRect(0, GAP + RenderedTextBlock_enchantInfo.bottom(), WIDTH, 24);
             OptionSlider_enchantId.setRect(0, GAP + OptionSlider_enchantRarity.top() + OptionSlider_enchantRarity.height(), WIDTH, 24);
@@ -383,11 +394,11 @@ public class SpawnArmor extends TestItem {
         /**
          * 创建护甲图标，并添加到窗口中。
          *
-         * @param all 所有护甲的Class数组
+         * @param all 所有护甲的Class数组f
          */
         private void createArmorImage(Class<? extends Armor>[] all) {
             float left = BTN_SIZE / 2f;
-            float top = 27;
+            float top = 0;
             int placed = 0;
             int length = all.length;
             for (int i = 0; i < length; ++i) {
@@ -406,7 +417,7 @@ public class SpawnArmor extends TestItem {
                 btn.icon(im);
                 int row = placed / MAX_ICONS_PER_LINE;
                 int col = placed % MAX_ICONS_PER_LINE;
-                float x = left + col * (BTN_SIZE + GAP);
+                float x = left + col * (BTN_SIZE + GAP)*2;
                 float y = top + row * (BTN_SIZE + GAP);
                 btn.setRect(x, y, BTN_SIZE, BTN_SIZE);
                 add(btn);
@@ -419,7 +430,7 @@ public class SpawnArmor extends TestItem {
          * 更新选中的武器文本。
          */
         private void updateSelectedArmorText() {
-            Armor armor = (Armor) Reflection.newInstance(getArmor(armor_id).getClass());
+            Armor armor = Reflection.newInstance(getArmor(armor_id).getClass());
             Button_Level.text(armor.name());
             layout();
         }
@@ -428,23 +439,46 @@ public class SpawnArmor extends TestItem {
         * 获取附魔信息文本。
         * @return 附魔信息文本 
         */
-        private String infoBuilder() {
-            //String desc = Messages.get(BossRushArmor.class, "enchant_id_pre", enchant_rarity);
-            String desc = "";
-            Class<? extends Armor.Glyph> glyph = generateEnchant(enchant_rarity, enchant_id);
-            desc += Messages.get(this, "current_enchant", (glyph == null ? Messages.get(this, "no_enchant") : currentGlyphName(glyph)));
-            return desc;
+        private String getEnchantInfo(Class enchant) {
+            return enchant==null?Messages.get(this, "no_enchant"):Messages.get(enchant, "name", Messages.get(this, "enchant"));
+        }
+
+        private int getEnchantCount(int rarity) {
+            switch (rarity) {
+                case 1:
+                    return 4;
+                case 2:
+                    return 6;
+                case 3:
+                    return 3;
+                case 4:
+                    return 8;
+            }
+            return 0;
+        }
+
+        private void updateEnchantText() {
+            StringBuilder info = new StringBuilder();
+            if (enchant_rarity == 0) {
+                info = new StringBuilder(Messages.get(this, "no_enchant"));
+            } else {
+                for (int i = 0; i < getEnchantCount(enchant_rarity); i++) {
+                    info.append(i + 1).append(":").append(getEnchantInfo(generateEnchant(enchant_rarity, i))).append(" ");
+
+                    // 添加换行判断
+                    if ((i + 1) % 4 == 0 || i == (getEnchantCount(enchant_rarity)-1)) {
+                        info.append("\n");
+                    }
+                }
+                info.append(Messages.get(this, "current_enchant",getEnchantInfo(generateEnchant(enchant_rarity, enchant_id))));
+            }
+            RenderedTextBlock_enchantInfo.text(info.toString());
         }
 
         private int maxSlots(int t) {
-            if (t <= 1) return 5;
-            if (t == 2 || t == 3) return 1145;
-            else return 8;
-        }
-
-        private void updateText() {
-            RenderedTextBlock_enchantInfo.text(infoBuilder());
-            layout();
+            if (t <= 1) return 3;
+            if (t == 2 || t == 3) return 8;
+            else return 9;
         }
     }
 }

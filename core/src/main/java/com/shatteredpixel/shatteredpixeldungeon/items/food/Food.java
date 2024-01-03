@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -94,7 +96,8 @@ public class Food extends Item {
 		if (Dungeon.hero.hasTalent(Talent.IRON_STOMACH)
 			|| Dungeon.hero.hasTalent(Talent.ENERGIZING_MEAL)
 			|| Dungeon.hero.hasTalent(Talent.MYSTICAL_MEAL)
-			|| Dungeon.hero.hasTalent(Talent.INVIGORATING_MEAL)){
+			|| Dungeon.hero.hasTalent(Talent.INVIGORATING_MEAL)
+			|| Dungeon.hero.hasTalent(Talent.FOCUSED_MEAL)){
 			return TIME_TO_EAT - 2;
 		} else {
 			return TIME_TO_EAT;
@@ -102,11 +105,18 @@ public class Food extends Item {
 	}
 	
 	protected void satisfy( Hero hero ){
+		float foodVal = energy;
 		if (Dungeon.isChallenged(Challenges.NO_FOOD)){
-			Buff.affect(hero, Hunger.class).satisfy(energy/3f);
-		} else {
-			Buff.affect(hero, Hunger.class).satisfy(energy);
+			foodVal /= 3f;
 		}
+
+		Artifact.ArtifactBuff buff = hero.buff( HornOfPlenty.hornRecharge.class );
+		if (buff != null && buff.isCursed()){
+			foodVal *= 0.67f;
+			GLog.n( Messages.get(Hunger.class, "cursedhorn") );
+		}
+
+		Buff.affect(hero, Hunger.class).satisfy(foodVal);
 	}
 	
 	@Override

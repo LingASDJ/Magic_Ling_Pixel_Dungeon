@@ -12,8 +12,9 @@ public class Frankenstein extends Mob {
 
         baseSpeed = 0.85f;
         HP = HT = 90;
+        EXP = 15;
         defenseSkill = 14;
-        maxLvl = 35;
+        maxLvl = 34;
         properties.add(Char.Property.HOLLOW);
     }
 

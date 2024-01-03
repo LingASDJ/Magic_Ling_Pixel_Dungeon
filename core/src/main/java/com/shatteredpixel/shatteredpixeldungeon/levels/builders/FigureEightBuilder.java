@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,7 +130,7 @@ public class FigureEightBuilder extends RegularBuilder {
 		ArrayList<Room> secondLoopTemp = new ArrayList<>();
 		secondLoopTemp.add(landmarkRoom);
 		secondLoopTemp.addAll(roomsToLoop);
-		secondLoopTemp.add((secondLoopTemp.size()+1)/2, exit);
+		if (exit != null) secondLoopTemp.add((secondLoopTemp.size()+1)/2, exit);
 
 		secondLoop = new ArrayList<>();
 		for (Room r : secondLoopTemp){
@@ -241,7 +241,9 @@ public class FigureEightBuilder extends RegularBuilder {
 		roomsToBranch.addAll(multiConnections);
 		roomsToBranch.addAll(singleConnections);
 		weightRooms(branchable);
-		createBranches(rooms, branchable, roomsToBranch, branchTunnelChances);
+		if (!createBranches(rooms, branchable, roomsToBranch, branchTunnelChances)){
+			return null;
+		}
 		
 		findNeighbours(rooms);
 		

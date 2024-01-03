@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,17 +35,20 @@ public class RaisedTerrainTilemap extends DungeonTilemap {
 	protected int getTileVisual(int pos, int tile, boolean flat) {
 		
 		if (flat) return -1;
-		
+
+		if (DungeonWallsTilemap.skipCells.contains(pos)){
+			return -1;
+		}
+
 		if (tile == Terrain.HIGH_GRASS){
 			return DungeonTileSheet.getVisualWithAlts(
-					DungeonTileSheet.RAISED_HIGH_GRASS,
-					pos) + 2;
+					DungeonTileSheet.HIGH_GRASS_UNDERHANG,
+					pos);
 		} else if (tile == Terrain.FURROWED_GRASS){
 			return DungeonTileSheet.getVisualWithAlts(
-					DungeonTileSheet.RAISED_FURROWED_GRASS,
-					pos) + 2;
+					DungeonTileSheet.FURROWED_UNDERHANG,
+					pos);
 		}
-		
 		
 		return -1;
 	}

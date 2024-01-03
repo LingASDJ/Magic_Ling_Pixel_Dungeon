@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -31,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -59,11 +61,10 @@ public class PotionOfDragonsBreath extends ExoticPotion {
 	@Override
 	//need to override drink so that time isn't spent right away
 	protected void drink(final Hero hero) {
-		curUser = hero;
-		curItem = detach( hero.belongings.backpack );
 
 		if (!isKnown()) {
 			identify();
+			curItem = detach( hero.belongings.backpack );
 			identifiedByUse = true;
 		} else {
 			identifiedByUse = false;
@@ -90,29 +91,35 @@ public class PotionOfDragonsBreath extends ExoticPotion {
 
 			if (cell == null && identifiedByUse){
 				showingWindow = true;
-				GameScene.show( new WndOptions(new ItemSprite(PotionOfDragonsBreath.this),
-						Messages.titleCase(name()),
-						Messages.get(ExoticPotion.class, "warning"),
-						Messages.get(ExoticPotion.class, "yes"),
-						Messages.get(ExoticPotion.class, "no") ) {
+				ShatteredPixelDungeon.runOnRenderThread(new Callback() {
 					@Override
-					protected void onSelect( int index ) {
-						showingWindow = false;
-						switch (index) {
-							case 0:
-								curUser.spendAndNext(1f);
-								identifiedByUse = false;
-								break;
-							case 1:
-								GameScene.selectCell( targeter );
-								break;
-						}
+					public void call() {
+						GameScene.show( new WndOptions(new ItemSprite(PotionOfDragonsBreath.this),
+								Messages.titleCase(name()),
+								Messages.get(ExoticPotion.class, "warning"),
+								Messages.get(ExoticPotion.class, "yes"),
+								Messages.get(ExoticPotion.class, "no") ) {
+							@Override
+							protected void onSelect( int index ) {
+								showingWindow = false;
+								switch (index) {
+									case 0:
+										curUser.spendAndNext(1f);
+										identifiedByUse = false;
+										break;
+									case 1:
+										GameScene.selectCell( targeter );
+										break;
+								}
+							}
+							public void onBackPressed() {}
+						} );
 					}
-					public void onBackPressed() {}
-				} );
-			} else if (cell == null && !anonymous){
-				curItem.collect( curUser.belongings.backpack );
+				});
 			} else if (cell != null) {
+				if (!identifiedByUse) {
+					curItem.detach(curUser.belongings.backpack);
+				}
 				potionAlreadyUsed = true;
 				identifiedByUse = false;
 				curUser.busy();
@@ -120,8 +127,6 @@ public class PotionOfDragonsBreath extends ExoticPotion {
 				curUser.sprite.operate(curUser.pos, new Callback() {
 					@Override
 					public void call() {
-
-						curItem.detach(curUser.belongings.backpack);
 
 						curUser.sprite.idle();
 						curUser.sprite.zap(cell);
@@ -192,6 +197,10 @@ public class PotionOfDragonsBreath extends ExoticPotion {
 										}
 
 										curUser.spendAndNext(1f);
+
+										if (!anonymous){
+											Talent.onPotionUsed(curUser, curUser.pos, talentFactor);
+										}
 									}
 								});
 						

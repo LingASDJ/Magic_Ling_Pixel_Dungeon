@@ -51,6 +51,7 @@ import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.ColorMath;
+import com.watabou.utils.GameMath;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -99,7 +100,7 @@ public class StatusPane extends Component {
 	//Custom UI Left
 	public PageIndicator page;
 	public PageIndicatorB pageb;
-	public MainHandIndicator mainhand;
+
 	public BossSelectIndicator bossselect;
 	public JoinIndicator joinxxx;
 	public LanterFireCator lanter;
@@ -117,7 +118,11 @@ public class StatusPane extends Component {
 		this.large = large;
 
 		if (SPDSettings.ClassUI()) {
-			asset = Assets.Interfaces.STATUS;
+			if(Dungeon.depth>25) {
+				asset = Assets.Interfaces.STATUS_HOLLOW;
+			} else {
+				asset = Assets.Interfaces.STATUS;
+			}
 		} else {
 			asset =  Assets.Interfaces.STATUS_DARK;
 		}
@@ -150,7 +155,7 @@ public class StatusPane extends Component {
 
 		talentBlink = 0;
 
-		compass = new Compass( Statistics.amuletObtained ? Dungeon.level.entrance : Dungeon.level.exit );
+		compass = new Compass( Statistics.amuletObtained ? Dungeon.level.entrance() : Dungeon.level.exit() );
 		add( compass );
 
 		if (large)  rawShielding = new Image(asset, 0, 112, 128, 9);
@@ -176,7 +181,7 @@ public class StatusPane extends Component {
 
 		add( icehp );
 
-	 	lanterfirevae = new Image(Assets.Interfaces.LANTERLING);
+	 	lanterfirevae = SPDSettings.ClassUI() ? new Image(Assets.Interfaces.LANTERLING) : new Image(Assets.Interfaces.LANTERLING_N);
 		add(lanterfirevae);
 
 		hpText = new BitmapText(PixelScene.pixelFont);
@@ -239,9 +244,6 @@ public class StatusPane extends Component {
 
 		pageb=new PageIndicatorB();
 		add(pageb);
-
-		mainhand=new MainHandIndicator();
-		add(mainhand);
 
 		bossselect=new BossSelectIndicator();
 		add(bossselect);
@@ -365,7 +367,7 @@ public class StatusPane extends Component {
 		}
 
 		if(SPDSettings.TimeLimit()) {
-			timeText.x = MenuPane.version.x - 10;
+			timeText.x = MenuPane.depthButton.x;
 
 			timeText.y = MenuPane.version.y + 5;
 
@@ -390,10 +392,16 @@ public class StatusPane extends Component {
 		super.update();
 
 		if (SPDSettings.ClassUI()) {
-			asset = Assets.Interfaces.STATUS;
+			if(Dungeon.depth>25) {
+				asset = Assets.Interfaces.STATUS_HOLLOW;
+			} else {
+				asset = Assets.Interfaces.STATUS;
+			}
 		} else {
 			asset =  Assets.Interfaces.STATUS_DARK;
 		}
+
+
 
 		int maxHunger = (int) Hunger.STARVING;
 		float maxPureSole = Dungeon.hero.lanterfire;
@@ -408,7 +416,12 @@ public class StatusPane extends Component {
 		int max = Dungeon.hero.HT;
 
 		if (SPDSettings.ClassUI()) {
-			bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
+			if(Dungeon.depth>25){
+				bg.texture = TextureCache.get(Assets.Interfaces.STATUS_HOLLOW);
+			} else {
+				bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
+			}
+
 		} else {
 			bg.texture = TextureCache.get(Assets.Interfaces.STATUS_DARK);
 		}
@@ -424,13 +437,13 @@ public class StatusPane extends Component {
 		if (ClassPage()) {
 			page.setPos(0, 40);
 			pageb.setPos(0, 1000);
-			mainhand.setPos(0, 51);
-			joinxxx.setPos(0, 78);
+
+			joinxxx.setPos(0, 52);
 
 			if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
 				bossselect.setPos(0, 1000);
 			} else {
-				bossselect.setPos(0, 104);
+				bossselect.setPos(0, 78);
 			}
 
 
@@ -442,7 +455,7 @@ public class StatusPane extends Component {
 		} else {
 			page.setPos(0, 1000);
 			pageb.setPos(0, 40);
-			mainhand.setPos(0, 1000);
+
 			joinxxx.setPos(0, 1000);
 			bossselect.setPos(0, 1000);
 
@@ -577,4 +590,19 @@ public class StatusPane extends Component {
 		emitter.burst( Speck.factory( Speck.STAR ), 12 );
 	}
 
+	public void alpha( float value ){
+		value = GameMath.gate(0, value, 1f);
+		bg.alpha(value);
+		avatar.alpha(value);
+		rawShielding.alpha(0.5f*value);
+		shieldedHP.alpha(value);
+		hp.alpha(value);
+		hpText.alpha(0.6f*value);
+		exp.alpha(value);
+		if (expText != null) expText.alpha(0.6f*value);
+		level.alpha(value);
+		compass.alpha(value);
+		busy.alpha(value);
+		counter.alpha(value);
+	}
 }

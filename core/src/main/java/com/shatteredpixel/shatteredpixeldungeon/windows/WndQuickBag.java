@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,31 +21,21 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.InventorySlot;
-import com.shatteredpixel.shatteredpixeldungeon.ui.ItemSlot;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.watabou.gltextures.TextureCache;
-import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Sample;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,7 +63,7 @@ public class WndQuickBag extends Window {
 		ArrayList<Item> items = new ArrayList<>();
 
 		for (Item i : bag == null ? Dungeon.hero.belongings : bag){
-			if (i.defaultAction == null){
+			if (i.defaultAction() == null){
 				continue;
 			}
 			if (i instanceof Bag) {
@@ -131,6 +121,7 @@ public class WndQuickBag extends Window {
 					return null; //no tooltips here
  				}
 			};
+			slot.showExtraInfo(false);
 			slot.setRect(left, top, btnWidth, btnHeight);
 			add(slot);
 
@@ -158,7 +149,7 @@ public class WndQuickBag extends Window {
 
 		resize((int)width, (int)height);
 
-		int bottom = GameScene.uiCamera.height;
+		int bottom = PixelScene.uiCamera.height;
 
 		//offset to be above the toolbar
 		offset(0, (int) (bottom/2 - 30 - height/2));

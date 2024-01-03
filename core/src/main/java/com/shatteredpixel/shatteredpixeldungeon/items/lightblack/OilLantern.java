@@ -35,7 +35,7 @@ public class OilLantern extends Artifact {
     private static final String PLASKS = "plasks";
 
     private static final int MAX_CHARGE = 60;
-    private static final int MIX_CHARGE = 20;
+    private static final int MIX_CHARGE = 50;
     private static final float TIME_TO_USE = 2.0f;
 
     private static final String TXT_STATUS = "%d%%";
@@ -134,7 +134,7 @@ public class OilLantern extends Artifact {
         ArrayList<String> actions = OilLantern.super.actions(hero);
         actions.add(isActivated() ? AC_SNUFF : AC_LIGHT);
         actions.add(AC_REFILL);
-
+        actions.remove(AC_EQUIP);
         actions.remove("THROW");
 
         actions.remove("DROP");
@@ -192,7 +192,7 @@ public class OilLantern extends Artifact {
 
     public void refills(Hero hero) {
         this.plingks--;
-        this.charge = Math.min(this.charge + MAX_CHARGE, 100);
+        this.charge = Math.min(this.charge + MIX_CHARGE, 100);
         hero.spend(TIME_TO_USE);
         hero.busy();
         Sample.INSTANCE.play(Assets.Sounds.DRINK, TIME_TO_USE, TIME_TO_USE, 1.2f);

@@ -453,7 +453,7 @@ public class YogReal extends Boss {
 
     @Override
     public void aggro(Char ch) {
-        for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
+       for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
             if (Dungeon.level.distance(pos, mob.pos) <= 8 &&
                     (mob instanceof Larva || mob instanceof RipperDemon)) {
                 mob.aggro(ch);
@@ -466,7 +466,7 @@ public class YogReal extends Boss {
     public void die( Object cause ) {
         GameScene.flash(0x80FFFFFF);
 
-        for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
+       for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
             if (mob.alignment == Alignment.ENEMY && mob != this) {
                 mob.die( cause );
             }

@@ -32,15 +32,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMixShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessNoMoney;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
-import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Banner;
@@ -96,6 +93,8 @@ public class WndStory extends Window {
 	public static final int ID_ZTBS = 26;
 	public static final int ID_DMZR = 27;
 	public static final int ID_ENDS = 28;
+
+	public static final int ID_ANCITY = 28;
 	//
 	public static final int ID_DWADA		= 13;
 
@@ -133,6 +132,8 @@ public class WndStory extends Window {
 		CHAPTERS.put( ID_DMZR, "dmzero" );
 		CHAPTERS.put( ID_ENDS, "end" );
 		CHAPTERS.put( ID_DWADA, "drawfmaster" );
+
+		CHAPTERS.put( ID_ANCITY, "aientncity" );
 	}
 
 
@@ -213,6 +214,15 @@ public class WndStory extends Window {
 					mapnameSlain.show( Window.CBLACK, 0.6f, 3f );
 					scene.showLogo( mapnameSlain );
 					break;
+				case 17:case 18:
+					switch(Dungeon.branch){
+						case 1:
+							mapnameSlain.texture( "interfaces/mapname/ancient.png" );
+							mapnameSlain.show( 0x067000, 0.6f, 3f );
+							scene.showLogo( mapnameSlain );
+						break;
+					}
+					break;
 				case 21:
 					mapnameSlain.texture( "interfaces/mapname/halls.png" );
 					mapnameSlain.show( Window.GDX_COLOR, 0.6f, 3f );
@@ -245,11 +255,10 @@ public class WndStory extends Window {
 	}
 
 	public static void lanterfireRoll(){
-		SpellSprite.show( hero, SpellSprite.MASTERY );
 		if(lanterfireactive) {
 			if (Dungeon.depth == 6){
 				//TODO 首次到达6层 给予1个增益Buff
-				switch (Random.Int(6)){
+				switch (Random.Int(5)){
 					case 0: default:
 						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
 						break;
@@ -264,10 +273,6 @@ public class WndStory extends Window {
 						break;
 					case 4:
 						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
-						break;
-					case 5:
-						new WandOfAnmy().quantity(1).identify().collect();
-						Buff.affect(hero, BlessAnmy.class).set( (100), 1 );
 						break;
 				}
 				GLog.b(Messages.get(WndStory.class,"start"));

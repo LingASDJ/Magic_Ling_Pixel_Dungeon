@@ -23,6 +23,11 @@ import com.watabou.utils.Random;
 
 public class Nyctophobia extends Buff implements Hero.Doom {
 
+    @Override
+    public String heroMessage() {
+        return "";
+    }
+
     private static final String LEVEL = "level";
     private static final String PARTIALDAMAGE = "partialDamage";
 
@@ -48,7 +53,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
             cure( Dungeon.hero );
             badLanterFire();
             spend(100f);
-        } else if (hero.lanterfire < 31 && hero.lanterfire > 0) {
+        } else if (hero.lanterfire < 31 && hero.lanterfire >= 0) {
             cure( Dungeon.hero );
             switch (Random.Int(5)){
                 case 0: case 1:
@@ -65,7 +70,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
                     break;
             }
             spend(90f);
-        }  else if(hero.lanterfire < 0){
+        }  else if(hero.lanterfire == 0){
             hero.damage( (int)((Dungeon.depth/5)*(Math.abs(hero.lanterfire)/2)+10), this );
             spend(24f);
             GLog.w( Messages.get(this, "desc6") );
@@ -148,7 +153,8 @@ public class Nyctophobia extends Buff implements Hero.Doom {
         bundle.put(PARTIALDAMAGE, this.partialDamage);
     }
 
-    public String toString() {
+    @Override
+    public String name() {
         if (hero.lanterfire >= 90 && hero.lanterfire <= 100) {
             return Messages.get(this, "name");
         } else if (hero.lanterfire >= 80 && hero.lanterfire <= 89) {

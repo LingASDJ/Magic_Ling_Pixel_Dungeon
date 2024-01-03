@@ -29,10 +29,16 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireacti
 
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.ClearLanterBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.ElementalBaseBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.ElementalBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.ElementalFABuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlDebuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
@@ -71,6 +77,10 @@ public class WndHero extends WndTabbed {
 	private TalentsTab talents;
 	private BuffsTab buffs;
 
+	private ElementalBuffsTab ebuffs;
+	private LRBuffsTab rbuffs;
+
+
 	public static int lastIdx = 0;
 
 	public WndHero() {
@@ -90,6 +100,16 @@ public class WndHero extends WndTabbed {
 		add( buffs );
 		buffs.setRect(0, 0, WIDTH, HEIGHT);
 		buffs.setupList();
+
+		ebuffs = new ElementalBuffsTab();
+		add( ebuffs );
+		ebuffs.setRect(0, 0, WIDTH, HEIGHT);
+		ebuffs.setupList();
+
+		rbuffs = new LRBuffsTab();
+		add( rbuffs );
+		rbuffs.setRect(0, 0, WIDTH, HEIGHT);
+		rbuffs.setupList();
 
 		add( new IconTab( Icons.get(Icons.RANKINGS) ) {
 			protected void select( boolean value ) {
@@ -118,6 +138,21 @@ public class WndHero extends WndTabbed {
 				buffs.visible = buffs.active = selected;
 			}
 		} );
+		add( new IconTab( Icons.get(Icons.CHANGES) ) {
+			protected void select( boolean value ) {
+				super.select( value );
+				if (selected) lastIdx = 3;
+				ebuffs.visible = ebuffs.active = selected;
+			}
+		} );
+
+		add( new IconTab( Icons.get(Icons.PLUS) ) {
+			protected void select( boolean value ) {
+				super.select( value );
+				if (selected) lastIdx = 4;
+				rbuffs.visible = rbuffs.active = selected;
+			}
+		} );
 
 		layoutTabs();
 
@@ -133,6 +168,8 @@ public class WndHero extends WndTabbed {
 		super.offset(xOffset, yOffset);
 		talents.layout();
 		buffs.layout();
+		ebuffs.layout();
+		rbuffs.layout();
 	}
 
 	private class StatsTab extends Group {
@@ -439,8 +476,22 @@ public class WndHero extends WndTabbed {
 		
 		private void setupList() {
 			Component content = buffList.content();
+
+
+			content.setSize(buffList.width(), pos);
+			buffList.setSize(buffList.width(), buffList.height());
+
+			RenderedTextBlock title = PixelScene.renderTextBlock(Messages.get(WndHero.class,"blist"), 9);
+			title.hardlight(TITLE_COLOR);
+			title.maxWidth( (int)width() - 2 );
+			title.setPos( (width() - title.width())/2f, pos + 1 + ((18) - title.height())/2f);
+			PixelScene.align(title);
+			content.add(title);
+
+			pos += Math.max(18, title.height());
+
 			for (Buff buff : hero.buffs()) {
-				if (buff.icon() != BuffIndicator.NONE) {
+				if (buff.icon() != BuffIndicator.NONE && !(buff instanceof ElementalBuff || buff instanceof ElementalFABuff|| buff instanceof ClearLanterBuff || buff instanceof MagicGirlDebuff)) {
 					BuffSlot slot = new BuffSlot(buff);
 					slot.setRect(0, pos, WIDTH, slot.icon.height());
 					content.add(slot);
@@ -448,8 +499,11 @@ public class WndHero extends WndTabbed {
 					pos += GAP + slot.height();
 				}
 			}
+
 			content.setSize(buffList.width(), pos);
 			buffList.setSize(buffList.width(), buffList.height());
+
+
 		}
 
 		private class BuffSlot extends Component {
@@ -467,7 +521,7 @@ public class WndHero extends WndTabbed {
 				icon.y = this.y;
 				add( icon );
 
-				txt = PixelScene.renderTextBlock( buff.toString(), 8 );
+				txt = PixelScene.renderTextBlock( buff.name(), 8 );
 				txt.setPos(
 						icon.width + GAP,
 						this.y + (icon.height - txt.height()) / 2
@@ -499,4 +553,228 @@ public class WndHero extends WndTabbed {
 			}
 		}
 	}
+
+	private class ElementalBuffsTab extends Component {
+
+		private static final int GAP = 2;
+
+		private float pos;
+		private ScrollPane buffList;
+		private ArrayList<EBuffSlot> slots = new ArrayList<>();
+
+		@Override
+		protected void createChildren() {
+
+			super.createChildren();
+
+
+
+			buffList = new ScrollPane( new Component() ){
+				@Override
+				public void onClick( float x, float y ) {
+					int size = slots.size();
+					for (int i=0; i < size; i++) {
+						if (slots.get( i ).onClick( x, y )) {
+							break;
+						}
+					}
+				}
+			};
+			add(buffList);
+		}
+
+		@Override
+		protected void layout() {
+			super.layout();
+			buffList.setRect(0, 0, width, height);
+		}
+
+		private void setupList() {
+			Component content = buffList.content();
+
+
+			RenderedTextBlock title = PixelScene.renderTextBlock(Messages.get(WndHero.class,"elist"), 9);
+			title.hardlight(SPDSettings.ClassUI() ? 0x8f8f8f : Window.R_COLOR);
+			title.maxWidth( (int)width() - 2 );
+			title.setPos( (width() - title.width())/2f, pos + 1 + ((18) - title.height())/2f);
+			PixelScene.align(title);
+			content.add(title);
+
+			pos += Math.max(18, title.height());
+
+			content.setSize(buffList.width(), pos);
+			buffList.setSize(buffList.width(), buffList.height());
+
+			//遍历buff 既不是None 但是ElementalBuff ElementalFABuff ElementalBaseBuff
+			for (Buff ebuff : hero.buffs()) {
+				if (ebuff.icon() != BuffIndicator.NONE && (ebuff instanceof ElementalBuff || ebuff instanceof ElementalFABuff || ebuff instanceof ElementalBaseBuff)) {
+					EBuffSlot slot = new EBuffSlot(ebuff);
+					slot.setRect(0, pos, WIDTH, slot.icon.height());
+					content.add(slot);
+					slots.add(slot);
+					pos += GAP + slot.height();
+				}
+			}
+
+			content.setSize(buffList.width(), pos);
+			buffList.setSize(buffList.width(), buffList.height());
+
+		}
+
+		private class EBuffSlot extends Component {
+
+			private Buff buff;
+
+			Image icon;
+			RenderedTextBlock txt;
+
+			public EBuffSlot( Buff buff ){
+				super();
+				this.buff = buff;
+
+				icon = new BuffIcon(buff, true);
+				icon.y = this.y;
+				add( icon );
+
+				txt = PixelScene.renderTextBlock( buff.name(), 8 );
+				txt.setPos(
+						icon.width + GAP,
+						this.y + (icon.height - txt.height()) / 2
+				);
+				PixelScene.align(txt);
+				add( txt );
+
+			}
+
+			@Override
+			protected void layout() {
+				super.layout();
+				icon.y = this.y;
+				txt.maxWidth((int)(width - icon.width()));
+				txt.setPos(
+						icon.width + GAP,
+						this.y + (icon.height - txt.height()) / 2
+				);
+				PixelScene.align(txt);
+			}
+
+			protected boolean onClick ( float x, float y ) {
+				if (inside( x, y )) {
+					GameScene.show(new WndInfoBuff(buff));
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
+	}
+
+	private class LRBuffsTab extends Component {
+
+		private static final int GAP = 2;
+
+		private float pos;
+		private float pos2;
+		private ScrollPane buffList;
+		private ArrayList<LRBuffSlot> slots = new ArrayList<>();
+
+		@Override
+		protected void createChildren() {
+
+			super.createChildren();
+			buffList = new ScrollPane( new Component() ){
+				@Override
+				public void onClick( float x, float y ) {
+					int size = slots.size();
+					for (int i=0; i < size; i++) {
+						if (slots.get( i ).onClick( x, y )) {
+							break;
+						}
+					}
+				}
+			};
+			add(buffList);
+		}
+
+		@Override
+		protected void layout() {
+			super.layout();
+			buffList.setRect(0, 0, width, height);
+		}
+
+		private void setupList() {
+			Component content = buffList.content();
+
+			RenderedTextBlock title = PixelScene.renderTextBlock(Messages.get(WndHero.class,"gdlist"), 9);
+			title.hardlight(SPDSettings.ClassUI() ? Window.CPINK : Window.CYELLOW);
+			title.maxWidth( (int)width() - 2 );
+			title.setPos( (width() - title.width())/2f, pos + 1 + ((18) - title.height())/2f);
+			PixelScene.align(title);
+			content.add(title);
+
+			pos += Math.max(18, title.height());
+
+			for (Buff ebuff : hero.buffs()) {
+				if (ebuff.icon() != BuffIndicator.NONE && (ebuff instanceof ClearLanterBuff || ebuff instanceof MagicGirlDebuff) ) {
+					LRBuffSlot slot = new LRBuffSlot(ebuff);
+					slot.setRect(0, pos, WIDTH, slot.icon.height());
+					content.add(slot);
+					slots.add(slot);
+					pos += GAP + slot.height();
+				}
+			}
+
+			content.setSize(buffList.width(), pos);
+			buffList.setSize(buffList.width(), buffList.height());
+
+		}
+
+		private class LRBuffSlot extends Component {
+
+			private Buff buff;
+
+			Image icon;
+			RenderedTextBlock txt;
+
+			public LRBuffSlot( Buff buff ){
+				super();
+				this.buff = buff;
+
+				icon = new BuffIcon(buff, true);
+				icon.y = this.y;
+				add( icon );
+
+				txt = PixelScene.renderTextBlock( buff.name(), 8 );
+				txt.setPos(
+						icon.width + GAP,
+						this.y + (icon.height - txt.height()) / 2
+				);
+				PixelScene.align(txt);
+				add( txt );
+
+			}
+
+			@Override
+			protected void layout() {
+				super.layout();
+				icon.y = this.y;
+				txt.maxWidth((int)(width - icon.width()));
+				txt.setPos(
+						icon.width + GAP,
+						this.y + (icon.height - txt.height()) / 2
+				);
+				PixelScene.align(txt);
+			}
+
+			protected boolean onClick ( float x, float y ) {
+				if (inside( x, y )) {
+					GameScene.show(new WndInfoBuff(buff));
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
+	}
+
 }

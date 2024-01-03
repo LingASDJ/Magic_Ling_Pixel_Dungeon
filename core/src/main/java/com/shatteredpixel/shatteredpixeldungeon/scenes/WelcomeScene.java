@@ -47,7 +47,7 @@ import com.watabou.utils.FileUtils;
 
 public class WelcomeScene extends PixelScene {
 
-	private static final int LATEST_UPDATE = ShatteredPixelDungeon.v1_2_0;
+	private static final int LATEST_UPDATE = ShatteredPixelDungeon.v2_2_0;
 
 	@Override
 	public void create() {
@@ -70,7 +70,7 @@ public class WelcomeScene extends PixelScene {
 			return;
 		}
 
-		if (!SPDSettings.intro() && !SPDSettings.firebase()) {
+		if (!SPDSettings.intro() && SPDSettings.firebase()) {
 			ShatteredPixelDungeon.switchNoFade(GameNewsScene.class);
 		} else {
 			ShatteredPixelDungeon.switchNoFade(TitleScene.class);
@@ -82,7 +82,7 @@ public class WelcomeScene extends PixelScene {
 				new float[]{1, 1},
 				false);
 
-		uiCamera.visible = false;
+		PixelScene.uiCamera.visible = false;
 
 		int w = Camera.main.width;
 		int h = Camera.main.height;
@@ -223,7 +223,7 @@ public class WelcomeScene extends PixelScene {
 		}
 
 		//if the player has beaten Goo, automatically give all guidebook pages
-		if (previousVersion <= ShatteredPixelDungeon.v0_9_3c){
+		if (previousVersion <= ShatteredPixelDungeon.v1_2_3){
 			Badges.loadGlobal();
 			if (Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_1)){
 				for (String page : Document.ADVENTURERS_GUIDE.pageNames()){

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,25 +22,26 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Constants;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.watabou.input.GameAction;
 import com.watabou.noosa.Image;
+import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
 
-public class QuickSlotButton extends Button  {
-	private static QuickSlotButton[] instance = new QuickSlotButton[Constants.MAX_QUICKSLOTS];
+public class QuickSlotButton extends Button {
 
+	private static QuickSlotButton[] instance = new QuickSlotButton[QuickSlot.SIZE];
 	private int slotNum;
 
 	private ItemSlot slot;
@@ -48,7 +49,7 @@ public class QuickSlotButton extends Button  {
 	private static Image crossB;
 	private static Image crossM;
 
-	private static boolean targeting = false;
+	public static int targetingSlot = -1;
 	public static Char lastTarget = null;
 
 	public QuickSlotButton( int slotNum ) {
@@ -59,10 +60,6 @@ public class QuickSlotButton extends Button  {
 		instance[slotNum] = this;
 	}
 
-	public static void useTargeting(int idx){
-		instance[idx].useTargeting();
-	}
-
 	@Override
 	public void destroy() {
 		super.destroy();
@@ -70,12 +67,8 @@ public class QuickSlotButton extends Button  {
 		reset();
 	}
 
-	public void slotMargins( int left, int top, int right, int bottom){
-		slot.setMargins(left, top, right, bottom);
-	}
-
 	public static void reset() {
-		instance = new QuickSlotButton[Constants.MAX_QUICKSLOTS];
+		instance = new QuickSlotButton[QuickSlot.SIZE];
 
 		lastTarget = null;
 	}
@@ -87,10 +80,10 @@ public class QuickSlotButton extends Button  {
 		slot = new ItemSlot() {
 			@Override
 			protected void onClick() {
-				if (!Dungeon.hero.isAlive()){
+				if (!Dungeon.hero.isAlive() || !Dungeon.hero.ready){
 					return;
 				}
-				if (targeting) {
+				if (targetingSlot == slotNum) {
 					int cell = autoAim(lastTarget, select(slotNum));
 
 					if (cell != -1){
@@ -101,16 +94,33 @@ public class QuickSlotButton extends Button  {
 					}
 				} else {
 					Item item = select(slotNum);
-					if (item.usesTargeting) {
-						useTargeting();
+					if (Dungeon.hero.belongings.contains(item) && !GameScene.cancel()) {
+						GameScene.centerNextWndOnInvPane();
+						item.execute(Dungeon.hero);
+						if (item.usesTargeting) {
+							useTargeting();
+						}
 					}
-					item.execute( Dungeon.hero );
 				}
+			}
+
+			@Override
+			protected void onRightClick() {
+				QuickSlotButton.this.onLongClick();
+			}
+
+			@Override
+			protected void onMiddleClick() {
+				onClick();
 			}
 
 			@Override
 			public GameAction keyAction() {
 				return QuickSlotButton.this.keyAction();
+			}
+			@Override
+			public GameAction secondaryTooltipAction(){
+				return QuickSlotButton.this.secondaryTooltipAction();
 			}
 			@Override
 			protected boolean onLongClick() {
@@ -123,6 +133,15 @@ public class QuickSlotButton extends Button  {
 			@Override
 			protected void onPointerUp() {
 				sprite.resetColor();
+			}
+
+			@Override
+			protected String hoverText() {
+				if (item == null){
+					return Messages.titleCase(Messages.get(WndKeyBindings.class, "quickslot_" + (slotNum+1)));
+				} else {
+					return super.hoverText();
+				}
 			}
 		};
 		slot.showExtraInfo( false );
@@ -147,10 +166,14 @@ public class QuickSlotButton extends Button  {
 		PixelScene.align(crossB);
 	}
 
+	public void alpha( float value ){
+		slot.alpha(value);
+	}
+
 	@Override
 	public void update() {
 		super.update();
-		if (targeting && lastTarget != null && lastTarget.sprite != null){
+		if (targetingSlot != -1 && lastTarget != null && lastTarget.sprite != null){
 			crossM.point(lastTarget.sprite.center(crossM));
 		}
 	}
@@ -182,6 +205,15 @@ public class QuickSlotButton extends Button  {
 	}
 
 	@Override
+	protected String hoverText() {
+		if (slot.item == null){
+			return Messages.titleCase(Messages.get(WndKeyBindings.class, "quickslot_" + (slotNum+1)));
+		} else {
+			return super.hoverText();
+		}
+	}
+
+	@Override
 	protected void onClick() {
 		if (Dungeon.hero.ready && !GameScene.cancel()) {
 			GameScene.selectItem(itemSelector);
@@ -189,10 +221,18 @@ public class QuickSlotButton extends Button  {
 	}
 
 	@Override
+	protected void onRightClick() {
+		onClick();
+	}
+
+	@Override
+	protected void onMiddleClick() {
+		onClick();
+	}
+
+	@Override
 	protected boolean onLongClick() {
-		if (Dungeon.hero.ready && !GameScene.cancel()) {
-			GameScene.selectItem(itemSelector);
-		}
+		onClick();
 		return true;
 	}
 
@@ -205,17 +245,31 @@ public class QuickSlotButton extends Button  {
 
 		@Override
 		public boolean itemSelectable(Item item) {
-			return item.defaultAction != null;
+			return item.defaultAction() != null;
 		}
 
 		@Override
 		public void onSelect(Item item) {
 			if (item != null) {
-				Dungeon.quickslot.setSlot( slotNum , item );
-				refresh();
+				set( slotNum , item );
 			}
 		}
 	};
+
+	public static void set(Item item){
+		for (int i = 0; i < instance.length; i++) {
+			if (select(i) == null || select(i) == item) {
+				set(i, item);
+				return;
+			}
+		}
+		set(0, item);
+	}
+
+	public static void set(int slotNum, Item item){
+		Dungeon.quickslot.setSlot( slotNum , item );
+		refresh();
+	}
 
 	private static Item select(int slotNum){
 		return Dungeon.quickslot.getItem( slotNum );
@@ -237,7 +291,15 @@ public class QuickSlotButton extends Button  {
 
 	private void enableSlot() {
 		slot.enable(Dungeon.quickslot.isNonePlaceholder( slotNum )
-				&& (Dungeon.hero.buff(LostInventory.class) == null || Dungeon.quickslot.getItem(slotNum).keptThoughLostInvent));
+				&& (Dungeon.hero.buff(LostInventory.class) == null || Dungeon.quickslot.getItem(slotNum).keptThroughLostInventory()));
+	}
+
+	public void slotMargins( int left, int top, int right, int bottom){
+		slot.setMargins(left, top, right, bottom);
+	}
+
+	public static void useTargeting(int idx){
+		instance[idx].useTargeting();
 	}
 
 	private void useTargeting() {
@@ -248,11 +310,13 @@ public class QuickSlotButton extends Button  {
 				lastTarget.alignment != Char.Alignment.ALLY &&
 				Dungeon.level.heroFOV[lastTarget.pos]) {
 
-			targeting = true;
+			targetingSlot = slotNum;
 			CharSprite sprite = lastTarget.sprite;
 
-			sprite.parent.addToFront( crossM );
-			crossM.point(sprite.center(crossM));
+			if (sprite.parent != null) {
+				sprite.parent.addToFront(crossM);
+				crossM.point(sprite.center(crossM));
+			}
 
 			crossB.point(slot.sprite.center(crossB));
 			crossB.visible = true;
@@ -260,7 +324,7 @@ public class QuickSlotButton extends Button  {
 		} else {
 
 			lastTarget = null;
-			targeting = false;
+			targetingSlot = -1;
 
 		}
 
@@ -295,6 +359,7 @@ public class QuickSlotButton extends Button  {
 		for (int i = 0; i < instance.length; i++) {
 			if (instance[i] != null) {
 				instance[i].item(select(i));
+				instance[i].enable(instance[i].active);
 			}
 		}
 	}
@@ -304,14 +369,15 @@ public class QuickSlotButton extends Button  {
 			lastTarget = target;
 
 			TargetHealthIndicator.instance.target( target );
+			InventoryPane.lastTarget = target;
 		}
 	}
 
 	public static void cancel() {
-		if (targeting) {
-			crossB.visible = false;
-			crossM.remove();
-			targeting = false;
+		if (targetingSlot != -1) {
+				crossB.visible = false;
+				crossM.remove();
+				targetingSlot = -1;
 		}
 	}
 }

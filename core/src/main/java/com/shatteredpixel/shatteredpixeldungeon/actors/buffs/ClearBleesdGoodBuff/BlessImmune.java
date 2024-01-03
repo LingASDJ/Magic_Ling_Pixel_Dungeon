@@ -19,6 +19,11 @@ public class BlessImmune extends ClearLanterBuff {
     public static int level = 0;
     private int interval = 1;
 
+    public void detach() {
+        super.detach();
+        immunities.removeAll(AntiMagic.RESISTS);
+    }
+
     @Override
     public boolean act() {
         if (target.isAlive()) {

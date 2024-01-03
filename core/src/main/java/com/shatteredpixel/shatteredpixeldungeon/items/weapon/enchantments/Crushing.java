@@ -34,7 +34,7 @@ public class Crushing extends Weapon.Enchantment {
             defender.sprite.emitter().burst(SmokeParticle.FACTORY, 4 );
             if (Random.Int( 2 ) == 0) {
                 damage += level;
-                GLog.n(Messages.get(Crushing.class,"kill"),attacker.name());
+                GLog.n(Messages.get(Crushing.class,"kill",defender.name(),attacker.name()));
                 new Bomb().explodeHeros(defender.pos);
             }
         }

@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.items.Generator.randomArtifact;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -37,19 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.Brew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAntiMagic;
@@ -122,7 +109,8 @@ public class RedDragon extends NPC {
 
 
     @Override
-    public void add( Buff buff ) {
+    public boolean add(Buff buff ) {
+        return false;
     }
 
     @Override
@@ -242,7 +230,7 @@ public class RedDragon extends NPC {
         public static Ring weapon;
         public static Wand RingT;
         public static Item armor;
-        public static Brew food;
+        public static Item food;
         public static ExoticScroll scrolls;
 
         public static Weapon.Enchantment enchant;
@@ -320,11 +308,16 @@ public class RedDragon extends NPC {
 
                 weapon = (Ring) node.get(WEAPON);
 
-                armor = (Artifact) node.get(ARMOR);
+                try {
+                    armor = (Artifact) node.get(ARMOR);
+                } catch (Exception e) {
+                    armor = (Ring) node.get(ARMOR);
+                }
+
                 RingT = (Wand) node.get(RINGT);
 
 
-                food = (Brew) node.get(FOOD);
+                food = (Item) node.get(FOOD);
                 scrolls = (ExoticScroll) node.get(SCROLLS);
 
                 if (node.contains(ENCHANT)) {
@@ -352,42 +345,16 @@ public class RedDragon extends NPC {
                 given = false;
                 processed = false;
                 depth = Dungeon.depth;
-                //5
-                switch (Random.chances(new float[]{0, 0, 10, 6, 3, 1})){
-                    default:
-                    case 2: food = new BlizzardBrew(); break;
-                    case 3: food = new CausticBrew();    break;
-                    case 4: food = new InfernalBrew();   break;
-                    case 5: food = new ShockingBrew();   break;
+
+                food = Generator.random(Generator.Category.WAND);
+
+                try {
+                    armor = Generator.random(Generator.Category.ARTIFACT);
+                } catch (Exception e) {
+                    armor = Generator.random(Generator.Category.RING);
                 }
 
-                Item item = randomArtifact();
-                if(item != null) {
-                    switch (Random.NormalIntRange(1,7)){
-                        case 1:
-                            armor = new CapeOfThorns(); break;
-                        case 2:
-                            armor = new AlchemistsToolkit(); break;
-                        case 3:
-                            armor = new ChaliceOfBlood(); break;
-                        case 4:
-                            armor = new DriedRose(); break;
-                        case 5:
-                            armor = new SandalsOfNature(); break;
-                        case 6:
-                            armor = new TimekeepersHourglass(); break;
-                        case 7:
-                            armor = new WraithAmulet(); break;
-                    }
-                } else {
-                    switch (Random.chances(new float[]{0, 0, 10, 6, 3, 1})){
-                        default:
-                        case 2: armor = new CapeOfThorns();break;
-                        case 3: armor = new CapeOfThorns();break;
-                        case 4: armor = new CapeOfThorns();break;
-                        case 5: armor = new CapeOfThorns();break;
-                    }
-                }
+
                 RingT = (Wand) Generator.random(Generator.Category.WAND);
 
                 switch (Random.Int(5)){
@@ -417,7 +384,7 @@ public class RedDragon extends NPC {
                     itemLevel = 3;
                 }
                 weapon.upgrade(itemLevel);
-                //armor.upgrade(itemLevel);
+                food.upgrade(itemLevel);
                 RingT.upgrade(itemLevel);
 
                 //10% to be enchanted. We store it separately so enchant status isn't revealed early

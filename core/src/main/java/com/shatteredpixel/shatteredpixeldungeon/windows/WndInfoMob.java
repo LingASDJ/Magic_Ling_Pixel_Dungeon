@@ -166,6 +166,8 @@ public class WndInfoMob extends WndTitledMessage {
 				level = Messages.get(WndInfoMob.class,"demon");
 			} else if (mob.properties.contains(Char.Property.NPC)){
 				level = "NPC";
+			} else if (mob.properties.contains(Char.Property.PETS)){
+				level = Messages.get(WndInfoMob.class,"pets");
 			} else if (mob.properties.contains(Char.Property.FIERY) || mob.properties.contains(Char.Property.ICY) || mob.properties.contains(Char.Property.ELECTRIC)){
 				level = Messages.get(WndInfoMob.class,"ling");
 			} else {
@@ -219,7 +221,13 @@ public class WndInfoMob extends WndTitledMessage {
 					String.valueOf((double)Math.round(mob.speed()*10)/10): SPLevel(mob),6);
 
 			mobSixInfo.info7 = PixelScene.renderTextBlock(ProName(mob),6);
-			mobSixInfo.info8 = PixelScene.renderTextBlock(String.valueOf(mob.damageRoll()),6);
+			int dmg = 0;
+			int tries = 1000;
+			for (int i = 0; i < tries; i++) {
+				dmg += mob.damageRoll();
+			}
+
+			mobSixInfo.info8 = PixelScene.renderTextBlock(String.valueOf(dmg/tries),6);
 
 			add(mobSixInfo.info1);
 			add(mobSixInfo.info2);
@@ -244,6 +252,8 @@ public class WndInfoMob extends WndTitledMessage {
 			image.y = Math.max( 0, name.height() + health.height() - image.height() );
 
 			float w = width - image.width() - GAP;
+
+			mobSixInfo.WIDTH = width;
 
 			name.maxWidth((int)w);
 			name.setPos(x + image.width + GAP,
@@ -328,14 +338,14 @@ public class WndInfoMob extends WndTitledMessage {
 			colorBlock = new ColorBlock(1,1, SPDSettings.ClassUI() ? 0xFF462d00 : 0xFF555555);
 			add(colorBlock);
 
-			image1 = new BuffIcon(68, false);
-			image2 = new BuffIcon(69, false);
-			image3 = new BuffIcon(70, false);
-			image4 = new BuffIcon(71, false);
-			image5 = new BuffIcon(72, false);
-			image6 = new BuffIcon(73, false);
-			image7 = new BuffIcon(74, false);
-			image8 = new BuffIcon(75, false);
+			image1 = new BuffIcon(126, false);
+			image2 = new BuffIcon(127, false);
+			image3 = new BuffIcon(128, false);
+			image4 = new BuffIcon(129, false);
+			image5 = new BuffIcon(130, false);
+			image6 = new BuffIcon(131, false);
+			image7 = new BuffIcon(132, false);
+			image8 = new BuffIcon(133, false);
 			add(image1);
 			add(image2);
 			add(image3);

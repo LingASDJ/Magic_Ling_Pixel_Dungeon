@@ -300,7 +300,7 @@ public class vM0_5_X_Changes {
         changeInfos.add(changes8);
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-        changes.hardlight(Window.GREEN_COLOR);
+        changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(Icons.get(Icons.STAIRS), (Messages.get(vM0_5_X_Changes.class, "dev8")),
@@ -490,7 +490,7 @@ public class vM0_5_X_Changes {
         changeInfos.add(changes9);
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-        changes.hardlight(Window.GREEN_COLOR);
+        changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
         Image i = new Image(new BombGnollTricksterSprites());
@@ -518,7 +518,7 @@ public class vM0_5_X_Changes {
         changeInfos.add(changes7);
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-        changes.hardlight(Window.GREEN_COLOR);
+        changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG26), (Messages.get(vM0_5_X_Changes.class, "dg26")),
@@ -582,7 +582,7 @@ public class vM0_5_X_Changes {
         changeInfos.add(changes4);
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-        changes.hardlight(Window.GREEN_COLOR);
+        changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RedBloodMoon), (Messages.get(vM0_5_X_Changes.class, "newwepaon")),

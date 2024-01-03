@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.watabou.noosa.Tilemap;
 
@@ -144,8 +145,9 @@ public class LaveCavesBossLevel extends Level{
         cleanWalls();
 
 
-        entrance = 32*15 + 23;
-
+        int enter = 32*15 + 23;
+        LevelTransition ent = new LevelTransition(this, enter, LevelTransition.Type.REGULAR_ENTRANCE);
+        transitions.add(ent);
         return true;
     }
 

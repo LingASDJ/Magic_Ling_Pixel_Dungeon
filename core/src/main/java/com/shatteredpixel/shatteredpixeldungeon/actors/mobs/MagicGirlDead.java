@@ -245,6 +245,11 @@ public class MagicGirlDead extends Boss {
     private static final float TIME_TO_BURN	= 6f;
     @Override
     public boolean act(){
+
+        if(HP<=0){
+            die(true);
+        }
+
         if(paralysed>0){
             spend(TICK);
             summonCD -= 1/speed();
@@ -394,6 +399,13 @@ public class MagicGirlDead extends Boss {
 
             GetBossLoot();
         }
+        Badges.validateBossSlain();
+        if (Statistics.qualifiedForBossChallengeBadge){
+            Badges.validateBossChallengeCompleted();
+        }
+        //酸液体清0
+        Statistics.SiderLing = 0;
+
         int shards = Random.chances(new float[]{0, 0, 6, 3, 1});
         for (int i = 0; i < shards; i++){
             int ofs;
@@ -415,7 +427,6 @@ public class MagicGirlDead extends Boss {
         Dungeon.level.drop(new SkeletonKey(Dungeon.depth), pos).sprite.drop();
         GameScene.bossSlain();
         Badges.KILLMG();
-        Badges.validateBossSlain();
 
         WandOfGodIce woc = new WandOfGodIce();
         woc.level(Random.NormalIntRange(2,6));
@@ -490,9 +501,9 @@ public class MagicGirlDead extends Boss {
                 case LIGHT:
                     caster = new SpellCaster.LightCaster();
                     break;
-                case HALOFIRE:
-                    caster = new SpellCaster.HaloFireCaster();
-                    break;
+//                case HALOFIRE:
+//                    caster = new SpellCaster.HaloFireCaster();
+//                    break;
                 case BOUNCE: default:
                     caster = new SpellCaster.BounceCaster();
             }
@@ -650,7 +661,7 @@ public class MagicGirlDead extends Boss {
                 pos++;
             }
         }
-        Buff.append(this, NewDM300.FallingRockBuff.class, Math.min(target.cooldown(), 3*TICK)).setRockPositions(rockCells);
+        Buff.append(this, DM300.FallingRockBuff.class, Math.min(target.cooldown(), 3*TICK)).setRockPositions(rockCells);
 
     }
 

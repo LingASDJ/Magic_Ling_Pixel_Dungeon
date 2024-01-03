@@ -114,7 +114,7 @@ public class RandomBlueFire extends Mob {
             int var2 = Random.Int(this.deathCurse.length);
             this.sprite.showStatus(16711680, this.deathCurse[var2]);
         }
-        for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
+       for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
             if (	mob instanceof FlameC01) {
                 mob.die( var1 );
             }

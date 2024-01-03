@@ -2,10 +2,11 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuf
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
@@ -13,7 +14,6 @@ public class BlessGoRead extends ClearLanterBuff {
 
     {
         type = buffType.POSITIVE;
-        immunities.addAll(AntiMagic.RESISTS);
     }
 
     public static int level = 0;
@@ -27,8 +27,7 @@ public class BlessGoRead extends ClearLanterBuff {
             if (level <= 0) {
                 detach();
             }
-
-            if(hero.lanterfire > 60) {
+            if(hero.lanterfire > 90 && !Statistics.noGoReadHungry) {
                 //effectively 1HP at lvl 0-5, 2HP lvl 6-8, 3HP lvl 9, and 5HP lvl 10.
                 target.HP = Math.min( target.HT, target.HP + 2);
                 spend(3f);
@@ -66,13 +65,19 @@ public class BlessGoRead extends ClearLanterBuff {
 
     @Override
     public String toString() {
-        return Messages.get(this, "name");
+            return Messages.get(this, "name");
     }
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc");
-    }
+        if(hero.lanterfire<90 && !Statistics.noGoReadHungry){
+            return Messages.get(this, "desc_lanter");
+        } else if (Statistics.noGoReadHungry) {
+            return Messages.get(this, "desc_rest");
+        } else
+            return Messages.get(this, "desc");
+
+        }
 
     private static final String LEVEL	    = "level";
     private static final String INTERVAL    = "interval";
@@ -93,12 +98,24 @@ public class BlessGoRead extends ClearLanterBuff {
 
     @Override
     public void tintIcon(Image icon) {
-        icon.hardlight(0xFF1493);
+
+        if(hero.lanterfire<90 && !Statistics.noGoReadHungry){
+            icon.hardlight(Window.CYELLOW);
+        } else if (Statistics.noGoReadHungry) {
+            icon.hardlight(0x993333);
+        } else
+            icon.hardlight(0xFF1493);
     }
 
     @Override
     public int icon() {
-        return BuffIndicator.GOBUFF_UPRD;
+
+        if(hero.lanterfire<90 && !Statistics.noGoReadHungry){
+            return BuffIndicator.DEBUFF_DOWN;
+        } else if (Statistics.noGoReadHungry) {
+            return BuffIndicator.DEBUFF_DOWN;
+        } else
+            return BuffIndicator.GOBUFF_UPRD;
     }
 
 

@@ -212,7 +212,7 @@ public class WraithAmulet extends Artifact {
                 if (!(((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && Dungeon.depth==10)) {
                     if (hero.rooted || Dungeon.level.distance(hero.pos, target) < 3) {
                         if(enemy != null && !(enemy instanceof NPC)){
-                            final WraithAmulet amulet = (WraithAmulet) Item.curItem;
+                            final WraithAmulet amulet = (WraithAmulet) curItem;
                             amulet.exp += 40;
                             hero.pos = target;
                             if (enemy.properties().contains(Char.Property.BOSS)) {

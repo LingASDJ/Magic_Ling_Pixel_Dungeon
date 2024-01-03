@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.DarkBlock;
@@ -30,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.EmoIcon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.IceBlock;
+import com.shatteredpixel.shatteredpixeldungeon.effects.IconFloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.RoseHalo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.ShieldHalo;
@@ -67,14 +69,15 @@ import java.nio.Buffer;
 public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip.Listener {
 
 	// Color constants for floating text
-	public static final int DEFAULT		= 0xFFFFFF;
-	public static final int POSITIVE	= 0x00FF00;
-	public static final int NEGATIVE	= 0xFF0000;
-	public static final int BLUETEXT	= 0x00FFFF;
-	public static final int PINKTEXT	= 0xFF00FF;
-	public static final int WARNING		= 0xFF8800;
-	public static final int NEUTRAL		= 0xFFFF00;
-	public static final int WATERDAMAGE	= 0x00FFFF;
+	// Color constants for floating text
+	public static final int DEFAULT = 0xFFFFFF;
+	public static final int POSITIVE = 0x00FF00;
+	public static final int NEGATIVE = 0xFF0000;
+	public static final int BLUETEXT = 0x00FFFF;
+	public static final int PINKTEXT = 0xFF00FF;
+	public static final int WARNING = 0xFF8800;
+	public static final int NEUTRAL = 0xFFFF00;
+	public static final int WATERDAMAGE = 0x00FFFF;
 
 	public static final float DEFAULT_MOVE_INTERVAL = 0.1f;
 	private static float moveInterval = DEFAULT_MOVE_INTERVAL;
@@ -90,29 +93,13 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected float shadowHeight    = 0.25f;
 	protected float shadowOffset    = 0.25f;
 
+
 	public enum State {
-		BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED,
-		ROSESHIELDED,HALOMETHANEBURNING,FROSTBURNING,BUTTER,SPINVISIBLE,SMOKER,HEARTS
+		BURNING, LEVITATING, INVISIBLE,TRUE_INVISIBLE,
+		PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED,
+		ROSESHIELDED, HALOMETHANEBURNING, FROSTBURNING, BUTTER, SPINVISIBLE, SMOKER, HEARTS
 	}
 	private int stunStates = 0;
-
-	public void zaplink( int cell ) {
-
-		turnTo( ch.pos , cell );
-		play( attack );
-
-		MagicMissile.boltFromChar( parent,
-				MagicMissile.SHAMAN_BLUE,
-				this,
-				cell,
-				new Callback() {
-					@Override
-					public void call() {
-						((Mob)ch).onZapComplete();
-					}
-				} );
-		Sample.INSTANCE.play( Assets.Sounds.ZAP );
-	}
 
 	protected Animation idle;
 	protected Animation run;
@@ -126,20 +113,40 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected PosTweener motion;
 
 	protected Emitter burning;
-	protected Emitter haloburning;
-	protected Emitter frostburning;
-	protected Emitter soling;
 	protected Emitter chilled;
 	protected Emitter marked;
 	protected Emitter levitation;
 	protected Emitter healing;
+	protected Emitter frostburning;
+	protected Emitter haloburning;
+	protected Emitter soling;
+	protected RoseHalo roseshield;
+
+	public void zaplink(int cell) {
+
+		turnTo(ch.pos, cell);
+		play(attack);
+
+		MagicMissile.boltFromChar(parent,
+				MagicMissile.SHAMAN_BLUE,
+				this,
+				cell,
+				new Callback() {
+					@Override
+					public void call() {
+						((Mob) ch).onZapComplete();
+					}
+				});
+		Sample.INSTANCE.play(Assets.Sounds.ZAP);
+	}
+
 	protected Emitter hearts;
+
 	protected IceBlock iceBlock;
 	protected DarkBlock darkBlock;
 	protected TorchHalo light;
 	protected ShieldHalo shield;
 	protected AlphaTweener invisible;
-	protected RoseHalo roseshield;
 	protected Flare aura;
 
 	protected EmoIcon emo;
@@ -181,18 +188,6 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		turnTo( ch.pos, Random.Int( Dungeon.level.length() ) );
 		renderShadow = true;
 
-		//TODO: this is a hack to get the hero to show up in the right place
-		if (ch != Dungeon.hero) {
-			if (health == null) {
-				health = new CharHealthIndicator(ch);
-			} else {
-				health.target(ch);
-			}
-
-			ch.updateSpriteState();
-		}
-
-
 		if (ch != Dungeon.hero) {
 			if (health == null) {
 				health = new CharHealthIndicator(ch);
@@ -204,12 +199,17 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		ch.updateSpriteState();
 	}
 
+	@Override
+	public void destroy() {
+		super.destroy();
+		if (ch != null && ch.sprite == this){
+			ch.sprite = null;
+		}
+	}
+
 	//used for just updating a sprite based on a given character, not linking them or placing in the game
 	public void linkVisuals( Char ch ){
-		if (ch instanceof Mob){
-			scale.set(((Mob) ch).scaleFactor);
-			place(ch.pos);
-		}
+		//do nothin by default
 	}
 
 	public PointF worldToCamera( int cell ) {
@@ -226,20 +226,41 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		point( worldToCamera( cell ) );
 	}
 
-	public void showStatus( int color, String text, Object... args ) {
-		if (visible) {
-			if (args.length > 0) {
-				text = Messages.format( text, args );
-			}
-			float x = destinationCenter().x;
-			float y = destinationCenter().y - height()/2f;
-			if (ch != null) {
-				FloatingText.show( x, y, ch.pos, text, color );
-			} else {
-				FloatingText.show( x, y, text, color );
+	public void showStatus(int color, String text, Object... args) {
+		//TODO 实验性功能 ICONTYPE
+		if(SPDSettings.ClassSkin()){
+			showStatusWithIcon(color, text, IconFloatingText.NO_ICON, args);
+		} else {
+			if (visible) {
+				if (args.length > 0) {
+					text = Messages.format( text, args );
+				}
+				float x = destinationCenter().x;
+				float y = destinationCenter().y - height()/2f;
+				if (ch != null) {
+					FloatingText.show( x, y, ch.pos, text, color );
+				} else {
+					FloatingText.show( x, y, text, color );
+				}
 			}
 		}
 	}
+
+	public void showStatusWithIcon(int color, String text, int icon, Object... args) {
+		if (this.visible) {
+			if (args.length > 0) {
+				text = Messages.format(text, args);
+			}
+			float x = destinationCenter().x;
+			float y = destinationCenter().y - (height() / 2.0f);
+			if (ch != null) {
+				IconFloatingText.show(x, y, ch.pos, text, color, icon, true);
+			} else {
+				IconFloatingText.show(x, y, -1, text, color, icon, true);
+			}
+		}
+	}
+
 
 	public void idle() {
 		play(idle);
@@ -283,35 +304,33 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	}
 
 	public void attack( int cell ) {
-		turnTo( ch.pos, cell );
-		play( attack );
+		attack( cell, null );
 	}
 
-	public void attack( int cell, Callback callback ) {
+	public synchronized void attack( int cell, Callback callback ) {
 		animCallback = callback;
 		turnTo( ch.pos, cell );
 		play( attack );
 	}
 
 	public void operate( int cell ) {
-		turnTo( ch.pos, cell );
-		play( operate );
+		operate( cell, null );
 	}
 
-	public void operate( int cell, Callback callback ) {
+	public synchronized void operate( int cell, Callback callback ) {
 		animCallback = callback;
 		turnTo( ch.pos, cell );
 		play( operate );
 	}
 
 	public void zap( int cell ) {
-		turnTo( ch.pos, cell );
-		play( zap );
+		zap( cell, null );
 	}
 
-	public void zap( int cell, Callback callback ) {
+	public synchronized void zap( int cell, Callback callback ) {
 		animCallback = callback;
-		zap( cell );
+		turnTo( ch.pos, cell );
+		play( zap );
 	}
 
 	public void turnTo( int from, int to ) {
@@ -325,18 +344,11 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	}
 
 	public void jump( int from, int to, Callback callback ) {
-		float distance = Dungeon.level.trueDistance( from, to );
-		jump( from, to, callback, distance * 2, distance * 0.1f );
+		float distance = Math.max( 1f, Dungeon.level.trueDistance( from, to ));
+		jump( from, to, distance * 2, distance * 0.1f, callback );
 	}
 
-	public void dirtcar( int from, int to, Callback callback ) {
-		float distance = Dungeon.level.trueDistance( from, to );
-		jump( from, to, callback, 0, distance * 0.1f );
-	}
-
-
-
-	public void jump( int from, int to, Callback callback, float height, float duration ) {
+	public void jump( int from, int to, float height, float duration,  Callback callback ) {
 		jumpCallback = callback;
 
 		jumpTweener = new JumpTweener( this, worldToCamera( to ), height, duration );
@@ -400,24 +412,6 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	public void add( State state ) {
 		switch (state) {
-			case HALOMETHANEBURNING:
-				haloburning = emitter();
-				haloburning.pour( HalomethaneFlameParticle.FACTORY, 0.06f );
-				if (visible) {
-					Sample.INSTANCE.play( Assets.Sounds.BURNING );
-				}
-				break;
-			case FROSTBURNING:
-				frostburning = emitter();
-				frostburning.pour( FrostFlameParticle.FACTORY, 0.06f );
-				if (visible) {
-					Sample.INSTANCE.play( Assets.Sounds.BURNING );
-				}
-				break;
-			case SMOKER:
-				soling = emitter();
-				soling.pour( SmokeFlameParticle.FACTORY, 0.06f );
-				break;
 			case BURNING:
 				burning = emitter();
 				burning.pour( FlameParticle.FACTORY, 0.06f );
@@ -438,6 +432,16 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					parent.add(invisible);
 				} else
 					alpha( 0.4f );
+				break;
+			case TRUE_INVISIBLE:
+				if (invisible != null) {
+					invisible.killAndErase();
+				}
+				invisible = new AlphaTweener( this, 0f, 0f );
+				if (parent != null){
+					parent.add(invisible);
+				} else
+					alpha( 0f );
 				break;
 			case PARALYSED:
 				paused = true;
@@ -464,39 +468,41 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				healing.pour(Speck.factory(Speck.HEALING), 0.5f);
 				break;
 			case SHIELDED:
-				GameScene.effect( shield = new ShieldHalo( this ));
-				break;
-			case ROSESHIELDED:
-				GameScene.effect( roseshield = new RoseHalo( this ));
+				if (shield != null) {
+					shield.killAndErase();
+				}
+				GameScene.effect(shield = new ShieldHalo(this));
 				break;
 			case HEARTS:
 				hearts = emitter();
 				hearts.pour(Speck.factory(Speck.HEART), 0.5f);
 				break;
-
+			case HALOMETHANEBURNING:
+				haloburning = emitter();
+				haloburning.pour(HalomethaneFlameParticle.FACTORY, 0.06f);
+				if (visible) {
+					Sample.INSTANCE.play(Assets.Sounds.BURNING);
+				}
+				break;
+			case FROSTBURNING:
+				frostburning = emitter();
+				frostburning.pour(FrostFlameParticle.FACTORY, 0.06f);
+				if (visible) {
+					Sample.INSTANCE.play(Assets.Sounds.BURNING);
+				}
+				break;
+			case SMOKER:
+				soling = emitter();
+				soling.pour(SmokeFlameParticle.FACTORY, 0.06f);
+				break;
+			case ROSESHIELDED:
+				GameScene.effect(roseshield = new RoseHalo(this));
+				break;
 		}
 	}
 
 	public void remove( State state ) {
 		switch (state) {
-			case HALOMETHANEBURNING:
-				if (haloburning != null) {
-					haloburning.on = false;
-					haloburning = null;
-				}
-				break;
-			case FROSTBURNING:
-				if (frostburning != null) {
-					frostburning.on = false;
-					frostburning = null;
-				}
-				break;
-			case SMOKER:
-				if (soling != null) {
-					soling .on = false;
-					soling  = null;
-				}
-				break;
 			case BURNING:
 				if (burning != null) {
 					burning.on = false;
@@ -509,19 +515,12 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					levitation = null;
 				}
 				break;
-			case INVISIBLE:
+			case INVISIBLE:case TRUE_INVISIBLE:
 				if (invisible != null) {
 					invisible.killAndErase();
 					invisible = null;
 				}
 				alpha( 1f );
-				break;
-			case SPINVISIBLE:
-				if (invisible != null) {
-					invisible.killAndErase();
-					invisible = null;
-				}
-				alpha( 4f );
 				break;
 			case PARALYSED:
 				paused = false;
@@ -566,15 +565,40 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					shield.putOut();
 				}
 				break;
-			case ROSESHIELDED:
-				if (roseshield != null){
-					roseshield.putOut();
-				}
-				break;
 			case HEARTS:
 				if (hearts != null){
 					hearts.on = false;
 					hearts = null;
+				}
+				break;
+			case HALOMETHANEBURNING:
+				if (haloburning != null) {
+					haloburning.on = false;
+					haloburning = null;
+				}
+				break;
+			case FROSTBURNING:
+				if (frostburning != null) {
+					frostburning.on = false;
+					frostburning = null;
+				}
+				break;
+			case SMOKER:
+				if (soling != null) {
+					soling.on = false;
+					soling = null;
+				}
+				break;
+			case SPINVISIBLE:
+				if (invisible != null) {
+					invisible.killAndErase();
+					invisible = null;
+				}
+				alpha(4f);
+				break;
+			case ROSESHIELDED:
+				if(roseshield != null) {
+					roseshield.putOut();
 				}
 				break;
 		}
@@ -588,7 +612,12 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		size = Math.max(size+4, 16);
 		aura = new Flare(5, size);
 		aura.angularSpeed = 90;
-		aura.color(color, true).show(this, 0);
+		aura.color(color, true);
+		aura.visible = visible;
+
+		if (parent != null) {
+			aura.show(this, 0);
+		}
 	}
 
 	public void clearAura(){
@@ -610,9 +639,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		if (flashTime > 0 && (flashTime -= Game.elapsed) <= 0) {
 			resetColor();
 		}
-		if (hearts != null){
-			hearts.visible = visible;
-		}
+
 		if (burning != null) {
 			burning.visible = visible;
 		}
@@ -628,7 +655,16 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		if (marked != null) {
 			marked.visible = visible;
 		}
+		if (healing != null){
+			healing.visible = visible;
+		}
+		if (hearts != null){
+			hearts.visible = visible;
+		}
 		if (aura != null){
+			if (aura.parent == null){
+				aura.show(this, 0);
+			}
 			aura.visible = visible;
 			aura.point(center());
 		}
@@ -689,27 +725,6 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	public void hideAlert() {
 		synchronized (EmoIcon.class) {
 			if (emo instanceof EmoIcon.Alert) {
-				emo.killAndErase();
-				emo = null;
-			}
-		}
-	}
-
-	public void showLove() {
-		synchronized (EmoIcon.class) {
-			if (!(emo instanceof EmoIcon.Love)) {
-				if (emo != null) {
-					emo.killAndErase();
-				}
-				emo = new EmoIcon.Love(this);
-				emo.visible = visible;
-			}
-		}
-	}
-
-	public void hideLove() {
-		synchronized (EmoIcon.class) {
-			if (emo instanceof EmoIcon.Love) {
 				emo.killAndErase();
 				emo = null;
 			}
@@ -781,7 +796,6 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		if (renderShadow) {
 			if (dirty) {
 				((Buffer)verticesBuffer).position(0);
-				//(verticesBuffer).position(0);
 				verticesBuffer.put(vertices);
 				if (buffer == null)
 					buffer = new Vertexbuffer(verticesBuffer);
@@ -830,6 +844,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				motion = null;
 				ch.onMotionComplete();
 
+				GameScene.sortMobSprites();
 				notifyAll();
 			}
 
@@ -837,7 +852,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	}
 
 	@Override
-	public void onComplete( Animation anim ) {
+	public synchronized void onComplete( Animation anim ) {
 
 		if (animCallback != null) {
 			Callback executing = animCallback;

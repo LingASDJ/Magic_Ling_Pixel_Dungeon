@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,25 +21,36 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.armor;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
-import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.custom.CustomArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChooseAbility;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 abstract public class ClassArmor extends Armor {
 
 	private static final String AC_ABILITY = "ABILITY";
+	private static final String AC_TRANSFER = "TRANSFER";
 	
 	{
 		levelKnown = true;
@@ -53,7 +64,7 @@ abstract public class ClassArmor extends Armor {
 	public float charge = 0;
 	
 	public ClassArmor() {
-		super( 7 );
+		super( 5 );
 	}
 
 	@Override
@@ -78,33 +89,40 @@ abstract public class ClassArmor extends Armor {
 		}
 	}
 
+	@Override
+	public int targetingPos(Hero user, int dst) {
+		return user.armorAbility.targetedPos(user, dst);
+	}
+
 	public static ClassArmor upgrade (Hero owner, Armor armor ) {
 		
 		ClassArmor classArmor = null;
 		
 		switch (owner.heroClass) {
-		case WARRIOR:
-			classArmor = new WarriorArmor();
-			BrokenSeal seal = armor.checkSeal();
-			if (seal != null) {
-				classArmor.affixSeal(seal);
-			}
-			break;
-		case ROGUE:
-			classArmor = new RogueArmor();
-			break;
-		case MAGE:
-			classArmor = new MageArmor();
-			break;
-		case HUNTRESS:
-			classArmor = new HuntressArmor();
-			break;
+			case WARRIOR:
+				classArmor = new WarriorArmor();
+				break;
+			case ROGUE:
+				classArmor = new RogueArmor();
+				break;
+			case MAGE:
+				classArmor = new MageArmor();
+				break;
+			case HUNTRESS:
+				classArmor = new HuntressArmor();
+				break;
+			case DUELIST:
+				classArmor = new DuelistArmor();
+				break;
 		}
 		
 		classArmor.level(armor.trueLevel());
 		classArmor.tier = armor.tier;
 		classArmor.augment = armor.augment;
-		classArmor.inscribe( armor.glyph );
+		classArmor.inscribe(armor.glyph);
+		if (armor.seal != null) {
+			classArmor.seal = armor.seal;
+		}
 		classArmor.cursed = armor.cursed;
 		classArmor.curseInfusionBonus = armor.curseInfusionBonus;
 		classArmor.masteryPotionBonus = armor.masteryPotionBonus;
@@ -138,13 +156,14 @@ abstract public class ClassArmor extends Armor {
 		if (isEquipped( hero )) {
 			actions.add( AC_ABILITY );
 		}
+		actions.add( AC_TRANSFER );
 		return actions;
 	}
 
 	@Override
 	public String actionName(String action, Hero hero) {
 		if (hero.armorAbility != null && action.equals(AC_ABILITY)){
-			return hero.armorAbility.name().toUpperCase();
+			return Messages.upperCase(hero.armorAbility.name());
 		} else {
 			return super.actionName(action, hero);
 		}
@@ -162,7 +181,6 @@ abstract public class ClassArmor extends Armor {
 
 		if (action.equals(AC_ABILITY)){
 
-			//for pre-0.9.3 saves
 			if (hero.armorAbility == null){
 				GameScene.show(new WndChooseAbility(null, this, hero));
 			} else if (!isEquipped( hero )) {
@@ -176,6 +194,95 @@ abstract public class ClassArmor extends Armor {
 				hero.armorAbility.use(this, hero);
 			}
 			
+		} else if (action.equals(AC_TRANSFER)){
+
+			GameScene.show(new WndOptions(new ItemSprite(ItemSpriteSheet.CROWN),
+					Messages.get(ClassArmor.class, "transfer_title"),
+					Messages.get(ClassArmor.class, "transfer_desc"),
+					Messages.get(ClassArmor.class, "transfer_prompt"),
+					Messages.get(ClassArmor.class, "transfer_cancel")){
+				@Override
+				protected void onSelect(int index) {
+					if (index == 0){
+						GameScene.selectItem(new WndBag.ItemSelector() {
+							@Override
+							public String textPrompt() {
+								return Messages.get(ClassArmor.class, "transfer_prompt");
+							}
+
+							@Override
+							public boolean itemSelectable(Item item) {
+								return item instanceof Armor;
+							}
+
+							@Override
+							public void onSelect(Item item) {
+								if (item == null || item == ClassArmor.this) return;
+
+								if(item instanceof CustomArmor){
+									GLog.n(Messages.get(ClassArmor.class, "not_trans",item.name()));
+									return;
+								}
+
+								Armor armor = (Armor)item;
+								armor.detach(hero.belongings.backpack);
+								if (hero.belongings.armor == armor){
+									hero.belongings.armor = null;
+								}
+								level(armor.trueLevel());
+								tier = armor.tier;
+								augment = armor.augment;
+								cursed = armor.cursed;
+								curseInfusionBonus = armor.curseInfusionBonus;
+								masteryPotionBonus = armor.masteryPotionBonus;
+								if (armor.checkSeal() != null) {
+									inscribe(armor.glyph);
+									seal = armor.checkSeal();
+									if (seal.level() > 0) {
+										int newLevel = trueLevel() + 1;
+										level(newLevel);
+										Badges.validateItemLevelAquired(ClassArmor.this);
+									}
+								} else if (checkSeal() != null){
+									//automates the process of detaching the glyph manually
+									// and re-affixing it to the new armor
+									if (seal.level() > 0 && trueLevel() <= armor.trueLevel()){
+										int newLevel = trueLevel() + 1;
+										level(newLevel);
+										Badges.validateItemLevelAquired(ClassArmor.this);
+									}
+
+									//if both source and destination armor have glyphs
+									// we assume the player wants the glyph on the destination armor
+									// they can always manually detach first if they don't.
+									// otherwise we automate glyph transfer just like upgrades
+									if (armor.glyph == null && seal.canTransferGlyph()){
+										//do nothing, keep our glyph
+									} else {
+										inscribe(armor.glyph);
+										seal.setGlyph(null);
+									}
+								} else {
+									inscribe(armor.glyph);
+								}
+
+								identify();
+
+								GLog.p( Messages.get(ClassArmor.class, "transfer_complete") );
+								hero.sprite.operate(hero.pos);
+
+								//TODO 待修复 hero.sprite.emitter().burst( Speck.factory( Speck.CROWN), 12 );
+								hero.sprite.emitter().burst( Speck.factory( Speck.UP), 12 );
+								Sample.INSTANCE.play( Assets.Sounds.EVOKE );
+								hero.spend(Actor.TICK);
+								hero.busy();
+
+							}
+						});
+					}
+				}
+			});
+
 		}
 	}
 
@@ -188,7 +295,7 @@ abstract public class ClassArmor extends Armor {
 			if (ability != null) {
 				desc += "\n\n" + ability.shortDesc();
 				float chargeUse = ability.chargeUse(Dungeon.hero);
-				desc += " " + Messages.get(this, "charge_use", new DecimalFormat("#.##").format(chargeUse));
+				desc += " " + Messages.get(this, "charge_use", Messages.decimalFormat("#.##", chargeUse));
 			} else {
 				desc += "\n\n" + "_" + Messages.get(this, "no_ability") + "_";
 			}
@@ -208,11 +315,25 @@ abstract public class ClassArmor extends Armor {
 	}
 
 	public class Charger extends Buff {
+
+		@Override
+		public boolean attachTo( Char target ) {
+			if (super.attachTo( target )) {
+				//if we're loading in and the hero has partially spent a turn, delay for 1 turn
+				if (target instanceof Hero && Dungeon.hero == null && cooldown() == 0 && target.cooldown() > 0) {
+					spend(TICK);
+				}
+				return true;
+			}
+			return false;
+		}
+
 		@Override
 		public boolean act() {
-			LockedFloor lock = target.buff(LockedFloor.class);
-			if (lock == null || lock.regenOn()) {
-				charge += 100 / 500f; //500 turns to full charge
+			if (Regeneration.regenOn()) {
+				float chargeGain = 100 / 500f; //500 turns to full charge
+				chargeGain *= RingOfEnergy.armorChargeMultiplier(target);
+				charge += chargeGain;
 				updateQuickslot();
 				if (charge > 100) {
 					charge = 100;

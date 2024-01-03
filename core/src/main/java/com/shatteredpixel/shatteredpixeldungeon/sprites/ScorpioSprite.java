@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ public class ScorpioSprite extends MobSprite {
 		
 		texture( Assets.Sprites.SCORPIO );
 		
-		TextureFilm frames = new TextureFilm( texture, 18, 17 );
+		TextureFilm frames = new TextureFilm( texture, 17, 17 );
 		
 		idle = new Animation( 12, true );
 		idle.frames( frames, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 1, 2 );
@@ -65,8 +65,7 @@ public class ScorpioSprite extends MobSprite {
 		if (!Dungeon.level.adjacent( cell, ch.pos )) {
 			
 			cellToAttack = cell;
-			turnTo( ch.pos , cell );
-			play( zap );
+			zap(cell);
 			
 		} else {
 			

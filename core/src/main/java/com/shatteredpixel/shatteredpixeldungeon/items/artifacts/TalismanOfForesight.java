@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
@@ -68,13 +70,19 @@ public class TalismanOfForesight extends Artifact {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		if (isEquipped( hero ) && !cursed) actions.add(AC_SCRY);
+		if (isEquipped( hero )
+				&& !cursed
+				&& hero.buff(MagicImmune.class) == null) {
+			actions.add(AC_SCRY);
+		}
 		return actions;
 	}
 
 	@Override
 	public void execute( Hero hero, String action ) {
 		super.execute(hero, action);
+
+		if (hero.buff(MagicImmune.class) != null) return;
 
 		if (action.equals(AC_SCRY)){
 			if (!isEquipped(hero))  GLog.i( Messages.get(Artifact.class, "need_to_equip") );
@@ -90,6 +98,7 @@ public class TalismanOfForesight extends Artifact {
 	
 	@Override
 	public void charge(Hero target, float amount) {
+		if (cursed || target.buff(MagicImmune.class) != null) return;
 		if (charge < chargeCap){
 			charge += Math.round(2*amount);
 			if (charge >= chargeCap) {
@@ -211,6 +220,7 @@ public class TalismanOfForesight extends Artifact {
 					charge++;
 					partialCharge--;
 				}
+				Invisibility.dispel(curUser);
 				Talent.onArtifactUsed(Dungeon.hero);
 				updateQuickslot();
 				Dungeon.observe();
@@ -290,7 +300,9 @@ public class TalismanOfForesight extends Artifact {
 				}
 			}
 
-			if (smthFound && !cursed){
+			if (smthFound
+					&& !cursed
+					&& target.buff(MagicImmune.class) == null){
 				if (!warn){
 					GLog.w( Messages.get(this, "uneasy") );
 					if (target instanceof Hero){
@@ -302,8 +314,10 @@ public class TalismanOfForesight extends Artifact {
 				warn = false;
 			}
 
-			LockedFloor lock = target.buff(LockedFloor.class);
-			if (charge < chargeCap && !cursed && (lock == null || lock.regenOn())) {
+			if (charge < chargeCap
+					&& !cursed
+					&& target.buff(MagicImmune.class) == null
+					&& Regeneration.regenOn()) {
 				//fully charges in 2000 turns at +0, scaling to 1000 turns at +10.
 				float chargeGain = (0.05f+(level()*0.005f));
 				chargeGain *= RingOfEnergy.artifactChargeMultiplier(target);
@@ -323,20 +337,10 @@ public class TalismanOfForesight extends Artifact {
 		}
 
 		public void charge(int boost){
-			if (!cursed) {
+			if (!cursed && target.buff(MagicImmune.class) == null) {
 				charge = Math.min((charge + boost), chargeCap);
 				updateQuickslot();
 			}
-		}
-
-		@Override
-		public String toString() {
-			return  Messages.get(this, "name");
-		}
-
-		@Override
-		public String desc() {
-			return Messages.get(this, "desc");
 		}
 
 		@Override
@@ -379,9 +383,11 @@ public class TalismanOfForesight extends Artifact {
 
 		public int pos;
 		public int depth = Dungeon.depth;
+		public int branch = Dungeon.branch;
 
 		private static final String POS = "pos";
 		private static final String DEPTH = "depth";
+		private static final String BRANCH = "branch";
 
 		@Override
 		public void detach() {
@@ -395,6 +401,7 @@ public class TalismanOfForesight extends Artifact {
 			super.restoreFromBundle(bundle);
 			pos = bundle.getInt(POS);
 			depth = bundle.getInt(DEPTH);
+			branch = bundle.getInt(BRANCH);
 		}
 
 		@Override
@@ -402,6 +409,7 @@ public class TalismanOfForesight extends Artifact {
 			super.storeInBundle(bundle);
 			bundle.put(POS, pos);
 			bundle.put(DEPTH, depth);
+			bundle.put(BRANCH, branch);
 		}
 	}
 

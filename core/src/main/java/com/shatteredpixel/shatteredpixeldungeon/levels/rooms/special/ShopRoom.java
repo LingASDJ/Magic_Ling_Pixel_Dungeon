@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireacti
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
@@ -50,11 +51,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -65,10 +68,11 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ShopRoom extends SpecialRoom {
 
-	private ArrayList<Item> itemsToSpawn;
+	protected ArrayList<Item> itemsToSpawn;
 	
 	@Override
 	public int minWidth() {
@@ -157,17 +161,34 @@ public class ShopRoom extends SpecialRoom {
 		ArrayList<Item> itemsToSpawn = new ArrayList<>();
 
 		MeleeWeapon w;
+
+		LockSword w2 = new LockSword();
+
 		switch (Dungeon.depth) {
 		case 6: default:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[1]);
 			itemsToSpawn.add( Generator.random(Generator.misTiers[1]).quantity(2).identify(false) );
 			itemsToSpawn.add( new LeatherArmor().identify(false) );
+
+			if(Random.Int(10)>2) {
+				w2.lvl = Random.Int(0, 301);
+				itemsToSpawn.add(w2.identify(false));
+			}
+
 			break;
 			
 		case 11:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[2]);
 			itemsToSpawn.add( Generator.random(Generator.misTiers[2]).quantity(2).identify(false) );
 			itemsToSpawn.add( new MailArmor().identify(false) );
+
+			if(Random.Int(10)>8) {
+				w2 = new LockSword();
+				((LockSword) w2).lvl = Random.Int(100, 301);
+				itemsToSpawn.add(w2.identify(false));
+			}
+
+
 			break;
 			
 		case 16:
@@ -179,7 +200,15 @@ public class ShopRoom extends SpecialRoom {
 				itemsToSpawn.add( new ScaleArmor().identify(false) );
 			}
 
+			if(Random.Int(10)==1) {
+				w2 = new LockSword();
+				((LockSword) w2).lvl = Random.Int(200, 501);
+				itemsToSpawn.add( w2.identify(false) );
+			}
+
 			break;
+
+
 
 		case 20: case 21:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[4]);
@@ -192,6 +221,12 @@ public class ShopRoom extends SpecialRoom {
 			itemsToSpawn.add( new Torch() );
 			itemsToSpawn.add( new Torch() );
 			itemsToSpawn.add( new Torch() );
+
+			if(Random.Int(50)==1) {
+				w2 = new LockSword();
+				((LockSword) w2).lvl = Random.Int(300, 601);
+				itemsToSpawn.add(w2.identify(false));
+			}
 			break;
 		}
 		w.enchant(null);
@@ -204,8 +239,10 @@ public class ShopRoom extends SpecialRoom {
 
 		itemsToSpawn.add( new Alchemize().quantity(Random.IntRange(2, 3)));
 
-		itemsToSpawn.add(ChooseBag(Dungeon.hero.belongings));
-
+		Bag bag = ChooseBag(Dungeon.hero.belongings);
+		if (bag != null) {
+			itemsToSpawn.add(bag);
+		}
 
 		itemsToSpawn.add( new PotionOfHealing() );
 		itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.POTION ) );
@@ -233,6 +270,15 @@ public class ShopRoom extends SpecialRoom {
 
 		itemsToSpawn.add( new SmallRation() );
 		itemsToSpawn.add( new SmallRation() );
+
+		PaswordBadges.loadGlobal();
+		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
+
+		if(passwordbadges.contains(PaswordBadges.Badge.RESET_DAY)) {
+			if (Random.Int(4) == 0) {
+				itemsToSpawn.add(new SakaFishSketon());
+			}
+		}
 		
 		switch (Random.Int(4)){
 			case 0:
@@ -293,10 +339,12 @@ public class ShopRoom extends SpecialRoom {
 		itemsToSpawn.add( rare );
 
 		//hard limit is 63 items + 1 shopkeeper, as shops can't be bigger than 8x8=64 internally
-		if (itemsToSpawn.size() > 63)
+		if (itemsToSpawn.size() > 63) {
 			throw new RuntimeException("Shop attempted to carry more than 63 items!");
+		}
 
 		//use a new generator here to prevent items in shop stock affecting levelgen RNG (e.g. sandbags)
+		//we can use a random long for the seed as it will be the same long every time
 		Random.pushGenerator(Random.Long());
 			Random.shuffle(itemsToSpawn);
 		Random.popGenerator();
@@ -304,7 +352,7 @@ public class ShopRoom extends SpecialRoom {
 		return itemsToSpawn;
 	}
 
-	protected static Bag ChooseBag(Belongings pack){
+	public static Bag ChooseBag(Belongings pack){
 
 		//generate a hashmap of all valid bags.
 		HashMap<Bag, Integer> bags = new HashMap<>();

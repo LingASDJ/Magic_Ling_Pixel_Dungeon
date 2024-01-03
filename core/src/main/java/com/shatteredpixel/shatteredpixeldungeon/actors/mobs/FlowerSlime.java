@@ -11,26 +11,26 @@ public class FlowerSlime extends Mob {
         spriteClass = FlowerSlimeSprites.class;
 
         loot = Generator.Category.SEED;
-        lootChance = 0.05f;
+        lootChance = 0.09f;
 
-        HP = HT = 12;
+        HP = HT = Random.NormalIntRange(5,8);
         defenseSkill = 2;
         maxLvl = 5;
     }
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 2, 5 );
+        return Random.NormalIntRange( 1, 5 );
     }
 
     @Override
     public int attackSkill( Char target ) {
-        return 8;
+        return 7;
     }
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(0, 2);
+        return Random.NormalIntRange(0, 1);
     }
 
 }

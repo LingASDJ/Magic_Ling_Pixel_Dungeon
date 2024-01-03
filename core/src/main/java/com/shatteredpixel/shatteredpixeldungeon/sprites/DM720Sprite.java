@@ -69,7 +69,7 @@ public class DM720Sprite extends MobSprite {
     public void updateChargeState( boolean enraged ){
         if (superchargeSparks != null) superchargeSparks.on = enraged;
 
-        int c = enraged ? 10 : 0;
+        int c = enraged ? 11 : 0;
 
         TextureFilm frames = new TextureFilm( texture, 22, 20 );
 
@@ -86,7 +86,7 @@ public class DM720Sprite extends MobSprite {
 
         if (charge == null) {
             charge = new Animation(4, true);
-            charge.frames(frames, 0, 10);
+            charge.frames(frames, 0, 11);
 
             slam = attack.clone();
 

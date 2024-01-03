@@ -2,23 +2,29 @@ package com.shatteredpixel.shatteredpixeldungeon.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.TextInput;
 import com.watabou.utils.DeviceCompat;
 
 public class WndTextNumberInput extends Window {
 
     private static final int WIDTH = 130;
-    private static final int W_LAND_EXTRA = 200; //extra width is sometimes used in landscape
+    private static final int W_LAND_EXTRA = 190; //extra width is sometimes used in landscape
     private static final int MARGIN = 2;
     private static final int BUTTON_HEIGHT = 16;
 
     protected TextInput textBox;
 
     protected RedButton btnNumber;
+
+    protected RedButton btnNumberZero;
+
+    protected RedButton btnCE;
 
     public WndTextNumberInput(final String title, final String body, final String initialValue, final int maxLength,
                               final boolean multiLine, final String posTxt, final String negTxt) {
@@ -97,8 +103,11 @@ public class WndTextNumberInput extends Window {
         // 计算数字按钮区域的高度
         float numberAreaHeight = BUTTON_HEIGHT * 4 + MARGIN * 3;
 
+
+        boolean landscape = Game.width > Game.height;
+
         // 计算每行按钮的宽度
-        float btnWidth = (width - MARGIN * 9) / 2.79f;
+        float btnWidth = landscape ? 60 : 40;
 
         // 创建数字按钮
         for (int i = 1; i <= 9; i++) {
@@ -112,22 +121,32 @@ public class WndTextNumberInput extends Window {
 
             int row = (i - 1) / 3;  // 计算按钮所在的行数
 
-            btnNumber.setRect((MARGIN + btnWidth * ((i - 1) % 3)), pos + row * (BUTTON_HEIGHT + MARGIN),
+            btnNumber.setRect((MARGIN + btnWidth * ((i - 1) % 3))+3, pos + row * (BUTTON_HEIGHT + MARGIN),
                     btnWidth, BUTTON_HEIGHT);
 
             add(btnNumber);
         }
 
         // 创建最后一行的0按钮
-        btnNumber = new RedButton("0") {
+        btnNumberZero = new RedButton("0") {
             @Override
             protected void onClick() {
                 textBox.setText(textBox.getText() + "0");
             }
         };
-        btnNumber.setRect(MARGIN, pos + 3 * (BUTTON_HEIGHT + MARGIN),
-                btnWidth*3, BUTTON_HEIGHT);
-        add(btnNumber);
+        btnNumberZero.setRect(MARGIN+3, pos + 3 * (BUTTON_HEIGHT + MARGIN),
+                btnWidth, BUTTON_HEIGHT);
+        add(btnNumberZero);
+
+        btnCE = new RedButton(Messages.get(WndTextNumberInput.class,"clear")) {
+            @Override
+            protected void onClick() {
+                textBox.setText(null);
+            }
+        };
+        btnCE.setRect(btnNumberZero.right(), pos + 3 * (BUTTON_HEIGHT + MARGIN),
+                btnWidth*2, BUTTON_HEIGHT);
+        add(btnCE);
 
         // 更新pos变量，确保按钮区域在确认按钮上方
         pos += numberAreaHeight + MARGIN;

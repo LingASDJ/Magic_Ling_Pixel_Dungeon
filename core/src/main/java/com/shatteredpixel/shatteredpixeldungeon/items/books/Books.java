@@ -1,7 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.books;
 
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.MainBooks;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -40,27 +38,14 @@ public class Books extends MainBooks {
     }
     @Override
     public int value() {
-        return quantity * 12;
+        return quantity * 50;
     }
 
     @Override
     public ArrayList<String> actions(Hero hero ) {
         ArrayList<String> actions = super.actions(hero);
-        if (hero.HP > 0) {
-            actions.add(Read);
-        }
-        actions.remove(AC_DROP);
-        actions.remove(AC_THROW);
+        actions.add(Read);
         return actions;
-    }
-
-    @Override
-    public void execute(final Hero hero, String action ) {
-        super.execute(hero, action);
-        if (action.equals( Read )) {
-                Statistics.readBooks++;
-                Badges.valiReadBooks();
-        }
     }
 
 }

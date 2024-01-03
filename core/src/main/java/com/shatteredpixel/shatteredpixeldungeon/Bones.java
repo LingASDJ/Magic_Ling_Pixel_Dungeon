@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,18 +41,24 @@ public class Bones {
 	private static final String BONES_FILE	= "bones.dat";
 	
 	private static final String LEVEL	= "level";
+	private static final String BRANCH	= "branch";
 	private static final String ITEM	= "item";
 
 	private static int depth = -1;
+	private static int branch = -1;
 	private static Item item;
 	
 	public static void leave() {
 
-		depth = Dungeon.depth;
+		//remains will usually drop on the floor the hero died on
+		// but are capped at 5 floors above the lowest depth reached (even when ascending)
+		depth = Math.max(Dungeon.depth, Statistics.deepestFloor-5);
 
-		//heroes which have won the game, who die far above their farthest depth, or who are challenged drop no bones.
-		if (Statistics.amuletObtained || (Statistics.deepestFloor - 5) >= depth || Dungeon.challenges > 0) {
-			depth = -1;
+		branch = Dungeon.branch;
+
+		//daily runs do not interact with remains
+		if (Dungeon.daily) {
+			depth = branch = -1;
 			return;
 		}
 
@@ -71,10 +77,27 @@ public class Bones {
 
 	private static Item pickItem(Hero hero){
 		Item item = null;
+
+		//seeded runs always leave gold
+		//This is to prevent using specific seeds to transport items to regular runs
+		if (!Dungeon.customSeedText.isEmpty()){
+			if (Dungeon.gold > 100) {
+				return new Gold( Random.NormalIntRange( 50, Dungeon.gold/2 ) );
+			} else {
+				return new Gold( 50 );
+			}
+		}
+
 		if (Random.Int(3) != 0) {
 			switch (Random.Int(7)) {
 				case 0:
 					item = hero.belongings.weapon;
+					//if the hero has two weapons (champion), pick the stronger one
+					if (hero.belongings.secondWep != null &&
+							(item == null || hero.belongings.secondWep.trueLevel() > item.trueLevel())){
+						item = hero.belongings.secondWep;
+						break;
+					}
 					break;
 				case 1:
 					item = hero.belongings.armor;
@@ -124,12 +147,18 @@ public class Bones {
 	}
 
 	public static Item get() {
+		//daily runs do not interact with remains
+		if (Dungeon.daily){
+			return null;
+		}
+
 		if (depth == -1) {
 
 			try {
 				Bundle bundle = FileUtils.bundleFromFile(BONES_FILE);
 
 				depth = bundle.getInt( LEVEL );
+				branch = bundle.getInt( BRANCH );
 				if (depth > 0) {
 					item = (Item) bundle.get(ITEM);
 				}
@@ -141,8 +170,8 @@ public class Bones {
 			}
 
 		} else {
-			//heroes who are challenged cannot find bones
-			if (depth == Dungeon.depth && Dungeon.challenges == 0) {
+			if (lootAtCurLevel()) {
+
 				Bundle emptyBones = new Bundle();
 				emptyBones.put(LEVEL, 0);
 				try {
@@ -151,8 +180,15 @@ public class Bones {
 					ShatteredPixelDungeon.reportException(e);
 				}
 				depth = 0;
-				
-				if (item == null) return null;
+
+				//challenged or seeded runs will always find 10 gold
+				if (Dungeon.challenges != 0 || !Dungeon.customSeedText.isEmpty()){
+					item = new Gold(10);
+				}
+
+				if (item == null) {
+					item = new Gold(50);
+				}
 
 				//Enforces artifact uniqueness
 				if (item instanceof Artifact){
@@ -196,5 +232,18 @@ public class Bones {
 				return null;
 			}
 		}
+	}
+
+	private static boolean lootAtCurLevel(){
+		if (branch == Dungeon.branch) {
+			if (branch == 0) {
+				//always match depth exactly for main path
+				return depth == Dungeon.depth;
+			} else if (branch == 1) {
+				//just match the region for quest sub-floors
+				return depth/5 == Dungeon.depth/5;
+			}
+		}
+		return false;
 	}
 }

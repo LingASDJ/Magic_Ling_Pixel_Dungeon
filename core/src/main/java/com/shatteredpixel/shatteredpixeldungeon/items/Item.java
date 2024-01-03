@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -55,6 +57,21 @@ import java.util.Comparator;
 
 public class Item implements Bundlable {
 
+	@Override
+	public String toString() {
+
+		String name = name();
+
+		if (visiblyUpgraded() != 0)
+			name = Messages.format( TXT_TO_STRING_LVL, name, visiblyUpgraded()  );
+
+		if (quantity > 1)
+			name = Messages.format( TXT_TO_STRING_X, name, quantity );
+
+		return name;
+
+	}
+
 	protected static final String TXT_TO_STRING_LVL		= "%s %+d";
 	protected static final String TXT_TO_STRING_X		= "%s x%d";
 	
@@ -70,42 +87,36 @@ public class Item implements Bundlable {
 
 	//TODO should these be private and accessed through methods?
 	public int image = 0;
-
-	public Class<? extends ItemSprite> ItemSpriteClass;
-
-	public int icon = -1;
-	//used as an identifier for items with randomized images
-
+	public int icon = -1; //used as an identifier for items with randomized images
+	
 	public boolean stackable = false;
-
-	public int flasks;
-
-	public int quantity = 1;
+	protected int quantity = 1;
 	public boolean dropsDownHeap = false;
-
+	
 	public int level = 0;
 
 	public boolean levelKnown = false;
-
+	
 	public boolean cursed;
 	public boolean cursedKnown;
-
+	
 	// Unique items persist through revival
 	public boolean unique = false;
 
 	// These items are preserved even if the hero's inventory is lost via unblessed ankh
+	// this is largely set by the resurrection window, items can override this to always be kept
 	public boolean keptThoughLostInvent = false;
 
 	// whether an item can be included in heroes remains
 	public boolean bones = false;
-
+	
 	public static final Comparator<Item> itemComparator = new Comparator<Item>() {
 		@Override
 		public int compare( Item lhs, Item rhs ) {
 			return Generator.Category.order( lhs ) - Generator.Category.order( rhs );
 		}
 	};
-
+	
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = new ArrayList<>();
 		actions.add( AC_DROP );
@@ -123,17 +134,17 @@ public class Item implements Bundlable {
 
 	public boolean doPickUp(Hero hero, int pos) {
 		if (collect( hero.belongings.backpack )) {
-
+			
 			GameScene.pickUp( this, pos );
 			Sample.INSTANCE.play( Assets.Sounds.ITEM );
 			hero.spendAndNext( TIME_TO_PICK_UP );
 			return true;
-
+			
 		} else {
 			return false;
 		}
 	}
-
+	
 	public void doDrop( Hero hero ) {
 		hero.spendAndNext(TIME_TO_DROP);
 		int pos = hero.pos;
@@ -145,42 +156,54 @@ public class Item implements Bundlable {
 		keptThoughLostInvent = false;
 	}
 
+	public boolean keptThroughLostInventory(){
+		return keptThoughLostInvent;
+	}
+
 	public void doThrow( Hero hero ) {
 		GameScene.selectCell(thrower);
 	}
-
+	
 	public void execute( Hero hero, String action ) {
 
 		GameScene.cancel();
 		curUser = hero;
 		curItem = this;
-
+		
 		if (action.equals( AC_DROP )) {
-
+			
 			if (hero.belongings.backpack.contains(this) || isEquipped(hero)) {
 				doDrop(hero);
 			}
-
+			
 		} else if (action.equals( AC_THROW )) {
-
+			
 			if (hero.belongings.backpack.contains(this) || isEquipped(hero)) {
 				doThrow(hero);
 			}
-
+			
 		}
 	}
 
-	public void execute( Hero hero ) {
-		execute( hero, defaultAction );
+	//can be overridden if default action is variable
+	public String defaultAction(){
+		return defaultAction;
 	}
-
+	
+	public void execute( Hero hero ) {
+		String action = defaultAction();
+		if (action != null) {
+			execute(hero, defaultAction());
+		}
+	}
+	
 	protected void onThrow( int cell ) {
 		Heap heap = Dungeon.level.drop( this, cell );
 		if (!heap.isEmpty()) {
 			heap.sprite.drop( cell );
 		}
 	}
-
+	
 	//takes two items and merges them (if possible)
 	public Item merge( Item other ){
 		if (isSimilar( other )){
@@ -189,7 +212,7 @@ public class Item implements Bundlable {
 		}
 		return this;
 	}
-
+	
 	public boolean collect( Bag container ) {
 
 		if (quantity <= 0){
@@ -213,7 +236,7 @@ public class Item implements Bundlable {
 		if (!container.canHold(this)){
 			return false;
 		}
-
+		
 		if (stackable) {
 			for (Item item:items) {
 				if (isSimilar( item )) {
@@ -223,6 +246,23 @@ public class Item implements Bundlable {
 						Badges.validateItemLevelAquired( this );
 						Talent.onItemCollected(Dungeon.hero, item);
 						if (isIdentified()) Catalog.setSeen(getClass());
+					}
+					if (TippedDart.lostDarts > 0){
+						Dart d = new Dart();
+						d.quantity(TippedDart.lostDarts);
+						TippedDart.lostDarts = 0;
+						if (!d.collect()){
+							//have to handle this in an actor as we can't manipulate the heap during pickup
+							Actor.add(new Actor() {
+								{ actPriority = VFX_PRIO; }
+								@Override
+								protected boolean act() {
+									Dungeon.level.drop(d, Dungeon.hero.pos).sprite.drop();
+									Actor.remove(this);
+									return true;
+								}
+							});
+						}
 					}
 					return true;
 				}
@@ -242,11 +282,11 @@ public class Item implements Bundlable {
 		return true;
 
 	}
-
+	
 	public boolean collect() {
 		return collect( Dungeon.hero.belongings.backpack );
 	}
-
+	
 	//returns a new item if the split was sucessful and there are now 2 items, otherwise null
 	public Item split( int amount ){
 		if (amount <= 0 || amount >= quantity()) {
@@ -254,27 +294,27 @@ public class Item implements Bundlable {
 		} else {
 			//pssh, who needs copy constructors?
 			Item split = Reflection.newInstance(getClass());
-
+			
 			if (split == null){
 				return null;
 			}
-
+			
 			Bundle copy = new Bundle();
 			this.storeInBundle(copy);
 			split.restoreFromBundle(copy);
 			split.quantity(amount);
 			quantity -= amount;
-
+			
 			return split;
 		}
 	}
-
+	
 	public final Item detach( Bag container ) {
-
+		
 		if (quantity <= 0) {
-
+			
 			return null;
-
+			
 		} else
 		if (quantity == 1) {
 
@@ -283,18 +323,18 @@ public class Item implements Bundlable {
 			}
 
 			return detachAll( container );
-
+			
 		} else {
-
-
+			
+			
 			Item detached = split(1);
 			updateQuickslot();
 			if (detached != null) detached.onDetach( );
 			return detached;
-
+			
 		}
 	}
-
+	
 	public final Item detachAll( Bag container ) {
 		Dungeon.quickslot.clearItem( this );
 
@@ -316,7 +356,7 @@ public class Item implements Bundlable {
 		updateQuickslot();
 		return this;
 	}
-
+	
 	public boolean isSimilar( Item item ) {
 		return level == item.level && getClass() == item.getClass();
 	}
@@ -332,11 +372,13 @@ public class Item implements Bundlable {
 	public int level(){
 		return level;
 	}
-
+	
 	//returns the level of the item, after it may have been modified by temporary boosts/reductions
 	//note that not all item properties should care about buffs/debuffs! (e.g. str requirement)
 	public int buffedLvl(){
-		if (Dungeon.hero.buff( Degrade.class ) != null) {
+		//only the hero can be affected by Degradation
+		if (Dungeon.hero.buff( Degrade.class ) != null
+			&& (isEquipped( Dungeon.hero ) || Dungeon.hero.belongings.contains( this ))) {
 			return Degrade.reduceLevel(level());
 		} else {
 			return level();
@@ -348,39 +390,39 @@ public class Item implements Bundlable {
 
 		updateQuickslot();
 	}
-
+	
 	public Item upgrade() {
-
+		
 		this.level++;
 
 		updateQuickslot();
-
+		
 		return this;
 	}
-
+	
 	final public Item upgrade( int n ) {
 		for (int i=0; i < n; i++) {
 			upgrade();
 		}
-
+		
 		return this;
 	}
-
+	
 	public Item degrade() {
-
+		
 		this.level--;
-
+		
 		return this;
 	}
-
+	
 	final public Item degrade( int n ) {
 		for (int i=0; i < n; i++) {
 			degrade();
 		}
-
+		
 		return this;
 	}
-
+	
 	public int visiblyUpgraded() {
 		return levelKnown ? level() : 0;
 	}
@@ -388,19 +430,19 @@ public class Item implements Bundlable {
 	public int buffedVisiblyUpgraded() {
 		return levelKnown ? buffedLvl() : 0;
 	}
-
+	
 	public boolean visiblyCursed() {
 		return cursed && cursedKnown;
 	}
-
+	
 	public boolean isUpgradable() {
 		return true;
 	}
-
+	
 	public boolean isIdentified() {
 		return levelKnown && cursedKnown;
 	}
-
+	
 	public boolean isEquipped( Hero hero ) {
 		return false;
 	}
@@ -419,20 +461,19 @@ public class Item implements Bundlable {
 		levelKnown = true;
 		cursedKnown = true;
 		Item.updateQuickslot();
-
+		
 		return this;
 	}
-
+	
 	public void onHeroGainExp( float levelPercent, Hero hero ){
 		//do nothing by default
 	}
-
+	
 	public static void evoke( Hero hero ) {
 		hero.sprite.emitter().burst( Speck.factory( Speck.EVOKE ), 5 );
 	}
 
-	@Override
-	public String toString() {
+	public String title() {
 
 		String name = name();
 
@@ -445,23 +486,19 @@ public class Item implements Bundlable {
 		return name;
 
 	}
-
+	
 	public String name() {
 		return trueName();
 	}
-
+	
 	public final String trueName() {
 		return Messages.get(this, "name");
 	}
-
+	
 	public int image() {
 		return image;
 	}
-
-	public ItemSprite itemSprite() {
-		return Reflection.newInstance(ItemSpriteClass);
-	}
-
+	
 	public ItemSprite.Glowing glowing() {
 		return null;
 	}
@@ -636,7 +673,7 @@ public class Item implements Bundlable {
 		return TIME_TO_THROW;
 	}
 	
-	public static Hero curUser = null;
+	protected static Hero curUser = null;
 	protected static Item curItem = null;
 	protected static CellSelector.Listener thrower = new CellSelector.Listener() {
 		@Override

@@ -1,12 +1,15 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.HollowMimic;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.HollowPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.painters.PrisonPainter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BurningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ChillingTrap;
@@ -22,15 +25,16 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TeleportationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ToxicTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Halo;
-import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
-
-import java.util.ArrayList;
 
 public class HollowLevel extends RegularLevel {
 
@@ -40,37 +44,50 @@ public class HollowLevel extends RegularLevel {
     }
 
     @Override
-    public void playLevelMusic() {
-        Music.INSTANCE.playTracks(
-                new String[]{Assets.Music.PRISON_1, Assets.Music.PRISON_2, Assets.Music.PRISON_2},
-                new float[]{1, 1, 0.5f},
-                false);
-    }
-
-    @Override
-    protected ArrayList<Room> initRooms() {
-        return Wandmaker.Quest.spawnRoom(super.initRooms());
+    public boolean activateTransition(Hero hero, LevelTransition transition) {
+        if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE && depth == 26) {
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+                    if (timeFreeze != null) timeFreeze.disarmPresses();
+                    Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+                    if (timeBubble != null) timeBubble.disarmPresses();
+                    InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
+                    InterlevelScene.curTransition = new LevelTransition();
+                    InterlevelScene.curTransition.destDepth = depth - 1;
+                    InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+                    InterlevelScene.curTransition.destBranch = 4;
+                    InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+                    InterlevelScene.curTransition.centerCell  = -1;
+                    Game.switchScene( InterlevelScene.class );
+                }
+            });
+            return false;
+        } else {
+            return super.activateTransition(hero, transition);
+        }
     }
 
     @Override
     protected int standardRooms(boolean forceMax) {
-        if (forceMax) return 6;
-        //5 to 6, average 5.5
-        return 5+ Random.chances(new float[]{1, 1});
+        if (forceMax) return 9;
+        //8 to 9, average 8.33
+        return 8+ Random.chances(new float[]{2, 1});
     }
 
     @Override
     protected int specialRooms(boolean forceMax) {
         if (forceMax) return 3;
-        //1 to 3, average 2.0
-        return 1+Random.chances(new float[]{1, 3, 1});
+        //2 to 3, average 2.5
+        return 2 + Random.chances(new float[]{1, 1});
     }
 
     @Override
     protected Painter painter() {
-        return new PrisonPainter()
-                .setWater(feeling == Level.Feeling.WATER ? 0.90f : 0.30f, 4)
-                .setGrass(feeling == Level.Feeling.GRASS ? 0.80f : 0.20f, 3)
+        return new HollowPainter()
+                .setWater(feeling == Level.Feeling.WATER ? 0.90f : 0.30f, 2)
+                .setGrass(feeling == Level.Feeling.GRASS ? 0.80f : 0.20f, 0)
                 .setTraps(nTraps(), trapClasses(), trapChances());
     }
 
@@ -105,6 +122,8 @@ public class HollowLevel extends RegularLevel {
         switch (tile) {
             case Terrain.WATER:
                 return Messages.get(PrisonLevel.class, "water_name");
+            case Terrain.CUSTOM_DECO:
+                return Messages.get(HollowMimic.class, "cspx_name");
             case Terrain.WALL_DECO:
                 return Messages.get(HollowMimic.class, "minames");
             default:
@@ -117,6 +136,8 @@ public class HollowLevel extends RegularLevel {
         switch (tile) {
             case Terrain.WALL_DECO:
                 return Messages.get(HollowMimic.class, "midescs");
+            case Terrain.CUSTOM_DECO:
+                return Messages.get(HollowMimic.class, "cspx_desc");
             case Terrain.EMPTY_DECO:
                 return Messages.get(PrisonLevel.class, "empty_deco_desc");
             case Terrain.BOOKSHELF:
