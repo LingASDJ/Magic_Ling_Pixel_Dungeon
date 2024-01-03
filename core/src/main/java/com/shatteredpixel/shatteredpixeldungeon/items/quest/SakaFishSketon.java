@@ -205,6 +205,17 @@ public class SakaFishSketon extends Item {
         public boolean act() {
 
             detach();
+            boolean needToSpawn = true;
+
+            for (Mob mob : Dungeon.level.mobs){
+                if (mob instanceof MiniSaka) {
+                    needToSpawn = false;
+                    break;
+                }
+            }
+            if (needToSpawn && hero.buff(CoolDownStoneRecharge.class) == null){
+                GLog.p( Messages.get(SakaFishSketon.class, "charged") );
+            }
             return true;
         }
 
