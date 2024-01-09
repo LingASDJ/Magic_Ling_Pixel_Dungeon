@@ -101,13 +101,22 @@ public class YinYangRoom extends SpecialRoom {
         for (int i = 1;i < right - left;i++) {
             for (int j =1;j < bottom - top;j++) {
                 if (i + j < right - left + 1) {
-                    Painter.set(level,left + i,top + j,Terrain.CHASM);
+                    if(Dungeon.depth == 4 && Dungeon.branch == 2) {
+                        Painter.set(level, left + i, top + j, Terrain.EMPTY_SP);
+                    } else {
+                        Painter.set(level, left + i, top + j, Terrain.CHASM);
+                    }
                 }
             }
         }
 
         Painter.fill(level,a.x,top + 1,right - a.x,a.y - top + 1,Terrain.WATER);
-        Painter.fill(level,left + 1,b.y,b.x - left,bottom - b.y,Terrain.CHASM);
+
+        if(Dungeon.depth == 4 && Dungeon.branch == 2) {
+            Painter.fill(level, left + 1, b.y, b.x - left, bottom - b.y, Terrain.EMPTY_SP);
+        } else {
+            Painter.fill(level, left + 1, b.y, b.x - left, bottom - b.y, Terrain.CHASM);
+        }
 
         Painter.drawLine(level,new Point((left + right) / 2,top),a,Terrain.WALL);
         Painter.drawLine(level,new Point((left + right) / 2,bottom),b,Terrain.WALL);
@@ -138,9 +147,9 @@ public class YinYangRoom extends SpecialRoom {
             } else {
                 level.addItemToSpawn( new IronKey( Dungeon.depth ) );
                 if(Dungeon.depth == 4 && Dungeon.branch == 2){
-                    entrance().set( Door.Type.REGULAR );
+                    entrance().set( Door.Type.CRYSTAL);
                 } else {
-                    entrance().set( Door.Type.CRYSTAL );
+                    entrance().set( Door.Type.LOCKED );
                 }
             }
 
