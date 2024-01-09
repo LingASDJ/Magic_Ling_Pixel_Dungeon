@@ -98,7 +98,6 @@ public class ScrollOfTransmutation extends InventoryScroll {
 						if (!result.collect()){
 							Dungeon.level.drop(result, curUser.pos).sprite.drop();
 						}
-						GLog.p( Messages.get(this, "empty") );
 					} else if (item instanceof KindOfWeapon && Dungeon.hero.belongings.secondWep() == item){
 						((EquipableItem) item).doUnequip(Dungeon.hero, false);
 						((KindOfWeapon) result).equipSecondary(Dungeon.hero);
