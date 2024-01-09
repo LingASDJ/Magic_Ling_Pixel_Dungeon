@@ -36,7 +36,6 @@ public class AncityArmor extends CustomArmor{
         charge = 50;
     }
 
-
     @Override
     public int STRReq(int lvl){
         return STRReq(4, lvl)-1;
@@ -169,7 +168,7 @@ public class AncityArmor extends CustomArmor{
             }
         }
 
-        return evasion*1.35f + augment.evasionFactor(buffedLvl());
+        return (evasion*1.35f + augment.evasionFactor(buffedLvl())) * (level() <3 ? 1 : level()/3f);
     }
 
     @Override

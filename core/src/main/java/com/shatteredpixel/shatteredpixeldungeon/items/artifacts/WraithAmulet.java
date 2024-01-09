@@ -10,6 +10,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
@@ -228,8 +230,13 @@ public class WraithAmulet extends Artifact {
                                         return;
                                     }
                                 }
+                            } else if(enemy instanceof BruteBot || enemy instanceof Brute) {
+                                enemy.damage(enemy.HT,this);
+                                GLog.i(Messages.get(this, "killmobs"));
+                                ScrollOfTeleportation.appear(hero, target);
+                                Dungeon.observe();
                             } else {
-                                enemy.die(true);
+                                enemy.die(null);
                                 GLog.i(Messages.get(this, "killmobs"));
                                 enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this,"died"));
                                 ScrollOfTeleportation.appear(hero, target);

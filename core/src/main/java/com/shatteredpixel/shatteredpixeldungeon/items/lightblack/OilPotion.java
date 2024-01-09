@@ -32,7 +32,7 @@ public class OilPotion extends Item {
         OilPotion.super.execute(hero, action);
         if (action.equals(AC_REFILL)) {
             OilLantern lantern = Dungeon.hero.belongings.getItem(OilLantern.class);
-            Refill(lantern);
+            if(lantern != null) Refill(lantern);
         }
     }
 

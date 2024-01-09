@@ -138,9 +138,9 @@ public class YinYangRoom extends SpecialRoom {
             } else {
                 level.addItemToSpawn( new IronKey( Dungeon.depth ) );
                 if(Dungeon.depth == 4 && Dungeon.branch == 2){
-                    entrance().set( Door.Type.CRYSTAL );
+                    entrance().set( Door.Type.REGULAR );
                 } else {
-                    entrance().set( Door.Type.LOCKED );
+                    entrance().set( Door.Type.CRYSTAL );
                 }
             }
 

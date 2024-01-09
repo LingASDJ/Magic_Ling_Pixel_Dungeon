@@ -12,6 +12,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoome
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Javelin;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.RedBlock;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.RiverSlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingClub;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingHammer;
@@ -67,7 +69,9 @@ public class SpawnMissile extends TestItem {
             Tomahawk.class,
             ThrowingHammer.class,
             Trident.class,
-            ForceCube.class
+            ForceCube.class,
+            RiverSlade.class,
+            RedBlock.class
     };
 
     public SpawnMissile(){

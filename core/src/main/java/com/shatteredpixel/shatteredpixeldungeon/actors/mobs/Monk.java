@@ -53,7 +53,7 @@ public class Monk extends Mob {
 	
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 12, 25 );
+		return Random.NormalIntRange( 12, 20 );
 	}
 	
 	@Override
@@ -63,7 +63,7 @@ public class Monk extends Mob {
 	
 	@Override
 	public float attackDelay() {
-		return super.attackDelay()*0.5f;
+		return super.attackDelay()*0.75f;
 	}
 	
 	@Override

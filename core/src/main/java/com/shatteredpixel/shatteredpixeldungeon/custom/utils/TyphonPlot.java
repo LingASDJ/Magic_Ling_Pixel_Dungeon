@@ -9,7 +9,6 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.Morphs;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Typhon;
-import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
@@ -188,16 +187,12 @@ public class TyphonPlot extends Plot {
         GameScene.scene.add(new Delayer(0.1f){
             @Override
             protected void onComplete() {
-                if (BadgeBanner.isShowingBadges()){
-                    GameScene.scene.add(new Delayer(3f){
-                        @Override
-                        protected void onComplete() {
-                            Game.switchScene( RankingsScene.class );
-                        }
-                    });
-                } else {
-                    Game.switchScene( RankingsScene.class );
-                }
+                GameScene.scene.add(new Delayer(3f){
+                    @Override
+                    protected void onComplete() {
+                        Game.switchScene( RankingsScene.class );
+                    }
+                });
             }
         });
         Music.INSTANCE.playTracks(

@@ -649,7 +649,7 @@ public abstract class Char extends Actor {
 
 	public float speed() {
 		float speed = baseSpeed;
-		//创世神之怒
+		//创世神
 		if ( buff( AnkhInvulnerability.GodDied.class ) != null ) speed *= 2f;
 
 		if (buff(Cripple.class) != null) speed /= 2f;

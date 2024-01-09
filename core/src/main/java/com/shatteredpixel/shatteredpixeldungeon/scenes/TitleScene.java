@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
@@ -21,9 +22,9 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SliceGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.EndButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.ReloadButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndHardNotification;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.BitmapText;
@@ -37,6 +38,15 @@ import com.watabou.utils.GameMath;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 
+import org.apache.commons.net.ntp.NTPUDPClient;
+import org.apache.commons.net.ntp.TimeInfo;
+import org.apache.commons.net.ntp.TimeStamp;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -45,6 +55,15 @@ public class TitleScene extends PixelScene {
 
 	public static boolean NightDay = false;
 
+	public static boolean NTP_ERROR = false;
+
+	public static boolean NTP_ERROR_VEFY = false;
+
+	public static boolean NTP_NOINTER = false;
+
+	public static boolean NTP_NOINTER_VEFY = false;
+
+	@SuppressWarnings("NewApi")
 	@Override
 	public void create() {
 		super.create();
@@ -52,17 +71,43 @@ public class TitleScene extends PixelScene {
 		int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
 		Badges.loadGlobal();
 		Dungeon.whiteDaymode = currentHour > 7 && currentHour < 22;
-//		if(SPDSettings.startPort(false)){
-//			SPDSettings.scale(3);
-//			ShatteredPixelDungeon.seamlessResetScene();
-//			SPDSettings.startPort(true);
-//		}
 
 		Badges.loadGlobal();
 		boolean whiteDaymode = currentHour > 7 && currentHour < 22;
-		if(Random.Int(10) == 1 && !NightDay && !whiteDaymode){
-			NightDay = true;
+
+		try {
+			NTPUDPClient timeClient = new NTPUDPClient();
+			String timeServerUrl = "ntp.aliyun.com";
+			InetAddress timeServerAddress = InetAddress.getByName(timeServerUrl);
+			TimeInfo timeInfo = timeClient.getTime(timeServerAddress);
+			TimeStamp timeStamp = timeInfo.getMessage().getTransmitTimeStamp();
+
+			@SuppressWarnings("NewApi")
+			Instant ntpInstant = Instant.ofEpochMilli(timeStamp.getDate().getTime());
+			@SuppressWarnings("NewApi")
+			Clock systemClock = Clock.systemDefaultZone();
+			@SuppressWarnings("NewApi")
+			Instant systemInstant = Instant.now(systemClock);
+
+			// NTP协同验证
+			if (ntpInstant.equals(systemInstant) || Math.abs(Duration.between(ntpInstant, systemInstant).toMillis()) < 1000) {
+				if(Random.Int(10) == 1 && !NightDay && !whiteDaymode){
+					NightDay = true;
+				} else if(Badges.isUnlocked(Badges.Badge.VICTORY) && Random.Int(10) == 1 && !Reusable){
+					Reusable = true;
+				}
+			} else if(!NTP_ERROR_VEFY) {
+				NTP_ERROR = true;
+				NTP_ERROR_VEFY = true;
+			}
+		} catch (IOException e) {
+			if(!NTP_NOINTER_VEFY || SPDSettings.WiFi() && !Game.platform.connectedToUnmeteredNetwork())  {
+				NTP_NOINTER = true;
+				NTP_NOINTER_VEFY = true;
+			}
 		}
+
+
 
 		if(holiday == XMAS){
 			Music.INSTANCE.play(Assets.Music.CHRAMSS, true);
@@ -161,9 +206,9 @@ public class TitleScene extends PixelScene {
 		archs.setSize( w, h );
 		addToBack( archs );
 
-		ReloadButton btnReload = new ReloadButton();
-		btnReload.setRect(0, 0, 16, 20);
-		add( btnReload );
+//		ReloadButton btnReload = new ReloadButton();
+//		btnReload.setRect(0, 0, 16, 20);
+//		add( btnReload );
 
 		Image signs = new Image( BannerSprites.get( BannerSprites.Type.PIXEL_DUNGEON_SIGNS ) ) {
 			private float time = 0;
@@ -189,11 +234,76 @@ public class TitleScene extends PixelScene {
 		StyledButton btnPlay = new StyledButton(GREY_TR, Messages.get(this, "enter")){
 			@Override
 			protected void onClick() {
-				if (GamesInProgress.checkAll().size() == 0) {
-					GamesInProgress.selectedClass = null;
-					GamesInProgress.curSlot = 1;
+				if(NTP_ERROR) {
+					try {
+						NTPUDPClient timeClient = new NTPUDPClient();
+						String timeServerUrl = "ntp.aliyun.com";
+						InetAddress timeServerAddress = InetAddress.getByName(timeServerUrl);
+						TimeInfo timeInfo = timeClient.getTime(timeServerAddress);
+						TimeStamp timeStamp = timeInfo.getMessage().getTransmitTimeStamp();
+
+						@SuppressWarnings("NewApi")
+						Instant ntpInstant = Instant.ofEpochMilli(timeStamp.getDate().getTime());
+						@SuppressWarnings("NewApi")
+						Clock systemClock = Clock.systemDefaultZone();
+						@SuppressWarnings("NewApi")
+						Instant systemInstant = Instant.now(systemClock);
+						ShatteredPixelDungeon.scene().add(new WndHardNotification(NetIcons.get(NetIcons.ALERT),
+								Messages.get(this, "ntp_error"),
+								Messages.get(this, "ntp_desc", systemInstant.getNano(), ntpInstant.getNano()),
+								Messages.get(this, "ok"),
+								0) {
+							@Override
+							public void hide() {
+								NTP_ERROR = false;
+								if (GamesInProgress.checkAll().size() == 0) {
+									GamesInProgress.selectedClass = null;
+									GamesInProgress.curSlot = 1;
+								}
+								ShatteredPixelDungeon.switchNoFade(StartScene.class);
+							}
+
+							@Override
+							public void onBackPressed() {
+								NTP_ERROR = false;
+								ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+							}
+						});
+
+					} catch (IOException e) {
+
+					}
+				} else if(NTP_NOINTER){
+					ShatteredPixelDungeon.scene().add(new WndHardNotification(NetIcons.get(NetIcons.ALERT),
+							Messages.get(this, "lntp_error"),
+							Messages.get(this, "lntp_desc"),
+							Messages.get(this, "ok"),
+							0){
+						@Override
+						public void hide() {
+							NTP_NOINTER = false;
+							if (GamesInProgress.checkAll().size() == 0) {
+								GamesInProgress.selectedClass = null;
+								GamesInProgress.curSlot = 1;
+							}
+							ShatteredPixelDungeon.switchNoFade( StartScene.class );
+						}
+
+						@Override
+						public void onBackPressed() {
+							NTP_NOINTER = false;
+							ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+						}
+					});
+				} else {
+					if (GamesInProgress.checkAll().size() == 0) {
+						GamesInProgress.selectedClass = null;
+						GamesInProgress.curSlot = 1;
+					}
+					ShatteredPixelDungeon.switchNoFade( StartScene.class );
 				}
-				ShatteredPixelDungeon.switchNoFade( StartScene.class );
+
+
 			}
 
 			@Override
@@ -210,6 +320,16 @@ public class TitleScene extends PixelScene {
 							0.5f + (float)Math.sin(Game.timeTotal*5)/2f));
 					text(Messages.get(TitleScene.class, "go"));
 					icon(BadgeBanner.image(Badges.Badge.HAPPY_END.image));
+				} else if(TitleScene.NTP_ERROR){
+					textColor(ColorMath.interpolate( 0xFFFFFF, Window.GDX_COLOR,
+							0.5f + (float)Math.sin(Game.timeTotal*5)/2f));
+					text(Messages.get(TitleScene.class, "ntp"));
+					icon(NetIcons.get(NetIcons.ALERT));
+				} else if(TitleScene.NTP_NOINTER){
+					textColor(ColorMath.interpolate( 0xFFFFFF, Window.WATA_COLOR,
+							0.5f + (float)Math.sin(Game.timeTotal*5)/2f));
+					text(Messages.get(TitleScene.class, "ntp_ns"));
+					icon(NetIcons.get(NetIcons.ALERT));
 				}
 			}
 
@@ -262,6 +382,10 @@ public class TitleScene extends PixelScene {
 		btnChanges.icon(new ItemSprite(ItemSpriteSheet.ICEBOOK, null));
 		add(btnChanges);
 
+		StyledButton reloadButton = new ReloadButton(landscape() ? Chrome.Type.GREY_BUTTON_TR : Chrome.Type.BLANK, Messages.get(this, "update_web"));
+		reloadButton.icon(NetIcons.get(NetIcons.GLOBE));
+		add(reloadButton);
+
 		StyledButton btnSettings = new SettingsButton(GREY_TR, Messages.get(this, "settings"));
 		add(btnSettings);
 
@@ -284,6 +408,14 @@ public class TitleScene extends PixelScene {
 		GAP /= landscape() ? 3 : 5;
 		GAP = Math.max(GAP, 2);
 
+		BitmapText version = new BitmapText( "v" + Game.version, pixelFont);
+		version.measure();
+		version.alpha( 0.4f);
+		version.x = w - version.width() - 4;
+		version.y = h - version.height() - 2;
+
+		add( version );
+
 		if (landscape()) {
 			btnPlay.setRect(title.x - 50, topRegion + GAP, title.width() + 100 - 1, BTN_HEIGHT);
 			align(btnPlay);
@@ -294,9 +426,14 @@ public class TitleScene extends PixelScene {
 			btnSettings.setRect(btnSupport.right() + 2, btnSupport.top(), btnRankings.width(), BTN_HEIGHT);
 			btnAbout.setRect(btnSettings.left(), btnSettings.bottom() + GAP, btnRankings.width(), BTN_HEIGHT);
 			btnNews.setRect(btnPlay.left(), btnAbout.bottom() + GAP, btnAbout.width() + 157 - 1, BTN_HEIGHT);
+
+			reloadButton.setRect(0, 0,40,20);
+
 			align(btnNews);
 		}
 		else {
+			reloadButton.setRect(0, version.y-10,40,20);
+
 			btnPlay.setRect(title.x, topRegion + GAP, title.width(), BTN_HEIGHT);
 			align(btnPlay);
 			btnRankings.setRect(btnPlay.left(), btnPlay.bottom()+ GAP, (btnPlay.width() / 2) - 1, BTN_HEIGHT);
@@ -308,13 +445,6 @@ public class TitleScene extends PixelScene {
 			btnNews.setRect(btnPlay.left(), btnAbout.bottom() + GAP, btnAbout.width() + 68 - 1, BTN_HEIGHT);
 			align(btnNews);
 		}
-
-		BitmapText version = new BitmapText( "v" + Game.version, pixelFont);
-		version.measure();
-		version.alpha( 0.4f);
-		version.x = w - version.width() - 4;
-		version.y = h - version.height() - 2;
-		add( version );
 
 		Point p = SPDSettings.windowResolution();
 		if ( p.x >= 640 && p.y >= 480) {
@@ -385,6 +515,21 @@ public class TitleScene extends PixelScene {
 		}
 
 	}
+
+	private static class ReloadButton extends StyledButton {
+
+		public ReloadButton( Chrome.Type type, String label ){
+			super(type, label);
+		}
+
+		@Override
+		protected void onClick() {
+			ShatteredPixelDungeon.switchNoFade(GameNewsScene.class);
+		}
+
+	}
+
+
 
 
 	private static class SettingsButton extends StyledButton {

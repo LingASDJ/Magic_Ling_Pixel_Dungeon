@@ -40,6 +40,8 @@ public class Red extends Item {
     {
         image = ItemSpriteSheet.WHITEROSE;
 
+        defaultAction = AC_BACK;
+
         unique = true;
     }
     private static final String AC_BACK = "interlevel_tp";

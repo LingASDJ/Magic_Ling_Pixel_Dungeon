@@ -70,10 +70,6 @@ public class Nyctophobia extends Buff implements Hero.Doom {
                     break;
             }
             spend(90f);
-        }  else if(hero.lanterfire == 0){
-            hero.damage( (int)((Dungeon.depth/5)*(Math.abs(hero.lanterfire)/2)+10), this );
-            spend(24f);
-            GLog.w( Messages.get(this, "desc6") );
         }
 
 
@@ -90,7 +86,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
                 return true;
             }
             if (hero.lanterfire >= 0 ) {
-                hero.damageLantern(1+Challenges.activeChallenges()/5);
+                hero.damageLantern(1+Challenges.activeChallenges()/3);
                 spend(20f-(float) Dungeon.depth/5+Challenges.activeChallenges());
             } else {
                 spend(STEP);
@@ -101,19 +97,21 @@ public class Nyctophobia extends Buff implements Hero.Doom {
 
     @Override
     public String desc() {
+        String result;
         if (hero.lanterfire >= 90 && hero.lanterfire <= 100) {
-            return Messages.get(this, "desc");
+            result =  Messages.get(this, "desc");
         } else if (hero.lanterfire >= 80 && hero.lanterfire <= 89) {
-            return Messages.get(this, "desc2");
+            result = Messages.get(this, "desc2");
         } else if (hero.lanterfire >= 60 && hero.lanterfire <= 79) {
-            return Messages.get(this, "desc3");
+            result = Messages.get(this, "desc3");
         } else if (hero.lanterfire >= 35 && hero.lanterfire <= 59) {
-            return Messages.get(this, "desc4");
+            result = Messages.get(this, "desc4");
         } else if (hero.lanterfire >= 1 && hero.lanterfire <= 34) {
-            return Messages.get(this, "desc5");
+            result = Messages.get(this, "desc5");
         } else {
-            return Messages.get(this, "desc6");
+            result = Messages.get(this, "desc6");
         }
+        return result;
     }
 
 

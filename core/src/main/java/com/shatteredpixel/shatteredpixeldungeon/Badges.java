@@ -713,6 +713,12 @@ public class Badges {
 					case WARDEN:
 						badge = Badge.BOSS_SLAIN_3_WARDEN;
 						break;
+					case CHAMPION:
+						badge = Badge.BOSS_SLAIN_3_CHAMPION;
+						break;
+					case MONK:
+						badge = Badge.BOSS_SLAIN_3_MONK;
+						break;
 					default:
 						return;
 				}
@@ -729,7 +735,9 @@ public class Badges {
 						global.contains( Badge.BOSS_SLAIN_3_FREERUNNER ) &&
 						global.contains( Badge.BOSS_SLAIN_3_ASSASSIN ) &&
 						global.contains( Badge.BOSS_SLAIN_3_SNIPER ) &&
-						global.contains( Badge.BOSS_SLAIN_3_WARDEN )) {
+						global.contains( Badge.BOSS_SLAIN_3_WARDEN ) &&
+						global.contains( Badge.BOSS_SLAIN_3_CHAMPION ) &&
+						global.contains( Badge.BOSS_SLAIN_3_MONK )) {
 
 					badge = Badge.BOSS_SLAIN_3_ALL_SUBCLASSES;
 					if (!global.contains( badge )) {
@@ -812,14 +820,6 @@ public class Badges {
 		displayBadge( Badge.WOC_MONEY_GIRL);
 	}
 
-    public void Test(){
-
-	}
-
-	public int Tests(){
-		return 4;
-	}
-
 	public static void validateVictory() {
 
 		Statistics.winGame = true;
@@ -840,6 +840,9 @@ public class Badges {
 			case HUNTRESS:
 				badge = Badge.VICTORY_HUNTRESS;
 				break;
+			case DUELIST:
+				badge = Badge.VICTORY_DUELIST;
+				break;
 		}
 		local.add( badge );
 		if (!global.contains( badge )) {
@@ -850,7 +853,8 @@ public class Badges {
 		if (global.contains( Badge.VICTORY_WARRIOR ) &&
 				global.contains( Badge.VICTORY_MAGE ) &&
 				global.contains( Badge.VICTORY_ROGUE ) &&
-				global.contains( Badge.VICTORY_HUNTRESS )) {
+				global.contains( Badge.VICTORY_HUNTRESS )&&
+				global.contains( Badge.VICTORY_DUELIST )) {
 
 			badge = Badge.VICTORY_ALL_CLASSES;
 			displayBadge( badge );
@@ -1064,6 +1068,8 @@ public class Badges {
 		BOSS_SLAIN_1_MAGE,
 		BOSS_SLAIN_1_ROGUE,
 		BOSS_SLAIN_1_HUNTRESS,
+
+		BOSS_SLAIN_1_DUELIST,
 		BOSS_SLAIN_1_ALL_CLASSES    ( 53, true ),
 		GAMES_PLAYED_1              ( 54, true ),
 
@@ -1119,6 +1125,8 @@ public class Badges {
 		BOSS_SLAIN_3_ASSASSIN,
 		BOSS_SLAIN_3_SNIPER,
 		BOSS_SLAIN_3_WARDEN,
+		BOSS_SLAIN_3_CHAMPION,
+		BOSS_SLAIN_3_MONK,
 		BOSS_SLAIN_3_ALL_SUBCLASSES ( 80, true ),
 		GAMES_PLAYED_2              ( 81, true ),
 
@@ -1141,6 +1149,7 @@ public class Badges {
 		VICTORY_MAGE,
 		VICTORY_ROGUE,
 		VICTORY_HUNTRESS,
+		VICTORY_DUELIST,
 		VICTORY_ALL_CLASSES         ( 98, true ),
 		GAMES_PLAYED_3              ( 99, true ),
 		CHAMPION_1X                  ( 100 ),
@@ -1388,7 +1397,7 @@ public class Badges {
 		firstBossClassBadges.put(HeroClass.MAGE, Badge.BOSS_SLAIN_1_MAGE);
 		firstBossClassBadges.put(HeroClass.ROGUE, Badge.BOSS_SLAIN_1_ROGUE);
 		firstBossClassBadges.put(HeroClass.HUNTRESS, Badge.BOSS_SLAIN_1_HUNTRESS);
-		//firstBossClassBadges.put(HeroClass.DUELIST, Badge.BOSS_SLAIN_1_DUELIST);
+		firstBossClassBadges.put(HeroClass.DUELIST, Badge.BOSS_SLAIN_1_DUELIST);
 	}
 
 	private static LinkedHashMap<HeroClass, Badge> victoryClassBadges = new LinkedHashMap<>();
@@ -1397,7 +1406,7 @@ public class Badges {
 		victoryClassBadges.put(HeroClass.MAGE, Badge.VICTORY_MAGE);
 		victoryClassBadges.put(HeroClass.ROGUE, Badge.VICTORY_ROGUE);
 		victoryClassBadges.put(HeroClass.HUNTRESS, Badge.VICTORY_HUNTRESS);
-		//victoryClassBadges.put(HeroClass.DUELIST, Badge.VICTORY_DUELIST);
+		victoryClassBadges.put(HeroClass.DUELIST, Badge.VICTORY_DUELIST);
 	}
 
 	private static LinkedHashMap<HeroSubClass, Badge> thirdBossSubclassBadges = new LinkedHashMap<>();
@@ -1411,8 +1420,8 @@ public class Badges {
 		thirdBossSubclassBadges.put(HeroSubClass.SNIPER, Badge.BOSS_SLAIN_3_SNIPER);
 		thirdBossSubclassBadges.put(HeroSubClass.WARDEN, Badge.BOSS_SLAIN_3_WARDEN);
 
-//		thirdBossSubclassBadges.put(HeroSubClass.CHAMPION, Badge.BOSS_SLAIN_3_CHAMPION);
-//		thirdBossSubclassBadges.put(HeroSubClass.MONK, Badge.BOSS_SLAIN_3_MONK);
+		thirdBossSubclassBadges.put(HeroSubClass.CHAMPION, Badge.BOSS_SLAIN_3_CHAMPION);
+		thirdBossSubclassBadges.put(HeroSubClass.MONK, Badge.BOSS_SLAIN_3_MONK);
 	}
 
 	//used for badges with completion progress that would otherwise be hard to track

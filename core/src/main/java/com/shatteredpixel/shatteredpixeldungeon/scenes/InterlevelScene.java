@@ -528,7 +528,13 @@ public class InterlevelScene extends PixelScene {
 				level.map[Dungeon.hero.pos] = Terrain.GRASS;
 			}
 			Dungeon.hero.resurrect();
-			level.drop(new LostBackpack(), invPos);
+
+			if(Statistics.ankhToExit){
+				level.drop(new LostBackpack(), level.entrance());
+			} else {
+				level.drop(new LostBackpack(), invPos);
+			}
+
 		}
 
 		Dungeon.switchLevel( level, Dungeon.hero.pos );

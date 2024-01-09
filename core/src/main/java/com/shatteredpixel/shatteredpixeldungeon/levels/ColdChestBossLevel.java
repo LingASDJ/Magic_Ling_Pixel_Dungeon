@@ -69,7 +69,7 @@ public class ColdChestBossLevel extends Level {
 
     @Override
     public int randomRespawnCell( Char ch ) {
-        int pos = WIDTH + 16; //random cell adjacent to the entrance.
+        int pos = WIDTH + 16;
         int cell;
         do {
             cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];

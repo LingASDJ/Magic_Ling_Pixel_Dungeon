@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue.Quest.survey_research_points;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -135,13 +136,16 @@ public class DragonGirlBlue extends NTNPC{
                 });
                 return false;
             }
-        } else {
+        } else if(DragonGirlBlue.Quest.survey_research_points != 0) {
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {
+                    if(survey_research_points>4000) survey_research_points = 4000;
                     GameScene.show(new WndDragonGirlBlue(DragonGirlBlue.this, Dungeon.hero));
                 }
             });
+        } else {
+            yell(Messages.get(DragonGirlBlue.class,"no_anymore"));
         }
 
         return true;
@@ -244,7 +248,9 @@ public class DragonGirlBlue extends NTNPC{
 
         public static void complete(){
             completed = true;
-            //调查等级直接折合为任务数组2的探索积分 或许可以让SSS+更加容易
+            if(survey_research_points>4000){
+                survey_research_points = 4000;
+            }
         }
 
     }

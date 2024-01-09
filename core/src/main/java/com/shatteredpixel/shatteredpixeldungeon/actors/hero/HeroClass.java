@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
@@ -81,7 +82,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImag
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVenom;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
@@ -93,6 +93,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSp
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.DeviceCompat;
 
 import java.util.List;
@@ -154,6 +155,8 @@ public enum HeroClass {
 			Badges.BOSSTHREE();
 		}
 
+		GLog.n(String.valueOf(Statistics.commonrelaycall));
+
 		if(RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY){
 			new CrystalLing().quantity(1).identify().collect();
 			Buff.affect(hero, BlessLing.class).set( (100), 1 );
@@ -207,7 +210,7 @@ public enum HeroClass {
 			new SpawnArtifact().quantity(1).identify().collect();
 			new SpawnRingOrWand().quantity(1).identify().collect();
 			new SpawnMissile().quantity(1).identify().collect();
-			new WandOfVenom().quantity(1).identify().collect();
+			//new WandOfVenom().quantity(1).identify().collect();
 			new TerrainPlacer().quantity(1).identify().collect();
 
 			new MobPlacer().quantity(1).identify().collect();

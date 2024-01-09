@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -22,6 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 public class Typhon extends NTNPC {
 
@@ -73,23 +76,24 @@ public class Typhon extends NTNPC {
     @Override
     public boolean interact(Char c) {
 
-        sprite.turnTo(pos, Dungeon.hero.pos);
+        sprite.turnTo(pos, hero.pos);
+
 
         TyphonPlot typhonPlot = new TyphonPlot();
-        Game.runOnRenderThread(new Callback() {
-            @Override
-            public void call() {
-                GameScene.show(new WndDialog(typhonPlot,false));
-            }
-        });
 
-//        if(!secnod && first){
-//
-//            first = false;
-//            return true;
-//        } else {
-//            tell(Messages.get(Typhon.class,"now_letgo"));
-//        }
+
+        if(!secnod && first){
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndDialog(typhonPlot,false));
+                }
+            });
+            first = false;
+            return true;
+        } else {
+            tell(Messages.get(Typhon.class,"now_letgo"));
+        }
         return true;
     }
     private static int[] FirstPos = new int[]{259,453,235,477};
@@ -99,9 +103,11 @@ public class Typhon extends NTNPC {
 
         throwItem();
 
-        sprite.turnTo( pos, Dungeon.hero.pos );
+        sprite.turnTo( pos, hero.pos );
 
-        if(look>14 && rd) {
+        final int chance = Random.NormalIntRange(50,120);
+
+        if(look>chance && rd) {
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                 if (mob instanceof Cerberus) {
                     ScrollOfTeleportation.appear(mob, 356);
@@ -131,7 +137,7 @@ public class Typhon extends NTNPC {
                                 public void call() {
                                     GameScene.flash(Window.Pink_COLOR);
                                     DiedStorm(mob);
-                                    mob.die(true);
+                                    mob.die(null);
                                     yell(Messages.get(Typhon.class,"dog_home"));
                                     Buff.detach(mob, BruteBot.BruteBotRage.class);
                                 }
@@ -147,8 +153,6 @@ public class Typhon extends NTNPC {
         } else {
             look++;
         }
-
-
 
         spend( TICK );
         return true;

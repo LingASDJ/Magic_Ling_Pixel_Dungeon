@@ -164,6 +164,9 @@ public class Assets {
 		public static final String MENUTITLE  = "interfaces/menutitle.png";
 		public static final String TWOYEARS  = "interfaces/2years.png";
 
+		//网络贴图
+		public static final String NETICONS = "interfaces/net_icons.png";
+
 		//圣诞节
 		public static final String BANNERSSD  = "interfaces/banners_sd.png";
 
