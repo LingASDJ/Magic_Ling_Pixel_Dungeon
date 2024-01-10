@@ -37,8 +37,6 @@ import java.util.ArrayList;
 
 public class SlimeKingMob extends Mob {
 
-    private final String[] attackCurse = {"雕虫小技", "班门弄斧",
-            "GAMEOVER"};
     private int combo = 0;
     private static final float TIME_TO_ZAP	= 0.5f;
 
@@ -193,7 +191,7 @@ public class SlimeKingMob extends Mob {
     @Override
     public int attackProc(Char enemy, int damage) {
         if (Random.Int(0, 10) > 7) {
-            this.sprite.showStatus(0x009999, this.attackCurse[Random.Int(this.attackCurse.length)]);
+            this.sprite.showStatus(0x009999, Messages.get(this,"attack_msg_"+Random.IntRange(1, 3)));
         }
         int damage2 = super.attackProc(enemy, this.combo + damage);
         this.combo++;

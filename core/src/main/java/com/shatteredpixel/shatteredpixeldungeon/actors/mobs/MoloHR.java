@@ -29,9 +29,7 @@ import com.watabou.utils.Random;
 
 public class MoloHR extends Mob {
 
-    private final String[] attackCurse;
     private int combo;
-    private final String[] deathCurse;
 
     public MoloHR() {
         this.spriteClass = MolotovHuntsmanSprite.class;
@@ -43,10 +41,6 @@ public class MoloHR extends Mob {
         flying = true;
         this.EXP = 15;
         this.baseSpeed = 2F;
-        this.deathCurse = new String[]{"终于，解脱了……"};
-        this.attackCurse = new String[]{"就你？还想打我？", "让火焰净化一切！", "你是何人？", "我说，为什么要让我承担？",
-                "这都是你的错！",
-                "扬了你的骨灰！", "啊！", "烧死你"};
         this.combo = 0;
         properties.add(Property.BOSS);
         properties.add(Property.FIERY);
@@ -56,8 +50,8 @@ public class MoloHR extends Mob {
 
         int var4;
         if (Random.Int(0, 8) > 7) {
-            var4 = Random.Int(this.attackCurse.length);
-            this.sprite.showStatus(16711680, this.attackCurse[var4]);
+            var4 = Random.IntRange(1, 8);
+            this.sprite.showStatus(16711680, Messages.get(this,"attack_msg_"+var4));
         }
 
         int var5 = super.attackProc(var1, var2);
@@ -94,8 +88,8 @@ public class MoloHR extends Mob {
         GameScene.bossSlain();
         Dungeon.level.unseal();
         if (cause != Chasm.class) {
-            int var2 = Random.Int(this.deathCurse.length);
-            this.sprite.showStatus(16711680, this.deathCurse[var2]);
+            //如果新增临死前的话，请将1改为Random.IntRange
+            this.sprite.showStatus(16711680, Messages.get(this,"death_msg_"+1));
         }
         //酸液体清0
         Statistics.SiderLing = 0;

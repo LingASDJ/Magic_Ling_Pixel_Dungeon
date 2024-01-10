@@ -29,21 +29,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDHBLRTT;
 import com.watabou.utils.Random;
 
 public class SRPDHBLR extends Mob {
-    private String[] attackCurse = {"烧，快烧起来！", "扭曲的世界",
-            "滚开！",
-            "你不可能再继续前进了！", "你这个狡猾的人类！", "冒险家，肮脏的冒险家！",
-            "去死，你这肮脏的冒险者！", "啊！",
-            "尝尝我的怒火！",
-            "你不能！你不能！不……"};
+
     private int combo = 0;
-    private String[] deathCurse = {"快停下...", "猎杀结束了",
-            "啊...你这个怪物", "你这怪物", "神啊...帮帮我吧...",
-            "四周好冷", "诅咒你这怪物", "相信我的同伴今晚会为我复仇"};
 
     public int generation	= 0;
 
@@ -69,7 +62,7 @@ public class SRPDHBLR extends Mob {
 
     public int attackProc(Char enemy, int damage) {
         if (Random.Int(0, 10) > 7) {
-            this.sprite.showStatus(16711680, this.attackCurse[Random.Int(this.attackCurse.length)], new Object[0]);
+            this.sprite.showStatus(16711680, Messages.get(this,"attack_msg_"+Random.IntRange(1, 10)), new Object[0]);
         }
         int damage2 = SRPDHBLR.super.attackProc(enemy, this.combo + damage);
         this.combo++;
@@ -88,7 +81,7 @@ public class SRPDHBLR extends Mob {
     public void die(Object cause) {
         SRPDHBLR.super.die(cause);
         if (cause != Chasm.class) {
-            this.sprite.showStatus(16711680, this.deathCurse[Random.Int(this.deathCurse.length)], new Object[0]);
+            this.sprite.showStatus(16711680, Messages.get(this,"death_msg_"+Random.IntRange(1, 8)), new Object[0]);
 
         }
     }}

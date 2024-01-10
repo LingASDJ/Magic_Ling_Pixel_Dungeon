@@ -25,9 +25,7 @@ import com.watabou.utils.Random;
 
 public class RandomBlueFire extends Mob {
     private static final String COMBO = "combo";
-    private String[] attackCurse;
     private int combo;
-    private String[] deathCurse;
     public float lifespan;
     public RandomBlueFire() {
         this.spriteClass = FireBallMobSpriteKB.class;
@@ -39,8 +37,6 @@ public class RandomBlueFire extends Mob {
         this.lootChance =1;
         this.state = this.SLEEPING;
         this.baseSpeed = 0.8f;
-        this.deathCurse = new String[]{"死亡，即为结束！"};
-        this.attackCurse = new String[]{"为什么要入侵这里？","不，你不能离开这里","你不是我的王"};
         this.combo = 0;
         properties.add(Property.FIERY);
     }
@@ -55,8 +51,8 @@ public class RandomBlueFire extends Mob {
         byte var3 = 0;
         int var4;
         if (Random.Int(0, 10) > 7) {
-            var4 = Random.Int(this.attackCurse.length);
-            this.sprite.showStatus(16711680, this.attackCurse[var4], new Object[0]);
+            var4 = Random.IntRange(1, 3);
+            this.sprite.showStatus(16711680, Messages.get(this,"attack_msg_"+var4), new Object[0]);
         }
 
         int var5 = super.attackProc(var1, var2);
@@ -111,8 +107,8 @@ public class RandomBlueFire extends Mob {
         Dungeon.level.drop( new PotionOfHealing(), pos ).sprite.drop();
         super.die(var1);
         if (var1 != Chasm.class) {
-            int var2 = Random.Int(this.deathCurse.length);
-            this.sprite.showStatus(16711680, this.deathCurse[var2]);
+            //如果新增临死前的话，请将1改为Random.IntRange
+            this.sprite.showStatus(16711680, Messages.get(this,"death_msg_"+1));
         }
        for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
             if (	mob instanceof FlameC01) {

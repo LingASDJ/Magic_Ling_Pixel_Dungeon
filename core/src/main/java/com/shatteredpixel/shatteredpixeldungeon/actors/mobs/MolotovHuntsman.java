@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MolotovHuntsmanSprite;
 import com.watabou.utils.Bundle;
@@ -20,9 +21,8 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class MolotovHuntsman extends Mob {
-    private String[] attackCurse;
+
     private int combo;
-    private String[] deathCurse;
     public float lifespan;
     public MolotovHuntsman() {
         this.spriteClass = MolotovHuntsmanSprite.class;
@@ -34,8 +34,6 @@ public class MolotovHuntsman extends Mob {
         this.baseSpeed = 0.5625F;
 //        this.loot = new RedBloodMoon();
 //        this.lootChance = 0.005F;
-        this.deathCurse = new String[]{"快停下...", "啊......", "啊.......你这个怪物", "你这怪物...", "神啊，帮帮我吧...", "最后…啊…终于能...见到家人了...", "愚蠢的人类", "为了她..."};
-        this.attackCurse = new String[]{"烧起来吧，吃人的野兽！", "让火焰净化一切！", "快滚！", "我说，为什么要让我承担？", "这都是你的错！", "扬了你的骨灰！", "你们，都是贱人！", "去死，你这嗜血的人!", "啊！", "烧死你"};
         this.combo = 0;
     }
 
@@ -43,8 +41,8 @@ public class MolotovHuntsman extends Mob {
         byte var3 = 0;
         int var4;
         if (Random.Int(0, 10) > 7) {
-            var4 = Random.Int(this.attackCurse.length);
-            this.sprite.showStatus(16711680, this.attackCurse[var4]);
+            var4 = Random.IntRange(1, 10);
+            this.sprite.showStatus(16711680, Messages.get(this,"attack_msg_"+var4));
         }
 
         int var5 = super.attackProc(var1, var2);
@@ -88,8 +86,7 @@ public class MolotovHuntsman extends Mob {
     public void die(Object var1) {
         super.die(var1);
         if (var1 != Chasm.class) {
-            int var2 = Random.Int(this.deathCurse.length);
-            this.sprite.showStatus(16711680, this.deathCurse[var2], new Object[0]);
+            this.sprite.showStatus(16711680, Messages.get(this,"death_msg_"+Random.IntRange(1, 8)), new Object[0]);
         }
 
     }

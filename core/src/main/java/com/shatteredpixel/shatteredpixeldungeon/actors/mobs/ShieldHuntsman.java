@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShieldHuntsmanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
@@ -21,9 +22,7 @@ import com.watabou.utils.Random;
 
 public class ShieldHuntsman extends Mob {
     private static final String COMBO = "combo";
-    private String[] attackCurse = {"离我远点", "肮脏的诅咒！", "快滚开！", "你毁了我的家，我要复仇！", "你这恶魔！", "不可能，这 不 可 能 ！ ", "水晶之城!!!!!!!!!"};
     private int combo = 0;
-    private String[] deathCurse = {"快停下...", "为了水晶之城...", "啊.......你这个怪物", "你这怪物...", "诅咒你！", "守住水晶之城...", "诅咒你这个怪物！", "啊啊...", "诅咒你！", "Why?????????"};
 
     public ShieldHuntsman() {
         this.spriteClass = ShieldHuntsmanSprite.class;
@@ -45,7 +44,7 @@ public class ShieldHuntsman extends Mob {
 
     public int attackProc(Char enemy, int damage) {
         if (Random.Int(0, 10) > 7) {
-            this.sprite.showStatus(16711680, this.attackCurse[Random.Int(this.attackCurse.length)], new Object[0]);
+            this.sprite.showStatus(16711680, Messages.get(this,"attack_msg_"+Random.IntRange(1, 7)), new Object[0]);
         }
         int damage2 = ShieldHuntsman.super.attackProc(enemy, this.combo + damage);
         this.combo++;
@@ -59,7 +58,7 @@ public class ShieldHuntsman extends Mob {
                 Dungeon.quickslot.convertToPlaceholder(weapon);
                 KindOfWeapon.updateQuickslot();
                 Dungeon.level.drop(weapon, hero.pos).sprite.drop();
-                GLog.w("你的武器被猎人击飞了！");
+                GLog.w(Messages.get(this,"kicked"));
             }
         }
         if (Random.Int(0, 10) > 7) {
@@ -78,7 +77,7 @@ public class ShieldHuntsman extends Mob {
     public void die(Object cause) {
         ShieldHuntsman.super.die(cause);
         if (cause != Chasm.class) {
-            this.sprite.showStatus(16711680, this.deathCurse[Random.Int(this.deathCurse.length)], new Object[0]);
+            this.sprite.showStatus(16711680, Messages.get(this,"death_msg_"+Random.IntRange(1, 10)), new Object[0]);
         }
     }
 
