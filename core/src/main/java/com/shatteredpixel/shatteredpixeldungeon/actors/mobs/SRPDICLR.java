@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SRPDICLRTT;
 import com.watabou.noosa.tweeners.AlphaTweener;
@@ -37,10 +38,7 @@ import com.watabou.utils.Random;
 
 public class SRPDICLR extends Mob {
     private static final String COMBO = "combo";
-    private String[] attackCurse = {"她是不朽的", "没有人能逃脱",
-            "尝尝这个"};
     private int combo = 0;
-    private String[] deathCurse = {"你会后悔的!"};
 
     public SRPDICLR() {
         this.spriteClass = SRPDICLRTT.class;
@@ -99,7 +97,7 @@ public class SRPDICLR extends Mob {
 
     public int attackProc(Char enemy, int damage) {
         if (Random.Int(0, 10) > 7) {
-            this.sprite.showStatus(0x009999, this.attackCurse[Random.Int(this.attackCurse.length)], new Object[0]);
+            this.sprite.showStatus(0x009999, Messages.get(this,"attack_msg_"+Random.IntRange(1, 3)), new Object[0]);
         }
         int damage2 = SRPDICLR.super.attackProc(enemy, this.combo + damage);
         this.combo++;
@@ -115,7 +113,7 @@ public class SRPDICLR extends Mob {
     public void die(Object cause) {
         SRPDICLR.super.die(cause);
         if (cause != Chasm.class) {
-            this.sprite.showStatus(0x009999, this.deathCurse[Random.Int(this.deathCurse.length)], new Object[0]);
-
+            //如果新增临死前的话，请将1改为Random.IntRange
+            this.sprite.showStatus(0x009999, Messages.get(this,"death_msg_"+1), new Object[0]);
         }
     }}
