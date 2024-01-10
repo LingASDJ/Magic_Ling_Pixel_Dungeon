@@ -7,16 +7,13 @@ import com.nlf.calendar.Lunar;
 import com.nlf.calendar.Solar;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 
-import org.apache.commons.net.ntp.NTPUDPClient;
-import org.apache.commons.net.ntp.TimeInfo;
-import org.apache.commons.net.ntp.TimeStamp;
-
 import java.io.IOException;
-import java.net.InetAddress;
-import java.time.Clock;
-import java.time.Duration;
-import java.time.Instant;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class Gregorian {
 
@@ -43,24 +40,22 @@ public class Gregorian {
      *  <a href="https://github.com/6tail/lunar-java">Lunar Github</a>
      *  2024.1.9 加入NTP验证系统时间
      * */
-    @SuppressWarnings("NewApi")
     public static void LunarCheckDate() {
+
         try {
-            NTPUDPClient timeClient = new NTPUDPClient();
-            String timeServerUrl = "ntp.aliyun.com";
-            InetAddress timeServerAddress = InetAddress.getByName(timeServerUrl);
-            TimeInfo timeInfo = timeClient.getTime(timeServerAddress);
-            TimeStamp timeStamp = timeInfo.getMessage().getTransmitTimeStamp();
+            //NTP服务器有严重延迟 直接使用百度的地址进行监测
+            URL url = new URL("https://www.baidu.com");
+            URLConnection conn = url.openConnection();
+            conn.connect();
+            long dateL = conn.getDate();
+            Date onlineDate = new Date(dateL);
 
-            @SuppressWarnings("NewApi")
-            Instant ntpInstant = Instant.ofEpochMilli(timeStamp.getDate().getTime());
-            @SuppressWarnings("NewApi")
-            Clock systemClock = Clock.systemDefaultZone();
-            @SuppressWarnings("NewApi")
-            Instant systemInstant = Instant.now(systemClock);
-
-            // NTP协同验证 误差最多1s
-            if (ntpInstant.equals(systemInstant) || Math.abs(Duration.between(ntpInstant, systemInstant).toMillis()) < 1000) {
+            Date localDate = new Date(); // 获取本地时间
+            String strDateFormat = "yyyy-MM-dd";
+            SimpleDateFormat dateFormat = new SimpleDateFormat(strDateFormat, Locale.getDefault());
+            String onlineTimeStr = dateFormat.format(onlineDate); // 在线时间的字符串表示
+            String localTimeStr = dateFormat.format(localDate); // 本地时间的字符串表示
+            if (onlineTimeStr.equals(localTimeStr)) {
                 Calendar calendar = Calendar.getInstance();
                 Solar date = Solar.fromDate(calendar.getTime());
                 Lunar lunar = date.getLunar();
@@ -88,7 +83,9 @@ public class Gregorian {
                 }
             }
         } catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
 
 }

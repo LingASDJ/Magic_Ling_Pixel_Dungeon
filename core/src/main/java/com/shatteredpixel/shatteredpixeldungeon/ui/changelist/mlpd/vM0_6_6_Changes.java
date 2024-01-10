@@ -113,7 +113,28 @@ public class vM0_6_6_Changes {
     }
 
     public static void add_SC2_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.9.2-3", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.9.4", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "inter"), false, null);
+        changes.hardlight(Window.GDX_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(NetIcons.get(NetIcons.GLOBE), ("网络时间同步系统V2"),
+                ("在游戏进入时，会自动同步网络时间，以防止通过修改时间作弊活动。同时修正时差问题。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GREEN_DARK), ("新投武：流光飞刀"),
+                ("修复一些错误。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RED_BLOOD), ("新投武：土木人之怒"),
+                ("修复一些错误。")));
+
+        changes = new ChangeInfo("v0.6.9.2-3", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 

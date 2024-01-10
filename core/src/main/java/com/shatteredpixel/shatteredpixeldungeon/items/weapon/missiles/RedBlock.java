@@ -21,12 +21,6 @@ public class RedBlock extends MissileWeapon {
     }
 
     @Override
-    protected void onThrow(int cell) {
-        super.onThrow(cell);
-        rangedHit(null, cell);
-    }
-
-    @Override
     public int min(int lvl) {
         return level()<1 ? 16 : 8 + (level() * 2) ;
     }

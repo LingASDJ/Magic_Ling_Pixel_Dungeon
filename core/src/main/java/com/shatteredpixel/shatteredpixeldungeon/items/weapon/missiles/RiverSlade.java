@@ -11,13 +11,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 
 import java.util.ArrayList;
@@ -70,21 +68,21 @@ public class RiverSlade extends MissileWeapon {
 
     @Override
     protected void onThrow(int cell) {
-        super.onThrow(cell);
+        if (Dungeon.level.pit[cell]){
+            super.onThrow(cell);
+            return;
+        }
 
+        rangedHit( null, cell );
+        Dungeon.level.pressCell(cell);
         ArrayList<Char> targets = new ArrayList<>();
         if (Actor.findChar(cell) != null) targets.add(Actor.findChar(cell));
+
         for (int i : PathFinder.NEIGHBOURS5){
             if (Actor.findChar(cell + i) != null){
                 Buff.prolong( Actor.findChar(cell + i), Blindness.class, 4+(level()/4f) );
             }
             GameScene.flash(0x80808080);
-        }
-
-        if(durability > 0 && durability <= durabilityPerUse()){
-            rangedMiss(cell);
-        } else {
-            decrementDurability();
         }
 
 
@@ -96,9 +94,6 @@ public class RiverSlade extends MissileWeapon {
                 GLog.n(Messages.get(this, "ondeath"));
             }
         }
-
-        WandOfBlastWave.BlastWave.blast(cell);
-        Sample.INSTANCE.play( Assets.Sounds.BLAST );
     }
 
     @Override
@@ -117,7 +112,6 @@ public class RiverSlade extends MissileWeapon {
                     return;
                 }
             }
-            Dungeon.level.drop( d, enemy.pos ).sprite.drop();
         }
     }
 

@@ -38,17 +38,13 @@ import com.watabou.utils.GameMath;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 
-import org.apache.commons.net.ntp.NTPUDPClient;
-import org.apache.commons.net.ntp.TimeInfo;
-import org.apache.commons.net.ntp.TimeStamp;
-
 import java.io.IOException;
-import java.net.InetAddress;
-import java.time.Clock;
-import java.time.Duration;
-import java.time.Instant;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class TitleScene extends PixelScene {
 	public static boolean Reusable = false;
@@ -76,21 +72,20 @@ public class TitleScene extends PixelScene {
 		boolean whiteDaymode = currentHour > 7 && currentHour < 22;
 
 		try {
-			NTPUDPClient timeClient = new NTPUDPClient();
-			String timeServerUrl = "ntp.aliyun.com";
-			InetAddress timeServerAddress = InetAddress.getByName(timeServerUrl);
-			TimeInfo timeInfo = timeClient.getTime(timeServerAddress);
-			TimeStamp timeStamp = timeInfo.getMessage().getTransmitTimeStamp();
+			//NTP服务器有严重延迟 直接使用百度的地址进行监测
+			URL url = new URL("https://www.baidu.com");
+			URLConnection conn = url.openConnection();
+			conn.connect();
+			long dateL = conn.getDate();
+			Date onlineDate = new Date(dateL);
 
-			@SuppressWarnings("NewApi")
-			Instant ntpInstant = Instant.ofEpochMilli(timeStamp.getDate().getTime());
-			@SuppressWarnings("NewApi")
-			Clock systemClock = Clock.systemDefaultZone();
-			@SuppressWarnings("NewApi")
-			Instant systemInstant = Instant.now(systemClock);
+			Date localDate = new Date(); // 获取本地时间
+			String strDateFormat = "yyyy-MM-dd";
+			SimpleDateFormat dateFormat = new SimpleDateFormat(strDateFormat, Locale.getDefault());
+			String onlineTimeStr = dateFormat.format(onlineDate); // 在线时间的字符串表示
+			String localTimeStr = dateFormat.format(localDate); // 本地时间的字符串表示
 
-			// NTP协同验证
-			if (ntpInstant.equals(systemInstant) || Math.abs(Duration.between(ntpInstant, systemInstant).toMillis()) < 1000) {
+			if (onlineTimeStr.equals(localTimeStr)) {
 				if(Random.Int(10) == 1 && !NightDay && !whiteDaymode){
 					NightDay = true;
 				} else if(Badges.isUnlocked(Badges.Badge.VICTORY) && Random.Int(10) == 1 && !Reusable){
@@ -236,21 +231,22 @@ public class TitleScene extends PixelScene {
 			protected void onClick() {
 				if(NTP_ERROR) {
 					try {
-						NTPUDPClient timeClient = new NTPUDPClient();
-						String timeServerUrl = "ntp.aliyun.com";
-						InetAddress timeServerAddress = InetAddress.getByName(timeServerUrl);
-						TimeInfo timeInfo = timeClient.getTime(timeServerAddress);
-						TimeStamp timeStamp = timeInfo.getMessage().getTransmitTimeStamp();
+						//NTP服务器有严重延迟 直接使用百度的地址进行监测
+						URL url = new URL("https://www.baidu.com");
+						URLConnection conn = url.openConnection();
+						conn.connect();
+						long dateL = conn.getDate();
+						Date onlineDate = new Date(dateL);
 
-						@SuppressWarnings("NewApi")
-						Instant ntpInstant = Instant.ofEpochMilli(timeStamp.getDate().getTime());
-						@SuppressWarnings("NewApi")
-						Clock systemClock = Clock.systemDefaultZone();
-						@SuppressWarnings("NewApi")
-						Instant systemInstant = Instant.now(systemClock);
+						Date localDate = new Date(); // 获取本地时间
+						String strDateFormat = "yyyy-MM-dd";
+						SimpleDateFormat dateFormat = new SimpleDateFormat(strDateFormat, Locale.getDefault());
+						String onlineTimeStr = dateFormat.format(onlineDate); // 在线时间的字符串表示
+						String localTimeStr = dateFormat.format(localDate); // 本地时间的字符串表示
+
 						ShatteredPixelDungeon.scene().add(new WndHardNotification(NetIcons.get(NetIcons.ALERT),
 								Messages.get(this, "ntp_error"),
-								Messages.get(this, "ntp_desc", systemInstant.getNano(), ntpInstant.getNano()),
+								Messages.get(this, "ntp_desc", onlineTimeStr, localTimeStr),
 								Messages.get(this, "ok"),
 								0) {
 							@Override
