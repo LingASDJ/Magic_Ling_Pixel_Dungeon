@@ -181,7 +181,7 @@ public class WndDragonGirlBlue extends Window {
         }
 
         if(DragonGirlBlue.Quest.one_used_points == 3 && DragonGirlBlue.Quest.two_used_points ==3) {
-            int UpgradePoint = 1000;
+            int UpgradePoint = 500;
             int OtherPoint = 400;
 
             RedButton pro = new RedButton(Messages.get(this, "pro", OtherPoint), 6){
@@ -240,7 +240,7 @@ public class WndDragonGirlBlue extends Window {
 
                 }
             };
-            upgrade.enable( DragonGirlBlue.Quest.survey_research_points>=UpgradePoint);
+            upgrade.enable( DragonGirlBlue.Quest.survey_research_points>=UpgradePoint && DragonGirlBlue.Quest.three_used_points == 2);
             buttons.add(upgrade);
 
         }
@@ -280,7 +280,7 @@ public class WndDragonGirlBlue extends Window {
         public void onSelect(Item item) {
             if (item != null) {
                 item.upgrade(Random.Int(1,4));
-                int upgradeCost = 1000;
+                int upgradeCost = 500;
                 DragonGirlBlue.Quest.survey_research_points -= upgradeCost;
                 DragonGirlBlue.Quest.three_used_points++;
 

@@ -120,6 +120,8 @@ public class CityLevel extends RegularLevel {
 				return Messages.get(CityLevel.class, "water_name");
 			case Terrain.HIGH_GRASS:
 				return Messages.get(CityLevel.class, "high_grass_name");
+			case Terrain.STATUE:case Terrain.STATUE_SP:
+				return Messages.get(CityLevel.class, "statue_name");
 			default:
 				return super.tileName( tile );
 		}

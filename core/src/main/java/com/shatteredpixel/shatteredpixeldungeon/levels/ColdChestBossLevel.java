@@ -371,6 +371,7 @@ public class ColdChestBossLevel extends Level {
                         if (pro == START && boss.HP <= 360) {
                             //动态修改整个房间
                             changeMap(MazeRoom);
+                            Buff.detach(hero, Levitation.class);
                             //宝箱王移动到看戏位
                             ScrollOfTeleportation.appear(boss, MDX);
                             //玩家移动到初始位

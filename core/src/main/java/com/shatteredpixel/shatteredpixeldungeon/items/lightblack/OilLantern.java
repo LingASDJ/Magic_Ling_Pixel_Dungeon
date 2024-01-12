@@ -14,8 +14,11 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.MagicFlamePart
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.MovieClip;
+import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -57,13 +60,6 @@ public class OilLantern extends Artifact {
         charge = 100 - (chCount>=6 ? chCount*4 : 0);
         defaultAction = AC_LIGHT;
     }
-
-    //TODO 仍然有问题
-//    public ItemSprite itemSprite() {
-//        ItemSprite sprite = new LS();
-//        sprite.setPos(0, 0);
-//        return sprite;
-//    }
 
     public void updateSprite() {
         this.image = isActivated() ? ItemSpriteSheet.LANTERNB : ItemSpriteSheet.LANTERNA;

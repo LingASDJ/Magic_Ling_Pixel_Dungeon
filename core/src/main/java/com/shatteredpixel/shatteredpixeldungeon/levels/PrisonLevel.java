@@ -174,6 +174,8 @@ public class PrisonLevel extends RegularLevel {
 		switch (tile) {
 			case Terrain.WATER:
 				return Messages.get(PrisonLevel.class, "water_name");
+			case Terrain.STATUE:case Terrain.STATUE_SP:
+				return Messages.get(PrisonLevel.class, "statue_name");
 			default:
 				return super.tileName( tile );
 		}
@@ -182,6 +184,9 @@ public class PrisonLevel extends RegularLevel {
 	@Override
 	public String tileDesc(int tile) {
 		switch (tile) {
+			case Terrain.STATUE:
+			case Terrain.STATUE_SP:
+				return Messages.get(PrisonLevel.class, "statue_desc");
 			case Terrain.EMPTY_DECO:
 				return Messages.get(PrisonLevel.class, "empty_deco_desc");
 			case Terrain.BOOKSHELF:

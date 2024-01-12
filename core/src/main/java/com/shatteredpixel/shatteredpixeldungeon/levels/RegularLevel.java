@@ -86,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PumpkinRoom
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.RandomRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.WeakFloorRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BigEyeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.CoinRoom;
@@ -374,13 +375,16 @@ public abstract class RegularLevel extends Level {
 			if (s instanceof PitRoom) specials++;
 			initRooms.add(s);
 		}
-		
-		int secrets = SecretRoom.secretsForFloor(Dungeon.depth);
-		//one additional secret for secret levels
-		if (feeling == Feeling.SECRETS && depth < 26) secrets++;
-		for (int i = 0; i < secrets; i++) {
-			initRooms.add(SecretRoom.createRoom());
+
+		if(depth<26){
+			int secrets = SecretRoom.secretsForFloor(Dungeon.depth);
+			if (feeling == Feeling.SECRETS && depth < 26) secrets++;
+			for (int i = 0; i < secrets; i++) {
+				initRooms.add(SecretRoom.createRoom());
+			}
 		}
+
+
 		
 		return initRooms;
 	}

@@ -31,8 +31,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.MovieClip;
+import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
@@ -48,6 +51,21 @@ public class RandomChest  extends Item {
         image = ItemSpriteSheet.RANDOM_CHEST;
         defaultAction = AC_AAT;
         bones = true;
+        animation = false;
+    }
+
+    @Override
+    public void frames(ItemSprite itemSprite){
+        itemSprite.texture(Assets.Sprites.MIMIC);
+        TextureFilm frames = new TextureFilm(itemSprite.texture, 16, 16);
+        MovieClip.Animation idle = new MovieClip.Animation(5, true);
+        idle.frames( frames,2,2,2,3,3);
+        itemSprite.play(idle);
+    }
+
+    @Override
+    public ItemSprite.Glowing glowing() {
+        return new ItemSprite.Glowing(0x880000, 6f);
     }
 
     @Override

@@ -59,7 +59,6 @@ public class TitleScene extends PixelScene {
 
 	public static boolean NTP_NOINTER_VEFY = false;
 
-	@SuppressWarnings("NewApi")
 	@Override
 	public void create() {
 		super.create();

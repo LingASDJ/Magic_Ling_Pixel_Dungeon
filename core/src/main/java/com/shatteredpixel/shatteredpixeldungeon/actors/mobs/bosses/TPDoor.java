@@ -6,16 +6,26 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BloodBat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.Pets;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TPDoorSprites;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.tweeners.Delayer;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
@@ -94,6 +104,44 @@ public class TPDoor extends Boss {
                         break;
                 }
                 ScrollOfTeleportation.appear(this, pos);
+                Buff.affect( enemy, MindVision.class, 1f );
+                enemy.sprite.jump(hero.pos, pos, new Callback() {
+                    @Override
+                    public void call() {
+                        Dungeon.level.occupyCell(hero);
+                        Dungeon.observe();
+                        GameScene.updateFog();
+                        Dungeon.level.occupyCell(hero);
+                        Dungeon.observe();
+                        GameScene.updateFog();
+
+                        Camera.main.shake(2, 0.5f);
+
+                        hero.spendAndNext(1);
+                        ScrollOfTeleportation.appear(hero, hero.pos);
+                        int doorPos = 918;
+
+                        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                            if (	mob instanceof Pets ||
+                                    mob instanceof DriedRose.GhostHero ||
+                                    mob instanceof BloodBat ||
+                                    mob instanceof SpiritHawk.HawkAlly) {
+                                ScrollOfTeleportation.appear(mob, doorPos);
+                            }
+                        }
+                    }
+                });
+                GameScene.scene.add(new Delayer(0.1f){
+                    @Override
+                    protected void onComplete() {
+                        GameScene.scene.add(new Delayer(2f){
+                            @Override
+                            protected void onComplete() {
+                                Buff.affect( hero, Paralysis.class, 5f);
+                            }
+                        });
+                    }
+                });
                 kill = 0;
             }
         } else {
@@ -106,9 +154,9 @@ public class TPDoor extends Boss {
                     public void call() {
                                 GameScene.show(new WndOptions(new DimandKingSprite(),
                                 Messages.titleCase(Messages.get(DiamondKnight.class, "name")),
-                                Messages.get(this, "quest_tengu_prompt"),
-                                Messages.get(this, "enter_yes"),
-                                Messages.get(this, "enter_no")) {
+                                Messages.get(TPDoor.class, "quest_tengu_prompt"),
+                                Messages.get(TPDoor.class, "enter_yes"),
+                                Messages.get(TPDoor.class, "enter_no")) {
                             @Override
                             protected void onSelect(int index) {
                                 if (index == 0) {
