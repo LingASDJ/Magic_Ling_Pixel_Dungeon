@@ -27,14 +27,19 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.RegrowthBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ShockBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ShrapnelBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.WoollyBomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.Books;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.BrokenBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.DeepBloodBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.GrassKingBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.HellFireBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.IceCityBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.NoKingMobBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.TestBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.DeYiZiBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.MoneyMoreBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.PinkRandomBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.questbookslist.DimandBook;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.questbookslist.HollowCityBook;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
@@ -257,7 +262,8 @@ public class SpawnMisc extends TestItem {
             case 8: return idToSpecialPotion(id);
             case 9: return idToSpell(id);
             case 10: return idToFood(id);
-            case 11: default: return idToMisc(id);
+            case 11: return idToBook(id);
+            case 12: default: return idToMisc(id);
         }
     }
 
@@ -274,7 +280,8 @@ public class SpawnMisc extends TestItem {
             case 8: return ItemSpriteSheet.BREW_CAUSTIC;
             case 9: return ItemSpriteSheet.PHASE_SHIFT;
             case 10: return ItemSpriteSheet.RATION;
-            case 11: default: return ItemSpriteSheet.CHEST;
+            case 11: return ItemSpriteSheet.MASTERY;
+            case 12: default: return ItemSpriteSheet.CHEST;
         }
     }
 
@@ -536,16 +543,26 @@ public class SpawnMisc extends TestItem {
             case 18: return MIME.GOLD_FIVE.class;
             case 19: return OilPotion.class;
 
-            case 20: return MagicGirlBooks.class;
-            case 21: return BrokenBooks.class;
-            case 22: return GrassKingBooks.class;
-            case 23: return IceCityBooks.class;
-            case 24: return NoKingMobBooks.class;
-            case 25: return HollowCityBook.class;
-            case 26: return DeepBloodBooks.class;
-            case 27: return DimandBook.class;
-            case 28: return TestBooks.class;
-            case 29: return YellowSunBooks.class;
+            case 20: return TestBooks.class;
+        }
+    }
+
+    private Class<? extends Books> idToBook(int id){
+        switch (id){
+            case 0: return MagicGirlBooks.class;
+            case 1: return BrokenBooks.class;
+            case 2: return GrassKingBooks.class;
+            case 3: return IceCityBooks.class;
+            case 4: return NoKingMobBooks.class;
+            case 5: return HollowCityBook.class;
+            case 6: return DeepBloodBooks.class;
+            case 7: return DimandBook.class;
+            case 8: return DeYiZiBooks.class;
+            case 9: return MoneyMoreBooks.class;
+            case 10: return PinkRandomBooks.class;
+            case 11: return  HellFireBooks.class;
+            default:
+            case 12: return YellowSunBooks.class;
         }
     }
 
@@ -568,14 +585,16 @@ public class SpawnMisc extends TestItem {
             case 10:
                 return 17;
             case 11:
-                return 29;
+                return 12;
+            case 12:
+                return 20;
             default:
                 return 11;
         }
     }
 
     private int maxCategory(){
-        return 11;
+        return 12;
     }
 
     private static ArrayList<Class<? extends Potion>> potionList = new ArrayList<>();
@@ -589,6 +608,7 @@ public class SpawnMisc extends TestItem {
     private static ArrayList<Class<? extends Potion>> brewList = new ArrayList<>();
     private static ArrayList<Class<? extends Spell>> spellList = new ArrayList<>();
     private static ArrayList<Class<? extends Food>> foodList = new ArrayList<>();
+    private static ArrayList<Class<? extends Books>> bookList = new ArrayList<>();
     private static ArrayList<Class<? extends Item>> miscList = new ArrayList<>();
 
     private void buildList() {
@@ -657,8 +677,14 @@ public class SpawnMisc extends TestItem {
             }
         }
 
-        if(miscList.isEmpty()){
+        if(bookList.isEmpty()){
             for(int i=0; i<maxIndex(11)+1; ++i){
+                bookList.add(idToBook(i));
+            }
+        }
+
+        if(miscList.isEmpty()){
+            for(int i=0; i<maxIndex(12)+1; ++i){
                 miscList.add(idToMisc(i));
             }
         }
@@ -731,7 +757,7 @@ public class SpawnMisc extends TestItem {
         private void createCategoryImage(){
             float left;
             float top = GAP + TITLE_BTM;
-            int length = 12;
+            int length = 13;
             int maxImageCount = 6;
             for (int i = 0; i < length; ++i) {
                 final int j = i;
@@ -764,7 +790,7 @@ public class SpawnMisc extends TestItem {
 
         private void createImage() {
             float left;
-            float top = TITLE_BTM + 4*GAP + 2*BTN_SIZE + 3;
+            float top = GAP + cateButtonList.get(cateButtonList.size() - 1 ).bottom() + 2 * GAP;
             int length = maxIndex(cateSelected)+1;
             int maxImageCount = 6;
             for (int i = 0; i < length; ++i) {
@@ -852,7 +878,13 @@ public class SpawnMisc extends TestItem {
                         im.scale.set(1.0f);
                         btn.icon(im);
                     } break;
-                    case 11: default:{
+                    case 11:{
+                        Image im = new Image(Assets.Sprites.ITEMS);
+                        im.frame(ItemSpriteSheet.film.get(Objects.requireNonNull(Reflection.newInstance(bookList.get(i))).image));
+                        im.scale.set(1.0f);
+                        btn.icon(im);
+                    } break;
+                    case 12: default:{
                         Image im = new Image(Assets.Sprites.ITEMS);
                         im.frame(ItemSpriteSheet.film.get(Objects.requireNonNull(Reflection.newInstance(miscList.get(i))).image));
                         im.scale.set(1.0f);

@@ -245,7 +245,7 @@ public class SpawnRingOrWand extends TestItem {
         private void layout() {
             OptionSlider_category.setRect(0, GAP, WIDTH, 24);
             Button_Level.setPos(0, OptionSlider_category.bottom() + 3 * GAP + 2 * BTN_SIZE);
-            Button_Level.setRect(0, OptionSlider_category.bottom() + 3 * GAP + 2 * BTN_SIZE * 1.1f , WIDTH, 24);
+            Button_Level.setRect(0, IconButtons.get(IconButtons.size() - 1).bottom() + GAP + 2 * GAP , WIDTH, 24);
             CheckBox_curse.setRect(0, Button_Level.bottom() + GAP, WIDTH, 18);
             RedButton_create.setRect(0, CheckBox_curse.bottom()+GAP, WIDTH, 16);
             resize(WIDTH, (int) RedButton_create.bottom() + GAP);
@@ -280,9 +280,8 @@ public class SpawnRingOrWand extends TestItem {
         private void createImage() {
             float left;
             float top = GAP + OptionSlider_category.bottom();
-            int placed = 0;
             int length = (category == RING_CAT ? ringList.size() : (category == WAND_CAT ? wandList.size() : 0));
-            int firstRow = (length % 2 == 0 ? length / 2 : (length / 2 + 1));
+            int maxImageCount = 6;
             for (int i = 0; i < length; ++i) {
                 final int j = i;
                 IconButton btn = new IconButton() {
@@ -305,15 +304,10 @@ public class SpawnRingOrWand extends TestItem {
                     btn.icon(im);
                 }
 
-                if (i < firstRow) {
-                    left = (WIDTH - BTN_SIZE * firstRow) / 2f;
-                    btn.setRect(left + placed * BTN_SIZE, top, BTN_SIZE, BTN_SIZE);
-                } else {
-                    left = (WIDTH - BTN_SIZE * (length-firstRow)) / 2f;
-                    btn.setRect(left + (placed - firstRow) * BTN_SIZE, top + GAP + BTN_SIZE, BTN_SIZE, BTN_SIZE);
-                }
+                left = (WIDTH - BTN_SIZE * maxImageCount) / 2f;
+                int line = i / maxImageCount;
+                btn.setRect(left + (i - maxImageCount * line) * BTN_SIZE, top + GAP * line + BTN_SIZE * line, BTN_SIZE, BTN_SIZE);
                 add(btn);
-                placed++;
                 IconButtons.add(btn);
             }
         }
