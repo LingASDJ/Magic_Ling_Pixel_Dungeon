@@ -136,7 +136,9 @@ public class DragonGirlBlue extends NTNPC{
                 });
                 return false;
             }
-        } else if(DragonGirlBlue.Quest.survey_research_points != 0) {
+        } else if(DragonGirlBlue.Quest.survey_research_points == 0) {
+            yell(Messages.get(DragonGirlBlue.class,"no_anymore"));
+        } else {
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {
@@ -144,8 +146,6 @@ public class DragonGirlBlue extends NTNPC{
                     GameScene.show(new WndDragonGirlBlue(DragonGirlBlue.this, Dungeon.hero));
                 }
             });
-        } else {
-            yell(Messages.get(DragonGirlBlue.class,"no_anymore"));
         }
 
         return true;

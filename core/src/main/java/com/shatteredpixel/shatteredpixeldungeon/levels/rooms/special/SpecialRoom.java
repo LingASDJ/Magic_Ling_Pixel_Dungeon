@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.YinYangRoom;
 import com.watabou.utils.Bundle;
@@ -82,7 +83,7 @@ public abstract class SpecialRoom extends Room {
 
 	//9 special rooms which give equipment more often than consumables (or as often as)
 	private static final ArrayList<Class<? extends SpecialRoom>> EQUIP_SPECIALS = new ArrayList<>( Arrays.asList(
-			(Dungeon.depth == 17 && Dungeon.branch == 5) ? GardenRoom.class : WeakFloorRoom.class, CryptRoom.class, PoolRoom.class, ArmoryRoom.class, SentryRoom.class,
+			WeakFloorRoom.class, CryptRoom.class, PoolRoom.class, ArmoryRoom.class, SentryRoom.class,
 			StatueRoom.class, CrystalVaultRoom.class, CrystalChoiceRoom.class, SacrificeRoom.class,
 			YinYangRoom.class
 	));
@@ -184,7 +185,7 @@ public abstract class SpecialRoom extends Room {
 
 			Room r = Reflection.newInstance(floorSpecials.get( index ));
 
-			if (r instanceof WeakFloorRoom){
+			if (r instanceof WeakFloorRoom && Dungeon.branch == 0){
 				pitNeededDepth = Dungeon.depth + 1;
 			}
 			

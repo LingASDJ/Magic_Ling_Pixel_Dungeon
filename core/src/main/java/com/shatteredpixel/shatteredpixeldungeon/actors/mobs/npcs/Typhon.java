@@ -115,35 +115,36 @@ public class Typhon extends NTNPC {
                     mob.sprite.jump(46, 356, 95, 12f,new Callback() {
                         @Override
                         public void call() {
-                            // This is Project,Shuold May be Can Work...
-
-
-                            mob.sprite.parent.add(new Chains(FirstPos[0], EndPos[0], Effects.Type.RED_CHAIN,null));
-
-                            mob.sprite.parent.add(new Chains(FirstPos[1], EndPos[1], Effects.Type.RED_CHAIN,null));
-
-                            mob.sprite.parent.add(new Chains(FirstPos[2], EndPos[2], Effects.Type.RED_CHAIN, null));
-
-                            mob.sprite.parent.add(new Chains(FirstPos[3], EndPos[3], Effects.Type.RED_CHAIN, null));
-
-                            mob.sprite.parent.add(new Chains(FirstPos[0], EndPos[1], Effects.Type.RED_CHAIN, null));
-
-                            mob.sprite.parent.add(new Chains(FirstPos[1], EndPos[2], Effects.Type.RED_CHAIN, null));
-
-                            mob.sprite.parent.add(new Chains(FirstPos[2], EndPos[0], Effects.Type.RED_CHAIN,null));
-
-                            mob.sprite.parent.add(new Chains(FirstPos[3], EndPos[0], Effects.Type.RED_CHAIN,new Callback() {
+                            Game.runOnRenderThread(new Callback() {
                                 @Override
                                 public void call() {
-                                    GameScene.flash(Window.Pink_COLOR);
-                                    DiedStorm(mob);
-                                    mob.die(null);
-                                    yell(Messages.get(Typhon.class,"dog_home"));
-                                    Buff.detach(mob, BruteBot.BruteBotRage.class);
+                                    // This is Project,Shuold May be Can Work...
+                                    mob.sprite.parent.add(new Chains(FirstPos[0], EndPos[0], Effects.Type.RED_CHAIN,null));
+
+                                    mob.sprite.parent.add(new Chains(FirstPos[1], EndPos[1], Effects.Type.RED_CHAIN,null));
+
+                                    mob.sprite.parent.add(new Chains(FirstPos[2], EndPos[2], Effects.Type.RED_CHAIN, null));
+
+                                    mob.sprite.parent.add(new Chains(FirstPos[3], EndPos[3], Effects.Type.RED_CHAIN, null));
+
+                                    mob.sprite.parent.add(new Chains(FirstPos[0], EndPos[1], Effects.Type.RED_CHAIN, null));
+
+                                    mob.sprite.parent.add(new Chains(FirstPos[1], EndPos[2], Effects.Type.RED_CHAIN, null));
+
+                                    mob.sprite.parent.add(new Chains(FirstPos[2], EndPos[0], Effects.Type.RED_CHAIN,null));
+
+                                    mob.sprite.parent.add(new Chains(FirstPos[3], EndPos[0], Effects.Type.RED_CHAIN,new Callback() {
+                                        @Override
+                                        public void call() {
+                                            GameScene.flash(Window.Pink_COLOR);
+                                            DiedStorm(mob);
+                                            mob.die(null);
+                                            yell(Messages.get(Typhon.class,"dog_home"));
+                                            Buff.detach(mob, BruteBot.BruteBotRage.class);
+                                        }
+                                    }));
                                 }
-                            }));
-
-
+                            });
                         }
                     });
                 }

@@ -71,7 +71,6 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
                 3){
             @Override
             public void hide() {
-                super.hide();
                 ShatteredPixelDungeon.switchNoFade(TitleScene.class);
             }
         });
@@ -150,7 +149,6 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
                     0){
                 @Override
                 public void hide() {
-                    super.hide();
                     ShatteredPixelDungeon.switchNoFade(TitleScene.class);
                 }
             });
@@ -338,7 +336,7 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
                     }
 
                     public void onBackPressed() {
-                        //
+                        ShatteredPixelDungeon.switchNoFade(TitleScene.class);
                     }
                 });
 

@@ -122,9 +122,9 @@ public class Chasm implements Hero.Doom {
 		if (Dungeon.hero.isAlive() && Dungeon.branch == 0 && Dungeon.depth!=30) {
 			Dungeon.hero.interrupt();
 			InterlevelScene.mode = InterlevelScene.Mode.FALL;
-			if (Dungeon.level instanceof RegularLevel) {
+			if (Dungeon.level instanceof RegularLevel && Dungeon.branch == 0){
 				Room room = ((RegularLevel)Dungeon.level).room( pos );
-				InterlevelScene.fallIntoPit = room != null && room instanceof WeakFloorRoom;
+				InterlevelScene.fallIntoPit = room instanceof WeakFloorRoom;
 			} else {
 				InterlevelScene.fallIntoPit = false;
 			}

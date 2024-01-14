@@ -135,11 +135,14 @@ public class PathFinder {
 			for (int i=0; i < dir.length; i++) {
 				
 				int n = s + dir[i];
-				
-				int thisD = distance[n];
-				if (thisD < minD) {
-					minD = thisD;
-					mins = n;
+				try {
+					int thisD = distance[n];
+					if (thisD < minD) {
+						minD = thisD;
+						mins = n;
+					}
+				} catch (ArrayIndexOutOfBoundsException e) {
+					System.out.println("ArrayIndex-Error");
 				}
 			}
 			s = mins;

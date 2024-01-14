@@ -40,6 +40,7 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.NoosaScript;
+import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.PointF;
@@ -94,7 +95,6 @@ public class ItemSprite extends MovieClip {
 	
 	public ItemSprite( int image, Glowing glowing ) {
 		super( Assets.Sprites.ITEMS );
-		
 		view(image, glowing);
 	}
 	
@@ -195,6 +195,11 @@ public class ItemSprite extends MovieClip {
 			parent.add( emitter );
 			this.emitter = emitter;
 		}
+
+		if(item.animation){
+			item.frames(this);
+		}
+
 		return this;
 	}
 	

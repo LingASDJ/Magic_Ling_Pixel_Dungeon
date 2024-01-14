@@ -113,7 +113,42 @@ public class vM0_6_6_Changes {
     }
 
     public static void add_SC2_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.6.9.4", true, "");
+
+        ChangeInfo changes = new ChangeInfo("v0.6.9.5", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        Image issxsaxs =new DimandKingSprite();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs, ("拟态之王"),
+                ("现在拟态之王二阶段进行了一些优化，并且神秘传送门也进行了一些调整。")));
+
+        changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_COLD, 48, 80, 16
+                , 16), "雕像优化",
+                "现在前三区的雕像有独立描述。"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分无用音乐删除\n" +
+                        "3.部分细节优化更新\n" +
+                        "4.部分界面优化迭代\n" +
+                        "5.字体数据源更新")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "修复了以下Bug:\n\n" +
+                        "1.修复了跳楼房相关问题\n" +
+                        "2.修复了30层的一些崩溃错误"
+        ));
+
+        changes = new ChangeInfo("v0.6.9.4", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -204,9 +239,9 @@ public class vM0_6_6_Changes {
         changes.addButton(new ChangeButton(new RedDragonSprite(), ("红龙之王"),
                 ("现在红龙之王的奖励窗口不能被动关闭，并且UI进行一些调整。")));
 
-        Image issxsaxs =new DimandKingSprite();
-        issxsaxs.scale.set(PixelScene.align(0.8f));
-        changes.addButton(new ChangeButton(issxsaxs, ("拟态之王"),
+        Image issxsaxss =new DimandKingSprite();
+        issxsaxss.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxss, ("拟态之王"),
                 ("现在拟态之王二阶段进行了一些优化，并且神秘传送门也进行了一些调整。")));
 
         changes.addButton(new ChangeButton(new FrankensteinSprite(), ("怪物调整：未尽梦偶"),
