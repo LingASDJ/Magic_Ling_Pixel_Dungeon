@@ -31,11 +31,11 @@ public class MagicFire extends Blob {
             for(Item item : Dungeon.level.heaps.get(pos).items){
                 if(item instanceof Armor){
                     ((Armor) item).inscribe(Armor.Glyph.random());
-                }
-                if(item instanceof Weapon){
+                    GLog.p(Messages.get(MagicFire.class, "good")+item.name()+"\n");
+                }else if(item instanceof Weapon){
                     ((Weapon) item).enchant(Weapon.Enchantment.random());
+                    GLog.p(Messages.get(MagicFire.class, "good")+item.name()+"\n");
                 }
-                GLog.p(Messages.get(MagicFire.class, "good")+item.name()+"\n");
             }
         }
     }
