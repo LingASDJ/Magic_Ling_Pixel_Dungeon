@@ -278,13 +278,9 @@ public class ScrollOfTeleportation extends Scroll {
 
 		ch.sprite.interruptMotion();
 
-		if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[ch.pos]){
-			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
-		}
+		Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 
-		if (Dungeon.level.heroFOV[ch.pos] && ch != Dungeon.hero ) {
-			CellEmitter.get(ch.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
-		}
+		CellEmitter.get(ch.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
 
 		ch.move( pos, false );
 		if (ch.pos == pos) {

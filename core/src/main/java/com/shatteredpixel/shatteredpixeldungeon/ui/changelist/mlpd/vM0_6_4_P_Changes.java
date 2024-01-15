@@ -574,7 +574,7 @@ public class vM0_6_4_P_Changes {
         changes.hardlight(Window.GREEN_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 48, 16
+        changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 80, 16
                 , 16), "房间改动",
                 "全新房间：慧眼墓碑房/太极八卦房加入"));
 

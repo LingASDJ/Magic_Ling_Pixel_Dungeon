@@ -27,14 +27,15 @@ public enum Languages {
 	CHINESE("中文",      "",   Status.REVIEWED,  null, null),
 	ENGLISH("English",          "en", Status.INCOMPLETE, new String[]{"JDSALing","Catand"},
 			new String[]{"Noodlemire","Aeonius"}),
-	HARDCHINESE("繁體中文","zh-TW", Status.INCOMPLETE, new String[]{"JDSALing"},
-			new String[]{"那些回忆","冷群"}),
-	RUSSIAN("Russian", "ru", Status.INCOMPLETE, new String[]{"JDSALing"},null),
+	HARDCHINESE("繁體中文","chk", Status.UNREVIEWED, new String[]{"Sotis"},
+			new String[]{"那些回忆","冷群","JDSALing"}),
+	RUSSIAN("Russian", "ru", Status.INCOMPLETE, new String[]{"JDSALing"},new String[]{"Dominowood371"}),
 	JAPANESE("日本語","ja", Status.INCOMPLETE, new String[]{"JDSALing","Gosamaru","FromBeyond"}, new String[]{
 			"Gosamaru",
 			"Otogiri",
 			"Siraore_Rou", "amama",
-			"daingewuvzeevisiddfddd", "kiyofumimanabe", "librada", "mocklike", "tomofumikitano"});
+			"daingewuvzeevisiddfddd", "kiyofumimanabe", "librada", "mocklike", "tomofumikitano"}),
+	GREEK("ελληνικά",       "el", Status.INCOMPLETE, new String[]{"Aeonius", "JDSALing"}, null);
 
 	public enum Status{
 		//below 80% complete languages are not added.

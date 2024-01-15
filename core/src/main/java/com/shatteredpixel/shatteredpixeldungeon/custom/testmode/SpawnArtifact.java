@@ -180,7 +180,7 @@ public class SpawnArtifact extends TestItem {
         }
 
         private void layout(){
-            RenderedTextBlock_selected.setPos(0, 3*GAP + BTN_SIZE *2);
+            RenderedTextBlock_selected.setPos(0, 3*GAP + BTN_SIZE *3);
             OptionSlider_level.setRect(0, RenderedTextBlock_selected.bottom() + GAP, WIDTH, 24);
             CheckBox_curse.setRect(0, OptionSlider_level.bottom() + GAP, WIDTH, 18);
             RedButton_create.setRect(0, CheckBox_curse.bottom() + GAP, WIDTH, 16);
@@ -206,14 +206,13 @@ public class SpawnArtifact extends TestItem {
                 im.frame(ItemSpriteSheet.film.get(Objects.requireNonNull(Reflection.newInstance(artifactList.get(i))).image));
                 im.scale.set(1f);
                 btn.icon(im);
-                if(i<7) {
-                    left = (WIDTH - BTN_SIZE * 7) / 2f;
-                    btn.setRect(left + placed * BTN_SIZE, top, BTN_SIZE, BTN_SIZE);
-                }
-                else {
-                    left = (WIDTH - BTN_SIZE * 7) / 2f;
-                    btn.setRect(left + (placed-7) * BTN_SIZE, top + GAP + BTN_SIZE, BTN_SIZE, BTN_SIZE);
-                }
+                // Calculate the row and column positions based on the index
+                int row = i / 7;
+                int col = i % 7;
+
+                left = (WIDTH - BTN_SIZE * 7) / 2f;
+                btn.setRect(left + col * BTN_SIZE, top + (row * (GAP + BTN_SIZE)), BTN_SIZE, BTN_SIZE);
+
                 add(btn);
                 placed++;
                 artifactSprites.add(btn);

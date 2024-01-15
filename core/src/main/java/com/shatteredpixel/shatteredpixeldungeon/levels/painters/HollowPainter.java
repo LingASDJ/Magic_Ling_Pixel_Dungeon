@@ -58,17 +58,14 @@ public class HollowPainter extends RegularPainter {
         int mimicCount = 0; // 记录已生成的拟态怪物数量
 
         for (int i = w; i < l - w; i++) {
-            if (map[i] == Terrain.WALL &&
-                    map[i - w] == Terrain.WALL &&
-                    (map[i + w] == Terrain.EMPTY || map[i + w] == Terrain.EMPTY_SP) &&
-                    Random.Int(3) == 0) {
+            if (map[i] == Terrain.DOOR) {
 
                 if (mimicCount >= 1) {
                     continue; // 跳过生成拟态怪物的步骤
                 }
 
                 level.mobs.add(HollowMimic.spawnAt(i, Generator.random(Generator.Category.ARMOR), HollowMimic.class));
-                map[i] = Terrain.CUSTOM_DECO;
+                map[i] = Terrain.EMPTY;
                 mimicCount++; // 增加拟态怪物数量的计数器
             }
         }

@@ -17,7 +17,7 @@ import com.watabou.noosa.audio.Music;
 public class BGMPlayer {
 
 
-    //解决电脑端高质量ogg的闪退问题
+    //解决电脑端高质量ogg的线程安全闪退问题
     public static void playBGM(String name, boolean loop) {
         Game.runOnRenderThread(() -> Music.INSTANCE.play(name, loop));
     }

@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWea
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DragonGirlBlueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -180,7 +181,7 @@ public class WndDragonGirlBlue extends Window {
         }
 
         if(DragonGirlBlue.Quest.one_used_points == 3 && DragonGirlBlue.Quest.two_used_points ==3) {
-            int UpgradePoint = 1000;
+            int UpgradePoint = 500;
             int OtherPoint = 400;
 
             RedButton pro = new RedButton(Messages.get(this, "pro", OtherPoint), 6){
@@ -212,10 +213,34 @@ public class WndDragonGirlBlue extends Window {
             RedButton upgrade = new RedButton(Messages.get(this, "up", UpgradePoint), 6){
                 @Override
                 protected void onClick() {
-                    GameScene.selectItem(new UpgradeSelector());
+
+                    if(DragonGirlBlue.Quest.three_used_points == 2){
+                        GameScene.selectItem(new UpgradeSelector());
+                    } else if(DragonGirlBlue.Quest.three_used_points == 3) {
+                        GameScene.show(new WndOptions(
+                                new DragonGirlBlueSprite(),
+                                Messages.get(DragonGirlBlue.class, "name" ),
+                                Messages.get(DragonGirlBlue.class, "cashout_verify", DragonGirlBlue.Quest.survey_research_points),
+                                Messages.get(DragonGirlBlue.class, "cashout_yes"),
+                                Messages.get(DragonGirlBlue.class, "cashout_no")
+                        ){
+                            @Override
+                            protected void onSelect(int index) {
+                                if (index == 0){
+                                    new Gold(DragonGirlBlue.Quest.survey_research_points/10).doPickUp(Dungeon.hero, Dungeon.hero.pos);
+                                    DragonGirlBlue.Quest.three_used_points++;
+                                    DragonGirlBlue.Quest.survey_research_points = 0;
+                                    hide();
+                                }
+                            }
+                        });
+                    } else if(DragonGirlBlue.Quest.survey_research_points == 0) {
+                        GLog.n(Messages.get(DragonGirlBlue.class,"no_anymore"));
+                    }
+
                 }
             };
-            upgrade.enable( DragonGirlBlue.Quest.three_used_points == 3 && DragonGirlBlue.Quest.survey_research_points>=UpgradePoint);
+            upgrade.enable( DragonGirlBlue.Quest.survey_research_points>=UpgradePoint && DragonGirlBlue.Quest.three_used_points == 2);
             buttons.add(upgrade);
 
         }
@@ -255,7 +280,7 @@ public class WndDragonGirlBlue extends Window {
         public void onSelect(Item item) {
             if (item != null) {
                 item.upgrade(Random.Int(1,4));
-                int upgradeCost = 1000;
+                int upgradeCost = 500;
                 DragonGirlBlue.Quest.survey_research_points -= upgradeCost;
                 DragonGirlBlue.Quest.three_used_points++;
 

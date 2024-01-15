@@ -519,7 +519,7 @@ public class Dungeon {
 		} else {
 			souLeftThisSet = 3 - (LimitedDrops.UPGRADE_SCROLLS.count - (depth / 5) * 3);
 		}
-		if (souLeftThisSet <= 0) return false;
+		if (souLeftThisSet <= 0 || Dungeon.branch != 0) return false;
 
 		int floorThisSet = (depth % 5);
 		//chance is floors left / scrolls left
@@ -607,6 +607,7 @@ public class Dungeon {
 		difficultys =  new Difficulty.HardStorage(SPDSettings.difficulty());
 
 		TitleScene.Reusable = false;
+
 		BloodBat.level = 1;
 
 		TitleScene.NightDay = false;

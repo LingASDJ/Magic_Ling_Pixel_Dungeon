@@ -187,6 +187,9 @@ public class CavesLevel extends RegularLevel {
 	@Override
 	public String tileName( int tile ) {
 		switch (tile) {
+			case Terrain.STATUE:
+			case Terrain.STATUE_SP:
+				return Messages.get(CavesLevel.class, "statue_name");
 			case Terrain.GRASS:
 				return Messages.get(CavesLevel.class, "grass_name");
 			case Terrain.HIGH_GRASS:
@@ -201,6 +204,9 @@ public class CavesLevel extends RegularLevel {
 	@Override
 	public String tileDesc( int tile ) {
 		switch (tile) {
+			case Terrain.STATUE:
+			case Terrain.STATUE_SP:
+				return Messages.get(CavesLevel.class, "statue_desc");
 			case Terrain.ENTRANCE:
 				return Messages.get(CavesLevel.class, "entrance_desc");
 			case Terrain.EXIT:

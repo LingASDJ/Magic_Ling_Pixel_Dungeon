@@ -38,8 +38,6 @@ import com.watabou.utils.PointF;
 
 public class OpenLastLevel extends Level {
 
-
-
     {
         color1 = 0x801500;
         color2 = 0xa68521;
@@ -67,7 +65,7 @@ public class OpenLastLevel extends Level {
 
     private static final int[] code_map = {
             K,K,K,K,K,K,K,K,K,K,K,K,K,
-            W,K,K,K,K,K,K,K,K,K,K,K,W,
+            W,K,K,K,K,K,O,K,K,K,K,K,W,
             W,K,O,O,S,O,O,O,S,O,O,K,W,
             E,E,O,O,O,O,O,O,O,O,O,E,E,
             E,O,X,O,O,O,O,O,O,O,X,O,E,
@@ -114,7 +112,7 @@ public class OpenLastLevel extends Level {
             return false;
         } else if (transition.type == LevelTransition.Type.REGULAR_EXIT) {
             return false;
-        } else if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE) {
+        } else if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE || transition.type == LevelTransition.Type.BRANCH_EXIT) {
             TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
             if (timeFreeze != null) timeFreeze.disarmPresses();
             Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
@@ -145,6 +143,10 @@ public class OpenLastLevel extends Level {
         int exit = 32;
         LevelTransition exitCell = new LevelTransition(this, exit, LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(exitCell);
+
+        int exit2 = 19;
+        LevelTransition exitCell2 = new LevelTransition(this, exit2, LevelTransition.Type.BRANCH_EXIT);
+        transitions.add(exitCell2);
 
         int enter2 = 279;
         LevelTransition entrance2 = new LevelTransition(this, enter2, LevelTransition.Type.BRANCH_ENTRANCE);

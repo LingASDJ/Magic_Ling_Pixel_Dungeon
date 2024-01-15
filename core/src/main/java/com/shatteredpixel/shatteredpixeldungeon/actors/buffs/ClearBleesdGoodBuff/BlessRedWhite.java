@@ -1,7 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
@@ -11,7 +13,6 @@ public class BlessRedWhite extends ClearLanterBuff {
 
     {
         type = buffType.POSITIVE;
-        immunities.addAll(AntiMagic.RESISTS);
     }
 
     public static int level = 0;
@@ -21,17 +22,14 @@ public class BlessRedWhite extends ClearLanterBuff {
     public boolean act() {
         if (target.isAlive()) {
 
+            spend(interval);
             if (level <= 0) {
                 detach();
             }
 
-
-            //effectively 1HP at lvl 0-5, 2HP lvl 6-8, 3HP lvl 9, and 5HP lvl 10.
             target.HP = Math.min( target.HT, target.HP + 1);
             spend(5f);
-
         }
-
         return true;
     }
 

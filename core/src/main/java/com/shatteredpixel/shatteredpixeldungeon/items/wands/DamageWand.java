@@ -70,7 +70,7 @@ public abstract class DamageWand extends Wand{
 	}
 
 	//TODO some naming issues here. Consider renaming this method and externalizing char awareness buff
-	protected static void processSoulMark(Char target, int wandLevel){
+	public static void processSoulMark(Char target, int wandLevel){
 		if (Dungeon.hero.hasTalent(Talent.ARCANE_VISION)) {
 			int dur = 5 + 5*Dungeon.hero.pointsInTalent(Talent.ARCANE_VISION);
 			Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class, dur).charID = target.id();

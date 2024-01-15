@@ -176,6 +176,7 @@ public class InterlevelScene extends PixelScene {
 		else if (loadingDepth <= 15)    loadingAsset = Assets.Interfaces.LOADING_COLD;
 		else if (loadingDepth <= 20)    loadingAsset = Assets.Interfaces.LOADING_CITY;
 		else if (loadingDepth <= 25)    loadingAsset = Assets.Interfaces.LOADING_HALLS;
+		else if (loadingDepth <= 30)    loadingAsset = Assets.Interfaces.LOADING_HOLLOW;
 		else                            loadingAsset = Assets.Interfaces.SHADOW;
 
 		//场景过渡速度
@@ -528,7 +529,13 @@ public class InterlevelScene extends PixelScene {
 				level.map[Dungeon.hero.pos] = Terrain.GRASS;
 			}
 			Dungeon.hero.resurrect();
-			level.drop(new LostBackpack(), invPos);
+
+			if(Statistics.ankhToExit){
+				level.drop(new LostBackpack(), level.entrance());
+			} else {
+				level.drop(new LostBackpack(), invPos);
+			}
+
 		}
 
 		Dungeon.switchLevel( level, Dungeon.hero.pos );

@@ -29,8 +29,8 @@ public class BlessGoRead extends ClearLanterBuff {
             }
             if(hero.lanterfire > 90 && !Statistics.noGoReadHungry) {
                 //effectively 1HP at lvl 0-5, 2HP lvl 6-8, 3HP lvl 9, and 5HP lvl 10.
-                target.HP = Math.min( target.HT, target.HP + 2);
-                spend(3f);
+                target.HP = Math.min( target.HT, target.HP + 1);
+                spend(7f);
             }
 
 

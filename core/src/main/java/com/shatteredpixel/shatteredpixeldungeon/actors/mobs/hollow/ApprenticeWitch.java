@@ -29,7 +29,7 @@ public class ApprenticeWitch extends Elemental.FireElemental {
     {
         spriteClass = ApprenticeWitchSprite.class;
 
-        baseSpeed = 1.2f;
+        baseSpeed = 1.9f;
         HP = HT = 120;
 
         defenseSkill = 24;
@@ -91,7 +91,7 @@ public class ApprenticeWitch extends Elemental.FireElemental {
             if (!candidates.isEmpty()){
                 targetingPos = Random.element(candidates);
 
-                for (int i : PathFinder.CROSS){
+                for (int i : PathFinder.NEIGHBOURS49){
                     if (!Dungeon.level.solid[targetingPos + i]) {
                         sprite.parent.addToBack(new TargetedCell(targetingPos + i, 0xFF0000));
                     }
@@ -116,17 +116,17 @@ public class ApprenticeWitch extends Elemental.FireElemental {
     @Override
     protected void zap() {
         if (targetingPos != -1) {
-            spend(1f);
+            spend(4f);
 
             Invisibility.dispel(this);
 
-            for (int i : PathFinder.NEIGHBOURS9) {
+            for (int i : PathFinder.NEIGHBOURS49) {
                 if (!Dungeon.level.solid[targetingPos + i]) {
-                    CellEmitter.get(targetingPos + i).burst(HalomethaneFlameParticle.FACTORY, 5);
+                    CellEmitter.get(targetingPos + i).burst(HalomethaneFlameParticle.FACTORY, 1);
                     if (Dungeon.level.water[targetingPos + i]) {
                         GameScene.add(Blob.seed(targetingPos + i, 2, HalomethaneFire.class));
                     } else {
-                        GameScene.add(Blob.seed(targetingPos + i, 8, HalomethaneFire.class));
+                        GameScene.add(Blob.seed(targetingPos + i, 4, HalomethaneFire.class));
                     }
                 }
             }
@@ -134,7 +134,7 @@ public class ApprenticeWitch extends Elemental.FireElemental {
         }
 
         targetingPos = -1;
-        rangedCooldown = Random.NormalIntRange( 3, 5 );
+        rangedCooldown = Random.NormalIntRange( 5, 8 );
     }
 
     @Override

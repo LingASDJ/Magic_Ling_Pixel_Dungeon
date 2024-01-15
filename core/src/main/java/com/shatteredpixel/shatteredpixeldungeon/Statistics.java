@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 import com.watabou.utils.SparseArray;
 
 public class Statistics {
@@ -34,6 +35,9 @@ public class Statistics {
 
 	//吃保底
 	public static int bossWeapons;
+
+	//中继器电话号码
+	public static int commonrelaycall;
 
 	public static int SiderLing;
 
@@ -109,6 +113,9 @@ public class Statistics {
 	//克里弗斯之果
 	public static boolean crivusfruitslevel2 = false;
 
+	//仙人跳背包问题
+	public static boolean ankhToExit = false;
+
 	//拟态之王
 	public static boolean TPDoorDieds = false;
 
@@ -132,6 +139,8 @@ public class Statistics {
 	//首次对决
 	public static boolean mimicking = false;
 
+	public static boolean mustTengu = false;
+
 	public static boolean dm720Fight = false;
 
 	public static boolean dm300Fight = false;
@@ -139,6 +148,8 @@ public class Statistics {
 	public static boolean gooFight = false;
 
     private static final String LOVX = "lovx";
+
+	private static final String MSTG = "musttengu";
 
 	private static final String LOCD = "locd";
 
@@ -211,6 +222,8 @@ public class Statistics {
 
 	private static final String BossSelect	= "bossselect";
 
+	private static final String XRTANKH	= "xrtankh";
+
 	//分数
 	private static final String PROG_SCORE	    = "prog_score";
 	private static final String HIGHEST		= "maxAscent";
@@ -267,6 +280,7 @@ public class Statistics {
 		dm720Fight = false;
 		dm300Fight = false;
 		gooFight = false;
+		mustTengu = false;
 
         happyMode = false;
 
@@ -299,6 +313,8 @@ public class Statistics {
         qualifiedForBossChallengeBadge = false;
         mimicking = false;
 
+		commonrelaycall = Random.IntRange(10000000,99999999);
+
 		amuletObtained = false;
 
 		tipsgodungeon = false;
@@ -313,6 +329,9 @@ public class Statistics {
 		noGoReadHungry =  false;
 
 		crivusfruitslevel2 = false;
+
+		ankhToExit = false;
+
 		TPDoorDieds = false;
 
 		TryUsedAnmy = false;
@@ -395,6 +414,8 @@ public class Statistics {
 
 		bundle.put(BossSelect,boss_enhance);
 
+		bundle.put(XRTANKH,ankhToExit);
+
 		bundle.put( LANTERACTIVE, lanterfireactive );
 		bundle.put(GOLDCHEST,	  goldchestmazeCollected);
 
@@ -444,6 +465,8 @@ public class Statistics {
 
 		bundle.put( SAKATWO, sakaBackStage );
 
+		bundle.put(MSTG,mustTengu);
+
 		//SPD
 		bundle.put("real_time_passed", second_elapsed);
 		bundle.put("real_seconds_passed", real_seconds);
@@ -462,6 +485,8 @@ public class Statistics {
 		doNotLookLing = bundle.getBoolean(LOCD);
 
 		seedCustom = bundle.getBoolean(SEEDCUSTOM);
+
+		ankhToExit = bundle.getBoolean(XRTANKH);
 
 		//嗜血荆棘等级处理
 		ChaicBlood   = bundle.getInt( CHACEBLOOD );
@@ -484,6 +509,9 @@ public class Statistics {
 
 		findMoon = bundle.getBoolean(LOVE);
 		deadGo = bundle.getBoolean(LOVX);
+
+		mustTengu = bundle.getBoolean(MSTG);
+
 		//分数
 		progressScore   = bundle.getInt( PROG_SCORE );
 		heldItemValue   = bundle.getInt( ITEM_VAL );

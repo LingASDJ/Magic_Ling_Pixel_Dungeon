@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.PasswordBadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -18,6 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300AttackSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DragonGirlBlueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlowerSlimeSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FrankensteinSprite;
@@ -51,6 +53,7 @@ import java.util.ArrayList;
 public class vM0_6_6_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_SC2_Changes(changeInfos);
         add_SC1_Changes(changeInfos);
         add_SC_Changes(changeInfos);
         add_v0_6_8_0_Changes(changeInfos);
@@ -107,6 +110,154 @@ public class vM0_6_6_Changes {
         c.scale.set(PixelScene.align(0.74f));
         changes.addButton(new ChangeButton(c, ("冰雪魔女重做"),
                 ("石碑上记录了有关于她的一切，她的过去，她的现在，她的未来。而当你与她对峙时，你是否能够看清她的真实面目？")));
+    }
+
+    public static void add_SC2_Changes( ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.6.9.5", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        Image issxsaxs =new DimandKingSprite();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs, ("拟态之王"),
+                ("现在拟态之王二阶段进行了一些优化，并且神秘传送门也进行了一些调整。")));
+
+        changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_COLD, 48, 80, 16
+                , 16), "雕像优化",
+                "现在前三区的雕像有独立描述。"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分无用音乐删除\n" +
+                        "3.部分细节优化更新\n" +
+                        "4.部分界面优化迭代\n" +
+                        "5.字体数据源更新")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "修复了以下Bug:\n\n" +
+                        "1.修复了跳楼房相关问题\n" +
+                        "2.修复了30层的一些崩溃错误"
+        ));
+
+        changes = new ChangeInfo("v0.6.9.4", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "inter"), false, null);
+        changes.hardlight(Window.GDX_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(NetIcons.get(NetIcons.GLOBE), ("网络时间同步系统V2"),
+                ("在游戏进入时，会自动同步网络时间，以防止通过修改时间作弊活动。同时修正时差问题。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GREEN_DARK), ("新投武：流光飞刀"),
+                ("修复一些错误。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RED_BLOOD), ("新投武：土木人之怒"),
+                ("修复一些错误。")));
+
+        changes = new ChangeInfo("v0.6.9.2-3", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton( new ChangeButton(Icons.get(Icons.LANGS), Messages.get(ChangesScene.class, "language"),
+                "添加繁体中文翻译---感谢Sotis提供的文本"));
+
+        changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_COLD, 48, 80, 16
+                , 16), "房间改动&素材优化",
+                "全新秘密房间：神秘实验炼金室加入\n\n" +
+                        "仙人跳房间优化：\n\n" +
+                        "现在有未祝福的十字架死亡时，遗物始终在每层入口处。\n\n" +
+                        "矮人区素材迭代更新！！！"));
+
+        changes.addButton(new ChangeButton(PasswordBadgeBanner.image(PaswordBadges.Badge.ZQJ_GHOST.image), ("中秋复刻加长"),
+                ("复刻时间再次追加，并且这次有网络时间验证，请在规定时间完成活动获得徽章。\n\n复刻持续到2月5号0点结束,请各位冒险者抓紧时间。错过了就要等到永久货币实装了。")));
+
+        changes.addButton(new ChangeButton(NetIcons.get(NetIcons.GLOBE), ("网络时间同步系统"),
+                ("在游戏进入时，会自动同步网络时间，以防止通过修改时间作弊活动。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GREEN_DARK), ("新投武：流光飞刀"),
+                ("刀刃由翡翠雕刻而成的飞刀，锋利无比，轻巧耐用\n\n" +
+                 "4阶，8～18伤害，2～4伤害成长，耐久20（升级无法提升耐久）\n\n" +
+                 "在命中地面或生物时，会释放耀眼的光芒，使5*5范围内的敌人失明4+（等级/4）回合（会失明自己）\n\n" +
+                 "（会留在敌人身上）\n\n" +
+                        "注意：有一个小bug是剩余1耐久用出不会销毁，而是让你捡到0个。捡了吗？如捡。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RED_BLOOD), ("新投武：土木人之怒"),
+                ("是建造这里时留下的吗，土木工程圣锤！\n\n" +
+                 "3阶，16～24伤害，2～6伤害成长，初始耐久8，攻击需要两回合\n\n" +
+                 "命中敌人时眩晕敌人3+（等级/4）回合\n\n" +
+                 "（不会留在敌人身上）")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new DragonGirlBlueSprite(), ("远古遗迹v1.2"),
+                ("升级最多一次，剩余的再次对话全部换为金币，10 ：1的比列。10分等于1金币。")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "修复了以下Bug:\n\n" +
+                        "1.修复了六区秘密房间的越界问题\n" +
+                        "2.修复了提丰在强制击杀狗子不能对话的问题\n" +
+                        "3.修复决斗家在部分徽章的显示异常\n" +
+                        "4.修复幽灵护符在部分拥有狂暴阶段（例如豺狼暴徒）的敌人被代码杀仍然残留护盾的问题\n" +
+                        "5.修复FireBase提到的各种报错\n" +
+                        "6.修复粉色幽灵的古老花园可以生成跳楼房的错误\n" +
+                        "7.修复部分子层可以产生升级卷轴的错误\n" +
+                        "8.修复灯火效果异常问题"
+        ));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("部分音乐进行调整"),
+                ("1.冰雪层音乐迭代---泰坦之魂冻土层\n\n" +
+                        "2.恶魔层音乐迭代----破碎地牢的地狱轨道2")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                 "2.部分无用音乐删除\n" +
+                 "3.部分细节优化更新\n" +
+                 "4.部分界面优化迭代\n" +
+                 "5.字体数据源更新")));
+
+        changes.addButton(new ChangeButton(new RedDragonSprite(), ("红龙之王"),
+                ("现在红龙之王的奖励窗口不能被动关闭，并且UI进行一些调整。")));
+
+        Image issxsaxss =new DimandKingSprite();
+        issxsaxss.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxss, ("拟态之王"),
+                ("现在拟态之王二阶段进行了一些优化，并且神秘传送门也进行了一些调整。")));
+
+        changes.addButton(new ChangeButton(new FrankensteinSprite(), ("怪物调整：未尽梦偶"),
+                ("移速有所提升。")));
+
+        changes.addButton(new ChangeButton(new ApprenticeWitchSprite(), ("怪物调整：见习魔女"),
+                ("攻击优化调整")));
+
+        changes.addButton(new ChangeButton(new ButcherSprite(), ("怪物调整：电锯狂人"),
+                ("现在习得相位传送")));
+
+        changes.addButton(new ChangeButton(new PumkingBomberSprite(), ("怪物调整：南瓜姜饼自爆人"),
+                ("现在爆炸威力更加强大")));
+
+        changes.addButton(new ChangeButton(new MimicSprite.HollowWall(), ("墙怪"),
+                ("现在墙怪会在6区刷新在一个随机门的位置")));
     }
 
     public static void add_SC1_Changes( ArrayList<ChangeInfo> changeInfos ) {

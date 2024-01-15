@@ -554,7 +554,7 @@ public class Hero extends Char {
 			Buff.affect(this, GameTracker.class);
 		}
 
-		if(lanterfireactive || Dungeon.isChallenged(DHXD)){
+		if( lanterfireactive || Dungeon.isChallenged(DHXD)){
 			Buff.affect( this, Nyctophobia.class );
 		}
 
@@ -2458,6 +2458,8 @@ public class Hero extends Char {
             new OilLantern().quantity(1).identify().collect();
 
             lanterfireactive = true;
+
+			Buff.affect( this, Nyctophobia.class );
 
             switch (Random.Int(5)) {
                 case 0:

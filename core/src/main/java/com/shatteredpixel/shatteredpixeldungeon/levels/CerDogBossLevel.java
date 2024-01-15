@@ -40,8 +40,9 @@ import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Callback;
-import com.watabou.utils.DeviceCompat;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
+import com.watabou.utils.Random;
 
 public class CerDogBossLevel extends Level{
 
@@ -81,11 +82,6 @@ public class CerDogBossLevel extends Level{
     public void occupyCell(Char ch) {
         super.occupyCell(ch);
 
-        if(DeviceCompat.isDebug()){
-            //GLog.w(String.valueOf(hero.pos));
-        }
-
-
         boolean isTrue = ch.pos == LDBossDoor && ch == hero && level.distance(ch.pos, entrance) >= 2;
 
         //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
@@ -95,6 +91,18 @@ public class CerDogBossLevel extends Level{
         }
 
 
+    }
+
+    @Override
+    public int randomRespawnCell( Char ch ) {
+        int pos = 1434;
+        int cell;
+        do {
+            cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
+        } while (!passable[cell]
+                || (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
+                || Actor.findChar(cell) != null);
+        return cell;
     }
 
     @Override

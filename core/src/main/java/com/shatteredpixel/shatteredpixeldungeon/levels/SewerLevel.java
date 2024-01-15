@@ -177,12 +177,14 @@ public class SewerLevel extends RegularLevel {
 			return super.activateTransition(hero, transition);
 		}
 	}
-	
+
 	@Override
 	public String tileName( int tile ) {
 		switch (tile) {
 			case Terrain.WATER:
 				return Messages.get(SewerLevel.class, "water_name");
+			case Terrain.STATUE:case Terrain.STATUE_SP:
+				return Messages.get(SewerLevel.class, "statue_name");
 			default:
 				return super.tileName( tile );
 		}
@@ -191,6 +193,9 @@ public class SewerLevel extends RegularLevel {
 	@Override
 	public String tileDesc(int tile) {
 		switch (tile) {
+			case Terrain.STATUE:
+			case Terrain.STATUE_SP:
+				return Messages.get(SewerLevel.class, "statue_desc");
 			case Terrain.EMPTY_DECO:
 				return Messages.get(SewerLevel.class, "empty_deco_desc");
 			case Terrain.BOOKSHELF:

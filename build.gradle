@@ -1,5 +1,9 @@
 buildscript {
     repositories {
+
+        mavenCentral()
+        google()
+
         maven { url 'https://maven.aliyun.com/repository/google' }
         maven { url 'https://maven.aliyun.com/repository/jcenter' }
         maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
@@ -19,8 +23,8 @@ allprojects {
         appName = 'Magic Ling Pixel Dungeon'
         appPackageName = 'com.ansdomagiclingpixeldungeon.ling'
 
-        appVersionCode = 202401010
-        appVersionName = '0.6.9.1'
+        appVersionCode = 202401111
+        appVersionName = '0.6.9.5'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
@@ -36,6 +40,10 @@ allprojects {
     version = appVersionName
 
     repositories {
+
+        mavenCentral()
+        google()
+
         maven { url 'https://maven.aliyun.com/repository/google' }
         maven { url 'https://maven.aliyun.com/repository/jcenter' }
         maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }

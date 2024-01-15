@@ -23,6 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Clipboard;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
@@ -73,11 +75,14 @@ public class WndRanking extends WndTabbed {
 	private String error = null;
 
 	private Image busy;
+	Clipboard clipboard;
 
 	public WndRanking( final Rankings.Record rec ) {
 
 		super();
 		resize( WIDTH, HEIGHT );
+
+		clipboard = Gdx.app.getClipboard();
 
 		if (thread != null){
 			hide();
@@ -344,6 +349,7 @@ public class WndRanking extends WndTabbed {
 								super.onSelect(index);
 								if (index == 0){
 									SPDSettings.customSeed(DungeonSeed.convertToCode(Dungeon.seed));
+									clipboard.setContents(DungeonSeed.convertToCode(Dungeon.seed));
 									icon.hardlight(1f, 1.5f, 0.67f);
 								}
 							}

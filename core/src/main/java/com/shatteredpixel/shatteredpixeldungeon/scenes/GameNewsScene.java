@@ -4,13 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.GameUpdateNewsArticles;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.UpdateNews;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
@@ -64,14 +64,13 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
 
         }
 
-        add(new WndHardNotification(Icons.get(Icons.CHANGES),
+        add(new WndHardNotification(NetIcons.get(NetIcons.NEWS),
                 Messages.get(this, "title"),
                 Messages.get(this, "update"),
                 Messages.get(this, "continue"),
                 3){
             @Override
             public void hide() {
-                super.hide();
                 ShatteredPixelDungeon.switchNoFade(TitleScene.class);
             }
         });
@@ -142,6 +141,17 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
                 align(title);  //将文本块与其他元素对齐
                 add(title);  //将文本块添加到场景中
             }
+        } else if (SPDSettings.WiFi() && !Game.platform.connectedToUnmeteredNetwork()){
+            add(new WndHardNotification(NetIcons.get(NetIcons.ALERT),
+                    Messages.get(this, "no_web"),
+                    Messages.get(this, "no_inter"),
+                    Messages.get(this, "continue"),
+                    0){
+                @Override
+                public void hide() {
+                    ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+                }
+            });
         }
 
     }
@@ -150,6 +160,8 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
     public void update() {  //重写update方法
 
         if (displayingNoArticles && UpdateNews.articlesAvailable()) {  //如果没有可用的文章并且有文章可用于加载
+            ShatteredPixelDungeon.seamlessResetScene();  //重置场景
+        } else if (SPDSettings.WiFi() && !Game.platform.connectedToUnmeteredNetwork()){
             ShatteredPixelDungeon.seamlessResetScene();  //重置场景
         }
 
@@ -265,7 +277,7 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
 
                 if (article.ling > Game.versionCode) {
                     // 向用户展示新文章可用的选项：下载或退出游戏
-                    ShatteredPixelDungeon.scene().add(new WndHardNotification(Icons.get(Icons.CHANGES),
+                    ShatteredPixelDungeon.scene().add(new WndHardNotification(NetIcons.get(NetIcons.GLOBE),
                             article.title,
                             article.summary,
                             Messages.get(this, "download"),
@@ -288,7 +300,7 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
                     });
                 } else {
                     // 向用户展示新版本可用的选项：强制下载或退出游戏
-                    ShatteredPixelDungeon.scene().add(new WndHardNotification(Icons.get(Icons.CHANGES),
+                    ShatteredPixelDungeon.scene().add(new WndHardNotification(NetIcons.get(NetIcons.ALERT),
                             article.title,
                             article.summary,
                             Messages.get(this, "force_download"),
@@ -313,7 +325,7 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
             } else {
                 // 显示天赋图标并提示用户已经更新完成
                 icon(UpdateNews.parseArticleIcon(article));
-                ShatteredPixelDungeon.scene().add(new WndHardNotification(Icons.get(Icons.CHANGES),
+                ShatteredPixelDungeon.scene().add(new WndHardNotification(NetIcons.get(NetIcons.NEWS),
                         article.title,
                         article.summary,
                         Messages.get(this, "okay"),
@@ -324,7 +336,7 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
                     }
 
                     public void onBackPressed() {
-                        //
+                        ShatteredPixelDungeon.switchNoFade(TitleScene.class);
                     }
                 });
 

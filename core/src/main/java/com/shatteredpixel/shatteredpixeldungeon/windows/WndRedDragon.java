@@ -37,16 +37,20 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfNukeCole;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BombGnollTricksterSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameBoiSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SkullShamanSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ItemSlot;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.NinePatch;
@@ -54,6 +58,12 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Component;
 
 public class WndRedDragon extends Window {
+
+    @Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
+    }
+
 
     private static final int WIDTH		= 120;
     private static final int BTN_SIZE	= 24;
@@ -99,8 +109,10 @@ public class WndRedDragon extends Window {
         message.setPos(0, titlebar.bottom() + GAP);
         add( message );
 
+
+
         RewardButton btnRing = new RewardButton( RedDragon.Quest.weapon );
-        btnRing.setRect( (WIDTH - BTN_GAP) / 2 - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE, BTN_SIZE );
+        btnRing.setRect( (WIDTH - BTN_GAP) / 1.5f - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE, BTN_SIZE );
         add( btnRing );
 
         RewardButton btnFood = new RewardButton( randomArtifact() != null ? RedDragon.Quest.armor:
@@ -117,7 +129,29 @@ public class WndRedDragon extends Window {
         btnScroll.setRect( btnArmor.right() + BTN_GAP, btnArmor.top(), BTN_SIZE, BTN_SIZE );
         add(btnScroll);
 
+        StyledButton reloadButton = new ReloadButton(Chrome.Type.RED_BUTTON, Messages.get(Bag.class, "name"));
+        reloadButton.icon(Icons.get(Icons.BACKPACK));
+        reloadButton.setRect( (WIDTH - BTN_GAP) / 8f,btnRing.top()+(BTN_SIZE/1.8f),BTN_SIZE+BTN_GAP+2, BTN_SIZE);
+        add(reloadButton);
+
         resize(WIDTH, (int) btnArmor.bottom() + BTN_GAP);
+    }
+
+    private static class ReloadButton extends StyledButton {
+
+        public ReloadButton( Chrome.Type type, String label ){
+            super(type, label);
+        }
+
+        @Override
+        protected void onClick() {
+            if (Dungeon.hero.ready || !Dungeon.hero.isAlive()) {
+                if (!GameScene.cancel()) {
+                    GameScene.show(new WndBag(Dungeon.hero.belongings.backpack));
+                }
+            }
+        }
+
     }
 
     private void selectReward( Item reward ) {
@@ -207,7 +241,7 @@ public class WndRedDragon extends Window {
                 }
 
             };
-            btnConfirm.setRect(0, height+2, width/2-1, 16);
+            btnConfirm.setRect(0, height+2, width/2f-1, 16);
             add(btnConfirm);
 
             RedButton btnCancel = new RedButton(Messages.get(WndSadGhost.class, "cancel")){

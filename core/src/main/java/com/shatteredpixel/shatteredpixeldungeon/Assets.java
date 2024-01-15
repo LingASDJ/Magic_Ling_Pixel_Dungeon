@@ -164,6 +164,9 @@ public class Assets {
 		public static final String MENUTITLE  = "interfaces/menutitle.png";
 		public static final String TWOYEARS  = "interfaces/2years.png";
 
+		//网络贴图
+		public static final String NETICONS = "interfaces/net_icons.png";
+
 		//圣诞节
 		public static final String BANNERSSD  = "interfaces/banners_sd.png";
 
@@ -202,6 +205,8 @@ public class Assets {
 		public static final String LOADING_COLD    = "interfaces/loading_cold.png";
 		public static final String LOADING_CITY     = "interfaces/loading_city.png";
 		public static final String LOADING_HALLS    = "interfaces/loading_halls.png";
+
+		public static final String LOADING_HOLLOW    = "interfaces/loading_halloween.png";
 
 		public static final String BUFFS_SMALL      = "interfaces/buffs.png";
 		public static final String BUFFS_LARGE      = "interfaces/large_buffs.png";

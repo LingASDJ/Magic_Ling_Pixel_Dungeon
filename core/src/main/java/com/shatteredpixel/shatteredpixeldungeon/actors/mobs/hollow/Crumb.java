@@ -144,7 +144,7 @@ public class Crumb extends Mob {
             if (food instanceof Honeypot.ShatteredPot) ((Honeypot.ShatteredPot)food).dropPot( this, pos );
             food = null;
         }
-        int value = 50;
+        int value = Random.NormalIntRange(-30,20);
         Buff.affect(hero, Hunger.class).satisfy(value);
         hero.sprite.showStatusWithIcon(CharSprite.NEGATIVE, String.valueOf(value), IconFloatingText.HUNGRY_EXTRA_HEAL);
         super.rollToDropLoot();

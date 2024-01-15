@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CommRelay;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
@@ -174,6 +175,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoome
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Javelin;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.RedBlock;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.RiverSlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingClub;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingHammer;
@@ -508,16 +511,18 @@ public class Generator {
 			MIS_T3.classes = new Class<?>[]{
 					ThrowingSpear.class,
 					Kunai.class,
-					Bolas.class
+					Bolas.class,
+					RedBlock.class
 			};
-			MIS_T3.probs = new float[]{ 6, 5, 4 };
+			MIS_T3.probs = new float[]{ 6, 5, 4, 3 };
 
 			MIS_T4.classes = new Class<?>[]{
 					Javelin.class,
 					Tomahawk.class,
-					HeavyBoomerang.class
+					HeavyBoomerang.class,
+					RiverSlade.class
 			};
-			MIS_T4.probs = new float[]{ 6, 5, 4 };
+			MIS_T4.probs = new float[]{ 6, 5, 4, 5 };
 
 			MIS_T5.classes = new Class<?>[]{
 					Trident.class,
@@ -572,8 +577,9 @@ public class Generator {
 					LloydsBeacon.class,
 					EtherealChains.class,
 					WraithAmulet.class,
+					CommRelay.class
 			};
-			ARTIFACT.defaultProbs = new float[]{ 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1,1};
+			ARTIFACT.defaultProbs = new float[]{ 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1,1, 0};
 			ARTIFACT.probs = ARTIFACT.defaultProbs.clone();
 		}
 	}

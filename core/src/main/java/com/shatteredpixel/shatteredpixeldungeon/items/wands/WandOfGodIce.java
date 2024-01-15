@@ -35,12 +35,12 @@ public class WandOfGodIce extends DamageWand {
 
     //1x/2x/3x damage
     public int min(int lvl){
-        return (5+lvl) * chargesPerCast();
+        return (5+lvl/2) * chargesPerCast();
     }
 
     //1x/2x/3x damage
     public int max(int lvl){
-        return (10+lvl) * chargesPerCast();
+        return (10*lvl/2) * chargesPerCast();
     }
 
     @Override

@@ -205,7 +205,6 @@ public class ShopRoom extends SpecialRoom {
 				((LockSword) w2).lvl = Random.Int(200, 501);
 				itemsToSpawn.add( w2.identify(false) );
 			}
-
 			break;
 
 
