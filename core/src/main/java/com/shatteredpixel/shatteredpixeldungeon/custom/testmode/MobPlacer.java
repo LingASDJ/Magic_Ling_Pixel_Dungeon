@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.testmode;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -48,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewBlackHost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDLLS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDNQHZ;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDZSLS;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PhantomPiranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedMurderer;
@@ -72,6 +74,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Succubus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.TormentedSpirit;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.XTG200;
@@ -508,7 +511,11 @@ public class MobPlacer extends TestItem{
         STATUE(Statue.class, DictSpriteSheet.STATUE),
         ARMORED_STATUE(ArmoredStatue.class, DictSpriteSheet.ARMORED_STATUE),
         WRAITH(Wraith.class, DictSpriteSheet.WRAITH),
+        TORMENTED_SPIRIT(TormentedSpirit.class,DictSpriteSheet.TORMENTED_SPIRIT),
+        PHANTOM_PIRANHA(PhantomPiranha.class,DictSpriteSheet.PHANTOM_PIRANHA),
         PIRANHA(Piranha.class, DictSpriteSheet.FISH),
+
+
 
         ZSLS(OGPDZSLS.class, DictSpriteSheet.OGPDZSLS),
         LLS(OGPDLLS.class, DictSpriteSheet.OGPDLLS),
