@@ -239,6 +239,10 @@ public class DictSpriteSheet {
                 return new GreenSltingSprite();
             case BEE:
                 return new Image(Assets.Sprites.BEE, 0, 0, 16, 16);
+            case TORMENTED_SPIRIT:
+                return new Image(Assets.Sprites.WRAITH, 0, 16, 14, 16);
+            case PHANTOM_PIRANHA:
+                return new Image(Assets.Sprites.PIRANHA, 0, 16, 12, 16);
 
             case SAD_GHOST:
                 return new Image(Assets.Sprites.GHOST, 0, 0, 14, 15);
@@ -388,7 +392,8 @@ public class DictSpriteSheet {
 
     public static final int GLTX = 906 + 10000;
     public static final int BEE             = 707 + 10000;
-
+    public static final int TORMENTED_SPIRIT = 708 + 10000;
+    public static final int PHANTOM_PIRANHA = 709 + 10000;
     public static final int SAD_GHOST       = 800 + 10000;
     public static final int WAND_MAKER      = 801 + 10000;
     public static final int BLACKSMITH      = 802 + 10000;
