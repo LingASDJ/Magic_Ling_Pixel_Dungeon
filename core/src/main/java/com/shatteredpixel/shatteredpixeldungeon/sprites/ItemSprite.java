@@ -40,7 +40,6 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.NoosaScript;
-import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.PointF;
@@ -190,13 +189,16 @@ public class ItemSprite extends MovieClip {
 	public ItemSprite view( Item item ){
 		view(item.image(), item.glowing());
 		Emitter emitter = item.emitter();
+
 		if (emitter != null && parent != null) {
 			emitter.pos( this );
 			parent.add( emitter );
 			this.emitter = emitter;
 		}
 
-		if(item.animation){
+		//有布尔且必须是继承的AnimationItem才有动画
+		//避免与其他Item的view冲突
+		if (item.animation && item instanceof Item.AnimationItem) {
 			item.frames(this);
 		}
 

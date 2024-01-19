@@ -43,7 +43,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Salamander;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
@@ -126,7 +125,7 @@ public class AntiMagic extends Armor.Glyph {
 		RESISTS.add(ChampionEnemy.Sider.DarkBolt.class);
 		RESISTS.add(ColdGurad.DarkBolt.class);
 		RESISTS.add(RedSwarm.DarkBolt.class);
-		RESISTS.add(BlackSoul.DarkBolt.class);
+		//RESISTS.add(BlackSoul.DarkBolt.class);
 		RESISTS.add(IceGolem.DarkBolt.class);
 		RESISTS.add(YogFist.HaloFist.DarkBolt.class);
 		RESISTS.add(YogFist.FreezingFist.LightBeam.class);

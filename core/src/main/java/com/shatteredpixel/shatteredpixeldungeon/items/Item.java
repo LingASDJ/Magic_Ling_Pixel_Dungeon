@@ -59,6 +59,8 @@ import java.util.Comparator;
 
 public class Item implements Bundlable {
 
+	public interface AnimationItem{}
+
 	@Override
 	public String toString() {
 
@@ -94,7 +96,7 @@ public class Item implements Bundlable {
 
 	
 	public boolean stackable = false;
-	protected int quantity = 1;
+	public int quantity = 1;
 	public boolean dropsDownHeap = false;
 	
 	public int level = 0;
@@ -118,6 +120,8 @@ public class Item implements Bundlable {
 	 * 动态组
 	 */
 	public boolean animation = false;
+
+	public boolean animationToidle = false;
 	public String animationTotalFrame;
 	public int animationWidth;
 	public int animationHeight;
@@ -127,7 +131,7 @@ public class Item implements Bundlable {
 	 *
 	 * @param itemSprite
 	 */
-	public void frames(ItemSprite itemSprite){
+    public void frames(ItemSprite itemSprite){
 		if(animation) {
 			itemSprite.texture(animationTotalFrame);
 			TextureFilm frames = new TextureFilm(itemSprite.texture, animationWidth, animationHeight);
@@ -531,6 +535,8 @@ public class Item implements Bundlable {
 	}
 
 	public Emitter emitter() { return null; }
+
+	public void NO() {}
 	
 	public String info() {
 		return desc();

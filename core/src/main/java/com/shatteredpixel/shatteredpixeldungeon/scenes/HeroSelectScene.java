@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDLCX;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHeroInfo;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
@@ -496,7 +497,7 @@ public class HeroSelectScene extends PixelScene {
 		IconButton DiffcultButton = new IconButton(new ItemSprite(ItemSpriteSheet.DIFFCULTBOOT)) {
 			@Override
 			protected void onClick() {
-				//ShatteredPixelDungeon.scene().addToFront(new WndDLCX(SPDSettings.difficulty(), true));
+				ShatteredPixelDungeon.scene().addToFront(new WndDLCX(SPDSettings.difficulty(), true));
 			}
 		};
 		DiffcultButton.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );

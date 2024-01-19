@@ -9,28 +9,47 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.utils.WndTextNumberInput;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.MovieClip;
+import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class CommRelay extends Artifact {
-    {
+public class CommRelay extends Artifact implements Item.AnimationItem {
 
+    {
         image = ItemSpriteSheet.DM100RELEY;
         level = 0;
         levelCap = 5;
-
+//        animation = true;
         defaultAction=AC_MERC;
+    }
+
+    @Override
+    public void frames(ItemSprite itemSprite){
+        itemSprite.texture(Assets.Sprites.ANIMATIONS_TERMIAL);
+        TextureFilm frames = new TextureFilm(itemSprite.texture, 16, 16);
+        MovieClip.Animation idle = new MovieClip.Animation(21, true);
+
+        if(animationToidle){
+            idle.frames( frames,0,1,1,2,2,2,3,3,4,4,5,5);
+        } else {
+            idle.frames( frames,3);
+        }
+
+        itemSprite.play(idle);
     }
 
     private static final int NIMAGES = 1;
@@ -134,6 +153,8 @@ public class CommRelay extends Artifact {
                         callNumber = Integer.parseInt(text);
                         if (callNumber == Statistics.commonrelaycall) {
                             GLog.n(Messages.get(CommRelay.class, "call_success"));
+                            animationToidle = true;
+                            updateQuickslot();
                         } else {
                             GLog.w(Messages.get(CommRelay.class, "call_fail"));
                         }

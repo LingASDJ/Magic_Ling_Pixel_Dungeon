@@ -75,6 +75,10 @@ public class Assets {
 		public static final String HALL_PO  = "environment/custom_tiles/hall_above.png";
 		public static final String HALL_POX  = "environment/custom_tiles/hall_above_b.png";
 
+
+		public static final String CITY_PO  = "environment/custom_tiles/parliament_above.png";
+		public static final String CITY_POX  = "environment/custom_tiles/parliament_behind.png";
+
 		public static final String VISUAL_GRID  = "environment/visual_grid.png";
 		public static final String WALL_BLOCKING= "environment/wall_blocking.png";
 
@@ -89,6 +93,8 @@ public class Assets {
 
 		public static final String TILES_CAVES  = "environment/tiles_caves.png";
 		public static final String TILES_CITY   = "environment/tiles_city.png";
+
+		public static final String TILES_CITY_CS   = "environment/tiles_city-cs.png";
 		public static final String TILES_ANCIENT  = "environment/tiles_ancient.png";
 		public static final String TILES_HALLS  = "environment/tiles_halls.png";
 		public static final String WATER_SEWERS = "environment/water0.png";
@@ -377,7 +383,7 @@ public class Assets {
 
 		//NPCS
 		public static final String KEEPERKING	= "sprites/npc/ShopKing.png";
-
+		public static final String WFS	    = "sprites/items/wf.png";
 		//ANCITY
 		public static final String TURTLE= "sprites/ancity/cltb.png";
 		public static final String ANOMALO= "sprites/ancity/anomalocaris.png";
@@ -394,6 +400,11 @@ public class Assets {
 		public static final String BOAT = "sprites/hollow/boat.png";
 		public static final String SWTICH = "sprites/hollow/Silence_Witch.png";
 		public static final String CSBR = "sprites/hollow/Cerberus.png";
+
+		public static final String DGS = "sprites/boss/dwarf_general.png";
+
+		public static final String DFL = "sprites/boss/army_flag.png";
+
 		public static final String TYPHON = "sprites/hollow/typhon.png";
 		public static final String MPHON = "sprites/hollow/morpheus.png";
 
@@ -446,7 +457,6 @@ public class Assets {
 
 		public static final String ILTRS	    = "sprites/items/lanter.png";
 
-		public static final String WFS	    = "sprites/items/wf.png";
 		public static final String ITEM_ICONS   = "sprites/item_icons.png";
 
 		public static final String MGAS	= "sprites/icemagicgirl.png";
@@ -519,6 +529,8 @@ public class Assets {
 		public static final String ICEGOLEM	= "sprites/icegolem.png";
 		public static final String STATUE	= "sprites/statue.png";
 		public static final String SUCCUBUS	= "sprites/succubus.png";
+
+		public static final String SUCCUBUS_QUEEN	= "sprites/succubus_queen.png";
 		public static final String IFE_SCORPIO	= "sprites/ife_scriopi.png";
 		public static final String SCORPIO	= "sprites/scorpio.png";
 		public static final String FISTS	= "sprites/yog_fists.png";
@@ -550,7 +562,7 @@ public class Assets {
 		public static final String RIPPER	= "sprites/ripper.png";
 		public static final String SPAWNER	= "sprites/spawner.png";
 		public static final String DM100	= "sprites/dm100.png";
-		public static final String DM275	= "mobs/dm300special.png";
+		public static final String DM275	= "sprites/dm275-RPG.png";
 		public static final String PYLON	= "sprites/pylon.png";
 		public static final String PYLONCS	= "sprites/pylonks.png";
 		public static final String CRSTAL	= "sprites/crstal.png";
@@ -571,5 +583,9 @@ public class Assets {
 
 		public static final String CRYSTAL_DIED= "sprites/crstal.png";
 		public static final String GNOLL_GUARD= "sprites/gnoll_guard.png";
+
+
+		//Animation Item
+		public static final String ANIMATIONS_TERMIAL = "sprites/items/Animation/DM100-Terminal.png";
 	}
 }

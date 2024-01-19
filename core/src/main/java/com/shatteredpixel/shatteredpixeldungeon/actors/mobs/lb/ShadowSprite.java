@@ -1,44 +1,22 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.watabou.noosa.TextureFilm;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.tweeners.Tweener;
 import com.watabou.utils.Callback;
 
 public class ShadowSprite extends MobSprite {
-
-    private Emitter smoke;
-
-    public void zap( int cell ) {
-
-        turnTo( ch.pos , cell );
-        play( zap );
-
-        MagicMissile.boltFromChar( parent,
-                MagicMissile.RAINBOW,
-                this,
-                cell,
-                new Callback() {
-                    @Override
-                    public void call() {
-                        ((BlackSoul)ch).onZapComplete();
-                    }
-                } );
-        Sample.INSTANCE.play( Assets.Sounds.ZAP );
-    }
 
     public ShadowSprite() {
         super();
 
         texture(Dungeon.hero.heroClass.spritesheet());
 
-        TextureFilm film = new TextureFilm(HeroSprite.tiers(), 6, 12, 15);
+        TextureFilm film = new TextureFilm(HeroSprite.tiers(), 7, 12, 15);
 
         idle = new Animation(1, true);
         idle.frames(film, 0, 0, 0, 1, 0, 0, 1, 1);
@@ -53,6 +31,7 @@ public class ShadowSprite extends MobSprite {
         attack.frames(film, 13, 14, 15, 0);
 
         zap = attack.clone();
+        toss = attack.clone();
 
         idle();
         resetColor();
@@ -67,25 +46,41 @@ public class ShadowSprite extends MobSprite {
     public void resetColor() {
         super.resetColor();
         alpha(0.8f);
-        brightness(0.0f);
+        brightness(0.7f);
+    }
+
+    public void zap( int cell ) {
+
+        turnTo( ch.pos , cell );
+        play( zap );
+
+        final Ballistica shot = new Ballistica( ch.pos, cell, ((BlackSoul)ch).wand.collisionProperties(cell));
+
+        ((BlackSoul)ch).wand.fx(shot, ch, new Callback() {
+            public void call() {
+                ((BlackSoul)ch).onZapComplete();
+            }
+        });
+    }
+
+    public void toss( int cell ) {
+
+        turnTo( ch.pos , cell );
+        play( toss );
+
+        ((MissileSprite)parent.recycle( MissileSprite.class )).
+                reset(ch.pos, cell, ((BlackSoul)ch).missile, new Callback() {
+                    public void call() {
+                        ((BlackSoul)ch).onTossComplete();
+                    }
+                });
     }
 
     @Override
-    public void update() {
-
-        super.update();
-
-        if (smoke != null) {
-            smoke.visible = visible;
+    public void onComplete( Animation anim ) {
+        if (anim == zap || anim == toss) {
+            idle();
         }
-    }
-
-    @Override
-    public void kill() {
-        super.kill();
-
-        if (smoke != null) {
-            smoke.on = false;
-        }
+        super.onComplete( anim );
     }
 }

@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Clipboard;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -117,7 +118,7 @@ public class WndGameInProgress extends Window {
 					try {
 						Bundle bundle = FileUtils.bundleFromFile(GamesInProgress.gameFile(slot));
 						String ing =
-								Messages.get(WndGameInProgress.class,"gameversion") + Game.version+"\n\n"+
+								Messages.get(WndGameInProgress.class,"gameversion") +info.version+"\n\n"+
 										Messages.get(WndGameInProgress.class,"gameseed")+ DungeonSeed.convertToCode(bundle.getLong("seed"))+"\n\n"+
 										Messages.get(WndGameInProgress.class,"gamegold") + bundle.getInt("gold") +"\n\n"+
 										Messages.get(WndGameInProgress.class,"gamenayzi") + bundle.getInt("naiyaziCollected")+
@@ -171,8 +172,12 @@ public class WndGameInProgress extends Window {
 			@Override
 			protected void onClick() {
 				super.onClick();
-				clipboard.setContents(info.customSeed.isEmpty() ? DungeonSeed.convertToCode(info.seed) : info.customSeed);
-				hide();
+
+				boolean seedType = (info.challenges & Challenges.MOREROOM) != 0;
+
+				clipboard.setContents(M.L(WndGameInProgress.class, "seed_copy",info.customSeed.isEmpty() ? DungeonSeed.convertToCode(info.seed) : info.customSeed,(seedType ? "B" : "A"),info.version));
+
+				Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndMessage(M.L(WndGameInProgress.class, "seed_copied",info.customSeed.isEmpty() ? DungeonSeed.convertToCode(info.seed) : info.customSeed,(seedType ? "B" : "A"),info.version))));
 			}
 		};
 		add(buttonSeed);

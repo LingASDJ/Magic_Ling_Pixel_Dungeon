@@ -96,6 +96,15 @@ public abstract class Wand extends Item {
 		usesTargeting = true;
 		bones = true;
 	}
+
+	public void fx( Ballistica bolt, Char caster, Callback callback ) {
+		MagicMissile.boltFromChar( caster.sprite.parent,
+				MagicMissile.MAGIC_MISSILE,
+				caster.sprite,
+				bolt.collisionPos,
+				callback);
+		Sample.INSTANCE.play( Assets.Sounds.ZAP );
+	}
 	
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
@@ -105,6 +114,12 @@ public abstract class Wand extends Item {
 		}
 
 		return actions;
+	}
+
+	public void rivalOnZap( Ballistica attack, Char attacker ) {
+		attacker.dispel();
+		onZap(attack);
+		curCharges -= cursed ? 1 : chargesPerCast();
 	}
 	
 	@Override

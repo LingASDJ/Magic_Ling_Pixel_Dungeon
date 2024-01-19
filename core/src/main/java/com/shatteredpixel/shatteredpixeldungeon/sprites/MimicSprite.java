@@ -88,6 +88,14 @@ public class MimicSprite extends MobSprite {
 		super.showSleep();
 	}
 
+
+	public static class Black extends MimicSprite{
+		@Override
+		protected int texOffset() {
+			return 48;
+		}
+	}
+
 	public static class Dimand extends MimicSprite{
 		@Override
 		protected int texOffset() {

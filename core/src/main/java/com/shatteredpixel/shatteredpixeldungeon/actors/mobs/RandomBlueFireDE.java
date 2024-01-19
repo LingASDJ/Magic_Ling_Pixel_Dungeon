@@ -47,7 +47,7 @@ public class RandomBlueFireDE extends Mob {
 		//半血狂暴
 		super.damage( dmg, src );
 		if (HP <= HT / 2) {
-			destroy();
+			this.die(true);
 			Mob mob = new RandomBlueFire();
 			mob.HP = mob.HT;
 			mob.pos = pos;

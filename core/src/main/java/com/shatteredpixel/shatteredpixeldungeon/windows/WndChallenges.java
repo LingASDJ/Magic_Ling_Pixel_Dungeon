@@ -21,10 +21,16 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
+
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -33,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Callback;
@@ -49,6 +56,8 @@ public class WndChallenges extends Window {
 	private boolean editable;
 	private ArrayList<ChallengeButton> boxes;
 
+	private int totalBoxCount;
+
 	public int index;
 	private static int boundIndex(int index) {
 		int result = index;
@@ -64,6 +73,16 @@ public class WndChallenges extends Window {
 
 	public WndChallenges( int checked, boolean editable, Callback callback ) {
 		this(checked, 0, editable, callback);
+	}
+
+	public int getSelectedButtonCount() {
+		int count = 0;
+		for (ChallengeButton button : boxes) {
+			if (button.checked()) {
+				count++;
+			}
+		}
+		return count;
 	}
 	
 	private WndChallenges( int checked, int index, boolean editable, Callback callback ) {
@@ -115,6 +134,12 @@ public class WndChallenges extends Window {
 				cb.visible=false;
 			}
 
+			for (int ch : Challenges.MASKS) {
+				if ((Dungeon.challenges & ch) != 0 && ch <= MOREROOM && ch != PRO && ch != DHXD) {
+					getSelectedButtonCount();
+				}
+			}
+
 			boxes.add( cb );
 			info.setRect((i % 3) * 40, pos, 40, 0);
 			infoBottom = Math.max(infoBottom, info.bottom());
@@ -153,27 +178,23 @@ public class WndChallenges extends Window {
 
 		pos += BTN_HEIGHT;
 
-		btnFirst = new RedButton(Messages.get(WndChallenges.class,"main")) {
+		RedButton btnEnableAll = new RedButton(Messages.get(WndChallenges.class,"enableAll"), 7) {
 			@Override
-			protected void onClick() {
-				WndChallenges.this.hide();
-				ShatteredPixelDungeon.scene().addToFront(new WndChallenges(refreshChecked(checked), 0, editable, callback));
+			public void update() {
+				text(Messages.get(WndChallenges.class, "count") + " (" +
+						getSelectedButtonCount() + "/" + boxes.size() + ")");
 			}
 		};
-		add( btnFirst );
-		pos += GAP;
+		btnEnableAll.setRect(btnPrev.left()+ GAP, pos, (WIDTH - GAP), BTN_HEIGHT);
+		add(btnEnableAll);
 
-		btnFirst.setRect(0, pos, (WIDTH - GAP) * 0.5f, BTN_HEIGHT);
-		btnLast = new RedButton(Messages.get(WndChallenges.class,"last")) {
-			@Override
-			protected void onClick() {
-				WndChallenges.this.hide();
-				ShatteredPixelDungeon.scene().addToFront(new WndChallenges(refreshChecked(checked),
-						WndChallenges.boundIndex(Challenges.NAME_IDS.length - 1), editable, callback));
-			}
-		};
-		add( btnLast );
-		btnLast.setRect(btnFirst.right() + GAP, pos, (WIDTH - GAP) * 0.5f, BTN_HEIGHT);
+		float challenges =(float) Math.pow(1.25, Challenges.activeChallenges());
+		float trueChallenges = Math.round(challenges * 20f) / 20f;
+
+		if (!editable && !(Game.scene() == null || Game.scene().getClass() != GameScene.class)) {
+			btnEnableAll.enable(false);
+			btnEnableAll.text(Messages.get(WndChallenges.class, "totalcount",Challenges.activeChallenges(),trueChallenges));
+		}
 
 		RedButton btnClear = new RedButton(Messages.get(WndChallenges.class,"clear"), 7) {
 			@Override
@@ -183,7 +204,7 @@ public class WndChallenges extends Window {
 				}
 			}
 		};
-		btnClear.setRect(btnFirst.left()+ GAP, pos+20, (WIDTH - GAP), BTN_HEIGHT);
+		btnClear.setRect(btnEnableAll.left()+ GAP, pos+20, (WIDTH - GAP), BTN_HEIGHT);
 		add(btnClear);
 		if (!editable) {
 			btnClear.enable(false);
@@ -224,6 +245,13 @@ public class WndChallenges extends Window {
 
 	private static class ChallengeButton extends IconButton {
 		private boolean checked = false;
+
+		private String name;
+
+		public String getName() {
+			return name;
+		}
+
 		public ChallengeButton() {
 			super( Icons.get( Icons.MISSON_OFF));
 		}
@@ -239,6 +267,10 @@ public class WndChallenges extends Window {
 			this.checked = checked;
 			icon( Icons.get( checked ? Icons.MISSON_ON : Icons.MISSON_OFF ) );
 		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
 	}
 
 	private static class ChallengeInfo extends Component {
@@ -253,20 +285,11 @@ public class WndChallenges extends Window {
 			info = new IconButton(Icons.get(Icons.INFO)){
 				@Override
 				protected void onClick() {
-					if(challenge.equals("stronger_bosses")){
-						ShatteredPixelDungeon.scene().add(new WndHardNotification( new ItemSprite(ItemSpriteSheet.CHALLANEESICON_13, new ItemSprite.Glowing(0xff0000)),
-								Messages.get(WndChallenges.class, "boss_title"),
-								Messages.get(WndChallenges.class, "boss_desc"),
-								Messages.get(WndChallenges.class, "ok"),
-								0){
-						});
-					} else {
 						ShatteredPixelDungeon.scene().add(
 								new WndTitledMessage(new Image(ChallengeInfo.this.icon),
 										Messages.titleCase(Messages.get(Challenges.class, challenge)),
 										Messages.get(Challenges.class, challenge+"_desc"))
 						);
-					}
 				}
 			};
 			add( info );
