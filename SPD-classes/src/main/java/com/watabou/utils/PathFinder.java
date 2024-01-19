@@ -46,6 +46,8 @@ public class PathFinder {
 	public static int[] NEIGHBOURS8;
 	public static int[] NEIGHBOURS9;
 
+	public static int[] NEIGHBOURS5;
+
 	public static int[] CROSS;
 
 	public static int[] CROSS_7x7;
@@ -54,6 +56,8 @@ public class PathFinder {
 	//Useful for some logic functions, but is slower due to lack of array-access order.
 	public static int[] CIRCLE4;
 	public static int[] CIRCLE8;
+
+	public static int[] NEIGHBOURS49;
 	
 	public static void setMapSize( int width, int height ) {
 		
@@ -75,6 +79,35 @@ public class PathFinder {
 		NEIGHBOURS4 = new int[]{-width, -1, +1, +width};
 		NEIGHBOURS8 = new int[]{-width-1, -width, -width+1, -1, +1, +width-1, +width, +width+1};
 		NEIGHBOURS9 = new int[]{-width-1, -width, -width+1, -1, 0, +1, +width-1, +width, +width+1};
+
+		NEIGHBOURS5 = new int[]{-2*width-2, -2*width-1, -2*width, -2*width+1, -2*width+2,
+				-width-2,   -width-1,   -width,   -width+1,   -width,
+				-2,         -1,         0,        +1,          +2,
+				+width-2,   +width-1,   +width,   +width+1,   +width+2,
+				+2*width-2, +2*width-1, +2*width, +2*width+1, +2*width+2};
+
+		NEIGHBOURS49 = new int[] {
+				-width-1, -width, -width+1,
+				-1, 0, +1,
+				+width-1, +width, +width+1,
+				-2*width-2, -2*width-1, -2*width, -2*width+1, -2*width+2,
+				-width*2-1, -width*2, -width*2+1,
+				-width-2, -width+2,
+				-width*2-2, -width*2-1, -width*2, -width*2+1, -width*2+2,
+				-width-2, -width+2,
+				-width-1, -width, -width+1,
+				-1, 0, +1,
+				+width-1, +width, +width+1,
+				+width*2-2, +width*2-1, +width*2, +width*2+1, +width*2+2,
+				+width-2, +width+2,
+				+width*2-2, +width*2-1, +width*2, +width*2+1, +width*2+2,
+				-width-2, -width+2,
+				-2*width-2, -2*width-1, -2*width, -2*width+1, -2*width+2,
+				-width*2-1, -width*2, -width*2+1,
+				-width-1, -width, -width+1,
+				-1, 0, +1,
+				+width-1, +width, +width+1
+		};
 
 		CROSS = new int[]{-width, -1, 0, +1, +width};
 
@@ -102,11 +135,14 @@ public class PathFinder {
 			for (int i=0; i < dir.length; i++) {
 				
 				int n = s + dir[i];
-				
-				int thisD = distance[n];
-				if (thisD < minD) {
-					minD = thisD;
-					mins = n;
+				try {
+					int thisD = distance[n];
+					if (thisD < minD) {
+						minD = thisD;
+						mins = n;
+					}
+				} catch (ArrayIndexOutOfBoundsException e) {
+					System.out.println("ArrayIndex-Error");
 				}
 			}
 			s = mins;

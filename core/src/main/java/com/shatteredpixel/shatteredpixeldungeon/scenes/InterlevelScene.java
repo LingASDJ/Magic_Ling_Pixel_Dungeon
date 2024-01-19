@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
@@ -29,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -176,6 +179,7 @@ public class InterlevelScene extends PixelScene {
 		else if (loadingDepth <= 15)    loadingAsset = Assets.Interfaces.LOADING_COLD;
 		else if (loadingDepth <= 20)    loadingAsset = Assets.Interfaces.LOADING_CITY;
 		else if (loadingDepth <= 25)    loadingAsset = Assets.Interfaces.LOADING_HALLS;
+		else if (loadingDepth <= 30)    loadingAsset = Assets.Interfaces.LOADING_HOLLOW;
 		else                            loadingAsset = Assets.Interfaces.SHADOW;
 
 		//场景过渡速度
@@ -505,7 +509,26 @@ public class InterlevelScene extends PixelScene {
 			}
 			int pos = level.randomRespawnCell(null);
 			if (pos == -1) pos = level.entrance();
-			level.drop(new LostBackpack(), pos);
+
+			Ankh ankh = null;
+
+			for (Ankh i : hero.belongings.getAllItems(Ankh.class)) {
+				if (ankh == null || i.isBlessed()) {
+					ankh = i;
+				}
+			}
+
+			for (Ankh i : hero.belongings.getAllItems(Ankh.class)) {
+				if (ankh != null || i.isBlessed()) {
+					if (!(hero.lanterfire <= 30 && !i.isBlessed())) {
+						level.drop(new LostBackpack(), pos);
+					}
+				} else if(!Statistics.lanterfireactive){
+					level.drop(new LostBackpack(), pos);
+				}
+			}
+
+
 
 		} else {
 			level = Dungeon.level;
@@ -528,7 +551,45 @@ public class InterlevelScene extends PixelScene {
 				level.map[Dungeon.hero.pos] = Terrain.GRASS;
 			}
 			Dungeon.hero.resurrect();
-			level.drop(new LostBackpack(), invPos);
+
+			if(Statistics.ankhToExit){
+				Ankh ankh = null;
+
+				for (Ankh i : hero.belongings.getAllItems(Ankh.class)) {
+					if (ankh == null || i.isBlessed()) {
+						ankh = i;
+					}
+				}
+
+				for (Ankh i : hero.belongings.getAllItems(Ankh.class)) {
+					if (ankh != null || i.isBlessed()) {
+						if (!(hero.lanterfire <= 30 && !i.isBlessed())) {
+							level.drop(new LostBackpack(), level.entrance());
+						}
+					} else if(!Statistics.lanterfireactive){
+						level.drop(new LostBackpack(), level.entrance());
+					}
+				}
+			} else {
+				Ankh ankh = null;
+
+				for (Ankh i : hero.belongings.getAllItems(Ankh.class)) {
+					if (ankh == null || i.isBlessed()) {
+						ankh = i;
+					}
+				}
+
+				for (Ankh i : hero.belongings.getAllItems(Ankh.class)) {
+					if (ankh != null || i.isBlessed()) {
+						if (!(hero.lanterfire <= 30 && !i.isBlessed())) {
+							level.drop(new LostBackpack(), invPos);
+						}
+					} else if(!Statistics.lanterfireactive){
+						level.drop(new LostBackpack(), invPos);
+					}
+				}
+			}
+
 		}
 
 		Dungeon.switchLevel( level, Dungeon.hero.pos );

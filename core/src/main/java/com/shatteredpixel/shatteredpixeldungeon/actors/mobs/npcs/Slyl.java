@@ -13,9 +13,6 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 public class Slyl extends NPC {
-
-    private static final String[] TXT_RANDOM = {"始作俑者是……","我们真的在做正确的事吗？","风暴正在袭来，何处才有我们的结局？"};
-
     {
         spriteClass = SlylSprite.class;
 
@@ -83,7 +80,7 @@ public class Slyl extends NPC {
             rd=false;
             tell(Messages.get(Slyl.class, "message3"));
         } else {
-            GLog.b(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
+            GLog.b(Messages.get(this,"other_"+Random.IntRange(1, 3)));
         }
 
         return true;

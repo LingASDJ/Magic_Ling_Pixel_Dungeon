@@ -152,7 +152,7 @@ public class NullDiedTO extends NTNPC {
             first=false;
         }else {
             if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && Dungeon.depth == 27){
-                GLog.n("冒险家，快通过水晶之心离开这里吧……");
+                GLog.n(Messages.get(this,"leave"));
             } else {
                 Game.runOnRenderThread(new Callback() {
                     @Override

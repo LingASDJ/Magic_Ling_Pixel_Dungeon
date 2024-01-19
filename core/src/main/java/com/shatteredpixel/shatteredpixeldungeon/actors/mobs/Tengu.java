@@ -211,9 +211,17 @@ public class Tengu extends Mob {
 		}
 		//酸液体清0
 		Statistics.SiderLing = 0;
+		Badges.validateBossSlain();
+
+		if (Statistics.qualifiedForBossChallengeBadge){
+			Badges.validateBossChallengeCompleted();
+		}
 		Statistics.bossScores[1] += 2000;
+
 		GameScene.bossSlain();
 		super.die( cause );
+
+
 
 //		TenguPlot plot = new TenguPlot();
 //		Game.runOnRenderThread(new Callback() {
@@ -636,6 +644,7 @@ public class Tengu extends Mob {
 							}
 
 							if (ch == Dungeon.hero){
+								Statistics.qualifiedForBossChallengeBadge = false;
 								Statistics.bossScores[1] -= 100;
 
 								if (!ch.isAlive()) {
@@ -881,7 +890,8 @@ public class Tengu extends Mob {
 							}
 
 							if (ch == Dungeon.hero){
-								Statistics.bossScores[1] -= 200;
+								Statistics.qualifiedForBossChallengeBadge = false;
+								Statistics.bossScores[1] -= 100;
 							}
 
 							burned = true;
@@ -1062,7 +1072,7 @@ public class Tengu extends Mob {
 								ch.damage(2 + depth, new Electricity());
 
 								if (ch == Dungeon.hero){
-
+									Statistics.qualifiedForBossChallengeBadge = false;
 									Statistics.bossScores[1] -= 200;
 									if (!ch.isAlive()) {
 										Dungeon.fail(Tengu.class);

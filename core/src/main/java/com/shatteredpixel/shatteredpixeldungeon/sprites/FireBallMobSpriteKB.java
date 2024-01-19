@@ -39,7 +39,7 @@ public class FireBallMobSpriteKB extends MobSprite {
         idle = new Animation( 8, true );
         idle.frames( frames, 0, 1, 2, 3,0, 1, 2, 3,0, 1, 2 ,0, 1, 2, 3 );
 
-        run = new Animation( 6, true );
+        run = new Animation( 15, true );
         run.frames( frames, 0, 1, 0, 1, 0,1 );
 
         attack = new Animation( 5, false );

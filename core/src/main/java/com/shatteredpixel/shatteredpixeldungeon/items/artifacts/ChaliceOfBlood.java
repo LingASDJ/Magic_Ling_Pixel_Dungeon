@@ -59,7 +59,7 @@ public class ChaliceOfBlood extends Artifact {
 
 		@Override
 		public String info() {
-			return "注意：蓄血圣杯必须是未装备的才能参与炼金";
+			return Messages.get(this,"tip");
 		}
 	}
 

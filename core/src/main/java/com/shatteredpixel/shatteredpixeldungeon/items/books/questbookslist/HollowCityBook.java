@@ -65,11 +65,7 @@ public class HollowCityBook extends Books {
                                     InterlevelScene.curTransition.destDepth = 25;
                                     InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
 
-                                    if(Statistics.endingbald){
-                                        InterlevelScene.curTransition.destBranch = 4;
-                                    } else {
-                                        InterlevelScene.curTransition.destBranch = 5;
-                                    }
+                                    InterlevelScene.curTransition.destBranch = 4;
 
                                     InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
                                     InterlevelScene.curTransition.centerCell  = -1;

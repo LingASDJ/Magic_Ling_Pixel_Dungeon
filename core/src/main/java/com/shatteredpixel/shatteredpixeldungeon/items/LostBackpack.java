@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -46,6 +47,10 @@ public class LostBackpack extends Item {
 	public boolean doPickUp(Hero hero, int pos) {
 		if (hero.buff(LostInventory.class) != null){
 			hero.buff(LostInventory.class).detach();
+		}
+
+		if( Statistics.ankhToExit){
+			Statistics.ankhToExit = false;
 		}
 
 		MagicalHolster holster = hero.belongings.getItem(MagicalHolster.class);

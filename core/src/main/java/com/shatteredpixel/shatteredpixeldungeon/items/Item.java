@@ -44,6 +44,8 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
+import com.watabou.noosa.MovieClip;
+import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundlable;
@@ -56,6 +58,8 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class Item implements Bundlable {
+
+	public interface AnimationItem{}
 
 	@Override
 	public String toString() {
@@ -88,9 +92,11 @@ public class Item implements Bundlable {
 	//TODO should these be private and accessed through methods?
 	public int image = 0;
 	public int icon = -1; //used as an identifier for items with randomized images
+
+
 	
 	public boolean stackable = false;
-	protected int quantity = 1;
+	public int quantity = 1;
 	public boolean dropsDownHeap = false;
 	
 	public int level = 0;
@@ -109,6 +115,31 @@ public class Item implements Bundlable {
 
 	// whether an item can be included in heroes remains
 	public boolean bones = false;
+
+	/**
+	 * 动态组
+	 */
+	public boolean animation = false;
+
+	public boolean animationToidle = false;
+	public String animationTotalFrame;
+	public int animationWidth;
+	public int animationHeight;
+	public int animationSpeed;
+
+	/**
+	 *
+	 * @param itemSprite
+	 */
+    public void frames(ItemSprite itemSprite){
+		if(animation) {
+			itemSprite.texture(animationTotalFrame);
+			TextureFilm frames = new TextureFilm(itemSprite.texture, animationWidth, animationHeight);
+			MovieClip.Animation idle = new MovieClip.Animation(animationSpeed, true);
+			idle.frames(frames, 0);
+			itemSprite.play(idle);
+		}
+	}
 	
 	public static final Comparator<Item> itemComparator = new Comparator<Item>() {
 		@Override
@@ -504,6 +535,8 @@ public class Item implements Bundlable {
 	}
 
 	public Emitter emitter() { return null; }
+
+	public void NO() {}
 	
 	public String info() {
 		return desc();
@@ -560,6 +593,8 @@ public class Item implements Bundlable {
 	private static final String CURSED_KNOWN	= "cursedKnown";
 	private static final String QUICKSLOT		= "quickslotpos";
 	private static final String KEPT_LOST       = "kept_lost";
+
+	private static final String ANLIX       = "anlix";
 	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -572,6 +607,8 @@ public class Item implements Bundlable {
 			bundle.put( QUICKSLOT, Dungeon.quickslot.getSlot(this) );
 		}
 		bundle.put( KEPT_LOST, keptThoughLostInvent );
+
+		bundle.put(ANLIX,animation);
 	}
 	
 	@Override
@@ -597,6 +634,8 @@ public class Item implements Bundlable {
 		}
 
 		keptThoughLostInvent = bundle.getBoolean( KEPT_LOST );
+
+		animation = bundle.getBoolean(ANLIX);
 	}
 
 	public int targetingPos( Hero user, int dst ){

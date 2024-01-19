@@ -258,8 +258,10 @@ abstract public class KindOfWeapon extends EquipableItem {
 	public int defenseFactor( Char owner ) {
 		return 0;
 	}
-	
-	public int proc( Char attacker, Char defender, int damage ) {
+
+    public abstract float speedFactor(Char owner);
+
+    public int proc(Char attacker, Char defender, int damage ) {
 		return damage;
 	}
 

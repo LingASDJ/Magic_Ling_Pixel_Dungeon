@@ -19,7 +19,7 @@ import com.watabou.utils.Random;
 public class ScaryDamageBuff extends ElementalBaseBuff {
 
     {
-        type = buffType.NEGATIVE;
+        type = buffType.NEUTRAL;
         announced = true;
     }
 

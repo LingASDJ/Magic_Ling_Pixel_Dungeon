@@ -37,7 +37,7 @@ public class BlessMixShiled extends ClearLanterBuff {
                     Buff.affect(hero, LanterBarrier.class).setShield(((20) * Dungeon.depth / 5));
                 }
                 spend(270f);
-                GLog.w("你的血量已满，奖励你"+(Dungeon.depth<=5 ? 20 : (20) * Dungeon.depth / 5)+"点护盾值。");
+                GLog.w(Messages.get(this,"tip",(Dungeon.depth<=5 ? 20 : (20) * Dungeon.depth / 5)));
             }
 
             spend(interval);

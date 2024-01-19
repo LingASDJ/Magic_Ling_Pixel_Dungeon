@@ -37,7 +37,7 @@ public abstract class SecretRoom extends SpecialRoom {
 			SecretGardenRoom.class, SecretLaboratoryRoom.class, SecretLibraryRoom.class,
 			SecretLarderRoom.class, SecretWellRoom.class, SecretRunestoneRoom.class,
 			SecretArtilleryRoom.class, SecretChestChasmRoom.class, SecretHoneypotRoom.class,
-			SecretHoardRoom.class, SecretMazeRoom.class, SecretSummoningRoom.class));
+			SecretHoardRoom.class, SecretMazeRoom.class, SecretSummoningRoom.class,SecretSmallLaboratoryRoom.class));
 
 	public static ArrayList<Class<? extends SecretRoom>> runSecrets = new ArrayList<>();
 
@@ -63,27 +63,19 @@ public abstract class SecretRoom extends SpecialRoom {
 	}
 
 	public static int secretsForFloor(int depth){
-		if (depth == 1) return 0;
+		if (depth == 1 || depth > 25 && depth< 45 ) return 0;
 
 		int region = depth/5;
 		int floor = depth%5;
 
-		if (depth > 25) {
-			region = 5;
-		}
-
 		int floorsLeft = 5 - floor;
 
 		float secrets;
-		if (floorsLeft == 0) {
-			secrets = regionSecretsThisRun[region];
+		secrets = regionSecretsThisRun[region] / (float) floorsLeft;
+		if (Random.Float() < secrets % 1f){
+			secrets = (float)Math.ceil(secrets);
 		} else {
-			secrets = regionSecretsThisRun[region] / (float)floorsLeft;
-			if (Random.Float() < secrets % 1f){
-				secrets = (float)Math.ceil(secrets);
-			} else {
-				secrets = (float)Math.floor(secrets);
-			}
+			secrets = (float)Math.floor(secrets);
 		}
 
 		regionSecretsThisRun[region] -= (int)secrets;
@@ -112,15 +104,12 @@ public abstract class SecretRoom extends SpecialRoom {
 	public static void restoreRoomsFromBundle( Bundle bundle ) {
 		runSecrets.clear();
 		if (bundle.contains( ROOMS )) {
-			for (Class<? extends SecretRoom> type : bundle.getClassArray(ROOMS)) {
+			for (Class<? extends SecretRoom> type :
+					bundle.getClassArray(ROOMS)) {
 				if (type != null) runSecrets.add(type);
 			}
 
-			if (regionSecretsThisRun.length == 5) {
-				regionSecretsThisRun = new int[6];
-			} else {
-				regionSecretsThisRun = bundle.getIntArray(REGIONS);
-			}
+			regionSecretsThisRun = bundle.getIntArray(REGIONS);
 		} else {
 			initForRun();
 			ShatteredPixelDungeon.reportException(new Exception("secrets array didn't exist!"));

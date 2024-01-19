@@ -90,6 +90,10 @@ public class ItemSpriteSheet {
 
     public static final int TENGU_BOMB      = UNCOLLECTIBLE+8;
     public static final int TENGU_SHOCKER   = UNCOLLECTIBLE+9;
+
+    public static final int GREEN_DARK   = UNCOLLECTIBLE+11;
+
+    public static final int RED_BLOOD   = UNCOLLECTIBLE+12;
     static{
         assignItemRect(GOLD,        15, 13);
         assignItemRect(ENERGY,      16, 16);
@@ -101,6 +105,9 @@ public class ItemSpriteSheet {
 
         assignItemRect(TENGU_BOMB,      10, 10);
         assignItemRect(TENGU_SHOCKER,   10, 10);
+
+        assignItemRect(GREEN_DARK,      12, 13);
+        assignItemRect(RED_BLOOD,       12, 14);
     }
 
     private static final int CONTAINERS     =                               xy(1, 3);   //16 slots
@@ -861,6 +868,7 @@ public class ItemSpriteSheet {
     public static final int	WATERSOUL				= BAGS+59;
     public static final int	WRALIPS				= BAGS+60;
 
+    public static final int	DM100RELEY				= BAGS+63;
     public static final int	SDBlade			= BAGS+74;
     public static final int	HHBlade				= BAGS+75;
 

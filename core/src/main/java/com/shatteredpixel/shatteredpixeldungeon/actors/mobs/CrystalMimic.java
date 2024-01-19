@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -104,6 +105,7 @@ public class CrystalMimic extends Mimic {
 	public void stopHiding(){
 		state = FLEEING;
 		if (sprite != null) sprite.idle();
+		Buff.affect(this, Levitation.class, Levitation.DURATION/2f);
 		//haste for 2 turns if attacking
 		if (alignment == Alignment.NEUTRAL){
 			Buff.affect(this, Haste.class, 2f);

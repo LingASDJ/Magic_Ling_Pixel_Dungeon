@@ -71,11 +71,12 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.builders.FigureEightBuild
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LoopBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.GardenEntranceRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.GardenExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.HealWellRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.IdenityRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.LanFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NxhyShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NyzBombAndBooksRoom;
@@ -135,33 +136,28 @@ public abstract class RegularLevel extends Level {
         Solar date = Solar.fromDate(calendar.getTime());
         Lunar lunar = date.getLunar();
 
-        boolean isZQJ = lunar.getMonth() == 8 && (lunar.getDay() >= 15 - 10 && lunar.getDay() <= 15 + 12);
-		boolean isZQJ_FK = lunar.getMonth() == 11 && (lunar.getDay() >= 17 && lunar.getDay() <= 17+9);
-
         //计算中国传统节日的代码已迁移到最上方的"Gregorian.LunarCheckDate();"方法。
 
-		if(isZQJ || isZQJ_FK){
-			holiday = RegularLevel.Holiday.ZQJ;
-		} else {
-			switch (calendar.get(Calendar.MONTH)) {
-				case Calendar.JANUARY:
-					if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
-						holiday = Holiday.XMAS;
-					break;
-				case Calendar.OCTOBER:
-					if (calendar.get(Calendar.WEEK_OF_MONTH) >= 2)
-						holiday = Holiday.HWEEN;
-					break;
-				case Calendar.NOVEMBER:
-					if (calendar.get(Calendar.DAY_OF_MONTH) == 1)
-						holiday = Holiday.HWEEN;
-					break;
-				case Calendar.DECEMBER:
-					if (calendar.get(Calendar.WEEK_OF_MONTH) >= 3)
-						holiday = Holiday.XMAS;
-					break;
-			}
+
+		switch (calendar.get(Calendar.MONTH)) {
+			case Calendar.JANUARY:
+				if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
+					holiday = Holiday.XMAS;
+				break;
+			case Calendar.OCTOBER:
+				if (calendar.get(Calendar.WEEK_OF_MONTH) >= 2)
+					holiday = Holiday.HWEEN;
+				break;
+			case Calendar.NOVEMBER:
+				if (calendar.get(Calendar.DAY_OF_MONTH) == 1)
+					holiday = Holiday.HWEEN;
+				break;
+			case Calendar.DECEMBER:
+				if (calendar.get(Calendar.WEEK_OF_MONTH) >= 3)
+					holiday = Holiday.XMAS;
+				break;
 		}
+
 
 
     }
@@ -219,8 +215,16 @@ public abstract class RegularLevel extends Level {
 	
 	protected ArrayList<Room> initRooms() {
 		ArrayList<Room> initRooms = new ArrayList<>();
-		initRooms.add ( roomEntrance = new EntranceRoom());
-		initRooms.add( roomExit = new ExitRoom());
+
+		if(branch == 5 && depth == 17){
+			initRooms.add(roomEntrance = new GardenEntranceRoom());
+			initRooms.add(roomExit = new GardenExitRoom());
+		} else {
+			initRooms.add ( roomEntrance = new EntranceRoom());
+			initRooms.add( roomExit = new ExitRoom());
+		}
+
+
 
 		//force max standard rooms and multiple by 1.5x for large levels
 		//force max standard rooms and multiple by 1.5x for large levels
@@ -268,9 +272,9 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new NxhyShopRoom());
 		}
 
-		if(Dungeon.FireLevel()){
-			initRooms.add(new LanFireRoom());
-		}
+//		if(Dungeon.FireLevel()){
+//			initRooms.add(new LanFireRoom());
+//		}
 
 		if(depth>27 && depth <30){
 			if(Random.Float() < 0.5f){
@@ -279,7 +283,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 
-		//initRooms.add(new HeartRoom());
+		//		initRooms.add(new RangeMobRoom());
 
 		if (Dungeon.NyzshopOnLevel() && branch == 0) {
 			Buff.affect(hero, RandomBuff.class).set( (4 + Random.Int(9)+hero.STR/6+hero.HP/30)/Random.Int(1,2)+5, 1 );
@@ -369,13 +373,16 @@ public abstract class RegularLevel extends Level {
 			if (s instanceof PitRoom) specials++;
 			initRooms.add(s);
 		}
-		
-		int secrets = SecretRoom.secretsForFloor(Dungeon.depth);
-		//one additional secret for secret levels
-		if (feeling == Feeling.SECRETS) secrets++;
-		for (int i = 0; i < secrets; i++) {
-			initRooms.add(SecretRoom.createRoom());
+
+		if(depth<26){
+			int secrets = SecretRoom.secretsForFloor(Dungeon.depth);
+			if (feeling == Feeling.SECRETS && depth < 26) secrets++;
+			for (int i = 0; i < secrets; i++) {
+				initRooms.add(SecretRoom.createRoom());
+			}
 		}
+
+
 		
 		return initRooms;
 	}

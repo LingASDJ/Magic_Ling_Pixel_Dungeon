@@ -80,7 +80,7 @@ public class MagicTorch extends MeleeWeapon {
         super.execute(hero, action);
         if (AC_EQUIP.equals(action)) {
             if (Dungeon.hero.buff(LighS.class) != null || Dungeon.hero.buff(Light.class) != null) {
-                GLog.n("你已有其他光芒效果，在这些效果取消或主动失效前，魔法火把的效果不生效。");
+                GLog.n(Messages.get(this,"mustload"));
             } else {
                 Buff.affect(hero, MagicLight.class).set((100), 1);
             }

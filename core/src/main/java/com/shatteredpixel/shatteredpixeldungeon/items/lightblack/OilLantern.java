@@ -35,7 +35,7 @@ public class OilLantern extends Artifact {
     private static final String PLASKS = "plasks";
 
     private static final int MAX_CHARGE = 60;
-    private static final int MIX_CHARGE = 50;
+    private static final int MIX_CHARGE = 55;
     private static final float TIME_TO_USE = 2.0f;
 
     private static final String TXT_STATUS = "%d%%";
@@ -57,13 +57,6 @@ public class OilLantern extends Artifact {
         charge = 100 - (chCount>=6 ? chCount*4 : 0);
         defaultAction = AC_LIGHT;
     }
-
-    //TODO 仍然有问题
-//    public ItemSprite itemSprite() {
-//        ItemSprite sprite = new LS();
-//        sprite.setPos(0, 0);
-//        return sprite;
-//    }
 
     public void updateSprite() {
         this.image = isActivated() ? ItemSpriteSheet.LANTERNB : ItemSpriteSheet.LANTERNA;
@@ -192,7 +185,7 @@ public class OilLantern extends Artifact {
 
     public void refills(Hero hero) {
         this.plingks--;
-        this.charge = Math.min(this.charge + MIX_CHARGE, 100);
+        this.charge = Math.min(this.charge + (MIX_CHARGE-(10*Dungeon.depth/5)), 100);
         hero.spend(TIME_TO_USE);
         hero.busy();
         Sample.INSTANCE.play(Assets.Sounds.DRINK, TIME_TO_USE, TIME_TO_USE, 1.2f);

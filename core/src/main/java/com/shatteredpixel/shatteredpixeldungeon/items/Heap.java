@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
@@ -98,7 +99,8 @@ public class Heap implements Bundlable {
 		case WHITETOMB:
 			ScrollOfTeleportation.appear( hero,hero.pos+5 );
 			new PotionOfLiquidFlame().quantity(1).identify().collect();
-			GLog.n("你在探索的时候，你发现了一瓶液态火焰药水，你收集了它，但同时被传入了墓穴的中央……");
+			GLog.n(Messages.get(this,"warning"));
+			Statistics.ankhToExit = true;
 			break;
 		case TELECRYSTL:
 			ScrollOfTeleportation.appear( hero,level.entrance );

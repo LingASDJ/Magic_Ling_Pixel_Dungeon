@@ -77,6 +77,7 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+
 public class Cerberus extends Boss {
 
     {
@@ -96,8 +97,6 @@ public class Cerberus extends Boss {
         immunities.add(Vertigo.class);
     }
 
-
-
     @Override
     public float speed() {
         if(hero.speed() >= 2f){
@@ -111,6 +110,13 @@ public class Cerberus extends Boss {
 
         super.die( cause );
         Dungeon.level.unseal();
+
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (mob instanceof Typhon) {
+                ((Typhon) mob).rd = false;
+                ((Typhon) mob).secnod = false;
+            }
+        }
 
         Badges.KILL_DOG();
         GameScene.bossSlain();
@@ -317,24 +323,6 @@ public class Cerberus extends Boss {
         return super.act();
     }
 
-//    @Override
-//    public synchronized boolean isAlive() {
-//        if (super.isAlive()){
-//            return true;
-//        } else {
-//            if (!rd && buff(BruteBot.BruteBotRage.class) == null){
-//                triggerEnrage();
-//            }
-//            return !buffs(BruteBot.BruteBotRage.class).isEmpty();
-//        }
-//    }
-//
-//    protected void triggerEnrage(){
-//        Buff.affect(this, BruteBot.BruteBotRage.class).setShield(HT/2 + 40);
-//
-//        spend( TICK );
-//    }
-
     public int attackProc(Char enemy, int damage) {
        damage = super.attackProc(enemy, damage);
         if (beamCooldown > 0)
@@ -363,10 +351,6 @@ public class Cerberus extends Boss {
                 }
             }
         }
-
-
-
-
 
         return damage;
     }
@@ -704,7 +688,7 @@ public class Cerberus extends Boss {
     }
 
     protected void triggerEnrage(){
-        Buff.affect(this, Rage.class).setShield(666666);
+        Buff.affect(this, Rage.class).setShield(1000);
         Typhon typhon = new Typhon();
         typhon.pos = 356;
         GameScene.add(typhon);
@@ -729,6 +713,8 @@ public class Cerberus extends Boss {
             }
 
             absorbDamage( 2);
+
+            target.baseSpeed = 2f;
 
             if (shielding() <= 0){
                 target.die(null);

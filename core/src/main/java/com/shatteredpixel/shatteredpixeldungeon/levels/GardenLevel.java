@@ -19,7 +19,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TeleportationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ToxicTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Random;
 
 public class GardenLevel extends RegularLevel {
@@ -95,8 +94,7 @@ public class GardenLevel extends RegularLevel {
 
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
-        GLog.w(Messages.get(GardenLevel.class,"notactivate"));
-       return false;
+        return false;
     }
 
     @Override

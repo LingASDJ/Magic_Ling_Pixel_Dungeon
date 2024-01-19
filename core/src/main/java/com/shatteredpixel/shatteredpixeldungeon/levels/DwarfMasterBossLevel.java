@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class DwarfMasterBossLevel extends Level {
+
     {
         color1 = 0x48763c;
         color2 = 0x59994a;

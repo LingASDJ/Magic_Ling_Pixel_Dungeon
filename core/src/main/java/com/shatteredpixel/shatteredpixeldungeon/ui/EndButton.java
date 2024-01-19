@@ -6,7 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.FeedBackScene;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.watabou.input.GameAction;
 
-public class EndButton  extends IconButton {
+public class EndButton extends IconButton {
 
     public EndButton() {
         super(Icons.EXIT.get());

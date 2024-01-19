@@ -819,10 +819,11 @@ public class WndSettings extends WndTabbed {
 				optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width/2, SLIDER_HEIGHT);
 				optIcon.setRect(optFPSLimit.right(), optSplashScreen.bottom() + GAP, width/2, SLIDER_HEIGHT);
 				if ((Game.scene() == null || Game.scene().getClass() != GameScene.class) && SPDSettings.quickSwapper()) {
-					quickslots.setRect(optFPSLimit.right(), optFPSLimit.top(), width/2, SLIDER_HEIGHT);
+					quickslots.visible = false;
 					wxts.visible = false;
 				} else {
-					quickslots.visible = false;
+					optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width/2, SLIDER_HEIGHT);
+					quickslots.setRect(optSplashScreen.right(), ClassUI.bottom()+GAP, width/2, SLIDER_HEIGHT);
 					wxts.visible = false;
 				}
 			} else {
@@ -833,7 +834,7 @@ public class WndSettings extends WndTabbed {
 				if ((Game.scene() == null || Game.scene().getClass() != GameScene.class) && SPDSettings.quickSwapper()) {
 					quickslots.visible = false;
 				} else {
-					quickslots.setRect(0, optFPSLimit.bottom() + GAP, width, SLIDER_HEIGHT);
+					quickslots.setRect(0, optIcon.bottom() + GAP, width, SLIDER_HEIGHT);
 
 				}
 				wxts.visible = false;
@@ -1167,7 +1168,7 @@ public class WndSettings extends WndTabbed {
 			add(txtLangName);
 
 			txtLangInfo = PixelScene.renderTextBlock(6);
-			if (currLang == Languages.CHINESE) txtLangInfo.text("这是源语言，由开发者编写！");
+			if (currLang == Languages.CHINESE) txtLangInfo.text(Messages.get(WndSettings.class,"origin_language"));
 			else if (currLang.status() == Languages.Status.REVIEWED) txtLangInfo.text(Messages.get(this, "completed"));
 			else if (currLang.status() == Languages.Status.UNREVIEWED) txtLangInfo.text(Messages.get(this, "unreviewed"));
 			else if (currLang.status() == Languages.Status.INCOMPLETE) txtLangInfo.text(Messages.get(this, "unfinished"));

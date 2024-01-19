@@ -554,7 +554,7 @@ public class Hero extends Char {
 			Buff.affect(this, GameTracker.class);
 		}
 
-		if(lanterfireactive || Dungeon.isChallenged(DHXD)){
+		if( lanterfireactive || Dungeon.isChallenged(DHXD)){
 			Buff.affect( this, Nyctophobia.class );
 		}
 
@@ -2371,11 +2371,8 @@ public class Hero extends Char {
 			seedCustom = true;
 		}
 
-        PotionOfPurity.PotionOfPurityLing potionOfPurityLing =
-                hero.belongings.getItem(PotionOfPurity.PotionOfPurityLing.class);
-        if (potionOfPurityLing != null && !Dungeon.level.locked) {
-            potionOfPurityLing.detachAll(hero.belongings.backpack);
-        }
+        PotionOfPurity.PotionOfPurityLing potionOfPurityLing = hero.belongings.getItem(PotionOfPurity.PotionOfPurityLing.class);
+        if (potionOfPurityLing != null && !Dungeon.level.locked) {potionOfPurityLing.detachAll(hero.belongings.backpack);}
 
         RedWhiteRose redWhiteRose = hero.belongings.getItem(RedWhiteRose.class);
         if (redWhiteRose != null) {
@@ -2459,6 +2456,8 @@ public class Hero extends Char {
 
             lanterfireactive = true;
 
+			Buff.affect( this, Nyctophobia.class );
+
             switch (Random.Int(5)) {
                 case 0:
                 default:
@@ -2518,11 +2517,11 @@ public class Hero extends Char {
 
         //灯火值低于35死亡生成自己的邪恶面，并清空金币，将金币保存到json文件。（灵感：空洞骑士）
         for (Ankh i : belongings.getAllItems(Ankh.class)) {
-            if (ankh == null || i.isBlessed()) {
+            if (ankh != null || i.isBlessed()) {
                 if (lanterfireactive && hero.lanterfire <= 30 && !i.isBlessed()) {
                     BlackSoul s = new BlackSoul();
                     s.pos = Dungeon.hero.pos;
-                    s.gold = Dungeon.gold;
+                    //s.gold = Dungeon.gold;
                     Dungeon.gold = 0;
                     s.state = s.SLEEPING;
                     GameScene.add(s);

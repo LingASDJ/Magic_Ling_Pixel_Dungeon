@@ -394,7 +394,7 @@ public class CrivusFruits extends Mob {
             Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
             if(Statistics.bossWeapons>=3){
                 Statistics.bossWeapons=0;
-                GLog.w("你已经连续3局未获得生命树，触发保底机制，同时你的保底机制次数重置为0");
+                GLog.w(Messages.get(this,"weapon"));
             }
         } else {
             Dungeon.level.drop( new Food(), pos ).sprite.drop();

@@ -130,7 +130,7 @@ public class NewChangesScene extends PixelScene {
                 panel.innerHeight() + 2);
         list.scrollTo(0, fromChangesScene ? posY - list.height() : 0);
 
-        StyledButton btnBeta1 = new StyledButton(Chrome.Type.TOAST, "0.6.6"){
+        StyledButton btnBeta1 = new StyledButton(Chrome.Type.TOAST, "0.6-9"){
             @Override
             protected void onClick() {
                 super.onClick();

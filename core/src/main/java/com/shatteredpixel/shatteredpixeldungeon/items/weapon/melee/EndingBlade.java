@@ -126,11 +126,11 @@ public class EndingBlade extends Weapon {
                     if(fireenergy >= 300 && firstx){
                         firstx = false;
                         new LaserPython().quantity(1).identify().collect();
-                        GLog.n("你突然感觉你的背包鼓鼓的……");
+                        GLog.n(Messages.get(this,"bag"));
                     } else if(!firstx) {
-                        GLog.n("你尚未使用激光晶柱，无法继续使用");
+                        GLog.n(Messages.get(this,"unused"));
                     } else {
-                        GLog.n("等级不足，需求等级为3");
+                        GLog.n(Messages.get(this,"low_level"));
                     }
                     break;
                 case AC_DIEDGHOST:
@@ -139,9 +139,9 @@ public class EndingBlade extends Weapon {
                         curItem = this;
                         GameScene.selectCell(zapper);
                     } else if (TIME_TO_DIED != 0) {
-                        GLog.n("技能正在冷却");
+                        GLog.n(Messages.get(this,"cool_down"));
                     } else {
-                        GLog.n("等级不足,需求等级为5");
+                        GLog.n(Messages.get(this,"lower_level"));
                     }
                     break;
                 case AC_HEALRESET:
@@ -163,11 +163,11 @@ public class EndingBlade extends Weapon {
                             }
                         }
                     } else if(Statistics.wangzheguilai) {
-                        GLog.n("你本局已经使用千里追魂，无法再次使用。");
+                        GLog.n(Messages.get(this,"cant_use"));
                     } else if(level < 7) {
-                        GLog.n("你的等级尚未达到7级以上，打败更多的怪物，鲜血会让你的武器变得更强……");
+                        GLog.n(Messages.get(this,"lowest_level"));
                     } else if(0.30f >= (float)(hero.HP/hero.HT)) {
-                        GLog.n("你的血量尚未低于30%，无法使用");
+                        GLog.n(Messages.get(this,"low_hp"));
                     }
                     break;
             }

@@ -441,7 +441,7 @@ public class HeroSelectScene extends PixelScene {
 							}
 						}));
 					} else {
-						ShatteredPixelDungeon.scene().addToFront(new WndMessage("击败圣境密林_任意Boss后_解锁重命名功能"));
+						ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(HeroSelectScene.class,"unlock_rename")));
 					}
 
 				}
@@ -470,7 +470,7 @@ public class HeroSelectScene extends PixelScene {
 						}
 					}));
 				} else {
-					ShatteredPixelDungeon.scene().addToFront(new WndMessage("获得_衪人之遇_徽章后解锁每日狩猎。--暂未实装"));
+					ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(HeroSelectScene.class,"unlock_daily")));
 				}
 
 			}
@@ -485,7 +485,7 @@ public class HeroSelectScene extends PixelScene {
 //				if ( Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3)){
 //					ShatteredPixelDungeon.scene().addToFront(new WndDLC(SPDSettings.dlc(), true));
 //				} else {
-					ShatteredPixelDungeon.scene().addToFront(new WndMessage("DLC模式返修中，敬请期待。"));
+					ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(HeroSelectScene.class,"unlock_dlc")));
 //				}
 
 			}
@@ -524,7 +524,7 @@ public class HeroSelectScene extends PixelScene {
 						}
 					}));
 				} else {
-					ShatteredPixelDungeon.scene().addToFront(new WndMessage("章节系统将于下半段开启，敬请期待。"));
+					ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(HeroSelectScene.class,"unlock_chapter")));
 				}
 
 			}
@@ -553,7 +553,7 @@ public class HeroSelectScene extends PixelScene {
 						}
 					}));
 				} else {
-					ShatteredPixelDungeon.scene().addToFront(new WndMessage("DLC尚未开启，敬请期待"));
+					ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(HeroSelectScene.class,"dlc_todo")));
 				}
 
 			}

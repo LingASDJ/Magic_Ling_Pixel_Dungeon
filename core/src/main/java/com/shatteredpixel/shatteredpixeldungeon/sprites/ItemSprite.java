@@ -94,7 +94,6 @@ public class ItemSprite extends MovieClip {
 	
 	public ItemSprite( int image, Glowing glowing ) {
 		super( Assets.Sprites.ITEMS );
-		
 		view(image, glowing);
 	}
 	
@@ -190,11 +189,19 @@ public class ItemSprite extends MovieClip {
 	public ItemSprite view( Item item ){
 		view(item.image(), item.glowing());
 		Emitter emitter = item.emitter();
+
 		if (emitter != null && parent != null) {
 			emitter.pos( this );
 			parent.add( emitter );
 			this.emitter = emitter;
 		}
+
+		//有布尔且必须是继承的AnimationItem才有动画
+		//避免与其他Item的view冲突
+		if (item.animation && item instanceof Item.AnimationItem) {
+			item.frames(this);
+		}
+
 		return this;
 	}
 	

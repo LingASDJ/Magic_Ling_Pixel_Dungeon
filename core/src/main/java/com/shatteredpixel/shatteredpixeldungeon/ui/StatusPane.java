@@ -23,7 +23,10 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.ClassPage;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
+import static com.shatteredpixel.shatteredpixeldungeon.ui.MenuPane.WIDTH;
 
+import com.nlf.calendar.Lunar;
+import com.nlf.calendar.Solar;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -155,7 +158,7 @@ public class StatusPane extends Component {
 
 		talentBlink = 0;
 
-		compass = new Compass( Statistics.amuletObtained ? Dungeon.level.entrance() : Dungeon.level.exit() );
+		compass = new Compass( Statistics.amuletObtained && Dungeon.depth <26 ? Dungeon.level.entrance() : Dungeon.level.exit() );
 		add( compass );
 
 		if (large)  rawShielding = new Image(asset, 0, 112, 128, 9);
@@ -367,13 +370,13 @@ public class StatusPane extends Component {
 		}
 
 		if(SPDSettings.TimeLimit()) {
-			timeText.x = MenuPane.depthButton.x;
+			timeText.x = MenuPane.depthButton.x - WIDTH - timeText.width();;
 
 			timeText.y = MenuPane.version.y + 5;
 
 			PixelScene.align(timeText);
-			timeStatusText.x = MenuPane.version.x;
-			timeStatusText.y = MenuPane.version.y+10;
+			timeStatusText.x = timeText.right();
+			timeStatusText.y = MenuPane.version.y + 5;
 			PixelScene.align(timeStatusText);
 		} else {
 			timeText.visible=false;
@@ -475,20 +478,26 @@ public class StatusPane extends Component {
 			String strDateFormat = "yyyy-MM-dd HH:mm";
 			SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat, Locale.getDefault());
 
-			Calendar cal=Calendar.getInstance();
-			int s=cal.get(Calendar.SECOND);
-			if(s<20) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
+
+			int s = cal.get(Calendar.SECOND);
+			if (s < 20) {
 				timeText.hardlight(Window.CWHITE);
-			} else if(s<40) {
+			} else if (s < 40) {
 				timeText.hardlight(Window.CYELLOW);
 			} else {
 				timeText.hardlight(Window.SKYBULE_COLOR);
 			}
-			timeText.text(sdf.format(date));
-		} else {
-			timeText.text("GAME OVER");
-		}
 
+			Calendar calendar = Calendar.getInstance();
+			Solar solardate = Solar.fromDate(calendar.getTime());
+			Lunar lunar = solardate.getLunar();
+			String shengXiao = lunar.getYearZhi() + lunar.getYearShengXiao();
+			timeText.text(sdf.format(date) + " " + Messages.get(this,Integer.toString(solardate.getWeek()))  + " " + shengXiao);
+		} else {
+			timeText.text(Messages.get(this,"game_over"));
+		}
 
 		if (!Dungeon.hero.isAlive()) {
 			avatar.tint(0x000000, 0.5f);

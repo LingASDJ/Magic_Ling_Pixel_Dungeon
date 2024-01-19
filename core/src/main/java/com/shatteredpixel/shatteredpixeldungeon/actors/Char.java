@@ -65,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HasteLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
@@ -102,6 +103,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Potential;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
@@ -166,6 +168,29 @@ public abstract class Char extends Actor {
 	private final LinkedHashSet<Buff> buffs = new LinkedHashSet<>();
 
 	public boolean[] fieldOfView = null;
+
+	public void dispel() {
+		Invisibility buff = buff( Invisibility.class );
+		if (buff != null) {
+			buff.detach();
+		}
+
+		CloakOfShadows.cloakStealth cloakBuff = buff( CloakOfShadows.cloakStealth.class );
+		if (cloakBuff != null) {
+			cloakBuff.dispel();
+		}
+
+		Preparation prep = buff( Preparation.class );
+		if (prep != null){
+			prep.detach();
+		}
+
+		Swiftthistle.TimeBubble bubble = buff( Swiftthistle.TimeBubble.class );
+		if (bubble != null){
+			bubble.detach();
+		}
+	}
+
 	final public static boolean hit( Char attacker, Char defender, boolean magic ) {
 		return hit(attacker, defender, magic ? 2f : 1f, magic);
 	}
@@ -649,7 +674,7 @@ public abstract class Char extends Actor {
 
 	public float speed() {
 		float speed = baseSpeed;
-		//创世神之怒
+		//创世神
 		if ( buff( AnkhInvulnerability.GodDied.class ) != null ) speed *= 2f;
 
 		if (buff(Cripple.class) != null) speed /= 2f;

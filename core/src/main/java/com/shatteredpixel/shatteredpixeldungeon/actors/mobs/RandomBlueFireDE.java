@@ -31,9 +31,7 @@ import com.watabou.utils.Random;
 
 public class RandomBlueFireDE extends Mob {
     private static final String COMBO = "combo";
-    private String[] attackCurse = {"……","不能违背神的意志","无知者无罪"};
     private int combo = 0;
-    private String[] deathCurse = {"没有任何的悲哀可以给我，你彻底激怒我了！"};
     public RandomBlueFireDE() {
         this.spriteClass = FireBallMobSprite.class;
         this.HT = 40;
@@ -49,7 +47,7 @@ public class RandomBlueFireDE extends Mob {
 		//半血狂暴
 		super.damage( dmg, src );
 		if (HP <= HT / 2) {
-			destroy();
+			this.die(true);
 			Mob mob = new RandomBlueFire();
 			mob.HP = mob.HT;
 			mob.pos = pos;
@@ -65,7 +63,7 @@ public class RandomBlueFireDE extends Mob {
     }
 
     public int attackProc( Char enemy, int damage ) {
-        this.sprite.showStatus(16711680, this.attackCurse[Random.Int(this.attackCurse.length)]);
+        this.sprite.showStatus(16711680, Messages.get(this,"attack_msg_"+Random.IntRange(1, 3)));
         super.attackProc( enemy, damage );
         return damage;
     }
@@ -73,7 +71,8 @@ public class RandomBlueFireDE extends Mob {
     public void die(Object cause) {
         RandomBlueFireDE.super.die(cause);
         if (cause != Chasm.class) {
-            this.sprite.showStatus(16711680, this.deathCurse[Random.Int(this.deathCurse.length)], new Object[0]);
+            //如果新增临死前的话，请将1改为Random.IntRange
+            this.sprite.showStatus(16711680, Messages.get(this,"death_msg_"+1), new Object[0]);
         }
     }
 

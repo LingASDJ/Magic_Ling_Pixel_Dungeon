@@ -84,7 +84,6 @@ public class LevelRules {
                 case 0:
                     return new ZeroLevel();
                 case 1:
-                    //return new AncityMiniLevel();
                 case 2:
                 case 3:
                 case 4:
@@ -97,7 +96,7 @@ public class LevelRules {
                 case 9:
                     return new PrisonLevel();
                 case 10:
-                    if ((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) {
+                    if ( ((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && !Statistics.mustTengu) {
                         return new ColdChestBossLevel();
                     } else {
                         return new PrisonBossLevel();
@@ -205,9 +204,7 @@ public class LevelRules {
 
             case 5:
                 switch (depth){
-                    case 25:
-                        return Statistics.endingbald ? new OpenLastLevel() : new NewLastLevel();
-                    case 17: case 18:
+                    case 17:
                         return new GardenLevel();
                     default:
                         return new DeadEndLevel();

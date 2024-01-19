@@ -215,12 +215,10 @@ public class WndStory extends Window {
 					scene.showLogo( mapnameSlain );
 					break;
 				case 17:case 18:
-					switch(Dungeon.branch){
-						case 1:
-							mapnameSlain.texture( "interfaces/mapname/ancient.png" );
-							mapnameSlain.show( 0x067000, 0.6f, 3f );
-							scene.showLogo( mapnameSlain );
-						break;
+					if (Dungeon.branch == 1) {
+						mapnameSlain.texture("interfaces/mapname/ancient.png");
+						mapnameSlain.show(0x067000, 0.6f, 3f);
+						scene.showLogo(mapnameSlain);
 					}
 					break;
 				case 21:

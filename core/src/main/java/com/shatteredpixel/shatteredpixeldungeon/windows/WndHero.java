@@ -27,6 +27,8 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Clipboard;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -59,6 +61,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.TalentButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentsPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Gizmo;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
@@ -79,7 +82,7 @@ public class WndHero extends WndTabbed {
 
 	private ElementalBuffsTab ebuffs;
 	private LRBuffsTab rbuffs;
-
+	Clipboard clipboard;
 
 	public static int lastIdx = 0;
 
@@ -88,6 +91,8 @@ public class WndHero extends WndTabbed {
 		super();
 
 		resize( WIDTH, HEIGHT );
+
+		clipboard = Gdx.app.getClipboard();
 
 		stats = new StatsTab();
 		add( stats );
@@ -282,14 +287,25 @@ public class WndHero extends WndTabbed {
 				}
 			};
 			add(buttonItem);
-			buttonItem.setRect(2, pos, WIDTH - 4, 16);
-			if(HelpSettings() && Dungeon.isChallenged(PRO)){
+			buttonItem.setRect(2, pos, WIDTH /2-4, 16);
+			boolean developerMode = HelpSettings() && Dungeon.isChallenged(PRO);
+			if(developerMode){
 				buttonItem.active = true;
 			} else {
 				buttonItem.active = false;
 				buttonItem.visible = false;
 			}
 
+			RedButton buttonSeed = new RedButton(M.L(HeroStat.class, "item_seed"), 8){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					clipboard.setContents(DungeonSeed.convertToCode(Dungeon.seed));
+					GLog.i(Messages.get(HeroStat.class, "copy_success"));
+				}
+			};
+			add(buttonSeed);
+			buttonSeed.setRect(developerMode ? buttonItem.right()+2 : 2, pos, developerMode ? WIDTH /2-4 : WIDTH-4, 16);
 		}
 
 		private void statSlot( String label, String value ) {

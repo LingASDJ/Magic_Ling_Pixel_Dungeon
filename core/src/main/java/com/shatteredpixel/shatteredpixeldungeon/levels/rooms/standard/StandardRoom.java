@@ -165,6 +165,7 @@ public abstract class StandardRoom extends Room {
 		} else {
 			chances[16] = new float[]{10, 0, 0, 0, 0, 0, 0, 10, 10, 5, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 		}
+
 		chances[20] = chances[19] = chances[18] = chances[17] = chances[16];
 
 		chances[21] = new float[]{10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
