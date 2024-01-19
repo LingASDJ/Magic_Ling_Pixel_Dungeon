@@ -494,10 +494,9 @@ public class StatusPane extends Component {
 			Solar solardate = Solar.fromDate(calendar.getTime());
 			Lunar lunar = solardate.getLunar();
 			String shengXiao = lunar.getYearZhi() + lunar.getYearShengXiao();
-			String weekend = solardate.getWeekInChinese();
-			timeText.text(sdf.format(date) + " " + "周"+weekend  + " " + shengXiao);
+			timeText.text(sdf.format(date) + " " + Messages.get(this,Integer.toString(solardate.getWeek()))  + " " + shengXiao);
 		} else {
-			timeText.text("GAME OVER");
+			timeText.text(Messages.get(this,"game_over"));
 		}
 
 		if (!Dungeon.hero.isAlive()) {

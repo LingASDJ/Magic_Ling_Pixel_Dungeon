@@ -258,12 +258,12 @@ public class MagicGirlDead extends Boss {
         for (Buff buff : hero.buffs()) {
             if (buff instanceof RoseShiled) {
                 buff.detach();
-                GLog.b("……你妄图使用这种方法来逃脱吗？");
+                GLog.b(Messages.get(this,"run"));
                 Statistics.bossScores[2] -= 800;
             }
             if (buff instanceof HaloFireImBlue ||buff instanceof FireImbue) {
                 buff.detach();
-                GLog.b("……你妄图使用这种方法来逃脱吗？");
+                GLog.b(Messages.get(this,"run"));
                 Statistics.bossScores[2] -= 800;
             }
         }

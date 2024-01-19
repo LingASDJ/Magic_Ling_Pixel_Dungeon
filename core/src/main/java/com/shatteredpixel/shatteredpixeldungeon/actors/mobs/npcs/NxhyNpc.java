@@ -13,10 +13,6 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 public class NxhyNpc extends NPC {
-
-    private static final String[] TXT_RANDOM = {"你知道吗？我还有个妹妹失散在了地牢之中，她叫夏洛。希望你能找到她！\n" +
-            "我记得我还有把祖传的尚方宝剑，可是我遗落在地牢某处了，希望你在地牢里可以所向披靡。"};
-
     {
         spriteClass = NxhySprite.class;
 
@@ -85,7 +81,7 @@ public class NxhyNpc extends NPC {
             rd=false;
             tell(Messages.get(NxhyNpc.class, "message3"));
         } else {
-            GLog.b(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
+            GLog.b(Messages.get(this,"other_"+Random.IntRange(1, 2)));
         }
 
         return true;

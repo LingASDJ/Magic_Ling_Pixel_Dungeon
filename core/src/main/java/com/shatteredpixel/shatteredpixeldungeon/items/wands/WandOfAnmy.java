@@ -185,7 +185,7 @@ public class WandOfAnmy extends DamageWand {
             if (ch.isAlive() && (!ch.properties().contains(Char.Property.BOSS))){
                 Buff.affect(ch, AllyToRestart.class);
             } else {
-                GLog.n("不能影响Boss。");
+                GLog.n(Messages.get(this,"error"));
             }
         } else {
             Dungeon.level.pressCell(bolt.collisionPos);

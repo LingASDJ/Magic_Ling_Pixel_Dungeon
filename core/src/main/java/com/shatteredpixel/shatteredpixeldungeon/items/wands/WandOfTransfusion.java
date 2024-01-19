@@ -94,7 +94,7 @@ public class WandOfTransfusion extends Wand {
 					ch.HP += 0;
 					ch.sprite.emitter().burst(Speck.factory(Speck.HEALING), 2 + buffedLvl() / 2);
 					ch.sprite.showStatus(CharSprite.WARNING, "+0HP", healing + shielding);
-					GLog.n("注魂法杖对Boss治疗是无效的！");
+					GLog.n(Messages.get(this,"error"));
 				} else {
 					ch.HP += healing;
 					ch.sprite.emitter().burst(Speck.factory(Speck.HEALING), 2 + buffedLvl() / 2);

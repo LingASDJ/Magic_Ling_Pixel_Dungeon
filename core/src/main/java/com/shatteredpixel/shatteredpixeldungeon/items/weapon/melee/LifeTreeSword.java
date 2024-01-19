@@ -276,7 +276,7 @@ public class LifeTreeSword extends MeleeWeapon {
 
         @Override
         public String info() {
-            return "注意：倒悬的生命树必须是未装备的才能参与炼金";
+            return Messages.get(this,"error");
         }
     }
 

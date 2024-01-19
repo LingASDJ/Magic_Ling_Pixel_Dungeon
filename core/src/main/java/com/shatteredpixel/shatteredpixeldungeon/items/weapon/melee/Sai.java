@@ -58,7 +58,7 @@ public class Sai extends MeleeWeapon {
 	}
 
 	public String statsInfo(){
-		return ("持有这个武器，你在迅猛一击的时候可以吸血!你上次吸血的结果为"+"_"+R+"_"+"点");
+		return (Messages.get(this,"stats_info",R));
 	}
 
 
@@ -72,12 +72,12 @@ public class Sai extends MeleeWeapon {
 				//角色最大血量*0.1+武器等级*0.5+1.5
 				//50x0.1+7x0.5+1=10+3.5+1=15
 				if(attacker.HP >= attacker.HT){
-					GLog.p("血量已满！无法回血");
+					GLog.p(Messages.get(this,"full"));
 				} else if (Random.Int(10)<=4) {
 					R = (int) Math.min(attacker.HT-attacker.HP,(attacker.HT * 0.1 + (buffedLvl() * 0.5) + 1.5));
 					attacker.HP +=R;
 					attacker.sprite.showStatus(CharSprite.POSITIVE, ("+" + R + "HP"));
-					GLog.p(attacker.name()+"的迅猛一击，回血成功！");
+					GLog.p(Messages.get(this,"success",attacker.name()));
 				}
 				return super.proc(attacker, defender, damage);
 		}

@@ -63,7 +63,7 @@ public class LanFire extends NPC {
                                 hero.spend( 3f );
                                 hero.busy();
                                 hero.sprite.operate(hero.pos);
-                                GLog.p("你烹饪了一个神秘的肉，回复了少量的温度。");
+                                GLog.p(Messages.get(this,"cook_one"));
                             } else if(index == 1 ) {
                                 if(mysteryMeat.quantity() >= 3){
                                     hero.healIcehp(Math.max(0, 3));
@@ -75,16 +75,16 @@ public class LanFire extends NPC {
                                     hero.spend(9f);
                                     hero.busy();
                                     hero.sprite.operate(hero.pos);
-                                    GLog.p("你烹饪了三个神秘的肉，回复了一些的温度。");
+                                    GLog.p(Messages.get(this,"cook_three"));
                                 } else {
-                                    GLog.p("你并没有3个神秘的肉！");
+                                    GLog.p(Messages.get(this,"cook_none"));
                                 }
                             } else if (index == 2){
                                 GameScene.pickUp(chargrilledMeat, Dungeon.hero.pos);
                                 hero.healIcehp(Math.max(0,mysteryMeat.quantity()));
                                 chargrilledMeat.quantity(mysteryMeat.quantity()).collect();
                                 mysteryMeat.detachAll( hero.belongings.backpack );
-                                GLog.p("你将所有神秘的肉全部烹饪了，同时回复了大量的温度。");
+                                GLog.p(Messages.get(this,"cook_all"));
                                 hero.busy();
                                 hero.spend( mysteryMeat.quantity()/5f < 1 ? 10f : mysteryMeat.quantity()/5f );
                                 hero.sprite.operate(hero.pos);
@@ -103,13 +103,13 @@ public class LanFire extends NPC {
         if (!seenBefore && Dungeon.level.heroFOV[pos] && Dungeon.level.distance(pos, hero.pos) <= 3) {
             seenBefore = true;
             Buff.affect(hero, IceHealHP.class).set( (100), 1 );
-            GLog.p("篝火的温暖照亮每一个在寒冷中徒步的冒险者，在寒冷而又凛冽的地牢中，这里是唯一的休息站。");
+            GLog.p(Messages.get(this,"enter"));
             spend(TICK);
             return true;
         } else if(seenBefore && !Dungeon.level.heroFOV[pos]) {
             seenBefore = false;
             Buff.detach( hero, IceHealHP.class );
-            GLog.n("离开温暖的篝火休息站，前方迎面而来的又是凛冽的寒风。");
+            GLog.n(Messages.get(this,"leave"));
             return true;
         }
         return super.act();

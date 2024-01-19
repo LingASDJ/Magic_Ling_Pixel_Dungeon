@@ -84,6 +84,7 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -275,7 +276,7 @@ public class MobPlacer extends TestItem{
 
             resize(WIDTH, HEIGHT);
 
-            RedButton lhs = new RedButton("上一页", 6){
+            RedButton lhs = new RedButton(Messages.get(WndSetMob.class,"last_page"), 6){
                 @Override
                 public void onClick(){
                     mobTier--;
@@ -290,7 +291,7 @@ public class MobPlacer extends TestItem{
             lhs.setRect(GAP, GAP, 24, 18);
             add(lhs);
 
-            RedButton rhs = new RedButton("下一页", 6){
+            RedButton rhs = new RedButton(Messages.get(WndSetMob.class,"next_page"), 6){
                 @Override
                 public void onClick(){
                     mobTier++;
