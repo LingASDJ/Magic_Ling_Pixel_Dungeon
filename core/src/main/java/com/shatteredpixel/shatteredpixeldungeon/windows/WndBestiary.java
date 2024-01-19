@@ -148,7 +148,7 @@ public class WndBestiary extends Window {
             icon = mob.sprite();
             if(!mob.discovered){
                 icon.hardlight(0x111111);
-                temptext = "暂无资料";
+                temptext = Messages.get(ListItem.class,"none");
             }
             if(icon.width()>21){
                 icon.scale.set(PixelScene.align(0.7f));
@@ -188,7 +188,7 @@ public class WndBestiary extends Window {
         public boolean onClick( float x, float y ) {
             if (inside( x, y )) {
                 if(!mob1.discovered){
-                    GameScene.show( new WndMessage("你必须击败敌人才能获得对应情报。"));
+                    GameScene.show( new WndMessage(Messages.get(ListItem.class,"kill_enemy")));
                 } else {
                     GameScene.show( new WndInfoMob( mob1 ) );
                 }

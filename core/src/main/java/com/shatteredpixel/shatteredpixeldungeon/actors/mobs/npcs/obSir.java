@@ -13,9 +13,6 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 public class obSir extends NPC {
-
-    private static final String[] TXT_RANDOM = {"哦，有趣，我开始想象你的冒险旅程了。","路上小心！！！","在调查地牢的同时，不要忘记自己的家人"};
-
     {
         spriteClass = obSirSprite.class;
 
@@ -77,7 +74,7 @@ public class obSir extends NPC {
             secnod=false;
             tell(Messages.get(obSir.class, "message2"));
         } else {
-            GLog.p(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
+            GLog.p(Messages.get(this,"other_"+Random.IntRange(1, 3)));
         }
 
         return true;

@@ -40,7 +40,7 @@ public class LighS extends FlavourBuff {
             }
             lantern.spendCharge();
         } else {
-            GLog.n("在遗物状态下无法点亮提灯");
+            GLog.n(Messages.get(this,"tip"));
             detach();
         }
 
