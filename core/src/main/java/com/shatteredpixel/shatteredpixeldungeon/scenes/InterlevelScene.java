@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
@@ -29,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -341,7 +344,7 @@ public class InterlevelScene extends PixelScene {
 				else if (error.getMessage() != null &&
 						error.getMessage().equals("old save")) errorMsg = Messages.get(this, "io_error");
 
-				else throw new RuntimeException("fatal error occured while moving between floors. " +
+				else throw new RuntimeException("fatal error occurred while moving between floors. " +
 							"Seed:" + Dungeon.seed + " depth:" + Dungeon.depth, error);
 
 				add( new WndError( errorMsg ) {
@@ -359,11 +362,13 @@ public class InterlevelScene extends PixelScene {
 					s += "\n";
 					s += t.toString();
 				}
-				ShatteredPixelDungeon.reportException(
-						new RuntimeException("waited more than 10 seconds on levelgen. " +
-								"Seed:" + Dungeon.seed + " depth:" + Dungeon.depth + " trace:" +
-								s)
-				);
+				//we care about reporting game logic exceptions, not slow IO
+				if (!s.contains("FileUtils.bundleToFile")){
+					ShatteredPixelDungeon.reportException(
+							new RuntimeException("waited more than 10 seconds on levelgen. " +
+									"Seed:" + Dungeon.seed + " depth:" + Dungeon.depth + " trace:" +
+									s));
+				}
 			}
 			break;
 		}
@@ -506,7 +511,26 @@ public class InterlevelScene extends PixelScene {
 			}
 			int pos = level.randomRespawnCell(null);
 			if (pos == -1) pos = level.entrance();
-			level.drop(new LostBackpack(), pos);
+
+			Ankh ankh = null;
+
+			for (Ankh i : hero.belongings.getAllItems(Ankh.class)) {
+				if (ankh == null || i.isBlessed()) {
+					ankh = i;
+				}
+			}
+
+			for (Ankh i : hero.belongings.getAllItems(Ankh.class)) {
+				if (ankh != null || i.isBlessed()) {
+					if (!(hero.lanterfire <= 30 && !i.isBlessed())) {
+						level.drop(new LostBackpack(), pos);
+					}
+				} else if(!Statistics.lanterfireactive){
+					level.drop(new LostBackpack(), pos);
+				}
+			}
+
+
 
 		} else {
 			level = Dungeon.level;
@@ -531,9 +555,41 @@ public class InterlevelScene extends PixelScene {
 			Dungeon.hero.resurrect();
 
 			if(Statistics.ankhToExit){
-				level.drop(new LostBackpack(), level.entrance());
+				Ankh ankh = null;
+
+				for (Ankh i : hero.belongings.getAllItems(Ankh.class)) {
+					if (ankh == null || i.isBlessed()) {
+						ankh = i;
+					}
+				}
+
+				for (Ankh i : hero.belongings.getAllItems(Ankh.class)) {
+					if (ankh != null || i.isBlessed()) {
+						if (!(hero.lanterfire <= 30 && !i.isBlessed())) {
+							level.drop(new LostBackpack(), level.entrance());
+						}
+					} else if(!Statistics.lanterfireactive){
+						level.drop(new LostBackpack(), level.entrance());
+					}
+				}
 			} else {
-				level.drop(new LostBackpack(), invPos);
+				Ankh ankh = null;
+
+				for (Ankh i : hero.belongings.getAllItems(Ankh.class)) {
+					if (ankh == null || i.isBlessed()) {
+						ankh = i;
+					}
+				}
+
+				for (Ankh i : hero.belongings.getAllItems(Ankh.class)) {
+					if (ankh != null || i.isBlessed()) {
+						if (!(hero.lanterfire <= 30 && !i.isBlessed())) {
+							level.drop(new LostBackpack(), invPos);
+						}
+					} else if(!Statistics.lanterfireactive){
+						level.drop(new LostBackpack(), invPos);
+					}
+				}
 			}
 
 		}

@@ -12,9 +12,6 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 public class WhiteNPC extends NPC {
-
-    private static final String[] TXT_RANDOM = {"有什么事情吗？","如果想要物资，来监狱层找我"};
-
     {
         spriteClass = WhiteGirlSprites.class;
 
@@ -83,7 +80,7 @@ public class WhiteNPC extends NPC {
             rd=false;
             tell(Messages.get(NxhyNpc.class, "message3"));
         } else {
-            yell(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
+            yell(Messages.get(this,"other_"+Random.IntRange(1, 2)));
         }
 
         return true;

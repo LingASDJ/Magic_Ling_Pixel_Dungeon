@@ -84,7 +84,6 @@ public class LevelRules {
                 case 0:
                     return new ZeroLevel();
                 case 1:
-                    //return new AncityMiniLevel();
                 case 2:
                 case 3:
                 case 4:

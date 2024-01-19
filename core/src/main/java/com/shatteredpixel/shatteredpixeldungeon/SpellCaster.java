@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrstalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
@@ -657,7 +658,6 @@ public abstract class SpellCaster extends Mob {
         @Override
         protected void zapProc() {
             Ballistica ba = new Ballistica(pos, lastTargeting, Ballistica.MAGIC_BOLT);
-
             sprite.parent.add(new BeamCustom(
                     sprite.center(),
                     DungeonTilemap.tileCenterToWorld(ba.collisionPos),
@@ -673,7 +673,7 @@ public abstract class SpellCaster extends Mob {
         @Override
         protected void warn(int num) {
             //if(num==2) sprite.showStatus( 0x30FF30, "!" );
-            if(num==1) {sprite.showStatus(0xff0000, "暴食");
+            if(num==1) {sprite.showStatus(0xff0000, Messages.get(this,"status"));
                 new Flare( 6, 32 ).color( 0x30FF30, true ).show(sprite, 3f );}
         }
 

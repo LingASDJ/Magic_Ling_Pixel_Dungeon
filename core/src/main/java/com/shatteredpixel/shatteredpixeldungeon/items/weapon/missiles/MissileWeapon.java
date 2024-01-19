@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,6 +98,15 @@ abstract public class MissileWeapon extends Weapon {
 	public int STRReq(int lvl){
 		return STRReq(tier, lvl) - 1; //1 less str than normal for their tier
 	}
+
+	//use the parent item if this has been thrown from a parent
+	public int buffedLvl(){
+		if (parent != null) {
+			return parent.buffedLvl();
+		} else {
+			return super.buffedLvl();
+		}
+	}
 	
 	@Override
 	//FIXME some logic here assumes the items are in the player's inventory. Might need to adjust
@@ -164,7 +173,7 @@ abstract public class MissileWeapon extends Weapon {
 		}
 
 		if (projecting
-				&& (Dungeon.level.passable[dst] || Dungeon.level.avoid[dst])
+				&& (Dungeon.level.passable[dst] || Dungeon.level.avoid[dst] || Actor.findChar(dst) != null)
 				&& Dungeon.level.distance(user.pos, dst) <= Math.round(4 * Enchantment.genericProcChanceMultiplier(user))){
 			return dst;
 		} else {
@@ -305,6 +314,11 @@ abstract public class MissileWeapon extends Weapon {
 	}
 	
 	public float durabilityPerUse(){
+		//classes that override durabilityPerUse can turn rounding off, to do their own rounding after more logic
+		return durabilityPerUse(true);
+	}
+
+	protected final float durabilityPerUse( boolean rounded){
 		float usages = baseUses * (float)(Math.pow(3, level()));
 
 		//+50%/75% durability
@@ -314,16 +328,20 @@ abstract public class MissileWeapon extends Weapon {
 		if (holster) {
 			usages *= MagicalHolster.HOLSTER_DURABILITY_FACTOR;
 		}
-		
+
 		usages *= RingOfSharpshooting.durabilityMultiplier( Dungeon.hero );
-		
+
 		//at 100 uses, items just last forever.
 		if (usages >= 100f) return 0;
 
-		usages = Math.round(usages);
-		
-		//add a tiny amount to account for rounding error for calculations like 1/3
-		return (MAX_DURABILITY/usages) + 0.001f;
+		if (rounded){
+			usages = Math.round(usages);
+			//add a tiny amount to account for rounding error for calculations like 1/3
+			return (MAX_DURABILITY/usages) + 0.001f;
+		} else {
+			//rounding can be disabled for classes that override durability per use
+			return MAX_DURABILITY/usages;
+		}
 	}
 	
 	protected void decrementDurability(){

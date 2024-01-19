@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,8 @@ import java.util.Comparator;
 
 public class Item implements Bundlable {
 
+	public interface AnimationItem{}
+
 	@Override
 	public String toString() {
 
@@ -94,7 +96,7 @@ public class Item implements Bundlable {
 
 	
 	public boolean stackable = false;
-	protected int quantity = 1;
+	public int quantity = 1;
 	public boolean dropsDownHeap = false;
 	
 	public int level = 0;
@@ -118,6 +120,8 @@ public class Item implements Bundlable {
 	 * 动态组
 	 */
 	public boolean animation = false;
+
+	public boolean animationToidle = false;
 	public String animationTotalFrame;
 	public int animationWidth;
 	public int animationHeight;
@@ -127,7 +131,7 @@ public class Item implements Bundlable {
 	 *
 	 * @param itemSprite
 	 */
-	public void frames(ItemSprite itemSprite){
+    public void frames(ItemSprite itemSprite){
 		if(animation) {
 			itemSprite.texture(animationTotalFrame);
 			TextureFilm frames = new TextureFilm(itemSprite.texture, animationWidth, animationHeight);
@@ -531,6 +535,8 @@ public class Item implements Bundlable {
 	}
 
 	public Emitter emitter() { return null; }
+
+	public void NO() {}
 	
 	public String info() {
 		return desc();
@@ -695,8 +701,9 @@ public class Item implements Bundlable {
 						public void call() {
 							curUser = user;
 							Item i = Item.this.detach(user.belongings.backpack);
+							user.spend(delay);
 							if (i != null) i.onThrow(cell);
-							user.spendAndNext(delay);
+							user.next();
 						}
 					});
 		}

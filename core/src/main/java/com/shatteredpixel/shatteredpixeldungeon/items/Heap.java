@@ -94,12 +94,12 @@ public class Heap implements Bundlable {
 	public void open( Hero hero ) {
 		switch (type) {
 		case TOMB:
-			Wraith.spawnAround( hero.pos,false );
+			Wraith.spawnAround( hero.pos,null );
 			break;
 		case WHITETOMB:
 			ScrollOfTeleportation.appear( hero,hero.pos+5 );
 			new PotionOfLiquidFlame().quantity(1).identify().collect();
-			GLog.n("你在探索的时候，你发现了一瓶液态火焰药水，你收集了它，但同时被传入了墓穴的中央……");
+			GLog.n(Messages.get(this,"warning"));
 			Statistics.ankhToExit = true;
 			break;
 		case TELECRYSTL:
@@ -113,7 +113,7 @@ public class Heap implements Bundlable {
 		}
 		
 		if (haunted){
-			if (Wraith.spawnAt( pos,true ) == null) {
+			if (Wraith.spawnAt( pos,null ) == null) {
 				hero.sprite.emitter().burst( ShadowParticle.CURSE, 6 );
 				hero.damage( hero.HP / 2, this );
 			}

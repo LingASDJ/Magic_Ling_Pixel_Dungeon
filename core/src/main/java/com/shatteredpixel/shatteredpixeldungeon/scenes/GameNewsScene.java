@@ -127,13 +127,13 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
                 RenderedTextBlock title;
 
                 if (article.ling > Game.versionCode) {  //如果文章需要更新的版本号大于当前版本号
-                    title = PixelScene.renderTextBlock("你的版本需要更新！", 9);  //创建一个渲染的文本块，并设置为"你的版本需要更新！"
+                    title = PixelScene.renderTextBlock(Messages.get(this,"new_version"), 9);  //创建一个渲染的文本块，并设置为"你的版本需要更新！"
                     title.hardlight(Window.RED_COLOR);  //将文本块突出显示为红色
                 } else if (article.ling < Game.versionCode) {  //如果文章需要更新的版本号小于当前版本号
-                    title = PixelScene.renderTextBlock("警告：你的版本可能是盗版！", 9);  //创建一个渲染的文本块，并设置为"警告：你的版本可能是盗版！"
+                    title = PixelScene.renderTextBlock(Messages.get(this,"error_version"), 9);  //创建一个渲染的文本块，并设置为"警告：你的版本可能是盗版！"
                     title.hardlight(Window.CBLACK);  //将文本块突出显示为黑色
                 } else {
-                    title = PixelScene.renderTextBlock("已是最新版本！", 9);  //如果文章版本号与当前版本号相同，创建一个渲染的文本块，并设置为"已是最新版本！"
+                    title = PixelScene.renderTextBlock(Messages.get(this,"lastest_version"), 9);  //如果文章版本号与当前版本号相同，创建一个渲染的文本块，并设置为"已是最新版本！"
                     title.hardlight(Window.TITLE_COLOR);  //将文本块突出显示为标题颜色
                 }
 

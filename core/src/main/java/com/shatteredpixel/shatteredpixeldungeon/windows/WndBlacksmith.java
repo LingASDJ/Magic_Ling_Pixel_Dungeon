@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -100,6 +101,10 @@ public class WndBlacksmith extends Window {
 							Blacksmith.Quest.favor -= pickaxeCost;
 							Blacksmith.Quest.pickaxe = null;
 							WndBlacksmith.this.hide();
+
+							if (!Blacksmith.Quest.rewardsAvailable()){
+								Notes.remove( Notes.Landmark.TROLL );
+							}
 						}
 					}
 				});
@@ -256,7 +261,7 @@ public class WndBlacksmith extends Window {
 				protected void onClick() {
 
 					Item first, second;
-					if (btnItem1.item().trueLevel() > btnItem2.item().trueLevel()) {
+					if (btnItem1.item().trueLevel() >= btnItem2.item().trueLevel()) {
 						first = btnItem1.item();
 						second = btnItem2.item();
 					} else {
@@ -294,6 +299,10 @@ public class WndBlacksmith extends Window {
 					Blacksmith.Quest.favor -= 500 + 1000*Blacksmith.Quest.reforges;
 					Blacksmith.Quest.reforges++;
 
+					if (!Blacksmith.Quest.rewardsAvailable()){
+						Notes.remove( Notes.Landmark.TROLL );
+					}
+
 					hide();
 					if (wndParent != null){
 						wndParent.hide();
@@ -322,7 +331,7 @@ public class WndBlacksmith extends Window {
 
 			@Override
 			public boolean itemSelectable(Item item) {
-				return item.isIdentified() && item.isUpgradable();
+				return item.isIdentified() && !item.cursed && item.isUpgradable();
 			}
 
 			@Override
@@ -369,7 +378,7 @@ public class WndBlacksmith extends Window {
 		@Override
 		public boolean itemSelectable(Item item) {
 			return item.isUpgradable()
-					&& item.isIdentified()
+					&& item.isIdentified() && !item.cursed
 					&& ((item instanceof MeleeWeapon && !((Weapon) item).enchantHardened)
 					|| (item instanceof Armor && !((Armor) item).glyphHardened));
 		}
@@ -390,6 +399,10 @@ public class WndBlacksmith extends Window {
 
 				Sample.INSTANCE.play(Assets.Sounds.EVOKE);
 				Item.evoke( Dungeon.hero );
+
+				if (!Blacksmith.Quest.rewardsAvailable()){
+					Notes.remove( Notes.Landmark.TROLL );
+				}
 			}
 		}
 	}
@@ -410,6 +423,7 @@ public class WndBlacksmith extends Window {
 		public boolean itemSelectable(Item item) {
 			return item.isUpgradable()
 					&& item.isIdentified()
+					&& !item.cursed
 					&& item.level() < 2;
 		}
 
@@ -428,6 +442,10 @@ public class WndBlacksmith extends Window {
 				Item.evoke( Dungeon.hero );
 
 				Badges.validateItemLevelAquired( item );
+
+				if (!Blacksmith.Quest.rewardsAvailable()){
+					Notes.remove( Notes.Landmark.TROLL );
+				}
 			}
 		}
 	}
@@ -503,6 +521,10 @@ public class WndBlacksmith extends Window {
 						}
 						WndSmith.this.hide();
 						Blacksmith.Quest.smithRewards = null;
+
+						if (!Blacksmith.Quest.rewardsAvailable()){
+							Notes.remove( Notes.Landmark.TROLL );
+						}
 					}
 				};
 				btnConfirm.setRect(0, height+2, width/2-1, 16);

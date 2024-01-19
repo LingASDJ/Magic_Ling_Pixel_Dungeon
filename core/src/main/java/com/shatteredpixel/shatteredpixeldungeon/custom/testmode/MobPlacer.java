@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollTrickster;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreenSlting;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.IceGolem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ice_Scorpio;
@@ -48,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewBlackHost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDLLS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDNQHZ;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDZSLS;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PhantomPiranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedMurderer;
@@ -72,15 +72,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Succubus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.TormentedSpirit;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.XTG200;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GreenSlting;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SlimeKingMob;
 import com.shatteredpixel.shatteredpixeldungeon.custom.dict.DictSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -272,7 +275,7 @@ public class MobPlacer extends TestItem{
 
             resize(WIDTH, HEIGHT);
 
-            RedButton lhs = new RedButton("上一页", 6){
+            RedButton lhs = new RedButton(Messages.get(WndSetMob.class,"last_page"), 6){
                 @Override
                 public void onClick(){
                     mobTier--;
@@ -287,7 +290,7 @@ public class MobPlacer extends TestItem{
             lhs.setRect(GAP, GAP, 24, 18);
             add(lhs);
 
-            RedButton rhs = new RedButton("下一页", 6){
+            RedButton rhs = new RedButton(Messages.get(WndSetMob.class,"next_page"), 6){
                 @Override
                 public void onClick(){
                     mobTier++;
@@ -508,7 +511,11 @@ public class MobPlacer extends TestItem{
         STATUE(Statue.class, DictSpriteSheet.STATUE),
         ARMORED_STATUE(ArmoredStatue.class, DictSpriteSheet.ARMORED_STATUE),
         WRAITH(Wraith.class, DictSpriteSheet.WRAITH),
+        TORMENTED_SPIRIT(TormentedSpirit.class,DictSpriteSheet.TORMENTED_SPIRIT),
+        PHANTOM_PIRANHA(PhantomPiranha.class,DictSpriteSheet.PHANTOM_PIRANHA),
         PIRANHA(Piranha.class, DictSpriteSheet.FISH),
+
+
 
         ZSLS(OGPDZSLS.class, DictSpriteSheet.OGPDZSLS),
         LLS(OGPDLLS.class, DictSpriteSheet.OGPDLLS),

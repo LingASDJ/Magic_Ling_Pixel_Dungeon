@@ -4,12 +4,12 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreenSlting;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.BlackMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDHBLR;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.DM275;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GnollHero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GreenSlting;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SuccubusQueen;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -52,15 +52,14 @@ public class LinkRoom extends StandardRoom {
 
         Mob n = new GreenSlting();
         if(depth >= 20){
-            n = new Eye();
+            n = new SuccubusQueen();
         } else if(depth >= 15) {
-            n = new BruteBot();
+            n = new BlackMimic();
         } else if(depth >= 10) {
-            n = new DM200();
+            n = new DM275();
         } else if(depth >= 6){
-            n = new SRPDHBLR();
+            n = new GnollHero();
         }
-        n.HT = n.HP =  n.HT * 2;
         n.pos = level.pointToCell(center);
         Class<?extends ChampionEnemy> buffCls;
         switch (Random.NormalIntRange(0,6)){

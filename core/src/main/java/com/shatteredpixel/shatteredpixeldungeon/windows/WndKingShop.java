@@ -42,14 +42,14 @@ public class WndKingShop extends Window {
         titlebar.setRect(0, 0, WIDTH, 0);
         titlebar.icon(new ShopkKingSprite());
         if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-            titlebar.label("水晶意志");
+            titlebar.label(Messages.get(WndKingShop.class,"title_bar"));
         } else {
             titlebar.label(Messages.get(WndKingShop.class,"king"));
         }
 
         add( titlebar );
 
-        RenderedTextBlock message = PixelScene.renderTextBlock( Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? "喜欢什么随便拿，但一次500金币的费用还是要交的哦" :
+        RenderedTextBlock message = PixelScene.renderTextBlock( Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? (Messages.get(WndKingShop.class,"run")) :
         (Messages.get(WndKingShop.class,"select")), 6 );
         message.maxWidth(WIDTH);
         message.setPos(0, titlebar.bottom() + GAP);

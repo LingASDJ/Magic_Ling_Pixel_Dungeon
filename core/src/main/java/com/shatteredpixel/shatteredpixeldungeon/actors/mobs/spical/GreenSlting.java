@@ -1,6 +1,7 @@
-package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
+package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GreenSltingSprite;
 import com.watabou.utils.Random;
 
@@ -9,7 +10,7 @@ public class GreenSlting extends Mob {
     {
         spriteClass = GreenSltingSprite.class;
         flying = true;
-        HP = HT = 15;
+        HP = HT = 30;
         defenseSkill = 2;
         maxLvl = 7;
     }

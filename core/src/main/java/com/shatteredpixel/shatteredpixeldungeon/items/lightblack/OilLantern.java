@@ -14,11 +14,8 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.MagicFlamePart
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.MovieClip;
-import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -38,7 +35,7 @@ public class OilLantern extends Artifact {
     private static final String PLASKS = "plasks";
 
     private static final int MAX_CHARGE = 60;
-    private static final int MIX_CHARGE = 50;
+    private static final int MIX_CHARGE = 55;
     private static final float TIME_TO_USE = 2.0f;
 
     private static final String TXT_STATUS = "%d%%";
@@ -188,7 +185,7 @@ public class OilLantern extends Artifact {
 
     public void refills(Hero hero) {
         this.plingks--;
-        this.charge = Math.min(this.charge + MIX_CHARGE, 100);
+        this.charge = Math.min(this.charge + (MIX_CHARGE-(10*Dungeon.depth/5)), 100);
         hero.spend(TIME_TO_USE);
         hero.busy();
         Sample.INSTANCE.play(Assets.Sounds.DRINK, TIME_TO_USE, TIME_TO_USE, 1.2f);

@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -47,7 +48,7 @@ public class TerrainPlacer extends TestItem {
                 @Override
                 public void onSelect(final Integer cell) {
                     if (chosen == 17 || chosen == 18 || chosen == 19) {
-                        GLog.i("不能放置此类型的地形");
+                        GLog.i(Messages.get(this,"cant_place"));
                     } else if (cell != null) {
                         Level.set(cell,chosen);
                         GameScene.updateMap(cell);
@@ -93,7 +94,7 @@ public class TerrainPlacer extends TestItem {
                 add(terrainButton);
             }
 
-            name = PixelScene.renderTextBlock("深渊",9);
+            name = PixelScene.renderTextBlock(Messages.get(this,"chasm"),9);
             name.setPos((110 - name.width()) / 2,112);
             add(name);
 
@@ -129,19 +130,19 @@ public class TerrainPlacer extends TestItem {
             chosen = terrain;
             switch (terrain) {
                 case 16:
-                    name.text("隐藏门");
+                    name.text(Messages.get(SettingsWindow.class,"hidden_door"));
                     break;
                 case 17:
-                    name.text("隐藏陷阱");
+                    name.text(Messages.get(SettingsWindow.class,"hidden_trap"));
                     break;
                 case 18:
-                    name.text("陷阱");
+                    name.text(Messages.get(SettingsWindow.class,"trap"));
                     break;
                 case 19:
-                    name.text("已触发陷阱");
+                    name.text(Messages.get(SettingsWindow.class,"triggered_trap"));
                     break;
                 case 23:
-                    name.text("被移除的告示牌");
+                    name.text(Messages.get(SettingsWindow.class,"remove"));
                     break;
                 default:
                     name.text(Dungeon.level.tileName(terrain));

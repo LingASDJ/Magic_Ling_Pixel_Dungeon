@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,7 +76,22 @@ abstract public class Weapon extends KindOfWeapon {
 	public float	DLY	= 1f;	// Speed modifier
 	public int      RCH = 1;    // Reach modifier (only applies to melee hits)
 
-	public enum Augment {
+	@Override
+	public float speedFactor( Char owner ) {
+
+		int encumbrance = 0;
+		if (owner instanceof Hero) {
+			encumbrance = STRReq() - ((Hero)owner).STR();
+		}
+
+		float DLY = augment.delayFactor(this.DLY);
+
+		DLY *= RingOfFuror.attackSpeedMultiplier(owner);
+
+		return (encumbrance > 0 ? (float)(DLY * Math.pow( 1.2, encumbrance )) : DLY);
+	}
+
+    public enum Augment {
 		SPEED   (0.7f, 2/3f),
 		DAMAGE  (1.5f, 5/3f),
 		NONE	(1.0f, 1f);

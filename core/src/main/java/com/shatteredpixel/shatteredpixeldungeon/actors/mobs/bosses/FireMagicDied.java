@@ -827,8 +827,7 @@ public class FireMagicDied extends Mob implements Callback {
         //summon();
     }
 
-    private final String PUMPEDUP = "pumpedup";
-    private final String HEALINC = "healinc";
+
 
     public static class YogScanHalf extends Buff implements ScanningBeam.OnCollide{
         private int left = 5;

@@ -50,6 +50,18 @@ public class WndScoreBreakdown extends Window {
                     num.format(Statistics.totalQuestScore), pos, Statistics.totalQuestScore >= 14_000);
         pos = addInfo(this, Messages.get(this, "quests_desc"), pos);
 
+
+//        String chalString = "";
+//        float ratio =  1f-(1f - ( (float) Rankings.INSTANCE.wonNumber / Rankings.INSTANCE.totalNumber ) * 100f );
+//
+//        pos = statSlot(this, "总局数", Rankings.INSTANCE.totalNumber+"局", pos, false);
+//        pos = statSlot(this, "总胜利", Rankings.INSTANCE.wonNumber+"局", pos, false);
+//
+//        pos = statSlot(this, "总胜率", String.format("%.2f", ratio) + "%", pos, false);
+//
+//        pos = statSlot(this, "地牢意识", "再接再厉", pos, false);
+
+
         if (Statistics.winMultiplier > 1) {
             pos = statSlot(this, Messages.get(this, "win_multiplier"), Statistics.winMultiplier + "x", pos, false);
         }

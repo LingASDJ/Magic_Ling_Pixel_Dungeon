@@ -9,28 +9,47 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.utils.WndTextNumberInput;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.MovieClip;
+import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class CommRelay extends Artifact {
-    {
+public class CommRelay extends Artifact implements Item.AnimationItem {
 
+    {
         image = ItemSpriteSheet.DM100RELEY;
         level = 0;
         levelCap = 5;
-
+//        animation = true;
         defaultAction=AC_MERC;
+    }
+
+    @Override
+    public void frames(ItemSprite itemSprite){
+        itemSprite.texture(Assets.Sprites.ANIMATIONS_TERMIAL);
+        TextureFilm frames = new TextureFilm(itemSprite.texture, 16, 16);
+        MovieClip.Animation idle = new MovieClip.Animation(21, true);
+
+        if(animationToidle){
+            idle.frames( frames,0,1,1,2,2,2,3,3,4,4,5,5);
+        } else {
+            idle.frames( frames,3);
+        }
+
+        itemSprite.play(idle);
     }
 
     private static final int NIMAGES = 1;
@@ -77,11 +96,11 @@ public class CommRelay extends Artifact {
         if (action.equals(AC_MERC)) {
             if(!cursed){
                 if (!isEquipped(hero))
-                    GLog.i("你需要先装备神器才能使用！");
+                    GLog.i(Messages.get(CommRelay.class,"unequipped"));
                 else if(!useable())
-                    GLog.i("你想做什么？");
+                    GLog.i(Messages.get(CommRelay.class,"unuseable"));
                 else if (!(Dungeon.gold >= 3500))//TODO adjust the gold cost based on current level.
-                    GLog.w("你穷困潦倒，不能使用神器的该技能！");
+                    GLog.w(Messages.get(CommRelay.class,"no_money"));
                 else {
                     ArrayList<Integer> respawnPoints = new ArrayList<Integer>();
 
@@ -108,17 +127,17 @@ public class CommRelay extends Artifact {
                     Sample.INSTANCE.play(Assets.Sounds.READ);
                     Invisibility.dispel();
                     Dungeon.gold -= 3500;
-                    GLog.p("TXT_MERC");
+                    GLog.p(Messages.get(CommRelay.class,"merc"));
                 }
             } else {
-                GLog.i("我们不会服从你!");
+                GLog.i(Messages.get(CommRelay.class,"already_cursed"));
                 //GLog.i("The item will not obey you!");
             }
         } else if (action.equals(AC_SUPP)) {
             if (!(Dungeon.gold >= 5000)){//TODO adjust the gold cost based on current level.
-                GLog.w("你穷困潦倒，不能使用神器的该技能！");
+                GLog.w(Messages.get(CommRelay.class,"no_money"));
             } else if(Dungeon.bossLevel()){
-                GLog.i("TXT_BOSS");
+                GLog.i(Messages.get(CommRelay.class,"boss"));
             } else{
                 GameScene.selectCell(listener);
             }
@@ -134,6 +153,8 @@ public class CommRelay extends Artifact {
                         callNumber = Integer.parseInt(text);
                         if (callNumber == Statistics.commonrelaycall) {
                             GLog.n(Messages.get(CommRelay.class, "call_success"));
+                            animationToidle = true;
+                            updateQuickslot();
                         } else {
                             GLog.w(Messages.get(CommRelay.class, "call_fail"));
                         }
@@ -146,21 +167,21 @@ public class CommRelay extends Artifact {
 
     @Override
     public String desc() {
-        String desc = "你惊讶的在地牢里发现了一个正在工作的通讯中继器！这还有一份说明书，";
+        String desc = Messages.get(CommRelay.class,"desc_1");
 
-            desc += "加上一点阅读时的相互参照，你搞明白了它的功能。\n\n" +
-                    "似乎它连接着雇佣兵协会的数据库。你很确定你可以和协会做个交易，当然是以一些金钱作为交换。";
+            desc += Messages.get(CommRelay.class,"desc_2") +
+                    Messages.get(CommRelay.class,"desc_3");
 
         if(isEquipped(Dungeon.hero)){
             desc += "\n\n";
             if(cursed){
-                desc += "中继器在你背包里自己打开了，并发出了一道响亮的静电在地牢中回荡。";
+                desc += Messages.get(CommRelay.class,"desc_cursed");
             } else if(level < 2){
-                desc += "你用无线电联系上了一个雇佣兵协会，他们很乐意给你提供一些帮助，只要你花一些钱来启动他们的物质传送器，";
+                desc += Messages.get(CommRelay.class,"desc_low_level");
             } else if (level < 10){
-                desc += "有人远程在你的通讯中继器上添加了一个大大的红色按钮，上面写着“补给包：5000金币 和 雇佣兵：3500金币“，你当然知道这会花你一大笔钱，但你不禁对它的用处浮想联翩。";
+                desc += Messages.get(CommRelay.class,"desc_high_level");
             } else {
-                desc += "你和电台上的协会很熟了，他们愿意为你提供跟好的服务，并收取更低费用。";
+                desc += Messages.get(CommRelay.class,"desc_work_well");
             }
         }
 
@@ -188,13 +209,13 @@ public class CommRelay extends Artifact {
                 Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
                 GameScene.updateMap(pos);
                 Dungeon.observe();
-                GLog.p("地表商会为你带来了丰厚的物资。请尽情享用。");
+                GLog.p(Messages.get(CommRelay.class,"item_tip"));
             }
         }
 
         @Override
         public String prompt() {
-            return "选择补给物的位置";
+            return Messages.get(CommRelay.class,"item_pos");
         }
     };
 

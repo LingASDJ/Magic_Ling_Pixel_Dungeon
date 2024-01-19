@@ -40,7 +40,7 @@ public class FireBallMobSprite extends MobSprite {
         run = new Animation( 6, true );
         run.frames( frames, 0, 1, 0, 1, 0,1 );
 
-        attack = new Animation( 5, false );
+        attack = new Animation( 15, false );
         attack.frames( frames, 2, 3,2, 3,2,3 );
 
         die = new Animation( 10, false );

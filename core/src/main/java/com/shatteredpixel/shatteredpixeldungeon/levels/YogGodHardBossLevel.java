@@ -23,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.utils.Random;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class YogGodHardBossLevel extends Level {
@@ -143,14 +144,17 @@ public class YogGodHardBossLevel extends Level {
 
     @Override
     protected void createItems() {
-        Item item = Bones.get();
-        if (item != null) {
+        ArrayList<Item> bonesItems = Bones.get();
+        if (bonesItems != null) {
             int pos;
             do {
                 pos = randomRespawnCell(null);
-            } while (pos % WIDTH == 20);
-            drop( item, pos ).setHauntedIfCursed().type = Heap.Type.REMAINS;
+            } while (pos == entrance());
+            for (Item i : bonesItems) {
+                drop(i, pos).setHauntedIfCursed().type = Heap.Type.REMAINS;
+            }
         }
+        Random.popGenerator();
 
         int[] plates = new int[]{4+WIDTH*4, 4+WIDTH*36, 36+WIDTH*36, 36+WIDTH*4};
         for(int i =0; i<4;++i){

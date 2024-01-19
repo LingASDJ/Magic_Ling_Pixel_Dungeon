@@ -46,7 +46,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AdrenalineSurge;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AnkhInvulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
@@ -1942,7 +1941,7 @@ public class Hero extends Char {
 			
 		} else if (fieldOfView[cell] && ch instanceof Mob) {
 
-			if (ch.alignment != Alignment.ENEMY && ch.buff(Amok.class) == null) {
+			if (((Mob) ch).heroShouldInteract()) {
 				curAction = new HeroAction.Interact( ch );
 			} else {
 				curAction = new HeroAction.Attack( ch );
@@ -2371,11 +2370,8 @@ public class Hero extends Char {
 			seedCustom = true;
 		}
 
-        PotionOfPurity.PotionOfPurityLing potionOfPurityLing =
-                hero.belongings.getItem(PotionOfPurity.PotionOfPurityLing.class);
-        if (potionOfPurityLing != null && !Dungeon.level.locked) {
-            potionOfPurityLing.detachAll(hero.belongings.backpack);
-        }
+        PotionOfPurity.PotionOfPurityLing potionOfPurityLing = hero.belongings.getItem(PotionOfPurity.PotionOfPurityLing.class);
+        if (potionOfPurityLing != null && !Dungeon.level.locked) {potionOfPurityLing.detachAll(hero.belongings.backpack);}
 
         RedWhiteRose redWhiteRose = hero.belongings.getItem(RedWhiteRose.class);
         if (redWhiteRose != null) {
@@ -2520,11 +2516,11 @@ public class Hero extends Char {
 
         //灯火值低于35死亡生成自己的邪恶面，并清空金币，将金币保存到json文件。（灵感：空洞骑士）
         for (Ankh i : belongings.getAllItems(Ankh.class)) {
-            if (ankh == null || i.isBlessed()) {
+            if (ankh != null || i.isBlessed()) {
                 if (lanterfireactive && hero.lanterfire <= 30 && !i.isBlessed()) {
                     BlackSoul s = new BlackSoul();
                     s.pos = Dungeon.hero.pos;
-                    s.gold = Dungeon.gold;
+                    //s.gold = Dungeon.gold;
                     Dungeon.gold = 0;
                     s.state = s.SLEEPING;
                     GameScene.add(s);
