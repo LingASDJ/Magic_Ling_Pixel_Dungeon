@@ -128,6 +128,11 @@ public abstract class Mob extends Char {
 	protected boolean enemySeen;
 	protected boolean alerted = false;
 
+	//whether the hero should interact with the mob (true) or attack it (false)
+	public boolean heroShouldInteract(){
+		return alignment != Alignment.ENEMY && buff(Amok.class) == null;
+	}
+
 	protected static final float TIME_TO_WAKE_UP = 1f;
 	@Override
 	public int attackProc(Char enemy, int damage) {
@@ -1012,7 +1017,7 @@ public abstract class Mob extends Char {
 		if (!(this instanceof Wraith)
 				&& soulMarked
 				&& Random.Float() < (0.4f*Dungeon.hero.pointsInTalent(Talent.NECROMANCERS_MINIONS)/3f)){
-			Wraith w = Wraith.spawnAt(pos, false);
+			Wraith w = Wraith.spawnAt(pos, Wraith.class);
 			if (w != null) {
 				Buff.affect(w, Corruption.class);
 				if (Dungeon.level.heroFOV[pos]) {

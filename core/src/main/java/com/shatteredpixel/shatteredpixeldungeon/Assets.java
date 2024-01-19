@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,6 +97,9 @@ public class Assets {
 		public static final String TILES_CITY_CS   = "environment/tiles_city-cs.png";
 		public static final String TILES_ANCIENT  = "environment/tiles_ancient.png";
 		public static final String TILES_HALLS  = "environment/tiles_halls.png";
+		public static final String TILES_CAVES_CRYSTAL  = "environment/tiles_caves_crystal.png";
+		public static final String TILES_CAVES_GNOLL    = "environment/tiles_caves_gnoll.png";
+
 		public static final String WATER_SEWERS = "environment/water0.png";
 		public static final String WATER_PRISON = "environment/water1.png";
 		public static final String WATER_CAVES  = "environment/water2.png";
@@ -578,11 +581,14 @@ public class Assets {
 
 		public static final String SWORDLING= "Boss/swordling.png";
 		public static final String CRYSTAL_WISP= "sprites/crystal_wisp.png";
-		public static final String CRYSTAL_GUARDIAN= "sprites/crystal_guardian.png";
-		public static final String CRYSTAL_SPIRE= "sprites/crystal_spire.png";
-
-		public static final String CRYSTAL_DIED= "sprites/crstal.png";
-		public static final String GNOLL_GUARD= "sprites/gnoll_guard.png";
+		public static final String CRYSTAL_GUARDIAN = "sprites/crystal_guardian.png";
+		public static final String CRYSTAL_SPIRE    = "sprites/crystal_spire.png";
+		public static final String GNOLL_GUARD      = "sprites/gnoll_guard.png";
+		public static final String GNOLL_SAPPER     = "sprites/gnoll_sapper.png";
+		public static final String GNOLL_GEOMANCER  = "sprites/gnoll_geomancer.png";
+		public static final String FUNGAL_SPINNER   = "sprites/fungal_spinner.png";
+		public static final String FUNGAL_SENTRY    = "sprites/fungal_sentry.png";
+		public static final String FUNGAL_CORE      = "sprites/fungal_core.png";
 
 
 		//Animation Item
