@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -152,14 +152,18 @@ public class Tengu extends Mob {
 
 		int hpBracket = HT / 8;
 
+		int curbracket = HP / hpBracket;
+
 		int beforeHitHP = HP;
 		super.damage(dmg, src);
-		dmg = beforeHitHP - HP;
 
-		//tengu cannot be hit through multiple brackets at a time
-		if ((beforeHitHP/hpBracket - HP/hpBracket) >= 2){
-			HP = hpBracket * ((beforeHitHP/hpBracket)-1) + 1;
+		//cannot be hit through multiple brackets at a time
+		if (HP <= (curbracket-1)*hpBracket){
+			HP = (curbracket-1)*hpBracket + 1;
 		}
+
+		int newBracket =  HP / hpBracket;
+		dmg = beforeHitHP - HP;
 
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 		if (lock != null) {
@@ -192,6 +196,15 @@ public class Tengu extends Mob {
 			yell(Messages.get(this, "interesting"));
 			((PrisonBossLevel)Dungeon.level).progress();
 			BossHealthBar.bleed(true);
+
+		//if tengu has lost a certain amount of hp, jump
+		} else if (newBracket != curbracket) {
+			//let full attack action complete first
+			Actor.add(new Actor() {
+
+				{
+					actPriority = VFX_PRIO;
+				}
 
 			//if tengu has lost a certain amount of hp, jump
 		} else if (beforeHitHP / hpBracket != HP / hpBracket) {
@@ -624,11 +637,11 @@ public class Tengu extends Mob {
 
 			PointF p = DungeonTilemap.raisedTileCenterToWorld(bombPos);
 			if (timer == 3) {
-				FloatingText.show(p.x, p.y, bombPos, "3...", CharSprite.NEUTRAL);
+				FloatingText.show(p.x, p.y, bombPos, "3...", CharSprite.WARNING);
 			} else if (timer == 2){
 				FloatingText.show(p.x, p.y, bombPos, "2...", CharSprite.WARNING);
 			} else if (timer == 1){
-				FloatingText.show(p.x, p.y, bombPos, "1...", CharSprite.NEGATIVE);
+				FloatingText.show(p.x, p.y, bombPos, "1...", CharSprite.WARNING);
 			} else {
 				PathFinder.buildDistanceMap( bombPos, BArray.not( Dungeon.level.solid, null ), 2 );
 				for (int cell = 0; cell < PathFinder.distance.length; cell++) {
