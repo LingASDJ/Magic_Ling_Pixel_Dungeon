@@ -27,7 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
-import com.shatteredpixel.shatteredpixeldungeon.items.remains.RemainsItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.FileUtils;
@@ -239,12 +238,12 @@ public class Bones {
 
 				ArrayList<Item> result = new ArrayList<>();
 
-				if (heroClass != null) {
-					result.add(RemainsItem.get(heroClass));
-					if (Dungeon.bossLevel()){
-						Statistics.qualifiedForBossRemainsBadge = true;
-					}
-				}
+//				if (heroClass != null) {
+//					result.add(RemainsItem.get(heroClass));
+//					if (Dungeon.bossLevel()){
+//						Statistics.qualifiedForBossRemainsBadge = true;
+//					}
+//				}
 
 				if (item != null) {
 					result.add(item);

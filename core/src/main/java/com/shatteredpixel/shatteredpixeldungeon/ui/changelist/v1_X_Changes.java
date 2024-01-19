@@ -352,14 +352,6 @@ public class v1_X_Changes {
 				"Several talents that were previously exempt from being chosen by the scroll now have alternative effects that let them be used by any hero.\n\n" +
 				"These alternative effects only appear when getting these talents via metamorphosis."));
 
-		changes.addButton( new ChangeButton(BadgeBanner.image( Badges.Badge.MONSTERS_SLAIN_5.image ), "Badge Changes",
-				"I'm making several changes to existing badges, based on feedback and data from Steam players:\n\n" +
-				"_-_ Several gold tier badges have been bumped up to platinum tier to better reflect their difficulty\n" +
-				"_-_ The 'grim reaper' badge has been bumped up to gold tier, from silver\n\n" +
-				"_-_ The master and grandmaster 'monsters hunter' and 'treasure hunter' badges have been made more difficult\n" +
-				"_-_ The alchemist badges have been rebalanced to start out easier and end up harder\n\n" +
-				"_-_ The 'dungeoneer' badges have been made easier to unlock with wins or games played. The master and grandmaster versions still require a lot of games played though."));
-
 		changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.TARGETED, true), "Buff and Spell Icons",
 				"Several buffs have been given icons when they didn't have any, or have had their icons adjusted to prevent icon duplication. This should improve buff clarity in a few cases, and ensure that two active buffs can never have the exact same icon (recolored icons are still present though).\n\n" +
 				"A few new overhead spell effects have been added as well."));
@@ -498,11 +490,6 @@ public class v1_X_Changes {
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_ARMBAND), "Armband Rework!",
 				"_The Master Thieves' Armband has been reworked!_\n\n" +
 				"This rework focuses on giving the armband usefulness outside of shops. You can now use it to steal from enemies as well as shopkeepers, and it gains charge as you gain exp, instead of when you collect gold."));
-
-		changes.addButton( new ChangeButton(BadgeBanner.image(Badges.Badge.MONSTERS_SLAIN_5.image), "New Badges!",
-				"_Badges now have names, and 8 new badges have been added!_\n\n" +
-				"These new badges are all part of the existing series badges (e.g. defeat X enemies), and primarily exist around the gold badge level.\n\n" +
-				"The 'games played' badges have also been adjusted to unlock either on a large number of games played, or a smaller number of games won."));
 
 		changes.addButton( new ChangeButton(Icons.get(Icons.AUDIO), "New Boss Music!",
 				"_Each of the game's five bosses now have their own music track!_\n\n" +

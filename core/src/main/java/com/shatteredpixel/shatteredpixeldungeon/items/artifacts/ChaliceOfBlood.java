@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -176,6 +177,7 @@ public class ChaliceOfBlood extends Artifact {
 		//grants 5 turns of healing up-front
 		float healDelay = 10f - level()*0.9f;
 		healDelay /= amount;
+
 		float heal = 5f/healDelay;
 		//effectively 0.5/1/1.5/2/2.5 HP per turn at +0/+6/+8/+9/+10
 		if (Random.Float() < heal%1){

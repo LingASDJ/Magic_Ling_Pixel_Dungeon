@@ -94,7 +94,7 @@ public class Heap implements Bundlable {
 	public void open( Hero hero ) {
 		switch (type) {
 		case TOMB:
-			Wraith.spawnAround( hero.pos,false );
+			Wraith.spawnAround( hero.pos,null );
 			break;
 		case WHITETOMB:
 			ScrollOfTeleportation.appear( hero,hero.pos+5 );
@@ -113,7 +113,7 @@ public class Heap implements Bundlable {
 		}
 		
 		if (haunted){
-			if (Wraith.spawnAt( pos,true ) == null) {
+			if (Wraith.spawnAt( pos,null ) == null) {
 				hero.sprite.emitter().burst( ShadowParticle.CURSE, 6 );
 				hero.damage( hero.HP / 2, this );
 			}

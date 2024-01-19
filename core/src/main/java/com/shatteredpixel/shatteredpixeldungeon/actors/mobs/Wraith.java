@@ -37,48 +37,48 @@ import com.watabou.utils.Reflection;
 public class Wraith extends Mob {
 
 	private static final float SPAWN_DELAY	= 2f;
-	
+
 	protected int level;
-	
+
 	{
 		spriteClass = WraithSprite.class;
-		
+
 		HP = HT = 1;
 		EXP = 0;
 
 		maxLvl = -2;
-		
+
 		flying = true;
 
 		properties.add(Property.UNDEAD);
 		properties.add(Property.INORGANIC);
 	}
-	
+
 	private static final String LEVEL = "level";
-	
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
 		bundle.put( LEVEL, level );
 	}
-	
+
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
 		level = bundle.getInt( LEVEL );
 		adjustStats( level );
 	}
-	
+
 	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( 1 + level/2, 2 + level );
 	}
-	
+
 	@Override
 	public int attackSkill( Char target ) {
 		return 10 + level;
 	}
-	
+
 	public void adjustStats( int level ) {
 		this.level = level;
 		defenseSkill = attackSkill( null ) * 5;
@@ -99,7 +99,7 @@ public class Wraith extends Mob {
 	public static void spawnAround( int pos ) {
 		spawnAround( pos, null );
 	}
-	
+
 	public static void spawnAround( int pos, Class<? extends Wraith> wraithClass ) {
 		for (int n : PathFinder.NEIGHBOURS4) {
 			spawnAt( pos + n, wraithClass );

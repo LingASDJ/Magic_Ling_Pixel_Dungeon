@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -51,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollGeomancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -211,6 +214,8 @@ public class GnollGeomancer extends Mob {
 						GLog.w( Messages.get(GnollGeomancer.this, "warning"));
 					} if (hits == 3){
 						GLog.n( Messages.get(GnollGeomancer.this, "alert"));
+						GameScene.flash(Window.GDX_COLOR);
+						playBGM(Assets.Music.PRISON_TENSE, true);
 						wasSleeping = false;
 						spend(TICK);
 						sprite.idle();
@@ -724,7 +729,7 @@ public class GnollGeomancer extends Mob {
 
 	public static class Boulder extends Item {
 		{
-			image = ItemSpriteSheet.GEO_BOULDER;
+			image = ItemSpriteSheet.RED_BLOOD;
 		}
 	}
 
@@ -865,6 +870,7 @@ public class GnollGeomancer extends Mob {
 
 		if (hits >= 3){
 			BossHealthBar.assignBoss(this);
+			playBGM(Assets.Music.PRISON_TENSE, true);
 		}
 	}
 }

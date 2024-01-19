@@ -285,6 +285,12 @@ public class Generator {
 		public Long seed = null;
 		public int dropped = 0;
 
+		//some items types have two decks and swap between them
+		// this enforces more consistency while still allowing for better precision
+		public float[] defaultProbs2 = null;
+		//but in such cases we still need a reference to the full deck in case of non-deck generation
+		public float[] defaultProbsTotal = null;
+
 		//game has two decks of 35 items for overall category probs
 		//one deck has a ring and extra armor, the other has an artifact and extra thrown weapon
 		public float firstProb;
@@ -581,6 +587,16 @@ public class Generator {
 			};
 			ARTIFACT.defaultProbs = new float[]{ 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1,1, 0};
 			ARTIFACT.probs = ARTIFACT.defaultProbs.clone();
+
+			for (Category cat : Category.values()){
+				if (cat.defaultProbs2 != null){
+					cat.defaultProbsTotal = new float[cat.defaultProbs.length];
+					for (int i = 0; i < cat.defaultProbs.length; i++){
+						cat.defaultProbsTotal[i] = cat.defaultProbs[i] + cat.defaultProbs2[i];
+					}
+				}
+			}
+
 		}
 	}
 

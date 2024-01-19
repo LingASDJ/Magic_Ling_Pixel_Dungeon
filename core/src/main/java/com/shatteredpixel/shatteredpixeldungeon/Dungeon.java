@@ -264,7 +264,7 @@ public class Dungeon {
 			}
 		}
 
-		Statistics.qualifiedForBossRemainsBadge = false;
+		//Statistics.qualifiedForBossRemainsBadge = false;
 		
 		level.create();
 		

@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.bombs;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -341,7 +342,7 @@ public class Bomb extends Item {
 				}
 				
 				if (ch == Dungeon.hero && !ch.isAlive()) {
-					if (this instanceof MagicalBomb) {
+					if (this instanceof ShockBomb) {
                         //任何邪恶，终将绳之以法！！！
                         Badges.validateDeathFromFriendlyMagic();
                     }

@@ -73,13 +73,13 @@ public class BGMPlayer {
                 if(d == 16 || d == 17 || d == 18 || d == 19  ){
                     playBGM(Assets.Music.ANCITY, true);
                 }
-                if (d == 11 || d == 12 || d == 13 || d == 14) {
-                    if(level.locked){
-                        playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
-                    } else {
-                        playBGM(Assets.Music.CAVES_TENSE, true);
-                    }
-                }
+//                if (d == 11 || d == 12 || d == 13 || d == 14) {
+//                    if(level.locked){
+//                        playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
+//                    } else {
+//                        playBGM(Assets.Music.CAVES_TENSE, true);
+//                    }
+//                }
             } else {
                 if (d == -1) {
                     playBGM(Assets.TOWN, true);
@@ -190,8 +190,8 @@ public class BGMPlayer {
                 playBGM(Assets.BGM_BOSSB, true);
             } else if (Dungeon.bossLevel() && t == 10) {
                 playBGM(Assets.BGM_BOSSB2, true);
-            } else if ((t == 11 || t == 12 || t == 13 || t == 14) && s == 1)  {
-                playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
+//            } else if ((t == 11 || t == 12 || t == 13 || t == 14) && s == 1)  {
+//                playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
             } else if (t == 14) {
                 playBGM(Assets.BGM_BOSSC, true);
             } else if (Dungeon.bossLevel() && t == 15) {

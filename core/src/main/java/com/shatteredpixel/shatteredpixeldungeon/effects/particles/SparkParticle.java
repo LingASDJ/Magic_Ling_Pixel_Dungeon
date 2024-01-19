@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,10 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.effects.particles;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
-
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.watabou.noosa.Visual;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.Emitter.Factory;
 import com.watabou.noosa.particles.PixelParticle;
@@ -42,7 +40,7 @@ public class SparkParticle extends PixelParticle {
 			return true;
 		}
 	};
-	
+
 	public static final Emitter.Factory STATIC = new Factory() {
 		@Override
 		public void emit( Emitter emitter, int index, float x, float y ) {
@@ -53,44 +51,55 @@ public class SparkParticle extends PixelParticle {
 			return true;
 		}
 	};
-	
+
 	public SparkParticle() {
 		super();
-		
+
 		size( 2 );
 
-		if(depth == 10 || (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && (depth == 8))) {
-			color(0x5a0808);
-		}
-		
 		acc.set( 0, +50 );
 	}
-	
+
 	public void reset( float x, float y ) {
 		revive();
-		
+
 		this.x = x;
 		this.y = y;
 		size = 5;
-		
+
 		left = lifespan = Random.Float( 0.5f, 1.0f );
-		
+
 		speed.polar( -Random.Float( 3.1415926f ), Random.Float( 20, 40 ) );
 	}
-	
+
 	public void resetStatic( float x, float y){
 		reset(x, y);
-		
+
 		left = lifespan = Random.Float( 0.25f, 0.5f );
-		
+
 		acc.set( 0, 0 );
 		speed.set( 0, 0 );
+	}
+
+	public void resetAttracting( float x, float y, Visual attracting){
+		reset(x, y);
+
+		left = lifespan = Random.Float( 0.2f, 0.35f );
+
+		acc.set(0);
+		speed.set((attracting.x + attracting.width / 2f) - x,
+				(attracting.y + attracting.height / 2f) - y);
+		speed.normalize().scale(DungeonTilemap.SIZE * 3f);
+
+		//offset the particles slightly so they don't go too far outside of the cell
+		this.x -= speed.x / 8f;
+		this.y -= speed.y / 8f;
 	}
 
 	public void setMaxSize( float value ){
 		size = value;
 	}
-	
+
 	@Override
 	public void update() {
 		super.update();
