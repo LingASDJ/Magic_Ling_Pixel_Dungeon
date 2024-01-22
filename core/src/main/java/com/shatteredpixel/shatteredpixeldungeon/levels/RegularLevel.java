@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.anCityQuestLevel;
@@ -318,7 +319,7 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new CoinRoom());
 		} else if(Dungeon.depth<26 && Random.Int(10) == 1) {
 			initRooms.add(new EyeRoom());
-		} else if(Dungeon.depth<26 && Random.Int(30) == 1){
+		} else if(Dungeon.depth<26 && Random.Int(30) == 1 && (Dungeon.isChallenged(DHXD) || Statistics.lanterfireactive )){
 			initRooms.add(new OilWellRoom());
 		}
 

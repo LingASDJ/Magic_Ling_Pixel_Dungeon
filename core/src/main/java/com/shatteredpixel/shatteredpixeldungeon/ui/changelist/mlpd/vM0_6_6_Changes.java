@@ -116,7 +116,38 @@ public class vM0_6_6_Changes {
 
     public static void add_SC3_Changes( ArrayList<ChangeInfo> changeInfos ) {
 
-        ChangeInfo changes = new ChangeInfo("v0.6.9.6", true, "");
+
+        ChangeInfo changes = new ChangeInfo("v0.6.9.6-RC", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton( new ChangeButton(Icons.get(Icons.LANGS), Messages.get(ChangesScene.class, "language"),
+                "语言更新：繁体中文\n\n同步0.6.9.6的翻译--贡献者：Sotis"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_17), ("挑战改进:孤城迷境"),
+                ("魔绫像素地牢-v0696-HF1版更新说明:\n" +
+                        "挑战优化:\n" +
+                        "1.在6层后才是全精英\n" +
+                        "2.在孤城状态下的精英生成异常和支离破碎挑战1层怪物生成异常修正\n" +
+                        "3.在黑夜点亮提灯可以免疫失明\n" +
+                        "4.修复黑夜状态下领袖伤害没有生效的问题")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "修复了以下Bug:\n\n" +
+                        "1.修复0.6.9.6果子层闪退问题。\n" +
+                        "2.修复孤城挑战下的部分NPC的不合理对话\n" +
+                        "3.修复油井房在非灯火状态下出现"
+        ));
+
+        changes = new ChangeInfo("v0.6.9.6", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -132,11 +163,9 @@ public class vM0_6_6_Changes {
         changes.addButton(new ChangeButton(new SuccubusQueenSprite(), ("变幻莫测V0.4"),
                 ("为精英地形添加独立怪物，四区原计划拟态魔，由于一些原因暂时搁置。")));
 
-
-
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("灯火前路-V4.0"),
                 ("灯火从现在开始在10挑以上计为1挑，且难度调整为：" +
-                        "新房间：油井\n" +
+                        "\n\n新房间：油井\n" +
                         "在此房间中将提灯扔进井中将可以填充一定的灯油。\n\n" +
                         "随着挑战的深入，火把给予的灯油充能将会更加困难。")));
 

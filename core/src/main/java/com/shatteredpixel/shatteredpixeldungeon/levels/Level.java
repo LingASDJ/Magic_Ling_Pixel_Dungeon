@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.tipsgodungeon;
 import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.ready;
@@ -631,7 +632,7 @@ public abstract class Level implements Bundlable {
 				|| transition.type == LevelTransition.Type.BRANCH_EXIT) {
 			if (Dungeon.depth == 0 && !tipsgodungeon && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 
-				if (!tipsgodungeon) {
+				if (!tipsgodungeon && !Dungeon.isChallenged(CS)) {
 					Game.runOnRenderThread(new Callback() {
 						@Override
 						public void call() {
