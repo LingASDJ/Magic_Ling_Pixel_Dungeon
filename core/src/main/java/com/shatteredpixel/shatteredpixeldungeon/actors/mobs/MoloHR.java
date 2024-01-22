@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
@@ -27,7 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
-public class MoloHR extends Mob {
+public class MoloHR extends Boss {
 
     private int combo;
 

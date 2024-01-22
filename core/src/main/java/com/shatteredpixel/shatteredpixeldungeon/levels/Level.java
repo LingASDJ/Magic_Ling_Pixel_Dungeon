@@ -1343,7 +1343,7 @@ public abstract class Level implements Bundlable {
 		}
 	}
 
-	private static boolean[] heroMindFov;
+	public static boolean[] heroMindFov;
 
 	private static boolean[] modifiableBlocking;
 

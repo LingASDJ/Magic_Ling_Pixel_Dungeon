@@ -11,7 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.BlackKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -101,7 +101,7 @@ public class AutoShopRoom extends SpecialRoom {
             if (Random.Float() < 0.2f) {
                 addChestE(level, (top + 5) * level.width() + right - 2, door);
                 addChestF(level, (top + 5) * level.width() + right - 6, door);
-                level.addItemToSpawn(new GoldenKey(Dungeon.depth));
+                level.addItemToSpawn(new BlackKey(Dungeon.depth));
             }
         }
 
@@ -185,7 +185,7 @@ public class AutoShopRoom extends SpecialRoom {
         mw.level(Random.Int(0,3));
         mw.cursed = false;
         mw.identify();
-        level.drop(mw, pos ).type = Heap.Type.LOCKED_CHEST;
+        level.drop(mw, pos ).type = Heap.Type.BLACK;
     }
 
     private static void addChestF( Level level, int pos, int door ) {
@@ -201,7 +201,7 @@ public class AutoShopRoom extends SpecialRoom {
         mw.level(Random.Int(0,3));
         mw.cursed = false;
         mw.identify();
-        level.drop(mw, pos ).type = Heap.Type.LOCKED_CHEST;
+        level.drop(mw, pos ).type = Heap.Type.BLACK;
     }
 
 

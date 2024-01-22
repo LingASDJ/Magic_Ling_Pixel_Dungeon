@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.RedDragonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShamanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SpectralNecromancerSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SuccubusQueenSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TyphonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZeroBoatDiedSprite;
@@ -53,6 +54,7 @@ import java.util.ArrayList;
 public class vM0_6_6_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_SC3_Changes(changeInfos);
         add_SC2_Changes(changeInfos);
         add_SC1_Changes(changeInfos);
         add_SC_Changes(changeInfos);
@@ -110,6 +112,70 @@ public class vM0_6_6_Changes {
         c.scale.set(PixelScene.align(0.74f));
         changes.addButton(new ChangeButton(c, ("冰雪魔女重做"),
                 ("石碑上记录了有关于她的一切，她的过去，她的现在，她的未来。而当你与她对峙时，你是否能够看清她的真实面目？")));
+    }
+
+    public static void add_SC3_Changes( ArrayList<ChangeInfo> changeInfos ) {
+
+        ChangeInfo changes = new ChangeInfo("v0.6.9.6", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        Image issxsaxs =new DimandKingSprite();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs, ("拟态之王"),
+                ("现在拟态之王二阶段进行了一些优化，并且神秘传送门也进行了一些调整,在特定情况下传送门可以打人。")));
+
+        changes.addButton(new ChangeButton(new SuccubusQueenSprite(), ("变幻莫测V0.4"),
+                ("为精英地形添加独立怪物，四区原计划拟态魔，由于一些原因暂时搁置。")));
+
+
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("灯火前路-V4.0"),
+                ("灯火从现在开始在10挑以上计为1挑，且难度调整为：" +
+                        "新房间：油井\n" +
+                        "在此房间中将提灯扔进井中将可以填充一定的灯油。\n\n" +
+                        "随着挑战的深入，火把给予的灯油充能将会更加困难。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_17), ("新挑战:孤城迷境"),
+                ("这是魔绫像素地牢的最后一个挑战，他非常的困难，所以还请小心行事。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEED_SKYBLUEFIRE), ("种子复制V2.0"),
+                ("现在种子复制后会携带一些关键信息")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_9), ("新精英：炼狱"),
+                ("炼狱精英回归，并修复了苦痛精英的问题")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_10), ("挑战改进:支离破碎"),
+                ("支离破碎卷土重来，还带来更多恐怖的东西。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WHITEROSE), ("白玫瑰"),
+                ("修复一些异常错误")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.REDWHITEROSE), ("一种载体"),
+                ("取消自然回血加成")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分无用音乐删除\n" +
+                        "3.部分细节优化更新\n" +
+                        "4.部分界面优化迭代\n" +
+                        "5.字体数据源更新")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "修复了以下Bug:\n\n" +
+                        "1.修复了提丰一言不发的问题\n" +
+                        "2.修复了小蓝任务的一些异常问题\n" +
+                        "3.其他小型错误纠正"
+        ));
+
     }
 
     public static void add_SC2_Changes( ArrayList<ChangeInfo> changeInfos ) {

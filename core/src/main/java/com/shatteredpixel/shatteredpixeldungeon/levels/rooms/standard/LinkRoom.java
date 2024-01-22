@@ -4,7 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.BlackMimic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.IceGolem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.DM275;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GnollHero;
@@ -54,7 +54,7 @@ public class LinkRoom extends StandardRoom {
         if(depth >= 20){
             n = new SuccubusQueen();
         } else if(depth >= 15) {
-            n = new BlackMimic();
+            n = new IceGolem();
         } else if(depth >= 10) {
             n = new DM275();
         } else if(depth >= 6){

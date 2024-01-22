@@ -119,9 +119,14 @@ public class Challenges {
 
 	public static int activeChallenges() {
 		int chCount = 0;
+		int EXchCount = 0;
 		for (int ch : Challenges.MASKS) {
-			if ((Dungeon.challenges & ch) != 0 && ch <= MOREROOM && ch != PRO && ch != DHXD) {
+			if ((Dungeon.challenges & ch) != 0 && ch <= CS && ch != PRO && ch != DHXD) {
 				chCount++;
+				if(Statistics.lanterfireactive && EXchCount == 0){
+					EXchCount++;
+					chCount += EXchCount;
+				}
 			}
 		}
 		return chCount;

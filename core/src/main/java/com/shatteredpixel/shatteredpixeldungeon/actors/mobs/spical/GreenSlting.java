@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GreenSltingSprite;
 import com.watabou.utils.Random;
 
@@ -12,7 +13,10 @@ public class GreenSlting extends Mob {
         flying = true;
         HP = HT = 30;
         defenseSkill = 2;
-        maxLvl = 7;
+        maxLvl = 30;
+        EXP = 5;
+        loot = Food.class;
+        lootChance = 1f;
     }
 
     @Override

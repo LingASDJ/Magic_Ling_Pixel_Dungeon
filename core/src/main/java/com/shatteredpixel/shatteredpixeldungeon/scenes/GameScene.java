@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CHAMPION_ENEMIES;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping.discover;
@@ -541,17 +542,14 @@ public class GameScene extends PixelScene {
 			return;
 		}
 
-
-
 		super.update();
 
 		if (notifyDelay > 0) notifyDelay -= Game.elapsed;
 
 		if (!Emitter.freezeEmitters) water.offset( 0, -5 * Game.elapsed );
 
-		if (!Actor.processing() && Dungeon.hero.isAlive()) {
+		if (!Actor.processing() && Dungeon.hero.isAlive() || Dungeon.isChallenged(CS) && !Actor.processing()) {
 			if (actorThread == null || !actorThread.isAlive()) {
-				
 				actorThread = new Thread() {
 					@Override
 					public void run() {
@@ -573,6 +571,7 @@ public class GameScene extends PixelScene {
 					actorThread.notify();
 				}
 			}
+
 		}
 
 		if (Dungeon.hero.ready && Dungeon.hero.paralysed == 0) {
@@ -1790,6 +1789,14 @@ public class GameScene extends PixelScene {
 						scene.showBanner(bossSlain);
 					}
 					break;
+				case 25:
+					if(Dungeon.isChallenged(CS)) {
+						bossSlain.texture(Assets.Interfaces.YogZot_Title);
+						bossSlain.show(Window.R_COLOR, 0.3f, 5f);
+						GameScene.flash(Window.GDX_COLOR);
+						scene.showBanner(bossSlain);
+					}
+					break;
 				case 30:
 					bossSlain.texture(Assets.Interfaces.Cerdog_Title);
 					bossSlain.show(Window.CYELLOW, 0.3f, 5f);
@@ -1841,6 +1848,14 @@ public class GameScene extends PixelScene {
 					if(Dungeon.branch == 3){
 						bossSlain.texture(Assets.Interfaces.SakaBJY_Clear);
 						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+					}
+					break;
+				case 25:
+					if(Dungeon.isChallenged(CS)) {
+						bossSlain.texture(Assets.Interfaces.YogZot_Slain);
+						bossSlain.show(Window.GDX_COLOR, 0.3f, 5f);
+						GameScene.flash(Window.TITLE_COLOR);
 						scene.showBanner(bossSlain);
 					}
 					break;

@@ -40,7 +40,7 @@ public class Noisemaker extends Bomb {
 	}
 
 	@Override
-	protected Fuse createFuse() {
+    public Fuse createFuse() {
 		return new NoisemakerFuse();
 	}
 

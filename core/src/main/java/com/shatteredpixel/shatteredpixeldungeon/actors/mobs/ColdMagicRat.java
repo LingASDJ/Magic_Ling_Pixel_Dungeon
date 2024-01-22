@@ -53,7 +53,7 @@ public class ColdMagicRat extends Mob implements Callback {
         maxLvl = 17;
 
         loot = Generator.Category.GOLD;
-        lootChance = 0.2f;
+        lootChance = 0.6f;
 
         properties.add(Property.UNDEAD);
     }

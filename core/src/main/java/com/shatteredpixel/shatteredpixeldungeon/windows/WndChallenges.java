@@ -56,8 +56,6 @@ public class WndChallenges extends Window {
 	private boolean editable;
 	private ArrayList<ChallengeButton> boxes;
 
-	private int totalBoxCount;
-
 	public int index;
 	private static int boundIndex(int index) {
 		int result = index;
@@ -128,7 +126,7 @@ public class WndChallenges extends Window {
 			cb.active = editable;
 
 			//Disable
-			if(Challenges.NAME_IDS[i].equals("cs")||(Challenges.NAME_IDS[i].equals("icedied"))){
+			if((Challenges.NAME_IDS[i].equals("icedied"))){
 				cb.active = false;
 				cb.checked(false);
 				cb.visible=false;
@@ -365,7 +363,7 @@ public class WndChallenges extends Window {
 			case "morelevel":
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_16, new ItemSprite.Glowing(0x98bc76));
 			case "cs":
-				return Icons.get(Icons.WARNING);
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_17, new ItemSprite.Glowing(0x08bed5));
 			default:
 				return Icons.get(Icons.PREFS);
 		}

@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
@@ -34,6 +35,15 @@ abstract public class Boss extends Mob {
             baseMaxDef = mad; //最大防御
         }
 
+    @Override
+    public float attackDelay() {
+        if (Statistics.gameNight) {
+            return 0.75f;
+        } else {
+            return 1f;
+        }
+    }
+
         protected void initStatus(int exp) {
             defenseSkill = Math.round(baseEva); //闪避率
             EXP = exp; //经验值
@@ -42,7 +52,12 @@ abstract public class Boss extends Mob {
 
         @Override
         public int damageRoll() {
-            return Math.round(Random.NormalFloat( baseMin, baseMax )); //随机伤害
+            if(Statistics.gameNight){
+                return Math.round(Random.NormalFloat( baseMin*1.25f, baseMax*1.25f )); //随机伤害
+            } else {
+                return Math.round(Random.NormalFloat( baseMin, baseMax )); //随机伤害
+            }
+
         }
 
         @Override

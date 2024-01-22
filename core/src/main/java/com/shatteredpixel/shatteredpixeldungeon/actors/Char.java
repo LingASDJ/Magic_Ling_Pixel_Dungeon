@@ -21,10 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
@@ -69,6 +72,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySoftDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
@@ -514,6 +518,10 @@ public abstract class Char extends Actor {
 					effectiveDamage *= 1.33f;
 				}
 
+				if (enemy.buff(MagicGirlSaySoftDied.class) != null) {
+					effectiveDamage *= 1.25f;
+				}
+
 				effectiveDamage = attackProc(enemy, effectiveDamage);
 			}
 			if (visibleFight) {
@@ -652,6 +660,10 @@ public abstract class Char extends Actor {
 			buff.onAttackProc( enemy );
 		}
 
+		if ( buff(Charm.CharmLing.class) != null ){
+			damage *= 0.75f;
+		}
+
 		//削弱10%伤害
 		if ( buff(MagicGirlSayKill.class) != null ){
 			damage *= 0.90f;
@@ -662,6 +674,16 @@ public abstract class Char extends Actor {
 
 		if ( buff(AnkhInvulnerability.GodDied.class) != null ) {
 			damage *= 2.25f;
+		}
+
+		if(properties.contains(Property.UNDEAD) && Statistics.gameNight){
+			Buff.affect( hero, Bleeding.class ).set((damage/3f));
+		}
+
+		if(properties.contains(Property.DEMONIC) && Statistics.gameNight){
+			if(Random.Int(10)==1){
+				Buff.affect( hero, CrivusFruits.CFBarrior.class ).setShield(damage/2);
+			}
 		}
 
 		for (ChampionHero buff : buffs(ChampionHero.class)){
@@ -676,6 +698,10 @@ public abstract class Char extends Actor {
 		float speed = baseSpeed;
 		//创世神
 		if ( buff( AnkhInvulnerability.GodDied.class ) != null ) speed *= 2f;
+
+		if ((properties().contains(Property.BOSS) || properties().contains(Property.MINIBOSS)) && Statistics.gameNight) {
+			speed *= 1.2f;
+		}
 
 		if (buff(Cripple.class) != null) speed /= 2f;
 		if (buff(Stamina.class) != null) speed *= 1.5f;
@@ -726,6 +752,10 @@ public abstract class Char extends Actor {
 
 		if(buff(BlessImmune.class) != null && !this.isImmune(BlessImmune.class)){
 			dmg = (int) Math.ceil(dmg * 0.75f);
+		}
+
+		if(buff(Charm.CharmLing.class) != null && !this.isImmune(Charm.CharmLing.class)){
+			dmg = (int) Math.ceil(dmg * 1.25f);
 		}
 
 		for (ChampionHero buff : buffs(ChampionHero.class)){

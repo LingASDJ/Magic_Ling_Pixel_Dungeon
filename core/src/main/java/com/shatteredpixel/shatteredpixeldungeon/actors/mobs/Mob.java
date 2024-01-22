@@ -800,6 +800,9 @@ public abstract class Mob extends Char {
 		if(buff(ChampionEnemy.Sider.class) != null){
 			delay = 4.0f;
 		}
+
+
+
 		return delay;
 	}
 
@@ -923,7 +926,7 @@ public abstract class Mob extends Char {
 
 		if(this.buff(ChampionEnemy.DelayMob.class) != null && dmg> 0){
 			Viscosity.DeferedDamage deferred = Buff.affect( this, Viscosity.DeferedDamage.class );
-			deferred.prolong( dmg );
+			deferred.prolong( dmg/6 );
 		}
 
         super.damage( dmg, src );

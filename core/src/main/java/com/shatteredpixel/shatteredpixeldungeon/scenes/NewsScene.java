@@ -262,7 +262,7 @@ public class NewsScene extends PixelScene {
 			super(Chrome.Type.GREY_BUTTON_TR, article.title, 6);
 			this.article = article;
 
-			icon(News.parseArticleIcon(article));
+			icon(News.parseArticleIcon(article,true));
 			long lastRead = SPDSettings.newsLastRead();
 			if (lastRead > 0 && article.date.getTime() > lastRead) {
 				textColor(Window.Pink_COLOR);
@@ -304,7 +304,7 @@ public class NewsScene extends PixelScene {
 	private static class WndArticle extends WndTitledMessage {
 
 		public WndArticle(NewsArticle article ) {
-			super(News.parseArticleIcon(article), article.title, article.summary);
+			super(News.parseArticleIcon(article,false), article.title, article.summary);
 
 			RedButton link = new RedButton(Messages.get(NewsScene.class, "read_more")){
 				@Override

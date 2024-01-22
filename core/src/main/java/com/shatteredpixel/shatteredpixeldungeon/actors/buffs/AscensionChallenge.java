@@ -215,7 +215,7 @@ public class AscensionChallenge extends Buff {
 		if (enemy instanceof Ghoul || enemy instanceof RipperDemon){
 			chal.stacks -= 0.5f;
 		} else {
-			chal.stacks -= 1;
+			chal.stacks -= 0.1f;
 		}
 		chal.stacks = Math.max(0, chal.stacks);
 		if (chal.stacks < 8f && (int)(chal.stacks/2) != (int)(oldStacks/2f)){

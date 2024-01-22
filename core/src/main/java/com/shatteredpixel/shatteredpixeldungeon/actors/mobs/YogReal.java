@@ -1,8 +1,15 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -39,9 +46,12 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ScanningBeam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SpreadWave;
+import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.YogGodHardBossLevel;
@@ -55,8 +65,11 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
@@ -392,6 +405,16 @@ public class YogReal extends Boss {
             summonCD = -20;
             phase = 5;
             regularSummons.add(YogRealRipper.class);
+            YogFist.FreezingFist freezingFist = new YogFist.FreezingFist();
+            freezingFist.HP=freezingFist.HT=600;
+            freezingFist.pos = pos-3;
+            GameScene.add(freezingFist);
+            Camera.main.shake(1,3f);
+            GameScene.flash(0x808080,true);
+            YogFist.HaloFist haloFist = new YogFist.HaloFist();
+            haloFist.HP=haloFist.HT=500;
+            haloFist.pos = pos+3;
+            GameScene.add(haloFist);
         }
 
         spend(TICK);
@@ -439,10 +462,12 @@ public class YogReal extends Boss {
         return phase == 0 || findFist() != null;
     }
 
-    private YogRealFirst findFist(){
+    private Mob findFist(){
         for ( Char c : Actor.chars() ){
             if (c instanceof YogRealFirst){
                 return (YogRealFirst) c;
+            } else if (c instanceof YogFist){
+                return (YogFist) c;
             }
         }
         return null;
@@ -472,19 +497,69 @@ public class YogReal extends Boss {
             }
         }
 
+        if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && Statistics.spawnersAlive == 4){
+            Badges.validateBossChallengeCompleted();
+        } else {
+            Statistics.qualifiedForBossChallengeBadge = false;
+        }
+
+        Statistics.bossScores[4] += 10000 + 2250*Statistics.spawnersAlive;
+
         Dungeon.level.viewDistance = 4;
         if (hero.buff(Light.class) == null){
             hero.viewDistance = Dungeon.level.viewDistance;
         }
 
-        for(int i=0;i<4;++i){
-            Dungeon.level.drop(new GoldenKey(Dungeon.depth), pos).sprite.drop();
+        for(int i=0;i<5;++i){
+            int ofs;
+            do {
+                ofs = PathFinder.NEIGHBOURS49[Random.Int(3)];
+            } while (!Dungeon.level.passable[pos + ofs]);
+            Dungeon.level.drop(new GoldenKey(Dungeon.depth), pos+ ofs).sprite.drop();
         }
+
+        Dungeon.level.drop(new Amulet(), pos).sprite.drop();
+
+        Heap droppedGold = Dungeon.level.drop( new Rapier(),pos);
+        droppedGold.type = Heap.Type.LOCKED_CHEST;
+        droppedGold.sprite.view( droppedGold );
 
         GameScene.bossSlain();
         Dungeon.level.unseal();
         super.die( cause );
-        PaswordBadges.BOSSRUSH();
+
+        Game.runOnRenderThread(new Callback() {
+            @Override
+            public void call() {
+                Music.INSTANCE.fadeOut(5f, new Callback() {
+                    @Override
+                    public void call() {
+                        Music.INSTANCE.play(Assets.Music.THEME_FINALE, true);
+                    }
+                });
+            }
+        });
+
+        if(Dungeon.isChallenged(RLPT)){
+            Badges.GOODRLPT();
+        }
+
+        if(!Dungeon.whiteDaymode){
+            PaswordBadges.NIGHT_CAT();
+        }
+
+        if(Dungeon.isChallenged(AQUAPHOBIA)){
+            Badges.CLEARWATER();
+        }
+
+        if(Dungeon.isChallenged(SBSG)){
+            PaswordBadges.BIGX();
+        }
+
+        if(Dungeon.isChallenged(EXSG)){
+            PaswordBadges.EXSG();
+        }
+
         yell( Messages.get(this, "defeated") );
     }
 
@@ -499,6 +574,8 @@ public class YogReal extends Boss {
                     ((DriedRose.GhostHero) ch).sayBoss();
                 }
             }
+            GameScene.bossReady();
+            BGMPlayer.playBoss();
             if (phase == 0) {
                 phase = 1;
             }

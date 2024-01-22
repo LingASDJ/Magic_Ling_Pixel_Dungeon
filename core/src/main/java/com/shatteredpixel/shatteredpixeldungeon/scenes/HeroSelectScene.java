@@ -580,7 +580,7 @@ public class HeroSelectScene extends PixelScene {
 			placeTorch(title.x + 132, title.y + 42);
 			add(title);
 
-			Image twotitle = new Image(Assets.Interfaces.TWOYEARS, 0, 0, 126, 34);
+			Image twotitle = new Image(Assets.Interfaces.Three_YEARS, 0, 0, 126, 34);
 
 			//float topRegion = Math.max(title.height/2, 20f);
 

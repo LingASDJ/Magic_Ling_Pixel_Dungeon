@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.anCityQuestLevel;
@@ -80,6 +81,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.IdenityRoom
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NxhyShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NyzBombAndBooksRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.OilWellRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PumpkinRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.RandomRoom;
@@ -234,6 +236,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 
+
 		if(feeling == Feeling.DIEDROOM){
 			switch (branch){
 				case 0:
@@ -315,6 +318,8 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new CoinRoom());
 		} else if(Dungeon.depth<26 && Random.Int(10) == 1) {
 			initRooms.add(new EyeRoom());
+		} else if(Dungeon.depth<26 && Random.Int(30) == 1){
+			initRooms.add(new OilWellRoom());
 		}
 
 		if(feeling == Feeling.THREEWELL){
@@ -437,8 +442,12 @@ public abstract class RegularLevel extends Level {
 		}
 
 		// 在特定挑战中怪物生成翻倍
-		if (Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
+		if (Dungeon.isChallenged(MOREROOM) && (!(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) || !Dungeon.isChallenged(CS)))) {
 			mobs += Random.NormalIntRange(1,3);
+		}
+
+		if(Dungeon.isChallenged(CS)){
+			mobs -= 2;
 		}
 
 		return mobs;
@@ -579,7 +588,9 @@ public abstract class RegularLevel extends Level {
 	
 	@Override
 	protected void createItems() {
-		
+
+
+
 		// drops 3/4/5 items 60%/30%/10% of the time
 		int nItems = 3 + Random.chances(new float[]{6, 3, 1});
 
@@ -587,9 +598,13 @@ public abstract class RegularLevel extends Level {
 		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
 			nItems += 2;
 		}
-		
-		for (int i=0; i < nItems; i++) {
 
+		//最终挑战 谜城
+		if(Dungeon.isChallenged(CS)){
+			nItems -= 6;
+		}
+
+		for (int i=0; i < nItems; i++) {
 			Item toDrop = Generator.random();
 			if (toDrop == null) continue;
 
@@ -641,7 +656,7 @@ public abstract class RegularLevel extends Level {
 					dropped.setHauntedIfCursed();
 				}
 			}
-			
+
 		}
 
 		for (Item item : itemsToSpawn) {
@@ -768,6 +783,7 @@ public abstract class RegularLevel extends Level {
 		Random.popGenerator();
 	}
 
+
 	private static HashMap<Document, Dungeon.LimitedDrops> limitedDocs = new HashMap<>();
 	static {
 		limitedDocs.put(Document.SEWERS_GUARD, Dungeon.LimitedDrops.LORE_SEWERS);
@@ -869,11 +885,12 @@ public abstract class RegularLevel extends Level {
 		for (Heap h : heaps.valueList()){
 			if (h.autoExplored) continue;
 
-			if (!h.seen || (h.type != Heap.Type.HEAP && h.type != Heap.Type.FOR_SALE && h.type != Heap.Type.CRYSTAL_CHEST)){
+			if (!h.seen || (h.type != Heap.Type.HEAP && h.type != Heap.Type.FOR_SALE && h.type != Heap.Type.CRYSTAL_CHEST && h.type != Heap.Type.BLACK)){
 				return false;
 			}
+
 			for (Item i : h.items){
-				if (i instanceof Key){
+				if (i instanceof Key ){
 					return false;
 				}
 			}

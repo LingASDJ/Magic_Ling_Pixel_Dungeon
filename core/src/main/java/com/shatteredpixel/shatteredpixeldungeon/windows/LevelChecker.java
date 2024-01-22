@@ -20,6 +20,7 @@ public class LevelChecker {
         boolean amuletObtained = Statistics.amuletObtained;
 
         String level;
+        //从D级开始 失败均会导致评分翻倍
         if (totalScore >= SSSP_SCORE * chalMultiplier * (amuletObtained ? 1 : 5)) {
             level = "_SSS+_";
         } else if (totalScore >= SSS_SCORE * chalMultiplier/2 * (amuletObtained ? 1 : 4)) {

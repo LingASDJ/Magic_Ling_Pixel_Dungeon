@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -75,7 +76,7 @@ public class Torch extends Item {
 			if(Statistics.lanterfireactive){
 				OilLantern lantern = Dungeon.hero.belongings.getItem(OilLantern.class);
 				Refill(lantern);
-				GLog.p(Messages.get(Torch.class,"lanterfireactive"));
+				GLog.p(Messages.get(Torch.class,"lanterfireactive",(55-(10*Dungeon.depth/5)- Challenges.activeChallenges()/4)));
 			} else if (Dungeon.hero.buff(LighS.class) != null || Dungeon.hero.buff(MagicTorch.MagicLight.class) != null) {
 				GLog.n(Messages.get(Torch.class,"mustload"));
 			} else {

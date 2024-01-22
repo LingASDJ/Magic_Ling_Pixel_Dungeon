@@ -21,7 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CHAMPION_ENEMIES;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -81,8 +84,8 @@ public class Bestiary {
 			if (Dungeon.isChallenged(RLPT)) {
 				switch (i) {
 					case 1:
-						return new ArrayList<>(Arrays.asList(FlowerSlime.class,
-								FlowerSlime.class, FlowerSlime.class, Gnoll.class));
+						return new ArrayList<>(Arrays.asList(
+								Rat.class, Rat.class));
 					case 2:
 						return new ArrayList<>(Arrays.asList(FlowerSlime.class,
 								FlowerSlime.class, FlowerSlime.class, Gnoll.class, Gnoll.class,
@@ -105,6 +108,7 @@ public class Bestiary {
 								return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
 										Thief.class,Thief.class,BrownBat.class,
 										Spinner.class,Shaman.random(), KagenoNusujin.class));
+							default:
 							case 1:
 								return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
 										Thief.class,Thief.class,Thief.class,
@@ -159,6 +163,7 @@ public class Bestiary {
 								return new ArrayList<>(Arrays.asList(
 										Fire_Scorpio.class,Albino.class,Monk.class,
 										Golem.class));
+							default:
 							case 4:
 								return new ArrayList<>(Arrays.asList(
 										ShieldHuntsman.class,
@@ -195,7 +200,7 @@ public class Bestiary {
 						return new ArrayList<>(Arrays.asList(FlowerSlime.class, FlowerSlime.class,Slime.class,Slime.class,Swarm.class,Crab.class));
 					case 6:
 						return new ArrayList<>(Arrays.asList(Skeleton.class,
-								Skeleton.class,BrownBat.class,BrownBat.class));
+								Skeleton.class,BrownBat.class,BrownBat.class,Thief.class,Thief.class));
 
 					case 7:
 						return new ArrayList<>(Arrays.asList(Skeleton.class,
@@ -207,7 +212,7 @@ public class Bestiary {
 					case 9:
 						return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
 								Thief.class,Thief.class,BrownBat.class,BrownBat.class, DM100.class,
-								BrownBat.class));
+								BrownBat.class,Thief.class,Thief.class));
 
 					case 10:
 						return new ArrayList<>(Arrays.asList(Bat.class,
@@ -325,144 +330,6 @@ public class Bestiary {
 		return new ArrayList<>(Arrays.asList(FlowerSlime.class, FlowerSlime.class));
 	}
 
-	private static ArrayList<Class<? extends Mob>> Dungeon_RLPT() {
-		ArrayList<Class<? extends Mob>> result;
-		switch (Dungeon.depth) {
-			case 1:
-				result = new ArrayList<>(Arrays.asList(FlowerSlime.class,
-						FlowerSlime.class, FlowerSlime.class, Gnoll.class));
-				break;
-			case 2:
-				result = new ArrayList<>(Arrays.asList(FlowerSlime.class,
-						FlowerSlime.class, FlowerSlime.class, Gnoll.class, Gnoll.class,
-						Gnoll.class, Gnoll.class, Albino.class));
-				break;
-			case 3:
-				result = new ArrayList<>(Arrays.asList(FlowerSlime.class,
-						FlowerSlime.class, Salamander.class, FlowerSlime.class, FlowerSlime.class,
-						ClearElemental.class,Crab.class,Swarm.class));
-				break;
-			case 4:
-				result = new ArrayList<>(Arrays.asList(Salamander.class,
-						ClearElemental.class, Slime_Red.class,
-						Slime_Orange.class, Swarm.class,Crab.class));
-				break;
-			case 6:
-			case 7:
-			case 8:
-			case 9:
-			case 10:
-				switch (Random.Int(3)) {
-					case 0:
-						result = new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
-								Thief.class,Thief.class,BrownBat.class,
-								Spinner.class,Shaman.random()));
-						break;
-					case 1:
-						result = new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
-								Thief.class,Thief.class,Thief.class,
-								DM100.class,Necromancer.class,Necromancer.class,
-								DM100.class));
-						break;
-					default:
-					case 2:
-						result = new ArrayList<>(Arrays.asList(
-								Skeleton.class, Skeleton.class, Skeleton.class,
-								Thief.class,Thief.class,BrownBat.class, DM100.class,
-								Spinner.class, Necromancer.class,
-								Necromancer.class,
-								Brute.class,
-								Bat.class));
-						break;
-				}
-				break;
-			case 11:
-			case 12:
-			case 13:
-			case 14:
-			case 15:
-				switch (Random.Int(4)) {
-					case 0:
-						result = new ArrayList<>(Arrays.asList(Skeleton.class, BlackHost.class,
-								Thief.class,DM100.class,Necromancer.class,IceGolem.class));
-						break;
-					case 1:
-						result = new ArrayList<>(Arrays.asList(Skeleton.class,
-								Thief.class,
-								DM100.class,Necromancer.class,SpectralNecromancer.class,
-								DM100.class));
-						break;
-					case 2:
-						result = new ArrayList<>(Arrays.asList(
-								Monk.class,
-								Warlock.class));
-						break;
-					default:
-					case 3:
-						result = new ArrayList<>(Arrays.asList(
-								Elemental.random(),
-								Monk.class, Monk.class,
-								Golem.class));
-						break;
-				}
-				break;
-			case 16:
-			case 17:
-			case 18:
-			case 19:
-			case 20:
-			case 21:
-			case 22:
-			case 23:
-			case 24:
-			case 25:
-				switch (Random.Int(6)) {
-					case 0:
-						result = new ArrayList<>(Arrays.asList(Skeleton.class,
-								Thief.class,DM100.class,Necromancer.class,Monk.class,
-								Golem.class));
-						break;
-					case 1:
-						result = new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
-								Thief.class,Thief.class,Fire_Scorpio.class,
-								DM200.class,SkullShaman.class,
-								DM100.class, Ice_Scorpio.class,Monk.class,
-								Golem.class));
-						break;
-					default:
-					case 2:
-						result = new ArrayList<>(Arrays.asList(
-								Succubus.class,
-								Scorpio.class,Monk.class,
-								Golem.class));
-						break;
-					case 3:
-						result = new ArrayList<>(Arrays.asList(
-								Fire_Scorpio.class,Albino.class,Monk.class,
-								Golem.class));
-						break;
-					case 4:
-						result = new ArrayList<>(Arrays.asList(
-								ShieldHuntsman.class,
-								Monk.class,
-								Golem.class));
-						break;
-					case 5:
-						result = new ArrayList<>(Arrays.asList(
-								Succubus.class,
-								Eye.class, Eye.class,
-								Scorpio.class, Eye.class,Succubus.class,Monk.class,
-								Golem.class));
-						break;
-				}
-				break;
-			default:
-				result = new ArrayList<>();
-				break;
-		}
-		return result;
-	}
-
 
 	//has a chance to add a rarely spawned mobs to the rotation
 	public static void addRareMobs( int depth, ArrayList<Class<?extends Mob>> rotation ){
@@ -496,7 +363,7 @@ public class Bestiary {
 	//switches out regular mobs for their alt versions when appropriate
 	private static void swapMobAlts(ArrayList<Class<?extends Mob>> rotation){
 		for (int i = 0; i < rotation.size(); i++){
-			if (Random.Int( 50 ) == 0) {
+			if (Random.Int( 50 ) == 0 || Dungeon.isChallenged(CS) && (!Dungeon.isChallenged(SBSG) || !Dungeon.isChallenged(CHAMPION_ENEMIES)) && Random.Int(50)<=20) {
 				Class<? extends Mob> cl = rotation.get(i);
 				if (cl == FlowerSlime.class) {
 					cl = Albino.class;

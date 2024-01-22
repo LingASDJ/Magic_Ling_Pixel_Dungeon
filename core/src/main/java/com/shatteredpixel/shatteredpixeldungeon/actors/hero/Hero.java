@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
@@ -106,6 +107,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WaterSoulX;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.NightorDay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
@@ -231,6 +233,7 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.Objects;
 
 public class Hero extends Char {
 
@@ -555,6 +558,10 @@ public class Hero extends Char {
 
 		if( lanterfireactive || Dungeon.isChallenged(DHXD)){
 			Buff.affect( this, Nyctophobia.class );
+		}
+
+		if(Dungeon.isChallenged(CS)){
+			Buff.affect( this, NightorDay.class ).set((100), 1);
 		}
 
 	}
@@ -884,6 +891,8 @@ public class Hero extends Char {
 	
 	@Override
 	public boolean act() {
+
+
 		
 		//calls to dungeon.observe will also update hero's local FOV.
 		fieldOfView = Dungeon.level.heroFOV;
@@ -1594,16 +1603,15 @@ public class Hero extends Char {
 		if (wep != null) damage = wep.proc( this, enemy, damage );
 
 		damage = Talent.onAttackProc( this, enemy, damage );
-		
-		switch (subClass) {
-		case SNIPER:
+
+		if (Objects.requireNonNull(subClass) == HeroSubClass.SNIPER) {
 			if (wep instanceof MissileWeapon && !(wep instanceof SpiritBow.SpiritArrow) && enemy != this) {
 				Actor.add(new Actor() {
-					
+
 					{
 						actPriority = VFX_PRIO;
 					}
-					
+
 					@Override
 					protected boolean act() {
 						if (enemy.isAlive()) {
@@ -1615,8 +1623,6 @@ public class Hero extends Char {
 					}
 				});
 			}
-			break;
-		default:
 		}
 		
 		return damage;
@@ -1989,13 +1995,9 @@ public class Hero extends Char {
 			curAction = new HeroAction.LvlTransition( cell );
 			
 		}  else {
-			
-			if (!Dungeon.level.visited[cell] && !Dungeon.level.mapped[cell]
-					&& Dungeon.level.traps.get(cell) != null && Dungeon.level.traps.get(cell).visible) {
-				walkingToVisibleTrapInFog = true;
-			} else {
-				walkingToVisibleTrapInFog = false;
-			}
+
+			walkingToVisibleTrapInFog = !Dungeon.level.visited[cell] && !Dungeon.level.mapped[cell]
+					&& Dungeon.level.traps.get(cell) != null && Dungeon.level.traps.get(cell).visible;
 			
 			curAction = new HeroAction.Move( cell );
 			lastAction = null;
@@ -2168,10 +2170,15 @@ public class Hero extends Char {
 	}
 	
     public static void badLanterFire() {
-        switch (Random.Int(5)) {
+        switch (Random.Int(6)) {
             case 0:
             default:
-                Buff.affect(hero, MagicGirlSayMoneyMore.class).set((100), 1);
+				//非商人层不会出现追加商店的价格Debuff
+				if(Dungeon.shopOnLevel()){
+					Buff.affect(hero, MagicGirlSayMoneyMore.class).set((100), 1);
+				} else {
+					Buff.affect(hero, MagicGirlSaySoftDied.class).set((100), 1);
+				}
                 break;
             case 1:
                 Buff.affect(hero, MagicGirlSaySoftDied.class).set((100), 1);
@@ -2363,10 +2370,12 @@ public class Hero extends Char {
 
 	private boolean actMove( HeroAction.Move action ) {
 
+
+
 		//水中祝福
 		MoveWater();
 
-		if(!seedCustom && !Dungeon.customSeedText.isEmpty()){
+		if(!seedCustom && !Dungeon.customSeedText.isEmpty() && !Dungeon.isChallenged(CS)){
 			seedCustom = true;
 		}
 
@@ -2431,11 +2440,6 @@ public class Hero extends Char {
         }
 
 
-        int chCount = 0;
-        for (int ch : Challenges.MASKS) {
-            if ((Dungeon.challenges & ch) != 0) chCount++;
-        }
-
 
         // 深度调查
         if ((Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
@@ -2444,38 +2448,42 @@ public class Hero extends Char {
         }
 
 
-        if (chCount >= 6 && !lanterfireactive && !Dungeon.isChallenged(PRO)) {
+        if (Challenges.activeChallenges() >= 10 && !lanterfireactive && !Dungeon.isChallenged(PRO)) {
             GLog.n(Messages.get(WndStory.class, "warning"));
         }
 
-        if (chCount >= 3 && !lanterfireactive && !Dungeon.isChallenged(PRO) || Dungeon.isChallenged(DHXD) && !lanterfireactive) {
-            //灯火前行 3.2
-            lanterfire = 100 - (chCount >= 6 ? chCount * 3 : 0);
-            new OilLantern().quantity(1).identify().collect();
+        if (Challenges.activeChallenges() >= 10 && !lanterfireactive && !Dungeon.isChallenged(PRO) || Dungeon.isChallenged(DHXD) && !lanterfireactive) {
+            //灯火前行 4.0
+			hero.lanterfire = 100 - Challenges.activeChallenges() * 4;
+			new OilLantern().quantity(1).identify().collect();
 
             lanterfireactive = true;
 
 			Buff.affect( this, Nyctophobia.class );
 
-            switch (Random.Int(5)) {
-                case 0:
-                default:
-                    Buff.affect(hero, BlessMobDied.class).set((100), 1);
-                    break;
-                case 1:
-                    Buff.affect(hero, BlessMixShiled.class).set((100), 1);
-                    break;
-                case 2:
-                    Buff.affect(hero, BlessImmune.class).set((100), 1);
-                    break;
-                case 3:
-                    Buff.affect(hero, BlessGoRead.class).set((100), 1);
-                    break;
-                case 4:
-                    new WandOfAnmy().quantity(1).identify().collect();
-                    Buff.affect(hero, BlessAnmy.class).set((100), 1);
-            }
-            GLog.b(Messages.get(WndStory.class, "letxz"));
+			if(lanterfire>50){
+				switch (Random.Int(5)) {
+					case 0:
+					default:
+						Buff.affect(hero, BlessMobDied.class).set((100), 1);
+						break;
+					case 1:
+						Buff.affect(hero, BlessMixShiled.class).set((100), 1);
+						break;
+					case 2:
+						Buff.affect(hero, BlessImmune.class).set((100), 1);
+						break;
+					case 3:
+						Buff.affect(hero, BlessGoRead.class).set((100), 1);
+						break;
+					case 4:
+						new WandOfAnmy().quantity(1).identify().collect();
+						Buff.affect(hero, BlessAnmy.class).set((100), 1);
+				}
+				GLog.b(Messages.get(WndStory.class, "letxz"));
+			}
+
+
         }
 
         if (getCloser(action.dst)) {
@@ -2514,13 +2522,17 @@ public class Hero extends Char {
             }
         }
 
-        //灯火值低于35死亡生成自己的邪恶面，并清空金币，将金币保存到json文件。（灵感：空洞骑士）
+        //灯火值低于40 死亡生成自己的邪恶面，并清空金币，背包也一并带走。（灵感：空洞骑士）
         for (Ankh i : belongings.getAllItems(Ankh.class)) {
             if (ankh != null || i.isBlessed()) {
-                if (lanterfireactive && hero.lanterfire <= 30 && !i.isBlessed()) {
+                if (lanterfireactive && hero.lanterfire <= 40 && !i.isBlessed() || hero.buff(LostInventory.class) != null) {
                     BlackSoul s = new BlackSoul();
-                    s.pos = Dungeon.hero.pos;
-                    //s.gold = Dungeon.gold;
+					if(Statistics.ankhToExit){
+						s.pos = Dungeon.level.entrance();
+					} else {
+						s.pos = Dungeon.hero.pos;
+					}
+					s.gold = Dungeon.gold;
                     Dungeon.gold = 0;
                     s.state = s.SLEEPING;
                     GameScene.add(s);
@@ -2695,11 +2707,11 @@ public class Hero extends Char {
 		
 		if (curAction instanceof HeroAction.Unlock) {
 
-			int doorCell = ((HeroAction.Unlock)curAction).dst;
+			int doorCell = curAction.dst;
 			int door = Dungeon.level.map[doorCell];
 			
 			if (Dungeon.level.distance(pos, doorCell) <= 1) {
-				boolean hasKey = true;
+				boolean hasKey;
 				if (door == Terrain.LOCKED_DOOR) {
 					hasKey = Notes.remove(new IronKey(Dungeon.depth));
 					if (hasKey) Level.set(doorCell, Terrain.DOOR);
@@ -2724,7 +2736,7 @@ public class Hero extends Char {
 			
 		} else if (curAction instanceof HeroAction.OpenChest) {
 			
-			Heap heap = Dungeon.level.heaps.get( ((HeroAction.OpenChest)curAction).dst );
+			Heap heap = Dungeon.level.heaps.get( curAction.dst );
 			
 			if (Dungeon.level.distance(pos, heap.pos) <= 1){
 				boolean hasKey = true;
@@ -3031,17 +3043,17 @@ public class Hero extends Char {
     //寒冰值系统
     public void damageIcehp(int value) {
         icehp += value;
-        hero.sprite.showStatus(0x009999, String.valueOf("-" + value));
+        hero.sprite.showStatus(0x009999, "-" + value);
     }
 
     public void healIcehp(int value) {
         if (icehp > 0) {
             icehp -= value;
         }
-        hero.sprite.showStatus(0x00ffff, String.valueOf("+" + value));
+        hero.sprite.showStatus(0x00ffff, "+" + value);
     }
 
-    public static interface Doom {
-        public void onDeath();
+    public interface Doom {
+        void onDeath();
     }
 }

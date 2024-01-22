@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.ROGUE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createBossRushLevel;
@@ -86,14 +87,9 @@ import com.watabou.utils.Random;
 import com.watabou.utils.SparseArray;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.Locale;
-import java.util.TimeZone;
 
 public class Dungeon {
 	public static boolean whiteDaymode;
@@ -620,13 +616,7 @@ public class Dungeon {
 
 		mobsToChampion = -1;
         mobsToStateLing = -1;
-		if (daily) {
-			//Ensures that daily seeds are not in the range of user-enterable seeds
-			seed = SPDSettings.lastDaily() + DungeonSeed.TOTAL_SEEDS;
-			DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
-			format.setTimeZone(TimeZone.getTimeZone("UTC"));
-			customSeedText = format.format(new Date(SPDSettings.lastDaily()));
-		} else if (!SPDSettings.customSeed().isEmpty()){
+		if (!SPDSettings.customSeed().isEmpty() && !Dungeon.isChallenged(CS)){
 			customSeedText = SPDSettings.customSeed();
 			seed = DungeonSeed.convertFromText(customSeedText);
 		} else {

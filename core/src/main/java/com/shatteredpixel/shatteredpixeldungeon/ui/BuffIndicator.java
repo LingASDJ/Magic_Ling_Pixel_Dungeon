@@ -143,9 +143,16 @@ public class BuffIndicator extends Component {
 
 	public static final int IMELSAZE        = 85;
 
+	public static final int WHITE_DAY        = 86;
+	public static final int MID_DAY        = 87;
+	public static final int EVEN_DAY        = 88;
+	public static final int NIGHT_DAY        = 89;
 
 	//ELEMENTS
 	public static final int SCARY        = 112;
+
+
+
 
     public static final int SIZE_SMALL = 7;
     public static final int SIZE_LARGE = 16;

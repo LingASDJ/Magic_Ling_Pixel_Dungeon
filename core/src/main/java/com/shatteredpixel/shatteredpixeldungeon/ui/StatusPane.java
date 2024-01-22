@@ -21,11 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.ClassPage;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameTime;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
-import static com.shatteredpixel.shatteredpixeldungeon.ui.MenuPane.WIDTH;
 
-import com.nlf.calendar.Lunar;
 import com.nlf.calendar.Solar;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
@@ -36,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.NightorDay;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CircleArc;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -51,6 +53,7 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
+import com.watabou.noosa.Visual;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.ColorMath;
@@ -62,6 +65,18 @@ import java.util.Date;
 import java.util.Locale;
 
 public class StatusPane extends Component {
+
+	public String name() {
+		if(gameTime>400){
+			return Messages.get(NightorDay.class, "name4");
+		} else if(gameTime>350){
+			return Messages.get(NightorDay.class, "name");
+		} else if(gameTime>200) {
+			return Messages.get(NightorDay.class, "name2");
+		} else {
+			return Messages.get(NightorDay.class, "name3");
+		}
+	}
 
 	private NinePatch bg;
 	private Image avatar;
@@ -137,7 +152,7 @@ public class StatusPane extends Component {
 		heroInfo = new Button(){
 			@Override
 			protected void onClick () {
-				Camera.main.panTo( Dungeon.hero.sprite.center(), 5f );
+				Camera.main.panTo( hero.sprite.center(), 5f );
 				GameScene.show( new WndHero() );
 			}
 			
@@ -153,7 +168,7 @@ public class StatusPane extends Component {
 		};
 		add(heroInfo);
 
-		avatar = HeroSprite.avatar( Dungeon.hero.heroClass, lastTier );
+		avatar = HeroSprite.avatar( hero.heroClass, lastTier );
 		add( avatar );
 
 		talentBlink = 0;
@@ -211,7 +226,7 @@ public class StatusPane extends Component {
 		heroInfoOnBar = new Button(){
 			@Override
 			protected void onClick () {
-				Camera.main.panTo( Dungeon.hero.sprite.center(), 5f );
+				Camera.main.panTo( hero.sprite.center(), 5f );
 				GameScene.show( new WndHero() );
 			}
 		};
@@ -232,7 +247,7 @@ public class StatusPane extends Component {
 		level.hardlight( 0xFFFFAA );
 		add( level );
 
-		buffs = new BuffIndicator( Dungeon.hero,large);
+		buffs = new BuffIndicator( hero,large);
 		add( buffs );
 
 		busy = new BusyIndicator();
@@ -370,7 +385,7 @@ public class StatusPane extends Component {
 		}
 
 		if(SPDSettings.TimeLimit()) {
-			timeText.x = MenuPane.depthButton.x - WIDTH - timeText.width();;
+			timeText.x = MenuPane.depthButton.x - 27 - timeText.width();;
 
 			timeText.y = MenuPane.version.y + 5;
 
@@ -389,7 +404,7 @@ public class StatusPane extends Component {
 	}
 	
 	private static final int[] warningColors = new int[]{0x660000, 0xCC0000, 0x660000};
-
+	private float time;
 	@Override
 	public void update() {
 		super.update();
@@ -404,19 +419,25 @@ public class StatusPane extends Component {
 			asset =  Assets.Interfaces.STATUS_DARK;
 		}
 
+		Visual visual = new Visual(0,0,0,0);
+		visual.am = 1f + 0.01f*Math.max(0f, (float)Math.sin( time += Game.elapsed ));
+		time += Game.elapsed / 3.5f;
+
+
+
 
 
 		int maxHunger = (int) Hunger.STARVING;
-		float maxPureSole = Dungeon.hero.lanterfire;
+		float maxPureSole = hero.lanterfire;
 		int mtPureSole = 100;
 
 		//冰血聪明 x
-		int maxIceHp = Dungeon.hero.icehp;
+		int maxIceHp = hero.icehp;
 		int mtIceHp = 100;
 
-		int health = Dungeon.hero.HP;
-		int shield = Dungeon.hero.shielding();
-		int max = Dungeon.hero.HT;
+		int health = hero.HP;
+		int shield = hero.shielding();
+		int max = hero.HT;
 
 		if (SPDSettings.ClassUI()) {
 			if(Dungeon.depth>25){
@@ -430,7 +451,7 @@ public class StatusPane extends Component {
 		}
 
 		if(SPDSettings.TimeLimit()) {
-			if (Dungeon.hero.buff(LockedFloor.class) != null) {
+			if (hero.buff(LockedFloor.class) != null) {
 				timeText.y = MenuPane.version.y + 14;
 			} else {
 				timeText.y = MenuPane.version.y + 5;
@@ -473,7 +494,7 @@ public class StatusPane extends Component {
 
 		}
 
-		if (Dungeon.hero != null && Dungeon.hero.isAlive()) {
+		if (hero != null && hero.isAlive()) {
 			Date date = new Date();
 			String strDateFormat = "yyyy-MM-dd HH:mm";
 			SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat, Locale.getDefault());
@@ -492,14 +513,23 @@ public class StatusPane extends Component {
 
 			Calendar calendar = Calendar.getInstance();
 			Solar solardate = Solar.fromDate(calendar.getTime());
-			Lunar lunar = solardate.getLunar();
-			String shengXiao = lunar.getYearZhi() + lunar.getYearShengXiao();
-			timeText.text(sdf.format(date) + " " + Messages.get(this,Integer.toString(solardate.getWeek()))  + " " + shengXiao);
+			if(Dungeon.isChallenged(CS)){
+
+				String str = String.valueOf(gameTime);
+				String result = str.substring(0, 1);
+				int lastTwoDigits = gameTime % 100;
+
+				timeText.text(sdf.format(date) + " " + Messages.get(this,Integer.toString(solardate.getWeek()))
+						+"\n"+Messages.get(this,"time") + Math.abs(Integer.parseInt(result)) +":"+Math.abs(lastTwoDigits)+"-"+name());
+			} else {
+				timeText.text(sdf.format(date) + " " + Messages.get(this,Integer.toString(solardate.getWeek())));
+			}
+
 		} else {
 			timeText.text(Messages.get(this,"game_over"));
 		}
 
-		if (!Dungeon.hero.isAlive()) {
+		if (!hero.isAlive()) {
 			avatar.tint(0x000000, 0.5f);
 		} else if ((health/(float)max) < 0.3f) {
 			warning += Game.elapsed * 5f *(0.4f - (health/(float)max));
@@ -521,6 +551,14 @@ public class StatusPane extends Component {
 			lanterfirevae.scale.y = -1.0f;
 		}
 
+		float r =  0.53f+0.57f*Math.max(0f, (float)Math.sin( time - 10/Math.PI/3 ));
+		float g =  0.03f+0.57f*Math.max(0f, (float)Math.sin( time + 4/Math.PI/2 ));
+		float b =  0.93f+0.57f*Math.max(0f, (float)Math.sin( time));
+
+		if(hero.lanterfire<50){
+			lanterfirevae.hardlight(r,g,b);
+		}
+
 		icehp.scale.x = Math.max( 0, (maxIceHp)/(float)mtIceHp);
 
 		if (shield > health) {
@@ -537,37 +575,38 @@ public class StatusPane extends Component {
 
 		icehpText.text(maxIceHp + "/" + mtIceHp);
 
-		Hunger hungerBuff = Dungeon.hero.buff(Hunger.class);
+
+		Hunger hungerBuff = hero.buff(Hunger.class);
 		if (hungerBuff != null) {
 			int hunger = Math.max(0, maxHunger - hungerBuff.hunger());
 			hg.scale.x = (float) hunger / (float) maxHunger;
 			hgText.text(hunger + "/" + maxHunger);
 		}
-		else if (Dungeon.hero.isAlive()) {
+		else if (hero.isAlive()) {
 			hg.scale.x = 1.0f;
 		}
 
 		if (large) {
-			exp.scale.x = (128 / exp.width) * Dungeon.hero.exp / Dungeon.hero.maxExp();
+			exp.scale.x = (128 / exp.width) * hero.exp / hero.maxExp();
 
 			hpText.measure();
 			hpText.x = hp.x + (128 - hpText.width())/2f;
 
-			expText.text(Dungeon.hero.exp + "/" + Dungeon.hero.maxExp());
+			expText.text(hero.exp + "/" + hero.maxExp());
 			expText.measure();
 			expText.x = hp.x + (128 - expText.width())/2f;
 
 		} else {
-			exp.scale.x = (width / exp.width) * Dungeon.hero.exp / Dungeon.hero.maxExp();
+			exp.scale.x = (width / exp.width) * hero.exp / hero.maxExp();
 		}
 
-		if (Dungeon.hero.lvl != lastLvl) {
+		if (hero.lvl != lastLvl) {
 
 			if (lastLvl != -1) {
 				showStarParticles();
 			}
 
-			lastLvl = Dungeon.hero.lvl;
+			lastLvl = hero.lvl;
 
 			if (large){
 				level.text( "lv. " + lastLvl );
@@ -583,10 +622,10 @@ public class StatusPane extends Component {
 			PixelScene.align(level);
 		}
 
-		int tier = Dungeon.hero.tier();
+		int tier = hero.tier();
 		if (tier != lastTier) {
 			lastTier = tier;
-			avatar.copy( HeroSprite.avatar( Dungeon.hero.heroClass, tier ) );
+			avatar.copy( HeroSprite.avatar( hero.heroClass, tier ) );
 		}
 
 		counter.setSweep((1f - Actor.now()%1f)%1f);

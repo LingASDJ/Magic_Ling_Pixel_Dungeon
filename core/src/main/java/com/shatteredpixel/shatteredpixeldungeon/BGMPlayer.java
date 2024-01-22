@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
@@ -229,7 +230,7 @@ public class BGMPlayer {
             } else if (Dungeon.bossLevel() && t == 20) {
                 if((Statistics.boss_enhance & 0x8) != 0)  playBGM(Assets.BGM_BOSSD2, true);
                 else  playBGM(Assets.BGM_BOSSD, true);
-            } else if (Dungeon.bossLevel() && t == 25 && (Statistics.spawnersAlive > 0)) {
+            } else if (Dungeon.bossLevel() && t == 25 && Dungeon.isChallenged(CS)) {
                 playBGM(Assets.BGM_BOSSE3, true);
             }else if (Dungeon.bossLevel() && t == 25){
                 level.playLevelMusic();

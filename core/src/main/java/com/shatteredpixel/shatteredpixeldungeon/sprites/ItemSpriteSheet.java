@@ -476,6 +476,8 @@ public class ItemSpriteSheet {
     public static final int MIME_FIVE       = ARTIFACTS+28;
     public static final int WHITEROSE      = ARTIFACTS+29;
     public static final int REDWHITEROSE      = ARTIFACTS+30;
+
+    public static final int ICESTONE      = ARTIFACTS+31;
     static{
         assignItemRect(ARTIFACT_CLOAK,      9,  15);
         assignItemRect(ARTIFACT_ARMBAND,    16, 13);
@@ -957,7 +959,7 @@ public class ItemSpriteSheet {
 
     public static final int CHALLANEESICON_16=			 CHALLANEESICONINDEX+15;
 
-
+    public static final int CHALLANEESICON_17=			 CHALLANEESICONINDEX+31;
     public static final int SCROLL_GOLD   	 		= xy(1, 46);  //16 slots
     public static final int  RANDOM_CHEST			= SCROLL_GOLD+1;
 

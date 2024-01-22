@@ -128,9 +128,6 @@ public class OilLantern extends Artifact {
         actions.add(isActivated() ? AC_SNUFF : AC_LIGHT);
         actions.add(AC_REFILL);
         actions.remove(AC_EQUIP);
-        actions.remove("THROW");
-
-        actions.remove("DROP");
         return actions;
     }
 
@@ -167,7 +164,7 @@ public class OilLantern extends Artifact {
                 }
                 break;
             default:
-                GLog.w(Messages.get(OilLantern.class, "lanterneeds"));
+               OilLantern.super.execute(hero, action);
                 break;
         }
     }
@@ -183,9 +180,19 @@ public class OilLantern extends Artifact {
         updateQuickslot();
     }
 
+    public void reoill(Hero hero) {
+        this.charge = Math.min(this.charge + 70-(5*Dungeon.depth/5)-Challenges.activeChallenges()/4, 100);
+        hero.spend(TIME_TO_USE);
+        hero.busy();
+        Sample.INSTANCE.play(Assets.Sounds.DRINK, TIME_TO_USE, TIME_TO_USE, 1.2f);
+        hero.sprite.operate(hero.pos);
+        GLog.i(Messages.get(OilLantern.class, "lanterreload"));
+        updateQuickslot();
+    }
+
     public void refills(Hero hero) {
         this.plingks--;
-        this.charge = Math.min(this.charge + (MIX_CHARGE-(10*Dungeon.depth/5)), 100);
+        this.charge = Math.min(this.charge + (MIX_CHARGE-(10*Dungeon.depth/5)-Challenges.activeChallenges()/4), 100);
         hero.spend(TIME_TO_USE);
         hero.busy();
         Sample.INSTANCE.play(Assets.Sounds.DRINK, TIME_TO_USE, TIME_TO_USE, 1.2f);
@@ -249,5 +256,9 @@ public class OilLantern extends Artifact {
 
     public String status() {
         return Utils.format(TXT_STATUS, this.charge);
+    }
+
+    public boolean isFull() {
+        return charge >= MAX_CHARGE;
     }
 }

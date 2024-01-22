@@ -729,7 +729,7 @@ public class GnollGeomancer extends Mob {
 
 	public static class Boulder extends Item {
 		{
-			image = ItemSpriteSheet.RED_BLOOD;
+			image = ItemSpriteSheet.ICESTONE;
 		}
 	}
 

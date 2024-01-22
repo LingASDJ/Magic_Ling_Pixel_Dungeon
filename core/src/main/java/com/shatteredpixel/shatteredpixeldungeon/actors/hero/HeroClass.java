@@ -151,6 +151,10 @@ public enum HeroClass {
 
 	public void initHero( Hero hero ) {
 
+		if (Challenges.activeChallenges() >= 10) {
+			hero.lanterfire = 100 - Challenges.activeChallenges() * 4;
+		}
+
 		if(!Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3) && Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ){
 			Badges.BOSSTHREE();
 		}

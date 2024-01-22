@@ -147,6 +147,14 @@ public class Statistics {
 
 	public static boolean gooFight = false;
 
+	//昼夜更替
+	public static int gameTime;
+	public static boolean gameNight;
+
+	private static final String GAMETIME = "gameTime";
+
+	private static final String GAMENIGHT = "gamenight";
+
     private static final String LOVX = "lovx";
 
 	private static final String MSTG = "musttengu";
@@ -279,6 +287,12 @@ public class Statistics {
 
 		dm720Fight = false;
 		dm300Fight = false;
+
+		ascended = false;
+
+		gameTime = 0;
+		gameNight = false;
+
 		gooFight = false;
 		mustTengu = false;
 
@@ -472,6 +486,10 @@ public class Statistics {
 		bundle.put("real_seconds_passed", real_seconds);
         bundle.put("turns_passed", turnsPassed);
         bundle.put(BOSS_CHALLENGE_QUALIFIED, qualifiedForBossChallengeBadge);
+
+		bundle.put(GAMETIME,gameTime);
+		bundle.put(GAMENIGHT,gameNight);
+
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
@@ -511,6 +529,10 @@ public class Statistics {
 		deadGo = bundle.getBoolean(LOVX);
 
 		mustTengu = bundle.getBoolean(MSTG);
+
+		gameTime = bundle.getInt(GAMETIME);
+
+		gameNight = bundle.getBoolean(GAMENIGHT);
 
 		//分数
 		progressScore   = bundle.getInt( PROG_SCORE );

@@ -153,7 +153,8 @@ public class MenuPane extends Component {
 				@Override
 				public void update() {
 					super.update();
-					am = 1f + 0.01f*Math.max(0f, (float)Math.sin( time += Game.elapsed/1 ));
+					text(Integer.toString( Challenges.activeChallenges()));
+				    am = 1f + 0.01f*Math.max(0f, (float)Math.sin( time += Game.elapsed/1 ));
 					time += Game.elapsed / 3.5f;
 					float r = 0.33f+0.57f*Math.max(0f, (float)Math.sin( time));
 					float g = 0.53f+0.57f*Math.max(0f, (float)Math.sin( time + 2*Math.PI/3 ));

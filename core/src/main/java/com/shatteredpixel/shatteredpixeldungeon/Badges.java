@@ -250,7 +250,7 @@ public class Badges {
 			badge = Badge.HIGH_SCORE_3;
 			local.add( badge );
 		}
-		if (score >=  SSS_SCORE * chalMultiplier/2 * (amuletObtained ? 1 : 4)) {
+		if (score >= SSS_SCORE * chalMultiplier/2 * (amuletObtained ? 1 : 4)) {
 			badge = Badge.HIGH_SCORE_4;
 			local.add( badge );
 		}

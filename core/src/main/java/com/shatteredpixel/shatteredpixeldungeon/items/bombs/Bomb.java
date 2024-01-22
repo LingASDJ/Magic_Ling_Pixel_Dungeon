@@ -67,6 +67,8 @@ public class Bomb extends Item {
 
     public Fuse fuse;
 
+	public boolean isLit = false;
+
     {
         image = ItemSpriteSheet.BOMB;
 
@@ -180,7 +182,7 @@ public class Bomb extends Item {
 		super.execute(hero, action);
 	}
 
-	protected Fuse createFuse(){
+	public Fuse createFuse(){
 		return new Fuse();
 	}
 
@@ -206,6 +208,11 @@ public class Bomb extends Item {
 			GLog.w( Messages.get(this, "snuff_fuse") );
 			fuse = null;
 		}
+		if (isLit) {
+			GLog.n( Messages.get(this, "snuff_fuse_no") );
+			return false;
+		}
+
 		return super.doPickUp(hero, pos);
 	}
 
@@ -401,11 +408,16 @@ public class Bomb extends Item {
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put( FUSE, fuse );
+
+		bundle.put( "isLit", isLit );
 	}
 
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
+
+		bundle.put( "isLit", isLit );
+
 		if (bundle.contains( FUSE ))
 			Actor.add( fuse = ((Fuse)bundle.get(FUSE)).ignite(this) );
 	}

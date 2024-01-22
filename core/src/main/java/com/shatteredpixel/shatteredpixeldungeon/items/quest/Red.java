@@ -65,6 +65,15 @@ public class Red extends Item {
     }
 
     @Override
+    public String defaultAction() {
+        if(Dungeon.depth == 17 && Dungeon.branch == 5) {
+            return AC_BACK;
+        } else {
+            return AC_THROW;
+        }
+    }
+
+    @Override
     public void execute(Hero hero, String action ) {
         super.execute(hero, action);
         if (action.equals(AC_BACK)) {

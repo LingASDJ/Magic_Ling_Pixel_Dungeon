@@ -87,6 +87,8 @@ public class Assets {
 		public static final String TILES_COLDCHEST  = "environment/tiles_coldchest.png";
 		public static final String TILES_FIRE  = "environment/tiles_fire.png";
 		public static final String Dreamcatcher  = "environment/custom_tiles/blue_quest.png";
+
+		public static final String OilWell  = "environment/custom_tiles/oil_well.png";
 		public static final String TILES_HOLLOW  = "environment/tiles_halloween.png";
 
 		public static final String TILES_HOLLOW_CS  = "environment/tiles_halloween-cs.png";
@@ -98,7 +100,7 @@ public class Assets {
 		public static final String TILES_ANCIENT  = "environment/tiles_ancient.png";
 		public static final String TILES_HALLS  = "environment/tiles_halls.png";
 		public static final String TILES_CAVES_CRYSTAL  = "environment/tiles_caves_crystal.png";
-		public static final String TILES_CAVES_GNOLL    = "environment/tiles_caves_gnoll.png";
+		public static final String TILES_CAVES_GNOLL    = "environment/tiles_cold_gnoll.png";
 
 		public static final String WATER_SEWERS = "environment/water0.png";
 		public static final String WATER_PRISON = "environment/water1.png";
@@ -153,6 +155,9 @@ public class Assets {
 		public static final String SakaBJY_Title  = "interfaces/bosslogo/sakabjy-title.png";
 		public static final String SakaBJY_Clear  = "interfaces/bosslogo/sakabjy-clear.png";
 
+		public static final String YogZot_Title  = "interfaces/bosslogo/yog-title.png";
+		public static final String YogZot_Slain  = "interfaces/bosslogo/yog-slain.png";
+
 		public static final String Cerdog_Title  = "interfaces/bosslogo/cerberus-title.png";
 		public static final String Cerdog_Clear  = "interfaces/bosslogo/cerberus-clear.png";
 
@@ -172,6 +177,8 @@ public class Assets {
 
 		public static final String MENUTITLE  = "interfaces/menutitle.png";
 		public static final String TWOYEARS  = "interfaces/2years.png";
+
+		public static final String Three_YEARS  = "interfaces/3years.png";
 
 		//网络贴图
 		public static final String NETICONS = "interfaces/net_icons.png";
@@ -593,5 +600,12 @@ public class Assets {
 
 		//Animation Item
 		public static final String ANIMATIONS_TERMIAL = "sprites/items/Animation/DM100-Terminal.png";
+	}
+
+
+
+	public static class Shader {
+		public static final String WATER_WAVE_VERT      = "shaders/water.vert";
+		public static final String WATER_WAVE_FRAG      = "shaders/water.frag";
 	}
 }

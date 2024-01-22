@@ -776,6 +776,13 @@ public abstract class YogFist extends Mob {
 					boss.remove(HalomethaneBurning.class);
 				}
 			}
+
+			for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
+				if (mob.alignment == Alignment.ENEMY && mob != this && !(mob instanceof YogReal || mob instanceof YogFist.FreezingFist)) {
+					mob.die( cause );
+				}
+			}
+
 			super.die( cause );
 		}
 		public static class DarkBolt{}

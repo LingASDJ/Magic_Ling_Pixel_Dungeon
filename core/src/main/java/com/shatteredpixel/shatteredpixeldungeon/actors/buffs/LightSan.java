@@ -30,7 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 public class LightSan extends FlavourBuff {
     private static final float DELAY = 5.0f;
-    public static final int DISTANCE = 6;
+    public static final int DISTANCE = 1;
     public static final float DURATION = 300.0f;
 
     public LightSan() {
@@ -44,7 +44,7 @@ public class LightSan extends FlavourBuff {
         if (Dungeon.level == null) {
             return true;
         }
-        target.viewDistance = Math.max(Dungeon.level.viewDistance, 6);
+        target.viewDistance = Math.max(Dungeon.level.viewDistance, DISTANCE);
         Dungeon.observe();
         return true;
     }
@@ -74,7 +74,7 @@ public class LightSan extends FlavourBuff {
 
     @Override
     public int icon() {
-        return BuffIndicator.LIGHT;
+        return BuffIndicator.NONE;
     }
 
     public void fx(boolean on) {

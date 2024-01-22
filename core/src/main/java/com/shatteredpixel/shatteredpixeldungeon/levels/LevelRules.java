@@ -21,10 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
@@ -134,7 +136,7 @@ public class LevelRules {
                 case 24:
                     return new HallsLevel();
                 case 25:
-                    if ((Statistics.boss_enhance & 0x10) != 0) {
+                    if ((Statistics.boss_enhance & 0x10) != 0 || Dungeon.isChallenged(CS)) {
                         return new YogGodHardBossLevel();
                     } else {
                         return new HallsBossLevel();

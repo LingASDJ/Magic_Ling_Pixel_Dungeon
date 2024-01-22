@@ -21,6 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -34,11 +37,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FireGhostDead;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.RedTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -47,10 +52,12 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 
 public abstract class ChampionEnemy extends Buff {
 	//public static final float shopDURATION	= 2000000000f;
@@ -171,7 +178,7 @@ public abstract class ChampionEnemy extends Buff {
 			}
 		}
 
-		if (Dungeon.mobsToStateLing <= 0 && Dungeon.isChallenged(Challenges.SBSG) && !m.properties.contains(Char.Property.NOBIG)) {
+		if (Dungeon.mobsToStateLing <= 0 && Dungeon.isChallenged(Challenges.SBSG) && !m.properties.contains(Char.Property.NOBIG) || Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.SBSG) && depth>5) {
 			Buff.affect(m, buffCls);
 			m.state = m.WANDERING;
 		}
@@ -406,7 +413,7 @@ public abstract class ChampionEnemy extends Buff {
 		//we roll for a champion enemy even if we aren't spawning one to ensure that
 		//mobsToChampion does not affect levelgen RNG (number of calls to Random.Int() is constant)
 		Class<?extends ChampionEnemy> buffCls;
-		switch (Random.Int(8)){
+		switch (Random.Int(9)){
 			case 0: default:    buffCls = Blazing.class;      break;
 			case 1:             buffCls = Projecting.class;   break;
 			case 2:             buffCls = AntiMagic.class;    break;
@@ -415,10 +422,10 @@ public abstract class ChampionEnemy extends Buff {
 			case 5:             buffCls = Growing.class;      break;
 			case 6:             buffCls = Halo.class;      	  break;
 			case 7:             buffCls = DelayMob.class;     break;
-			//case 8:             buffCls = King.class;     	  break;
+			case 8:             buffCls = King.class;     	  break;
 		}
 
-		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES)) {
+		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) || Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) && depth>5) {
 			Buff.affect(m, buffCls);
 			m.state = m.WANDERING;
 		}
@@ -662,8 +669,22 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public void onAttackProc(Char enemy) {
-			if(Random.NormalIntRange(1,8)>2){
-				new FireGhostDead().spawnAround(enemy.pos+1);
+			if(Random.Int(100)<20){
+				Mob w = Reflection.newInstance(Bestiary.getMobRotation(depth).get(0));
+
+				w.pos = enemy.pos+1;
+
+				for (Buff s : target.buffs(WandOfAnmy.AllyToRestartOK.class)){
+					if(s!=null) Buff.affect(w,WandOfAnmy.AllyToRestartOK.class);
+				}
+
+				w.state = w.HUNTING;
+				GameScene.add( w, 2f );
+
+				w.sprite.alpha( 0 );
+				w.sprite.parent.add( new AlphaTweener( w.sprite, 1, 0.5f ) );
+
+				w.sprite.emitter().burst( ShadowParticle.CURSE, 5 );
 			}
 		}
 

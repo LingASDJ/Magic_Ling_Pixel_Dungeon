@@ -21,7 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -528,9 +530,10 @@ public class InterlevelScene extends PixelScene {
 				} else if(!Statistics.lanterfireactive){
 					level.drop(new LostBackpack(), pos);
 				}
+				return;
 			}
 
-
+			level.drop(new LostBackpack(), pos);
 
 		} else {
 			level = Dungeon.level;
@@ -565,12 +568,18 @@ public class InterlevelScene extends PixelScene {
 
 				for (Ankh i : hero.belongings.getAllItems(Ankh.class)) {
 					if (ankh != null || i.isBlessed()) {
-						if (!(hero.lanterfire <= 30 && !i.isBlessed())) {
-							level.drop(new LostBackpack(), level.entrance());
+						if (hero.lanterfire <= 40 && !i.isBlessed()) {
+							return;
 						}
+						level.drop(new LostBackpack(), level.entrance());
 					} else if(!Statistics.lanterfireactive){
 						level.drop(new LostBackpack(), level.entrance());
 					}
+					return;
+				}
+
+				if( !lanterfireactive || !Dungeon.isChallenged(DHXD)){
+					level.drop(new LostBackpack(), level.entrance());
 				}
 			} else {
 				Ankh ankh = null;
@@ -583,13 +592,18 @@ public class InterlevelScene extends PixelScene {
 
 				for (Ankh i : hero.belongings.getAllItems(Ankh.class)) {
 					if (ankh != null || i.isBlessed()) {
-						if (!(hero.lanterfire <= 30 && !i.isBlessed())) {
-							level.drop(new LostBackpack(), invPos);
+						if (hero.lanterfire <= 40 && !i.isBlessed()) {
+							return;
 						}
-					} else if(!Statistics.lanterfireactive){
 						level.drop(new LostBackpack(), invPos);
 					}
+					return;
 				}
+
+				if( !lanterfireactive || !Dungeon.isChallenged(DHXD)){
+					level.drop(new LostBackpack(), invPos);
+				}
+
 			}
 
 		}
