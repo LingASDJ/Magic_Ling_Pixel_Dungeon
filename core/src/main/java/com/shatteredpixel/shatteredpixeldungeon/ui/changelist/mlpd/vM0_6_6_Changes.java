@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.ShadowSprite;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.PasswordBadgeBanner;
@@ -128,6 +129,9 @@ public class vM0_6_6_Changes {
         changes.addButton( new ChangeButton(Icons.get(Icons.LANGS), Messages.get(ChangesScene.class, "language"),
                 "语言更新：繁体中文\n\n同步0.6.9.6的翻译--贡献者：Sotis"));
 
+        changes.addButton(new ChangeButton(new ShadowSprite(), ("暗影"),
+                ("在低于40，包括40灯火的情况下，死亡会产生自己的暗影，他会掠走你的金币和背包。")));
+
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_17), ("挑战改进:孤城迷境"),
                 ("魔绫像素地牢-v0696-HF1版更新说明:\n" +
                         "挑战优化:\n" +
@@ -144,7 +148,8 @@ public class vM0_6_6_Changes {
                 "修复了以下Bug:\n\n" +
                         "1.修复0.6.9.6果子层闪退问题。\n" +
                         "2.修复孤城挑战下的部分NPC的不合理对话\n" +
-                        "3.修复油井房在非灯火状态下出现"
+                        "3.修复油井房在非灯火状态下出现\n" +
+                        "4.修复暗影活死人现象"
         ));
 
         changes = new ChangeInfo("v0.6.9.6", true, "");
