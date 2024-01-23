@@ -338,7 +338,7 @@ public class MobPlacer extends TestItem{
                 }
 
                 OptionSlider op = new OptionSlider
-                        ("_修改血量_","1x","6x",1,6) {
+                        (Messages.get(MobPlacer.class,"modify_health"),"1x","6x",1,6) {
                     @Override
                     public int getTitleTextSize(){
                         return 6;
