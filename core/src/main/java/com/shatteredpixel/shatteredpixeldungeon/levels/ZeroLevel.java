@@ -43,7 +43,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
@@ -140,45 +139,43 @@ public class ZeroLevel extends Level {
             drop( new Guidebook(),  (this.width * 2) + 4 );
         }
 
-        if(!Dungeon.isChallenged(CS)){
+
             drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.width * 17 + 16 );
-            drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.width * 16 + 17 );
 
             drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 20 + 17 );
-            drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 19 + 16 );
 
-            drop( new RandomChest(), this.width * 17 + 20  ).type = Heap.Type.FOR_SALE;
             drop( new RandomChest(), this.width * 19 + 20  ).type = Heap.Type.FOR_SALE;
 
-            drop( ( Generator.randomUsingDefaults( Generator.Category.STONE ) ), this.width * 16 + 19 );
-            drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), this.width * 20 + 19 );
+            drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), this.width * 16 + 19 );
 
-            drop( new Pasty(), this.width * 20 + 19  );
 
-            PaswordBadges.loadGlobal();
-            List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
+            if(!Dungeon.isChallenged(CS)) {
+                PaswordBadges.loadGlobal();
+                List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
-            if(passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)){
-                drop( ( Generator.random( Generator.Category.RING ) ), this.width * 17 + 18 );
-            }
-            if(passwordbadges.contains(PaswordBadges.Badge.BIG_X)){
-                if(Dungeon.isChallenged(Challenges.NO_ARMOR)){
-                    drop( ( Generator.random( Generator.Category.WAND ) ), this.width * 19 + 18 );
-                } else {
-                    drop( ( Generator.random( Generator.Category.ARMOR ) ), this.width * 19 + 18 );
+                drop( ( Generator.randomUsingDefaults( Generator.Category.STONE ) ), this.width * 20 + 19 );
+
+                if (passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)) {
+                    drop((Generator.random(Generator.Category.RING)), this.width * 17 + 18);
                 }
+                if (passwordbadges.contains(PaswordBadges.Badge.BIG_X)) {
+                    if (Dungeon.isChallenged(Challenges.NO_ARMOR)) {
+                        drop((Generator.random(Generator.Category.WAND)), this.width * 19 + 18);
+                    } else {
+                        drop((Generator.random(Generator.Category.ARMOR)), this.width * 19 + 18);
+                    }
+                }
+                if (Badges.isUnlocked(Badges.Badge.KILL_DM720) || Badges.isUnlocked(Badges.Badge.KILL_MG)) {
+                    drop((Generator.random(Generator.Category.WEP_T2)), this.width * 18 + 17);
+                }
+                if (Badges.isUnlocked(Badges.Badge.RLPT)) {
+                    Item item = new BookBag();
+                    drop(item, this.width * 18 + 19);
+                }
+                drop( new RandomChest(), this.width * 17 + 20  ).type = Heap.Type.FOR_SALE;
+                drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.width * 16 + 17 );
+                drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 19 + 16 );
             }
-            if ( Badges.isUnlocked(Badges.Badge.KILL_DM720)||Badges.isUnlocked(Badges.Badge.KILL_MG)  ){
-                drop(( Generator.random( Generator.Category.WEP_T2 )), this.width * 18 + 17  );
-            }
-            if ( Badges.isUnlocked(Badges.Badge.RLPT)){
-                Item item =new BookBag();
-                drop(item, this.width * 18 + 19 );
-            }
-        }
-
-
-
     }
 
     public Mob createMob() {

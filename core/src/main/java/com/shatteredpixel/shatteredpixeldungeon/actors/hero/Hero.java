@@ -27,10 +27,14 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameNight;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameTime;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.happyMode;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.seedCustom;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
+
+import static java.lang.Math.min;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -313,7 +317,7 @@ public class Hero extends Char {
 		if (boostHP){
 			HP += Math.max(HT - curHT, 0);
 		}
-		HP = Math.min(HP, HT);
+		HP = min(HP, HT);
 	}
 
 	public int STR() {
@@ -769,6 +773,12 @@ public class Hero extends Char {
 		MIME.GOLD_THREE getSpeed = Dungeon.hero.belongings.getItem(MIME.GOLD_THREE.class);
 		if (getSpeed!=null) {
 			speed *= 1.2f;
+		}
+
+		if(Dungeon.isChallenged(CS) && gameNight){
+			speed *= 1.1f;
+		} else if(gameTime>400 && gameTime<600) {
+			speed *= 1.05f;
 		}
 
 		if(Dungeon.hero.buff(BlessRedWhite.class) != null) {
@@ -1733,7 +1743,7 @@ public class Hero extends Char {
 		float flashIntensity = 0.25f * (percentDMG * percentDMG) / percentHP;
 		//if the intensity is very low don't flash at all
 		if (flashIntensity >= 0.05f){
-			flashIntensity = Math.min(1/3f, flashIntensity); //cap intensity at 1/3
+			flashIntensity = min(1/3f, flashIntensity); //cap intensity at 1/3
 			GameScene.flash( (int)(0xFF*flashIntensity) << 16 );
 			if (isAlive()) {
 				if (flashIntensity >= 1/6f) {
@@ -2454,7 +2464,8 @@ public class Hero extends Char {
 
         if (Challenges.activeChallenges() >= 10 && !lanterfireactive && !Dungeon.isChallenged(PRO) || Dungeon.isChallenged(DHXD) && !lanterfireactive) {
             //灯火前行 4.0
-			hero.lanterfire = 100 - Challenges.activeChallenges() * 4;
+			hero.lanterfire = 100 - min(Challenges.activeChallenges() * 4, 45);
+
 			new OilLantern().quantity(1).identify().collect();
 
             lanterfireactive = true;
@@ -2840,7 +2851,7 @@ public class Hero extends Char {
 
 		int left, right;
 		int curr;
-		for (int y = Math.max(0, c.y - distance); y <= Math.min(Dungeon.level.height()-1, c.y + distance); y++) {
+		for (int y = Math.max(0, c.y - distance); y <= min(Dungeon.level.height()-1, c.y + distance); y++) {
 			if (!circular){
 				left = c.x - distance;
 			} else if (rounding[Math.abs(c.y - y)] < Math.abs(c.y - y)) {
@@ -2852,7 +2863,7 @@ public class Hero extends Char {
 				}
 				left = c.x - left;
 			}
-			right = Math.min(Dungeon.level.width()-1, c.x + c.x - left);
+			right = min(Dungeon.level.width()-1, c.x + c.x - left);
 			left = Math.max(0, left);
 			for (curr = left + y * Dungeon.level.width(); curr <= right + y * Dungeon.level.width(); curr++){
 
@@ -3036,7 +3047,7 @@ public class Hero extends Char {
 	}
 
     public void healLantern(float value) {
-        lanterfire = Math.min(lanterfire + value, 100);
+        lanterfire = min(lanterfire + value, 100);
         hero.sprite.showStatus(0x00ff00, String.valueOf(value));
     }
 

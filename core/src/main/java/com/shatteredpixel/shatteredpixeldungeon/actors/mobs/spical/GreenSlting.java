@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
@@ -21,7 +22,7 @@ public class GreenSlting extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 8, 12 );
+        return Random.NormalIntRange( 5 + Dungeon.depth, 9 + Dungeon.depth );
     }
 
     @Override

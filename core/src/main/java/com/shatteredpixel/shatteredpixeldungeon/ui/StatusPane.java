@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.ClassPage;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameDay;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameTime;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
@@ -516,11 +517,18 @@ public class StatusPane extends Component {
 			if(Dungeon.isChallenged(CS)){
 
 				String str = String.valueOf(gameTime);
-				String result = str.substring(0, 1);
+
+				String result;
+
+				if (gameTime < 10) {
+					result = "";
+				} else {
+					result = str.substring(0, 1);
+				}
 				int lastTwoDigits = gameTime % 100;
 
 				timeText.text(sdf.format(date) + " " + Messages.get(this,Integer.toString(solardate.getWeek()))
-						+"\n"+Messages.get(this,"time") + Math.abs(Integer.parseInt(result)) +":"+Math.abs(lastTwoDigits)+"-"+name());
+						+"\n"+Messages.get(this,"time") + (gameTime < 100 ? 0 : Math.abs(Integer.parseInt(result))) +":"+Math.abs(lastTwoDigits)+"-"+name()+"\n"+Messages.get(this,"day",gameDay));
 			} else {
 				timeText.text(sdf.format(date) + " " + Messages.get(this,Integer.toString(solardate.getWeek())));
 			}

@@ -62,7 +62,7 @@ public class LinkRoom extends StandardRoom {
         }
         n.pos = level.pointToCell(center);
         Class<?extends ChampionEnemy> buffCls;
-        switch (Random.NormalIntRange(0,6)){
+        switch (Random.NormalIntRange(0,4)){
             case 0: default:
                 buffCls = ChampionEnemy.Small.class;
                 break;
@@ -76,9 +76,6 @@ public class LinkRoom extends StandardRoom {
                 buffCls = ChampionEnemy.Big.class;
                 break;
             case 4:
-                buffCls = ChampionEnemy.Sider.class;
-                break;
-            case 5:
                 buffCls = ChampionEnemy.LongSider.class;
                 break;
         }

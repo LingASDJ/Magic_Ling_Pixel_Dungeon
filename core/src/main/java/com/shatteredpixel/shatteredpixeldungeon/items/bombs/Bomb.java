@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.DrTerror;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
@@ -121,7 +122,7 @@ public class Bomb extends Item {
             for (Char ch : affected) {
 
                 //if they have already been killed by another bomb
-                if (!ch.isAlive()) {
+                if (!ch.isAlive() || ch instanceof DrTerror) {
                     continue;
                 }
 
@@ -330,6 +331,7 @@ public class Bomb extends Item {
 			
 			for (Char ch : affected){
 
+
 				//if they have already been killed by another bomb
 				if(!ch.isAlive()){
 					continue;
@@ -344,7 +346,7 @@ public class Bomb extends Item {
 
 				dmg -= ch.drRoll();
 
-				if (dmg > 0) {
+				if (dmg > 0){
 					ch.damage(dmg, this);
 				}
 				

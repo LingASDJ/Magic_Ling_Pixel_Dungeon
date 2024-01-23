@@ -1,13 +1,12 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameDay;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameNight;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameTime;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LighS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -31,9 +30,10 @@ public class NightorDay extends Buff {
                 detach();
             }
 
-            if(Dungeon.depth<1)return true;
+            if(Dungeon.depth<1 || Dungeon.level.locked )return true;
 
             //昼夜更替
+
             if(Dungeon.isChallenged(CS) && gameNight){
                 if(gameTime>0){
                     gameNight = false;
@@ -43,13 +43,10 @@ public class NightorDay extends Buff {
             } else if(gameTime>400 && gameTime<600) {
                 gameTime++;
                 gameNight = true;
-                if (!(Dungeon.level.locked || this.target.buff(LighS.class) != null)) {
-                    Buff.affect(target, Blindness.class, 2f);
-                }
             } else if(gameTime>599){
                 gameTime = 0;
                 gameNight = false;
-                Buff.detach(target, Blindness.class);
+                gameDay++;
             } else {
                 gameTime++;
             }

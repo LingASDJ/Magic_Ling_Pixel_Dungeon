@@ -324,7 +324,7 @@ public class QuickRecipe extends Component {
 						new LightFood()));
 				result.add(new QuickRecipe( new WaterSoul.Recipe(),
 						new ArrayList<Item>(Arrays.asList(new PotionOfHealing(), new FrozenCarpaccio()
-								)),
+								,new AlchemicalCatalyst())),
 						new WaterSoul().quantity(2)));
 				result.add(new QuickRecipe( new PotionOfNoWater.Recipe(),
 						new ArrayList<Item>(Arrays.asList(new Blindweed.Seed(), new Firebloom.Seed())),

@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.TormentedSpirit;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.DrTerror;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
@@ -52,6 +53,28 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 	public void doRead() {
 
 		TormentedSpirit spirit = null;
+		DrTerror dr = null;
+
+		for (int i : PathFinder.NEIGHBOURS8){
+			if (Actor.findChar(curUser.pos+i) instanceof DrTerror){
+				dr = (DrTerror) Actor.findChar(curUser.pos+i);
+			}
+		}
+		if (dr != null) {
+			identify();
+			Sample.INSTANCE.play(Assets.Sounds.READ);
+			readAnimation();
+
+			new Flare(6, 32).show(curUser.sprite, 2f);
+
+			if (curUser.buff(Degrade.class) != null) {
+				Degrade.detach(curUser, Degrade.class);
+			}
+
+			GLog.p(Messages.get(this, "spirit"));
+			dr.cleanse();
+		}
+
 		for (int i : PathFinder.NEIGHBOURS8){
 			if (Actor.findChar(curUser.pos+i) instanceof TormentedSpirit){
 				spirit = (TormentedSpirit) Actor.findChar(curUser.pos+i);

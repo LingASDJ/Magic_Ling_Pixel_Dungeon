@@ -149,6 +149,7 @@ public class Statistics {
 
 	//昼夜更替
 	public static int gameTime;
+	public static int gameDay;
 	public static boolean gameNight;
 
 	private static final String GAMETIME = "gameTime";
@@ -287,6 +288,8 @@ public class Statistics {
 
 		dm720Fight = false;
 		dm300Fight = false;
+
+		gameDay = 1;
 
 		ascended = false;
 
@@ -489,12 +492,15 @@ public class Statistics {
 
 		bundle.put(GAMETIME,gameTime);
 		bundle.put(GAMENIGHT,gameNight);
+		bundle.put("gameday",gameDay);
 
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
 
 		SiderLing = bundle.getInt( SIDERLING);
+
+		gameDay = bundle.getInt("gameday");
 
 		winGame = bundle.getBoolean(WINGAME);
 

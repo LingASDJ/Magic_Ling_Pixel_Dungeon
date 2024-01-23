@@ -286,7 +286,7 @@ public abstract class Level implements Bundlable {
 
 				if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
 					int randomInt = Random.Int(10);
-					if(Dungeon.depth == 4 || Dungeon.depth == 14){
+					if(Dungeon.depth == 4){
 						feeling = Feeling.DIEDROOM;
 					} else if (randomInt == 0) {
 						feeling = Feeling.CHASM;
