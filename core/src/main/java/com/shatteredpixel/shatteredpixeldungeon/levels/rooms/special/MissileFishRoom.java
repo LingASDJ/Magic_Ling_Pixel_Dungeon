@@ -104,10 +104,37 @@ public class MissileFishRoom extends SpecialRoom {
             }
         }
 
+        int may = Random.NormalIntRange(1,11);
+
         ArrayList<Item> mis = new ArrayList<>();
-        mis.add(idToTippedDart(Random.NormalIntRange(1,11)));
-        for (int i=0; i < Random.NormalIntRange(2,3); i++) {
+        mis.add(idToTippedDart(may));
+        for (int i=0; i < 1; i++) {
             for (Item item : mis) {
+                int Lpos;
+                do {
+                    Lpos = level.pointToCell(random(1));
+                } while (level.map[Lpos] != EMPTY_SP || level.heaps.get(Lpos) != null);
+                Heap h = level.drop(item, Lpos);
+                h.type = Heap.Type.HEAP;
+            }
+        }
+
+        ArrayList<Item> mis2 = new ArrayList<>();
+        mis2.add(idToTippedDart(may));
+        for (int i=0; i < 1; i++) {
+            for (Item item : mis2) {
+                int Lpos;
+                do {
+                    Lpos = level.pointToCell(random(1));
+                } while (level.map[Lpos] != EMPTY_SP || level.heaps.get(Lpos) != null);
+                Heap h = level.drop(item, Lpos);
+                h.type = Heap.Type.HEAP;
+            }
+        }
+        ArrayList<Item> mis3 = new ArrayList<>();
+        mis3.add(idToTippedDart(may));
+        for (int i=0; i < 1; i++) {
+            for (Item item : mis3) {
                 int Lpos;
                 do {
                     Lpos = level.pointToCell(random(1));

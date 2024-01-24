@@ -12,7 +12,7 @@ public class GunHuntsmanSprite extends MobSprite {
     public GunHuntsmanSprite() {
         super();
 
-        texture( "SRPD/Gunman.png" );
+        texture( "SRPD/gunman.png" );
         TextureFilm var1 = new TextureFilm(this.texture, 20, 16);
         Integer var2 = 2;
         Integer var3 = 1;

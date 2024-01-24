@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.bombs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand.procChanceMultiplier;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -270,7 +271,7 @@ public class Bomb extends Item {
 
 
 				if (ch.pos != cell){
-					dmg = Math.round(dmg*0.67f);
+					dmg = (int) (Math.round(dmg*0.67f) * procChanceMultiplier(ch));
 				}
 
 				dmg -= ch.drRoll();

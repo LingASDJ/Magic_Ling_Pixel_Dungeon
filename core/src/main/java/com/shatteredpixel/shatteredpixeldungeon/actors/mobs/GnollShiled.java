@@ -105,7 +105,7 @@ public class GnollShiled extends Gnoll {
     protected boolean getCloser(int target) {
         this.combo = 0;
         if (this.state != this.HUNTING) {
-            return getCloser(target);
+            return GnollShiled.super.getCloser(target);
         }
         if (!this.enemySeen || !getFurther(target)) {
             return false;

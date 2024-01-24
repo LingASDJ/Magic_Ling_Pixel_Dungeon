@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DeathRongShop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nxhy;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -79,9 +80,18 @@ public class NxhyShopRoom extends SpecialRoom {
 
     protected void placeShopkeeper(Level level) {
         int pos = level.pointToCell(center());
-        Mob nxhy = new Nxhy();
-        nxhy.pos = pos;
-        level.mobs.add(nxhy);
+
+        if(Dungeon.depth<26){
+            Mob nxhy = new Nxhy();
+            nxhy.pos = pos;
+            level.mobs.add(nxhy);
+        } else {
+            Mob d = new DeathRongShop();
+            d.pos = pos;
+            level.mobs.add(d);
+        }
+
+
     }
 
     protected void placeItems(Level level) {

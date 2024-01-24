@@ -19,6 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdRatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300AttackSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DeathRongSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DrTerrorSprite;
@@ -121,7 +122,7 @@ public class vM0_6_6_Changes {
     public static void add_SC4_Changes( ArrayList<ChangeInfo> changeInfos ) {
 
 
-        ChangeInfo changes = new ChangeInfo("v0.6.9.7", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.6.9.7-RC", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -129,19 +130,25 @@ public class vM0_6_6_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(PasswordBadgeBanner.image(PaswordBadges.Badge.HELLORWORLD.image), ("新徽章：终末赞歌"),
+                ("完成孤城挑战即可获得。")));
+
         changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.GREATAXE,
                 new ItemSprite.Glowing( 0x00FFFF )), "新稀有附魔：鬼磷",
-                "这个附魔会使磷火从武器中喷薄而出，能够使用点燃敌人并对正在燃烧的敌人造成中毒的额外伤害。"));
+                "这个附魔会使磷火从武器中喷薄而出，能够使用点燃敌人并对正在燃烧的敌人造成中毒的额外伤害。\n\n奥术戒加成效果：提升鬼磷几率"));
 
         changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.GREATSWORD,
                 new ItemSprite.Glowing( 0xcc7770 )), "新常规附魔：爆破",
-                "这个附魔会让使用者陷入癫狂，能使爆炸的能量从武器中喷薄而出，能够使敌人目标处受到一次范围伤害亦或者给造成敌人短暂的残废效果。"));
+                "这个附魔会让使用者陷入癫狂，能使爆炸的能量从武器中喷薄而出，能够使敌人目标处受到一次范围伤害亦或者给造成敌人短暂的残废效果。\n\n奥术戒加成效果：提升伤害"));
 
         changes.addButton(new ChangeButton(new GunHuntsmanSprite(), ("新敌人：血月兽型猎人"),
                 ("支离破碎3区特供，主要攻击手段是远程攻击。")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WATERSOUL), ("水灵改动"),
                 ("污泥浊水的水灵药剂的治疗不再受药水异症影响，也不会中毒，且有效时间变为250回合。但合成表有所改变")));
+
+        changes.addButton(new ChangeButton(new DeathRongSprite(), ("新商人：卡戎"),
+                ("她发现冥河渡人的生意越来越难做，所以现在在万圣大厅开起了商店，不久她就赚的盆满钵满。")));
 
         changes.addButton(new ChangeButton(new DrTerrorSprite(), ("新敌人：恐怖博士"),
                 ("曾经的名人，而如今沦落到如此田地。物是人非，指的就是这个了吧。")));
@@ -184,7 +191,9 @@ public class vM0_6_6_Changes {
                 "修复了以下Bug:\n\n" +
                         "1.修复了魅魔女王闪退的问题。\n" +
                         "2.修复了提灯的异常崩溃问题\n" +
-                        "3.修复了炼狱精英的处理问题"
+                        "3.修复了炼狱精英的处理问题\n" +
+                        "4.修复了豺狼炼药长老的闪退问题\n" +
+                        "5.修复了鱼与飞镖的故事飞镖异常问题"
         ));
 
         changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.CORRUPT, true), ("基因突变"),

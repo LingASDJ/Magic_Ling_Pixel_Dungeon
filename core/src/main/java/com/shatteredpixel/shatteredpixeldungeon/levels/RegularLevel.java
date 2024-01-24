@@ -272,7 +272,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 		//20%
-		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) < 20) {
+		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) < 20 || depth == 28) {
 			initRooms.add(new NxhyShopRoom());
 		}
 
@@ -319,7 +319,9 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new CoinRoom());
 		} else if(Dungeon.depth<26 && Random.Int(10) == 1) {
 			initRooms.add(new EyeRoom());
-		} else if(Dungeon.depth<26 && Random.Int(30) == 1 && (Dungeon.isChallenged(DHXD) || Statistics.lanterfireactive )){
+		}
+
+		if(Dungeon.depth<26 && Random.Int(30) == 1 && (Dungeon.isChallenged(DHXD) || Statistics.lanterfireactive )){
 			initRooms.add(new OilWellRoom());
 		}
 
