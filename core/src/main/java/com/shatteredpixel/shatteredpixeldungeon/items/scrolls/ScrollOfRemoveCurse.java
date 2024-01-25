@@ -71,7 +71,6 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 				Degrade.detach(curUser, Degrade.class);
 			}
 
-			GLog.p(Messages.get(this, "spirit"));
 			dr.cleanse();
 		}
 

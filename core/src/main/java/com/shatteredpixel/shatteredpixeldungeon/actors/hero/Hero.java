@@ -776,8 +776,8 @@ public class Hero extends Char {
 		}
 
 		if(Dungeon.isChallenged(CS) && gameNight){
-			speed *= 1.1f;
-		} else if(gameTime>400 && gameTime<600) {
+			speed *= 1.10f;
+		} else if(gameTime>350 && gameTime<400) {
 			speed *= 1.05f;
 		}
 

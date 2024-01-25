@@ -35,11 +35,13 @@ public class WaterSoul extends Elixir {
 
     @Override
     public void apply(Hero hero) {
-        Buff.affect(hero, WaterSoulX.class).set( (251), 1 );
+        Buff.affect(hero, WaterSoulX.class).set( (250), 1 );
         cure( hero );
         if (Dungeon.isChallenged(Challenges.NO_HEALING) && Statistics.HealingIsDied<=2) {
             heal(hero);
             Statistics.HealingIsDied++;
+        } else if(!(Dungeon.isChallenged(Challenges.NO_HEALING))) {
+            heal(hero);
         }
         if (Dungeon.isChallenged(Challenges.NO_FOOD)){
             Buff.affect(hero, Hunger.class).satisfy(energy/3f);

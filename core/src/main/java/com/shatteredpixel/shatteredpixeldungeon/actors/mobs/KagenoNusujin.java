@@ -13,7 +13,7 @@ public class KagenoNusujin extends Thief {
 
    {
         spriteClass = KagenoNusujinSprite.class;
-
+        properties.add(Property.NOBIG);
         HT = HP = 30;
 
         defenseSkill = 12;

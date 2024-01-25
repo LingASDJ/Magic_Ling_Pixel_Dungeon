@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ArmoredStatue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bandit;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BlackHost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BrownBat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CausticSlime;
@@ -20,6 +21,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ClearElemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdGurad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdMagicRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalGuardian;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalWisp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
@@ -29,8 +32,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FetidRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Fire_Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlameC01;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlowerSlime;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FungalSpinner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gnoll;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGuard;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollSapper;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollTrickster;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
@@ -227,7 +233,8 @@ public class MobPlacer extends TestItem{
             case 6: return DataPack.PIRANHA.ordinal() - DataPack.ACIDIC.ordinal() - 1;
             case 7: return DataPack.NQHZ.ordinal() - DataPack.PIRANHA.ordinal() - 1;
             case 8: return DataPack.IAS.ordinal() - DataPack.NQHZ.ordinal() - 1;
-            case 9: default: return DataPack.DiedP.ordinal() - DataPack.DR.ordinal() - 1;
+            case 9: return DataPack.DiedP.ordinal() - DataPack.DR.ordinal() - 1;
+            case 10: default: return DataPack.FLXX.ordinal() - DataPack.Crystal.ordinal() - 1;
         }
     }
     private int dataThreshold(int tier){
@@ -250,6 +257,8 @@ public class MobPlacer extends TestItem{
                 return DataPack.NQHZ.ordinal()+1;
             case 9:
                 return DataPack.IAS.ordinal()+1;
+            case 10:
+                return DataPack.Crystal.ordinal()+1;
         }
     }
 
@@ -297,8 +306,8 @@ public class MobPlacer extends TestItem{
                 @Override
                 public void onClick(){
                     mobTier--;
-                    if(mobTier < 1 || mobTier>9){
-                        mobTier = 9;
+                    if(mobTier < 1 || mobTier>10){
+                        mobTier = 10;
                     }
                     mobIndex = Math.min(mobIndex, maxMobIndex(mobTier));
                     refreshImage();
@@ -312,7 +321,7 @@ public class MobPlacer extends TestItem{
                 @Override
                 public void onClick(){
                     mobTier++;
-                    if(mobTier < 1 || mobTier >9){
+                    if(mobTier < 1 || mobTier >10){
                         mobTier = 1;
                     }
                     mobIndex = Math.min(mobIndex, maxMobIndex(mobTier));
@@ -390,7 +399,7 @@ public class MobPlacer extends TestItem{
         private void updateSelectedMob(){
             int selected = mobTier;
             StringBuilder sb = new StringBuilder();
-            for(int i=1;i<=9;++i){
+            for(int i=1;i<=10;++i){
                 sb.append((i==selected? "* ":"- "));
             }
             selectedPage.text(sb.toString());
@@ -559,6 +568,8 @@ public class MobPlacer extends TestItem{
         GOO(XTG200.class,DictSpriteSheet.GOO),
         IKS(ColdGurad.class,DictSpriteSheet.GKS),
         BRTX(BruteBot.class, DictSpriteSheet.BRTX),
+
+        BRBAT(BrownBat.class, 0),
         IAS(IceGolem.class, DictSpriteSheet.IAS),
 
 
@@ -577,8 +588,19 @@ public class MobPlacer extends TestItem{
         BlackSoulx(BlackSoul.class, 0),
         ANO(AnomaloCaris.class, 0),
         TB(ThreeLeafBug.class, 0),
-        Turtlex(Turtle.class, 0),
-        DiedP(Mob.class, 0);
+        DiedXP(Turtle.class, 0),
+        DiedP(Turtle.class, 0),
+
+        Crystal(CrystalGuardian.class,0),
+        CrystalS(CrystalWisp.class,0),
+//        CBoss(CrystalSpire.class,0),
+//        GnollBoss(GnollGeomancer.class,0),
+        GnollX(GnollGuard.class,0),
+        GnollC(GnollSapper.class,0),
+        FLX(CrystalGuardian.class,0),
+        FLXX(FungalSpinner.class,0);
+
+
 
         private Class<? extends Mob> mobClass;
         private int imageId;

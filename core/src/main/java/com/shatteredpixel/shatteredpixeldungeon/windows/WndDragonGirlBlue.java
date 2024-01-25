@@ -180,7 +180,7 @@ public class WndDragonGirlBlue extends Window {
             buttons.add(maxring);
         }
 
-        if(DragonGirlBlue.Quest.one_used_points == 3 && DragonGirlBlue.Quest.two_used_points == 4) {
+        if(DragonGirlBlue.Quest.one_used_points == 3 && DragonGirlBlue.Quest.two_used_points == 3) {
             int UpgradePoint = 500;
             int OtherPoint = 400;
 
@@ -194,7 +194,7 @@ public class WndDragonGirlBlue extends Window {
                     GLog.p(Messages.get(WndDragonGirlBlue.class, "pro_yes"));
                 }
             };
-            pro.enable(DragonGirlBlue.Quest.three_used_points == 3 && DragonGirlBlue.Quest.survey_research_points>=OtherPoint);
+            pro.enable(DragonGirlBlue.Quest.three_used_points == 0 && DragonGirlBlue.Quest.survey_research_points>=OtherPoint);
             buttons.add(pro);
 
             RedButton gold = new RedButton(Messages.get(this, "gold", OtherPoint), 6){

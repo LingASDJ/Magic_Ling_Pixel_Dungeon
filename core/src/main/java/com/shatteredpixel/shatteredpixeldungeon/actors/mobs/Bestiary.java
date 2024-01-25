@@ -242,7 +242,31 @@ public class Bestiary {
 	}
 
 	private static ArrayList<Class<? extends Mob>> rlptMobDied(int i) {
+		if(Dungeon.branch!=0){
+			switch (Dungeon.branch){
+				case 1:
+					if(Dungeon.depth == 17 || Dungeon.depth == 18){
+						return new ArrayList<>(Arrays.asList(
+								Turtle.class,Turtle.class,Turtle.class,Turtle.class,Turtle.class,Turtle.class, Turtle.class));
+					}
+				case 2:
+					if(Dungeon.depth == 18 || Dungeon.depth == 17){
+						return new ArrayList<>(Arrays.asList(
+								Turtle.class, ThreeLeafBug.class, AnomaloCaris.class, AnomaloCaris.class,
+								ThreeLeafBug.class,ThreeLeafBug.class, AnomaloCaris.class, AnomaloCaris.class,
+								ThreeLeafBug.class,ThreeLeafBug.class, AnomaloCaris.class, AnomaloCaris.class,
+								ThreeLeafBug.class,ThreeLeafBug.class, AnomaloCaris.class, AnomaloCaris.class,
+								ThreeLeafBug.class,ThreeLeafBug.class, AnomaloCaris.class, AnomaloCaris.class,
+								ThreeLeafBug.class,ThreeLeafBug.class, AnomaloCaris.class, AnomaloCaris.class,
+								ThreeLeafBug.class));
+					}
+				case 5:
+					if(Dungeon.depth == 17){
+						return new ArrayList<>(Arrays.asList(BlueWraith.class));
+					}
 
+			}
+		}
 		switch (i) {
 			case 6:
 				return new ArrayList<>(Arrays.asList(Skeleton.class,

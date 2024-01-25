@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameNight;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameTime;
 
@@ -696,12 +695,12 @@ public abstract class Char extends Actor {
 		}
 
 		if(properties.contains(Property.UNDEAD) && Statistics.gameNight){
-			Buff.affect( hero, Bleeding.class ).set((damage/3f));
+			Buff.affect( enemy, Bleeding.class ).set((damage/3f));
 		}
 
 		if(properties.contains(Property.DEMONIC) && Statistics.gameNight){
 			if(Random.Int(10)==1){
-				Buff.affect( hero, CrivusFruits.CFBarrior.class ).setShield(damage/2);
+				Buff.affect( this, CrivusFruits.CFBarrior.class ).setShield(damage/2);
 			}
 		}
 

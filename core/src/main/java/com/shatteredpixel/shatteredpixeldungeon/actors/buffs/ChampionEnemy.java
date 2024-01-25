@@ -174,7 +174,12 @@ public abstract class ChampionEnemy extends Buff {
 					buffCls = ChampionEnemy.LongSider.class;
 					break;
 				case 4:
-					buffCls = ChampionEnemy.HealRight.class;
+					if (m.properties.contains(Char.Property.NOBIG)) {
+						buffCls = ChampionEnemy.Bomber.class;
+					} else {
+						buffCls = ChampionEnemy.HealRight.class;
+					}
+
 					break;
 			}
 		}
