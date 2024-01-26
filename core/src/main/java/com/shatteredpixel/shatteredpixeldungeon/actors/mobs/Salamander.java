@@ -66,7 +66,10 @@ public class Salamander extends Mob {
 
     @Override
     protected boolean canAttack( Char enemy ) {
-        return fieldOfView[enemy.pos] && Dungeon.level.distance(pos, enemy.pos) <= 4;
+        if(Dungeon.level.distance(pos,target)>3)
+            return false;
+        Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
+        return !Dungeon.level.adjacent(pos, enemy.pos) && attack.collisionPos == enemy.pos;
     }
 
     @Override
@@ -94,13 +97,9 @@ public class Salamander extends Mob {
     protected boolean getCloser(int target) {
         combo = 0;
         if (state == HUNTING) {
-            if (enemySeen && getFurther(target)) {
-                return true;
-            }
-            // 如果敌人和蜥蜴之间的距离大于3格，继续靠近英雄
-            if (!Dungeon.level.adjacent(pos, enemy.pos)) {
-                return super.getCloser(target);
-            }
+            if(Dungeon.level.distance(pos,target)>3)
+                return super.getCloser( target );
+            return enemySeen && getFurther( target );
         } else {
             return super.getCloser(target);
         }
