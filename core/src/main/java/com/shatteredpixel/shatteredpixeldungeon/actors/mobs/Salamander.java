@@ -67,6 +67,8 @@ public class Salamander extends Mob {
 
     @Override
     protected boolean canAttack( Char enemy ) {
+        if(Dungeon.level.distance(pos,target)>3)
+            return false;
         Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
         return !Dungeon.level.adjacent(pos, enemy.pos) && attack.collisionPos == enemy.pos;
     }
@@ -97,6 +99,8 @@ public class Salamander extends Mob {
     protected boolean getCloser( int target ) {
         combo = 0; //if he's moving, he isn't attacking, reset combo.
         if (state == HUNTING) {
+            if(Dungeon.level.distance(pos,target)>3)
+                return super.getCloser( target );
             return enemySeen && getFurther( target );
         } else {
             return super.getCloser( target );
