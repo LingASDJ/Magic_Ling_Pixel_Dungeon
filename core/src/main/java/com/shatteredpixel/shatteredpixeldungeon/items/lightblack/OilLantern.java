@@ -198,7 +198,8 @@ public class OilLantern extends Artifact {
 
     public void refills(Hero hero) {
         this.plingks--;
-        this.charge = Math.min(this.charge + (MIX_CHARGE-(10*Statistics.deepestFloor/5)-Challenges.activeChallenges()/4), 100);
+        int result = Math.min(Math.max(55 - (10 * Statistics.deepestFloor / 5) - Challenges.activeChallenges() / 4, 10), 100);
+        this.charge = Math.min(this.charge + result, 100);
         hero.spend(TIME_TO_USE);
         hero.busy();
         Sample.INSTANCE.play(Assets.Sounds.DRINK, TIME_TO_USE, TIME_TO_USE, 1.2f);
@@ -248,7 +249,7 @@ public class OilLantern extends Artifact {
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc",flasks,plingks,Math.min(this.charge + (MIX_CHARGE-(10* Statistics.deepestFloor /5)-Challenges.activeChallenges()/4), 100));
+        return Messages.get(this, "desc",flasks,plingks,Statistics.deepestFloor,Math.min(Math.max(55 - (10 * Statistics.deepestFloor / 5) - Challenges.activeChallenges() / 4, 10), 100));
     }
 
     public int price() {

@@ -1,8 +1,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 
+import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
@@ -15,6 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -31,7 +34,6 @@ import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Music;
 import com.watabou.utils.ColorMath;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.GameMath;
@@ -45,6 +47,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class TitleScene extends PixelScene {
 	public static boolean Reusable = false;
@@ -59,6 +67,31 @@ public class TitleScene extends PixelScene {
 
 	public static boolean NTP_NOINTER_VEFY = false;
 
+	public void noInter(){
+		if(NTP_NOINTER || NTP_ERROR || NTP_NOINTER_VEFY || NTP_ERROR_VEFY){
+			//启用破碎默认活动
+			final Calendar calendar = Calendar.getInstance();
+			switch (calendar.get(Calendar.MONTH)) {
+				case Calendar.JANUARY:
+					if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
+						holiday = RegularLevel.Holiday.XMAS;
+					break;
+				case Calendar.OCTOBER:
+					if (calendar.get(Calendar.WEEK_OF_MONTH) >= 2)
+						holiday = RegularLevel.Holiday.HWEEN;
+					break;
+				case Calendar.NOVEMBER:
+					if (calendar.get(Calendar.DAY_OF_MONTH) == 1)
+						holiday = RegularLevel.Holiday.HWEEN;
+					break;
+				case Calendar.DECEMBER:
+					if (calendar.get(Calendar.WEEK_OF_MONTH) >= 3)
+						holiday = RegularLevel.Holiday.XMAS;
+					break;
+			}
+		}
+	}
+
 	@Override
 	public void create() {
 		super.create();
@@ -70,43 +103,68 @@ public class TitleScene extends PixelScene {
 		Badges.loadGlobal();
 		boolean whiteDaymode = currentHour > 7 && currentHour < 22;
 
-		try {
-			//NTP服务器有严重延迟 直接使用百度的地址进行监测
-			URL url = new URL("https://www.baidu.com");
-			URLConnection conn = url.openConnection();
-			conn.connect();
-			long dateL = conn.getDate();
-			Date onlineDate = new Date(dateL);
-
-			Date localDate = new Date(); // 获取本地时间
-			String strDateFormat = "yyyy-MM-dd";
-			SimpleDateFormat dateFormat = new SimpleDateFormat(strDateFormat, Locale.getDefault());
-			String onlineTimeStr = dateFormat.format(onlineDate); // 在线时间的字符串表示
-			String localTimeStr = dateFormat.format(localDate); // 本地时间的字符串表示
-
-			if (onlineTimeStr.equals(localTimeStr)) {
-				if(Random.Int(10) == 1 && !NightDay && !whiteDaymode){
-					NightDay = true;
-				} else if(Badges.isUnlocked(Badges.Badge.VICTORY) && Random.Int(10) == 1 && !Reusable){
-					Reusable = true;
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		Future<?> future = executor.submit(() -> {
+			try {
+				// NTP服务器需要合理分配，根据语言环使用不同的地址进行监测
+				String ntpServer;
+				switch (SPDSettings.language()){
+					default:
+					case CHINESE:
+						ntpServer = "www.baidu.com";
+					break;
+					case GREEK:case ENGLISH:case RUSSIAN:case JAPANESE:case HARDCHINESE:
+						ntpServer = "www.bing.com";
+					break;
 				}
-			} else if(!NTP_ERROR_VEFY) {
-				NTP_ERROR = true;
-				NTP_ERROR_VEFY = true;
+				URL url = new URL("https://" + ntpServer);
+				URLConnection conn = url.openConnection();
+				conn.connect();
+				long dateL = conn.getDate();
+				Date onlineDate = new Date(dateL);
+
+				Date localDate = new Date(); // 获取本地时间
+				String strDateFormat = "yyyy-MM-dd";
+				SimpleDateFormat dateFormat = new SimpleDateFormat(strDateFormat, Locale.getDefault());
+				String onlineTimeStr = dateFormat.format(onlineDate); // 在线时间的字符串表示
+				String localTimeStr = dateFormat.format(localDate); // 本地时间的字符串表示
+
+				if (onlineTimeStr.equals(localTimeStr)) {
+					if (Random.Int(10) == 1 && !NightDay && !whiteDaymode) {
+						NightDay = true;
+					} else if (Badges.isUnlocked(Badges.Badge.VICTORY) && Random.Int(10) == 1 && !Reusable) {
+						Reusable = true;
+					}
+				} else if (!NTP_ERROR_VEFY) {
+					noInter();
+					NTP_ERROR = true;
+					NTP_ERROR_VEFY = true;
+				}
+			} catch (IOException e) {
+				if (!NTP_NOINTER_VEFY || SPDSettings.WiFi() && !Game.platform.connectedToUnmeteredNetwork()) {
+					NTP_NOINTER = true;
+					NTP_NOINTER_VEFY = true;
+				}
 			}
-		} catch (IOException e) {
-			if(!NTP_NOINTER_VEFY || SPDSettings.WiFi() && !Game.platform.connectedToUnmeteredNetwork())  {
+		});
+
+		try {
+			//超时1s 实际3s
+			future.get(1, TimeUnit.SECONDS);
+		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			if (!NTP_NOINTER_VEFY || SPDSettings.WiFi() && !Game.platform.connectedToUnmeteredNetwork()) {
 				NTP_NOINTER = true;
 				NTP_NOINTER_VEFY = true;
 			}
+			System.out.println("fhiq");
+			noInter();
 		}
-
-
+		executor.shutdown();
 
 		if(holiday == XMAS){
-			Music.INSTANCE.play(Assets.Music.CHRAMSS, true);
+			playBGM(Assets.Music.CHRAMSS, true);
 		} else {
-			Music.INSTANCE.play(Assets.Music.THEME_1, true);
+			playBGM(Assets.Music.THEME_1, true);
 		}
 
 		uiCamera.visible = false;
@@ -200,10 +258,6 @@ public class TitleScene extends PixelScene {
 		archs.setSize( w, h );
 		addToBack( archs );
 
-//		ReloadButton btnReload = new ReloadButton();
-//		btnReload.setRect(0, 0, 16, 20);
-//		add( btnReload );
-
 		Image signs = new Image( BannerSprites.get( BannerSprites.Type.PIXEL_DUNGEON_SIGNS ) ) {
 			private float time = 0;
 			@Override
@@ -229,45 +283,61 @@ public class TitleScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				if(NTP_ERROR) {
-					try {
-						//NTP服务器有严重延迟 直接使用百度的地址进行监测
-						URL url = new URL("https://www.baidu.com");
-						URLConnection conn = url.openConnection();
-						conn.connect();
-						long dateL = conn.getDate();
-						Date onlineDate = new Date(dateL);
 
-						Date localDate = new Date(); // 获取本地时间
-						String strDateFormat = "yyyy-MM-dd";
-						SimpleDateFormat dateFormat = new SimpleDateFormat(strDateFormat, Locale.getDefault());
-						String onlineTimeStr = dateFormat.format(onlineDate); // 在线时间的字符串表示
-						String localTimeStr = dateFormat.format(localDate); // 本地时间的字符串表示
-
-						ShatteredPixelDungeon.scene().add(new WndHardNotification(NetIcons.get(NetIcons.ALERT),
-								Messages.get(this, "ntp_error"),
-								Messages.get(this, "ntp_desc", onlineTimeStr, localTimeStr),
-								Messages.get(this, "ok"),
-								0) {
-							@Override
-							public void hide() {
-								NTP_ERROR = false;
-								if (GamesInProgress.checkAll().size() == 0) {
-									GamesInProgress.selectedClass = null;
-									GamesInProgress.curSlot = 1;
-								}
-								ShatteredPixelDungeon.switchNoFade(StartScene.class);
+					ExecutorService executor = Executors.newSingleThreadExecutor();
+					executor.submit(() -> {
+						try {
+							// NTP服务器有严重延迟，直接使用百度的地址进行监测
+							String ntpServer;
+							switch (SPDSettings.language()){
+								default:
+								case CHINESE:
+									ntpServer = "www.baidu.com";
+									break;
+								case GREEK:case ENGLISH:case RUSSIAN:case JAPANESE:case HARDCHINESE:
+									ntpServer = "www.bing.com";
+									break;
 							}
+							URL url = new URL("https://" + ntpServer);
+							URLConnection conn = url.openConnection();
+							conn.connect();
+							long dateL = conn.getDate();
+							Date onlineDate = new Date(dateL);
 
-							@Override
-							public void onBackPressed() {
-								NTP_ERROR = false;
-								ShatteredPixelDungeon.switchNoFade(TitleScene.class);
-							}
-						});
+							Date localDate = new Date(); // 获取本地时间
+							String strDateFormat = "yyyy-MM-dd";
+							SimpleDateFormat dateFormat = new SimpleDateFormat(strDateFormat, Locale.getDefault());
+							String onlineTimeStr = dateFormat.format(onlineDate); // 在线时间的字符串表示
+							String localTimeStr = dateFormat.format(localDate); // 本地时间的字符串表示
 
-					} catch (IOException e) {
+							// 在主线程中更新UI
+							Gdx.app.postRunnable(() -> {
+								ShatteredPixelDungeon.scene().add(new WndHardNotification(NetIcons.get(NetIcons.ALERT),
+										Messages.get(this, "ntp_error"),
+										Messages.get(this, "ntp_desc", onlineTimeStr, localTimeStr),
+										Messages.get(this, "ok"),
+										0) {
+									@Override
+									public void hide() {
+										NTP_ERROR = false;
+										if (GamesInProgress.checkAll().size() == 0) {
+											GamesInProgress.selectedClass = null;
+											GamesInProgress.curSlot = 1;
+										}
+										ShatteredPixelDungeon.switchNoFade(StartScene.class);
+									}
 
-					}
+									@Override
+									public void onBackPressed() {
+										NTP_ERROR = false;
+										ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+									}
+								});
+							});
+
+						} catch (IOException ignored) {}
+					});
+					executor.shutdown();
 				} else if(NTP_NOINTER){
 					ShatteredPixelDungeon.scene().add(new WndHardNotification(NetIcons.get(NetIcons.ALERT),
 							Messages.get(this, "lntp_error"),
@@ -283,7 +353,6 @@ public class TitleScene extends PixelScene {
 							}
 							ShatteredPixelDungeon.switchNoFade( StartScene.class );
 						}
-
 						@Override
 						public void onBackPressed() {
 							NTP_NOINTER = false;
@@ -297,8 +366,6 @@ public class TitleScene extends PixelScene {
 					}
 					ShatteredPixelDungeon.switchNoFade( StartScene.class );
 				}
-
-
 			}
 
 			@Override
@@ -309,6 +376,7 @@ public class TitleScene extends PixelScene {
 					textColor(ColorMath.interpolate( 0xFFFFFF, Window.CBLACK,
 							0.1f + (float)Math.sin(Game.timeTotal*5)/2f));
 					text(Messages.get(TitleScene.class, "dark"));
+					playBGM(Assets.NIGHT, true);
 					icon(BadgeBanner.image(Badges.Badge.STORM.image));
 				} else if (TitleScene.Reusable){
 					textColor(ColorMath.interpolate( 0xFFFFFF, Window.CYELLOW,

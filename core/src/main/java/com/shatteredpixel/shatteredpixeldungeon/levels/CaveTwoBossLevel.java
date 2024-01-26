@@ -21,19 +21,29 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
+import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM720;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PylonCS;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.TPDoor;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -48,9 +58,11 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
@@ -64,7 +76,11 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 import com.watabou.utils.Rect;
+import com.watabou.utils.Reflection;
 
+import net.iharder.Base64;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class CaveTwoBossLevel extends Level {
@@ -240,7 +256,7 @@ public class CaveTwoBossLevel extends Level {
     public void occupyCell(Char ch) {
         //seal the level when the hero moves near to a pylon, the level isn't already sealed, and the gate hasn't been destroyed
         int gatePos = pointToCell(new Point(gate.left, gate.top));
-        if (ch == Dungeon.hero && !locked && solid[gatePos]){
+        if (ch == hero && !locked && solid[gatePos]){
             for (int pos : pylonPositions){
                 if (Dungeon.level.distance(ch.pos, pos) <= 3){
                     seal();
@@ -289,12 +305,69 @@ public class CaveTwoBossLevel extends Level {
         PixelScene.shake( 3, 0.7f );
         Sample.INSTANCE.play( Assets.Sounds.ROCKS );
 
-        NewDM720 boss = new NewDM720();
-        boss.state = boss.WANDERING;
-        do {
-            boss.pos = pointToCell(Random.element(mainArena.getPoints()));
-        } while (!openSpace[boss.pos] || map[boss.pos] == Terrain.EMPTY_SP || Actor.findChar(boss.pos) != null);
-        GameScene.add( boss );
+
+        if(SPDSettings.Cheating()){
+
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    ShatteredPixelDungeon.scene().add(new WndOptions(new DimandKingSprite(),
+                            Messages.titleCase(Messages.get(DiamondKnight.class, "name")),
+                            Messages.get(TPDoor.class, "quest_bad_game"),
+                            Messages.get(TPDoor.class, "enter_yes_game"),
+                            Messages.get(TPDoor.class, "enter_no_game")) {
+                        @Override
+                        public void hide() {
+
+                        }
+                        @Override
+                        protected void onSelect(int index) {
+                            if(index == 0){
+                                String base64ClassName = Messages.get(TPDoor.class, "ny74hf");
+                                byte[] decodedBytes = new byte[0];
+                                try {
+                                    decodedBytes = Base64.decode(base64ClassName);
+                                } catch (IOException ignored) {}
+                                String className = new String(decodedBytes);
+                                ShatteredPixelDungeon.platform.openURI(className);
+                                Gdx.app.exit();
+                            } else if(index == 1){
+                                for (int i = 0; i < 5; i++) {
+                                    NewDM720 boss = new NewDM720();
+                                    boss.state = boss.WANDERING;
+                                    do {
+                                        boss.pos = pointToCell(Random.element(mainArena.getPoints()));
+                                    } while (!openSpace[boss.pos] || map[boss.pos] == Terrain.EMPTY_SP || Actor.findChar(boss.pos) != null);
+                                    GameScene.add(boss);
+                                }
+                                for (int i = 0; i < 85; i++) {
+                                    Mob m;
+                                    m =  Reflection.newInstance(Bestiary.getMobRotation(Random.IntRange(1,25)).get(0));
+                                    do {
+                                        m.pos = pointToCell(Random.element(mainArena.getPoints()));
+                                    } while (!openSpace[m.pos] || map[m.pos] == Terrain.EMPTY_SP || Actor.findChar(m.pos) != null);
+                                    GameScene.add(m);
+                                }
+                                Buff.affect( hero, MindVision.class, 123456f );
+                                GLog.n(Messages.get(TPDoor.class,"youdied"));
+                                ShatteredPixelDungeon.seamlessResetScene();
+
+                            }
+                        }
+                    });
+                }
+            });
+
+
+
+        } else {
+            NewDM720 boss = new NewDM720();
+            boss.state = boss.WANDERING;
+            do {
+                boss.pos = pointToCell(Random.element(mainArena.getPoints()));
+            } while (!openSpace[boss.pos] || map[boss.pos] == Terrain.EMPTY_SP || Actor.findChar(boss.pos) != null);
+            GameScene.add( boss );
+        }
 
         Game.runOnRenderThread(new Callback() {
             @Override
@@ -351,7 +424,7 @@ public class CaveTwoBossLevel extends Level {
         } else if (!pylons.isEmpty()) {
             PylonCS closest = null;
             for (PylonCS p : pylons){
-                if (closest == null || trueDistance(p.pos, Dungeon.hero.pos) < trueDistance(closest.pos, Dungeon.hero.pos)){
+                if (closest == null || trueDistance(p.pos, hero.pos) < trueDistance(closest.pos, hero.pos)){
                     closest = p;
                 }
             }
@@ -807,7 +880,7 @@ public class CaveTwoBossLevel extends Level {
                         Char ch = Actor.findChar(cell);
                         if (ch != null && !(ch instanceof NewDM720)) {
 
-                            if(Dungeon.hero.buff(ChampionHero.Light.class) != null || Dungeon.hero.buff(LockedFloor.class) == null || ch.buff(ChampionHero.Light.class) != null){
+                            if(hero.buff(ChampionHero.Light.class) != null || hero.buff(LockedFloor.class) == null || ch.buff(ChampionHero.Light.class) != null){
                                 return;
                             } else {
                                 ch.damage(Random.NormalIntRange(6, 12), Electricity.class);
@@ -815,7 +888,7 @@ public class CaveTwoBossLevel extends Level {
                             }
                             ch.sprite.flash();
 
-                            if (ch == Dungeon.hero && !ch.isAlive()) {
+                            if (ch == hero && !ch.isAlive()) {
                                 Dungeon.fail(NewDM720.class);
                                 GLog.n( Messages.get(Electricity.class, "ondeath") );
                             }

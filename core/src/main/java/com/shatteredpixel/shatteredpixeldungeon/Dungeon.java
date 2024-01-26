@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.ROGUE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createBossRushLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createBranchLevel;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createCheatingLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createStandardLevel;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -234,7 +235,9 @@ public class Dungeon {
 		Actor.clear();
 		
 		Level level;
-		if (branch == 0)
+			if(SPDSettings.Cheating()){
+				level = createCheatingLevel();
+			}else if (branch == 0)
 			if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))
 				level = createBossRushLevel();
 			else level = createStandardLevel();
@@ -269,7 +272,9 @@ public class Dungeon {
 		
 		return level;
 	}
-	
+
+
+
 	public static void resetLevel() {
 		
 		Actor.clear();

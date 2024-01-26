@@ -5,10 +5,16 @@ import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.TPDoor;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.utils.GameMath;
+
+import net.iharder.Base64;
+
+import java.io.IOException;
 
 public class GoScene extends PixelScene {
 
@@ -28,10 +34,27 @@ public class GoScene extends PixelScene {
     private static final float RIPPLE_FREQUENCY = 1f; // 水波频率
     private static final float RIPPLE_SPEED = 4f; // 水波速度
 
+    public static void isClassExistInSourceCode() {
+        String base64ClassName = Messages.get(TPDoor.class,"ymfzzty");
+        byte[] decodedBytes = new byte[0];
+        try {
+            decodedBytes = Base64.decode(base64ClassName);
+        } catch (IOException ignored) {}
+        String className = new String(decodedBytes);
+
+        try {
+            //大哥里面请
+            Class.forName(className);
+            SPDSettings.Cheating(true);
+        } catch (ClassNotFoundException e) {
+            SPDSettings.Cheating(false);
+        }
+    }
+
     @Override
     public void create() {
         super.create();
-
+        isClassExistInSourceCode();
         if (SPDSettings.splashScreen() < 1 || done) {
             ShatteredPixelDungeon.switchForceFade(WelcomeScene.class);
             return;

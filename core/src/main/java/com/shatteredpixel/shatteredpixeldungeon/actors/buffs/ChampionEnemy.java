@@ -428,7 +428,14 @@ public abstract class ChampionEnemy extends Buff {
 			case 5:             buffCls = Growing.class;      break;
 			case 6:             buffCls = Halo.class;      	  break;
 			case 7:             buffCls = DelayMob.class;     break;
-			case 8:             buffCls = King.class;     	  break;
+			case 8:
+				if(Random.Int(100)==1 && Challenges.activeChallenges()>11){
+					buffCls = King.class;
+				} else {
+					buffCls = Blazing.class;
+				}
+
+			break;
 		}
 
 		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) || Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) && depth>5 && Random.Float()<=0.45f) {

@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -63,7 +65,7 @@ public class BrownBat extends Mob {
             var4.activate();
 
         }
-            for (Buff buff : enemy.buffs()) {
+            for (Buff buff : hero.buffs()) {
                 if (buff instanceof Blindness) {
                     buff.detach();
                 }

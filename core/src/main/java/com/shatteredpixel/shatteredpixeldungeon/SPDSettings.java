@@ -639,4 +639,11 @@ public class SPDSettings extends GameSettings {
         return getInt(KEY_MOVE_SENS, 3, 0, 4);
     }
 
+	public static void Cheating(boolean value) {
+		put("cheatingfuck", value);
+	}
+
+	public static boolean Cheating() {
+		return getBoolean("cheatingfuck", false);
+	}
 }

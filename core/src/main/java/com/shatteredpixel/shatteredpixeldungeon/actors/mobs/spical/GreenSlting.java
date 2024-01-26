@@ -18,6 +18,7 @@ public class GreenSlting extends Mob {
         EXP = 5;
         loot = Food.class;
         lootChance = 1f;
+        baseSpeed = Dungeon.depth == 2 ? 0.9f : 1f;
     }
 
     @Override

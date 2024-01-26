@@ -33,8 +33,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
 
-import com.nlf.calendar.Lunar;
-import com.nlf.calendar.Solar;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -135,10 +133,6 @@ public abstract class RegularLevel extends Level {
         Gregorian.LunarCheckDate();
 
         final Calendar calendar = Calendar.getInstance();
-
-        Solar date = Solar.fromDate(calendar.getTime());
-        Lunar lunar = date.getLunar();
-
         //计算中国传统节日的代码已迁移到最上方的"Gregorian.LunarCheckDate();"方法。
 
 
@@ -160,9 +154,6 @@ public abstract class RegularLevel extends Level {
 					holiday = Holiday.XMAS;
 				break;
 		}
-
-
-
     }
 
     protected ArrayList<Room> rooms;

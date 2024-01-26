@@ -8,7 +8,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -67,11 +66,9 @@ public class Salamander extends Mob {
 
     @Override
     protected boolean canAttack( Char enemy ) {
-        Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
-        return !Dungeon.level.adjacent(pos, enemy.pos) && attack.collisionPos == enemy.pos;
+        return fieldOfView[enemy.pos] && Dungeon.level.distance(pos, enemy.pos) <= 4;
     }
 
-    //todo Ghost Quest Mob-2
     @Override
     public int attackProc( Char enemy, int damage ) {
         damage = super.attackProc( enemy, damage );
@@ -94,13 +91,20 @@ public class Salamander extends Mob {
     }
 
     @Override
-    protected boolean getCloser( int target ) {
-        combo = 0; //if he's moving, he isn't attacking, reset combo.
+    protected boolean getCloser(int target) {
+        combo = 0;
         if (state == HUNTING) {
-            return enemySeen && getFurther( target );
+            if (enemySeen && getFurther(target)) {
+                return true;
+            }
+            // 如果敌人和蜥蜴之间的距离大于3格，继续靠近英雄
+            if (!Dungeon.level.adjacent(pos, enemy.pos)) {
+                return super.getCloser(target);
+            }
         } else {
-            return super.getCloser( target );
+            return super.getCloser(target);
         }
+        return false;
     }
 
     @Override

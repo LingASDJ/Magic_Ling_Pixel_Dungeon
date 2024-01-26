@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLing;
@@ -154,6 +155,12 @@ public enum HeroClass {
 
 		if (Challenges.activeChallenges() >= 10) {
 			hero.lanterfire = 100 - Challenges.activeChallenges() * 4;
+		}
+
+		if(SPDSettings.Cheating()){
+			hero.HT = hero.HP = 114514;
+			hero.exp = -1919810;
+			hero.lvl = 100;
 		}
 
 		if(!Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3) && Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ){
