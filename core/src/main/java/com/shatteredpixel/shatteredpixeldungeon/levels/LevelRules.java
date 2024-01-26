@@ -81,7 +81,14 @@ public class LevelRules {
         }
     }
 
+    public static Level createCheatingLevel() {
+        return new CaveTwoBossLevel();
+    }
+
+
+
     public static Level createStandardLevel() {
+
             switch (depth) {
                 case 0:
                     return new ZeroLevel();

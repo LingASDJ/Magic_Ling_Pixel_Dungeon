@@ -220,12 +220,13 @@ public abstract class Recipe {
 		new SummonElemental.Recipe(),
 		new StewedMeat.twoMeat(),
 		new PotionOfNoWater.Recipe(),
-		new WaterSoul.Recipe(),
+
 	};
 	
 	private static Recipe[] threeIngredientRecipes = new Recipe[]{
 		new Potion.SeedToPotion(),
 		new StewedMeat.threeMeat(),
+			new WaterSoul.Recipe(),
 		new MeatPie.Recipe(),
 			new ScrollOfRoseShiled.Recipe(),
 			new ScrollOfFlameCursed.Recipe(),

@@ -12,7 +12,7 @@ public class GnollHero extends Mob {
     {
         spriteClass = TribesmanSprite.class;
         HP = HT = 30;
-        baseSpeed = 1.4f;
+        baseSpeed = 1.2f;
         maxLvl = 30;
         EXP = 9;
     }
@@ -20,7 +20,7 @@ public class GnollHero extends Mob {
     @Override
     public void die(Object cause) {
         super.die(cause);
-        Dungeon.level.drop(new Gold( 400), pos).sprite.drop();
+        Dungeon.level.drop(new Gold( Random.Int(250,401)), pos).sprite.drop();
     }
 
     @Override

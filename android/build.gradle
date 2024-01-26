@@ -36,6 +36,10 @@ android {
             dependencies {
                 releaseImplementation project(':services:news:shatteredNews')
             }
+            shrinkResources true
+            minifyEnabled true
+            firebaseCrashlytics {mappingFileUploadEnabled false}
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {
 
@@ -99,7 +103,8 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.2'
 
     implementation 'cat.ereza:customactivityoncrash:2.3.0'
-
+    // https://mvnrepository.com/artifact/net.iharder/base64
+    implementation 'net.iharder:base64:2.3.9'
     implementation project(':services:news:shatteredNews')
 }
 

@@ -21,7 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameNight;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameTime;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -518,6 +520,16 @@ public abstract class Char extends Actor {
 					effectiveDamage *= 1.33f;
 				}
 
+				if(Dungeon.isChallenged(CS) && gameNight){
+					effectiveDamage *= 0.92f;
+				} else if(gameTime>400 && gameTime<600) {
+					effectiveDamage *= 0.96f;
+				}
+
+				if (enemy.buff(BlessImmune.class) != null) {
+					effectiveDamage *= 0.75f;
+				}
+
 				if (enemy.buff(MagicGirlSaySoftDied.class) != null) {
 					effectiveDamage *= 1.25f;
 				}
@@ -672,17 +684,23 @@ public abstract class Char extends Actor {
 			damage *= 1.5f;
 		}
 
+		if(Dungeon.isChallenged(CS) && gameNight){
+			damage *= 1.1f;
+		} else if(gameTime>400 && gameTime<600) {
+			damage *= 1.05f;
+		}
+
 		if ( buff(AnkhInvulnerability.GodDied.class) != null ) {
 			damage *= 2.25f;
 		}
 
 		if(properties.contains(Property.UNDEAD) && Statistics.gameNight){
-			Buff.affect( hero, Bleeding.class ).set((damage/3f));
+			Buff.affect( enemy, Bleeding.class ).set((damage/3f));
 		}
 
 		if(properties.contains(Property.DEMONIC) && Statistics.gameNight){
 			if(Random.Int(10)==1){
-				Buff.affect( hero, CrivusFruits.CFBarrior.class ).setShield(damage/2);
+				Buff.affect( this, CrivusFruits.CFBarrior.class ).setShield(damage/2);
 			}
 		}
 
@@ -750,9 +768,9 @@ public abstract class Char extends Actor {
 			return;
 		}
 
-		if(buff(BlessImmune.class) != null && !this.isImmune(BlessImmune.class)){
-			dmg = (int) Math.ceil(dmg * 0.75f);
-		}
+//		if(buff(BlessImmune.class) != null && !this.isImmune(BlessImmune.class)){
+////			dmg = (int) Math.ceil(dmg * 0.75f);
+////		}
 
 		if(buff(Charm.CharmLing.class) != null && !this.isImmune(Charm.CharmLing.class)){
 			dmg = (int) Math.ceil(dmg * 1.25f);

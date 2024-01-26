@@ -33,8 +33,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
 
-import com.nlf.calendar.Lunar;
-import com.nlf.calendar.Solar;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -135,10 +133,6 @@ public abstract class RegularLevel extends Level {
         Gregorian.LunarCheckDate();
 
         final Calendar calendar = Calendar.getInstance();
-
-        Solar date = Solar.fromDate(calendar.getTime());
-        Lunar lunar = date.getLunar();
-
         //计算中国传统节日的代码已迁移到最上方的"Gregorian.LunarCheckDate();"方法。
 
 
@@ -160,9 +154,6 @@ public abstract class RegularLevel extends Level {
 					holiday = Holiday.XMAS;
 				break;
 		}
-
-
-
     }
 
     protected ArrayList<Room> rooms;
@@ -272,7 +263,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 		//20%
-		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) < 20) {
+		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) < 20 || depth == 28) {
 			initRooms.add(new NxhyShopRoom());
 		}
 
@@ -319,7 +310,9 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new CoinRoom());
 		} else if(Dungeon.depth<26 && Random.Int(10) == 1) {
 			initRooms.add(new EyeRoom());
-		} else if(Dungeon.depth<26 && Random.Int(30) == 1 && (Dungeon.isChallenged(DHXD) || Statistics.lanterfireactive )){
+		}
+
+		if(Dungeon.depth<26 && Random.Int(30) == 1 && (Dungeon.isChallenged(DHXD) || Statistics.lanterfireactive )){
 			initRooms.add(new OilWellRoom());
 		}
 
@@ -448,7 +441,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 		if(Dungeon.isChallenged(CS)){
-			mobs -= 2;
+			mobs -= 1;
 		}
 
 		return mobs;
@@ -457,7 +450,7 @@ public abstract class RegularLevel extends Level {
 	@Override
 	protected void createMobs() {
 		//on floor 1, 10 pre-set mobs are created so the player can get level 2.
-		int mobsToSpawn = Dungeon.depth == 1 ? 10 : mobLimit();
+		int mobsToSpawn = Dungeon.depth == 1 ? Dungeon.isChallenged(CS) ? 5 : 10 : mobLimit();
 
 		ArrayList<Room> stdRooms = new ArrayList<>();
 		for (Room room : rooms) {
@@ -600,10 +593,8 @@ public abstract class RegularLevel extends Level {
 			nItems += 2;
 		}
 
-		//最终挑战 谜城
-		if(Dungeon.isChallenged(CS)){
-			nItems -= 6;
-		}
+		//谜城资源量减半
+		if(Dungeon.isChallenged(CS)){nItems = nItems/2;}
 
 		for (int i=0; i < nItems; i++) {
 			Item toDrop = Generator.random();

@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -31,7 +32,7 @@ import com.watabou.utils.Random;
 
 public class RandomBlueFireDE extends Mob {
     private static final String COMBO = "combo";
-    private int combo = 0;
+    private final int combo = 0;
     public RandomBlueFireDE() {
         this.spriteClass = FireBallMobSprite.class;
         this.HT = 40;
@@ -72,8 +73,16 @@ public class RandomBlueFireDE extends Mob {
         RandomBlueFireDE.super.die(cause);
         if (cause != Chasm.class) {
             //如果新增临死前的话，请将1改为Random.IntRange
-            this.sprite.showStatus(16711680, Messages.get(this,"death_msg_"+1), new Object[0]);
+            this.sprite.showStatus(16711680, Messages.get(this,"death_msg_"+1));
         }
+
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            if (mob instanceof FlameC01) {
+                mob.die( cause );
+            }
+        }
+
+
     }
 
     @Override

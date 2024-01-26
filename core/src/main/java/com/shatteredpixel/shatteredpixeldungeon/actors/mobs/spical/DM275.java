@@ -42,7 +42,8 @@ public class DM275 extends Mob {
 
         properties.add(Property.INORGANIC);
         properties.add(Property.LARGE);
-
+        immunities.add(ToxicGas.class);
+        immunities.add(CorrosiveGas.class);
         HUNTING = new Hunting();
     }
 
@@ -193,13 +194,16 @@ public class DM275 extends Mob {
         spend( TICK );
         ventCooldown = 30;
 
-        Ballistica trajectory = new Ballistica(pos, enemy.pos, Ballistica.STOP_TARGET);
+        if(enemy!= null){
+            Ballistica trajectory = new Ballistica(pos, enemy.pos, Ballistica.STOP_TARGET);
 
-        for (int i : trajectory.subPath(0, trajectory.dist)){
-            GameScene.add(Blob.seed(i, 20, ToxicGas.class));
-            GameScene.add(Blob.seed(i, 20, CorrosiveGas.class));
+            for (int i : trajectory.subPath(0, trajectory.dist)){
+                GameScene.add(Blob.seed(i, 20, ToxicGas.class));
+                GameScene.add(Blob.seed(i, 20, CorrosiveGas.class));
+            }
+            GameScene.add(Blob.seed(trajectory.collisionPos, 100, ToxicGas.class));
+
         }
-        GameScene.add(Blob.seed(trajectory.collisionPos, 100, ToxicGas.class));
 
     }
 
@@ -229,8 +233,11 @@ public class DM275 extends Mob {
                     if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
                         sprite.zap( enemy.pos );
                         return false;
-                    } else {
+                    } else if(enemy!=null) {
                         zap();
+                        return true;
+                    } else {
+                        spend( TICK );
                         return true;
                     }
 
@@ -242,8 +249,11 @@ public class DM275 extends Mob {
                     if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
                         sprite.zap( enemy.pos );
                         return false;
-                    } else {
+                    } else if(enemy!=null) {
                         zap();
+                        return true;
+                    } else {
+                        spend( TICK );
                         return true;
                     }
 

@@ -41,8 +41,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.RedTrap;
@@ -52,12 +52,13 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
+
+import java.util.ArrayList;
 
 public abstract class ChampionEnemy extends Buff {
 	//public static final float shopDURATION	= 2000000000f;
@@ -173,12 +174,17 @@ public abstract class ChampionEnemy extends Buff {
 					buffCls = ChampionEnemy.LongSider.class;
 					break;
 				case 4:
-					buffCls = ChampionEnemy.HealRight.class;
+					if (m.properties.contains(Char.Property.NOBIG)) {
+						buffCls = ChampionEnemy.Bomber.class;
+					} else {
+						buffCls = ChampionEnemy.HealRight.class;
+					}
+
 					break;
 			}
 		}
 
-		if (Dungeon.mobsToStateLing <= 0 && Dungeon.isChallenged(Challenges.SBSG) && !m.properties.contains(Char.Property.NOBIG) || Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.SBSG) && depth>5) {
+		if (Dungeon.mobsToStateLing <= 0 && Dungeon.isChallenged(Challenges.SBSG) && !m.properties.contains(Char.Property.NOBIG) || Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.SBSG) && depth>5 && Random.Float()<=0.45f) {
 			Buff.affect(m, buffCls);
 			m.state = m.WANDERING;
 		}
@@ -422,10 +428,17 @@ public abstract class ChampionEnemy extends Buff {
 			case 5:             buffCls = Growing.class;      break;
 			case 6:             buffCls = Halo.class;      	  break;
 			case 7:             buffCls = DelayMob.class;     break;
-			case 8:             buffCls = King.class;     	  break;
+			case 8:
+				if(Random.Int(100)==1 && Challenges.activeChallenges()>11){
+					buffCls = King.class;
+				} else {
+					buffCls = Blazing.class;
+				}
+
+			break;
 		}
 
-		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) || Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) && depth>5) {
+		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) || Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) && depth>5 && Random.Float()<=0.45f) {
 			Buff.affect(m, buffCls);
 			m.state = m.WANDERING;
 		}
@@ -658,7 +671,6 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public float meleeDamageFactor() {
-
 			return 1.45f;
 		}
 
@@ -670,25 +682,37 @@ public abstract class ChampionEnemy extends Buff {
 		@Override
 		public void onAttackProc(Char enemy) {
 			if(Random.Int(100)<20){
-				Mob w = Reflection.newInstance(Bestiary.getMobRotation(depth).get(0));
-
-				w.pos = enemy.pos+1;
-
-				for (Buff s : target.buffs(WandOfAnmy.AllyToRestartOK.class)){
-					if(s!=null) Buff.affect(w,WandOfAnmy.AllyToRestartOK.class);
+					Mob m;
+					ArrayList<Integer> spawnPoints = new ArrayList<>();
+					for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+						int p = enemy.pos + PathFinder.NEIGHBOURS8[i];
+						if (Actor.findChar( p ) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
+							spawnPoints.add( p );
+						}
+					}
+					if (spawnPoints.size() > 0) {
+						Actor.fixTime();
+						m =  Reflection.newInstance(Bestiary.getMobRotation(depth).get(0));
+						for (Buff s : target.buffs(WandOfAnmy.AllyToRestartOK.class)){
+						if(s!=null) Buff.affect(m,WandOfAnmy.AllyToRestartOK.class);
+					}
+						if (m != null) {
+							if (Char.hasProp(m, Char.Property.LARGE)){
+								for ( int i : spawnPoints.toArray(new Integer[0])){
+									if (!Dungeon.level.openSpace[i]){
+										spawnPoints.remove((Integer) i);
+									}
+								}
+							}
+						if (!spawnPoints.isEmpty()) {
+							m.pos = Random.element(spawnPoints);
+							GameScene.add(m);
+							ScrollOfTeleportation.appear(m, m.pos);
+						}
+					}
 				}
-
-				w.state = w.HUNTING;
-				GameScene.add( w, 2f );
-
-				w.sprite.alpha( 0 );
-				w.sprite.parent.add( new AlphaTweener( w.sprite, 1, 0.5f ) );
-
-				w.sprite.emitter().burst( ShadowParticle.CURSE, 5 );
 			}
 		}
-
-
 	}
 
 	public static class DeadSoulSX extends ChampionEnemy {

@@ -784,7 +784,7 @@ public class DwarfKing extends Mob {
 		@Override
 		public void detach() {
 			super.detach();
-			for (Mob m : Dungeon.level.mobs){
+			for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
 				if (m instanceof DwarfKing){
 					int damage = m.HT / (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 18 : 12);
 					m.damage(damage, this);

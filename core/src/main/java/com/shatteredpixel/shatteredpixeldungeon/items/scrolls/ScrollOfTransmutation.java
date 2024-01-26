@@ -152,7 +152,9 @@ public class ScrollOfTransmutation extends InventoryScroll {
 			return changeStone((Runestone) item);
 		} else if (item instanceof Artifact) {
 			Artifact a = changeArtifact( (Artifact)item );
-			if (a == null){
+			if(item instanceof OilLantern){
+				return item;
+			} else if (a == null){
 				//if no artifacts are left, generate a random +0 ring with shared ID/curse state
 				Item result = Generator.randomUsingDefaults(Generator.Category.RING);
 				result.levelKnown = item.levelKnown;

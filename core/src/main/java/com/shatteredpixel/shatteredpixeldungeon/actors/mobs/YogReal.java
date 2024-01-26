@@ -548,6 +548,8 @@ public class YogReal extends Boss {
             PaswordBadges.NIGHT_CAT();
         }
 
+        PaswordBadges.NightOrHell();
+
         if(Dungeon.isChallenged(AQUAPHOBIA)){
             Badges.CLEARWATER();
         }

@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
@@ -31,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BatSprite;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
 public class BrownBat extends Mob {
@@ -59,6 +61,7 @@ public class BrownBat extends Mob {
         if (Random.Int(3) == 0) {
             AlarmTrap var4 = new AlarmTrap();
             var4.pos = super.pos;
+            Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
             var4.activate();
 
         }
@@ -72,12 +75,12 @@ public class BrownBat extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 5, 5 );
+        return Random.NormalIntRange( 5, 9 );
     }
 
     @Override
     public int attackSkill( Char target ) {
-        return 3;
+        return 15;
     }
 
     @Override
@@ -88,10 +91,10 @@ public class BrownBat extends Mob {
     @Override
     public int attackProc( Char enemy, int damage ) {
         damage = super.attackProc( enemy, damage );
-        int reg = Math.min( damage - 4, HT - HP );
 
-        if (reg > 0) {
-            Buff.prolong( Dungeon.hero, Blindness.class, Blindness.DURATION*1.5f );
+
+        if (damage > 4) {
+            Buff.prolong( enemy, Blindness.class, Blindness.DURATION*1.5f );
         }
 
         return damage;

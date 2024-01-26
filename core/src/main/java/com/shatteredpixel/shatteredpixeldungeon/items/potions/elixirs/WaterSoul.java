@@ -20,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WaterSoulX;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -34,13 +35,13 @@ public class WaterSoul extends Elixir {
 
     @Override
     public void apply(Hero hero) {
-        Buff.affect(hero, WaterSoulX.class).set( (101), 1 );
+        Buff.affect(hero, WaterSoulX.class).set( (250), 1 );
         cure( hero );
-        if (Dungeon.isChallenged(Challenges.NO_HEALING) && Statistics.HealingIsDied>=2) {
-           pharmacophobiaProc(hero);
-        } else {
+        if (Dungeon.isChallenged(Challenges.NO_HEALING) && Statistics.HealingIsDied<=2) {
             heal(hero);
             Statistics.HealingIsDied++;
+        } else if(!(Dungeon.isChallenged(Challenges.NO_HEALING))) {
+            heal(hero);
         }
         if (Dungeon.isChallenged(Challenges.NO_FOOD)){
             Buff.affect(hero, Hunger.class).satisfy(energy/3f);
@@ -55,11 +56,6 @@ public class WaterSoul extends Elixir {
             if (ch == Dungeon.hero){
                 GLog.p( Messages.get(PotionOfHealing.class, "heal") );
             }
-    }
-
-    public static void pharmacophobiaProc( Hero hero ){
-        // harms the hero for ~40% of their max HP in poison
-        Buff.affect( hero, Poison.class).set(6 + hero.lvl/2f);
     }
 
     public static void cure( Char ch ) {
@@ -78,10 +74,10 @@ public class WaterSoul extends Elixir {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
         {
-            inputs =  new Class[]{PotionOfHealing.class, FrozenCarpaccio.class};
-            inQuantity = new int[]{1, 1};
+            inputs =  new Class[]{PotionOfHealing.class, FrozenCarpaccio.class, AlchemicalCatalyst.class};
+            inQuantity = new int[]{1, 1, 1};
 
-            cost = 14;
+            cost = 10;
 
             output = WaterSoul.class;
             outQuantity = 2;

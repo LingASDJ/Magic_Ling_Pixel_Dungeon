@@ -304,7 +304,7 @@ public class ColdChestBossLevel extends Level {
                 if(ch.pos==682){
                     Buff.detach(hero, Levitation.class);
                 } else if(ch.pos==111||ch.pos==133) {
-                    Buff.affect( hero, Levitation.class, 114514f );
+                    Buff.affect( hero, Levitation.class, 6f );
                 }
             }
 

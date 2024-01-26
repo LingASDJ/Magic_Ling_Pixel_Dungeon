@@ -66,6 +66,10 @@ public class PaswordBadges {
         displayBadge( Badge.GOOD_BLUE);
     }
 
+    public static void NightOrHell() {
+        displayBadge( Badge.HELLORWORLD);
+    }
+
 
     public enum Badge {
 
@@ -85,7 +89,9 @@ public class PaswordBadges {
         EXSG(14),
         NIGHT_CAT(16),
         ZQJ_GHOST(17),
-        GOOD_BLUE(18);
+        GOOD_BLUE(18),
+
+        HELLORWORLD(21);
 
 
 

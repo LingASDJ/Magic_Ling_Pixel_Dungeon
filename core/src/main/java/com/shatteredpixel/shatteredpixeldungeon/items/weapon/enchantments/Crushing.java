@@ -28,7 +28,7 @@ public class Crushing extends Weapon.Enchantment {
             if (Random.Int( 2 ) == 0) {
                 Buff.prolong( defender, Cripple.class, Random.Float( 1f, 1f + level/2f ) );
             }
-            defender.damage( Random.Int( 1, level + 2 ), this );
+            defender.damage( Random.Int((int) (1 * procChanceMultiplier(attacker)), (int) (level + 2 * 1 * procChanceMultiplier(attacker))), this );
 
             defender.sprite.emitter().burst(BlastParticle.FACTORY, 30 );
             defender.sprite.emitter().burst(SmokeParticle.FACTORY, 4 );

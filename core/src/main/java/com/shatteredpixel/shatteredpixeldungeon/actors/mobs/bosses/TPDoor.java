@@ -18,7 +18,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TPDoorSprites;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -152,7 +151,7 @@ public class TPDoor extends Boss {
                 Game.runOnRenderThread(new Callback() {
                     @Override
                     public void call() {
-                                GameScene.show(new WndOptions(new DimandKingSprite(),
+                        GameScene.show(new WndOptions(new DimandKingSprite(),
                                 Messages.titleCase(Messages.get(DiamondKnight.class, "name")),
                                 Messages.get(TPDoor.class, "quest_tengu_prompt"),
                                 Messages.get(TPDoor.class, "enter_yes"),
@@ -160,10 +159,27 @@ public class TPDoor extends Boss {
                             @Override
                             protected void onSelect(int index) {
                                 if (index == 0) {
-                                    Statistics.mustTengu = true;
-                                    if(Dungeon.level.locked) Dungeon.level.unseal();
-                                    InterlevelScene.mode = InterlevelScene.Mode.RESET;
-                                    Game.switchScene(InterlevelScene.class);
+
+                                    GameScene.show(new WndOptions(new DimandKingSprite(),
+                                            Messages.titleCase(Messages.get(DiamondKnight.class, "name")),
+                                            Messages.get(TPDoor.class, "quest_tengu_really"),
+                                            Messages.get(TPDoor.class, "enter_no"),
+                                            Messages.get(TPDoor.class, "enter_no"),
+                                            Messages.get(TPDoor.class, "enter_no"),
+                                            Messages.get(TPDoor.class, "enter_yes")) {
+                                        @Override
+                                        protected void onSelect(int index) {
+                                            if (index == 3) {
+                                                Statistics.mustTengu = true;
+                                                if(Dungeon.level.locked) Dungeon.level.unseal();
+                                                InterlevelScene.mode = InterlevelScene.Mode.RESET;
+                                                Game.switchScene(InterlevelScene.class);
+                                            } else {
+                                                kill = 0;
+                                                yell( Messages.get(DiamondKnight.class, "ten"));
+                                            }
+                                        }
+                                    });
                                 } else if(index == 1){
                                     kill = 0;
                                     yell( Messages.get(DiamondKnight.class, "ten"));
@@ -176,7 +192,7 @@ public class TPDoor extends Boss {
 
             }
 
-            if(kill < 6){
+            if(kill < 6 && enemy == hero){
                 GLog.n(Messages.get(this,"lowdamage"));
                 kill++;
                 for (Buff b : buffs(Buff.class)){

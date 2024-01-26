@@ -5,6 +5,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LighS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
@@ -128,6 +129,11 @@ public class OilLantern extends Artifact {
         actions.add(isActivated() ? AC_SNUFF : AC_LIGHT);
         actions.add(AC_REFILL);
         actions.remove(AC_EQUIP);
+        if (isActivated()) {
+            actions.remove(AC_DROP);
+            actions.remove(AC_THROW);
+        }
+
         return actions;
     }
 
@@ -192,7 +198,8 @@ public class OilLantern extends Artifact {
 
     public void refills(Hero hero) {
         this.plingks--;
-        this.charge = Math.min(this.charge + (MIX_CHARGE-(10*Dungeon.depth/5)-Challenges.activeChallenges()/4), 100);
+        int result = Math.min(Math.max(55 - (10 * Statistics.deepestFloor / 5) - Challenges.activeChallenges() / 4, 10), 100);
+        this.charge = Math.min(this.charge + result, 100);
         hero.spend(TIME_TO_USE);
         hero.busy();
         Sample.INSTANCE.play(Assets.Sounds.DRINK, TIME_TO_USE, TIME_TO_USE, 1.2f);
@@ -242,7 +249,7 @@ public class OilLantern extends Artifact {
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc",flasks,plingks);
+        return Messages.get(this, "desc",flasks,plingks,Statistics.deepestFloor,Math.min(Math.max(55 - (10 * Statistics.deepestFloor / 5) - Challenges.activeChallenges() / 4, 10), 100));
     }
 
     public int price() {

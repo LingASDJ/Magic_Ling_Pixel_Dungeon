@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Rect;
 import com.watabou.utils.Reflection;
 
@@ -260,4 +261,15 @@ public class Blob extends Actor {
 			return gas.cur[cell];
 		}
 	}
+
+	public void explode(int cell) {
+		if (cur[cell]>0) {
+			volume-=cur[cell];
+			cur[cell]=0;
+			for (int ofs : PathFinder.NEIGHBOURS8) {
+				explode(cell+ofs);
+			}
+		}
+	}
+
 }

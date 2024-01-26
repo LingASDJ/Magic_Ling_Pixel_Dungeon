@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
@@ -17,11 +18,12 @@ public class GreenSlting extends Mob {
         EXP = 5;
         loot = Food.class;
         lootChance = 1f;
+        baseSpeed = Dungeon.depth == 2 ? 0.9f : 1f;
     }
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 8, 12 );
+        return Random.NormalIntRange( 5 + Dungeon.depth, 9 + Dungeon.depth );
     }
 
     @Override

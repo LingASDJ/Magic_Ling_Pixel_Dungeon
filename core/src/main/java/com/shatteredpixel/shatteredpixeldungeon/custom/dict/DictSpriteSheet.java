@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.FireAcidicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlameC01Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlowerSlimeSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GreenSltingSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GunHuntsmanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceFireScorpioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceGolemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -108,6 +109,8 @@ public class DictSpriteSheet {
                 return new FireAcidicSprite();
             case IAS:
                 return new IceGolemSprite();
+            case CLIX:
+                return new GunHuntsmanSprite();
             case BRTX:
                 return new BruteBotSprite();
             case GOO:
@@ -328,6 +331,13 @@ public class DictSpriteSheet {
     public static final int FAX      = 227 + 10000;
     public static final int CAX      = 228 + 10000;
     public static final int IAS      = 229 + 10000;
+
+
+    public static final int CLIX      = 8000 + 10000;
+
+
+
+
 
     public static final int FLAMEC01      = 330 + 10000;
 

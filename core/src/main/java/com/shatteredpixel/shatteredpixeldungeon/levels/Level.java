@@ -281,12 +281,9 @@ public abstract class Level implements Bundlable {
 			}
 			
 			if (Dungeon.depth > 1) {
-				//50% chance of getting a level feeling
-				//~7.15% chance for each feeling
-
 				if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
 					int randomInt = Random.Int(10);
-					if(Dungeon.depth == 4 || Dungeon.depth == 14){
+					if(Dungeon.depth == 4){
 						feeling = Feeling.DIEDROOM;
 					} else if (randomInt == 0) {
 						feeling = Feeling.CHASM;
@@ -301,13 +298,15 @@ public abstract class Level implements Bundlable {
 					} else if (randomInt == 4) {
 						feeling = Feeling.TRAPS;
 					} else if (randomInt == 5) {
-						feeling = Feeling.BIGTRAP;
+						feeling = Feeling.THREEWELL;
 					} else if (randomInt == 6) {
 						feeling = Feeling.SECRETS;
-					} else if (randomInt == 7) {
+					} else if (randomInt == 7 && !(Dungeon.depth == 6) ) {
 						feeling = Feeling.LINKROOM;
 					} else if (randomInt == 8) {
-						feeling = Feeling.THREEWELL;
+						feeling = Feeling.BIGTRAP;
+					} else {
+						feeling = Feeling.CHASM;
 					}
 				} else {
 					switch (Random.Int( 14 )) {
@@ -1468,7 +1467,7 @@ public abstract class Level implements Bundlable {
 			if (c.buff( MindVision.class ) != null) {
 				for (Mob mob : mobs) {
 					for (int i : PathFinder.NEIGHBOURS9) {
-						heroMindFov[mob.pos + i] = true;
+							heroMindFov[mob.pos + i] = true;
 					}
 				}
 			} else if (((Hero) c).hasTalent(Talent.HEIGHTENED_SENSES)) {

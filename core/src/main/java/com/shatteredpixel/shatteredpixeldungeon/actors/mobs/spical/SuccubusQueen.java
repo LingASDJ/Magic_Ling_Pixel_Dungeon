@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -19,7 +21,7 @@ public class SuccubusQueen extends Succubus {
 
     @Override
     public boolean isInvulnerable(Class effect) {
-        return ( enemy.buff( Charm.CharmLing.class ) != null );
+        return ( hero.buff( Charm.CharmLing.class ) != null );
     }
 
     {
@@ -37,7 +39,7 @@ public class SuccubusQueen extends Succubus {
         maxLvl = 30;
 
         loot = Generator.Category.RING;
-        lootChance = 0.48f;
+        lootChance = 1f;
     }
 
     public int attackProc(Char enemy, int damage ) {

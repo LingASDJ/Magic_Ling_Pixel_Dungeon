@@ -21,7 +21,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 public class ShieldHuntsman extends Mob {
-    private static final String COMBO = "combo";
+
     private int combo = 0;
 
     public ShieldHuntsman() {
@@ -44,7 +44,7 @@ public class ShieldHuntsman extends Mob {
 
     public int attackProc(Char enemy, int damage) {
         if (Random.Int(0, 10) > 7) {
-            this.sprite.showStatus(16711680, Messages.get(this,"attack_msg_"+Random.IntRange(1, 7)), new Object[0]);
+            this.sprite.showStatus(16711680, Messages.get(this,"attack_msg_"+Random.IntRange(1, 7)));
         }
         int damage2 = ShieldHuntsman.super.attackProc(enemy, this.combo + damage);
         this.combo++;
@@ -77,7 +77,7 @@ public class ShieldHuntsman extends Mob {
     public void die(Object cause) {
         ShieldHuntsman.super.die(cause);
         if (cause != Chasm.class) {
-            this.sprite.showStatus(16711680, Messages.get(this,"death_msg_"+Random.IntRange(1, 10)), new Object[0]);
+            this.sprite.showStatus(16711680, Messages.get(this,"death_msg_"+Random.IntRange(1, 10)));
         }
     }
 

@@ -64,11 +64,6 @@ public class RandomChest  extends Item {
     }
 
     @Override
-    public ItemSprite.Glowing glowing() {
-        return new ItemSprite.Glowing(0x880000, 6f);
-    }
-
-    @Override
     public ArrayList<String> actions(Hero hero ) {
         ArrayList<String> actions = super.actions( hero );
         actions.add(AC_AAT);

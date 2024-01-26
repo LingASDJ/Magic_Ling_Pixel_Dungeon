@@ -8,7 +8,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -73,7 +72,6 @@ public class Salamander extends Mob {
         return !Dungeon.level.adjacent(pos, enemy.pos) && attack.collisionPos == enemy.pos;
     }
 
-    //todo Ghost Quest Mob-2
     @Override
     public int attackProc( Char enemy, int damage ) {
         damage = super.attackProc( enemy, damage );
@@ -96,15 +94,16 @@ public class Salamander extends Mob {
     }
 
     @Override
-    protected boolean getCloser( int target ) {
-        combo = 0; //if he's moving, he isn't attacking, reset combo.
+    protected boolean getCloser(int target) {
+        combo = 0;
         if (state == HUNTING) {
             if(Dungeon.level.distance(pos,target)>3)
                 return super.getCloser( target );
             return enemySeen && getFurther( target );
         } else {
-            return super.getCloser( target );
+            return super.getCloser(target);
         }
+        return false;
     }
 
     @Override
