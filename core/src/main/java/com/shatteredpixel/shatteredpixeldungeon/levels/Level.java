@@ -74,6 +74,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition;
@@ -129,7 +130,11 @@ public abstract class Level implements Bundlable {
 
 		//清理掉落物
 		for (Heap heap : heaps.valueList()){
-			heap.destroy();
+			for (Item item : heap.items){
+				if(item instanceof MIME){
+					heap.destroy();
+				}
+			}
 		}
 
 		//自动获取出入口

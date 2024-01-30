@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 public class LighS extends FlavourBuff {
@@ -15,6 +16,12 @@ public class LighS extends FlavourBuff {
 
     public LighS() {
         this.type = Buff.buffType.POSITIVE;
+    }
+
+    @Override
+    public void fx(boolean on) {
+        if (on) target.sprite.add(CharSprite.State.ILLUMINATED);
+        else target.sprite.remove(CharSprite.State.ILLUMINATED);
     }
 
     @Override
@@ -49,7 +56,7 @@ public class LighS extends FlavourBuff {
 
 
         if(Dungeon.depth>20){
-            spend(DELAY + 6f);
+            spend(DELAY + 7f);
         } else if (Dungeon.depth>15){
             spend(DELAY + 4f);
         } else if (Dungeon.depth>10){

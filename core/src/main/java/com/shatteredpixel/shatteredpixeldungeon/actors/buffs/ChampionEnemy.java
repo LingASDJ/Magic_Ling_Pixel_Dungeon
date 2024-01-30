@@ -321,7 +321,7 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public float meleeDamageFactor() {
-			return 0.75f;
+			return 0.65f;
 		}
 
 		@Override
@@ -367,12 +367,12 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public float speedFactor() {
-			return 1.25f;
+			return 1.2f;
 		}
 
 		@Override
 		public float damageTakenFactor() {
-			return 0.3f;
+			return 0.7f;
 		}
 
 	}

@@ -48,7 +48,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
@@ -74,7 +73,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySoftDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
@@ -526,13 +524,6 @@ public abstract class Char extends Actor {
 					effectiveDamage *= 0.96f;
 				}
 
-				if (enemy.buff(BlessImmune.class) != null) {
-					effectiveDamage *= 0.75f;
-				}
-
-				if (enemy.buff(MagicGirlSaySoftDied.class) != null) {
-					effectiveDamage *= 1.25f;
-				}
 
 				effectiveDamage = attackProc(enemy, effectiveDamage);
 			}
@@ -684,7 +675,7 @@ public abstract class Char extends Actor {
 			damage *= 1.5f;
 		}
 
-		if(Dungeon.isChallenged(CS) && gameNight){
+		if(Dungeon.isChallenged(CS) && !gameNight){
 			damage *= 1.1f;
 		} else if(gameTime>400 && gameTime<600) {
 			damage *= 1.05f;
@@ -699,9 +690,11 @@ public abstract class Char extends Actor {
 		}
 
 		if(properties.contains(Property.DEMONIC) && Statistics.gameNight){
-			if(Random.Int(10)==1){
+			if(Random.Int(10)==1 && buff(CrivusFruits.CFBarrior.class) == null){
 				Buff.affect( this, CrivusFruits.CFBarrior.class ).setShield(damage/2);
 			}
+		} else {
+			Buff.detach( this, CrivusFruits.CFBarrior.class);
 		}
 
 		for (ChampionHero buff : buffs(ChampionHero.class)){
@@ -719,6 +712,10 @@ public abstract class Char extends Actor {
 
 		if ((properties().contains(Property.BOSS) || properties().contains(Property.MINIBOSS)) && Statistics.gameNight) {
 			speed *= 1.2f;
+		}
+
+		for (ChampionEnemy buff : buffs(ChampionEnemy.class)) {
+			speed = buff.speedFactor();
 		}
 
 		if (buff(Cripple.class) != null) speed /= 2f;
@@ -1084,6 +1081,7 @@ public abstract class Char extends Actor {
 		if (buff(Speed.class) != null) {
 			timeScale *= 2.0f;
 		}
+
 
 		super.spend(time / timeScale);
 	}

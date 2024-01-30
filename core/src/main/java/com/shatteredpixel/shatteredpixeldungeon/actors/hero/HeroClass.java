@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
@@ -95,7 +94,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSp
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.DeviceCompat;
 
 import java.util.List;
@@ -162,12 +160,12 @@ public enum HeroClass {
 			hero.exp = -1919810;
 			hero.lvl = 100;
 		}
-
+		//Buff.affect(hero, BlessImmune.class, ChampionHero.DURATION*123456f);
 		if(!Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3) && Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ){
 			Badges.BOSSTHREE();
 		}
 
-		GLog.n(String.valueOf(Statistics.commonrelaycall));
+		//GLog.n(String.valueOf(Statistics.commonrelaycall));
 
 		if(RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY){
 			new CrystalLing().quantity(1).identify().collect();
@@ -213,7 +211,7 @@ public enum HeroClass {
 
 		new ScrollOfIdentify().identify();
 
-		if (Dungeon.isChallenged(Challenges.PRO)){
+		if (!Dungeon.isChallenged(Challenges.PRO)){
 			new SpawnMisc().quantity(1).identify().collect();
 			new LevelTeleporter().quantity(1).identify().collect();
 			new SakaFishSketon().quantity(1).identify().collect();

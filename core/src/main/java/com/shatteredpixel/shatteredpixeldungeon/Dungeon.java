@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.ROGUE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createBossRushLevel;
@@ -341,6 +340,10 @@ public class Dungeon {
 		return depth == 6 || depth == 11 || depth == 16;
 	}
 
+	public static boolean exgoldLevel() {
+		return depth == 3 || depth == 7 || depth == 13 || depth == 17;
+	}
+
 	public static boolean anCityQuestLevel() {
 		return 18 == anCityQuestLevel  || 17 == anCityQuestLevel;
 	}
@@ -473,8 +476,12 @@ public class Dungeon {
 		Light light = hero.buff( Light.class );
 		MagicTorch.MagicLight magicLight = hero.buff( MagicTorch.MagicLight.class );
 
-		if(light != null || lights != null || magicLight != null){
-			hero.viewDistance = Math.max( Light.DISTANCE, level.viewDistance );
+		if(lights != null){
+			hero.viewDistance = Math.max( LighS.DISTANCE, level.viewDistance );
+		} else if(light != null) {
+			hero.viewDistance = Math.max(Light.DISTANCE, level.viewDistance);
+		} else if(magicLight != null){
+			hero.viewDistance = Math.max( MagicTorch.MagicLight.DISTANCE, level.viewDistance );
 		} else {
 			hero.viewDistance = level.viewDistance;
 		}
@@ -621,7 +628,7 @@ public class Dungeon {
 
 		mobsToChampion = -1;
         mobsToStateLing = -1;
-		if (!SPDSettings.customSeed().isEmpty() && !Dungeon.isChallenged(CS)){
+		if (!SPDSettings.customSeed().isEmpty()){
 			customSeedText = SPDSettings.customSeed();
 			seed = DungeonSeed.convertFromText(customSeedText);
 		} else {

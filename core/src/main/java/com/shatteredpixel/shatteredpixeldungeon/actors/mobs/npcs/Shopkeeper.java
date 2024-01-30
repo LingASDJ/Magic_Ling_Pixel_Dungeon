@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -192,10 +191,6 @@ public class Shopkeeper extends NPC {
 	//shopkeepers are greedy!
 	public static int sellPrice(Item item){
 		int price = item.value() * 5 * (Dungeon.depth / 5 + 1);
-
-		if(Dungeon.isChallenged(CS)){
-			price *= 1.25f;
-		}
 
 		if(hero.buff(MagicGirlSayMoneyMore.class) != null){
 			if(item instanceof Ankh ||item instanceof Food || item instanceof PotionOfHealing){

@@ -51,6 +51,8 @@ public class Statistics {
 
 	public static boolean happyMode = false;
 
+	public static boolean NoTime = false;
+
 	//萨卡班甲鱼二阶段
 	public static int sakaBackStage;
 	public static int readBooks;
@@ -286,6 +288,7 @@ public class Statistics {
         readBooks = 0;
         HealingIsDied = 0;
 
+		NoTime = false;
 		dm720Fight = false;
 		dm300Fight = false;
 
@@ -400,6 +403,8 @@ public class Statistics {
 
 		bundle.put(GOOFIGHT,gooFight);
 
+		bundle.put("NOTIME",NoTime);
+
 		//分数
 		bundle.put( PROG_SCORE,  progressScore );
 		bundle.put( ITEM_VAL,    heldItemValue );
@@ -511,6 +516,8 @@ public class Statistics {
 		seedCustom = bundle.getBoolean(SEEDCUSTOM);
 
 		ankhToExit = bundle.getBoolean(XRTANKH);
+
+		NoTime = bundle.getBoolean("NOTIME");
 
 		//嗜血荆棘等级处理
 		ChaicBlood   = bundle.getInt( CHACEBLOOD );

@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -25,7 +26,7 @@ public class Salamander extends Mob {
         defenseSkill = 25;
 
         loot = Generator.Category.SEED;
-        lootChance = 0.05f;
+        lootChance = 0.5f;
 
         maxLvl = 12;
     }
@@ -103,7 +104,7 @@ public class Salamander extends Mob {
         } else {
             return super.getCloser(target);
         }
-        return false;
+        //return false;
     }
 
     @Override

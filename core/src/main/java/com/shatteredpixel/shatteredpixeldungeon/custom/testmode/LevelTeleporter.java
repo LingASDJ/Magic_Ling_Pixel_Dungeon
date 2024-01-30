@@ -217,6 +217,7 @@ public class LevelTeleporter extends TestItem {
             }
             GameScene.show(new WndSelectLevel());
         }else if (action.equals(AC_RESET)) {
+            Statistics.NoTime = false;
             switch (depth){
                 case 2:
                 case 3:

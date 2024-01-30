@@ -60,7 +60,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.Mag
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySoftDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -548,7 +547,7 @@ public class GameScene extends PixelScene {
 
 		if (!Emitter.freezeEmitters) water.offset( 0, -5 * Game.elapsed );
 
-		if (!Actor.processing() && Dungeon.hero.isAlive() || Dungeon.isChallenged(CS) && !Actor.processing()) {
+		if (!Actor.processing() && Dungeon.hero.isAlive()) {
 			if (actorThread == null || !actorThread.isAlive()) {
 				actorThread = new Thread() {
 					@Override
@@ -1464,7 +1463,11 @@ public class GameScene extends PixelScene {
 							WndStory.showChapter( WndStory.ID_HALLS );
 							break;
 						case 25:
-							if(Dungeon.branch == 5) WndStory.showChapter( WndStory.ID_CHAPTONEEND );
+							if(Dungeon.branch == 5){
+								WndStory.showChapter( WndStory.ID_CHAPTONEEND );
+							} else if(Dungeon.isChallenged(CS)&& Dungeon.branch == 0){
+								WndStory.showChapter(WndStory.ID_ZTBS);
+							}
 							break;
 						case 26:
 							HollowPlot plot = new HollowPlot();
@@ -1747,7 +1750,6 @@ public class GameScene extends PixelScene {
 		Buff.detach( ch, MagicGirlSayKill.class );
 		Buff.detach( ch, MagicGirlSayMoneyMore.class );
 		Buff.detach( ch, MagicGirlSaySlowy.class );
-		Buff.detach( ch, MagicGirlSaySoftDied.class );
 		Buff.detach( ch, MagicGirlSayNoSTR.class );
 		Buff.detach( ch, MagicGirlSayTimeLast.class );
 	}

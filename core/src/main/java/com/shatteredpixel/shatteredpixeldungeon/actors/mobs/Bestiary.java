@@ -101,11 +101,11 @@ public class Bestiary {
 							Gnoll.class, Gnoll.class));
 				case 3:
 					return new ArrayList<>(Arrays.asList(FlowerSlime.class,
-							FlowerSlime.class, Salamander.class,
-							Salamander.class, FlowerSlime.class, FlowerSlime.class,
+							FlowerSlime.class, Katydid.class,
+							Katydid.class, FlowerSlime.class, FlowerSlime.class,
 							ClearElemental.class,Crab.class,Swarm.class));
 				case 4:
-					return new ArrayList<>(Arrays.asList(Salamander.class,
+					return new ArrayList<>(Arrays.asList(Katydid.class,
 							ClearElemental.class, Slime_Red.class,
 							Slime_Orange.class, Swarm.class,Crab.class));
 				case 5:
@@ -274,7 +274,7 @@ public class Bestiary {
 
 			case 7:
 				return new ArrayList<>(Arrays.asList(Skeleton.class,
-						Thief.class,DM100.class,Necromancer.class,Guard.class, KagenoNusujin.class));
+						Thief.class,DM100.class,Necromancer.class,Guard.class));
 			case 8:
 			case 9:
 				switch (Random.Int(3)) {
@@ -299,13 +299,13 @@ public class Bestiary {
 				}
 
 			case 11:
-				return new ArrayList<>(Arrays.asList(Bat.class, GunHuntsman.class,DM100.class,ColdMagicRat.class,
+				return new ArrayList<>(Arrays.asList(Bat.class,DM100.class,ColdMagicRat.class,
 						ColdMagicRat.class));
 			case 12:
 				//1x bat, 1x brute, 2x shaman, 2x spinner, 2x DM-300
 				return new ArrayList<>(Arrays.asList(
 						Bat.class,
-						ColdMagicRat.class,FireGhost.class,GunHuntsman.class));
+						ColdMagicRat.class, GnollGuard.class));
 			case 13:
 			case 14:
 				switch (Random.Int(4)) {
@@ -325,12 +325,12 @@ public class Bestiary {
 				//5x elemental, 5x warlock, 1x monk, 2x silvercrab
 				return new ArrayList<>(Arrays.asList(
 						Monk.class,
-						Shaman.random(),RedMurderer.class));
+						Shaman.random()));
 			case 17:
 				//2x elemental, 2x warlock, 2x monk, 1x silvercrab
 				return new ArrayList<>(Arrays.asList(
 						Elemental.random(),
-						Monk.class,FireGhost.class,RandomBlueFireDE.class));
+						Monk.class,FireGhost.class));
 			case 18:
 			case 19:
 				switch (Random.Int(6)) {
@@ -340,19 +340,19 @@ public class Bestiary {
 								Golem.class));
 					case 3:
 						return new ArrayList<>(Arrays.asList(
-								Fire_Scorpio.class,Albino.class,Monk.class,
+								Fire_Scorpio.class,Monk.class,
 								Golem.class));
 					default:
 					case 4:
 						return new ArrayList<>(Arrays.asList(
 								ShieldHuntsman.class,
 								Monk.class,
-								Golem.class,Warlock.class, RandomBlueFireDE.class));
+								Golem.class,Warlock.class));
 					case 5:
 						return new ArrayList<>(Arrays.asList(
 								Eye.class, Eye.class,
 								Scorpio.class, Eye.class,Succubus.class,Monk.class,
-								Golem.class,RedMurderer.class));
+								Golem.class));
 				}
 
 			case 21:
@@ -442,6 +442,8 @@ public class Bestiary {
 				Class<? extends Mob> cl = rotation.get(i);
 				if (cl == FlowerSlime.class) {
 					cl = Albino.class;
+				} else if (cl == Katydid.class) {
+					cl = Salamander.class;
 				} else if (cl == Guard.class) {
 					cl = SRPDHBLR.class;
 				} else if (cl == Thief.class) {
@@ -462,6 +464,10 @@ public class Bestiary {
 					cl = Acidic.class;
 				} else if (cl == Spinner.class) {
 					cl = GnollShiled.class;
+				} else if (cl == Elemental.class && Dungeon.isChallenged(RLPT)) {
+					cl = RandomBlueFireDE.class;
+				} else if (cl == FireGhost.class && Dungeon.isChallenged(RLPT)) {
+					cl = RedMurderer.class;
 				} else if (cl == FireGhost.class) {
 					cl = MolotovHuntsman.class;
 				}

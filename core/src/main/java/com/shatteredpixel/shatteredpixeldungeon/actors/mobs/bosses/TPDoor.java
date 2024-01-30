@@ -103,7 +103,7 @@ public class TPDoor extends Boss {
                         break;
                 }
                 ScrollOfTeleportation.appear(this, pos);
-                Buff.affect( enemy, MindVision.class, 1f );
+                Buff.affect( hero, MindVision.class, 1f );
                 enemy.sprite.jump(hero.pos, pos, new Callback() {
                     @Override
                     public void call() {

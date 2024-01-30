@@ -230,9 +230,11 @@ public class BGMPlayer {
             } else if (Dungeon.bossLevel() && t == 20) {
                 if((Statistics.boss_enhance & 0x8) != 0)  playBGM(Assets.BGM_BOSSD2, true);
                 else  playBGM(Assets.BGM_BOSSD, true);
-            } else if (Dungeon.bossLevel() && t == 25 && Dungeon.isChallenged(CS)) {
+            } else if (Dungeon.bossLevel() && t == 25 && Dungeon.isChallenged(CS) && !Statistics.NoTime) {
                 playBGM(Assets.BGM_BOSSE3, true);
-            }else if (Dungeon.bossLevel() && t == 25){
+            } else if(Dungeon.bossLevel() && t == 25 && Dungeon.isChallenged(CS) && Statistics.NoTime) {
+                playBGM(Assets.BGM_BOSSE4, true);
+            } else if (Dungeon.bossLevel() && t == 25){
                 level.playLevelMusic();
             } else if (Dungeon.bossLevel() && t == 30) {
                 playBGM(Assets.BOSSDOG, true);

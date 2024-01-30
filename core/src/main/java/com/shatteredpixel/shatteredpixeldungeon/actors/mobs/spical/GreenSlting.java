@@ -3,7 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GreenSltingSprite;
 import com.watabou.utils.Random;
 
@@ -16,7 +16,7 @@ public class GreenSlting extends Mob {
         defenseSkill = 2;
         maxLvl = 30;
         EXP = 5;
-        loot = Food.class;
+        loot = Generator.Category.FOOD;
         lootChance = 1f;
         baseSpeed = Dungeon.depth == 2 ? 0.9f : 1f;
     }

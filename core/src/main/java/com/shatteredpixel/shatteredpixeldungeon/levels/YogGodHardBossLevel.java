@@ -48,7 +48,7 @@ public class YogGodHardBossLevel extends Level {
         color1 = 0x801500;
         color2 = 0xa68521;
 
-        viewDistance = Math.min(4, viewDistance);
+        viewDistance = Math.min(8, viewDistance);
     }
 
     private static final int WIDTH = 41;
@@ -179,10 +179,10 @@ public class YogGodHardBossLevel extends Level {
             plates[rand] = prev;
         }
 
-        drop(new BrokenSeal(), plates[0]).type = Heap.Type.LOCKED_CHEST;
-        drop(new MagesStaff(new WandOfMagicMissile()), plates[1]).type = Heap.Type.LOCKED_CHEST;
-        drop(new CloakOfShadows(), plates[2]).type = Heap.Type.LOCKED_CHEST;
-        drop(new SpiritBow(), plates[3]).type = Heap.Type.LOCKED_CHEST;
+        drop(new BrokenSeal(), plates[0]).type = Heap.Type.CRYSTAL_CHEST;
+        drop(new MagesStaff(new WandOfMagicMissile()), plates[1]).type = Heap.Type.CRYSTAL_CHEST;
+        drop(new CloakOfShadows(), plates[2]).type = Heap.Type.CRYSTAL_CHEST;
+        drop(new SpiritBow(), plates[3]).type = Heap.Type.CRYSTAL_CHEST;
 
     }
 

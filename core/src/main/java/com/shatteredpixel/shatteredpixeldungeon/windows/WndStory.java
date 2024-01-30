@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMixShiled;
@@ -270,7 +271,7 @@ public class WndStory extends Window {
 						Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
 						break;
 					case 4:
-						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
+						Buff.affect(hero, BlessImmune.class, ChampionHero.DURATION*123456f);
 						break;
 				}
 				GLog.b(Messages.get(WndStory.class,"start"));

@@ -53,7 +53,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Gregorian;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -75,6 +74,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.GardenEntranc
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.GardenExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.GoldRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.HealWellRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.IdenityRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
@@ -129,13 +129,7 @@ public abstract class RegularLevel extends Level {
 
         holiday = Holiday.NONE;
 
-        /**农历计算*/
-        Gregorian.LunarCheckDate();
-
         final Calendar calendar = Calendar.getInstance();
-        //计算中国传统节日的代码已迁移到最上方的"Gregorian.LunarCheckDate();"方法。
-
-
 		switch (calendar.get(Calendar.MONTH)) {
 			case Calendar.JANUARY:
 				if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
@@ -311,6 +305,8 @@ public abstract class RegularLevel extends Level {
 		} else if(Dungeon.depth<26 && Random.Int(10) == 1) {
 			initRooms.add(new EyeRoom());
 		}
+
+		if(Dungeon.exgoldLevel()&&Dungeon.isChallenged(CS)) initRooms.add(new GoldRoom());
 
 		if(Dungeon.depth<26 && Random.Int(30) == 1 && (Dungeon.isChallenged(DHXD) || Statistics.lanterfireactive )){
 			initRooms.add(new OilWellRoom());
@@ -594,7 +590,9 @@ public abstract class RegularLevel extends Level {
 		}
 
 		//谜城资源量减半
-		if(Dungeon.isChallenged(CS)){nItems = nItems/2;}
+		if(Dungeon.isChallenged(CS)){
+			nItems = nItems/2;
+		}
 
 		for (int i=0; i < nItems; i++) {
 			Item toDrop = Generator.random();

@@ -1312,9 +1312,9 @@ public class vM0_6_7_X_Changes {
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CAKE), ("新食物:草莓蛋糕"),
                 ("在自动售货机内有售卖" )));
-
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SWTR), ("新食物:魔法三明治"),
                 ("在自动售货机内有售卖" )));
+
 
         changes = new ChangeInfo("调整", false, null);
         changes.hardlight(Window.SKYBULE_COLOR);

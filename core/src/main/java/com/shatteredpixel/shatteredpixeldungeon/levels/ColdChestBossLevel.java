@@ -108,8 +108,8 @@ public class ColdChestBossLevel extends Level {
 
     private static final int[] WorldRoomShort = {
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
-            W,E,E,E,W,W,W,W,W,E,E,E,E,E,E,E,W,J,W,E,E,E,E,E,E,E,W,W,W,W,W,E,E,E,W,
-            W,E,E,E,O,O,O,O,O,E,E,E,E,E,E,E,W,P,W,E,E,E,E,E,E,E,O,O,O,O,O,E,E,E,W,
+            W,E,E,E,W,W,W,W,W,E,E,E,E,E,E,E,W,W,W,E,E,E,E,E,E,E,W,W,W,W,W,E,E,E,W,
+            W,E,E,E,O,O,O,O,O,E,E,E,E,E,E,E,W,J,W,E,E,E,E,E,E,E,O,O,O,O,O,E,E,E,W,
             W,E,E,E,P,P,P,P,P,E,E,E,E,E,E,E,W,P,W,E,E,E,E,E,E,E,P,P,P,P,P,E,E,E,W,
             W,E,E,E,P,E,E,E,P,E,E,E,E,E,E,E,W,K,W,E,E,E,E,E,E,E,P,E,E,E,P,E,E,E,W,
             W,E,P,E,P,E,M,E,P,E,P,E,P,E,P,E,W,P,W,E,P,E,P,E,P,E,P,E,M,E,P,E,P,E,W,
@@ -304,7 +304,7 @@ public class ColdChestBossLevel extends Level {
                 if(ch.pos==682){
                     Buff.detach(hero, Levitation.class);
                 } else if(ch.pos==111||ch.pos==133) {
-                    Buff.affect( hero, Levitation.class, 6f );
+                    Buff.affect( hero, Levitation.class, 120f );
                 }
             }
 
@@ -369,7 +369,7 @@ public class ColdChestBossLevel extends Level {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于360 1阶段
                         if (pro == START && boss.HP <= 360) {
-                            //动态修改整个房间
+                            //动态修改整个房间形态
                             changeMap(MazeRoom);
                             Buff.detach(hero, Levitation.class);
                             //宝箱王移动到看戏位

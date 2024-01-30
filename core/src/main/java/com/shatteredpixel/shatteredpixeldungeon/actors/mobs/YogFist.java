@@ -48,6 +48,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.DM275;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GnollHero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GreenSlting;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SuccubusQueen;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -778,7 +782,8 @@ public abstract class YogFist extends Mob {
 			}
 
 			for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
-				if (mob.alignment == Alignment.ENEMY && mob != this && !(mob instanceof YogReal || mob instanceof YogFist.FreezingFist)) {
+				if (mob.alignment == Alignment.ENEMY && mob != this && !(mob instanceof YogReal || mob instanceof YogFist.FreezingFist||mob instanceof SuccubusQueen||mob instanceof GreenSlting||
+						mob instanceof DM275||mob instanceof GnollHero) ) {
 					mob.die( cause );
 				}
 			}

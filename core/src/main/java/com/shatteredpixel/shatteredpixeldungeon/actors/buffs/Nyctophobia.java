@@ -8,11 +8,11 @@ import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.cure;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.ClearLanterBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayCursed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySoftDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -58,7 +58,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
             switch (Random.Int(5)){
                 case 0: case 1:
                     Buff.affect(hero, MagicGirlSayMoneyMore.class).set( (100), 1 );
-                    Buff.affect(hero, MagicGirlSaySoftDied.class).set( (100), 1 );
+                    Buff.affect(hero, MagicGirlSayCursed.class).set( (100), 1 );
                     break;
                 case 2:case 3:
                     Buff.affect(hero, MagicGirlSayTimeLast.class).set( (100), 1 );
@@ -76,7 +76,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
             switch (Random.Int(4)){
                 case 0: case 1:
                     Buff.affect(hero, MagicGirlSayMoneyMore.class).set( (100), 1 );
-                    Buff.affect(hero, MagicGirlSaySoftDied.class).set( (100), 1 );
+                    Buff.affect(hero, MagicGirlSayCursed.class).set( (100), 1 );
                     Buff.affect(hero, MagicGirlSayTimeLast.class).set( (100), 1 );
                     break;
                 case 2: case 3:

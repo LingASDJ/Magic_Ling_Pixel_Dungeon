@@ -32,9 +32,19 @@ public class Crushing extends Weapon.Enchantment {
 
             defender.sprite.emitter().burst(BlastParticle.FACTORY, 30 );
             defender.sprite.emitter().burst(SmokeParticle.FACTORY, 4 );
+
+            String[] TXT_RANDOM = {
+                    Messages.get(Crushing.class,"kill",defender.name(),attacker.name()),
+                    Messages.get(Crushing.class,"kill1",defender.name(),attacker.name()),
+                    Messages.get(Crushing.class,"kill3",defender.name(),attacker.name()),
+                    Messages.get(Crushing.class,"kill4",defender.name(),attacker.name()),
+                    Messages.get(Crushing.class,"kill5",defender.name(),attacker.name()),
+                    Messages.get(Crushing.class,"kill6",defender.name(),attacker.name())
+            };
+
             if (Random.Int( 2 ) == 0) {
                 damage += level;
-                GLog.n(Messages.get(Crushing.class,"kill",defender.name(),attacker.name()));
+                GLog.n(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
                 new Bomb().explodeHeros(defender.pos);
             }
         }

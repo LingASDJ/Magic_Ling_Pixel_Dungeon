@@ -45,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.IceGolem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ice_Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.KagenoNusujin;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Katydid;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MolotovHuntsman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
@@ -560,6 +561,7 @@ public class MobPlacer extends TestItem{
         CLEARS(ClearElemental.class, DictSpriteSheet.CLEARS),
         SLXJ(SpectralNecromancer.class, DictSpriteSheet.SLXJ),
         BMHR(ShieldHuntsman.class, DictSpriteSheet.BMHR),
+        KTX(Katydid.class,0),
         STX(Salamander.class, DictSpriteSheet.STX),
         XHDD(RedMurderer.class, DictSpriteSheet.XHDD),
         IAX(Ice_Scorpio.class, DictSpriteSheet.IAX),

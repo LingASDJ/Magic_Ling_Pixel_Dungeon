@@ -23,7 +23,7 @@ public class GunHuntsman extends Mob {
     {
         spriteClass = GunHuntsmanSprite.class;
 
-        HP = HT = 60;
+        HP = HT = 45;
         defenseSkill = 15;
 
         EXP = 10;
@@ -82,13 +82,13 @@ public class GunHuntsman extends Mob {
         combo++;
 
         sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "reload"));
-        reload = Random.Int(3,7);
+        reload = Random.Int(9,17);
 
         if(combo>8){
             combo = 0;
         }
 
-        if(Random.Float()<0.35f&& enemy.buff(Burning.class) == null){
+        if(Random.Float()<0.15f&& enemy.buff(Burning.class) == null){
             if (Dungeon.level.flamable[enemy.pos])
                 GameScene.add(Blob.seed(enemy.pos, 7+combo, Fire.class));
             Buff.affect(enemy, Burning.class).reignite( enemy );

@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.ClassPage;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameDay;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameNight;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameTime;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
@@ -424,9 +425,25 @@ public class StatusPane extends Component {
 		visual.am = 1f + 0.01f*Math.max(0f, (float)Math.sin( time += Game.elapsed ));
 		time += Game.elapsed / 3.5f;
 
-
-
-
+		//时间紊乱
+		if(Statistics.NoTime){
+			if(Dungeon.isChallenged(CS) && gameNight){
+				if(gameTime>0){
+					gameNight = false;
+				} else {
+					gameTime++;
+				}
+			} else if(gameTime>400 && gameTime<600) {
+				gameTime++;
+				gameNight = true;
+			} else if(gameTime>599){
+				gameTime = 0;
+				gameNight = false;
+				gameDay++;
+			} else {
+				gameTime++;
+			}
+		}
 
 		int maxHunger = (int) Hunger.STARVING;
 		float maxPureSole = hero.lanterfire;

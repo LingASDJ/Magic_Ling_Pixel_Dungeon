@@ -33,7 +33,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.happyMode;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.seedCustom;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
-
 import static java.lang.Math.min;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -98,7 +97,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.Mag
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySoftDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
@@ -1044,6 +1042,8 @@ public class Hero extends Char {
             default:
 				if(Dungeon.depth < 20){
 					Buff.affect(hero, BlessNoMoney.class).set((100), 1);
+				} else {
+					Buff.affect(hero, BlessImmune.class,ChampionHero.DURATION*123456f);
 				}
                 break;
             case 1:
@@ -1057,12 +1057,14 @@ public class Hero extends Char {
                 break;
             case 4:
 				if(Dungeon.depth < 20){
-					Buff.affect(hero, BlessImmune.class).set((100), 1);
+					Buff.affect(hero, BlessImmune.class,ChampionHero.DURATION*123456f);
 				}
                 break;
         }
         GLog.p(Messages.get(WndStory.class, "good"));
     }
+
+
 	
 	private boolean actInteract( HeroAction.Interact action ) {
 		
@@ -2180,29 +2182,24 @@ public class Hero extends Char {
 	}
 	
     public static void badLanterFire() {
-        switch (Random.Int(6)) {
+        switch (Random.Int(5)) {
             case 0:
             default:
 				//非商人层不会出现追加商店的价格Debuff
 				if(Dungeon.shopOnLevel()){
 					Buff.affect(hero, MagicGirlSayMoneyMore.class).set((100), 1);
-				} else {
-					Buff.affect(hero, MagicGirlSaySoftDied.class).set((100), 1);
 				}
                 break;
             case 1:
-                Buff.affect(hero, MagicGirlSaySoftDied.class).set((100), 1);
-                break;
-            case 2:
                 Buff.affect(hero, MagicGirlSayCursed.class).set((100), 1);
                 break;
-            case 3:
+            case 2:
                 Buff.affect(hero, MagicGirlSaySlowy.class).set((100), 1);
                 break;
-            case 4:
+            case 3:
                 Buff.affect(hero, MagicGirlSayKill.class).set((100), 1);
                 break;
-            case 5:
+            case 4:
                 Buff.affect(hero, MagicGirlSayNoSTR.class).set((100), 1);
                 break;
         }
@@ -2482,7 +2479,7 @@ public class Hero extends Char {
 						Buff.affect(hero, BlessMixShiled.class).set((100), 1);
 						break;
 					case 2:
-						Buff.affect(hero, BlessImmune.class).set((100), 1);
+						Buff.affect(hero, BlessImmune.class, ChampionHero.DURATION*123456f);
 						break;
 					case 3:
 						Buff.affect(hero, BlessGoRead.class).set((100), 1);

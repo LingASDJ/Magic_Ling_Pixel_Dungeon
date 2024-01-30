@@ -43,6 +43,7 @@ public class Assets {
 	public static final String BGM_BOSSD = "music/Boss4.ogg";
 	public static final String BGM_BOSSD2 = "music/DwarfMaster.ogg";
 	public static final String BGM_BOSSE3 = "music/Yogdead.ogg";
+	public static final String BGM_BOSSE4 = "music/YogTime.ogg";
 	public static final String BGM_FRBOSS = "music/SnowLing.ogg";
 	public static final String RUN = "music/Run.ogg";
 	public static final String HOLLOW_CITY = "music/tmp/hollowcity.ogg";
@@ -488,6 +489,8 @@ public class Assets {
 		public static final String LanFire		= "sprites/npc/lanfire.png";
 
 		public static final String SAESD		= "sprites/bluedragon.png";
+
+		public static final String KATID		= "sprites/katydid.png";
 
 		public static final String WHITE		= "Npcs/White.png";
 		public static final String BBAT	= "sprites/bloodbat.png";
