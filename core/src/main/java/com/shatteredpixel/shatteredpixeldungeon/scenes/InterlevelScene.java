@@ -522,18 +522,15 @@ public class InterlevelScene extends PixelScene {
 				}
 			}
 
-			for (Ankh i : hero.belongings.getAllItems(Ankh.class)) {
-				if (ankh != null || i.isBlessed()) {
-					if (!(hero.lanterfire <= 40 && !i.isBlessed())) {
-						level.drop(new LostBackpack(), pos);
-					}
-				} else if(!Statistics.lanterfireactive){
-					level.drop(new LostBackpack(), pos);
-				}
+			if (hero.lanterfire > 40) {
+				level.drop(new LostBackpack(), pos);
+				return;
+			} else if( !lanterfireactive || !Dungeon.isChallenged(DHXD)){
+				level.drop(new LostBackpack(), pos);
 				return;
 			}
 
-			level.drop(new LostBackpack(), pos);
+			//level.drop(new LostBackpack(), pos);
 
 		} else {
 			level = Dungeon.level;
@@ -568,9 +565,7 @@ public class InterlevelScene extends PixelScene {
 
 				if (hero.lanterfire > 40) {
 					level.drop(new LostBackpack(), level.entrance());
-				}
-
-				if( !lanterfireactive || !Dungeon.isChallenged(DHXD)){
+				} else if( !lanterfireactive || !Dungeon.isChallenged(DHXD)){
 					level.drop(new LostBackpack(), level.entrance());
 				}
 			} else {
@@ -583,9 +578,7 @@ public class InterlevelScene extends PixelScene {
 
 				if (hero.lanterfire > 40) {
 					level.drop(new LostBackpack(), invPos);
-				}
-
-				if( !lanterfireactive || !Dungeon.isChallenged(DHXD)){
+				} else if( !lanterfireactive || !Dungeon.isChallenged(DHXD)){
 					level.drop(new LostBackpack(), invPos);
 				}
 

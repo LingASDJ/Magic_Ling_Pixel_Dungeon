@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -61,6 +62,8 @@ public class WndBag extends WndTabbed {
 
 	protected static final int COLS_P   = 7;
 	protected static final int COLS_L   = 7;
+
+	protected static final int FIRST_ROW_COLS = 5;
 
 	protected static int SLOT_WIDTH_P   = 18;
 	protected static int SLOT_WIDTH_L   = 18;
@@ -235,9 +238,13 @@ public class WndBag extends WndTabbed {
 		PixelScene.align(txtTitle);
 		add( txtTitle );
 	}
-	
+
 	protected void placeItems( Bag container ) {
-		
+		// 重置计数器和行列指示器
+		count = 0;
+		col = 0;
+		row = 0;
+
 		// Equipped items
 		Belongings stuff = Dungeon.hero.belongings;
 		placeItem( stuff.weapon != null ? stuff.weapon : new Placeholder( ItemSpriteSheet.WEAPON_HOLDER ) );
@@ -246,16 +253,12 @@ public class WndBag extends WndTabbed {
 		placeItem( stuff.misc != null ? stuff.misc : new Placeholder( ItemSpriteSheet.SOMETHING ) );
 		placeItem( stuff.ring != null ? stuff.ring : new Placeholder( ItemSpriteSheet.RING_HOLDER ) );
 
-		int equipped = 5;
-
-		//the container itself if it's not the root backpack
-		if (container != Dungeon.hero.belongings.backpack){
-			placeItem(container);
-			count--; //don't count this one, as it's not actually inside of itself
-		} else if (stuff.secondWep != null) {
-			//second weapon always goes to the front of view on main bag
-			placeItem(stuff.secondWep);
-			equipped++;
+		// 判断是否已经放置了首行的5个物品，如果是，则跳过两个位置
+		if (col == FIRST_ROW_COLS) {
+			placeIceCoinDisplay();
+			col += 2; // 跳过两个位置
+			row++; // 移动到下一行
+			col = 0; // 重置列指示器，因为下一行开始是完整的行
 		}
 
 		// Items in the bag, except other containers (they have tags at the bottom)
@@ -266,13 +269,40 @@ public class WndBag extends WndTabbed {
 				count++;
 			}
 		}
-		
+
 		// Free Space
-		while ((count - equipped) < container.capacity()) {
+		while ((count - 5) < container.capacity()) {
 			placeItem( null );
 		}
 	}
-	
+
+	protected void placeIceCoinDisplay() {
+		int x = col * (slotWidth + SLOT_MARGIN);
+		int y = TITLE_HEIGHT + row * (slotHeight + SLOT_MARGIN);
+
+
+		BitmapText iceCoinAmount = new BitmapText(Integer.toString(Statistics.iceCyanBlueSquareCoin), PixelScene.pixelFont);
+		iceCoinAmount.hardlight(TITLE_COLOR);
+		iceCoinAmount.measure();
+		// 数值文本紧随图标之后
+		iceCoinAmount.x = x + iceCoinAmount.width();
+		iceCoinAmount.y = y + (slotHeight - iceCoinAmount.baseLine()) / 2f;
+		PixelScene.align(iceCoinAmount);
+		add(iceCoinAmount);
+
+		// 创建冰蓝方孔币的ItemSprite
+		ItemSprite iceCoinSprite = new ItemSprite(ItemSpriteSheet.ICEGOLD, null);
+		iceCoinSprite.setPos(x+iceCoinSprite.width()*1.25f,iceCoinAmount.y-(slotHeight - iceCoinAmount.baseLine()) / 2f);
+		PixelScene.align(iceCoinSprite);
+		add(iceCoinSprite);
+
+		// 创建并设置冰蓝方孔币数值显示
+
+
+		// 更新列计数器，以反映冰蓝方孔币图标和数值的添加
+		col += 1; // 假设冰蓝方孔币图标和数值占用一个位置
+	}
+
 	protected void placeItem( final Item item ) {
 
 		count++;

@@ -154,6 +154,12 @@ public class Statistics {
 	public static int gameDay;
 	public static boolean gameNight;
 
+
+	//永久货币 冰蓝方孔货币
+	public static int iceCyanBlueSquareCoin;
+
+	private static final String ICECLAN ="iceCyanBlueSquareCoin";
+
 	private static final String GAMETIME = "gameTime";
 
 	private static final String GAMENIGHT = "gamenight";
@@ -360,7 +366,6 @@ public class Statistics {
 		real_seconds = 0;
 		turnsPassed = 0f;
 
-
 		//得分
 		progressScore   = 0;
 		heldItemValue   = 0;
@@ -379,6 +384,9 @@ public class Statistics {
 	}
 
     public static void storeInBundle(Bundle bundle) {
+
+		bundle.put(ICECLAN,iceCyanBlueSquareCoin);
+
 
         bundle.put(HIDEEN, HiddenOK);
 
@@ -502,6 +510,8 @@ public class Statistics {
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
+
+		iceCyanBlueSquareCoin = bundle.getInt(ICECLAN);
 
 		SiderLing = bundle.getInt( SIDERLING);
 

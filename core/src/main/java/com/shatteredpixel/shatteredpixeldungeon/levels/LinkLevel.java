@@ -14,7 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.ShopKing_Two;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.BackGoKey;
 
-public class LinkLevel  extends Level {
+public class LinkLevel extends Level {
 
     private static final int W = WALL;
     private static final int B = EMPTY;

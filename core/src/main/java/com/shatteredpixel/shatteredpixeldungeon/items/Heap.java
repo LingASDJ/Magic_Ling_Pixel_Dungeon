@@ -66,7 +66,9 @@ public class Heap implements Bundlable {
 
 	public enum Type {
 		HEAP,
+
 		FOR_SALE,
+		FOR_ICE,
 		CHEST,
 		LOCKED_CHEST,
 		CRYSTAL_CHEST,
@@ -167,7 +169,7 @@ public class Heap implements Bundlable {
 	
 	public void drop( Item item ) {
 		
-		if (item.stackable && type != Type.FOR_SALE) {
+		if (item.stackable && type != Type.FOR_SALE && type != Type.FOR_ICE) {
 			
 			for (Item i : items) {
 				if (i.isSimilar( item )) {
@@ -180,7 +182,7 @@ public class Heap implements Bundlable {
 		}
 
 		//lost backpack must always be on top of a heap
-		if ((item.dropsDownHeap && type != Type.FOR_SALE) || peek() instanceof LostBackpack) {
+		if ((item.dropsDownHeap && type != Type.FOR_SALE && type != Type.FOR_ICE) || peek() instanceof LostBackpack) {
 			items.add( item );
 		} else {
 			items.addFirst( item );
@@ -385,6 +387,13 @@ public class Heap implements Bundlable {
 					return Messages.get(this, "for_sale", Shopkeeper.sellPrice(i), i.toString());
 				} else {
 					return i.toString();
+				}
+			case FOR_ICE:
+				Item ix = peek();
+				if (size() == 1) {
+					return Messages.get(this, "for_ice", Shopkeeper.sellIcePrice(ix), ix.toString());
+				} else {
+					return ix.toString();
 				}
 			case CHEST:
 				return Messages.get(this, "chest");

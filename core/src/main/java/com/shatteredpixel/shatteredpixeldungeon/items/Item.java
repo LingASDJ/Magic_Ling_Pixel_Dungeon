@@ -560,6 +560,11 @@ public class Item implements Bundlable {
 		return 0;
 	}
 
+	//item's value in gold coins
+	public int iceCoinValue() {
+		return 0;
+	}
+
 	//item's value in energy crystals
 	public int energyVal() {
 		return 0;

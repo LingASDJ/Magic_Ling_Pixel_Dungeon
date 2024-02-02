@@ -726,7 +726,7 @@ public class FireMagicDied extends Mob implements Callback {
                 int dy = enemy.pos / w - pos / w;
                 int direction = 2 * (Math.abs(dx) > Math.abs(dy) ? 0 : 1);
                 direction += (direction > 0 ? (dy > 0 ? 1 : 0) : (dx > 0 ? 1 : 0));
-                Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);
+                Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);;
                 beamCD = 40 + 8 - (phase == 10 ? 38 : 0);
                 sprite.showStatus(0xff0000, Messages.get(this, "dead"));
                 sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
@@ -744,7 +744,7 @@ public class FireMagicDied extends Mob implements Callback {
 
             this.pos = FALSEPosition;
 
-            Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(300);
+            Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(1200);
 
             Buff.append(hero, BeamTowerAdbility.class).towerPos = TRUEPosition;
 
@@ -763,7 +763,7 @@ public class FireMagicDied extends Mob implements Callback {
             int dy = enemy.pos / w - pos / w;
             int direction = 2 * (Math.abs(dx) > Math.abs(dy) ? 0 : 1);
             direction += (direction > 0 ? (dy > 0 ? 1 : 0) : (dx > 0 ? 1 : 0));
-            Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);
+            //Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);;
             beamCD = 40 + 8 - (phase == 10 ? 38 : 0);
             sprite.showStatus(0xff0000, Messages.get(this, "dead"));
             Buff.affect(this, ChampionEnemy.Halo.class);
@@ -822,7 +822,7 @@ public class FireMagicDied extends Mob implements Callback {
         super.notice();
         BossHealthBar.assignBoss(this);
 
-       playBGM(Assets.BGM_FRBOSS, true);
+       playBGM(Assets.BGM_BOSSE3, true);
         yell( Messages.get(this, "notice") );
         //summon();
     }
@@ -893,8 +893,8 @@ public class FireMagicDied extends Mob implements Callback {
             target.sprite.parent.add(new BeamCustom(
                     new PointF(startX, startY).offset(0.5f, 0.5f).scale(DungeonTilemap.SIZE),
                     new PointF(endX, endY).offset(0.5f, 0.5f).scale(DungeonTilemap.SIZE),
-                    Effects.Type.BLUE_RAY)
-                    .setLifespan(0.7f).setColor(0x00ffff)
+                    Effects.Type.RED_CHAIN)
+                    .setLifespan(0.7f).setColor(0xff0000)
             );
         }
         //damage
@@ -921,7 +921,7 @@ public class FireMagicDied extends Mob implements Callback {
             }
 
             ScanningBeam.setCollide(this);
-            target.sprite.parent.add(new ScanningBeam(Effects.Type.BLUE_RAY, BallisticaReal.STOP_TARGET,
+            target.sprite.parent.add(new ScanningBeam(Effects.Type.RED_CHAIN, BallisticaReal.STOP_TARGET,
                             new ScanningBeam.BeamData()
                                     .setPosition(startX+0.8f, startY + 0.8f, ang, r)
                                     .setSpeed(xsp, ysp, 0f)
@@ -1103,7 +1103,7 @@ public class FireMagicDied extends Mob implements Callback {
             int dy = enemy.pos / w - pos / w;
             int direction = 2 * (Math.abs(dx) > Math.abs(dy) ? 0 : 1);
             direction += (direction > 0 ? (dy > 0 ? 1 : 0) : (dx > 0 ? 1 : 0));
-            Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);
+            //Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);;
             beamCD = 20 + 8 - (phase == 5 ? 19 : 0);
             ScrollOfTeleportation.appear(hero, ShopBossLevel.throne);
             GLog.n(Messages.get(this, "active") );
@@ -1132,7 +1132,7 @@ public class FireMagicDied extends Mob implements Callback {
             int dy = enemy.pos / w - pos / w;
             int direction = 2 * (Math.abs(dx) > Math.abs(dy) ? 0 : 1);
             direction += (direction > 0 ? (dy > 0 ? 1 : 0) : (dx > 0 ? 1 : 0));
-            Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);
+            //Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);;
             beamCD = 20 + 8 - (phase == 5 ? 19 : 0);
             ++wave;
             spend(TICK*15);
@@ -1158,7 +1158,7 @@ public class FireMagicDied extends Mob implements Callback {
             int dy = enemy.pos / w - pos / w;
             int direction = 2 * (Math.abs(dx) > Math.abs(dy) ? 0 : 1);
             direction += (direction > 0 ? (dy > 0 ? 1 : 0) : (dx > 0 ? 1 : 0));
-            Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);
+            //Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);;
             beamCD = 20 + 8 - (phase == 5 ? 19 : 0);
             ++wave;
             spend(TICK*100000);

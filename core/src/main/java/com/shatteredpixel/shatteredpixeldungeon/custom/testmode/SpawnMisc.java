@@ -4,11 +4,11 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
+import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
@@ -542,8 +542,8 @@ public class SpawnMisc extends TestItem {
             case 17: return MIME.GOLD_FOUR.class;
             case 18: return MIME.GOLD_FIVE.class;
             case 19: return OilPotion.class;
-
-            case 20: return TestBooks.class;
+            case 21: return IceCyanBlueSquareCoin.class;
+            case 22: return TestBooks.class;
         }
     }
 
@@ -587,7 +587,7 @@ public class SpawnMisc extends TestItem {
             case 11:
                 return 12;
             case 12:
-                return 20;
+                return 22;
             default:
                 return 11;
         }

@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -203,6 +204,16 @@ public class Shopkeeper extends NPC {
 //		if(Dungeon.isDLC(Conducts.Conduct.MONEYLETGO)){
 //			price *= 0.5;
 //		}
+		return price;
+	}
+
+	public static int sellIcePrice(Item item){
+		int price = item.iceCoinValue();
+
+		if (Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
+			price *= 0.9f;
+		}
+
 		return price;
 	}
 	

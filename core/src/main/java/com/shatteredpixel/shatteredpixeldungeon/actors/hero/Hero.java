@@ -217,6 +217,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndIceTradeItem;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
@@ -900,7 +901,44 @@ public class Hero extends Char {
 	@Override
 	public boolean act() {
 
+		if (Challenges.activeChallenges() >= 10 && !lanterfireactive && !Dungeon.isChallenged(PRO)) {
+			GLog.n(Messages.get(WndStory.class, "warning"));
+		}
 
+		if (Challenges.activeChallenges() >= 10 && !lanterfireactive && !Dungeon.isChallenged(PRO) || Dungeon.isChallenged(DHXD) && !lanterfireactive) {
+			//灯火前行 4.0
+			hero.lanterfire = 100 - min(Challenges.activeChallenges() * 4, 45);
+
+			new OilLantern().quantity(1).identify().collect();
+
+			lanterfireactive = true;
+
+			Buff.affect( this, Nyctophobia.class );
+
+			if(lanterfire>50){
+				switch (Random.Int(5)) {
+					case 0:
+					default:
+						Buff.affect(hero, BlessMobDied.class).set((100), 1);
+						break;
+					case 1:
+						Buff.affect(hero, BlessMixShiled.class).set((100), 1);
+						break;
+					case 2:
+						Buff.affect(hero, BlessImmune.class, ChampionHero.DURATION*123456f);
+						break;
+					case 3:
+						Buff.affect(hero, BlessGoRead.class).set((100), 1);
+						break;
+					case 4:
+						new WandOfAnmy().quantity(1).identify().collect();
+						Buff.affect(hero, BlessAnmy.class).set((100), 1);
+				}
+				GLog.b(Messages.get(WndStory.class, "letxz"));
+			}
+
+
+		}
 		
 		//calls to dungeon.observe will also update hero's local FOV.
 		fieldOfView = Dungeon.level.heroFOV;
@@ -957,6 +995,9 @@ public class Hero extends Char {
 				
 			} else if (curAction instanceof HeroAction.Buy) {
 				actResult = actBuy( (HeroAction.Buy)curAction );
+
+			} else if (curAction instanceof HeroAction.BuyIce) {
+				actResult = actBuyIce( (HeroAction.BuyIce)curAction );
 				
 			}else if (curAction instanceof HeroAction.PickUp) {
 				actResult = actPickUp( (HeroAction.PickUp)curAction );
@@ -990,7 +1031,7 @@ public class Hero extends Char {
 		
 		return actResult;
 	}
-	
+
 	public void busy() {
 		ready = false;
 	}
@@ -1097,11 +1138,39 @@ public class Hero extends Char {
 			ready();
 			
 			Heap heap = Dungeon.level.heaps.get( dst );
-			if (heap != null && heap.type == Type.FOR_SALE && heap.size() == 1) {
+			if (heap != null && heap.type == Type.FOR_SALE && heap.size() == 1 ) {
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {
 						GameScene.show( new WndTradeItem( heap ) );
+					}
+				});
+			}
+
+			return false;
+
+		} else if (getCloser( dst )) {
+
+			return true;
+
+		} else {
+			ready();
+			return false;
+		}
+	}
+
+	private boolean actBuyIce( HeroAction.BuyIce action ) {
+		int dst = action.dst;
+		if (pos == dst) {
+
+			ready();
+
+			Heap heap = Dungeon.level.heaps.get( dst );
+			if (heap != null && heap.type == Type.FOR_ICE && heap.size() == 1) {
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						GameScene.show( new WndIceTradeItem( heap ) );
 					}
 				});
 			}
@@ -1224,7 +1293,7 @@ public class Hero extends Char {
 			path = null;
 			
 			Heap heap = Dungeon.level.heaps.get( dst );
-			if (heap != null && (heap.type != Type.HEAP && heap.type != Type.FOR_SALE)) {
+			if (heap != null && (heap.type != Type.HEAP && heap.type != Type.FOR_SALE && heap.type != Type.FOR_ICE)) {
 				
 				if ((heap.type == Type.LOCKED_CHEST && Notes.keyCount(new GoldenKey(Dungeon.depth)) < 1)
 					|| (heap.type == Type.CRYSTAL_CHEST && Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1)|| (heap.type == Type.BLACK && Notes.keyCount(new BlackKey(Dungeon.depth)) < 1)){
@@ -1979,7 +2048,7 @@ public class Hero extends Char {
 				//moving to an item doesn't auto-pickup when enemies are near...
 				&& (visibleEnemies.size() == 0 || cell == pos ||
 				//...but only for standard heaps. Chests and similar open as normal.
-				(heap.type != Type.HEAP && heap.type != Type.FOR_SALE))) {
+				(heap.type != Type.HEAP && heap.type != Type.FOR_SALE && heap.type != Type.FOR_ICE))) {
 
 			switch (heap.type) {
 			case HEAP:
@@ -1990,6 +2059,11 @@ public class Hero extends Char {
 					new HeroAction.Buy( cell ) :
 					new HeroAction.PickUp( cell );
 				break;
+			case FOR_ICE:
+					curAction = heap.size() == 1 && heap.peek().iceCoinValue() > 0 ?
+							new HeroAction.BuyIce( cell ) :
+							new HeroAction.PickUp( cell );
+					break;
 			default:
 				curAction = new HeroAction.OpenChest( cell );
 			}
@@ -2376,13 +2450,10 @@ public class Hero extends Char {
 	}
 
 	private boolean actMove( HeroAction.Move action ) {
-
-
-
 		//水中祝福
 		MoveWater();
 
-		if(!seedCustom && !Dungeon.customSeedText.isEmpty() && !Dungeon.isChallenged(CS)){
+		if(!seedCustom && !Dungeon.customSeedText.isEmpty()){
 			seedCustom = true;
 		}
 
@@ -2455,44 +2526,7 @@ public class Hero extends Char {
         }
 
 
-        if (Challenges.activeChallenges() >= 10 && !lanterfireactive && !Dungeon.isChallenged(PRO)) {
-            GLog.n(Messages.get(WndStory.class, "warning"));
-        }
 
-        if (Challenges.activeChallenges() >= 10 && !lanterfireactive && !Dungeon.isChallenged(PRO) || Dungeon.isChallenged(DHXD) && !lanterfireactive) {
-            //灯火前行 4.0
-			hero.lanterfire = 100 - min(Challenges.activeChallenges() * 4, 45);
-
-			new OilLantern().quantity(1).identify().collect();
-
-            lanterfireactive = true;
-
-			Buff.affect( this, Nyctophobia.class );
-
-			if(lanterfire>50){
-				switch (Random.Int(5)) {
-					case 0:
-					default:
-						Buff.affect(hero, BlessMobDied.class).set((100), 1);
-						break;
-					case 1:
-						Buff.affect(hero, BlessMixShiled.class).set((100), 1);
-						break;
-					case 2:
-						Buff.affect(hero, BlessImmune.class, ChampionHero.DURATION*123456f);
-						break;
-					case 3:
-						Buff.affect(hero, BlessGoRead.class).set((100), 1);
-						break;
-					case 4:
-						new WandOfAnmy().quantity(1).identify().collect();
-						Buff.affect(hero, BlessAnmy.class).set((100), 1);
-				}
-				GLog.b(Messages.get(WndStory.class, "letxz"));
-			}
-
-
-        }
 
         if (getCloser(action.dst)) {
             canSelfTrample = false;

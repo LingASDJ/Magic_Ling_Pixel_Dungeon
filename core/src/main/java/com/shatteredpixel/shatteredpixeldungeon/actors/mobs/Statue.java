@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
@@ -46,7 +47,7 @@ public class Statue extends Mob {
 		properties.add(Property.INORGANIC);
 	}
 	public boolean levelGenStatue = true;
-	protected Weapon weapon;
+	public Weapon weapon;
 
 	public void createWeapon( boolean useDecks ){
 		if (useDecks) {
@@ -187,4 +188,7 @@ public class Statue extends Mob {
 		}
 	}
 
+	public Item weapon() {
+		return weapon;
+	}
 }

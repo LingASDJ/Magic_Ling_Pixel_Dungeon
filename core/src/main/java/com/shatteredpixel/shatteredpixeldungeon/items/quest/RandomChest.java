@@ -95,9 +95,11 @@ public class RandomChest  extends Item {
         return true;
     }
 
+
+    private final int coin = Random.Int(13,21);
     @Override
-    public int value() {
-        return 70;
+    public int iceCoinValue() {
+        return coin;
     }
 
     private Item convert(){

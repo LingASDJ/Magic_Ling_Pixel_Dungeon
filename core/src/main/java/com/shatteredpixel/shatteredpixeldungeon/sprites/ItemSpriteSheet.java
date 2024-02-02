@@ -94,6 +94,9 @@ public class ItemSpriteSheet {
     public static final int GREEN_DARK   = UNCOLLECTIBLE+11;
 
     public static final int RED_BLOOD   = UNCOLLECTIBLE+12;
+
+
+    public static final int ICEGOLD   = UNCOLLECTIBLE+14;
     static{
         assignItemRect(GOLD,        15, 13);
         assignItemRect(ENERGY,      16, 16);

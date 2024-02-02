@@ -83,6 +83,7 @@ dependencies {
     //接入多DEX
     implementation 'com.android.support:multidex:1.0.3'
 
+    //LIBGDX资源
     //noinspection GradleDependency
     implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
 
@@ -102,8 +103,10 @@ dependencies {
     //noinspection GradleDependency
     implementation 'androidx.appcompat:appcompat:1.0.2'
 
+    //崩溃报告
     implementation 'cat.ereza:customactivityoncrash:2.3.0'
-    // https://mvnrepository.com/artifact/net.iharder/base64
+
+    //Base 64解析库
     implementation 'net.iharder:base64:2.3.9'
     implementation project(':services:news:shatteredNews')
 }

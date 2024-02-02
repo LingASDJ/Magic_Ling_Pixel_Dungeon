@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -144,7 +145,7 @@ public class ZeroLevel extends Level {
 
             drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 20 + 17 );
 
-            drop( new RandomChest(), this.width * 19 + 20  ).type = Heap.Type.FOR_SALE;
+            drop( new RandomChest(), this.width * 19 + 20  ).type = Heap.Type.FOR_ICE;
 
             drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), this.width * 16 + 19 );
 
@@ -172,7 +173,7 @@ public class ZeroLevel extends Level {
                     Item item = new BookBag();
                     drop(item, this.width * 18 + 19);
                 }
-                drop( new RandomChest(), this.width * 17 + 20  ).type = Heap.Type.FOR_SALE;
+                drop( new DiedCrossBow(), this.width * 17 + 20  ).type = Heap.Type.FOR_ICE;
                 drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.width * 16 + 17 );
                 drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 19 + 16 );
             }

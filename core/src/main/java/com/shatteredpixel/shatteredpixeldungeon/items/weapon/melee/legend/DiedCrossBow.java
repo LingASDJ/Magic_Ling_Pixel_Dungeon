@@ -45,6 +45,11 @@ public class DiedCrossBow extends LegendWeapon {
     }
 
     @Override
+    public int iceCoinValue() {
+        return 220;
+    }
+
+    @Override
     protected LegendWeapon.LegendWeaponBuff passiveBuff() {
         return new DiedCrossBow.Recharge();
     }

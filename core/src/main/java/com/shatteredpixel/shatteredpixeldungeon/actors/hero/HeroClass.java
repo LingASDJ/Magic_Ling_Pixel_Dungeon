@@ -96,8 +96,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.DeviceCompat;
 
-import java.util.List;
-
 public enum HeroClass {
 
 	WARRIOR( HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ),
@@ -178,15 +176,15 @@ public enum HeroClass {
 
 		if ( Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
 			Buff.affect(hero, RandomBuff.class).set( (5), 1 );
-			Dungeon.gold += 400;
-		}
-		//Buff.affect(hero, ScaryDamageBuff.class).set((50),1);
-		PaswordBadges.loadGlobal();
-		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
-		if(passwordbadges.contains(PaswordBadges.Badge.EXSG)){
-			Dungeon.gold += 648;
 		}
 
+		//Buff.affect(hero, ScaryDamageBuff.class).set((50),1);
+//		PaswordBadges.loadGlobal();
+//		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
+//		if(passwordbadges.contains(PaswordBadges.Badge.EXSG)){
+//			Dungeon.gold += 648;
+//		}
+		PaswordBadges.EXSG();
 		if ( Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
 			Dungeon.gold += 3000;
 			new Amulet().quantity(1).identify().collect();
@@ -211,7 +209,7 @@ public enum HeroClass {
 
 		new ScrollOfIdentify().identify();
 
-		if (!Dungeon.isChallenged(Challenges.PRO)){
+		if (Dungeon.isChallenged(Challenges.PRO)){
 			new SpawnMisc().quantity(1).identify().collect();
 			new LevelTeleporter().quantity(1).identify().collect();
 			new SakaFishSketon().quantity(1).identify().collect();
