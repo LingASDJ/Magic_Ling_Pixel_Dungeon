@@ -181,9 +181,13 @@ public class WndGameInProgress extends Window {
 			}
 		};
 		add(buttonSeed);
-		buttonSeed.setRect(btnGameInfo.right()+2, pos, buttonSeed.reqWidth() + 1, 18);
+		boolean multiLine=btnGameInfo.right()+buttonSeed.reqWidth()>WIDTH;
+		float btnX,btnY;
+		btnX = multiLine?2:btnGameInfo.right()+2;
+		btnY = multiLine?btnGameInfo.bottom()+2:pos;
+		buttonSeed.setRect(btnX, btnY, buttonSeed.reqWidth() + 1, 18);
 
-		pos = btnGameInfo.bottom() + GAP;
+		pos = buttonSeed.bottom() + GAP;
 		
 		pos += GAP;
 
