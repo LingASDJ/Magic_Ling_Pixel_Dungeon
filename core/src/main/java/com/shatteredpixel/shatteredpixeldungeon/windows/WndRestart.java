@@ -73,7 +73,7 @@ public class WndRestart extends Window {
             @Override
             protected void onClick() {
                 super.onClick();
-                HeroClass oldHero = GamesInProgress.selectedClass;
+                HeroClass oldHero = Dungeon.hero.heroClass;
                 //Difficulty.HardStorage oldDifficulty = SPDSettings.difficulty();
                 int oldChallenges = SPDSettings.challenges();
                 long oldSeed = SPDSettings.customSeed().isEmpty() ? Dungeon.seed : DungeonSeed.convertFromText(SPDSettings.customSeed());
