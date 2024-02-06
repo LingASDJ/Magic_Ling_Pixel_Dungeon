@@ -74,7 +74,7 @@ public class WndGame extends Window {
 
 		boolean shouldRestart = Dungeon.hero == null || !Dungeon.hero.isAlive();
 
-		addButton(curBtn = new RedButton(Messages.get(this, "start")) {
+		addButton(curBtn = new RedButton(Messages.get(this, shouldRestart ? "start" : "restart" )) {
 			@Override
 			protected void onClick() {
 				super.onClick();

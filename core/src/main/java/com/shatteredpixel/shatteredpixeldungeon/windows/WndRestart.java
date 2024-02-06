@@ -58,6 +58,12 @@ public class WndRestart extends Window {
             cbs.add(cb);
             pos += BOX_HEIGHT + GAP;
         }
+        boolean shouldRestart = Dungeon.hero == null || !Dungeon.hero.isAlive();
+        if(shouldRestart){
+            cbs.get(4).active = false;
+            cbs.get(4).checked = false;
+            cbs.get(4).visible = false;
+        }
 
         cbs.get(3).alpha(0.4f);
         cbs.get(3).active=false;
@@ -85,7 +91,7 @@ public class WndRestart extends Window {
                 //SPDSettings.difficulty( cbs.get(3).checked() ? oldDifficulty : new Difficulty.HardStorage(Difficulty.DifficultyConduct.NULL) );
 
                 try {
-                    if(cbs.get(4).checked())
+                    if( cbs.get(4).checked() && !shouldRestart )
                         Dungeon.deleteGame(GamesInProgress.curSlot,true);
                     GamesInProgress.curSlot=GamesInProgress.firstEmpty();
                 } catch (Exception e) {
