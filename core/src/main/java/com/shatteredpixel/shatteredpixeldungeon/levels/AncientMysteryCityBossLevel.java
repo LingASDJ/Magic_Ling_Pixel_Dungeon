@@ -10,6 +10,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCity
 import static com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLevel.State.TWO_BOSS;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -20,6 +21,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DictFish;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.RoomStone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.SakaFishBoss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -36,6 +39,7 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AncientMysteryCityBossLevel extends Level{
@@ -374,6 +378,17 @@ public class AncientMysteryCityBossLevel extends Level{
      */
     @Override
     protected void createItems() {
-
+        Random.pushGenerator(Random.Long());
+        ArrayList<Item> bonesItems = Bones.get();
+        if (bonesItems != null) {
+            int pos;
+            do {
+                pos = randomRespawnCell(null);
+            } while (pos == entrance());
+            for (Item i : bonesItems) {
+                drop(i, pos).setHauntedIfCursed().type = Heap.Type.REMAINS;
+            }
+        }
+        Random.popGenerator();
     }
 }

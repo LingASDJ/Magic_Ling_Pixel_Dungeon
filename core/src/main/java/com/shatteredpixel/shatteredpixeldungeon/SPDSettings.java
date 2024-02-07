@@ -236,6 +236,8 @@ public class SPDSettings extends GameSettings {
     public static final String KEY_CONTROLLER_SENS = "controller_sens";
     public static final String KEY_MOVE_SENS = "move_sens";
 
+	public static final String KEY_ICECOIN = "iceGoldMagic";
+
     public static void cameraFollow(int value) {
         put(KEY_CAMERA_FOLLOW, value);
     }
@@ -646,4 +648,23 @@ public class SPDSettings extends GameSettings {
 	public static boolean Cheating() {
 		return getBoolean("cheatingfuck", false);
 	}
+
+
+	//永久货币逻辑
+	public static void iceCoin(int value) {
+		int currentCoin = iceCoin();
+		int newCoin = currentCoin + value;
+		put(KEY_ICECOIN, newCoin);
+	}
+
+	public static void iceDownCoin(int value) {
+		int currentCoin = iceCoin();
+		int newCoin = currentCoin - value;
+		put(KEY_ICECOIN, newCoin);
+	}
+
+	public static int iceCoin(){
+		return getInt( KEY_ICECOIN, 0);
+	}
+
 }

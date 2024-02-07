@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.Door;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.watabou.utils.SparseArray;
@@ -32,6 +33,9 @@ public class Statistics {
 
 	//种子处罚
 	public static boolean seedCustom = false;
+
+
+	public static boolean snow = false;
 
 	//吃保底
 	public static int bossWeapons;
@@ -294,6 +298,8 @@ public class Statistics {
         readBooks = 0;
         HealingIsDied = 0;
 
+		Door.reset();
+
 		NoTime = false;
 		dm720Fight = false;
 		dm300Fight = false;
@@ -405,6 +411,8 @@ public class Statistics {
 
 		bundle.put(SEEDCUSTOM,seedCustom);
 
+		bundle.put("SNOW",snow);
+
 		bundle.put(DM720FIGHT,dm720Fight);
 
 		bundle.put(DM300FIGHT,dm300Fight);
@@ -512,6 +520,8 @@ public class Statistics {
 	public static void restoreFromBundle( Bundle bundle ) {
 
 		iceCyanBlueSquareCoin = bundle.getInt(ICECLAN);
+
+		snow = bundle.getBoolean("SNOW");
 
 		SiderLing = bundle.getInt( SIDERLING);
 

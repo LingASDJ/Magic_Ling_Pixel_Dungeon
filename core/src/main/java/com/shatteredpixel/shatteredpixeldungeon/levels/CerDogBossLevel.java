@@ -7,6 +7,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -24,6 +25,8 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SentryRoom;
@@ -43,6 +46,8 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class CerDogBossLevel extends Level{
 
@@ -454,7 +459,18 @@ public class CerDogBossLevel extends Level{
      */
     @Override
     protected void createItems() {
-
+        Random.pushGenerator(Random.Long());
+        ArrayList<Item> bonesItems = Bones.get();
+        if (bonesItems != null) {
+            int pos;
+            do {
+                pos = randomRespawnCell(null);
+            } while (pos == entrance());
+            for (Item i : bonesItems) {
+                drop(i, pos).setHauntedIfCursed().type = Heap.Type.REMAINS;
+            }
+        }
+        Random.popGenerator();
     }
 
     public static class YellowStar extends NPC {

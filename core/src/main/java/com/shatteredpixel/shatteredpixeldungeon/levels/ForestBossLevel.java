@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSE
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -15,12 +16,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RatKing;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 //克里弗斯之果 5层
 public class ForestBossLevel extends Level {
@@ -29,6 +33,7 @@ public class ForestBossLevel extends Level {
     protected void createMobs() {
 
     }
+
 
     //修复跳楼错误
     @Override
@@ -46,9 +51,18 @@ public class ForestBossLevel extends Level {
     //二选一
     @Override
     protected void createItems() {
-        drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.width * 28 + 10 );
-
-        drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 28 + 22 );
+        Random.pushGenerator(Random.Long());
+        ArrayList<Item> bonesItems = Bones.get();
+        if (bonesItems != null) {
+            int pos;
+            do {
+                pos = randomRespawnCell(null);
+            } while (pos == entrance());
+            for (Item i : bonesItems) {
+                drop(i, pos).setHauntedIfCursed().type = Heap.Type.REMAINS;
+            }
+        }
+        Random.popGenerator();
     }
 
     public static final int WIDTH = 32;
@@ -212,6 +226,11 @@ public class ForestBossLevel extends Level {
     @Override
     public void unseal() {
         super.unseal();
+
+        drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.width * 28 + 10 );
+
+        drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 28 + 22 );
+
 
         set( getBossDoor, Terrain.EMPTY );
         GameScene.updateMap( getBossDoor );

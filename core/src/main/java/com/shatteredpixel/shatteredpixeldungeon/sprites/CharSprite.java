@@ -97,7 +97,8 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	public enum State {
 		BURNING, LEVITATING, INVISIBLE,TRUE_INVISIBLE,
 		PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED,
-		ROSESHIELDED, HALOMETHANEBURNING, FROSTBURNING, BUTTER, SPINVISIBLE, SMOKER, HEARTS
+		ROSESHIELDED, HALOMETHANEBURNING, FROSTBURNING, BUTTER, SPINVISIBLE, SMOKER, HEARTS,
+		MUTATION_1,MUTATION_2,MUTATION_3,MUTATION_4,MUTATION_5,MUTATION_6,
 	}
 	private int stunStates = 0;
 
@@ -142,6 +143,14 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	}
 
 	protected Emitter hearts;
+
+	protected Emitter mutation;
+	protected Emitter mutation2;
+	protected Emitter mutation3;
+	protected Emitter mutation4;
+	protected Emitter mutation5;
+	protected Emitter mutation6;
+
 
 	protected IceBlock iceBlock;
 	protected DarkBlock darkBlock;
@@ -510,6 +519,18 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 			case ROSESHIELDED:
 				GameScene.effect(roseshield = new RoseHalo(this));
 				break;
+			case MUTATION_1:
+				mutation = emitter();
+				mutation.pour(Speck.factory(Speck.MUTATION_1), 0.5f);
+				break;
+			case MUTATION_2:
+				mutation2 = emitter();
+				mutation2.pour(Speck.factory(Speck.MUTATION_2), 0.5f);
+				break;
+			case MUTATION_3:
+				mutation3 = emitter();
+				mutation3.pour(Speck.factory(Speck.MUTATION_3), 0.5f);
+				break;
 		}
 	}
 
@@ -583,6 +604,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					hearts = null;
 				}
 				break;
+
 			case HALOMETHANEBURNING:
 				if (haloburning != null) {
 					haloburning.on = false;
@@ -611,6 +633,24 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 			case ROSESHIELDED:
 				if(roseshield != null) {
 					roseshield.putOut();
+				}
+				break;
+			case MUTATION_1:
+				if (mutation != null){
+					mutation.on = false;
+					mutation = null;
+				}
+				break;
+			case MUTATION_2:
+				if(mutation2 != null){
+					mutation2.on =  false;
+					mutation2 = null;
+				}
+				break;
+			case MUTATION_3:
+				if(mutation3 != null){
+					mutation3.on =  false;
+					mutation3 = null;
 				}
 				break;
 		}
@@ -672,6 +712,15 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		}
 		if (hearts != null){
 			hearts.visible = visible;
+		}
+		if (mutation != null){
+			mutation.visible = visible;
+		}
+		if (mutation2 != null){
+			mutation2.visible = visible;
+		}
+		if (mutation3 != null){
+			mutation3.visible = visible;
 		}
 		if (aura != null){
 			if (aura.parent == null){

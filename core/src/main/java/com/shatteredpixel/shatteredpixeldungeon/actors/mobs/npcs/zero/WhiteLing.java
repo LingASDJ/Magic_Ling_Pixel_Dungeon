@@ -1,7 +1,9 @@
-package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
+package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NxhyNpc;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhiteGirlSprites;
@@ -11,11 +13,24 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
-public class WhiteNPC extends NPC {
+public class WhiteLing extends NPC {
     {
         spriteClass = WhiteGirlSprites.class;
-
+        maxLvl = 0;
+        HP = HT = 0;
+        properties.add(Property.UNKNOWN);
+        baseSpeed = 0;
         properties.add(Property.IMMOVABLE);
+    }
+
+    @Override
+    public float attackDelay() {
+        return 0;
+    }
+
+    @Override
+    public int damageRoll() {
+        return 0;
     }
 
     private boolean first=true;

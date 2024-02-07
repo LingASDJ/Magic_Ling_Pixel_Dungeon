@@ -113,6 +113,11 @@ public class MenuPane extends Component {
 		depthIcon = Icons.get(Dungeon.level.feeling);
 		add(depthIcon);
 
+//		depthText = PixelScene.renderTextBlock(4);
+//		depthText.text("桃源岛");
+//		depthText.hardlight( Window.Pink_COLOR );
+//		//depthText.measure();
+//		add(depthText);
 
 		depthText = new BitmapText(displayText(), PixelScene.pixelFont);
 		depthText.hardlight( 0xCACFC2 );

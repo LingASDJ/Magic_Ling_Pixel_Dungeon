@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.RedTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
@@ -67,6 +68,12 @@ public abstract class ChampionEnemy extends Buff {
 	}
 
 	protected int color;
+
+	public static int Mcolor = 0x808080;
+
+	public static int mutationcolor() {
+		return Mcolor;
+	}
 
 	@Override
 	public int icon() {
@@ -194,6 +201,7 @@ public abstract class ChampionEnemy extends Buff {
 	public static class LongSider extends ChampionEnemy {
 		{
 			color = 0xff00ff;
+			Mcolor = color;
 		}
 
 		@Override
@@ -223,7 +231,14 @@ public abstract class ChampionEnemy extends Buff {
 	public static class Sider extends ChampionEnemy implements Hero.Doom {
         {
             color = 0xED186E;
+			Mcolor = color;
         }
+
+		@Override
+		public void fx(boolean on) {
+			if (on) {target.sprite.add(CharSprite.State.MUTATION_2);
+			} else target.sprite.remove(CharSprite.State.MUTATION_2);
+		}
 
 		int scount = 0;
 		private final String SCOUNT = "counts";
@@ -286,6 +301,11 @@ public abstract class ChampionEnemy extends Buff {
 		private final String COUNT = "count";
 
 		@Override
+		public void fx(boolean on) {
+
+		}
+
+		@Override
 		public void storeInBundle( Bundle bundle ) {
 			super.storeInBundle(bundle);
 			bundle.put( COUNT , count );
@@ -299,6 +319,7 @@ public abstract class ChampionEnemy extends Buff {
 
 		{
 			color = 0xB085D5;
+			Mcolor = color;
 		}
 
 		@Override
@@ -317,11 +338,18 @@ public abstract class ChampionEnemy extends Buff {
 
 		{
 			color = 0x8f8f8f;
+			Mcolor = color;
 		}
 
 		@Override
 		public float meleeDamageFactor() {
 			return 0.65f;
+		}
+
+		@Override
+		public void fx(boolean on) {
+			if (on) {target.sprite.add(CharSprite.State.MUTATION_1);
+			} else target.sprite.remove(CharSprite.State.MUTATION_1);
 		}
 
 		@Override
@@ -336,8 +364,13 @@ public abstract class ChampionEnemy extends Buff {
 
 		{
 			color = 0x00FF00;
+			Mcolor = color;
 		}
-
+		@Override
+		public void fx(boolean on) {
+			if (on) {target.sprite.add(CharSprite.State.MUTATION_3);
+			} else target.sprite.remove(CharSprite.State.MUTATION_3);
+		}
 		@Override
 		public float meleeDamageFactor() {
 			return 0.7f;
@@ -358,13 +391,17 @@ public abstract class ChampionEnemy extends Buff {
 
 		{
 			color = 0xFFFF00;
+			Mcolor = color;
 		}
 
 		@Override
 		public float meleeDamageFactor() {
 			return 1.25f;
 		}
-
+		@Override
+		public void fx(boolean on) {
+//
+		}
 		@Override
 		public float speedFactor() {
 			return 1.2f;
@@ -383,8 +420,12 @@ public abstract class ChampionEnemy extends Buff {
 
 		{
 			color = 0xFF0000;
+			Mcolor = color;
 		}
-
+		@Override
+		public void fx(boolean on) {
+//
+		}
 		@Override
 		public float meleeDamageFactor() {
 			return 1.30f;

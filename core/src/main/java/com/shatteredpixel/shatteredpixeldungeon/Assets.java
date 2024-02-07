@@ -80,6 +80,16 @@ public class Assets {
 		public static final String CITY_PO  = "environment/custom_tiles/parliament_above.png";
 		public static final String CITY_POX  = "environment/custom_tiles/parliament_behind.png";
 
+
+		public static final String HOTEL_PO  = "environment/custom_tiles/hotel_above.png";
+		public static final String HOTEL_POX  = "environment/custom_tiles/hotel_behind.png";
+
+		public static final String ICE_PO  = "environment/custom_tiles/ice.png";
+		public static final String ICE_POX  = "environment/custom_tiles/ice_above.png";
+
+		public static final String PEACH_PO  =  "environment/custom_tiles/peach_forest_above.png";
+		public static final String PEACH_POX  = "environment/custom_tiles/peach_forest_behind.png";
+
 		public static final String VISUAL_GRID  = "environment/visual_grid.png";
 		public static final String WALL_BLOCKING= "environment/wall_blocking.png";
 
@@ -126,7 +136,7 @@ public class Assets {
 		public static final String HALLS_SP         = "environment/custom_tiles/halls_special.png";
 
 		public static final String TILES_COLD	= "environment/tiles_cold.png";
-
+		public static final String TILES_COLD_CS	= "environment/tiles_cold-cs.png";
 		public static final String TILES_COLD_MINE	= "environment/tiles_cold_mine.png";
 		public static final String RELOAD	= "environment/Reload.png";
 		public static final String TILES_DIED	= "environment/tiles_died.png";
@@ -492,7 +502,15 @@ public class Assets {
 
 		public static final String KATID		= "sprites/katydid.png";
 
-		public static final String WHITE		= "Npcs/White.png";
+		public static final String WHITE		= "sprites/npc/whiteling.png";
+
+		public static final String MOONC		= "sprites/npc/mooncat.png";
+
+		public static final String MORUS		= "sprites/npc/mruos.png";
+
+		public static final String WOLF		= "sprites/npc/wolf.png";
+
+
 		public static final String BBAT	= "sprites/bloodbat.png";
 
 		public static final String RAT		= "sprites/rat.png";

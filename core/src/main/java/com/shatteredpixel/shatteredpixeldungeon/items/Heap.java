@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
@@ -51,8 +52,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -107,7 +111,12 @@ public class Heap implements Bundlable {
 		case TELECRYSTL:
 			ScrollOfTeleportation.appear( hero,level.entrance );
 			break;
-		case REMAINS:
+			case REMAINS:
+				if (Dungeon.level.diedname != null) {
+					GameScene.show(new WndTitledMessage(new ItemSprite(ItemSpriteSheet.RIP, null), Messages.get(this, "rip"), level.diedname));
+					Dungeon.level.diedname = null;
+				}
+			break;
 		case SKELETON:
 			CellEmitter.center( pos ).start(Speck.factory(Speck.RATTLE), 0.1f, 3);
 			break;
@@ -282,8 +291,6 @@ public class Heap implements Bundlable {
 
 		if (type != Type.HEAP) {
 
-			return;
-
 		} else {
 
 			for (Item item : items.toArray( new Item[0] )) {
@@ -388,6 +395,11 @@ public class Heap implements Bundlable {
 				} else {
 					return i.toString();
 				}
+			case REMAINS:
+				if (level.diedname != null) {
+					return Messages.get(this, "grave");
+				}
+				return Messages.get(this, "remains");
 			case FOR_ICE:
 				Item ix = peek();
 				if (size() == 1) {
@@ -407,8 +419,6 @@ public class Heap implements Bundlable {
 				return Messages.get(this, "wtomb");
 			case SKELETON:
 				return Messages.get(this, "skeleton");
-			case REMAINS:
-				return Messages.get(this, "remains");
 			case BLACK:
 				return Messages.get(this, "black_chest");
 			default:
@@ -440,7 +450,11 @@ public class Heap implements Bundlable {
 			case SKELETON:
 				return Messages.get(this, "skeleton_desc");
 			case REMAINS:
-				return Messages.get(this, "remains_desc");
+				if (level.diedname != null) {
+					return level.diedname;
+				}
+				return Messages.get(this, "remains_desc", new Object[0]);
+
 			default:
 				return peek().info();
 		}

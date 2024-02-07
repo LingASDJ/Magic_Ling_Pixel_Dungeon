@@ -1,6 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.effects.particles;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
@@ -31,7 +34,7 @@ public class ColdSnowParticles extends PixelParticle {
             case 1:case 2:case 3:case 4:case 5:
                 texture("leaf.png");
             break;
-            case 10:case 6:case 7:case 8:case 9:
+            case 0:case 10:case 6:case 7:case 8:case 9:
                 texture("snowflake.png");
             break;
         }
@@ -61,7 +64,7 @@ public class ColdSnowParticles extends PixelParticle {
                 am = 0; // 保持这个属性不变
                 color(0x8780FF80);
                 break;
-            case 10:case 6:case 7:case 8:case 9:
+            case 0:case 10:case 6:case 7:case 8:case 9:
                 left = lifespan;
 
                 super.speed.set(speed);
@@ -70,11 +73,12 @@ public class ColdSnowParticles extends PixelParticle {
                 this.x = x - super.speed.x * lifespan / 2;
                 this.y = y - super.speed.y * lifespan / 2;
                 origin.set(width/2,height/2);
-                angle = 0.85F;
-                angularSpeed=60;
-                speed = (new PointF()).polar(angle, 16.0F);
+                angle = 0.35F;
+                angularSpeed=40;
+                speed = (new PointF()).polar(angle, 36.0F);
                 am=0;
-                color(0x8700FFFF);
+                color(0xC5F2F0FF);
+                //alpha(0.75f);
                 break;
         }
 
@@ -86,6 +90,9 @@ public class ColdSnowParticles extends PixelParticle {
     public void update() {
         super.update();
 
+        if(Dungeon.depth == 0 && Dungeon.branch == 0 && hero.viewDistance<20){
+            return;
+        }
         float p = left / lifespan;
         am = (p < 0.5f ? p : 1 - p) * size * 1f;
     }
@@ -100,21 +107,41 @@ public class ColdSnowParticles extends PixelParticle {
         private float y;
 
         public Snow(int pos) {
-            this.pos = pos;
-            PointF pointF = DungeonTilemap.tileToWorld(pos);
-            x = pointF.x;
-            y = pointF.y;
-            delay = Random.Float(3.0F);
+
+
+         this.pos = pos;
+         PointF pointF = DungeonTilemap.tileToWorld(pos);
+         x = pointF.x;
+         y = pointF.y;
+         delay = Random.Float(3.0F);
+
+
+
         }
 
         public void update() {
             super.update();
-            if (visible = (pos < Dungeon.level.heroFOV.length && Dungeon.level.heroFOV[pos])) {
-                float f = delay - Game.elapsed;
-                delay = f;
-                if (f <= 0.0F) {
-                    delay = Random.Float(5.0F);
-                    ((ColdSnowParticles)recycle(ColdSnowParticles.class)).reset(this.x + Random.Float(16.0F), this.y + Random.Float(16.0F));
+            if(!Statistics.snow && Dungeon.depth == 0 && Dungeon.branch == 0) {
+
+                if (visible == (pos < Dungeon.level.heroFOV.length && Dungeon.level.heroFOV[pos])) {
+                    float f = delay - Game.elapsed;
+                    delay = f;
+                    if (f <= 0.0F) {
+                        delay = Random.Float(5.0F);
+                        ((ColdSnowParticles) recycle(ColdSnowParticles.class)).reset(this.x + Random.Float(16.0F), this.y + Random.Float(16.0F));
+                    }
+                }
+                visible = true;
+            } else if(Statistics.snow && Dungeon.depth == 0 && Dungeon.branch == 0) {
+                visible = false;
+            } else {
+                if (visible == (pos < Dungeon.level.heroFOV.length && Dungeon.level.heroFOV[pos])) {
+                    float f = delay - Game.elapsed;
+                    delay = f;
+                    if (f <= 0.0F) {
+                        delay = Random.Float(5.0F);
+                        ((ColdSnowParticles) recycle(ColdSnowParticles.class)).reset(this.x + Random.Float(16.0F), this.y + Random.Float(16.0F));
+                    }
                 }
             }
         }

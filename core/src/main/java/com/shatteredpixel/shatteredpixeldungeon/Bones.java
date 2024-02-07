@@ -26,8 +26,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfNukeCole;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.FileUtils;
 import com.watabou.utils.Random;
@@ -45,6 +50,14 @@ public class Bones {
 	private static final String BRANCH	= "branch";
 	private static final String ITEM	= "item";
 	private static final String HERO_CLASS	= "hero_class";
+
+	private static final String NAME = "hero_name";
+	private static final String KILLED = "enemies_slain";
+	private static final String HEALING = "available_healing";
+	private static String name;
+	private static int killed;
+	private static int healing;
+
 
 	private static int depth = -1;
 	private static int branch = -1;
@@ -75,12 +88,57 @@ public class Bones {
 		bundle.put( ITEM, item );
 		bundle.put( HERO_CLASS, heroClass );
 
+		//TODO 墓志铭测试
+		setEpitaphProps(bundle);
+
 		try {
 			FileUtils.bundleToFile( BONES_FILE, bundle );
 		} catch (IOException e) {
 			ShatteredPixelDungeon.reportException(e);
 		}
 	}
+
+	private static void setEpitaphProps(Bundle bundle) {
+		if (Dungeon.hero.name().equals(Dungeon.hero.className())) {
+			name = "";
+		} else {
+			name = Dungeon.hero.name();
+		}
+		killed = Statistics.enemiesSlain;
+		healing = 0;
+		Waterskin waterskin = Dungeon.hero.belongings.getItem(Waterskin.class);
+		//死亡时携带核子可乐
+		if(Dungeon.hero.belongings.getItem(ElixirOfNukeCole.class) != null){
+			healing = 4;
+		//死亡时携带水灵药剂
+		}else if(Dungeon.hero.belongings.getItem(WaterSoul.class) != null){
+			healing = 3;
+		} else if (waterskin != null && waterskin.isFull()) {
+			healing = 2;
+		} else if (Dungeon.hero.belongings.getItem(PotionOfHealing.class) != null) {
+			healing = 1;
+		}
+		bundle.put(NAME, name);
+		bundle.put(KILLED, killed);
+		bundle.put(HEALING, healing);
+	}
+
+	private static void clearEpitaphProps() {
+		name = null;
+		killed = 0;
+		healing = 0;
+	}
+
+	private static void loadEpitaphProps(Bundle bundle) {
+		if (bundle.contains(NAME)) {
+			name = bundle.getString(NAME);
+			healing = bundle.getInt(HEALING);
+			killed = bundle.getInt(KILLED);
+			return;
+		}
+		clearEpitaphProps();
+	}
+
 
 	private static Item pickItem(Hero hero){
 		Item item = null;
@@ -174,6 +232,7 @@ public class Bones {
 					} else {
 						heroClass = null;
 					}
+					loadEpitaphProps(bundle);
 				}
 
 				return get();
@@ -255,6 +314,68 @@ public class Bones {
 			}
 		}
 	}
+
+
+	public static String generateHeroEpitaph() {
+		// 初始检查，确保必要条件被满足
+		if (depth != 0 || name == null || heroClass == null) {
+			return null;
+		}
+
+		// 根据英雄是否有名字，选择合适的墓志铭开头
+		String epitaphStart = name.isEmpty() ?
+				Messages.get(Bones.class, "here_lies_nameless", heroClass.title()) :
+				Messages.get(Bones.class, "here_lies_named", name, heroClass.title());
+
+		epitaphStart += "\n\n"; // 添加段落分隔
+
+		String epitaphBody; // 墓志铭的主体部分
+		// 根据英雄的深度和杀敌数，生成墓志铭的主体内容
+		if (killed == 0) {
+			epitaphBody = Messages.get(Bones.class, "pacifist");
+		} else if (depth < 4) {
+			epitaphBody = Messages.get(Bones.class, "rats", killed);
+		} else if (depth < 7) {
+			epitaphBody = Messages.get(Bones.class, "crabs", killed);
+		} else if (depth < 9) {
+			epitaphBody = Messages.get(Bones.class, "undead", killed);
+		} else if (depth < 11) {
+			epitaphBody = Messages.get(Bones.class, "thieves", killed);
+		} else if (depth < 14) {
+			epitaphBody = Messages.get(Bones.class, "bats", killed);
+		} else if (depth < 17) {
+			epitaphBody = Messages.get(Bones.class, "brutes", killed);
+		} else if (depth < 19) {
+			epitaphBody = Messages.get(Bones.class, "monks", killed);
+		} else if (depth < 21) {
+			epitaphBody = Messages.get(Bones.class, "golems", killed);
+		} else {
+			epitaphBody = depth < 25 ?
+					Messages.get(Bones.class, "demons", killed) :
+					Messages.get(Bones.class, "yog", killed);
+		}
+
+		// 添加关于治疗的备注
+		if (healing == 1) {
+			epitaphBody += "\n\n" + Messages.get(Bones.class, "forgot_waterskin");
+		} else if (healing == 2) {
+			epitaphBody += "\n\n" + Messages.get(Bones.class, "forgot_potion");
+		} else if (healing == 3) {
+			epitaphBody += "\n\n" + Messages.get(Bones.class, "forgot_watersoul");
+		} else if (healing == 4) {
+			epitaphBody += "\n\n" + Messages.get(Bones.class, "forgot_nukecole");
+		}
+
+		// 结尾部分，表示安息
+		String epitaphEnd = "\n\n" + Messages.get(Bones.class, "rest_in_peace");
+
+		// 清除墓志铭相关的属性
+		clearEpitaphProps();
+
+		// 返回完整的墓志铭
+		return epitaphStart + epitaphBody + epitaphEnd;
+	}
+
 
 	private static boolean lootAtCurLevel(){
 		if (branch == Dungeon.branch) {

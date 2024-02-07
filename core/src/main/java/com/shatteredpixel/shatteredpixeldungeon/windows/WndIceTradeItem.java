@@ -1,7 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -113,7 +113,7 @@ public class WndIceTradeItem extends WndInfoItem {
         btnBuy.icon(new ItemSprite(ItemSpriteSheet.ICEGOLD));
 
 
-        btnBuy.enable( price <= Statistics.iceCyanBlueSquareCoin );
+        btnBuy.enable( price <= SPDSettings.iceCoin());
         add( btnBuy );
 
         pos = btnBuy.bottom();
@@ -188,7 +188,7 @@ public class WndIceTradeItem extends WndInfoItem {
         if (item == null) return;
 
         int price = Shopkeeper.sellIcePrice( item );
-        Statistics.iceCyanBlueSquareCoin -= price;
+        SPDSettings.iceDownCoin(price);
 
         if (!item.doPickUp( Dungeon.hero )) {
             Dungeon.level.drop( item, heap.pos ).sprite.drop();

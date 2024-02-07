@@ -287,7 +287,7 @@ public class SakaFishBoss extends Boss {
             }
 
             survey_research_points += 2000;
-            Statistics.questScores[2] += survey_research_points/2;
+            //Statistics.questScores[2] += survey_research_points/2;
             Badges.validateAncityProgress();
             GameScene.bossSlain();
             Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();

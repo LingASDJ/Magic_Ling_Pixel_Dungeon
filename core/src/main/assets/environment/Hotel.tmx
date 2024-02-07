@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<map version="1.2" orientation="orthogonal" renderorder="right-down" width="14" height="20" tilewidth="16" tileheight="16" nextobjectid="0">
+  <properties>
+    <property name="sw1" value="261" />
+    <property name="sw2" value="267" />
+    <property name="sw3" value="530" />
+    <property name="sw4" value="513" />
+    <property name="sw5" value="617" />
+    <property name="sw6" value="593" />
+  </properties>
+  <tileset firstgid="1" name="tiles_cold" columns="16" tilecount="256" tileheight="16" tilewidth="16">
+    <image source="tiles_cold.png" width="256" height="256" />
+  </tileset>
+  <tileset firstgid="257" name="tiles_prison" columns="16" tilecount="256" tileheight="16" tilewidth="16">
+    <image source="tiles_prison.png" width="256" height="256" />
+  </tileset>
+  <tileset firstgid="513" name="tiles_halloween" columns="16" tilecount="256" tileheight="16" tilewidth="16">
+    <image source="tiles_halloween.png" width="256" height="256" />
+  </tileset>
+  <tileset firstgid="769" name="terrain_features" columns="16" tilecount="144" tileheight="16" tilewidth="16">
+    <image source="terrain_features.png" width="256" height="144" />
+  </tileset>
+  <tileset firstgid="913" name="prison_exit" columns="16" tilecount="512" tileheight="16" tilewidth="16">
+    <image source="prison_exit.png" width="256" height="512" />
+  </tileset>
+  <tileset firstgid="1425" name="caves_boss" columns="8" tilecount="64" tileheight="16" tilewidth="16">
+    <image source="caves_boss.png" width="128" height="128" />
+  </tileset>
+  <layer name="ground" width="14" height="20">
+    <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAAKVT0QqAMAh0hhD41if1DX1Z9cEFFYjMedLDMdDd9E4njUg60CBusQvRIf34+caZibYbE8fvqOO1++7Cz7ly3pPlfZgH9Ua8xjV9FaA8dVojXs+PjOfzmb5RDZ+r+ILo++tnRV+27wrUi7zyPORvIfWsPrsz2dwRP9EeszlcuPX1BGAEAAA=
+  </data>
+  </layer>
+  <layer name="dec_ground" width="14" height="20">
+    <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAAGNgIB8cZ2JgOAbEvEwQviiU1gLSSkBsAMT6UFqPCbc5j/DIIet7hcSOZYJgXMAAjxyxAJf/YMCcEYKNgdiREbsZLwm4A1kfIf/lAtXGMmLqIwUg6yPkP1z6yLUPGRCKP2oAYvynB8TqQMwIxegAV9pUQdID0/eaiPSpDFWvg8M+XACmTx9JH8x/MIAr/jQYcPsPn30GaPqakAzA5T/ksARhAE+K1ThgBAAA
+  </data>
+  </layer>
+  <layer name="wall" width="14" height="20">
+    <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAAJvPxMBgCMSJUDoQiqdD6UQkMRh7BhBvAGJsIAaHOAgswKPvBJK4JxMqDdK3DogPYsFrCNg3H8n9yHgFme6khv+w6Rv1HwPDYSxyxPgPmxpi/IeuZiuR/sOmjxj/YdNHjP8WkOBOZP9Fkuk/9LjE579VaH49iYR3AjEAocsRNmAEAAA=
+  </data>
+  </layer>
+  <layer name="dec_wall" width="14" height="20">
+    <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAAGNgwAQPmbAIDiMw6r+hDbD5z5aZgeEPUFyHmTwzC+msDx+gRfwhu/MjI3n6yAEAyDU1DWAEAAA=
+  </data>
+  </layer>
+  <layer name="other" width="14" height="20">
+    <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAAGNgoC54wkSevhtk6qM3wOW/Mmb8+nD5r4KAPlygmkx9hOzD5b8aOvuPVmAkpc9nJLgZ2X8PqOhXAMaL2VJgBAAA
+  </data>
+  </layer>
+</map>

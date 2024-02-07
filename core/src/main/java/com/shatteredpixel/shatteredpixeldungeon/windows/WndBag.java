@@ -23,7 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -281,7 +281,7 @@ public class WndBag extends WndTabbed {
 		int y = TITLE_HEIGHT + row * (slotHeight + SLOT_MARGIN);
 
 
-		BitmapText iceCoinAmount = new BitmapText(Integer.toString(Statistics.iceCyanBlueSquareCoin), PixelScene.pixelFont);
+		BitmapText iceCoinAmount = new BitmapText(Integer.toString(SPDSettings.iceCoin()), PixelScene.pixelFont);
 		iceCoinAmount.hardlight(TITLE_COLOR);
 		iceCoinAmount.measure();
 		// 数值文本紧随图标之后

@@ -1132,6 +1132,8 @@ public class Dungeon {
 			PaswordBadges.reset();
 		}
 
+		//Door.reset();
+
 		Notes.restoreFromBundle( bundle );
 
 		hero = null;

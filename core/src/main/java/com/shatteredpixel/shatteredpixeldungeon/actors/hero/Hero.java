@@ -461,6 +461,8 @@ public class Hero extends Char {
 		info.heroClass = bundle.getEnum( CLASS, HeroClass.class );
 		info.subClass = bundle.getEnum( SUBCLASS, HeroSubClass.class );
 		Belongings.preview( info, bundle );
+
+		info.name = bundle.contains("name") ? bundle.getString("name") : "";
 	}
 
 	public boolean hasTalent( Talent talent ){
@@ -517,14 +519,16 @@ public class Hero extends Char {
 			return 0;
 		}
 	}
-	
+
 	public String className() {
-		return subClass == null || subClass == HeroSubClass.NONE ? heroClass.title() : subClass.title();
+		HeroSubClass heroSubClass = this.subClass;
+		return (heroSubClass == null || heroSubClass == HeroSubClass.NONE) ? this.heroClass.title() : heroSubClass.title();
 	}
 
+
 	@Override
-	public String name(){
-		return className();
+	public String name() {
+		return this.name.equals("") ? className() : this.name;
 	}
 
 	@Override
@@ -2306,10 +2310,9 @@ public class Hero extends Char {
 
         bundle.put(CAKEUSED, CakeUsed);
 
-        if (!this.name.equals("")) {
-            bundle.put("name", this.name);
-        }
-
+		if (!this.name.equals("")) {
+			bundle.put("name", this.name);
+		}
 
         belongings.storeInBundle(bundle);
     }

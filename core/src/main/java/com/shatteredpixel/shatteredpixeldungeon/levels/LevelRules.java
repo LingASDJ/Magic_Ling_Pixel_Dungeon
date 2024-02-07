@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
+import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.HotelLevel;
 import com.watabou.utils.Random;
 
 //Level Rules
@@ -91,7 +92,7 @@ public class LevelRules {
 
             switch (depth) {
                 case 0:
-                    return new ZeroLevel();
+                    return new ZeroCityLevel();
                 case 1:
                 case 2:
                 case 3:
@@ -172,6 +173,8 @@ public class LevelRules {
             default:
             case 1:
                 switch (depth) {
+                    case 0:
+                        return new HotelLevel();
                     case 11:
                     case 12:
                     case 13:

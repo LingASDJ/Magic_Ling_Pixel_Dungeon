@@ -122,6 +122,7 @@ public class ItemSpriteSheet {
     public static final int LOCKED_CHEST    = CONTAINERS+5;
     public static final int CRYSTAL_CHEST   = CONTAINERS+6;
     public static final int EBONY_CHEST     = CONTAINERS+7;
+    public static final int RIP     = CONTAINERS+8;
     static{
         assignItemRect(BONES,           14, 11);
         assignItemRect(REMAINS,         14, 11);

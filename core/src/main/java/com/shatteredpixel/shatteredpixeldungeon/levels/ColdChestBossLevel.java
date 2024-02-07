@@ -10,6 +10,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.WIN;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -21,6 +22,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.TPDoor;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -29,6 +32,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 //宝藏迷宫 10层
@@ -591,7 +595,14 @@ public class ColdChestBossLevel extends Level {
 
     @Override
     protected void createItems() {
-
+        Random.pushGenerator(Random.Long());
+        ArrayList<Item> bonesItems = Bones.get();
+        if (bonesItems != null) {
+            for (Item i : bonesItems) {
+                drop(i, WIDTH*5+17).setHauntedIfCursed().type = Heap.Type.REMAINS;
+            }
+        }
+        Random.popGenerator();
     }
 
 

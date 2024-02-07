@@ -1340,7 +1340,8 @@ public abstract class Char extends Actor {
 		HOLLOW,
 		IMMOVABLE,
 		PETS,
-		ABYSS;
+		ABYSS,
+		UNKNOWN;
 
 		private final HashSet<Class> resistances;
 		private final HashSet<Class> immunities;

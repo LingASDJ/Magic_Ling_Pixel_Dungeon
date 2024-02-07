@@ -209,7 +209,7 @@ public enum HeroClass {
 
 		new ScrollOfIdentify().identify();
 
-		if (Dungeon.isChallenged(Challenges.PRO)){
+		if (!Dungeon.isChallenged(Challenges.PRO)){
 			new SpawnMisc().quantity(1).identify().collect();
 			new LevelTeleporter().quantity(1).identify().collect();
 			new SakaFishSketon().quantity(1).identify().collect();
@@ -218,7 +218,7 @@ public enum HeroClass {
 			new SpawnArtifact().quantity(1).identify().collect();
 			new SpawnRingOrWand().quantity(1).identify().collect();
 			new SpawnMissile().quantity(1).identify().collect();
-			//new WandOfVenom().quantity(1).identify().collect();
+			new Amulet().quantity(1).identify().collect();
 			new TerrainPlacer().quantity(1).identify().collect();
 
 			new MobPlacer().quantity(1).identify().collect();

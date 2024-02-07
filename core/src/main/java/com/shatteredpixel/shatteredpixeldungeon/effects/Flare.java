@@ -107,7 +107,7 @@ public class Flare extends Visual {
 	public Flare color( int color, boolean lightMode ) {
 		this.lightMode = lightMode;
 		hardlight( color );
-		
+
 		return this;
 	}
 	

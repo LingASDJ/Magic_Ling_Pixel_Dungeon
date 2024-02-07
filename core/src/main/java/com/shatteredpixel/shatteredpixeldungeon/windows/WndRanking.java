@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -55,7 +56,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentsPane;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
@@ -179,23 +179,29 @@ public class WndRanking extends WndTabbed {
 		public StatsTab() {
 			super();
 
-			String heroClass = record.heroClass.name();
-			if (Dungeon.hero != null){
-				heroClass = Dungeon.hero.className();
+			String name = Dungeon.hero.className();
+			IconTitle title = new IconTitle();
+			Hero hero = Dungeon.hero;
+			title.icon(HeroSprite.avatar(hero.heroClass, hero.tier()));
+			if (Dungeon.hero.name().equals(Dungeon.hero.className())) {
+				title.label(Messages.get(this, "title", Dungeon.hero.lvl, name).toUpperCase(Locale.ENGLISH));
+			} else {
+				String csname = Dungeon.hero.name() +
+						"\n" +
+						Messages.get(this, "title", Dungeon.hero.lvl, name).toUpperCase(Locale.ENGLISH);
+				title.label(csname);
 			}
 
-			IconTitle title = new IconTitle();
-			title.icon( HeroSprite.avatar( record.heroClass, record.armorTier ) );
-			title.label( Messages.get(this, "title", record.herolevel, heroClass ).toUpperCase( Locale.ENGLISH ) );
-			title.color(Window.TITLE_COLOR);
-			title.setRect( 0, 0, WIDTH, 0 );
-			add( title );
+			title.color(16777028);
+			title.setRect(0.0F, 0.0F, 115.0F, 0.0F);
+			add(title);
+			float pos = title.bottom() + GAP;
 
 			if (Dungeon.hero != null && Dungeon.seed != -1){
 				GAP--;
 			}
 
-			float pos = title.bottom() + 1;
+			//float pos = title.bottom() + 1;
 
 			RenderedTextBlock date = PixelScene.renderTextBlock(record.date, 7);
 			date.hardlight(0xCCCCCC);

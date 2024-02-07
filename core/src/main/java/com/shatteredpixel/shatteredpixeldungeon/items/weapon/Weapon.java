@@ -381,14 +381,16 @@ abstract public class Weapon extends KindOfWeapon {
 	public static abstract class Enchantment implements Bundlable {
 
 		public static final Class<?>[] common = new Class<?>[]{
-				Blazing.class, Chilling.class, Kinetic.class, Shocking.class, Crushing.class};
+				Blazing.class, Chilling.class, Kinetic.class, Shocking.class};
 
 		public static final Class<?>[] uncommon = new Class<?>[]{
 				Blocking.class, Blooming.class, Elastic.class,
-				Lucky.class, Projecting.class, Unstable.class};
+				Lucky.class, Projecting.class, Unstable.class,
+				HaloBlazing.class, Crushing.class};
 
 		public static final Class<?>[] rare = new Class<?>[]{
-				Corrupting.class, Grim.class, Vampiric.class, HaloBlazing.class};
+				Corrupting.class, Grim.class, Vampiric.class,
+		};
 
 		public static final float[] typeChances = new float[]{
 				50, //12.5% each

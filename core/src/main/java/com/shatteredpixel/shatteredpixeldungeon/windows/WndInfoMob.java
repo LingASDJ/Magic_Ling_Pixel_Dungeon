@@ -143,7 +143,7 @@ public class WndInfoMob extends WndTitledMessage {
 			} else if (mob.HP==1) {
 				level = "G";
 			} else {
-				level = "F";
+				level = "?";
 			}
 			return level;
 		}
@@ -152,6 +152,8 @@ public class WndInfoMob extends WndTitledMessage {
 			String level;
 			if (mob.properties.contains(Char.Property.BOSS)){
 				level = Messages.get(WndInfoMob.class,"boss");
+			} else if (mob.properties.contains(Char.Property.UNKNOWN)){
+				level = Messages.get(WndInfoMob.class,"unknown");
 			} else if (mob.properties.contains(Char.Property.MINIBOSS)){
 				level = Messages.get(WndInfoMob.class,"miniboss");
 			} else if (mob.properties.contains(Char.Property.HOLLOW)){
