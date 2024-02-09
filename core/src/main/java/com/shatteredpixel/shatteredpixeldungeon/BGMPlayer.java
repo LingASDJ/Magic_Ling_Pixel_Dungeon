@@ -46,9 +46,9 @@ public class BGMPlayer {
                 playBGM(Assets.BGM_3, true);
             } else if (d > 15 && d <= 20) {
                 playBGM(Assets.BGM_4, true);
-            } else if (d > 20 && d <= 25) {
+            } else if (d > 20 && d <= 26) {
                 playBGM(Assets.BGM_5, true);
-            } else if (d >= 26 && d <= 30) {
+            } else if (d >= 27 && d <= 30) {
                 playBGM(Assets.HOLLOW_CITY, true);
             } else if (d ==-5||d ==-15) {
                 playBGM(Assets.SNOWCYON, true);

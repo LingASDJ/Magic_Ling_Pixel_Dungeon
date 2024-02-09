@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.ALCHEMY;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.BARRICADE;
@@ -21,6 +22,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WELL;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
@@ -41,8 +43,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonLow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Question;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.SmallLeaf;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
@@ -58,6 +64,8 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
+
+import java.util.List;
 
 public class ZeroCityLevel extends Level {
 
@@ -365,6 +373,34 @@ public class ZeroCityLevel extends Level {
     protected void createItems() {
         drop( new DiedCrossBow(), 1237  ).type = Heap.Type.FOR_ICE;
         drop( new MoonDao(), 1238  ).type = Heap.Type.FOR_ICE;
+
+        if(!Dungeon.isChallenged(CS)) {
+            PaswordBadges.loadGlobal();
+            List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+
+            drop((Generator.randomUsingDefaults(Generator.Category.SCROLL)), 3193);
+            drop((Generator.randomUsingDefaults(Generator.Category.SCROLL)), 2937);
+
+            if (!passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)) {
+                drop((Generator.random(Generator.Category.RING)), 3001);
+            }
+            if (!passwordbadges.contains(PaswordBadges.Badge.BIG_X)) {
+                if (Dungeon.isChallenged(Challenges.NO_ARMOR)) {
+                    drop((Generator.random(Generator.Category.WAND)), 3065);
+                } else {
+                    drop((Generator.random(Generator.Category.ARMOR)), 3065);
+                }
+            }
+
+            if (!Badges.isUnlocked(Badges.Badge.RLPT)) {
+                Item item = new BookBag();
+                drop(item, 3129);
+            }
+
+            drop( new RandomChest(), 1239  ).type = Heap.Type.FOR_ICE;
+            drop( new RandomChest(), 1240  ).type = Heap.Type.FOR_ICE;
+        }
+
     }
 
 

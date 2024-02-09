@@ -165,7 +165,7 @@ public class SewerLevel extends RegularLevel {
 					} );
 				}
 			});
-		} else {
+		} else if(transition.type == LevelTransition.Type.SURFACE) {
 			if (hero.belongings.getItem(Amulet.class) == null) {
 				Game.runOnRenderThread(new Callback() {
 					@Override
@@ -187,7 +187,10 @@ public class SewerLevel extends RegularLevel {
 				InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
 				InterlevelScene.curTransition.centerCell = -1;
 				Game.switchScene(InterlevelScene.class);
+				return false;
 			}
+		} else {
+			return super.activateTransition(hero,transition);
 		}
 		return false;
 	}
