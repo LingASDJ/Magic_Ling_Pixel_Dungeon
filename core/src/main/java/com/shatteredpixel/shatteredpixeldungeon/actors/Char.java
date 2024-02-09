@@ -956,6 +956,10 @@ public abstract class Char extends Actor {
 				icon = IconFloatingText.HALO;
 			}
 
+			if (src instanceof FrostBurning) {
+				icon = IconFloatingText.ICEFIRE;
+			}
+
 			if(src instanceof ScaryBuff){
 				icon = IconFloatingText.HEARTDEMON;
 			}

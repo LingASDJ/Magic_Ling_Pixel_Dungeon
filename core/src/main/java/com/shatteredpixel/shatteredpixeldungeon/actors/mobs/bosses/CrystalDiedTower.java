@@ -22,6 +22,8 @@ public class CrystalDiedTower extends Mob {
 
         HP = HT = 1;
 
+        invisible = 1;
+
         properties.add(Property.MINIBOSS);
         properties.add(Property.INORGANIC);
         properties.add(Property.ELECTRIC);

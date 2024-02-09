@@ -159,10 +159,10 @@ public class WndTradeItem extends WndInfoItem {
 			}
 		};
 
-		//if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-			btnStole.alpha(0.3f);
-			btnStole.active=false;
-		//}
+//		//if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+//			btnStole.alpha(0.3f);
+//			btnStole.active=false;
+//		//}
 
 		btnStole.setRect( 0, pos + GAP, width, BTN_HEIGHT );
 		btnStole.icon(Statistics.fireGirlnoshopping && !Statistics.deadshoppingdied ? new FireMagicGirlSprite() :

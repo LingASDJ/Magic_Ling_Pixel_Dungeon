@@ -195,6 +195,11 @@ public class WndStory extends Window {
 		Banner mapnameSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
 		if(!Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
 			switch (Dungeon.depth) {
+				case 0:
+					mapnameSlain.texture( "interfaces/mapname/snow.png" );
+					mapnameSlain.show( Window.TITLE_COLOR, 0.6f, 3f );
+					scene.showLogo( mapnameSlain );
+					break;
 				case 1:
 					mapnameSlain.texture( "interfaces/mapname/forest.png" );
 					mapnameSlain.show( Window.GREEN_COLOR, 0.6f, 3f );

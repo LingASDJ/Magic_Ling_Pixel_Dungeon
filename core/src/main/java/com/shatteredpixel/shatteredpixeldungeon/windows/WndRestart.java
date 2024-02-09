@@ -104,7 +104,7 @@ public class WndRestart extends Window {
             }
         };
         add(confirm);
-        confirm.setRect(GAP, pos, WIDTH / 2 - 4 * GAP, BOX_HEIGHT);
+        confirm.setRect(GAP, pos, WIDTH / 2f -2 * GAP, BOX_HEIGHT);
 
         RedButton cancel =new RedButton(Messages.get(this, "cancel")){
             @Override
@@ -113,7 +113,7 @@ public class WndRestart extends Window {
             }
         };
         add(cancel);
-        cancel.setRect(confirm.right()+GAP, pos, WIDTH / 2 - 4 * GAP, BOX_HEIGHT);
+        cancel.setRect(confirm.right()+GAP*2, pos, confirm.width(), BOX_HEIGHT);
         resize(WIDTH, HEIGHT);
     }
 }

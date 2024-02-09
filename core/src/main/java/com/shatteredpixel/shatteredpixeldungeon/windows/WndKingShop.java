@@ -281,8 +281,8 @@ public class WndKingShop extends Window {
             RedButton btnConfirm = new RedButton(Messages.get(WndKingShop.class, "buy")){
                 @Override
                 protected void onClick() {
-                    if(Dungeon.gold >=500) {
-                        Dungeon.gold-=500;
+                    if(Dungeon.gold >=320) {
+                        Dungeon.gold-=320;
                         WndKingShop.this.selectReward( item );
                         Buff.prolong( hero, ReloadShop.class, 1f);
                         //Statistics.naiyaziCollected += 1;
@@ -318,8 +318,8 @@ public class WndKingShop extends Window {
             RedButton btnConfirm = new RedButton(Messages.get(WndKingShop.class, "buy")){
                 @Override
                 protected void onClick() {
-                    if(Dungeon.gold >= 500) {
-                        Dungeon.gold-=500;
+                    if(Dungeon.gold >= 320) {
+                        Dungeon.gold-=320;
                         Buff.prolong( hero, ReloadShop.class, 1f);
                         WndKingShop.this.selectReward( item );
                         //Badges.nyzvalidateGoldCollected();

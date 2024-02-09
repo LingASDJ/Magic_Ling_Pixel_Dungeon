@@ -1,9 +1,12 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.QinWolfSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
@@ -87,13 +90,14 @@ public class QinYueWolf extends NTNPC {
     @Override
     public boolean interact(Char c) {
 
-        sprite.turnTo(pos, Dungeon.hero.pos);
+        sprite.turnTo(pos, hero.pos);
 
         if(first){
             WndQuest.chating(this,chat);
             first=false;
         } else if(secnod) {
             WndQuest.chating(this,B_chat);
+            Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), hero.pos );
             secnod = false;
         } else if(!Statistics.amuletObtained) {
             WndQuest.chating(this,C_chat);

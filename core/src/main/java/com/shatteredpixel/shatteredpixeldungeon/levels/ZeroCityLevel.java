@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.ALCHEMY;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.BARRICADE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.BOOKSHELF;
@@ -26,16 +25,27 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LanFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NxhyNpc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.REN;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.obSir;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.BzmdrLand;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.DeepSea;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.JIT;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.KongFu;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.LuoWhite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoRuoS;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonLow;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Question;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.SmallLeaf;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
@@ -43,11 +53,11 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.SurfaceScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 public class ZeroCityLevel extends Level {
 
@@ -152,12 +162,12 @@ public class ZeroCityLevel extends Level {
             P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,
     };
 
-    @Override
-    public void occupyCell(Char ch) {
-        super.occupyCell(ch);
-        GLog.p(String.valueOf(hero.pos));
-        GLog.b(String.valueOf(hero.viewDistance));
-    }
+
+//    public void occupyCell(Char ch) {
+//        super.occupyCell(ch);
+//        GLog.p(String.valueOf(hero.pos));
+//        GLog.b(String.valueOf(hero.viewDistance));
+//    }
 
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
@@ -205,17 +215,16 @@ public class ZeroCityLevel extends Level {
         setSize(WIDTH, HEIGHT);
         map = codedMap.clone();
 
-        int entrance = 131;
-        int exit = 317;
-        int bexit = 2615;
 
-        LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.SURFACE);
+        int exitCell = 317;
+        LevelTransition exit = new LevelTransition(this, exitCell, LevelTransition.Type.REGULAR_EXIT);
+        transitions.add(exit);
+
+        int enterCell = 131;
+        LevelTransition enter = new LevelTransition(this, enterCell, LevelTransition.Type.SURFACE);
         transitions.add(enter);
 
-        LevelTransition exits = new LevelTransition(this, exit, LevelTransition.Type.REGULAR_EXIT);
-        transitions.add(exits);
-
-        LevelTransition bexits = new LevelTransition(this, bexit, LevelTransition.Type.BRANCH_ENTRANCE);
+        LevelTransition bexits = new LevelTransition(this, 2615, LevelTransition.Type.BRANCH_ENTRANCE);
         transitions.add(bexits);
 
         CustomTilemap vis = new townBehind();
@@ -309,11 +318,53 @@ public class ZeroCityLevel extends Level {
         MoRuoS npc4 = new MoRuoS();
         npc4.pos = 3066;
         mobs.add(npc4);
+
+        SmallLeaf npc5 = new SmallLeaf();
+        npc5.pos = 365;
+        mobs.add(npc5);
+
+        Question npc6 = new Question();
+        npc6.pos = 3757;
+        mobs.add(npc6);
+
+        LanFire npc7 = new LanFire();
+        npc7.pos = 3020;
+        mobs.add(npc7);
+
+        JIT npc8 = new JIT();
+        npc8.pos = 2955;
+        mobs.add(npc8);
+
+        DeepSea npc10 = new DeepSea();
+        npc10.pos = 2685;
+        mobs.add(npc10);
+
+        MoonLow npc11 = new MoonLow();
+        npc11.pos = 2728;
+        mobs.add(npc11);
+
+        KongFu npc12 = new KongFu();
+        npc12.pos = 3100;
+        mobs.add(npc12);
+
+        LuoWhite npc13 = new LuoWhite();
+        npc13.pos = 1300;
+        mobs.add(npc13);
+
+        //45%概率
+        if(Random.Float()<=0.45f){
+            BzmdrLand npc9 = new BzmdrLand();
+            npc9.pos = 3085;
+            mobs.add(npc9);
+            //如果地表版本生成 旅馆禁止生成Bzmdr
+            Statistics.onlyBzmdr = true;
+        }
     }
 
     @Override
     protected void createItems() {
-
+        drop( new DiedCrossBow(), 1237  ).type = Heap.Type.FOR_ICE;
+        drop( new MoonDao(), 1238  ).type = Heap.Type.FOR_ICE;
     }
 
 

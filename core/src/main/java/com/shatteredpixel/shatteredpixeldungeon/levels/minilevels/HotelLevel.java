@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.minilevels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.BOOKSHELF;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CRYSTAL_DOOR;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CUSTOM_DECO;
@@ -11,11 +10,15 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EXIT;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.STATUE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ATRI;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.BlueCJ;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Bzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonCat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.QinYueWolf;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLing;
@@ -25,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
 import com.watabou.utils.Random;
@@ -52,11 +54,10 @@ public class HotelLevel extends Level {
 
     private static final int B = SIGN;
 
-    @Override
-    public void occupyCell(Char ch) {
-        super.occupyCell(ch);
-        GLog.p(String.valueOf(hero.pos));
-    }
+    private static final int R = WATER;
+
+
+
 
     private static final int[] code_map = {
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,
@@ -65,8 +66,8 @@ public class HotelLevel extends Level {
             W,D,D,D,D,D,W,D,D,D,D,D,D,W,
             W,W,W,W,W,W,W,D,D,D,D,D,D,W,
             W,D,D,D,D,D,W,D,D,I,I,I,B,W,
-            W,D,D,D,D,D,C,D,D,D,D,D,B,W,
-            W,D,D,D,D,D,W,D,D,I,I,D,B,W,
+            W,R,R,D,D,D,C,D,D,D,D,D,B,W,
+            W,R,R,D,D,D,W,D,D,I,I,D,B,W,
             W,W,W,W,W,W,W,D,D,D,D,D,B,W,
             W,D,D,D,D,D,W,D,D,D,D,D,B,W,
             W,D,D,D,D,D,C,D,D,D,D,D,B,W,
@@ -182,9 +183,24 @@ public class HotelLevel extends Level {
         n1.pos = 143;
         mobs.add(n1);
 
+        ATRI n3 = new ATRI();
+        n3.pos = 87;
+        mobs.add(n3);
+
         QinYueWolf n5 = new QinYueWolf();
         n5.pos = 255;
         mobs.add(n5);
+
+        BlueCJ n7 = new BlueCJ();
+        n7.pos = 31;
+        mobs.add(n7);
+
+        if(!Statistics.onlyBzmdr){
+            Bzmdr n9 = new Bzmdr();
+            n9.pos = 199;
+            mobs.add(n9);
+        }
+
     }
 
     @Override
@@ -199,7 +215,7 @@ public class HotelLevel extends Level {
 
     @Override
     public String waterTex() {
-        return Assets.Environment.WATER_CITY;
+        return Assets.Environment.WATER_CAVES;
     }
 
 

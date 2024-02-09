@@ -114,7 +114,7 @@ public class ColdChestBossLevel extends Level {
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
             W,E,E,E,W,W,W,W,W,E,E,E,E,E,E,E,W,W,W,E,E,E,E,E,E,E,W,W,W,W,W,E,E,E,W,
             W,E,E,E,O,O,O,O,O,E,E,E,E,E,E,E,W,J,W,E,E,E,E,E,E,E,O,O,O,O,O,E,E,E,W,
-            W,E,E,E,P,P,P,P,P,E,E,E,E,E,E,E,W,P,W,E,E,E,E,E,E,E,P,P,P,P,P,E,E,E,W,
+            W,E,E,E,P,P,P,P,P,E,E,E,E,E,E,E,W,J,W,E,E,E,E,E,E,E,P,P,P,P,P,E,E,E,W,
             W,E,E,E,P,E,E,E,P,E,E,E,E,E,E,E,W,K,W,E,E,E,E,E,E,E,P,E,E,E,P,E,E,E,W,
             W,E,P,E,P,E,M,E,P,E,P,E,P,E,P,E,W,P,W,E,P,E,P,E,P,E,P,E,M,E,P,E,P,E,W,
             W,E,E,E,P,E,E,E,P,E,E,E,E,E,E,E,W,P,W,E,E,E,E,E,E,E,P,E,E,E,P,E,E,E,W,
@@ -308,7 +308,7 @@ public class ColdChestBossLevel extends Level {
                 if(ch.pos==682){
                     Buff.detach(hero, Levitation.class);
                 } else if(ch.pos==111||ch.pos==133) {
-                    Buff.affect( hero, Levitation.class, 120f );
+                    Buff.affect( hero, Levitation.class, 99999999999999999999999999999999f );
                 }
             }
 

@@ -27,7 +27,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
@@ -119,11 +118,7 @@ public class Chasm implements Hero.Doom {
 		Sample.INSTANCE.play( Assets.Sounds.FALLING );
 
 		Level.beforeTransition();
-		if((Dungeon.depth ==10 && ((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && !Statistics.mustTengu) ) {
-			ScrollOfTeleportation.appear(hero, 35 * 19 + 17);
-			Dungeon.hero.interrupt();
-			Dungeon.observe();
-		} else if (Dungeon.hero.isAlive() && Dungeon.branch == 0 && Dungeon.depth!=30) {
+		if (Dungeon.hero.isAlive() && Dungeon.branch == 0 && Dungeon.depth!=30) {
 			Dungeon.hero.interrupt();
 			InterlevelScene.mode = InterlevelScene.Mode.FALL;
 			if (Dungeon.level instanceof RegularLevel && Dungeon.branch == 0) {

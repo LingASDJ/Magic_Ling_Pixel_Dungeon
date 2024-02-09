@@ -94,6 +94,9 @@ public class MenuPane extends Component {
 				break;
 				case 5: abcd = "E";
 				break;
+				case 6: case 7:
+				abcd = "?";
+				break;
 		}
 
 		if(branch!=0){

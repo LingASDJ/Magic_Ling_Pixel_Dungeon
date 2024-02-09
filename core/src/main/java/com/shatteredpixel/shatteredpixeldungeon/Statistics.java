@@ -125,7 +125,7 @@ public class Statistics {
 	//拟态之王
 	public static boolean TPDoorDieds = false;
 
-	//修复同步
+	//前路优化
 	public static boolean noGoReadHungry = false;
 
 	//警告
@@ -152,6 +152,8 @@ public class Statistics {
 	public static boolean dm300Fight = false;
 
 	public static boolean gooFight = false;
+
+	public static boolean onlyBzmdr = false;
 
 	//昼夜更替
 	public static int gameTime;
@@ -303,6 +305,7 @@ public class Statistics {
 		NoTime = false;
 		dm720Fight = false;
 		dm300Fight = false;
+		onlyBzmdr = false;
 
 		gameDay = 1;
 
@@ -418,6 +421,8 @@ public class Statistics {
 		bundle.put(DM300FIGHT,dm300Fight);
 
 		bundle.put(GOOFIGHT,gooFight);
+
+		bundle.put("onlyB",onlyBzmdr);
 
 		bundle.put("NOTIME",NoTime);
 
@@ -536,6 +541,8 @@ public class Statistics {
 		seedCustom = bundle.getBoolean(SEEDCUSTOM);
 
 		ankhToExit = bundle.getBoolean(XRTANKH);
+
+		onlyBzmdr = bundle.getBoolean("onlyB");
 
 		NoTime = bundle.getBoolean("NOTIME");
 

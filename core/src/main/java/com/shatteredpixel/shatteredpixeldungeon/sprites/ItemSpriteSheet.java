@@ -190,6 +190,8 @@ public class ItemSpriteSheet {
 
     public static final int CRYSTAL_LING    = BOMBS+13;
 
+    public static final int CRYSTAL_QUESTION    = BOMBS+14;
+
     static{
         assignItemRect(BOMB,            10, 13);
         assignItemRect(DBL_BOMB,        14, 13);
@@ -204,6 +206,7 @@ public class ItemSpriteSheet {
         assignItemRect(ARCANE_BOMB,     10, 13);
         assignItemRect(SHRAPNEL_BOMB,   10, 13);
         assignItemRect(BLACK_KEY,        8, 14);
+        assignItemRect(CRYSTAL_QUESTION, 15,11);
     }
 
 
@@ -799,6 +802,8 @@ public class ItemSpriteSheet {
     public static final int  FIVEREN= 	LENGYWEAPONS+11;
 
     public static final int  SHADOWMEAT= 	LENGYWEAPONS+12;
+
+    public static final int  REDCRAB= 	LENGYWEAPONS+13;
 
     static {
         assignItemRect(DIEDCROSSBOW, 16, 15);

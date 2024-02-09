@@ -2,25 +2,37 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NxhyNpc;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.LingPlot;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhiteGirlSprites;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.tweeners.Delayer;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
-public class WhiteLing extends NPC {
+import java.util.ArrayList;
+
+public class WhiteLing extends NTNPC {
+
     {
         spriteClass = WhiteGirlSprites.class;
         maxLvl = 0;
-        HP = HT = 0;
         properties.add(Property.UNKNOWN);
         baseSpeed = 0;
         properties.add(Property.IMMOVABLE);
+
+        chat = new ArrayList<String>() {
+            {
+                add((Messages.get(WhiteLing.class, "c_message1")));
+                add((Messages.get(WhiteLing.class, "c_message2")));
+                add((Messages.get(WhiteLing.class, "c_message3")));
+            }
+        };
+
     }
 
     @Override
@@ -45,6 +57,8 @@ public class WhiteLing extends NPC {
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(FIRST, first);
+        bundle.put(SECNOD, secnod);
+        bundle.put(RD, RD);
     }
 
 
@@ -83,31 +97,40 @@ public class WhiteLing extends NPC {
 
     @Override
     public boolean interact(Char c) {
-
+        LingPlot plot = new LingPlot();
+        LingPlot.LingPlotGood B_plot = new LingPlot.LingPlotGood();
         sprite.turnTo(pos, Dungeon.hero.pos);
-        if(first) {
+        if(first){
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndDialog(plot,false));
+                }
+            });
             first=false;
-            tell(Messages.get(NxhyNpc.class, "message1"));
-        }else if(secnod) {
+        } else if(secnod){
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndDialog(B_plot,false));
+                }
+            });
             secnod=false;
-            tell(Messages.get(NxhyNpc.class, "message2"));
-        } else if(secnod) {
-            rd=false;
-            tell(Messages.get(NxhyNpc.class, "message3"));
+        } else if(rd) {
+            ((WhiteGirlSprites)sprite).go();
+            WndQuest.chating(this,chat);
+            GameScene.scene.add(new Delayer(2f){
+                @Override
+                protected void onComplete() {
+                    ((WhiteGirlSprites)sprite).sleep();
+                }
+            });
+            rd = false;
         } else {
-            yell(Messages.get(this,"other_"+Random.IntRange(1, 2)));
+            ((WhiteGirlSprites)sprite).sleep();
+            WndQuest.chating(this,chat);
         }
 
         return true;
-    }
-
-    private void tell(String text) {
-        Game.runOnRenderThread(new Callback() {
-                                   @Override
-                                   public void call() {
-                                       GameScene.show(new WndQuest(new NxhyNpc(), text));
-                                   }
-                               }
-        );
     }
 }

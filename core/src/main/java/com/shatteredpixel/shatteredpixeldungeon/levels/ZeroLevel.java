@@ -173,7 +173,7 @@ public class ZeroLevel extends Level {
                     Item item = new BookBag();
                     drop(item, this.width * 18 + 19);
                 }
-                drop( new DiedCrossBow(), this.width * 17 + 20  ).type = Heap.Type.FOR_ICE;
+
                 drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.width * 16 + 17 );
                 drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 19 + 16 );
             }

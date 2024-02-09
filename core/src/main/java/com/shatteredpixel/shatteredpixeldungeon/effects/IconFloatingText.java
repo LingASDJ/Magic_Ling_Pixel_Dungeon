@@ -59,6 +59,8 @@ public class IconFloatingText extends RenderedTextBlock {
 
     public static int HUNGRY_EXTRA_HEAL = 30;
 
+    public static int ICEFIRE = 32;
+
     private static final SparseArray<ArrayList<IconFloatingText>> stacks = new SparseArray<>();
 
     public IconFloatingText() {

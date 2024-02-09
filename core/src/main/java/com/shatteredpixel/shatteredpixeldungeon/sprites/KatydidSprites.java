@@ -27,12 +27,12 @@ public class KatydidSprites extends MobSprite {
         run.frames( frames, 2,3,4 );
 
         attack = new MovieClip.Animation( 12, false );
-        attack.frames( frames, 5,0 );
+        attack.frames( frames, 4,5,6,7,8,0 );
 
         cast = attack.clone();
 
         die = new MovieClip.Animation( 12, false );
-        die.frames( frames, 6,7 );
+        die.frames( frames, 9,10 );
 
         play( idle );
     }

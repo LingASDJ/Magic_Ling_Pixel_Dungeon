@@ -68,7 +68,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.DragonBluePlot;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.HollowPlot;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.EmoIcon;
@@ -1469,15 +1468,15 @@ public class GameScene extends PixelScene {
 								WndStory.showChapter(WndStory.ID_ZTBS);
 							}
 							break;
-						case 26:
-							HollowPlot plot = new HollowPlot();
-							Game.runOnRenderThread(new Callback() {
-								@Override
-								public void call() {
-									GameScene.show(new WndDialog(plot,false));
-								}
-							});
-							break;
+//						case 26:
+//							HollowPlot plot = new HollowPlot();
+//							Game.runOnRenderThread(new Callback() {
+//								@Override
+//								public void call() {
+//									GameScene.show(new WndDialog(plot,false));
+//								}
+//							});
+//							break;
 					}
 				}
 

@@ -650,6 +650,16 @@ public class SPDSettings extends GameSettings {
 	}
 
 
+
+	public static void WT3(boolean value) {
+		put("WT3", value);
+	}
+
+	public static boolean WT3() {
+		return getBoolean("WT3", false);
+	}
+
+
 	//永久货币逻辑
 	public static void iceCoin(int value) {
 		int currentCoin = iceCoin();

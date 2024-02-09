@@ -70,11 +70,15 @@ public class PaswordBadges {
         displayBadge( Badge.HELLORWORLD);
     }
 
+    public static void HelloLing() {
+        displayBadge( Badge.PINK_LING);
+    }
+
 
     public enum Badge {
 
         TAKE_ITEM( 0 ),
-        FIREGIRL,
+        FIREGIRL(1),
         SLIMEPRS(2),
         DRAWF_HEAD(3),
         SPICEALBOSS 				 (4),
@@ -91,7 +95,9 @@ public class PaswordBadges {
         ZQJ_GHOST(17),
         GOOD_BLUE(18),
 
-        HELLORWORLD(21);
+        HELLORWORLD(21),
+
+        PINK_LING(22);
 
 
 

@@ -285,7 +285,7 @@ public class WndBag extends WndTabbed {
 		iceCoinAmount.hardlight(TITLE_COLOR);
 		iceCoinAmount.measure();
 		// 数值文本紧随图标之后
-		iceCoinAmount.x = x + iceCoinAmount.width();
+		iceCoinAmount.x = x - iceCoinAmount.width()/5f+4;
 		iceCoinAmount.y = y + (slotHeight - iceCoinAmount.baseLine()) / 2f;
 		PixelScene.align(iceCoinAmount);
 		add(iceCoinAmount);

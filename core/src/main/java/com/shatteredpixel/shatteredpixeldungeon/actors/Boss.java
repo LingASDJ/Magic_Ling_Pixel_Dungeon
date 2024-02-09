@@ -1,8 +1,12 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
@@ -34,6 +38,11 @@ abstract public class Boss extends Mob {
             baseMinDef = mid; //最小防御
             baseMaxDef = mad; //最大防御
         }
+
+    public void die( Object cause ) {
+        super.die(cause);
+        Dungeon.level.drop(new IceCyanBlueSquareCoin(5*(Dungeon.depth/5)),hero.pos);
+    }
 
     @Override
     public float attackDelay() {

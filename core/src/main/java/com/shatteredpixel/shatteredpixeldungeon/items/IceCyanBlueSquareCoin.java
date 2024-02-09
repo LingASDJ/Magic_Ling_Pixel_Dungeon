@@ -4,7 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -31,7 +31,7 @@ public class IceCyanBlueSquareCoin extends Item {
 
     @Override
     public ArrayList<String> actions(Hero hero ) {
-        if(!Dungeon.isChallenged(PRO)) {
+        if(Dungeon.isChallenged(PRO)) {
             return new ArrayList<>();
         } else {
             return super.actions(hero);
@@ -41,8 +41,8 @@ public class IceCyanBlueSquareCoin extends Item {
     @Override
     public boolean doPickUp(Hero hero, int pos) {
 
-        if(Dungeon.isChallenged(PRO)){
-            Statistics.iceCyanBlueSquareCoin += quantity;
+        if(!Dungeon.isChallenged(PRO)){
+            SPDSettings.iceCoin(quantity);
         }
 
         GameScene.pickUp( this, pos );

@@ -88,7 +88,6 @@ public class Bones {
 		bundle.put( ITEM, item );
 		bundle.put( HERO_CLASS, heroClass );
 
-		//TODO 墓志铭测试
 		setEpitaphProps(bundle);
 
 		try {

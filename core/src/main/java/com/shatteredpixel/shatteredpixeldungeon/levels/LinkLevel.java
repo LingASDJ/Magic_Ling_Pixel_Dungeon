@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
@@ -13,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.ShopKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.ShopKing_Two;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.BackGoKey;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 
 public class LinkLevel extends Level {
 
@@ -78,15 +80,18 @@ public class LinkLevel extends Level {
         setSize(WIDTH, HEIGHT);
         map = code_map.clone();
 
-        this.entrance = WIDTH*28 + 22;
-        exit = 0;
+        int entrance = WIDTH*28 + 22;
+
+        LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.BRANCH_EXIT);
+        transitions.add(enter);
+
         return true;
     }
 
     @Override
     protected void createItems() {
         drop( new BackGoKey(), this.width  + 1  );
-        drop( new IronKey(-5), this.width  + 22  );
+        drop( new IronKey(depth), this.width  + 22  );
     }
 
     @Override
@@ -141,7 +146,7 @@ public class LinkLevel extends Level {
 
     @Override
     public String waterTex() {
-        return Assets.Environment.WATER_COLD;
+        return Assets.Environment.WATER_CAVES;
     }
 
 }

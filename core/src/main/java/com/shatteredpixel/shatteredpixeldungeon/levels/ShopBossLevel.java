@@ -15,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.FireMagicDiedNP
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDiedTO;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -79,6 +80,9 @@ public class ShopBossLevel extends Level {
             WIDTH*17 + 12,
             WIDTH*17 + 22,
     };
+    public static int[] CryStalPosition2 = new int[]{
+            816, 828, 408, 396
+    };
 
     public static int TRUEPosition = WIDTH * 17 + 17;
     public static int FALSEPosition = WIDTH * 22 + 17;
@@ -96,7 +100,7 @@ public class ShopBossLevel extends Level {
             GameScene.updateMap( this.entrance =  WIDTH*21 + 17 );
         } else {
             FireMagicDiedNPC boss = new FireMagicDiedNPC();
-            boss.pos = WIDTH*17 + 17;
+            boss.pos = 647;
             GameScene.add(boss);
 
             NullDiedTO bossx = new NullDiedTO();
@@ -115,6 +119,8 @@ public class ShopBossLevel extends Level {
                 && ch == hero && Dungeon.level.distance(ch.pos, entrance) >= 2) {
             seal();
         }
+
+        //GLog.p(String.valueOf(hero.pos));
 
         if(ch == hero){
             //指定区域
@@ -140,6 +146,11 @@ public class ShopBossLevel extends Level {
         Mob king = getKing();
         //fixed
         HashSet<FireMagicDied.Summoning> summons = king.buffs(FireMagicDied.Summoning.class);
+
+        if (summons.size() >= 20) {
+            return -1;
+        }
+
         ArrayList<Integer> positions = new ArrayList<>();
         for (int pedestal : pedestals) {
             boolean clear = true;
@@ -255,8 +266,12 @@ public class ShopBossLevel extends Level {
         setSize(WIDTH, HEIGHT);
         map = code_map.clone();
 
-        this.entrance = WIDTH*25 + 17;
+        int entrance = WIDTH*25 + 17;
         exit = 0;
+
+        LevelTransition ecne = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
+        transitions.add(ecne);
+
         return true;
     }
 
@@ -286,11 +301,11 @@ public class ShopBossLevel extends Level {
     }
 
     public String tilesTex() {
-            return Assets.Environment.TILES_DIED;
+            return Assets.Environment.TILES_HALLS;
     }
 
     public String waterTex() {
-            return Assets.Environment.WATER_CAVES;
+            return Assets.Environment.WATER_HALLS;
     }
 
 }

@@ -150,6 +150,7 @@ public class LevelRules {
                         return new HallsBossLevel();
                     }
                 case 26:
+                    return new LastLevel();
                 case 27:
                 case 28:
                 case 29:
@@ -221,6 +222,12 @@ public class LevelRules {
                     default:
                         return new DeadEndLevel();
                 }
+
+            case 6:
+                return new LinkLevel();
+
+            case 7:
+                return new ShopBossLevel();
         }
     }
 

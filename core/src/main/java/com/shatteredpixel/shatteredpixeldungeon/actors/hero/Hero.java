@@ -576,7 +576,7 @@ public class Hero extends Char {
 	public int tier() {
 		Armor armor = belongings.armor();
 		if (armor instanceof ClassArmor){
-			return 7;
+			return 9;
 		} else if (armor != null){
 			return armor.tier;
 		} else {

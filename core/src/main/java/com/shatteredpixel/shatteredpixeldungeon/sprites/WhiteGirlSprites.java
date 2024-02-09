@@ -5,6 +5,10 @@ import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
 
 public class WhiteGirlSprites extends MobSprite {
+
+    private Animation go;
+    private Animation sleep;
+
     public WhiteGirlSprites() {
         texture( Assets.Sprites.WHITE );
 
@@ -18,7 +22,21 @@ public class WhiteGirlSprites extends MobSprite {
         die = new MovieClip.Animation(10, false);
         die.frames(textureFilm, 0);
 
+        go = new MovieClip.Animation(8, false);
+        go.frames(textureFilm, 3,4,5,6,7);
+
+        sleep = new MovieClip.Animation(8, true);
+        sleep.frames(textureFilm, 11,12,13,14,15);
+
         play(this.idle);
+    }
+
+    public void go() {
+        play( go );
+    }
+
+    public void sleep() {
+        play( sleep );
     }
 }
 

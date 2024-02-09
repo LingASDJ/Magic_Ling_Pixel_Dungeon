@@ -54,7 +54,7 @@ public class BackGoKey extends TestItem {
     @Override
     public ArrayList<String> actions(Hero hero ) {
         ArrayList<String> actions = super.actions( hero );
-        if(Dungeon.hero.buff(ShopLimitLock.class) != null || Dungeon.depth == -5) {
+        if(Dungeon.hero.buff(ShopLimitLock.class) != null || Dungeon.branch == 6) {
             actions.add(AC_INTER_TP);
         }
         return actions;

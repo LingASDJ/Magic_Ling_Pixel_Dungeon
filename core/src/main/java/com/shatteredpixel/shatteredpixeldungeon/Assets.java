@@ -43,6 +43,8 @@ public class Assets {
 	public static final String BGM_BOSSD = "music/Boss4.ogg";
 	public static final String BGM_BOSSD2 = "music/DwarfMaster.ogg";
 	public static final String BGM_BOSSE3 = "music/Yogdead.ogg";
+
+	public static final String BGM_SHOP = "music/Shop.ogg";
 	public static final String BGM_BOSSE4 = "music/YogTime.ogg";
 	public static final String BGM_FRBOSS = "music/SnowLing.ogg";
 	public static final String RUN = "music/Run.ogg";
@@ -388,12 +390,24 @@ public class Assets {
 		public static final String GDX = "splashes/gdx.png";
 		public static final String ANSDOSHIP = "splashes/ansdoship.png";
 
-		public static final String MLPD2Y = "splashes/mlpd2y.png";
+		public static final String LINPX = "splashes/sx.png";
 		public static final String DUELIST  = "splashes/duelist.jpg";
 
 		public static final String MOSRDX = "splashes/morpheus_portraits.png";
 
 		public static final String TYPHON = "splashes/typhon_portraits.png";
+
+		public static final String SMLF = "splashes/smallleaf_portraits.png";
+
+		public static final String ATRP = "splashes/ATRI_portraits.png";
+
+		public static final String BZMR = "splashes/bzmdr_portraits.png";
+
+		public static final String JIT = "splashes/JIT_portraits.png";
+
+		public static final String MOON = "splashes/moon_portraits.png";
+
+		public static final String LINP = "splashes/Ling_portraits.png";
 
 		public static final String GHOSTJ = "splashes/apprentice_portraits.png";
 
@@ -404,6 +418,12 @@ public class Assets {
 
 		//NPCS
 		public static final String KEEPERKING	= "sprites/npc/ShopKing.png";
+		public static final String DEEP	= "sprites/npc/deepsea.png";
+		public static final String QUESTION	= "sprites/npc/question.png";
+
+		public static final String BZ	= "sprites/npc/bzmder.png";
+
+		public static final String JIT	= "sprites/npc/JIT.png";
 		public static final String WFS	    = "sprites/items/wf.png";
 		//ANCITY
 		public static final String TURTLE= "sprites/ancity/cltb.png";
@@ -462,7 +482,7 @@ public class Assets {
 
 		public static final String CRID	= "sprites/boss/ColdGuard.png";
 
-		public static final String FRAS	= "sprites/boss/FireMagicGirl.png";
+		public static final String FRAS	= "sprites/boss/FireWitch.png";
 
 		public static final String CFAS	= "sprites/boss/FruitsCrivus.png";
 		public static final String NECROREDEX	= "sprites/boss/rednecromancer_ex.png";
@@ -498,19 +518,28 @@ public class Assets {
 
 		public static final String LanFire		= "sprites/npc/lanfire.png";
 
+		public static final String CJBL		= "sprites/npc/blue_cj.png";
+
 		public static final String SAESD		= "sprites/bluedragon.png";
 
-		public static final String KATID		= "sprites/katydid.png";
+		public static final String KATID		= "sprites/venom_flower.png";
 
 		public static final String WHITE		= "sprites/npc/whiteling.png";
 
 		public static final String MOONC		= "sprites/npc/mooncat.png";
 
+		public static final String SMALLEAF		= "sprites/npc/smallleaf.png";
+
 		public static final String MORUS		= "sprites/npc/mruos.png";
 
+		public static final String LXF		= "sprites/npc/lostwhite.png";
+
+
 		public static final String WOLF		= "sprites/npc/wolf.png";
+		public static final String KONG		= "sprites/npc/ChineseGongFu.png";
+		public static final String MOLX		= "sprites/npc/moonwhite-n.png";
 
-
+		public static final String ATRI		= "sprites/npc/ATRI.png";
 		public static final String BBAT	= "sprites/bloodbat.png";
 
 		public static final String RAT		= "sprites/rat.png";

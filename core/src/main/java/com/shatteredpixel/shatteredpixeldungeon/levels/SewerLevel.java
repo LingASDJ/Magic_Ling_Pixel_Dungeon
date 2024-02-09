@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -29,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nxhy;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.JunglePainter;
@@ -45,7 +48,9 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TeleportationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ToxicTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NxhySprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
@@ -130,19 +135,7 @@ public class SewerLevel extends RegularLevel {
 	
 	@Override
 	public boolean activateTransition(Hero hero, LevelTransition transition) {
-		if (transition.type == LevelTransition.Type.SURFACE) {
-			if (hero.belongings.getItem(Amulet.class) == null) {
-				Game.runOnRenderThread(new Callback() {
-					@Override
-					public void call() {
-						GameScene.show(new WndMessage(Messages.get(hero, "leave")));
-					}
-				});
-				return false;
-			} else {
-				return super.activateTransition(hero, transition);
-			}
-		} else if (transition.type == LevelTransition.Type.BRANCH_EXIT) {
+		if (transition.type == LevelTransition.Type.BRANCH_EXIT) {
 
 
 			if (Statistics.gooFight){
@@ -172,10 +165,31 @@ public class SewerLevel extends RegularLevel {
 					} );
 				}
 			});
-			return false;
 		} else {
-			return super.activateTransition(hero, transition);
+			if (hero.belongings.getItem(Amulet.class) == null) {
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						GameScene.show(new WndMessage(Messages.get(hero, "leave")));
+					}
+				});
+				return false;
+			} else {
+				TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+				if (timeFreeze != null) timeFreeze.disarmPresses();
+				Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+				if (timeBubble != null) timeBubble.disarmPresses();
+				InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
+				InterlevelScene.curTransition = new LevelTransition();
+				InterlevelScene.curTransition.destDepth = depth-1;
+				InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+				InterlevelScene.curTransition.destBranch = 0;
+				InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+				InterlevelScene.curTransition.centerCell = -1;
+				Game.switchScene(InterlevelScene.class);
+			}
 		}
+		return false;
 	}
 
 	@Override
