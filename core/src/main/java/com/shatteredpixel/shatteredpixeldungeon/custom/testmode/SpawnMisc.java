@@ -51,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.LightFood;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.RedCrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.RiceDumplings;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
@@ -86,6 +87,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMi
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.BlessingNecklace;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
@@ -514,8 +516,9 @@ public class SpawnMisc extends TestItem {
             case 14: return RiceDumplings.RiceDumplingsOrange.class;
             case 15: return RiceDumplings.RiceDumplingsLink.class;
             case 16: return RiceDumplings.RiceDumplingsBottle.class;
+            case 17: return RedCrab.class;
             default:
-            case 17: return PhantomMeat.class;
+            case 18: return PhantomMeat.class;
         }
     }
 
@@ -543,6 +546,7 @@ public class SpawnMisc extends TestItem {
             case 19: return OilPotion.class;
             case 21: return LightFood.class;
             case 22: return TestBooks.class;
+            case 23: return BlessingNecklace.class;
         }
     }
 
@@ -582,11 +586,11 @@ public class SpawnMisc extends TestItem {
             case 9:
                 return 12;
             case 10:
-                return 17;
+                return 18;
             case 11:
                 return 12;
             case 12:
-                return 22;
+                return 23;
             default:
                 return 11;
         }
@@ -915,7 +919,7 @@ public class SpawnMisc extends TestItem {
             Class<? extends Item> item = idToItem(selected);
             if(!Reflection.newInstance(item).stackable)
                 item_quantity = 1;
-            RedButton_quantity.text(Messages.get(this, "item_quantity",Messages.get(item, "name"),item_quantity));
+            RedButton_quantity.text(Messages.get(this, "item_quantity",item == Pasty.class?new Pasty().name():Messages.get(item, "name"),item_quantity));
             //layout();
         }
     }
