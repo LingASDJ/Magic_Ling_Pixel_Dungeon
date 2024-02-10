@@ -34,7 +34,7 @@ public class WaterOfOil extends WellWater {
 
     @Override
     protected Notes.Landmark record() {
-        return Notes.Landmark.WELL_OF_HEALTH;
+        return Notes.Landmark.WELL_OF_OIL;
     }
 
     @Override

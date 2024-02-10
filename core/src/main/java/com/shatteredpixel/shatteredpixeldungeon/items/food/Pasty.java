@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
@@ -61,6 +62,9 @@ public class Pasty extends Food {
 			case ZQJ:
 				image = ItemSpriteSheet.DG1;
 				break;
+			case CJ:
+				image = ItemSpriteSheet.Fish_A;
+				break;
 		}
 	}
 	
@@ -86,6 +90,15 @@ public class Pasty extends Food {
 				ScrollOfRecharging.charge( hero );
 				GLog.p(Messages.get(this, "moonling"));
 				break;
+			case CJ:
+				//...but it also awards an extra item that restores 150 hunger
+				FishLeftover left = new FishLeftover();
+				Dungeon.level.drop(left, hero.pos).sprite.drop();
+				hero.belongings.charge(0.5f); //2 turns worth
+				ScrollOfRecharging.charge( hero );
+				Buff.affect(hero, Haste.class, 4f);
+				Buff.affect(Dungeon.hero, ArtifactRecharge.class).prolong(hero.HT/10f);
+				break;
 		}
 	}
 
@@ -100,6 +113,8 @@ public class Pasty extends Food {
 				return Messages.get(this, "cane");
 			case ZQJ:
 				return Messages.get(this, "moon");
+			case CJ:
+				return Messages.get(this, "fish_name");
 		}
 	}
 
@@ -114,6 +129,21 @@ public class Pasty extends Food {
 				return Messages.get(this, "cane_desc");
 			case ZQJ:
 				return Messages.get(this, "moon_desc", Dungeon.hero.name());
+			case CJ:
+				return Messages.get(this, "fish_desc");
+		}
+	}
+
+	public static class FishLeftover extends Food {
+
+		{
+			image = ItemSpriteSheet.Fish_B;
+			energy = Hunger.HUNGRY/2;
+		}
+
+		@Override
+		public int value() {
+			return 10 * quantity;
 		}
 	}
 	

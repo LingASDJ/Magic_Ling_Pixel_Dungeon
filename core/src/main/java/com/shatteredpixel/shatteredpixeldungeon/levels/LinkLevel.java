@@ -7,6 +7,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdGurad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Null;
@@ -17,6 +18,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.BackGoKey;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 
 public class LinkLevel extends Level {
+
+    @Override
+    public boolean activateTransition(Hero hero, LevelTransition transition) {
+        return false;
+    }
 
     private static final int W = WALL;
     private static final int B = EMPTY;

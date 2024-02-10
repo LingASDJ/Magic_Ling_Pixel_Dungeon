@@ -54,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ScanningBeam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SpreadWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.JAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
@@ -554,6 +555,8 @@ public class YogReal extends Boss {
     @Override
     public void die( Object cause ) {
         GameScene.flash(0x80FFFFFF);
+
+        Dungeon.level.drop(new IceCyanBlueSquareCoin(30),pos);
 
        for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
             if (mob.alignment == Alignment.ENEMY && mob != this) {

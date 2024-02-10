@@ -13,6 +13,7 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.tweeners.Delayer;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -32,6 +33,19 @@ public class WhiteLing extends NTNPC {
                 add((Messages.get(WhiteLing.class, "c_message3")));
             }
         };
+
+    }
+
+    @Override
+    public String defenseVerb() {
+        return def_verb();
+    }
+    private String def_verb(){
+        if(Random.Int(100)>=50){
+            return Messages.get(this, "def_verb_1");
+        } else {
+            return Messages.get(this, "def_verb_2");
+        }
 
     }
 

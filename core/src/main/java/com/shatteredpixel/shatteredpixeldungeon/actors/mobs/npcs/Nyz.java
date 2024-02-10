@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -17,6 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.IceCityBoo
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.NoKingMobBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
@@ -39,9 +42,15 @@ public class Nyz extends NTNPC {
 
         chat = new ArrayList<String>() {
             {
-                add(Messages.get(Nyz.class, "chat_1"));
-                add(Messages.get(Nyz.class, "chat_2"));
-                add(Messages.get(Nyz.class, "chat_3"));
+                if(RegularLevel.holiday == RegularLevel.Holiday.CJ) {
+                    add(Messages.get(Nyz.class, "dhat_1",hero.name()));
+                    add(Messages.get(Nyz.class, "dhat_2",hero.name()));
+                    add(Messages.get(Nyz.class, "dhat_3"));
+                } else {
+                    add(Messages.get(Nyz.class, "chat_1"));
+                    add(Messages.get(Nyz.class, "chat_2"));
+                    add(Messages.get(Nyz.class, "chat_3"));
+                }
             }
         };
     }
@@ -53,7 +62,7 @@ public class Nyz extends NTNPC {
             @Override
             public void call() {
                 if (!seenBefore && Dungeon.level.heroFOV[pos]) {
-                    GLog.p(Messages.get(Nyz.class, "greetings", Dungeon.hero.name()));
+                    GLog.p(Messages.get(Nyz.class, "greetings", hero.name()));
                     seenBefore = true;
                 } else if(seenBefore && !Dungeon.level.heroFOV[pos]) {
                     seenBefore = false;
@@ -63,7 +72,7 @@ public class Nyz extends NTNPC {
 
         throwItem();
 
-        sprite.turnTo( pos, Dungeon.hero.pos );
+        sprite.turnTo( pos, hero.pos );
         spend( TICK );
 
         shop6 = (Books) new YellowSunBooks().quantity(Random.Int(1,2));
@@ -114,7 +123,7 @@ public class Nyz extends NTNPC {
     }
 
     public boolean interact(Char c) {
-        this.sprite.turnTo(this.pos, Dungeon.hero.pos);
+        this.sprite.turnTo(this.pos, hero.pos);
         if (seenBefore && Dungeon.level.heroFOV[pos] && Dungeon.depth != 0 || Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
             Game.runOnRenderThread(new Callback() {
                 @Override

@@ -16,6 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
@@ -67,7 +68,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 //克里弗斯之果 本体
-public class CrivusFruits extends Mob {
+public class CrivusFruits extends Boss {
     //the actual affected cells
     private HashSet<Integer> affectedCells;
     private static final int MIN_ABILITY_CD = 7;

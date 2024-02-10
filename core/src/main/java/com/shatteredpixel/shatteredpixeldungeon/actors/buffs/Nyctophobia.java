@@ -102,7 +102,7 @@ public class Nyctophobia extends Buff implements Hero.Doom {
                 return true;
             }
             if (hero.lanterfire > 0 ) {
-                hero.damageLantern(1+Challenges.activeChallenges()/3);
+                hero.damageLantern(3+Challenges.activeChallenges()/3);
                 spend(20f-(float) Dungeon.depth/5+Challenges.activeChallenges());
             } else {
                 spend(STEP);

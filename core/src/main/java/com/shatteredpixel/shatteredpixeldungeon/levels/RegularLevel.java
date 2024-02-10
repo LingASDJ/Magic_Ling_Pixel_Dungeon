@@ -199,6 +199,7 @@ public abstract class RegularLevel extends Level {
         ZQJ, //TBD
         HWEEN,//2nd week of october though first day of november
         XMAS,
+		CJ,
     }
 	
 	protected ArrayList<Room> initRooms() {

@@ -854,6 +854,8 @@ public class WndSettings extends WndTabbed {
 
 		CheckBox ATBSwitch;
 
+		OptionSlider timeOut;
+
 //		RedButton ResetButton;
 
 		@Override
@@ -885,6 +887,20 @@ public class WndSettings extends WndTabbed {
 			ATBSwitch.checked(SPDSettings.ATBSettings());
 			add(ATBSwitch);
 
+			timeOut = new OptionSlider(Messages.get(this, "time_out"),
+					"4s",
+					"15s",
+					4, 15) {
+				@Override
+				protected void onChange() {
+					if (getSelectedValue() != SPDSettings.timeOutSeed()) {
+						SPDSettings.timeOutSeed(getSelectedValue());
+					}
+				}
+			};
+			timeOut.setSelectedValue(SPDSettings.timeOutSeed());
+			add(timeOut);
+
 		}
 
 		@Override
@@ -901,12 +917,14 @@ public class WndSettings extends WndTabbed {
 			if (width > 200){
 				LockFing.setRect(0, bottom, width, SLIDER_HEIGHT);
 				ATBSwitch.setRect(0, LockFing.bottom() + GAP, width, SLIDER_HEIGHT);
+				timeOut.setRect(0, ATBSwitch.bottom() + GAP, width, SLIDER_HEIGHT);
 			} else {
 				LockFing.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
 				ATBSwitch.setRect(0, LockFing.bottom() + GAP, width, SLIDER_HEIGHT);
+				timeOut.setRect(0, ATBSwitch.bottom() + GAP, width, SLIDER_HEIGHT);
 			}
 
-			height = ATBSwitch.bottom();
+			height = timeOut.bottom();
 		}
 
 	}

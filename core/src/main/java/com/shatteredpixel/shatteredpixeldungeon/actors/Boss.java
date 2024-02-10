@@ -2,7 +2,9 @@ package com.shatteredpixel.shatteredpixeldungeon.actors;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -11,6 +13,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetributio
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 abstract public class Boss extends Mob {
         protected static float baseMin; //最小伤害
@@ -41,7 +45,25 @@ abstract public class Boss extends Mob {
 
     public void die( Object cause ) {
         super.die(cause);
-        Dungeon.level.drop(new IceCyanBlueSquareCoin(5*(Dungeon.depth/5)),hero.pos);
+
+
+            ArrayList<IceCyanBlueSquareCoin> ice = hero.belongings.getAllItems(IceCyanBlueSquareCoin.class);
+            if(ice != null){
+                for (IceCyanBlueSquareCoin w : ice.toArray(new IceCyanBlueSquareCoin[0])){
+                    w.detachAll(hero.belongings.backpack);
+                    if(SPDSettings.Cheating()){
+                        //盗版蓝币只有正版的十分之一
+                        SPDSettings.iceCoin(w.quantity/10);
+                    } else {
+                        SPDSettings.iceCoin(w.quantity);
+                    }
+
+                }
+            }
+
+            Dungeon.level.drop(new IceCyanBlueSquareCoin((5*(Dungeon.depth/5) * ((Challenges.activeChallenges() / 5 == 0 ? 1 : Challenges.activeChallenges() / 5) /2))),pos);
+
+
     }
 
     @Override

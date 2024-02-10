@@ -151,18 +151,18 @@ public class LevelRules {
                     }
                 case 26:
                     return new LastLevel();
-                case 27:
-                case 28:
-                case 29:
-                    return new HollowLevel();
-                case 30:
-                    return new CerDogBossLevel();
-                case 31:
-                    if ((Statistics.boss_enhance & 0x12) != 0) {
-                        return new LastLevel();
-                    } else {
-                        return new LaveCavesBossLevel();
-                    }
+//                case 27:
+//                case 28:
+//                case 29:
+//                    return new HollowLevel();
+//                case 30:
+//                    return new CerDogBossLevel();
+//                case 31:
+//                    if ((Statistics.boss_enhance & 0x12) != 0) {
+//                        return new LastLevel();
+//                    } else {
+//                        return new LaveCavesBossLevel();
+//                    }
                 default:
                     Statistics.deepestFloor--;
                     return new DeadEndLevel();

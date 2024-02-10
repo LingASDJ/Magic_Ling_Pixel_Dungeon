@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.watabou.utils.Random;
@@ -43,6 +44,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 //TODO 仍然有问题
 public class SeedFinder {
@@ -112,16 +120,24 @@ public class SeedFinder {
         }
     }
 
-
+    private String result= Messages.get(this, "result");
+    public static boolean Nofinding = false;
+    public static boolean Pay = false;
 
     public void findSeed(boolean stop){
         if(!stop){
             findingStatus = FINDING.STOP;
         }
     }
-
+    static ExecutorService executorService= Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()*SPDSettings.timeOutSeed());
     public String findSeed(String[] wanted, int floor) {
         itemList = new ArrayList<>(Arrays.asList(wanted));
+        //Nofinding = false;
+        if(!Pay) {
+            int price = RegularLevel.holiday == RegularLevel.Holiday.CJ ? 5 : 15;
+            SPDSettings.iceDownCoin(price);
+            Pay = true;
+        }
 
         String seedDigits = Integer.toString(Random.Int(500000));
         findingStatus = FINDING.CONTINUE;
@@ -129,13 +145,29 @@ public class SeedFinder {
 
         int cs = SPDSettings.challenges();
 
-        String result="NONE";
 
-        for (int i = Random.Int(9999999); i < DungeonSeed.TOTAL_SEEDS && findingStatus == FINDING.CONTINUE ; i++) {
-            if (testSeedALL(seedDigits + i, floor)) {
-                result = logSeedItems(seedDigits + i, floor, cs);
-                break;
+
+        Future<String> future = executorService.submit(new Callable<String>() {
+
+            @Override
+            public String call() {
+                for (int i = Random.Int(9999999); i < DungeonSeed.TOTAL_SEEDS && findingStatus == FINDING.CONTINUE ; i++) {
+                    if (testSeedALL(seedDigits + i, floor) && !Nofinding) {
+                        result = logSeedItems(seedDigits + i, floor, cs);
+                        break;
+                    }
+                }
+                return result;
             }
+        });
+        try {
+            result = future.get(SPDSettings.timeOutSeed(), TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            future.cancel(true);
+            int pricex = RegularLevel.holiday == RegularLevel.Holiday.CJ ? 5 : 15;
+            SPDSettings.iceCoin(pricex);
+            Pay = false;
+            Nofinding = true;
         }
         return result;
     }
@@ -178,104 +210,12 @@ public class SeedFinder {
         return heaps;
     }
 
-    private boolean testSeed(String seed, int floors) {
-        SPDSettings.customSeed(seed);
-        GamesInProgress.selectedClass = HeroClass.WARRIOR;
-        Dungeon.init();
+    private boolean testSeedALL(String seed, int floors) {
 
-        boolean[] itemsFound = new boolean[itemList.size()];
-
-        for (int i = 0; i < floors; i++) {
-            Level l = Dungeon.newLevel();
-
-            ArrayList<Heap> heaps = new ArrayList<>(l.heaps.valueList());
-            heaps.addAll(getMobDrops(l));
-
-            if(Ghost.Quest.armor != null){
-                for (int j = 0; j < itemList.size(); j++) {
-                    if (Ghost.Quest.armor.identify().title().toLowerCase().replaceAll(" ","").contains(itemList.get(j).replaceAll(" ",""))) {
-                        if (!itemsFound[j]) {
-                            itemsFound[j] = true;
-                            break;
-                        }
-                    }
-                }
-            }
-            if(Wandmaker.Quest.wand1 != null){
-                for (int j = 0; j < itemList.size(); j++) {
-                    if (Wandmaker.Quest.wand1.identify().title().toLowerCase().replaceAll(" ","").contains(itemList.get(j).replaceAll(" ","")) || Wandmaker.Quest.wand2.identify().title().toLowerCase().replaceAll(" ","").contains(itemList.get(j).replaceAll(" ",""))) {
-                        if (!itemsFound[j]) {
-                            itemsFound[j] = true;
-                            break;
-                        }
-                    }
-                    if(Wandmaker.Quest.type() == 1 && Messages.get(this, "corpsedust").contains(itemList.get(j).replaceAll(" ",""))){
-                        if (!itemsFound[j]) {
-                            itemsFound[j] = true;
-                            break;
-                        }
-                    }else if(Wandmaker.Quest.type() == 2 && Messages.get(this, "embers").contains(itemList.get(j).replaceAll(" ",""))){
-                        if (!itemsFound[j]) {
-                            itemsFound[j] = true;
-                            break;
-                        }
-                    }else if(Wandmaker.Quest.type() == 3 && Messages.get(this, "rotberry").contains(itemList.get(j).replaceAll(" ",""))){
-                        if (!itemsFound[j]) {
-                            itemsFound[j] = true;
-                            break;
-                        }
-                    }
-                }
-            }
-            if(Imp.Quest.reward != null){
-                for (int j = 0; j < itemList.size(); j++) {
-                    if (Imp.Quest.reward.identify().title().toLowerCase().replaceAll(" ","").contains(itemList.get(j).replaceAll(" ",""))) {
-                        if (!itemsFound[j]) {
-                            itemsFound[j] = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            for (Heap h : heaps) {
-                for (Item item : h.items) {
-                    item.identify();
-
-                    for (int j = 0; j < itemList.size(); j++) {
-                        if (item.title().toLowerCase().replaceAll(" ","").contains(itemList.get(j).replaceAll(" ",""))) {
-                            if (!itemsFound[j]) {
-                                itemsFound[j] = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            Dungeon.depth++;
-        }
-
-        if (Options.condition == Condition.ANY) {
-            for (int i = 0; i < itemList.size(); i++) {
-                if (itemsFound[i])
-                    return true;
-            }
-
-            return false;
-        }
-
-        else {
-            for (int i = 0; i < itemList.size(); i++) {
-                if (!itemsFound[i])
-                    return false;
-            }
-
+        if(Nofinding){
             return true;
         }
-    }
 
-    private boolean testSeedALL(String seed, int floors) {
         SPDSettings.customSeed(seed);
         GamesInProgress.selectedClass = HeroClass.WARRIOR;
         Dungeon.init();

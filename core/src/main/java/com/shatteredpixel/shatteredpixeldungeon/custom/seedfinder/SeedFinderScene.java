@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder;
 
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -59,19 +60,18 @@ public class SeedFinderScene extends PixelScene {
         add(archs);
 
         //darkens the arches
-        add(new ColorBlock(w, h, 0x88000000));
+        add(new ColorBlock(w, h, 0));
 
         ScrollPane list = new ScrollPane(new Component());
         add(list);
 
         Component content = list.content();
         content.clear();
-
-        ShatteredPixelDungeon.scene().addToFront(new WndTextInput(Messages.get(this, "title"), Messages.get(this, "body"), Messages.get(this, "initial_value"), 1000, true, Messages.get(this, "find"), Messages.get(HeroSelectScene.class, "custom_seed_clear")) {
+        final RenderedTextBlock txtBody = PixelScene.renderTextBlock(  Messages.get(this, "body"), 6);
+        ShatteredPixelDungeon.scene().addToFront(new WndTextInput(Messages.get(this, "title"), Messages.get(this, "body2",SPDSettings.timeOutSeed(),SPDSettings.iceCoin()), Messages.get(this, "initial_value"), 1000, true, Messages.get(this, "find"), Messages.get(HeroSelectScene.class, "custom_seed_clear")) {
             @Override
             public void onSelect(boolean positive, String text) {
-                int floor = 31;
-                int cs = 0;
+                int floor = 26;
                 String up_to_floor = "floor end";
                 String strFloor = "floor";
 
@@ -79,38 +79,48 @@ public class SeedFinderScene extends PixelScene {
                     String fl = text.split(strFloor)[0].trim();
                     try {
                         floor = Integer.parseInt(fl);
-                    } catch (NumberFormatException numberFormatException) {
-                        ShatteredPixelDungeon.scene().add(new WndMessage("错误的楼层深度配置，已为你显示一份默认26层的。"));
+                    } catch (NumberFormatException ignored) {
                     }
                 }
-
+                txtBody.visible = false;
                 if (positive) {
-                    if (text.contains("floor end")) {
-                        String[] itemList = Arrays.copyOfRange(text.split("\n"), 1, text.split("\n").length);
+                    int price = RegularLevel.holiday == RegularLevel.Holiday.CJ ? 5 : 15;
+                    if(SPDSettings.iceCoin()>=price){
+                        if (text.contains("floor end")) {
+                            String[] itemList = Arrays.copyOfRange(text.split("\n"), 1, text.split("\n").length);
 
-                        Component content = list.content();
-                        content.clear();
+                            Component content = list.content();
+                            content.clear();
 
-                        CreditsBlock txt = new CreditsBlock(true, Window.TITLE_COLOR, new SeedFinder().findSeed(itemList, floor));
-                        txt.visible = false;
-                        txt.setRect((Camera.main.width - colWidth)/2f, 12, colWidth, 0);
-                        content.add(txt);
+                            CreditsBlock txt = new CreditsBlock(true, Window.TITLE_COLOR, new SeedFinder().findSeed(itemList, floor));
+                            txt.visible = false;
+                            txt.setRect((Camera.main.width - colWidth)/2f, 12, colWidth, 0);
+                            content.add(txt);
 
-                        content.setSize( fullWidth, txt.bottom()+10 );
+                            content.setSize( fullWidth, txt.bottom()+10 );
 
-                        list.setRect( 0, 0, w, h );
-                        list.scrollTo(0, 0);
+                            list.setRect( 0, 0, w, h );
+                            list.scrollTo(0, 0);
 
-                        result = new SeedFinder().findSeed(itemList, floor);
+                            result = new SeedFinder().findSeed(itemList, floor);
+                        } else {
+                            message(Messages.get(SeedFinderScene.class,"error"));
+                        }
                     } else {
-                        message("错误！！！");
+                        message(Messages.get(SeedFinderScene.class,"no_money"));
                     }
+
                 } else {
                     SPDSettings.customSeed("");
                     ShatteredPixelDungeon.switchNoFade(TitleScene.class);
                 }
             }
         });
+
+
+        txtBody.setPos(colWidth/6f, Camera.main.height/1.8f);
+        add(txtBody);
+
 
         ExitButton btnExit = new ExitButton();
         btnExit.setPos(Camera.main.width - btnExit.width(), 0);

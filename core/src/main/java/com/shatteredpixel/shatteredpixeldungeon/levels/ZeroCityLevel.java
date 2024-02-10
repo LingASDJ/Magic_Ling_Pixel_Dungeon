@@ -26,10 +26,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LanFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NxhyNpc;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.REN;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.obSir;
@@ -48,10 +50,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
+import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
@@ -114,9 +120,9 @@ public class ZeroCityLevel extends Level {
             P,P,D,D,A,D,D,D,A,D,D,D,A,D,D,D,M,M,M,M,M,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,A,D,D,D,P,
             P,P,D,D,D,D,D,D,D,I,D,D,D,D,D,D,O,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,
             P,P,D,D,D,D,D,D,D,R,R,R,R,R,R,D,M,M,M,M,M,M,M,M,M,D,D,M,M,M,M,D,D,M,M,M,M,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,
-            P,P,D,D,J,R,R,R,R,R,R,R,R,R,R,D,M,D,D,D,D,D,D,D,M,D,D,P,P,P,M,D,M,M,D,D,D,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,P,
-            P,P,D,D,R,R,R,R,R,R,R,R,R,R,R,D,M,D,D,D,D,Y,Y,D,M,D,D,P,P,P,M,B,M,D,D,D,D,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,P,P,P,D,M,D,D,D,P,
-            P,P,D,D,R,R,R,R,R,R,R,R,R,R,R,D,M,D,D,D,D,D,D,D,M,D,D,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,P,P,D,D,M,G,D,D,P,
+            P,P,D,D,J,R,R,R,R,R,R,R,R,R,R,D,M,D,D,D,D,Y,Y,D,M,D,D,P,P,P,M,D,M,M,D,D,D,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,P,
+            P,P,D,D,R,R,R,R,R,R,R,R,R,R,R,D,M,D,D,D,D,D,D,D,M,D,D,P,P,P,M,B,M,D,D,D,D,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,P,P,P,D,M,D,D,D,P,
+            P,P,D,D,R,R,R,R,R,R,R,R,R,R,R,D,M,D,D,D,D,Y,Y,D,M,D,D,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,P,P,D,D,M,G,D,D,P,
             P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,M,D,D,R,R,R,A,D,A,D,D,D,D,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,P,P,P,D,D,M,D,D,D,P,
             P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,M,B,M,M,M,M,M,D,D,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,R,D,D,D,D,D,D,D,D,D,D,P,R,P,D,D,M,D,D,D,P,
             P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,R,P,D,D,M,D,D,D,P,
@@ -369,10 +375,62 @@ public class ZeroCityLevel extends Level {
         }
     }
 
+    public static int[] SALEPOS_ONE = new int[]{
+
+            657,658
+    };
+
+    public static int[] SALEPOS_TWO = new int[]{
+          721,722
+    };
+
+    public static int[] SALEPOS_THREE = new int[]{
+           785,786
+    };
+
+    public static int[] SALEPOS_FOUR = new int[]{
+          849,850
+    };
+
+    public static int[] POSSALE = new int[]{
+           660,724,788,852
+    };
+
     @Override
     protected void createItems() {
         drop( new DiedCrossBow(), 1237  ).type = Heap.Type.FOR_ICE;
         drop( new MoonDao(), 1238  ).type = Heap.Type.FOR_ICE;
+
+        if (Dungeon.depth == 0 &&
+                (!Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_INTRO) || SPDSettings.intro() )){
+            drop( new Guidebook(),  132);
+        }
+
+        if (Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
+            Nyz npc4= new Nyz();
+            npc4.pos = 723;
+            mobs.add(npc4);
+            for (int i : SALEPOS_ONE) {
+                drop((Generator.random(Generator.Category.MISSILE)), i).type =
+                        Heap.Type.FOR_SALE;
+            }
+            for (int i : SALEPOS_TWO) {
+                drop((Generator.random(Generator.Category.POTION)), i).type =
+                        Heap.Type.FOR_SALE;
+            }
+            for (int i : SALEPOS_THREE) {
+                drop((Generator.random(Generator.Category.WEAPON)), i).type =
+                        Heap.Type.FOR_SALE;
+            }
+            for (int i : SALEPOS_FOUR) {
+                drop((Generator.random(Generator.Category.SCROLL)), i).type =
+                        Heap.Type.FOR_SALE;
+            }
+            for (int i : POSSALE) {
+                drop((Generator.random(Generator.Category.SEED)), i).type =
+                        Heap.Type.FOR_SALE;
+            }
+        }
 
         if(!Dungeon.isChallenged(CS)) {
             PaswordBadges.loadGlobal();
@@ -381,10 +439,10 @@ public class ZeroCityLevel extends Level {
             drop((Generator.randomUsingDefaults(Generator.Category.SCROLL)), 3193);
             drop((Generator.randomUsingDefaults(Generator.Category.SCROLL)), 2937);
 
-            if (!passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)) {
+            if (passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)) {
                 drop((Generator.random(Generator.Category.RING)), 3001);
             }
-            if (!passwordbadges.contains(PaswordBadges.Badge.BIG_X)) {
+            if (passwordbadges.contains(PaswordBadges.Badge.BIG_X)) {
                 if (Dungeon.isChallenged(Challenges.NO_ARMOR)) {
                     drop((Generator.random(Generator.Category.WAND)), 3065);
                 } else {
@@ -392,13 +450,21 @@ public class ZeroCityLevel extends Level {
                 }
             }
 
-            if (!Badges.isUnlocked(Badges.Badge.RLPT)) {
+            if (Badges.isUnlocked(Badges.Badge.RLPT)) {
                 Item item = new BookBag();
                 drop(item, 3129);
             }
 
+
+
+
             drop( new RandomChest(), 1239  ).type = Heap.Type.FOR_ICE;
             drop( new RandomChest(), 1240  ).type = Heap.Type.FOR_ICE;
+        }
+
+        if(RegularLevel.holiday == RegularLevel.Holiday.CJ){
+            drop( new Pasty(), 725  );
+            drop( new Food(), 853  );
         }
 
     }

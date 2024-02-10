@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.TextureFilm;
@@ -59,6 +60,8 @@ public class Speck extends Image {
 	public static final int MUTATION_4 = 18;
 	public static final int MUTATION_5 = 19;
 	public static final int MUTATION_6 = 20;
+
+	public static final int MUTATION_7 = 21;
 
 	public static final int DISCOVER = 101;
 	public static final int EVOKE = 102;
@@ -292,19 +295,43 @@ public class Speck extends Image {
 				speed.set(0, -20);
 				lifespan = 1f;
 				hardlight(0x8f8f8f);
-				alpha(0.8f);
+				//alpha(0.8f);
 				break;
 			case MUTATION_2:
 				speed.set(0, -20);
 				lifespan = 1f;
 				hardlight(0xED186E);
-				alpha(0.8f);
+				//alpha(0.8f);
 				break;
 			case MUTATION_3:
 				speed.set(0, -20);
 				lifespan = 1f;
 				hardlight(0x00ff00);
-				alpha(0.8f);
+				//alpha(0.8f);
+				break;
+			case MUTATION_4:
+				speed.set(0, -20);
+				lifespan = 1f;
+				hardlight(Window.CYELLOW);
+				//alpha(0.8f);
+				break;
+			case MUTATION_5:
+				speed.set(0, -20);
+				lifespan = 1f;
+				hardlight(Window.RED_COLOR);
+				//alpha(0.8f);
+				break;
+			case MUTATION_6:
+				speed.set(0, -20);
+				lifespan = 1f;
+				hardlight(0xff00ff);
+				//alpha(0.8f);
+				break;
+			case MUTATION_7:
+				speed.set(0, -20);
+				lifespan = 1f;
+				hardlight(0xB085D5);
+				//alpha(0.8f);
 				break;
 
 			case BUBBLE:
@@ -456,9 +483,8 @@ public class Speck extends Image {
 					break;
 
 				case MUTATION_1:case MUTATION_2:case MUTATION_3:
-				case MUTATION_4:case MUTATION_5: case MUTATION_6:
-					alpha(0.8f);
-					scale.set((float) (Math.sqrt(p < 0.2f ? p : 1 - p) * 0.6f));
+				case MUTATION_4:case MUTATION_5: case MUTATION_6:case MUTATION_7:
+					am = (float) Math.sqrt((p < 0.5f ? p : 1 - p) * 1.1f);
 					break;
 
 				case RED_LIGHT:

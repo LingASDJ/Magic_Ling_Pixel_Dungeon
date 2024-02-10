@@ -25,7 +25,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.ROGUE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createBossRushLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createBranchLevel;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createCheatingLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createStandardLevel;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -66,8 +65,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.LinkLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
@@ -234,9 +235,7 @@ public class Dungeon {
 		Actor.clear();
 		
 		Level level;
-			if(SPDSettings.Cheating()){
-				level = createCheatingLevel();
-			}else if (branch == 0)
+			if (branch == 0)
 			if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))
 				level = createBossRushLevel();
 			else level = createStandardLevel();
@@ -398,7 +397,7 @@ public class Dungeon {
 	public static boolean interfloorTeleportAllowed(){
 		if (Dungeon.level.locked
 				|| Dungeon.level instanceof MiningLevel
-				|| (Dungeon.hero != null && Dungeon.hero.belongings.getItem(Amulet.class) != null)){
+				|| (Dungeon.hero != null && Dungeon.hero.belongings.getItem(Amulet.class) != null)|| Dungeon.level instanceof ShopBossLevel || Dungeon.level instanceof LinkLevel){
 			return false;
 		}
 		return true;

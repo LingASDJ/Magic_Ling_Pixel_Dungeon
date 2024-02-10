@@ -1351,7 +1351,7 @@ public class GameScene extends PixelScene {
 		switch (InterlevelScene.mode) {
 			case RESURRECT:
 				Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
-				ScrollOfTeleportation.appear( Dungeon.hero, Dungeon.hero.pos );
+				ScrollOfTeleportation.appearVFX( Dungeon.hero );
 				SpellSprite.show(Dungeon.hero, SpellSprite.ANKH);
 				new Flare( 5, 16 ).color( 0xFFFF00, true ).show( hero, 4f ) ;
 				break;
@@ -1867,7 +1867,7 @@ public class GameScene extends PixelScene {
 					break;
 			}
 
-			if(lanterfireactive && Dungeon.branch == 0){
+			if(lanterfireactive && Dungeon.branch == 0 || Dungeon.branch == 6){
 				cure( Dungeon.hero );
 			}
 

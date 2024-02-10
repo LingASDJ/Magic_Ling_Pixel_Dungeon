@@ -246,12 +246,15 @@ public class Artifact extends KindofMisc {
 	private static final String CHARGE = "charge";
 	private static final String PARTIALCHARGE = "partialcharge";
 
+	private static final String COLD = "cold";
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle(bundle);
 		bundle.put( EXP , exp );
 		bundle.put( CHARGE , charge );
 		bundle.put( PARTIALCHARGE , partialCharge );
+		bundle.put(COLD,cooldown);
 	}
 
 	@Override
@@ -261,5 +264,6 @@ public class Artifact extends KindofMisc {
 		if (chargeCap > 0)  charge = Math.min( chargeCap, bundle.getInt( CHARGE ));
 		else                charge = bundle.getInt( CHARGE );
 		partialCharge = bundle.getFloat( PARTIALCHARGE );
+		cooldown = bundle.getInt(COLD);
 	}
 }

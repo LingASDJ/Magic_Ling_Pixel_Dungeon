@@ -253,21 +253,17 @@ public class WndBag extends WndTabbed {
 		placeItem( stuff.misc != null ? stuff.misc : new Placeholder( ItemSpriteSheet.SOMETHING ) );
 		placeItem( stuff.ring != null ? stuff.ring : new Placeholder( ItemSpriteSheet.RING_HOLDER ) );
 
-		// 判断是否已经放置了首行的5个物品，如果是，则跳过两个位置
+		// 判断是否已经放置了首行的5个物品，如果是，则跳过三个位置
 		if (col == FIRST_ROW_COLS) {
 			placeIceCoinDisplay();
-			col += 2; // 跳过两个位置
+			col += 1; // 跳过三个位置
 			row++; // 移动到下一行
 			col = 0; // 重置列指示器，因为下一行开始是完整的行
 		}
 
 		// Items in the bag, except other containers (they have tags at the bottom)
 		for (Item item : container.items.toArray(new Item[0])) {
-			if (!(item instanceof Bag)) {
-				placeItem( item );
-			} else {
-				count++;
-			}
+			placeItem( item );
 		}
 
 		// Free Space
@@ -275,6 +271,7 @@ public class WndBag extends WndTabbed {
 			placeItem( null );
 		}
 	}
+
 
 	protected void placeIceCoinDisplay() {
 		int x = col * (slotWidth + SLOT_MARGIN);

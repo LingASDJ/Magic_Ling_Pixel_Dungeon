@@ -66,6 +66,14 @@ public class SPDSettings extends GameSettings {
 		return getBoolean(KEY_TIME, true);
 	}
 
+	public static void HiICE(boolean value) {
+		put(KEY_ICE, value );
+	}
+
+	public static boolean HiICE() {
+		return getBoolean(KEY_ICE, true);
+	}
+
 	private static final String DEBUG_REPORT  = "debug_report";
 	public static boolean debugReport() {
 		return getBoolean(DEBUG_REPORT,false);
@@ -105,6 +113,8 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_GRID 	    = "visual_grid";
 	public static final String KEY_SPLASH_SCREEN= "splash_screen";
 
+	public static final String KEY_TIMEOUT= "timeout";
+
 	private static final String START_PORT  = "start_report";
 
 	//瀑布系统
@@ -116,6 +126,14 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_SPLASH_SCREEN, 1 );
 	}
 
+	public static void timeOutSeed( int value ) {
+		put( KEY_TIMEOUT, value );
+	}
+
+	public static int  timeOutSeed() {
+		return getInt( KEY_TIMEOUT, 4 );
+	}
+
 	public static void customSeed( String value ){
 		put( KEY_CUSTOM_SEED, value );
 	}
@@ -125,6 +143,8 @@ public class SPDSettings extends GameSettings {
 	}
 
 	private static final String KEY_TIME = "fps";
+
+	private static final String KEY_ICE = "hice";
 
 	private static final String KEY_DARK	= "dark_ui";
 
@@ -236,7 +256,7 @@ public class SPDSettings extends GameSettings {
     public static final String KEY_CONTROLLER_SENS = "controller_sens";
     public static final String KEY_MOVE_SENS = "move_sens";
 
-	public static final String KEY_ICECOIN = "iceGoldMagic";
+	public static final String KEY_ICECOIN = "iceGoldMagic2";
 
     public static void cameraFollow(int value) {
         put(KEY_CAMERA_FOLLOW, value);

@@ -68,7 +68,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Succubus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -284,17 +283,17 @@ public class AscensionChallenge extends Buff {
 						Dungeon.level.mobs.remove( mob );
 					}
 				}
-				//Dungeon.level.spawnMob();
+				Dungeon.level.spawnMob(24);
 
 			}
 		}
-		if (Statistics.highestAscent < 20){
-			for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
-				if (m instanceof Shopkeeper){
-					((Shopkeeper) m).flee();
-				}
-			}
-		}
+//		if (Statistics.highestAscent < 20){
+//			for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
+//				if (m instanceof Shopkeeper){
+//					((Shopkeeper) m).flee();
+//				}
+//			}
+//		}
 	}
 
 	//messages at boss levels only trigger on first ascent

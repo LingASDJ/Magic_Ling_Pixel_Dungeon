@@ -114,7 +114,7 @@ public class ColdChestBossLevel extends Level {
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
             W,E,E,E,W,W,W,W,W,E,E,E,E,E,E,E,W,W,W,E,E,E,E,E,E,E,W,W,W,W,W,E,E,E,W,
             W,E,E,E,O,O,O,O,O,E,E,E,E,E,E,E,W,J,W,E,E,E,E,E,E,E,O,O,O,O,O,E,E,E,W,
-            W,E,E,E,P,P,P,P,P,E,E,E,E,E,E,E,W,J,W,E,E,E,E,E,E,E,P,P,P,P,P,E,E,E,W,
+            W,E,E,E,P,P,P,P,P,E,E,E,E,E,E,E,W,O,W,E,E,E,E,E,E,E,P,P,P,P,P,E,E,E,W,
             W,E,E,E,P,E,E,E,P,E,E,E,E,E,E,E,W,K,W,E,E,E,E,E,E,E,P,E,E,E,P,E,E,E,W,
             W,E,P,E,P,E,M,E,P,E,P,E,P,E,P,E,W,P,W,E,P,E,P,E,P,E,P,E,M,E,P,E,P,E,W,
             W,E,E,E,P,E,E,E,P,E,E,E,E,E,E,E,W,P,W,E,E,E,E,E,E,E,P,E,E,E,P,E,E,E,W,
@@ -235,9 +235,6 @@ public class ColdChestBossLevel extends Level {
         int doorPos =  WIDTH*3+17;
         Mob.holdAllies(this, doorPos);
         Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
-
-        LevelTransition exit = new LevelTransition(this, 0, LevelTransition.Type.REGULAR_EXIT);
-        transitions.add(exit);
 
         map = WorldRoomShort.clone();
     }

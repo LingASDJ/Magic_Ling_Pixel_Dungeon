@@ -755,6 +755,9 @@ public class ItemSpriteSheet {
     public static final int RiceDumplingsLink  = QUEST+14;
     public static final int RiceDumplingsBottle   = QUEST+15;
 
+    public static final int Fish_A   = QUEST+16;
+    public static final int Fish_B   = QUEST+17;
+
     static{
         assignItemRect(SKULL,   16, 11);
         assignItemRect(DUST,    12, 11);
@@ -774,6 +777,9 @@ public class ItemSpriteSheet {
         assignItemRect(RiceDumplingsOrange,    14, 14);
         assignItemRect(RiceDumplingsLink,    14, 13);
         assignItemRect(RiceDumplingsBottle,    14, 14);
+
+        assignItemRect(Fish_A,    16, 12);
+        assignItemRect(Fish_B,    16, 12);
     }
 
     //传奇武器

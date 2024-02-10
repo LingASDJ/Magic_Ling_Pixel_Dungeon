@@ -21,13 +21,14 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
@@ -58,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.TerrainPlacer;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
@@ -96,6 +98,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSt
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.DeviceCompat;
+
+import java.util.List;
 
 public enum HeroClass {
 
@@ -154,11 +158,11 @@ public enum HeroClass {
 			hero.lanterfire = 100 - Challenges.activeChallenges() * 4;
 		}
 
-		if(SPDSettings.Cheating()){
-			hero.HT = hero.HP = 114514;
-			hero.exp = -1919810;
-			hero.lvl = 100;
-		}
+//		if(SPDSettings.Cheating()){
+//			hero.HT = hero.HP = 114514;
+//			hero.exp = -1919810;
+//			hero.lvl = 100;
+//		}
 		//Buff.affect(hero, BlessImmune.class, ChampionHero.DURATION*123456f);
 		if(!Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3) && Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ){
 			Badges.BOSSTHREE();
@@ -176,16 +180,20 @@ public enum HeroClass {
 		}
 
 		if ( Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
+			Dungeon.gold += 320;
 			Buff.affect(hero, RandomBuff.class).set( (5), 1 );
 		}
 
 		//Buff.affect(hero, ScaryDamageBuff.class).set((50),1);
-//		PaswordBadges.loadGlobal();
-//		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
-//		if(passwordbadges.contains(PaswordBadges.Badge.EXSG)){
-//			Dungeon.gold += 648;
-//		}
-		PaswordBadges.EXSG();
+		PaswordBadges.loadGlobal();
+		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
+		if(passwordbadges.contains(PaswordBadges.Badge.EXSG)){
+			Dungeon.gold += 400;
+			if(!Dungeon.isChallenged(PRO)) {
+				new IceCyanBlueSquareCoin().quantity(3).identify().collect();
+			}
+		}
+
 		if ( Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
 			Dungeon.gold += 3000;
 			new Amulet().quantity(1).identify().collect();
@@ -220,7 +228,7 @@ public enum HeroClass {
 			new SpawnArtifact().quantity(1).identify().collect();
 			new SpawnRingOrWand().quantity(1).identify().collect();
 			new SpawnMissile().quantity(1).identify().collect();
-			//new Amulet().quantity(1).identify().collect();
+			//new CrystalLing().quantity(1).identify().collect();
 			new TerrainPlacer().quantity(1).identify().collect();
 
 			new MobPlacer().quantity(1).identify().collect();

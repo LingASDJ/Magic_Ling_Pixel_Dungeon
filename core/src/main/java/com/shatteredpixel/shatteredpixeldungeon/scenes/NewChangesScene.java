@@ -15,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd.vM0_5_X_Chang
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd.vM0_6_4_P_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd.vM0_6_6_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd.vM0_6_7_X_Changes;
+import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd.vM0_7_X_Changes;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.ui.Component;
@@ -61,19 +62,22 @@ public class NewChangesScene extends PixelScene {
         final ArrayList<ChangeInfo> changeInfos = new ArrayList<>();
 
         switch (changesSelected){
-            case 0: default:
-                vM0_6_6_Changes.addAllChanges(changeInfos);
+            case 0:default:
+                vM0_7_X_Changes.addAllChanges(changeInfos);
                 break;
             case 1:
-                vM0_6_4_P_Changes.addAllChanges(changeInfos);
+                vM0_6_6_Changes.addAllChanges(changeInfos);
                 break;
             case 2:
-                vM0_6_7_X_Changes.addAllChanges(changeInfos);
+                vM0_6_4_P_Changes.addAllChanges(changeInfos);
                 break;
             case 3:
-                vM0_5_X_Changes.addAllChanges(changeInfos);
+                vM0_6_7_X_Changes.addAllChanges(changeInfos);
                 break;
             case 4:
+                vM0_5_X_Changes.addAllChanges(changeInfos);
+                break;
+            case 5:
                 S_Changes.addAllChanges(changeInfos);
                 break;
         }
@@ -130,7 +134,7 @@ public class NewChangesScene extends PixelScene {
                 panel.innerHeight() + 2);
         list.scrollTo(0, fromChangesScene ? posY - list.height() : 0);
 
-        StyledButton btnBeta1 = new StyledButton(Chrome.Type.TOAST, "0.6-9"){
+        StyledButton btn07 = new StyledButton(Chrome.Type.TOAST, "0.7"){
             @Override
             protected void onClick() {
                 super.onClick();
@@ -141,11 +145,11 @@ public class NewChangesScene extends PixelScene {
             }
         };
 
-        if (changesSelected != 0) btnBeta1.textColor( 0xBBBBBB );
-        btnBeta1.setRect(list.left()-4f, list.bottom(), 28, changesSelected == 0 ? 19 : 15);
-        addToBack(btnBeta1);
+        if (changesSelected != 0) btn07.textColor( 0xBBBBBB );
+        btn07.setRect(list.left()-4f, list.bottom(), 28, changesSelected == 0 ? 19 : 15);
+        addToBack(btn07);
 
-        StyledButton btnBeta2 = new StyledButton(Chrome.Type.TOAST, "0.6.4"){
+        StyledButton btnBeta1 = new StyledButton(Chrome.Type.TOAST, "0.6"){
             @Override
             protected void onClick() {
                 super.onClick();
@@ -155,12 +159,12 @@ public class NewChangesScene extends PixelScene {
                 }
             }
         };
+        if (changesSelected != 1) btnBeta1.textColor( 0xBBBBBB );
+        btnBeta1.setRect(btn07.right()+1, list.bottom(), 28, changesSelected == 1 ? 19 : 15);
+        addToBack(btnBeta1);
 
-        if (changesSelected != 1) btnBeta2.textColor( 0xBBBBBB );
-        btnBeta2.setRect(btnBeta1.right()+1, list.bottom(), 28, changesSelected == 1 ? 19 : 15);
-        addToBack(btnBeta2);
 
-        StyledButton btnBeta = new StyledButton(Chrome.Type.TOAST, "0.6.3"){
+        StyledButton btnBeta2 = new StyledButton(Chrome.Type.TOAST, "0.6.4"){
             @Override
             protected void onClick() {
                 super.onClick();
@@ -171,11 +175,11 @@ public class NewChangesScene extends PixelScene {
             }
         };
 
-        if (changesSelected != 2) btnBeta.textColor( 0xBBBBBB );
-        btnBeta.setRect(btnBeta2.right()+1, list.bottom(), 28, changesSelected == 2 ? 19 : 15);
-        addToBack(btnBeta);
+        if (changesSelected != 2) btnBeta2.textColor( 0xBBBBBB );
+        btnBeta2.setRect(btnBeta1.right()+1, list.bottom(), 28, changesSelected == 2 ? 19 : 15);
+        addToBack(btnBeta2);
 
-        StyledButton btn0_8 = new StyledButton(Chrome.Type.TOAST, "0.5"){
+        StyledButton btnBeta = new StyledButton(Chrome.Type.TOAST, "0.6.3"){
             @Override
             protected void onClick() {
                 super.onClick();
@@ -185,11 +189,12 @@ public class NewChangesScene extends PixelScene {
                 }
             }
         };
-        if (changesSelected != 3) btn0_8.textColor( 0xBBBBBB );
-        btn0_8.setRect(btnBeta.right()+1, list.bottom(), 20, changesSelected == 3 ? 19 : 15);
-        addToBack(btn0_8);
 
-        StyledButton btn0_7 = new StyledButton(Chrome.Type.TOAST, "0.0-0.4"){
+        if (changesSelected != 3) btnBeta.textColor( 0xBBBBBB );
+        btnBeta.setRect(btnBeta2.right()+1, list.bottom(), 24, changesSelected == 3 ? 19 : 15);
+        addToBack(btnBeta);
+
+        StyledButton btn0_8 = new StyledButton(Chrome.Type.TOAST, "0.5"){
             @Override
             protected void onClick() {
                 super.onClick();
@@ -199,8 +204,22 @@ public class NewChangesScene extends PixelScene {
                 }
             }
         };
-        if (changesSelected != 4) btn0_7.textColor( 0xBBBBBB );
-        btn0_7.setRect(btn0_8.right() + 1, btn0_8.top(), 33, changesSelected == 4 ? 19 : 15);
+        if (changesSelected != 4) btn0_8.textColor( 0xBBBBBB );
+        btn0_8.setRect(btnBeta.right()+1, list.bottom(), 18, changesSelected == 4 ? 19 : 15);
+        addToBack(btn0_8);
+
+        StyledButton btn0_7 = new StyledButton(Chrome.Type.TOAST, "S"){
+            @Override
+            protected void onClick() {
+                super.onClick();
+                if (changesSelected != 5) {
+                    changesSelected = 5;
+                    ShatteredPixelDungeon.seamlessResetScene();
+                }
+            }
+        };
+        if (changesSelected != 5) btn0_7.textColor( 0xBBBBBB );
+        btn0_7.setRect(btn0_8.right() + 1, btn0_8.top(), 10, changesSelected == 5 ? 19 : 15);
         addToBack(btn0_7);
 
         Archs archs = new Archs();

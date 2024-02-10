@@ -98,7 +98,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		BURNING, LEVITATING, INVISIBLE,TRUE_INVISIBLE,
 		PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED,
 		ROSESHIELDED, HALOMETHANEBURNING, FROSTBURNING, BUTTER, SPINVISIBLE, SMOKER, HEARTS,
-		MUTATION_1,MUTATION_2,MUTATION_3,MUTATION_4,MUTATION_5,MUTATION_6,
+		MUTATION_1,MUTATION_2,MUTATION_3,MUTATION_4,MUTATION_5,MUTATION_6,MUTATION_7,
 	}
 	private int stunStates = 0;
 
@@ -150,6 +150,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected Emitter mutation4;
 	protected Emitter mutation5;
 	protected Emitter mutation6;
+	protected Emitter mutation7;
 
 
 	protected IceBlock iceBlock;
@@ -531,6 +532,22 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				mutation3 = emitter();
 				mutation3.pour(Speck.factory(Speck.MUTATION_3), 0.5f);
 				break;
+			case MUTATION_4:
+				mutation4 = emitter();
+				mutation4.pour(Speck.factory(Speck.MUTATION_4), 0.5f);
+				break;
+			case MUTATION_5:
+				mutation5 = emitter();
+				mutation5.pour(Speck.factory(Speck.MUTATION_5), 0.5f);
+				break;
+			case MUTATION_6:
+				mutation6 = emitter();
+				mutation6.pour(Speck.factory(Speck.MUTATION_6), 0.5f);
+				break;
+			case MUTATION_7:
+				mutation7 = emitter();
+				mutation7.pour(Speck.factory(Speck.MUTATION_7), 0.5f);
+				break;
 		}
 	}
 
@@ -653,6 +670,30 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					mutation3 = null;
 				}
 				break;
+			case MUTATION_4:
+				if(mutation4 != null){
+					mutation4.on =  false;
+					mutation4 = null;
+				}
+				break;
+			case MUTATION_5:
+				if(mutation5 != null){
+					mutation5.on =  false;
+					mutation5 = null;
+				}
+				break;
+			case MUTATION_6:
+				if(mutation6 != null){
+					mutation6.on =  false;
+					mutation6 = null;
+				}
+				break;
+			case MUTATION_7:
+				if(mutation7 != null){
+					mutation7.on =  false;
+					mutation7 = null;
+				}
+				break;
 		}
 	}
 
@@ -721,6 +762,18 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		}
 		if (mutation3 != null){
 			mutation3.visible = visible;
+		}
+		if (mutation4 != null){
+			mutation4.visible = visible;
+		}
+		if (mutation5 != null){
+			mutation5.visible = visible;
+		}
+		if (mutation6 != null){
+			mutation6.visible = visible;
+		}
+		if (mutation7 != null){
+			mutation7.visible = visible;
 		}
 		if (aura != null){
 			if (aura.parent == null){

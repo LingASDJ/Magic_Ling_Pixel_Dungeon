@@ -195,7 +195,7 @@ public class WandOfAnmy extends DamageWand {
     @Override
     public void fx(Ballistica bolt, Callback callback) {
         MagicMissile.boltFromChar(curUser.sprite.parent,
-                MagicMissile.FROST,
+                MagicMissile.EARTH,
                 curUser.sprite,
                 bolt.collisionPos,
                 callback);

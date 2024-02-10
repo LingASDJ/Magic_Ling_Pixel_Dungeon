@@ -143,7 +143,7 @@ public class LevelTeleporter extends TestItem {
 //            }
 
         } else if(action.equals(AC_ASCEND)) {
-            if (Dungeon.hero.buff(LockedFloor.class) != null || depth <= 1) {
+            if (Dungeon.hero.buff(LockedFloor.class) != null || depth <= 0) {
                 GLog.w(Messages.get(this, "cannot_send"));
                 return;
             }

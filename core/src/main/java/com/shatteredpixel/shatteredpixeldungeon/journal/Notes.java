@@ -69,6 +69,8 @@ public class Notes {
 		WELL_OF_AWARENESS,
 		WELL_OF_TRANSMUTATION,
 
+		WELL_OF_OIL,
+
 		ALCHEMY,
 		GARDEN,
 		STATUE,

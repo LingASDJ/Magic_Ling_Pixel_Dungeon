@@ -142,6 +142,7 @@ public class BackGoKey extends TestItem {
                     if (buff != null) buff.detach();
                     InterlevelScene.mode = InterlevelScene.Mode.RETURN;
                     InterlevelScene.returnDepth = selectedLevel;
+                    InterlevelScene.returnBranch = 0;
                     InterlevelScene.returnPos = -1;
                     Game.switchScene( InterlevelScene.class );
 

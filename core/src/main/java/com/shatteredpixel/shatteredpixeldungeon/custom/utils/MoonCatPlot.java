@@ -86,7 +86,8 @@ public class MoonCatPlot extends Plot {
         diagulewindow.changeText(Messages.get(MoonCat.class, "message3"));
         Item item = ( Generator.randomUsingDefaults( Generator.Category.WEP_T1 ));
         if (Badges.isUnlocked(Badges.Badge.KILL_DM720) || Badges.isUnlocked(Badges.Badge.KILL_MG)) {
-            item.upgrade().identify();
+            item.level = 1;
+            item.identify();
         } else {
             item.level = 0;
         }

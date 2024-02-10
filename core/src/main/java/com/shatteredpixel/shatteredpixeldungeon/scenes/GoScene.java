@@ -58,9 +58,15 @@ public class GoScene extends PixelScene {
         if (SPDSettings.splashScreen() < 1 || done) {
             ShatteredPixelDungeon.switchForceFade(WelcomeScene.class);
             return;
-        } else {
+        } else if(SPDSettings.music()) {
             playBGM(Assets.Music.GO, true);
         }
+
+        TitleScene.NTP_ERROR = false;
+        TitleScene.NTP_NOINTER = false;
+        TitleScene.NTP_LINK = false;
+        TitleScene.NTP_ERROR_VEFY = false;
+        TitleScene.NTP_NOINTER_VEFY = false;
 
         PixelScene.uiCamera.visible = false;
 

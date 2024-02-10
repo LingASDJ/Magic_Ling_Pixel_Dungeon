@@ -205,6 +205,12 @@ public abstract class ChampionEnemy extends Buff {
 		}
 
 		@Override
+		public void fx(boolean on) {
+			if (on) {target.sprite.add(CharSprite.State.MUTATION_6);
+			} else target.sprite.remove(CharSprite.State.MUTATION_6);
+		}
+
+		@Override
 		public float meleeDamageFactor() {
 			return 0.9f;
 		}
@@ -302,7 +308,8 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public void fx(boolean on) {
-
+			if (on) {target.sprite.add(CharSprite.State.MUTATION_7);
+			} else target.sprite.remove(CharSprite.State.MUTATION_7);
 		}
 
 		@Override
@@ -400,7 +407,8 @@ public abstract class ChampionEnemy extends Buff {
 		}
 		@Override
 		public void fx(boolean on) {
-//
+			if (on) {target.sprite.add(CharSprite.State.MUTATION_4);
+			} else target.sprite.remove(CharSprite.State.MUTATION_4);
 		}
 		@Override
 		public float speedFactor() {
@@ -424,7 +432,8 @@ public abstract class ChampionEnemy extends Buff {
 		}
 		@Override
 		public void fx(boolean on) {
-//
+			if (on) {target.sprite.add(CharSprite.State.MUTATION_5);
+			} else target.sprite.remove(CharSprite.State.MUTATION_5);
 		}
 		@Override
 		public float meleeDamageFactor() {

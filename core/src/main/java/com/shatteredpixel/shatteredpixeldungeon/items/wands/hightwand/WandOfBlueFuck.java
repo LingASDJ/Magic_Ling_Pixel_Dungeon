@@ -101,56 +101,53 @@ public class WandOfBlueFuck extends DamageWand {
     ConeAOE cone;
 
     @Override
-    public void onZap( Ballistica bolt ) {
-
+    public void onZap(Ballistica bolt) {
         ArrayList<Char> affectedChars = new ArrayList<>();
         ArrayList<Integer> adjacentCells = new ArrayList<>();
-        for( int cell : cone.cells ){
-
-            //ignore caster cell
-            if (cell == bolt.sourcePos){
+        for (int cell : cone.cells) {
+            // 忽略施法者所在的格子
+            if (cell == bolt.sourcePos) {
                 continue;
             }
 
-            //knock doors open
-            if (Dungeon.level.map[cell] == Terrain.DOOR){
+            // 打开门
+            if (Dungeon.level.map[cell] == Terrain.DOOR) {
                 Level.set(cell, Terrain.OPEN_DOOR);
                 GameScene.updateMap(cell);
             }
 
-            //only ignite cells directly near caster if they are flammable
-            if (Dungeon.level.adjacent(bolt.sourcePos, cell) && !Dungeon.level.flamable[cell]){
+            // 如果格子直接相邻并且不可燃，则加入到 adjacentCells 列表
+            if (Dungeon.level.adjacent(bolt.sourcePos, cell) && !Dungeon.level.flamable[cell]) {
                 adjacentCells.add(cell);
             } else {
-                GameScene.add( Blob.seed( cell, 6+chargesPerCast(), HalomethaneFire.class ) );
+                GameScene.add(Blob.seed(cell, 6 + chargesPerCast(), HalomethaneFire.class));
             }
 
-            Char ch = Actor.findChar( cell );
+            Char ch = Actor.findChar(cell);
             if (ch != null) {
                 affectedChars.add(ch);
             }
         }
 
-        //ignite cells that share a side with an adjacent cell, are flammable, and are further from the source pos
-        //This prevents short-range casts not igniting barricades or bookshelves
-        for (int cell : adjacentCells){
-            for (int i : PathFinder.CIRCLE8){
-                if (Dungeon.level.trueDistance(cell+i, bolt.sourcePos) > Dungeon.level.trueDistance(cell, bolt.sourcePos)
-                        && Dungeon.level.flamable[cell+i]
-                        && HalomethaneFire.volumeAt(cell+i, HalomethaneFire.class) == 0){
-                    GameScene.add( Blob.seed( cell+i, 12+chargesPerCast(), HalomethaneFire.class ) );
+        // 点燃与 adjacentCells 相邻的可燃格子（排除已经点燃的格子）
+        for (int cell : adjacentCells) {
+            for (int i : PathFinder.CIRCLE8) {
+                if (Dungeon.level.trueDistance(cell + i, bolt.sourcePos) > Dungeon.level.trueDistance(cell, bolt.sourcePos)
+                        && Dungeon.level.flamable[cell + i]
+                        && HalomethaneFire.volumeAt(cell + i, HalomethaneFire.class) == 0) {
+                    GameScene.add(Blob.seed(cell + i, 12 + chargesPerCast(), HalomethaneFire.class));
                 }
             }
         }
 
-        for ( Char ch : affectedChars ){
+        for (Char ch : affectedChars) {
             processSoulMark(ch, chargesPerCast());
             ch.damage(damageRoll(), this);
             if (ch.isAlive()) {
                 Buff.affect(ch, HalomethaneBurning.class).reignite(ch);
                 switch (chargesPerCast()) {
                     case 1:
-                        break; //no effects
+                        break; // 没有额外效果
                     case 2:
                         Buff.affect(ch, Blindness.class, 4f);
                         break;

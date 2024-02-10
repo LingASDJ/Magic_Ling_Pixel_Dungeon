@@ -47,9 +47,14 @@ public class Gregorian {
         boolean isDevBirthday = lunar.getMonth() == 8 && lunar.getDay() >= 22 && lunar.getDay() <= 25;
         boolean isDWJ = lunar.getMonth() == 5 && (lunar.getDay() >= 5 - 3 && lunar.getDay() <= 5 + 7);
 
-        boolean isSF = lunar.getMonth() == 1 && (lunar.getDay() >= 1 && lunar.getDay() <= 1 + 16);
+        boolean isSF = lunar.getMonth() == 1 && (lunar.getDay() >= 1 && lunar.getDay() <= 1 + 15);
 
         // 判断是否是中秋节前10天到中秋节后12天
+
+        if(isSF){
+            holiday = RegularLevel.Holiday.CJ;
+        }
+
         if (isZQJ || isZQJ_FK) {
             holiday = RegularLevel.Holiday.ZQJ;
         }

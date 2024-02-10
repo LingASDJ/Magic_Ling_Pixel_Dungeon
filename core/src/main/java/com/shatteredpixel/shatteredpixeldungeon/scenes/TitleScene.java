@@ -12,6 +12,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedFinder;
+import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedFinderScene;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Gregorian;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
@@ -102,7 +104,8 @@ public class TitleScene extends PixelScene {
 		int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
 		Badges.loadGlobal();
 		Dungeon.whiteDaymode = currentHour > 7 && currentHour < 22;
-
+		SeedFinder.Pay = false;
+		SeedFinder.Nofinding = false;
 		Badges.loadGlobal();
 		boolean whiteDaymode = currentHour > 7 && currentHour < 22;
 
@@ -158,7 +161,7 @@ public class TitleScene extends PixelScene {
 
 			try {
 				//超时1s 实际3s
-				future.get(1, TimeUnit.SECONDS);
+				future.get(4, TimeUnit.SECONDS);
 			} catch (InterruptedException | ExecutionException | TimeoutException e) {
 				if (!NTP_NOINTER_VEFY || SPDSettings.WiFi() && !Game.platform.connectedToUnmeteredNetwork()) {
 					NTP_NOINTER = true;
@@ -459,6 +462,10 @@ public class TitleScene extends PixelScene {
 		reloadButton.icon(NetIcons.get(NetIcons.GLOBE));
 		add(reloadButton);
 
+		StyledButton seed = new SeedButton(landscape() ? Chrome.Type.GREY_BUTTON_TR : Chrome.Type.BLANK, Messages.get(this, "seed"));
+		seed.icon(NetIcons.get(NetIcons.CHAT));
+		add(seed);
+
 		StyledButton btnSettings = new SettingsButton(GREY_TR, Messages.get(this, "settings"));
 		add(btnSettings);
 
@@ -502,11 +509,13 @@ public class TitleScene extends PixelScene {
 
 			reloadButton.setRect(0, 0,40,20);
 
+			seed.setRect(0, 20,40,20);
+
 			align(btnNews);
 		}
 		else {
 			reloadButton.setRect(0, version.y-10,40,20);
-
+			seed.setRect(0, version.y-30,40,20);
 			btnPlay.setRect(title.x, topRegion + GAP, title.width(), BTN_HEIGHT);
 			align(btnPlay);
 			btnRankings.setRect(btnPlay.left(), btnPlay.bottom()+ GAP, (btnPlay.width() / 2) - 1, BTN_HEIGHT);
@@ -598,6 +607,19 @@ public class TitleScene extends PixelScene {
 		@Override
 		protected void onClick() {
 			ShatteredPixelDungeon.switchNoFade(GameNewsScene.class);
+		}
+
+	}
+
+	private static class SeedButton extends StyledButton {
+
+		public SeedButton( Chrome.Type type, String label ){
+			super(type, label);
+		}
+
+		@Override
+		protected void onClick() {
+			ShatteredPixelDungeon.switchNoFade(SeedFinderScene.class);
 		}
 
 	}
