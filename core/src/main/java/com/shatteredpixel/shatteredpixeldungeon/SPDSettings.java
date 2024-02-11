@@ -258,6 +258,8 @@ public class SPDSettings extends GameSettings {
 
 	public static final String KEY_ICECOIN = "iceGoldMagic2";
 
+	public static final String KEY_UNLOCKITEM = "forever_unlock_item";
+
     public static void cameraFollow(int value) {
         put(KEY_CAMERA_FOLLOW, value);
     }
@@ -697,4 +699,90 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_ICECOIN, 0);
 	}
 
+	public static void unlockItem(String value){
+		String[] itemArray = value.split(";");
+		StringBuilder items = new StringBuilder(unlockItem());
+
+		for ( String item : itemArray) {
+			String[] tempItem = item.split(",");
+			if(!isItemUnlock(tempItem[0])){
+				switch(tempItem.length){
+					case 1:
+						items.append(item).append(",false,1;");
+						break;
+					case 2:
+						if(tempItem[1].matches("\\d+")){
+							items.append(tempItem[0]).append("false").append(tempItem[1]);
+						}else {
+							items.append(item).append(",1;");
+						}
+						break;
+					case 3:
+						items.append(item).append(";");
+						break;
+				}
+			}
+		}
+
+		put(KEY_UNLOCKITEM,items.toString());
+	}
+
+	public static void unlockItem(String value,boolean allowMulti){
+		StringBuilder items = new StringBuilder(unlockItem());
+
+		if(!isItemUnlock(value)){
+			items.append(value).append(",");
+			items.append(allowMulti).append(",1;");
+		}
+
+		put(KEY_UNLOCKITEM,items.toString());
+	}
+
+	public static void unlockItem(String value,boolean allowMulti,int limit){
+		StringBuilder items = new StringBuilder(unlockItem());
+
+		if(!isItemUnlock(value)){
+			items.append(value).append(",");
+			items.append(allowMulti).append(",");
+			items.append(limit).append(";");
+		}
+
+		put(KEY_UNLOCKITEM,items.toString());
+	}
+
+	public static String unlockItem(){ return getString( KEY_UNLOCKITEM, ""); }
+
+	public static Boolean isItemUnlock(String value){ return unlockItem().indexOf(value) != -1; }
+
+	public static Boolean isUnlockItemAllowMulti(String value){
+		if(!isItemUnlock(value)){
+			return false;
+		}
+
+		String[] items = unlockItem().split(";");
+
+		for(String item : items ){
+			if(item.indexOf(value) != -1){
+				return Boolean.parseBoolean(item.split(",")[1]);
+			}
+		}
+
+		return false;
+	}
+
+	public static int getUnlockItemLimit(String value){
+		if(!isItemUnlock(value)){
+			return -1;
+		}
+
+		String[] items = unlockItem().split(";");
+
+		for(String item : items ){
+			if(item.indexOf(value) != -1){
+				return Integer.parseInt(item.split(",")[2]);
+			}
+		}
+
+		return -1;
+	}
 }
