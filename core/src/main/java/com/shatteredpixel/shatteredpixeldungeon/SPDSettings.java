@@ -720,6 +720,8 @@ public class SPDSettings extends GameSettings {
 					case 3:
 						items.append(item).append(";");
 						break;
+					default:
+						return;
 				}
 			}
 		}
