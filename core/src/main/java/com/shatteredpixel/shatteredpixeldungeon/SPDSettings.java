@@ -720,7 +720,7 @@ public class SPDSettings extends GameSettings {
 						break;
 					case 2:
 						if( tempItem[1].matches( "\\d+" ) ){
-							items.append( tempItem[0] ).append( "false" ).append( tempItem[1] );
+							items.append( tempItem[0] ).append( ",false," ).append( tempItem[1] ).append( ";" );
 						}else if( tempItem[1].equals( "true" ) || tempItem[1].equals( "false" ) ){
 							items.append( item ).append( ",1;" );
 						}else {
