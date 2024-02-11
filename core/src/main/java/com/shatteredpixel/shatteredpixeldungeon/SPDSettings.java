@@ -699,89 +699,128 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_ICECOIN, 0);
 	}
 
-	public static void unlockItem(String value){
-		String[] itemArray = value.split(";");
-		StringBuilder items = new StringBuilder(unlockItem());
 
-		for ( String item : itemArray) {
-			String[] tempItem = item.split(",");
-			if(!isItemUnlock(tempItem[0])){
-				switch(tempItem.length){
+	/*
+	 * @Breif 永久解锁物品，允许批量解锁，以","作为元素分隔符,";"作为物品分隔符
+	 * 输入格式为String itemName1,boolean allowMulti1,int itemLimit1;String itemName2,boolean allowMulti2,int itemLimit2;...
+	 * @Pramas String
+	 * @NativeName: unlockItem
+	 * @NativeFunction: void unlockItem(String)
+	 */
+	public static void unlockItem( String itemName ){
+		String[] itemArray = itemName.split( ";" );
+		StringBuilder items = new StringBuilder( unlockItem() );
+
+		for( String item : itemArray) {
+			String[] tempItem = item.split( "," );
+			if( !isItemUnlock( tempItem[0] ) ){
+				switch( tempItem.length ){
 					case 1:
-						items.append(item).append(",false,1;");
+						items.append( item ).append( ",false,1;" );
 						break;
 					case 2:
-						if(tempItem[1].matches("\\d+")){
-							items.append(tempItem[0]).append("false").append(tempItem[1]);
+						if( tempItem[1].matches( "\\d+" ) ){
+							items.append( tempItem[0] ).append( "false" ).append( tempItem[1] );
+						}else if( tempItem[1].equals( "true" ) || tempItem[1].equals( "false" ) ){
+							items.append( item ).append( ",1;" );
 						}else {
-							items.append(item).append(",1;");
+							continue;
 						}
 						break;
 					case 3:
-						items.append(item).append(";");
+						items.append( item ).append( ";" );
 						break;
-					default:
-						return;
 				}
 			}
 		}
 
-		put(KEY_UNLOCKITEM,items.toString());
+		put( KEY_UNLOCKITEM, items.toString() );
 	}
 
-	public static void unlockItem(String value,boolean allowMulti){
-		StringBuilder items = new StringBuilder(unlockItem());
-
-		if(!isItemUnlock(value)){
-			items.append(value).append(",");
-			items.append(allowMulti).append(",1;");
+	/*
+	 * @Breif 永久解锁物品，第一个参数为itemName，即物品的名称；第二个参数为allowMulti，即是否允许多持该物品
+	 * @Pramas String,boolean
+	 * @NativeName: unlockItem
+	 * @NativeFunction: void unlockItem(String,boolean)
+	 */
+	public static void unlockItem( String itemName, boolean allowMulti ){
+		if( !isItemUnlock( itemName ) ){
+			StringBuilder items = new StringBuilder( unlockItem() );
+			items.append( itemName ).append( "," );
+			items.append( allowMulti ).append( ",1;" );
+			put( KEY_UNLOCKITEM, items.toString() );
 		}
-
-		put(KEY_UNLOCKITEM,items.toString());
 	}
 
-	public static void unlockItem(String value,boolean allowMulti,int limit){
-		StringBuilder items = new StringBuilder(unlockItem());
-
-		if(!isItemUnlock(value)){
-			items.append(value).append(",");
-			items.append(allowMulti).append(",");
-			items.append(limit).append(";");
+	/*
+	 * @Breif 永久解锁物品，第一个参数为itemName，即物品的名称；第二个参数为allowMulti，即是否允许多持该物品；第三个参数为limit，即持有该物品的上限
+	 * @Pramas String,boolean,int
+	 * @NativeName: unlockItem
+	 * @NativeFunction: void unlockItem(String,boolean,int)
+	 */
+	public static void unlockItem( String itemName, boolean allowMulti, int limit ){
+		if( !isItemUnlock( itemName ) ){
+			StringBuilder items = new StringBuilder( unlockItem() );
+			items.append( itemName ).append( "," );
+			items.append( allowMulti ).append( "," );
+			items.append( limit ).append( ";" );
+			put( KEY_UNLOCKITEM, items.toString() );
 		}
-
-		put(KEY_UNLOCKITEM,items.toString());
 	}
 
+	/*
+	 * @Breif 获取已解锁的物品列表，以","作为元素分隔符,";"作为物品分隔符
+	 * 输出格式为String itemName1,boolean allowMulti1,int itemLimit1;String itemName2,boolean allowMulti2,int itemLimit2;...
+	 * @Pramas
+	 * @NativeName: unlockItem
+	 * @NativeFunction: String unlockItem()
+	 */
 	public static String unlockItem(){ return getString( KEY_UNLOCKITEM, ""); }
 
-	public static Boolean isItemUnlock(String value){ return unlockItem().indexOf(value) != -1; }
+	/*
+	 * @Breif 返回目标物品是否已经解锁
+	 * @Pramas String
+	 * @NativeName: isItemUnlock
+	 * @NativeFunction: Boolean isItemUnlock(String)
+	 */
+	public static Boolean isItemUnlock( String itemName ){ return unlockItem().indexOf( itemName ) != -1; }
 
-	public static Boolean isUnlockItemAllowMulti(String value){
-		if(!isItemUnlock(value)){
+	/*
+	 * @Breif 返回目标物品是否允许多持
+	 * @Pramas String
+	 * @NativeName: isUnlockItemAllowMulti
+	 * @NativeFunction: Boolean isUnlockItemAllowMulti(String)
+	 */
+	public static Boolean isUnlockItemAllowMulti( String itemName ){
+		if( !isItemUnlock( itemName ) ){
 			return false;
 		}
 
-		String[] items = unlockItem().split(";");
-
-		for(String item : items ){
-			if(item.indexOf(value) != -1){
-				return Boolean.parseBoolean(item.split(",")[1]);
+		String[] items = unlockItem().split( ";" );
+		for( String item : items ){
+			if( item.indexOf( itemName ) != -1 ){
+				return Boolean.parseBoolean( item.split( "," )[1] );
 			}
 		}
 
 		return false;
 	}
 
-	public static int getUnlockItemLimit(String value){
-		if(!isItemUnlock(value)){
+	/*
+	 * @Breif 返回目标物品的持有上限
+	 * @Pramas int
+	 * @NativeName: getUnlockItemLimit
+	 * @NativeFunction: int getUnlockItemLimit(String)
+	 */
+	public static int getUnlockItemLimit( String itemName ){
+		if( !isItemUnlock( itemName ) ){
 			return -1;
 		}
 
-		String[] items = unlockItem().split(";");
-
-		for(String item : items ){
-			if(item.indexOf(value) != -1){
-				return Integer.parseInt(item.split(",")[2]);
+		String[] items = unlockItem().split( ";" );
+		for( String item : items ){
+			if( item.indexOf( itemName ) != -1 ){
+				return Integer.parseInt( item.split( ", ")[2] );
 			}
 		}
 
