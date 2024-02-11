@@ -820,7 +820,7 @@ public class SPDSettings extends GameSettings {
 		String[] items = unlockItem().split( ";" );
 		for( String item : items ){
 			if( item.indexOf( itemName ) != -1 ){
-				return Integer.parseInt( item.split( ", ")[2] );
+				return Integer.parseInt( item.split( ",")[2] );
 			}
 		}
 
