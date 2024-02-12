@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holid
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
@@ -455,7 +456,7 @@ public class Generator {
 
 					MoonDao.class,
 			};
-			WEP_T3.probs = new float[]{ 1, 5, 4, 4, 4 ,3,5,3,6,0, 0,0,0,0};
+			WEP_T3.probs = new float[]{ 1, 5, 4, 4, 4 ,3,5,3,6,0, 0,0,0, SPDSettings.isItemUnlock( new MoonDao().name() ) ? 1.5f : 0 };
 
 			WEP_T4.classes = new Class<?>[]{
 					Longsword.class,
@@ -482,7 +483,7 @@ public class Generator {
 					WarScythe.class,
 
 			};
-			WEP_T5.probs = new float[]{ 0, 3, 3, 3, 3, 3,3,0,2};
+			WEP_T5.probs = new float[]{ 0, 3, 3, 3, 3, 3,3, SPDSettings.isItemUnlock( new DiedCrossBow().name() ) ? 1.5f : 0,2};
 
 			WEP_T6.classes = new Class<?>[]{
 					IceFishSword.class,
