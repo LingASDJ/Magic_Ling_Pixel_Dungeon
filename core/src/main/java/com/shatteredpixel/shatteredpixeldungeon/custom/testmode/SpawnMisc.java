@@ -517,8 +517,9 @@ public class SpawnMisc extends TestItem {
             case 15: return RiceDumplings.RiceDumplingsLink.class;
             case 16: return RiceDumplings.RiceDumplingsBottle.class;
             case 17: return RedCrab.class;
+            case 18: return Pasty.FishLeftover.class;
             default:
-            case 18: return PhantomMeat.class;
+            case 19: return PhantomMeat.class;
         }
     }
 
@@ -586,7 +587,7 @@ public class SpawnMisc extends TestItem {
             case 9:
                 return 12;
             case 10:
-                return 18;
+                return 19;
             case 11:
                 return 12;
             case 12:

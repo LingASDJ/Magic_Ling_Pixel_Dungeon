@@ -7,9 +7,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -102,7 +105,7 @@ public class WndIceTradeItem extends WndInfoItem {
 
         final int price = Shopkeeper.sellIcePrice( item );
 
-        RedButton btnBuy = new RedButton( Messages.get(this, "buy", price) ) {
+        RedButton btnBuy = new RedButton( SPDSettings.isItemUnlock( item.name() ) ? Messages.get(this, "unlocked") : Messages.get(this, "buy", price) ) {
             @Override
             protected void onClick() {
                 hide();
@@ -113,7 +116,7 @@ public class WndIceTradeItem extends WndInfoItem {
         btnBuy.icon(new ItemSprite(ItemSpriteSheet.ICEGOLD));
 
 
-        btnBuy.enable( price <= SPDSettings.iceCoin());
+        btnBuy.enable( SPDSettings.isItemUnlock( item.name() ) ? false : price <= SPDSettings.iceCoin());
         add( btnBuy );
 
         pos = btnBuy.bottom();
@@ -189,6 +192,14 @@ public class WndIceTradeItem extends WndInfoItem {
 
         int price = Shopkeeper.sellIcePrice( item );
         SPDSettings.iceDownCoin(price);
+
+        if( (item instanceof DiedCrossBow|| item instanceof MoonDao) && !SPDSettings.isItemUnlock( item.name() ) ){
+            if(item instanceof DiedCrossBow)
+                Generator.Category.WEP_T5.probs = new float[]{ 0, 3, 3, 3, 3, 3,3, 1.5f };
+            if(item instanceof MoonDao)
+                Generator.Category.WEP_T3.probs = new float[]{ 1, 5, 4, 4, 4 ,3,5,3,6,0, 0,0,0, 1.5f };
+            SPDSettings.unlockItem( item.name() );
+        }
 
         if (!item.doPickUp( Dungeon.hero )) {
             Dungeon.level.drop( item, heap.pos ).sprite.drop();

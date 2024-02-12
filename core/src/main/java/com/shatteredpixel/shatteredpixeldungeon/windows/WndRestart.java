@@ -73,6 +73,14 @@ public class WndRestart extends Window {
             @Override
             protected void onClick() {
                 super.onClick();
+                if( !cbs.get(4).checked() && GamesInProgress.checkAll().size() >= GamesInProgress.MAX_SLOTS ){
+                    add( new WndError( Messages.get(WndRestart.class,"error") ) {
+                        public void onBackPressed() {
+                            super.onBackPressed();
+                        }
+                    } );
+                    return;
+                }
                 HeroClass oldHero = Dungeon.hero.heroClass;
                 //Difficulty.HardStorage oldDifficulty = SPDSettings.difficulty();
                 int oldChallenges = SPDSettings.challenges();
