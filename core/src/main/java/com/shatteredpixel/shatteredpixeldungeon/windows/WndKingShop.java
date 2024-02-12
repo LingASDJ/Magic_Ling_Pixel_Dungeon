@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -14,9 +15,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDiedTO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.BackGoKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
@@ -199,7 +203,18 @@ public class WndKingShop extends Window {
                     @Override
                     public void call() {
                         hide();
-                        GameScene.show(new BackGoKey.WndSelectLevel());
+                        TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+                        if (timeFreeze != null) timeFreeze.disarmPresses();
+                        Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+                        if (timeBubble != null) timeBubble.disarmPresses();
+                        InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
+                        InterlevelScene.curTransition = new LevelTransition();
+                        InterlevelScene.curTransition.destDepth = depth;
+                        InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+                        InterlevelScene.curTransition.destBranch = 0;
+                        InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+                        InterlevelScene.curTransition.centerCell = -1;
+                        Game.switchScene(InterlevelScene.class);
                         GLog.w(Messages.get(WndKingShop.class,"back"));
                     }
                 });

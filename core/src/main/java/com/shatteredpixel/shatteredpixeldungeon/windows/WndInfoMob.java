@@ -142,8 +142,10 @@ public class WndInfoMob extends WndTitledMessage {
 				level = "E";
 			} else if (mob.HP==1) {
 				level = "G";
-			} else {
+			} else if(mob.HP<=0) {
 				level = "?";
+			} else {
+				level = "Z";
 			}
 			return level;
 		}

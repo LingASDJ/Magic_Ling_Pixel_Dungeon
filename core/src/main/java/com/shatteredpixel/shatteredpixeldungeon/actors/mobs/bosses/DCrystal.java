@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
 import static com.shatteredpixel.shatteredpixeldungeon.Difficulty.DifficultyConduct.HARD;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -10,14 +11,15 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DCrystalSprites;
+import com.watabou.utils.Random;
 
 public class DCrystal extends Mob {
 
     {
         spriteClass = DCrystalSprites.class;
 
-        //困难模式水晶血量翻倍
-        HP = HT = Dungeon.isDIFFICULTY(HARD) ? 80 : 40;
+        //水晶血量翻5倍
+        HP = HT = Dungeon.isChallenged(STRONGER_BOSSES) ? 120 : 40;
 
         properties.add(Property.MINIBOSS);
         properties.add(Property.INORGANIC);
@@ -25,12 +27,11 @@ public class DCrystal extends Mob {
         properties.add(Property.IMMOVABLE);
 
         state = PASSIVE;
-
-        baseSpeed =0;
     }
 
     @Override
     protected boolean act() {
+
         ColdChestBossLevel.State level = ((ColdChestBossLevel) Dungeon.level).pro();
         if (level == ColdChestBossLevel.State.VSBOSS_START || level == ColdChestBossLevel.State.VSYOU_START || level
                 == ColdChestBossLevel.State.VSLINK_START) {
@@ -46,6 +47,11 @@ public class DCrystal extends Mob {
             //如果宝箱王存在，且在五格范围内，给予它血量吧
             //困难模式治疗范围改为无限
             if(boss instanceof DiamondKnight && Dungeon.level.distance(pos, boss.pos) <= 5 || Dungeon.isDIFFICULTY(HARD) && boss instanceof DiamondKnight) {
+
+                if(Dungeon.isChallenged(STRONGER_BOSSES)){
+                    Buff.affect(boss, CrivusFruits.CFBarrior.class).setShield(Random.Int(5,12));
+                }
+
                 //最高加到半血
                 if (boss.HP < boss.HT/2){
 

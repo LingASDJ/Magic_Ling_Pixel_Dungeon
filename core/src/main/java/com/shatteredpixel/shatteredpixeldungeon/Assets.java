@@ -177,6 +177,9 @@ public class Assets {
 		public static final String Tengu_Title  = "interfaces/bosslogo/tengu-title.png";
 		public static final String Tengu_Clear  = "interfaces/bosslogo/tengu-clear.png";
 
+		public static final String D_Title  = "interfaces/bosslogo/dimand.png";
+		public static final String D_Clear  = "interfaces/bosslogo/dimand-clear.png";
+
 		public static final String ARCS_BG  = "interfaces/arcs1.png";
 		public static final String ARCS_FG  = "interfaces/arcs2.png";
 

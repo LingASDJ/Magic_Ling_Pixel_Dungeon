@@ -8,7 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.RiceDumplings;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KongFuSprites;
@@ -93,7 +93,7 @@ public class KongFu extends NTNPC {
             if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
                 Dungeon.level.drop(new Gold(1), hero.pos);
             } else {
-                Dungeon.level.drop( new RiceDumplings.RiceDumplingsPink(), hero.pos );
+                Dungeon.level.drop( new Pasty(), hero.pos );
             }
 
             first=false;

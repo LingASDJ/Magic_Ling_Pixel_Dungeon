@@ -1774,9 +1774,16 @@ public class GameScene extends PixelScene {
 						scene.showBanner(bossSlain);
 					break;
 				case 10:
-					bossSlain.texture(Assets.Interfaces.Tengu_Title);
-					bossSlain.show( Window.R_COLOR, 0.3f, 4f);
-					scene.showBanner(bossSlain);
+					if ( ((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && !Statistics.mustTengu) {
+						bossSlain.texture(Assets.Interfaces.D_Title);
+						bossSlain.show( Window.TITLE_COLOR, 0.3f, 4f);
+						scene.showBanner(bossSlain);
+					} else {
+						bossSlain.texture(Assets.Interfaces.Tengu_Title);
+						bossSlain.show( Window.R_COLOR, 0.3f, 4f);
+						scene.showBanner(bossSlain);
+					}
+
 					break;
 				case 14:
 					bossSlain.texture(Assets.Interfaces.DMOR_Title);
@@ -1836,9 +1843,16 @@ public class GameScene extends PixelScene {
 						scene.showBanner(bossSlain);
 					break;
 				case 10:
-					bossSlain.texture(Assets.Interfaces.Tengu_Clear);
-					bossSlain.show( Window.R_COLOR, 0.2f, 5f);
-					scene.showBanner(bossSlain);
+					if ( ((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && !Statistics.mustTengu) {
+						bossSlain.texture(Assets.Interfaces.D_Clear);
+						bossSlain.show( Window.TITLE_COLOR, 0.2f, 5f);
+						scene.showBanner(bossSlain);
+					} else {
+						bossSlain.texture(Assets.Interfaces.Tengu_Clear);
+						bossSlain.show( Window.R_COLOR, 0.2f, 5f);
+						scene.showBanner(bossSlain);
+					}
+
 					break;
 				case 14:
 					bossSlain.texture(Assets.Interfaces.DMOR_Clear);

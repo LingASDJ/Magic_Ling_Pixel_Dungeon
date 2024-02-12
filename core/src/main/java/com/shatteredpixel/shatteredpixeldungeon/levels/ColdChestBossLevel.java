@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.GO_START;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.MAZE_START;
@@ -94,6 +95,10 @@ public class ColdChestBossLevel extends Level {
         return true;
     }
     private static final short W = Terrain.WALL;
+
+    private static final short X = (short) (Dungeon.isChallenged(STRONGER_BOSSES) ? Terrain.WATER : Terrain.WALL);
+    private static final short A = (short) (Dungeon.isChallenged(STRONGER_BOSSES) ? Terrain.EMPTY : Terrain.CHASM);
+
     private static final short M = Terrain.WELL;
     private static final short E = Terrain.CHASM;
     private static final short J = Terrain.ENTRANCE;
@@ -146,7 +151,6 @@ public class ColdChestBossLevel extends Level {
             W,E,E,W,W,W,W,W,W,W,W,W,W,W,K,K,P,P,P,K,K,W,W,W,W,W,W,W,W,W,W,E,E,E,W,
             W,E,E,E,E,E,E,E,E,E,E,E,E,W,K,K,K,P,K,K,K,W,E,E,E,E,E,E,E,E,E,E,E,E,W,
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
-
     };
 
     private static final int[] MazeRoom = {
@@ -177,9 +181,9 @@ public class ColdChestBossLevel extends Level {
             W,T,W,W,W,W,L,L,W,L,L,W,W,W,W,L,L,W,L,W,L,W,L,L,W,W,W,L,W,L,L,L,L,L,W,
             W,W,W,L,L,L,L,L,W,L,L,L,L,L,W,L,L,W,L,L,L,W,L,L,L,L,W,L,W,W,W,W,W,W,W,
             W,W,W,L,W,L,W,W,W,L,L,L,W,L,W,L,L,W,W,W,L,W,W,W,W,W,W,L,W,L,L,L,L,L,W,
-            W,W,W,L,W,L,L,L,W,L,L,L,W,L,W,L,L,W,L,L,L,L,L,L,L,L,W,L,L,L,W,W,W,L,W,
-            W,W,W,L,W,L,L,W,W,L,W,L,W,L,L,L,L,W,L,W,W,W,L,W,L,L,W,L,W,L,W,E,W,L,W,
-            W,W,W,W,W,L,L,W,W,L,W,L,W,L,W,W,W,W,L,L,W,L,L,W,L,L,L,L,W,L,W,W,W,L,W,
+            W,W,W,L,W,L,L,L,W,L,L,L,W,L,W,L,L,W,L,L,L,L,L,L,L,L,W,L,L,L,X,X,X,L,W,
+            W,W,W,L,W,L,L,W,W,L,W,L,W,L,L,L,L,W,L,W,W,W,L,W,L,L,W,L,W,L,X,A,X,L,W,
+            W,W,W,W,W,L,L,W,W,L,W,L,W,L,W,W,W,W,L,L,W,L,L,W,L,L,L,L,W,L,X,X,X,L,W,
             W,W,W,L,L,L,W,W,W,L,W,L,W,L,L,W,L,L,L,L,L,L,L,W,L,L,L,L,W,L,L,L,L,L,W,
             W,W,W,L,W,L,L,L,W,L,W,L,W,L,L,W,L,W,W,W,W,W,L,W,W,W,W,W,W,W,W,W,W,W,W,
             W,W,W,L,W,L,W,L,W,W,W,W,W,L,W,W,T,L,L,L,W,L,L,L,W,L,L,L,W,L,L,L,W,L,W,
@@ -563,14 +567,13 @@ public class ColdChestBossLevel extends Level {
                     }
                 }
                 //水晶自爆
+                break;
+            case WIN:
                 for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
                     if (boss instanceof DCrystal) {
                         boss.die(true);
                     }
                 }
-                break;
-            case WIN:
-                //
                 break;
         }
     }

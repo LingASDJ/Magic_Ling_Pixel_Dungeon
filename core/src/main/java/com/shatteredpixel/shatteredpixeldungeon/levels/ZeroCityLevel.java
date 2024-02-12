@@ -58,6 +58,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -132,8 +133,8 @@ public class ZeroCityLevel extends Level {
             P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,M,B,M,M,M,M,M,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,R,R,P,D,D,M,D,D,D,P,
             P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,M,O,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,R,P,D,D,M,D,D,D,P,
             P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,M,K,D,D,D,D,D,D,D,M,O,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,D,D,D,D,D,D,D,P,R,R,R,P,D,D,M,M,M,M,M,
-            P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,M,M,M,M,O,D,D,P,D,D,D,D,D,D,D,D,D,D,D,D,P,P,P,D,D,D,D,D,D,D,P,R,R,R,P,P,D,D,D,D,D,P,
-            P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,M,P,P,P,P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,P,P,P,P,D,D,D,D,D,D,P,R,R,R,R,P,D,D,D,D,D,P,
+            P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,M,O,D,D,P,D,D,D,D,D,D,D,D,D,D,D,D,P,P,P,D,D,D,D,D,D,D,P,R,R,R,P,P,D,D,D,D,D,P,
+            P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,M,M,M,M,P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,P,P,P,P,D,D,D,D,D,D,P,R,R,R,R,P,D,D,D,D,D,P,
             P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,M,M,M,M,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,P,P,P,P,D,D,D,D,D,P,R,R,R,R,P,P,D,D,D,D,P,
             P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,P,P,P,P,P,D,D,D,D,D,P,R,R,R,R,R,P,P,D,D,P,P,
             P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,P,P,P,P,P,P,D,D,D,D,D,P,R,R,R,R,R,R,P,P,P,P,P,
@@ -361,9 +362,7 @@ public class ZeroCityLevel extends Level {
             npc12.pos = 3100;
             mobs.add(npc12);
 
-            LuoWhite npc13 = new LuoWhite();
-            npc13.pos = 1300;
-            mobs.add(npc13);
+
 
             //45%概率
             if(Random.Float()<=0.45f){
@@ -378,6 +377,10 @@ public class ZeroCityLevel extends Level {
         SmallLeaf npc5 = new SmallLeaf();
         npc5.pos = 365;
         mobs.add(npc5);
+
+        LuoWhite npc13 = new LuoWhite();
+        npc13.pos = 1300;
+        mobs.add(npc13);
 
     }
 
@@ -406,6 +409,7 @@ public class ZeroCityLevel extends Level {
     protected void createItems() {
         drop( new DiedCrossBow(), 1237  ).type = Heap.Type.FOR_ICE;
         drop( new MoonDao(), 1238  ).type = Heap.Type.FOR_ICE;
+        drop( new SaiPlus(), 1365  ).type = Heap.Type.FOR_ICE;
 
         if (Dungeon.depth == 0 &&
                 (!Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_INTRO) || SPDSettings.intro() )){

@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -193,11 +194,13 @@ public class WndIceTradeItem extends WndInfoItem {
         int price = Shopkeeper.sellIcePrice( item );
         SPDSettings.iceDownCoin(price);
 
-        if( (item instanceof DiedCrossBow|| item instanceof MoonDao) && !SPDSettings.isItemUnlock( item.name() ) ){
+        if( (item instanceof DiedCrossBow|| item instanceof MoonDao || item instanceof SaiPlus) && !SPDSettings.isItemUnlock( item.name() ) ){
             if(item instanceof DiedCrossBow)
                 Generator.Category.WEP_T5.probs = new float[]{ 0, 3, 3, 3, 3, 3,3, 1.5f };
             if(item instanceof MoonDao)
                 Generator.Category.WEP_T3.probs = new float[]{ 1, 5, 4, 4, 4 ,3,5,3,6,0, 0,0,0, 1.5f };
+            if(item instanceof SaiPlus)
+                Generator.Category.WEP_T5.probs = new float[]{ 0, 3, 3, 3, 3, 3,3,0,2,1f };
             SPDSettings.unlockItem( item.name() );
         }
 

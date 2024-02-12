@@ -76,6 +76,8 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -334,7 +336,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     @Override
     public boolean act() {
         int healInc = 1;
-        if (phase == 1 && HP <= 350) {
+        if (phase == 1 && HP <= HT/3) {
             Actor.add(new Actor() {
 
                 {
@@ -579,13 +581,10 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
             int dmg = Random.NormalIntRange(2+Dungeon.depth, 5+Dungeon.depth );
 
-            for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
-                if(Random.NormalIntRange(0,9)<4) {
-                    bolt(mob.pos, mob);
-                } else {
-                    enemy.damage( dmg, new ColdGurad.DarkBolt() );
-                }
-            }
+            enemy.damage( dmg, new ColdGurad.DarkBolt() );
+            enemy.damage( dmg, new ColdGurad.DarkBolt() );
+            enemy.damage( dmg, new ColdGurad.DarkBolt() );
+            enemy.damage( dmg, new ColdGurad.DarkBolt() );
 
 
             if (enemy == Dungeon.hero && !enemy.isAlive()) {
@@ -614,13 +613,12 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                 Buff.affect( enemy, HalomethaneBurning.class ).reignite( enemy, 7f );
                 enemy.sprite.burst( 0x000000, 5 );
             }
-        } else if (HP < 200) {
+        } else if (HP < HT/2) {
             if (Random.NormalFloat( 2, 9 ) == 4) {
                 GLog.n( Messages.get(FireMagicDied.class, "died_kill",Dungeon.hero.name()) );
+                zap();
             }
-            zap();
         } else {
-            ////doYogLasers();
             if (Random.Int( 3 ) == 0) {
                 Buff.affect( enemy, HalomethaneBurning.class ).reignite( enemy, 24f );
                 enemy.sprite.burst( 0x000000, 5 );
@@ -703,18 +701,44 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 //        return true;
 //    }
 
+
+    @Override
+    public boolean isAlive() {
+        return super.isAlive() || Dungeon.level.mobs.contains(this);
+    }
     @Override
     public void damage(int dmg, Object src) {
+
+        if (!Dungeon.level.mobs.contains(this)){
+            return;
+        }
+
         if (!BossHealthBar.isAssigned()){
             BossHealthBar.assignBoss( this );
         }
         boolean bleeding = (HP*2 <= HT);
 
+        super.damage(dmg, src);
+        int hpBracket = HT / 8;
+
+        int curbracket = HP / hpBracket;
+
+        int beforeHitHP = HP;
+
+
+        //cannot be hit through multiple brackets at a time
+        if (HP <= (curbracket-1)*hpBracket){
+            HP = (curbracket-1)*hpBracket + 1;
+        }
+
+        int newBracket =  HP / hpBracket;
+        dmg = beforeHitHP - HP;
+
+
+
         if ((HP*2 <= HT) && !bleeding){
             BossHealthBar.bleed(true);
-            ///sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "enraged"));
             ((FireMagicGirlSprite)sprite).spray(true);
-            //yell(Messages.get(this, "gluuurp"));
         }
         LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
         if (lock != null) lock.addTime(dmg*2);
@@ -743,7 +767,8 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                 beamCD = 40 + 8 - (phase == 10 ? 38 : 0);
                 sprite.showStatus(0xff0000, Messages.get(this, "dead"));
                 sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
-                Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(12*25);
+                Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(12*25+HT/3);
+                HP = HT/2;
             }
         } else if (phase == 2 && shielding() == 0 && HP <= HT/3) {
             actPhaseTwoSummon();
@@ -763,7 +788,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                     GameScene.add(csp);
                 }
             }
-
+            HP = HT/2;
             //T3 阶段
             CrystalLingTower abc = new CrystalLingTower();
             abc.pos = TRUEPosition;
@@ -800,17 +825,38 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             Buff.affect(this, ChampionEnemy.AntiMagic.class);
             Buff.affect(this, Adrenaline.class, 100f);
             Buff.affect(this, RoseShiled.class, 40f);
-        } else if (phase == 3 && preHP > 80 && HP <= 80){
+        } else if (phase == 3 && preHP > 10 && HP <= 20){
             yell( Messages.get(this, "losing") );
-        }
+            die(Dungeon.hero);
+            Dungeon.hero.interrupt();
+            GameScene.flash(0x80FFFFFF);
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    Music.INSTANCE.fadeOut(5f, new Callback() {
+                        @Override
+                        public void call() {
+                            Music.INSTANCE.end();
+                        }
+                    });
+                }
+            });
+        } else if (newBracket != curbracket) {
+        //let full attack action complete first
+        Actor.add(new Actor() {
 
-        for(Mob m: Dungeon.level.mobs.toArray(new Mob[0])){
-            if(m instanceof FireMagicDied && HP < 50){
-                m.die(this);
-                GameScene.flash(0x80FFFFFF);
+            {
+                actPriority = VFX_PRIO;
             }
-        }
-        super.damage(dmg, src);
+
+            @Override
+            protected boolean act() {
+                Actor.remove(this);
+                return true;
+            }
+        });
+    }
+
     }
 
     @Override

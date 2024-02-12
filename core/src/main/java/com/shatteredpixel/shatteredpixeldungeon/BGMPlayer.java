@@ -192,12 +192,12 @@ public class BGMPlayer {
                 playBGM(Assets.SKBJY, true);
             } else if (Dungeon.bossLevel() && t == 5 || t == 4 && s == 2) {
                 playBGM(Assets.BGM_BOSSA, true);
-            } else if (Dungeon.bossLevel() && t == 10 && Statistics.mimicking) {
-                playBGM(Assets.BGM_BOSSB, true);
             } else if (Dungeon.bossLevel() && t == 10) {
-                playBGM(Assets.BGM_BOSSB2, true);
-//            } else if ((t == 11 || t == 12 || t == 13 || t == 14) && s == 1)  {
-//                playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
+                if(((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && !Statistics.mustTengu){
+                    playBGM(Assets.BGM_BOSSB, true);
+                } else {
+                    playBGM(Assets.BGM_BOSSB2, true);
+                }
             } else if (t == 14) {
                 playBGM(Assets.BGM_BOSSC, true);
             } else if (Dungeon.bossLevel() && t == 15) {

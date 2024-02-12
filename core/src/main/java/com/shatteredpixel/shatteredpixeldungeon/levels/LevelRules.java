@@ -99,7 +99,16 @@ public class LevelRules {
                 case 4:
                     return new SewerLevel();
                 case 5:
-                    return new ForestBossLevel();
+//                    if(Challenges.activeChallenges()>9){
+//                        if(Random.NormalIntRange(0,100)<=70){
+//                            return new ForestHardBossLevel();
+//                        } else {
+//                            return new ForestBossLevel();
+//                        }
+//                    } else {
+                        return new ForestBossLevel();
+//                    }
+
                 case 6:
                 case 7:
                 case 8:

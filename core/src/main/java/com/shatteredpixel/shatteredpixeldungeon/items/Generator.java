@@ -170,6 +170,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WitheWoodSwor
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ForceCube;
@@ -481,9 +482,10 @@ public class Generator {
 					//传奇武器
 					DiedCrossBow.class,
 					WarScythe.class,
+					SaiPlus.class,
 
 			};
-			WEP_T5.probs = new float[]{ 0, 3, 3, 3, 3, 3,3, SPDSettings.isItemUnlock( new DiedCrossBow().name() ) ? 1.5f : 0,2};
+			WEP_T5.probs = new float[]{ 0, 3, 3, 3, 3, 3,3, SPDSettings.isItemUnlock( new DiedCrossBow().name() ) ? 1.5f : 0,2,SPDSettings.isItemUnlock( new SaiPlus().name() ) ? 1f : 0};
 
 			WEP_T6.classes = new Class<?>[]{
 					IceFishSword.class,

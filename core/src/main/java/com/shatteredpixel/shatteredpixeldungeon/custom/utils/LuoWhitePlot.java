@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
@@ -70,17 +71,23 @@ public class LuoWhitePlot extends Plot {
         diagulewindow.setMainAvatar(new Image(Assets.Splashes.LINPX));
         diagulewindow.setLeftName(Messages.get(LuoWhite.class, "name"));
 
-        if(SPDSettings.UPICE() && !Dungeon.isChallenged(PRO)) {
-            int x = 50;
+        if(!SPDSettings.UPICE() && !Dungeon.isChallenged(PRO)) {
+            int x = 40;
             diagulewindow.changeText(Messages.get(LuoWhite.class, "message_ice2",x));
             Dungeon.level.drop_hard(new IceCyanBlueSquareCoin(x),hero.pos);
-            SPDSettings.UPICE(false);
+            SPDSettings.UPICE(true);
         } else if(SPDSettings.HiICE() && !Dungeon.isChallenged(PRO)) {
             diagulewindow.changeText(Messages.get(LuoWhite.class, "message_ice"));
             Dungeon.level.drop_hard(new IceCyanBlueSquareCoin(30),hero.pos);
             SPDSettings.HiICE(false);
         } else {
-            diagulewindow.changeText(Messages.get(LuoWhite.class, "message1"));
+
+            if(Dungeon.isChallenged(CS)){
+                diagulewindow.changeText(Messages.get(LuoWhite.class, "message3"));
+            } else {
+                diagulewindow.changeText(Messages.get(LuoWhite.class, "message1"));
+            }
+
         }
 
 
