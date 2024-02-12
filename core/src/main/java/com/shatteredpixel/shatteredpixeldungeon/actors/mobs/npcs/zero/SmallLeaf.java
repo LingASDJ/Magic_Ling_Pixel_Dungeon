@@ -17,6 +17,9 @@ public class SmallLeaf extends NTNPC {
 
     {
         spriteClass = SmallLeafSprite.class;
+        properties.add(Property.IMMOVABLE);
+        properties.add(Property.UNKNOWN);
+        maxLvl = -1;
     }
 
 

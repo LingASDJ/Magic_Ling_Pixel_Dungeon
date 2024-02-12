@@ -37,7 +37,8 @@ public class Nyz extends NTNPC {
     {
 
         spriteClass = NyzSprites.class;
-
+        properties.add(Property.UNKNOWN);
+        maxLvl = -1;
         properties.add(Property.IMMOVABLE);
 
         chat = new ArrayList<String>() {

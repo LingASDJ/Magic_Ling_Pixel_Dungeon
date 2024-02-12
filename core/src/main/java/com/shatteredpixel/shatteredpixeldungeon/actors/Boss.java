@@ -61,7 +61,12 @@ abstract public class Boss extends Mob {
                 }
             }
 
-            Dungeon.level.drop(new IceCyanBlueSquareCoin((5*(Dungeon.depth/5) * ((Challenges.activeChallenges() / 5 == 0 ? 1 : Challenges.activeChallenges() / 5) /2))),pos);
+            if(Challenges.activeChallenges()>9){
+                Dungeon.level.drop(new IceCyanBlueSquareCoin(((5*(Dungeon.depth/5)) * (Challenges.activeChallenges() / 5))),pos);
+            } else {
+                Dungeon.level.drop(new IceCyanBlueSquareCoin(5*(Dungeon.depth/5)),pos);
+            }
+
 
 
     }

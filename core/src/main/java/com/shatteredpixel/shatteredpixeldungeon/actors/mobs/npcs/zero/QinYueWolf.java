@@ -1,12 +1,14 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.zeroItemLevel;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.QinWolfSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
@@ -97,7 +99,15 @@ public class QinYueWolf extends NTNPC {
             first=false;
         } else if(secnod) {
             WndQuest.chating(this,B_chat);
-            Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), hero.pos );
+
+            if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
+                Dungeon.level.drop(new Gold(1), hero.pos);
+            } else {
+                Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), hero.pos );
+            }
+
+
+            zeroItemLevel++;
             secnod = false;
         } else if(!Statistics.amuletObtained) {
             WndQuest.chating(this,C_chat);

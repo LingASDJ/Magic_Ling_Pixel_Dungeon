@@ -74,6 +74,15 @@ public class SPDSettings extends GameSettings {
 		return getBoolean(KEY_ICE, true);
 	}
 
+	public static void UPICE(boolean value) {
+		put(KEY_UP_ICE, value );
+	}
+
+	public static boolean UPICE() {
+		return getBoolean(KEY_UP_ICE, true);
+	}
+
+
 	private static final String DEBUG_REPORT  = "debug_report";
 	public static boolean debugReport() {
 		return getBoolean(DEBUG_REPORT,false);
@@ -145,6 +154,8 @@ public class SPDSettings extends GameSettings {
 	private static final String KEY_TIME = "fps";
 
 	private static final String KEY_ICE = "hice";
+
+	private static final String KEY_UP_ICE = "iceupdate";
 
 	private static final String KEY_DARK	= "dark_ui";
 

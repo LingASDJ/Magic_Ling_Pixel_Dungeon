@@ -144,7 +144,7 @@ public class NewsScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				super.onClick();
-				String link = "http://www.pd.qinyueqwq.top/";
+				String link = "https://pd.qinyueqwq.top/";
 				ShatteredPixelDungeon.platform.openURI(link);
 			}
 		};

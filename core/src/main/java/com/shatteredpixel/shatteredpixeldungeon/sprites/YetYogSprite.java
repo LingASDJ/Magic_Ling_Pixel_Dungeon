@@ -4,18 +4,15 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
 
-public class KongFuSprites extends CharSprite {
+public class YetYogSprite extends MobSprite {
+    public YetYogSprite() {
 
-    private Animation what_up;
-
-    public KongFuSprites() {
-
-        texture( Assets.Sprites.KONG );
+        texture( Assets.Sprites.YETYOG );
 
         TextureFilm ren = new TextureFilm(this.texture, 16, 16);
 
-        idle = new MovieClip.Animation(2, true);
-        idle.frames(ren, 0, 0, 1, 1,2,2,3,3);
+        idle = new MovieClip.Animation(3, true);
+        idle.frames(ren, 0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20);
 
         run = new MovieClip.Animation(10, true);
         run.frames(ren, 0);
@@ -23,14 +20,6 @@ public class KongFuSprites extends CharSprite {
         die = new MovieClip.Animation(10, false);
         die.frames(ren, 0);
 
-        what_up = new Animation( 9, false );
-        what_up.frames(ren, 6,6,7,7,8,8,9,9,10,10,11,11 );
-
         play(this.idle);
     }
-
-    public void What_Up( ){
-        play( what_up );
-    }
-
 }

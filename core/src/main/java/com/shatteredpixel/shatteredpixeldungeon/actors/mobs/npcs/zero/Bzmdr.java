@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.zeroItemLevel;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -8,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BzmdrSprite;
@@ -110,11 +112,19 @@ public class Bzmdr extends NTNPC {
             first=false;
         } else if(secnod) {
             WndQuest.chating(this,B_chat);
-            if(Random.NormalIntRange(0,100)<=50){
-                Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.SEED ) ), hero.pos );
+
+            if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
+                Dungeon.level.drop(new Gold(1), hero.pos);
             } else {
-                Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.STONE) ), hero.pos );
+                if(Random.NormalIntRange(0,100)<=50){
+                    Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.SEED ) ), hero.pos );
+                } else {
+                    Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.STONE) ), hero.pos );
+                }
             }
+
+
+            zeroItemLevel++;
             secnod = false;
         } else if(!Statistics.amuletObtained) {
             WndQuest.chating(this,C_chat);

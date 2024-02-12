@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.zeroItemLevel;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -9,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MoonLowSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
@@ -120,7 +122,14 @@ public class MoonLow extends NTNPC {
             first=false;
         } else if(secnod) {
             WndQuest.chating(this,B_chat);
-            Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), hero.pos );
+
+            if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
+                Dungeon.level.drop(new Gold(1), hero.pos);
+            } else {
+                Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), hero.pos );
+            }
+
+            zeroItemLevel++;
             secnod = false;
         } else if(!Statistics.amuletObtained) {
             WndQuest.chating(this,C_chat);
@@ -137,12 +146,12 @@ public class MoonLow extends NTNPC {
     }
     private String def_verb(){
 
-        switch (Random.Int(3)){
+        switch (Random.Int(2)){
             case 0:default:
                 return Messages.get(MoonLow.class, "dx_message1");
+//            case 1:
+//                return Messages.get(MoonLow.class, "dx_message2");
             case 1:
-                return Messages.get(MoonLow.class, "dx_message2");
-            case 2:
                 return Messages.get(MoonLow.class, "dx_message3");
         }
 

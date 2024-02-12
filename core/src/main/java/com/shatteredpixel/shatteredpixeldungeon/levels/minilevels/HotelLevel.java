@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.minilevels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.BOOKSHELF;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CRYSTAL_DOOR;
@@ -179,26 +180,28 @@ public class HotelLevel extends Level {
             mobs.add(n);
         }
 
-        MoonCat n1 = new MoonCat();
-        n1.pos = 143;
-        mobs.add(n1);
+        if(!Dungeon.isChallenged(CS)) {
+            MoonCat n1 = new MoonCat();
+            n1.pos = 143;
+            mobs.add(n1);
 
-        ATRI n3 = new ATRI();
-        n3.pos = 87;
-        mobs.add(n3);
+            ATRI n3 = new ATRI();
+            n3.pos = 87;
+            mobs.add(n3);
 
-        QinYueWolf n5 = new QinYueWolf();
-        n5.pos = 255;
-        mobs.add(n5);
+            QinYueWolf n5 = new QinYueWolf();
+            n5.pos = 255;
+            mobs.add(n5);
 
-        BlueCJ n7 = new BlueCJ();
-        n7.pos = 31;
-        mobs.add(n7);
+            BlueCJ n7 = new BlueCJ();
+            n7.pos = 31;
+            mobs.add(n7);
 
-        if(!Statistics.onlyBzmdr){
-            Bzmdr n9 = new Bzmdr();
-            n9.pos = 199;
-            mobs.add(n9);
+            if (!Statistics.onlyBzmdr) {
+                Bzmdr n9 = new Bzmdr();
+                n9.pos = 199;
+                mobs.add(n9);
+            }
         }
 
     }

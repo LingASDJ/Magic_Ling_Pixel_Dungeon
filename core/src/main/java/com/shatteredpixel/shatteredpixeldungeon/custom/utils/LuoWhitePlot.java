@@ -70,9 +70,14 @@ public class LuoWhitePlot extends Plot {
         diagulewindow.setMainAvatar(new Image(Assets.Splashes.LINPX));
         diagulewindow.setLeftName(Messages.get(LuoWhite.class, "name"));
 
-        if(SPDSettings.HiICE() && !Dungeon.isChallenged(PRO)) {
+        if(SPDSettings.UPICE() && !Dungeon.isChallenged(PRO)) {
+            int x = 50;
+            diagulewindow.changeText(Messages.get(LuoWhite.class, "message_ice2",x));
+            Dungeon.level.drop_hard(new IceCyanBlueSquareCoin(x),hero.pos);
+            SPDSettings.UPICE(false);
+        } else if(SPDSettings.HiICE() && !Dungeon.isChallenged(PRO)) {
             diagulewindow.changeText(Messages.get(LuoWhite.class, "message_ice"));
-            Dungeon.level.drop(new IceCyanBlueSquareCoin(30),hero.pos);
+            Dungeon.level.drop_hard(new IceCyanBlueSquareCoin(30),hero.pos);
             SPDSettings.HiICE(false);
         } else {
             diagulewindow.changeText(Messages.get(LuoWhite.class, "message1"));

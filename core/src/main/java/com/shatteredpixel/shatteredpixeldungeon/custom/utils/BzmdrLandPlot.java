@@ -1,11 +1,14 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.zeroItemLevel;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.BzmdrLand;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Image;
@@ -100,10 +103,18 @@ public class BzmdrLandPlot extends Plot {
 
     private void process_to_2() {
         diagulewindow.changeText(Messages.get(BzmdrLand.class, "message2"));
-        if(Random.NormalIntRange(0,100)<=50){
-            Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.SEED ) ), hero.pos );
+
+
+        if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
+            Dungeon.level.drop(new Gold(1), hero.pos);
         } else {
-            Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.STONE) ), hero.pos );
+            if(Random.NormalIntRange(0,100)<=50){
+                Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.SEED ) ), hero.pos );
+            } else {
+                Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.STONE) ), hero.pos );
+            }
         }
+
+        zeroItemLevel++;
     }
 }

@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoRuoS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonLow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Question;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.SmallLeaf;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -180,7 +181,7 @@ public class ZeroCityLevel extends Level {
 //    public void occupyCell(Char ch) {
 //        super.occupyCell(ch);
 //        GLog.p(String.valueOf(hero.pos));
-//        GLog.b(String.valueOf(hero.viewDistance));
+//        GLog.b(String.valueOf(Statistics.zeroItemLevel));
 //    }
 
     @Override
@@ -313,66 +314,71 @@ public class ZeroCityLevel extends Level {
 
     @Override
     protected void createMobs() {
-        REN n = new REN();
-        n.pos = 252;
-        mobs.add(n);
+        if(!Dungeon.isChallenged(CS)){
+            REN n = new REN();
+            n.pos = 252;
+            mobs.add(n);
 
-        Slyl npc1 = new Slyl();
-        npc1.pos = 254;
-        mobs.add(npc1);
+            Slyl npc1 = new Slyl();
+            npc1.pos = 254;
+            mobs.add(npc1);
 
-        obSir npc2 = new obSir();
-        npc2.pos = 380;
-        mobs.add(npc2);
+            obSir npc2 = new obSir();
+            npc2.pos = 380;
+            mobs.add(npc2);
 
-        NxhyNpc npc3 = new NxhyNpc();
-        npc3.pos = 382;
-        mobs.add(npc3);
+            NxhyNpc npc3 = new NxhyNpc();
+            npc3.pos = 382;
+            mobs.add(npc3);
 
-        MoRuoS npc4 = new MoRuoS();
-        npc4.pos = 3066;
-        mobs.add(npc4);
+            MoRuoS npc4 = new MoRuoS();
+            npc4.pos = 3066;
+            mobs.add(npc4);
+
+
+
+            Question npc6 = new Question();
+            npc6.pos = 3757;
+            mobs.add(npc6);
+
+            LanFire npc7 = new LanFire();
+            npc7.pos = 3020;
+            mobs.add(npc7);
+
+            JIT npc8 = new JIT();
+            npc8.pos = 2955;
+            mobs.add(npc8);
+
+            DeepSea npc10 = new DeepSea();
+            npc10.pos = 2685;
+            mobs.add(npc10);
+
+            MoonLow npc11 = new MoonLow();
+            npc11.pos = 2728;
+            mobs.add(npc11);
+
+            KongFu npc12 = new KongFu();
+            npc12.pos = 3100;
+            mobs.add(npc12);
+
+            LuoWhite npc13 = new LuoWhite();
+            npc13.pos = 1300;
+            mobs.add(npc13);
+
+            //45%概率
+            if(Random.Float()<=0.45f){
+                BzmdrLand npc9 = new BzmdrLand();
+                npc9.pos = 3085;
+                mobs.add(npc9);
+                //如果地表版本生成 旅馆禁止生成Bzmdr
+                Statistics.onlyBzmdr = true;
+            }
+        }
 
         SmallLeaf npc5 = new SmallLeaf();
         npc5.pos = 365;
         mobs.add(npc5);
 
-        Question npc6 = new Question();
-        npc6.pos = 3757;
-        mobs.add(npc6);
-
-        LanFire npc7 = new LanFire();
-        npc7.pos = 3020;
-        mobs.add(npc7);
-
-        JIT npc8 = new JIT();
-        npc8.pos = 2955;
-        mobs.add(npc8);
-
-        DeepSea npc10 = new DeepSea();
-        npc10.pos = 2685;
-        mobs.add(npc10);
-
-        MoonLow npc11 = new MoonLow();
-        npc11.pos = 2728;
-        mobs.add(npc11);
-
-        KongFu npc12 = new KongFu();
-        npc12.pos = 3100;
-        mobs.add(npc12);
-
-        LuoWhite npc13 = new LuoWhite();
-        npc13.pos = 1300;
-        mobs.add(npc13);
-
-        //45%概率
-        if(Random.Float()<=0.45f){
-            BzmdrLand npc9 = new BzmdrLand();
-            npc9.pos = 3085;
-            mobs.add(npc9);
-            //如果地表版本生成 旅馆禁止生成Bzmdr
-            Statistics.onlyBzmdr = true;
-        }
     }
 
     public static int[] SALEPOS_ONE = new int[]{
@@ -410,6 +416,11 @@ public class ZeroCityLevel extends Level {
             Nyz npc4= new Nyz();
             npc4.pos = 723;
             mobs.add(npc4);
+
+            YetYog npc1= new YetYog();
+            npc1.pos = 663;
+            mobs.add(npc1);
+
             for (int i : SALEPOS_ONE) {
                 drop((Generator.random(Generator.Category.MISSILE)), i).type =
                         Heap.Type.FOR_SALE;

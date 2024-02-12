@@ -39,6 +39,10 @@ public class PaswordBadges {
         displayBadge( PaswordBadges.Badge.BRCLER );
     }
 
+    public static void WHATSUP() {
+        displayBadge( Badge.WHATSUP );
+    }
+
     public static void ALLCS(int challenges){
         if (challenges == 0) return;
         if (challenges >= 13 && !(Dungeon.isChallenged(PRO))||!Statistics.happyMode && challenges >= 13){
@@ -97,7 +101,9 @@ public class PaswordBadges {
 
         HELLORWORLD(21),
 
-        PINK_LING(22);
+        PINK_LING(22),
+
+        WHATSUP(23);
 
 
 

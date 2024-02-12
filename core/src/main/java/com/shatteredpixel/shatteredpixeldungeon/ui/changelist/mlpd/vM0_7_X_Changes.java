@@ -1,7 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
+import com.shatteredpixel.shatteredpixeldungeon.effects.PasswordBadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -10,9 +12,13 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.FireCrystalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KatydidSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.KongFuSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WhiteGirlSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.YetYogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ChangeButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ChangeInfo;
@@ -22,8 +28,70 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V074_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.0.4", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(PasswordBadgeBanner.image(PaswordBadges.Badge.WHATSUP.image), ("新隐藏徽章"),
+                ("白嫖不规范，金币分“一瓣”")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ICEGOLD), "冰蓝方孔钴币V0.3",
+                "常规获取方法：(当前所在楼层/5)*5 \n\n挑战奖励：10挑以上x2,15挑以上x3\n\n" +
+                        "返程讨伐莲娜（商店抢劫）：额外15钴币\n\n" +
+                        "孤城Yog-Zot：额外30钴币\n\n注意：由于上个版本有一些错误，导致钴币严重失调。\n\n不过你可以前往落白的商店领取补偿的50钴币（每个设备仅限一次）。\n\n" +
+                        "开发者模式Boss可以掉钴币，方便看具体数量，但拾取不计入。"));
+
+        changes.addButton(new ChangeButton(new YetYogSprite(), ("新NPC:泡泡"),
+                ("与奈亚同时生成，奈亚和泡泡的关系，懂得都懂。")));
+
+        changes.addButton(new ChangeButton(NetIcons.get(NetIcons.CHAT), ("查种器V0.2"),
+                ("修复了一些bug，现在支持多序列查种，红龙之王的奖励也会显示。\n\n默认值也改的更加合理，在16层前。")));
+
+        changes.addButton(new ChangeButton(NetIcons.get(NetIcons.GLOBE), ("解析区域更换"),
+                ("由于国内流量负载严重，近期已换到香港节点，网站下载可能会稍微慢一点，还请理解。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new KongFuSprites(), ("鸽子调整"),
+                ("奖励从全肉大饼改为蜜枣甜粽")));
+
+        changes.addButton(new ChangeButton(new WhiteGirlSprites(), ("小镇调整"),
+                ("除澪，泡泡给予的物品以及落白给予的蓝币，其他npc一局最多领取4次，4次后，自动变为1金币。")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.0.4版本:\n\n" +
+                        "没有任何崩溃错误，它非常的稳定:)"
+        ));
+
+        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.GREATAXE,
+                new ItemSprite.Glowing( 0x00FFFF )), "附魔调整：鬼磷（罕见--》稀有（降级））",
+                "这个附魔会使磷火从武器中喷薄而出，能够使用点燃敌人并对正在燃烧的敌人造成中毒的额外伤害。\n\n奥术戒加成效果：提升鬼磷几率"));
+
+        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.GREATSWORD,
+                new ItemSprite.Glowing( 0xcc7770 )), "附魔调整：爆破（稀有--》罕见(上位)）",
+                "这个附魔会让使用者陷入癫狂，能使爆炸的能量从武器中喷薄而出，能够使敌人目标处受到一次范围伤害亦或者给造成敌人短暂的残废效果。\n\n奥术戒加成效果：提升伤害"));
+
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分细节优化更新\n" +
+                        "3.部分界面优化\n")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_17), ("挑战改进:孤城迷境"),
+                ("在全新0层中，除小叶，澪，奈亚，泡泡。其他全部在孤城中消失。")));
+
     }
 
     public static void add_V071_Changes( ArrayList<ChangeInfo> changeInfos ) {

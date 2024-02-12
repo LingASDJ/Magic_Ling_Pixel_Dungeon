@@ -133,6 +133,7 @@ public class SeedFinderScene extends PixelScene {
     protected void onBackPressed() {
         ShatteredPixelDungeon.switchScene(TitleScene.class);
         System.gc();
+        SeedFinder.Nofinding = true;
     }
 
     private void addLine(float y, Group content) {

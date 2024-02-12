@@ -40,6 +40,10 @@ public class Statistics {
 	//吃保底
 	public static int bossWeapons;
 
+	public static int zeroItemLevel;
+
+	public static boolean youNoItem = false;
+
 	//中继器电话号码
 	public static int commonrelaycall;
 
@@ -288,6 +292,8 @@ public class Statistics {
 
 	private static final String GOOFIGHT      = "gooFIGHT";
 
+	private static final String ZEROLEVEL      = "zerolevel";
+
     public static boolean TryUsedAnmy = false;
     public static boolean winGame = false;
     public static boolean HiddenOK = false;
@@ -310,6 +316,9 @@ public class Statistics {
 		gameDay = 1;
 
 		ascended = false;
+
+		zeroItemLevel = 0;
+		youNoItem = false;
 
 		gameTime = 0;
 		gameNight = false;
@@ -406,6 +415,9 @@ public class Statistics {
         bundle.put(BDTX, bossWeapons);
 
         bundle.put(LOVE,findMoon);
+
+		bundle.put(ZEROLEVEL,zeroItemLevel);
+
 		bundle.put(LOVX,deadGo);
 
 		bundle.put(SIDERLING,SiderLing);
@@ -520,6 +532,8 @@ public class Statistics {
 		bundle.put(GAMENIGHT,gameNight);
 		bundle.put("gameday",gameDay);
 
+		bundle.put("YOU",youNoItem);
+
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
@@ -543,6 +557,10 @@ public class Statistics {
 		ankhToExit = bundle.getBoolean(XRTANKH);
 
 		onlyBzmdr = bundle.getBoolean("onlyB");
+
+		youNoItem = bundle.getBoolean("YOU");
+
+		zeroItemLevel = bundle.getInt(ZEROLEVEL);
 
 		NoTime = bundle.getBoolean("NOTIME");
 

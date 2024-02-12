@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
@@ -38,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
+import com.watabou.noosa.Game;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -129,7 +131,9 @@ public class SeedFinder {
             findingStatus = FINDING.STOP;
         }
     }
-    static ExecutorService executorService= Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()*SPDSettings.timeOutSeed());
+
+    static int timeOut = SPDSettings.timeOutSeed();
+    static ExecutorService executorService= Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     public String findSeed(String[] wanted, int floor) {
         itemList = new ArrayList<>(Arrays.asList(wanted));
         //Nofinding = false;
@@ -152,7 +156,7 @@ public class SeedFinder {
             @Override
             public String call() {
                 for (int i = Random.Int(9999999); i < DungeonSeed.TOTAL_SEEDS && findingStatus == FINDING.CONTINUE ; i++) {
-                    if (testSeedALL(seedDigits + i, floor) && !Nofinding) {
+                    if (testSeedALL(seedDigits + i, floor)) {
                         result = logSeedItems(seedDigits + i, floor, cs);
                         break;
                     }
@@ -161,7 +165,7 @@ public class SeedFinder {
             }
         });
         try {
-            result = future.get(SPDSettings.timeOutSeed(), TimeUnit.SECONDS);
+            result = future.get(timeOut, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             future.cancel(true);
             int pricex = RegularLevel.holiday == RegularLevel.Holiday.CJ ? 5 : 15;
@@ -212,7 +216,7 @@ public class SeedFinder {
 
     private boolean testSeedALL(String seed, int floors) {
 
-        if(Nofinding){
+        if(Game.scene().getClass() != SeedFinderScene.class){
             return true;
         }
 
@@ -282,6 +286,23 @@ public class SeedFinder {
                             break;
                         }
                     }else if(Wandmaker.Quest.type() == 3 && Messages.get(this, "rotberry").contains(wantingItem.replaceAll(" ",""))){
+                        if (!itemsFound[j]) {
+                            itemsFound[j] = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if(RedDragon.Quest.armor != null){
+                for (int j = 0; j < itemList.size(); j++) {
+                    String wantingItem = itemList.get(j);
+                    boolean precise = wantingItem.startsWith("\"")&&wantingItem.endsWith("\"");
+                    if(precise){
+                        wantingItem = wantingItem.replaceAll(" ", "");
+                    }else{
+                        wantingItem = wantingItem.replaceAll("\"","");
+                    }
+                    if (!precise&&RedDragon.Quest.armor.identify().title().toLowerCase().replaceAll(" ","").contains(wantingItem) || precise&& RedDragon.Quest.armor.identify().title().toLowerCase().equals(wantingItem)) {
                         if (!itemsFound[j]) {
                             itemsFound[j] = true;
                             break;
@@ -372,6 +393,17 @@ public class SeedFinder {
                 Ghost.Quest.complete();
 
                 addTextQuest("【 " + Messages.get(this, "sad_ghost_reward") + " 】", rewards, builder);
+            }
+
+            if (RedDragon.Quest.armor != null) {
+                ArrayList<Item> rewards = new ArrayList<>();
+                rewards.add(RedDragon.Quest.weapon.identify());
+                rewards.add(RedDragon.Quest.RingT.identify());
+                rewards.add(RedDragon.Quest.food.identify());
+                rewards.add(RedDragon.Quest.scrolls.identify());
+                RedDragon.Quest.complete();
+
+                addTextQuest("【 " + Messages.get(this, "red_dragon_reward") + " 】", rewards, builder);
             }
 
             if (Wandmaker.Quest.wand1 != null) {

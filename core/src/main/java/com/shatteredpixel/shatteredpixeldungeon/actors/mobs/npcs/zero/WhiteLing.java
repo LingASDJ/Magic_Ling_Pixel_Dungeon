@@ -21,7 +21,7 @@ public class WhiteLing extends NTNPC {
 
     {
         spriteClass = WhiteGirlSprites.class;
-        maxLvl = 0;
+        maxLvl = -1;
         properties.add(Property.UNKNOWN);
         baseSpeed = 0;
         properties.add(Property.IMMOVABLE);

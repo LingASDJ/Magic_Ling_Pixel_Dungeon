@@ -1,25 +1,42 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.zeroItemLevel;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.JITPlot;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.YetYogPlot;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.JITSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.YetYogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.tweeners.Delayer;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
-public class JIT extends NTNPC {
+public class YetYog extends NTNPC {
+
+    {
+        spriteClass = YetYogSprite.class;
+        properties.add(Property.IMMOVABLE);
+        properties.add(Property.UNKNOWN);
+        maxLvl = -1;
+    }
+
+    @Override
+    public String defenseVerb() {
+        return def_verb();
+    }
+    private String def_verb(){
+        if(Random.Int(100)>=50){
+            return Messages.get(this, "def_verb_1");
+        } else if(Random.Int(100)>=20) {
+            return Messages.get(this, "def_verb_2");
+        } else {
+            return Messages.get(this, "def_verb_3");
+        }
+
+    }
 
     private boolean first=true;
     private boolean secnod=true;
@@ -45,40 +62,12 @@ public class JIT extends NTNPC {
         rd = bundle.getBoolean(RD);
     }
 
-    {
-        spriteClass = JITSprite.class;
-    }
-
-    private String def_verb(){
-        ((JITSprite)sprite).What_Up();
-        //1s延迟后，恢复闲置状态
-        GameScene.scene.add(new Delayer(1f){
-            @Override
-            protected void onComplete() {
-                ((JITSprite)sprite).idle();
-            }
-        });
-
-        if(Statistics.amuletObtained){
-            return Messages.get(this, "no2");
-        } else {
-            return Messages.get(this, "no1");
-        }
-
-
-    }
-
-    @Override
-    public String defenseVerb() {
-        return def_verb();
-    }
-
     @Override
     public boolean interact(Char c) {
 
         sprite.turnTo(pos, hero.pos);
-        JITPlot plot = new JITPlot();
-        JITPlot.JITPlotGO plot2 = new JITPlot.JITPlotGO();
+        YetYogPlot plot = new YetYogPlot();
+        YetYogPlot.EndPlot plot2= new YetYogPlot.EndPlot();
         if (first) {
             Game.runOnRenderThread(new Callback() {
                 @Override
@@ -86,15 +75,6 @@ public class JIT extends NTNPC {
                     GameScene.show(new WndDialog(plot,false));
                 }
             });
-            zeroItemLevel++;
-
-            if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
-                Dungeon.level.drop(new Gold(1), hero.pos);
-            } else {
-                Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), hero.pos );
-            }
-
-
             first=false;
         } else {
             Game.runOnRenderThread(new Callback() {

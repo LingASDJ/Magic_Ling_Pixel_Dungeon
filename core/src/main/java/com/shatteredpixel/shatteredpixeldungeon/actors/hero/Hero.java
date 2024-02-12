@@ -32,6 +32,8 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameTime;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.happyMode;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.seedCustom;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.youNoItem;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.zeroItemLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 import static java.lang.Math.min;
 
@@ -42,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -218,6 +221,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndIceTradeItem;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
@@ -904,6 +908,23 @@ public class Hero extends Char {
 	
 	@Override
 	public boolean act() {
+
+		if(Statistics.zeroItemLevel == 8 && Dungeon.depth == 0){
+			PaswordBadges.WHATSUP();
+			zeroItemLevel++;
+		}
+
+		if(!youNoItem && Statistics.zeroItemLevel >= 4){
+
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					GameScene.show( new WndMessage(Messages.get(Hero.class,"no_item")));
+					GLog.p(Messages.get(Hero.class,"no_item"));
+					youNoItem = true;
+				}
+			});
+		}
 
 		if (Challenges.activeChallenges() >= 10 && !lanterfireactive && !Dungeon.isChallenged(PRO)) {
 			GLog.n(Messages.get(WndStory.class, "warning"));

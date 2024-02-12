@@ -386,10 +386,10 @@ abstract public class Weapon extends KindOfWeapon {
 		public static final Class<?>[] uncommon = new Class<?>[]{
 				Blocking.class, Blooming.class, Elastic.class,
 				Lucky.class, Projecting.class, Unstable.class,
-				HaloBlazing.class, Crushing.class};
+				HaloBlazing.class};
 
 		public static final Class<?>[] rare = new Class<?>[]{
-				Corrupting.class, Grim.class, Vampiric.class,
+				Corrupting.class, Grim.class, Vampiric.class, Crushing.class
 		};
 
 		public static final float[] typeChances = new float[]{

@@ -403,6 +403,8 @@ public class Assets {
 
 		public static final String BZMR = "splashes/bzmdr_portraits.png";
 
+		public static final String YTZY = "splashes/yet_yog_portraits.png";
+
 		public static final String LN = "splashes/ln_portraits.png";
 
 		public static final String JIT = "splashes/JIT_portraits.png";
@@ -420,7 +422,7 @@ public class Assets {
 
 		//NPCS
 		public static final String KEEPERKING	= "sprites/npc/ShopKing.png";
-
+		public static final String YETYOG	= "sprites/npc/yet_yog.png";
 		public static final String YUYE	= "sprites/npc/yuye.png";
 		public static final String DEEP	= "sprites/npc/deepsea.png";
 		public static final String QUESTION	= "sprites/npc/question.png";
