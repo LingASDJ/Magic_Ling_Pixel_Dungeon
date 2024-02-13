@@ -21,7 +21,7 @@ public class MoonDao extends MeleeWeapon {
     }
 
     public int min(int level) {
-        return (this.tier + 1) + (this.tier + 1) * level;
+        return 3 + level;
     }
 
     @Override
@@ -30,6 +30,6 @@ public class MoonDao extends MeleeWeapon {
     }
 
     public int max(int level) {
-        return (this.tier + 1) * 2 + (this.tier + 1) * level;
+        return 10 + level * 3;
     }
 }
