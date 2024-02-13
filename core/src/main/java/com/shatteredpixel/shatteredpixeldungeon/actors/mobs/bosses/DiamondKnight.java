@@ -61,6 +61,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -108,7 +109,7 @@ public class DiamondKnight extends Boss implements Hero.Doom {
 
     @Override
     public boolean isAlive() {
-        return super.isAlive() || Dungeon.level.mobs.contains(this);
+        return phase<6;
     }
 
     @Override
@@ -120,8 +121,6 @@ public class DiamondKnight extends Boss implements Hero.Doom {
             min = 8 + Statistics.dimandchestmazeCollected * 2 + 2;
             max = (HP*2 <= HT) ?  14 : 9 + Statistics.dimandchestmazeCollected * 3 + 3;
         }
-
-
 
         //模仿玩家的伤害
         ColdChestBossLevel.State level = ((ColdChestBossLevel)Dungeon.level).pro();
@@ -198,13 +197,13 @@ public class DiamondKnight extends Boss implements Hero.Doom {
             GLog.n(Messages.get(DiamondKnight.class, "war_go"));
             phase++;
         }
-        ColdChestBossLevel.State level = ((ColdChestBossLevel)Dungeon.level).pro();
-        //血量低于360后追加phase并加载楼层的进度方法,加载迷宫
-        if (level == ColdChestBossLevel.State.VSYOU_START && HP<10) {
+
+        if (phase>4 && HP<10) {
             GameScene.flash(0x80FFFFFF);
             Dungeon.hero.interrupt();
             die(hero);
         }
+
         return super.act();
     }
 
@@ -215,15 +214,8 @@ public class DiamondKnight extends Boss implements Hero.Doom {
      */
     @Override
     protected boolean canAttack( Char enemy ) {
-        if ( Dungeon.level.distance(enemy.pos, pos) >= 2){
-            //we check both from and to in this case as projectile logic isn't always symmetrical.
-            //this helps trim out BS edge-cases
-            return Dungeon.level.distance(enemy.pos, pos) <= 2
-                    && new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos
-                    && new Ballistica( enemy.pos, pos, Ballistica.PROJECTILE).collisionPos == pos;
-        } else {
-            return super.canAttack(enemy);
-        }
+        Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
+        return !Dungeon.level.adjacent(pos, enemy.pos) && attack.collisionPos == enemy.pos;
     }
 
     private int combo = 0;
@@ -249,14 +241,18 @@ public class DiamondKnight extends Boss implements Hero.Doom {
     }
 
 
-    @Override
-    protected boolean getCloser( int target ) {
-        if (pumpedUp != 0) {
-            pumpedUp = 0;
-            sprite.idle();
-        }
-        return super.getCloser( target );
-    }
+//    @Override
+//    protected boolean getCloser(int target) {
+//        combo = 0;
+//        if (state == HUNTING) {
+//            if(Dungeon.level.distance(pos,target)>1)
+//                return super.getCloser( target );
+//            return enemySeen && getFurther( target );
+//        } else {
+//            return super.getCloser(target);
+//        }
+//        //return false;
+//    }
 
     /**
      * @param dmg 伤害
@@ -360,6 +356,8 @@ public class DiamondKnight extends Boss implements Hero.Doom {
             die(hero);
         }
 
+
+
     }
 
     @Override
@@ -457,7 +455,8 @@ public class DiamondKnight extends Boss implements Hero.Doom {
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle( bundle );
-        phase = bundle.getInt(PHASE);
+        bundle.put(PHASE,phase);
+
         bundle.put( PUMPEDUP , pumpedUp );
         bundle.put( HEALINC, healInc );
         bundle.put(COMBO, combo);
@@ -473,10 +472,14 @@ public class DiamondKnight extends Boss implements Hero.Doom {
     @Override
     public void restoreFromBundle( Bundle bundle ) {
         super.restoreFromBundle( bundle );
-        bundle.put(PHASE,phase);
+        phase = bundle.getInt(PHASE);
         pumpedUp = bundle.getInt( PUMPEDUP );
         if (state != SLEEPING) BossHealthBar.assignBoss(this);
         if ((HP*2 <= HT)) BossHealthBar.bleed(true);
+
+        if (Dungeon.initialVersion < Game.versionCode){
+            phase = 5;
+        }
 
         //if check is for pre-0.9.3 saves
         healInc = bundle.getInt(HEALINC);
