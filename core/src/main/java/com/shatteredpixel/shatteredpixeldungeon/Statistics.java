@@ -33,8 +33,8 @@ public class Statistics {
 
 	//种子处罚
 	public static boolean seedCustom = false;
-
-
+	public static boolean ExFruit = false;
+	public static boolean CatFirst = false;
 	public static boolean snow = false;
 
 	//吃保底
@@ -294,6 +294,8 @@ public class Statistics {
 
 	private static final String ZEROLEVEL      = "zerolevel";
 
+	private static final String EXBOSS1		= "EXBOSS1";
+
     public static boolean TryUsedAnmy = false;
     public static boolean winGame = false;
     public static boolean HiddenOK = false;
@@ -304,6 +306,11 @@ public class Statistics {
         boss_enhance = 0;
         ChaicBlood = 0;
         readBooks = 0;
+
+		ExFruit = false;
+
+		CatFirst = false;
+
         HealingIsDied = 0;
 
 		Door.reset();
@@ -425,6 +432,10 @@ public class Statistics {
 		bundle.put(FUCKALONE,fuckGeneratorAlone);
 
 		bundle.put(SEEDCUSTOM,seedCustom);
+
+		bundle.put(EXBOSS1,ExFruit);
+
+		bundle.put("CAT",CatFirst);
 
 		bundle.put("SNOW",snow);
 
@@ -550,11 +561,15 @@ public class Statistics {
 
 		HiddenOK = bundle.getBoolean(HIDEEN);
 
+		CatFirst = bundle.getBoolean("CAT");
+
 		doNotLookLing = bundle.getBoolean(LOCD);
 
 		seedCustom = bundle.getBoolean(SEEDCUSTOM);
 
 		ankhToExit = bundle.getBoolean(XRTANKH);
+
+		ExFruit = bundle.getBoolean(EXBOSS1);
 
 		onlyBzmdr = bundle.getBoolean("onlyB");
 

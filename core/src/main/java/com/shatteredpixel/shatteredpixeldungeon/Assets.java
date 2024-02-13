@@ -36,6 +36,8 @@ public class Assets {
 
 	public static final String TOWN = "music/town.ogg";
 	public static final String BGM_BOSSA = "music/Boss1.ogg";
+
+	public static final String BGM_BOSSA1 = "music/Boss1-Remixed.ogg";
 	public static final String BGM_BOSSB = "music/Boss2.ogg";
 	public static final String BGM_BOSSB2 = "music/Tengu.ogg";
 	public static final String BGM_BOSSC = "music/Boss3.ogg";
@@ -407,7 +409,7 @@ public class Assets {
 		public static final String BZMR = "splashes/bzmdr_portraits.png";
 
 		public static final String YTZY = "splashes/yet_yog_portraits.png";
-
+		public static final String MT = "splashes/mint_portraits.png";
 		public static final String LN = "splashes/ln_portraits.png";
 
 		public static final String JIT = "splashes/JIT_portraits.png";
@@ -426,6 +428,8 @@ public class Assets {
 		//NPCS
 		public static final String KEEPERKING	= "sprites/npc/ShopKing.png";
 		public static final String YETYOG	= "sprites/npc/yet_yog.png";
+
+		public static final String MINT	= "sprites/npc/mint.png";
 		public static final String YUYE	= "sprites/npc/yuye.png";
 		public static final String DEEP	= "sprites/npc/deepsea.png";
 		public static final String QUESTION	= "sprites/npc/question.png";

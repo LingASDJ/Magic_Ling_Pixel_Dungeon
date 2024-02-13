@@ -45,7 +45,7 @@ public class ForestHardBossLevel extends Level {
     private static final int S = CHASM;
     private static final int L = WALL;
     private static final int D = EMPTY_SP;
-    private static final int W = WATER;
+    private static final int W = EMPTY;
     private static final int X = LOCKED_DOOR;
     private static final int Z = EXIT;
     private static final int Q = ENTRANCE;
@@ -65,13 +65,13 @@ public class ForestHardBossLevel extends Level {
             S,L,S,S,M,M,J,J,J,J,J,J,L,L,J,L,M,L,J,L,L,J,J,J,J,J,J,M,M,S,S,L,S,
             S,L,S,S,M,J,J,J,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,J,J,J,M,S,S,L,S,
             L,L,S,L,L,L,L,L,L,W,W,W,W,W,W,W,D,W,W,W,W,W,W,W,L,L,L,L,L,L,S,L,S,
-            L,L,L,L,W,W,W,W,S,S,S,S,S,S,S,D,D,D,S,S,S,S,S,S,S,W,W,W,W,L,L,L,L,
-            L,L,D,W,W,S,S,S,S,D,D,D,D,D,D,D,W,D,D,D,D,D,D,D,S,S,S,S,W,W,D,L,L,
-            L,D,W,S,S,S,D,D,D,D,S,S,D,S,S,D,D,D,S,S,D,S,S,D,D,D,D,S,S,W,W,D,L,
-            L,W,W,S,D,D,D,S,D,S,S,S,S,S,S,S,D,S,S,S,S,S,S,S,D,S,D,D,D,S,W,W,L,
-            L,W,S,D,D,D,W,S,D,D,S,S,S,S,D,D,D,D,D,S,S,S,S,D,D,S,W,D,D,D,S,W,L,
-            L,W,W,S,D,S,W,W,W,D,S,S,D,D,D,S,D,S,D,D,D,S,S,D,W,W,W,S,D,S,W,W,L,
-            L,W,S,S,D,W,W,W,D,D,D,D,D,S,S,S,D,S,S,S,D,D,D,D,D,W,W,W,D,S,S,W,L,
+            L,L,L,L,M,M,M,M,S,S,S,S,S,S,S,D,D,D,S,S,S,S,S,S,S,M,M,M,M,L,L,L,L,
+            L,L,D,M,M,S,S,S,S,D,D,D,D,D,D,D,W,D,D,D,D,D,D,D,S,S,S,S,M,M,D,L,L,
+            L,D,M,S,S,S,D,D,D,D,S,S,D,S,S,D,D,D,S,S,D,S,S,D,D,D,D,S,S,M,M,D,L,
+            L,M,M,S,D,D,D,S,D,S,S,S,S,S,S,S,D,S,S,S,S,S,S,S,D,S,D,D,D,S,M,M,L,
+            L,M,S,D,D,D,W,S,D,D,S,S,S,S,D,D,D,D,D,S,S,S,S,D,D,S,W,D,D,D,S,M,L,
+            L,M,W,S,D,S,W,W,W,D,S,S,D,D,D,S,D,S,D,D,D,S,S,D,W,W,W,S,D,S,W,M,L,
+            L,M,S,S,D,W,W,W,D,D,D,D,D,S,S,S,D,S,S,S,D,D,D,D,D,W,W,W,D,S,S,M,L,
             L,S,D,D,D,D,W,S,W,D,S,S,D,D,S,D,D,D,S,D,D,S,S,D,W,S,W,D,D,D,D,S,L,
             L,D,D,W,W,D,D,D,D,D,S,S,S,D,D,D,N,D,D,D,S,S,S,D,D,D,D,D,W,W,D,D,L,
             L,S,D,W,D,D,W,W,W,D,S,S,D,D,S,D,D,D,S,D,D,S,S,D,W,W,W,D,D,W,D,S,L,
@@ -83,7 +83,7 @@ public class ForestHardBossLevel extends Level {
             L,S,W,W,S,W,W,W,W,W,S,W,W,W,W,S,D,S,W,W,W,W,S,W,W,W,W,W,S,W,W,S,L,
             L,L,W,W,S,W,W,W,W,W,S,W,W,W,W,S,D,S,W,W,W,W,S,W,W,W,W,W,S,W,W,L,L,
             S,L,L,W,S,W,W,W,L,L,L,L,L,L,L,L,X,L,L,L,L,L,L,L,L,W,W,W,S,W,L,L,S,
-            S,S,L,L,L,L,L,L,L,J,J,J,J,J,L,J,J,J,L,J,J,J,J,J,L,L,L,L,L,L,S,S,S,
+            S,S,L,L,L,L,L,L,L,J,J,J,J,J,L,J,J,J,L,J,J,J,J,J,L,L,L,L,L,L,L,S,S,
             S,S,S,S,S,S,S,S,L,J,J,J,J,J,X,J,J,J,X,J,J,J,J,J,L,S,S,S,S,S,S,S,S,
             S,S,S,S,S,S,S,S,L,J,J,J,J,J,L,J,Z,J,L,J,J,J,J,J,L,S,S,S,S,S,S,S,S,
             S,S,S,S,S,S,S,S,L,J,J,L,L,L,L,J,J,J,L,L,L,L,J,J,L,S,S,S,S,S,S,S,S,

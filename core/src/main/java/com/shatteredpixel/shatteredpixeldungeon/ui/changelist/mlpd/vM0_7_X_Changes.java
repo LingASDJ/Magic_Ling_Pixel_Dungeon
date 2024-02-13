@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KatydidSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KongFuSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MintSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhiteGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YetYogSprite;
@@ -29,10 +30,48 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V076_Changes(changeInfos);
         add_V075_Changes(changeInfos);
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V076_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.0.6-HC", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new MintSprite(), ("新NPC:睡觉的猫咪"),
+                ("在旅馆处有40%概率生成，奖励一本传奇书籍，不计入0层NPC物品限制中。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        Image s =new DimandKingSprite();
+        s.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(s, ("拟态之王"),
+                ("修复了0血还不死亡的问题。")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.0.6版本:\n\n" +
+                        "1.修复阶段性Boss的相关问题\n" +
+                        "2.修复莲娜的错误技能使用\n" +
+                        "3.修复拟态王无敌问题"
+        ));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分细节优化更新\n" +
+                        "3.部分界面优化\n")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_17), ("挑战改进:孤城迷境"),
+                ("在全新0层中，除小叶，澪，奈亚，泡泡，落白，旅馆老板娘以外。其他全部在孤城中消失。")));
     }
 
     public static void add_V075_Changes( ArrayList<ChangeInfo> changeInfos ) {

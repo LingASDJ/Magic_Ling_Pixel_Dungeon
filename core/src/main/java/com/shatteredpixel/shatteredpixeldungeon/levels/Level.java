@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.bossLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.tipsgodungeon;
 import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.ready;
@@ -137,10 +136,11 @@ public abstract class Level implements Bundlable {
 			for (Item item : heap.items){
 				if(item instanceof MIME){
 					heap.destroy();
+				} else {
+					heap.pos = hero.pos;
 				}
 			}
 		}
-
 		//自动获取出入口
 		exit = entrance = 0;
 		for (int i = 0; i < length(); i ++)
@@ -1005,8 +1005,8 @@ public abstract class Level implements Bundlable {
 		//if raw tile type is flammable or empty
 		int terr = map[pos];
 
-		//0层 和 Boss楼层 常规门 无法被摧毁
-		if((terr == Terrain.DOOR || terr == Terrain.OPEN_DOOR) && Dungeon.depth == 0 || bossLevel()){
+		//0层 常规门 无法被摧毁
+		if((terr == Terrain.DOOR || terr == Terrain.OPEN_DOOR) && Dungeon.depth == 0){
 			return;
 		}
 

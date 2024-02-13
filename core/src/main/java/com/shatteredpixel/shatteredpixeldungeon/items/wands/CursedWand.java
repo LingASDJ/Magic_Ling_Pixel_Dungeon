@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GoldenMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Mint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonCat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.SmallLeaf;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLing;
@@ -272,7 +273,7 @@ public class CursedWand {
 			case 0: default:
 
 				Char ch = Actor.findChar( targetPos );
-				if (ch != null && !(ch instanceof Hero || ch instanceof SmallLeaf || ch instanceof WhiteLing ||ch instanceof MoonCat||ch instanceof Nyz ||ch instanceof YetYog)
+				if (ch != null && !(ch instanceof Hero || ch instanceof SmallLeaf || ch instanceof WhiteLing ||ch instanceof MoonCat||ch instanceof Nyz ||ch instanceof YetYog||ch instanceof Mint)
 						&& !ch.properties().contains(Char.Property.BOSS)
 						&& !ch.properties().contains(Char.Property.MINIBOSS)){
 					Sheep sheep = new Sheep();

@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.DeepSea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.JIT;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.KongFu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.LuoWhite;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Mint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoRuoS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonLow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Question;
@@ -332,12 +333,6 @@ public class ZeroCityLevel extends Level {
             npc3.pos = 382;
             mobs.add(npc3);
 
-            MoRuoS npc4 = new MoRuoS();
-            npc4.pos = 3066;
-            mobs.add(npc4);
-
-
-
             Question npc6 = new Question();
             npc6.pos = 3757;
             mobs.add(npc6);
@@ -373,6 +368,17 @@ public class ZeroCityLevel extends Level {
                 Statistics.onlyBzmdr = true;
             }
         }
+
+        MoRuoS npc4 = new MoRuoS();
+        npc4.pos = 3066;
+        mobs.add(npc4);
+
+        if(Random.Float()<=0.4f){
+            Mint m = new Mint();
+            m.pos = 3060;
+            mobs.add(m);
+        }
+
 
         SmallLeaf npc5 = new SmallLeaf();
         npc5.pos = 365;
@@ -451,8 +457,7 @@ public class ZeroCityLevel extends Level {
             PaswordBadges.loadGlobal();
             List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
-            drop((Generator.randomUsingDefaults(Generator.Category.SCROLL)), 3193);
-            drop((Generator.randomUsingDefaults(Generator.Category.SCROLL)), 2937);
+
 
             if (passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)) {
                 drop((Generator.random(Generator.Category.RING)), 3001);
@@ -482,7 +487,12 @@ public class ZeroCityLevel extends Level {
             drop( new Food(), 853  );
         }
 
+
+        drop((Generator.randomUsingDefaults(Generator.Category.SCROLL)), 3193);
+        drop((Generator.randomUsingDefaults(Generator.Category.SCROLL)), 2937);
     }
+
+
 
 
 }

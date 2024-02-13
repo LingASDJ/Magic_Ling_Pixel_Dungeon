@@ -32,7 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.HotelLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.ForestHardBossLevel;
 import com.watabou.utils.Random;
 
 //Level Rules
@@ -107,7 +106,7 @@ public class LevelRules {
 //                            return new ForestBossLevel();
 //                        }
 //                    } else {
-                        return new ForestHardBossLevel();
+                        return new ForestBossLevel();
 //                    }
 
                 case 6:
