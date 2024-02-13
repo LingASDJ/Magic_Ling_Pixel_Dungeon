@@ -228,6 +228,42 @@ public class Generator {
 		}
 	}
 
+	/*
+	 * @Breif 将对应category中item的生成率改为overrideProbs
+	 * @Pramas Item,Category,float
+	 * @NativeName: setProbs
+	 * @NativeFunction: void setProbs(Item,Category,float)
+	 */
+	public static void setProbs(Item item,Category category,float overrideProbs){
+		if( !category.superClass.isAssignableFrom(item.getClass()) ) {
+			return;
+		}
+
+		for(int i = 0;i<category.classes.length;i++){
+			if(category.classes[i] == item.getClass()){
+				category.probs[i] = overrideProbs;
+			}
+		}
+	}
+
+	/*
+	 * @Breif 将对应category中item的生成率和默认生成率分别改为overrideProbs和overrideDefaultProbs
+	 * @Pramas Item,Category,float,float
+	 * @NativeName: setProbs
+	 * @NativeFunction: void setProbs(Item,Category,float,float)
+	 */
+	public static void setProbs(Item item,Category category,float overrideProbs,float overrideDefaultProbs){
+		if( !item.getClass().isAssignableFrom(category.superClass) )
+			return;
+
+		for(int i = 0;i<category.classes.length;i++){
+			if(category.classes[i] == item.getClass()){
+				category.defaultProbs[i] = overrideDefaultProbs;
+				category.probs[i] = overrideProbs;
+			}
+		}
+	}
+
 	public static MeleeWeapon randomWeapon(int floorSet, boolean useDefaults) {
 
 		floorSet = (int)GameMath.gate(0, floorSet, floorSetTierProbs.length-1);

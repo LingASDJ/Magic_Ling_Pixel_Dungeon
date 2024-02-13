@@ -298,13 +298,13 @@ public class DiedCrossBow extends LegendWeapon {
 
     @Override
     public int min(int lvl) {
-        return 2 + lvl * (tier + 1);   //scaling unchanged
+        return 4 + lvl;   //scaling unchanged
     }
-
+    //你要是喜欢写成lvl*1也行
 
     @Override
     public int max(int lvl) {
-        return 14 + lvl * (tier + 3);   //scaling unchanged
+        return 25 + lvl * 6;   //scaling unchanged
     }
-
+    //最高成长6，写成lvl*6和tm写成lvl*(tier+1)是tm一样的，别被Evan棍进去了，你清醒一点，不要当谜语人了！！！！！
 }

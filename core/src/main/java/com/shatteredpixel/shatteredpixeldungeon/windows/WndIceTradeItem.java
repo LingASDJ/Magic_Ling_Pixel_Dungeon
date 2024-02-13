@@ -195,12 +195,13 @@ public class WndIceTradeItem extends WndInfoItem {
         SPDSettings.iceDownCoin(price);
 
         if( (item instanceof DiedCrossBow|| item instanceof MoonDao || item instanceof SaiPlus) && !SPDSettings.isItemUnlock( item.name() ) ){
-            if(item instanceof DiedCrossBow)
-                Generator.Category.WEP_T5.probs = new float[]{ 0, 3, 3, 3, 3, 3,3, 1.5f };
-            if(item instanceof MoonDao)
-                Generator.Category.WEP_T3.probs = new float[]{ 1, 5, 4, 4, 4 ,3,5,3,6,0, 0,0,0, 1.5f };
-            if(item instanceof SaiPlus)
-                Generator.Category.WEP_T5.probs = new float[]{ 0, 3, 3, 3, 3, 3,3,0,2,1f };
+            if( item instanceof DiedCrossBow )
+                Generator.setProbs( item, Generator.Category.WEP_T5, 1.5f );
+            if( item instanceof MoonDao )
+                Generator.setProbs( item,Generator.Category.WEP_T3, 1.5f );
+            if( item instanceof SaiPlus )
+                Generator.setProbs( item, Generator.Category.WEP_T5, 1 );
+
             SPDSettings.unlockItem( item.name() );
         }
 

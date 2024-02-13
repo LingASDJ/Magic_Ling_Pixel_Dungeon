@@ -58,14 +58,12 @@ public class SaiPlus extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        return  Math.round(3f*(tier+1)) +     //10 base, down from 20
-                lvl*Math.round(1.74f*(tier+1));  //+2 per level, down from +4
+        return 22 + lvl * 6;
     }
 
     @Override
     public int min(int lvl) {
-        return  Math.round(0.75f*(tier+1)) +     //10 base, down from 20
-                lvl*Math.round(0.75f*(tier+1));  //+2 per level, down from +4
+        return 5 + lvl;  // 最小伤害
     }
 
 
