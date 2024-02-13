@@ -20,7 +20,7 @@ public class SaiPlus extends MeleeWeapon {
         hitSound = Assets.Sounds.HIT_STAB;
         hitSoundPitch = 1.3f;
         tier = 5;
-        DLY = 1; // 攻速为 1
+        DLY = 1;
         ACC = 1;
         RCH = 1;
     }
@@ -31,7 +31,8 @@ public class SaiPlus extends MeleeWeapon {
 
     @Override
     public int STRReq(int lvl) {
-        return 17; // 力量要求为 17
+        return (7 + tier * 2) - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
+        //17 base strength req, up from 18
     }
 
     @Override
@@ -42,7 +43,7 @@ public class SaiPlus extends MeleeWeapon {
             Hero hero = (Hero) attacker;
             Char enemy = hero.enemy();
             if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
-                int stolenLife = (int) lifeStealPercentage/10;
+                int stolenLife = Math.min(attacker.HT-attacker.HP,(int) ((int) lifeStealPercentage/100f));
                 attacker.HP += stolenLife;
                 attacker.sprite.showStatus(CharSprite.POSITIVE, "+" + stolenLife + " HP");
                 GLog.p(Messages.get(this, "success", attacker.name()));

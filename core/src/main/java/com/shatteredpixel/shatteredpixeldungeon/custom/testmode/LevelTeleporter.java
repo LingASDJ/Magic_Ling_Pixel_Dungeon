@@ -2,6 +2,8 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.testmode;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.TPDoorDieds;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
@@ -17,6 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
@@ -262,6 +265,21 @@ public class LevelTeleporter extends TestItem {
             if(Dungeon.level.locked)
                 Dungeon.level.unseal();
             InterlevelScene.mode = InterlevelScene.Mode.RESET;
+
+            //克里弗斯之果二阶段死亡的时候的给予重新评估
+            if(crivusfruitslevel2){
+                crivusfruitslevel2 = false;
+            }
+
+            //拟态王二阶段死亡的时候给予重新评估
+            if(TPDoorDieds){
+                TPDoorDieds = false;
+            }
+
+            DragonGirlBlue.Quest.four_used_points = 0;
+
+            Statistics.sakaBackStage = 0;
+
             Game.switchScene(InterlevelScene.class);
         }
     }

@@ -148,7 +148,7 @@ public class CrystalLingTower extends Mob {
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
             if (mob instanceof FireMagicDied) {
                 Viscosity.DeferedDamage deferred = Buff.affect( mob, Viscosity.DeferedDamage.class );
-                deferred.prolong( HT/4 );
+                deferred.prolong( HT/3 );
                 GLog.n( Messages.get(FireMagicDied.class, "dixsdf" ));
             }
         }

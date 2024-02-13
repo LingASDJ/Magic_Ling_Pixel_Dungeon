@@ -2,8 +2,10 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
@@ -36,12 +38,41 @@ public class TPDoor extends Mob {
         spriteClass = TPDoorSprites.class;
 
         HP = HT = 100;
-
+        properties.add(Property.MINIBOSS);
         properties.add(Property.INORGANIC);
         properties.add(Property.ELECTRIC);
-        properties.add(Property.IMMOVABLE);
 
-        state = PASSIVE;
+        if(!Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+            properties.add(Property.IMMOVABLE);
+
+            state = PASSIVE;
+        }
+
+    }
+
+    @Override
+    protected boolean canAttack( Char enemy ) {
+        if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+           return false;
+        } else {
+            return super.canAttack(enemy);
+        }
+    }
+
+    @Override
+    protected boolean getCloser(int target) {
+        if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+            if (state == HUNTING) {
+                if (Dungeon.level.distance(pos, target) > 12)
+                    return super.getCloser(target);
+                return enemySeen && getFurther(target);
+            } else {
+                return super.getCloser(target);
+            }
+        } else {
+            return super.getCloser(target);
+        }
+        //return false;
     }
 
     @Override

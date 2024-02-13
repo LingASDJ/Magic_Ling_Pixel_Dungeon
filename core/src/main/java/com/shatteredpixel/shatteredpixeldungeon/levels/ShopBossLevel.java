@@ -104,6 +104,9 @@ public class ShopBossLevel extends Level {
             boss.pos = 647;
             GameScene.add(boss);
 
+            set(  this.entrance =  WIDTH*17 + 17, WATER );
+            GameScene.updateMap( this.entrance =  WIDTH*17 + 17 );
+
             NullDiedTO bossx = new NullDiedTO();
             bossx.pos = WIDTH*15 + 17;
             GameScene.add(bossx);

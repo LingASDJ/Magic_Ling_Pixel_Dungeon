@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CHASM;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.DOOR;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
@@ -13,9 +14,18 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.STATUE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Tilemap;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 
 public class DwarfGeneralBossLevel extends Level {
 
@@ -83,6 +93,67 @@ public class DwarfGeneralBossLevel extends Level {
 
     };
 
+    private int status = 0;
+    private static final int START = 0;
+    private static final int FIGHTING = 1;
+    private static final int WON = 2;
+    private static final int ERROR = 9999999;
+
+    @Override
+    public void storeInBundle( Bundle bundle ) {
+        super.storeInBundle( bundle );
+        bundle.put( "level_status", status );
+    }
+
+    @Override
+    public void restoreFromBundle( Bundle bundle ) {
+        super.restoreFromBundle( bundle );
+        status = bundle.getInt("level_status");
+    }
+
+    private void progress(){
+        if(status == START){
+            status = FIGHTING;
+        }else if(status == FIGHTING){
+            status = WON;
+        }else{
+            status = ERROR;
+        }
+    }
+
+    @Override
+    public void occupyCell( Char ch ) {
+        super.occupyCell(ch);
+        GLog.p(String.valueOf(hero.pos));
+        GLog.b("BOSS");
+
+        if (status == START && ch == Dungeon.hero) {
+            progress();
+            seal();
+        }
+
+    }
+
+
+
+    @Override
+    public void seal() {
+        super.seal();
+
+        DwarfGeneral boss = new DwarfGeneral();
+        boss.pos = 367;
+        GameScene.add(boss);
+        ScrollOfTeleportation.appear(hero,493);
+
+
+        Level.set(514, LOCKED_DOOR);
+        GameScene.updateMap(514);
+        Dungeon.observe();
+
+        GLog.p(Messages.get(this,"dead_go"));
+        Sample.INSTANCE.play(Assets.Sounds.DEATH);
+    }
+
     @Override
     public String tilesTex() {
         return Assets.Environment.TILES_CITY_CS;
@@ -98,8 +169,8 @@ public class DwarfGeneralBossLevel extends Level {
         setSize(WIDTH, HEIGHT);
         map = code_map.clone();
 
-        int entrance = 29 + WIDTH * 10;
-        int exit = 0;
+        int entrance = 598;
+        int exit = 225;
 
         LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(enter);
@@ -114,7 +185,7 @@ public class DwarfGeneralBossLevel extends Level {
         via.pos(0, 0);
         customTiles.add(via);
 
-        //map[exit] = Terrain.LOCKED_EXIT;
+        map[exit] = Terrain.LOCKED_EXIT;
 
         return true;
     }

@@ -62,7 +62,7 @@ public class DimandBook extends Books {
     @Override
     public ItemSprite.Glowing glowing() {
         if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
-            return new ItemSprite.Glowing(Window.R_COLOR, 3f);
+            return new ItemSprite.Glowing(Window.TITLE_COLOR, 3f);
         } else {
             return null;
         }
