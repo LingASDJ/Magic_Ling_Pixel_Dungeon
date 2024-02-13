@@ -543,7 +543,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         }
     }
 
-    public void bolt(Integer target, final Mob mob){
+    public void bolt(Integer target, final Char mob){
         if (target != null) {
 
             final Ballistica shot = new Ballistica( mob.pos, target, Ballistica.PROJECTILE);
@@ -557,7 +557,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                 callback);
     }
 
-    protected void onHit(Ballistica bolt, Mob mob) {
+    protected void onHit(Ballistica bolt, Char mob) {
 
         //presses all tiles in the AOE first
 
@@ -614,8 +614,10 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                 enemy.sprite.burst( 0x000000, 5 );
             }
         } else if (HP < HT/2) {
-            if (Random.NormalFloat( 2, 9 ) == 4) {
+            if (Random.NormalFloat( 0,100 ) <= 10) {
                 GLog.n( Messages.get(FireMagicDied.class, "died_kill",Dungeon.hero.name()) );
+                bolt(damage/2,enemy);
+            } else {
                 zap();
             }
         } else {

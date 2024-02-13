@@ -75,11 +75,11 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         EXP = 10;
         defenseSkill = 8;
 
-        if(Dungeon.isChallenged(STRONGER_BOSSES)){
-            WANDERING = new Wandering();
-        }
-
         flying=true;
+
+        if(Dungeon.isChallenged(STRONGER_BOSSES)){
+            viewDistance = 24;
+        }
 
         spriteClass = DimandKingSprite.class;
 
@@ -88,22 +88,17 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         properties.add(Property.ACIDIC);
     }
 
-    private class Wandering extends Mob.Wandering {
-        //全图找你 说不定你睡个觉 拟态王就突然贴你脸了（什么地牢恐怖片）
-        @Override
-        public boolean act( boolean enemyInFOV, boolean justAlerted ) {
-                int oldPos = pos;
-                target = Dungeon.hero.pos;
-                //always move towards the hero when wandering
-                if (getCloser( target )) {
-                    spend( 1 / speed() );
-                    return moveSprite( oldPos, pos );
-                } else {
-                    spend( TICK );
-                }
-            return super.act( enemyInFOV, justAlerted );
+
+    public String info(){
+        StringBuilder desc = new StringBuilder(super.info());
+
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (mob instanceof TPDoor) {
+                desc.append("\n\n").append(Messages.get(this, "TPDoor"));
+            }
         }
 
+        return desc.toString();
     }
 
     private int pumpedUp = 0;
@@ -202,6 +197,13 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         if(this.HP <= 300 && phase == 1) {
             GLog.n(Messages.get(DiamondKnight.class, "war_go"));
             phase++;
+        }
+        ColdChestBossLevel.State level = ((ColdChestBossLevel)Dungeon.level).pro();
+        //血量低于360后追加phase并加载楼层的进度方法,加载迷宫
+        if (level == ColdChestBossLevel.State.VSYOU_START && HP<10) {
+            GameScene.flash(0x80FFFFFF);
+            Dungeon.hero.interrupt();
+            die(hero);
         }
         return super.act();
     }
@@ -428,11 +430,11 @@ public class DiamondKnight extends Boss implements Hero.Doom {
     @Override
     public void notice() {
         super.notice();
-        GameScene.bossReady();
+
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
             Dungeon.level.seal();
-
+            GameScene.bossReady();
             if(Dungeon.isChallenged(STRONGER_BOSSES)){
                 yell(Messages.get(this, "notice_2"));
             } else {
