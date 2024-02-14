@@ -112,7 +112,7 @@ public class Chasm implements Hero.Doom {
 	}
 	
 	public static void heroFall( int pos ) {
-		
+
 		jumpConfirmed = false;
 				
 		Sample.INSTANCE.play( Assets.Sounds.FALLING );
@@ -129,7 +129,8 @@ public class Chasm implements Hero.Doom {
 			}
 			Game.switchScene(InterlevelScene.class);
 		} else {
-			ScrollOfTeleportation.appear(hero, level.entrance());
+			int heroPos = level.entrance;
+			ScrollOfTeleportation.appear(hero, heroPos);
 			Dungeon.hero.interrupt();
 			Dungeon.observe();
 		}

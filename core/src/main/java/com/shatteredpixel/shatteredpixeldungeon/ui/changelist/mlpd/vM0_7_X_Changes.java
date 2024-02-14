@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DeepSeaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireCrystalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -15,6 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KatydidSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KongFuSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MintSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MoonLowSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhiteGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YetYogSprite;
@@ -30,11 +32,65 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V077_Changes(changeInfos);
         add_V076_Changes(changeInfos);
         add_V075_Changes(changeInfos);
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+
+    public static void add_V077_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.0.7", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ALL_BAG), ("新物品：大背包"),
+                ("帮忙收纳你的其他背包，但在高于14挑时会被小偷认为是珍贵物品(指疯狂和常规，猩红大盗不会偷取)，\n\n" +
+                        "如果你的大背包被偷，小偷将陷入0.6移速，并给予你6回合灵视\n\n" +
+                        "同时，所有背包不能再被扔出。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        Image s =new DimandKingSprite();
+        s.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(s, ("拟态之王"),
+                ("1.修复近战攻击变傻的问题\n" +
+                        "2.优化掉落物切换阶段的问题\n" +
+                        "3.优化去打天狗楼层掉落物的问题\n" +
+                        "4.传送门移速降低为0.85，孤城无法提速传送门\n" +
+                        "5.彻底修复拟态王楼层卡存档问题（旧存档可能没有用）")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_17), ("挑战改进:孤城迷境"),
+                ("在全新0层中，现在孤城所有人回归。")));
+
+        changes.addButton(new ChangeButton(new MintSprite(), ("薄绿调整"),
+                ("进行了优化，薄绿厨万岁。")));
+
+        changes.addButton(new ChangeButton(new MoonLowSprite(), ("浅月调整"),
+                ("进行了优化，添加了立绘。")));
+
+        changes.addButton(new ChangeButton(new DeepSeaSprite(), ("小海调整"),
+                ("素材进行了优化。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FISHING_SPEAR), "投掷武器优化",
+                "优化投掷武器在附魔后的一些问题，感谢手电的修正"));
+
+        changes = new ChangeInfo("削弱", false, null);
+        changes.hardlight(Window.RED_COLOR);
+        changeInfos.add(changes);
+
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), "归溯钥剑",
+                "整体成长属性削弱，从1-11改为1-6。"));
+
     }
 
     public static void add_V076_Changes( ArrayList<ChangeInfo> changeInfos ) {

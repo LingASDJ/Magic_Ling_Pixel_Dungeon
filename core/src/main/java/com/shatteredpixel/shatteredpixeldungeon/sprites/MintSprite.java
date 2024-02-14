@@ -28,8 +28,8 @@ public class MintSprite extends MobSprite {
             idle.frames(ren, 25,26,27,28,29);
         }
 
-        wakeup = new MovieClip.Animation(10, true);
-        wakeup.frames(ren,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,26,27,26,27,26,27,26,27,26,27,26,27,26,27);
+        wakeup = new MovieClip.Animation(10, false);
+        wakeup.frames(ren,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27);
 
         run = new MovieClip.Animation(8, true);
         run.frames(ren, 0);

@@ -214,8 +214,15 @@ public class DiamondKnight extends Boss implements Hero.Doom {
      */
     @Override
     protected boolean canAttack( Char enemy ) {
-        Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
-        return !Dungeon.level.adjacent(pos, enemy.pos) && attack.collisionPos == enemy.pos;
+        if ( Dungeon.level.distance(enemy.pos, pos) >= 2){
+            //we check both from and to in this case as projectile logic isn't always symmetrical.
+            //this helps trim out BS edge-cases
+            return Dungeon.level.distance(enemy.pos, pos) <= 2
+                    && new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos
+                    && new Ballistica( enemy.pos, pos, Ballistica.PROJECTILE).collisionPos == pos;
+        } else {
+            return super.canAttack(enemy);
+        }
     }
 
     private int combo = 0;

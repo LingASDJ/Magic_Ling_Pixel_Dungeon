@@ -77,7 +77,7 @@ public class Mint extends NTNPC {
 
         if (first) {
             ((MintSprite)sprite).wakeUp();
-            GameScene.scene.add(new Delayer(1.75f){
+            GameScene.scene.add(new Delayer(1.7f){
                 @Override
                 protected void onComplete() {
                     ((MintSprite)sprite).idleS();
@@ -98,7 +98,13 @@ public class Mint extends NTNPC {
             });
             secnod = false;
         } else {
-            yell(Messages.get(this,"x"));
+            MintPlot.EndPlot plot = new MintPlot.EndPlot();
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndDialog(plot,false));
+                }
+            });
         }
         return true;
     }

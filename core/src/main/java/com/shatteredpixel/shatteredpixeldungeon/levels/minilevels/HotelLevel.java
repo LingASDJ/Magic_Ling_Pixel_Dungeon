@@ -1,6 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.minilevels;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.BOOKSHELF;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CRYSTAL_DOOR;
@@ -180,7 +179,7 @@ public class HotelLevel extends Level {
             mobs.add(n);
         }
 
-        if(!Dungeon.isChallenged(CS)) {
+
             MoonCat n1 = new MoonCat();
             n1.pos = 143;
             mobs.add(n1);
@@ -202,7 +201,7 @@ public class HotelLevel extends Level {
                 n9.pos = 199;
                 mobs.add(n9);
             }
-        }
+
 
     }
 

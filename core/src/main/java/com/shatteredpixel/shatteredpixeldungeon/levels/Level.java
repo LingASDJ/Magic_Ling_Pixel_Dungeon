@@ -76,7 +76,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition;
@@ -132,22 +131,15 @@ public abstract class Level implements Bundlable {
 		cleanWalls();
 
 		//清理掉落物
-		for (Heap heap : heaps.valueList()){
-			for (Item item : heap.items){
-				if(item instanceof MIME){
-					heap.destroy();
-				} else {
-					heap.pos = hero.pos;
-				}
-			}
-		}
-		//自动获取出入口
-		exit = entrance = 0;
-		for (int i = 0; i < length(); i ++)
-			if (map[i] == Terrain.ENTRANCE)
-				entrance = i;
-			else if (map[i] == Terrain.EXIT)
-				exit = i;
+
+
+//		//自动获取出入口
+//		exit = entrance = 0;
+//		for (int i = 0; i < length(); i ++)
+//			if (map[i] == Terrain.ENTRANCE)
+//				entrance = i;
+//			else if (map[i] == Terrain.EXIT)
+//				exit = i;
 
 		//可见性和地图被完全重置
 		BArray.setFalse(visited);

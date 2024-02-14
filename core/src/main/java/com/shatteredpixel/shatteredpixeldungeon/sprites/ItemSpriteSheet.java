@@ -636,12 +636,15 @@ public class ItemSpriteSheet {
     public static final int SEED_SKYBLUEFIRE      = SEEDS+12;
     public static final int SEED_AIKELAIER      = SEEDS+13;
 
-
+    public static final int ALL_BAG      = SEEDS+14;
     public static final int GREEN_LING      = SEEDS+15;
+
+
     static{
         for (int i = SEEDS; i < SEEDS+16; i++)
             assignItemRect(i, 10, 10);
         assignItemRect(GREEN_LING, 8, 15);
+        assignItemRect(ALL_BAG, 16, 16);
     }
 
     private static final int BREWS          =                               xy(1, 25);  //8 slots

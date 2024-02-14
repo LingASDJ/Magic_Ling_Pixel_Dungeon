@@ -710,7 +710,7 @@ public abstract class Char extends Actor {
 		//创世神
 		if ( buff( AnkhInvulnerability.GodDied.class ) != null ) speed *= 2f;
 
-		if ((properties().contains(Property.BOSS) || properties().contains(Property.MINIBOSS)) && Statistics.gameNight) {
+		if ((properties().contains(Property.BOSS) || properties().contains(Property.MINIBOSS) && !properties().contains(Property.ABYSS)) && Statistics.gameNight) {
 			speed *= 1.2f;
 		}
 

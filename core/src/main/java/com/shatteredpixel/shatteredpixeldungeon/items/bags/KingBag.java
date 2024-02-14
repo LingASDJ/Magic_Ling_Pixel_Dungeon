@@ -21,28 +21,22 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.bags;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class KingBag extends Bag {
 
     {
-        image = ItemSpriteSheet.DG8;
+        image = ItemSpriteSheet.ALL_BAG;
+
+        unique = Challenges.activeChallenges() <= 13;
+
     }
 
     @Override
     public boolean canHold( Item item ) {
-        if (item instanceof Food|| item instanceof Runestone
-                || item instanceof GooBlob || item instanceof MetalShard
-                || item instanceof Potion ||
-                item instanceof Scroll || item instanceof Weapon){
+        if (item instanceof Bag){
             return super.canHold(item);
         } else {
             return false;
@@ -50,11 +44,11 @@ public class KingBag extends Bag {
     }
 
     public int capacity(){
-        return 40;
+        return 6;
     }
 
     public int price() {
-        return 600;
+        return -1;
     }
 
 }

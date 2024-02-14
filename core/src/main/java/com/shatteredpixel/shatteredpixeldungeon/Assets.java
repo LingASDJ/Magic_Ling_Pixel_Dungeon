@@ -161,7 +161,7 @@ public class Assets {
 
 		//Boss 贴图
 
-		public static final String QliPhoth_Title  = "interfaces/bosslogo/qliphoth-title.png";
+		public static final String QliPhoth_Title  = "interfaces/bosslogo/qliphoth-title-ex.png";
 		public static final String QliPhoth_Clear  = "interfaces/bosslogo/qliphoth-clear.png";
 
 		public static final String DMOR_Title  = "interfaces/bosslogo/dm300or-title.png";
@@ -416,6 +416,8 @@ public class Assets {
 
 		public static final String MOON = "splashes/moon_portraits.png";
 
+		public static final String LMOON = "splashes/lowmoon_portraits.png";
+
 		public static final String LINP = "splashes/Ling_portraits.png";
 
 		public static final String GHOSTJ = "splashes/apprentice_portraits.png";
@@ -498,6 +500,8 @@ public class Assets {
 		public static final String FRAS	= "sprites/boss/FireWitch.png";
 
 		public static final String CFAS	= "sprites/boss/FruitsCrivus.png";
+
+		public static final String CFZS	= "sprites/boss/overworld/qliphoth_ex.png";
 		public static final String NECROREDEX	= "sprites/boss/rednecromancer_ex.png";
 		public static final String SLIMEPRINCESS	= "sprites/boss/SlimePrincess.png";
 		public static final String ICEALICE	= "sprites/boss/IceFireCrstal.png";

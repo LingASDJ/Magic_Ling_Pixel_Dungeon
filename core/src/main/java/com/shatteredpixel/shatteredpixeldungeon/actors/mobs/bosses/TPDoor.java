@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -9,14 +10,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BloodBat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.Pets;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -40,7 +44,9 @@ public class TPDoor extends Mob {
         HP = HT = 100;
         properties.add(Property.MINIBOSS);
         properties.add(Property.INORGANIC);
-        properties.add(Property.ELECTRIC);
+        properties.add(Property.ABYSS);
+
+        baseSpeed = 0.85f;
 
         if(!Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
             properties.add(Property.IMMOVABLE);
@@ -75,14 +81,6 @@ public class TPDoor extends Mob {
         //return false;
     }
 
-    @Override
-    protected boolean act() {
-        if (Dungeon.level.heroFOV[pos]) {
-            Notes.add( Notes.Landmark.STATUE );
-        }
-        return super.act();
-    }
-
     private int kill = 0;
 
     private static final String KILL = "kill";
@@ -106,6 +104,9 @@ public class TPDoor extends Mob {
         if (AntiMagic.RESISTS.contains(src.getClass())) {
             dmg = 0;
         } else {
+            if(!(src instanceof Hero)){
+                return;
+            }
             if (dmg >= 20){
                 //20
                 dmg = 20;
@@ -212,6 +213,16 @@ public class TPDoor extends Mob {
                                                     if(Dungeon.level.locked) Dungeon.level.unseal();
                                                     InterlevelScene.mode = InterlevelScene.Mode.RESET;
                                                     Game.switchScene(InterlevelScene.class);
+                                                    for (Heap heap : level.heaps.valueList()) {
+                                                        for (Item item : heap.items) {
+                                                            if(!(item instanceof MIME)){
+                                                                item.doPickUp(hero, hero.pos);
+                                                                heap.destroy();
+                                                            } else {
+                                                                heap.destroy();
+                                                            }
+                                                        }
+                                                    }
                                                 } else {
                                                     kill = 0;
                                                     yell( Messages.get(DiamondKnight.class, "ten"));

@@ -114,8 +114,8 @@ public class ZeroCityLevel extends Level {
 
     private static final int[] codedMap = {
             P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,S,S,S,S,S,S,P,P,P,P,P,P,P,P,P,P,P,M,M,M,M,M,M,P,
-            P,P,P,M,D,D,D,P,P,D,P,M,M,P,M,P,P,P,P,P,P,P,M,M,M,M,M,M,M,P,P,P,P,P,P,P,P,P,P,P,S,S,S,S,S,S,P,P,P,P,P,P,P,P,P,P,P,D,M,P,D,D,D,M,
-            P,P,D,T,D,D,I,D,D,D,D,D,D,D,M,P,P,P,P,P,P,P,M,O,O,O,O,O,M,M,M,M,M,M,M,M,M,M,M,M,S,S,S,S,S,S,M,M,M,M,M,M,M,M,P,P,P,D,M,P,A,A,A,M,
+            P,P,P,M,D,D,D,P,P,D,P,M,M,P,M,P,P,P,P,P,P,P,M,M,M,M,M,M,M,P,P,P,P,P,P,P,P,P,P,P,S,S,S,S,S,S,P,P,P,P,P,P,P,P,P,P,P,M,M,P,D,D,D,M,
+            P,P,D,T,D,D,I,D,D,D,D,D,D,D,M,P,P,P,P,P,P,P,M,O,O,O,O,O,M,M,M,M,M,M,M,M,M,M,M,M,S,S,S,S,S,M,M,M,M,M,M,M,M,M,P,P,P,D,M,P,A,A,A,M,
             P,P,I,D,A,D,D,D,A,D,D,D,D,D,M,M,P,P,P,P,P,M,M,D,D,D,D,D,D,D,D,D,D,R,R,R,D,D,M,M,M,Q,M,M,M,M,D,D,D,D,D,D,D,M,P,P,P,D,M,P,D,D,D,M,
             P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,M,P,P,P,P,M,M,D,D,D,D,D,M,M,M,M,M,M,M,M,M,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,P,P,D,M,P,D,N,D,M,
             P,P,D,D,D,D,K,D,D,D,D,D,D,D,D,M,M,P,P,P,M,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,P,D,M,P,D,D,D,M,
@@ -139,17 +139,17 @@ public class ZeroCityLevel extends Level {
             P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,M,M,M,M,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,P,P,P,P,D,D,D,D,D,P,R,R,R,R,P,P,D,D,D,D,P,
             P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,P,P,P,P,P,D,D,D,D,D,P,R,R,R,R,R,P,P,D,D,P,P,
             P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,P,P,P,P,P,P,D,D,D,D,D,P,R,R,R,R,R,R,P,P,P,P,P,
-            P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,R,R,R,R,R,R,D,D,D,D,D,D,D,P,P,P,P,P,P,P,P,D,D,D,D,D,P,P,R,R,R,R,R,R,R,R,R,P,
-            P,P,P,P,R,R,R,R,D,D,D,D,D,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,D,D,D,D,D,D,P,P,P,P,P,P,D,D,D,D,D,D,D,D,P,R,R,R,R,R,R,R,R,D,P,
-            P,P,P,P,R,R,R,R,D,D,D,D,D,R,R,R,R,R,R,R,R,R,R,R,R,R,R,D,D,D,D,R,R,D,D,D,D,D,D,D,P,P,P,P,D,D,D,D,D,D,D,D,D,P,P,R,R,R,R,R,R,R,D,P,
-            P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,R,D,D,D,D,D,D,D,D,P,P,D,D,D,D,D,D,D,D,D,D,D,P,R,R,R,R,R,R,R,D,P,
-            P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,E,M,M,M,D,D,D,D,D,D,D,D,D,R,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,R,R,R,R,R,R,R,D,P,
-            P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,D,R,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,R,R,R,R,R,D,P,
-            P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,D,R,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,R,R,R,R,D,P,
-            P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,P,R,R,R,D,P,
-            P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,R,R,P,
-            P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,R,R,R,R,R,D,D,D,D,D,D,D,M,M,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,R,P,
-            P,P,P,P,D,D,D,D,D,D,D,A,D,D,D,D,D,D,D,D,D,D,D,R,R,R,R,R,R,R,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,P,
+            P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,P,P,P,P,D,D,D,D,D,D,D,P,P,P,P,P,P,P,P,D,D,D,D,D,P,P,R,R,R,R,R,R,R,R,R,P,
+            P,P,P,P,P,P,P,P,D,D,D,D,D,P,P,P,P,P,P,P,P,P,P,P,P,P,R,R,R,R,R,R,P,D,D,D,D,D,D,P,P,P,P,P,P,D,D,D,D,D,D,D,D,P,R,R,R,R,R,R,R,R,D,P,
+            P,P,P,P,R,R,R,R,D,D,D,D,D,R,R,R,R,R,R,R,R,R,R,R,R,R,R,D,D,D,D,R,P,D,D,D,D,D,D,D,P,P,P,P,D,D,D,D,D,D,D,D,D,P,P,R,R,R,R,R,R,R,D,P,
+            P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,D,D,D,D,D,D,D,D,P,P,D,D,D,D,D,D,D,D,D,D,D,P,R,R,R,R,R,R,R,D,P,
+            P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,E,M,M,M,D,D,D,D,D,D,D,D,D,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,R,R,R,R,R,R,R,D,P,
+            P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,D,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,R,R,R,R,R,D,P,
+            P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,D,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,R,R,R,R,D,P,
+            P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,P,R,R,R,D,P,
+            P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,P,P,R,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,R,R,P,
+            P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,R,R,D,D,D,D,D,D,D,M,M,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,R,P,
+            P,P,P,P,D,D,D,D,D,D,D,A,D,D,D,D,D,D,D,D,D,D,D,P,P,P,P,R,R,R,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,P,
             P,P,P,P,D,D,D,D,D,D,D,A,D,D,D,D,D,D,A,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,P,
             P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,
             P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,D,D,D,M,M,M,V,M,M,M,D,D,P,P,
@@ -157,8 +157,8 @@ public class ZeroCityLevel extends Level {
             P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,M,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,M,D,D,D,P,
             P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,G,D,M,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,M,D,D,D,P,
             P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,M,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,M,D,D,D,P,
-            P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,A,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,M,M,M,M,D,D,D,D,D,I,D,M,M,M,M,M,D,D,D,D,D,M,D,D,D,P,
-            P,P,P,D,D,D,D,D,D,D,D,A,D,D,D,D,D,D,A,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,I,D,M,D,D,D,D,D,D,D,D,D,M,D,D,P,P,
+            P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,A,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,M,M,M,M,D,D,D,D,D,I,D,D,D,D,D,M,D,D,D,D,D,M,D,D,D,P,
+            P,P,P,D,D,D,D,D,D,D,D,A,D,D,D,D,D,D,A,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,I,D,M,M,M,M,M,D,D,D,D,D,M,D,D,P,P,
             P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,I,D,M,D,D,D,D,D,D,D,D,D,M,D,D,P,P,
             P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,I,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,B,D,D,D,D,D,D,D,D,D,M,D,D,P,P,
             P,P,D,D,D,D,D,D,I,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,I,D,M,D,D,D,D,D,D,D,D,D,M,D,D,P,P,
@@ -316,7 +316,7 @@ public class ZeroCityLevel extends Level {
 
     @Override
     protected void createMobs() {
-        if(!Dungeon.isChallenged(CS)){
+
             REN n = new REN();
             n.pos = 252;
             mobs.add(n);
@@ -357,8 +357,6 @@ public class ZeroCityLevel extends Level {
             npc12.pos = 3100;
             mobs.add(npc12);
 
-
-
             //45%概率
             if(Random.Float()<=0.45f){
                 BzmdrLand npc9 = new BzmdrLand();
@@ -367,7 +365,7 @@ public class ZeroCityLevel extends Level {
                 //如果地表版本生成 旅馆禁止生成Bzmdr
                 Statistics.onlyBzmdr = true;
             }
-        }
+
 
         MoRuoS npc4 = new MoRuoS();
         npc4.pos = 3066;

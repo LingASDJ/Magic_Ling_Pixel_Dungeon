@@ -419,6 +419,19 @@ public class ColdChestBossLevel extends Level {
                                 changeMap(MazeRoom);
                             }
 
+
+                            for (Heap heap : heaps.valueList()) {
+                                for (Item item : heap.items) {
+                                    if(!(item instanceof MIME)){
+                                        item.doPickUp(hero, STARTPOS);
+                                        heap.destroy();
+                                    } else {
+                                        heap.destroy();
+                                    }
+                                }
+                            }
+
+
                             Buff.detach(hero, Levitation.class);
                             //宝箱王移动到看戏位
                             ScrollOfTeleportation.appear(boss, MDX);
@@ -531,6 +544,18 @@ public class ColdChestBossLevel extends Level {
                             //动态修改整个房间 宝藏迷宫
                             changeMap(EndMap);
                             //在切换房间的时候立刻切换全新坐标
+
+                            for (Heap heap : heaps.valueList()) {
+                                for (Item item : heap.items) {
+                                    if(!(item instanceof MIME)){
+                                        item.doPickUp(hero, 962);
+                                        heap.destroy();
+                                    } else {
+                                        heap.destroy();
+                                    }
+                                }
+                            }
+
                             setMapEnd();
                             Buff.affect(boss, ChampionEnemy.Halo.class);
                             ScrollOfTeleportation.appear(boss,647);

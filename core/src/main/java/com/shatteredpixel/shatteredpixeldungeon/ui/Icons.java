@@ -87,6 +87,7 @@ public enum Icons {
 	COIN_SML,
 	ENERGY_SML,
 	BACKPACK,
+	B_BACKPACK,
 	SEED_POUCH,
 	SCROLL_HOLDER,
 	WAND_HOLSTER,
@@ -306,6 +307,9 @@ public enum Icons {
 				break;
 			case BACKPACK:
 				icon.frame( icon.texture.uvRectBySize( 201, 48, 10, 10 ) );
+				break;
+			case B_BACKPACK:
+				icon.frame( icon.texture.uvRectBySize( 201, 59, 10, 10 ) );
 				break;
 			case SCROLL_HOLDER:
 				icon.frame( icon.texture.uvRectBySize( 211, 48, 10, 10 ) );
