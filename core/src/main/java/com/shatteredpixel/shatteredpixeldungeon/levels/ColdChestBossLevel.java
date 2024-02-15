@@ -269,10 +269,13 @@ public class ColdChestBossLevel extends Level {
 
 
     private void setMapStart() {
-        int entrance = HOME;
+        int entrance = WIDTH*2+17;
 
         LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(enter);
+
+        LevelTransition exit = new LevelTransition(this, 0, LevelTransition.Type.REGULAR_EXIT);
+        transitions.add(exit);
 
         int doorPos =  WIDTH*3+17;
         Mob.holdAllies(this, doorPos);

@@ -46,7 +46,7 @@ public class DiedCrossBow extends LegendWeapon {
 
     @Override
     public int iceCoinValue() {
-        return 450;
+        return 175 + tier*25;
     }
 
     @Override

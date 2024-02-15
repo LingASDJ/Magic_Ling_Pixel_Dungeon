@@ -62,7 +62,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.BackGoKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
@@ -874,7 +873,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
         super.die( cause );
         Statistics.bossScores[3] += 1000 * Dungeon.depth/5;
-        Dungeon.level.drop(new BackGoKey().quantity(1).identify(), pos).sprite.drop();
+        //Dungeon.level.drop(new BackGoKey().quantity(1).identify(), pos).sprite.drop();
         Dungeon.level.drop(new ScrollOfMagicMapping().quantity(1).identify(), pos).sprite.drop();
 
 

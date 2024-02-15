@@ -69,7 +69,7 @@ public class SaiPlus extends MeleeWeapon {
 
     @Override
     public int iceCoinValue() {
-        return 600;
+        return 175 + tier*25;
     }
 
 }

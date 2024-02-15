@@ -23,6 +23,9 @@ package com.shatteredpixel.shatteredpixeldungeon.items.bags;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class KingBag extends Bag {
@@ -36,7 +39,7 @@ public class KingBag extends Bag {
 
     @Override
     public boolean canHold( Item item ) {
-        if (item instanceof Bag){
+        if ((item instanceof Weapon  && !(item instanceof MagesStaff))||item instanceof Armor){
             return super.canHold(item);
         } else {
             return false;
@@ -44,7 +47,7 @@ public class KingBag extends Bag {
     }
 
     public int capacity(){
-        return 6;
+        return 21;
     }
 
     public int price() {

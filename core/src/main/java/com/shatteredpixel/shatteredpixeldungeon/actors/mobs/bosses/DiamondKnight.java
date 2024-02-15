@@ -384,9 +384,12 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         Statistics.bossScores[1] += 2500;
         Dungeon.level.drop( new TengusMask(), pos ).sprite.drop();
         int dropPos = this.pos;
+
+
         if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
-            Dungeon.level.drop(new IceCyanBlueSquareCoin(20),pos);
+            Dungeon.level.drop(new IceCyanBlueSquareCoin(20),hero.pos);
         }
+
         Dungeon.level.drop(new ScrollOfRecharging().quantity(2),  dropPos).sprite.drop(pos);
 
         Ankh ankh = new Ankh();
