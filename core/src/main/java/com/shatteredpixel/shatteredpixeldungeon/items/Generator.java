@@ -493,7 +493,7 @@ public class Generator {
 
 					MoonDao.class,
 			};
-			WEP_T3.probs = new float[]{ 1, 5, 4, 4, 4 ,3,5,3,6,0, 0,0,0, SPDSettings.isItemUnlock( new MoonDao().name() ) ? 1.5f : 0 };
+			WEP_T3.probs = new float[]{ 1, 5, 4, 4, 4 ,3,5,3,6,0, 0,0,0, SPDSettings.isItemUnlock( new MoonDao().getClass().getSimpleName() ) ? 1.5f : 0 };
 
 			WEP_T4.classes = new Class<?>[]{
 					Longsword.class,
@@ -521,7 +521,7 @@ public class Generator {
 					SaiPlus.class,
 
 			};
-			WEP_T5.probs = new float[]{ 0, 3, 3, 3, 3, 3,3, SPDSettings.isItemUnlock( new DiedCrossBow().name() ) ? 1.5f : 0,2,SPDSettings.isItemUnlock( new SaiPlus().name() ) ? 1f : 0};
+			WEP_T5.probs = new float[]{ 0, 3, 3, 3, 3, 3,3, SPDSettings.isItemUnlock( new DiedCrossBow().getClass().getSimpleName() ) ? 1.5f : 0,2,SPDSettings.isItemUnlock( new SaiPlus().getClass().getSimpleName() ) ? 1f : 0};
 
 			WEP_T6.classes = new Class<?>[]{
 					IceFishSword.class,
