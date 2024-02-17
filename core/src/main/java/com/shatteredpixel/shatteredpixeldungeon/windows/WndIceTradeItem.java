@@ -106,7 +106,7 @@ public class WndIceTradeItem extends WndInfoItem {
 
         final int price = Shopkeeper.sellIcePrice( item );
 
-        RedButton btnBuy = new RedButton( SPDSettings.isItemUnlock( item.name() ) ? Messages.get(this, "unlocked") : Messages.get(this, "buy", price) ) {
+        RedButton btnBuy = new RedButton( SPDSettings.isItemUnlock( item.getClass().getSimpleName() ) ? Messages.get(this, "unlocked") : Messages.get(this, "buy", price) ) {
             @Override
             protected void onClick() {
                 hide();
@@ -116,8 +116,7 @@ public class WndIceTradeItem extends WndInfoItem {
         btnBuy.setRect( 0, pos + GAP, width, BTN_HEIGHT );
         btnBuy.icon(new ItemSprite(ItemSpriteSheet.ICEGOLD));
 
-
-        btnBuy.enable(!SPDSettings.isItemUnlock(item.name()) && price <= SPDSettings.iceCoin());
+        btnBuy.enable( SPDSettings.isItemUnlock( item.getClass().getSimpleName() ) ? false : price <= SPDSettings.iceCoin());
         add( btnBuy );
 
         pos = btnBuy.bottom();
@@ -194,7 +193,7 @@ public class WndIceTradeItem extends WndInfoItem {
         int price = Shopkeeper.sellIcePrice( item );
         SPDSettings.iceDownCoin(price);
 
-        if( (item instanceof DiedCrossBow|| item instanceof MoonDao || item instanceof SaiPlus) && !SPDSettings.isItemUnlock( item.name() ) ){
+        if( (item instanceof DiedCrossBow|| item instanceof MoonDao || item instanceof SaiPlus) && !SPDSettings.isItemUnlock( item.getClass().getSimpleName() ) ){
             if( item instanceof DiedCrossBow )
                 Generator.setProbs( item, Generator.Category.WEP_T5, 1.5f );
             if( item instanceof MoonDao )
@@ -202,7 +201,7 @@ public class WndIceTradeItem extends WndInfoItem {
             if( item instanceof SaiPlus )
                 Generator.setProbs( item, Generator.Category.WEP_T5, 1 );
 
-            SPDSettings.unlockItem( item.name() );
+            SPDSettings.unlockItem( item.getClass().getSimpleName() );
         }
 
         if (!item.doPickUp( Dungeon.hero )) {

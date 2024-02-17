@@ -837,4 +837,25 @@ public class SPDSettings extends GameSettings {
 
 		return -1;
 	}
+
+
+	/*
+	 * @Breif 将已解锁物品移除，允许同时移除多个物品
+	 * @Pramas String
+	 * @NativeName: removeUnlockItem
+	 * @NativeFunction: void removeUnlockItem(String)
+	 */
+	public static void removeUnlockItem( String itemName ){
+		String[] itemArray = itemName.split( ";" );
+		StringBuilder items = new StringBuilder( unlockItem() );
+
+		int index;
+		for( String target : itemArray ) {
+			if ( ( index = items.indexOf( target ) ) != -1 ) {
+					items.delete( index, index + items.indexOf( ";", index ) + 1 );
+			}
+		}
+
+		put( KEY_UNLOCKITEM, items.toString() );
+	}
 }
