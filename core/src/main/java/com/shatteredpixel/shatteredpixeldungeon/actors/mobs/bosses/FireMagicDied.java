@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShopLimitLock;
@@ -527,16 +528,16 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
     @Override
     protected boolean canAttack( Char enemy ) {
-        if (pumpedUp > 0){
+        if (pumpedUp > 0) {
             //we check both from and to in this case as projectile logic isn't always symmetrical.
             //this helps trim out BS edge-cases
             return Dungeon.level.distance(enemy.pos, pos) <= 2
-                    && new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos
-                    && new Ballistica( enemy.pos, pos, Ballistica.PROJECTILE).collisionPos == pos;
-        } else if(HP < HT/2) {
+                    && new Ballistica(pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos
+                    && new Ballistica(enemy.pos, pos, Ballistica.PROJECTILE).collisionPos == pos;
+        } else if (HP < HT / 2) {
             return Dungeon.level.distance(enemy.pos, pos) <= 3
-                    && new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos
-                    && new Ballistica( enemy.pos, pos, Ballistica.PROJECTILE).collisionPos == pos;
+                    && new Ballistica(pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos
+                    && new Ballistica(enemy.pos, pos, Ballistica.PROJECTILE).collisionPos == pos;
         } else {
             return super.canAttack(enemy);
         }
@@ -581,9 +582,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             int dmg = Random.NormalIntRange(2+Dungeon.depth, 5+Dungeon.depth );
 
             enemy.damage( dmg, new ColdGurad.DarkBolt() );
-            enemy.damage( dmg, new ColdGurad.DarkBolt() );
-            enemy.damage( dmg, new ColdGurad.DarkBolt() );
-            enemy.damage( dmg, new ColdGurad.DarkBolt() );
 
 
             if (enemy == Dungeon.hero && !enemy.isAlive()) {
@@ -601,6 +599,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     }
 
     public void onZapComplete() {
+        zap();
         next();
     }
 
@@ -660,7 +659,8 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                 if (pumpedUp >= 2) {
                     ((FireMagicGirlSprite) sprite).pumpAttack();
                 } else {
-                    sprite.attack(enemy.pos);
+                    sprite.zap(enemy.pos);
+                    spend(3f);
                 }
             }
 
@@ -682,25 +682,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             return true;
         }
     }
-
-    @Override
-    public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti ) {
-        boolean result = super.attack( enemy, dmgMulti, dmgBonus, accMulti );
-        pumpedUp = 0;
-        return result;
-    }
-
-//    @Override
-//    protected boolean getCloser(int target) {
-//        this.pumpedUp = 0;
-//        if (this.state != this.HUNTING) {
-//            return FireMagicDied.super.getCloser(target);
-//        }
-//        if (!this.enemySeen || !getFurther(target)) {
-//            return false;
-//        }
-//        return true;
-//    }
 
 
     @Override
@@ -797,7 +778,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
             this.pos = FALSEPosition;
 
-            Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(HT/2);
+            Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(HT/4);
 
             if(Statistics.amuletObtained){
                 Buff.append(hero, BeamTowerAdbility.class).towerPos = TRUEPosition;
@@ -825,7 +806,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             Buff.affect(this, ChampionEnemy.Halo.class);
             Buff.affect(this, ChampionEnemy.AntiMagic.class);
             Buff.affect(this, Adrenaline.class, 100f);
-            Buff.affect(this, RoseShiled.class, 40f);
+            Buff.affect(this, RoseShiled.class, 20f);
         } else if (phase == 3 && preHP > 10 && HP <= 20){
             yell( Messages.get(this, "losing") );
             die(Dungeon.hero);
@@ -895,7 +876,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         Buff.affect(hero, ShopLimitLock.class).set((1), 1);
 
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-            if (mob instanceof FireMagicDied.ColdGuradA ||  mob instanceof SRPDICLRPRO ||mob instanceof Skeleton||mob instanceof DM100|| mob instanceof BlackHost|| mob instanceof Warlock|| mob instanceof Monk|| mob instanceof CrystalDiedTower) {
+            if (mob instanceof FireMagicDied.ColdGuradA ||  mob instanceof SRPDICLRPRO ||mob instanceof Skeleton||mob instanceof DM100|| mob instanceof BlackHost|| mob instanceof Warlock|| mob instanceof Monk|| mob instanceof CrystalDiedTower|| mob instanceof CrystalLingTower) {
                 mob.die( cause );
             }
         }
@@ -907,7 +888,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         }
 
         GameScene.bossSlain();
-
+        Buff.detach(hero, MagicGirlSayTimeLast.class);
         PaswordBadges.KILLFIREGIRL();
 
         yell( Messages.get(this, "defeated",Dungeon.hero.name()) );
@@ -1208,7 +1189,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             //Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);;
             beamCD = 20 + 8 - (phase == 5 ? 19 : 0);
             ScrollOfTeleportation.appear(hero, ShopBossLevel.throne);
-            GLog.n(Messages.get(this, "active") );
+            yell(Messages.get(this, "active") );
             spend(TICK*12);
         }else if(wave == 2){
             summonSubject(1, FireMagicDied.ColdGuradA.class);
@@ -1216,13 +1197,13 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             summonSubject(6, FireMagicDied.ColdGuradA.class);
             summonSubject(6, FireMagicDied.ColdGuradA.class);
             ScrollOfTeleportation.appear(hero, ShopBossLevel.throne);
-            GLog.n(Messages.get(this, "active") );
+            yell(Messages.get(this, "active") );
             ++wave;
             spend(TICK*15);
         }else if(wave == 3){
             yell(Messages.get(this, "wave_2",Dungeon.hero.name()));
             ScrollOfTeleportation.appear(hero, ShopBossLevel.throne);
-            GLog.n(Messages.get(this, "active") );
+            yell(Messages.get(this, "active") );
             //Eye.spawnAround(pos);
             summonSubject(1, FireMagicDied.ColdGuradA.class);
             summonSubject(2, FireMagicDied.ColdGuradC.class);
@@ -1249,7 +1230,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         }else if(wave == 5){
             yell(Messages.get(this,"wave_3",Dungeon.hero.name()));
             ScrollOfTeleportation.appear(hero, ShopBossLevel.throne);
-            GLog.n(Messages.get(this, "active") );
+            yell(Messages.get(this, "active") );
             summonSubject(2, FireMagicDied.ColdGuradA.class);
             summonSubject(2, FireMagicDied.ColdGuradB.class);
             summonSubject(2, FireMagicDied.ColdGuradC.class);
