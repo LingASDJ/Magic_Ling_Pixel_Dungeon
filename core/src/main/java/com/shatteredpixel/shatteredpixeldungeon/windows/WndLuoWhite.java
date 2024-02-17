@@ -163,9 +163,9 @@ public class WndLuoWhite extends Window {
         public RewardWindow( Item item ) {
             super(item);
 
-            boolean locked = SPDSettings.isItemUnlock(item.name());
+            boolean locked = SPDSettings.isItemUnlock(item.getClass().getSimpleName());
 
-            StyledButton btnConfirm = new StyledButton(SPDSettings.isItemUnlock(item.name())?Chrome.Type.SCROLL : Chrome.Type.RED_BUTTON,Messages.get(WndIceTradeItem.class, (locked) ? "unlocked":"buy",item.iceCoinValue())){
+            StyledButton btnConfirm = new StyledButton(SPDSettings.isItemUnlock(item.getClass().getSimpleName())?Chrome.Type.SCROLL : Chrome.Type.RED_BUTTON,Messages.get(WndIceTradeItem.class, (locked) ? "unlocked":"buy",item.iceCoinValue())){
                 @Override
                 protected void onClick() {
                     if(SPDSettings.iceCoin() >= item.iceCoinValue()) {
@@ -192,7 +192,7 @@ public class WndLuoWhite extends Window {
                 }
             };
             btnConfirm.setRect(0, height+2, WIDTH, 16);
-            if(SPDSettings.isItemUnlock(item.name())){
+            if(SPDSettings.isItemUnlock(item.getClass().getSimpleName())){
                 btnConfirm.active = false;
                 btnConfirm.setRect(0, height+2, WIDTH, 31);
             }
