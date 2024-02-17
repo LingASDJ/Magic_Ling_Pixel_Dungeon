@@ -18,6 +18,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ClearElemental;
@@ -45,6 +46,7 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class ForestHardBossLevel extends Level {
@@ -62,6 +64,19 @@ public class ForestHardBossLevel extends Level {
         color1 = 0x801500;
         color2 = 0xa68521;
     }
+
+    @Override
+    public int randomRespawnCell( Char ch ) {
+        int pos = 82; //random cell adjacent to the entrance.
+        int cell;
+        do {
+            cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
+        } while (!passable[cell]
+                || (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
+                || Actor.findChar(cell) != null);
+        return cell;
+    }
+
 
     private static final int getBossDoor = 214;
     private static final int LDBossDoor = 247;
@@ -103,11 +118,11 @@ public class ForestHardBossLevel extends Level {
                     }
                     for (int i : ForestHardBossLasherTWOPos) {
                         ClearElemental csp = new ClearElemental();
-                        csp.HT = csp.HP = 50;
+                        csp.HT = csp.HP = 30;
                         csp.pos = i;
                         GameScene.add(csp);
                         csp.state = csp.WANDERING;
-                        Buff.affect(csp, CrivusFruits.CFBarrior.class).setShield(50);
+                        Buff.affect(csp, CrivusFruits.CFBarrior.class).setShield(30);
                     }
                     for (int i : MobPos) {
                         CrivusStarFruitsLasher csp = new CrivusStarFruitsLasher();
@@ -120,7 +135,7 @@ public class ForestHardBossLevel extends Level {
             }
         }
 
-        if(Statistics.CrivusbossTeleporter>12 && Statistics.crivusfruitslevel2) {
+        if(Statistics.CrivusbossTeleporter>16 && !Statistics.crivusfruitslevel3 && crivusfruitslevel2) {
             for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
                 if (boss instanceof CrivusStarFruits) {
                     int pos;

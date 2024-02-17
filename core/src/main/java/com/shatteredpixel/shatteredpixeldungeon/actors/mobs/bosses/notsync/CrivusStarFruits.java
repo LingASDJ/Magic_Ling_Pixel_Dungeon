@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
+import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.CrivusFruitsFood;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
@@ -66,7 +67,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
 
         HP = HT = 280;
 
-        defenseSkill = 15;
+        defenseSkill = 14;
         state = WANDERING;
         EXP = 20;
 
@@ -115,10 +116,10 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
     public void die(Object cause) {
         super.die(cause);
         boolean heroKilled = false;
-        for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-            Char ch = findChar( pos + PathFinder.NEIGHBOURS8[i] );
+        for (int i = 0; i < PathFinder.NEIGHBOURS49.length; i++) {
+            Char ch = findChar( pos + PathFinder.NEIGHBOURS49[i] );
             if (ch != null && ch.isAlive()) {
-                int damage = Math.round(Random.NormalIntRange(6, 12));
+                int damage = Math.round(Random.NormalIntRange(12, 21));
                 damage = Math.round( damage * AscensionChallenge.statModifier(this));
                 //armor is 2x effective against bone explosion
                 damage = Math.max( 0,  damage - (ch.drRoll() + ch.drRoll()) );
@@ -143,18 +144,18 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
         Dungeon.level.unseal();
         GameScene.bossSlain();
         GLog.n(Messages.get(this,"dead"));
-        Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
-        Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
-        Dungeon.level.drop( new IronKey( Dungeon.depth ), pos ).sprite.drop();
-        Dungeon.level.drop( new IronKey( Dungeon.depth ), pos ).sprite.drop();
+        Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos-1 ).sprite.drop();
+        Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos+1 ).sprite.drop();
+        Dungeon.level.drop( new IronKey( Dungeon.depth ), pos-2 ).sprite.drop();
+        Dungeon.level.drop( new IronKey( Dungeon.depth ), pos+2 ).sprite.drop();
         Badges.validateBossSlain();
         Statistics.bossScores[0] += 2000;
         Badges.KILL_ST();
         Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
-        Dungeon.level.drop(new IceCyanBlueSquareCoin(15),hero.pos);
-        Dungeon.level.drop(new Gold(200),hero.pos);
-        Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.FOOD),hero.pos);
-        Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.FOOD),hero.pos);
+        Dungeon.level.drop(new IceCyanBlueSquareCoin(15),pos);
+        Dungeon.level.drop(new Gold(200),pos);
+        Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.FOOD),pos);
+        Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.FOOD),pos);
 
         int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
         for (int i = 0; i < blobs; i++){
@@ -163,6 +164,10 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
                 ofs = PathFinder.NEIGHBOURS8[Random.Int(6)];
             } while (!Dungeon.level.passable[pos + ofs]);
             Dungeon.level.drop( new CrivusFruitsFood(), pos + ofs ).sprite.drop( pos );
+        }
+
+        if(Statistics.lanterfireactive){
+            Dungeon.level.drop( new Torch(), pos ).sprite.drop();
         }
 
         int flakes = Random.chances(new float[]{0, 0, 6, 3, 1});
@@ -218,7 +223,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
             if(enemy!=null){
                 yell(Messages.get(this,"goodbye"));
                 enemy.damage(enemy.HT/3,this);
-                spend(20f);
+                spend(16f);
             }
 
         }
@@ -286,6 +291,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
             AlarmTrap trap = new AlarmTrap();
             trap.pos = super.pos;
             trap.activate();
+            ScrollOfTeleportation.teleportToLocation(this, 577);
             GLog.n(Messages.get(this, "died"));
         }
         spend( TICK );
@@ -301,7 +307,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
         @Override
         public boolean act() {
 
-            if (target.HP > 60){
+            if (target.HP > 200){
                 detach();
                 return true;
             }
@@ -346,7 +352,8 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
     public int defenseProc(Char enemy, int damage) {
         GameScene.add(Blob.seed(pos, 10, CrivusFruits.DiedBlobs.class));
 
-        if(Random.Int(100)<=10){
+
+        if(Random.Int(100)<=10 && !Statistics.crivusfruitslevel3){
             int pos;
             switch (Random.Int(9)) {
                 case 0:

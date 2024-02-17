@@ -428,7 +428,7 @@ public class ItemSpriteSheet {
     public static final int WAND_HTR    = WANDS+14;
     public static final int WAND_KCX    = WANDS+15;
     static {
-        for (int i = WANDS; i < WANDS+12; i++)
+        for (int i = WANDS; i < WANDS+15; i++)
             assignItemRect(i, 14, 14);
     }
 
@@ -902,6 +902,9 @@ public class ItemSpriteSheet {
     static{
         assignItemRect(WATERSKIN,        16, 16);
         assignItemRect(POUCH,       14, 15);
+        assignItemRect(DG6,       14, 14);
+        assignItemRect(DG17,       14, 14);
+        assignItemRect(DG19,       14, 14);
         assignItemRect(HOLDER,      16, 16);
         assignItemRect(BANDOLIER,   15, 16);
         assignItemRect(HOLSTER,     15, 16);

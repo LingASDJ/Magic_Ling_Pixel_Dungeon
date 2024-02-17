@@ -46,7 +46,66 @@ public class vM0_7_X_Changes {
     }
 
     public static void add_V078_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.7.0.8", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.7.0.8-P1", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        Image ss =new CrivusStarFruitsSprite();
+        ss.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(ss, ("Boss调整:克里璃斯之果"),
+                "9挑战以上出现，机制说明请查阅后续选项卡,有颜色标注的代表修正。" +
+                        "异果出现顺序：\n" +
+                        "9挑以上出现（包括9挑），\n" +
+                        "还没有获得异果徽章，100%出现，\n" +
+                        "获得异果徽章后，70%出现。\n" +
+                        "获得徽章后，在无挑环境中也有20%的概率出现\n" +
+                        "\n" +
+                        "注意一旦出现，本局固定异果。\n" +
+                        "十字架重置是无效的",
+                "第一阶段：280-160\n\n" +
+                        "果子在中心，12个触手，_触手血量第一阶段：60->50，第二阶段：30->40，果子自身闪避从15降为14_\n" +
+                        "第一阶段还有四个英雄遗骸，里面有四个小净化\n" +
+                        "注意:四个小净化在阶段转换如果在地面会被清除 阶段转换的其他物品都会立刻还给玩家（类似于念力结晶）\n" +
+                        "触手技能：十字毒雾，玩家在非危险区可周期捕获敌人。（就是监狱长那种锁链）\n" +
+                        "危险区：指触手和玩家中间有不可跨越地块，这时触手不会抓捕玩家。\n" +
+                        "12个触手打完后，玩家进行任意行走后，进入第二阶段。（不要想着卡bug，因为第一阶段最多扣到160，在玩家尚未移动前，不会继续扣减）\n" +
+                        "在第一阶段掉入裂缝传到安全区不会有任何伤害。",
+                "第二阶段：160-0\n\n" +
+                        "触手完全无敌，并产生酸雾效果。\n" +
+                        "果子周期性瞬移,_瞬移冷却加长,从12回合变成16回合_（嗯，是的，异果是反着来的）\n" +
+                        "触手也会进行周期性抓捕\n" +
+                        "场上出现两个额外纯晶元素 _30血+30盾_\n" +
+                        "在从第二阶段开始，掉落悬崖除了传送到安全区外，还会固定扣减3滴血。\n" +
+                        "在这个阶段打本体会产生固定6伤害的红雾，请小心行事，合理躲避。",
+                "最终阶段：0\n\n" +
+                        "异果血量降到0后，立刻呼吁大家向它给予能量。_6个触手每次给予果子12血,2x6_\n" +
+                        "在这期间，玩家有两个选择，强杀果子或者是杀触手，从第三阶段开始，因为触手需要给予本体能量，自身不再坚不可摧，可以被攻击。\n" +
+                        "_族群意识不会在60血以上自动消失_" +
+                        "如果异果血量大于60以上（不包括60，异果锁定的敌人将周期性受到敌人自身最大血量的三分之一真实伤害）\n" +
+                        "在这个阶段打触手会产生固定6伤害的红雾，请小心行事，合理躲避。_同时果子不再传送_\n" +
+                        "并且果子死亡会造成_大规模爆炸伤害_，不要靠的太近\n" +
+                        "地图中也有一些可利用的元素，更多的等各位自行探索哦。",
+                "奖励：\n\n" +
+                        "除普通果子的基础奖励还有\n1.200金币\n2.15钴币\n3.2个食物\n4._如果开启灯火,还会在打完后给予一个额外火把_"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ALL_BAG), ("物品调整：武甲背包"),
+                ("不能放入投掷武器。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分文案优化\n" +
+                        "3.部分细节优化更新\n" +
+                        "4.金币为负数时会变成红色")));
+
+        changes = new ChangeInfo("v0.7.0.8", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 

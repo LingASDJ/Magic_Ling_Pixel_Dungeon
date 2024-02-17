@@ -54,7 +54,7 @@ public class CrivusStarFruitsLasher extends Mob {
                         sprite.parent.add(new Beam.GlassRayS(sprite.center(), boss.sprite.center()));
                     }
 
-                    boss.HP = Math.min(boss.HP + 1, boss.HT/2);
+                    boss.HP = Math.min(boss.HP + 2, boss.HT/2);
                     if (boss.sprite.visible) boss.sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
 
                     //不符合的情况下给予3回合激素涌动
@@ -68,7 +68,7 @@ public class CrivusStarFruitsLasher extends Mob {
     {
         spriteClass = RotLasherSprite.class;
 
-        HP = HT = Statistics.crivusfruitslevel2 ? 30 : 60;
+        HP = HT = Statistics.crivusfruitslevel2 ? 40 : 50;
         defenseSkill = 0;
 
         EXP = 1;
