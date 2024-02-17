@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -46,6 +47,9 @@ public class DiedCrossBow extends LegendWeapon {
 
     @Override
     public int iceCoinValue() {
+        if (Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
+            return (int) ((175 + tier*25) * 0.9f);
+        }
         return 175 + tier*25;
     }
 

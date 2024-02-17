@@ -98,7 +98,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		BURNING, LEVITATING, INVISIBLE,TRUE_INVISIBLE,
 		PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED,
 		ROSESHIELDED, HALOMETHANEBURNING, FROSTBURNING, BUTTER, SPINVISIBLE, SMOKER, HEARTS,
-		MUTATION_1,MUTATION_2,MUTATION_3,MUTATION_4,MUTATION_5,MUTATION_6,MUTATION_7,
+		MUTATION_1,MUTATION_2,MUTATION_3,MUTATION_4,MUTATION_5,MUTATION_6,MUTATION_7,MUTATION_8,MUTATION_9
 	}
 	private int stunStates = 0;
 
@@ -151,7 +151,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected Emitter mutation5;
 	protected Emitter mutation6;
 	protected Emitter mutation7;
-
+	protected Emitter mutation8;
 
 	protected IceBlock iceBlock;
 	protected DarkBlock darkBlock;
@@ -548,6 +548,10 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				mutation7 = emitter();
 				mutation7.pour(Speck.factory(Speck.MUTATION_7), 0.5f);
 				break;
+			case MUTATION_8:
+				mutation8 = emitter();
+				mutation8.pour(Speck.factory(Speck.MUTATION_8), 0.1f);
+				break;
 		}
 	}
 
@@ -694,6 +698,12 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					mutation7 = null;
 				}
 				break;
+			case MUTATION_8:
+				if(mutation8 != null){
+					mutation8.on =  false;
+					mutation8 = null;
+				}
+				break;
 		}
 	}
 
@@ -774,6 +784,9 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		}
 		if (mutation7 != null){
 			mutation7.visible = visible;
+		}
+		if (mutation8 != null){
+			mutation8.visible = visible;
 		}
 		if (aura != null){
 			if (aura.parent == null){

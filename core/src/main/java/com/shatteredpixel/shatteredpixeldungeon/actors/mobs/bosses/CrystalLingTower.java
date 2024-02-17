@@ -5,6 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SpellCaster;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BeamCustom;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
@@ -147,6 +148,7 @@ public class CrystalLingTower extends Mob {
         super.die(cause);
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
             if (mob instanceof FireMagicDied) {
+                Buff.detach(mob, RoseShiled.class);
                 Viscosity.DeferedDamage deferred = Buff.affect( mob, Viscosity.DeferedDamage.class );
                 deferred.prolong( HT/3 );
                 GLog.n( Messages.get(FireMagicDied.class, "dixsdf" ));

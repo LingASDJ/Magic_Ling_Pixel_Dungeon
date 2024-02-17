@@ -148,6 +148,24 @@ public class FireMagicGirlSprite extends MobSprite {
         }
     }
 
+    public void zap( int cell ) {
+
+        turnTo( ch.pos , cell );
+        play( zap );
+
+        MagicMissile.boltFromChar( parent,
+                MagicMissile.FIRE,
+                this,
+                cell,
+                new Callback() {
+                    @Override
+                    public void call() {
+                        ((FireMagicDied)ch).onZapComplete();
+                    }
+                } );
+        Sample.INSTANCE.play( Assets.Sounds.ZAP );
+    }
+
     @Override
     public void onComplete( Animation anim ) {
         super.onComplete(anim);

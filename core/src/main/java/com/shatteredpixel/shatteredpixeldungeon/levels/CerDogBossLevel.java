@@ -243,7 +243,7 @@ public class CerDogBossLevel extends Level{
 
         @Override
         public float speedFactor() {
-            return 1.3f;
+            return super.speedFactor()*2.3f;
         }
 
 

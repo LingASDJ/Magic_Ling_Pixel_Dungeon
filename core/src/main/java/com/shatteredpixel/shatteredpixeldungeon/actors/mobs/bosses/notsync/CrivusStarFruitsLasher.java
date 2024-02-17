@@ -5,8 +5,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
@@ -34,7 +38,7 @@ public class CrivusStarFruitsLasher extends Mob {
     {
         spriteClass = RotLasherSprite.class;
 
-        HP = HT = Statistics.crivusfruitslevel2 ? 30 : 15;
+        HP = HT = Statistics.crivusfruitslevel2 ? 50 : 25;
         defenseSkill = 0;
 
         EXP = 1;
@@ -60,7 +64,7 @@ public class CrivusStarFruitsLasher extends Mob {
         if (chainsUsed || enemy.properties().contains(Property.IMMOVABLE))
             return false;
 
-        Ballistica chain = new Ballistica(pos, target, Ballistica.PROJECTILE);
+        Ballistica chain = new Ballistica(pos, target, Ballistica.STOP_TARGET);
 
         if (chain.collisionPos != enemy.pos
                 || chain.path.size() < 2
@@ -85,6 +89,11 @@ public class CrivusStarFruitsLasher extends Mob {
                     yell(Messages.get(this, "scorpion"));
                     new Item().throwSound();
                     Sample.INSTANCE.play(Assets.Sounds.CHAINS);
+                    for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                        if (mob instanceof CrivusStarFruitsLasher){
+                            Buff.affect(mob, Blindness.class, 3f);
+                        }
+                    }
                     sprite.parent.add(new Chains(sprite.center(),
                             enemy.sprite.destinationCenter(),
                             Effects.Type.GLASSCHAIN,
@@ -131,6 +140,11 @@ public class CrivusStarFruitsLasher extends Mob {
         super.storeInBundle(bundle);
         bundle.put(CHAINSUSED, chainsUsed);
         bundle.put(CHAINXUSED,chains);
+    }
+    @Override
+    protected boolean act() {
+        GameScene.add(Blob.seed(pos, Statistics.crivusfruitslevel2 ? 60 : 10, CorrosiveGas.class));
+        return super.act();
     }
 
     @Override
@@ -195,7 +209,7 @@ public class CrivusStarFruitsLasher extends Mob {
     }
 
     {
-        immunities.add( ToxicGas.class );
+        immunities.add( CorrosiveGas.class );
     }
 
     private class Waiting extends Mob.Wandering{}

@@ -20,7 +20,9 @@ public class BGMPlayer {
 
     //解决电脑端高质量ogg的线程安全闪退问题
     public static void playBGM(String name, boolean loop) {
-        Game.runOnRenderThread(() -> Music.INSTANCE.play(name, loop));
+        if(SPDSettings.music()){
+            Game.runOnRenderThread(() -> Music.INSTANCE.play(name, loop));
+        }
     }
 
     public static void playBGMWithDepth() {
@@ -185,7 +187,7 @@ public class BGMPlayer {
 
             }
         } else {
-            if(s == 6){
+            if(s == 7){
                 playBGM(Assets.BGM_SHOP, true);
             }
             if(s == 3 && t == 16 ||s == 3 && t == 17 || s == 3 && t == 18) {

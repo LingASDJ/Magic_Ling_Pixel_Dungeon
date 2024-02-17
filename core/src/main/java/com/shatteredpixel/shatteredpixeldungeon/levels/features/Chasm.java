@@ -118,7 +118,26 @@ public class Chasm implements Hero.Doom {
 		Sample.INSTANCE.play( Assets.Sounds.FALLING );
 
 		Level.beforeTransition();
-		if (Dungeon.hero.isAlive() && Dungeon.branch == 0 && Dungeon.depth!=30) {
+		if(Dungeon.depth == 5){
+			int SafePos = 0;
+			switch (Random.NormalIntRange(0,4)){
+				case 0:
+					SafePos = 325;
+					break;
+				case 1:
+					SafePos = 301;
+					break;
+				case 2:
+					SafePos = 861;
+					break;
+				case 3:
+					SafePos = 855;
+					break;
+			}
+			ScrollOfTeleportation.appear(hero, SafePos);
+			Dungeon.hero.interrupt();
+			Dungeon.observe();
+		} else if (Dungeon.hero.isAlive() && Dungeon.branch == 0 && Dungeon.depth!=30) {
 			Dungeon.hero.interrupt();
 			InterlevelScene.mode = InterlevelScene.Mode.FALL;
 			if (Dungeon.level instanceof RegularLevel && Dungeon.branch == 0) {

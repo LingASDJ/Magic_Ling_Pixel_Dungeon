@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -82,6 +83,13 @@ public class AttackIndicator extends Tag {
 			if (!flipped)   sprite.x = x + (SIZE - sprite.width()) / 2f + 1;
 			else            sprite.x = x + width - (SIZE + sprite.width()) / 2f - 1;
 			sprite.y = y + (height - sprite.height()) / 2f;
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+				if (mob.buff(ChampionEnemy.NoCode.class) != null) {
+					sprite.visible = false;
+					return;
+				}
+			}
+
 			PixelScene.align(sprite);
 		}
 	}
@@ -154,15 +162,19 @@ public class AttackIndicator extends Tag {
 		sprite.linkVisuals(lastTarget);
 		sprite.idle();
 		sprite.paused = true;
+
 		sprite.visible = bg.visible;
 
 		if (sprite.width() > 20 || sprite.height() > 20){
 			sprite.scale.set(PixelScene.align(20f/Math.max(sprite.width(), sprite.height())));
 		}
 
-		add( sprite );
-
 		layout();
+
+
+
+
+
 	}
 	
 	private boolean enabled = true;

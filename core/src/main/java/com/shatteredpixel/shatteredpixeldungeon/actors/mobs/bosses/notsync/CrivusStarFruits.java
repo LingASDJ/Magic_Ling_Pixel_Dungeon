@@ -1,17 +1,20 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ConfusionGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -42,8 +45,8 @@ public class CrivusStarFruits extends Boss {
         immunities.add( Paralysis.class );
         immunities.add( Amok.class );
         immunities.add( Sleep.class );
-        immunities.add( ToxicGas.class );
-        immunities.add( CrivusFruits.DiedBlobs.class );
+        immunities.add( CorrosiveGas.class );
+        immunities.add( ConfusionGas.class );
         immunities.add( Terror.class );
         immunities.add( Dread.class );
         immunities.add( Vertigo.class );
@@ -58,12 +61,17 @@ public class CrivusStarFruits extends Boss {
         if (alignment == Alignment.NEUTRAL) {
             return true;
         }
-
-        GameScene.add(Blob.seed(pos, 120, CrivusFruits.DiedBlobs.class));
+        if( hero.buff(LockedFloor.class) != null){
+            notice();
+        }
+        GameScene.add(Blob.seed(pos, 120, ConfusionGas.class));
 
         return super.act();
     }
-
+    @Override
+    public void beckon(int cell) {
+        //do nothing
+    }
     public void notice() {
         super.notice();
         if (!BossHealthBar.isAssigned()) {

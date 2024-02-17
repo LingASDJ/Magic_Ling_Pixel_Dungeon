@@ -16,6 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
@@ -60,7 +61,7 @@ public class WndKingShop extends Window {
         add( message );
 
         WndKingShop.RewardButton shop1 = new WndKingShop.RewardButton( NullDiedTO.shop1 );
-        shop1.setRect( (WIDTH - BTN_GAP) / 6 - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE,
+        shop1.setRect( (WIDTH - BTN_GAP) / 6f - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE,
                 BTN_SIZE );
         add( shop1 );
 
@@ -292,12 +293,13 @@ public class WndKingShop extends Window {
 
         public RewardWindow( Item item ) {
             super(item);
-
-            RedButton btnConfirm = new RedButton(Messages.get(WndKingShop.class, "buy")){
+            int sellPrice =Dungeon.depth<10 ? item.value() * 3 : item.value() * 5;
+            RedButton btnConfirm = new RedButton(Messages.get(WndKingShop.class, "buy",sellPrice)){
                 @Override
                 protected void onClick() {
-                    if(Dungeon.gold >=320) {
-                        Dungeon.gold-=320;
+
+                    if(Dungeon.gold >=sellPrice) {
+                        Dungeon.gold-= RegularLevel.holiday == RegularLevel.Holiday.CJ ?sellPrice*0.5f : sellPrice;
                         WndKingShop.this.selectReward( item );
                         Buff.prolong( hero, ReloadShop.class, 1f);
                         //Statistics.naiyaziCollected += 1;
@@ -309,55 +311,10 @@ public class WndKingShop extends Window {
                     }
                 }
             };
-            btnConfirm.setRect(0, height+2, width/2-1, 16);
+            btnConfirm.setRect(0, height+2, width, 16);
             add(btnConfirm);
 
-            RedButton btnCancel = new RedButton(Messages.get(WndKingShop.class, "cancel")){
-                @Override
-                protected void onClick() {
-                    hide();
-                }
-            };
-            btnCancel.setRect(btnConfirm.right()+2, height+2, btnConfirm.width(), 16);
-            add(btnCancel);
-
-            resize(width, (int)btnCancel.bottom());
-        }
-    }
-
-    private class RewardWindow2 extends WndInfoItem {
-
-        public RewardWindow2( Item item ) {
-            super(item);
-
-            RedButton btnConfirm = new RedButton(Messages.get(WndKingShop.class, "buy")){
-                @Override
-                protected void onClick() {
-                    if(Dungeon.gold >= 320) {
-                        Dungeon.gold-=320;
-                        Buff.prolong( hero, ReloadShop.class, 1f);
-                        WndKingShop.this.selectReward( item );
-                        //Badges.nyzvalidateGoldCollected();
-                        //Statistics.naiyaziCollected += 1;
-                        WndKingShop.RewardWindow2.this.hide();
-                    } else {
-                        tell(Messages.get(WndKingShop.class,"nomoney"));
-                    }
-                }
-            };
-            btnConfirm.setRect(0, height+2, width/2-1, 16);
-            add(btnConfirm);
-
-            RedButton btnCancel = new RedButton(Messages.get(WndKingShop.class, "cancel")){
-                @Override
-                protected void onClick() {
-                    hide();
-                }
-            };
-            btnCancel.setRect(btnConfirm.right()+2, height+2, btnConfirm.width(), 16);
-            add(btnCancel);
-
-            resize(width, (int)btnCancel.bottom());
+            resize(width, (int)btnConfirm.bottom());
         }
     }
 
@@ -384,7 +341,7 @@ public class WndKingShop extends Window {
 
                 @Override
                 protected void onClick() {
-                    ShatteredPixelDungeon.scene().addToFront(new WndKingShop.RewardWindow2(item));
+                    ShatteredPixelDungeon.scene().addToFront(new WndKingShop.RewardWindow(item));
                 }
             };
             add(slot);

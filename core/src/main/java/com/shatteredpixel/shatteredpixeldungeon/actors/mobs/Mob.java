@@ -92,6 +92,8 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
+import net.iharder.Base64;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -324,7 +326,6 @@ public abstract class Mob extends Char {
 	public void restoreFromBundle( Bundle bundle ) {
 
 		super.restoreFromBundle( bundle );
-
 		String state = bundle.getString( STATE );
 		if (state.equals( Sleeping.TAG )) {
 			this.state = SLEEPING;
@@ -1070,12 +1071,37 @@ public abstract class Mob extends Char {
 
 	}
 
+
+	public String encodeWithLineBreak(String text) {
+		byte[] bytes = text.getBytes();
+		byte[] encodedBytes = Base64.encodeBytes(bytes).getBytes();
+
+		StringBuilder sb = new StringBuilder();
+		int index = 0;
+		while (index < encodedBytes.length) {
+			sb.append(new String(encodedBytes, index, Math.min(28, encodedBytes.length - index)));
+			sb.append("\n");
+			index += 28;
+		}
+
+		return sb.toString();
+	}
+
 	public String info(){
 		String desc = description();
+
+		if(buff(ChampionEnemy.NoCode.class) != null){
+			try {
+				desc = encodeWithLineBreak(description());
+			} catch (Exception ignored) {
+			}
+		}
 
 		for (Buff b : buffs(ChampionEnemy.class)){
 			desc += "\n\n_" + Messages.titleCase(b.name()) + "_\n" + b.desc();
 		}
+
+
 
 		return desc;
 	}

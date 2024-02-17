@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.ALCHEMY;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.BARRICADE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.BOOKSHELF;
@@ -28,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LanFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NxhyNpc;
@@ -57,9 +59,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -68,6 +67,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.SurfaceScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
@@ -180,11 +180,11 @@ public class ZeroCityLevel extends Level {
     };
 
 
-//    public void occupyCell(Char ch) {
-//        super.occupyCell(ch);
-//        GLog.p(String.valueOf(hero.pos));
-//        GLog.b(String.valueOf(Statistics.zeroItemLevel));
-//    }
+    public void occupyCell(Char ch) {
+        super.occupyCell(ch);
+        GLog.p(String.valueOf(hero.pos));
+        GLog.b(String.valueOf(Statistics.zeroItemLevel));
+    }
 
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
@@ -389,16 +389,15 @@ public class ZeroCityLevel extends Level {
     }
 
     public static int[] SALEPOS_ONE = new int[]{
-
-            657,658
+            1427,1428
     };
 
     public static int[] SALEPOS_TWO = new int[]{
-          721,722
+          785,786
     };
 
     public static int[] SALEPOS_THREE = new int[]{
-           785,786
+           1429,1365
     };
 
     public static int[] SALEPOS_FOUR = new int[]{
@@ -406,14 +405,11 @@ public class ZeroCityLevel extends Level {
     };
 
     public static int[] POSSALE = new int[]{
-           660,724,788,852
+           657,658,721,722
     };
 
     @Override
     protected void createItems() {
-        drop( new DiedCrossBow(), 1237  ).type = Heap.Type.FOR_ICE;
-        drop( new MoonDao(), 1238  ).type = Heap.Type.FOR_ICE;
-        drop( new SaiPlus(), 1365  ).type = Heap.Type.FOR_ICE;
 
         if (Dungeon.depth == 0 &&
                 (!Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_INTRO) || SPDSettings.intro() )){
@@ -429,18 +425,12 @@ public class ZeroCityLevel extends Level {
             npc1.pos = 663;
             mobs.add(npc1);
 
-            for (int i : SALEPOS_ONE) {
-                drop((Generator.random(Generator.Category.MISSILE)), i).type =
-                        Heap.Type.FOR_SALE;
-            }
+
             for (int i : SALEPOS_TWO) {
                 drop((Generator.random(Generator.Category.POTION)), i).type =
                         Heap.Type.FOR_SALE;
             }
-            for (int i : SALEPOS_THREE) {
-                drop((Generator.random(Generator.Category.WEAPON)), i).type =
-                        Heap.Type.FOR_SALE;
-            }
+
             for (int i : SALEPOS_FOUR) {
                 drop((Generator.random(Generator.Category.SCROLL)), i).type =
                         Heap.Type.FOR_SALE;
@@ -455,8 +445,16 @@ public class ZeroCityLevel extends Level {
             PaswordBadges.loadGlobal();
             List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
-
-
+            drop( new RandomChest(), 1425  ).type = Heap.Type.FOR_SALE;
+            drop( new RandomChest(), 1426  ).type = Heap.Type.FOR_SALE;
+            for (int i : SALEPOS_ONE) {
+                drop((Generator.random(Generator.Category.MISSILE)), i).type =
+                        Heap.Type.FOR_SALE;
+            }
+            for (int i : SALEPOS_THREE) {
+                drop((Generator.random(Generator.Category.WEAPON)), i).type =
+                        Heap.Type.FOR_SALE;
+            }
             if (passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)) {
                 drop((Generator.random(Generator.Category.RING)), 3001);
             }
@@ -473,11 +471,6 @@ public class ZeroCityLevel extends Level {
                 drop(item, 3129);
             }
 
-
-
-
-            drop( new RandomChest(), 1239  ).type = Heap.Type.FOR_ICE;
-            drop( new RandomChest(), 1240  ).type = Heap.Type.FOR_ICE;
         }
 
         if(RegularLevel.holiday == RegularLevel.Holiday.CJ){
