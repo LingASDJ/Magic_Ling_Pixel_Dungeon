@@ -310,10 +310,8 @@ public class HeroSelectScene extends PixelScene {
 		};
 		challengeButton.setRect(startBtn.left() + 16, Camera.main.height- BUTTON_HEIGHT-16, 21, 21);
 		add(challengeButton);
-		if (DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY)||Badges.isUnlocked(Badges.Badge.HOLLOWCITY)) {
-			Dungeon.challenges = 0;
-			SPDSettings.challenges(0);
-		}
+
+
 
 //		holidayButton = new StyledButton(Chrome.Type.BLANK,"TesT", 6){
 //			@Override

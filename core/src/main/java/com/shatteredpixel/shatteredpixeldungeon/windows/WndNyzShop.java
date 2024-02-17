@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReloadShop;
@@ -196,7 +197,7 @@ public class WndNyzShop extends Window {
                             }
                         }
                     } else if(Dungeon.gold >= 720) {
-                        Dungeon.gold-=720*Random.Int(2)+hero.lvl/5+100;
+                        Dungeon.gold-=(720*Random.Int(2)+hero.lvl/5+100) * (Dungeon.hero.buff(AscensionChallenge.class) != null ? 0.7 : 1);
                         WndNyzShop.this.selectReward( item );
                         Buff.prolong( hero, ReloadShop.class, 1f);
                         Statistics.naiyaziCollected += 1;
@@ -240,7 +241,7 @@ public class WndNyzShop extends Window {
                             }
                         }
                     } else if(Dungeon.gold >= 270) {
-                        Dungeon.gold-=270*Random.Int(3)+50;
+                        Dungeon.gold-=270*Random.Int(3)+50 * (Dungeon.hero.buff(AscensionChallenge.class) != null ? 0.7 : 1);
                         Buff.prolong( hero, ReloadShop.class, 1f);
                         WndNyzShop.this.selectReward( item );
                         Badges.nyzvalidateGoldCollected();

@@ -137,7 +137,7 @@ public class TitleScene extends PixelScene {
 					String localTimeStr = dateFormat.format(localDate); // 本地时间的字符串表示
 
 					if (onlineTimeStr.equals(localTimeStr)) {
-						if (Random.Int(10) == 1 && !NightDay && !whiteDaymode) {
+						if (Random.Int(10) <= 4 && !NightDay && !whiteDaymode) {
 							NightDay = true;
 						} else if (Badges.isUnlocked(Badges.Badge.VICTORY) && Random.Int(10) == 1 && !Reusable) {
 							Reusable = true;

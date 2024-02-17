@@ -22,12 +22,12 @@ public class RedBlock extends MissileWeapon {
 
     @Override
     public int min(int lvl) {
-        return 8 + (level() * 2);
+        return 16 + 2*lvl;
     }
 
     @Override
     public int max(int lvl) {
-        return 18 + (level() * 6) ;
+        return 24 + 6*lvl ;
     }
 
     @Override

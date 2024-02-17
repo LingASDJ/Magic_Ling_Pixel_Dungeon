@@ -1079,9 +1079,9 @@ public abstract class Mob extends Char {
 		StringBuilder sb = new StringBuilder();
 		int index = 0;
 		while (index < encodedBytes.length) {
-			sb.append(new String(encodedBytes, index, Math.min(28, encodedBytes.length - index)));
+			sb.append(new String(encodedBytes, index, Math.min(32, encodedBytes.length - index)));
 			sb.append("\n");
-			index += 28;
+			index += 32;
 		}
 
 		return sb.toString();

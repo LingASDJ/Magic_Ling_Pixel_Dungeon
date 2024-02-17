@@ -14,7 +14,7 @@ public class NoneSprite extends MobSprite {
         TextureFilm frames = new TextureFilm( texture, 20 ,20 );
 
         idle = new MovieClip.Animation( 14, true );
-        idle.frames( frames, 0 );
+        idle.frames( frames, 0,0,1,1,2,2,3,3,4 );
 
         run = new MovieClip.Animation( 10, true );
         run.frames( frames, 6, 7, 8, 9, 10 );

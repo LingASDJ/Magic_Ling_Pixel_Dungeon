@@ -75,7 +75,7 @@ public class Shopkeeper extends NPC {
 	public ArrayList<Item> buybackItems = new ArrayList<>();
 
 	private int turnsSinceHarmed = -1;
-	
+	private boolean seenBefore = false;
 	@Override
 	protected boolean act() {
 
@@ -86,7 +86,12 @@ public class Shopkeeper extends NPC {
 		if (turnsSinceHarmed >= 0){
 			turnsSinceHarmed ++;
 		}
-
+		if (!seenBefore && Dungeon.level.heroFOV[pos]) {
+			if (Dungeon.hero.buff(AscensionChallenge.class) != null) {
+				yell(Messages.get(this, "talk_ascent", Messages.titleCase(Dungeon.hero.name())));
+			}
+			seenBefore = true;
+		}
 		sprite.turnTo( pos, Dungeon.hero.pos );
 		spend( TICK );
 		return super.act();
@@ -195,7 +200,9 @@ public class Shopkeeper extends NPC {
 		} else if (hero.buff(BlessNoMoney.class) != null) {
 			price *= 0.6;
 		}
-
+		if (Dungeon.hero.buff(AscensionChallenge.class) != null && Dungeon.shopOnLevel()){
+			price *= 3f;
+		}
 //		if(Dungeon.isDLC(Conducts.Conduct.MONEYLETGO)){
 //			price *= 0.5;
 //		}

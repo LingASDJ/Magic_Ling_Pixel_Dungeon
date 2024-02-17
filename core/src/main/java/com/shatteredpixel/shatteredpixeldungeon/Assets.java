@@ -160,7 +160,7 @@ public class Assets {
 	public static class Interfaces {
 
 		//Boss 贴图
-
+		public static final String QliPhothEX_Title  = "interfaces/bosslogo/qliphoth-title-ex.png";
 		public static final String QliPhoth_Title  = "interfaces/bosslogo/qliphoth-title.png";
 		public static final String QliPhoth_Clear  = "interfaces/bosslogo/qliphoth-clear.png";
 

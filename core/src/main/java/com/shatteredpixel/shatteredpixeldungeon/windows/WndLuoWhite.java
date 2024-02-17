@@ -154,7 +154,7 @@ public class WndLuoWhite extends Window {
             if( item instanceof SaiPlus )
                 Generator.setProbs( item, Generator.Category.WEP_T5, 1 );
 
-            SPDSettings.unlockItem( item.name() );
+            SPDSettings.unlockItem( item.getClass().getSimpleName() );
         }
     }
 

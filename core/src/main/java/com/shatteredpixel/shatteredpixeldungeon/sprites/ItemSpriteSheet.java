@@ -943,7 +943,7 @@ public class ItemSpriteSheet {
 
     public static final int  BLACKMOON=			EXFOODINDEX+2;
     static {
-        assignItemRect(FISHSKELETON,11,14);
+        assignItemRect(FISHSKELETON,16,16);
         assignItemRect(BLACKMOON, 15, 12);
     }
 

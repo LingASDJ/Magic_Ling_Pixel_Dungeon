@@ -1423,7 +1423,11 @@ public class GameScene extends PixelScene {
 							WndStory.showChapter( WndStory.ID_SEWERS );
 							break;
 						case 5:
-							WndStory.showChapter( WndStory.ID_SEWERSBOSS );
+							if(Statistics.ExFruit){
+								WndStory.showChapter( WndStory.ID_EXSEWERSBOSS );
+							} else {
+								WndStory.showChapter( WndStory.ID_SEWERSBOSS );
+							}
 							break;
 						case 6:
 							WndStory.showChapter( WndStory.ID_PRISON );
@@ -1769,7 +1773,7 @@ public class GameScene extends PixelScene {
 					}
 					break;
 				case 5:
-						bossSlain.texture(Assets.Interfaces.QliPhoth_Title);
+						bossSlain.texture(Statistics.ExFruit ? Assets.Interfaces.QliPhothEX_Title : Assets.Interfaces.QliPhoth_Title);
 						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
 					break;

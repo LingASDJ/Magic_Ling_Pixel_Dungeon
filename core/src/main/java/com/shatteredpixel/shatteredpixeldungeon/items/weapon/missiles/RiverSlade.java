@@ -58,12 +58,12 @@ public class RiverSlade extends MissileWeapon {
 
     @Override
     public int min(int lvl) {
-        return level()<1 ? 8 : 8 + (level() * 2) ;
+        return 8+2*lvl;
     }
 
     @Override
     public int max(int lvl) {
-        return level()<1 ? 18 : 18 + (level() * 4) ;
+        return 18 + 4*lvl;
     }
 
     @Override

@@ -811,6 +811,10 @@ public class Badges {
 		displayBadge( Badge.KILL_DOG );
     }
 
+	public static void KILL_ST() {
+		displayBadge( Badge.KILL_CLSISTER );
+	}
+
 
 	public static void CITY_END() {
 		displayBadge( Badge.HOLLOWCITY );
@@ -1180,6 +1184,8 @@ public class Badges {
         HIGH_SCORE_5(137),
 
 		KILL_DOG(138),
+
+		KILL_CLSISTER(140),
 
         BOSS_CHALLENGE_1(152),
         BOSS_CHALLENGE_2(153),

@@ -67,6 +67,8 @@ public class WndStory extends Window {
 	public static final int ID_HALLS		= 4;
 
 	public static final int ID_SEWERSBOSS		= 5;
+
+	public static final int ID_EXSEWERSBOSS		= 30;
 	public static final int ID_PRISONBOSS		= 6;
 	public static final int ID_CAVESBOSS		= 7;
 	public static final int ID_CITYSBOSS		= 8;
@@ -109,6 +111,7 @@ public class WndStory extends Window {
 		CHAPTERS.put( ID_CITY, "city" );
 		CHAPTERS.put( ID_HALLS, "halls" );
 		CHAPTERS.put( ID_SEWERSBOSS, "sewersboss" );
+		CHAPTERS.put( ID_EXSEWERSBOSS, "exboss1" );
 		CHAPTERS.put( ID_PRISONBOSS, "prisonboss" );
 		CHAPTERS.put( ID_CAVESBOSS, "cavesboss" );
 		CHAPTERS.put( ID_CITYSBOSS, "cityboss" );

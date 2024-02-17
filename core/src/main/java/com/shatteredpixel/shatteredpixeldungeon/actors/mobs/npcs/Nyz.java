@@ -5,6 +5,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Firebomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Flashbang;
@@ -63,7 +64,12 @@ public class Nyz extends NTNPC {
             @Override
             public void call() {
                 if (!seenBefore && Dungeon.level.heroFOV[pos]) {
-                    GLog.p(Messages.get(Nyz.class, "greetings", hero.name()));
+                    if (Dungeon.hero.buff(AscensionChallenge.class) != null) {
+                        yell(Messages.get(this, "talk_ascent", Messages.titleCase(Dungeon.hero.name())));
+                    } else {
+                        GLog.p(Messages.get(Nyz.class, "greetings", hero.name()));
+                    }
+
                     seenBefore = true;
                 } else if(seenBefore && !Dungeon.level.heroFOV[pos]) {
                     seenBefore = false;
