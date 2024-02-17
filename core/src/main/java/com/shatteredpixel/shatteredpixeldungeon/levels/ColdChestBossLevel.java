@@ -11,7 +11,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.WIN;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -33,7 +32,6 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 //宝藏迷宫 10层
@@ -87,6 +85,13 @@ public class ColdChestBossLevel extends Level {
     @Override
     protected boolean build() {
         setSize(WIDTH,HEIGHT);
+        int entrance = WIDTH*2+17;
+
+        LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
+        transitions.add(enter);
+
+        LevelTransition exit = new LevelTransition(this, 0, LevelTransition.Type.REGULAR_EXIT);
+        transitions.add(exit);
 
         //首次构建地图
         pro = GO_START;
@@ -293,6 +298,10 @@ public class ColdChestBossLevel extends Level {
 
         LevelTransition exit2 = new LevelTransition(this, exit, LevelTransition.Type.REGULAR_EXIT);
         transitions.add(exit2);
+
+        int doorPos =  647;
+        Mob.holdAllies(this, doorPos);
+        Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
     }
 
     private static final HashMap<Integer, Integer> MAIN_PORTAL = new HashMap<>(5);
@@ -666,14 +675,14 @@ public class ColdChestBossLevel extends Level {
 
     @Override
     protected void createItems() {
-        Random.pushGenerator(Random.Long());
-        ArrayList<Item> bonesItems = Bones.get();
-        if (bonesItems != null) {
-            for (Item i : bonesItems) {
-                drop(i, WIDTH*5+17).setHauntedIfCursed().type = Heap.Type.REMAINS;
-            }
-        }
-        Random.popGenerator();
+//        Random.pushGenerator(Random.Long());
+//        ArrayList<Item> bonesItems = Bones.get();
+//        if (bonesItems != null) {
+//            for (Item i : bonesItems) {
+//                drop(i, WIDTH*5+17).setHauntedIfCursed().type = Heap.Type.REMAINS;
+//            }
+//        }
+//        Random.popGenerator();
     }
 
 
