@@ -123,6 +123,8 @@ public class HeroSelectScene extends PixelScene {
 
 	private IconButton infoButton;
 	private IconButton challengeButton;
+
+	private StyledButton holidayButton;
 	private IconButton btnExit;
 	private ArrayList<StyledButton> buttons;
 	@Override
@@ -277,7 +279,7 @@ public class HeroSelectScene extends PixelScene {
 				Icons.get( SPDSettings.challenges() > 0 ? Icons.CHALLENGE_ON :Icons.CHALLENGE_OFF)){
 			@Override
 			protected void onClick() {
-				if (DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY)| Badges.isUnlocked(Badges.Badge.HOLLOWCITY)) {
+				if (DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY)||Badges.isUnlocked(Badges.Badge.HOLLOWCITY)) {
 					ShatteredPixelDungeon.scene().addToFront(new WndChallenges(SPDSettings.challenges(), true,null) {
 						public void onBackPressed() {
 							super.onBackPressed();
@@ -307,12 +309,56 @@ public class HeroSelectScene extends PixelScene {
 			}
 		};
 		challengeButton.setRect(startBtn.left() + 16, Camera.main.height- BUTTON_HEIGHT-16, 21, 21);
-
 		add(challengeButton);
-		if (!(DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY))){
+		if (DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY)||Badges.isUnlocked(Badges.Badge.HOLLOWCITY)) {
 			Dungeon.challenges = 0;
 			SPDSettings.challenges(0);
 		}
+
+//		holidayButton = new StyledButton(Chrome.Type.BLANK,"TesT", 6){
+//			@Override
+//			protected void onClick() {
+//
+//			}
+//			private long timeToUpdate = 0;
+//			private static final long SECOND = 1000;
+//			private static final long MINUTE = 60 * SECOND;
+//			private static final long HOUR = 60 * MINUTE;
+//			private static final long DAY = 24 * HOUR;
+//			private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss", Locale.ROOT);
+//			{
+//				dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+//			}
+//			@Override
+//			public void update() {
+//				super.update();
+//
+//				if (Game.realTime > timeToUpdate && visible){
+//					long diff = (SPDSettings.lastDaily() + DAY) - Game.realTime;
+//
+//					if (diff > 0){
+//						if (diff > 30*HOUR){
+//							holidayButton.text("30:00:00+");
+//						} else {
+//							holidayButton.text(dateFormat.format(new Date(diff)));
+//						}
+//						timeToUpdate = Game.realTime + SECOND;
+//					} else {
+//						//holidayButton.text(Messages.get(HeroSelectScene.class, "daily"));
+//						timeToUpdate = Long.MAX_VALUE;
+//					}
+//				}
+//
+//			}
+//
+//			@Override
+//			protected String hoverText() {
+//				return Messages.titleCase(Messages.get(WndChallenges.class, "title"));
+//			}
+//		};
+//		holidayButton.icon(NetIcons.get(NetIcons.NEWS));
+//		holidayButton.setRect(challengeButton.left(), challengeButton.y, 21, 21);
+//		add(holidayButton);
 
 		setSelectedHero();
 

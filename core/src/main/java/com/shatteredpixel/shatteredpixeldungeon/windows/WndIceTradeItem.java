@@ -117,7 +117,7 @@ public class WndIceTradeItem extends WndInfoItem {
         btnBuy.icon(new ItemSprite(ItemSpriteSheet.ICEGOLD));
 
 
-        btnBuy.enable( SPDSettings.isItemUnlock( item.name() ) ? false : price <= SPDSettings.iceCoin());
+        btnBuy.enable(!SPDSettings.isItemUnlock(item.name()) && price <= SPDSettings.iceCoin());
         add( btnBuy );
 
         pos = btnBuy.bottom();
