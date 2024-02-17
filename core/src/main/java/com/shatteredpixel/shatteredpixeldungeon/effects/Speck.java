@@ -63,6 +63,8 @@ public class Speck extends Image {
 
 	public static final int MUTATION_7 = 21;
 
+	public static final int MUTATION_8 = 23;
+
 	public static final int DISCOVER = 101;
 	public static final int EVOKE = 102;
 	public static final int MASK = 103;
@@ -333,6 +335,11 @@ public class Speck extends Image {
 				hardlight(0xB085D5);
 				//alpha(0.8f);
 				break;
+			case MUTATION_8:
+				scale.set(1f);
+				lifespan = 1f;
+				angle = Random.Float(360);
+				break;
 
 			case BUBBLE:
 				speed.set(0, -15);
@@ -483,7 +490,7 @@ public class Speck extends Image {
 					break;
 
 				case MUTATION_1:case MUTATION_2:case MUTATION_3:
-				case MUTATION_4:case MUTATION_5: case MUTATION_6:case MUTATION_7:
+				case MUTATION_4:case MUTATION_5: case MUTATION_6:case MUTATION_7:case MUTATION_8:
 					am = (float) Math.sqrt((p < 0.5f ? p : 1 - p) * 1.1f);
 					break;
 

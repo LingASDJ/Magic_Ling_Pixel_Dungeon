@@ -122,7 +122,7 @@ public abstract class ChampionEnemy extends Buff {
 	}
 
 	public float speedFactor(){
-		return 1f;
+		return target.baseSpeed;
 	}
 
 	{
@@ -146,7 +146,7 @@ public abstract class ChampionEnemy extends Buff {
 //				buffCls = ChampionEnemy.Sider.class;
 //				Statistics.SiderLing++;
 //			} else {
-				switch (randomNumber % 5) {
+				switch (randomNumber % 6) {
 					case 0: default:
 						buffCls = ChampionEnemy.Small.class;
 						break;
@@ -162,12 +162,15 @@ public abstract class ChampionEnemy extends Buff {
 					case 4:
 						buffCls = ChampionEnemy.HealRight.class;
 						break;
+					case 5:
+						buffCls = ChampionEnemy.NoCode.class;
+						break;
 				}
 //			}
 		} else if (randomNumber < 10) {
 			buffCls = ChampionEnemy.Bomber.class;
 		} else {
-			switch (randomNumber % 5) {
+			switch (randomNumber % 6) {
 				case 0: default:
 					buffCls = ChampionEnemy.Small.class;
 					break;
@@ -186,7 +189,9 @@ public abstract class ChampionEnemy extends Buff {
 					} else {
 						buffCls = ChampionEnemy.HealRight.class;
 					}
-
+					break;
+				case 5:
+					buffCls = ChampionEnemy.NoCode.class;
 					break;
 			}
 		}
@@ -361,7 +366,28 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public float speedFactor() {
-			return 1.3f;
+			return super.speedFactor()*1.3f;
+		}
+
+
+	}
+
+	public static class NoCode extends ChampionEnemy {
+
+		{
+			color = 0x333333;
+			Mcolor = color;
+		}
+
+		@Override
+		public float meleeDamageFactor() {
+			return 1.2f;
+		}
+
+		@Override
+		public void fx(boolean on) {
+			if (on) {target.sprite.add(CharSprite.State.MUTATION_8);
+			} else target.sprite.remove(CharSprite.State.MUTATION_8);
 		}
 
 
@@ -385,7 +411,7 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public float speedFactor() {
-			return 0.5f;
+			return super.speedFactor()*0.5f;
 		}
 
 		public void detach() {
@@ -412,7 +438,7 @@ public abstract class ChampionEnemy extends Buff {
 		}
 		@Override
 		public float speedFactor() {
-			return 1.2f;
+			return super.speedFactor()*1.25f;
 		}
 
 		@Override

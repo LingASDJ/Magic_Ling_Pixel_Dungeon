@@ -161,7 +161,7 @@ public class Assets {
 
 		//Boss 贴图
 
-		public static final String QliPhoth_Title  = "interfaces/bosslogo/qliphoth-title-ex.png";
+		public static final String QliPhoth_Title  = "interfaces/bosslogo/qliphoth-title.png";
 		public static final String QliPhoth_Clear  = "interfaces/bosslogo/qliphoth-clear.png";
 
 		public static final String DMOR_Title  = "interfaces/bosslogo/dm300or-title.png";
@@ -560,7 +560,7 @@ public class Assets {
 		public static final String BBAT	= "sprites/bloodbat.png";
 
 		public static final String RAT		= "sprites/rat.png";
-
+		public static final String NONE		= "sprites/none.png";
 		public static final String FLOWER_SLIME		= "sprites/flowers_slime.png";
 
 		public static final String GREEN		= "sprites/greenslting.png";

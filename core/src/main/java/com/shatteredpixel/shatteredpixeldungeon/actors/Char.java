@@ -97,6 +97,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Ch
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.DeathMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
@@ -263,8 +264,17 @@ public abstract class Char extends Actor {
 		}
 		return false;
 	}
-
+	private static String[] TXT_RANDOM = {
+			Messages.get(Rat.class,"404"),
+			Messages.get(Rat.class,"405"),
+			Messages.get(Rat.class,"406"),
+			Messages.get(Rat.class,"407"),
+			Messages.get(Rat.class,"408")
+	};
 	public String name(){
+		if(buff(ChampionEnemy.NoCode.class) != null){
+			return TXT_RANDOM[Random.Int(TXT_RANDOM.length)];
+		}
 		return Messages.get(this, "name");
 	}
 
