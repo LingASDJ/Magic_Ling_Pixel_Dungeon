@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
@@ -191,13 +192,150 @@ public class SpawnMisc extends TestItem {
     private int cateSelected;
     private int item_quantity;
     private int selected;
-
     private static final String AC_SPAWN = "spawn";
+    private static ArrayList<Class<? extends Potion>> potionList = new ArrayList<>();
+    private static ArrayList<Class<? extends ExoticPotion>> exoticPotionList = new ArrayList<>();
+    private static ArrayList<Class<? extends Plant.Seed>> seedList = new ArrayList<>();
+    private static ArrayList<Class<? extends Scroll>> scrollList = new ArrayList<>();
+    private static ArrayList<Class<? extends ExoticScroll>> exoticScrollList = new ArrayList<>();
+    private static ArrayList<Class<? extends Runestone>> stoneList = new ArrayList<>();
+    private static ArrayList<Class<? extends TippedDart>> dartList = new ArrayList<>();
+    private static ArrayList<Class<? extends Item>> bombList = new ArrayList<>();
+    private static ArrayList<Class<? extends Potion>> brewList = new ArrayList<>();
+    private static ArrayList<Class<? extends Spell>> spellList = new ArrayList<>();
+    private static ArrayList<Class<? extends Food>> foodList = new ArrayList<>();
+    private static ArrayList<Class<? extends Books>> bookList = new ArrayList<>();
+    private static ArrayList<Class<? extends Item>> miscList = new ArrayList<>();
 
     public SpawnMisc(){
         this.cateSelected = 0;
         this.item_quantity = 1;
         this.selected = 0;
+
+        buildList();
+    }
+
+    private void buildList(){
+        for(int i=0;i<Generator.Category.POTION.classes.length;i++){
+            potionList.add((Class<? extends Potion>) Generator.Category.POTION.classes[i]);
+            exoticPotionList.add(ExoticPotion.regToExo.get(potionList.get(i)));
+        }
+
+        for(int i=0;i<Generator.Category.SEED.classes.length;i++){
+            seedList.add((Class<? extends Plant.Seed>) Generator.Category.SEED.classes[i]);
+            dartList.add(TippedDart.types.get(seedList.get(i)));
+        }
+
+        for(int i=0;i<Generator.Category.SCROLL.classes.length;i++){
+            scrollList.add((Class<? extends Scroll>) Generator.Category.SCROLL.classes[i]);
+            exoticScrollList.add(ExoticScroll.regToExo.get(scrollList.get(i)));
+        }
+        scrollList.add(ScrollOfRoseShiled.class);
+        scrollList.add(ScrollOfFlameCursed.class);
+
+        for(int i=0;i<Generator.Category.STONE.classes.length;i++){
+            stoneList.add((Class<? extends Runestone>) Generator.Category.STONE.classes[i]);
+        }
+        stoneList.add(StoneOfFear.class);
+
+        //Bomb
+        bombList.add(Bomb.class);
+        bombList.add(ArcaneBomb.class);
+        bombList.add(Firebomb.class);
+        bombList.add(Flashbang.class);
+        bombList.add(FrostBomb.class);
+        bombList.add(HolyBomb.class);
+        bombList.add(Noisemaker.class);
+        bombList.add(RegrowthBomb.class);
+        bombList.add(ShockBomb.class);
+        bombList.add(ShrapnelBomb.class);
+        bombList.add(WoollyBomb.class);
+
+        //Brew
+        brewList.add(BlizzardBrew.class);
+        brewList.add(CausticBrew.class);
+        brewList.add(InfernalBrew.class);
+        brewList.add(ShockingBrew.class);
+        brewList.add(ElixirOfAquaticRejuvenation.class);
+        brewList.add(ElixirOfArcaneArmor.class);
+        brewList.add(ElixirOfDragonsBlood.class);
+        brewList.add(ElixirOfHoneyedHealing.class);
+        brewList.add(ElixirOfIcyTouch.class);
+        brewList.add(ElixirOfMight.class);
+        brewList.add(ElixirOfToxicEssence.class);
+        brewList.add(AlchemicalCatalyst.class);
+        brewList.add(WaterSoul.class);
+
+        //Spell
+        spellList.add(Alchemize.class);
+        spellList.add(AquaBlast.class);
+        spellList.add(BeaconOfReturning.class);
+        spellList.add(CurseInfusion.class);
+        spellList.add(FeatherFall.class);
+        spellList.add(MagicalInfusion.class);
+        spellList.add(TelekineticGrab.class);
+        spellList.add(PhaseShift.class);
+        spellList.add(ReclaimTrap.class);
+        spellList.add(Recycle.class);
+        spellList.add(WildEnergy.class);
+        spellList.add(SummonElemental.class);
+        spellList.add(ArcaneCatalyst.class);
+
+        for(int i=0;i<Generator.Category.FOOD.classes.length;i++){
+            foodList.add((Class<? extends Food>) Generator.Category.FOOD.classes[i]);
+        }
+        foodList.add(SmallRation.class);
+        foodList.add(Blandfruit.class);
+        foodList.add(StewedMeat.class);
+        foodList.add(FrozenCarpaccio.class);
+        foodList.add(ChargrilledMeat.class);
+        foodList.add(Berry.class);
+        foodList.add(LightFood.class);
+        foodList.add(Cake.class);
+        foodList.add(Switch.class);
+        foodList.add(RedCrab.class);
+        foodList.add(Pasty.FishLeftover.class);
+        foodList.add(PhantomMeat.class);
+
+        //Book
+        bookList.add(MagicGirlBooks.class);
+        bookList.add(BrokenBooks.class);
+        bookList.add(GrassKingBooks.class);
+        bookList.add(IceCityBooks.class);
+        bookList.add(NoKingMobBooks.class);
+        bookList.add(HollowCityBook.class);
+        bookList.add(DeepBloodBooks.class);
+        bookList.add(DimandBook.class);
+        bookList.add(DeYiZiBooks.class);
+        bookList.add(MoneyMoreBooks.class);
+        bookList.add(PinkRandomBooks.class);
+        bookList.add(HellFireBooks.class);
+        bookList.add(YellowSunBooks.class);
+
+        //Misc
+        miscList.add(Torch.class);
+        miscList.add(GooBlob.class);
+        miscList.add(MetalShard.class);
+        miscList.add(Honeypot.class);
+        miscList.add(Ankh.class);
+        miscList.add(Waterskin.class);
+        miscList.add(Stylus.class);
+        miscList.add(KingsCrown.class);
+        miscList.add(TengusMask.class);
+        miscList.add(LiquidMetal.class);
+        miscList.add(ArcaneResin.class);
+        miscList.add(Embers.class);
+        miscList.add(CorpseDust.class);
+        miscList.add(PotionOfNoWater.class);
+        miscList.add(MIME.GOLD_ONE.class);
+        miscList.add(MIME.GOLD_TWO.class);
+        miscList.add(MIME.GOLD_THREE.class);
+        miscList.add(MIME.GOLD_FOUR.class);
+        miscList.add(MIME.GOLD_FIVE.class);
+        miscList.add(OilPotion.class);
+        miscList.add(LightFood.class);
+        miscList.add(TestBooks.class);
+        miscList.add(BlessingNecklace.class);
     }
 
     public ArrayList<String> actions(Hero hero) {
@@ -252,19 +390,19 @@ public class SpawnMisc extends TestItem {
 
     private Class<? extends Item> idToItem(int id){
         switch (cateSelected){
-            case 0: return idToPotion(id);
-            case 1: return idToExoticPotion(id);
-            case 2: return idToSeed(id);
-            case 3: return idToTippedDart(id);
-            case 4: return idToScroll(id);
-            case 5: return idToExoticScroll(id);
-            case 6: return idToStone(id);
-            case 7: return idToBomb(id);
-            case 8: return idToSpecialPotion(id);
-            case 9: return idToSpell(id);
-            case 10: return idToFood(id);
-            case 11: return idToBook(id);
-            case 12: default: return idToMisc(id);
+            case 0: return potionList.get(id);
+            case 1: return exoticPotionList.get(id);
+            case 2: return seedList.get(id);
+            case 3: return dartList.get(id);
+            case 4: return scrollList.get(id);
+            case 5: return exoticScrollList.get(id);
+            case 6: return stoneList.get(id);
+            case 7: return bombList.get(id);
+            case 8: return brewList.get(id);
+            case 9: return spellList.get(id);
+            case 10: return foodList.get(id);
+            case 11: return bookList.get(id);
+            case 12: default: return miscList.get(id);
         }
     }
 
@@ -286,312 +424,34 @@ public class SpawnMisc extends TestItem {
         }
     }
 
-    private Class<? extends Potion> idToPotion(int id) {
-        switch (id) {
-            case 0:
-                return PotionOfExperience.class;
-            case 1:
-                return PotionOfFrost.class;
-            case 2:
-                return PotionOfHaste.class;
-            case 3:
-                return PotionOfHealing.class;
-            case 4:
-                return PotionOfInvisibility.class;
-            case 5:
-                return PotionOfLevitation.class;
-            case 6:
-                return PotionOfLiquidFlame.class;
-            case 7:
-                return PotionOfMindVision.class;
-            case 8:
-                return PotionOfParalyticGas.class;
-            case 9:
-                return PotionOfPurity.class;
-            case 10:
-                return PotionOfStrength.class;
-            case 11:
-                return PotionOfLiquidFlameX.class;
-            case 12:
-                return PotionOfLightningShiledX.class;
-            case 13:
-            default:
-                return PotionOfToxicGas.class;
-        }
-    }
-
-    private Class<? extends ExoticPotion> idToExoticPotion(int id) {
-        return ExoticPotion.regToExo.get((idToPotion(id)));
-    }
-
-    private Class<? extends Plant.Seed> idToSeed(int id) {
-        switch (id) {
-            case 0:
-                return Starflower.Seed.class;
-            case 1:
-                return Icecap.Seed.class;
-            case 2:
-                return Swiftthistle.Seed.class;
-            case 3:
-                return Sungrass.Seed.class;
-            case 4:
-                return Blindweed.Seed.class;
-            case 5:
-                return Stormvine.Seed.class;
-            case 6:
-                return Firebloom.Seed.class;
-            case 7:
-                return Fadeleaf.Seed.class;
-            case 8:
-                return Earthroot.Seed.class;
-            case 9:
-                return Mageroyal.Seed.class;
-            case 10:
-                return Rotberry.Seed.class;
-            case 11:
-                return SkyBlueFireBloom.Seed.class;
-            case 12:
-                return AikeLaier.Seed.class;
-            case 13:
-            default:
-                return Sorrowmoss.Seed.class;
-        }
-    }
-
-    private Class<? extends TippedDart> idToTippedDart(int id){
-        switch (id){
-            case 0: return HolyDart.class;
-            case 1: return ChillingDart.class;
-            case 2: return AdrenalineDart.class;
-            case 3: return HealingDart.class;
-            case 4: return BlindingDart.class;
-            case 5: return ShockingDart.class;
-            case 6: return IncendiaryDart.class;
-            case 7: return DisplacingDart.class;
-            case 8: return ParalyticDart.class;
-            case 9: return CleansingDart.class;
-            case 10: return RotDart.class;
-            case 11: default: return PoisonDart.class;
-        }
-    }
-
-    private Class<? extends Scroll> idToScroll(int id) {
-        switch (id) {
-            case 0:
-                return ScrollOfIdentify.class;
-            case 1:
-                return ScrollOfLullaby.class;
-            case 2:
-                return ScrollOfMagicMapping.class;
-            case 3:
-                return ScrollOfMirrorImage.class;
-            case 4:
-                return ScrollOfRage.class;
-            case 5:
-                return ScrollOfRecharging.class;
-            case 6:
-                return ScrollOfRetribution.class;
-            case 7:
-                return ScrollOfRemoveCurse.class;
-            case 8:
-                return ScrollOfTeleportation.class;
-            case 9:
-                return ScrollOfTerror.class;
-            case 10:
-                return ScrollOfTransmutation.class;
-            case 11:
-                return ScrollOfUpgrade.class;
-            case 12:
-                return ScrollOfRoseShiled.class;
-            case 13:
-                return ScrollOfFlameCursed.class;
-            default:
-                return null;
-        }
-    }
-
-    private Class<? extends ExoticScroll> idToExoticScroll(int id) {
-            return ExoticScroll.regToExo.get(idToScroll(id));
-    }
-
-    private Class<? extends Runestone> idToStone(int id) {
-        switch (id) {
-            case 0:
-                return StoneOfIntuition.class;
-            case 1:
-                return StoneOfFear.class;
-            case 2:
-                return StoneOfClairvoyance.class;
-            case 3:
-                return StoneOfFlock.class;
-            case 4:
-                return StoneOfAggression.class;
-            case 5:
-                return StoneOfShock.class;
-            case 6:
-                return StoneOfBlast.class;
-            case 7:
-                return StoneOfDisarming.class;
-            case 8:
-                return StoneOfBlink.class;
-            case 9:
-                return StoneOfDeepSleep.class;
-            case 10:
-                return StoneOfAugmentation.class;
-            case 11:
-            default:
-                return StoneOfEnchantment.class;
-        }
-    }
-
-    private Class<? extends Item> idToBomb(int id){
-        switch (id){
-            case 0: return Bomb.class;
-            case 1: return ArcaneBomb.class;
-            case 2: return Firebomb.class;
-            case 3: return Flashbang.class;
-            case 4: return FrostBomb.class;
-            case 5: return HolyBomb.class;
-            case 6: return Noisemaker.class;
-            case 7: return RegrowthBomb.class;
-            case 8: return ShockBomb.class;
-            case 9: return ShrapnelBomb.class;
-            case 10: default: return WoollyBomb.class;
-        }
-    }
-
-    private Class<? extends Potion> idToSpecialPotion(int id){
-        switch (id){
-            case 0: return BlizzardBrew.class;
-            case 1: return CausticBrew.class;
-            case 2: return InfernalBrew.class;
-            case 3: return ShockingBrew.class;
-            case 4: return ElixirOfAquaticRejuvenation.class;
-            case 5: return ElixirOfArcaneArmor.class;
-            case 6: return ElixirOfDragonsBlood.class;
-            case 7: return ElixirOfHoneyedHealing.class;
-            case 8: return ElixirOfIcyTouch.class;
-            case 9: return ElixirOfMight.class;
-            case 10: return ElixirOfToxicEssence.class;
-            case 11: return AlchemicalCatalyst.class;
-            case 12: return WaterSoul.class;
-            default: return null;
-        }
-    }
-
-    private Class<? extends Spell> idToSpell(int id){
-        switch (id){
-            case 0: return Alchemize.class;
-            case 1: return AquaBlast.class;
-            case 2: return BeaconOfReturning.class;
-            case 3: return CurseInfusion.class;
-            case 4: return FeatherFall.class;
-            case 5: return MagicalInfusion.class;
-            case 6: return TelekineticGrab.class;
-            case 7: return PhaseShift.class;
-            case 8: return ReclaimTrap.class;
-            case 9: return Recycle.class;
-            case 10: return WildEnergy.class;
-            case 11: return SummonElemental.class;
-            case 12: default: return ArcaneCatalyst.class;
-        }
-    }
-
-    private Class<? extends Food> idToFood(int id){
-        switch (id){
-            case 0: return Food.class;
-            case 1: return SmallRation.class;
-            case 2: return Pasty.class;
-            case 3: return Blandfruit.class;
-            case 4: return MysteryMeat.class;
-            case 5: return StewedMeat.class;
-            case 6: return FrozenCarpaccio.class;
-            case 7: return ChargrilledMeat.class;
-            case 8: return Berry.class;
-            case 9: return LightFood.class;
-            case 10: return Cake.class;
-            case 11: return Switch.class;
-            case 12: return RiceDumplings.RiceDumplingsRed.class;
-            case 13: return RiceDumplings.RiceDumplingsPink.class;
-            case 14: return RiceDumplings.RiceDumplingsOrange.class;
-            case 15: return RiceDumplings.RiceDumplingsLink.class;
-            case 16: return RiceDumplings.RiceDumplingsBottle.class;
-            case 17: return RedCrab.class;
-            case 18: return Pasty.FishLeftover.class;
-            default:
-            case 19: return PhantomMeat.class;
-        }
-    }
-
-    private Class<? extends Item> idToMisc(int id){
-        switch (id){
-            case 0: return Torch.class;
-            case 1: return GooBlob.class;
-            case 2: return MetalShard.class;
-            case 3: return Honeypot.class;
-            case 4: return Ankh.class;
-            case 5: return Waterskin.class;
-            case 6: return Stylus.class;
-            case 7: default: return KingsCrown.class;
-            case 8: return TengusMask.class;
-            case 9: return LiquidMetal.class;
-            case 10: return ArcaneResin.class;
-            case 11: return Embers.class;
-            case 12: return CorpseDust.class;
-            case 13: return PotionOfNoWater.class;
-            case 14: return MIME.GOLD_ONE.class;
-            case 15: return MIME.GOLD_TWO.class;
-            case 16: return MIME.GOLD_THREE.class;
-            case 17: return MIME.GOLD_FOUR.class;
-            case 18: return MIME.GOLD_FIVE.class;
-            case 19: return OilPotion.class;
-            case 21: return LightFood.class;
-            case 22: return TestBooks.class;
-            case 23: return BlessingNecklace.class;
-        }
-    }
-
-    private Class<? extends Books> idToBook(int id){
-        switch (id){
-            case 0: return MagicGirlBooks.class;
-            case 1: return BrokenBooks.class;
-            case 2: return GrassKingBooks.class;
-            case 3: return IceCityBooks.class;
-            case 4: return NoKingMobBooks.class;
-            case 5: return HollowCityBook.class;
-            case 6: return DeepBloodBooks.class;
-            case 7: return DimandBook.class;
-            case 8: return DeYiZiBooks.class;
-            case 9: return MoneyMoreBooks.class;
-            case 10: return PinkRandomBooks.class;
-            case 11: return  HellFireBooks.class;
-            default:
-            case 12: return YellowSunBooks.class;
-        }
-    }
-
     private int maxIndex(int cate){
         switch (cate){
             case 0:
-                return 13;
+                return potionList.size() - 1;
             case 1:
-                return 13;
+                return exoticPotionList.size() - 1;
             case 2:
-                return 13;
+                return seedList.size() - 1;
+            case 3:
+                return dartList.size() - 1;
             case 4:
-                return 13;
+                return scrollList.size() - 1;
+            case 5:
+                return exoticScrollList.size() - 1;
+            case 6:
+                return stoneList.size() - 1;
             case 7:
-                return 10;
+                return bombList.size() - 1;
             case 8:
-                return 12;
+                return brewList.size() - 1;
             case 9:
-                return 12;
+                return spellList.size() - 1;
             case 10:
-                return 19;
+                return foodList.size() - 1;
             case 11:
-                return 12;
+                return bookList.size() - 1;
             case 12:
-                return 23;
+                return miscList.size() - 1;
             default:
                 return 11;
         }
@@ -599,99 +459,6 @@ public class SpawnMisc extends TestItem {
 
     private int maxCategory(){
         return 12;
-    }
-
-    private static ArrayList<Class<? extends Potion>> potionList = new ArrayList<>();
-    private static ArrayList<Class<? extends ExoticPotion>> exoticPotionList = new ArrayList<>();
-    private static ArrayList<Class<? extends Plant.Seed>> seedList = new ArrayList<>();
-    private static ArrayList<Class<? extends Scroll>> scrollList = new ArrayList<>();
-    private static ArrayList<Class<? extends ExoticScroll>> exoticScrollList = new ArrayList<>();
-    private static ArrayList<Class<? extends Runestone>> stoneList = new ArrayList<>();
-    private static ArrayList<Class<? extends TippedDart>> dartList = new ArrayList<>();
-    private static ArrayList<Class<? extends Item>> bombList = new ArrayList<>();
-    private static ArrayList<Class<? extends Potion>> brewList = new ArrayList<>();
-    private static ArrayList<Class<? extends Spell>> spellList = new ArrayList<>();
-    private static ArrayList<Class<? extends Food>> foodList = new ArrayList<>();
-    private static ArrayList<Class<? extends Books>> bookList = new ArrayList<>();
-    private static ArrayList<Class<? extends Item>> miscList = new ArrayList<>();
-
-    private void buildList() {
-        if (potionList.isEmpty()) {
-            for (int i = 0; i < maxIndex(0)+1; ++i) {
-                potionList.add(idToPotion(i));
-            }
-        }
-        if (exoticPotionList.isEmpty()) {
-            for (int i = 0; i < maxIndex(1)+1; ++i) {
-                exoticPotionList.add(idToExoticPotion(i));
-            }
-        }
-
-        if (seedList.isEmpty()) {
-            for (int i = 0; i < maxIndex(2)+1; ++i) {
-                seedList.add(idToSeed(i));
-            }
-        }
-
-        if(dartList.isEmpty()){
-            for(int i=0; i<maxIndex(3)+1; ++i){
-                dartList.add(idToTippedDart(i));
-            }
-        }
-
-        if (scrollList.isEmpty()) {
-            for (int i = 0; i < maxIndex(4)+1; ++i) {
-                scrollList.add(idToScroll(i));
-            }
-        }
-
-        if (exoticScrollList.isEmpty()) {
-            for (int i = 0; i < maxIndex(5)+1; ++i) {
-                exoticScrollList.add(idToExoticScroll(i));
-            }
-        }
-
-        if (stoneList.isEmpty()) {
-            for (int i = 0; i < maxIndex(6)+1; ++i) {
-                stoneList.add(idToStone(i));
-            }
-        }
-
-        if(bombList.isEmpty()){
-            for(int i=0; i<maxIndex(7)+1; ++i){
-                bombList.add(idToBomb(i));
-            }
-        }
-
-        if(brewList.isEmpty()){
-            for(int i=0; i<maxIndex(8)+1; ++i){
-                brewList.add(idToSpecialPotion(i));
-            }
-        }
-
-        if(spellList.isEmpty()){
-            for(int i=0; i<maxIndex(9)+1; ++i){
-                spellList.add(idToSpell(i));
-            }
-        }
-
-        if(foodList.isEmpty()){
-            for(int i=0; i<maxIndex(10)+1; ++i){
-                foodList.add(idToFood(i));
-            }
-        }
-
-        if(bookList.isEmpty()){
-            for(int i=0; i<maxIndex(11)+1; ++i){
-                bookList.add(idToBook(i));
-            }
-        }
-
-        if(miscList.isEmpty()){
-            for(int i=0; i<maxIndex(12)+1; ++i){
-                miscList.add(idToMisc(i));
-            }
-        }
     }
 
     private class SettingsWindow extends Window {
@@ -705,8 +472,6 @@ public class SpawnMisc extends TestItem {
         private static final int TITLE_BTM = 8;
 
         public SettingsWindow() {
-            buildList();
-
             createCategoryImage();
 
             createImage();
