@@ -231,7 +231,7 @@ public enum HeroClass {
 			new SpawnMissile().quantity(1).identify().collect();
 			//new CrystalLing().quantity(1).identify().collect();
 			new TerrainPlacer().quantity(1).identify().collect();
-			new Amulet().quantity(1).identify().collect();
+			//new Amulet().quantity(1).identify().collect();
 			new MobPlacer().quantity(1).identify().collect();
 			new Pickaxe().quantity(1).identify().collect();
 			new PotionOfMindVision().quantity(50).identify().collect();
