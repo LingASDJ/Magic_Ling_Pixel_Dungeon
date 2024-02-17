@@ -80,9 +80,9 @@ abstract public class MissileWeapon extends Weapon {
 		if( item.getClass() == getClass() ){
 			MissileWeapon nitem = (MissileWeapon)item;
 			if (nitem.enchantment != null && enchantment != null ){
-				return nitem.enchantment == enchantment  && level == item.level;
+				return nitem.enchantment == enchantment && level == item.level;
 			}else{
-				return nitem.enchantment != null || enchantment != null ? false : true;
+				return nitem.enchantment == null && enchantment == null;
 			}
 		}
 		return super.isSimilar(item);
@@ -497,6 +497,10 @@ abstract public class MissileWeapon extends Weapon {
 	@Override
 	public int value() {
 		return 6 * tier * quantity * (level() + 1);
+	}
+
+	public int iceCoinValue() {
+		return (6 * tier * quantity * (level() + 1))/2;
 	}
 
 	private static final String DURABILITY = "durability";

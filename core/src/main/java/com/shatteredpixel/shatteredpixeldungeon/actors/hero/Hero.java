@@ -1994,7 +1994,7 @@ public class Hero extends Char {
 					&& (!flying || buff(Levitation.class) != null && buff(Levitation.class).detachesWithinDelay(delay))){
 				if (!Chasm.jumpConfirmed){
 
-					if(Dungeon.branch != 0){
+					if(Dungeon.branch != 0 || Dungeon.depth == 5){
 						if(buff(Levitation.class) != null){
 							GLog.n(Messages.get(Hero.class, "error_no"));
 						}

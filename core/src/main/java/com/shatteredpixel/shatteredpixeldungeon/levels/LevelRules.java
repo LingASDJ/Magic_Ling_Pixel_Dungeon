@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.HotelLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.ForestHardBossLevel;
 import com.watabou.utils.Random;
 
 //Level Rules
@@ -47,7 +48,7 @@ public class LevelRules {
             case 11: case 13: case 15: case 18: case 20: case 24:
                 return new ItemLevel();
             case 2:
-                return new ForestBossLevel();
+                return new ForestHardBossLevel();
             case 4:
                 return new SewerBossLevel();
             case 5:
@@ -106,7 +107,7 @@ public class LevelRules {
 //                            return new ForestBossLevel();
 //                        }
 //                    } else {
-                        return new ForestBossLevel();
+                        return new ForestHardBossLevel();
 //                    }
 
                 case 6:
@@ -115,7 +116,9 @@ public class LevelRules {
                 case 9:
                     return new PrisonLevel();
                 case 10:
-                    if ( ((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && !Statistics.mustTengu) {
+                    if(Statistics.mimicking && !Statistics.mustTengu){
+                        return new ColdChestBossLevel();
+                    } else if ((Statistics.boss_enhance & 0x2) != 0 && !Statistics.mustTengu) {
                         return new ColdChestBossLevel();
                     } else {
                         return new PrisonBossLevel();

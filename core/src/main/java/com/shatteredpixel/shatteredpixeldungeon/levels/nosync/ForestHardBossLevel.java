@@ -18,10 +18,13 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruitsLasher;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 public class ForestHardBossLevel extends Level {
     private static final int WIDTH = 33;
@@ -47,7 +50,7 @@ public class ForestHardBossLevel extends Level {
     @Override
     public void occupyCell(Char ch) {
         super.occupyCell(ch);
-        //GLog.p(String.valueOf(hero.pos));
+        GLog.p(String.valueOf(hero.pos));
 
         boolean isTrue = ch.pos == LDBossDoor && ch == hero && Dungeon.level.distance(ch.pos, entrance) >= 2;
 
@@ -71,6 +74,12 @@ public class ForestHardBossLevel extends Level {
             GameScene.add(csp);
         }
 
+        for (int i : TombPos) {
+            Heap s = drop(new PotionOfPurity.PotionOfPurityLing().identify(), i);
+            s.type = Heap.Type.TOMB;
+            s.sprite.view(s);
+        }
+
         set( getBossDoor, WALL );
         GameScene.updateMap( getBossDoor );
 
@@ -79,7 +88,7 @@ public class ForestHardBossLevel extends Level {
         Dungeon.observe();
 
         CrivusStarFruits boss = new CrivusStarFruits();
-        boss.state = boss.PASSIVE;
+        boss.state = boss.WANDERING;
         boss.pos = 577;
         GameScene.add(boss);
     }
@@ -111,22 +120,22 @@ public class ForestHardBossLevel extends Level {
             S,L,S,S,M,M,J,J,J,J,J,J,L,L,J,L,M,L,J,L,L,J,J,J,J,J,J,M,M,S,S,L,S,
             S,L,S,S,M,J,J,J,L,L,L,L,L,L,L,L,K,L,L,L,L,L,L,L,L,J,J,J,M,S,S,L,S,
             L,L,S,L,L,L,L,L,L,W,W,W,W,W,W,W,D,W,W,W,W,W,W,W,L,L,L,L,L,L,S,L,S,
-            L,L,L,L,M,M,M,M,S,S,S,S,S,S,S,D,D,D,S,S,S,S,S,S,S,M,M,M,M,L,L,L,L,
+            L,L,L,L,M,M,M,M,M,S,S,S,S,S,S,D,D,D,S,S,S,S,S,S,M,M,M,M,M,L,L,L,L,
             L,L,D,M,M,S,S,S,S,D,D,D,D,D,D,D,W,D,D,D,D,D,D,D,S,S,S,S,M,M,D,L,L,
             L,D,M,S,S,S,D,D,D,D,S,S,D,L,S,D,D,D,S,L,D,S,S,D,D,D,D,S,S,M,M,D,L,
-            L,M,M,S,D,D,D,S,D,S,S,S,S,L,S,S,D,S,S,L,S,S,S,S,D,S,D,D,D,S,M,M,L,
+            L,M,S,S,D,D,D,S,D,S,S,S,S,L,S,S,D,S,S,L,S,S,S,S,D,S,D,D,D,S,S,M,L,
             L,M,S,D,D,D,W,S,D,D,S,S,S,L,D,D,D,D,D,L,S,S,S,D,D,S,W,D,D,D,S,M,L,
             L,M,W,S,D,S,W,W,W,D,S,S,D,D,D,L,D,L,D,D,D,S,S,D,W,W,W,S,D,S,W,M,L,
             L,M,S,S,D,W,W,W,D,D,D,D,D,L,L,L,D,L,L,L,D,D,D,D,D,W,W,W,D,S,S,M,L,
-            L,S,D,D,D,D,W,S,W,D,S,S,D,D,L,D,D,D,L,D,D,S,S,D,W,S,W,D,D,D,D,S,L,
-            L,D,D,W,W,D,D,D,D,D,S,S,S,D,D,D,N,D,D,D,S,S,S,D,D,D,D,D,W,W,D,D,L,
-            L,S,D,W,D,D,W,W,W,D,S,S,D,D,L,D,D,D,L,D,D,S,S,D,W,W,W,D,D,W,D,S,L,
+            L,S,D,D,D,D,W,W,W,D,S,S,D,D,L,D,D,D,L,D,D,S,S,D,W,S,W,D,D,D,D,S,L,
+            L,D,D,W,W,D,S,D,D,D,S,S,S,D,D,D,N,D,D,D,S,S,S,D,D,D,S,D,W,W,D,D,L,
+            L,S,D,W,D,D,W,S,W,D,S,S,D,D,L,D,D,D,L,D,D,S,S,D,W,W,W,D,D,W,D,S,L,
             L,S,W,W,D,W,W,W,D,D,D,D,D,L,L,L,D,L,L,L,D,D,D,D,D,W,W,W,D,W,W,S,L,
             L,S,W,W,D,W,W,W,W,D,S,L,D,L,L,L,D,L,L,L,D,L,S,D,W,W,W,W,D,W,W,S,L,
             L,S,W,D,D,D,D,W,D,D,L,L,D,L,D,D,D,D,D,L,D,L,L,D,D,W,D,D,D,D,W,S,L,
             L,S,W,W,D,W,D,W,D,W,L,D,D,D,D,L,D,L,D,D,D,D,L,W,D,W,D,W,D,W,W,S,L,
             L,S,W,W,S,W,D,D,D,W,L,W,D,W,W,S,D,S,W,W,D,W,L,W,D,D,D,W,S,W,W,S,L,
-            L,S,W,W,S,W,W,W,W,W,L,W,W,W,W,S,D,S,W,W,W,W,L,W,W,W,W,W,S,W,W,S,L,
+            L,S,W,W,S,W,W,W,W,W,L,W,S,W,W,S,D,S,W,W,S,W,L,W,W,W,W,W,S,W,W,S,L,
             L,L,W,W,S,W,W,W,W,W,S,W,W,W,W,S,D,S,W,W,W,W,S,W,W,W,W,W,S,W,W,L,L,
             S,L,L,W,S,W,W,W,L,L,L,L,L,L,L,L,X,L,L,L,L,L,L,L,L,W,W,W,S,W,L,L,S,
             S,S,L,L,L,L,L,L,L,J,J,J,J,J,L,J,J,J,L,J,J,J,J,J,L,L,L,L,L,L,L,S,S,
@@ -135,6 +144,11 @@ public class ForestHardBossLevel extends Level {
             S,S,S,S,S,S,S,S,L,J,J,L,L,L,L,J,J,J,L,L,L,L,J,J,L,S,S,S,S,S,S,S,S,
             S,S,S,S,S,S,S,S,L,L,L,L,S,S,L,L,L,L,L,S,S,L,L,L,L,S,S,S,S,S,S,S,S,
     };
+
+    public static int[] TombPos = new int[]{
+            535,619,562,592
+    };
+
 
     protected boolean build() {
         setSize(WIDTH, HEIGHT);
