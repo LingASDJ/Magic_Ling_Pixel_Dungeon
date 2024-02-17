@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -69,6 +70,9 @@ public class SaiPlus extends MeleeWeapon {
 
     @Override
     public int iceCoinValue() {
+        if (Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
+            return (int) ((175 + tier*25) * 0.9f);
+        }
         return 175 + tier*25;
     }
 
