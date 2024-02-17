@@ -74,7 +74,7 @@ public class GardenEntranceRoom extends EntranceRoom {
             } while (pos == level.entrance() || level.findMob(level.entrance()) != null);
             GuidePage p = new GuidePage();
             p.page(Document.GUIDE_SEARCHING);
-            level.drop( p, pos );
+            level.drop( p, entrance );
         }
 
         Random.popGenerator();

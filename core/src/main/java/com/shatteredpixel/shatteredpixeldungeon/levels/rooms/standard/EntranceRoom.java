@@ -83,7 +83,7 @@ public class EntranceRoom extends StandardRoom {
 		Random.pushGenerator();
 
 
-		//places the third guidebook page on floor 2
+		//
 		if (Dungeon.depth == 2 && !Document.ADVENTURERS_GUIDE.isPageFound(Document.GUIDE_SEARCHING)){
 			int pos;
 			do {
@@ -93,7 +93,7 @@ public class EntranceRoom extends StandardRoom {
 			} while (pos == level.entrance() || level.findMob(level.entrance()) != null);
 			GuidePage p = new GuidePage();
 			p.page(Document.GUIDE_SEARCHING);
-			level.drop( p, pos );
+			level.drop( p,entrance );
 		}
 
 		Random.popGenerator();
