@@ -216,126 +216,162 @@ public class SpawnMisc extends TestItem {
     }
 
     private void buildList(){
-        for(int i=0;i<Generator.Category.POTION.classes.length;i++){
-            potionList.add((Class<? extends Potion>) Generator.Category.POTION.classes[i]);
-            exoticPotionList.add(ExoticPotion.regToExo.get(potionList.get(i)));
+        if(potionList.isEmpty()) {
+            for (int i = 0; i < Generator.Category.POTION.classes.length; i++) {
+                potionList.add((Class<? extends Potion>) Generator.Category.POTION.classes[i]);
+            }
         }
 
-        for(int i=0;i<Generator.Category.SEED.classes.length;i++){
-            seedList.add((Class<? extends Plant.Seed>) Generator.Category.SEED.classes[i]);
-            dartList.add(TippedDart.types.get(seedList.get(i)));
+        if(exoticPotionList.isEmpty()) {
+            for (int i = 0; i < Generator.Category.POTION.classes.length; i++) {
+                exoticPotionList.add(ExoticPotion.regToExo.get(potionList.get(i)));
+            }
         }
 
-        for(int i=0;i<Generator.Category.SCROLL.classes.length;i++){
-            scrollList.add((Class<? extends Scroll>) Generator.Category.SCROLL.classes[i]);
-            exoticScrollList.add(ExoticScroll.regToExo.get(scrollList.get(i)));
+        if(seedList.isEmpty()) {
+            for (int i = 0; i < Generator.Category.SEED.classes.length; i++) {
+                seedList.add((Class<? extends Plant.Seed>) Generator.Category.SEED.classes[i]);
+            }
         }
-        scrollList.add(ScrollOfRoseShiled.class);
-        scrollList.add(ScrollOfFlameCursed.class);
 
-        for(int i=0;i<Generator.Category.STONE.classes.length;i++){
-            stoneList.add((Class<? extends Runestone>) Generator.Category.STONE.classes[i]);
+        if (dartList.isEmpty()) {
+            for (int i = 0; i < Generator.Category.SEED.classes.length; i++) {
+                dartList.add(TippedDart.types.get(seedList.get(i)));
+            }
         }
-        stoneList.add(StoneOfFear.class);
+
+        if(scrollList.isEmpty()) {
+            for (int i = 0; i < Generator.Category.SCROLL.classes.length; i++) {
+                scrollList.add((Class<? extends Scroll>) Generator.Category.SCROLL.classes[i]);
+            }
+            scrollList.add(ScrollOfRoseShiled.class);
+            scrollList.add(ScrollOfFlameCursed.class);
+        }
+
+        if(exoticScrollList.isEmpty()) {
+            for (int i = 0; i < Generator.Category.SCROLL.classes.length; i++) {
+                exoticScrollList.add(ExoticScroll.regToExo.get(scrollList.get(i)));
+            }
+        }
+
+
+        if(stoneList.isEmpty()) {
+            for (int i = 0; i < Generator.Category.STONE.classes.length; i++) {
+                stoneList.add((Class<? extends Runestone>) Generator.Category.STONE.classes[i]);
+            }
+            stoneList.add(StoneOfFear.class);
+        }
 
         //Bomb
-        bombList.add(Bomb.class);
-        bombList.add(ArcaneBomb.class);
-        bombList.add(Firebomb.class);
-        bombList.add(Flashbang.class);
-        bombList.add(FrostBomb.class);
-        bombList.add(HolyBomb.class);
-        bombList.add(Noisemaker.class);
-        bombList.add(RegrowthBomb.class);
-        bombList.add(ShockBomb.class);
-        bombList.add(ShrapnelBomb.class);
-        bombList.add(WoollyBomb.class);
+        if(bombList.isEmpty()) {
+            bombList.add(Bomb.class);
+            bombList.add(ArcaneBomb.class);
+            bombList.add(Firebomb.class);
+            bombList.add(Flashbang.class);
+            bombList.add(FrostBomb.class);
+            bombList.add(HolyBomb.class);
+            bombList.add(Noisemaker.class);
+            bombList.add(RegrowthBomb.class);
+            bombList.add(ShockBomb.class);
+            bombList.add(ShrapnelBomb.class);
+            bombList.add(WoollyBomb.class);
+        }
 
         //Brew
-        brewList.add(BlizzardBrew.class);
-        brewList.add(CausticBrew.class);
-        brewList.add(InfernalBrew.class);
-        brewList.add(ShockingBrew.class);
-        brewList.add(ElixirOfAquaticRejuvenation.class);
-        brewList.add(ElixirOfArcaneArmor.class);
-        brewList.add(ElixirOfDragonsBlood.class);
-        brewList.add(ElixirOfHoneyedHealing.class);
-        brewList.add(ElixirOfIcyTouch.class);
-        brewList.add(ElixirOfMight.class);
-        brewList.add(ElixirOfToxicEssence.class);
-        brewList.add(AlchemicalCatalyst.class);
-        brewList.add(WaterSoul.class);
+        if(brewList.isEmpty()) {
+            brewList.add(BlizzardBrew.class);
+            brewList.add(CausticBrew.class);
+            brewList.add(InfernalBrew.class);
+            brewList.add(ShockingBrew.class);
+            brewList.add(ElixirOfAquaticRejuvenation.class);
+            brewList.add(ElixirOfArcaneArmor.class);
+            brewList.add(ElixirOfDragonsBlood.class);
+            brewList.add(ElixirOfHoneyedHealing.class);
+            brewList.add(ElixirOfIcyTouch.class);
+            brewList.add(ElixirOfMight.class);
+            brewList.add(ElixirOfToxicEssence.class);
+            brewList.add(AlchemicalCatalyst.class);
+            brewList.add(WaterSoul.class);
+        }
 
         //Spell
-        spellList.add(Alchemize.class);
-        spellList.add(AquaBlast.class);
-        spellList.add(BeaconOfReturning.class);
-        spellList.add(CurseInfusion.class);
-        spellList.add(FeatherFall.class);
-        spellList.add(MagicalInfusion.class);
-        spellList.add(TelekineticGrab.class);
-        spellList.add(PhaseShift.class);
-        spellList.add(ReclaimTrap.class);
-        spellList.add(Recycle.class);
-        spellList.add(WildEnergy.class);
-        spellList.add(SummonElemental.class);
-        spellList.add(ArcaneCatalyst.class);
-
-        for(int i=0;i<Generator.Category.FOOD.classes.length;i++){
-            foodList.add((Class<? extends Food>) Generator.Category.FOOD.classes[i]);
+        if(spellList.isEmpty()) {
+            spellList.add(Alchemize.class);
+            spellList.add(AquaBlast.class);
+            spellList.add(BeaconOfReturning.class);
+            spellList.add(CurseInfusion.class);
+            spellList.add(FeatherFall.class);
+            spellList.add(MagicalInfusion.class);
+            spellList.add(TelekineticGrab.class);
+            spellList.add(PhaseShift.class);
+            spellList.add(ReclaimTrap.class);
+            spellList.add(Recycle.class);
+            spellList.add(WildEnergy.class);
+            spellList.add(SummonElemental.class);
+            spellList.add(ArcaneCatalyst.class);
         }
-        foodList.add(SmallRation.class);
-        foodList.add(Blandfruit.class);
-        foodList.add(StewedMeat.class);
-        foodList.add(FrozenCarpaccio.class);
-        foodList.add(ChargrilledMeat.class);
-        foodList.add(Berry.class);
-        foodList.add(LightFood.class);
-        foodList.add(Cake.class);
-        foodList.add(Switch.class);
-        foodList.add(RedCrab.class);
-        foodList.add(Pasty.FishLeftover.class);
-        foodList.add(PhantomMeat.class);
+
+        if(foodList.isEmpty()) {
+            for (int i = 0; i < Generator.Category.FOOD.classes.length; i++) {
+                foodList.add((Class<? extends Food>) Generator.Category.FOOD.classes[i]);
+            }
+            foodList.add(SmallRation.class);
+            foodList.add(Blandfruit.class);
+            foodList.add(StewedMeat.class);
+            foodList.add(FrozenCarpaccio.class);
+            foodList.add(ChargrilledMeat.class);
+            foodList.add(Berry.class);
+            foodList.add(LightFood.class);
+            foodList.add(Cake.class);
+            foodList.add(Switch.class);
+            foodList.add(RedCrab.class);
+            foodList.add(Pasty.FishLeftover.class);
+            foodList.add(PhantomMeat.class);
+        }
 
         //Book
-        bookList.add(MagicGirlBooks.class);
-        bookList.add(BrokenBooks.class);
-        bookList.add(GrassKingBooks.class);
-        bookList.add(IceCityBooks.class);
-        bookList.add(NoKingMobBooks.class);
-        bookList.add(HollowCityBook.class);
-        bookList.add(DeepBloodBooks.class);
-        bookList.add(DimandBook.class);
-        bookList.add(DeYiZiBooks.class);
-        bookList.add(MoneyMoreBooks.class);
-        bookList.add(PinkRandomBooks.class);
-        bookList.add(HellFireBooks.class);
-        bookList.add(YellowSunBooks.class);
+        if(bookList.isEmpty()) {
+            bookList.add(MagicGirlBooks.class);
+            bookList.add(BrokenBooks.class);
+            bookList.add(GrassKingBooks.class);
+            bookList.add(IceCityBooks.class);
+            bookList.add(NoKingMobBooks.class);
+            bookList.add(HollowCityBook.class);
+            bookList.add(DeepBloodBooks.class);
+            bookList.add(DimandBook.class);
+            bookList.add(DeYiZiBooks.class);
+            bookList.add(MoneyMoreBooks.class);
+            bookList.add(PinkRandomBooks.class);
+            bookList.add(HellFireBooks.class);
+            bookList.add(YellowSunBooks.class);
+        }
 
         //Misc
-        miscList.add(Torch.class);
-        miscList.add(GooBlob.class);
-        miscList.add(MetalShard.class);
-        miscList.add(Honeypot.class);
-        miscList.add(Ankh.class);
-        miscList.add(Waterskin.class);
-        miscList.add(Stylus.class);
-        miscList.add(KingsCrown.class);
-        miscList.add(TengusMask.class);
-        miscList.add(LiquidMetal.class);
-        miscList.add(ArcaneResin.class);
-        miscList.add(Embers.class);
-        miscList.add(CorpseDust.class);
-        miscList.add(PotionOfNoWater.class);
-        miscList.add(MIME.GOLD_ONE.class);
-        miscList.add(MIME.GOLD_TWO.class);
-        miscList.add(MIME.GOLD_THREE.class);
-        miscList.add(MIME.GOLD_FOUR.class);
-        miscList.add(MIME.GOLD_FIVE.class);
-        miscList.add(OilPotion.class);
-        miscList.add(LightFood.class);
-        miscList.add(TestBooks.class);
-        miscList.add(BlessingNecklace.class);
+        if(miscList.isEmpty()) {
+            miscList.add(Torch.class);
+            miscList.add(GooBlob.class);
+            miscList.add(MetalShard.class);
+            miscList.add(Honeypot.class);
+            miscList.add(Ankh.class);
+            miscList.add(Waterskin.class);
+            miscList.add(Stylus.class);
+            miscList.add(KingsCrown.class);
+            miscList.add(TengusMask.class);
+            miscList.add(LiquidMetal.class);
+            miscList.add(ArcaneResin.class);
+            miscList.add(Embers.class);
+            miscList.add(CorpseDust.class);
+            miscList.add(PotionOfNoWater.class);
+            miscList.add(MIME.GOLD_ONE.class);
+            miscList.add(MIME.GOLD_TWO.class);
+            miscList.add(MIME.GOLD_THREE.class);
+            miscList.add(MIME.GOLD_FOUR.class);
+            miscList.add(MIME.GOLD_FIVE.class);
+            miscList.add(OilPotion.class);
+            miscList.add(LightFood.class);
+            miscList.add(TestBooks.class);
+            miscList.add(BlessingNecklace.class);
+        }
     }
 
     public ArrayList<String> actions(Hero hero) {
