@@ -11,7 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.watabou.noosa.Tilemap;
 
-public class PeachGodLevel extends Level{
+public class PeachGodBossLevel extends Level{
 
     {
         color1 = 0x801500;
