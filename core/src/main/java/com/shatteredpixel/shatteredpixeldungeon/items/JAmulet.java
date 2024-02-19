@@ -21,7 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
+
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.JAmuletScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -41,10 +46,53 @@ public class JAmulet extends Item {
 
     @Override
     public ItemSprite.Glowing glowing() {
-        return new ItemSprite.Glowing(0x008888, 6f);
+        return Dungeon.isChallenged(PRO)? new ItemSprite.Glowing(0x008888, 6f) : null;
     }
 
+    public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe {
 
+        @Override
+        public boolean testIngredients(ArrayList<Item> ingredients) {
+            boolean cling = false;
+            boolean read = false;
+            boolean book = false;
+
+            for (Item ingredient : ingredients){
+                if (ingredient.quantity() > 0) {
+                    if (ingredient instanceof MIME.GOLD_FIVE) {
+                        cling = true;
+                    } else if (ingredient instanceof CrystalLing) {
+                        read = true;
+                    } else if(ingredient instanceof Waterskin) {
+                        book = true;
+                    }
+                }
+            }
+
+            return cling && read && book;
+        }
+
+        @Override
+        public int cost(ArrayList<Item> ingredients) {
+            return 16;
+        }
+
+        @Override
+        public Item brew(ArrayList<Item> ingredients) {
+            if (!testIngredients(ingredients)) return null;
+
+            for (Item ingredient : ingredients){
+                ingredient.quantity(ingredient.quantity() - 1);
+            }
+
+            return sampleOutput(null);
+        }
+
+        @Override
+        public Item sampleOutput(ArrayList<Item> ingredients) {
+            return new JAmulet();
+        }
+    }
 
     @Override
     public ArrayList<String> actions( Hero hero ) {
