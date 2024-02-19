@@ -229,7 +229,7 @@ public enum HeroClass {
 			new SpawnArtifact().quantity(1).identify().collect();
 			new SpawnRingOrWand().quantity(1).identify().collect();
 			new SpawnMissile().quantity(1).identify().collect();
-			//new CrystalLing().quantity(1).identify().collect();
+			new CrystalLing().quantity(1).identify().collect();
 			new TerrainPlacer().quantity(1).identify().collect();
 			//new Amulet().quantity(1).identify().collect();
 			new MobPlacer().quantity(1).identify().collect();
