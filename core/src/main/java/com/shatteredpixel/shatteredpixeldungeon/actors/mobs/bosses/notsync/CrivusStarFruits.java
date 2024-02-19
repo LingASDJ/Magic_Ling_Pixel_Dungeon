@@ -143,7 +143,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
 
         Dungeon.level.unseal();
         GameScene.bossSlain();
-        GLog.n(Messages.get(this,"dead"));
+        GLog.w(Messages.get(this,"dead"));
         Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos-1 ).sprite.drop();
         Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos+1 ).sprite.drop();
         Dungeon.level.drop( new IronKey( Dungeon.depth ), pos-2 ).sprite.drop();
