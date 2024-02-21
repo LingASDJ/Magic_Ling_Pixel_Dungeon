@@ -199,7 +199,7 @@ public class StatusPane extends Component {
 			icehp =  new Image(asset, 0, 135, 128, 6);
 		else     icehp = new Image(asset, 0, 49, 52, 4);
 
-		add( icehp );
+		//add( icehp );
 
 	 	lanterfirevae = SPDSettings.ClassUI() ? new Image(Assets.Interfaces.LANTERLING) : new Image(Assets.Interfaces.LANTERLING_N);
 		add(lanterfirevae);
@@ -214,7 +214,7 @@ public class StatusPane extends Component {
 
 		icehpText = new BitmapText(PixelScene.pixelFont);
 		icehpText.alpha(0.6f);
-		add(icehpText);
+		//add(icehpText);
 
 		//TIME TEXT
 		timeText = PixelScene.renderTextBlock(5);
@@ -584,7 +584,7 @@ public class StatusPane extends Component {
 			lanterfirevae.hardlight(r,g,b);
 		}
 
-		icehp.scale.x = Math.max( 0, (maxIceHp)/(float)mtIceHp);
+//		icehp.scale.x = Math.max( 0, (maxIceHp)/(float)mtIceHp);
 
 		if (shield > health) {
 			rawShielding.scale.x = shield / (float) max;
@@ -598,7 +598,7 @@ public class StatusPane extends Component {
 			hpText.text(health + "+" + shield +  "/" + max);
 		}
 
-		icehpText.text(maxIceHp + "/" + mtIceHp);
+//		icehpText.text(maxIceHp + "/" + mtIceHp);
 
 
 		Hunger hungerBuff = hero.buff(Hunger.class);

@@ -199,7 +199,7 @@ public class WndGameInProgress extends Window {
 		else                statSlot( Messages.get(this, "health"), (info.hp) + "/" + info.ht );
 		statSlot( Messages.get(this, "exp"), info.exp + "/" + Hero.maxExp(info.level) );
 
-		statSlot( Messages.get(this, "icehp"), (info.icehp) + "/" + 100 );
+		//tatSlot( Messages.get(this, "icehp"), (info.icehp) + "/" + 100 );
 		
 		pos += GAP;
 		statSlot( Messages.get(this, "gold"), info.goldCollected );
