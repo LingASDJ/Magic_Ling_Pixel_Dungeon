@@ -22,6 +22,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Firebomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Flashbang;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.FrostBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.HolyBomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.LaserPython;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Noisemaker;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.RegrowthBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ShockBomb;
@@ -46,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Cake;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.ChargrilledMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.CrivusFruitsFood;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.LightFood;
@@ -54,9 +56,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.RedCrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.RiceDumplings;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.SakaMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Switch;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
@@ -85,15 +90,22 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDr
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfNukeCole;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.BlessingNecklace;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.RedWhiteRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
@@ -220,6 +232,7 @@ public class SpawnMisc extends TestItem {
             for (int i = 0; i < Generator.Category.POTION.classes.length; i++) {
                 potionList.add((Class<? extends Potion>) Generator.Category.POTION.classes[i]);
             }
+            potionList.add(PotionOfPurity.PotionOfPurityLing.class);
         }
 
         if(exoticPotionList.isEmpty()) {
@@ -275,6 +288,7 @@ public class SpawnMisc extends TestItem {
             bombList.add(ShockBomb.class);
             bombList.add(ShrapnelBomb.class);
             bombList.add(WoollyBomb.class);
+            bombList.add(LaserPython.class);
         }
 
         //Brew
@@ -292,6 +306,7 @@ public class SpawnMisc extends TestItem {
             brewList.add(ElixirOfToxicEssence.class);
             brewList.add(AlchemicalCatalyst.class);
             brewList.add(WaterSoul.class);
+            brewList.add(ElixirOfNukeCole.class);
         }
 
         //Spell
@@ -327,6 +342,8 @@ public class SpawnMisc extends TestItem {
             foodList.add(RedCrab.class);
             foodList.add(Pasty.FishLeftover.class);
             foodList.add(PhantomMeat.class);
+            foodList.add(CrivusFruitsFood.class);
+            foodList.add(SakaMeat.class);
         }
 
         //Book
@@ -367,10 +384,17 @@ public class SpawnMisc extends TestItem {
             miscList.add(MIME.GOLD_THREE.class);
             miscList.add(MIME.GOLD_FOUR.class);
             miscList.add(MIME.GOLD_FIVE.class);
-            miscList.add(OilPotion.class);
             miscList.add(LightFood.class);
             miscList.add(TestBooks.class);
             miscList.add(BlessingNecklace.class);
+            miscList.add(OilPotion.class);
+            miscList.add(OilLantern.class);
+            miscList.add(CrivusFruitsFlake.class);
+            miscList.add(SakaFishSketon.class);
+            miscList.add(RandomChest.class);
+            miscList.add(Red.class);
+            miscList.add(CrystalLing.class);
+            miscList.add(RedWhiteRose.class);
         }
     }
 
