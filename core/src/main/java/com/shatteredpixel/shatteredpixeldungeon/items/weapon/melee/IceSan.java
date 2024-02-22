@@ -122,8 +122,8 @@ public class IceSan extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        return  tier+5 //base damage
-                *lvl +1; //per upgrade
+        return  tier+ //5 base damage
+                lvl; //+1 per upgrade
     }
 
 }
