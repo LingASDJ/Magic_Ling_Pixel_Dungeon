@@ -2,8 +2,10 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.testmode;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.CrivusbossTeleporter;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.TPDoorDieds;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel3;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
@@ -270,7 +272,10 @@ public class LevelTeleporter extends TestItem {
             if(crivusfruitslevel2){
                 crivusfruitslevel2 = false;
             }
-
+            if(crivusfruitslevel3){
+                crivusfruitslevel3 = false;
+            }
+            CrivusbossTeleporter = 0;
             //拟态王二阶段死亡的时候给予重新评估
             if(TPDoorDieds){
                 TPDoorDieds = false;

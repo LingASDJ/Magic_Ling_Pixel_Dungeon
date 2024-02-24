@@ -123,6 +123,10 @@ public class Statistics {
 	//克里弗斯之果
 	public static boolean crivusfruitslevel2 = false;
 
+	//异果
+	public static int CrivusbossTeleporter;
+	public static boolean crivusfruitslevel3 = false;
+
 	//仙人跳背包问题
 	public static boolean ankhToExit = false;
 
@@ -232,6 +236,8 @@ public class Statistics {
 	//克里弗斯之果
 	private static final String CrivusFruitsLevel2		= "crivusfruitslevel2";
 
+	private static final String CrivusFruitsLevel3		= "crivusfruitslevel3";
+
 	//拟态之王
 	private static final String TPDoorDied		= "TPDoorDieds";
 
@@ -246,6 +252,8 @@ public class Statistics {
 	private static final String MMC		= "mmcsx";
 
 	private static final String DDK		= "dada";
+
+	private static final String BDK		= "bossLingCR";
 
 	private static final String BossSelect	= "bossselect";
 
@@ -380,7 +388,7 @@ public class Statistics {
 		noGoReadHungry =  false;
 
 		crivusfruitslevel2 = false;
-
+		crivusfruitslevel3 = false;
 		ankhToExit = false;
 
 		TPDoorDieds = false;
@@ -406,6 +414,7 @@ public class Statistics {
 		totalScore      = 0;
 		seedCustom = false;
 		SiderLing = 0;
+		CrivusbossTeleporter = 0;
 	}
 
     public static void storeInBundle(Bundle bundle) {
@@ -487,7 +496,11 @@ public class Statistics {
 
 		bundle.put(DDK,dimandchestmazeCollected);
 
+		bundle.put(BDK,CrivusbossTeleporter);
+
 		bundle.put( CrivusFruitsLevel2, crivusfruitslevel2 );
+
+		bundle.put( CrivusFruitsLevel3, crivusfruitslevel3 );
 
 		bundle.put( TPDoorDied, TPDoorDieds );
 
@@ -552,6 +565,8 @@ public class Statistics {
 		iceCyanBlueSquareCoin = bundle.getInt(ICECLAN);
 
 		snow = bundle.getBoolean("SNOW");
+
+		CrivusbossTeleporter = bundle.getInt(BDK);
 
 		SiderLing = bundle.getInt( SIDERLING);
 
@@ -678,6 +693,8 @@ public class Statistics {
 		noGoReadHungry = bundle.getBoolean( BUG_SYNC_FIXED );
 
 		crivusfruitslevel2 = bundle.getBoolean( CrivusFruitsLevel2 );
+
+		crivusfruitslevel3 = bundle.getBoolean( CrivusFruitsLevel3 );
 
 		TPDoorDieds  = bundle.getBoolean( TPDoorDied );
 

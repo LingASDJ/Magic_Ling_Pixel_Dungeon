@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -11,18 +13,24 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -35,18 +43,65 @@ import com.watabou.utils.Random;
 public class CrivusStarFruitsLasher extends Mob {
     private boolean chainsUsed = false;
 
+    public void onZapComplete(){
+        for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if(boss instanceof CrivusStarFruits && Dungeon.level.distance(pos, boss.pos) <= 50 && Statistics.crivusfruitslevel3) {
+
+                //最高加到半血
+                if (boss.HP < boss.HT/2){
+
+                    if (sprite.visible || boss.sprite.visible) {
+                        sprite.parent.add(new Beam.GlassRayS(sprite.center(), boss.sprite.center()));
+                    }
+
+                    boss.HP = Math.min(boss.HP + 2, boss.HT/2);
+                    if (boss.sprite.visible) boss.sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
+
+                    //不符合的情况下给予3回合激素涌动
+                }
+                next();
+            }
+        }
+
+    }
+
     {
         spriteClass = RotLasherSprite.class;
 
-        HP = HT = Statistics.crivusfruitslevel2 ? 50 : 25;
+        HP = HT = Statistics.crivusfruitslevel2 ? 40 : 50;
         defenseSkill = 0;
 
         EXP = 1;
 
-        state = WANDERING = new Waiting();
+        state = WANDERING;
+
         HUNTING = new Hunting();
         properties.add(Char.Property.IMMOVABLE);
         properties.add(Char.Property.MINIBOSS);
+    }
+
+    @Override
+    public void damage(int dmg, Object src) {
+        LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+        if (lock != null) lock.addTime(dmg*2+4);
+        if (AntiMagic.RESISTS.contains(src.getClass()) && Statistics.crivusfruitslevel2) {
+            dmg = 0;
+        } else if (src instanceof Burning && !Statistics.crivusfruitslevel2) {
+            Buff.affect( this, HalomethaneBurning.class ).reignite( this, 2f );
+        }
+        super.damage(dmg, src);
+    }
+
+    public String info(){
+        StringBuilder desc = new StringBuilder(super.info());
+
+        if(Statistics.crivusfruitslevel3){
+            desc.append("\n\n").append(Messages.get(this, "xlin"));
+        } else if(Statistics.crivusfruitslevel2){
+            desc.append("\n\n").append(Messages.get(this, "xling"));
+        }
+
+        return desc.toString();
     }
 
     {
@@ -134,7 +189,10 @@ public class CrivusStarFruitsLasher extends Mob {
     private final String CHAINSUSED = "chainsused";
 
     private final String CHAINXUSED = "chainxused";
-
+    @Override
+    public boolean isInvulnerable(Class effect) {
+        return Statistics.crivusfruitslevel2 && !Statistics.crivusfruitslevel3;
+    }
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
@@ -143,8 +201,25 @@ public class CrivusStarFruitsLasher extends Mob {
     }
     @Override
     protected boolean act() {
-        GameScene.add(Blob.seed(pos, Statistics.crivusfruitslevel2 ? 60 : 10, CorrosiveGas.class));
+        GameScene.add(Blob.seed(pos, Statistics.crivusfruitslevel2 ? 10 : 0, CorrosiveGas.class));
+        GameScene.add(Blob.seed(pos, Statistics.crivusfruitslevel2 ? 0 : 10, ToxicGas.class));
+
+        if (Statistics.crivusfruitslevel3) {
+            onZapComplete();
+            spend(12f);
+        }
+
+        if(hero.buff(CrivusStarFruits.DiedDamager.class) == null){
+            Buff.affect(this,CrivusStarFruits.DiedDamager.class);
+        }
+
         return super.act();
+    }
+
+    @Override
+    public int defenseProc(Char enemy, int damage) {
+        GameScene.add(Blob.seed(pos, Statistics.crivusfruitslevel2 ? 10 : 0, CrivusFruits.DiedBlobs.class));
+        return super.defenseProc(enemy, damage);
     }
 
     @Override
@@ -210,8 +285,8 @@ public class CrivusStarFruitsLasher extends Mob {
 
     {
         immunities.add( CorrosiveGas.class );
+        immunities.add( CrivusFruits.DiedBlobs.class );
     }
 
-    private class Waiting extends Mob.Wandering{}
 }
 

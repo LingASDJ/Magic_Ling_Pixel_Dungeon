@@ -129,18 +129,6 @@ public abstract class Level implements Bundlable {
 		this.map = map.clone();
 		buildFlagMaps();
 		cleanWalls();
-
-		//清理掉落物
-
-
-//		//自动获取出入口
-//		exit = entrance = 0;
-//		for (int i = 0; i < length(); i ++)
-//			if (map[i] == Terrain.ENTRANCE)
-//				entrance = i;
-//			else if (map[i] == Terrain.EXIT)
-//				exit = i;
-
 		//可见性和地图被完全重置
 		BArray.setFalse(visited);
 		BArray.setFalse(mapped);
@@ -572,7 +560,9 @@ public abstract class Level implements Bundlable {
 		Mob m = Reflection.newInstance(mobsToSpawn.remove(0));
 		ChampionEnemy.rollForChampion(m);
 		ChampionEnemy.rollForStateLing(m);
-		//Buff.affect(m, HasteLing.MobLing.class, HasteLing.MobLing.DURATION*2000f);
+		if(Dungeon.isChallenged(CS) && Dungeon.depth>2 && Dungeon.depth<25){
+			Buff.affect(m, ChampionEnemy.AloneCity.class);
+		}
 		return m;
 	}
 

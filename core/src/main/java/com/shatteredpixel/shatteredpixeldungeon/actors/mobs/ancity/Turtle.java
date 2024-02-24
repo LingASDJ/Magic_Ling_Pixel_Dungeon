@@ -27,7 +27,7 @@ public class Turtle extends Mob {
     @Override
     public void die( Object cause ) {
         super.die(cause);
-        DragonGirlBlue.Quest.survey_research_points += Math.min(DragonGirlBlue.Quest.survey_research_points + 100, 600);
+        DragonGirlBlue.Quest.survey_research_points += 100;
         Badges.validateAncityProgress();
     }
 

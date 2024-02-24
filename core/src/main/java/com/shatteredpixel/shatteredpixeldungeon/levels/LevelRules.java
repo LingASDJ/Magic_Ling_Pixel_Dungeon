@@ -26,6 +26,8 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -93,23 +95,35 @@ public class LevelRules {
 
             switch (depth) {
                 case 0:
-                    return new ZeroCityLevel();
+                    if(Dungeon.isChallenged(CS)){
+                        return new ZeroLevel();
+                    } else {
+                        return new ZeroCityLevel();
+                    }
                 case 1:
                 case 2:
                 case 3:
                 case 4:
                     return new SewerLevel();
                 case 5:
-//                    if(Challenges.activeChallenges()>9){
-//                        if(Random.NormalIntRange(0,100)<=70){
-//                            return new ForestHardBossLevel();
-//                        } else {
-//                            return new ForestBossLevel();
-//                        }
-//                    } else {
+                    if(Statistics.ExFruit){
                         return new ForestHardBossLevel();
-//                    }
-
+                    } else if(Challenges.activeChallenges()>8){
+                        if (!Badges.isUnlocked(Badges.Badge.KILL_CLSISTER)){
+                            Statistics.ExFruit = true;
+                            return new ForestHardBossLevel();
+                        } else if (Random.Float()<=0.7f){
+                            Statistics.ExFruit = true;
+                            return new ForestHardBossLevel();
+                        } else {
+                            return new ForestBossLevel();
+                        }
+                    } else if(Badges.isUnlocked(Badges.Badge.KILL_CLSISTER) && Random.Float()<=0.2f) {
+                        Statistics.ExFruit = true;
+                        return new ForestHardBossLevel();
+                    } else {
+                        return new ForestBossLevel();
+                    }
                 case 6:
                 case 7:
                 case 8:

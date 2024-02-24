@@ -2,9 +2,10 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NyzPlot;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Firebomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Flashbang;
@@ -24,9 +25,10 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndNyzShop;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
@@ -63,7 +65,12 @@ public class Nyz extends NTNPC {
             @Override
             public void call() {
                 if (!seenBefore && Dungeon.level.heroFOV[pos]) {
-                    GLog.p(Messages.get(Nyz.class, "greetings", hero.name()));
+                    if (Dungeon.hero.buff(AscensionChallenge.class) != null) {
+                        yell(Messages.get(this, "talk_ascent", Messages.titleCase(Dungeon.hero.name())));
+                    } else {
+                        GLog.p(Messages.get(Nyz.class, "greetings", hero.name()));
+                    }
+
                     seenBefore = true;
                 } else if(seenBefore && !Dungeon.level.heroFOV[pos]) {
                     seenBefore = false;
@@ -122,18 +129,50 @@ public class Nyz extends NTNPC {
     public boolean reset() {
         return true;
     }
+    private boolean first=true;
+    private boolean secnod=true;
+    private boolean rd=true;
 
+    private static final String FIRST = "first";
+    private static final String SECNOD = "secnod";
+    private static final String RD = "rd";
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(FIRST, first);
+        bundle.put(SECNOD, secnod);
+        bundle.put(RD, rd);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        first = bundle.getBoolean(FIRST);
+        secnod = bundle.getBoolean(SECNOD);
+        rd = bundle.getBoolean(RD);
+    }
+    @Override
     public boolean interact(Char c) {
-        this.sprite.turnTo(this.pos, hero.pos);
-        if (seenBefore && Dungeon.level.heroFOV[pos] && Dungeon.depth != 0 || Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+
+        sprite.turnTo(pos, hero.pos);
+        NyzPlot plot = new NyzPlot();
+        NyzPlot.EndPlot plot2= new NyzPlot.EndPlot();
+        if (first) {
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {
-                    GameScene.show(new WndNyzShop(this));
+                    GameScene.show(new WndDialog(plot,false));
                 }
             });
+            first=false;
         } else {
-            WndQuest.chating(this,chat);
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndDialog(plot2,false));
+                }
+            });
         }
         return true;
     }

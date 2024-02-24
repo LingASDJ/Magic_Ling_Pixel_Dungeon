@@ -24,9 +24,12 @@ package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.Books;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 
 public class MIME extends Item {
@@ -99,6 +102,53 @@ public class MIME extends Item {
         public int value() {
             return quantity * 1000;
         }
+
+        public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe {
+
+            @Override
+            public boolean testIngredients(ArrayList<Item> ingredients) {
+                boolean cling = false;
+                boolean read = false;
+                boolean book = false;
+
+                for (Item ingredient : ingredients){
+                    if (ingredient.quantity() > 0) {
+                        if (ingredient instanceof MIME.GOLD_ONE) {
+                            cling = true;
+                        } else if (ingredient instanceof MIME.GOLD_FOUR) {
+                            read = true;
+                        } else if(ingredient instanceof Books) {
+                            book = true;
+                        }
+                    }
+                }
+
+                return cling && read && book;
+            }
+
+            @Override
+            public int cost(ArrayList<Item> ingredients) {
+                return 18;
+            }
+
+            @Override
+            public Item brew(ArrayList<Item> ingredients) {
+                if (!testIngredients(ingredients)) return null;
+
+                for (Item ingredient : ingredients){
+                    ingredient.quantity(ingredient.quantity() - 1);
+                }
+
+                return sampleOutput(null);
+            }
+
+            @Override
+            public Item sampleOutput(ArrayList<Item> ingredients) {
+                return new MIME.GOLD_FIVE();
+            }
+        }
+
+
     }
 
     public boolean doPickUp(Hero hero, int pos) {
@@ -119,9 +169,9 @@ public class MIME extends Item {
         super.storeInBundle(bundle);
         isMimeSupported = bundle.getBoolean(COMBO);
     }
-
-    public void restoreInBundle( Bundle bundle ) {
-        super.storeInBundle(bundle);
+    @Override
+    public void restoreFromBundle( Bundle bundle ) {
+        super.restoreFromBundle(bundle);
         isMimeSupported = bundle.getBoolean(COMBO);
     }
 

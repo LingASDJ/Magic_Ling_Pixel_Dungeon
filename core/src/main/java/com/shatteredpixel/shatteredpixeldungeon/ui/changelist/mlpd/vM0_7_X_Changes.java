@@ -8,16 +8,20 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusStarFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeepSeaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DragonGirlBlueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireCrystalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KatydidSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KongFuSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.LuoWhiteSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MintSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MoonLowSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhiteGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YetYogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
@@ -32,6 +36,8 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V079_Changes(changeInfos);
+        add_V078_Changes(changeInfos);
         add_V077_Changes(changeInfos);
         add_V076_Changes(changeInfos);
         add_V075_Changes(changeInfos);
@@ -40,6 +46,280 @@ public class vM0_7_X_Changes {
         add_GYD_Changes(changeInfos);
     }
 
+    public static void add_V079_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.0.9", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        Image ss =new CrivusStarFruitsSprite();
+        ss.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(ss, ("Boss调整:克里璃斯之果"),
+                "二和三阶段进行了一些调整"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_1), ("新法杖：毒素紊乱法杖"),
+                ("这根法杖的能量非常紊乱，可能释放出各种魔法。释放魔法造成伤害并产生一种随机法术。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MEAT_PIE), ("炼金追加新的配方"),
+                ("炼金拥有更多配方，欢迎尝鲜。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(NetIcons.get(NetIcons.CHAT), ("查种器V0.3"),
+                ("修复了一些bug，现在查找速度更加的快。等级也会渲染出特殊颜色来。并且长按可以进行输入一个参数查找种子（此功能无需钴币）")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_6), ("共生法杖"),
+                ("优化发射效果。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BLINDING_DART), ("投掷武器"),
+                ("修复投掷武器的相关问题。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_17), ("挑战改进:孤城迷境"),
+                ("在全新孤城中，孤城就是老0层，且孤城特别房间补给从最多4级变成最多2级。\n\n" +
+                        "孤城从第2层到第24层追加孤城印记怪。Boss层没有。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分文案优化\n" +
+                        "3.部分细节优化更新\n" +
+                        "4.金币为负数时会变成红色")));
+
+        changes = new ChangeInfo("v0.7.0.8", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        Image s =new CrivusStarFruitsSprite();
+        s.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(s, ("新Boss:克里璃斯之果"),
+                "9挑战以上出现，机制说明请查阅后续选项卡。" +
+                        "异果出现顺序：\n" +
+                        "9挑以上出现（包括9挑），\n" +
+                        "还没有获得异果徽章，100%出现，\n" +
+                        "获得异果徽章后，70%出现。\n" +
+                        "获得徽章后，在无挑环境中也有20%的概率出现\n" +
+                        "\n" +
+                        "注意一旦出现，本局固定异果。\n" +
+                        "十字架重置是无效的",
+                "第一阶段：280-160\n\n" +
+                        "果子在中心，12个触手\n" +
+                        "第一阶段还有四个英雄遗骸，里面有四个小净化\n" +
+                        "注意:四个小净化在阶段转换如果在地面会被清除 阶段转换的其他物品都会立刻还给玩家（类似于念力结晶）\n" +
+                        "触手技能：十字毒雾，玩家在非危险区可周期捕获敌人。（就是监狱长那种锁链）\n" +
+                        "危险区：指触手和玩家中间有不可跨越地块，这时触手不会抓捕玩家。\n" +
+                        "12个触手打完后，玩家进行任意行走后，进入第二阶段。（不要想着卡bug，因为第一阶段最多扣到160，在玩家尚未移动前，不会继续扣减）\n" +
+                        "在第一阶段掉入裂缝传到安全区不会有任何伤害。",
+                "第二阶段：160-0\n\n" +
+                        "触手完全无敌，并产生酸雾效果。\n" +
+                        "果子周期性瞬移（嗯，是的，异果是反着来的）\n" +
+                        "触手也会进行周期性抓捕\n" +
+                        "场上出现两个额外纯晶元素 50血+50盾\n" +
+                        "在从第二阶段开始，掉落悬崖除了传送到安全区外，还会固定扣减3滴血。\n" +
+                        "在这个阶段打本体会产生固定6伤害的红雾，请小心行事，合理躲避。",
+                "最终阶段：0\n\n" +
+                        "异果血量降到0后，立刻呼吁大家向它给予能量。在这期间，玩家有两个选择，强杀果子或者是杀触手，从第三阶段开始，因为触手需要给予本体能量，自身不再坚不可摧，可以被攻击。\n" +
+                        "如果异果血量大于60以上（不包括60，异果锁定的敌人将周期性受到敌人自身最大血量的三分之一真实伤害）\n" +
+                        "在这个阶段打触手会产生固定6伤害的红雾，请小心行事，合理躲避。\n" +
+                        "并且果子死亡会造成爆炸伤害，不要靠的太近\n" +
+                        "地图中也有一些可利用的元素，更多的等各位自行探索哦。"));
+
+        Image issxsaxs =new FireCrystalSprites();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs, ("商店抢劫常驻啦！！"),
+                "商店抢劫进行了优化，并修正了一些问题，并且常驻！！！\n\n我们还会在后续更新带来商店抢劫的额外故事线，也就是说后续还不会100%打莲娜，而是前往神秘的雪凛峡谷帮助莲娜哦。\n\n" +
+                        "火魔女也进行了相关优化，具体参考后续表。",
+                "莲娜优化\n\n" +
+                        "1.修复战斗结束还给予魔女诅咒\n" +
+                        "2.水晶现在摧毁莲娜的玫瑰结界会立刻消失",
+                "商人领主优化\n\n" +
+                        "1.商人领主的东西以原价贩卖，并且在春节期间打折。\n" +
+                        "2.莲娜战斗结束不再掉落归溯之书，并且归溯之书仅能回到本层主深度,不再给予选择楼层。"));
+
+        changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.CORRUPT, true), ("精英挑战优化调整"),
+                "新的突变体：\n\n" +
+                        "突变乱码体：认知能力坍缩，无法用常理表示……\n\n" +
+                        "攻击力提高20%，这个突变体的全部信息被隐藏，包括数据和描述以及形象，但你依然可以通过战斗方式判断大部分敌人的种类。"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new DragonGirlBlueSprite(), ("远古遗迹v1.3"),
+                ("修正一些问题")));
+
+        changes.addButton(new ChangeButton(new ShopkeeperSprite(), ("商人返程文本"),
+                ("商人返程文本添加，包括奈亚子，小恶魔，商人，那些回忆")));
+
+        changes.addButton(new ChangeButton(new LuoWhiteSprite(), ("0层部分优化调整"),
+                ("1.优化落白商店\n\n" +
+                        "2.奈亚子商店和落白商店商品位置调整")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GREEN_DARK), ("投武：流光飞刀"),
+                ("修复成长开方错误。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RED_BLOOD), ("投武：土木人之怒"),
+                ("修复成长开方错误。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分无用音乐删除\n" +
+                        "3.部分细节优化更新\n" +
+                        "4.金币为负数时会变成红色")));
+    }
+
+    public static void add_V078_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.0.8-P1", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        Image ss =new CrivusStarFruitsSprite();
+        ss.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(ss, ("Boss调整:克里璃斯之果"),
+                "9挑战以上出现，机制说明请查阅后续选项卡,有颜色标注的代表修正。" +
+                        "异果出现顺序：\n" +
+                        "9挑以上出现（包括9挑），\n" +
+                        "还没有获得异果徽章，100%出现，\n" +
+                        "获得异果徽章后，70%出现。\n" +
+                        "获得徽章后，在无挑环境中也有20%的概率出现\n" +
+                        "\n" +
+                        "注意一旦出现，本局固定异果。\n" +
+                        "十字架重置是无效的",
+                "第一阶段：280-160\n\n" +
+                        "果子在中心，12个触手，_触手血量第一阶段：60->50，第二阶段：30->40，果子自身闪避从15降为14_\n" +
+                        "第一阶段还有四个英雄遗骸，里面有四个小净化\n" +
+                        "注意:四个小净化在阶段转换如果在地面会被清除 阶段转换的其他物品都会立刻还给玩家（类似于念力结晶）\n" +
+                        "触手技能：十字毒雾，玩家在非危险区可周期捕获敌人。（就是监狱长那种锁链）\n" +
+                        "危险区：指触手和玩家中间有不可跨越地块，这时触手不会抓捕玩家。\n" +
+                        "12个触手打完后，玩家进行任意行走后，进入第二阶段。（不要想着卡bug，因为第一阶段最多扣到160，在玩家尚未移动前，不会继续扣减）\n" +
+                        "在第一阶段掉入裂缝传到安全区不会有任何伤害。",
+                "第二阶段：160-0\n\n" +
+                        "触手完全无敌，并产生酸雾效果。\n" +
+                        "果子周期性瞬移,_瞬移冷却加长,从12回合变成16回合_（嗯，是的，异果是反着来的）\n" +
+                        "触手也会进行周期性抓捕\n" +
+                        "场上出现两个额外纯晶元素 _30血+30盾_\n" +
+                        "在从第二阶段开始，掉落悬崖除了传送到安全区外，还会固定扣减3滴血。\n" +
+                        "在这个阶段打本体会产生固定6伤害的红雾，请小心行事，合理躲避。",
+                "最终阶段：0\n\n" +
+                        "异果血量降到0后，立刻呼吁大家向它给予能量。_6个触手每次给予果子12血,2x6_\n" +
+                        "在这期间，玩家有两个选择，强杀果子或者是杀触手，从第三阶段开始，因为触手需要给予本体能量，自身不再坚不可摧，可以被攻击。\n" +
+                        "_族群意识不会在60血以上自动消失_" +
+                        "如果异果血量大于60以上（不包括60，异果锁定的敌人将周期性受到敌人自身最大血量的三分之一真实伤害）\n" +
+                        "在这个阶段打触手会产生固定6伤害的红雾，请小心行事，合理躲避。_同时果子不再传送_\n" +
+                        "并且果子死亡会造成_大规模爆炸伤害_，不要靠的太近\n" +
+                        "地图中也有一些可利用的元素，更多的等各位自行探索哦。",
+                "奖励：\n\n" +
+                        "除普通果子的基础奖励还有\n1.200金币\n2.15钴币\n3.2个食物\n4._如果开启灯火,还会在打完后给予一个额外火把_"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ALL_BAG), ("物品调整：武甲背包"),
+                ("不能放入投掷武器。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分文案优化\n" +
+                        "3.部分细节优化更新\n" +
+                        "4.金币为负数时会变成红色")));
+
+        changes = new ChangeInfo("v0.7.0.8", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        Image s =new CrivusStarFruitsSprite();
+        s.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(s, ("新Boss:克里璃斯之果"),
+                "9挑战以上出现，机制说明请查阅后续选项卡。" +
+                        "异果出现顺序：\n" +
+                        "9挑以上出现（包括9挑），\n" +
+                        "还没有获得异果徽章，100%出现，\n" +
+                        "获得异果徽章后，70%出现。\n" +
+                        "获得徽章后，在无挑环境中也有20%的概率出现\n" +
+                        "\n" +
+                        "注意一旦出现，本局固定异果。\n" +
+                        "十字架重置是无效的",
+                        "第一阶段：280-160\n\n" +
+                                "果子在中心，12个触手\n" +
+                                "第一阶段还有四个英雄遗骸，里面有四个小净化\n" +
+                                "注意:四个小净化在阶段转换如果在地面会被清除 阶段转换的其他物品都会立刻还给玩家（类似于念力结晶）\n" +
+                                "触手技能：十字毒雾，玩家在非危险区可周期捕获敌人。（就是监狱长那种锁链）\n" +
+                                "危险区：指触手和玩家中间有不可跨越地块，这时触手不会抓捕玩家。\n" +
+                                "12个触手打完后，玩家进行任意行走后，进入第二阶段。（不要想着卡bug，因为第一阶段最多扣到160，在玩家尚未移动前，不会继续扣减）\n" +
+                                "在第一阶段掉入裂缝传到安全区不会有任何伤害。",
+                "第二阶段：160-0\n\n" +
+                "触手完全无敌，并产生酸雾效果。\n" +
+                        "果子周期性瞬移（嗯，是的，异果是反着来的）\n" +
+                        "触手也会进行周期性抓捕\n" +
+                        "场上出现两个额外纯晶元素 50血+50盾\n" +
+                        "在从第二阶段开始，掉落悬崖除了传送到安全区外，还会固定扣减3滴血。\n" +
+                        "在这个阶段打本体会产生固定6伤害的红雾，请小心行事，合理躲避。",
+                "最终阶段：0\n\n" +
+                "异果血量降到0后，立刻呼吁大家向它给予能量。在这期间，玩家有两个选择，强杀果子或者是杀触手，从第三阶段开始，因为触手需要给予本体能量，自身不再坚不可摧，可以被攻击。\n" +
+                        "如果异果血量大于60以上（不包括60，异果锁定的敌人将周期性受到敌人自身最大血量的三分之一真实伤害）\n" +
+                        "在这个阶段打触手会产生固定6伤害的红雾，请小心行事，合理躲避。\n" +
+                        "并且果子死亡会造成爆炸伤害，不要靠的太近\n" +
+                        "地图中也有一些可利用的元素，更多的等各位自行探索哦。"));
+
+        Image issxsaxs =new FireCrystalSprites();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs, ("商店抢劫常驻啦！！"),
+                "商店抢劫进行了优化，并修正了一些问题，并且常驻！！！\n\n我们还会在后续更新带来商店抢劫的额外故事线，也就是说后续还不会100%打莲娜，而是前往神秘的雪凛峡谷帮助莲娜哦。\n\n" +
+                        "火魔女也进行了相关优化，具体参考后续表。",
+                "莲娜优化\n\n" +
+                        "1.修复战斗结束还给予魔女诅咒\n" +
+                        "2.水晶现在摧毁莲娜的玫瑰结界会立刻消失",
+                "商人领主优化\n\n" +
+                        "1.商人领主的东西以原价贩卖，并且在春节期间打折。\n" +
+                        "2.莲娜战斗结束不再掉落归溯之书，并且归溯之书仅能回到本层主深度,不再给予选择楼层。"));
+
+        changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.CORRUPT, true), ("精英挑战优化调整"),
+                "新的突变体：\n\n" +
+                        "突变乱码体：认知能力坍缩，无法用常理表示……\n\n" +
+                        "攻击力提高20%，这个突变体的全部信息被隐藏，包括数据和描述以及形象，但你依然可以通过战斗方式判断大部分敌人的种类。"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new DragonGirlBlueSprite(), ("远古遗迹v1.3"),
+                ("修正一些问题")));
+
+        changes.addButton(new ChangeButton(new ShopkeeperSprite(), ("商人返程文本"),
+                ("商人返程文本添加，包括奈亚子，小恶魔，商人，那些回忆")));
+
+        changes.addButton(new ChangeButton(new LuoWhiteSprite(), ("0层部分优化调整"),
+                ("1.优化落白商店\n\n" +
+                        "2.奈亚子商店和落白商店商品位置调整")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GREEN_DARK), ("投武：流光飞刀"),
+                ("修复成长开方错误。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RED_BLOOD), ("投武：土木人之怒"),
+                ("修复成长开方错误。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分无用音乐删除\n" +
+                        "3.部分细节优化更新\n" +
+                        "4.金币为负数时会变成红色")));
+    }
 
     public static void add_V077_Changes( ArrayList<ChangeInfo> changeInfos ) {
         ChangeInfo changes = new ChangeInfo("v0.7.0.7", true, "");
@@ -50,10 +330,9 @@ public class vM0_7_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ALL_BAG), ("新物品：武器背包"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ALL_BAG), ("新物品：武甲背包"),
                 ("帮忙收纳你的武器护甲的背包，但在高于14挑时会被小偷认为是珍贵物品(指疯狂和常规，猩红大盗不会偷取)，\n\n" +
-                        "如果你的大背包被偷，小偷将陷入0.6移速，并给予你6回合灵视\n\n" +
-                        "同时，所有背包不能再被扔出。")));
+                        "如果你的武甲背包被偷，小偷将陷入0.6移速，并给予你6回合灵视\n\n")));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);

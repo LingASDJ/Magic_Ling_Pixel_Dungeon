@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.REN;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.obSir;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -46,7 +47,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -226,6 +226,11 @@ public class ZeroLevel extends Level {
 //        mobs.add(god1);
 
         if (Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
+
+            YetYog npc3 = new YetYog();
+            npc3.pos = 1066;
+            mobs.add(npc3);
+
             Nyz npc4= new Nyz();
             npc4.pos = (this.width * 28 + 7);
             mobs.add(npc4);
@@ -291,5 +296,9 @@ public class ZeroLevel extends Level {
     public String waterTex() {
         return Assets.Environment.WATER_PRISON;
     }
-
+//    public void occupyCell(Char ch) {
+//        super.occupyCell(ch);
+//        GLog.p(String.valueOf(hero.pos));
+//        GLog.b(String.valueOf(Statistics.zeroItemLevel));
+//    }
 }

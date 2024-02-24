@@ -270,9 +270,11 @@ public class RankingsScene extends PixelScene {
 			if (rec.daily){
 				shield.copy( Icons.get(Icons.CALENDAR) );
 				shield.hardlight(0.5f, 1f, 2f);
+			} else if (!rec.customSeed.isEmpty() && !rec.win){
+				shield.copy(new Image(new ItemSprite( ItemSpriteSheet.RIP, null )));
 			} else if (!rec.customSeed.isEmpty()){
-				shield.copy(new Image(new ItemSprite( ItemSpriteSheet.GRAVE, null )));
-				shield.hardlight(1f, 1.5f, 0.67f);
+				shield.copy(new Image(new ItemSprite( ItemSpriteSheet.AMULET, null )));
+				shield.hardlight(Window.SHPX_COLOR);
 			}
 
 		}

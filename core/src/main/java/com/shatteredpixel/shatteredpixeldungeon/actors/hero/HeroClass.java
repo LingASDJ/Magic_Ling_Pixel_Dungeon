@@ -218,7 +218,7 @@ public enum HeroClass {
 		waterskin.collect();
 
 		new ScrollOfIdentify().identify();
-
+		//new Amulet().quantity(1).identify().collect();
 		if (Dungeon.isChallenged(Challenges.PRO)){
 			new BlessingNecklace().quantity(1).identify().collect();
 			new SpawnMisc().quantity(1).identify().collect();
@@ -229,7 +229,7 @@ public enum HeroClass {
 			new SpawnArtifact().quantity(1).identify().collect();
 			new SpawnRingOrWand().quantity(1).identify().collect();
 			new SpawnMissile().quantity(1).identify().collect();
-			//new CrystalLing().quantity(1).identify().collect();
+			new CrystalLing().quantity(1).identify().collect();
 			new TerrainPlacer().quantity(1).identify().collect();
 
 			new MobPlacer().quantity(1).identify().collect();

@@ -138,7 +138,7 @@ public class WandOfAnmy extends DamageWand {
     }
 
     {
-        image = ItemSpriteSheet.WAND_KCX;
+        image = ItemSpriteSheet.HIGHTWAND_6;
     }
 
 
@@ -195,7 +195,7 @@ public class WandOfAnmy extends DamageWand {
     @Override
     public void fx(Ballistica bolt, Callback callback) {
         MagicMissile.boltFromChar(curUser.sprite.parent,
-                MagicMissile.EARTH,
+                MagicMissile.HEART_ANMY,
                 curUser.sprite,
                 bolt.collisionPos,
                 callback);

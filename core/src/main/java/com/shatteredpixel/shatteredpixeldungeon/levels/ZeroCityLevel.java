@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.ALCHEMY;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.BARRICADE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.BOOKSHELF;
@@ -14,6 +13,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.ENTRANCE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EXIT;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.MINE_CRYSTAL;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.PEDESTAL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.STATUE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
@@ -29,8 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LanFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NxhyNpc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoRuoS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonLow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Question;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.SmallLeaf;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteYan;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -67,7 +68,6 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.SurfaceScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
@@ -112,11 +112,13 @@ public class ZeroCityLevel extends Level {
 
     private static final int Q = CRYSTAL_DOOR;
 
+    private static final int X = PEDESTAL;
+
     private static final int[] codedMap = {
-            P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,S,S,S,S,S,S,P,P,P,P,P,P,P,P,P,P,P,M,M,M,M,M,M,P,
-            P,P,P,M,D,D,D,P,P,D,P,M,M,P,M,P,P,P,P,P,P,P,M,M,M,M,M,M,M,P,P,P,P,P,P,P,P,P,P,P,S,S,S,S,S,S,P,P,P,P,P,P,P,P,P,P,P,M,M,P,D,D,D,M,
-            P,P,D,T,D,D,I,D,D,D,D,D,D,D,M,P,P,P,P,P,P,P,M,O,O,O,O,O,M,M,M,M,M,M,M,M,M,M,M,M,S,S,S,S,S,M,M,M,M,M,M,M,M,M,P,P,P,D,M,P,A,A,A,M,
-            P,P,I,D,A,D,D,D,A,D,D,D,D,D,M,M,P,P,P,P,P,M,M,D,D,D,D,D,D,D,D,D,D,R,R,R,D,D,M,M,M,Q,M,M,M,M,D,D,D,D,D,D,D,M,P,P,P,D,M,P,D,D,D,M,
+            P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,M,P,P,P,P,S,P,P,P,P,P,P,P,P,P,P,P,M,M,M,M,M,M,P,
+            P,P,P,M,D,D,D,P,P,D,P,M,M,P,M,P,P,P,P,P,P,P,M,M,M,M,M,M,M,P,P,P,P,P,P,P,P,P,P,P,M,R,X,R,R,S,P,P,P,P,P,P,P,P,P,P,P,M,M,P,D,D,D,M,
+            P,P,D,T,D,D,I,D,D,D,D,D,D,D,M,P,P,P,P,P,P,P,M,O,O,O,O,O,M,M,M,M,M,M,M,M,M,M,M,M,M,R,R,R,R,M,M,M,M,M,M,M,M,M,P,P,P,D,M,P,A,A,A,M,
+            P,P,I,D,A,D,D,D,A,D,D,D,D,D,M,M,P,P,P,P,P,M,M,D,D,D,D,D,D,D,D,D,D,R,R,R,D,D,M,M,M,B,M,M,M,M,D,D,D,D,D,D,D,M,P,P,P,D,M,P,D,D,D,M,
             P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,M,P,P,P,P,M,M,D,D,D,D,D,M,M,M,M,M,M,M,M,M,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,P,P,D,M,P,D,N,D,M,
             P,P,D,D,D,D,K,D,D,D,D,D,D,D,D,M,M,P,P,P,M,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,P,D,M,P,D,D,D,M,
             P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,M,M,M,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,R,R,D,D,D,D,D,D,D,D,D,M,P,D,M,M,M,B,M,M,
@@ -148,8 +150,8 @@ public class ZeroCityLevel extends Level {
             P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,D,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,R,R,R,R,D,P,
             P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,P,R,R,R,D,P,
             P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,P,P,R,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,R,R,P,
-            P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,R,R,D,D,D,D,D,D,D,M,M,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,R,P,
-            P,P,P,P,D,D,D,D,D,D,D,A,D,D,D,D,D,D,D,D,D,D,D,P,P,P,P,R,R,R,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,P,
+            P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,R,P,
+            P,P,P,P,D,D,D,D,D,D,D,A,D,D,D,D,D,D,D,D,D,D,D,P,P,P,P,R,R,R,D,D,D,D,D,D,D,D,D,M,M,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,R,P,
             P,P,P,P,D,D,D,D,D,D,D,A,D,D,D,D,D,D,A,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,P,
             P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,P,
             P,P,P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,D,D,D,M,M,M,V,M,M,M,D,D,P,P,
@@ -180,11 +182,11 @@ public class ZeroCityLevel extends Level {
     };
 
 
-    public void occupyCell(Char ch) {
-        super.occupyCell(ch);
-        GLog.p(String.valueOf(hero.pos));
-        GLog.b(String.valueOf(Statistics.zeroItemLevel));
-    }
+//    public void occupyCell(Char ch) {
+//        super.occupyCell(ch);
+//        GLog.p(String.valueOf(hero.pos));
+//        GLog.b(String.valueOf(Statistics.zeroItemLevel));
+//    }
 
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
@@ -357,6 +359,10 @@ public class ZeroCityLevel extends Level {
             npc12.pos = 3100;
             mobs.add(npc12);
 
+        WhiteYan npc16 = new WhiteYan();
+        npc16.pos = 3255;
+        mobs.add(npc16);
+
             //45%概率
             if(Random.Float()<=0.45f){
                 BzmdrLand npc9 = new BzmdrLand();
@@ -385,6 +391,15 @@ public class ZeroCityLevel extends Level {
         LuoWhite npc13 = new LuoWhite();
         npc13.pos = 1300;
         mobs.add(npc13);
+
+        PaswordBadges.loadGlobal();
+        List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+
+//        if (passwordbadges.contains(PaswordBadges.Badge.FIREGIRL)) {
+//            WaloKe npc14 = new WaloKe();
+//            npc14.pos = 479;
+//            mobs.add(npc14);
+//        }
 
     }
 
@@ -479,11 +494,18 @@ public class ZeroCityLevel extends Level {
         }
 
 
+
+
         drop((Generator.randomUsingDefaults(Generator.Category.SCROLL)), 3193);
         drop((Generator.randomUsingDefaults(Generator.Category.SCROLL)), 2937);
     }
 
-
+    public Mob createMob() {
+        return null;
+    }
+    public int randomRespawnCell() {
+        return this.entrance - width();
+    }
 
 
 }

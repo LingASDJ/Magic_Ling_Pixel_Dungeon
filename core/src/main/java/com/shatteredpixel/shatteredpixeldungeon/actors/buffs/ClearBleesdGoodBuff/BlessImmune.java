@@ -25,7 +25,10 @@ public class BlessImmune extends ChampionHero {
     public void fx(boolean on) {
     }
 
-
+    @Override
+    public String iconTextDisplay() {
+        return "";
+    }
 
     @Override
     public void tintIcon(Image icon) {

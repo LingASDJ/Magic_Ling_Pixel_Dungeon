@@ -235,6 +235,7 @@ public class WraithAmulet extends Artifact {
                                 GLog.i(Messages.get(this, "killmobs"));
                                 ScrollOfTeleportation.appear(hero, target);
                                 Dungeon.observe();
+                                amulet.cooldown = 150 / (amulet.level() / 2);
                             } else {
                                 enemy.die(null);
                                 GLog.i(Messages.get(this, "killmobs"));

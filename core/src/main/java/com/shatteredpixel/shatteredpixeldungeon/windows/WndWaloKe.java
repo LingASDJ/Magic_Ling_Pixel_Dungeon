@@ -15,7 +15,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.LuoWhite;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
@@ -35,21 +34,17 @@ import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
-public class WndLuoWhite extends Window {
+public class WndWaloKe extends Window {
     private static final int WIDTH		= 120;
     private static final int BTN_SIZE	= 32;
     private static final int BTN_GAP	= 6;
     private static final int GAP		= 6;
 
 
-    public WndLuoWhite() {
+    public WndWaloKe() {
         LuoWhite.shop3 = new MoonDao();
         LuoWhite.shop2 = new DiedCrossBow();
         LuoWhite.shop1 = new SaiPlus();
-
-        LuoWhite.shop4 = new RandomChest();
-        LuoWhite.shop5 = Generator.random(Generator.Category.MISSILE);
-        LuoWhite.shop6 = new RandomChest();
 
         IconTitle titlebar = new IconTitle();
         titlebar.setRect(0, 0, WIDTH, 0);
@@ -62,16 +57,16 @@ public class WndLuoWhite extends Window {
         message.setPos(0, titlebar.bottom() + GAP);
         add( message );
 
-        RewardButton shop1 = new RewardButton( LuoWhite.shop1 );
+        WndWaloKe.RewardButton shop1 = new WndWaloKe.RewardButton( LuoWhite.shop1 );
         shop1.setRect( (WIDTH - BTN_GAP) / 3f - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE,
                 BTN_SIZE );
         add( shop1 );
 
-        RewardButton shop2 = new RewardButton( LuoWhite.shop2 );
+        WndWaloKe.RewardButton shop2 = new WndWaloKe.RewardButton( LuoWhite.shop2 );
         shop2.setRect( shop1.right() + BTN_GAP, shop1.top(), BTN_SIZE, BTN_SIZE );
         add(shop2);
 
-        RewardButton shop3 = new RewardButton( LuoWhite.shop3 );
+        WndWaloKe.RewardButton shop3 = new WndWaloKe.RewardButton( LuoWhite.shop3 );
         shop3.setRect( shop2.right() + BTN_GAP, shop2.top(), BTN_SIZE, BTN_SIZE );
         add(shop3);
 
@@ -165,12 +160,12 @@ public class WndLuoWhite extends Window {
 
             boolean locked = SPDSettings.isItemUnlock(item.getClass().getSimpleName());
 
-            StyledButton btnConfirm = new StyledButton(SPDSettings.isItemUnlock(item.getClass().getSimpleName())?Chrome.Type.SCROLL : Chrome.Type.RED_BUTTON,Messages.get(WndIceTradeItem.class, (locked) ? "unlocked":"buy",item.iceCoinValue())){
+            StyledButton btnConfirm = new StyledButton(SPDSettings.isItemUnlock(item.getClass().getSimpleName())? Chrome.Type.SCROLL : Chrome.Type.RED_BUTTON,Messages.get(WndIceTradeItem.class, (locked) ? "unlocked":"buy",item.iceCoinValue())){
                 @Override
                 protected void onClick() {
                     if(SPDSettings.iceCoin() >= item.iceCoinValue()) {
                         SPDSettings.iceDownCoin(item.iceCoinValue());
-                        WndLuoWhite.this.selectReward( item );
+                        WndWaloKe.this.selectReward( item );
                         itemUnlock(item);
                         if(Dungeon.hero.buff(AutoRandomBuff.class) != null) {
                             AutoRandomBuff.level -= Random.Int(4);
@@ -184,10 +179,10 @@ public class WndLuoWhite extends Window {
                         }
                         item.cursed = true;
                         Buff.prolong( hero, ReloadShop.class, 1f);
-                        RewardWindow.this.hide();
+                        WndWaloKe.RewardWindow.this.hide();
                     } else {
-                        tell(Messages.get(WndLuoWhite.class,"nomoney"));
-                        RewardWindow.this.hide();
+                        tell(Messages.get(WndWaloKe.class,"nomoney"));
+                        WndWaloKe.RewardWindow.this.hide();
                     }
                 }
             };
@@ -223,7 +218,7 @@ public class WndLuoWhite extends Window {
                 }
                 @Override
                 protected void onClick() {
-                    ShatteredPixelDungeon.scene().addToFront(new RewardWindow(item));
+                    ShatteredPixelDungeon.scene().addToFront(new WndWaloKe.RewardWindow(item));
                 }
             };
             add(slot);
@@ -241,4 +236,5 @@ public class WndLuoWhite extends Window {
         }
     }
 }
+
 

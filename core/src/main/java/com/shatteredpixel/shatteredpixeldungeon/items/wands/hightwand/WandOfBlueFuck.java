@@ -58,7 +58,7 @@ import java.util.ArrayList;
 public class WandOfBlueFuck extends DamageWand {
 
     {
-        image = ItemSpriteSheet.DG6;
+        image = ItemSpriteSheet.HIGHTWAND_3;
 
         collisionProperties = Ballistica.MAGIC_BOLT;
     }

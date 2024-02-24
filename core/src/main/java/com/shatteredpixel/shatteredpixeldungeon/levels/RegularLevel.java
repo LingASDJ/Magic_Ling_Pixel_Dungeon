@@ -258,7 +258,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 		//20%
-		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) < 20 || depth == 28) {
+		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) <= 30 || depth == 28) {
 			initRooms.add(new NxhyShopRoom());
 		}
 

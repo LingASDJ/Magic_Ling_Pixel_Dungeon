@@ -160,7 +160,7 @@ public class Assets {
 	public static class Interfaces {
 
 		//Boss 贴图
-
+		public static final String QliPhothEX_Title  = "interfaces/bosslogo/qliphoth-title-ex.png";
 		public static final String QliPhoth_Title  = "interfaces/bosslogo/qliphoth-title.png";
 		public static final String QliPhoth_Clear  = "interfaces/bosslogo/qliphoth-clear.png";
 
@@ -409,9 +409,11 @@ public class Assets {
 		public static final String BZMR = "splashes/bzmdr_portraits.png";
 
 		public static final String YTZY = "splashes/yet_yog_portraits.png";
+
+		public static final String NYZ = "splashes/nyz_portraits.png";
 		public static final String MT = "splashes/mint_portraits.png";
 		public static final String LN = "splashes/ln_portraits.png";
-
+		public static final String WTX = "splashes/yan_portraits.png";
 		public static final String JIT = "splashes/JIT_portraits.png";
 
 		public static final String MOON = "splashes/moon_portraits.png";
@@ -488,10 +490,10 @@ public class Assets {
 
 		public static final String SXGR	= "sprites/boss/IceSlowGirl.png";
 
-		public static final String SKFS	= "sprites/boss/SakaFishBoss.png";
+		public static final String SKFS	 = "sprites/boss/SakaFishBoss.png";
 
-
-		public static final String DIMK	= "sprites/boss/DimandKing.png";
+		public static final String WHITEYAN = "sprites/boss/white_yan_boss.png";
+		public static final String DIMK	 = "sprites/boss/DimandKing.png";
 
 		public static final String DIED	= "sprites/items/died.png";
 

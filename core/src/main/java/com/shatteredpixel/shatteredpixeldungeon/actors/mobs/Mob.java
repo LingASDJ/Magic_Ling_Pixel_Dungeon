@@ -21,7 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.bossLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
@@ -191,6 +193,9 @@ public abstract class Mob extends Char {
 			//modify health for ascension challenge if applicable, only on first add
 			float percent = HP / (float) HT;
 			HT = Math.round(HT * AscensionChallenge.statModifier(this));
+			if(Dungeon.isChallenged(CS) && Dungeon.depth>2 && Dungeon.depth<25 && !properties.contains(Property.NPC) && !bossLevel()){
+				HT = Math.round(HT * ChampionEnemy.AloneCity.statModifier(this));
+			}
 			HP = Math.round(HT * percent);
 			firstAdded = false;
 		}
@@ -921,6 +926,9 @@ public abstract class Mob extends Char {
 		if (state == SLEEPING) {
 			state = WANDERING;
 		}
+
+
+
 		if (state != HUNTING && !(src instanceof Corruption)) {
 			alerted = true;
 		}
@@ -1079,9 +1087,9 @@ public abstract class Mob extends Char {
 		StringBuilder sb = new StringBuilder();
 		int index = 0;
 		while (index < encodedBytes.length) {
-			sb.append(new String(encodedBytes, index, Math.min(28, encodedBytes.length - index)));
+			sb.append(new String(encodedBytes, index, Math.min(32, encodedBytes.length - index)));
 			sb.append("\n");
-			index += 28;
+			index += 32;
 		}
 
 		return sb.toString();

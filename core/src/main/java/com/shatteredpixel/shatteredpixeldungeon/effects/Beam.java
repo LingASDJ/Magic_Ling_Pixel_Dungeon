@@ -66,6 +66,12 @@ public class Beam extends Image {
 		}
 	}
 
+	public static class GlassRayS extends Beam{
+		public GlassRayS(PointF s, PointF e){
+			super(s, e, Effects.Type.GLASSCHAIN, 0.5f);
+		}
+	}
+
 	public static class LightRay extends Beam{
 		public LightRay(PointF s, PointF e){
 			super(s, e, Effects.Type.LIGHT_RAY, 1f);

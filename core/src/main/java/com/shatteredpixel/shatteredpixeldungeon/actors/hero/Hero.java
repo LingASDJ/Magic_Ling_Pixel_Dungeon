@@ -580,7 +580,7 @@ public class Hero extends Char {
 	public int tier() {
 		Armor armor = belongings.armor();
 		if (armor instanceof ClassArmor){
-			return 9;
+			return  RegularLevel.holiday == RegularLevel.Holiday.CJ ? 9 : 7;
 		} else if (armor != null){
 			return armor.tier;
 		} else {

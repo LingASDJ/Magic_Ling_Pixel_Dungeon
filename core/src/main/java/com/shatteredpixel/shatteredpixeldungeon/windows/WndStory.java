@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.RollLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
@@ -67,6 +68,8 @@ public class WndStory extends Window {
 	public static final int ID_HALLS		= 4;
 
 	public static final int ID_SEWERSBOSS		= 5;
+
+	public static final int ID_EXSEWERSBOSS		= 30;
 	public static final int ID_PRISONBOSS		= 6;
 	public static final int ID_CAVESBOSS		= 7;
 	public static final int ID_CITYSBOSS		= 8;
@@ -99,6 +102,8 @@ public class WndStory extends Window {
 	//
 	public static final int ID_DWADA		= 13;
 
+	public static final int ID_ALC		= 33;
+
 	private static final SparseArray<String> CHAPTERS = new SparseArray<>();
 
 	static {
@@ -109,6 +114,7 @@ public class WndStory extends Window {
 		CHAPTERS.put( ID_CITY, "city" );
 		CHAPTERS.put( ID_HALLS, "halls" );
 		CHAPTERS.put( ID_SEWERSBOSS, "sewersboss" );
+		CHAPTERS.put( ID_EXSEWERSBOSS, "exboss1" );
 		CHAPTERS.put( ID_PRISONBOSS, "prisonboss" );
 		CHAPTERS.put( ID_CAVESBOSS, "cavesboss" );
 		CHAPTERS.put( ID_CITYSBOSS, "cityboss" );
@@ -135,6 +141,8 @@ public class WndStory extends Window {
 		CHAPTERS.put( ID_DWADA, "drawfmaster" );
 
 		CHAPTERS.put( ID_ANCITY, "aientncity" );
+
+		CHAPTERS.put( ID_ALC, "aic" );
 	}
 
 
@@ -196,9 +204,11 @@ public class WndStory extends Window {
 		if(!Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
 			switch (Dungeon.depth) {
 				case 0:
-					mapnameSlain.texture( "interfaces/mapname/snow.png" );
-					mapnameSlain.show( Window.TITLE_COLOR, 0.6f, 3f );
-					scene.showLogo( mapnameSlain );
+					if(!Dungeon.isChallenged(CS)){
+						mapnameSlain.texture( "interfaces/mapname/snow.png" );
+						mapnameSlain.show( Window.TITLE_COLOR, 0.6f, 3f );
+						scene.showLogo( mapnameSlain );
+					}
 					break;
 				case 1:
 					mapnameSlain.texture( "interfaces/mapname/forest.png" );

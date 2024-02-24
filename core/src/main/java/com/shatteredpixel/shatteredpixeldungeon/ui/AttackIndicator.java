@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.NoneSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.watabou.input.GameAction;
 import com.watabou.noosa.Game;
@@ -39,19 +40,19 @@ import java.util.ArrayList;
 
 //FIXME needs a refactor, lots of weird thread interaction here.
 public class AttackIndicator extends Tag {
-	
+
 	private static final float ENABLED	= 1.0f;
 	private static final float DISABLED	= 0.3f;
 
 	private static float delay;
-	
+
 	private static AttackIndicator instance;
-	
+
 	private CharSprite sprite = null;
-	
+
 	private Mob lastTarget;
 	private ArrayList<Mob> candidates = new ArrayList<>();
-	
+
 	public AttackIndicator() {
 		super( DangerIndicator.COLOR );
 
@@ -64,17 +65,17 @@ public class AttackIndicator extends Tag {
 			enable(false);
 		}
 	}
-	
+
 	@Override
 	public GameAction keyAction() {
 		return SPDAction.TAG_ATTACK;
 	}
-	
+
 	@Override
 	protected void createChildren() {
 		super.createChildren();
 	}
-	
+
 	@Override
 	protected synchronized void layout() {
 		super.layout();
@@ -83,17 +84,10 @@ public class AttackIndicator extends Tag {
 			if (!flipped)   sprite.x = x + (SIZE - sprite.width()) / 2f + 1;
 			else            sprite.x = x + width - (SIZE + sprite.width()) / 2f - 1;
 			sprite.y = y + (height - sprite.height()) / 2f;
-			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-				if (mob.buff(ChampionEnemy.NoCode.class) != null) {
-					sprite.visible = false;
-					return;
-				}
-			}
-
 			PixelScene.align(sprite);
 		}
 	}
-	
+
 	@Override
 	public synchronized void update() {
 		super.update();
@@ -118,7 +112,7 @@ public class AttackIndicator extends Tag {
 			}
 		}
 	}
-	
+
 	private synchronized void checkEnemies() {
 
 		candidates.clear();
@@ -129,7 +123,7 @@ public class AttackIndicator extends Tag {
 				candidates.add( mob );
 			}
 		}
-		
+
 		if (!candidates.contains( lastTarget )) {
 			if (candidates.isEmpty()) {
 				lastTarget = null;
@@ -145,38 +139,37 @@ public class AttackIndicator extends Tag {
 				flash();
 			}
 		}
-		
+
 		visible( lastTarget != null );
 		enable( bg.visible );
 	}
-	
+
 	private synchronized void updateImage() {
-		
+
+
+
 		if (sprite != null) {
 			sprite.killAndErase();
 			sprite = null;
 		}
-		
-		sprite = Reflection.newInstance(lastTarget.spriteClass);
+
+
+		sprite = lastTarget.buff(ChampionEnemy.NoCode.class) != null ? new NoneSprite() : Reflection.newInstance(lastTarget.spriteClass);
 		active = true;
 		sprite.linkVisuals(lastTarget);
 		sprite.idle();
 		sprite.paused = true;
-
 		sprite.visible = bg.visible;
 
 		if (sprite.width() > 20 || sprite.height() > 20){
 			sprite.scale.set(PixelScene.align(20f/Math.max(sprite.width(), sprite.height())));
 		}
 
+		add( sprite );
+
 		layout();
-
-
-
-
-
 	}
-	
+
 	private boolean enabled = true;
 	private synchronized void enable( boolean value ) {
 		enabled = value;
@@ -184,11 +177,11 @@ public class AttackIndicator extends Tag {
 			sprite.alpha( value ? ENABLED : DISABLED );
 		}
 	}
-	
+
 	private synchronized void visible( boolean value ) {
 		bg.visible = value;
 	}
-	
+
 	@Override
 	protected void onClick() {
 		super.onClick();
@@ -213,7 +206,7 @@ public class AttackIndicator extends Tag {
 			QuickSlotButton.target(target);
 		}
 	}
-	
+
 	public static void updateState() {
 		instance.checkEnemies();
 	}

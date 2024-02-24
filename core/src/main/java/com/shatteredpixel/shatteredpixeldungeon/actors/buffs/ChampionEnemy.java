@@ -27,6 +27,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -37,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -50,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
@@ -681,6 +684,59 @@ public abstract class ChampionEnemy extends Buff {
 		@Override
 		public float evasionAndAccuracyFactor() {
 			return 3f;
+		}
+	}
+
+	public static class AloneCity extends ChampionEnemy {
+
+		{
+			color = Window.WATA_COLOR;
+		}
+
+		@Override
+		public void fx(boolean on) {
+			if (on) {target.sprite.add(CharSprite.State.SMOKER);
+			} else target.sprite.remove(CharSprite.State.SMOKER);
+		}
+		@Override
+		public boolean act() {
+
+			spend(3*TICK);
+			return true;
+		}
+
+		@Override
+		public float meleeDamageFactor() {
+			return 1+Statistics.gameDay*0.05f;
+		}
+
+		@Override
+		public float damageTakenFactor() {
+			return 1+Statistics.gameDay*0.05f;
+		}
+
+		@Override
+		public float evasionAndAccuracyFactor() {
+			return 1+Statistics.gameDay*0.05f;
+		}
+
+		public static float statModifier(Char ch){
+			if (ch instanceof Ratmogrify.TransmogRat){
+				ch = ((Ratmogrify.TransmogRat) ch).getOriginal();
+			}
+
+			if (ch.buff(AscensionChallenge.AscensionBuffBlocker.class) != null){
+				return 1f;
+			}
+			return 1+Statistics.gameDay*0.05f;
+		}
+		@Override
+		public int icon() {
+			return BuffIndicator.TERROR;
+		}
+		@Override
+		public String desc() {
+			return Messages.get(this, "desc", (int)(100*(Statistics.gameDay*0.05f)),(int)(100*(Statistics.gameDay*0.05f)),(int)(100*(Statistics.gameDay*0.05f)));
 		}
 	}
 

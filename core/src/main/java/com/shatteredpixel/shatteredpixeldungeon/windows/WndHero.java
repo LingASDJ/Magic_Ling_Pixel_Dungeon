@@ -55,7 +55,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
@@ -310,7 +309,7 @@ public class WndHero extends WndTabbed {
 				RestatSlot( Messages.get(this, "lanterfire"), (double)(hero.lanterfire) + "/" + 100 );
 			}
 
-			IcestatSlot( Messages.get(this, "icehp"), (hero.icehp) + "/" + 100 );
+//			IcestatSlot( Messages.get(this, "icehp"), (hero.icehp) + "/" + 100 );
 
 			pos += GAP;
 

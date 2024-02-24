@@ -12,7 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedFinder;
+import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedAnalysisScene;
 import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedFinderScene;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Gregorian;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
@@ -104,8 +104,7 @@ public class TitleScene extends PixelScene {
 		int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
 		Badges.loadGlobal();
 		Dungeon.whiteDaymode = currentHour > 7 && currentHour < 22;
-		SeedFinder.Pay = false;
-		SeedFinder.Nofinding = false;
+
 		Badges.loadGlobal();
 		boolean whiteDaymode = currentHour > 7 && currentHour < 22;
 
@@ -137,7 +136,7 @@ public class TitleScene extends PixelScene {
 					String localTimeStr = dateFormat.format(localDate); // 本地时间的字符串表示
 
 					if (onlineTimeStr.equals(localTimeStr)) {
-						if (Random.Int(10) == 1 && !NightDay && !whiteDaymode) {
+						if (Random.Int(10) <= 4 && !NightDay && !whiteDaymode) {
 							NightDay = true;
 						} else if (Badges.isUnlocked(Badges.Badge.VICTORY) && Random.Int(10) == 1 && !Reusable) {
 							Reusable = true;
@@ -620,6 +619,12 @@ public class TitleScene extends PixelScene {
 		@Override
 		protected void onClick() {
 			ShatteredPixelDungeon.switchNoFade(SeedFinderScene.class);
+		}
+
+		@Override
+		protected boolean onLongClick() {
+			ShatteredPixelDungeon.switchNoFade(SeedAnalysisScene.class);
+			return true;
 		}
 
 	}
