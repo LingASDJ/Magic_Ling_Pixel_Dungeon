@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndNyzShop;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
@@ -158,7 +159,14 @@ public class Nyz extends NTNPC {
         sprite.turnTo(pos, hero.pos);
         NyzPlot plot = new NyzPlot();
         NyzPlot.EndPlot plot2= new NyzPlot.EndPlot();
-        if (first) {
+        if(Dungeon.NyzshopOnLevel()) {
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndNyzShop(this));
+                }
+            });
+        } else if (first && Dungeon.depth == 0) {
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {

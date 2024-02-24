@@ -728,7 +728,7 @@ public abstract class ChampionEnemy extends Buff {
 			if (ch.buff(AscensionChallenge.AscensionBuffBlocker.class) != null){
 				return 1f;
 			}
-			return 1+Statistics.gameDay*0.05f;
+			return 1+Statistics.gameDay*0.01f;
 		}
 		@Override
 		public int icon() {
@@ -736,7 +736,7 @@ public abstract class ChampionEnemy extends Buff {
 		}
 		@Override
 		public String desc() {
-			return Messages.get(this, "desc", (int)(100*(Statistics.gameDay*0.05f)),(int)(100*(Statistics.gameDay*0.05f)),(int)(100*(Statistics.gameDay*0.05f)));
+			return Messages.get(this, "desc", (int)(100*(Statistics.gameDay*0.01f)),(int)(100*(Statistics.gameDay*0.01f)),(int)(100*(Statistics.gameDay*0.01f)));
 		}
 	}
 

@@ -82,8 +82,6 @@ public class CryStalPlot extends Plot {
 
     @Override
     public void skip() {
-        diagulewindow.cancel();
-        WndDialog.settedPlot = null;
     }
 
     private void process_to_1() {

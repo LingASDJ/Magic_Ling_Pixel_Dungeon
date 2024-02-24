@@ -5,6 +5,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -209,7 +210,12 @@ public class NyzPlot extends Plot {
             diagulewindow.setMainAvatar(new Image(Assets.Splashes.NYZ));
             diagulewindow.setLeftName(Messages.get(Nyz.class, "name"));
             if(Dungeon.isChallenged(CS)) {
-                diagulewindow.changeText(Messages.get(Nyz.class, "xhat_4", hero.name()));
+                if(Statistics.amuletObtained){
+                    diagulewindow.changeText(Messages.get(Nyz.class, "xhat_5", hero.name()));
+                } else {
+                    diagulewindow.changeText(Messages.get(Nyz.class, "xhat_4", hero.name()));
+                }
+
             } else {
                 diagulewindow.changeText(Messages.get(Nyz.class, "chat_4"));
             }

@@ -3,7 +3,6 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
@@ -20,13 +19,16 @@ import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
@@ -247,23 +249,32 @@ public class YogGodHardBossLevel extends Level {
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
         if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
-                && hero.belongings.getItem(Amulet.class) != null
-                && hero.buff(AscensionChallenge.class) == null) {
+                && hero.belongings.getItem(Amulet.class) != null) {
 
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {
                     GameScene.show( new WndOptions( new ItemSprite(ItemSpriteSheet.AMULET),
-                            Messages.get(Amulet.class, "ascent_title"),
-                            Messages.get(Amulet.class, "ascent_desc"),
-                            Messages.get(Amulet.class, "ascent_yes"),
-                            Messages.get(Amulet.class, "ascent_no")){
+                            Messages.get(Amulet.class, "xascent_title"),
+                            Messages.get(Amulet.class, "xascent_desc"),
+                            Messages.get(Amulet.class, "xascent_yes"),
+                            Messages.get(Amulet.class, "xascent_no")){
                         @Override
                         protected void onSelect(int index) {
                             if (index == 0){
-                                Buff.affect(hero, AscensionChallenge.class);
-                                Statistics.highestAscent = 25;
-                                activateTransition(hero, transition);
+                                Buff.detach(hero, AscensionChallenge.class);
+                                TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+                                if (timeFreeze != null) timeFreeze.disarmPresses();
+                                Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+                                if (timeBubble != null) timeBubble.disarmPresses();
+                                InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
+                                InterlevelScene.curTransition = new LevelTransition();
+                                InterlevelScene.curTransition.destDepth = 0;
+                                InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+                                InterlevelScene.curTransition.destBranch = 0;
+                                InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+                                InterlevelScene.curTransition.centerCell = -1;
+                                Game.switchScene(InterlevelScene.class);
                             }
                         }
                     } );
