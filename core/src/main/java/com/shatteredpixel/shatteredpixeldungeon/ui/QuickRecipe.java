@@ -71,6 +71,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTerror;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfRoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
@@ -89,9 +90,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfGodIce;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVenom;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
@@ -466,6 +469,8 @@ public class QuickRecipe extends Component {
 						new ArrayList<Item>(Arrays.asList(new FrozenCarpaccio(), new MagicalInfusion(),
 								new AlchemicalCatalyst())),
 						new IceFishSword()));
+				result.add(null);
+				result.add(null);
 				result.add(new QuickRecipe( new MIME.GOLD_FIVE.Recipe(),
 						new ArrayList<Item>(Arrays.asList(new MIME.GOLD_ONE(), new MagicGirlBooks(),
 								new MIME.GOLD_FOUR())),
@@ -474,6 +479,13 @@ public class QuickRecipe extends Component {
 						new ArrayList<Item>(Arrays.asList(new MIME.GOLD_FIVE(), new CrystalLing(),
 								new Waterskin())),
 						new JAmulet()));
+				result.add(null);
+				result.add(null);
+				result.add(new QuickRecipe( new WandOfVenom.Recipe(),
+						new ArrayList<Item>(Arrays.asList(new ScrollOfEnchantment(),
+								new WandOfGodIce(),
+								new WandOfBlueFuck())),
+						new WandOfVenom()));
 				return result;
 		}
 	}

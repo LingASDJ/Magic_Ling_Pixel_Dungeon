@@ -42,7 +42,7 @@ import java.util.ArrayList;
 public class WandOfHightHunderStorm extends DamageWand {
 
     {
-        image = ItemSpriteSheet.WAND_HTR;
+        image = ItemSpriteSheet.HIGHTWAND_5;
     }
 
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {

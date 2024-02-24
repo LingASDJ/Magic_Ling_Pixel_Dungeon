@@ -63,7 +63,7 @@ public class GoldRoom extends SpecialRoom {
 
             Item generator = Generator.random();
             if(generator instanceof Weapon){
-                generator.level=Random.Int(1,4);
+                generator.level=Random.Int(0,2);
                 generator.cursed = false;
             } else if(generator instanceof Wand){
                 generator.level=Random.Int(2);
@@ -76,7 +76,7 @@ public class GoldRoom extends SpecialRoom {
 
             Item generator2 = Generator.random();
             if(generator2 instanceof Weapon){
-                generator2.level=Random.Int(1,4);
+                generator.level=Random.Int(0,2);
                 generator2.cursed = false;
             } else if(generator2 instanceof Wand){
                 generator2.level=Random.Int(2);

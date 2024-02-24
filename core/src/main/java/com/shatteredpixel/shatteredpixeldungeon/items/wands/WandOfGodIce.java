@@ -28,7 +28,7 @@ import com.watabou.utils.Random;
 public class WandOfGodIce extends DamageWand {
 
     {
-        image = ItemSpriteSheet.DG19;
+        image = ItemSpriteSheet.HIGHTWAND_4;
 
         collisionProperties = Ballistica.MAGIC_BOLT;
     }

@@ -193,12 +193,8 @@ public class DiamondKnight extends Boss implements Hero.Doom {
 
     @Override
     public boolean act() {
-        if(this.HP <= 300 && phase == 1) {
-            GLog.n(Messages.get(DiamondKnight.class, "war_go"));
-            phase++;
-        }
-
-        if (phase>4 && HP<10) {
+        ColdChestBossLevel.State level = ((ColdChestBossLevel)Dungeon.level).pro();
+        if (level == ColdChestBossLevel.State.VSBOSS_START && HP<10) {
             GameScene.flash(0x80FFFFFF);
             Dungeon.hero.interrupt();
             die(hero);
@@ -361,6 +357,7 @@ public class DiamondKnight extends Boss implements Hero.Doom {
             GameScene.flash(0x80FFFFFF);
             Dungeon.hero.interrupt();
             die(hero);
+
         }
 
 
@@ -384,7 +381,11 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         Statistics.bossScores[1] += 2500;
         Dungeon.level.drop( new TengusMask(), pos ).sprite.drop();
         int dropPos = this.pos;
-
+        for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (boss instanceof DCrystal) {
+                boss.die(true);
+            }
+        }
 
         if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
             Dungeon.level.drop(new IceCyanBlueSquareCoin(20),hero.pos);

@@ -92,8 +92,13 @@ public class SeedFinder {
                         (i instanceof Weapon && ((Weapon) i).hasGoodEnchant()) ||
                         (i instanceof Ring) || (i instanceof Wand)) && i.cursed)
                     builder.append("- " + Messages.get(this, "cursed")).append(i.title().toLowerCase());
-
-                else
+                else if ((i.level>2)) {
+                    builder.append(" [").append(i.title().toLowerCase()).append(" [ \n");
+                } else if ((i.level==2)) {
+                    builder.append(" ]").append(i.title().toLowerCase()).append(" ] \n");
+                } else if ((i.level==1)) {
+                    builder.append("_").append(i.title().toLowerCase()).append("_ \n");
+                } else
                     builder.append("- ").append(i.title().toLowerCase());
 
                 if (h.type != Type.HEAP)
@@ -111,9 +116,17 @@ public class SeedFinder {
             builder.append(caption).append(":\n");
 
             for (Item i : items) {
-                if (i.cursed)
-                    builder.append("- " + Messages.get(this, "cursed")).append(i.title().toLowerCase()).append("\n");
-
+                if (i.cursed && i.level<=0)
+                    builder.append("- ").append(Messages.get(this, "cursed")).append(i.title().toLowerCase()).append("\n");
+                else if ((i.level>0) && i.cursed) {
+                    builder.append("{ " + Messages.get(this, "cursed")).append(i.title().toLowerCase()).append(" { \n");
+                } else if ((i.level>2)) {
+                    builder.append(" [").append(i.title().toLowerCase()).append(" [ \n");
+                } else if ((i.level==2)) {
+                    builder.append(" ]").append(i.title().toLowerCase()).append(" ] \n");
+                } else if ((i.level==1)) {
+                    builder.append("_").append(i.title().toLowerCase()).append("_ \n");
+                }
                 else
                     builder.append("- ").append(i.title().toLowerCase()).append("\n");
             }
@@ -155,7 +168,8 @@ public class SeedFinder {
 
             @Override
             public String call() {
-                for (int i = Random.Int(9999999); i < DungeonSeed.TOTAL_SEEDS && findingStatus == FINDING.CONTINUE ; i++) {
+                for (long i = Random.Long(DungeonSeed.randomSeed());
+                     i < DungeonSeed.TOTAL_SEEDS && findingStatus == FINDING.CONTINUE ; i++) {
                     if (testSeedALL(seedDigits + i, floor)) {
                         result = logSeedItems(seedDigits + i, floor, cs);
                         break;
@@ -171,7 +185,7 @@ public class SeedFinder {
             int pricex = RegularLevel.holiday == RegularLevel.Holiday.CJ ? 5 : 15;
             SPDSettings.iceCoin(pricex);
             Pay = false;
-            Nofinding = true;
+            findingStatus = FINDING.STOP;
         }
         return result;
     }

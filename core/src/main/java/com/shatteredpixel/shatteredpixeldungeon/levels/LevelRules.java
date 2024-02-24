@@ -95,7 +95,11 @@ public class LevelRules {
 
             switch (depth) {
                 case 0:
-                    return new ZeroCityLevel();
+                    if(Dungeon.isChallenged(CS)){
+                        return new ZeroLevel();
+                    } else {
+                        return new ZeroCityLevel();
+                    }
                 case 1:
                 case 2:
                 case 3:

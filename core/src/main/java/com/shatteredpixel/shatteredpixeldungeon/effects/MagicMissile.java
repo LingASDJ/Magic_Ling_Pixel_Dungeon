@@ -96,6 +96,8 @@ public class MagicMissile extends Emitter {
 	public static final int BLOOD_CONE      = 113;
 
 	public static final int SWORDLING      = 114;
+
+	public static final int HEART_ANMY      = 115;
 	
 	public void reset( int type, int from, int to, Callback callback ) {
 		reset( type,
@@ -187,6 +189,10 @@ public class MagicMissile extends Emitter {
 			case SWORDLING:
 				size( 4 );
 				pour( SwordParticle.FACTORY, 0.01f );
+				break;
+			case HEART_ANMY:
+				size( 4 );
+				pour( Speck.factory(Speck.HEART), 0.01f );
 				break;
 				
 			case SHAMAN_RED:

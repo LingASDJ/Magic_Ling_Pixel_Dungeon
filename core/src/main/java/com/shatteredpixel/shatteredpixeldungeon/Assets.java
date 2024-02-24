@@ -409,6 +409,8 @@ public class Assets {
 		public static final String BZMR = "splashes/bzmdr_portraits.png";
 
 		public static final String YTZY = "splashes/yet_yog_portraits.png";
+
+		public static final String NYZ = "splashes/nyz_portraits.png";
 		public static final String MT = "splashes/mint_portraits.png";
 		public static final String LN = "splashes/ln_portraits.png";
 		public static final String WTX = "splashes/yan_portraits.png";

@@ -1417,7 +1417,11 @@ public class GameScene extends PixelScene {
 				} else {
 					switch (Dungeon.depth) {
 						case 0:
-							WndStory.showChapter( WndStory.ID_FOREST );
+							if(Dungeon.isChallenged(CS)) {
+								WndStory.showChapter(WndStory.ID_ALC);
+							} else {
+								WndStory.showChapter(WndStory.ID_FOREST);
+							}
 							break;
 						case 1:
 							WndStory.showChapter( WndStory.ID_SEWERS );

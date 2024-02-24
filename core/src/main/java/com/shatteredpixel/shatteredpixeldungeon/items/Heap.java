@@ -81,7 +81,11 @@ public class Heap implements Bundlable {
 		WHITETOMB,
 		SKELETON,
 		REMAINS,
-		BLACK
+		BLACK,
+		MIMIC,
+		GOLDEN_MIMIC,
+		CRYSTAL_MIMIC,
+		STATUE
 	}
 
 	//好好好

@@ -49,7 +49,7 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 
-//长末优化 手电 2024-2-14
+//长末优化 手电 2024-2-24
 abstract public class MissileWeapon extends Weapon {
 
 	{
@@ -77,15 +77,22 @@ abstract public class MissileWeapon extends Weapon {
 
 	@Override
 	public boolean isSimilar(Item item){
-		if( item.getClass() == getClass() ){
-			MissileWeapon nitem = (MissileWeapon)item;
-			if (nitem.enchantment != null && enchantment != null ){
-				return nitem.enchantment == enchantment && level == item.level;
+		if(item instanceof MissileWeapon && item.getClass() == getClass() ){
+			MissileWeapon mitem = (MissileWeapon)item;
+			Enchantment en = mitem.getEnchantment();
+			if(en!=null&&enchantment!=null){
+				return level == item.level() && enchantment.getClass() == en.getClass();
+			}else if( en!=null || enchantment!=null ){
+				return false;
 			}else{
-				return nitem.enchantment == null && enchantment == null;
+				return level() == item.level();
 			}
 		}
 		return super.isSimilar(item);
+	}
+
+	public Enchantment getEnchantment(){
+		return enchantment;
 	}
 
 	@Override

@@ -595,7 +595,7 @@ public class ItemSpriteSheet {
     public static final int LIQUID_METAL    = POTIONS+15;
     static {
         for (int i = POTIONS; i < POTIONS+16; i++)
-            assignItemRect(i, 12, 14);
+            assignItemRect(i, 14, 15);
         assignItemRect(POTION_CATALYST, 6, 15);
         assignItemRect(LIQUID_METAL,    8, 15);
     }
@@ -616,7 +616,7 @@ public class ItemSpriteSheet {
     public static final int EXOTIC_BLUEFIREX    = EXOTIC_POTIONS+12;
     static {
         for (int i = EXOTIC_POTIONS; i < EXOTIC_POTIONS+16; i++)
-            assignItemRect(i, 12, 13);
+            assignItemRect(i, 14, 15);
     }
 
     private static final int SEEDS              =                           xy(1, 24);  //16 slots
@@ -636,7 +636,6 @@ public class ItemSpriteSheet {
     public static final int SEED_SKYBLUEFIRE      = SEEDS+12;
     public static final int SEED_AIKELAIER      = SEEDS+13;
 
-    public static final int ALL_BAG      = SEEDS+14;
     public static final int GREEN_LING      = SEEDS+15;
 
 
@@ -644,7 +643,6 @@ public class ItemSpriteSheet {
         for (int i = SEEDS; i < SEEDS+16; i++)
             assignItemRect(i, 10, 10);
         assignItemRect(GREEN_LING, 8, 15);
-        assignItemRect(ALL_BAG, 16, 16);
     }
 
     private static final int BREWS          =                               xy(1, 25);  //8 slots
@@ -652,6 +650,9 @@ public class ItemSpriteSheet {
     public static final int BREW_BLIZZARD   = BREWS+1;
     public static final int BREW_SHOCKING   = BREWS+2;
     public static final int BREW_CAUSTIC    = BREWS+3;
+    public static final int	REDDRAGON				= BREWS+5;
+    public static final int	ANTILIGHT				= BREWS+6;
+    public static final int	WATERSOUL				= BREWS+7;
 
     private static final int ELIXIRS        =                               xy(9, 25);  //8 slots
     public static final int ELIXIR_HONEY    = ELIXIRS+0;
@@ -663,7 +664,7 @@ public class ItemSpriteSheet {
     public static final int ELIXIR_ARCANE   = ELIXIRS+6;
     static{
         for (int i = BREWS; i < BREWS+16; i++)
-            assignItemRect(i, 12, 14);
+            assignItemRect(i, 16, 16);
     }
 
     //16 free slots
@@ -866,7 +867,7 @@ public class ItemSpriteSheet {
     public static final int	BLUEDEVIAL				= BAGS+40;
     public static final int	PINKDEVIAL				= BAGS+41;
     public static final int	REDDEVIAL				= BAGS+42;
-    public static final int	REDDRAGON				= BAGS+43;
+
     public static final int	DRAGONKINGHALOFIRE				= BAGS+44;
     public static final int	ICEFISHSWORD				= BAGS+45;
     public static final int	FIREFISHSWORD				= BAGS+46;
@@ -877,7 +878,7 @@ public class ItemSpriteSheet {
     public static final int	DIEDVS				= BAGS+50;
 
 
-    public static final int	ANTILIGHT				= BAGS+51;
+    public static final int	ALL_BAG				= BAGS+51;
     public static final int	BOOKBAG				= BAGS+52;
     public static final int	BLACKBOOK		= BAGS+53;
     public static final int	LOSTBAG				= BAGS+54;
@@ -885,7 +886,7 @@ public class ItemSpriteSheet {
     public static final int	LANTERNB				= BAGS+56;
     public static final int	SKPOTION				= BAGS+57;
     public static final int	SKNANO				= BAGS+58;
-    public static final int	WATERSOUL				= BAGS+59;
+
     public static final int	WRALIPS				= BAGS+60;
 
     public static final int	DM100RELEY				= BAGS+63;
@@ -909,12 +910,13 @@ public class ItemSpriteSheet {
         assignItemRect(BANDOLIER,   15, 16);
         assignItemRect(HOLSTER,     15, 16);
         assignItemRect(DRAGONKINGHALOFIRE, 12, 14);
-        assignItemRect(REDDRAGON, 14, 14);
+        assignItemRect(REDDRAGON, 15, 16);
+        assignItemRect(ANTILIGHT, 15, 16);
         assignItemRect(LANTERNA, 10, 16);
         assignItemRect(LANTERNB, 10, 16);
         assignItemRect(SKPOTION, 8, 15);
         assignItemRect(SKNANO, 15, 14);
-        assignItemRect(WATERSOUL, 14, 14);
+        assignItemRect(WATERSOUL, 14, 16);
         assignItemRect(WRALIPS, 16, 16);
         assignItemRect(SDBlade, 15, 15);
     }
@@ -1004,6 +1006,19 @@ public class ItemSpriteSheet {
         assignItemRect(CAVES_PAGE,  10, 11);
         assignItemRect(CITY_PAGE,   10, 11);
         assignItemRect(HALLS_PAGE,  10, 11);
+    }
+
+    private static final int HIGHTWAND  =                                   xy(1, 50);  //16 slots
+    public static final int HIGHTWAND_1  = + HIGHTWAND+0;
+    public static final int HIGHTWAND_2  = + HIGHTWAND+1;
+    public static final int HIGHTWAND_3  = + HIGHTWAND+2;
+    public static final int HIGHTWAND_4  = + HIGHTWAND+3;
+    public static final int HIGHTWAND_5  = + HIGHTWAND+4;
+
+    public static final int HIGHTWAND_6  = + HIGHTWAND+5;
+    static {
+        for (int i =HIGHTWAND; i < HIGHTWAND+15; i++)
+            assignItemRect(i, 14, 14);
     }
 
     //for smaller 8x8 icons that often accompany an item sprite

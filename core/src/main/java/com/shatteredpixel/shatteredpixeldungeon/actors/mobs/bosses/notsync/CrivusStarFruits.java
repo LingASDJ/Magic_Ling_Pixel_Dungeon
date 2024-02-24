@@ -30,8 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ClearElemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
-import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
@@ -220,10 +218,12 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
     protected boolean act() {
 
         if (HP > 60 && Statistics.crivusfruitslevel3){
-            if(enemy!=null){
+            if(enemy!=null && enemy == hero){
                 yell(Messages.get(this,"goodbye"));
                 enemy.damage(enemy.HT/3,this);
                 spend(16f);
+            } else {
+                this.damage(2,this);
             }
 
         }
@@ -238,7 +238,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
             notice();
         }
 
-        GameScene.add(Blob.seed(pos, 20, ConfusionGas.class));
+        GameScene.add(Blob.seed(pos, Statistics.crivusfruitslevel2 ? 0 : 20,  ConfusionGas.class));
 
         return super.act();
     }
@@ -307,7 +307,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
         @Override
         public boolean act() {
 
-            if (target.HP > 200){
+            if (target.HP > 60){
                 detach();
                 return true;
             }
@@ -350,47 +350,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
 
     @Override
     public int defenseProc(Char enemy, int damage) {
-        GameScene.add(Blob.seed(pos, 10, CrivusFruits.DiedBlobs.class));
-
-
-        if(Random.Int(100)<=10 && !Statistics.crivusfruitslevel3){
-            int pos;
-            switch (Random.Int(9)) {
-                case 0:
-                default:
-                    pos = 346;
-                    break;
-                case 1:
-                    pos = 709;
-                    break;
-                case 2:
-                    pos = 339;
-                    break;
-                case 3:
-                    pos = 353;
-                    break;
-                case 4:
-                    pos = 721;
-                    break;
-                case 5:
-                    pos = 697;
-                    break;
-                case 6:
-                    pos = 596;
-                    break;
-                case 7:
-                    pos = 624;
-                    break;
-                case 8:
-                    pos = 577;
-                    break;
-            }
-            ScrollOfTeleportation.teleportToLocation(this, pos);
-            CellEmitter.get( pos ).burst( Speck.factory( Speck.LIGHT ), 10 );
-        }
-
-
-
+        GameScene.add(Blob.seed(pos, 40, CrivusFruits.DiedBlobs.class));
         return super.defenseProc(enemy, damage);
     }
 

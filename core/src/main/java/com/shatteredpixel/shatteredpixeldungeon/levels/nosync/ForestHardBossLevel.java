@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -109,6 +110,14 @@ public class ForestHardBossLevel extends Level {
                             }
                         }
                     }
+
+
+                    for (int i : TPos) {
+                        Heap s = drop(new Bomb(), i);
+                        s.type = Heap.Type.SKELETON;
+                        s.sprite.view(s);
+                    }
+
                     Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
                     boss.sprite.showStatus(CharSprite.NEGATIVE, "!!!");
                     ScrollOfTeleportation.teleportToLocation(hero, 248);
@@ -389,6 +398,10 @@ public class ForestHardBossLevel extends Level {
 
     public static int[] TombPos = new int[]{
             535,619,562,592
+    };
+
+    public static int[] TPos = new int[]{
+            535,592
     };
 
     public static int[] MobPos = new int[]{

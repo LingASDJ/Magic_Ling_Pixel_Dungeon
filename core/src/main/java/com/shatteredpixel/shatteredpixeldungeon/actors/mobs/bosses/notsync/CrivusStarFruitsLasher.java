@@ -206,7 +206,7 @@ public class CrivusStarFruitsLasher extends Mob {
 
         if (Statistics.crivusfruitslevel3) {
             onZapComplete();
-            spend(5f);
+            spend(12f);
         }
 
         if(hero.buff(CrivusStarFruits.DiedDamager.class) == null){

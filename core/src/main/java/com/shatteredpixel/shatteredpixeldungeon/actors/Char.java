@@ -552,6 +552,7 @@ public abstract class Char extends Actor {
 			enemy.damage( effectiveDamage, this );
 
 			if (buff(FireImbue.class) != null)  buff(FireImbue.class).proc(enemy);
+			if (buff(HaloFireImBlue.class) != null)  buff(HaloFireImBlue.class).proc(enemy);
 			if (buff(FrostImbue.class) != null) buff(FrostImbue.class).proc(enemy);
 			if (buff(FrostImbueEX.class) != null) buff(FrostImbueEX.class).proc(enemy);
 

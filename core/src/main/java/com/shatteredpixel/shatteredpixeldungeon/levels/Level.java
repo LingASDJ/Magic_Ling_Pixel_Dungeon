@@ -560,7 +560,9 @@ public abstract class Level implements Bundlable {
 		Mob m = Reflection.newInstance(mobsToSpawn.remove(0));
 		ChampionEnemy.rollForChampion(m);
 		ChampionEnemy.rollForStateLing(m);
-		//Buff.affect(m, HasteLing.MobLing.class, HasteLing.MobLing.DURATION*2000f);
+		if(Dungeon.isChallenged(CS) && Dungeon.depth>2 && Dungeon.depth<25){
+			Buff.affect(m, ChampionEnemy.AloneCity.class);
+		}
 		return m;
 	}
 
