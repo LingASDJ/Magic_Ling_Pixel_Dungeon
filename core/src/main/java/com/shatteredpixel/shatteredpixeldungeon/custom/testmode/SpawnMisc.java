@@ -55,17 +55,16 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.PotionOfLightningShiled;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.RedCrab;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.RiceDumplings;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SakaMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Switch;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfNoWater;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
@@ -333,7 +332,6 @@ public class SpawnMisc extends TestItem {
             miscList.add(CrystalLing.class);
             miscList.add(RedWhiteRose.class);
             miscList.add(PotionOfLightningShiled.class);
-            miscList.add(ElixirOfNukeCole.class);
         }
     }
 

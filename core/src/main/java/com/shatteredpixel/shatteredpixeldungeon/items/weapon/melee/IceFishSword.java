@@ -24,7 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
-public class IceFishSword extends Weapon {
+public class IceFishSword extends MeleeWeapon {
 
 
     {

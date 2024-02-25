@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.GoldIron;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -36,11 +37,23 @@ public class SpawnArtifact extends TestItem {
     private int artifact_level;
     private int artifact_id;
     private boolean cursed;
+    private static ArrayList<Class<? extends Artifact>> artifactList = new ArrayList<Class<? extends Artifact>>();
 
     public SpawnArtifact(){
         this.artifact_level = 0;
         this.artifact_id = 0;
         this.cursed = false;
+
+        buildList();
+    }
+
+    private void buildList(){
+        if(artifactList.isEmpty()) {
+            for (int i = 0; i < Generator.Category.ARTIFACT.classes.length; ++i) {
+                artifactList.add((Class<? extends Artifact>) Generator.Category.ARTIFACT.classes[i]);
+            }
+            artifactList.add(GoldIron.class);
+        }
     }
 
     @Override
@@ -64,7 +77,7 @@ public class SpawnArtifact extends TestItem {
         a.cursed = cursed;
     }
     public void createArtifact(){
-        Artifact artifact = (Artifact) Reflection.newInstance(getArtifact(artifact_id));
+        Artifact artifact = Reflection.newInstance(artifactList.get(artifact_id));
         if(artifact != null){
             if(Challenges.isItemBlocked(artifact))
                 return;
@@ -98,10 +111,6 @@ public class SpawnArtifact extends TestItem {
         artifact_level = bundle.getInt("artifact_level");
     }
 
-    private Class getArtifact(int index){
-        return Generator.Category.ARTIFACT.classes[index];
-    }
-
     private int maxLevel(int id){
         switch (id){
             case 0:
@@ -125,14 +134,6 @@ public class SpawnArtifact extends TestItem {
         }
     }
 
-    private static ArrayList<Class<? extends Artifact>> artifactList = new ArrayList<Class<? extends Artifact>>();
-    private void buildArtifactArray(){
-        if(!artifactList.isEmpty()) return;
-        for(int i=0;i<Generator.Category.ARTIFACT.classes.length;++i){
-            artifactList.add(getArtifact(i));
-        }
-    }
-
     private class ArtifactSetting extends Window {
         private static final int WIDTH = 120;
         private static final int BTN_SIZE = 17;
@@ -144,7 +145,6 @@ public class SpawnArtifact extends TestItem {
         private ArrayList<IconButton> artifactSprites = new ArrayList<>();
 
         public ArtifactSetting(){
-            buildArtifactArray();
             createArtifactImage();
             RenderedTextBlock_selected = PixelScene.renderTextBlock("", 6);
             add((RenderedTextBlock_selected));
@@ -220,7 +220,7 @@ public class SpawnArtifact extends TestItem {
         }
 
         private void updateText(){
-            Artifact artifact = (Artifact) Reflection.newInstance(getArtifact(artifact_id));
+            Artifact artifact = (Artifact) Reflection.newInstance(artifactList.get(artifact_id));
             RenderedTextBlock_selected.text(Messages.get(this, "current_artifact",artifact.name()));
             layout();
         }

@@ -3,7 +3,6 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.testmode;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -32,7 +31,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projec
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FiveRen;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceDewVialSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceSan;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicBlueSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -70,6 +75,12 @@ public class SpawnWeapon extends TestItem{
     private int enchant_id;
     private int enchant_rarity;
     private int weapon_id;
+    private static ArrayList<Class<? extends MeleeWeapon>> t1_WeaponList = new ArrayList<>();
+    private static ArrayList<Class<? extends MeleeWeapon>> t2_WeaponList = new ArrayList<>();
+    private static ArrayList<Class<? extends MeleeWeapon>> t3_WeaponList = new ArrayList<>();
+    private static ArrayList<Class<? extends MeleeWeapon>> t4_WeaponList = new ArrayList<>();
+    private static ArrayList<Class<? extends MeleeWeapon>> t5_WeaponList = new ArrayList<>();
+    private static ArrayList<Class<? extends MeleeWeapon>> t6_WeaponList = new ArrayList<>();
 
     public SpawnWeapon(){
         this.tier = 1;
@@ -78,6 +89,51 @@ public class SpawnWeapon extends TestItem{
         this.enchant_id = 0;
         this.enchant_rarity = 0;
         this.weapon_id = 0;
+
+        buildList();
+    }
+
+    private void buildList(){
+        if(t1_WeaponList.isEmpty()) {
+            for (int i = 0; i < Generator.Category.WEP_T1.classes.length; i++) {
+                t1_WeaponList.add((Class<? extends MeleeWeapon>) Generator.Category.WEP_T1.classes[i]);
+            }
+        }
+
+        if(t2_WeaponList.isEmpty()) {
+            for (int i = 0; i < Generator.Category.WEP_T2.classes.length; i++) {
+                t2_WeaponList.add((Class<? extends MeleeWeapon>) Generator.Category.WEP_T2.classes[i]);
+            }
+        }
+
+        if(t3_WeaponList.isEmpty()) {
+            for (int i = 0; i < Generator.Category.WEP_T3.classes.length; i++) {
+                t3_WeaponList.add((Class<? extends MeleeWeapon>) Generator.Category.WEP_T3.classes[i]);
+            }
+            t3_WeaponList.add(MagicBlueSword.class);
+        }
+
+        if(t4_WeaponList.isEmpty()) {
+            for (int i = 0; i < Generator.Category.WEP_T4.classes.length; i++) {
+                t4_WeaponList.add((Class<? extends MeleeWeapon>) Generator.Category.WEP_T4.classes[i]);
+            }
+        }
+
+        if(t5_WeaponList.isEmpty()) {
+            for (int i = 0; i < Generator.Category.WEP_T5.classes.length; i++) {
+                t5_WeaponList.add((Class<? extends MeleeWeapon>) Generator.Category.WEP_T5.classes[i]);
+            }
+            t5_WeaponList.add(IceSan.class);
+            t5_WeaponList.add(FiveRen.class);
+        }
+
+        if(t6_WeaponList.isEmpty()) {
+            for (int i = 0; i < Generator.Category.WEP_T6.classes.length; i++) {
+                t6_WeaponList.add((Class<? extends MeleeWeapon>) Generator.Category.WEP_T6.classes[i]);
+            }
+            t6_WeaponList.add(IceDewVialSword.class);
+            t6_WeaponList.add(FireFishSword.class);
+        }
     }
 
     @Override
@@ -97,7 +153,7 @@ public class SpawnWeapon extends TestItem{
 
     public void createWeapon(){
         try{
-            Weapon wpn = (Weapon) Reflection.newInstance(getWeapon(tier)[weapon_id]);
+            Weapon wpn = Reflection.newInstance(getWeapon(tier).get(weapon_id));
             wpn.level(weapon_level);
             Class enchantResult = getEnchant(enchant_rarity,enchant_id);
             if(enchantResult!=null){
@@ -123,22 +179,22 @@ public class SpawnWeapon extends TestItem{
         }
     }
 
-    private Class[] getWeapon(int tier){
+    private ArrayList<Class<? extends MeleeWeapon>> getWeapon(int tier){
         switch (tier){
             case 1:
-                return Generator.Category.WEP_T1.classes.clone();
+                return t1_WeaponList;
             case 2:
-                return Generator.Category.WEP_T2.classes.clone();
+                return t2_WeaponList;
             case 3:
-                return Generator.Category.WEP_T3.classes.clone();
+                return t3_WeaponList;
             case 4:
-                return Generator.Category.WEP_T4.classes.clone();
+                return t4_WeaponList;
             case 5:
-                return Generator.Category.WEP_T5.classes.clone();
+                return t5_WeaponList;
             case 6:
-                return Generator.Category.WEP_T6.classes.clone();
+                return t6_WeaponList;
         }
-        return Generator.Category.WEP_T1.classes.clone();
+        return t1_WeaponList;
     }
 
     private Class getEnchant(int rarity,int id){
@@ -248,7 +304,6 @@ public class SpawnWeapon extends TestItem{
         private static final int MAX_ICONS_PER_LINE = 7; // 每行最大图标数量
 
         // 成员变量
-        private Class[] AllWeapon; // 所有武器的Class数组
         private final RedButton Button_Create; // 创建武器按钮
         private final CheckBox CheckBox_Curse; // 诅咒物品复选框
         private final ArrayList<IconButton> IconButtons = new ArrayList<>(); // 图标按钮列表
@@ -267,24 +322,20 @@ public class SpawnWeapon extends TestItem{
             // 设置窗口尺寸
             resize(WIDTH, HEIGHT);
 
-            // 创建武器列表
-            createWeaponList(tier);
-
             // 创建武器阶数选项滑块
             OptionSlider_Tier = new OptionSlider(Messages.get(this, "weapon_tier"), "1", "6", 1, 6) {
                 @Override
                 protected void onChange() {
                     tier = getSelectedValue();
                     clearImage();
-                    createWeaponList(tier);
-                    createWeaponImage(AllWeapon);
+                    createWeaponImage(getWeapon(tier));
                 }
             };
             OptionSlider_Tier.setSelectedValue(tier);
             add(OptionSlider_Tier);
 
             // 创建武器图标
-            createWeaponImage(AllWeapon);
+            createWeaponImage(getWeapon(tier));
 
             // 创建附魔信息文本块
             Text_EnchantInfo = PixelScene.renderTextBlock("", 6);
@@ -351,7 +402,7 @@ public class SpawnWeapon extends TestItem{
 
             //TC控制
             try {
-                Button_Level.text(((Weapon) Reflection.newInstance(getWeapon(tier)[weapon_id])).name());
+                Button_Level.text(Reflection.newInstance(getWeapon(tier).get(weapon_id)).name());
             } catch (Exception e) {
                 GLog.w(M.L(MobPlacer.class, "forbidden"));
             }
@@ -374,7 +425,7 @@ public class SpawnWeapon extends TestItem{
          */
         private void SyncUI() {
             OptionSlider_Tier.setRect(0, GAP, WIDTH, 24);
-            int numLines = (int) Math.ceil(AllWeapon.length / (float) MAX_ICONS_PER_LINE);
+            int numLines = (int) Math.ceil(getWeapon(tier).size() / (float) MAX_ICONS_PER_LINE);
             float totalHeight = 30;
             if (numLines > 0) {
                 totalHeight += numLines * (BTN_SIZE + GAP);
@@ -400,19 +451,10 @@ public class SpawnWeapon extends TestItem{
         }
 
         /**
-         * 创建武器列表，并根据阶数筛选相应的武器类。
-         *
-         * @param tier 武器的阶数
-         */
-        private void createWeaponList(int tier) {
-            AllWeapon = getWeapon(tier);
-        }
-
-        /**
          * 更新选中的武器文本。
          */
         private void updateSelectedWeaponText() {
-            Weapon wpn = (Weapon) Reflection.newInstance(getWeapon(tier)[weapon_id]);
+            Weapon wpn = Reflection.newInstance(getWeapon(tier).get(weapon_id));
             Button_Level.text(wpn.name());
             layout();
         }
@@ -422,11 +464,10 @@ public class SpawnWeapon extends TestItem{
          *
          * @param all 所有武器的Class数组
          */
-        private void createWeaponImage(Class<? extends Weapon>[] all) {
+        private void createWeaponImage(ArrayList<Class<? extends MeleeWeapon>> all) {
             float left = BTN_SIZE / 2f;
             float top = 27;
-            int placed = 0;
-            int length = all.length;
+            int length = all.size();
             for (int i = 0; i < length; ++i) {
                 final int j = i;
                 IconButton btn = new IconButton() {
@@ -438,16 +479,15 @@ public class SpawnWeapon extends TestItem{
                     }
                 };
                 Image im = new Image(Assets.Sprites.ITEMS);
-                im.frame(ItemSpriteSheet.film.get(Objects.requireNonNull(Reflection.newInstance(all[i])).image));
+                im.frame(ItemSpriteSheet.film.get(Objects.requireNonNull(Reflection.newInstance(all.get(i))).image));
                 im.scale.set(1f);
                 btn.icon(im);
-                int row = placed / MAX_ICONS_PER_LINE;
-                int col = placed % MAX_ICONS_PER_LINE;
-                float x = left + col * (BTN_SIZE + GAP);
-                float y = top + row * (BTN_SIZE + GAP);
-                btn.setRect(x, y, BTN_SIZE, BTN_SIZE);
+
+                left = (WIDTH - BTN_SIZE * MAX_ICONS_PER_LINE) / 2f;
+                int line = i / MAX_ICONS_PER_LINE;
+                btn.setRect(left + (i - MAX_ICONS_PER_LINE * line) * BTN_SIZE, top + GAP * line + BTN_SIZE * line, BTN_SIZE, BTN_SIZE);
+
                 add(btn);
-                placed++;
                 IconButtons.add(btn);
             }
         }
