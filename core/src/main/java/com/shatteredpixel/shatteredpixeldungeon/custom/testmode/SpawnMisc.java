@@ -481,7 +481,7 @@ public class SpawnMisc extends TestItem {
                                 Messages.get(SpawnMisc.SettingsWindow.class, "item_level"), Messages.get(SpawnMisc.SettingsWindow.class, "item_level_desc"),
                                 Integer.toString(item_quantity),
                                 4, false, Messages.get(SpawnMisc.SettingsWindow.class, "confirm"),
-                                Messages.get(SpawnMisc.SettingsWindow.class, "cancel")) {
+                                Messages.get(SpawnMisc.SettingsWindow.class, "cancel"),false) {
                             @Override
                             public void onSelect(boolean check, String text) {
                                 if (check && item_quantity > 0 &&text.matches("^[1-9]\\d*$")) {

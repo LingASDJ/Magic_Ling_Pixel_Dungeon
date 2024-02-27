@@ -384,7 +384,7 @@ public class SpawnWeapon extends TestItem{
                                 Messages.get(SpawnWeapon.WeaponSetting.class, "weapon_level"), Messages.get(SpawnWeapon.WeaponSetting.class, "weapon_level_desc"),
                                 Integer.toString(weapon_level),
                                 4, false, Messages.get(SpawnWeapon.WeaponSetting.class, "confirm"),
-                                Messages.get(SpawnWeapon.WeaponSetting.class, "cancel")) {
+                                Messages.get(SpawnWeapon.WeaponSetting.class, "cancel"),false) {
                             @Override
                             public void onSelect(boolean check, String text) {
 

@@ -278,7 +278,7 @@ public class SpawnArmor extends TestItem {
                                 Messages.get(SpawnArmor.ArmorSetting.class, "armor_level"), Messages.get(SpawnArmor.ArmorSetting.class, "armor_level_desc"),
                                 Integer.toString(armor_level),
                                 4, false, Messages.get(SpawnArmor.ArmorSetting.class, "confirm"),
-                                Messages.get(SpawnArmor.ArmorSetting.class, "cancel")) {
+                                Messages.get(SpawnArmor.ArmorSetting.class, "cancel"),false) {
                             @Override
                             public void onSelect(boolean check, String text) {
 

@@ -200,7 +200,7 @@ public class SpawnRingOrWand extends TestItem {
                                 Messages.get(SettingsWindow.class, "item_level"), Messages.get(SettingsWindow.class, "item_level_desc"),
                                 Integer.toString(item_level),
                                 4, false, Messages.get(SettingsWindow.class, "confirm"),
-                                Messages.get(SettingsWindow.class, "cancel")) {
+                                Messages.get(SettingsWindow.class, "cancel"),false) {
                             @Override
                             public void onSelect(boolean check, String text) {
                                 if (check && text.matches("\\d+")) {

@@ -221,4 +221,12 @@ public class TextInput extends Component {
 			if (!DeviceCompat.isDesktop()) Game.platform.updateSystemUI();
 		}
 	}
+
+	public int getCursorPosition(){
+		return textField.getCursorPosition();
+	}
+
+	public void setCursorPosition (int cursorPosition){
+		textField.setCursorPosition(cursorPosition);
+	}
 }
