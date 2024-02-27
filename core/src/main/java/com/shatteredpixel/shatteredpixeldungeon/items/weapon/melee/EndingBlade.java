@@ -51,7 +51,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class EndingBlade extends Weapon {
+public class EndingBlade extends MeleeWeapon {
 
     {
         image = ItemSpriteSheet.ENDDIED;

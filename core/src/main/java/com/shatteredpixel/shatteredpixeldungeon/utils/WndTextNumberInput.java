@@ -17,6 +17,7 @@ public class WndTextNumberInput extends Window {
     private static final int W_LAND_EXTRA = 190; //extra width is sometimes used in landscape
     private static final int MARGIN = 2;
     private static final int BUTTON_HEIGHT = 16;
+    private boolean pressedDecimalPoint = false;
 
     protected TextInput textBox;
 
@@ -24,10 +25,12 @@ public class WndTextNumberInput extends Window {
 
     protected RedButton btnNumberZero;
 
+    protected RedButton btnDecimalPoint;
+
     protected RedButton btnCE;
 
     public WndTextNumberInput(final String title, final String body, final String initialValue, final int maxLength,
-                              final boolean multiLine, final String posTxt, final String negTxt) {
+                              final boolean multiLine, final String posTxt, final String negTxt, final boolean allowDecimalPoint) {
         super();
 
         //need to offset to give space for the soft keyboard
@@ -76,7 +79,11 @@ public class WndTextNumberInput extends Window {
                 hide();
             }
         };
-        if (initialValue != null) textBox.setText(initialValue);
+        if (initialValue != null){
+            textBox.setText(initialValue);
+            if(initialValue.indexOf(".")!=-1)
+                pressedDecimalPoint = true;
+        }
         textBox.setMaxLength(maxLength);
 
         //sets different height depending on whether this is a single or multi line input.
@@ -115,7 +122,16 @@ public class WndTextNumberInput extends Window {
             btnNumber = new RedButton(String.valueOf(number)) {
                 @Override
                 protected void onClick() {
-                    textBox.setText(textBox.getText() + number);
+                    int position = textBox.getCursorPosition();
+                    if(position==0){
+                        textBox.setText( number+textBox.getText() );
+                        textBox.setCursorPosition(1);
+                    }else if(position==textBox.getText().length()){
+                        textBox.setText(textBox.getText() + number);
+                    }else {
+                        textBox.setText(textBox.getText().substring(0,position)+number+textBox.getText().substring(position));
+                        textBox.setCursorPosition(position+1);
+                    }
                 }
             };
 
@@ -138,14 +154,27 @@ public class WndTextNumberInput extends Window {
                 btnWidth, BUTTON_HEIGHT);
         add(btnNumberZero);
 
+        if(allowDecimalPoint){
+            btnDecimalPoint = new RedButton(".") {
+                @Override
+                protected void onClick() {
+                    if(!pressedDecimalPoint){
+                        textBox.setText(textBox.getText()+".");
+                        pressedDecimalPoint = true;
+                    }
+                }
+            };
+            btnDecimalPoint.setRect(btnNumberZero.right(), pos + 3 * (BUTTON_HEIGHT + MARGIN),
+                    btnWidth, BUTTON_HEIGHT);
+            add(btnDecimalPoint);
+        }
+
         btnCE = new RedButton(Messages.get(WndTextNumberInput.class,"clear")) {
             @Override
-            protected void onClick() {
-                textBox.setText(null);
-            }
+            protected void onClick() {textBox.setText(null); pressedDecimalPoint = false;}
         };
-        btnCE.setRect(btnNumberZero.right(), pos + 3 * (BUTTON_HEIGHT + MARGIN),
-                btnWidth*2, BUTTON_HEIGHT);
+        btnCE.setRect(allowDecimalPoint ? btnDecimalPoint.right() : btnNumberZero.right(), pos + 3 * (BUTTON_HEIGHT + MARGIN),
+                allowDecimalPoint ? btnWidth : btnWidth*2, BUTTON_HEIGHT);
         add(btnCE);
 
         // 更新pos变量，确保按钮区域在确认按钮上方
