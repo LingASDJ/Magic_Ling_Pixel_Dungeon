@@ -226,7 +226,7 @@ public class ZeroCityLevel extends Level {
                 }
             } else if (transition.type == LevelTransition.Type.DOUBLE_ENTRANCE) {
 
-            if (hero.belongings.getItem( BossRushBloodGold.class ) == null && !(Statistics.deepestFloor == 0)) {
+            if (hero.belongings.getItem( BossRushBloodGold.class ) == null) {
                 Game.runOnRenderThread(new Callback() {
                     @Override
                     public void call() {
@@ -234,7 +234,7 @@ public class ZeroCityLevel extends Level {
                     }
                 });
                 return false;
-            } else {
+            } else if(hero.belongings.getItem( BossRushBloodGold.class ) != null && Statistics.deepestFloor == 0) {
 
                 Game.runOnRenderThread(new Callback() {
                     @Override
@@ -301,9 +301,11 @@ public class ZeroCityLevel extends Level {
                     }
 
                 });
-                
-               
+
+
                 return false;
+            } else {
+                return super.activateTransition(hero, transition);
             }
 
             } else {
