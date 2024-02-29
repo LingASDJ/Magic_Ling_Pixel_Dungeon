@@ -36,8 +36,6 @@ import com.watabou.utils.Random;
 
 public class GooMob extends Mob {
 
-
-
     {
         HP = HT = Random.NormalIntRange(90,180);
 

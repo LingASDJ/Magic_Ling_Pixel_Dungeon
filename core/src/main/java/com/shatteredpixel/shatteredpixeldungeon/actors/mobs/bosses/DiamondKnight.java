@@ -61,7 +61,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -106,11 +105,6 @@ public class DiamondKnight extends Boss implements Hero.Doom {
 
     public int phase;
     private int healInc = 1;
-
-    @Override
-    public boolean isAlive() {
-        return phase<6;
-    }
 
     @Override
     public int damageRoll() {
@@ -191,17 +185,7 @@ public class DiamondKnight extends Boss implements Hero.Doom {
 
     }
 
-    @Override
-    public boolean act() {
-        ColdChestBossLevel.State level = ((ColdChestBossLevel)Dungeon.level).pro();
-        if (level == ColdChestBossLevel.State.VSBOSS_START && HP<10) {
-            GameScene.flash(0x80FFFFFF);
-            Dungeon.hero.interrupt();
-            die(hero);
-        }
 
-        return super.act();
-    }
 
     /**
      * 判定是否可以攻击
@@ -303,12 +287,12 @@ public class DiamondKnight extends Boss implements Hero.Doom {
                     return true;
                 }
             });
-        } else if (level == ColdChestBossLevel.State.VSBOSS_START && this.HP <= 240 && phase == 2) {
+        } else if (level == ColdChestBossLevel.State.VSBOSS_START && this.HP <= 240 && phase == 1) {
             HP = 240;
             ((ColdChestBossLevel)Dungeon.level).progress();
             phase++;
             //血量低于200后变成玩家的样子，伤害和防御数值与玩家一致
-        } else if (level == ColdChestBossLevel.State.VSLINK_START && this.HP <= 200 && phase == 3) {
+        } else if (level == ColdChestBossLevel.State.VSLINK_START && this.HP <= 200 && phase == 2) {
             HP = 200;
             Actor.add(new Actor() {
 
@@ -331,7 +315,7 @@ public class DiamondKnight extends Boss implements Hero.Doom {
                 }
             });
             //最终决斗
-        } else if (level == ColdChestBossLevel.State.VSYOU_START && this.HP <= 100 && phase == 4) {
+        } else if (level == ColdChestBossLevel.State.VSYOU_START && this.HP <= 100 && phase == 3) {
             HP = 100;
             Actor.add(new Actor() {
 
@@ -353,14 +337,7 @@ public class DiamondKnight extends Boss implements Hero.Doom {
                     return true;
                 }
             });
-        } else if (level == ColdChestBossLevel.State.WIN && this.HP <= 10 && phase == 5) {
-            GameScene.flash(0x80FFFFFF);
-            Dungeon.hero.interrupt();
-            die(hero);
-
         }
-
-
 
     }
 
@@ -487,10 +464,6 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         pumpedUp = bundle.getInt( PUMPEDUP );
         if (state != SLEEPING) BossHealthBar.assignBoss(this);
         if ((HP*2 <= HT)) BossHealthBar.bleed(true);
-
-        if (Dungeon.initialVersion < Game.versionCode){
-            phase = 5;
-        }
 
         //if check is for pre-0.9.3 saves
         healInc = bundle.getInt(HEALINC);

@@ -72,7 +72,7 @@ public class ColdChestBossLevel extends Level {
 
     @Override
     public int randomRespawnCell( Char ch ) {
-        int pos = WIDTH + 16;
+        int pos = WIDTH*19+17;
         int cell;
         do {
             cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
@@ -642,7 +642,7 @@ public class ColdChestBossLevel extends Level {
                         //如果楼层为开始且boss血量小于100 判定WIN
                         if (pro == VSYOU_START && boss.HP <= 100) {
                             pro = WIN;
-                            //Buff.detach(boss, ChampionEnemy.Halo.class);
+                            Buff.detach(boss, ChampionEnemy.Halo.class);
                         }
                     }
                 }

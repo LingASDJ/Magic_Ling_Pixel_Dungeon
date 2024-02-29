@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Music;
 
 import java.io.IOException;
@@ -114,6 +115,17 @@ public class WndGame extends Window {
 		});
 		curBtn.icon(Icons.get(Icons.DISPLAY));
 		if (SPDSettings.intro()) curBtn.enable(false);
+
+		if(!Dungeon.hero.ready) {
+			// Debug
+			addButton(curBtn = new RedButton(Messages.get(this, "debug")) {
+				@Override
+				protected void onClick() {
+					GameScene.logActorThread = true;
+				}
+			});
+			curBtn.icon(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16));
+		}
 
 		resize( WIDTH, pos );
 	}

@@ -23,8 +23,12 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush.SkyGoo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.watabou.noosa.TextureFilm;
@@ -201,4 +205,37 @@ public class GooSprite extends MobSprite {
 			spray.killAndErase();
 		}
 	}
+
+
+	public void zap( int pos ) {
+
+		Char enemy = Actor.findChar(pos);
+
+		//shoot lightning from eye, not sprite center.
+		PointF origin = center();
+		if (flipHorizontal){
+			origin.y -= 6*scale.y;
+			origin.x -= 1*scale.x;
+		} else {
+			origin.y -= 8*scale.y;
+			origin.x += 1*scale.x;
+		}
+		if (enemy != null) {
+			parent.add(new Lightning(origin, enemy.sprite.destinationCenter(), (SkyGoo) ch));
+		} else {
+			parent.add(new Lightning(origin, pos, (SkyGoo) ch));
+		}
+		Sample.INSTANCE.play( Assets.Sounds.LIGHTNING );
+
+		super.zap( ch.pos );
+		flash();
+	}
+
+	@Override
+	public void die() {
+		emitter().burst( Speck.factory( Speck.WOOL ), 5 );
+		super.die();
+	}
+
+
 }

@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Salamander;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush.SkyGoo;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ArcaneBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.HolyBomb;
@@ -115,6 +116,8 @@ public class AntiMagic extends Armor.Glyph {
 		RESISTS.add( WarpBeacon.class );
 		
 		RESISTS.add( DM100.LightningBolt.class );
+
+		RESISTS.add( SkyGoo.LightningBolt.class );
 
 		RESISTS.add( Shaman.EarthenBolt.class );
 		RESISTS.add( CrystalWisp.LightBeam.class );
