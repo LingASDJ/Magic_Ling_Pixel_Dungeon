@@ -63,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.GuidePage;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.Builder;
@@ -337,21 +338,6 @@ public abstract class RegularLevel extends Level {
 				initRooms.add(new DreamcatcherRoom());
 				DragonGirlBlue.Quest.spawned = true;
 				anCityQuestProgress = true;
-			}
-		} else {
-			//49% chance
-			if(branch == 0){
-				if(Random.Float() <= 0.49f){
-					if (anCityQuestLevel() && anCityQuestLevel == depth && !anCityQuestProgress) {
-						initRooms.add(new DreamcatcherRoom());
-						DragonGirlBlue.Quest.spawned = true;
-						anCityQuestProgress = true;
-					} else if (!anCityQuestProgress && depth == anCityQuestLevel) {
-						initRooms.add(new DreamcatcherRoom());
-						anCityQuestProgress = true;
-						DragonGirlBlue.Quest.spawned = true;
-					}
-				}
 			}
 		}
 

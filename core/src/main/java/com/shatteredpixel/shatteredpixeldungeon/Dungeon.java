@@ -343,10 +343,6 @@ public class Dungeon {
 		return depth == 3 || depth == 7 || depth == 13 || depth == 17;
 	}
 
-	public static boolean anCityQuestLevel() {
-		return 18 == anCityQuestLevel  || 17 == anCityQuestLevel;
-	}
-
 	//Todo Roll 一下
 	public static boolean RollLevel() {
 		return depth == 6 || depth == 11 || depth == 16|| depth == 21;
@@ -663,7 +659,7 @@ public class Dungeon {
 		branch = 0;
 		generatedLevels.clear();
 
-		anCityQuestLevel = Random.Int(17,19);
+		anCityQuestLevel = 18;
 
 		anCityQuestProgress = false;
 		anCityQuest2Progress = false;
