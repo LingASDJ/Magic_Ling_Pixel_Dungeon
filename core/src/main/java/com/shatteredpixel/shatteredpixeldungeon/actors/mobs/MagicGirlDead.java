@@ -4,7 +4,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SpellCaster;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -395,8 +394,7 @@ public class MagicGirlDead extends Boss {
     public void die(Object src){
         Statistics.bossScores[2] += 5000;
         super.die(src);
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-
+      if(Statistics.happyMode){
             GetBossLoot();
         }
         Badges.validateBossSlain();

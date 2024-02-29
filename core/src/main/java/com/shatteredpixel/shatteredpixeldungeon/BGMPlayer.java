@@ -35,27 +35,18 @@ public class BGMPlayer {
         int d = depth;
         int s = branch;
 
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-            if (d == -1) {
-                playBGM(Assets.SNOWCYON, true);
-            }else if (d == 0||d==27) {
-                playBGM(Assets.SNOWCYON, true);
-            } else if (d > 0 && d <= 5) {
+        if (Statistics.happyMode) {
+            if (d == 1) {
+                playBGM(Assets.TOWN, true);
+            } else if (d >= 2 && d <= 7) {
                 playBGM(Assets.BGM_1, true);
-            } else if (d > 5 && d <= 10) {
+            } else if (d >= 8 && d <= 14) {
                 playBGM(Assets.BGM_2, true);
-            } else if (d > 10 && d <= 15) {
-                playBGM(Assets.BGM_3, true);
-            } else if (d > 15 && d <= 20) {
+            } else if (d >= 15 && d <= 21) {
                 playBGM(Assets.BGM_4, true);
-            } else if (d > 20 && d <= 26) {
+            } else if (d >= 22 && d <= 31) {
                 playBGM(Assets.BGM_5, true);
-            } else if (d >= 27 && d <= 30) {
-                playBGM(Assets.HOLLOW_CITY, true);
-            } else if (d ==-5||d ==-15) {
-                playBGM(Assets.SNOWCYON, true);
             } else
-                //default
                 playBGM(Assets.Music.THEME, true);
         } else {
             if(s == 5){
@@ -155,34 +146,43 @@ public class BGMPlayer {
         int t = depth;
         int s = branch;
 
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+        if (Statistics.happyMode) {
             switch (depth){
-                case 2: case 4:case 5:
+                case 2: case 4: case 6: case 13:
                     playBGM(Assets.BGM_BOSSA, true);
                     break;
-                case 8: case 10:
+                case 11:
+                    playBGM(Assets.BGM_BOSSB, true);
+                    break;
+                case 9:
+                    playBGM(Assets.BGM_BOSSB2, true);
+                    break;
+                case 16: case 17:
                     playBGM(Assets.BGM_BOSSC, true);
                     break;
-                case 12: case 14:
-                    playBGM(Assets.BGM_BOSSD, true);
-                    break;
-                case 16:
+                case 18:
                     playBGM(Assets.BGM_BOSSC3, true);
                     break;
-                case 19: case 21:
-                    playBGM(Assets.BGM_BOSSD2, true);
-                    break;
-                case 25:
+                case 21:
                     playBGM(Assets.BGM_FRBOSS, true);
                     break;
+                case 23:
+                    playBGM(Assets.SKBJY, true);
+                    break;
+                case 24:
+                    playBGM(Assets.BGM_BOSSD, true);
+                    break;
                 case 26:
-                    playBGM(Assets.BGM_BOSSE3, true);
+                    playBGM(Assets.BOSSDOG, true);
                     break;
-                case 28:
-                    playBGM( Assets.BGM_0, true );
+                case 27:
+                    playBGM(Assets.BGM_BOSSD2, true);
                     break;
-                case -31:
-                    playBGM( Assets.SKBJY, true );
+                case 29:
+                    playBGM( Assets.Music.HALLS_BOSS, true );
+                    break;
+                case 31:
+                    playBGM( Assets.BGM_BOSSE4, true );
                     break;
 
             }

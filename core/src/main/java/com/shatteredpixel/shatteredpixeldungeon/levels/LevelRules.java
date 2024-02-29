@@ -31,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.HotelLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.ForestHardBossLevel;
@@ -39,51 +38,9 @@ import com.watabou.utils.Random;
 
 //Level Rules
 public class LevelRules {
-    public static Level createBossRushLevel() {
-        switch (depth) {
-            case 0:
-            case 17:
-            case 27:
-                Buff.affect(hero, RandomBuff.class).set(5, 1);
-                return new AncityLevel();
-            case 1: case 3: case 6: case 7: case 9:
-            case 11: case 13: case 15: case 18: case 20: case 24:
-                return new ItemLevel();
-            case 2:
-                return new ForestHardBossLevel();
-            case 4:
-                return new SewerBossLevel();
-            case 5:
-                return new SLMKingLevel();
-            case 8:
-                return new PrisonBossLevel();
-            case 10:
-                return new DimandKingLevel();
-            case 12:
-                return new CavesBossLevel();
-            case 14:
-                return new CaveTwoBossLevel();
-            case 16:
-                return new CavesGirlDeadLevel();
-            case 19:
-                return new ShopBossLevel();
-            case 21:
-                return new NewCityBossLevel();
-            case 22: case 23:
-                Buff.affect(hero, TestDwarfMasterLock.class).set(10, 1);
-                return new CityLevel();
-            case 25:
-                return new DwarfMasterBossLevel();
-            case 26:
-                return new YogGodHardBossLevel();
-//            case 28:
-//                Buff.affect(hero, TestDwarfMasterLock.class).set(1, 1);
-//                return new DM920BossLevel();
-            default:
-                Statistics.deepestFloor--;
-                return new DeadEndLevel();
-        }
-    }
+//    public static Level createBossRushLevel() {
+//
+//    }
 
     public static Level createCheatingLevel() {
         return new CaveTwoBossLevel();
@@ -254,6 +211,55 @@ public class LevelRules {
 
             case 7:
                 return new ShopBossLevel();
+            case 8:
+                switch (depth) {
+                    case 1: return new AncityLevel();
+
+                    case 2: return new ForestBossLevel();
+
+                    case 4:
+                        return new ForestHardBossLevel();
+
+                    case 6: return new SLMKingLevel();
+
+//                    case 7: return new SkyGooBossLevel();
+
+                    case 9: return new PrisonBossLevel();
+
+                    case 11: return new ColdChestBossLevel();
+
+                    case 13: return new DimandKingLevel();
+
+                    //御三家 最难时刻
+                    case 16: return new CavesBossLevel();
+                    case 17: return new CaveTwoBossLevel();
+                    case 18: return new CavesGirlDeadLevel();
+
+                    case 21: return new ShopBossLevel();
+
+                    case 23: return new AncientMysteryCityBossLevel();
+                    case 24: return new NewCityBossLevel();
+
+                    case 26: return new CerDogBossLevel();
+
+                    case 27: return new DwarfMasterBossLevel();
+
+                    case 29: return new HallsBossLevel();
+
+                    case 31: return new YogGodHardBossLevel();
+
+                    //补给层 T1
+                    case 3:  case 5: case 7: case 8:  case 10:
+                        //补给层 T2
+                    case 14: case 12: case 15:  case 19: case 20:
+                        //补给层 T3
+                    case 22: case 25: case 28: case 30:
+                        return new ItemLevel();
+
+                    default:
+                        Statistics.deepestFloor--;
+                        return new DeadEndLevel();
+                }
         }
     }
 

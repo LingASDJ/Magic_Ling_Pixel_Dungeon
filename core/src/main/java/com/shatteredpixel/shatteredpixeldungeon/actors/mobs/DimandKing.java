@@ -28,8 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
@@ -42,7 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GreenSltingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -61,7 +59,7 @@ import java.util.HashSet;
 
 public class DimandKing extends Boss {
     {
-        spriteClass = MimicSprite.Dimand.class;
+        spriteClass = GreenSltingSprite.class;
         initProperty();
         initBaseStatus(14, 23, 33, 22, 200, 5, 12);
         initStatus(120);
@@ -223,6 +221,7 @@ public class DimandKing extends Boss {
                     abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
                     spend(TICK);
                 }
+                doYogLasers();
 
             } else {
                 abilityCooldown--;
@@ -239,7 +238,6 @@ public class DimandKing extends Boss {
     }
 
     private boolean summonSubject( int delay ){
-
         //4th summon is always a monk or warlock, otherwise ghoul
         //4 1n 13 are monks/warlocks
         if (summonsMade % 13 == 7 || summonsMade % 13 == 11) {
@@ -366,14 +364,14 @@ public class DimandKing extends Boss {
         }
         new Flare(5, 32).color(0xFF6060, false).show(sprite, 1.5f);
         yell(Messages.get(this,"buff_all"));
-        //doYogLasers();
+        doYogLasers();
     }
 
     private void sacrificeSubject(){
         Buff.affect(this,  SacrificeSubjectListener.class, 3f);
         new Flare(6, 32).color(0xFF22FF, false).show(sprite, 1.5f);
         yell(Messages.get(this, "sacrifice"));
-        //doYogLasers();
+        doYogLasers();
     }
 
     private void deathRattleSubject(){
@@ -391,7 +389,7 @@ public class DimandKing extends Boss {
         }
         new Flare(7, 32).color(0x303030, false).show(sprite, 1.5f);
         yell(Messages.get(this,"death_rattle"));
-        //doYogLasers();
+        doYogLasers();
     }
 
     private void extraSummonSubject(){
@@ -400,7 +398,7 @@ public class DimandKing extends Boss {
         summonSubject(3);
         summonsMade++;
         yell(Messages.get(this, "more_summon"));
-        //doYogLasers();
+        doYogLasers();
         new Flare(4, 32).color(0x4040FF, false).show(sprite, 1.5f);
     }
 
@@ -493,7 +491,7 @@ public class DimandKing extends Boss {
 
     @Override
     public void die(Object cause) {
-//        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+//      if(Statistics.happyMode){
 //
 //            GetBossLoot();
 //        }
@@ -525,10 +523,6 @@ public class DimandKing extends Boss {
 
         //Dungeon.level.drop(new KingsCrown(), dropPos).sprite.drop();
         Dungeon.level.drop(new ScrollOfRecharging().quantity(2),  dropPos).sprite.drop(pos);
-        Ankh ankh = new Ankh();
-        ankh.bless();
-        Dungeon.level.drop(new Ankh(), dropPos).sprite.drop(pos);
-        Dungeon.level.drop(new Gold().quantity(Random.Int(400,900)), pos).sprite.drop();
         Badges.validateBossSlain();
         //Badges.KILL_DMK();
         Dungeon.level.unseal();
@@ -549,7 +543,7 @@ public class DimandKing extends Boss {
         return super.isImmune(effect);
     }
 
-    public static class DKGhoul extends OGPDLLS {
+    public static class DKGhoul extends Katydid {
         {
             state = HUNTING;
             immunities.add(Corruption.class);
@@ -585,7 +579,7 @@ public class DimandKing extends Boss {
         }
     }
 
-    public static class DKWarlock extends SRPDHBLR {
+    public static class DKWarlock extends Salamander {
         {
             state = HUNTING;
             immunities.add(Corruption.class);
@@ -1003,7 +997,7 @@ public class DimandKing extends Boss {
                 Dungeon.observe();
             }
             for (Char ch : affected) {
-                ch.damage(Random.NormalIntRange(30, 50), new Eye.DeathGaze());
+                ch.damage(Random.NormalIntRange(20, 30), new Eye.DeathGaze());
 
                 if (Dungeon.level.heroFOV[pos]) {
                     ch.sprite.flash();

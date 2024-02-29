@@ -203,7 +203,36 @@ public class AncientMysteryCityBossLevel extends Level{
 
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
-        if (transition.type == LevelTransition.Type.BRANCH_EXIT) {
+
+        if(Statistics.happyMode && transition.type == LevelTransition.Type.BRANCH_EXIT) {
+            TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+            if (timeFreeze != null) timeFreeze.disarmPresses();
+            Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+            if (timeBubble != null) timeBubble.disarmPresses();
+            InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+            InterlevelScene.curTransition = new LevelTransition();
+            InterlevelScene.curTransition.destDepth = depth + 1;
+            InterlevelScene.curTransition.destType = LevelTransition.Type.BRANCH_EXIT;
+            InterlevelScene.curTransition.destBranch = 8;
+            InterlevelScene.curTransition.type = LevelTransition.Type.BRANCH_EXIT;
+            InterlevelScene.curTransition.centerCell = -1;
+            Game.switchScene(InterlevelScene.class);
+            return false;
+        } else if(Statistics.happyMode && transition.type == LevelTransition.Type.BRANCH_ENTRANCE){
+            TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+            if (timeFreeze != null) timeFreeze.disarmPresses();
+            Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+            if (timeBubble != null) timeBubble.disarmPresses();
+            InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+            InterlevelScene.curTransition = new LevelTransition();
+            InterlevelScene.curTransition.destDepth = depth-1;
+            InterlevelScene.curTransition.destType = LevelTransition.Type.BRANCH_EXIT;
+            InterlevelScene.curTransition.destBranch = 8;
+            InterlevelScene.curTransition.type = LevelTransition.Type.BRANCH_EXIT;
+            InterlevelScene.curTransition.centerCell  = -1;
+            Game.switchScene( InterlevelScene.class );
+            return false;
+        } else if (transition.type == LevelTransition.Type.BRANCH_EXIT) {
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {

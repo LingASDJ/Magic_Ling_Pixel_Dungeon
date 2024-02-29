@@ -6,6 +6,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -93,12 +94,20 @@ public class ShopBossLevel extends Level {
     public void unseal() {
         super.unseal();
 
-        if(Dungeon.depth == 19){
-            set(  this.entrance =  WIDTH*17 + 17, Terrain.EXIT );
-            GameScene.updateMap( this.entrance =  WIDTH*17 + 17 );
+        if(Dungeon.depth == 21){
 
-            set(  this.entrance =  WIDTH*21 + 17, Terrain.ENTRANCE );
+            int entrance =  WIDTH*17 + 17;
+            set(  entrance, Terrain.EXIT );
+            GameScene.updateMap( this.entrance =  WIDTH*17 + 17 );
+            LevelTransition ene = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_EXIT);
+            transitions.add(ene);
+
+            int exne =  WIDTH*21 + 17;
+            set( exne, Terrain.ENTRANCE );
             GameScene.updateMap( this.entrance =  WIDTH*21 + 17 );
+            LevelTransition ecne = new LevelTransition(this, exne, LevelTransition.Type.REGULAR_ENTRANCE);
+            transitions.add(ecne);
+
         } else {
             FireMagicDiedNPC boss = new FireMagicDiedNPC();
             boss.pos = 647;
@@ -281,6 +290,9 @@ public class ShopBossLevel extends Level {
 
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
+        if(Statistics.happyMode){
+            return super.activateTransition(hero, transition);
+        }
         return false;
     }
 

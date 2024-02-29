@@ -5,9 +5,9 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReloadShop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReloadShopTwo;
@@ -46,7 +46,7 @@ public class WndKingShop extends Window {
         IconTitle titlebar = new IconTitle();
         titlebar.setRect(0, 0, WIDTH, 0);
         titlebar.icon(new ShopkKingSprite());
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+        if (Statistics.happyMode) {
             titlebar.label(Messages.get(WndKingShop.class,"title_bar"));
         } else {
             titlebar.label(Messages.get(WndKingShop.class,"king"));
@@ -54,7 +54,7 @@ public class WndKingShop extends Window {
 
         add( titlebar );
 
-        RenderedTextBlock message = PixelScene.renderTextBlock( Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? (Messages.get(WndKingShop.class,"run")) :
+        RenderedTextBlock message = PixelScene.renderTextBlock( Statistics.happyMode ? (Messages.get(WndKingShop.class,"run")) :
         (Messages.get(WndKingShop.class,"select")), 6 );
         message.maxWidth(WIDTH);
         message.setPos(0, titlebar.bottom() + GAP);
@@ -224,7 +224,7 @@ public class WndKingShop extends Window {
         btnGoBack.textColor(Window.CYELLOW);
         btnGoBack.icon(Icons.get(Icons.DEPTH));
 
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+        if (Statistics.happyMode) {
             btnGoBack.active=false;
             btnGoBack.alpha(0.3f);
         }

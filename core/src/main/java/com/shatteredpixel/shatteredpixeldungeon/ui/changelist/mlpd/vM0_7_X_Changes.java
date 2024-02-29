@@ -36,6 +36,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0710_Changes(changeInfos);
         add_V079_Changes(changeInfos);
         add_V078_Changes(changeInfos);
         add_V077_Changes(changeInfos);
@@ -44,6 +45,37 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0710_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.0.X", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKELETONGOLD), ("新模式：BossRush"),
+                ("仍然在测试，请谨慎游玩。")));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new DragonGirlBlueSprite(), ("远古遗迹v1.3"),
+                ("1.小蓝固定刷新\n\n" +
+                        "2.优化钥匙剑生成")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FISHING_SPEAR), "投掷武器优化",
+                "优化投掷武器在附魔后的一些问题，感谢手电的修正"));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分文案优化\n" +
+                        "3.部分细节优化更新")));
+
     }
 
     public static void add_V079_Changes( ArrayList<ChangeInfo> changeInfos ) {

@@ -3,8 +3,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle;
@@ -44,7 +44,7 @@ public class NullDiedTO extends NTNPC {
     }
     @Override
     public String name(){
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+        if (Statistics.happyMode) {
             return Messages.get(this, "namex");
         } else {
             return Messages.get(this, "name");
@@ -54,7 +54,7 @@ public class NullDiedTO extends NTNPC {
 
     @Override
     public String description(){
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+        if (Statistics.happyMode) {
             return Messages.get(this, "descx");
         } else {
             return Messages.get(this, "desc");
@@ -151,7 +151,7 @@ public class NullDiedTO extends NTNPC {
             WndQuest.chating(this,chat);
             first=false;
         }else {
-            if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && Dungeon.depth == 27){
+            if(Statistics.happyMode && Dungeon.depth == 27){
                 GLog.n(Messages.get(this,"leave"));
             } else {
                 Game.runOnRenderThread(new Callback() {
@@ -172,20 +172,20 @@ public class NullDiedTO extends NTNPC {
 
         chat = new ArrayList<String>() {
             {
-                if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && Dungeon.depth==0) {
+                if(Statistics.happyMode && Dungeon.depth==1) {
                     add(Messages.get(NullDiedTO.class, "talk_a"));
                     add(Messages.get(NullDiedTO.class, "talk_b"));
                     add(Messages.get(NullDiedTO.class, "talk_c"));
                     add(Messages.get(NullDiedTO.class, "talk_d"));
                     add(Messages.get(NullDiedTO.class, "talk_e"));
                     add(Messages.get(NullDiedTO.class, "talk_f"));
-                } else if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && Dungeon.depth==17) {
+                } else if(Statistics.happyMode && Dungeon.depth==17) {
                     add(Messages.get(NullDiedTO.class, "talk_g"));
                     add(Messages.get(NullDiedTO.class, "talk_h"));
-                } else if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && Dungeon.depth==27) {
+                } else if(Statistics.happyMode && Dungeon.depth==27) {
                     add(Messages.get(NullDiedTO.class, "talk_i"));
                     add(Messages.get(NullDiedTO.class, "talk_j"));
-                } else if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && Dungeon.depth==28) {
+                } else if(Statistics.happyMode && Dungeon.depth==28) {
                     add(Messages.get(NullDiedTO.class, "talk_k"));
                     add(Messages.get(NullDiedTO.class, "talk_l"));
                     add(Messages.get(NullDiedTO.class, "talk_m"));

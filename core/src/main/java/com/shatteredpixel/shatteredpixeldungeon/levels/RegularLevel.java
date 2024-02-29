@@ -26,14 +26,12 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.anCityQuestLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.anCityQuestProgress;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
 
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
@@ -63,7 +61,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.GuidePage;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.Builder;
@@ -276,7 +273,7 @@ public abstract class RegularLevel extends Level {
 
 		//		initRooms.add(new RangeMobRoom());
 
-		if (Dungeon.NyzshopOnLevel() && branch == 0) {
+		if (Dungeon.NyzshopOnLevel() && branch == 0 || Statistics.happyMode && Dungeon.NyzshopOnLevel()) {
 			Buff.affect(hero, RandomBuff.class).set( (4 + Random.Int(9)+hero.STR/6+hero.HP/30)/Random.Int(1,2)+5, 1 );
 			initRooms.add(new NyzBombAndBooksRoom());
 		}
@@ -333,13 +330,13 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(s);
 		}
 
-		if (!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)) {
+//		if (!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)) {
 			if (depth == 18 && !anCityQuestProgress) {
 				initRooms.add(new DreamcatcherRoom());
 				DragonGirlBlue.Quest.spawned = true;
 				anCityQuestProgress = true;
 			}
-		}
+//		}
 
 		if (Dungeon.shopOnLevel() && branch == 0)
 			initRooms.add(new ShopRoom());

@@ -6,12 +6,14 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ abstract public class Boss extends Mob {
             immunities.add(ScrollOfPsionicBlast.class); //添加ScrollOfPsionicBlast类
             immunities.add(ScrollOfRetribution.class); //添加ScrollOfRetribution类
             immunities.add(Corruption.class);
+
         }
 
         protected void initBaseStatus(float min, float max, float acc, float eva, float ht, float mid, float mad) {
@@ -61,13 +64,13 @@ abstract public class Boss extends Mob {
                 }
             }
 
-            if(Challenges.activeChallenges()>9){
-                Dungeon.level.drop(new IceCyanBlueSquareCoin(((5*(Dungeon.depth/5)) * (Challenges.activeChallenges() / 5))),pos);
-            } else {
-                Dungeon.level.drop(new IceCyanBlueSquareCoin(5*(Dungeon.depth/5)),pos);
+            if(!Statistics.happyMode){
+                if(Challenges.activeChallenges()>9){
+                    Dungeon.level.drop(new IceCyanBlueSquareCoin(((5*(Dungeon.depth/5)) * (Challenges.activeChallenges() / 5))),pos);
+                } else {
+                    Dungeon.level.drop(new IceCyanBlueSquareCoin(5*(Dungeon.depth/5)),pos);
+                }
             }
-
-
 
     }
 
@@ -84,6 +87,8 @@ abstract public class Boss extends Mob {
             defenseSkill = Math.round(baseEva); //闪避率
             EXP = exp; //经验值
             HP = HT = Math.round(baseHT); //生命值
+
+
         }
 
         @Override
@@ -103,6 +108,40 @@ abstract public class Boss extends Mob {
 
         @Override
         public int drRoll() {
+
             return Math.round(Random.NormalFloat(baseMinDef, baseMaxDef)); //随机防御
         }
+    private boolean first=false;
+
+    private static final String FIRST = "first";
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(FIRST, first);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        first = bundle.getBoolean(FIRST);
+    }
+
+    @Override
+    public void notice() {
+        super.notice();
+        if (Statistics.happyMode && !(Dungeon.depth == 2 || Dungeon.depth == 4)){
+            if(!first){
+                if(Statistics.difficultyDLCEXLevel == 3){
+                    ChampionEnemy.rollForChampion(this);
+                    ChampionEnemy.rollForStateLing(this);
+                } else if (Statistics.difficultyDLCEXLevel == 2){
+                    ChampionEnemy.rollForChampion(this);
+                }
+                first = true;
+            }
+        }
+    }
+
+
 }

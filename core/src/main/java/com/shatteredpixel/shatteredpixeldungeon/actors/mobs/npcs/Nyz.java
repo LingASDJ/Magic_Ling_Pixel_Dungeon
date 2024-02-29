@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NyzPlot;
@@ -159,7 +160,7 @@ public class Nyz extends NTNPC {
         sprite.turnTo(pos, hero.pos);
         NyzPlot plot = new NyzPlot();
         NyzPlot.EndPlot plot2= new NyzPlot.EndPlot();
-        if(Dungeon.NyzshopOnLevel()) {
+        if(Dungeon.NyzshopOnLevel()|| Statistics.happyMode) {
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {

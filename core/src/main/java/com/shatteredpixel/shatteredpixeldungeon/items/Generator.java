@@ -179,7 +179,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Javelin;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.RedBlock;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.RiverSlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.StreamerKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingClub;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingHammer;
@@ -570,7 +570,7 @@ public class Generator {
 					Javelin.class,
 					Tomahawk.class,
 					HeavyBoomerang.class,
-					RiverSlade.class
+					StreamerKnife.class
 			};
 			MIS_T4.probs = new float[]{ 6, 5, 4, 5 };
 

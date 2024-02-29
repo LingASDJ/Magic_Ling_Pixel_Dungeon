@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.ROGUE;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createBossRushLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createBranchLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createStandardLevel;
 
@@ -235,10 +234,7 @@ public class Dungeon {
 		Actor.clear();
 		
 		Level level;
-			if (branch == 0)
-			if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))
-				level = createBossRushLevel();
-			else level = createStandardLevel();
+			if (branch == 0) level = createStandardLevel();
 		 	else level = createBranchLevel();
 
 

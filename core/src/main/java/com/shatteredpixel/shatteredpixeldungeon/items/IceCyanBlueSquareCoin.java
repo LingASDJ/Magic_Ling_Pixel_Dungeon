@@ -5,6 +5,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -37,7 +38,7 @@ public class IceCyanBlueSquareCoin extends Item {
     @Override
     public boolean doPickUp(Hero hero, int pos) {
 
-        if(!Dungeon.isChallenged(PRO)){
+        if(!Dungeon.isChallenged(PRO) || !Statistics.happyMode){
             if(SPDSettings.Cheating()){
                 //盗版蓝币只有正版的十分之一
                 SPDSettings.iceCoin(quantity/10);

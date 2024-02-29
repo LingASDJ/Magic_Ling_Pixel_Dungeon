@@ -114,6 +114,12 @@ public class CerDogBossLevel extends Level{
     public void unseal() {
         super.unseal();
 
+        set(46, Terrain.EXIT);
+        GameScene.updateMap(46);
+
+        LevelTransition exit = new LevelTransition(this,46, LevelTransition.Type.REGULAR_EXIT);
+        transitions.add(exit);
+
         set(getBossDoor, Terrain.EMPTY);
         GameScene.updateMap(getBossDoor);
 
@@ -411,8 +417,7 @@ public class CerDogBossLevel extends Level{
         LevelTransition ent = new LevelTransition(this, enter, LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(ent);
 
-        LevelTransition exit = new LevelTransition(this,0, LevelTransition.Type.REGULAR_EXIT);
-        transitions.add(exit);
+
 
         CustomTilemap vis = new townBehind();
         vis.pos(0, 0);
@@ -502,6 +507,62 @@ public class CerDogBossLevel extends Level{
 
         @Override
         public boolean interact(Char c) {
+            for (Mob mob : level.mobs.toArray(new Mob[0])){
+                if (mob instanceof YellowStar){
+
+                    mob.sprite.jump(46, 356, 145, 12f,new Callback() {
+                        @Override
+                        public void call() {
+                            // This is Project,Shuold May be Can Work...
+
+
+                            mob.sprite.parent.add(new Chains(FirstPos[0], EndPos[0], Effects.Type.RED_CHAIN,null));
+
+                            mob.sprite.parent.add(new Chains(FirstPos[1], EndPos[1], Effects.Type.RED_CHAIN,null));
+
+                            mob.sprite.parent.add(new Chains(FirstPos[2], EndPos[2], Effects.Type.RED_CHAIN, null));
+
+                            mob.sprite.parent.add(new Chains(FirstPos[3], EndPos[3], Effects.Type.RED_CHAIN, null));
+
+                            mob.sprite.parent.add(new Chains(FirstPos[0], EndPos[1], Effects.Type.RED_CHAIN, null));
+
+                            mob.sprite.parent.add(new Chains(FirstPos[1], EndPos[2], Effects.Type.RED_CHAIN, null));
+
+                            mob.sprite.parent.add(new Chains(FirstPos[2], EndPos[0], Effects.Type.RED_CHAIN,null));
+
+                            mob.sprite.parent.add(new Chains(FirstPos[3], EndPos[0], Effects.Type.RED_CHAIN,new Callback() {
+                                @Override
+                                public void call() {
+                                    mob.destroy();
+                                    mob.sprite.killAndErase();
+                                    Camera.main.shake(2f, 10f);
+                                    Cerberus ncx = new Cerberus();
+                                    ncx.pos = 356;
+                                    ncx.notice();
+
+                                    Buff.detach( hero, MindVision.class );
+
+                                    for (Mob mob : level.mobs.toArray(new Mob[0])){
+                                        if ( mob instanceof DeathRong) {
+                                            if(!((DeathRong) mob).rd){
+                                                Buff.affect( ncx, DiedCrused.class);
+                                                DeathRong.tell(Messages.get(DeathRong.class, "fuck",hero.name()));
+                                            }
+                                        }
+                                    }
+
+                                    ncx.state = ncx.WANDERING;
+                                    GameScene.add(ncx);
+                                }
+                            }));
+
+
+                        }
+                    });
+
+
+                }
+            }
             return true;
         }
 

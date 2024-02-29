@@ -1,8 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
@@ -93,7 +93,7 @@ public class SlimeKingMob extends Mob {
     }
 
     {
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+      if(Statistics.happyMode){
             HP =190;
             HT= 190;
 

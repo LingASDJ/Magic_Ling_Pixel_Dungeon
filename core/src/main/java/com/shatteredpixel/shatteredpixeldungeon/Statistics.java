@@ -63,6 +63,11 @@ public class Statistics {
 
 	//萨卡班甲鱼二阶段
 	public static int sakaBackStage;
+
+
+	//难度等级
+	public static int difficultyDLCEXLevel;
+
 	public static int readBooks;
 	public static int treasureScore;
 	public static SparseArray<Boolean> floorsExplored = new SparseArray<>();
@@ -304,6 +309,8 @@ public class Statistics {
 
 	private static final String EXBOSS1		= "EXBOSS1";
 
+	private static final String XOL		= "xol";
+
     public static boolean TryUsedAnmy = false;
     public static boolean winGame = false;
     public static boolean HiddenOK = false;
@@ -341,6 +348,8 @@ public class Statistics {
 		gooFight = false;
 		mustTengu = false;
 
+
+		difficultyDLCEXLevel = 0;
         happyMode = false;
 
         findMoon = false;
@@ -544,6 +553,8 @@ public class Statistics {
 
 		bundle.put( SAKATWO, sakaBackStage );
 
+		bundle.put( XOL, difficultyDLCEXLevel);
+
 		bundle.put(MSTG,mustTengu);
 
 		//SPD
@@ -575,6 +586,8 @@ public class Statistics {
 		winGame = bundle.getBoolean(WINGAME);
 
 		HiddenOK = bundle.getBoolean(HIDEEN);
+
+		difficultyDLCEXLevel = bundle.getInt(XOL);
 
 		CatFirst = bundle.getBoolean("CAT");
 

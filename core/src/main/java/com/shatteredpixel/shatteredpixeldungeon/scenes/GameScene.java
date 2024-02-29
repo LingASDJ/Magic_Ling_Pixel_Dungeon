@@ -33,7 +33,6 @@ import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
@@ -1363,58 +1362,7 @@ public class GameScene extends PixelScene {
 			case ANCITYBOSS:
 			case AMULET:
 			case GARDEN:
-				if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-					switch (Dungeon.depth) {
-						case 0:
-							WndStory.showChapter(WndStory.ID_GAME);
-							break;
-						case 1:
-							WndStory.showChapter(WndStory.ID_NOMOBS);
-							break;
-						case 2:
-							WndStory.showChapter(WndStory.ID_CALA);
-							break;
-						case 4:
-							WndStory.showChapter(WndStory.ID_SEWS);
-							break;
-						case 5:
-							WndStory.showChapter(WndStory.ID_SKBS);
-							break;
-						case 8:
-							WndStory.showChapter(WndStory.ID_TGKS);
-							break;
-						case 10:
-							WndStory.showChapter(WndStory.ID_DKBS);
-							break;
-						case 12:
-							WndStory.showChapter(WndStory.ID_DMBS);
-							break;
-						case 14:
-							WndStory.showChapter(WndStory.ID_DKVS);
-							break;
-						case 16:
-							WndStory.showChapter(WndStory.ID_ICES);
-							break;
-						case 19:
-							WndStory.showChapter(WndStory.ID_FBXA);
-							break;
-						case 21:
-							WndStory.showChapter(WndStory.ID_DKKX);
-							break;
-						case 25:
-							WndStory.showChapter(WndStory.ID_LXKS);
-							break;
-						case 26:
-							WndStory.showChapter(WndStory.ID_ZTBS);
-							break;
-						case 27:
-							WndStory.showChapter(WndStory.ID_DMZR);
-							break;
-						case 28:
-							WndStory.showChapter(WndStory.ID_ENDS);
-							break;
-					}
-				} else {
+				if(!Statistics.happyMode){
 					switch (Dungeon.depth) {
 						case 0:
 							if(Dungeon.isChallenged(CS)) {
@@ -1476,15 +1424,6 @@ public class GameScene extends PixelScene {
 								WndStory.showChapter(WndStory.ID_ZTBS);
 							}
 							break;
-//						case 26:
-//							HollowPlot plot = new HollowPlot();
-//							Game.runOnRenderThread(new Callback() {
-//								@Override
-//								public void call() {
-//									GameScene.show(new WndDialog(plot,false));
-//								}
-//							});
-//							break;
 					}
 				}
 
@@ -1770,12 +1709,19 @@ public class GameScene extends PixelScene {
 			//Boss开始后的处理Logo,不在Switch中就是默认的Logo。
 			switch (Dungeon.depth){
 				case 2:
-					if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ){
+					if(Statistics.happyMode){
 						bossSlain.texture( Assets.Interfaces.QliPhoth_Title );
 						bossSlain.show( 0xFFFFFF, 0.3f, 5f );
 						scene.showBanner( bossSlain );
 					}
 					break;
+				case 4:
+					if(Statistics.happyMode){
+						bossSlain.texture(Assets.Interfaces.QliPhothEX_Title);
+						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+						break;
+					}
 				case 5:
 						bossSlain.texture(Statistics.ExFruit ? Assets.Interfaces.QliPhothEX_Title : Assets.Interfaces.QliPhoth_Title);
 						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
@@ -1813,7 +1759,7 @@ public class GameScene extends PixelScene {
 						scene.showBanner(bossSlain);
 					}
 					break;
-				case 30:
+				case 30: case 26:
 					bossSlain.texture(Assets.Interfaces.Cerdog_Title);
 					bossSlain.show(Window.CYELLOW, 0.3f, 5f);
 					scene.showBanner(bossSlain);
@@ -1839,7 +1785,7 @@ public class GameScene extends PixelScene {
 			//Boss死亡后的处理Logo,不在Switch中就是默认的Logo。
 			switch (Dungeon.depth){
 				case 2:
-					if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ){
+					if(Statistics.happyMode ){
 						bossSlain.texture( Assets.Interfaces.QliPhoth_Clear );
 						bossSlain.show( 0xFFFFFF, 0.3f, 5f );
 						scene.showBanner( bossSlain );
@@ -1882,7 +1828,7 @@ public class GameScene extends PixelScene {
 						scene.showBanner(bossSlain);
 					}
 					break;
-				case 30:
+				case 30: case 26:
 					bossSlain.texture(Assets.Interfaces.Cerdog_Clear);
 					bossSlain.show( 0xF7941D, 0.3f, 5f);
 					scene.showBanner(bossSlain);

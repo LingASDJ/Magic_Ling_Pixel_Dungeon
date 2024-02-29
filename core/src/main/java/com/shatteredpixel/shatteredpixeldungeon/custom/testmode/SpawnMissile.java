@@ -13,7 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Javelin;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.RedBlock;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.RiverSlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.StreamerKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingClub;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingHammer;
@@ -70,7 +70,7 @@ public class SpawnMissile extends TestItem {
             ThrowingHammer.class,
             Trident.class,
             ForceCube.class,
-            RiverSlade.class,
+            StreamerKnife.class,
             RedBlock.class
     };
 

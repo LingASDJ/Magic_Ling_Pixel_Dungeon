@@ -72,9 +72,9 @@ public class AncityLevel extends Level {
 
 
         int entranceCell =  (this.width * 8 + 8);
-        int exitCell =  (this.width * 8 + 8);
+        int exitCell =  0;
 
-        LevelTransition enter = new LevelTransition(this, entranceCell, LevelTransition.Type.REGULAR_ENTRANCE);
+        LevelTransition enter = new LevelTransition(this, entranceCell, LevelTransition.Type.REGULAR_EXIT);
         transitions.add(enter);
 
         LevelTransition exit = new LevelTransition(this, exitCell, LevelTransition.Type.REGULAR_ENTRANCE);

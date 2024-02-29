@@ -22,6 +22,11 @@ public class BossRushBloodGold extends Item {
     }
 
     @Override
+    public int iceCoinValue() {
+        return 600;
+    }
+
+    @Override
     public boolean isUpgradable() {
         return false;
     }
