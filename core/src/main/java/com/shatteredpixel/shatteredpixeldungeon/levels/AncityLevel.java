@@ -5,6 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDiedTO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 
 public class AncityLevel extends Level {
@@ -103,7 +104,7 @@ public class AncityLevel extends Level {
 
     @Override
     protected void createItems() {
-        // TODO Auto-generated method stub
+        drop( new PotionOfExperience(), this.width * 8 + 8 );
     }
 
     public int randomRespawnCell() {

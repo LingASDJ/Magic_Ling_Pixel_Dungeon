@@ -596,8 +596,8 @@ public class ItemSpriteSheet {
     static {
         for (int i = POTIONS; i < POTIONS+16; i++)
             assignItemRect(i, 14, 15);
-        assignItemRect(POTION_CATALYST, 6, 15);
-        assignItemRect(LIQUID_METAL,    8, 15);
+        assignItemRect(POTION_CATALYST, 13, 15);
+        assignItemRect(LIQUID_METAL,    13, 15);
     }
 
     private static final int EXOTIC_POTIONS =                               xy(1, 23);  //16 slots
@@ -642,7 +642,7 @@ public class ItemSpriteSheet {
     static{
         for (int i = SEEDS; i < SEEDS+16; i++)
             assignItemRect(i, 10, 10);
-        assignItemRect(GREEN_LING, 8, 15);
+        assignItemRect(GREEN_LING, 13, 15);
     }
 
     private static final int BREWS          =                               xy(1, 25);  //8 slots
@@ -914,7 +914,7 @@ public class ItemSpriteSheet {
         assignItemRect(ANTILIGHT, 15, 16);
         assignItemRect(LANTERNA, 10, 16);
         assignItemRect(LANTERNB, 10, 16);
-        assignItemRect(SKPOTION, 8, 15);
+        assignItemRect(SKPOTION, 13, 15);
         assignItemRect(SKNANO, 15, 14);
         assignItemRect(WATERSOUL, 14, 16);
         assignItemRect(WRALIPS, 16, 16);

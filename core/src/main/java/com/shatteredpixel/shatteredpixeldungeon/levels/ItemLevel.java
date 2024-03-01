@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CavesPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.watabou.utils.Random;
@@ -68,13 +69,14 @@ public class ItemLevel extends RegularLevel {
                 addItemToSpawn(new PotionOfStrength());
                 addItemToSpawn(new PotionOfHealing());
                 addItemToSpawn(new PotionOfHealing());
-               addItemToSpawn(new RandomChest());
+                addItemToSpawn(new RandomChest());
+                addItemToSpawn(new ScrollOfUpgrade());
                 addItemToSpawn(new PotionOfExperience());
                 addItemToSpawn(Generator.random(Generator.Category.FOOD));
                 addItemToSpawn(Generator.random(Generator.Category.FOOD));
           break;
            //T2 补给层
-           case 14: case 12: case 15:  case 19: case 20:
+           case 14: case 12: case 15:
                addItemToSpawn(new PotionOfExperience());
                addItemToSpawn(new PotionOfHealing());
                addItemToSpawn(Generator.random(Generator.Category.FOOD));
@@ -83,9 +85,25 @@ public class ItemLevel extends RegularLevel {
                if(Random.Float()<0.4f){
                    addItemToSpawn(new RandomChest());
                }
+           case 19: case 20:
+               addItemToSpawn(new PotionOfExperience());
+               addItemToSpawn(new PotionOfHealing());
+               addItemToSpawn(Generator.random(Generator.Category.FOOD));
+               addItemToSpawn(Generator.randomWeapon());
+               addItemToSpawn(Generator.randomArmor());
+               addItemToSpawn(new ScrollOfUpgrade());
+               if(Random.Float()<0.4f){
+                   addItemToSpawn(new RandomChest());
+               }
           break;
           //T3 补给层
-           case 22: case 25: case 28: case 30:
+           case 22: case 25:
+               addItemToSpawn(new ScrollOfUpgrade());
+               addItemToSpawn(new PotionOfStrength());
+               addItemToSpawn(new PotionOfHealing());
+               addItemToSpawn(Generator.random(Generator.Category.FOOD));
+               addItemToSpawn(Generator.randomWeapon());
+           case 28: case 30:
                addItemToSpawn(new PotionOfStrength());
                addItemToSpawn(new PotionOfHealing());
                addItemToSpawn(Generator.random(Generator.Category.FOOD));
