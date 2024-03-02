@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.utils;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -85,6 +86,39 @@ public class WndTextNumberInput extends Window {
                 pressedDecimalPoint = true;
         }
         textBox.setMaxLength(maxLength);
+        textBox.setTextFieldListener(new TextField.TextFieldListener() {
+            public void keyTyped(TextField textField, char c) {
+                switch (c){
+                    case '\r':
+                    case '\n':
+                        if(!multiLine)
+                            textBox.enterPressed();
+                        break;
+                    case '.':
+                        int position = textBox.getCursorPosition();
+                        String text = textBox.getText();
+                        if(pressedDecimalPoint){
+                            textBox.setText(deleteChar(text,position-1));
+                        }else {
+                            if (text.indexOf(".")==0) {
+                                textBox.setText(deleteChar(text,0));
+                                textBox.setCursorPosition(textBox.getText().length());
+                                return;
+                            }
+                            pressedDecimalPoint = true;
+                        }
+                        break;
+                }
+            }
+
+            public String deleteChar(String string,int position){
+                if( position < 0 || position > string.length() ) return null;
+
+                StringBuilder stringBuilder = new StringBuilder(string);
+                stringBuilder.deleteCharAt(position);
+                return stringBuilder.toString();
+            }
+        });
 
         //sets different height depending on whether this is a single or multi line input.
         final float inputHeight;
@@ -159,7 +193,16 @@ public class WndTextNumberInput extends Window {
                 @Override
                 protected void onClick() {
                     if(!pressedDecimalPoint){
-                        textBox.setText(textBox.getText()+".");
+                        int position = textBox.getCursorPosition();
+                        if(position==0){
+                            textBox.setCursorPosition(textBox.getText().length());
+                            return;
+                        }else if(position==textBox.getText().length()){
+                            textBox.setText(textBox.getText() + ".");
+                        }else {
+                            textBox.setText(textBox.getText().substring(0,position)+"."+textBox.getText().substring(position));
+                            textBox.setCursorPosition(position+1);
+                        }
                         pressedDecimalPoint = true;
                     }
                 }
