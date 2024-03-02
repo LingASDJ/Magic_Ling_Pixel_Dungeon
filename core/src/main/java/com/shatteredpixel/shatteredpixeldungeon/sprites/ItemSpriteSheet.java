@@ -985,10 +985,15 @@ public class ItemSpriteSheet {
     public static final int CHALLANEESICON_17=			 CHALLANEESICONINDEX+31;
     public static final int SCROLL_GOLD   	 		= xy(1, 46);  //16 slots
     public static final int  RANDOM_CHEST			= SCROLL_GOLD+1;
-
     public static final int  CITY_HOOD			= SCROLL_GOLD+2;
+    public static final int  BOSSRUSH_GOLD			= SCROLL_GOLD+4;
+
+    public static final int  BOSSRUSH_MINI			= SCROLL_GOLD+6;
+
     static {
         assignItemRect(SCROLL_GOLD, 15, 14);
+        assignItemRect(BOSSRUSH_GOLD, 16, 12);
+        assignItemRect(BOSSRUSH_MINI, 7, 7);
     }
     private static final int DOCUMENTS  =                                   xy(1, 48);  //16 slots
     public static final int GUIDE_PAGE  = DOCUMENTS+0;

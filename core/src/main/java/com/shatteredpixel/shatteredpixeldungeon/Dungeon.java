@@ -163,7 +163,7 @@ public class Dungeon {
 				} else {
 					lim.count = 0;
 				}
-				
+
 			}
 
 			//pre-v2.2.0 saves
@@ -179,12 +179,15 @@ public class Dungeon {
 
 	public static int challenges;
 	public static int mobsToChampion;
-    private static final String GENERATED_LEVELS = "generated_levels";
-    private static final String GOLD = "gold";
+	private static final String GENERATED_LEVELS = "generated_levels";
+	private static final String GOLD = "gold";
+
+	private static final String RUSHGOLD = "rushgold";
+
 	public static Level level;
 	public static int cycle;
 	public static QuickSlot quickslot = new QuickSlot();
-	
+
 	public static int depth;
 	//determines path the hero is on. Current uses:
 	// 0 is the default path
@@ -195,6 +198,9 @@ public class Dungeon {
 	public static ArrayList<Integer> generatedLevels = new ArrayList<>();
 
 	public static int gold;
+
+	public static int rushgold;
+
 	public static int energy;
 
 	public static int anCityQuestLevel;
@@ -216,7 +222,7 @@ public class Dungeon {
 	public static boolean dailyReplay;
 	public static String customSeedText = "";
 	public static long seed;
-    private static final String ENERGY = "energy";
+	private static final String ENERGY = "energy";
 
 	public static boolean[] discovered = new boolean[30];
 
@@ -227,15 +233,15 @@ public class Dungeon {
 	public static boolean levelHasBeenGenerated(int depth, int branch){
 		return generatedLevels.contains(depth + 1000*branch);
 	}
-	
+
 	public static Level newLevel() {
-		
+
 		Dungeon.level = null;
 		Actor.clear();
-		
+
 		Level level;
-			if (branch == 0) level = createStandardLevel();
-		 	else level = createBranchLevel();
+		if (branch == 0) level = createStandardLevel();
+		else level = createBranchLevel();
 
 
 		//dead end levels get cleared, don't count as generated
@@ -258,21 +264,21 @@ public class Dungeon {
 		}
 
 		//Statistics.qualifiedForBossRemainsBadge = false;
-		
+
 		level.create();
-		
+
 		if (branch == 0) Statistics.qualifiedForNoKilling = !bossLevel();
 		Statistics.qualifiedForBossChallengeBadge = false;
-		
+
 		return level;
 	}
 
 
 
 	public static void resetLevel() {
-		
+
 		Actor.clear();
-		
+
 		level.reset();
 		switchLevel( level, level.entrance() );
 	}
@@ -287,10 +293,10 @@ public class Dungeon {
 
 		Random.pushGenerator( seed );
 
-			for (int i = 0; i < lookAhead; i ++) {
-				Random.Long(); //we don't care about these values, just need to go through them
-			}
-			long result = Random.Long();
+		for (int i = 0; i < lookAhead; i ++) {
+			Random.Long(); //we don't care about these values, just need to go through them
+		}
+		long result = Random.Long();
 
 		Random.popGenerator();
 		return result;
@@ -394,7 +400,7 @@ public class Dungeon {
 		}
 		return true;
 	}
-	
+
 	public static void switchLevel( final Level level, int pos ) {
 
 		//Position of -2 specifically means trying to place the hero the exit
@@ -409,9 +415,9 @@ public class Dungeon {
 				|| (!(level instanceof MiningLevel) && !level.passable[pos] && !level.avoid[pos])){
 			pos = level.getTransition(null).cell();
 		}
-		
+
 		PathFinder.setMapSize(level.width(), level.height());
-		
+
 		Dungeon.level = level;
 		hero.pos = pos;
 
@@ -450,7 +456,7 @@ public class Dungeon {
 		Actor.init();
 
 		level.addRespawner();
-		
+
 		for(Mob m : level.mobs){
 			if (m.pos == hero.pos && !Char.hasProp(m, Char.Property.IMMOVABLE)){
 				//displace mob
@@ -476,7 +482,7 @@ public class Dungeon {
 		} else {
 			hero.viewDistance = level.viewDistance;
 		}
-		
+
 		hero.curAction = hero.lastAction = null;
 		LevelSwitchListener.onLevelSwitch();
 		observe();
@@ -550,40 +556,40 @@ public class Dungeon {
 	private static final String HERO		= "hero";
 	private static final String DEPTH		= "depth";
 	private static final String BRANCH		= "branch";
-    private static final String DROPPED = "dropped%d";
-    private static final String PORTED = "ported%d";
-    private static final String LEVEL = "level";
-    private static final String LIMDROPS = "limited_drops";
-    private static final String CHAPTERS = "chapters";
-    private static final String QUESTS = "quests";
-    private static final String BADGES = "badges";
-    private static final String MOBS_TO_STATELING = "mobs_to_stateling";
-    private static final String ZBADGES = "z-badges";
-    private static final String DLCS = "dlcs";
-    private static final String DIFFICULTY = "difficulty";
+	private static final String DROPPED = "dropped%d";
+	private static final String PORTED = "ported%d";
+	private static final String LEVEL = "level";
+	private static final String LIMDROPS = "limited_drops";
+	private static final String CHAPTERS = "chapters";
+	private static final String QUESTS = "quests";
+	private static final String BADGES = "badges";
+	private static final String MOBS_TO_STATELING = "mobs_to_stateling";
+	private static final String ZBADGES = "z-badges";
+	private static final String DLCS = "dlcs";
+	private static final String DIFFICULTY = "difficulty";
 
 	private static final String NCITY       = "NCITY";
 
 	private static final String NCITYPROGESS       = "NCITYPROGESS";
 	private static final String NCITYPROGESS2       = "NCITYPROGESS2";
 
-    public static int mobsToStateLing;
-    public static Hero hero;
+	public static int mobsToStateLing;
+	public static Hero hero;
 
-    //MLPD
-    public static Conducts.ConductStorage dlcs = new Conducts.ConductStorage();
-    public static Difficulty.HardStorage difficultys = new Difficulty.HardStorage();
-	
+	//MLPD
+	public static Conducts.ConductStorage dlcs = new Conducts.ConductStorage();
+	public static Difficulty.HardStorage difficultys = new Difficulty.HardStorage();
+
 	public static void saveLevel( int save ) throws IOException {
 		Bundle bundle = new Bundle();
 		bundle.put( LEVEL, level );
-		
+
 		FileUtils.bundleToFile(GamesInProgress.depthFile( save, depth, branch ), bundle);
 	}
-	
+
 	public static void saveAll() throws IOException {
 		if (hero != null && (hero.isAlive() || WndResurrect.instance != null)) {
-			
+
 			Actor.fixTime();
 			updateLevelExplored();
 			saveGame( GamesInProgress.curSlot );
@@ -593,11 +599,11 @@ public class Dungeon {
 
 		}
 	}
-	
+
 	public static void loadGame( int save ) throws IOException {
 		loadGame( save, true );
 	}
-	
+
 	public static void init() {
 
 		initialVersion = version = Game.versionCode;
@@ -618,7 +624,7 @@ public class Dungeon {
 		Arrays.fill(discovered, false);
 
 		mobsToChampion = -1;
-        mobsToStateLing = -1;
+		mobsToStateLing = -1;
 		if (!SPDSettings.customSeed().isEmpty()){
 			customSeedText = SPDSettings.customSeed();
 			seed = DungeonSeed.convertFromText(customSeedText);
@@ -633,14 +639,14 @@ public class Dungeon {
 		//offset seed slightly to avoid output patterns
 		Random.pushGenerator( seed+1 );
 
-			Scroll.initLabels();
-			Potion.initColors();
-			Ring.initGems();
+		Scroll.initLabels();
+		Potion.initColors();
+		Ring.initGems();
 
-			SpecialRoom.initForRun();
-			SecretRoom.initForRun();
+		SpecialRoom.initForRun();
+		SecretRoom.initForRun();
 
-			Generator.fullReset();
+		Generator.fullReset();
 
 		Random.resetGenerators();
 
@@ -649,7 +655,7 @@ public class Dungeon {
 
 		quickslot.reset();
 		QuickSlotButton.reset();
-        //Toolbar.swappedQuickslots = false;
+		//Toolbar.swappedQuickslots = false;
 
 		depth = 0;
 		branch = 0;
@@ -662,6 +668,7 @@ public class Dungeon {
 
 		gold = 0;
 		energy = 0;
+		rushgold = 0;
 
 		droppedItems = new SparseArray<>();
 
@@ -684,9 +691,9 @@ public class Dungeon {
 
 		GamesInProgress.selectedClass.initHero( hero );
 	}
-	
+
 	public static Level loadLevel( int save ) throws IOException {
-		
+
 		Dungeon.level = null;
 		Actor.clear();
 
@@ -700,7 +707,7 @@ public class Dungeon {
 			return level;
 		}
 	}
-	
+
 	public static void deleteGame( int save, boolean deleteLevels ) {
 
 		if (deleteLevels) {
@@ -713,10 +720,10 @@ public class Dungeon {
 		}
 
 		FileUtils.overwriteFile(GamesInProgress.gameFile(save), 1);
-		
+
 		GamesInProgress.delete( save );
 	}
-	
+
 	public static void preview( GamesInProgress.Info info, Bundle bundle ) {
 		info.depth = bundle.getInt( DEPTH );
 		info.version = bundle.getInt( VERSION );
@@ -768,34 +775,34 @@ public class Dungeon {
 
 		observe( dist+1 );
 	}
-	
+
 	public static void observe( int dist ) {
 
 		if (level == null) {
 			return;
 		}
-		
+
 		level.updateFieldOfView(hero, level.heroFOV);
 
 		int x = hero.pos % level.width();
 		int y = hero.pos / level.width();
-	
+
 		//left, right, top, bottom
 		int l = Math.max( 0, x - dist );
 		int r = Math.min( x + dist, level.width() - 1 );
 		int t = Math.max( 0, y - dist );
 		int b = Math.min( y + dist, level.height() - 1 );
-	
+
 		int width = r - l + 1;
 		int height = b - t + 1;
-		
+
 		int pos = l + t * level.width();
-	
+
 		for (int i = t; i <= b; i++) {
 			BArray.or( level.visited, level.heroFOV, pos, width, level.visited );
 			pos+=level.width();
 		}
-	
+
 		GameScene.updateFog(l, t, width, height);
 
 		if (hero.buff(MindVision.class) != null){
@@ -916,7 +923,7 @@ public class Dungeon {
 		return PathFinder.find( ch.pos, to, findPassable(ch, pass, vis, chars) );
 
 	}
-	
+
 	public static int findStep(Char ch, int to, boolean[] pass, boolean[] visible, boolean chars ) {
 
 		if (Dungeon.level.adjacent( ch.pos, to )) {
@@ -926,47 +933,50 @@ public class Dungeon {
 		return PathFinder.getStep( ch.pos, to, findPassable(ch, pass, visible, chars) );
 
 	}
-	
-    public static void saveGame(int save) {
-        try {
-            Bundle bundle = new Bundle();
 
-            bundle.put(INIT_VER, initialVersion);
-            bundle.put(VERSION, version = Game.versionCode);
-            bundle.put(SEED, seed);
-            bundle.put(CUSTOM_SEED, customSeedText);
-            bundle.put(DAILY, daily);
-            bundle.put(DAILY_REPLAY, dailyReplay);
-            bundle.put(CHALLENGES, challenges);
-            Dungeon.challenges = bundle.getInt(CHALLENGES);
-            //DLC模式
-            //bundle.put(DLCS, dlcs);
-            //dlcs.storeInBundle(bundle);
-            difficultys.storeInBundle(bundle);
-            //HARD选择
-            bundle.put(DIFFICULTY, difficultys);
-            Bundle z_badges = new Bundle();
-            PaswordBadges.saveLocal(z_badges);
+	public static void saveGame(int save) {
+		try {
+			Bundle bundle = new Bundle();
+
+			bundle.put(INIT_VER, initialVersion);
+			bundle.put(VERSION, version = Game.versionCode);
+			bundle.put(SEED, seed);
+			bundle.put(CUSTOM_SEED, customSeedText);
+			bundle.put(DAILY, daily);
+			bundle.put(DAILY_REPLAY, dailyReplay);
+			bundle.put(CHALLENGES, challenges);
+			Dungeon.challenges = bundle.getInt(CHALLENGES);
+			//DLC模式
+			//bundle.put(DLCS, dlcs);
+			//dlcs.storeInBundle(bundle);
+			difficultys.storeInBundle(bundle);
+			//HARD选择
+			bundle.put(DIFFICULTY, difficultys);
+			Bundle z_badges = new Bundle();
+			PaswordBadges.saveLocal(z_badges);
 			bundle.put(NCITY, anCityQuestLevel);
 
 			bundle.put(NCITYPROGESS, anCityQuestProgress);
 			bundle.put(NCITYPROGESS2, anCityQuest2Progress);
 
-            bundle.put(ZBADGES, z_badges);
+			bundle.put(ZBADGES, z_badges);
 
-            bundle.put(MOBS_TO_CHAMPION, mobsToChampion);
+			bundle.put(MOBS_TO_CHAMPION, mobsToChampion);
 
-            bundle.put(MOBS_TO_STATELING, mobsToStateLing);
-            bundle.put(HERO, hero);
-            bundle.put(DEPTH, depth);
-            bundle.put(BRANCH, branch);
+			bundle.put(MOBS_TO_STATELING, mobsToStateLing);
+			bundle.put(HERO, hero);
+			bundle.put(DEPTH, depth);
+			bundle.put(BRANCH, branch);
 
-            bundle.put(GOLD, gold);
-            bundle.put(ENERGY, energy);
+			bundle.put(GOLD, gold);
 
-            for (int d : droppedItems.keyArray()) {
-                bundle.put(Messages.format(DROPPED, d), droppedItems.get(d));
-            }
+			bundle.put(RUSHGOLD, rushgold);
+
+			bundle.put(ENERGY, energy);
+
+			for (int d : droppedItems.keyArray()) {
+				bundle.put(Messages.format(DROPPED, d), droppedItems.get(d));
+			}
 
 			quickslot.storePlaceholders( bundle );
 
@@ -1058,7 +1068,7 @@ public class Dungeon {
 
 		quickslot.reset();
 		QuickSlotButton.reset();
-        //Toolbar.swappedQuickslots = false;
+		//Toolbar.swappedQuickslots = false;
 
 		Dungeon.challenges = bundle.getInt( CHALLENGES );
 		Dungeon.mobsToChampion = bundle.getInt( MOBS_TO_CHAMPION );
@@ -1134,6 +1144,7 @@ public class Dungeon {
 		branch = bundle.getInt( BRANCH );
 
 		gold = bundle.getInt( GOLD );
+		rushgold = bundle.getInt(RUSHGOLD);
 		energy = bundle.getInt( ENERGY );
 
 		Statistics.restoreFromBundle( bundle );
@@ -1144,7 +1155,7 @@ public class Dungeon {
 			for (int i : bundle.getIntArray(GENERATED_LEVELS)){
 				generatedLevels.add(i);
 			}
-		//pre-v2.1.1 saves
+			//pre-v2.1.1 saves
 		} else  {
 			for (int i = 1; i <= Statistics.deepestFloor; i++){
 				generatedLevels.add(i);
@@ -1176,22 +1187,22 @@ public class Dungeon {
 			for (Char c : Actor.chars()) {
 				if (c.pos == from || Dungeon.level.adjacent(c.pos, ch.pos)) {
 					passable[c.pos] = false;
-                }
-            }
-        }
+				}
+			}
+		}
 
-        //chars affected by terror have a shorter lookahead and can't approach the fear source
-        boolean canApproachFromPos = ch.buff(Terror.class) == null && ch.buff(Dread.class) == null;
-        return PathFinder.getStepBack(ch.pos, from, canApproachFromPos ? 8 : 4, passable, canApproachFromPos);
+		//chars affected by terror have a shorter lookahead and can't approach the fear source
+		boolean canApproachFromPos = ch.buff(Terror.class) == null && ch.buff(Dread.class) == null;
+		return PathFinder.getStepBack(ch.pos, from, canApproachFromPos ? 8 : 4, passable, canApproachFromPos);
 
-    }
+	}
 
-    public static boolean isDLC(Conducts.Conduct mask) {
-        return dlcs.isConducted(Conducts.Conduct.NULL);
-    }
+	public static boolean isDLC(Conducts.Conduct mask) {
+		return dlcs.isConducted(Conducts.Conduct.NULL);
+	}
 
-    public static boolean isDIFFICULTY(Difficulty.DifficultyConduct mask) {
-        return difficultys.isConducted(mask);
-    }
+	public static boolean isDIFFICULTY(Difficulty.DifficultyConduct mask) {
+		return difficultys.isConducted(mask);
+	}
 
 }
