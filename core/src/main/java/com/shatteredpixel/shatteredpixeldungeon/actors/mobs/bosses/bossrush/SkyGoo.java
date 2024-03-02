@@ -21,19 +21,19 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
@@ -51,19 +51,21 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Camera;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
@@ -71,23 +73,30 @@ import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
+@SuppressWarnings("all")
 public class SkyGoo extends Mob {
 
 	{
-		HP = HT = 300;
-		EXP = 10;
-		defenseSkill = 8;
-		spriteClass = GooSprite.class;
+		this.HT = 300;
+		this.HP = 300;
+		this.EXP = 10;
+		this.defenseSkill = 12;
+		this.spriteClass = GooSprite.class;
+		this.properties.add(Char.Property.BOSS);
+		this.properties.add(Char.Property.DEMONIC);
+		this.properties.add(Char.Property.ACIDIC);
+		this.pumpedUp = 0;
+		this.PUMPEDUP = "pumpedup";
 
 		HUNTING = new Hunting();
-
-		properties.add(Property.BOSS);
-		properties.add(Property.DEMONIC);
-		properties.add(Property.ACIDIC);
 	}
 
-	private int pumpedUp = 0;
+	private final String PUMPEDUP;
+	private int pumpedUp;
+	private int var2;
+	public static class LightningBolt {}
 	private int healInc = 1;
 	private int lastPos = 0;
 	private boolean skill1 = false;
@@ -109,13 +118,9 @@ public class SkyGoo extends Mob {
 	@Override
 	public int damageRoll() {
 		int min = 1;
-		int max = (HP*2 <= HT) ? 12 : 8;
+		int max = (HP*2 <= HT) ? 16 : 10;
 		if (pumpedUp > 0) {
 			pumpedUp = 0;
-			if (enemy == hero) {
-				Statistics.qualifiedForBossChallengeBadge = false;
-				Statistics.bossScores[0] -= 100;
-			}
 			return Random.NormalIntRange( min*3, max*3 );
 		} else {
 			return Random.NormalIntRange( min, max );
@@ -142,38 +147,17 @@ public class SkyGoo extends Mob {
 
 	@Override
 	public boolean act() {
-
-		if (state != HUNTING && pumpedUp > 0){
-			pumpedUp = 0;
-			sprite.idle();
-		}
-
-		if (Dungeon.level.water[pos] && HP < HT) {
-			HP += healInc;
-			Statistics.qualifiedForBossChallengeBadge = false;
-
-			LockedFloor lock = hero.buff(LockedFloor.class);
-			if (lock != null){
-				if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.removeTime(healInc);
-				else                                                    lock.removeTime(healInc*1.5f);
+		if (Dungeon.level.water[this.pos] && this.HP < this.HT) {
+			if (Dungeon.level.heroFOV[this.pos]) {
+				this.sprite.emitter().burst(Speck.factory(0), 1);
 			}
-
-			if (Dungeon.level.heroFOV[pos] ){
-				sprite.emitter().burst( Speck.factory( Speck.HEALING ), healInc );
-			}
-			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && healInc < 3) {
-				healInc++;
-			}
-			if (HP*2 > HT) {
+			if (this.HP * 2 == this.HT) {
 				BossHealthBar.bleed(false);
-				((GooSprite)sprite).spray(false);
-				HP = Math.min(HP, HT);
+				((GooSprite) this.sprite).spray(false);
 			}
-		} else {
-			healInc = 1;
+			this.HP++;
 		}
-
-		if (state != SLEEPING){
+		if (this.state != this.SLEEPING) {
 			Dungeon.level.seal();
 		}
 
@@ -214,91 +198,113 @@ public class SkyGoo extends Mob {
 
 	@Override
 	protected boolean canAttack( Char enemy ) {
-		if (pumpedUp > 0){
-			//we check both from and to in this case as projectile logic isn't always symmetrical.
-			//this helps trim out BS edge-cases
-			return Dungeon.level.distance(enemy.pos, pos) <= 2
-					&& new Ballistica( pos, enemy.pos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID).collisionPos == enemy.pos
-					&& new Ballistica( enemy.pos, pos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID).collisionPos == pos;
-		} else {
-			return super.canAttack(enemy);
+		if (Dungeon.level.distance(this.pos, enemy.pos) <= 1) {
+			return this.pumpedUp > 0 ? distance(enemy) <= 2 : super.canAttack(enemy);
 		}
+		spend(1.0f);
+		if (hit(this, enemy, true)) {
+			int dmg = Random.NormalIntRange(3, 6);
+			enemy.damage(dmg, new LightningBolt());
+			if (enemy.sprite.visible) {
+				enemy.sprite.centerEmitter().burst(SparkParticle.FACTORY, 3);
+				enemy.sprite.flash();
+			}
+			if (enemy == Dungeon.hero) {
+				Camera.main.shake(2.0f, 0.3f);
+				if (!enemy.isAlive()) {
+					Dungeon.fail(getClass());
+					GLog.n(Messages.get(this, "zap_kill"));
+				}
+			}
+		} else {
+			enemy.sprite.showStatus(16776960, enemy.defenseVerb());
+		}
+		if (this.sprite == null || !(this.sprite.visible || enemy.sprite.visible)) {
+			return true;
+		}
+		this.sprite.zap(enemy.pos);
+		return false;
 	}
 
 	@Override
 	public int attackProc( Char enemy, int damage ) {
-		damage = super.attackProc( enemy, damage );
-		if (Random.Int( 3 ) == 0) {
-			Buff.affect( enemy, Ooze.class ).set( Ooze.DURATION );
-			enemy.sprite.burst( 0x000000, 5 );
+		int damage2 = super.attackProc(enemy, damage);
+		if (Random.Int(3) == 0) {
+			((Ooze) Buff.affect(enemy, Ooze.class)).set(20.0f);
+			((Poison) Buff.affect(enemy, Poison.class)).set(10.0f);
+			enemy.sprite.burst(61166, 9);
+		} else {
+			((Blindness) Buff.affect(enemy, Blindness.class)).set(10.0f);
+			enemy.sprite.burst(15597568, 9);
 		}
-
-		if (pumpedUp > 0) {
-			PixelScene.shake( 3, 0.2f );
+		if (this.pumpedUp > 0) {
+			Camera.main.shake(3.0f, 0.2f);
 		}
-
-		return damage;
+		int i = this.var2;
+		if (Random.Int(3) == 0) {
+			int i2 = this.var2 + 10;
+			SummoningTrap one = new SummoningTrap();
+			one.pos = this.pos;
+			one.activate();
+			AlarmTrap two = new AlarmTrap();
+			two.pos = this.pos;
+			two.activate();
+			yell(Messages.get(this, "sr"));
+		}
+		int reg = Math.min(2, this.HT - this.HP);
+		if (reg > 0) {
+			this.HP += reg;
+			this.sprite.emitter().burst(Speck.factory(0), 1);
+		}
+		yell(Messages.get(this, "ss"));
+		return damage2;
 	}
 
 	@Override
 	public void updateSpriteState() {
 		super.updateSpriteState();
-
-		if (pumpedUp > 0){
-			((GooSprite)sprite).pumpUp( pumpedUp );
+		if (this.pumpedUp > 0) {
+			((GooSprite) this.sprite).pumpUp(this.pumpedUp);
 		}
 	}
 
 	@Override
 	protected boolean doAttack( Char enemy ) {
-		if (pumpedUp == 1) {
-			pumpedUp++;
-			((GooSprite)sprite).pumpUp( pumpedUp );
-
-			spend( attackDelay() );
-
-			return true;
-		} else if (pumpedUp >= 2 || Random.Int( (HP*2 <= HT) ? 2 : 5 ) > 0) {
-
-			boolean visible = Dungeon.level.heroFOV[pos];
-
-			if (visible) {
-				if (pumpedUp >= 2) {
-					((GooSprite) sprite).pumpAttack();
-				} else {
-					sprite.attack(enemy.pos);
-				}
-			} else {
-				if (pumpedUp >= 2){
-					((GooSprite)sprite).triggerEmitters();
-				}
-				attack( enemy );
-				Invisibility.dispel(this);
-				spend( attackDelay() );
-			}
-
-			return !visible;
-
-		} else {
-
-			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
-				pumpedUp += 2;
-				//don't want to overly punish players with slow move or attack speed
-				spend(GameMath.gate(attackDelay(), hero.cooldown(), 3*attackDelay()));
-			} else {
-				pumpedUp++;
-				spend( attackDelay() );
-			}
-
-			((GooSprite)sprite).pumpUp( pumpedUp );
-
-			if (Dungeon.level.heroFOV[pos]) {
-				sprite.showStatus( CharSprite.NEGATIVE, Messages.get(this, "!!!") );
-				GLog.n( Messages.get(this, "pumpup") );
-			}
-
+		int i = this.pumpedUp;
+		if (i == 1) {
+			((GooSprite) this.sprite).pumpUp(2);
+			this.pumpedUp++;
+			spend(attackDelay());
 			return true;
 		}
+		if (i < 2) {
+			if (Random.Int(this.HP * 2 <= this.HT ? 2 : 5) <= 0) {
+				this.pumpedUp++;
+				((GooSprite) this.sprite).pumpUp(1);
+				if (Dungeon.level.heroFOV[this.pos]) {
+					this.sprite.showStatus(16711680, Messages.get(this, "!!!"));
+					GLog.n(Messages.get(this, "pumpup"));
+				}
+				spend(attackDelay());
+				return true;
+			}
+		}
+		boolean visible = Dungeon.level.heroFOV[this.pos];
+		if (visible) {
+			if (this.pumpedUp >= 2) {
+				((GooSprite) this.sprite).pumpAttack();
+				((GooSprite) this.sprite).pumpAttack();
+			} else {
+				this.sprite.attack(enemy.pos);
+			}
+		} else {
+			if (this.pumpedUp >= 2) {
+				((GooSprite) this.sprite).triggerEmitters();
+			}
+			attack(enemy);
+		}
+		spend(attackDelay());
+		return !visible;
 	}
 
 	@Override
@@ -316,9 +322,9 @@ public class SkyGoo extends Mob {
 
 	@Override
 	protected boolean getCloser( int target ) {
-		if (pumpedUp != 0) {
-			pumpedUp = 0;
-			sprite.idle();
+		if (this.pumpedUp != 0) {
+			this.pumpedUp = 0;
+			this.sprite.idle();
 		}
 		return super.getCloser( target );
 	}
@@ -334,9 +340,8 @@ public class SkyGoo extends Mob {
 
 	@Override
 	public void damage(int dmg, Object src) {
-		if (!BossHealthBar.isAssigned()){
-			BossHealthBar.assignBoss( this );
-			Dungeon.level.seal();
+		if (!BossHealthBar.isAssigned()) {
+			BossHealthBar.assignBoss(this);
 		}
 
 		if( Random.Int(10) >= 5 && src.getClass() == SkyGoo.SkyGooBlob.class ) {
@@ -347,52 +352,35 @@ public class SkyGoo extends Mob {
 		if(HP<=120){
 			dmg = (int) Math.ceil( dmg * Math.max( Math.pow( 0.7, 120/HP ), 0.5 ) );
 		}
-		boolean bleeding = (HP*2 <= HT);
+		boolean bleeding = (this.HP*2 <= this.HT);
 		super.damage(dmg, src);
-		if ((HP*2 <= HT) && !bleeding){
+		if (this.HP * 2 <= this.HT && !bleeding) {
 			BossHealthBar.bleed(true);
-			sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "enraged"));
-			((GooSprite)sprite).spray(true);
+			this.sprite.showStatus(16711680, Messages.get(this, "enraged"));
+			((GooSprite) this.sprite).spray(true);
 			yell(Messages.get(this, "gluuurp"));
 		}
-		LockedFloor lock = hero.buff(LockedFloor.class);
-		if (lock != null){
-			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg);
-			else                                                    lock.addTime(dmg*1.5f);
+		LockedFloor lock = (LockedFloor) Dungeon.hero.buff(LockedFloor.class);
+		if (lock != null) {
+			lock.addTime(dmg * 2);
 		}
 	}
 
 	@Override
 	public void die( Object cause ) {
-
 		super.die( cause );
-		Statistics.gooFight = true;
-		Dungeon.level.unseal();
-
-		GameScene.bossSlain();
-
-		//Dungeon.level.drop( Generator.random( Generator.Category.WAND), pos) .sprite.drop();
-
-		Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
-		Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
-
-		//60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5
+		SkyGooBossLevel level = (SkyGooBossLevel) Dungeon.level;
+		level.unseal();
 		int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
 		for (int i = 0; i < blobs; i++){
 			int ofs;
 			do {
 				ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
 			} while (!Dungeon.level.passable[pos + ofs]);
-			Dungeon.level.drop( Generator.random( Generator.Category.STONE), pos + ofs ).sprite.drop( pos );
+			Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
 		}
-
-
-
-
-		Badges.GOO();
-		Statistics.bossScores[0] += 1000;
-
-		yell( Messages.get(this, "defeated") );
+		playBGM(Assets.BGM_1, true);
+		GameScene.bossSlain();
 	}
 
 	@Override
@@ -400,17 +388,18 @@ public class SkyGoo extends Mob {
 		super.notice();
 		if (!BossHealthBar.isAssigned()) {
 			BossHealthBar.assignBoss(this);
-			Dungeon.level.seal();
 			yell(Messages.get(this, "notice"));
-			for (Char ch : Actor.chars()){
-				if (ch instanceof DriedRose.GhostHero){
+			Music.INSTANCE.play(Assets.BGM_BOSSA, true);
+			Iterator<Char> it = Actor.chars().iterator();
+			while (it.hasNext()) {
+				Char ch = it.next();
+				if (ch instanceof DriedRose.GhostHero) {
 					((DriedRose.GhostHero) ch).sayBoss();
 				}
 			}
 		}
 	}
 
-	private final String PUMPEDUP = "pumpedup";
 	private final String HEALINC = "healinc";
 	private static final String LAST_ENEMY_POS = "last_enemy_pos";
 	private static final String LEAP_POS = "leap_pos";
@@ -425,7 +414,7 @@ public class SkyGoo extends Mob {
 
 		super.storeInBundle( bundle );
 
-		bundle.put( PUMPEDUP , pumpedUp );
+		bundle.put( PUMPEDUP , this.pumpedUp );
 		bundle.put( HEALINC, healInc );
 		bundle.put(LAST_ENEMY_POS, lastEnemyPos);
 		bundle.put(LEAP_POS, leapPos);
@@ -442,9 +431,9 @@ public class SkyGoo extends Mob {
 
 		super.restoreFromBundle( bundle );
 
-		pumpedUp = bundle.getInt( PUMPEDUP );
-		if (state != SLEEPING) BossHealthBar.assignBoss(this);
-		if ((HP*2 <= HT)) BossHealthBar.bleed(true);
+		this.pumpedUp = bundle.getInt( PUMPEDUP );
+		if (this.state != this.SLEEPING) BossHealthBar.assignBoss(this);
+		if ((this.HP*2 <= this.HT)) BossHealthBar.bleed(true);
 
 		healInc = bundle.getInt(HEALINC);
 
