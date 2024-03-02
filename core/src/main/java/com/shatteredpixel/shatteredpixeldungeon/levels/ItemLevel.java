@@ -32,14 +32,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CavesPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Group;
-import com.watabou.noosa.particles.PixelParticle;
-import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
 public class ItemLevel extends RegularLevel {
@@ -68,29 +64,53 @@ public class ItemLevel extends RegularLevel {
         Ghost.Quest.spawnBossRush( this );
        switch (depth){
            //T1 补给层
-          case 1: case 3: case 6: case 7:
+           case 3:  case 5: case 7: case 8:  case 10:
                 addItemToSpawn(new Gold().random());
                 addItemToSpawn(new PotionOfStrength());
                 addItemToSpawn(new PotionOfHealing());
                 addItemToSpawn(new PotionOfHealing());
+                addItemToSpawn(new RandomChest());
+                addItemToSpawn(new ScrollOfUpgrade());
                 addItemToSpawn(new PotionOfExperience());
                 addItemToSpawn(Generator.random(Generator.Category.FOOD));
                 addItemToSpawn(Generator.random(Generator.Category.FOOD));
           break;
            //T2 补给层
-          case 9: case 11: case 13:
+           case 14: case 12: case 15:
                addItemToSpawn(new PotionOfExperience());
                addItemToSpawn(new PotionOfHealing());
                addItemToSpawn(Generator.random(Generator.Category.FOOD));
                addItemToSpawn(Generator.randomWeapon());
                addItemToSpawn(Generator.randomArmor());
+               if(Random.Float()<0.4f){
+                   addItemToSpawn(new RandomChest());
+               }
+           case 19: case 20:
+               addItemToSpawn(new PotionOfExperience());
+               addItemToSpawn(new PotionOfHealing());
+               addItemToSpawn(Generator.random(Generator.Category.FOOD));
+               addItemToSpawn(Generator.randomWeapon());
+               addItemToSpawn(Generator.randomArmor());
+               addItemToSpawn(new ScrollOfUpgrade());
+               if(Random.Float()<0.4f){
+                   addItemToSpawn(new RandomChest());
+               }
           break;
           //T3 补给层
-           case 18: case 20: case 23:case 25:
+           case 22: case 25:
+               addItemToSpawn(new ScrollOfUpgrade());
                addItemToSpawn(new PotionOfStrength());
                addItemToSpawn(new PotionOfHealing());
                addItemToSpawn(Generator.random(Generator.Category.FOOD));
                addItemToSpawn(Generator.randomWeapon());
+           case 28: case 30:
+               addItemToSpawn(new PotionOfStrength());
+               addItemToSpawn(new PotionOfHealing());
+               addItemToSpawn(Generator.random(Generator.Category.FOOD));
+               addItemToSpawn(Generator.randomWeapon());
+               if(Random.Float()<0.2f){
+                   addItemToSpawn(new RandomChest());
+               }
                addItemToSpawn(Generator.randomArmor());
                break;
        }
@@ -132,117 +152,8 @@ public class ItemLevel extends RegularLevel {
         } else if(depth>=6){
             return Assets.Environment.WATER_PRISON;
         } else {
-            return Assets.Environment.WATER_COLD;
+            return Assets.Environment.WATER_CAVES;
         }
     }
 
-    @Override
-    public String tileName( int tile ) {
-        switch (tile) {
-            case Terrain.GRASS:
-                return Messages.get(CavesLevel.class, "grass_name");
-            case Terrain.HIGH_GRASS:
-                return Messages.get(CavesLevel.class, "high_grass_name");
-            case Terrain.WATER:
-                return Messages.get(CavesLevel.class, "water_name");
-            default:
-                return super.tileName( tile );
-        }
-    }
-
-    @Override
-    public String tileDesc( int tile ) {
-        switch (tile) {
-            case Terrain.ENTRANCE:
-                return Messages.get(CavesLevel.class, "entrance_desc");
-            case Terrain.EXIT:
-                return Messages.get(CavesLevel.class, "exit_desc");
-            case Terrain.HIGH_GRASS:
-                return Messages.get(CavesLevel.class, "high_grass_desc");
-            case Terrain.WALL_DECO:
-                return Messages.get(CavesLevel.class, "wall_deco_desc");
-            case Terrain.BOOKSHELF:
-                return Messages.get(CavesLevel.class, "bookshelf_desc");
-            case Terrain.WATER:
-                return Messages.get(CavesLevel.class,
-                        "water_desc");
-            default:
-                return super.tileDesc( tile );
-        }
-    }
-
-    @Override
-    public Group addVisuals() {
-        super.addVisuals();
-        addCavesVisuals( this, visuals );
-        return visuals;
-    }
-
-    public static void addCavesVisuals( Level level, Group group ) {
-        for (int i=0; i < level.length(); i++) {
-            if (level.map[i] == Terrain.WALL_DECO) {
-                group.add( new Vein( i ) );
-            }
-        }
-    }
-
-    private static class Vein extends Group {
-
-        private int pos;
-
-        private float delay;
-
-        public Vein( int pos ) {
-            super();
-
-            this.pos = pos;
-
-            delay = Random.Float( 2 );
-        }
-
-        @Override
-        public void update() {
-
-            if (visible = (pos < Dungeon.level.heroFOV.length && Dungeon.level.heroFOV[pos])) {
-
-                super.update();
-
-                if ((delay -= Game.elapsed) <= 0) {
-
-                    //pickaxe can remove the ore, should remove the sparkling too.
-                    if (Dungeon.level.map[pos] != Terrain.WALL_DECO){
-                        kill();
-                        return;
-                    }
-
-                    delay = Random.Float();
-
-                    PointF p = DungeonTilemap.tileToWorld( pos );
-                    ((Sparkle)recycle( Sparkle.class )).reset(
-                            p.x + Random.Float( DungeonTilemap.SIZE ),
-                            p.y + Random.Float( DungeonTilemap.SIZE ) );
-                }
-            }
-        }
-    }
-
-    public static final class Sparkle extends PixelParticle {
-
-        public void reset( float x, float y ) {
-            revive();
-
-            this.x = x;
-            this.y = y;
-
-            left = lifespan = 0.5f;
-        }
-
-        @Override
-        public void update() {
-            super.update();
-
-            float p = left / lifespan;
-            size( (am = p < 0.5f ? p * 2 : (1 - p) * 2) * 2 );
-        }
-    }
 }

@@ -63,7 +63,7 @@ public class LightFood extends Food {
 
     @Override
     public int value() {
-        return 10 * quantity;
+        return 40 * quantity;
     }
 }
 

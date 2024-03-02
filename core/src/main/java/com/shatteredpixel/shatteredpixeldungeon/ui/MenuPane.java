@@ -99,7 +99,9 @@ public class MenuPane extends Component {
 				break;
 		}
 
-		if(branch!=0){
+		if(branch == 8){
+			depth = "BR-"+depth;
+		} else if(branch!=0){
 			depth += "-" + abcd;
 		}
 

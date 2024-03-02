@@ -529,7 +529,7 @@ public class NewDM720 extends MolotovHuntsman {
 
     @Override
     public void die( Object cause ) {
-//        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+//      if(Statistics.happyMode){
 //            GetBossLoot();
 //        }
 

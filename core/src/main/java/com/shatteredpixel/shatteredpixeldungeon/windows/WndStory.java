@@ -30,8 +30,8 @@ import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero.goodLant
 import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.scene;
 
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
@@ -201,7 +201,7 @@ public class WndStory extends Window {
 	public void hide() {
 		super.hide();
 		Banner mapnameSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
-		if(!Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
+		if(!Statistics.happyMode){
 			switch (Dungeon.depth) {
 				case 0:
 					if(!Dungeon.isChallenged(CS)){

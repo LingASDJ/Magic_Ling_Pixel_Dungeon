@@ -56,6 +56,10 @@ public class ShatteredPixelDungeon extends Game {
 		//pre-v2.2.0
 
 		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.StreamerKnife.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.RiverSlade" );
+
+		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceLingSword.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip" );
 

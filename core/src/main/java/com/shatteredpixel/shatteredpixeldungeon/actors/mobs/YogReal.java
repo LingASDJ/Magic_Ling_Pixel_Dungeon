@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -58,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.JAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -67,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LarvaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSprite;
@@ -77,6 +80,7 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.tweeners.Delayer;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
@@ -91,6 +95,7 @@ import java.util.LinkedList;
 public class YogReal extends Boss {
     {
         initProperty();
+
         initBaseStatus(0, 0, 1, 0, 1000, 0, 0);
         initStatus(666);
 
@@ -570,6 +575,29 @@ public class YogReal extends Boss {
             Statistics.qualifiedForBossChallengeBadge = false;
         }
 
+        if(Statistics.happyMode){
+            PaswordBadges.KILLALLBOSS();
+            PaswordBadges.BOSSRUSH();
+            Statistics.questScores[4] += 30000;
+            Dungeon.win( BossRushBloodGold.class );
+            Dungeon.deleteGame( GamesInProgress.curSlot, true );
+            GameScene.scene.add(new Delayer(0.1f){
+                @Override
+                protected void onComplete() {
+                    GameScene.scene.add(new Delayer(3f){
+                        @Override
+                        protected void onComplete() {
+                            Game.switchScene( RankingsScene.class );
+                        }
+                    });
+                }
+            });
+            Music.INSTANCE.playTracks(
+                    new String[]{Assets.Music.THEME_2, Assets.Music.THEME_1},
+                    new float[]{1, 1},
+                    false);
+        }
+
         Statistics.bossScores[4] += 10000 + 2250*Statistics.spawnersAlive;
 
         Dungeon.level.viewDistance = 4;
@@ -757,7 +785,7 @@ public class YogReal extends Boss {
         }
     }
 
-    public static class YogRealSuccubus extends Succubus {
+    public static class YogRealSuccubus extends Fire_Scorpio {
         {
             maxLvl = -999;
             viewDistance = 10;

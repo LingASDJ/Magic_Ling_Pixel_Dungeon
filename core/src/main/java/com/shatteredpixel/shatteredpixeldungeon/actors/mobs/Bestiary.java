@@ -28,6 +28,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.AnomaloCaris;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.ThreeLeafBug;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.Turtle;
@@ -64,7 +65,7 @@ public class Bestiary {
 	private static ArrayList<Class<? extends Mob>> standardMobRotation(int i) {
 
 		//TODO 暂时这样 后续优化
-		if(Dungeon.branch!=0){
+		if(Dungeon.branch!=0 && !Statistics.happyMode){
 			switch (Dungeon.branch){
 				case 1:
 				if(Dungeon.depth == 17 || Dungeon.depth == 18){

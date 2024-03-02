@@ -8,9 +8,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -20,7 +17,7 @@ import com.watabou.utils.PathFinder;
 
 import java.util.ArrayList;
 
-public class RiverSlade extends MissileWeapon {
+public class StreamerKnife extends MissileWeapon {
 
     {
         image = ItemSpriteSheet.GREEN_DARK;
@@ -34,25 +31,8 @@ public class RiverSlade extends MissileWeapon {
 
     @Override
     public float durabilityPerUse(){
-        float usages = baseUses * (float)(Math.pow(5, 0));
-
-        //+50%/75% durability
-        if (Dungeon.hero.hasTalent(Talent.DURABLE_PROJECTILES)){
-            usages *= 1.25f + (0.25f*Dungeon.hero.pointsInTalent(Talent.DURABLE_PROJECTILES));
-        }
-        if (holster) {
-            usages *= MagicalHolster.HOLSTER_DURABILITY_FACTOR;
-        }
-
-        usages *= RingOfSharpshooting.durabilityMultiplier( Dungeon.hero );
-
-        //at 100 uses, items just last forever.
-        if (usages >= 100f) return 0;
-
-        usages = Math.round(usages);
-
-        //add a tiny amount to account for rounding error for calculations like 1/3
-        return (MAX_DURABILITY/usages) + 0.001f;
+        return (MAX_DURABILITY/10);
+        //不受任何影响的10点耐久
     }
 
 

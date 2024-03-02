@@ -36,6 +36,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0710_Changes(changeInfos);
         add_V079_Changes(changeInfos);
         add_V078_Changes(changeInfos);
         add_V077_Changes(changeInfos);
@@ -46,8 +47,39 @@ public class vM0_7_X_Changes {
         add_GYD_Changes(changeInfos);
     }
 
+    public static void add_V0710_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.0.X", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKELETONGOLD), ("新模式：BossRush"),
+                ("仍然在测试，请谨慎游玩。")));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new DragonGirlBlueSprite(), ("远古遗迹v1.3"),
+                ("1.小蓝固定刷新\n\n" +
+                        "2.优化钥匙剑生成")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FISHING_SPEAR), "投掷武器优化",
+                "优化投掷武器在附魔后的一些问题，感谢手电的修正"));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分文案优化\n" +
+                        "3.部分细节优化更新")));
+
+    }
+
     public static void add_V079_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.7.0.9", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.7.0.9-10", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -59,6 +91,9 @@ public class vM0_7_X_Changes {
         ss.scale.set(PixelScene.align(0.8f));
         changes.addButton(new ChangeButton(ss, ("Boss调整:克里璃斯之果"),
                 "二和三阶段进行了一些调整"));
+
+        changes.addButton(new ChangeButton(new NyzSprites(), ("奈亚子"),
+                ("奈亚子立绘加入，修正一些bug")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_1), ("新法杖：毒素紊乱法杖"),
                 ("这根法杖的能量非常紊乱，可能释放出各种魔法。释放魔法造成伤害并产生一种随机法术。")));
@@ -81,7 +116,8 @@ public class vM0_7_X_Changes {
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_17), ("挑战改进:孤城迷境"),
                 ("在全新孤城中，孤城就是老0层，且孤城特别房间补给从最多4级变成最多2级。\n\n" +
-                        "孤城从第2层到第24层追加孤城印记怪。Boss层没有。")));
+                        "孤城从第2层到第24层追加孤城印记怪。Boss层没有。\n\n" +
+                        "孤城每过一天，属性加1%。且孤城返程进行了一些优化。")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
                 ("1.部分素材优化迭代\n" +

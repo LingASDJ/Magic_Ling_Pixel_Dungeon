@@ -1,32 +1,29 @@
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class IceCyanBlueSquareCoin extends Item {
+public class KingGold extends Item {
+
     {
-        image = ItemSpriteSheet.ICEGOLD;
+        image = ItemSpriteSheet.BOSSRUSH_GOLD;
         stackable = true;
     }
 
-    public IceCyanBlueSquareCoin() {
+    public KingGold() {
         this( 1 );
     }
 
-    public IceCyanBlueSquareCoin( int value ) {
+    public KingGold( int value ) {
         this.quantity = value;
     }
 
@@ -38,18 +35,10 @@ public class IceCyanBlueSquareCoin extends Item {
     @Override
     public boolean doPickUp(Hero hero, int pos) {
 
-        if(!Dungeon.isChallenged(PRO) || !Statistics.happyMode){
-            if(SPDSettings.Cheating()){
-                //盗版蓝币只有正版的十分之一
-                SPDSettings.iceCoin(quantity/10);
-            } else {
-                SPDSettings.iceCoin(quantity);
-            }
-
-        }
+        Dungeon.rushgold += quantity;
 
         GameScene.pickUp( this, pos );
-        hero.sprite.showStatusWithIcon(Window.TITLE_COLOR, Integer.toString(quantity), FloatingText.ICECOIN );
+        hero.sprite.showStatusWithIcon( CharSprite.NEUTRAL, Integer.toString(quantity), FloatingText.GOLD );
         hero.spendAndNext( TIME_TO_PICK_UP );
 
         Sample.INSTANCE.play( Assets.Sounds.GOLD, 1, 1, Random.Float( 0.9f, 1.1f ) );
@@ -68,9 +57,5 @@ public class IceCyanBlueSquareCoin extends Item {
         return true;
     }
 
-    @Override
-    public Item random() {
-        quantity = Random.IntRange( 30 + Dungeon.depth * 10, 60 + Dungeon.depth * 20 );
-        return this;
-    }
 }
+

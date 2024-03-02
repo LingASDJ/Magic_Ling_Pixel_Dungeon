@@ -5,6 +5,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.ExFruit;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.bossWeapons;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel3;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel.BRatKingRoom;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel.ForestBossLasherTWOPos;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel.RatKingRoom;
@@ -13,7 +14,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -380,6 +380,17 @@ public class CrivusFruits extends Boss {
             potionOfPurityLing.detachAll( hero.belongings.backpack );
         }
 
+        //共存
+        if(Statistics.happyMode){
+            //克里弗斯之果二阶段死亡的时候的给予重新评估
+            if(crivusfruitslevel2){
+                crivusfruitslevel2 = false;
+            }
+            if(crivusfruitslevel3){
+                crivusfruitslevel3 = false;
+            }
+        }
+
         Dungeon.level.unseal();
         GameScene.bossSlain();
         GLog.n(Messages.get(this,"dead"));
@@ -422,7 +433,7 @@ public class CrivusFruits extends Boss {
             Dungeon.level.drop( new CrivusFruitsFlake(), pos + ofs ).sprite.drop( pos );
         }
 
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+      if(Statistics.happyMode){
             GetBossLoot();
         }
     }

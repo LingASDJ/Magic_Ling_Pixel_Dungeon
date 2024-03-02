@@ -21,11 +21,14 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -53,7 +56,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class SlimeKing extends Mob {
+public class SlimeKing extends Boss {
 
     private int combo = 0;
     private static final float TIME_TO_ZAP	= 0.5f;
@@ -111,14 +114,8 @@ public class SlimeKing extends Mob {
     }
 
     {
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-            HP =190;
-            HT= 190;
-
-        } else {
-            HP =140;
-            HT= 140;
-        }
+        HP =190;
+        HT= 190;
 
         EXP = 20;
         defenseSkill = 12;
@@ -131,7 +128,7 @@ public class SlimeKing extends Mob {
 
     @Override
     public boolean act() {
-
+        playBGM(Assets.BGM_BOSSA, true);
         if(HP < 70 && !PartCold){
             baseSpeed = 1f;
             SummoningTrap var4 = new  SummoningTrap();
@@ -178,7 +175,7 @@ public class SlimeKing extends Mob {
         } else {
 
             if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
-                sprite.zap( enemy.pos );
+                sprite.attack( enemy.pos );
                 return false;
             } else {
                 zap();
@@ -309,7 +306,6 @@ public class SlimeKing extends Mob {
         BossHealthBar.assignBoss(this);
         yell( Messages.get(this, "notice") );
         chainsUsed = false;
-        //summon();
     }
 
 
@@ -333,7 +329,7 @@ public class SlimeKing extends Mob {
             } while (!Dungeon.level.passable[pos + ofs]);
             Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
         }
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+      if(Statistics.happyMode){
 
             GetBossLoot();
         }

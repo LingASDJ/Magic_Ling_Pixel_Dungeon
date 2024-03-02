@@ -199,7 +199,7 @@ public abstract class ChampionEnemy extends Buff {
 			}
 		}
 
-		if (Dungeon.mobsToStateLing <= 0 && Dungeon.isChallenged(Challenges.SBSG) && !m.properties.contains(Char.Property.NOBIG) || Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.SBSG) && depth>5 && Random.Float()<=0.45f) {
+		if (Dungeon.mobsToStateLing <= 0 && Dungeon.isChallenged(Challenges.SBSG) && !m.properties.contains(Char.Property.NOBIG) || Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.SBSG) && depth>5 && Random.Float()<=0.45f ||  Statistics.happyMode && m.properties.contains(Char.Property.BOSS)) {
 			Buff.affect(m, buffCls);
 			m.state = m.WANDERING;
 		}
@@ -517,7 +517,7 @@ public abstract class ChampionEnemy extends Buff {
 			break;
 		}
 
-		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) || Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) && depth>5 && Random.Float()<=0.45f) {
+		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) || Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) && depth>5 && Random.Float()<=0.45f || Statistics.happyMode && m.properties.contains(Char.Property.BOSS)) {
 			Buff.affect(m, buffCls);
 			m.state = m.WANDERING;
 		}
@@ -711,11 +711,6 @@ public abstract class ChampionEnemy extends Buff {
 		}
 
 		@Override
-		public float damageTakenFactor() {
-			return 1+Statistics.gameDay*0.05f;
-		}
-
-		@Override
 		public float evasionAndAccuracyFactor() {
 			return 1+Statistics.gameDay*0.05f;
 		}
@@ -728,7 +723,7 @@ public abstract class ChampionEnemy extends Buff {
 			if (ch.buff(AscensionChallenge.AscensionBuffBlocker.class) != null){
 				return 1f;
 			}
-			return 1+Statistics.gameDay*0.05f;
+			return 1+Statistics.gameDay*0.01f;
 		}
 		@Override
 		public int icon() {
@@ -736,7 +731,7 @@ public abstract class ChampionEnemy extends Buff {
 		}
 		@Override
 		public String desc() {
-			return Messages.get(this, "desc", (int)(100*(Statistics.gameDay*0.05f)),(int)(100*(Statistics.gameDay*0.05f)),(int)(100*(Statistics.gameDay*0.05f)));
+			return Messages.get(this, "desc", (int)(100*(Statistics.gameDay*0.01f)),(int)(100*(Statistics.gameDay*0.01f)));
 		}
 	}
 

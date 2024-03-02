@@ -33,7 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoome
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Javelin;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.RedBlock;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.RiverSlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.StreamerKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpear;
@@ -102,7 +102,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		ANGULAR_SPEEDS.put(Javelin.class,       0);
 		ANGULAR_SPEEDS.put(Trident.class,       0);
 
-		ANGULAR_SPEEDS.put(RiverSlade.class,       0);
+		ANGULAR_SPEEDS.put(StreamerKnife.class,       0);
 
 		ANGULAR_SPEEDS.put(RedBlock.class,       0);
 

@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -689,9 +690,14 @@ public class Cerberus extends Boss {
 
     protected void triggerEnrage(){
         Buff.affect(this, Rage.class).setShield(1000);
-        Typhon typhon = new Typhon();
-        typhon.pos = 356;
-        GameScene.add(typhon);
+
+        if(!Statistics.happyMode){
+            Typhon typhon = new Typhon();
+            typhon.pos = 356;
+            GameScene.add(typhon);
+        }
+
+
         ref = false;
         spend( TICK );
         hasRaged = true;

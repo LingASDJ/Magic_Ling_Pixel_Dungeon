@@ -6,7 +6,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitsle
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -182,7 +181,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
                 mob.die( cause );
             }
         }
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+      if(Statistics.happyMode){
             GetBossLoot();
         }
     }

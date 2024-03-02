@@ -631,7 +631,7 @@ public abstract class Level implements Bundlable {
 		InterlevelScene.curTransition = transition;
 
 		if (transition.type == LevelTransition.Type.REGULAR_EXIT
-				|| transition.type == LevelTransition.Type.BRANCH_EXIT) {
+				|| transition.type == LevelTransition.Type.BRANCH_EXIT || transition.type == LevelTransition.Type.DOUBLE_ENTRANCE) {
 			if (Dungeon.depth == 0 && !tipsgodungeon && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 
 				if (!tipsgodungeon && !Dungeon.isChallenged(CS)) {
@@ -750,9 +750,12 @@ public abstract class Level implements Bundlable {
 					visuals.add( new FlowParticle.Flow( i - width() ) );
 				}
 			}
-			if(Dungeon.depth == 0 && Dungeon.branch == 0 || Dungeon.depth >=1 && Dungeon.depth <= 5){
-				visuals.add( new ColdSnowParticles.Snow(i));
+			if(!Statistics.happyMode){
+				if(Dungeon.depth == 0 && Dungeon.branch == 0 || Dungeon.depth >=1 && Dungeon.depth <= 5){
+					visuals.add( new ColdSnowParticles.Snow(i));
+				}
 			}
+
 
 		}
 		return visuals;

@@ -4,7 +4,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -1613,7 +1612,7 @@ public class DwarfMaster extends Boss {
                 mob.die( cause );
             }
         }
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+      if(Statistics.happyMode){
             GetBossLoot();
         }
         for (Buff buff : hero.buffs()) {

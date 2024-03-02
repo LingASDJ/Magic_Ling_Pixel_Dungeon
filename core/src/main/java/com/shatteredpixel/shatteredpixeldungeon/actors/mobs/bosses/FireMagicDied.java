@@ -9,7 +9,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.FALS
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.TRUEPosition;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -843,7 +842,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
     @Override
     public void die( Object cause ) {
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+      if(Statistics.happyMode){
 
             GetBossLoot();
         }

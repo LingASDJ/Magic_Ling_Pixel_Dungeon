@@ -596,8 +596,8 @@ public class ItemSpriteSheet {
     static {
         for (int i = POTIONS; i < POTIONS+16; i++)
             assignItemRect(i, 14, 15);
-        assignItemRect(POTION_CATALYST, 6, 15);
-        assignItemRect(LIQUID_METAL,    8, 15);
+        assignItemRect(POTION_CATALYST, 13, 15);
+        assignItemRect(LIQUID_METAL,    13, 15);
     }
 
     private static final int EXOTIC_POTIONS =                               xy(1, 23);  //16 slots
@@ -642,7 +642,7 @@ public class ItemSpriteSheet {
     static{
         for (int i = SEEDS; i < SEEDS+16; i++)
             assignItemRect(i, 10, 10);
-        assignItemRect(GREEN_LING, 8, 15);
+        assignItemRect(GREEN_LING, 13, 15);
     }
 
     private static final int BREWS          =                               xy(1, 25);  //8 slots
@@ -914,7 +914,7 @@ public class ItemSpriteSheet {
         assignItemRect(ANTILIGHT, 15, 16);
         assignItemRect(LANTERNA, 10, 16);
         assignItemRect(LANTERNB, 10, 16);
-        assignItemRect(SKPOTION, 8, 15);
+        assignItemRect(SKPOTION, 13, 15);
         assignItemRect(SKNANO, 15, 14);
         assignItemRect(WATERSOUL, 14, 16);
         assignItemRect(WRALIPS, 16, 16);
@@ -985,10 +985,15 @@ public class ItemSpriteSheet {
     public static final int CHALLANEESICON_17=			 CHALLANEESICONINDEX+31;
     public static final int SCROLL_GOLD   	 		= xy(1, 46);  //16 slots
     public static final int  RANDOM_CHEST			= SCROLL_GOLD+1;
-
     public static final int  CITY_HOOD			= SCROLL_GOLD+2;
+    public static final int  BOSSRUSH_GOLD			= SCROLL_GOLD+4;
+
+    public static final int  BOSSRUSH_MINI			= SCROLL_GOLD+6;
+
     static {
         assignItemRect(SCROLL_GOLD, 15, 14);
+        assignItemRect(BOSSRUSH_GOLD, 16, 12);
+        assignItemRect(BOSSRUSH_MINI, 7, 7);
     }
     private static final int DOCUMENTS  =                                   xy(1, 48);  //16 slots
     public static final int GUIDE_PAGE  = DOCUMENTS+0;

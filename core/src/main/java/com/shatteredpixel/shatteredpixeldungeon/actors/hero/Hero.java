@@ -41,7 +41,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
@@ -68,6 +67,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessAnmy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessBossRushLow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoRead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
@@ -574,6 +574,11 @@ public class Hero extends Char {
 
 		if(Dungeon.isChallenged(CS)){
 			Buff.affect( this, NightorDay.class ).set((100), 1);
+		}
+
+		//春游模式
+		if(Statistics.difficultyDLCEXLevel == 1){
+			Buff.affect(hero, BlessBossRushLow.class, ChampionHero.DURATION*123456f);
 		}
 
 	}
@@ -1995,7 +2000,7 @@ public class Hero extends Char {
 					&& (!flying || buff(Levitation.class) != null && buff(Levitation.class).detachesWithinDelay(delay))){
 				if (!Chasm.jumpConfirmed){
 
-					if(Dungeon.branch != 0 || Dungeon.depth == 5){
+					if(Dungeon.branch != 0 && !happyMode || Dungeon.depth == 5 ){
 						if(buff(Levitation.class) != null){
 							GLog.n(Messages.get(Hero.class, "error_no"));
 						}
@@ -2544,11 +2549,11 @@ public class Hero extends Char {
 
 
 
-        // 深度调查
-        if ((Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
-            happyMode = true;
-            GLog.n(Messages.get(WndStory.class, "letsplay"));
-        }
+//        // 深度调查
+//        if ((Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
+//            happyMode = true;
+//            GLog.n(Messages.get(WndStory.class, "letsplay"));
+//        }
 
 
 

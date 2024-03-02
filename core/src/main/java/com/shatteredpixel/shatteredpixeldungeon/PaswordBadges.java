@@ -50,6 +50,10 @@ public class PaswordBadges {
         }
     }
 
+    public static void KILLALLBOSS() {
+        displayBadge( Badge.SPICEALBOSS );
+    }
+
     public static void BIGX() {
         displayBadge( PaswordBadges.Badge.BIG_X );
     }
@@ -88,7 +92,7 @@ public class PaswordBadges {
         SPICEALBOSS 				 (4),
         SAKA_DIED(5),
         RESET_DAY(6),
-        BRCLER,
+        BRCLER(7),
         ALLCHSX(8),
 
         GODD_MAKE(12),

@@ -29,8 +29,10 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessBossRushLow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LanFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NxhyNpc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
@@ -47,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoRuoS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonLow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Question;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.SmallLeaf;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteYan;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
@@ -58,6 +61,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
@@ -67,8 +71,10 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.SurfaceScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
 import com.watabou.utils.Callback;
@@ -116,9 +122,9 @@ public class ZeroCityLevel extends Level {
 
     private static final int[] codedMap = {
             P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,M,P,P,P,P,S,P,P,P,P,P,P,P,P,P,P,P,M,M,M,M,M,M,P,
-            P,P,P,M,D,D,D,P,P,D,P,M,M,P,M,P,P,P,P,P,P,P,M,M,M,M,M,M,M,P,P,P,P,P,P,P,P,P,P,P,M,R,X,R,R,S,P,P,P,P,P,P,P,P,P,P,P,M,M,P,D,D,D,M,
-            P,P,D,T,D,D,I,D,D,D,D,D,D,D,M,P,P,P,P,P,P,P,M,O,O,O,O,O,M,M,M,M,M,M,M,M,M,M,M,M,M,R,R,R,R,M,M,M,M,M,M,M,M,M,P,P,P,D,M,P,A,A,A,M,
-            P,P,I,D,A,D,D,D,A,D,D,D,D,D,M,M,P,P,P,P,P,M,M,D,D,D,D,D,D,D,D,D,D,R,R,R,D,D,M,M,M,B,M,M,M,M,D,D,D,D,D,D,D,M,P,P,P,D,M,P,D,D,D,M,
+            P,P,P,M,D,D,D,P,P,D,P,M,M,P,M,P,P,P,P,P,P,P,M,M,M,M,M,M,M,P,P,P,P,P,P,P,P,P,P,P,D,D,D,M,P,S,P,P,P,P,P,P,P,P,P,P,P,M,M,P,D,D,D,M,
+            P,P,D,T,D,D,I,D,D,D,D,D,D,D,M,P,P,P,P,P,P,P,M,O,O,O,O,O,M,M,M,M,M,M,M,M,M,M,M,M,D,D,D,M,P,M,M,M,M,M,M,M,M,M,P,P,P,D,M,P,A,A,A,M,
+            P,P,I,D,A,D,D,D,A,D,D,D,D,D,M,M,P,P,P,P,P,M,M,D,D,D,D,D,D,D,D,D,D,R,R,R,D,D,M,M,D,D,D,M,M,M,D,D,D,D,D,D,D,M,P,P,P,D,M,P,D,D,D,M,
             P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,M,P,P,P,P,M,M,D,D,D,D,D,M,M,M,M,M,M,M,M,M,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,P,P,D,M,P,D,N,D,M,
             P,P,D,D,D,D,K,D,D,D,D,D,D,D,D,M,M,P,P,P,M,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,P,D,M,P,D,D,D,M,
             P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,M,M,M,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,R,R,D,D,D,D,D,D,D,D,D,M,P,D,M,M,M,B,M,M,
@@ -181,13 +187,6 @@ public class ZeroCityLevel extends Level {
             P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,
     };
 
-
-//    public void occupyCell(Char ch) {
-//        super.occupyCell(ch);
-//        GLog.p(String.valueOf(hero.pos));
-//        GLog.b(String.valueOf(Statistics.zeroItemLevel));
-//    }
-
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
         if (transition.type == LevelTransition.Type.BRANCH_ENTRANCE) {
@@ -225,15 +224,108 @@ public class ZeroCityLevel extends Level {
                     }
                     return true;
                 }
+            } else if (transition.type == LevelTransition.Type.DOUBLE_ENTRANCE) {
+
+            if (hero.belongings.getItem( BossRushBloodGold.class ) == null) {
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show(new WndMessage(Messages.get(hero, "leave_more_dead")));
+                    }
+                });
+                return false;
+            } else if(hero.belongings.getItem( BossRushBloodGold.class ) != null && Statistics.deepestFloor == 0) {
+
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show(new WndOptions(new ShopkKingSprite(),
+                                Messages.titleCase(Messages.get(WaloKe.class, "name")),
+                                Messages.get(WaloKe.class, "quest_start_prompt"),
+                                Messages.get(WaloKe.class, "easy"),
+                                Messages.get(WaloKe.class, "normal"),
+                                Messages.get(WaloKe.class, "hard")) {
+                            @Override
+                            protected void onSelect(int index) {
+                                if (index == 0) {
+                                    TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+                                    if (timeFreeze != null) timeFreeze.disarmPresses();
+                                    Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+                                    if (timeBubble != null) timeBubble.disarmPresses();
+                                    InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+                                    InterlevelScene.curTransition = new LevelTransition();
+                                    InterlevelScene.curTransition.destDepth = depth+1;
+                                    InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+                                    InterlevelScene.curTransition.destBranch = 8;
+                                    InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+                                    InterlevelScene.curTransition.centerCell = -1;
+                                    Game.switchScene(InterlevelScene.class);
+                                    Buff.affect(hero, BlessBossRushLow.class, ChampionHero.DURATION*123456f);
+                                    Statistics.difficultyDLCEXLevel = 1;
+
+                                } else if (index == 1) {
+                                    TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+                                    if (timeFreeze != null) timeFreeze.disarmPresses();
+                                    Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+                                    if (timeBubble != null) timeBubble.disarmPresses();
+                                    InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+                                    InterlevelScene.curTransition = new LevelTransition();
+                                    InterlevelScene.curTransition.destDepth = depth + 1;
+                                    InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+                                    InterlevelScene.curTransition.destBranch = 8;
+                                    InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+                                    InterlevelScene.curTransition.centerCell = -1;
+                                    Game.switchScene(InterlevelScene.class);
+                                    Statistics.difficultyDLCEXLevel = 2;
+                                } else if (index == 2) {
+                                    TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+                                    if (timeFreeze != null) timeFreeze.disarmPresses();
+                                    Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+                                    if (timeBubble != null) timeBubble.disarmPresses();
+                                    InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+                                    InterlevelScene.curTransition = new LevelTransition();
+                                    InterlevelScene.curTransition.destDepth = depth + 1;
+                                    InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+                                    InterlevelScene.curTransition.destBranch = 8;
+                                    InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+                                    InterlevelScene.curTransition.centerCell = -1;
+                                    Game.switchScene(InterlevelScene.class);
+                                    Statistics.difficultyDLCEXLevel = 3;
+                                }
+                                //绝命
+                                Dungeon.challenges = 4096;
+                                Statistics.happyMode = true;
+                                Dungeon.gold += 1200;
+                            }
+                        });
+                    }
+
+                });
+
+
+                return false;
             } else {
-            return super.activateTransition(hero, transition);
-        }
+                return super.activateTransition(hero, transition);
+            }
+
+            } else {
+                return super.activateTransition(hero, transition);
+            }
+    }
+
+//    public void occupyCell(Char ch) {
+//        super.occupyCell(ch);
+//        GLog.p(String.valueOf(hero.pos));
+//        GLog.b(String.valueOf(Statistics.zeroItemLevel));
+//    }
+
+    public int randomRespawnCell() {
+        return entrance();
     }
 
     protected boolean build() {
         setSize(WIDTH, HEIGHT);
         map = codedMap.clone();
-
 
         int exitCell = 317;
         LevelTransition exit = new LevelTransition(this, exitCell, LevelTransition.Type.REGULAR_EXIT);
@@ -245,6 +337,9 @@ public class ZeroCityLevel extends Level {
 
         LevelTransition bexits = new LevelTransition(this, 2615, LevelTransition.Type.BRANCH_ENTRANCE);
         transitions.add(bexits);
+
+        LevelTransition dexits = new LevelTransition(this, 169, LevelTransition.Type.DOUBLE_ENTRANCE);
+        transitions.add(dexits);
 
         CustomTilemap vis = new townBehind();
         vis.pos(0, 0);
@@ -395,11 +490,11 @@ public class ZeroCityLevel extends Level {
         PaswordBadges.loadGlobal();
         List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
-//        if (passwordbadges.contains(PaswordBadges.Badge.FIREGIRL)) {
-//            WaloKe npc14 = new WaloKe();
-//            npc14.pos = 479;
-//            mobs.add(npc14);
-//        }
+        if (passwordbadges.contains(PaswordBadges.Badge.FIREGIRL)) {
+            WaloKe npc14 = new WaloKe();
+            npc14.pos = 479;
+            mobs.add(npc14);
+        }
 
     }
 
@@ -499,13 +594,5 @@ public class ZeroCityLevel extends Level {
         drop((Generator.randomUsingDefaults(Generator.Category.SCROLL)), 3193);
         drop((Generator.randomUsingDefaults(Generator.Category.SCROLL)), 2937);
     }
-
-    public Mob createMob() {
-        return null;
-    }
-    public int randomRespawnCell() {
-        return this.entrance - width();
-    }
-
 
 }

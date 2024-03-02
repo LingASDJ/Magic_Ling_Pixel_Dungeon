@@ -7,21 +7,20 @@ import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AutoRandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReloadShop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.LuoWhite;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.LuoWhiteSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ItemSlot;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
@@ -42,43 +41,41 @@ public class WndWaloKe extends Window {
 
 
     public WndWaloKe() {
-        LuoWhite.shop3 = new MoonDao();
-        LuoWhite.shop2 = new DiedCrossBow();
-        LuoWhite.shop1 = new SaiPlus();
+        WaloKe.shop1 = new BossRushBloodGold ();
 
         IconTitle titlebar = new IconTitle();
         titlebar.setRect(0, 0, WIDTH, 0);
-        titlebar.icon(new LuoWhiteSprite());
-        titlebar.label(Messages.get(LuoWhite.class,"name"));
+        titlebar.icon(new ShopkKingSprite());
+        titlebar.label(Messages.get(WaloKe.class,"name"));
         add( titlebar );
         RenderedTextBlock message =
-                PixelScene.renderTextBlock( (Messages.get(LuoWhite.class,"descx",hero.name())), 6 );
+                PixelScene.renderTextBlock( (Messages.get(WaloKe.class,"descx",hero.name())), 6 );
         message.maxWidth(WIDTH);
         message.setPos(0, titlebar.bottom() + GAP);
         add( message );
 
-        WndWaloKe.RewardButton shop1 = new WndWaloKe.RewardButton( LuoWhite.shop1 );
+        WndWaloKe.RewardButton shop1 = new WndWaloKe.RewardButton( WaloKe.shop1 );
         shop1.setRect( (WIDTH - BTN_GAP) / 3f - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE,
                 BTN_SIZE );
         add( shop1 );
 
-        WndWaloKe.RewardButton shop2 = new WndWaloKe.RewardButton( LuoWhite.shop2 );
+        WndWaloKe.RewardButton shop2 = new WndWaloKe.RewardButton( WaloKe.shop2 );
         shop2.setRect( shop1.right() + BTN_GAP, shop1.top(), BTN_SIZE, BTN_SIZE );
         add(shop2);
 
-        WndWaloKe.RewardButton shop3 = new WndWaloKe.RewardButton( LuoWhite.shop3 );
+        WndWaloKe.RewardButton shop3 = new WndWaloKe.RewardButton( WaloKe.shop3 );
         shop3.setRect( shop2.right() + BTN_GAP, shop2.top(), BTN_SIZE, BTN_SIZE );
         add(shop3);
 
-//        RewardButton bomb1 = new RewardButton( LuoWhite.shop4 );
+//        RewardButton bomb1 = new RewardButton( WaloKe.shop4 );
 //        bomb1.setRect( shop1.left() , shop1.bottom(), BTN_SIZE, BTN_SIZE );
 //        add(bomb1);
 //
-//        RewardButton bomb2 = new RewardButton( LuoWhite.shop5);
+//        RewardButton bomb2 = new RewardButton( WaloKe.shop5);
 //        bomb2.setRect( bomb1.right()+ BTN_GAP , bomb1.top(), BTN_SIZE, BTN_SIZE );
 //        add(bomb2);
 //
-//        RewardButton bomb3 = new RewardButton( LuoWhite.shop6 );
+//        RewardButton bomb3 = new RewardButton( WaloKe.shop6 );
 //        bomb3.setRect( bomb2.right()+ BTN_GAP , bomb2.top(), BTN_SIZE, BTN_SIZE );
 //        add(bomb3);
 
@@ -121,7 +118,7 @@ public class WndWaloKe extends Window {
         Game.runOnRenderThread(new Callback() {
                                    @Override
                                    public void call() {
-                                       GameScene.show(new WndQuest(new LuoWhite(), text));
+                                       GameScene.show(new WndQuest(new WaloKe(), text));
                                    }
                                }
         );
@@ -141,13 +138,9 @@ public class WndWaloKe extends Window {
     }
 
     public void itemUnlock(Item item){
-        if( (item instanceof DiedCrossBow|| item instanceof MoonDao || item instanceof SaiPlus) && !SPDSettings.isItemUnlock( item.name() ) ){
-            if( item instanceof DiedCrossBow )
-                Generator.setProbs( item, Generator.Category.WEP_T5, 1.5f );
-            if( item instanceof MoonDao )
-                Generator.setProbs( item,Generator.Category.WEP_T3, 1.5f );
-            if( item instanceof SaiPlus )
-                Generator.setProbs( item, Generator.Category.WEP_T5, 1 );
+        if( (item instanceof BossRushBloodGold) && !SPDSettings.isItemUnlock( item.name() ) ){
+            if( item instanceof BossRushBloodGold)
+                Generator.setProbs( item, Generator.Category.WEP_T5, 0f );
 
             SPDSettings.unlockItem( item.getClass().getSimpleName() );
         }
@@ -160,10 +153,10 @@ public class WndWaloKe extends Window {
 
             boolean locked = SPDSettings.isItemUnlock(item.getClass().getSimpleName());
 
-            StyledButton btnConfirm = new StyledButton(SPDSettings.isItemUnlock(item.getClass().getSimpleName())? Chrome.Type.SCROLL : Chrome.Type.RED_BUTTON,Messages.get(WndIceTradeItem.class, (locked) ? "unlocked":"buy",item.iceCoinValue())){
+            StyledButton btnConfirm = new StyledButton(SPDSettings.isItemUnlock(item.getClass().getSimpleName())? Chrome.Type.SCROLL : Chrome.Type.RED_BUTTON,Messages.get(WndWaloKe.class, (locked) ? "unlocked":"buy",item.iceCoinValue())){
                 @Override
                 protected void onClick() {
-                    if(SPDSettings.iceCoin() >= item.iceCoinValue()) {
+                    if(SPDSettings.iceCoin() >= item.iceCoinValue() && !SPDSettings.isItemUnlock(item.getClass().getSimpleName())) {
                         SPDSettings.iceDownCoin(item.iceCoinValue());
                         WndWaloKe.this.selectReward( item );
                         itemUnlock(item);
@@ -180,17 +173,19 @@ public class WndWaloKe extends Window {
                         item.cursed = true;
                         Buff.prolong( hero, ReloadShop.class, 1f);
                         WndWaloKe.RewardWindow.this.hide();
+                    } else if(SPDSettings.isItemUnlock(item.getClass().getSimpleName())) {
+                        WndWaloKe.this.selectReward( item );
+                        item.cursed = true;
+                        Buff.prolong( hero, ReloadShop.class, 1f);
+                        WndWaloKe.RewardWindow.this.hide();
                     } else {
                         tell(Messages.get(WndWaloKe.class,"nomoney"));
                         WndWaloKe.RewardWindow.this.hide();
                     }
+
                 }
             };
             btnConfirm.setRect(0, height+2, WIDTH, 16);
-            if(SPDSettings.isItemUnlock(item.getClass().getSimpleName())){
-                btnConfirm.active = false;
-                btnConfirm.setRect(0, height+2, WIDTH, 31);
-            }
             add(btnConfirm);
 
             resize(width, (int)btnConfirm.bottom());
@@ -228,11 +223,19 @@ public class WndWaloKe extends Window {
         protected void layout() {
             super.layout();
 
+
+
             bg.x = x;
             bg.y = y;
             bg.size( width, height );
 
             slot.setRect( x + 2, y + 2, width - 4, height - 4 );
+
+            if(Statistics.happyMode){
+                slot.active = false;
+                slot.alpha(0.6f);
+            }
+
         }
     }
 }

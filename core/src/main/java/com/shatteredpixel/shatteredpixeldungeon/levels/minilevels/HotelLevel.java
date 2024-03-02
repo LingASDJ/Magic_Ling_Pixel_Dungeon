@@ -13,6 +13,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -173,10 +174,18 @@ public class HotelLevel extends Level {
     @Override
     protected void createMobs() {
 
-        if(Random.Float()<0.1f){
-            WhiteLing n = new WhiteLing();
-            n.pos = (this.width * 9 + 10);
-            mobs.add(n);
+        if (Badges.isUnlocked(Badges.Badge.VICTORY)) {
+            if (Random.Float() < 0.45f) {
+                WhiteLing n = new WhiteLing();
+                n.pos = (this.width * 9 + 10);
+                mobs.add(n);
+            }
+        } else {
+            if (Random.Float() < 0.1f) {
+                WhiteLing n = new WhiteLing();
+                n.pos = (this.width * 9 + 10);
+                mobs.add(n);
+            }
         }
 
 
