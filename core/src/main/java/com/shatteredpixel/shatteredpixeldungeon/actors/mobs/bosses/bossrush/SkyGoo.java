@@ -331,15 +331,6 @@ public class SkyGoo extends Mob {
 	}
 
 	@Override
-	protected boolean getFurther(int target) {
-		if (pumpedUp != 0) {
-			pumpedUp = 0;
-			sprite.idle();
-		}
-		return super.getFurther( target );
-	}
-
-	@Override
 	public void damage(int dmg, Object src) {
 		if (!BossHealthBar.isAssigned()) {
 			BossHealthBar.assignBoss(this);
