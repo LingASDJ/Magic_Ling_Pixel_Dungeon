@@ -104,7 +104,7 @@ public class AncityLevel extends Level {
 
     @Override
     protected void createItems() {
-        drop( new PotionOfExperience(), this.width * 8 + 8 );
+        drop( new PotionOfExperience().quantity(4), this.width * 8 + 8 );
     }
 
     public int randomRespawnCell() {

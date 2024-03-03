@@ -33,7 +33,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.HotelLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.DeepShadowLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.ForestHardBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.SkyGooBossLevel;
 import com.watabou.utils.Random;
 
 //Level Rules
@@ -211,6 +213,7 @@ public class LevelRules {
 
             case 7:
                 return new ShopBossLevel();
+            //BossRush level
             case 8:
                 switch (depth) {
                     case 1: return new AncityLevel();
@@ -222,13 +225,25 @@ public class LevelRules {
 
                     case 6: return new SLMKingLevel();
 
-//                    case 7: return new SkyGooBossLevel();
+                    case 7:
+                        if(Statistics.difficultyDLCEXLevel >=2){
+                            return new SkyGooBossLevel();
+                        } else {
+                            return new ItemLevel();
+                        }
 
                     case 9: return new PrisonBossLevel();
 
                     case 11: return new ColdChestBossLevel();
 
                     case 13: return new DimandKingLevel();
+
+                    case 14:
+                        if(Statistics.difficultyDLCEXLevel >=2){
+                            return new DeepShadowLevel();
+                        } else {
+                            return new ItemLevel();
+                        }
 
                     //御三家 最难时刻
                     case 16: return new CavesBossLevel();
@@ -249,10 +264,10 @@ public class LevelRules {
                     case 31: return new YogGodHardBossLevel();
 
                     //补给层 T1
-                    case 3:  case 5: case 7: case 8:  case 10:
-                        //补给层 T2
-                    case 14: case 12: case 15:  case 19: case 20:
-                        //补给层 T3
+                    case 3:  case 5: case 8:  case 10:
+                    //补给层 T2
+                    case 12: case 15:  case 19: case 20:
+                    //补给层 T3
                     case 22: case 25: case 28: case 30:
                         return new ItemLevel();
 

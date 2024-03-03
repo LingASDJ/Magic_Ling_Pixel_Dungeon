@@ -338,6 +338,11 @@ public abstract class ChampionEnemy extends Buff {
 		}
 
 		@Override
+		public String desc() {
+			return Messages.get(this, "desc", count);
+		}
+
+		@Override
 		public void onAttackProc(Char enemy) {
 			if(count<4) {
 				count++;
@@ -345,6 +350,8 @@ public abstract class ChampionEnemy extends Buff {
 				run.pos = target.pos;
 				run.activate();
 				CellEmitter.get(target.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
+			} else {
+				super.onAttackProc(enemy);
 			}
 		}
 	}

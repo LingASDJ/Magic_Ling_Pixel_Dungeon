@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
@@ -56,7 +55,7 @@ public class ItemLevel extends RegularLevel {
     protected int specialRooms(boolean forceMax) {
         if (forceMax) return 1;
         //1 to 3, average 2.2
-        return 1+ Dungeon.depth/5+ Random.chances(new float[]{1,1,1});
+        return Dungeon.depth< 25 ? 1+ Dungeon.depth/5+ Random.chances(new float[]{1,1,1}) : 0;
     }
 
     @Override
@@ -64,8 +63,7 @@ public class ItemLevel extends RegularLevel {
         Ghost.Quest.spawnBossRush( this );
        switch (depth){
            //T1 补给层
-           case 3:  case 5: case 7: case 8:  case 10:
-                addItemToSpawn(new Gold().random());
+           case 3:  case 5: case 7: case 8: case 10:
                 addItemToSpawn(new PotionOfStrength());
                 addItemToSpawn(new PotionOfHealing());
                 addItemToSpawn(new PotionOfHealing());

@@ -283,6 +283,9 @@ public class LevelTeleporter extends TestItem {
 
             DragonGirlBlue.Quest.four_used_points = 0;
 
+
+            Statistics.doNotLookLing = false;
+
             Statistics.sakaBackStage = 0;
 
             Game.switchScene(InterlevelScene.class);

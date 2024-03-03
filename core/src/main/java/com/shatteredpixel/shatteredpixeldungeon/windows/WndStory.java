@@ -268,61 +268,62 @@ public class WndStory extends Window {
 		}
 	}
 
-	public static void lanterfireRoll(){
-		if(lanterfireactive) {
-			if (Dungeon.depth == 6){
-				//TODO 首次到达6层 给予1个增益Buff
-				switch (Random.Int(5)){
-					case 0: default:
-						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
-						break;
-					case 1:
-						Buff.affect(hero, BlessGoodSTR.class).set( (100), 1 );
-						break;
-					case 2:
-						Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
-						break;
-					case 3:
-						Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
-						break;
-					case 4:
-						Buff.affect(hero, BlessImmune.class, ChampionHero.DURATION*123456f);
-						break;
-				}
-				GLog.b(Messages.get(WndStory.class,"start"));
-			}
-			if (RollLevel()) {
-				if (hero.lanterfire == 100){
-					goodLanterFire();
-				} else if (hero.lanterfire <= 99 && hero.lanterfire >= 90) {
-					goodLanterFire();
-				} else if (hero.lanterfire <= 89 && hero.lanterfire >= 80 && Random.Float() <= 0.05f ) {
-					badLanterFire();
-				} else if (hero.lanterfire <= 89 && hero.lanterfire >= 80 && Random.Float() <= 0.85f ) {
-					goodLanterFire();
-				} else if (hero.lanterfire <= 89 && hero.lanterfire >= 80) {
-					GLog.b(Messages.get(WndStory.class,"normoal"));
-				} else if (hero.lanterfire <= 79 && hero.lanterfire >= 60 && Random.Float() <= 0.25f ) {
-					badLanterFire();
-				} else if (hero.lanterfire <= 79 && hero.lanterfire >= 60 && Random.Float() <= 0.70f ) {
-					goodLanterFire();
-				} else if (hero.lanterfire <= 79 && hero.lanterfire >= 60) {
-					GLog.b(Messages.get(WndStory.class,"normoal"));
-				} else if (hero.lanterfire <= 59 && hero.lanterfire >= 35 && Random.Float() <= 0.40f ) {
-					badLanterFire();
-				} else if (hero.lanterfire <= 59 && hero.lanterfire >= 35 && Random.Float() <= 0.20f ) {
-					goodLanterFire();
-				} else if (hero.lanterfire <= 59 && hero.lanterfire >= 35) {
-					GLog.b(Messages.get(WndStory.class,"normoal"));
-				} else if (hero.lanterfire <= 34 && hero.lanterfire >= 1 && Random.Float() <= 0.40f ) {
-					badLanterFire();
-				} else if (hero.lanterfire <= 34 && hero.lanterfire >= 1) {
-					GLog.b(Messages.get(WndStory.class,"normoal"));
-				} else {
-					badLanterFire();
-				}
-			}
+	static final float DURATION_MULTIPLIER = 123456f;
+	public static void lanterfireRoll() {
+		if (!lanterfireactive) return;
+
+		if (Dungeon.depth == 6) {
+			applyRandomBuff();
+			GLog.b(Messages.get(WndStory.class, "start"));
+		}
+		if (!RollLevel()) return;
+
+		if (hero.lanterfire >= 90) {
+			goodLanterFire();
+		} else if (hero.lanterfire >= 80) {
+			applyEffectBasedOnChance(0.85f, 0.05f);
+		} else if (hero.lanterfire >= 60) {
+			applyEffectBasedOnChance(0.70f, 0.25f);
+		} else if (hero.lanterfire >= 35) {
+			applyEffectBasedOnChance(0.20f, 0.40f);
+		} else if (hero.lanterfire >= 1) {
+			applyEffectBasedOnChance(0f, 0.40f);
+		} else {
+			badLanterFire();
 		}
 	}
+
+	private static void applyRandomBuff() {
+		switch (Random.Int(5)) {
+			case 0:
+			default:
+				Buff.affect(hero, BlessNoMoney.class).set(100, 1);
+				break;
+			case 1:
+				Buff.affect(hero, BlessGoodSTR.class).set(100, 1);
+				break;
+			case 2:
+				Buff.affect(hero, BlessMobDied.class).set(100, 1);
+				break;
+			case 3:
+				Buff.affect(hero, BlessMixShiled.class).set(100, 1);
+				break;
+			case 4:
+				Buff.affect(hero, BlessImmune.class, ChampionHero.DURATION * DURATION_MULTIPLIER);
+				break;
+		}
+	}
+
+	private static void applyEffectBasedOnChance(float goodChance, float badChance) {
+		float roll = Random.Float();
+		if (roll <= badChance) {
+			badLanterFire();
+		} else if (roll <= badChance + goodChance) {
+			goodLanterFire();
+		} else {
+			GLog.b(Messages.get(WndStory.class, "normoal"));
+		}
+	}
+
 
 }

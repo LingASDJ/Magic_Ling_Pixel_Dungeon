@@ -148,11 +148,14 @@ public class BGMPlayer {
 
         if (Statistics.happyMode) {
             switch (depth){
-                case 2: case 4: case 6: case 13:
+                case 2: case 4: case 6: case 13: case 7:
                     playBGM(Assets.BGM_BOSSA, true);
                     break;
                 case 11:
                     playBGM(Assets.BGM_BOSSB, true);
+                    break;
+                case 14:
+                    playBGM(Assets.BGM_YOU, true);
                     break;
                 case 9:
                     playBGM(Assets.BGM_BOSSB2, true);

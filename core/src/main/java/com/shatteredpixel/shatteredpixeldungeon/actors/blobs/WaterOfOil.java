@@ -28,6 +28,8 @@ public class WaterOfOil extends WellWater {
             Sample.INSTANCE.play( Assets.Sounds.WATER );
             GLog.w( Messages.get(this, "clear"));
             return item;
+        } else {
+            GLog.w( Messages.get(this, "cl7"));
         }
         return null;
     }

@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
@@ -419,7 +420,11 @@ public class InterlevelScene extends PixelScene {
 
 			LevelTransition destTransition = level.getTransition(curTransition.destType);
 			curTransition = null;
-			Dungeon.switchLevel( level, destTransition.cell() );
+			if(Dungeon.depth == 14 && branch == 8){
+				Dungeon.switchLevel( level, 847 );
+			} else {
+				Dungeon.switchLevel( level, destTransition.cell() );
+			}
 		}
 
 	}
@@ -458,7 +463,12 @@ public class InterlevelScene extends PixelScene {
 
 		LevelTransition destTransition = level.getTransition(curTransition.destType);
 		curTransition = null;
-		Dungeon.switchLevel( level, destTransition.cell() );
+		if(Dungeon.depth == 14 && branch == 8){
+			Dungeon.switchLevel( level, 495 );
+		} else {
+			Dungeon.switchLevel( level, destTransition.cell() );
+		}
+
 	}
 	
 	private void returnTo() throws IOException {

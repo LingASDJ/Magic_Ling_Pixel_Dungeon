@@ -37,7 +37,7 @@ public class Assets {
 	public static final String TOWN = "music/town.ogg";
 	public static final String BGM_BOSSA = "music/Boss1.ogg";
 
-	public static final String BGM_BOSSA1 = "music/Boss1-Remixed.ogg";
+	public static final String BGM_YOU = "music/tmp/you.ogg";
 	public static final String BGM_BOSSB = "music/Boss2.ogg";
 	public static final String BGM_BOSSB2 = "music/Tengu.ogg";
 	public static final String BGM_BOSSC = "music/Boss3.ogg";
@@ -49,7 +49,6 @@ public class Assets {
 	public static final String BGM_SHOP = "music/Shop.ogg";
 	public static final String BGM_BOSSE4 = "music/YogTime.ogg";
 	public static final String BGM_FRBOSS = "music/SnowLing.ogg";
-	public static final String RUN = "music/Run.ogg";
 	public static final String HOLLOW_CITY = "music/tmp/hollowcity.ogg";
 
 	public static final String FL_CITY = "music/forestflower.ogg";

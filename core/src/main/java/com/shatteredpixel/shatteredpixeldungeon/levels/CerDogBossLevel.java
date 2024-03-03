@@ -9,6 +9,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArcaneArmor;
@@ -551,6 +552,44 @@ public class CerDogBossLevel extends Level{
                                         }
                                     }
 
+                                    if(Statistics.difficultyDLCEXLevel == 3){
+                                        Class<?extends ChampionEnemy> buffCls2;
+                                        switch (Random.Int(5)){
+                                            case 0: default:    buffCls2 = ChampionEnemy.Middle.class;      break;
+                                            case 1:             buffCls2 = ChampionEnemy.Bomber.class;      break;
+                                            case 2:             buffCls2 = ChampionEnemy.Sider.class;       break;
+                                            case 3:             buffCls2 = ChampionEnemy.LongSider.class;   break;
+                                            case 4:             buffCls2 = ChampionEnemy.Big.class;         break;
+                                        }
+                                        Buff.affect(ncx, buffCls2);
+                                        Class<?extends ChampionEnemy> buffCls;
+                                        switch (Random.Int(9)){
+                                            case 0: default:    buffCls = ChampionEnemy.Blazing.class;      break;
+                                            case 1:             buffCls = ChampionEnemy.Projecting.class;   break;
+                                            case 2:             buffCls = ChampionEnemy.AntiMagic.class;    break;
+                                            case 3:             buffCls = ChampionEnemy.Giant.class;        break;
+                                            case 4:             buffCls = ChampionEnemy.Blessed.class;      break;
+                                            case 5:             buffCls = ChampionEnemy.Growing.class;      break;
+                                            case 6:             buffCls = ChampionEnemy.Halo.class;      	break;
+                                            case 7:             buffCls = ChampionEnemy.DelayMob.class;     break;
+                                        }
+                                        Buff.affect(ncx, buffCls);
+                                    } else if (Statistics.difficultyDLCEXLevel == 2){
+                                        Class<?extends ChampionEnemy> buffCls;
+                                        switch (Random.Int(9)){
+                                            case 0: default:    buffCls = ChampionEnemy.Blazing.class;      break;
+                                            case 1:             buffCls = ChampionEnemy.Projecting.class;   break;
+                                            case 2:             buffCls = ChampionEnemy.AntiMagic.class;    break;
+                                            case 3:             buffCls = ChampionEnemy.Giant.class;        break;
+                                            case 4:             buffCls = ChampionEnemy.Blessed.class;      break;
+                                            case 5:             buffCls = ChampionEnemy.Growing.class;      break;
+                                            case 6:             buffCls = ChampionEnemy.Halo.class;      	break;
+                                            case 7:             buffCls = ChampionEnemy.DelayMob.class;     break;
+                                        }
+                                        Buff.affect(ncx, buffCls);
+                                    }
+
+
                                     ncx.state = ncx.WANDERING;
                                     GameScene.add(ncx);
                                 }
@@ -567,6 +606,7 @@ public class CerDogBossLevel extends Level{
         }
 
     }
+
 
 
     public static class YowLingSprite extends MobSprite {

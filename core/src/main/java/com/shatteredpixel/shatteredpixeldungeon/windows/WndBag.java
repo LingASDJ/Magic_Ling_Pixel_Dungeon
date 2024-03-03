@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -283,21 +284,39 @@ public class WndBag extends WndTabbed {
 		int x = col * (slotWidth + SLOT_MARGIN);
 		int y = TITLE_HEIGHT + row * (slotHeight + SLOT_MARGIN);
 
+		if(Statistics.happyMode){
+			BitmapText iceCoinAmount = new BitmapText(Integer.toString(Dungeon.rushgold), PixelScene.pixelFont);
+			iceCoinAmount.hardlight(TITLE_COLOR);
+			iceCoinAmount.measure();
+			iceCoinAmount.x = x - iceCoinAmount.width()/5f+4;
+			iceCoinAmount.y = y + (slotHeight - iceCoinAmount.baseLine()) / 2f;
+			PixelScene.align(iceCoinAmount);
+			add(iceCoinAmount);
+			ItemSprite iceCoinSprite = new ItemSprite(ItemSpriteSheet.BOSSRUSH_GOLD, null);
+			iceCoinSprite.setPos(x+iceCoinSprite.width()*1.25f,iceCoinAmount.y-(slotHeight - iceCoinAmount.baseLine()) / 2f);
+			PixelScene.align(iceCoinSprite);
+			add(iceCoinSprite);
+		} else {
+			BitmapText iceCoinAmount = new BitmapText(Integer.toString(SPDSettings.iceCoin()), PixelScene.pixelFont);
+			if(SPDSettings.iceCoin()>9999){
+				iceCoinAmount.text("9999+");
+			}
+			iceCoinAmount.hardlight(TITLE_COLOR);
+			iceCoinAmount.measure();
+			// 数值文本紧随图标之后
+			iceCoinAmount.x = x - iceCoinAmount.width()/5f+4;
+			iceCoinAmount.y = y + (slotHeight - iceCoinAmount.baseLine()) / 2f;
+			PixelScene.align(iceCoinAmount);
+			add(iceCoinAmount);
 
-		BitmapText iceCoinAmount = new BitmapText(Integer.toString(SPDSettings.iceCoin()), PixelScene.pixelFont);
-		iceCoinAmount.hardlight(TITLE_COLOR);
-		iceCoinAmount.measure();
-		// 数值文本紧随图标之后
-		iceCoinAmount.x = x - iceCoinAmount.width()/5f+4;
-		iceCoinAmount.y = y + (slotHeight - iceCoinAmount.baseLine()) / 2f;
-		PixelScene.align(iceCoinAmount);
-		add(iceCoinAmount);
+			// 创建冰蓝方孔币的ItemSprite
+			ItemSprite iceCoinSprite = new ItemSprite(ItemSpriteSheet.ICEGOLD, null);
+			iceCoinSprite.setPos(x+iceCoinSprite.width()*1.25f,iceCoinAmount.y-(slotHeight - iceCoinAmount.baseLine()) / 2f);
+			PixelScene.align(iceCoinSprite);
+			add(iceCoinSprite);
+		}
 
-		// 创建冰蓝方孔币的ItemSprite
-		ItemSprite iceCoinSprite = new ItemSprite(ItemSpriteSheet.ICEGOLD, null);
-		iceCoinSprite.setPos(x+iceCoinSprite.width()*1.25f,iceCoinAmount.y-(slotHeight - iceCoinAmount.baseLine()) / 2f);
-		PixelScene.align(iceCoinSprite);
-		add(iceCoinSprite);
+
 
 		// 创建并设置冰蓝方孔币数值显示
 

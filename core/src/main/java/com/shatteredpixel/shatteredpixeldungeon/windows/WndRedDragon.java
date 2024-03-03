@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.items.Generator.randomArtifact;
 
@@ -236,7 +235,6 @@ public class WndRedDragon extends Window {
                         Buff.affect(hero, Bleeding.class).set(8);
                         Buff.prolong(hero, Blindness.class, Degrade.DURATION);
                         Buff.prolong(hero, Cripple.class, Cripple.DURATION);
-                       playBGM(Assets.RUN, true);
                     }
                 }
 

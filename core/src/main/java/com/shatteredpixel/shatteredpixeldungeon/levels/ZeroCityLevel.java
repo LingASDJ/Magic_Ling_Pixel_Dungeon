@@ -130,9 +130,9 @@ public class ZeroCityLevel extends Level {
             P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,M,M,M,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,R,R,D,D,D,D,D,D,D,D,D,M,P,D,M,M,M,B,M,M,
             P,P,D,D,A,D,D,D,A,D,D,D,A,D,D,D,M,M,M,M,M,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,A,D,D,D,P,
             P,P,D,D,D,D,D,D,D,I,D,D,D,D,D,D,O,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,
-            P,P,D,D,D,D,D,D,D,R,R,R,R,R,R,D,M,M,M,M,M,M,M,M,M,D,D,M,M,M,M,D,D,M,M,M,M,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,
-            P,P,D,D,J,R,R,R,R,R,R,R,R,R,R,D,M,D,D,D,D,Y,Y,D,M,D,D,P,P,P,M,D,M,M,D,D,D,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,P,
-            P,P,D,D,R,R,R,R,R,R,R,R,R,R,R,D,M,D,D,D,D,D,D,D,M,D,D,P,P,P,M,B,M,D,D,D,D,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,P,P,P,D,M,D,D,D,P,
+            P,P,D,D,D,D,D,D,D,R,R,R,R,R,R,D,M,M,M,M,M,M,M,M,M,D,D,M,M,M,M,D,D,D,D,D,M,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,P,
+            P,P,D,D,J,R,R,R,R,R,R,R,R,R,R,D,M,D,D,D,D,Y,Y,D,M,D,D,P,P,P,M,D,D,M,M,M,M,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,P,
+            P,P,D,D,R,R,R,R,R,R,R,R,R,R,R,D,M,D,D,D,D,D,D,D,M,D,D,P,P,P,M,B,M,M,D,D,D,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,P,P,P,D,M,D,D,D,P,
             P,P,D,D,R,R,R,R,R,R,R,R,R,R,R,D,M,D,D,D,D,Y,Y,D,M,D,D,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,D,P,P,D,D,M,G,D,D,P,
             P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,D,D,D,D,D,D,D,M,D,D,R,R,R,A,D,A,D,D,D,D,D,D,D,D,D,D,R,R,R,R,D,D,D,D,D,D,D,P,P,P,D,D,M,D,D,D,P,
             P,P,D,D,D,D,D,D,D,D,D,D,D,D,D,D,M,M,M,B,M,M,M,M,M,D,D,R,R,R,D,D,D,D,D,D,D,D,D,D,D,D,D,R,D,D,D,D,D,D,D,D,D,D,P,R,P,D,D,M,D,D,D,P,
@@ -292,8 +292,7 @@ public class ZeroCityLevel extends Level {
                                     Game.switchScene(InterlevelScene.class);
                                     Statistics.difficultyDLCEXLevel = 3;
                                 }
-                                //绝命
-                                Dungeon.challenges = 4096;
+                                Statistics.deepestFloor = 100;
                                 Statistics.happyMode = true;
                                 Dungeon.gold += 1200;
                             }
@@ -305,7 +304,13 @@ public class ZeroCityLevel extends Level {
 
                 return false;
             } else {
-                return super.activateTransition(hero, transition);
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show(new WndMessage(Messages.get(hero, "leave_more_dead")));
+                    }
+                });
+                return false;
             }
 
             } else {

@@ -356,7 +356,11 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         Statistics.SiderLing = 0;
         Dungeon.level.unseal();
         Statistics.bossScores[1] += 2500;
-        Dungeon.level.drop( new TengusMask(), pos ).sprite.drop();
+
+        if(!Statistics.happyMode){
+            Dungeon.level.drop( new TengusMask(), pos ).sprite.drop();
+        }
+
         int dropPos = this.pos;
         for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
             if (boss instanceof DCrystal) {

@@ -861,7 +861,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             Dungeon.level.drop(new Gold().quantity(1012), pos).sprite.drop();
             Dungeon.level.drop(new ScrollOfUpgrade().quantity(1).identify(), pos).sprite.drop();
         } else {
-            Dungeon.level.drop(new Gold().quantity(2024), pos).sprite.drop();
+            Dungeon.level.drop(new Gold().quantity(720), pos).sprite.drop();
             if(Random.Int(100)<=20){
                 Dungeon.level.drop(new ScrollOfUpgrade().quantity(1).identify(), pos).sprite.drop();
             } else {

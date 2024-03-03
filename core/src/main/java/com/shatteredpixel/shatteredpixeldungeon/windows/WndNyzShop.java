@@ -154,7 +154,11 @@ public class WndNyzShop extends Window {
         public void onSelect( Item item ) {
             if (item != null) {
                 WndBag parentWnd = sell();
-                GameScene.show( new WndTradeItem( item, parentWnd ) );
+                if(Statistics.happyMode){
+                    GameScene.show( new WndRushTradeItem( item, parentWnd ) );
+                } else {
+                    GameScene.show( new WndTradeItem( item, parentWnd ) );
+                }
             }
         }
     };

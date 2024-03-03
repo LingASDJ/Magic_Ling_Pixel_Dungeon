@@ -8,9 +8,11 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
@@ -45,15 +47,15 @@ public class IceCyanBlueSquareCoin extends Item {
             } else {
                 SPDSettings.iceCoin(quantity);
             }
+            GameScene.pickUp( this, pos );
+            hero.sprite.showStatusWithIcon(Window.TITLE_COLOR, Integer.toString(quantity), FloatingText.ICECOIN );
+            hero.spendAndNext( TIME_TO_PICK_UP );
 
+            Sample.INSTANCE.play( Assets.Sounds.GOLD, 1, 1, Random.Float( 0.9f, 1.1f ) );
+            updateQuickslot();
+        }  else {
+            GLog.n(Messages.get(this,"no"));
         }
-
-        GameScene.pickUp( this, pos );
-        hero.sprite.showStatusWithIcon(Window.TITLE_COLOR, Integer.toString(quantity), FloatingText.ICECOIN );
-        hero.spendAndNext( TIME_TO_PICK_UP );
-
-        Sample.INSTANCE.play( Assets.Sounds.GOLD, 1, 1, Random.Float( 0.9f, 1.1f ) );
-        updateQuickslot();
 
         return true;
     }

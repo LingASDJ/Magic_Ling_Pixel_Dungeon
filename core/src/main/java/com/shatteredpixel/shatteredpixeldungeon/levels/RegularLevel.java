@@ -256,7 +256,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 		//20%
-		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) <= 30 || depth == 28) {
+		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) <= 30 || depth == 28 && !Statistics.happyMode) {
 			initRooms.add(new NxhyShopRoom());
 		}
 
@@ -338,8 +338,11 @@ public abstract class RegularLevel extends Level {
 			}
 //		}
 
-		if (Dungeon.shopOnLevel() && branch == 0)
+		if (Dungeon.shopOnLevel() && branch == 0) {
 			initRooms.add(new ShopRoom());
+		} else if(Statistics.happyMode && branch == 8 && Dungeon.shopRushLevel()){
+			initRooms.add(new ShopRoom());
+		}
 
 		//force max special rooms and add one more for large levels
 		int specials = specialRooms(feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)));
@@ -859,7 +862,7 @@ public abstract class RegularLevel extends Level {
 		for (Heap h : heaps.valueList()){
 			if (h.autoExplored) continue;
 
-			if (!h.seen || (h.type != Heap.Type.HEAP && h.type != Heap.Type.FOR_SALE && h.type != Heap.Type.CRYSTAL_CHEST && h.type != Heap.Type.BLACK && h.type != Heap.Type.FOR_ICE)){
+			if (!h.seen || (h.type != Heap.Type.HEAP && h.type != Heap.Type.FOR_SALE && h.type != Heap.Type.CRYSTAL_CHEST && h.type != Heap.Type.BLACK && h.type != Heap.Type.FOR_ICE && h.type != Heap.Type.FOR_RUSH)){
 				return false;
 			}
 

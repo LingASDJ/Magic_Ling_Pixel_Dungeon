@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
@@ -152,7 +153,12 @@ public class ShopRoom extends SpecialRoom {
 				} while (level.heaps.get( cell ) != null || level.findMob( cell ) != null);
 			}
 
-			level.drop( item, cell ).type = Heap.Type.FOR_SALE;
+			if(Statistics.happyMode){
+				level.drop( item, cell ).type = Heap.Type.FOR_RUSH;
+			} else {
+				level.drop( item, cell ).type = Heap.Type.FOR_SALE;
+			}
+
 		}
 
 	}
@@ -166,7 +172,7 @@ public class ShopRoom extends SpecialRoom {
 		LockSword w2 = new LockSword();
 
 		switch (Dungeon.depth) {
-		case 6: default:
+			case 5:case 6: default:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[1]);
 			itemsToSpawn.add( Generator.random(Generator.misTiers[1]).quantity(2).identify(false) );
 			itemsToSpawn.add( new LeatherArmor().identify(false) );
@@ -185,7 +191,7 @@ public class ShopRoom extends SpecialRoom {
 
 			break;
 			
-		case 11:
+		case 11:case 12:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[2]);
 			itemsToSpawn.add( Generator.random(Generator.misTiers[2]).quantity(2).identify(false) );
 			itemsToSpawn.add( new MailArmor().identify(false) );
@@ -206,7 +212,7 @@ public class ShopRoom extends SpecialRoom {
 
 			break;
 			
-		case 16:
+		case 16:case 19:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[3]);
 			itemsToSpawn.add( Generator.random(Generator.misTiers[3]).quantity(2).identify(false) );
 			if(Random.Int(10) == 0){
@@ -233,7 +239,7 @@ public class ShopRoom extends SpecialRoom {
 
 
 
-		case 20: case 21:
+		case 20: case 21:case 25:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[4]);
 			itemsToSpawn.add( Generator.random(Generator.misTiers[4]).quantity(2).identify(false) );
 			if(Random.Int(10) == 0){
@@ -311,7 +317,10 @@ public class ShopRoom extends SpecialRoom {
 				break;
 		}
 
-		itemsToSpawn.add( new Ankh() );
+		if(!Statistics.happyMode){
+			itemsToSpawn.add( new Ankh() );
+		}
+
 		itemsToSpawn.add( new StoneOfAugmentation() );
 
 		TimekeepersHourglass hourglass = Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);

@@ -119,7 +119,7 @@ public class SeedFinder {
                 if (i.cursed && i.level<=0)
                     builder.append("- ").append(Messages.get(this, "cursed")).append(i.title().toLowerCase()).append("\n");
                 else if ((i.level>0) && i.cursed) {
-                    builder.append("{ " + Messages.get(this, "cursed")).append(i.title().toLowerCase()).append(" { \n");
+                    builder.append("{ ").append(Messages.get(this, "cursed")).append(i.title().toLowerCase()).append(" { \n");
                 } else if ((i.level>2)) {
                     builder.append(" [").append(i.title().toLowerCase()).append(" [ \n");
                 } else if ((i.level==2)) {

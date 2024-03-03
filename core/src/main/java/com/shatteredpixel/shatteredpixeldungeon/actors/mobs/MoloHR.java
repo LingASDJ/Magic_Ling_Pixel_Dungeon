@@ -94,7 +94,7 @@ public class MoloHR extends Boss {
         }
         //酸液体清0
         Statistics.SiderLing = 0;
-
+        GetBossLoot();
         Statistics.bossScores[2] += 4000;
         Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.pos );
         Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.pos );

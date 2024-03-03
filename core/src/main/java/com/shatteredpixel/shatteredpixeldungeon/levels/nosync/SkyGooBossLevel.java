@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.nosync;
 
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.BARRICADE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CHASM;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CRYSTAL_DOOR;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.DOOR;
@@ -21,6 +22,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+
 public class SkyGooBossLevel extends Level {
     private static final int SIZE = 5;
     private static final int Y = CHASM;
@@ -36,13 +38,15 @@ public class SkyGooBossLevel extends Level {
     private static final int D = DOOR;
     private static final int X = CRYSTAL_DOOR;
     private static final int M = LOCKED_DOOR;
+    private static final int L = BARRICADE;
+
 
     private static final int[] pre_map = {
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
             W,G,G,G,G,G,G,G,Q,Q,E,Q,Q,G,G,G,G,G,G,G,W,
-            W,V,V,V,V,V,V,V,V,V,Q,V,V,V,V,V,V,V,V,V,W,
-            W,G,G,G,G,G,G,G,G,G,Q,G,G,G,G,G,G,G,G,G,W,
-            W,V,V,V,V,V,V,V,Q,Q,Q,Q,Q,V,V,V,V,V,V,V,W,
+            W,V,V,L,V,V,V,L,V,V,Q,V,V,L,V,V,V,L,V,V,W,
+            W,G,L,L,L,G,G,L,G,G,Q,G,G,L,G,G,L,L,L,G,W,
+            W,V,V,L,V,V,V,L,Q,Q,Q,Q,Q,L,V,V,V,L,V,V,W,
             W,G,G,G,G,G,G,G,Q,Q,G,Q,Q,G,G,G,G,G,G,G,W,
             W,W,W,D,W,W,W,W,Q,G,G,G,Q,W,W,W,W,W,D,W,W,
             W,Q,Q,Q,Q,Q,Q,W,W,W,W,W,W,W,Q,Q,Q,Q,Q,Q,W,
@@ -76,7 +80,9 @@ public class SkyGooBossLevel extends Level {
     };
     private int stairs = 0;
 
+
     public void seal() {
+        super.seal();
         if (this.exit != 0) {
             super.seal();
             set(this.exit, 14);
@@ -88,8 +94,8 @@ public class SkyGooBossLevel extends Level {
     }
 
     public void unseal() {
+        super.unseal();
         if (this.stairs != 0) {
-            super.unseal();
             this.exit = this.stairs;
             this.stairs = 0;
             set(this.exit, 7);
@@ -105,8 +111,8 @@ public class SkyGooBossLevel extends Level {
 
     protected boolean build() {
         setSize(21, 35);
-        int exitCell = (this.width * 10) + 31;
-        int entranceCell = (this.width * 10) + 11;
+        int exitCell = 661;
+        int entranceCell = 31;
 
         LevelTransition enter = new LevelTransition(this, entranceCell, LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(enter);
@@ -128,7 +134,7 @@ public class SkyGooBossLevel extends Level {
 
     protected void createMobs() {
         SkyGoo a = new SkyGoo();
-        a.pos = (this.width * 17) + 10;
+        a.pos = 94;
         this.mobs.add(a);
     }
 

@@ -51,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndRushTradeItem;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
 import com.watabou.noosa.Game;
@@ -218,6 +219,10 @@ public class Shopkeeper extends NPC {
 
 		return price;
 	}
+
+	public static int sellRushPrice(Item item){
+		return item.RushValue();
+	}
 	
 	public static WndBag sell() {
 		return GameScene.selectItem( itemSelector );
@@ -246,7 +251,12 @@ public class Shopkeeper extends NPC {
 		public void onSelect( Item item ) {
 			if (item != null) {
 				WndBag parentWnd = sell();
-				GameScene.show( new WndTradeItem( item, parentWnd ) );
+				if(Statistics.happyMode){
+					GameScene.show( new WndRushTradeItem( item, parentWnd ) );
+				} else {
+					GameScene.show( new WndTradeItem( item, parentWnd ) );
+				}
+
 			}
 		}
 	};

@@ -119,6 +119,8 @@ public class Cerberus extends Boss {
             }
         }
 
+        GetBossLoot();
+
         Badges.KILL_DOG();
         GameScene.bossSlain();
         yell( Messages.get(this, "defeated",hero.name()) );
@@ -689,7 +691,12 @@ public class Cerberus extends Boss {
     }
 
     protected void triggerEnrage(){
-        Buff.affect(this, Rage.class).setShield(1000);
+        if(Statistics.happyMode){
+            Buff.affect(this, Rage.class).setShield(400);
+        } else {
+            Buff.affect(this, Rage.class).setShield(1000);
+        }
+
 
         if(!Statistics.happyMode){
             Typhon typhon = new Typhon();

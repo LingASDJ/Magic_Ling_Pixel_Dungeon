@@ -58,16 +58,6 @@ public class DwarfMasterBossLevel extends Level {
     private static final int WON = 2;
     private static final int ERROR = 9999999;
 
-    private void progress(){
-        if(status == START){
-            status = FIGHTING;
-        }else if(status == FIGHTING){
-            status = WON;
-        }else{
-            status = ERROR;
-        }
-    }
-
 
     @Override
     public String tilesTex() {
@@ -159,6 +149,10 @@ public class DwarfMasterBossLevel extends Level {
 
     }
 
+    public void storeInBundle( Bundle bundle ) {
+        super.storeInBundle(bundle);
+        bundle.put("level_status", status);
+    }
 
     @Override
     public void restoreFromBundle( Bundle bundle ) {
@@ -313,9 +307,9 @@ public class DwarfMasterBossLevel extends Level {
         super.occupyCell(ch);
         int entrance = (this.width * 31) + 18;
 
-        if (status == START && ch == Dungeon.hero) {
-            progress();
+        if (status == 0 && ch == Dungeon.hero) {
             seal();
+            status++;
             CellEmitter.get( entrance ).start( FlameParticle.FACTORY, 0.1f, 10 );
         }
 

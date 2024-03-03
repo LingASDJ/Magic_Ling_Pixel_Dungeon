@@ -6,10 +6,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
+import com.shatteredpixel.shatteredpixeldungeon.items.KingGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
@@ -62,6 +64,10 @@ abstract public class Boss extends Mob {
                     }
 
                 }
+            }
+
+            if(Statistics.happyMode){
+                Dungeon.level.drop(new KingGold(Random.NormalIntRange(1+Dungeon.depth/5,2+Dungeon.depth/5)),pos);
             }
 
             if(!Statistics.happyMode){
@@ -127,19 +133,55 @@ abstract public class Boss extends Mob {
         first = bundle.getBoolean(FIRST);
     }
 
+    private void RollCS(){
+        Class<?extends ChampionEnemy> buffCls;
+        switch (Random.Int(9)){
+            case 0: default:    buffCls = ChampionEnemy.Blazing.class;      break;
+            case 1:             buffCls = ChampionEnemy.Projecting.class;   break;
+            case 2:             buffCls = ChampionEnemy.AntiMagic.class;    break;
+            case 3:             buffCls = ChampionEnemy.Giant.class;        break;
+            case 4:             buffCls = ChampionEnemy.Blessed.class;      break;
+            case 5:             buffCls = ChampionEnemy.Growing.class;      break;
+            case 6:             buffCls = ChampionEnemy.Halo.class;      	break;
+            case 7:             buffCls = ChampionEnemy.DelayMob.class;     break;
+        }
+        Buff.affect(this, buffCls);
+        this.state = this.WANDERING;
+    }
+
+    private void RollEX(){
+        Class<?extends ChampionEnemy> buffCls2;
+        switch (Random.Int(5)){
+            case 0: default:    buffCls2 = ChampionEnemy.Middle.class;      break;
+            case 1:             buffCls2 = ChampionEnemy.Bomber.class;      break;
+            case 2:             buffCls2 = ChampionEnemy.Sider.class;       break;
+            case 3:             buffCls2 = ChampionEnemy.LongSider.class;   break;
+            case 4:             buffCls2 = ChampionEnemy.Big.class;         break;
+        }
+        Buff.affect(this, buffCls2);
+        this.state = this.WANDERING;
+    }
+
+
+
     @Override
     public void notice() {
         super.notice();
-        if (Statistics.happyMode && !(Dungeon.depth == 2 || Dungeon.depth == 4)){
+        if (Statistics.happyMode && !(Dungeon.depth == 2 || Dungeon.depth == 4 || Dungeon.depth == 24 || Dungeon.depth == 27)){
             if(!first){
                 if(Statistics.difficultyDLCEXLevel == 3){
-                    ChampionEnemy.rollForChampion(this);
-                    ChampionEnemy.rollForStateLing(this);
+                    RollEX();
+                    RollCS();
                 } else if (Statistics.difficultyDLCEXLevel == 2){
-                    ChampionEnemy.rollForChampion(this);
+                    RollCS();
                 }
                 first = true;
             }
+        } else if (Statistics.happyMode && Statistics.difficultyDLCEXLevel == 3) {
+            Buff.affect(this, ChampionEnemy.Halo.class);
+            Buff.affect(this, ChampionEnemy.Sider.class);
+        } else if (Statistics.happyMode && Statistics.difficultyDLCEXLevel == 2) {
+            Buff.affect(this, ChampionEnemy.Halo.class);
         }
     }
 

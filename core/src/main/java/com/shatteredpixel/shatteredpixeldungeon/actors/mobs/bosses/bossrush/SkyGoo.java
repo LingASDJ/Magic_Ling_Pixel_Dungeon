@@ -28,8 +28,10 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -37,28 +39,22 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Albino;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CausticSlime;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlowerSlime;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gnoll;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
-import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.SkyGooBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.StormTrap;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
@@ -68,28 +64,28 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 @SuppressWarnings("all")
-public class SkyGoo extends Mob {
+public class SkyGoo extends Boss implements Callback {
 
 	{
-		this.HT = 300;
-		this.HP = 300;
-		this.EXP = 10;
-		this.defenseSkill = 12;
-		this.spriteClass = GooSprite.class;
-		this.properties.add(Char.Property.BOSS);
-		this.properties.add(Char.Property.DEMONIC);
-		this.properties.add(Char.Property.ACIDIC);
-		this.pumpedUp = 0;
-		this.PUMPEDUP = "pumpedup";
+		HT = 280;
+		HP = 280;
+		EXP = 30;
+		defenseSkill = 5;
+		spriteClass = GooSprite.class;
+		properties.add(Char.Property.BOSS);
+		properties.add(Char.Property.DEMONIC);
+		properties.add(Char.Property.ACIDIC);
+		pumpedUp = 0;
+		PUMPEDUP = "pumpedup";
 
 		HUNTING = new Hunting();
 	}
@@ -97,24 +93,18 @@ public class SkyGoo extends Mob {
 	private final String PUMPEDUP;
 	private int pumpedUp;
 	private int var2;
-	public static class LightningBolt {}
+
+    @Override
+    public void call() {
+        next();
+    }
+
+    public static class LightningBolt {}
 	private int healInc = 1;
 	private int lastPos = 0;
 	private boolean skill1 = false;
 	private boolean skill3 = false;
 	private boolean skill2 = true;
-	private ArrayList<Class<? extends Mob>> mobs = new ArrayList<>();
-	{
-		mobs.add(Rat.class);
-		mobs.add(FlowerSlime.class);
-		mobs.add(Gnoll.class);
-		mobs.add(Snake.class);
-		mobs.add(Albino.class);
-		mobs.add(Crab.class);
-		mobs.add(Swarm.class);
-		mobs.add(Slime.class);
-		mobs.add(CausticSlime.class);
-	}
 
 	@Override
 	public int damageRoll() {
@@ -142,8 +132,11 @@ public class SkyGoo extends Mob {
 	}
 
 	@Override
-	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 2);
+	public void move( int step ) {
+		super.move( step );
+		if(HP <= 150){
+			GameScene.add(Blob.seed(pos, 10, SkyGoo.SkyGooBlob.class));
+		}
 	}
 
 	@Override
@@ -177,19 +170,17 @@ public class SkyGoo extends Mob {
 
 		lastPos = pos;
 
-		if(HP <= 240 && lastPos != pos){
-			GameScene.add(Blob.seed(pos,10,SkyGooBlob.class));
-		}
-
-		if(HP <= 150 && !skill3){
+		if(HP <= 200 && !skill3){
 			for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
 				int p = pos + PathFinder.NEIGHBOURS8[i];
 				if (Actor.findChar( p ) == null && Dungeon.level.passable[p]) {
-					Mob testActor = Reflection.newInstance(Random.element(mobs));
+					Mob testActor = Reflection.newInstance(Bestiary.getMobRotation(Random.NormalIntRange(3,9)).get(0));
 					Buff.affect(testActor, ChampionEnemy.Bomber.class);
 					testActor.state = testActor.HUNTING;
 					GameScene.add( testActor );
 					ScrollOfTeleportation.appear( testActor, p );
+					ScrollOfTeleportation.appear( hero, 388 );
+					ScrollOfTeleportation.appear( this, 451 );
 				}
 			}
 			skill3 =true;
@@ -242,15 +233,15 @@ public class SkyGoo extends Mob {
 			Camera.main.shake(3.0f, 0.2f);
 		}
 		int i = this.var2;
-		if (Random.Int(3) == 0) {
+		if (Random.Int(3) == 0 && HP<=200) {
 			int i2 = this.var2 + 10;
-			SummoningTrap one = new SummoningTrap();
-			one.pos = this.pos;
+			StormTrap one = new StormTrap();
+			one.pos = super.pos;
 			one.activate();
 			AlarmTrap two = new AlarmTrap();
-			two.pos = this.pos;
+			two.pos = super.pos;
 			two.activate();
-			yell(Messages.get(this, "sr"));
+			yell(Messages.get(this, "zl"));
 		}
 		int reg = Math.min(2, this.HT - this.HP);
 		if (reg > 0) {
@@ -373,6 +364,9 @@ public class SkyGoo extends Mob {
 		}
 		playBGM(Assets.BGM_1, true);
 		GameScene.bossSlain();
+		Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
+		Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
+		Dungeon.level.drop( new IronKey( Dungeon.depth ), hero.pos ).sprite.drop();
 	}
 
 	@Override
@@ -381,6 +375,7 @@ public class SkyGoo extends Mob {
 		if (!BossHealthBar.isAssigned()) {
 			BossHealthBar.assignBoss(this);
 			yell(Messages.get(this, "notice"));
+			Dungeon.level.seal();
 			Music.INSTANCE.play(Assets.BGM_BOSSA, true);
 			Iterator<Char> it = Actor.chars().iterator();
 			while (it.hasNext()) {
@@ -489,6 +484,7 @@ public class SkyGoo extends Mob {
 					if ((ch = Actor.findChar( leapPos+ i )) != null) {
 						if ( ch == enemy && !ch.isImmune(this.getClass()) ) {
 							Buff.affect(ch, Ooze.class).set(8f);
+							GameScene.add(Blob.seed(pos, 4, Fire.class));
 							if(Random.Int(100)>=74){ Buff.affect(ch, Poison.class).set(6f); }
 						}
 					}
@@ -554,7 +550,7 @@ public class SkyGoo extends Mob {
 						//don't want to overly punish players with slow move or attack speed
 						spend(GameMath.gate(attackDelay(), (int)Math.ceil(enemy.cooldown()), 3*attackDelay()));
 						if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[leapPos]){
-							GLog.w(Messages.get(SkyGoo.this, "leap"));
+							yell(Messages.get(SkyGoo.this, "leap"));
 							sprite.parent.addToBack(new TargetedCell(leapPos, 0xFF0000));
 							//((RatSprite)sprite).leapPrep( leapPos );
 							hero.interrupt();
@@ -601,7 +597,7 @@ public class SkyGoo extends Mob {
 
 						if ((ch = Actor.findChar( cell )) != null) {
 							if (!ch.isImmune(this.getClass())) {
-								ch.damage(10, this);
+								ch.damage(5, this);
 							}
 						}
 
@@ -640,4 +636,10 @@ public class SkyGoo extends Mob {
 			return BuffIndicator.NONE;
 		}
 	}
+
+	{
+		//all harmful blobs
+		immunities.add( SkyGooBlob.class );
+	}
+
 }

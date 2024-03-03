@@ -1806,12 +1806,6 @@ public class GameScene extends PixelScene {
 						bossSlain.show( Window.R_COLOR, 0.2f, 5f);
 						scene.showBanner(bossSlain);
 					}
-
-					break;
-				case 14:
-					bossSlain.texture(Assets.Interfaces.DMOR_Clear);
-					bossSlain.show( Window.GDX_COLOR, 0.3f, 5f);
-					scene.showBanner(bossSlain);
 					break;
 				case 17:case 18:
 					if(Dungeon.branch == 3){

@@ -225,6 +225,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndIceTradeItem;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndRushTradeItem;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
 import com.watabou.noosa.Game;
@@ -1029,6 +1030,9 @@ public class Hero extends Char {
 
 			} else if (curAction instanceof HeroAction.BuyIce) {
 				actResult = actBuyIce( (HeroAction.BuyIce)curAction );
+
+			} else if (curAction instanceof HeroAction.BuyRush) {
+				actResult = actBuyRush( (HeroAction.BuyRush)curAction );
 				
 			}else if (curAction instanceof HeroAction.PickUp) {
 				actResult = actPickUp( (HeroAction.PickUp)curAction );
@@ -1173,7 +1177,12 @@ public class Hero extends Char {
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {
-						GameScene.show( new WndTradeItem( heap ) );
+						if(happyMode){
+							GameScene.show( new WndRushTradeItem( heap ) );
+						} else {
+							GameScene.show( new WndTradeItem( heap ) );
+						}
+
 					}
 				});
 			}
@@ -1202,6 +1211,34 @@ public class Hero extends Char {
 					@Override
 					public void call() {
 						GameScene.show( new WndIceTradeItem( heap ) );
+					}
+				});
+			}
+
+			return false;
+
+		} else if (getCloser( dst )) {
+
+			return true;
+
+		} else {
+			ready();
+			return false;
+		}
+	}
+
+	private boolean actBuyRush( HeroAction.BuyRush action ) {
+		int dst = action.dst;
+		if (pos == dst) {
+
+			ready();
+
+			Heap heap = Dungeon.level.heaps.get( dst );
+			if (heap != null && heap.type == Type.FOR_RUSH && heap.size() == 1) {
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						GameScene.show( new WndRushTradeItem( heap ) );
 					}
 				});
 			}
@@ -1324,7 +1361,7 @@ public class Hero extends Char {
 			path = null;
 			
 			Heap heap = Dungeon.level.heaps.get( dst );
-			if (heap != null && (heap.type != Type.HEAP && heap.type != Type.FOR_SALE && heap.type != Type.FOR_ICE)) {
+			if (heap != null && (heap.type != Type.HEAP && heap.type != Type.FOR_SALE && heap.type != Type.FOR_ICE && heap.type != Type.FOR_RUSH)) {
 				
 				if ((heap.type == Type.LOCKED_CHEST && Notes.keyCount(new GoldenKey(Dungeon.depth)) < 1)
 					|| (heap.type == Type.CRYSTAL_CHEST && Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1)|| (heap.type == Type.BLACK && Notes.keyCount(new BlackKey(Dungeon.depth)) < 1)){
@@ -2079,7 +2116,7 @@ public class Hero extends Char {
 				//moving to an item doesn't auto-pickup when enemies are near...
 				&& (visibleEnemies.size() == 0 || cell == pos ||
 				//...but only for standard heaps. Chests and similar open as normal.
-				(heap.type != Type.HEAP && heap.type != Type.FOR_SALE && heap.type != Type.FOR_ICE))) {
+				(heap.type != Type.HEAP && heap.type != Type.FOR_SALE && heap.type != Type.FOR_ICE && heap.type != Type.FOR_RUSH))) {
 
 			switch (heap.type) {
 			case HEAP:
@@ -2095,6 +2132,11 @@ public class Hero extends Char {
 							new HeroAction.BuyIce( cell ) :
 							new HeroAction.PickUp( cell );
 					break;
+			case FOR_RUSH:
+				curAction = heap.size() == 1 && heap.peek().RushValue() > 0 ?
+						new HeroAction.BuyRush( cell ) :
+						new HeroAction.PickUp( cell );
+			break;
 			default:
 				curAction = new HeroAction.OpenChest( cell );
 			}
@@ -2290,7 +2332,6 @@ public class Hero extends Char {
         switch (Random.Int(5)) {
             case 0:
             default:
-				//非商人层不会出现追加商店的价格Debuff
 				if(Dungeon.shopOnLevel()){
 					Buff.affect(hero, MagicGirlSayMoneyMore.class).set((100), 1);
 				}

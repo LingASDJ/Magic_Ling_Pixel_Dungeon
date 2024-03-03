@@ -219,7 +219,7 @@ public enum HeroClass {
 		waterskin.collect();
 
 		new ScrollOfIdentify().identify();
-		//new Amulet().quantity(1).identify().collect();
+		//new KingGold().quantity(1).identify().collect();
 		if (Dungeon.isChallenged(Challenges.PRO)){
 			new BlessingNecklace().quantity(1).identify().collect();
 			new SpawnMisc().quantity(1).identify().collect();

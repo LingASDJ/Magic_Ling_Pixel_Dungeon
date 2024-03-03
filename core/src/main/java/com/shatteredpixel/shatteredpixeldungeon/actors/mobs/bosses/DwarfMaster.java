@@ -67,7 +67,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
@@ -1635,7 +1634,7 @@ public class DwarfMaster extends Boss {
             } while (!Dungeon.level.passable[pos + ofs]);
             Dungeon.level.drop(new Gold().quantity(Random.Int(340, 450)), pos+ofs).sprite.drop();
         }
-        Dungeon.level.drop(new KingsCrown(), pos).sprite.drop();
+        //Dungeon.level.drop(new KingsCrown(), pos).sprite.drop();
         Dungeon.level.drop(new PotionOfHealing().quantity(Random.NormalIntRange(2,4)), pos).sprite.drop();
         Dungeon.level.drop(new MeatPie().quantity(Random.NormalIntRange(1,2)), pos).sprite.drop();
         PaswordBadges.KILLDWARF();
