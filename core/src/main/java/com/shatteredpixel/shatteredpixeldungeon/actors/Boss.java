@@ -67,7 +67,7 @@ abstract public class Boss extends Mob {
             }
 
             if(Statistics.happyMode){
-                Dungeon.level.drop(new KingGold(Random.NormalIntRange(1+Dungeon.depth/5,2+Dungeon.depth/5)),pos);
+                Dungeon.level.drop(new KingGold(Random.NormalIntRange(3+Dungeon.depth/5,5+Dungeon.depth/5)),pos);
             }
 
             if(!Statistics.happyMode){

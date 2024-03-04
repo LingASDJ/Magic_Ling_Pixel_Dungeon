@@ -5,6 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.SmallLeafPlot;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SmallLeafSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
@@ -22,6 +23,30 @@ public class SmallLeaf extends NTNPC {
         maxLvl = -1;
     }
 
+
+    @Override
+    public String info() {
+        String desc = super.info();
+
+        if(Statistics.amuletObtained){
+            desc = Messages.get(this, "amulet_desc");
+        }
+
+        return desc;
+    }
+
+    @Override
+    public String defenseVerb() {
+        return def_verb();
+    }
+    private String def_verb(){
+        if(Random.Int(100)>=50){
+            return Messages.get(this, "def_verb_1");
+        } else {
+            return Messages.get(this, "def_verb_2");
+        }
+
+    }
 
     private boolean first=true;
     private boolean secnod=true;
@@ -71,20 +96,13 @@ public class SmallLeaf extends NTNPC {
                 }
             });
             secnod = false;
-        } else if(!Statistics.amuletObtained) {
-            switch (Random.NormalIntRange(1,2)){
-                case 1:
-                    Game.runOnRenderThread(new Callback() {
-                        @Override
-                        public void call() {
-                            GameScene.show(new WndDialog(C_plot,false));
-                        }
-                    });
-                break;
-                case 2:
-                    //
-                break;
-            }
+        } else {
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndDialog(C_plot,false));
+                }
+            });
         }
 
         return true;

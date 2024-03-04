@@ -566,7 +566,7 @@ public class Item implements Bundlable {
 	}
 
 	public int RushValue() {
-		return (quantity + level) * Dungeon.depth/5;
+		return (quantity + level) + Dungeon.depth/10;
 	}
 
 	//item's value in energy crystals

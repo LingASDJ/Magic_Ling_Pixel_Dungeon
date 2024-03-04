@@ -217,7 +217,7 @@ public enum HeroClass {
 		new KingBag().quantity(1).identify().collect();
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
-
+		new Amulet().quantity(1).identify().collect();
 		new ScrollOfIdentify().identify();
 		//new KingGold().quantity(1).identify().collect();
 		if (Dungeon.isChallenged(Challenges.PRO)){

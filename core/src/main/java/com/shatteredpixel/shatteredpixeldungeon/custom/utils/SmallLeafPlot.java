@@ -1,8 +1,15 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.SmallLeaf;
+import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Image;
@@ -233,79 +240,49 @@ public class SmallLeafPlot extends Plot {
             diagulewindow.hideAll();
             diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLF));
             diagulewindow.setLeftName(Messages.get(SmallLeaf.class, "name"));
-            switch (Random.NormalIntRange(1,3)){
-                case 1:
-                    diagulewindow.changeText(Messages.get(SmallLeaf.class,"message3"));
-                   break;
-                case 2:
-                    diagulewindow.changeText(Messages.get(SmallLeaf.class,"message4"));
-                   break;
-                case 3:
-                    diagulewindow.changeText(Messages.get(SmallLeaf.class,"message5"));
-                   break;
-            }
-        }
 
-    }
-
-    public static class EffectPlot extends Plot {
-
-
-        private final static int maxprocess = 2;
-
-        {
-            process = 1;
-        }
-
-        protected String getPlotName() {
-            return SEWER_NAME;
-        }
-
-        @Override
-        public void reachProcess(WndDialog wndDialog) {
-            diagulewindow = wndDialog;
-
-            while (this.process < needed_process) {
-                this.process();
-            }
-        }
-
-        @Override
-        public void process() {
-            if (diagulewindow != null) {
-                switch (process) {
-                    default:
+            if(Challenges.activeChallenges()>=15 && !SPDSettings.SmallLeafGetCoin() && !Dungeon.isChallenged(PRO)) {
+                diagulewindow.changeText(Messages.get(SmallLeaf.class, "wtf_sister"));
+                Dungeon.level.drop_hard(new IceCyanBlueSquareCoin(80), hero.pos);
+                SPDSettings.SmallLeafGetCoin(true);
+            } else if(Challenges.activeChallenges()>=12 && !Statistics.SmallLeafGet && Statistics.amuletObtained) {
+                diagulewindow.changeText(Messages.get(SmallLeaf.class, "victory"));
+                Statistics.SmallLeafGet = true;
+            } else if(Statistics.amuletObtained){
+                switch (Random.NormalIntRange(1,3)){
                     case 1:
-                        process_to_1();//Mostly process to 1 is made directly when creating,it might not be used,just in case
+                        diagulewindow.changeText(Messages.get(SmallLeaf.class,"amulet_message3"));
+                        break;
+                    case 2:
+                        diagulewindow.changeText(Messages.get(SmallLeaf.class,"amulet_message4"));
+                        break;
+                    case 3:
+                        diagulewindow.changeText(Messages.get(SmallLeaf.class,"amulet_message5"));
                         break;
                 }
-                diagulewindow.update();
-                process++;
+            } else {
+                switch (Random.NormalIntRange(1,3)){
+                    case 1:
+                        diagulewindow.changeText(Messages.get(SmallLeaf.class,"message3"));
+                        break;
+                    case 2:
+                        diagulewindow.changeText(Messages.get(SmallLeaf.class,"message4"));
+                        break;
+                    case 3:
+                        diagulewindow.changeText(Messages.get(SmallLeaf.class,"message5"));
+                        break;
+                    case 4:
+                        if(Challenges.activeChallenges()>=12){
+                            diagulewindow.changeText(Messages.get(SmallLeaf.class,"message7"));
+                        } else {
+                            diagulewindow.changeText(Messages.get(SmallLeaf.class,"message6"));
+                        }
+                        break;
+                }
             }
-        }
 
-        @Override
-        public void initial(WndDialog wndDialog) {
-            diagulewindow = wndDialog;
-            process = 2;
-            process_to_1();
-        }
 
-        @Override
-        public boolean end() {
-            return process > maxprocess;
-        }
 
-        @Override
-        public void skip() {
-           //TODO Auto-generated method stub
-        }
-
-        private void process_to_1() {
-            diagulewindow.hideAll();
-            diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLF));
-            diagulewindow.setLeftName(Messages.get(SmallLeaf.class, "name"));
-            diagulewindow.changeText(Messages.get(SmallLeaf.class,"message6"));
         }
 
     }

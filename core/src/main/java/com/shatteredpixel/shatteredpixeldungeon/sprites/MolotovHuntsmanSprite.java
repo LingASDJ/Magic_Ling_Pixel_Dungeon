@@ -12,7 +12,7 @@ import com.watabou.utils.Callback;
 
 public class MolotovHuntsmanSprite extends MobSprite {
     public MolotovHuntsmanSprite() {
-        if(Dungeon.depth == 15 || Dungeon.hero == null){
+        if(Dungeon.depth == 15 || Dungeon.hero == null || Dungeon.branch == 8){
             this.texture("sprites/boss/huntsman.png");
         } else {
             this.texture("SRPD/MolotovHuntsman.png");

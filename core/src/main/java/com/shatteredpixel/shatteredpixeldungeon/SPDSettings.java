@@ -170,6 +170,8 @@ public class SPDSettings extends GameSettings {
 
 	private static final String V1TOOL = "v1tool";
 
+	private static final String KEY_SMALLLEAF = "SMALLLEAF";
+
 	public static void fullscreen( boolean value ) {
 		put( KEY_FULLSCREEN, value );
 
@@ -858,4 +860,16 @@ public class SPDSettings extends GameSettings {
 
 		put( KEY_UNLOCKITEM, items.toString() );
 	}
+
+	//首次给予钴币 小叶
+	public static void SmallLeafGetCoin(boolean value) {
+		put(KEY_SMALLLEAF, value );
+	}
+
+	public static boolean SmallLeafGetCoin() {
+		return getBoolean(KEY_SMALLLEAF, false);
+	}
+
+
+
 }

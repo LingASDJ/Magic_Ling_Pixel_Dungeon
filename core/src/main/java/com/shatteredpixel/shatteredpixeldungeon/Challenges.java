@@ -43,7 +43,6 @@ public class Challenges {
 	public static final int DHXD = 8192;
 	public static final int ICEDIED = 16384;
 
-
 	public static final int PRO  = 32768;
 
 	public static final int MOREROOM   = 65536;
@@ -121,7 +120,7 @@ public class Challenges {
 		int chCount = 0;
 		int EXchCount = 0;
 		for (int ch : Challenges.MASKS) {
-			if ((Dungeon.challenges & ch) != 0 && ch <= CS && ch != PRO && ch != DHXD) {
+			if ((Dungeon.challenges & ch) != 0 && ch <= CS && ch != PRO && ch != DHXD && ch != ICEDIED) {
 				chCount++;
 				if(Statistics.lanterfireactive && EXchCount == 0){
 					EXchCount++;

@@ -403,6 +403,8 @@ public class Assets {
 
 		public static final String SMLF = "splashes/smallleaf_portraits.png";
 
+		public static final String PIANO = "splashes/piano_portraits.png";
+
 		public static final String ATRP = "splashes/ATRI_portraits.png";
 
 		public static final String BZMR = "splashes/bzmdr_portraits.png";
@@ -439,6 +441,7 @@ public class Assets {
 
 		public static final String BZ	= "sprites/npc/bzmder.png";
 
+		public static final String PIA	= "sprites/npc/PianoLe.png";
 		public static final String JIT	= "sprites/npc/JIT.png";
 		public static final String WFS	    = "sprites/items/wf.png";
 		//ANCITY

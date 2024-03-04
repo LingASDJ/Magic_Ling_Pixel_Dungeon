@@ -30,11 +30,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BlackHost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FungalSpinner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGuard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
@@ -1399,7 +1401,7 @@ public class DwarfMaster extends Boss {
         }
     }
 
-    public static class DKGhoul extends BlackHost {
+    public static class DKGhoul extends GnollGuard {
         {
             state = HUNTING;
             immunities.add(Corruption.class);
@@ -1422,7 +1424,7 @@ public class DwarfMaster extends Boss {
         }
     }
 
-    public static class DKMonk extends Monk {
+    public static class DKMonk extends Eye {
         {
             state = HUNTING;
             immunities.add(Corruption.class);
@@ -1460,7 +1462,7 @@ public class DwarfMaster extends Boss {
         }
     }
 
-    public static class DKWarlock extends Warlock {
+    public static class DKWarlock extends FungalSpinner {
         {
             state = HUNTING;
             immunities.add(Corruption.class);

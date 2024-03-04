@@ -162,6 +162,32 @@ public class BGMPlayer {
                     break;
                 case 16: case 17:
                     playBGM(Assets.BGM_BOSSC, true);
+                    try {
+                        CavesBossLevel level = (CavesBossLevel) Dungeon.level;
+                        for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
+                            if (m instanceof Pylon){
+                                if(BossHealthBar.isAssigned() && level.pylonsRemaining >= 2){
+                                    playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
+                                } else {
+                                    playBGM(Assets.Music.CAVES_BOSS, true);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
+                            if (m instanceof DM300){
+                                if(BossHealthBar.isAssigned()){
+                                    playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
+                                } else {
+                                    playBGM(Assets.Music.CAVES_BOSS, true);
+                                }
+                            } else {
+                                if(Statistics.happyMode && depth == 17){
+                                    playBGM(Assets.Music.PRISON_TENSE, true);
+                                }
+                            }
+                        }
+                    }
                     break;
                 case 18:
                     playBGM(Assets.BGM_BOSSC3, true);

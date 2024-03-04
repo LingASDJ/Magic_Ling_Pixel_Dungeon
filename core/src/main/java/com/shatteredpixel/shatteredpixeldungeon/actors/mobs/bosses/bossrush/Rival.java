@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsi
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFirebolt;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVenom;
@@ -59,7 +60,7 @@ public class Rival extends Boss implements Callback {
 
     @Override
     public String name() {
-       return Messages.get(this,"name",hero.name());
+        return Messages.get(this,"name",hero.name());
     }
 
 
@@ -339,24 +340,32 @@ public class Rival extends Boss implements Callback {
                         case PHASE_1:
                             wand = new WandOfFrost();
                             wand.curCharges = 20;
+                            wand.level(3);
+                            wand.updateLevel();
                             break;
                         case PHASE_2:
                             wand = new WandOfBlastWave();
                             wand.curCharges = 40;
                             misc1 = new RingOfHaste();
+                            wand.level(2);
+                            wand.updateLevel();
                             break;
                         case PHASE_3:
-                            wand = new WandOfCorrosion();
+                            wand = new WandOfFirebolt();
                             misc1 = new RingOfHaste();
+                            wand.level(1);
+                            wand.updateLevel();
                             wand.curCharges = 80;
-                            wand.cursed = true;
                             break;
                         case PHASE_4:
                             wand = new WandOfVenom();
+                            wand.level(8);
+                            wand.updateLevel();
                             misc1 = new RingOfTenacity();
                             wand.curCharges = 100;
                             break;
                     }
+                    HP = HT;
                     missile = (MissileWeapon)Generator.random(Generator.Category.MISSILE);
                     return;
                 case PHASE_5:

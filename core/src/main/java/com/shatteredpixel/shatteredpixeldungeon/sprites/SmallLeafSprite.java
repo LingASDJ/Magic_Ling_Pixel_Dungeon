@@ -13,14 +13,14 @@ public class SmallLeafSprite extends MobSprite {
         texture( Assets.Sprites.SMALLEAF );
 
         TextureFilm textureFilm = new TextureFilm(this.texture, 16, 15);
-        idle = new MovieClip.Animation(4, true);
+        idle = new MovieClip.Animation(8, true);
         // 定义一个Integer数组来存储帧序列
         Integer[] frameSequence;
 
         if (Statistics.amuletObtained) {
-            frameSequence = new Integer[]{11,11,19,19,20,20,21,21};
+            frameSequence = new Integer[]{11,11,19,19,20,20,21,21,11,11,19,19,20,20,21,21,11,11,19,19,20,20,21,21,11,11,19,19,20,20,21,21,11,11,19,19,20,20,21,21,12,13,14,15,16};
         } else {
-            frameSequence = new Integer[]{0,0,8,8,9,9,10,10};
+            frameSequence = new Integer[]{0,0,8,8,9,9,10,10,0,0,8,8,9,9,10,10,0,0,8,8,9,9,10,10,0,0,8,8,9,9,10,10,0,0,8,8,9,9,10,10,0,0,8,8,9,9,10,10,0,0,8,8,9,9,10,10,1,1,2,2,3,3,4,4,5,5,6,6};
         }
 
         starStorm = new Animation( 8, false );
@@ -34,7 +34,4 @@ public class SmallLeafSprite extends MobSprite {
         play(this.idle);
     }
 
-    public void setStarStorm(){
-        play( starStorm );
-    }
 }

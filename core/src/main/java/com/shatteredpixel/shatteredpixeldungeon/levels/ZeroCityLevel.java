@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.ALCHEMY;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.BARRICADE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.BOOKSHELF;
@@ -29,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessBossRushLow;
@@ -47,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.LuoWhite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Mint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoRuoS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonLow;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.PianoLe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Question;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.SmallLeaf;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
@@ -73,6 +76,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.SurfaceScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
@@ -318,11 +322,11 @@ public class ZeroCityLevel extends Level {
             }
     }
 
-//    public void occupyCell(Char ch) {
-//        super.occupyCell(ch);
-//        GLog.p(String.valueOf(hero.pos));
-//        GLog.b(String.valueOf(Statistics.zeroItemLevel));
-//    }
+    public void occupyCell(Char ch) {
+        super.occupyCell(ch);
+        GLog.p(String.valueOf(hero.pos));
+        GLog.b(String.valueOf(Statistics.zeroItemLevel));
+    }
 
     public int randomRespawnCell() {
         return entrance();
@@ -487,6 +491,10 @@ public class ZeroCityLevel extends Level {
         SmallLeaf npc5 = new SmallLeaf();
         npc5.pos = 365;
         mobs.add(npc5);
+
+        PianoLe npc36 = new PianoLe();
+        npc36.pos = 363;
+        mobs.add(npc36);
 
         LuoWhite npc13 = new LuoWhite();
         npc13.pos = 1300;

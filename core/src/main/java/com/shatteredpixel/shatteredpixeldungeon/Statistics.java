@@ -37,6 +37,9 @@ public class Statistics {
 	public static boolean CatFirst = false;
 	public static boolean snow = false;
 
+	//小叶12挑首次对话
+	public static boolean SmallLeafGet = false;
+
 	//吃保底
 	public static int bossWeapons;
 
@@ -326,6 +329,8 @@ public class Statistics {
 
 		CatFirst = false;
 
+		SmallLeafGet = false;
+
         HealingIsDied = 0;
 
 		Door.reset();
@@ -454,6 +459,8 @@ public class Statistics {
 		bundle.put(EXBOSS1,ExFruit);
 
 		bundle.put("CAT",CatFirst);
+
+		bundle.put("SMALLEAFTGET",SmallLeafGet);
 
 		bundle.put("SNOW",snow);
 
@@ -590,6 +597,8 @@ public class Statistics {
 		difficultyDLCEXLevel = bundle.getInt(XOL);
 
 		CatFirst = bundle.getBoolean("CAT");
+
+		SmallLeafGet = bundle.getBoolean("SMALLEAFTGET");
 
 		doNotLookLing = bundle.getBoolean(LOCD);
 

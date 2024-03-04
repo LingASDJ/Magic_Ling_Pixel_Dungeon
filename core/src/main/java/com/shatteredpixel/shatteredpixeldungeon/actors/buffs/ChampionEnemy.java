@@ -165,9 +165,6 @@ public abstract class ChampionEnemy extends Buff {
 					case 4:
 						buffCls = ChampionEnemy.HealRight.class;
 						break;
-					case 5:
-						buffCls = ChampionEnemy.NoCode.class;
-						break;
 				}
 //			}
 		} else if (randomNumber < 10) {
@@ -192,9 +189,6 @@ public abstract class ChampionEnemy extends Buff {
 					} else {
 						buffCls = ChampionEnemy.HealRight.class;
 					}
-					break;
-				case 5:
-					buffCls = ChampionEnemy.NoCode.class;
 					break;
 			}
 		}
