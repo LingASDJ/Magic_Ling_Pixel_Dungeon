@@ -65,8 +65,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.LingBag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.TestBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
@@ -221,6 +226,11 @@ public enum HeroClass {
 		new ScrollOfIdentify().identify();
 		//new KingGold().quantity(1).identify().collect();
 		if (Dungeon.isChallenged(Challenges.PRO)){
+			new PotionBandolier().collect();
+			new ScrollHolder().collect();
+			new MagicalHolster().collect();
+			new BookBag().collect();
+			new LingBag().collect();
 			new BlessingNecklace().quantity(1).identify().collect();
 			new SpawnMisc().quantity(1).identify().collect();
 			new LevelTeleporter().quantity(1).identify().collect();

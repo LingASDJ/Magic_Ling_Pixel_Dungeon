@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVenom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -69,6 +70,7 @@ public class SpawnRingOrWand extends TestItem {
                 wandList.add((Class<? extends Wand>) Generator.Category.WAND.classes[i]);
             }
             wandList.add(WandOfAnmy.class);
+            wandList.add(WandOfVenom.class);
         }
     }
 
