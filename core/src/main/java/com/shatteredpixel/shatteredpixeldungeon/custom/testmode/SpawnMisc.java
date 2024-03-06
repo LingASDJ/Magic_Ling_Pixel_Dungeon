@@ -51,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.CrivusFruitsFood;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.LightFood;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.PotionOfLightningShiled;
@@ -267,6 +268,7 @@ public class SpawnMisc extends TestItem {
                 foodList.add((Class<? extends Food>) Generator.Category.FOOD.classes[i]);
             }
             foodList.add(SmallRation.class);
+            foodList.add(MeatPie.class);
             foodList.add(Blandfruit.class);
             foodList.add(StewedMeat.class);
             foodList.add(FrozenCarpaccio.class);
@@ -315,12 +317,12 @@ public class SpawnMisc extends TestItem {
             miscList.add(Embers.class);
             miscList.add(CorpseDust.class);
             miscList.add(PotionOfNoWater.class);
+            miscList.add(PotionOfLightningShiled.class);
             miscList.add(MIME.GOLD_ONE.class);
             miscList.add(MIME.GOLD_TWO.class);
             miscList.add(MIME.GOLD_THREE.class);
             miscList.add(MIME.GOLD_FOUR.class);
             miscList.add(MIME.GOLD_FIVE.class);
-            miscList.add(LightFood.class);
             miscList.add(TestBooks.class);
             miscList.add(BlessingNecklace.class);
             miscList.add(OilPotion.class);
@@ -331,7 +333,6 @@ public class SpawnMisc extends TestItem {
             miscList.add(Red.class);
             miscList.add(CrystalLing.class);
             miscList.add(RedWhiteRose.class);
-            miscList.add(PotionOfLightningShiled.class);
         }
     }
 
