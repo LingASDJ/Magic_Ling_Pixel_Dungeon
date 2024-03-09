@@ -936,7 +936,6 @@ public class WndSettings extends WndTabbed {
 		CheckBox chkNews;
 		CheckBox chkBetas;
 		CheckBox chkWifi;
-		CheckBox chkFireBase;
 
 		@Override
 		protected void createChildren() {
@@ -969,16 +968,6 @@ public class WndSettings extends WndTabbed {
 				chkWifi.checked(SPDSettings.WiFi());
 				add(chkWifi);
 			}
-
-			chkFireBase = new CheckBox(Messages.get(this, "autoupdate")) {
-				@Override
-				protected void onClick() {
-					super.onClick();
-					SPDSettings.firebase(checked());
-				}
-			};
-			chkFireBase.checked( SPDSettings.firebase() );
-			add( chkFireBase );
 		}
 
 		@Override
@@ -989,17 +978,13 @@ public class WndSettings extends WndTabbed {
 
 			float pos;
 
-			if (width > 200 && chkFireBase != null){
+			if (width > 200){
 				chkNews.setRect(0, sep1.y + 1 + GAP, width/2-1, BTN_HEIGHT);
-				//chkUpdates.setRect(chkNews.right() + GAP, chkNews.top(), width/2-1, BTN_HEIGHT);
-				chkFireBase.setRect(chkNews.right() + GAP, chkNews.top(), width/2-1, BTN_HEIGHT);
-				pos = chkFireBase.bottom();
 			} else {
 				chkNews.setRect(0, sep1.y + 1 + GAP, width, BTN_HEIGHT);
-				chkFireBase.setRect(0, chkNews.bottom() + GAP, width, BTN_HEIGHT);
-				pos = chkNews.bottom();
 			}
 
+			pos = chkNews.bottom();
 			if (chkBetas != null){
 				chkBetas.setRect(0, pos + GAP, width, BTN_HEIGHT);
 				pos = chkBetas.bottom();
