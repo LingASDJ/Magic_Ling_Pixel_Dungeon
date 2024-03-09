@@ -176,7 +176,7 @@ public class TitleScene extends PixelScene {
 		if(holiday == XMAS){
 			playBGM(Assets.Music.CHRAMSS, true);
 		} else {
-			playBGM(Assets.NIGHT, true);
+			playBGM(Assets.Music.CAVES_TENSE, true);
 		}
 
 		uiCamera.visible = false;
