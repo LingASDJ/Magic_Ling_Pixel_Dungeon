@@ -201,7 +201,7 @@ public class WndStory extends Window {
 	public void hide() {
 		super.hide();
 		Banner mapnameSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
-		if(!Statistics.happyMode){
+		if(!Statistics.bossRushMode){
 			switch (Dungeon.depth) {
 				case 0:
 					if(!Dungeon.isChallenged(CS)){

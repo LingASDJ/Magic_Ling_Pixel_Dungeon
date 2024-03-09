@@ -65,7 +65,7 @@ public class Bestiary {
 	private static ArrayList<Class<? extends Mob>> standardMobRotation(int i) {
 
 		//TODO 暂时这样 后续优化
-		if(Dungeon.branch!=0 && !Statistics.happyMode){
+		if(Dungeon.branch!=0 && !Statistics.bossRushMode){
 			switch (Dungeon.branch){
 				case 1:
 				if(Dungeon.depth == 17 || Dungeon.depth == 18){

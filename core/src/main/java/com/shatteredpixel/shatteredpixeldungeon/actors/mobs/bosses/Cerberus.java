@@ -691,14 +691,14 @@ public class Cerberus extends Boss {
     }
 
     protected void triggerEnrage(){
-        if(Statistics.happyMode){
+        if(Statistics.bossRushMode){
             Buff.affect(this, Rage.class).setShield(400);
         } else {
             Buff.affect(this, Rage.class).setShield(1000);
         }
 
 
-        if(!Statistics.happyMode){
+        if(!Statistics.bossRushMode){
             Typhon typhon = new Typhon();
             typhon.pos = 356;
             GameScene.add(typhon);

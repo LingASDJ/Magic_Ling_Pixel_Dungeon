@@ -204,7 +204,7 @@ public class AncientMysteryCityBossLevel extends Level{
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
 
-        if(Statistics.happyMode && transition.type == LevelTransition.Type.BRANCH_EXIT) {
+        if(Statistics.bossRushMode && transition.type == LevelTransition.Type.BRANCH_EXIT) {
             TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
             if (timeFreeze != null) timeFreeze.disarmPresses();
             Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
@@ -218,7 +218,7 @@ public class AncientMysteryCityBossLevel extends Level{
             InterlevelScene.curTransition.centerCell = -1;
             Game.switchScene(InterlevelScene.class);
             return false;
-        } else if(Statistics.happyMode && transition.type == LevelTransition.Type.BRANCH_ENTRANCE){
+        } else if(Statistics.bossRushMode && transition.type == LevelTransition.Type.BRANCH_ENTRANCE){
             TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
             if (timeFreeze != null) timeFreeze.disarmPresses();
             Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);

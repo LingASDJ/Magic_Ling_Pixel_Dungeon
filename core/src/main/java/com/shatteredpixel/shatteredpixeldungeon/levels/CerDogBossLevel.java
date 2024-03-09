@@ -201,6 +201,45 @@ public class CerDogBossLevel extends Level{
                                         if(!((DeathRong) mob).rd){
                                             Buff.affect( ncx, DiedCrused.class);
                                             DeathRong.tell(Messages.get(DeathRong.class, "fuck",hero.name()));
+                                            if (Statistics.bossRushMode && !(Dungeon.depth == 2 || Dungeon.depth == 4 || Dungeon.depth == 24 || Dungeon.depth == 27)){
+                                                    if(Statistics.difficultyDLCEXLevel == 3){
+                                                        Class<?extends ChampionEnemy> buffCls2;
+                                                        switch (Random.Int(5)){
+                                                            case 0: default:    buffCls2 = ChampionEnemy.Middle.class;      break;
+                                                            case 1:             buffCls2 = ChampionEnemy.Bomber.class;      break;
+                                                            case 2:             buffCls2 = ChampionEnemy.Sider.class;       break;
+                                                            case 3:             buffCls2 = ChampionEnemy.LongSider.class;   break;
+                                                            case 4:             buffCls2 = ChampionEnemy.Big.class;         break;
+                                                        }
+                                                        Buff.affect(ncx, buffCls2);
+                                                        ncx.state = ncx.WANDERING;
+                                                        Class<?extends ChampionEnemy> buffCls;
+                                                        switch (Random.Int(9)){
+                                                            case 0: default:    buffCls = ChampionEnemy.Blazing.class;      break;
+                                                            case 1:             buffCls = ChampionEnemy.Projecting.class;   break;
+                                                            case 2:             buffCls = ChampionEnemy.AntiMagic.class;    break;
+                                                            case 3:             buffCls = ChampionEnemy.Giant.class;        break;
+                                                            case 4:             buffCls = ChampionEnemy.Blessed.class;      break;
+                                                            case 5:             buffCls = ChampionEnemy.Growing.class;      break;
+                                                            case 6:             buffCls = ChampionEnemy.Halo.class;      	break;
+                                                            case 7:             buffCls = ChampionEnemy.DelayMob.class;     break;
+                                                        }
+                                                        Buff.affect(ncx, buffCls);
+                                                    } else if (Statistics.difficultyDLCEXLevel == 2){
+                                                        Class<?extends ChampionEnemy> buffCls;
+                                                        switch (Random.Int(9)){
+                                                            case 0: default:    buffCls = ChampionEnemy.Blazing.class;      break;
+                                                            case 1:             buffCls = ChampionEnemy.Projecting.class;   break;
+                                                            case 2:             buffCls = ChampionEnemy.AntiMagic.class;    break;
+                                                            case 3:             buffCls = ChampionEnemy.Giant.class;        break;
+                                                            case 4:             buffCls = ChampionEnemy.Blessed.class;      break;
+                                                            case 5:             buffCls = ChampionEnemy.Growing.class;      break;
+                                                            case 6:             buffCls = ChampionEnemy.Halo.class;      	break;
+                                                            case 7:             buffCls = ChampionEnemy.DelayMob.class;     break;
+                                                        }
+                                                        Buff.affect(ncx, buffCls);
+                                                    }
+                                            }
                                         }
                                     }
                                 }

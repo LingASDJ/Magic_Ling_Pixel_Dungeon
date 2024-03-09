@@ -483,9 +483,12 @@ public class DeepShadowLevel extends Level {
         }
 
         //store excess items
-        for (Heap heap : heaps.values()){
-            storedItems.addAll(heap.items);
-            heap.destroy();
+
+        for (Heap heap : heaps.valueList()) {
+            for (Item item : heap.items) {
+                item.doPickUp(hero, hero.pos);
+                heap.destroy();
+            }
         }
 
         for (HeavyBoomerang.CircleBack b : hero.buffs(HeavyBoomerang.CircleBack.class)){

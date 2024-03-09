@@ -394,7 +394,7 @@ public class MagicGirlDead extends Boss {
     public void die(Object src){
         Statistics.bossScores[2] += 5000;
         super.die(src);
-      if(Statistics.happyMode){
+      if(Statistics.bossRushMode){
             GetBossLoot();
         }
         Badges.validateBossSlain();

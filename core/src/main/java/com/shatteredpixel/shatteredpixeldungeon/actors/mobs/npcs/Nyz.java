@@ -160,7 +160,7 @@ public class Nyz extends NTNPC {
         sprite.turnTo(pos, hero.pos);
         NyzPlot plot = new NyzPlot();
         NyzPlot.EndPlot plot2= new NyzPlot.EndPlot();
-        if(Dungeon.NyzshopOnLevel()|| Statistics.happyMode) {
+        if(Dungeon.NyzshopOnLevel()|| Statistics.bossRushMode) {
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {

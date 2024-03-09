@@ -329,7 +329,7 @@ public class SlimeKing extends Boss {
             } while (!Dungeon.level.passable[pos + ofs]);
             Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
         }
-      if(Statistics.happyMode){
+      if(Statistics.bossRushMode){
 
             GetBossLoot();
         }

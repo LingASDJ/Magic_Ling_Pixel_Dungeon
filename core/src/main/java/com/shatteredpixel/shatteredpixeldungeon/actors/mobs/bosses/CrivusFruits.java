@@ -381,7 +381,7 @@ public class CrivusFruits extends Boss {
         }
 
         //共存
-        if(Statistics.happyMode){
+        if(Statistics.bossRushMode){
             //克里弗斯之果二阶段死亡的时候的给予重新评估
             if(crivusfruitslevel2){
                 crivusfruitslevel2 = false;
@@ -433,7 +433,7 @@ public class CrivusFruits extends Boss {
             Dungeon.level.drop( new CrivusFruitsFlake(), pos + ofs ).sprite.drop( pos );
         }
 
-      if(Statistics.happyMode){
+      if(Statistics.bossRushMode){
             GetBossLoot();
         }
     }

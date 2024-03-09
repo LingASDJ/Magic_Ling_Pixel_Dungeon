@@ -66,11 +66,11 @@ abstract public class Boss extends Mob {
                 }
             }
 
-            if(Statistics.happyMode){
+            if(Statistics.bossRushMode){
                 Dungeon.level.drop(new KingGold(Random.NormalIntRange(3+Dungeon.depth/5,5+Dungeon.depth/5)),pos);
             }
 
-            if(!Statistics.happyMode){
+            if(!Statistics.bossRushMode){
                 if(Challenges.activeChallenges()>9){
                     Dungeon.level.drop(new IceCyanBlueSquareCoin(((5*(Dungeon.depth/5)) * (Challenges.activeChallenges() / 5))),pos);
                 } else {
@@ -167,7 +167,7 @@ abstract public class Boss extends Mob {
     @Override
     public void notice() {
         super.notice();
-        if (Statistics.happyMode && !(Dungeon.depth == 2 || Dungeon.depth == 4 || Dungeon.depth == 24 || Dungeon.depth == 27)){
+        if (Statistics.bossRushMode && !(Dungeon.depth == 2 || Dungeon.depth == 4 || Dungeon.depth == 24 || Dungeon.depth == 27)){
             if(!first){
                 if(Statistics.difficultyDLCEXLevel == 3){
                     RollEX();
@@ -177,10 +177,10 @@ abstract public class Boss extends Mob {
                 }
                 first = true;
             }
-        } else if (Statistics.happyMode && Statistics.difficultyDLCEXLevel == 3) {
+        } else if (Statistics.bossRushMode && Statistics.difficultyDLCEXLevel == 3) {
             Buff.affect(this, ChampionEnemy.Halo.class);
             Buff.affect(this, ChampionEnemy.Sider.class);
-        } else if (Statistics.happyMode && Statistics.difficultyDLCEXLevel == 2) {
+        } else if (Statistics.bossRushMode && Statistics.difficultyDLCEXLevel == 2) {
             Buff.affect(this, ChampionEnemy.Halo.class);
         }
     }

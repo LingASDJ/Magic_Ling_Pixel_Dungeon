@@ -153,7 +153,7 @@ public class ShopRoom extends SpecialRoom {
 				} while (level.heaps.get( cell ) != null || level.findMob( cell ) != null);
 			}
 
-			if(Statistics.happyMode){
+			if(Statistics.bossRushMode){
 				level.drop( item, cell ).type = Heap.Type.FOR_RUSH;
 			} else {
 				level.drop( item, cell ).type = Heap.Type.FOR_SALE;
@@ -317,7 +317,7 @@ public class ShopRoom extends SpecialRoom {
 				break;
 		}
 
-		if(!Statistics.happyMode){
+		if(!Statistics.bossRushMode){
 			itemsToSpawn.add( new Ankh() );
 		}
 

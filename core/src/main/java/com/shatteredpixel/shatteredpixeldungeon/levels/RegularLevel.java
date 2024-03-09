@@ -256,7 +256,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 		//20%
-		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) <= 30 || depth == 28 && !Statistics.happyMode) {
+		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) <= 30 || depth == 28 && !Statistics.bossRushMode) {
 			initRooms.add(new NxhyShopRoom());
 		}
 
@@ -273,7 +273,7 @@ public abstract class RegularLevel extends Level {
 
 		//		initRooms.add(new RangeMobRoom());
 
-		if (Dungeon.NyzshopOnLevel() && branch == 0 || Statistics.happyMode && Dungeon.NyzshopOnLevel()) {
+		if (Dungeon.NyzshopOnLevel() && branch == 0 || Statistics.bossRushMode && Dungeon.NyzshopOnLevel()) {
 			Buff.affect(hero, RandomBuff.class).set( (4 + Random.Int(9)+hero.STR/6+hero.HP/30)/Random.Int(1,2)+5, 1 );
 			initRooms.add(new NyzBombAndBooksRoom());
 		}
@@ -340,7 +340,7 @@ public abstract class RegularLevel extends Level {
 
 		if (Dungeon.shopOnLevel() && branch == 0) {
 			initRooms.add(new ShopRoom());
-		} else if(Statistics.happyMode && branch == 8 && Dungeon.shopRushLevel()){
+		} else if(Statistics.bossRushMode && branch == 8 && Dungeon.shopRushLevel()){
 			initRooms.add(new ShopRoom());
 		}
 

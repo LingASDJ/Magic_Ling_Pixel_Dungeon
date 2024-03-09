@@ -357,7 +357,7 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         Dungeon.level.unseal();
         Statistics.bossScores[1] += 2500;
 
-        if(!Statistics.happyMode){
+        if(!Statistics.bossRushMode){
             Dungeon.level.drop( new TengusMask(), pos ).sprite.drop();
         }
 

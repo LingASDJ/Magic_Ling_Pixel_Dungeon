@@ -40,7 +40,7 @@ public class IceCyanBlueSquareCoin extends Item {
     @Override
     public boolean doPickUp(Hero hero, int pos) {
 
-        if(!Dungeon.isChallenged(PRO) || !Statistics.happyMode){
+        if(!Dungeon.isChallenged(PRO) || !Statistics.bossRushMode){
             if(SPDSettings.Cheating()){
                 //盗版蓝币只有正版的十分之一
                 SPDSettings.iceCoin(quantity/10);

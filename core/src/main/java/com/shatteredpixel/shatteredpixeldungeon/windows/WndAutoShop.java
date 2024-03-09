@@ -104,7 +104,7 @@ public class WndAutoShop extends Window {
         public void onSelect( Item item ) {
             if (item != null) {
                 WndBag parentWnd = sell();
-                if(Statistics.happyMode){
+                if(Statistics.bossRushMode){
                     GameScene.show( new WndRushTradeItem( item, parentWnd ) );
                 } else {
                     GameScene.show( new WndTradeItem( item, parentWnd ) );

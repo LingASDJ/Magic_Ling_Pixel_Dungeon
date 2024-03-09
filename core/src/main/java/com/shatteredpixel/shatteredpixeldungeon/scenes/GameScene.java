@@ -1362,7 +1362,7 @@ public class GameScene extends PixelScene {
 			case ANCITYBOSS:
 			case AMULET:
 			case GARDEN:
-				if(!Statistics.happyMode){
+				if(!Statistics.bossRushMode){
 					switch (Dungeon.depth) {
 						case 0:
 							if(Dungeon.isChallenged(CS)) {
@@ -1709,14 +1709,14 @@ public class GameScene extends PixelScene {
 			//Boss开始后的处理Logo,不在Switch中就是默认的Logo。
 			switch (Dungeon.depth){
 				case 2:
-					if(Statistics.happyMode){
+					if(Statistics.bossRushMode){
 						bossSlain.texture( Assets.Interfaces.QliPhoth_Title );
 						bossSlain.show( 0xFFFFFF, 0.3f, 5f );
 						scene.showBanner( bossSlain );
 					}
 					break;
 				case 4:
-					if(Statistics.happyMode){
+					if(Statistics.bossRushMode){
 						bossSlain.texture(Assets.Interfaces.QliPhothEX_Title);
 						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
@@ -1785,7 +1785,7 @@ public class GameScene extends PixelScene {
 			//Boss死亡后的处理Logo,不在Switch中就是默认的Logo。
 			switch (Dungeon.depth){
 				case 2:
-					if(Statistics.happyMode ){
+					if(Statistics.bossRushMode){
 						bossSlain.texture( Assets.Interfaces.QliPhoth_Clear );
 						bossSlain.show( 0xFFFFFF, 0.3f, 5f );
 						scene.showBanner( bossSlain );
@@ -1829,7 +1829,7 @@ public class GameScene extends PixelScene {
 					break;
 			}
 
-			if(lanterfireactive && Dungeon.branch == 0 || Dungeon.branch == 6){
+			if(lanterfireactive && Dungeon.branch == 0 || Dungeon.branch == 6 || Statistics.bossRushMode){
 				cure( Dungeon.hero );
 			}
 

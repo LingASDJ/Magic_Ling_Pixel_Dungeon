@@ -291,7 +291,7 @@ public class Rival extends Boss implements Callback {
     public void die( Object cause ) {
         Dungeon.level.unseal();
         DeepShadowLevel.State state = ((DeepShadowLevel)Dungeon.level).state();
-        if (Statistics.happyMode && state != DeepShadowLevel.State.WON) {
+        if (Statistics.bossRushMode && state != DeepShadowLevel.State.WON) {
 
             //cures doom and drops missile weapons
             for (Buff buff : buffs()) {

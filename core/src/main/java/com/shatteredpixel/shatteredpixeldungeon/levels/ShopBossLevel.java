@@ -290,7 +290,7 @@ public class ShopBossLevel extends Level {
 
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
-        if(Statistics.happyMode){
+        if(Statistics.bossRushMode){
             return super.activateTransition(hero, transition);
         }
         return false;

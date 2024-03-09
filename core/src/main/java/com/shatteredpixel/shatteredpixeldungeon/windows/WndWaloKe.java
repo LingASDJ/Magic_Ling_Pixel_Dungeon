@@ -231,7 +231,7 @@ public class WndWaloKe extends Window {
 
             slot.setRect( x + 2, y + 2, width - 4, height - 4 );
 
-            if(Statistics.happyMode){
+            if(Statistics.bossRushMode){
                 slot.active = false;
                 slot.alpha(0.6f);
             }

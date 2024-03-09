@@ -60,7 +60,7 @@ public class Statistics {
 
 	public static boolean doNotLookLing = false;
 
-	public static boolean happyMode = false;
+	public static boolean bossRushMode = false;
 
 	public static boolean NoTime = false;
 
@@ -355,7 +355,7 @@ public class Statistics {
 
 
 		difficultyDLCEXLevel = 0;
-        happyMode = false;
+        bossRushMode = false;
 
         findMoon = false;
 		deadGo = false;
@@ -489,7 +489,7 @@ public class Statistics {
 
 		bundle.put( EXPL_SCORE,  exploreScore );
 
-		bundle.put( HAPPY,  happyMode );
+		bundle.put( HAPPY, bossRushMode);
 
 		bundle.put( BOSS_SCORES, bossScores );
 		bundle.put( TOT_BOSS,    totalBossScore );
@@ -668,7 +668,7 @@ public class Statistics {
 		highestAscent   = bundle.getInt( HIGHEST );
 		gameWon         = bundle.getBoolean( WON );
 		ascended        = bundle.getBoolean( ASCENDED );
-		happyMode		= bundle.getBoolean(HAPPY);
+		bossRushMode = bundle.getBoolean(HAPPY);
 
 		dimandchestmazeCollected = bundle.getInt(DDK);
 

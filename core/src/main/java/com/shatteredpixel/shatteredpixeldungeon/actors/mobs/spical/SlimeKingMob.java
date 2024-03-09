@@ -93,7 +93,7 @@ public class SlimeKingMob extends Mob {
     }
 
     {
-      if(Statistics.happyMode){
+      if(Statistics.bossRushMode){
             HP =190;
             HT= 190;
 

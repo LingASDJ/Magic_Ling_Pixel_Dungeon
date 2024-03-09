@@ -181,7 +181,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
                 mob.die( cause );
             }
         }
-      if(Statistics.happyMode){
+      if(Statistics.bossRushMode){
             GetBossLoot();
         }
     }

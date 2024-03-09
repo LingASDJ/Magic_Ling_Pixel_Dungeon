@@ -575,7 +575,7 @@ public class YogReal extends Boss {
             Statistics.qualifiedForBossChallengeBadge = false;
         }
 
-        if(Statistics.happyMode){
+        if(Statistics.bossRushMode){
             PaswordBadges.KILLALLBOSS();
             PaswordBadges.BOSSRUSH();
             Statistics.questScores[4] += 30000;

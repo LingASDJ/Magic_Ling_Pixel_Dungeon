@@ -1613,7 +1613,7 @@ public class DwarfMaster extends Boss {
                 mob.die( cause );
             }
         }
-      if(Statistics.happyMode){
+      if(Statistics.bossRushMode){
             GetBossLoot();
         }
         for (Buff buff : hero.buffs()) {

@@ -45,7 +45,7 @@ public class PaswordBadges {
 
     public static void ALLCS(int challenges){
         if (challenges == 0) return;
-        if (challenges >= 13 && !(Dungeon.isChallenged(PRO))||!Statistics.happyMode && challenges >= 13){
+        if (challenges >= 13 && !(Dungeon.isChallenged(PRO))||!Statistics.bossRushMode && challenges >= 13){
             displayBadge(PaswordBadges.Badge.ALLCHSX );
         }
     }

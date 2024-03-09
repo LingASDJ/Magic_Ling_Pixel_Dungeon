@@ -44,7 +44,7 @@ public class NullDiedTO extends NTNPC {
     }
     @Override
     public String name(){
-        if (Statistics.happyMode) {
+        if (Statistics.bossRushMode) {
             return Messages.get(this, "namex");
         } else {
             return Messages.get(this, "name");
@@ -54,7 +54,7 @@ public class NullDiedTO extends NTNPC {
 
     @Override
     public String description(){
-        if (Statistics.happyMode) {
+        if (Statistics.bossRushMode) {
             return Messages.get(this, "descx");
         } else {
             return Messages.get(this, "desc");
@@ -151,7 +151,7 @@ public class NullDiedTO extends NTNPC {
             WndQuest.chating(this,chat);
             first=false;
         }else {
-            if(Statistics.happyMode && Dungeon.depth == 27){
+            if(Statistics.bossRushMode && Dungeon.depth == 27){
                 GLog.n(Messages.get(this,"leave"));
             } else {
                 Game.runOnRenderThread(new Callback() {
@@ -172,20 +172,20 @@ public class NullDiedTO extends NTNPC {
 
         chat = new ArrayList<String>() {
             {
-                if(Statistics.happyMode && Dungeon.depth==1) {
+                if(Statistics.bossRushMode && Dungeon.depth==1) {
                     add(Messages.get(NullDiedTO.class, "talk_a"));
                     add(Messages.get(NullDiedTO.class, "talk_b"));
                     add(Messages.get(NullDiedTO.class, "talk_c"));
                     add(Messages.get(NullDiedTO.class, "talk_d"));
                     add(Messages.get(NullDiedTO.class, "talk_e"));
                     add(Messages.get(NullDiedTO.class, "talk_f"));
-                } else if(Statistics.happyMode && Dungeon.depth==17) {
+                } else if(Statistics.bossRushMode && Dungeon.depth==17) {
                     add(Messages.get(NullDiedTO.class, "talk_g"));
                     add(Messages.get(NullDiedTO.class, "talk_h"));
-                } else if(Statistics.happyMode && Dungeon.depth==27) {
+                } else if(Statistics.bossRushMode && Dungeon.depth==27) {
                     add(Messages.get(NullDiedTO.class, "talk_i"));
                     add(Messages.get(NullDiedTO.class, "talk_j"));
-                } else if(Statistics.happyMode && Dungeon.depth==28) {
+                } else if(Statistics.bossRushMode && Dungeon.depth==28) {
                     add(Messages.get(NullDiedTO.class, "talk_k"));
                     add(Messages.get(NullDiedTO.class, "talk_l"));
                     add(Messages.get(NullDiedTO.class, "talk_m"));

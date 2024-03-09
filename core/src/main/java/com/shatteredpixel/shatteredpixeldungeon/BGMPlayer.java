@@ -35,7 +35,7 @@ public class BGMPlayer {
         int d = depth;
         int s = branch;
 
-        if (Statistics.happyMode) {
+        if (Statistics.bossRushMode) {
             if (d == 1) {
                 playBGM(Assets.TOWN, true);
             } else if (d >= 2 && d <= 7) {
@@ -146,7 +146,7 @@ public class BGMPlayer {
         int t = depth;
         int s = branch;
 
-        if (Statistics.happyMode) {
+        if (Statistics.bossRushMode) {
             switch (depth){
                 case 2: case 4: case 6: case 13: case 7:
                     playBGM(Assets.BGM_BOSSA, true);
@@ -182,7 +182,7 @@ public class BGMPlayer {
                                     playBGM(Assets.Music.CAVES_BOSS, true);
                                 }
                             } else {
-                                if(Statistics.happyMode && depth == 17){
+                                if(Statistics.bossRushMode && depth == 17){
                                     playBGM(Assets.Music.PRISON_TENSE, true);
                                 }
                             }

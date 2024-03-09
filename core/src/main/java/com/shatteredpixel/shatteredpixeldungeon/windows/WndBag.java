@@ -284,7 +284,7 @@ public class WndBag extends WndTabbed {
 		int x = col * (slotWidth + SLOT_MARGIN);
 		int y = TITLE_HEIGHT + row * (slotHeight + SLOT_MARGIN);
 
-		if(Statistics.happyMode){
+		if(Statistics.bossRushMode){
 			BitmapText iceCoinAmount = new BitmapText(Integer.toString(Dungeon.rushgold), PixelScene.pixelFont);
 			iceCoinAmount.hardlight(TITLE_COLOR);
 			iceCoinAmount.measure();

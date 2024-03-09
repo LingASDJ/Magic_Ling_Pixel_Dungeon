@@ -29,7 +29,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameNight;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameTime;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.happyMode;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.bossRushMode;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.seedCustom;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.youNoItem;
@@ -1177,7 +1177,7 @@ public class Hero extends Char {
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {
-						if(happyMode){
+						if(bossRushMode){
 							GameScene.show( new WndRushTradeItem( heap ) );
 						} else {
 							GameScene.show( new WndTradeItem( heap ) );
@@ -2037,7 +2037,7 @@ public class Hero extends Char {
 					&& (!flying || buff(Levitation.class) != null && buff(Levitation.class).detachesWithinDelay(delay))){
 				if (!Chasm.jumpConfirmed){
 
-					if(Dungeon.branch != 0 && !happyMode || Dungeon.depth == 5 ){
+					if(Dungeon.branch != 0 && !bossRushMode || Dungeon.depth == 5 ){
 						if(buff(Levitation.class) != null){
 							GLog.n(Messages.get(Hero.class, "error_no"));
 						}
@@ -2522,7 +2522,9 @@ public class Hero extends Char {
 
 	private boolean actMove( HeroAction.Move action ) {
 		//水中祝福
-		MoveWater();
+		if(Dungeon.branch == 0){
+			MoveWater();
+		}
 
 		if(!seedCustom && !Dungeon.customSeedText.isEmpty()){
 			seedCustom = true;
