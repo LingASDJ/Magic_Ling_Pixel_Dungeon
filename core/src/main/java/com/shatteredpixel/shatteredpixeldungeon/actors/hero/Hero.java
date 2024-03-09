@@ -2224,7 +2224,7 @@ public class Hero extends Char {
 		boolean levelUp = false;
 		while (this.exp >= maxExp()) {
 			this.exp -= maxExp();
-			if (lvl < MAX_LEVEL || Dungeon.depth>25 && lvl < 40) {
+			if (lvl < MAX_LEVEL) {
 				lvl++;
 				levelUp = true;
 				

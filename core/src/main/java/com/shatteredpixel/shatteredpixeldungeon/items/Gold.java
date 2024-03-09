@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -57,21 +58,29 @@ public class Gold extends Item {
 	
 	@Override
 	public boolean doPickUp(Hero hero, int pos) {
-		
-		Dungeon.gold += quantity;
-		Statistics.goldCollected += quantity;
-		Badges.validateGoldCollected();
 
-		GameScene.pickUp( this, pos );
-		hero.sprite.showStatusWithIcon( CharSprite.NEUTRAL, Integer.toString(quantity), FloatingText.GOLD );
-		hero.spendAndNext( TIME_TO_PICK_UP );
 
-//		CommRelay.Collection collection = hero.buff(CommRelay.Collection.class);
-//		if (collection != null) collection.collectGold(quantity);
-		
-		Sample.INSTANCE.play( Assets.Sounds.GOLD, 1, 1, Random.Float( 0.9f, 1.1f ) );
-		updateQuickslot();
-		
+		if(quantity > 100 && Statistics.bossRushMode ){
+			Dungeon.rushgold += 1;
+
+			GameScene.pickUp( this, pos );
+			hero.spendAndNext( TIME_TO_PICK_UP );
+			hero.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "ling",quantity));
+			Sample.INSTANCE.play( Assets.Sounds.GOLD, 1, 1, Random.Float( 0.9f, 1.1f ) );
+			updateQuickslot();
+		} else {
+			Dungeon.gold += quantity;
+			Statistics.goldCollected += quantity;
+			Badges.validateGoldCollected();
+
+			GameScene.pickUp( this, pos );
+			hero.sprite.showStatusWithIcon( CharSprite.NEUTRAL, Integer.toString(quantity), FloatingText.GOLD );
+			hero.spendAndNext( TIME_TO_PICK_UP );
+
+			Sample.INSTANCE.play( Assets.Sounds.GOLD, 1, 1, Random.Float( 0.9f, 1.1f ) );
+			updateQuickslot();
+		}
+
 		return true;
 	}
 	

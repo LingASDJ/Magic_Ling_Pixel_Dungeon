@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKingShop;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndRushShop;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
@@ -157,7 +158,12 @@ public class NullDiedTO extends NTNPC {
                 Game.runOnRenderThread(new Callback() {
                     @Override
                     public void call() {
-                        GameScene.show(new WndKingShop());
+                        if(Statistics.bossRushMode){
+                            GameScene.show(new WndRushShop());
+                        } else {
+                            GameScene.show(new WndKingShop());
+                        }
+
                     }
                 });
             }

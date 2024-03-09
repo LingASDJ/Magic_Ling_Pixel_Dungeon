@@ -298,7 +298,8 @@ public class ZeroCityLevel extends Level {
                                 }
                                 Statistics.deepestFloor = 100;
                                 Statistics.bossRushMode = true;
-                                Dungeon.gold += 1200;
+                                Dungeon.gold = 0;
+                                Dungeon.rushgold = 12;
                             }
                         });
                     }
