@@ -83,10 +83,8 @@ public class WelcomeScene extends PixelScene {
 			return;
 		}
 
-		if (!SPDSettings.intro() && SPDSettings.firebase()) {
-			ShatteredPixelDungeon.switchScene(GameNewsScene.class);
-		} else {
-			ShatteredPixelDungeon.switchScene(TitleScene.class);
+		if (ShatteredPixelDungeon.versionCode == previousVersion && !SPDSettings.intro()) {
+			ShatteredPixelDungeon.switchNoFade(TitleScene.class);
 			return;
 		}
 

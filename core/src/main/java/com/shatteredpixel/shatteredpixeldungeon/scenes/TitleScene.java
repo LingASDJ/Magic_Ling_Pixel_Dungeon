@@ -176,7 +176,7 @@ public class TitleScene extends PixelScene {
 		if(holiday == XMAS){
 			playBGM(Assets.Music.CHRAMSS, true);
 		} else {
-			playBGM(Assets.Music.THEME_1, true);
+			playBGM(Assets.NIGHT, true);
 		}
 
 		uiCamera.visible = false;
@@ -457,10 +457,6 @@ public class TitleScene extends PixelScene {
 		btnChanges.icon(new ItemSprite(ItemSpriteSheet.ICEBOOK, null));
 		add(btnChanges);
 
-		StyledButton reloadButton = new ReloadButton(landscape() ? Chrome.Type.GREY_BUTTON_TR : Chrome.Type.BLANK, Messages.get(this, "update_web"));
-		reloadButton.icon(NetIcons.get(NetIcons.GLOBE));
-		add(reloadButton);
-
 		StyledButton seed = new SeedButton(landscape() ? Chrome.Type.GREY_BUTTON_TR : Chrome.Type.BLANK, Messages.get(this, "seed"));
 		seed.icon(NetIcons.get(NetIcons.CHAT));
 		add(seed);
@@ -505,16 +501,11 @@ public class TitleScene extends PixelScene {
 			btnSettings.setRect(btnSupport.right() + 2, btnSupport.top(), btnRankings.width(), BTN_HEIGHT);
 			btnAbout.setRect(btnSettings.left(), btnSettings.bottom() + GAP, btnRankings.width(), BTN_HEIGHT);
 			btnNews.setRect(btnPlay.left(), btnAbout.bottom() + GAP, btnAbout.width() + 157 - 1, BTN_HEIGHT);
-
-			reloadButton.setRect(0, 0,40,20);
-
-			seed.setRect(0, 20,40,20);
-
+			seed.setRect(0, 0,40,20);
 			align(btnNews);
 		}
 		else {
-			reloadButton.setRect(0, version.y-10,40,20);
-			seed.setRect(0, version.y-30,40,20);
+			seed.setRect(0, version.y-10,40,20);
 			btnPlay.setRect(title.x, topRegion + GAP, title.width(), BTN_HEIGHT);
 			align(btnPlay);
 			btnRankings.setRect(btnPlay.left(), btnPlay.bottom()+ GAP, (btnPlay.width() / 2) - 1, BTN_HEIGHT);
@@ -593,19 +584,6 @@ public class TitleScene extends PixelScene {
 		@Override
 		protected void onClick() {
 			ShatteredPixelDungeon.switchNoFade( ChangesScene.class );
-		}
-
-	}
-
-	private static class ReloadButton extends StyledButton {
-
-		public ReloadButton( Chrome.Type type, String label ){
-			super(type, label);
-		}
-
-		@Override
-		protected void onClick() {
-			ShatteredPixelDungeon.switchNoFade(GameNewsScene.class);
 		}
 
 	}

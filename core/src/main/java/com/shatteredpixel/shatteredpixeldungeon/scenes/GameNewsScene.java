@@ -27,7 +27,8 @@ import com.watabou.utils.DeviceCompat;
 import java.util.ArrayList;
 
 
-public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继承PixelScene类
+public class GameNewsScene extends PixelScene {
+    //定义GameNewsScene类，继承PixelScene类
 
     boolean displayingNoArticles = false;  //声明一个布尔类型的变量，用于标记是否需要显示文章
 

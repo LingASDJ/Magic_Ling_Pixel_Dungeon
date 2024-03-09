@@ -493,7 +493,7 @@ public class ZeroCityLevel extends Level {
         mobs.add(npc5);
 
         PianoLe npc36 = new PianoLe();
-        npc36.pos = 363;
+        npc36.pos = 364;
         mobs.add(npc36);
 
         LuoWhite npc13 = new LuoWhite();
