@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.EndButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.update.MLChangesButton;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHardNotification;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings;
 import com.watabou.glwrap.Blending;
@@ -457,7 +458,7 @@ public class TitleScene extends PixelScene {
 		StyledButton btnSupport = new SupportButton(GREY_TR, Messages.get(this, "support"));
 		add(btnSupport);
 
-		StyledButton btnChanges = new ChangesButton(GREY_TR, Messages.get(this, "changes"));
+		StyledButton btnChanges = new MLChangesButton(GREY_TR, Messages.get(this, "changes"));
 		btnChanges.icon(new ItemSprite(ItemSpriteSheet.ICEBOOK, null));
 		add(btnChanges);
 
@@ -579,7 +580,7 @@ public class TitleScene extends PixelScene {
 		}
 	}
 
-	private static class ChangesButton extends StyledButton {
+	public static class ChangesButton extends StyledButton {
 
 		public ChangesButton( Chrome.Type type, String label ){
 			super(type, label);
