@@ -129,13 +129,6 @@ public class WndChallenges extends Window {
 			cb.checked((checked & Challenges.MASKS[i]) != 0);
 			cb.active = editable;
 
-			//Disable
-			if((Challenges.NAME_IDS[i].equals("icedied"))){
-				cb.active = false;
-				cb.checked(false);
-				cb.visible=false;
-			}
-
 			for (int ch : Challenges.MASKS) {
 				if ((Dungeon.challenges & ch) != 0 && ch <= MOREROOM && ch != PRO && ch != DHXD) {
 					getSelectedButtonCount();
@@ -360,8 +353,8 @@ public class WndChallenges extends Window {
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_12, new ItemSprite.Glowing(0xd1ce9f));
 			case "stronger_bosses":
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_13, new ItemSprite.Glowing(0xff0000));
-			case "icedied":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14, new ItemSprite.Glowing(0x009999));
+			case "warling":
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14, new ItemSprite.Glowing(0x5a2410));
 			case "dhxd":
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_15, new ItemSprite.Glowing(0x384976));
 			case "morelevel":

@@ -232,4 +232,11 @@ public class Random {
 			}
 		}
 	}
+
+	private static java.util.Random rand = new java.util.Random();
+	//random boolean
+	public static boolean Boolean(){
+		return rand.nextBoolean();
+	}
+
 }

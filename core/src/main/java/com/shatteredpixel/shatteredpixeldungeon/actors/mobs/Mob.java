@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.WARLING;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.bossLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
@@ -52,12 +53,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Feint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.Pets;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -80,8 +83,15 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Mageroyal;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Starflower;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -95,6 +105,7 @@ import com.watabou.utils.Reflection;
 import net.iharder.Base64;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -115,6 +126,19 @@ public abstract class Mob extends Char {
 	public AiState FLEEING		= new Fleeing();
 	public AiState PASSIVE		= new Passive();
 	public AiState state = SLEEPING;
+
+	public boolean isStupid;
+	public HashSet<Class> beneficialPlants;
+
+	{
+		beneficialPlants = new HashSet<>();
+		isStupid = Dungeon.isChallenged(WARLING) && Random.Boolean();
+		beneficialPlants = new HashSet<Class>(Arrays.asList(
+				Sungrass.class, Starflower.class, Swiftthistle.class, AikeLaier.class, Mageroyal.class, Fadeleaf.class,
+				Earthroot.class
+		));
+	}
+
 
 	public Class<? extends CharSprite> spriteClass;
 
@@ -196,8 +220,9 @@ public abstract class Mob extends Char {
 	private static final String SEEN	= "seen";
 	private static final String TARGET	= "target";
 	private static final String MAX_LVL	= "max_lvl";
+	private static final String ENEMY_ID= "enemy_id";
+	private static final String STUPID	= "stupid";
 
-	private static final String ENEMY_ID	= "enemy_id";
     protected Object loot = null;
 
     {
@@ -316,6 +341,8 @@ public abstract class Mob extends Char {
 		if (enemy != null) {
 			bundle.put(ENEMY_ID, enemy.id() );
 		}
+
+		bundle.put( STUPID, isStupid );
 	}
 
 	@Override
@@ -347,6 +374,8 @@ public abstract class Mob extends Char {
 
 		//no need to actually save this, must be false
 		firstAdded = false;
+
+		isStupid = bundle.getBoolean( STUPID );
 	}
 
 	private boolean cellIsPathable( int cell ){
@@ -1100,6 +1129,12 @@ public abstract class Mob extends Char {
 			desc += "\n\n_" + Messages.titleCase(b.name()) + "_\n" + b.desc();
 		}
 
+		String intelligence = isStupid ? Messages.get(this, "stupid", name()) : Messages.get(this, "smart",name());
+
+		if(Dungeon.isChallenged(WARLING)){
+			desc += "\n\n"+intelligence;
+		}
+
 
 
 		return desc;
@@ -1254,6 +1289,7 @@ public abstract class Mob extends Char {
 
 		public static final String TAG	= "WANDERING";
 
+
 		@Override
 		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
 			if (enemyInFOV && (justAlerted || Random.Float( distance( enemy ) / 2f + enemy.stealth() ) < 1)) {
@@ -1267,47 +1303,56 @@ public abstract class Mob extends Char {
 			}
 		}
 
-        protected boolean noticeEnemy(){
+		protected boolean noticeEnemy(){
 			enemySeen = true;
 
-            notice();
+			notice();
 			alerted = true;
 			state = HUNTING;
 			target = enemy.pos;
 
-            if (alignment == Alignment.ENEMY && Dungeon.isChallenged( Challenges.SWARM_INTELLIGENCE )) {
+			if (Dungeon.isChallenged( Challenges.SWARM_INTELLIGENCE )) {
 				for (Mob mob : Dungeon.level.mobs) {
-					if (mob.paralysed <= 0
-							&& Dungeon.level.distance(pos, mob.pos) <= 8
-							&& mob.state != mob.HUNTING) {
+					if (Dungeon.level.distance(pos, mob.pos) <= 8 && mob.state != mob.HUNTING) {
 						mob.beckon( target );
 					}
 				}
 			}
 
-            return true;
+			return true;
 		}
 
-        protected boolean continueWandering(){
+		protected boolean continueWandering(){
 			enemySeen = false;
 
-            int oldPos = pos;
+			//stupid mobs will follow smart ones
+			if (isStupid) {
+				for (Mob mob : Dungeon.level.mobs) {
+					//the mob they follow must be smart, no more than 5 tiles away, also wandering as to not gang up on the player, and must be the same mob class
+					if (!mob.isStupid) {
+						Dungeon.level.distance(pos, mob.pos);
+					}
+				}
+			}
+
+			int oldPos = pos;
 			if (target != -1 && getCloser( target )) {
 				spend( 1 / speed() );
 				return moveSprite( oldPos, pos );
 			} else {
-				target = randomDestination();
+				target = Dungeon.level.randomDestination(Mob.this);
 				spend( TICK );
 			}
 
-            return true;
+			return true;
 		}
 
 		protected int randomDestination(){
 			return Dungeon.level.randomDestination( Mob.this );
 		}
+	}
 
-    }
+
 
 	public static void restoreAllies( Level level, int pos ){
 		restoreAllies(level, pos, -1);
@@ -1458,6 +1503,83 @@ public abstract class Mob extends Char {
 		}
 		Dungeon.level.drop( new Food(), pos ).sprite.drop();
 		Dungeon.level.drop( new PotionOfExperience(), pos ).sprite.drop();
+	}
+
+
+	@Override
+	public void move(int step) {
+		//npcs never die! (Maybe, maybe I'll add NPC's that can die) also livingplants do not want to destroy other plants.
+		if(!(this instanceof NPC) && Dungeon.isChallenged(WARLING)){
+			//inorganic mobs have no need for plants
+			if(!properties.contains(Property.INORGANIC) || !properties.contains(Property.IMMOVABLE)){
+				//checking for boolean and buff because these require the least amount of cp to call each step for every mob
+				if(!flying && buff( Vertigo.class ) == null){
+					//only seek to step on plant if HP is at 50% or less
+					if(HP <= HT / 2){
+						//check for all surrounding tiles
+						for(int p : PathFinder.NEIGHBOURS8){
+							if(Dungeon.level.plants.get(pos+p) != null){
+								if(!isStupid){
+									//if the mob is smart it will only look for beneficial plants specified in its .class
+									if(beneficialPlants.contains(Dungeon.level.plants.get(pos+p).getClass())){
+										//this variable makes everything easier to type
+										int newPos = pos+p;
+										//can't have two mobs going for the same plant at the same time
+										if(Actor.findChar(newPos) == null){
+											triggerPlant(newPos);
+											return;
+										}
+									}
+									//this can only happen if a flying mob could somehow loose its flying status, in that case we assume it didn't evolve on the ground and doesn't know what plants are.
+									if(beneficialPlants.isEmpty() || beneficialPlants == null){
+										//this variable makes everything easier to type
+										int newPos = pos+p;
+										//can't have two mobs going for the same plant at the same time
+										if(Actor.findChar(newPos) == null){
+											triggerPlant(newPos);
+											return;
+										} else {
+											super.move(step);
+										}
+									}
+								} else {
+									//if the mob is stupid it will step into any plant
+									//this variable makes everything easier to type
+									int newPos = pos+p;
+									//can't have two mobs going for the same plant at the same time
+									if(Actor.findChar(newPos) == null){
+										triggerPlant(newPos);
+										return;
+									} else {
+										super.move(step);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		super.move(step);
+	}
+
+	private void triggerPlant(int newPos){
+		//for when its on a watertile
+		if(Dungeon.level.map[newPos] == Terrain.WATER){
+			//set the pos to the new pos, update the tile and trigger the plant then return from this method skipping the normal move at the end
+			pos = newPos;
+			Level.set(newPos, Terrain.WATER);
+			GameScene.updateMap(newPos);
+			Dungeon.level.plants.get(newPos).trigger();
+		}
+		//for when its on a other tile
+		if(Dungeon.level.map[newPos] == Terrain.GRASS){
+			//set the pos to the new pos, update the tile and trigger the plant then return from this method skipping the normal move at the end
+			pos = newPos;
+			Level.set(newPos, Terrain.WATER);
+			GameScene.updateMap(newPos);
+			Dungeon.level.plants.get(newPos).trigger();
+		}
 	}
 
 }

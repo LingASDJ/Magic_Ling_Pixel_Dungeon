@@ -37,6 +37,7 @@ import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.ColorMath;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.GameMath;
@@ -176,7 +177,10 @@ public class TitleScene extends PixelScene {
 		if(holiday == XMAS){
 			playBGM(Assets.Music.CHRAMSS, true);
 		} else {
-			playBGM(Assets.Music.CAVES_TENSE, true);
+			Music.INSTANCE.playTracks(
+					new String[]{Assets.Music.THEME, Assets.Music.THEME_2,Assets.Music.CAVES_TENSE, Assets.Music.PRISON_BOSS},
+					new float[]{1, 1, 1, 1},
+					true);
 		}
 
 		uiCamera.visible = false;
