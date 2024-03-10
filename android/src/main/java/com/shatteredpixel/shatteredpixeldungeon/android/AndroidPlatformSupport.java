@@ -23,24 +23,30 @@ package com.shatteredpixel.shatteredpixeldungeon.android;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.view.View;
 import android.view.WindowManager;
+
+import androidx.core.content.FileProvider;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidGraphics;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.king.app.updater.AppUpdater;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.watabou.noosa.Game;
 import com.watabou.utils.PlatformSupport;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -354,5 +360,54 @@ public class AndroidPlatformSupport extends PlatformSupport {
 	public boolean isDesktop() {
 		return false;
 	}
+	@Override
+	public void updateGame(String url, UpdateCallback listener) {
+		AppUpdater appUpdater = new AppUpdater.Builder(AndroidLauncher.instance.getContext())
+				.setInstallApk(false)
+				.setUrl(url)
+				.build();
+		appUpdater.setUpdateCallback(new com.king.app.updater.callback.UpdateCallback() {
+					@Override
+					public void onDownloading(boolean isDownloading) {
+						listener.onDownloading(isDownloading);
+					}
 
+					@Override
+					public void onStart(String url) {
+						listener.onStart(url);
+					}
+
+					@Override
+					public void onProgress(long progress, long total, boolean isChanged) {
+						listener.onProgress(progress, total, isChanged);
+					}
+
+					@Override
+					public void onFinish(File file) {
+						listener.onFinish(file);
+					}
+
+					@Override
+					public void onError(Exception e) {
+						listener.onError(e);
+					}
+
+					@Override
+					public void onCancel() {
+						listener.onCancel();
+					}
+				}).start();
+	}
+
+	@Override
+	public void install(File file) {
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		String packageName = AndroidLauncher.instance.getContext().getPackageName();
+		String authorities = packageName + ".fileprovider";
+		Uri apkUri = FileProvider.getUriForFile(AndroidLauncher.instance.getContext(), authorities, file);
+		intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+		AndroidLauncher.instance.getContext().startActivity(intent);
+	}
 }

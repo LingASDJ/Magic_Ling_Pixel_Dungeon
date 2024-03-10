@@ -44,6 +44,8 @@ import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.UpdateNews;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
+import com.shatteredpixel.shatteredpixeldungeon.update.UpdateImpl;
+import com.shatteredpixel.shatteredpixeldungeon.update.Updates;
 import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
 
@@ -87,6 +89,7 @@ public class AndroidLauncher extends AndroidApplication {
 
 
 			if (NewsImpl.supportsNews()) {
+				Updates.service = UpdateImpl.getUpdateService();
 				UpdateNews.service = GameNesImpl.getNewsService();
 				News.service = NewsImpl.getNewsService();
 			}
