@@ -199,10 +199,24 @@ public class WndChallenges extends Window {
 				}
 			}
 		};
-		btnClear.setRect(btnEnableAll.left()+ GAP, pos+20, (WIDTH - GAP), BTN_HEIGHT);
+		btnClear.setRect(btnEnableAll.left()+ GAP, pos+20, (WIDTH/2f - GAP), BTN_HEIGHT);
 		add(btnClear);
 		if (!editable) {
 			btnClear.enable(false);
+		}
+
+		RedButton btnEnabll = new RedButton(Messages.get(WndChallenges.class,"enablealls"), 7) {
+			@Override
+			protected void onClick() {
+				for (int i = 0; i < boxes.size(); i++) {
+					setOpenCheckedNoUpdate(i);
+				}
+			}
+		};
+		btnEnabll.setRect(btnClear.right()+ GAP, pos+20, (WIDTH/2f - GAP), BTN_HEIGHT);
+		add(btnEnabll);
+		if (!editable) {
+			btnEnabll.enable(false);
 		}
 
 		pos += BTN_HEIGHT+20;
@@ -213,6 +227,10 @@ public class WndChallenges extends Window {
 	private void setCheckedNoUpdate(int id) {
 		boxes.get(id).checked(false);
 	}
+	private void setOpenCheckedNoUpdate(int id) {
+		boxes.get(id).checked(true);
+	}
+
 
 
 	@Override

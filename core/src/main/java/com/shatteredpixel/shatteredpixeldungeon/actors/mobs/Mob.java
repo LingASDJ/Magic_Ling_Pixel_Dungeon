@@ -1325,10 +1325,10 @@ public abstract class Mob extends Char {
 		protected boolean continueWandering(){
 			enemySeen = false;
 
-			//stupid mobs will follow smart ones
+			//愚蠢的怪物会跟随聪明的怪物
 			if (isStupid) {
 				for (Mob mob : Dungeon.level.mobs) {
-					//the mob they follow must be smart, no more than 5 tiles away, also wandering as to not gang up on the player, and must be the same mob class
+					//他们追随的怪物必须是聪明的，也必须是在巡查状态，以免围攻玩家，而且必须是相同的怪物类
 					if (!mob.isStupid) {
 						Dungeon.level.distance(pos, mob.pos);
 					}
@@ -1507,34 +1507,39 @@ public abstract class Mob extends Char {
 
 
 	@Override
+	/**
+	 * 移动方法
+	 *
+	 * @param step 移动的步数
+	 */
 	public void move(int step) {
-		//npcs never die! (Maybe, maybe I'll add NPC's that can die) also livingplants do not want to destroy other plants.
+		//npcs永远不会死！
 		if(!(this instanceof NPC) && Dungeon.isChallenged(WARLING)){
-			//inorganic mobs have no need for plants
+			//部分属性生物不需要植物
 			if(!properties.contains(Property.INORGANIC) || !properties.contains(Property.IMMOVABLE)){
-				//checking for boolean and buff because these require the least amount of cp to call each step for every mob
+				//检查布尔值和增益，因为每次对每个怪物调用的CP最少 且眩晕 飞行不会生效
 				if(!flying && buff( Vertigo.class ) == null){
-					//only seek to step on plant if HP is at 50% or less
+					//只有当HP达到50%或更低时才寻求踩在植物上
 					if(HP <= HT / 2){
-						//check for all surrounding tiles
+						//检查所有周围的瓷砖
 						for(int p : PathFinder.NEIGHBOURS8){
 							if(Dungeon.level.plants.get(pos+p) != null){
 								if(!isStupid){
-									//if the mob is smart it will only look for beneficial plants specified in its .class
+									//如果怪物很聪明，它只会寻找其.class中指定的有益植物
 									if(beneficialPlants.contains(Dungeon.level.plants.get(pos+p).getClass())){
-										//this variable makes everything easier to type
+										//这个变量使得一切更容易输入
 										int newPos = pos+p;
-										//can't have two mobs going for the same plant at the same time
+										//不能让两个怪物同时去同一个植物
 										if(Actor.findChar(newPos) == null){
 											triggerPlant(newPos);
 											return;
 										}
 									}
-									//this can only happen if a flying mob could somehow loose its flying status, in that case we assume it didn't evolve on the ground and doesn't know what plants are.
-									if(beneficialPlants.isEmpty() || beneficialPlants == null){
-										//this variable makes everything easier to type
+									//只有在飞行怪物以某种方式失去了飞行状态时，才会发生这种情况，在这种情况下，我们假设它没有在地面上进化，也不知道什么是植物。
+									if(beneficialPlants.isEmpty()){
+										//这个变量使得一切更容易输入
 										int newPos = pos+p;
-										//can't have two mobs going for the same plant at the same time
+										//不能让两个怪物同时去同一个植物
 										if(Actor.findChar(newPos) == null){
 											triggerPlant(newPos);
 											return;
@@ -1543,10 +1548,10 @@ public abstract class Mob extends Char {
 										}
 									}
 								} else {
-									//if the mob is stupid it will step into any plant
-									//this variable makes everything easier to type
+									//如果怪物很笨，它会走进任何植物
+									//这个变量使得一切更容易输入
 									int newPos = pos+p;
-									//can't have two mobs going for the same plant at the same time
+									//不能让两个怪物同时去同一个植物
 									if(Actor.findChar(newPos) == null){
 										triggerPlant(newPos);
 										return;
@@ -1564,22 +1569,23 @@ public abstract class Mob extends Char {
 	}
 
 	private void triggerPlant(int newPos){
-		//for when its on a watertile
+		//当位于水瓦片上时
 		if(Dungeon.level.map[newPos] == Terrain.WATER){
-			//set the pos to the new pos, update the tile and trigger the plant then return from this method skipping the normal move at the end
+			//将位置设置为新位置，更新瓦片并触发植物，然后从此方法返回，跳过最后的正常移动
 			pos = newPos;
 			Level.set(newPos, Terrain.WATER);
 			GameScene.updateMap(newPos);
 			Dungeon.level.plants.get(newPos).trigger();
 		}
-		//for when its on a other tile
+		//当位于其他瓦片上时
 		if(Dungeon.level.map[newPos] == Terrain.GRASS){
-			//set the pos to the new pos, update the tile and trigger the plant then return from this method skipping the normal move at the end
+			//将位置设置为新位置，更新瓦片并触发植物，然后从此方法返回，跳过最后的正常移动
 			pos = newPos;
 			Level.set(newPos, Terrain.WATER);
 			GameScene.updateMap(newPos);
 			Dungeon.level.plants.get(newPos).trigger();
 		}
 	}
+
 
 }
