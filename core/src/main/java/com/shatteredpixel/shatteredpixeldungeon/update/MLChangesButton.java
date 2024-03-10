@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
+import com.shatteredpixel.shatteredpixeldungeon.ui.HealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
@@ -19,7 +20,9 @@ import com.watabou.utils.PlatformSupport;
 import java.io.File;
 
 public class MLChangesButton extends StyledButton {
-	private static String updateProgress = "";
+	public static String updateProgress = "";
+
+	private static float updateProgressValue = 0f;
 	private static boolean downloadSuccess = false;
 
 	protected static File file;
@@ -40,8 +43,11 @@ public class MLChangesButton extends StyledButton {
 			text(Messages.get(TitleScene.class, "update"));
 		}
 
-		if (updateShown) {
-			textColor(ColorMath.interpolate(0xFFFFFF, Window.SHPX_COLOR, 0.5f + (float) Math.sin(Game.timeTotal * 5) / 2f));
+		if (!updateProgress.isEmpty()) {
+			text(Messages.get(TitleScene.class, "download"));
+			textColor(ColorMath.interpolate(0xFFFFFF, Window.CYELLOW, 0.5f + (float) Math.sin(Game.timeTotal * 5) / 2f));
+		} else if (updateShown) {
+			textColor(ColorMath.interpolate(0xFFFFFF, Window.ANSDO_COLOR, 0.5f + (float) Math.sin(Game.timeTotal * 5) / 2f));
 		}
 	}
 
@@ -74,9 +80,11 @@ public class MLChangesButton extends StyledButton {
 				updateProgress = "开始下载";
 			}
 
+			@SuppressWarnings("DefaultLocale")
 			@Override
 			public void onProgress(long progress, long total, boolean isChanged) {
-				updateProgress = String.format("%.2f", progress / 100000f) + "%";
+				updateProgressValue = (float) progress / total;
+				updateProgress = String.format("%.2f", updateProgressValue * 100) + "%";
 			}
 
 			@Override
@@ -121,9 +129,21 @@ public class MLChangesButton extends StyledButton {
 			tfMesage.setPos(0, pos);
 			add(tfMesage);
 
-			pos = tfMesage.bottom() + 2 * MARGIN;
+			HealthBar downloadProgress = new HealthBar() {
+				@Override
+				public synchronized void update() {
+					super.update();
+					this.visible = !updateProgress.isEmpty();
+					this.level(updateProgressValue);
+				}
+			};
+			downloadProgress.setSize(width, 2);
+			downloadProgress.setPos(0, pos + 8);
+			add(downloadProgress);
 
-			RedButton btn = new RedButton("从地址1下载") {
+			pos = tfMesage.bottom() + 2 * MARGIN*2;
+
+			RedButton btn = new RedButton("主下载渠道(辉梦)") {
 				@Override
 				protected void onClick() {
 					if (!downloadSuccess) {
@@ -137,13 +157,15 @@ public class MLChangesButton extends StyledButton {
 				public void update() {
 					if (!updateProgress.isEmpty()) {
 						text(updateProgress);
+						alpha(0.7f);
 					}
 				}
 			};
-			btn.setRect(0, pos, width, BUTTON_HEIGHT);
+			btn.setRect(0, pos+4, width, BUTTON_HEIGHT);
 			add(btn);
-			pos += BUTTON_HEIGHT + MARGIN;
-			RedButton btn2 = new RedButton("从地址2下载") {
+			pos += BUTTON_HEIGHT + MARGIN*3;
+
+			RedButton btn2 = new RedButton("备用下载渠道(Cold)") {
 				@Override
 				protected void onClick() {
 					if (!downloadSuccess) {
@@ -157,13 +179,14 @@ public class MLChangesButton extends StyledButton {
 				public void update() {
 					if (!updateProgress.isEmpty()) {
 						text(updateProgress);
+						alpha(0.7f);
 					}
 				}
 			};
 			btn2.setRect(0, pos, width, BUTTON_HEIGHT);
 			add(btn2);
 			pos += BUTTON_HEIGHT + MARGIN;
-			RedButton btn3 = new RedButton("从地址3下载") {
+			RedButton btn3 = new RedButton("备用下载渠道(Gitee)") {
 				@Override
 				protected void onClick() {
 					if (!downloadSuccess) {
@@ -177,14 +200,16 @@ public class MLChangesButton extends StyledButton {
 				public void update() {
 					if (!updateProgress.isEmpty()) {
 						text(updateProgress);
+						alpha(0.7f);
 					}
 				}
 			};
 			btn3.setRect(0, pos, width, BUTTON_HEIGHT);
 			add(btn3);
-			pos += BUTTON_HEIGHT + MARGIN;
 
+			pos += BUTTON_HEIGHT + MARGIN;
 			resize(width, (int) (pos - MARGIN));
 		}
+
 	}
 }
