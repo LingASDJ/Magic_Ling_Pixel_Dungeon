@@ -10,7 +10,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MolotovHuntsman;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDHBLR;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Senior;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime_Orange;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Succubus;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -18,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 
 public class EyeRoom extends SpecialRoom {
 
@@ -98,15 +104,15 @@ public class EyeRoom extends SpecialRoom {
 
 
         for (int i : MBTPOS) {
-            Mob n = new Crab();
+            Mob n = Random.Float()<=0.05f ? new Slime_Orange() :new Crab();
             if(depth >= 20){
-               n = new Eye();
+                n = Random.Float()<=0.05f ? new Succubus() : new Eye();
             } else if(depth >= 15) {
-               n = new BruteBot();
+                n = Random.Float()<=0.05f ? new Senior() : new BruteBot();
             } else if(depth >= 10) {
-               n = new DM201();
+                n = Random.Float()<=0.05f ? new MolotovHuntsman() :new DM201();
             } else if(depth >= 6){
-               n = new SRPDHBLR();
+                n = Random.Float()<=0.05f ? new Necromancer() : new SRPDHBLR();
             }
 
             n.pos = i;

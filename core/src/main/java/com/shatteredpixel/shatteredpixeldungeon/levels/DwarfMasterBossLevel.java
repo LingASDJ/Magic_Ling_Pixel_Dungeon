@@ -17,7 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
@@ -185,7 +185,9 @@ public class DwarfMasterBossLevel extends Level {
         mw.cursed = false;
         mw.identify();
         drop(mw, 16 + WIDTH * 34).type = Heap.Type.LOCKED_CHEST;
-        drop(new LloydsBeacon(), 18 + WIDTH * 34).type = Heap.Type.LOCKED_CHEST;
+        Item item = new ChaliceOfBlood();
+        item.level = 5;
+        drop(item, 18 + WIDTH * 34).type = Heap.Type.LOCKED_CHEST;
         Wand w;
         do {
             w = (Wand) Generator.random(Generator.Category.WAND);

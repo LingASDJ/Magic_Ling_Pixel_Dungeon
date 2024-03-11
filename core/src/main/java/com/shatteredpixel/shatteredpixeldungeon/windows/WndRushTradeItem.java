@@ -59,7 +59,7 @@ public class WndRushTradeItem extends WndInfoItem {
 
         } else {
 
-            int priceAll= 1;
+            int priceAll= item.quantity/5;
             RedButton btnSellAll = new RedButton( Messages.get(this, "sell_all", priceAll ) ) {
                 @Override
                 protected void onClick() {
@@ -69,10 +69,7 @@ public class WndRushTradeItem extends WndInfoItem {
             };
             btnSellAll.setRect( 0, pos + GAP, width, BTN_HEIGHT );
             btnSellAll.icon(new ItemSprite(ItemSpriteSheet.BOSSRUSH_GOLD));
-            if (item.quantity() < 10) {
-                btnSellAll.active = false;
-                btnSellAll.alpha(0.6f);
-            }
+
 
             add( btnSellAll );
 
@@ -136,11 +133,7 @@ public class WndRushTradeItem extends WndInfoItem {
         //selling items in the sell interface doesn't spend time
         hero.spend(-hero.cooldown());
 
-        if(item.quantity >=10){
-            new KingGold( 1 ).doPickUp( hero );
-        } else {
-            new KingGold( 0 ).doPickUp( hero );
-        }
+        new KingGold(item.quantity/5 ).doPickUp( hero );
 
 
         if (shop != null){

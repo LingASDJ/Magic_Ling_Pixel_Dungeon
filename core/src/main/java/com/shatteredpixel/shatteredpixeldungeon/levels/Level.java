@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.WARLING;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.tipsgodungeon;
 import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.ready;
@@ -560,8 +561,11 @@ public abstract class Level implements Bundlable {
 		Mob m = Reflection.newInstance(mobsToSpawn.remove(0));
 		ChampionEnemy.rollForChampion(m);
 		ChampionEnemy.rollForStateLing(m);
-		if(Dungeon.isChallenged(CS) && Dungeon.depth>2 && Dungeon.depth<25){
+		if(Dungeon.isChallenged(CS) && Dungeon.depth>2 && Dungeon.depth<25 && Random.Float()<0.25f){
 			Buff.affect(m, ChampionEnemy.AloneCity.class);
+		}
+		if(Dungeon.isChallenged(WARLING) && !(m.isStupid)  && Dungeon.depth>12 && Random.Float()<0.01f ){
+			Buff.affect(m, ChampionEnemy.Sider.class);
 		}
 		return m;
 	}
@@ -1177,7 +1181,7 @@ public abstract class Level implements Bundlable {
 		}
 
 		//we have to get this far as grass placement has RNG implications in levelgen
-		if (Dungeon.isChallenged(Challenges.NO_HERBALISM)){
+		if (Dungeon.isChallenged(Challenges.NO_HERBALISM) && !Dungeon.isChallenged(WARLING)){
 			return null;
 		}
 		

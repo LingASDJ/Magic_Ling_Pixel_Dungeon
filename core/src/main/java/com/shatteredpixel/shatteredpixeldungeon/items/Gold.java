@@ -60,12 +60,12 @@ public class Gold extends Item {
 	public boolean doPickUp(Hero hero, int pos) {
 
 
-		if(quantity > 100 && Statistics.bossRushMode ){
-			Dungeon.rushgold += 1;
+		if(quantity > 49 && Statistics.bossRushMode ){
+			Dungeon.rushgold += quantity/50;
 
 			GameScene.pickUp( this, pos );
 			hero.spendAndNext( TIME_TO_PICK_UP );
-			hero.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "ling",quantity));
+			hero.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "ling",quantity/50));
 			Sample.INSTANCE.play( Assets.Sounds.GOLD, 1, 1, Random.Float( 0.9f, 1.1f ) );
 			updateQuickslot();
 		} else {

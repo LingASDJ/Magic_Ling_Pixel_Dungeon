@@ -74,7 +74,7 @@ public class ItemSpriteSheet {
         assignItemRect(SEED_HOLDER,     10, 10);
         assignItemRect(SCROLL_HOLDER,   15, 14);
         assignItemRect(STONE_HOLDER,    14, 12);
-        assignItemRect(CATA_HOLDER,     6,  15);
+        assignItemRect(CATA_HOLDER,     12,  14);
         assignItemRect(ELIXIR_HOLDER,   12, 14);
         assignItemRect(SPELL_HOLDER,    8,  16);
     }

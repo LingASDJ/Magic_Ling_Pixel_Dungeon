@@ -420,7 +420,7 @@ public class InterlevelScene extends PixelScene {
 
 			LevelTransition destTransition = level.getTransition(curTransition.destType);
 			curTransition = null;
-			if(Dungeon.depth == 14 && branch == 8){
+			if(Dungeon.depth == 14 && branch == 8 && Statistics.difficultyDLCEXLevel>1){
 				Dungeon.switchLevel( level, 847 );
 			} else {
 				Dungeon.switchLevel( level, destTransition.cell() );
@@ -463,7 +463,7 @@ public class InterlevelScene extends PixelScene {
 
 		LevelTransition destTransition = level.getTransition(curTransition.destType);
 		curTransition = null;
-		if(Dungeon.depth == 14 && branch == 8){
+		if(Dungeon.depth == 14 && branch == 8 && Statistics.difficultyDLCEXLevel>1){
 			Dungeon.switchLevel( level, 495 );
 		} else {
 			Dungeon.switchLevel( level, destTransition.cell() );

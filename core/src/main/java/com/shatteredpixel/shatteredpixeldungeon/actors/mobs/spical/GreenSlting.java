@@ -11,7 +11,7 @@ public class GreenSlting extends Mob {
 
     {
         spriteClass = GreenSltingSprite.class;
-        flying = true;
+        flying = Dungeon.depth != 2;
         HP = HT = 30;
         defenseSkill = 2;
         maxLvl = 30;

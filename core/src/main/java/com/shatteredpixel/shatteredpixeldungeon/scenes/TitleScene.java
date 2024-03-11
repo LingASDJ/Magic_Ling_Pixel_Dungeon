@@ -23,11 +23,10 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SliceGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.EndButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.update.MLChangesButton;
@@ -393,7 +392,10 @@ public class TitleScene extends PixelScene {
 					textColor(ColorMath.interpolate( 0xFFFFFF, Window.CBLACK,
 							0.1f + (float)Math.sin(Game.timeTotal*5)/2f));
 					text(Messages.get(TitleScene.class, "dark"));
-					playBGM(Assets.NIGHT, true);
+					Music.INSTANCE.playTracks(
+							new String[]{Assets.Music.CITY_BOSS_FINALE, Assets.Music.NBPL,Assets.Music.HALLS_BOSS_FINALE, Assets.NIGHT},
+							new float[]{1, 1, 1, 1},
+							true);
 					icon(BadgeBanner.image(Badges.Badge.STORM.image));
 				} else if (TitleScene.Reusable){
 					textColor(ColorMath.interpolate( 0xFFFFFF, Window.CYELLOW,
@@ -426,7 +428,7 @@ public class TitleScene extends PixelScene {
 			}
 		};
 		btnPlay.icon(holiday == XMAS ?  new Image(new SliceGirlSprite()) :
-				new ItemSprite(ItemSpriteSheet.MAGICGIRLBOOKS, null));
+				new Image(Icons.get(Icons.ENTER)));
 		add(btnPlay);
 
 		StyledButton btnRankings = new StyledButton(GREY_TR,Messages.get(this, "rankings")) {
@@ -435,7 +437,7 @@ public class TitleScene extends PixelScene {
 				ShatteredPixelDungeon.switchNoFade(RankingsScene.class);
 			}
 		};
-		btnRankings.icon(new ItemSprite(ItemSpriteSheet.LANTERNB, null));
+		btnRankings.icon(new Image(Icons.get(Icons.RANKINGS)));
 		add(btnRankings);
 
 		StyledButton btnBadges = new StyledButton(GREY_TR, Messages.get(this, "badges")) {
@@ -452,14 +454,14 @@ public class TitleScene extends PixelScene {
 				return super.onLongClick();
 			}
 		};
-		btnBadges.icon(new ItemSprite(ItemSpriteSheet.GREENBOOKS, null));
+		btnBadges.icon(new Image(Icons.get(Icons.BADGES)));
 		add(btnBadges);
 
 		StyledButton btnSupport = new SupportButton(GREY_TR, Messages.get(this, "support"));
 		add(btnSupport);
 
 		StyledButton btnChanges = new MLChangesButton(GREY_TR, Messages.get(this, "changes"));
-		btnChanges.icon(new ItemSprite(ItemSpriteSheet.ICEBOOK, null));
+		btnChanges.icon(new Image(Icons.get(Icons.CHANGES)));
 		add(btnChanges);
 
 		StyledButton seed = new SeedButton(landscape() ? Chrome.Type.GREY_BUTTON_TR : Chrome.Type.BLANK, Messages.get(this, "seed"));
@@ -475,12 +477,11 @@ public class TitleScene extends PixelScene {
 				ShatteredPixelDungeon.switchNoFade( AboutSelectScene.class );
 			}
 		};
-		btnAbout.icon(new ItemSprite(ItemSpriteSheet.FIRELIYD, null));
+		btnAbout.icon(new Image("Ling.png", 0, 0, 16, 16));
 		add(btnAbout);
 
 		StyledButton btnNews = new NewsButton(GREY_TR, Messages.get(this, "news"));
-		btnNews.icon(new ItemSprite(ItemSpriteSheet.YELLOWBOOKS, null));
-		btnNews.icon(new ItemSprite(ItemSpriteSheet.YELLOWBOOKS, null));
+		btnNews.icon(new Image(NetIcons.get(NetIcons.NEWS)));
 		add(btnNews);
 
 		final int BTN_HEIGHT = 20;
@@ -619,8 +620,7 @@ public class TitleScene extends PixelScene {
 
 		public SettingsButton(Chrome.Type type, String label){
 			super(type, label);
-			icon(new ItemSprite(ItemSpriteSheet.BREDBOOK, null));
-			textColor(Window.Pink_COLOR);
+			icon(new Image(Icons.get(Icons.PREFS)));
 		}
 
 		@Override
@@ -638,8 +638,7 @@ public class TitleScene extends PixelScene {
 
 		public SupportButton( Chrome.Type type, String label ){
 			super(type, label);
-			icon(new ItemSprite(ItemSpriteSheet.NOKING, null));
-			textColor(Window.TITLE_COLOR);
+			icon(new Image(NetIcons.get(NetIcons.PLAYERS)));
 		}
 
 		@Override

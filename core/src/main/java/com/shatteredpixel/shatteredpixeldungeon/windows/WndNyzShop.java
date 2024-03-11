@@ -19,6 +19,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ItemSlot;
@@ -111,7 +113,7 @@ public class WndNyzShop extends Window {
                 });
             }
         };
-        btnSite.icon(Icons.get(Icons.GOLD));
+        btnSite.icon(Statistics.bossRushMode ? new ItemSprite(ItemSpriteSheet.BOSSRUSH_GOLD) : Icons.get(Icons.GOLD));
         btnSite.textColor(Window.CYELLOW);
         btnSite.setRect(56,-2, 65, 20 );
         add(btnSite);
@@ -121,7 +123,10 @@ public class WndNyzShop extends Window {
 
     private String NyzBadages() {
         String message = Messages.get(WndNyzShop.class,"nayaziwelcome",Statistics.naiyaziCollected);
-        if (!Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
+
+        if(Statistics.bossRushMode) {
+            message = Messages.get(WndNyzShop.class,"rush");
+        } else if (!Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
             message = Messages.get(WndNyzShop.class,"notgetbadges",Statistics.naiyaziCollected);
         }
         return message;
@@ -200,13 +205,22 @@ public class WndNyzShop extends Window {
                                 buff.detach();
                             }
                         }
-                    } else if(Dungeon.gold >= 720) {
-                        Dungeon.gold-=(720*Random.Int(2)+hero.lvl/5+100) * (Dungeon.hero.buff(AscensionChallenge.class) != null ? 0.7 : 1);
+                    } else if(Dungeon.gold >= 720|| Dungeon.rushgold >= 5) {
+
+                        if(Statistics.bossRushMode){
+                            Dungeon.rushgold -= 5;
+                        } else {
+                            Dungeon.gold-=(720*Random.Int(2)+hero.lvl/5+100) * (Dungeon.hero.buff(AscensionChallenge.class) != null ? 0.7 : 1);
+                            Statistics.naiyaziCollected += 1;
+                            Badges.nyzvalidateGoldCollected();
+                        }
+
+
                         WndNyzShop.this.selectReward( item );
                         Buff.prolong( hero, ReloadShop.class, 1f);
-                        Statistics.naiyaziCollected += 1;
+
                         WndNyzShop.RewardWindow.this.hide();
-                        Badges.nyzvalidateGoldCollected();
+
                     } else {
                         tell(Messages.get(WndNyzShop.class,"nomoney"));
                         WndNyzShop.RewardWindow.this.hide();
@@ -244,12 +258,19 @@ public class WndNyzShop extends Window {
                                 buff.detach();
                             }
                         }
-                    } else if(Dungeon.gold >= 270) {
-                        Dungeon.gold-=270*Random.Int(3)+50 * (Dungeon.hero.buff(AscensionChallenge.class) != null ? 0.7 : 1);
+                    } else if(Dungeon.gold >= 270 || Dungeon.rushgold >= 5) {
+
+                        if(Statistics.bossRushMode){
+                            Dungeon.rushgold -= 5;
+                        } else {
+                            Dungeon.gold-=270*Random.Int(3)+50 * (Dungeon.hero.buff(AscensionChallenge.class) != null ? 0.7 : 1);
+                            Badges.nyzvalidateGoldCollected();
+                            Statistics.naiyaziCollected += 1;
+                        }
+
                         Buff.prolong( hero, ReloadShop.class, 1f);
                         WndNyzShop.this.selectReward( item );
-                        Badges.nyzvalidateGoldCollected();
-                        Statistics.naiyaziCollected += 1;
+
                         WndNyzShop.RewardWindow2.this.hide();
                     } else {
                         tell(Messages.get(WndNyzShop.class,"nomoney"));

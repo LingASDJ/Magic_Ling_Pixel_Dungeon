@@ -34,12 +34,13 @@ import com.watabou.utils.Random;
 
 public class Slime_Orange extends Slime {
     {
+        HP = HT = 20;
         spriteClass = OrangeSprites.class;
         lootChance = 0.25f; //by default, see rollToDropLoot()
         loot = PotionOfLiquidFlame.class;
         properties.add(Property.ACIDIC);
-        maxLvl = 4;
-        EXP=3;
+        maxLvl = 10;
+        EXP=5;
     }
     private int combo = 0;
     @Override

@@ -34,6 +34,8 @@ import com.shatteredpixel.shatteredpixeldungeon.services.news.GameNesImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.UpdateNews;
+import com.shatteredpixel.shatteredpixeldungeon.update.UpdateImpl;
+import com.shatteredpixel.shatteredpixeldungeon.update.Updates;
 import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
 import com.watabou.utils.Point;
@@ -117,6 +119,7 @@ public class DesktopLauncher {
 		if (NewsImpl.supportsNews()){
 			UpdateNews.service = GameNesImpl.getNewsService();
 			News.service = NewsImpl.getNewsService();
+			Updates.service = UpdateImpl.getUpdateService();
 		}
 		
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
@@ -173,4 +176,5 @@ public class DesktopLauncher {
 
 		new Lwjgl3Application(new ShatteredPixelDungeon(new DesktopPlatformSupport()), config);
 	}
+
 }

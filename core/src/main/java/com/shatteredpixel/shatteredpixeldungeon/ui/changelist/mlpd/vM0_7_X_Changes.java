@@ -21,7 +21,9 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.LuoWhiteSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MintSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MoonLowSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.PianoLeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SmallLeafSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhiteGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YetYogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
@@ -36,6 +38,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0711_Changes(changeInfos);
         add_V0710_Changes(changeInfos);
         add_V079_Changes(changeInfos);
         add_V078_Changes(changeInfos);
@@ -45,6 +48,50 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0711_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.1.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new SmallLeafSprite(), ("小叶"),
+                ("完善NPC")));
+
+        changes.addButton(new ChangeButton(new PianoLeSprite(), ("琴里"),
+                ("小叶的姐姐，完善NPC")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14), ("新挑战：战术对抗"),
+                ("很显然，怪物已经受够你了，现在，你不会好过了。\n\n你遭遇的敌人将会更加聪明或者更加愚钝(各占50%)。\n\n1.愚钝的敌人大部分时间会跟着聪明的敌人，且种族必须一致（也就是老鼠跟老鼠）\n\n2.聪明的敌人在血量小于等于50%并脱战后，会寻找周围的有益植物并获得各种增益并将地块更新为水地形，愚钝的敌人则会完全随机踩植物\n\n(注意：如果开启此挑战，荒芜挑战仍然会有植物和种子，但仍然无法种植和没有露水)\n\n3.聪明的敌人无法掉入裂缝，在掉入前会爬上来\n\n4.(12层之后)聪明的敌人在产生时有1%的概率变成突变酸液体，孩子们,我回来了。")));
+
+        changes.addButton(new ChangeButton(NetIcons.get(NetIcons.GLOBE), ("在线更新系统"),
+                ("删除原有的老更新系统，改为在线更新系统。可在线下载apk并安装。\n\n电脑版仍然只能手动打开URL自行下载。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_17), ("挑战优化：孤城迷境"),
+                ("孤城印记现在是有概率出现,概率25%")));
+
+        changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_COLD, 48, 80, 16
+                , 16), "房间改动",
+                "仙人跳房间现在有5%的概率出现更加恐怖的怪组"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKELETONGOLD), ("BossRushV1.2"),
+                ("1.修复一些问题，现在全部改为金券，5个堆叠可以换一个金券，一次性堆叠50金币可以获得一个金券\n\n" +
+                        "2.狗子现在可以吃到词条加成，矮人武将怪组调整，加强14层Boss\n\n3.Boss可以掉落更多金券")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分文案优化\n" +
+                        "3.部分细节优化更新\n" +
+                        "4.主界面进行了优化，并丰富了更多界面音乐")));
+
     }
 
     public static void add_V0710_Changes( ArrayList<ChangeInfo> changeInfos ) {

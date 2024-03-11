@@ -120,10 +120,6 @@ public class WndChallenges extends Window {
 			}
 			ChallengeInfo info = new ChallengeInfo(foundChallangeIcon(i), challenge, false,
 					null);
-			if((Challenges.NAME_IDS[i].equals("icedied"))){
-				info.active = false;
-				info.visible=false;
-			}
 
 			ChallengeButton cb = info.check;
 			cb.checked((checked & Challenges.MASKS[i]) != 0);
