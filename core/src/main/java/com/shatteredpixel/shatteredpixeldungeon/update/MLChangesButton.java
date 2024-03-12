@@ -1,7 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.update;
 
-import static com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane.asset;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -176,7 +174,7 @@ public class MLChangesButton extends StyledButton {
 			add(progressText);
 
 
-			Image download = new Image(asset, 0, 49, 54, 5){
+			Image download = new Image(Assets.Interfaces.STATUS, 0, 49, 54, 5){
 				@Override
 				public synchronized void update() {
 					super.update();
