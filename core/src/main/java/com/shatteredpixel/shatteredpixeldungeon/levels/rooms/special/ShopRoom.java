@@ -380,6 +380,7 @@ public class ShopRoom extends SpecialRoom {
 	}
 
 	public static Bag ChooseBag(Belongings pack){
+		if(Dungeon.isChallenged(Challenges.PRO)) return null;
 
 		//generate a hashmap of all valid bags.
 		HashMap<Bag, Integer> bags = new HashMap<>();

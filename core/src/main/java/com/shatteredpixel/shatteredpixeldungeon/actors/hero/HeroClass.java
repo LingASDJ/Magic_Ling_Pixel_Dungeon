@@ -219,7 +219,9 @@ public enum HeroClass {
 		Dungeon.LimitedDrops.VELVET_POUCH.drop();
 
 		new HerbBag().quantity(1).identify().collect();
+		Dungeon.LimitedDrops.HERB_BAG.drop();
 		new KingBag().quantity(1).identify().collect();
+		Dungeon.LimitedDrops.KING_BAG.drop();
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
 		//new Amulet().quantity(1).identify().collect();
@@ -227,11 +229,16 @@ public enum HeroClass {
 		//new KingGold().quantity(1).identify().collect();
 		if (Dungeon.isChallenged(Challenges.PRO)){
 			new PotionBandolier().collect();
+			Dungeon.LimitedDrops.POTION_BANDOLIER.dropped();
 			new ScrollHolder().collect();
+			Dungeon.LimitedDrops.SCROLL_HOLDER.dropped();
 			new MagicalHolster().collect();
+			Dungeon.LimitedDrops.MAGICAL_HOLSTER.dropped();
 			new BookBag().collect();
-			new LingBag().collect();
+			Dungeon.LimitedDrops.BOOK_BAG.dropped();
 			new BlessingNecklace().quantity(1).identify().collect();
+			Dungeon.LimitedDrops.BLESSING_NECKLACE.dropped();
+
 			new SpawnMisc().quantity(1).identify().collect();
 			new LevelTeleporter().quantity(1).identify().collect();
 			new SakaFishSketon().quantity(1).identify().collect();

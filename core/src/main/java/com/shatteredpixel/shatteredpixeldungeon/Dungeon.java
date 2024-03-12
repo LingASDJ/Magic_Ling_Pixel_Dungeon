@@ -126,6 +126,10 @@ public class Dungeon {
 		SCROLL_HOLDER,
 		POTION_BANDOLIER,
 		MAGICAL_HOLSTER,
+		BOOK_BAG,
+		BLESSING_NECKLACE,
+		HERB_BAG,
+		KING_BAG,
 
 		//lore documents
 		LORE_SEWERS,

@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.WARLING;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.tipsgodungeon;
 import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.ready;
@@ -46,6 +47,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessBossRushLow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
@@ -65,6 +68,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ColdSnowParticles;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.WindParticle;
@@ -77,6 +81,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition;
@@ -97,7 +102,9 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
@@ -247,7 +254,7 @@ public abstract class Level implements Bundlable {
 				Dungeon.LimitedDrops.STRENGTH_POTIONS.count++;
 				addItemToSpawn( new PotionOfStrength() );
 			}
-			if (Dungeon.souNeeded() && Dungeon.depth>0) {
+			if (Dungeon.souNeeded() && depth>0) {
 				Dungeon.LimitedDrops.UPGRADE_SCROLLS.count++;
 				//every 2nd scroll of upgrade is removed with forbidden runes challenge on
 				//TODO while this does significantly reduce this challenge's levelgen impact, it doesn't quite remove it
@@ -263,19 +270,19 @@ public abstract class Level implements Bundlable {
 			}
 			//one scroll of transmutation is guaranteed to spawn somewhere on chapter 2-4
 			int enchChapter = (int)((Dungeon.seed / 10) % 3) + 1;
-			if ( Dungeon.depth / 5 == enchChapter &&
-					Dungeon.seed % 4 + 1 == Dungeon.depth % 5){
+			if ( depth / 5 == enchChapter &&
+					Dungeon.seed % 4 + 1 == depth % 5){
 				addItemToSpawn( new StoneOfEnchantment() );
 			}
 			
-			if ( Dungeon.depth == ((Dungeon.seed % 3) + 1)){
+			if ( depth == ((Dungeon.seed % 3) + 1)){
 				addItemToSpawn( new StoneOfIntuition() );
 			}
 			
-			if (Dungeon.depth > 1) {
+			if (depth > 1) {
 				if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
 					int randomInt = Random.Int(10);
-					if(Dungeon.depth == 4){
+					if(depth == 4){
 						feeling = Feeling.DIEDROOM;
 					} else if (randomInt == 0) {
 						feeling = Feeling.CHASM;
@@ -293,7 +300,7 @@ public abstract class Level implements Bundlable {
 						feeling = Feeling.THREEWELL;
 					} else if (randomInt == 6) {
 						feeling = Feeling.SECRETS;
-					} else if (randomInt == 7 && !(Dungeon.depth == 6) ) {
+					} else if (randomInt == 7 && !(depth == 6) ) {
 						feeling = Feeling.LINKROOM;
 					} else if (randomInt == 8) {
 						feeling = Feeling.BIGTRAP;
@@ -555,16 +562,16 @@ public abstract class Level implements Bundlable {
 
 	public Mob createMob() {
 		if (mobsToSpawn == null || mobsToSpawn.isEmpty()) {
-			mobsToSpawn = Bestiary.getMobRotation(Dungeon.depth);
+			mobsToSpawn = Bestiary.getMobRotation(depth);
 		}
 
 		Mob m = Reflection.newInstance(mobsToSpawn.remove(0));
 		ChampionEnemy.rollForChampion(m);
 		ChampionEnemy.rollForStateLing(m);
-		if(Dungeon.isChallenged(CS) && Dungeon.depth>2 && Dungeon.depth<25 && Random.Float()<0.25f){
+		if(Dungeon.isChallenged(CS) && depth>2 && depth<25 && Random.Float()<0.25f){
 			Buff.affect(m, ChampionEnemy.AloneCity.class);
 		}
-		if(Dungeon.isChallenged(WARLING) && !(m.isStupid)  && Dungeon.depth>12 && Random.Float()<0.01f ){
+		if(Dungeon.isChallenged(WARLING) && !(m.isStupid)  && depth>12 && Random.Float()<0.01f ){
 			Buff.affect(m, ChampionEnemy.Sider.class);
 		}
 		return m;
@@ -625,6 +632,20 @@ public abstract class Level implements Bundlable {
 		);
 	}
 
+	private void talkToHero(){
+		if(!tipsgodungeon) {
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					tell(Messages.get(Hero.class, "acs"));
+				}
+			});
+			ready();
+			tipsgodungeon = true;
+		}
+	}
+
+
 	//returns true if we immediately transition, false otherwise
 	public boolean activateTransition(Hero hero, LevelTransition transition){
 		if (locked){
@@ -636,20 +657,105 @@ public abstract class Level implements Bundlable {
 
 		if (transition.type == LevelTransition.Type.REGULAR_EXIT
 				|| transition.type == LevelTransition.Type.BRANCH_EXIT || transition.type == LevelTransition.Type.DOUBLE_ENTRANCE) {
-			if (Dungeon.depth == 0 && !tipsgodungeon && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+			if (depth == 0 && !tipsgodungeon && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
 
-				if (!tipsgodungeon && !Dungeon.isChallenged(CS)) {
-					Game.runOnRenderThread(new Callback() {
-						@Override
-						public void call() {
-							tell(Messages.get(Hero.class, "acs"));
-						}
-					});
-					ready();
-					tipsgodungeon = true;
+				if (!Dungeon.isChallenged(CS)) {
+					if(hero.belongings.getItem(BossRushBloodGold.class) != null){
+						Game.runOnRenderThread(new Callback() {
+							@Override
+							public void call() {
+								GameScene.show(new WndOptions(Icons.get(Icons.WARNING),
+										Messages.get(Level.class, "boss_rush_title"),
+										Messages.get(Level.class, "boss_rush_body", new BossRushBloodGold().name()),
+										Messages.get(Level.class, "boss_rush_yes"),
+										Messages.get(Level.class, "boss_rush_no")
+								) {
+									@Override
+									protected void onSelect(int index) {
+										if (index == 0) {
+											Game.runOnRenderThread(new Callback() {
+												@Override
+												public void call() {
+													GameScene.show(new WndOptions(new ShopkKingSprite(),
+															Messages.titleCase(Messages.get(WaloKe.class, "name")),
+															Messages.get(WaloKe.class, "quest_start_prompt"),
+															Messages.get(WaloKe.class, "easy"),
+															Messages.get(WaloKe.class, "normal"),
+															Messages.get(WaloKe.class, "hard")) {
+														@Override
+														protected void onSelect(int index) {
+															if (index == 0) {
+																TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+																if (timeFreeze != null)
+																	timeFreeze.disarmPresses();
+																Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+																if (timeBubble != null)
+																	timeBubble.disarmPresses();
+																InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+																InterlevelScene.curTransition = new LevelTransition();
+																InterlevelScene.curTransition.destDepth = depth + 1;
+																InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+																InterlevelScene.curTransition.destBranch = 8;
+																InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+																InterlevelScene.curTransition.centerCell = -1;
+																Game.switchScene(InterlevelScene.class);
+																Buff.affect(hero, BlessBossRushLow.class, ChampionHero.DURATION * 123456f);
+																Statistics.difficultyDLCEXLevel = 1;
+
+															} else if (index == 1) {
+																TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+																if (timeFreeze != null)
+																	timeFreeze.disarmPresses();
+																Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+																if (timeBubble != null)
+																	timeBubble.disarmPresses();
+																InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+																InterlevelScene.curTransition = new LevelTransition();
+																InterlevelScene.curTransition.destDepth = depth + 1;
+																InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+																InterlevelScene.curTransition.destBranch = 8;
+																InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+																InterlevelScene.curTransition.centerCell = -1;
+																Game.switchScene(InterlevelScene.class);
+																Statistics.difficultyDLCEXLevel = 2;
+															} else if (index == 2) {
+																TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+																if (timeFreeze != null)
+																	timeFreeze.disarmPresses();
+																Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+																if (timeBubble != null)
+																	timeBubble.disarmPresses();
+																InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+																InterlevelScene.curTransition = new LevelTransition();
+																InterlevelScene.curTransition.destDepth = depth + 1;
+																InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+																InterlevelScene.curTransition.destBranch = 8;
+																InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+																InterlevelScene.curTransition.centerCell = -1;
+																Game.switchScene(InterlevelScene.class);
+																Statistics.difficultyDLCEXLevel = 3;
+															}
+															Statistics.deepestFloor = 100;
+															Statistics.bossRushMode = true;
+															Dungeon.gold = 0;
+															Dungeon.rushgold = 16;
+														}
+													});
+												}
+											});
+										} else if (index == 1) {
+											talkToHero();
+										}
+									}
+								});
+							}
+						});
+					}else {
+						talkToHero();
+					}
 					return false;
 				} else if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
-					&& Dungeon.depth == 25
+					&& depth == 25
 					//ascension challenge only works on runs started on v1.3+
 					&& Dungeon.initialVersion > ShatteredPixelDungeon.v1_2_3
 					&& hero.belongings.getItem(Amulet.class) != null
@@ -734,7 +840,7 @@ public abstract class Level implements Bundlable {
 			}
 		}
 		for (HeavyBoomerang.CircleBack b : hero.buffs(HeavyBoomerang.CircleBack.class)){
-			if (b.activeDepth() == Dungeon.depth) items.add(b.cancel());
+			if (b.activeDepth() == depth) items.add(b.cancel());
 		}
 		return items;
 	}
@@ -755,7 +861,7 @@ public abstract class Level implements Bundlable {
 				}
 			}
 			if(!Statistics.bossRushMode){
-				if(Dungeon.depth == 0 && Dungeon.branch == 0 || Dungeon.depth >=1 && Dungeon.depth <= 5){
+				if(depth == 0 && Dungeon.branch == 0 || depth >=1 && depth <= 5){
 					visuals.add( new ColdSnowParticles.Snow(i));
 				}
 			}
@@ -847,7 +953,7 @@ public abstract class Level implements Bundlable {
 
 	public float respawnCooldown(){
 		if (Statistics.amuletObtained){
-			if (Dungeon.depth == 1){
+			if (depth == 1){
 				//very fast spawns on floor 1! 0/2/4/6/8/10/12, etc.
 				return (Dungeon.level.mobCount()) * (TIME_TO_RESPAWN / 25f);
 			} else {
@@ -995,7 +1101,7 @@ public abstract class Level implements Bundlable {
 		int terr = map[pos];
 
 		//0层 常规门 无法被摧毁
-		if((terr == Terrain.DOOR || terr == Terrain.OPEN_DOOR) && Dungeon.depth == 0){
+		if((terr == Terrain.DOOR || terr == Terrain.OPEN_DOOR) && depth == 0){
 			return;
 		}
 
@@ -1564,7 +1670,7 @@ public abstract class Level implements Bundlable {
 			}
 
 			for (TalismanOfForesight.HeapAwareness h : c.buffs(TalismanOfForesight.HeapAwareness.class)){
-				if (Dungeon.depth != h.depth || Dungeon.branch != h.branch) continue;
+				if (depth != h.depth || Dungeon.branch != h.branch) continue;
 				for (int i : PathFinder.NEIGHBOURS9) heroMindFov[h.pos+i] = true;
 			}
 
@@ -1581,7 +1687,7 @@ public abstract class Level implements Bundlable {
 			}
 
 			for (RevealedArea a : c.buffs(RevealedArea.class)){
-				if (Dungeon.depth != a.depth || Dungeon.branch != a.branch) continue;
+				if (depth != a.depth || Dungeon.branch != a.branch) continue;
 				for (int i : PathFinder.NEIGHBOURS9) heroMindFov[a.pos+i] = true;
 			}
 
