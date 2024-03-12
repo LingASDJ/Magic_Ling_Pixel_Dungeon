@@ -1,5 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.update;
 
+import static com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane.asset;
+
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
@@ -7,7 +10,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
-import com.shatteredpixel.shatteredpixeldungeon.ui.HealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
@@ -15,7 +17,9 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
+import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
 import com.watabou.utils.ColorMath;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.PlatformSupport;
@@ -144,17 +148,45 @@ public class MLChangesButton extends StyledButton {
 		protected void layoutBody(float pos, String message, AvailableUpdateData update) {
 			int width = PixelScene.landscape() ? WIDTH_L : WIDTH_P;
 
-			HealthBar downloadProgress = new HealthBar() {
+			Image bg = new Image(Assets.Interfaces.UPBARS){
 				@Override
 				public synchronized void update() {
 					super.update();
-					this.visible = !updateProgress.isEmpty();
-					this.level(updateProgressValue);
+					if (!updateProgress.isEmpty()) {
+						visible = true;
+					}
 				}
 			};
-			downloadProgress.setSize(width, 2);
-			downloadProgress.setPos(0, pos);
-			add(downloadProgress);
+			bg.setPos(width/3.5f, pos-2);
+			bg.visible = false;
+			add(bg);
+
+			BitmapText progressText = new BitmapText(PixelScene.pixelFont){
+				@Override
+				public void update() {
+					if(downloadSuccess){
+						text("100%");
+					} else if (!updateProgress.isEmpty()) {
+						text(updateProgress);
+					}
+				}
+			};
+			progressText.x = width/1.23f;
+			progressText.y = pos-2;
+			add(progressText);
+
+
+			Image download = new Image(asset, 0, 49, 54, 5){
+				@Override
+				public synchronized void update() {
+					super.update();
+					scale.x = (updateProgressValue);
+					visible = true;
+				}
+			};
+			download.setPos(width/3f-5, pos);
+			download.visible = false;
+			add(download);
 
 			RenderedTextBlock tfMesage = PixelScene.renderTextBlock(6);
 			tfMesage.text(message, width);
@@ -165,8 +197,14 @@ public class MLChangesButton extends StyledButton {
 
 			RedButton btn = new RedButton(Messages.get(MLChangesButton.class,"download1")) {
 				@Override
+				public void update() {
+					if (downloadSuccess) {
+						text(updateProgress);
+					}
+				}
+				@Override
 				protected void onClick() {
-					if(Objects.equals(update.URL1, "null")){
+					if(Objects.equals(update.URL1, "null") && !downloadSuccess){
 						ShatteredPixelDungeon.scene().add( new WndError( Messages.get(MLChangesButton.class, "null") ) );
 					} else if(DeviceCompat.isDesktop()){
 						ShatteredPixelDungeon.platform.openURI( update.URL1 );
@@ -177,13 +215,6 @@ public class MLChangesButton extends StyledButton {
 						Game.platform.install(file);
 					}
 				}
-
-				@Override
-				public void update() {
-					if (!updateProgress.isEmpty()) {
-						text(updateProgress);
-					}
-				}
 			};
 			btn.setRect(0, pos+4, width, BUTTON_HEIGHT);
 			add(btn);
@@ -191,8 +222,14 @@ public class MLChangesButton extends StyledButton {
 
 			RedButton btn2 = new RedButton(Messages.get(MLChangesButton.class,"download2")) {
 				@Override
+				public void update() {
+					if (downloadSuccess) {
+						text(updateProgress);
+					}
+				}
+				@Override
 				protected void onClick() {
-					if(Objects.equals(update.URL2, "null")){
+					if(Objects.equals(update.URL2, "null") && !downloadSuccess){
 						ShatteredPixelDungeon.scene().add( new WndError( Messages.get(MLChangesButton.class, "null") ) );
 					} else if(DeviceCompat.isDesktop()){
 						ShatteredPixelDungeon.platform.openURI( update.URL2 );
@@ -203,13 +240,6 @@ public class MLChangesButton extends StyledButton {
 						Game.platform.install(file);
 					}
 				}
-
-				@Override
-				public void update() {
-					if (!updateProgress.isEmpty()) {
-						text(updateProgress);
-					}
-				}
 			};
 			btn2.setRect(0, pos, width, BUTTON_HEIGHT);
 			add(btn2);
@@ -217,23 +247,7 @@ public class MLChangesButton extends StyledButton {
 			RedButton btn3 = new RedButton(Messages.get(MLChangesButton.class,"download3")) {
 				@Override
 				protected void onClick() {
-					if(Objects.equals(update.URL3, "null")){
-						ShatteredPixelDungeon.scene().add( new WndError( Messages.get(MLChangesButton.class, "null") ) );
-					} else if(DeviceCompat.isDesktop()){
-						ShatteredPixelDungeon.platform.openURI( update.URL3 );
-					} else if (!downloadSuccess) {
-						if(downloadFailure) downloadFailure = false;
-						Game.platform.updateGame(update.URL3, listener);
-					} else {
-						Game.platform.install(file);
-					}
-				}
-
-				@Override
-				public void update() {
-					if (!updateProgress.isEmpty()) {
-						text(updateProgress);
-					}
+					ShatteredPixelDungeon.switchNoFade(ChangesScene.class);
 				}
 			};
 			btn3.setRect(0, pos, width, BUTTON_HEIGHT);
@@ -245,16 +259,9 @@ public class MLChangesButton extends StyledButton {
 				@Override
 				protected void onClick() {
 					if(Objects.equals(update.URL4, "null")){
-						ShatteredPixelDungeon.scene().add( new WndError( Messages.get(MLChangesButton.class, "null") ) );
+						ShatteredPixelDungeon.platform.openURI( "https://www.pd.qinyueqwq.top" );
 					} else {
 						ShatteredPixelDungeon.platform.openURI( update.URL4 );
-					}
-				}
-
-				@Override
-				public void update() {
-					if (!updateProgress.isEmpty()) {
-						text(updateProgress);
 					}
 				}
 			};

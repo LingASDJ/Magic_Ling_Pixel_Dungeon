@@ -125,7 +125,7 @@ public class StatusPane extends Component {
 	public JoinIndicator joinxxx;
 	public LanterFireCator lanter;
 
-	private static String asset = Assets.Interfaces.STATUS_DARK;
+	public static String asset = Assets.Interfaces.STATUS_DARK;
 
 	private boolean large;
 
@@ -138,11 +138,7 @@ public class StatusPane extends Component {
 		this.large = large;
 
 		if (SPDSettings.ClassUI()) {
-			if(Dungeon.depth>25) {
-				asset = Assets.Interfaces.STATUS_HOLLOW;
-			} else {
-				asset = Assets.Interfaces.STATUS;
-			}
+			asset = Assets.Interfaces.STATUS;
 		} else {
 			asset =  Assets.Interfaces.STATUS_DARK;
 		}

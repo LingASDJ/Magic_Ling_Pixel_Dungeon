@@ -702,7 +702,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         super.damage(dmg, src);
         int hpBracket = HT / 8;
 
-        int curbracket = HP / hpBracket;
+        int curbracket = HP / hpBracket+1;
 
         int beforeHitHP = HP;
 

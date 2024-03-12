@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
+import static com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane.asset;
 
 import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -212,7 +213,11 @@ public class TitleScene extends PixelScene {
 				this.x = - this.width + curTime/ time * (Camera.main.width / 2f + this.width / 2f);
 				this.angle = 90 - curTime/ time *225;
 				am = curTime*curTime*curTime/(time * time * time);
-
+				if (SPDSettings.ClassUI()) {
+					asset = Assets.Interfaces.STATUS;
+				} else {
+					asset =  Assets.Interfaces.STATUS_DARK;
+				}
 				float preTime = 0.9f;
 				if (preCurTime < preTime) {
 					preCurTime += Game.elapsed;
@@ -393,9 +398,9 @@ public class TitleScene extends PixelScene {
 							0.1f + (float)Math.sin(Game.timeTotal*5)/2f));
 					text(Messages.get(TitleScene.class, "dark"));
 					Music.INSTANCE.playTracks(
-							new String[]{Assets.Music.CITY_BOSS_FINALE, Assets.Music.NBPL,Assets.Music.HALLS_BOSS_FINALE, Assets.NIGHT},
+							new String[]{Assets.NIGHT, Assets.Music.NBPL,Assets.Music.HALLS_BOSS_FINALE, Assets.Music.CITY_BOSS_FINALE},
 							new float[]{1, 1, 1, 1},
-							true);
+							false);
 					icon(BadgeBanner.image(Badges.Badge.STORM.image));
 				} else if (TitleScene.Reusable){
 					textColor(ColorMath.interpolate( 0xFFFFFF, Window.CYELLOW,

@@ -87,6 +87,22 @@ public class DeepShadowLevel extends Level {
 
     @Override
     public String tilesTex() {
+        if(rival == null && !Statistics.doNotLookLing){
+            GLog.n(Messages.get(Rival.class,"mustone",hero.name()+"?"));
+            Buff.prolong( hero, Paralysis.class, Paralysis.DURATION*50 );
+            Buff.affect(hero, RoseShiled.class, 200000f);
+            GameScene.scene.add(new Delayer(3f){
+                @Override
+                protected void onComplete() {
+
+                    InterlevelScene.mode = InterlevelScene.Mode.RESET;
+                    Game.switchScene(InterlevelScene.class);
+                    Buff.detach(hero, Paralysis.class);
+                    Buff.detach(hero, RoseShiled.class);
+                }
+            });
+
+        }
         return Assets.Environment.TILES_COLD;
     }
 
@@ -239,22 +255,7 @@ public class DeepShadowLevel extends Level {
         super.occupyCell(ch);
         //GLog.p(String.valueOf(hero.pos));
 
-        if(rival == null && !Statistics.doNotLookLing){
-            GLog.n(Messages.get(Rival.class,"mustone",hero.name()+"?"));
-            Buff.prolong( hero, Paralysis.class, Paralysis.DURATION*50 );
-            Buff.affect(hero, RoseShiled.class, 200000f);
-            GameScene.scene.add(new Delayer(3f){
-                @Override
-                protected void onComplete() {
 
-                    InterlevelScene.mode = InterlevelScene.Mode.RESET;
-                    Game.switchScene(InterlevelScene.class);
-                    Buff.detach(hero, Paralysis.class);
-                    Buff.detach(hero, RoseShiled.class);
-                }
-            });
-
-        }
 
         if (ch == hero && rival != null){
             //hero reaches amulet
