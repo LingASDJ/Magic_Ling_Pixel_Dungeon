@@ -169,9 +169,10 @@ public class ZeroLevel extends Level {
                 if (Badges.isUnlocked(Badges.Badge.KILL_DM720) || Badges.isUnlocked(Badges.Badge.KILL_MG)) {
                     drop((Generator.random(Generator.Category.WEP_T2)), this.width * 18 + 17);
                 }
-                if (Badges.isUnlocked(Badges.Badge.RLPT)) {
+                if (Badges.isUnlocked(Badges.Badge.RLPT) && !Dungeon.LimitedDrops.BOOK_BAG.dropped() && !Dungeon.isChallenged(Challenges.PRO)) {
                     Item item = new BookBag();
                     drop(item, this.width * 18 + 19);
+                    Dungeon.LimitedDrops.BOOK_BAG.drop();
                 }
 
                 drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.width * 16 + 17 );

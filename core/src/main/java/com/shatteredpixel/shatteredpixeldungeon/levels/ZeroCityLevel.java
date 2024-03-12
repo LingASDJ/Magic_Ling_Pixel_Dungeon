@@ -583,9 +583,10 @@ public class ZeroCityLevel extends Level {
                 }
             }
 
-            if (Badges.isUnlocked(Badges.Badge.RLPT)) {
+            if (Badges.isUnlocked(Badges.Badge.RLPT) && !Dungeon.LimitedDrops.BOOK_BAG.dropped() && !Dungeon.isChallenged(Challenges.PRO)) {
                 Item item = new BookBag();
                 drop(item, 3129);
+                Dungeon.LimitedDrops.BOOK_BAG.drop();
             }
 
         }

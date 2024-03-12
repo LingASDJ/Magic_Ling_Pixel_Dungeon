@@ -39,23 +39,25 @@ public class IceCyanBlueSquareCoin extends Item {
 
     @Override
     public boolean doPickUp(Hero hero, int pos) {
-
-        if(!Dungeon.isChallenged(PRO) || !Statistics.bossRushMode){
-            if(SPDSettings.Cheating()){
-                //盗版蓝币只有正版的十分之一
-                SPDSettings.iceCoin(quantity/10);
-            } else {
-                SPDSettings.iceCoin(quantity);
-            }
-            GameScene.pickUp( this, pos );
-            hero.sprite.showStatusWithIcon(Window.TITLE_COLOR, Integer.toString(quantity), FloatingText.ICECOIN );
-            hero.spendAndNext( TIME_TO_PICK_UP );
-
-            Sample.INSTANCE.play( Assets.Sounds.GOLD, 1, 1, Random.Float( 0.9f, 1.1f ) );
-            updateQuickslot();
-        }  else {
+        if(Dungeon.isChallenged(PRO) || Statistics.bossRushMode)
+        {
             GLog.n(Messages.get(this,"no"));
+            return false;
         }
+
+
+        if(SPDSettings.Cheating()){
+            //盗版蓝币只有正版的十分之一
+            SPDSettings.iceCoin(quantity/10);
+        } else {
+            SPDSettings.iceCoin(quantity);
+        }
+        GameScene.pickUp( this, pos );
+        hero.sprite.showStatusWithIcon(Window.TITLE_COLOR, Integer.toString(quantity), FloatingText.ICECOIN );
+        hero.spendAndNext( TIME_TO_PICK_UP );
+
+        Sample.INSTANCE.play( Assets.Sounds.GOLD, 1, 1, Random.Float( 0.9f, 1.1f ) );
+        updateQuickslot();
 
         return true;
     }
