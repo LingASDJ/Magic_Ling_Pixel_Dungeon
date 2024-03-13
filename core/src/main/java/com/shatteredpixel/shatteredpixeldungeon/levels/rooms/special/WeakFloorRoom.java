@@ -23,7 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -43,7 +43,7 @@ public class WeakFloorRoom extends SpecialRoom {
 		
 		Painter.fill( level, this, Terrain.WALL );
 
-		if(Dungeon.depth == 17 && Dungeon.branch == 5){
+		if(Dungeon.depth == 17 && Dungeon.branch == 5 || Statistics.bossRushMode){
 			Painter.fill( level, this, 1, Terrain.WATER );
 		}else{
 			Painter.fill( level, this, 1, Terrain.CHASM );

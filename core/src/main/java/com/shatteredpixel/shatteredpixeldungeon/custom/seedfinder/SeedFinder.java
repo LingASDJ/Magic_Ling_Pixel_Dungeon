@@ -149,7 +149,7 @@ public class SeedFinder {
     static ExecutorService executorService= Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     public String findSeed(String[] wanted, int floor) {
         itemList = new ArrayList<>(Arrays.asList(wanted));
-        //Nofinding = false;
+        Nofinding = false;
         if(!Pay) {
             int price = RegularLevel.holiday == RegularLevel.Holiday.CJ ? 5 : 15;
             SPDSettings.iceDownCoin(price);

@@ -5,8 +5,8 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -256,7 +256,7 @@ public class ForestBossLevel extends Level {
                 king.pos = WIDTH*7+3;
                 GameScene.add(king);
 
-                drop( new CrystalKey(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? 2 : 5 ), WIDTH*7+29 );
+                drop( new CrystalKey(Statistics.bossRushMode ? 2 : 5 ), WIDTH*7+29 );
 
                 Heap droppedA = Dungeon.level.drop( Generator.randomUsingDefaults( Generator.Category.ARMOR),
                         WIDTH*7+28 );
@@ -273,7 +273,7 @@ public class ForestBossLevel extends Level {
                 king2.pos = WIDTH*7+28;
                 GameScene.add(king2);
 
-                drop( new CrystalKey(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? 2 : 5 ), WIDTH*7+4 );
+                drop( new CrystalKey(Statistics.bossRushMode ? 2 : 5 ), WIDTH*7+4 );
 
                 Heap droppedB = Dungeon.level.drop( Generator.randomUsingDefaults( Generator.Category.WEAPON),
                         WIDTH*7+3 );

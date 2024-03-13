@@ -196,9 +196,15 @@ public class Chasm implements Hero.Doom {
 	public static void mobFall( Mob mob ) {
 
 		if(Dungeon.isChallenged(WARLING) && mob.sprite != null && !mob.isStupid){
-			RedTrap trapx = new RedTrap();
-			trapx.pos = mob.pos;
-			trapx.activate();
+
+			if( Random.IntRange(0,100)<=20){
+				RedTrap trapx = new RedTrap();
+				trapx.pos = mob.pos;
+				trapx.activate() ;
+			} else {
+				((MobSprite)mob.sprite).fall();
+				mob.die( Chasm.class );
+			}
 		} else if(mob.sprite != null && mob.isStupid){
 			((MobSprite)mob.sprite).fall();
 		}

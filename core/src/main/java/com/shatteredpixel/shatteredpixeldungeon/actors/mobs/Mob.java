@@ -1142,7 +1142,7 @@ public abstract class Mob extends Char {
 
 		String intelligence = isStupid ? Messages.get(this, "stupid", name()) : Messages.get(this, "smart",name());
 
-		if(Dungeon.isChallenged(WARLING)){
+		if(Dungeon.isChallenged(WARLING) && !(properties.contains(Property.BOSS)) ){
 			desc += "\n\n"+intelligence;
 		}
 

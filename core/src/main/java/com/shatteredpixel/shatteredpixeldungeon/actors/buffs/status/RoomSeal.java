@@ -16,14 +16,15 @@ import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 import java.util.HashMap;
 import java.util.HashSet;
 
 public class RoomSeal extends Buff implements Hero.Doom {
     private static final String CELLS = "cells";
-    private static final float LIMIT = 5;
-    private static final int ARENA_SIZE = 3;
+    private static final float LIMIT = 4;
+    private static int ARENA_SIZE = Random.Int(3,5);
     private static final String COOLDOWN = "cooldown";
     private final HashMap<Integer, Emitter> emitters = new HashMap<>();
     private final HashSet<Integer> cells = new HashSet<>();
@@ -40,9 +41,9 @@ public class RoomSeal extends Buff implements Hero.Doom {
     public boolean act() {
         if (!cells.isEmpty()) {
             if (!cells.contains(target.pos)) {
-                target.damage((Dungeon.depth/5+1) * 2, new DM100.LightningBolt());
                 if(target instanceof Hero){
                     ((Hero) target).interrupt();
+                    ((Hero) target).damage((Dungeon.depth/5+1) * 2, new DM100.LightningBolt());
                 }
             }
 
@@ -65,6 +66,10 @@ public class RoomSeal extends Buff implements Hero.Doom {
         } else {
             spriteEmitter.on = false;
         }
+    }
+
+    public void lockmob() {
+        cooldown = 123456789;
     }
 
     public void lock(Char caller) {
@@ -139,7 +144,7 @@ public class RoomSeal extends Buff implements Hero.Doom {
             spriteEmitter.autoKill = false;
         } else {
             clearBorders();
-            target.sprite.killAndErase();
+            target.sprite.die();
             spriteEmitter = null;
         }
     }
