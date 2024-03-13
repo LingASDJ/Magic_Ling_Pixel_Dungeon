@@ -38,6 +38,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0712_Changes(changeInfos);
         add_V0711_Changes(changeInfos);
         add_V0710_Changes(changeInfos);
         add_V079_Changes(changeInfos);
@@ -48,6 +49,47 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0712_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.1.2", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(NetIcons.get(NetIcons.GLOBE), ("在线更新系统V2.0"),
+                ("进行了全方位优化，包括下载进度，游戏局内进度查看。可边下边更。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), ("新音乐：沙漠"),
+                ("作者：犬\n\n将在后续更新黄金时代第一部分同步实装。目前可在现实时间的夜晚状态彩蛋剧情欣赏音乐。")));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.1.2版本:\n\n" +
+                        "1.修复钴币相关问题\n" +
+                        "2.修复FireBase上个版本提到的一些崩溃错误\n" +
+                        "3.修复变幻莫测粘咕水晶钥匙的一些异常"
+        ));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14), ("挑战：战术对抗V1.5"),
+                ("1.添加战术对抗竞技场\n\n2.聪明的敌人20%的概率不掉落于悬崖\n\n3.在同时开启此挑战和恐药后，阳春草不再提供治疗，反而给予和治疗药水相同的中毒效果")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分文案优化\n" +
+                        "3.部分细节优化更新\n" +
+                        "4.主界面进行了优化，并丰富了更多界面音乐")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKELETONGOLD), ("BossRushV1.5"),
+                ("1.修复2层钥匙异常\n\n2.修复14层和29层的一些异常\n\n3.修复部分地形的异常")));
+
     }
 
     public static void add_V0711_Changes( ArrayList<ChangeInfo> changeInfos ) {

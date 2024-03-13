@@ -398,7 +398,7 @@ public class TitleScene extends PixelScene {
 							0.1f + (float)Math.sin(Game.timeTotal*5)/2f));
 					text(Messages.get(TitleScene.class, "dark"));
 					Music.INSTANCE.playTracks(
-							new String[]{Assets.NIGHT, Assets.Music.NBPL,Assets.Music.HALLS_BOSS_FINALE, Assets.Music.CITY_BOSS_FINALE},
+							new String[]{Assets.Music.SAND, Assets.Music.NBPL,Assets.Music.HALLS_BOSS_FINALE, Assets.Music.CITY_BOSS_FINALE},
 							new float[]{1, 1, 1, 1},
 							false);
 					icon(BadgeBanner.image(Badges.Badge.STORM.image));
@@ -482,11 +482,11 @@ public class TitleScene extends PixelScene {
 				ShatteredPixelDungeon.switchNoFade( AboutSelectScene.class );
 			}
 		};
-		btnAbout.icon(new Image("Ling.png", 0, 0, 16, 16));
+		btnAbout.icon(new Image(Icons.get(Icons.SHPX)));
 		add(btnAbout);
 
 		StyledButton btnNews = new NewsButton(GREY_TR, Messages.get(this, "news"));
-		btnNews.icon(new Image(NetIcons.get(NetIcons.NEWS)));
+		btnNews.icon(new Image(Icons.get(Icons.NEWS)));
 		add(btnNews);
 
 		final int BTN_HEIGHT = 20;
@@ -643,7 +643,7 @@ public class TitleScene extends PixelScene {
 
 		public SupportButton( Chrome.Type type, String label ){
 			super(type, label);
-			icon(new Image(NetIcons.get(NetIcons.PLAYERS)));
+			icon(new Image(Icons.get(Icons.THANKS)));
 		}
 
 		@Override
