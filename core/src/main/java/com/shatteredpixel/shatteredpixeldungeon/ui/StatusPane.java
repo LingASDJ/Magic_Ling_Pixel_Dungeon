@@ -28,6 +28,9 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameDay;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameNight;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameTime;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
+import static com.shatteredpixel.shatteredpixeldungeon.ui.MenuPane.version;
+import static com.shatteredpixel.shatteredpixeldungeon.update.MLChangesButton.downloadSuccess;
+import static com.shatteredpixel.shatteredpixeldungeon.update.MLChangesButton.updateProgress;
 
 import com.nlf.calendar.Solar;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -326,8 +329,8 @@ public class StatusPane extends Component {
 
 			if(SPDSettings.TimeLimit()) {
 				PixelScene.align(timeText);
-				timeStatusText.x = MenuPane.version.x;
-				timeStatusText.y = MenuPane.version.y+10;
+				timeStatusText.x = version.x;
+				timeStatusText.y = version.y+10;
 				PixelScene.align(timeStatusText);
 			} else {
 				timeText.visible=false;
@@ -385,11 +388,11 @@ public class StatusPane extends Component {
 		if(SPDSettings.TimeLimit()) {
 			timeText.x = MenuPane.depthButton.x - 27 - timeText.width();;
 
-			timeText.y = MenuPane.version.y + 5;
+			timeText.y = version.y + 5;
 
 			PixelScene.align(timeText);
 			timeStatusText.x = timeText.right();
-			timeStatusText.y = MenuPane.version.y + 5;
+			timeStatusText.y = version.y + 5;
 			PixelScene.align(timeStatusText);
 		} else {
 			timeText.visible=false;
@@ -420,6 +423,16 @@ public class StatusPane extends Component {
 		Visual visual = new Visual(0,0,0,0);
 		visual.am = 1f + 0.01f*Math.max(0f, (float)Math.sin( time += Game.elapsed ));
 		time += Game.elapsed / 3.5f;
+
+		if(downloadSuccess) {
+			version.text("Download,Completed");
+			version.alpha(1f);
+			version.x = x + width - version.width();
+		} else if (!updateProgress.isEmpty()) {
+			version.text("Download:"+updateProgress);
+			version.alpha(1f);
+			version.x = x + width - version.width();
+		}
 
 		//时间紊乱
 		if(Statistics.NoTime){
@@ -466,9 +479,9 @@ public class StatusPane extends Component {
 
 		if(SPDSettings.TimeLimit()) {
 			if (hero.buff(LockedFloor.class) != null) {
-				timeText.y = MenuPane.version.y + 14;
+				timeText.y = version.y + 14;
 			} else {
-				timeText.y = MenuPane.version.y + 5;
+				timeText.y = version.y + 5;
 			}
 		}
 

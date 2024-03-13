@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class UpdateChecker {
 	public static JsonNode config;
 	// 配置获取地址
-	private static final String CONFIG_URL = "https://rust.coldmint.top/ftp/ling/json/ds.json";
+	private static final String CONFIG_URL = "https://pd.qinyueqwq.top/ftp/pd/gamenews/GameUpdate.json";
 
 	public static void refreshConfig() {
 		refreshConfig(new Net.HttpResponseListener() {

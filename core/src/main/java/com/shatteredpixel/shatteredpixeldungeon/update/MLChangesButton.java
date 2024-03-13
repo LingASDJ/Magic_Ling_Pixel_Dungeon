@@ -29,8 +29,8 @@ public class MLChangesButton extends StyledButton {
 	public static String updateProgress = "";
 
 	private static float updateProgressValue = 0f;
-	private static boolean downloadSuccess = false;
-	private static boolean downloadStart = false;
+	public static boolean downloadSuccess = false;
+	public static boolean downloadStart = false;
 	private static boolean downloadFailure = false;
 
 	protected static File file;
@@ -193,7 +193,7 @@ public class MLChangesButton extends StyledButton {
 
 			pos = tfMesage.bottom() + 2 * MARGIN*2;
 
-			RedButton btn = new RedButton(Messages.get(MLChangesButton.class,"download1")) {
+			RedButton btn = new RedButton(DeviceCompat.isDesktop() ? Messages.get(MLChangesButton.class,"downloadpc") : Messages.get(MLChangesButton.class,"download1")) {
 				@Override
 				public void update() {
 					if (downloadSuccess) {
@@ -205,7 +205,7 @@ public class MLChangesButton extends StyledButton {
 					if(Objects.equals(update.URL1, "null") && !downloadSuccess){
 						ShatteredPixelDungeon.scene().add( new WndError( Messages.get(MLChangesButton.class, "null") ) );
 					} else if(DeviceCompat.isDesktop()){
-						ShatteredPixelDungeon.platform.openURI( update.URL1 );
+						ShatteredPixelDungeon.platform.openURI( update.URL3 );
 					} else if (!downloadSuccess) {
 						if(downloadFailure) downloadFailure = false;
 						Game.platform.updateGame(update.URL1, listener);
@@ -240,8 +240,13 @@ public class MLChangesButton extends StyledButton {
 				}
 			};
 			btn2.setRect(0, pos, width, BUTTON_HEIGHT);
-			add(btn2);
-			pos += BUTTON_HEIGHT + MARGIN;
+
+			if(!DeviceCompat.isDesktop()){
+				add(btn2);
+				pos += BUTTON_HEIGHT + MARGIN;
+			}
+
+
 			RedButton btn3 = new RedButton(Messages.get(MLChangesButton.class,"download3")) {
 				@Override
 				protected void onClick() {
