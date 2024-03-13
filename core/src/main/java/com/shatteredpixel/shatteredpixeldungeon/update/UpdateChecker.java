@@ -5,11 +5,13 @@ import com.badlogic.gdx.Net;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 
 public class UpdateChecker {
 	public static JsonNode config;
 	// 配置获取地址
-	private static final String CONFIG_URL = "https://pd.qinyueqwq.top/ftp/pd/gamenews/GameUpdate.json";
+	private static final String CONFIG_URL = SPDSettings.language() == Languages.ENGLISH ?  "https://pd.qinyueqwq.top/ftp/pd/gamenews/GameUpdate.json" :  "https://rust.coldmint.top/ftp/ling/json/GameUpdate.json";
 
 	public static void refreshConfig() {
 		refreshConfig(new Net.HttpResponseListener() {

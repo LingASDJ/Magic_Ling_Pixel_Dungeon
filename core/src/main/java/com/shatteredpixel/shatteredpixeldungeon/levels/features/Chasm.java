@@ -203,7 +203,7 @@ public class Chasm implements Hero.Doom {
 			((MobSprite)mob.sprite).fall();
 		}
 
-		if (mob.isAlive() && mob.isStupid) {
+		if (mob.isAlive() && mob.isStupid && Dungeon.isChallenged(WARLING)|| mob.isAlive() && !Dungeon.isChallenged(WARLING) ) {
 			mob.die( Chasm.class );
 		}
 	}

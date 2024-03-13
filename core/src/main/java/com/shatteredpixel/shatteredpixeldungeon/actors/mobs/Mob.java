@@ -54,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.RoomSeal;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
@@ -398,6 +399,10 @@ public abstract class Mob extends Char {
 		return true;
 	}
 
+	public boolean focusingHero() {
+		return enemySeen && Dungeon.level.heroFOV[pos];
+	}
+
 	@Override
 	protected boolean act() {
 
@@ -440,6 +445,12 @@ public abstract class Mob extends Char {
 			spend( TICK );
 			return true;
 		}
+		if (focusingHero()) {
+			if (Dungeon.isChallenged(WARLING) && !isStupid) {
+				Buff.affect(Dungeon.hero, RoomSeal.class).lock(this);
+			}
+		}
+
 
 		return state.act( enemyInFOV, justAlerted );
 	}
