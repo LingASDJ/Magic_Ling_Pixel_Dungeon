@@ -368,7 +368,7 @@ public class DiamondKnight extends Boss implements Hero.Doom {
             }
         }
 
-        if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+        if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && !SprintableModeBoolean){
             Dungeon.level.drop(new IceCyanBlueSquareCoin(20),hero.pos);
         }
 

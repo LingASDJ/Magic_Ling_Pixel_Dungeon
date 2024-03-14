@@ -16,7 +16,6 @@ import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,7 +23,7 @@ import java.util.HashSet;
 public class RoomSeal extends Buff implements Hero.Doom {
     private static final String CELLS = "cells";
     private static final float LIMIT = 4;
-    private static int ARENA_SIZE = Random.Int(3,5);
+    private static int ARENA_SIZE = 3;
     private static final String COOLDOWN = "cooldown";
     private final HashMap<Integer, Emitter> emitters = new HashMap<>();
     private final HashSet<Integer> cells = new HashSet<>();
@@ -66,10 +65,6 @@ public class RoomSeal extends Buff implements Hero.Doom {
         } else {
             spriteEmitter.on = false;
         }
-    }
-
-    public void lockmob() {
-        cooldown = 123456789;
     }
 
     public void lock(Char caller) {

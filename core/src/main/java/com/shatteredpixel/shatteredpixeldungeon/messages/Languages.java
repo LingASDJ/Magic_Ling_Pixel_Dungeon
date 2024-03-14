@@ -27,7 +27,7 @@ public enum Languages {
 	CHINESE("中文",      "",   Status.REVIEWED,  null, null),
 	ENGLISH("English",          "en", Status.INCOMPLETE, new String[]{"JDSALing","Catand"},
 			new String[]{"Noodlemire","Aeonius"}),
-	HARDCHINESE("繁體中文","chk", Status.REVIEWED, new String[]{"Sotis"},
+	HARDCHINESE("繁體中文","chk", Status.UNREVIEWED, new String[]{"Sotis"},
 			new String[]{"那些回忆","冷群","JDSALing"}),
 	RUSSIAN("Russian", "ru", Status.INCOMPLETE, new String[]{"JDSALing"},new String[]{"Dominowood371"}),
 	JAPANESE("日本語","ja", Status.INCOMPLETE, new String[]{"JDSALing","Gosamaru","FromBeyond"}, new String[]{

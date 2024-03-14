@@ -30,32 +30,27 @@ public class VenomGas extends Blob {
                     cell = i + j* Dungeon.level.width();
                     if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
                         if (!ch.isImmune(this.getClass()))
-                            Buff.affect(ch, Venom.class).set(2f, strength);
+                            Buff.affect(ch, Venom.class).set(4f, strength, source);
                     }
                 }
             }
         }
     }
 
-    public VenomGas setStrength(int str){
-        if (str > strength) {
-            strength = str;
-        }
-        return this;
-    }
-
     private static final String STRENGTH = "strength";
-
+    private static final String SOURCE	= "source";
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         strength = bundle.getInt( STRENGTH );
+        source = bundle.getClass( SOURCE );
     }
 
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put( STRENGTH, strength );
+        bundle.put( SOURCE, source );
     }
 
     @Override
@@ -68,5 +63,17 @@ public class VenomGas extends Blob {
     @Override
     public String tileDesc() {
         return Messages.get(this, "desc");
+    }
+
+    public VenomGas setStrength(int str){
+        return setStrength(str, null);
+    }
+    private Class source;
+    public VenomGas setStrength(int str, Class source){
+        if (str > strength) {
+            strength = str;
+            this.source = source;
+        }
+        return this;
     }
 }

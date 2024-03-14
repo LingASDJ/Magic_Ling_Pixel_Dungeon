@@ -38,6 +38,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0713_Changes(changeInfos);
         add_V0712_Changes(changeInfos);
         add_V0711_Changes(changeInfos);
         add_V0710_Changes(changeInfos);
@@ -49,6 +50,45 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0713_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.1.3", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.LANGS), ("语言更新：繁体中文"),
+                ("来自Sotis的繁体中文已经更新")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_1), ("新法杖：毒液侵染法杖"),
+                ("由于代码错误，这个应该是毒液浸染的，而非紊乱法杖\n\n合成方式：沉睡符石+腐蚀酸雾合剂+酸杖\n\n这根法杖能射出一颗会在目标位置爆炸成一团猩红雾气的法球，可以释放出一种极具腐蚀性的气体，进入猩红毒雾的任何单位都会持续受到起始为若干点的持续递增伤害。在高度中毒情况下，会导致目标失明。在严重中毒情况下，会直接窒息目标，直至死亡降临。")));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.1.3版本:\n\n" +
+                        "1.修复BR模式中的钴币错误，不过老存档无法同步\n" +
+                        "2.修复怪物在裂缝的一些异常\n" +
+                        "3.修复蝎子的一些异常问题\n" +
+                        "4.修复战术对抗的一些问题\n" +
+                        "5.修复灯火隐没可以在20层后获得的问题\n" +
+                        "6.修复消逝草的一些异常问题"
+        ));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.手机端的buff显示现在最多一行六个\n" +
+                        "2.部分UI迭代优化")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14), ("挑战：战术对抗V1.6"),
+                ("1.战术对抗竞技场改动：目标拥有Boss或者NPC属性或者处于子层时，竞技场不会生效\n\n" +
+                        "2.战术对抗竞技场粒子效果优化")));
     }
 
     public static void add_V0712_Changes( ArrayList<ChangeInfo> changeInfos ) {

@@ -782,7 +782,7 @@ public abstract class YogFist extends Mob {
 			}
 
 			for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
-				if (mob.alignment == Alignment.ENEMY && mob != this && !(mob instanceof YogReal || mob instanceof YogFist.FreezingFist||mob instanceof SuccubusQueen||mob instanceof GreenSlting||
+				if (mob.alignment == Alignment.ENEMY && mob != this && !(mob instanceof YogReal || mob instanceof YogDzewa || mob instanceof YogFist.FreezingFist||mob instanceof SuccubusQueen||mob instanceof GreenSlting||
 						mob instanceof DM275||mob instanceof GnollHero) ) {
 					mob.die( cause );
 				}

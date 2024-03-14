@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.WARLING;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.bossLevel;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -446,11 +447,11 @@ public abstract class Mob extends Char {
 			return true;
 		}
 		if (focusingHero()) {
-			if (Dungeon.isChallenged(WARLING) && !isStupid) {
+			boolean Notenemy =(properties.contains(Property.NPC) || properties.contains(Property.MINIBOSS) ||properties.contains(Property.BOSS));
+			if (Dungeon.isChallenged(WARLING) && !isStupid && !Notenemy && branch == 0) {
 				Buff.affect(Dungeon.hero, RoomSeal.class).lock(this);
 			}
 		}
-
 
 		return state.act( enemyInFOV, justAlerted );
 	}

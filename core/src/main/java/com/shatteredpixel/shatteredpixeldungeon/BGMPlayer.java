@@ -69,13 +69,13 @@ public class BGMPlayer {
                 } else if(d == 16 || d == 17 || d == 18 || d == 19  ){
                     playBGM(Assets.Music.ANCITY, true);
                 }
-//                if (d == 11 || d == 12 || d == 13 || d == 14) {
-//                    if(level.locked){
-//                        playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
-//                    } else {
-//                        playBGM(Assets.Music.CAVES_TENSE, true);
-//                    }
-//                }
+                if (d == 11 || d == 12 || d == 13 || d == 14) {
+                    if(level.locked){
+                        playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
+                    } else {
+                        playBGM(Assets.Music.CAVES_TENSE, true);
+                    }
+                }
             } else {
                 if (d == -1) {
                     playBGM(Assets.TOWN, true);

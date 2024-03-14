@@ -1,6 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.effects.particles;
 
-import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.PixelParticle;
 
@@ -16,11 +16,10 @@ public class AttackFlameParticle extends PixelParticle.Shrinking {
             return true;
         };
     };
-
+    private float time;
     public AttackFlameParticle() {
         super();
 
-        color(Window.WATA_COLOR);
         lifespan = 0.6f;
 
         acc.set( 0, -80 );
@@ -43,6 +42,10 @@ public class AttackFlameParticle extends PixelParticle.Shrinking {
         super.update();
         float p = left / lifespan;
         am = p > 0.8f ? (1 - p) * 5 : 1;
+        float interval = (Game.timeTotal % 9) / 3f;
+        color(interval > 1 ? Math.max(0.9f, 1 - interval) : interval,
+                interval < 1 ? Math.min(153 + interval * 72, 255) : Math.max(153 - (interval - 1) * 72, 128),
+                0.5f);
     }
 }
 

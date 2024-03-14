@@ -217,7 +217,7 @@ public class Tengu extends Boss {
 			Dungeon.level.drop( new TengusMask(), pos ).sprite.drop();
 		}
 
-		if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+		if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && !SprintableModeBoolean){
 			Dungeon.level.drop(new IceCyanBlueSquareCoin(10),pos);
 		}
 

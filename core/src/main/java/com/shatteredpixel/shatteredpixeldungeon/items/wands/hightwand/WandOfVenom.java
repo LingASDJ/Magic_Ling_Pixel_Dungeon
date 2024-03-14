@@ -3,29 +3,24 @@ package com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Regrowth;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.VenomGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCorrosiveGas;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDeepSleep;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.DamageWand;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfGodIce;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -47,7 +42,7 @@ public class WandOfVenom extends DamageWand {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
         {
-            inputs =  new Class[]{WandOfBlueFuck.class, ScrollOfEnchantment.class , WandOfGodIce.class};
+            inputs =  new Class[]{WandOfCorrosion.class, PotionOfCorrosiveGas.class , StoneOfDeepSleep.class};
             inQuantity = new int[]{1, 1, 1};
 
             cost = 20;
@@ -70,159 +65,36 @@ public class WandOfVenom extends DamageWand {
 
     }
 
-    private int randomCast = Random.Int(5);
-
     @Override
-    public void onZap( Ballistica bolt ) {
-        this.chaosZap( bolt,
-                randomCast,
-                level());
-        randomCast = Random.Int(5);
-    }
+    public void onZap(Ballistica bolt) {
+        VenomGas gas = Blob.seed(bolt.collisionPos, 500 + 10 * buffedLvl(),  VenomGas.class);
+        CellEmitter.get(bolt.collisionPos).burst(Speck.factory(Speck.CORROSION), 10 );
+        gas.setStrength(4 + buffedLvl(), getClass());
+        GameScene.add(gas);
+        Sample.INSTANCE.play(Assets.Sounds.GAS);
 
-    private void chaosZap( Ballistica bolt, int castType, int lvl ) {
-        int damage;
-        Char ch;
-        switch(castType) {
-            default:
-            case 0: //magic missile
-                ch = Actor.findChar(bolt.collisionPos);
-                if (ch != null) {
-                    damage = Random.IntRange(
-                            2+lvl+Dungeon.hero.lvl/4,
-                            8+2*lvl+Dungeon.hero.lvl/2);
-                    ch.damage(damage, this);
-                    ch.sprite.burst(0xFFFFFFFF, lvl / 2 + 2);
+        for (int i : PathFinder.NEIGHBOURS9) {
+            Char ch = Actor.findChar(bolt.collisionPos + i);
+            if (ch != null) {
+                wandProc(ch, chargesPerCast());
+
+                if (i == 0 && ch instanceof DwarfKing){
+                    Statistics.qualifiedForBossChallengeBadge = false;
                 }
-                break;
-            case 1: //thunderbolt
-                ch = Actor.findChar(bolt.collisionPos);
-                if (ch != null) {
-                    damage = Random.IntRange(
-                            3+lvl,
-                            10+4*lvl);
-                    ch.damage(damage, this);
-                }
-                if (Dungeon.level.heroFOV[bolt.collisionPos]) {
-                    CellEmitter.center(bolt.collisionPos).burst(BlastParticle.FACTORY, 30);
-                    Sample.INSTANCE.play( Assets.Sounds.BLAST );
-                }
-                for (int i : PathFinder.NEIGHBOURS8) {
-                    int AOE = bolt.collisionPos + i;
-                    if (AOE >= 0 && AOE < Dungeon.level.length()) {
-                        ch = Actor.findChar(AOE);
-                        if (ch != null) {
-                            damage = Random.IntRange(
-                                    1+lvl,
-                                    6+2*lvl);
-                          //  processSoulMark(ch, chargesPerCast());
-                            ch.damage(damage, this);
-                        }
-                        if (Dungeon.level.heroFOV[AOE]) {
-                            CellEmitter.get(AOE).burst(SmokeParticle.FACTORY, 4);
-                        }
-                    }
-                }
-                break;
-            case 2: //frostfire
-                ch = Actor.findChar(bolt.collisionPos);
-                if (ch != null) {
-                    damage = Random.IntRange(
-                            4+2*lvl,
-                            16+6*lvl);
-                  //  processSoulMark(ch, chargesPerCast());
-                    ch.damage(damage, this); //second hit
-                    if (ch.isAlive() && ch.buff(Frost.class) == null) {
-                        if (Dungeon.level.water[ch.pos])
-                            Buff.prolong(ch, Chill.class, 4+lvl);
-                        else
-                            Buff.prolong(ch, Chill.class, 2+lvl);
-                    }
-                }
-                CellEmitter.get(bolt.collisionPos).burst(FlameParticle.FACTORY, 6);
-                break;
-            case 3: //flaming regrowth
-                ch = Actor.findChar(bolt.collisionPos);
-                if (ch != null) {
-                    damage = Random.IntRange(
-                            1+lvl,
-                            6+2*lvl);
-                  //  processSoulMark(ch, chargesPerCast());
-                    ch.damage(damage, this);
-                }
-                GameScene.add(Blob.seed(bolt.collisionPos, 30, Regrowth.class));
-                GameScene.add(Blob.seed(bolt.collisionPos, 2, Fire.class));
-                break;
-            case 4: //electric storm cloud
-                ch = Actor.findChar(bolt.collisionPos);
-                if (ch != null) {
-                    damage = Random.IntRange(
-                            3+lvl,
-                            10+4*lvl);
-                  //  processSoulMark(ch, chargesPerCast());
-                    ch.damage(damage, this);
-                }
-                GameScene.add(Blob.seed(bolt.collisionPos, 50, StormCloud.class));
-                GameScene.add(Blob.seed(bolt.collisionPos, 10, Electricity.class));
-                break;
+            }
+        }
+
+        if (Actor.findChar(bolt.collisionPos) == null){
+            Dungeon.level.pressCell(bolt.collisionPos);
         }
     }
 
     public void fx(Ballistica bolt, Char caster, Callback callback) {
-        switch(randomCast) {
-            default:
-            case 0: //magic missile
-                MagicMissile.boltFromChar( caster.sprite.parent,
-                        MagicMissile.MAGIC_MISSILE,
-                        caster.sprite,
-                        bolt.collisionPos,
-                        callback);
-                Sample.INSTANCE.play( Assets.Sounds.ZAP );
-                break;
-            case 1: //thunderbolt
-                caster.sprite.parent.addToFront( new Lightning( caster.pos, bolt.collisionPos, null ) );
-                callback.call();
-                break;
-            case 2: //frostfire
-                MagicMissile.boltFromChar(caster.sprite.parent,
-                        MagicMissile.FIRE,
-                        caster.sprite,
-                        bolt.collisionPos,
-                        null);
-                MagicMissile.boltFromChar(caster.sprite.parent,
-                        MagicMissile.FROST,
-                        caster.sprite,
-                        bolt.collisionPos,
-                        callback);
-                Sample.INSTANCE.play( Assets.Sounds.ZAP );
-                break;
-            case 3: //flaming regrowth
-                MagicMissile.boltFromChar(caster.sprite.parent,
-                        MagicMissile.FIRE,
-                        caster.sprite,
-                        bolt.collisionPos,
-                        null);
-                MagicMissile.boltFromChar(caster.sprite.parent,
-                        MagicMissile.FOLIAGE,
-                        caster.sprite,
-                        bolt.collisionPos,
-                        callback);
-                Sample.INSTANCE.play( Assets.Sounds.ZAP );
-                break;
-            case 4: //electric storm cloud
-                MagicMissile.boltFromChar(caster.sprite.parent,
-                        MagicMissile.SWORDLING,
-                        caster.sprite,
-                        bolt.collisionPos,
-                        callback);
-                MagicMissile.boltFromChar(caster.sprite.parent,
-                        MagicMissile.SPARK_CONE,
-                        caster.sprite,
-                        bolt.collisionPos,
-                        callback);
-                Sample.INSTANCE.play( Assets.Sounds.ZAP );
-                break;
-        }
+        MagicMissile.boltFromChar(caster.sprite.parent,
+                MagicMissile.TOXIC_VENT,
+                caster.sprite,
+                bolt.collisionPos,
+                null);
     }
 
     @Override
@@ -247,17 +119,21 @@ public class WandOfVenom extends DamageWand {
         particle.y += dst;
     }
 
-    protected int initialCharges() {
-        return 2;
-    }
-
     @Override
     public int min(int lvl) {
-        return 3+4*lvl;
+        return 2+4*lvl;
     }
 
     @Override
     public int max(int lvl) {
-        return 8+5*lvl;
+        return 3+5*lvl;
+    }
+
+    @Override
+    public String statsDesc() {
+        if (levelKnown)
+            return Messages.get(this, "stats_desc", 4+buffedLvl());
+        else
+            return Messages.get(this, "stats_desc", 4);
     }
 }

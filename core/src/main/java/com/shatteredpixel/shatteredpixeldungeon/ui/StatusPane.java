@@ -34,6 +34,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.update.MLChangesButton.up
 
 import com.nlf.calendar.Solar;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
@@ -377,7 +378,7 @@ public class StatusPane extends Component {
 			lanterfirevae.y= 142.0f;
 			lanterfirevae.visible = false; //
 
-			buffs.setPos( x + 34, y + 20 );
+			buffs.setPos( x + 34, y + 13 );
 
 			busy.x = x + 1;
 			busy.y = y + 33;
@@ -431,6 +432,16 @@ public class StatusPane extends Component {
 		} else if (!updateProgress.isEmpty()) {
 			version.text("Download:"+updateProgress);
 			version.alpha(1f);
+			version.x = x + width - version.width();
+		} else if(Challenges.activeChallenges()>13){
+			visual.am = 1f + 0.01f * Math.max(0f, (float) Math.sin(time += Game.elapsed));
+			time += Game.elapsed / 3.5f;
+			// 宝石蓝渐变到黑金色
+			float r = 0.63f+0.57f*Math.max(0f, (float)Math.sin( time));
+			float g = 0.63f+0.57f*Math.max(0f, (float)Math.sin( time + 2*Math.PI/3 ));
+			float b = 0.53f+0.57f*Math.max(0f, (float)Math.sin( time + 4*Math.PI/3 ));
+			version.text("v" + Game.version + "-"+"High-Challenges");
+			version.hardlight(r, g, b);
 			version.x = x + width - version.width();
 		}
 

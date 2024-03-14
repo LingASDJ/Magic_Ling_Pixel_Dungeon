@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -21,6 +22,9 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 abstract public class Boss extends Mob {
+
+        protected boolean SprintableModeBoolean = (Statistics.bossRushMode || Dungeon.isChallenged(PRO));
+
         protected static float baseMin; //最小伤害
         protected static float baseMax; //最大伤害
         protected static float baseAcc; //命中率

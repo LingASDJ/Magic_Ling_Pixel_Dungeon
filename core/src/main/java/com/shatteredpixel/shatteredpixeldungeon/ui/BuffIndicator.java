@@ -151,9 +151,6 @@ public class BuffIndicator extends Component {
 	//ELEMENTS
 	public static final int SCARY        = 112;
 
-
-
-
     public static final int SIZE_SMALL = 7;
     public static final int SIZE_LARGE = 16;
 
@@ -243,14 +240,27 @@ public class BuffIndicator extends Component {
 
 		//layout
 		int pos = 0;
+		int row = 0; // 行数
+		int maxIconsPerRow = 6; // 每行最多显示的图标数
+		int horizontalSpacing = 0; // 水平间距
+		int verticalSpacing = -3; // 垂直间距
+		int iconWidth = size + (large ? 1 : 2); // 图标宽度
+		int iconHeight = size + (large ? 0 : 5); // 图标高度
+
 		for (BuffButton icon : buffButtons.values()){
 			icon.updateIcon();
-			//button areas are slightly oversized, especially on small buttons
-			icon.setRect(x + pos * (size + (large ? 1 : 2)), y, size + (large ? 1 : 2), size + (large ? 0 : 5));
+			if (!large && pos % maxIconsPerRow == 0 && pos != 0) { // 在非"large"情况下，每6个图标换行
+				row++;
+				pos = 0; // 重置列数
+			}
+			float posX = x + pos * (iconWidth + horizontalSpacing);
+			float posY = y + row * (iconHeight + verticalSpacing);
+			icon.setRect(posX, posY, size, size);
 			PixelScene.align(icon);
 			pos++;
 		}
 	}
+
 
 	private static class BuffButton extends IconButton {
 

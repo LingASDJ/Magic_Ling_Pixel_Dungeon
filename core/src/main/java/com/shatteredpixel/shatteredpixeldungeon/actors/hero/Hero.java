@@ -1119,7 +1119,7 @@ public class Hero extends Char {
 				if(Dungeon.depth < 20){
 					Buff.affect(hero, BlessNoMoney.class).set((100), 1);
 				} else {
-					Buff.affect(hero, BlessImmune.class,ChampionHero.DURATION*123456f);
+					Buff.affect(hero, BlessMixShiled.class).set((100), 1);
 				}
                 break;
             case 1:
