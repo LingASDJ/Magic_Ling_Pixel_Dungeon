@@ -149,7 +149,7 @@ public abstract class Actor implements Bundlable {
 	private static SparseArray<Actor> ids = new SparseArray<>();
 	private static int nextID = 1;
 
-	private static float now = 0;
+	public static float now = 0;
 	
 	public static float now(){
 		return now;
@@ -329,7 +329,7 @@ public abstract class Actor implements Bundlable {
 		add( actor, now + Math.max(delay, 0) );
 	}
 	
-	private static synchronized void add( Actor actor, float time ) {
+	public static synchronized void add(Actor actor, float time) {
 		
 		if (all.contains( actor )) {
 			return;

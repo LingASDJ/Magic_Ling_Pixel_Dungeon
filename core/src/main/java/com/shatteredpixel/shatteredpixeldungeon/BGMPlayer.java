@@ -54,11 +54,11 @@ public class BGMPlayer {
                     playBGM(Assets.FL_CITY, true);
                 }
                 if(d == 25){
-                    playBGM(Assets.Music.RESET_FINALE, true);
+                    playBGM(Assets.Music.THEME_FINALE, true);
                 }
             } else if(s == 2 || s == 3 || s == 4){
                 if(d == 25){
-                    playBGM(Assets.Music.RESET_FINALE, true);
+                    playBGM(Assets.Music.THEME_FINALE, true);
                 }
                 if(d == 16 ||d == 17 || d == 18 || d == 19 ){
                     playBGM(Assets.Music.ANCITY, true);
@@ -190,7 +190,7 @@ public class BGMPlayer {
                     }
                     break;
                 case 18:
-                    playBGM(Assets.BGM_BOSSC3, true);
+                    playBGM(Assets.BGM_BOSSC, true);
                     break;
                 case 21:
                     playBGM(Assets.BGM_FRBOSS, true);
@@ -233,7 +233,7 @@ public class BGMPlayer {
                 playBGM(Assets.BGM_BOSSC, true);
             } else if (Dungeon.bossLevel() && t == 15) {
                 if((Statistics.boss_enhance & 0x4) != 0) {
-                    playBGM(Assets.BGM_BOSSC3, true);
+                    playBGM(Assets.BGM_BOSSC, true);
                 } else {
                    //最抽象的一集
                    try {

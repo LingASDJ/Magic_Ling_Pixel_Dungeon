@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -37,6 +39,10 @@ public class Paralysis extends FlavourBuff {
 	{
 		type = buffType.NEGATIVE;
 		announced = true;
+
+		if(target == hero){
+			immunities.add(Venom.class);
+		}
 	}
 	
 	@Override

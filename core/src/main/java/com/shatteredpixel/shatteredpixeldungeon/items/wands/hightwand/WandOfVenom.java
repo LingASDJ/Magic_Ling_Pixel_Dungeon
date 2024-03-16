@@ -37,6 +37,7 @@ public class WandOfVenom extends DamageWand {
 
     {
         image = ItemSpriteSheet.HIGHTWAND_1;
+        collisionProperties = Ballistica.STOP_TARGET | Ballistica.STOP_SOLID;
     }
 
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
@@ -89,12 +90,15 @@ public class WandOfVenom extends DamageWand {
         }
     }
 
-    public void fx(Ballistica bolt, Char caster, Callback callback) {
-        MagicMissile.boltFromChar(caster.sprite.parent,
-                MagicMissile.TOXIC_VENT,
-                caster.sprite,
+    @Override
+    public void fx(Ballistica bolt, Callback callback) {
+        MagicMissile.boltFromChar(
+                curUser.sprite.parent,
+                MagicMissile.CORROSION,
+                curUser.sprite,
                 bolt.collisionPos,
-                null);
+                callback);
+        Sample.INSTANCE.play(Assets.Sounds.ZAP);
     }
 
     @Override

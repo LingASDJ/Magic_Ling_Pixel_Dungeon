@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -119,7 +121,7 @@ public class Item implements Bundlable {
 	/**
 	 * 动态组
 	 */
-	public boolean animation = false;
+	public boolean animation;
 
 	public boolean animationToidle = false;
 	public String animationTotalFrame;
@@ -127,17 +129,23 @@ public class Item implements Bundlable {
 	public int animationHeight;
 	public int animationSpeed;
 
+	{
+		 animation = false;
+	}
+
 	/**
 	 *
 	 * @param itemSprite
 	 */
     public void frames(ItemSprite itemSprite){
-		if(animation) {
+		if(animation && this instanceof Item.AnimationItem) {
 			itemSprite.texture(animationTotalFrame);
 			TextureFilm frames = new TextureFilm(itemSprite.texture, animationWidth, animationHeight);
 			MovieClip.Animation idle = new MovieClip.Animation(animationSpeed, true);
 			idle.frames(frames, 0);
 			itemSprite.play(idle);
+		} else {
+			itemSprite.view(image(),glowing());
 		}
 	}
 	
@@ -273,9 +281,9 @@ public class Item implements Bundlable {
 				if (isSimilar( item )) {
 					item.merge( this );
 					item.updateQuickslot();
-					if (Dungeon.hero != null && Dungeon.hero.isAlive()) {
+					if (hero != null && hero.isAlive()) {
 						Badges.validateItemLevelAquired( this );
-						Talent.onItemCollected(Dungeon.hero, item);
+						Talent.onItemCollected(hero, item);
 						if (isIdentified()) Catalog.setSeen(getClass());
 					}
 					if (TippedDart.lostDarts > 0){
@@ -288,7 +296,7 @@ public class Item implements Bundlable {
 								{ actPriority = VFX_PRIO; }
 								@Override
 								protected boolean act() {
-									Dungeon.level.drop(d, Dungeon.hero.pos).sprite.drop();
+									Dungeon.level.drop(d, hero.pos).sprite.drop();
 									Actor.remove(this);
 									return true;
 								}
@@ -300,9 +308,9 @@ public class Item implements Bundlable {
 			}
 		}
 
-		if (Dungeon.hero != null && Dungeon.hero.isAlive()) {
+		if (hero != null && hero.isAlive()) {
 			Badges.validateItemLevelAquired( this );
-			Talent.onItemCollected( Dungeon.hero, this );
+			Talent.onItemCollected( hero, this );
 			if (isIdentified()) Catalog.setSeen(getClass());
 		}
 
@@ -315,7 +323,7 @@ public class Item implements Bundlable {
 	}
 	
 	public boolean collect() {
-		return collect( Dungeon.hero.belongings.backpack );
+		return collect( hero.belongings.backpack );
 	}
 	
 	//returns a new item if the split was sucessful and there are now 2 items, otherwise null
@@ -408,8 +416,8 @@ public class Item implements Bundlable {
 	//note that not all item properties should care about buffs/debuffs! (e.g. str requirement)
 	public int buffedLvl(){
 		//only the hero can be affected by Degradation
-		if (Dungeon.hero.buff( Degrade.class ) != null
-			&& (isEquipped( Dungeon.hero ) || Dungeon.hero.belongings.contains( this ))) {
+		if (hero.buff( Degrade.class ) != null
+			&& (isEquipped( hero ) || hero.belongings.contains( this ))) {
 			return Degrade.reduceLevel(level());
 		} else {
 			return level();
@@ -484,9 +492,9 @@ public class Item implements Bundlable {
 
 	public Item identify( boolean byHero ) {
 
-		if (byHero && Dungeon.hero != null && Dungeon.hero.isAlive()){
+		if (byHero && hero != null && hero.isAlive()){
 			Catalog.setSeen(getClass());
-			if (!isIdentified()) Talent.onItemIdentified(Dungeon.hero, this);
+			if (!isIdentified()) Talent.onItemIdentified(hero, this);
 		}
 
 		levelKnown = true;
@@ -636,7 +644,7 @@ public class Item implements Bundlable {
 		cursed	= bundle.getBoolean( CURSED );
 
 		//only want to populate slot on first load.
-		if (Dungeon.hero == null) {
+		if (hero == null) {
 			if (bundle.contains(QUICKSLOT)) {
 				Dungeon.quickslot.setSlot(bundle.getInt(QUICKSLOT), this);
 			}
@@ -660,7 +668,7 @@ public class Item implements Bundlable {
 	}
 	
 	public void cast( final Hero user, final int dst ) {
-		
+
 		final int cell = throwPos( user, dst );
 		user.sprite.zap( cell );
 		user.busy();
@@ -725,8 +733,10 @@ public class Item implements Bundlable {
 	protected static Hero curUser = null;
 	protected static Item curItem = null;
 	protected static CellSelector.Listener thrower = new CellSelector.Listener() {
+
 		@Override
 		public void onSelect( Integer target ) {
+
 			if (target != null) {
 				curItem.cast( curUser, target );
 			}

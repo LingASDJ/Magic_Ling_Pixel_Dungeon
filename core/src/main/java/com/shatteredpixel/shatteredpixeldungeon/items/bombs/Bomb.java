@@ -206,14 +206,19 @@ public class Bomb extends Item {
 
 	@Override
 	public boolean doPickUp(Hero hero, int pos) {
+
+
+
 		if (fuse != null) {
+			if (isLit) {
+				fuse = null;
+				GLog.n( Messages.get(this, "snuff_fuse_no") );
+				return false;
+			}
 			GLog.w( Messages.get(this, "snuff_fuse") );
 			fuse = null;
 		}
-		if (isLit) {
-			GLog.n( Messages.get(this, "snuff_fuse_no") );
-			return false;
-		}
+
 
 		return super.doPickUp(hero, pos);
 	}
@@ -434,7 +439,7 @@ public class Bomb extends Item {
 			actPriority = BLOB_PRIO+1; //after hero, before other actors
 		}
 
-		protected Bomb bomb;
+		public Bomb bomb;
 
 		public Fuse ignite(Bomb bomb){
 			this.bomb = bomb;

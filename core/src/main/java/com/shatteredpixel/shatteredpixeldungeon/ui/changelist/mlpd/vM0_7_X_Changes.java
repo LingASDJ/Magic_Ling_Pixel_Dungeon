@@ -53,7 +53,7 @@ public class vM0_7_X_Changes {
     }
 
     public static void add_V0713_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.7.1.3", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.7.1.3-4", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -64,8 +64,11 @@ public class vM0_7_X_Changes {
         changes.addButton(new ChangeButton(Icons.get(Icons.LANGS), ("语言更新：繁体中文"),
                 ("来自Sotis的繁体中文已经更新")));
 
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BOMB_SWORD), ("炸弹匕首回归"),
+                ("孩子们，我回来了。并变为5阶武器。")));
+
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_1), ("新法杖：毒液侵染法杖"),
-                ("由于代码错误，这个应该是毒液浸染的，而非紊乱法杖\n\n合成方式：沉睡符石+腐蚀酸雾合剂+酸杖\n\n这根法杖能射出一颗会在目标位置爆炸成一团猩红雾气的法球，可以释放出一种极具腐蚀性的气体，进入猩红毒雾的任何单位都会持续受到起始为若干点的持续递增伤害。在高度中毒情况下，会导致目标失明。在严重中毒情况下，会直接窒息目标，直至死亡降临。")));
+                ("由于代码错误，这个应该是毒液浸染的，而非紊乱法杖\n\n合成方式：沉睡符石+腐蚀酸雾合剂+酸杖\n\n这根法杖能射出一颗会在目标位置爆炸成一团猩红雾气的法球，可以释放出一种极具腐蚀性的气体，进入猩红毒雾的任何单位都会持续受到起始为若干点的持续递增伤害。在高度中毒情况下，会导致目标失明。在严重中毒情况下，会直接窒息目标，直至死亡降临。\n\n0.7.1.4：修复弹道问题")));
 
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);

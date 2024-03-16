@@ -200,6 +200,8 @@ public class ItemSprite extends MovieClip {
 		//避免与其他Item的view冲突
 		if (item.animation && item instanceof Item.AnimationItem) {
 			item.frames(this);
+		} else {
+			view(item.image(), item.glowing());
 		}
 
 		return this;

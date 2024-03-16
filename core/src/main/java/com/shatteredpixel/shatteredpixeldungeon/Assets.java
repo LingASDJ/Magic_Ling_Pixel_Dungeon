@@ -41,7 +41,6 @@ public class Assets {
 	public static final String BGM_BOSSB = "music/Boss2.ogg";
 	public static final String BGM_BOSSB2 = "music/Tengu.ogg";
 	public static final String BGM_BOSSC = "music/Boss3.ogg";
-	public static final String BGM_BOSSC3 = "music/Ice.ogg";
 	public static final String BGM_BOSSD = "music/Boss4.ogg";
 	public static final String BGM_BOSSD2 = "music/DwarfGeneral.ogg";
 	public static final String BGM_BOSSE3 = "music/Yogdead.ogg";
@@ -676,6 +675,8 @@ public class Assets {
 
 		//Animation Item
 		public static final String ANIMATIONS_TERMIAL = "sprites/items/Animation/DM100-Terminal.png";
+
+		public static final String ANIMATIONS_BOMBSWORD = "sprites/items/Animation/BoomSword.png";
 	}
 
 
