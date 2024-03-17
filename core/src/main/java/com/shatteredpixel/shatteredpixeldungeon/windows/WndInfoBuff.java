@@ -21,19 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Sample;
 
 public class WndInfoBuff extends Window {
 
@@ -57,33 +51,8 @@ public class WndInfoBuff extends Window {
 		txtInfo.maxWidth(WIDTH);
 		txtInfo.setPos(titlebar.left(), titlebar.bottom() + 2*GAP);
 		add( txtInfo );
-		RedButton clear = new RedButton(Messages.get(this, "clear"),7){
-			@Override
-			protected void onClick() {
-				if (buff.type != Buff.buffType.NEGATIVE){
-					hero.sprite.operate( hero.pos );
-					hero.busy();
-					Sample.INSTANCE.play( Assets.Sounds.READ );
-					hero.spend( 3f );
-					buff.detach();
-					GLog.p(Messages.get(this, "clear_buff"));
-					hide();
-				} else {
-					GLog.w(Messages.get(this, "notification"));
-					hide();
-				}
-			}
-		};
-		clear.setWidth(WIDTH);
-		clear.icon(new BuffIcon( buff, true ));
-		clear.setPos(txtInfo.left(), txtInfo.bottom()+3);
-		clear.setSize(120,18 );
-		if(buff.target == hero && buff.type != Buff.buffType.NEGATIVE){
-			add( clear);
-			resize( WIDTH, (int)clear.bottom() + 2 );
-		} else {
-			resize( WIDTH, (int)txtInfo.bottom() + 2 );
-		}
+		resize( WIDTH, (int)txtInfo.bottom() + 2 );
+
 	}
 
 

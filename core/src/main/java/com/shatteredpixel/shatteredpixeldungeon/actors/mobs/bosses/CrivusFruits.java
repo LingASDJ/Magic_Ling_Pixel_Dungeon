@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.ExFruit;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.bossWeapons;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel3;
@@ -339,8 +338,7 @@ public class CrivusFruits extends Boss {
                     cell = i + j*Dungeon.level.width();
                     if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
                         if (!ch.isImmune(this.getClass())) {
-                            if( hero.buff(LockedFloor.class) != null && !ExFruit) {
-                                //不为空为4 否则就是0
+                            if( hero.buff(LockedFloor.class) != null ) {
                                 ch.damage(hero.buff(LockedFloor.class) != null ? damage : 0, this);
                                 Statistics.bossScores[0] -= 200;
                             }

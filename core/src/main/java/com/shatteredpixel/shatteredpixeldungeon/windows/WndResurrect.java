@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.TPDoorDieds;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel3;
 
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
@@ -143,10 +144,21 @@ public class WndResurrect extends Window {
 					btnItem4.item.keptThoughLostInvent = true;
 				}
 
-				//克里弗斯之果二阶段死亡的时候的给予重新评估
-				if(crivusfruitslevel2){
-					crivusfruitslevel2 = false;
+				if(Statistics.bossRushMode){
+					//克里弗斯之果二阶段死亡的时候的给予重新评估
+					if(crivusfruitslevel2){
+						crivusfruitslevel2 = false;
+					}
+					if(crivusfruitslevel3){
+						crivusfruitslevel3 = false;
+					}
+				} else {
+					//克里弗斯之果二阶段死亡的时候的给予重新评估
+					if(crivusfruitslevel2){
+						crivusfruitslevel2 = false;
+					}
 				}
+
 
 				//拟态王二阶段死亡的时候给予重新评估
 				if(TPDoorDieds){

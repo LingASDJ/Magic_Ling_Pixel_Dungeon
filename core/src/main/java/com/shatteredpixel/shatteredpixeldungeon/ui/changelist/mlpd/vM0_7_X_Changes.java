@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MintSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MoonLowSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PianoLeSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SmallLeafSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhiteGirlSprites;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0715_Changes(changeInfos);
         add_V0714_Changes(changeInfos);
         add_V0713_Changes(changeInfos);
         add_V0712_Changes(changeInfos);
@@ -57,8 +59,10 @@ public class vM0_7_X_Changes {
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
     }
-    public static void add_V0714_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.7.1.5", true, "");
+
+
+    public static void add_V0715_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.1.6", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -81,6 +85,42 @@ public class vM0_7_X_Changes {
         changes.addButton(new ChangeButton(r, ("矮人军团"),
                 ("该数据已预载，将在下周六_2024-3.23_更新同步实装。")));
 
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new RedNecromancerSprite(),("新精英怪：死灵领主"),
+                ("火苍蝇的精英变体。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BUFFS), ("功能移除：效果按钮"),
+                ("由于BUG太多，被移除。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKELETONGOLD), ("BossRushV1.7"),
+                ("1.修复异果红雾异常\n\n" +
+                        "2.修复启动系统未识别为BR模式")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.1.6版本:\n\n" +
+                        "1.修复BR模式中的相关异常\n" +
+                        "2.修复怪物在裂缝的一些异常\n" +
+                        "5.修复灯火的一些问题\n" +
+                        "6.修复部分BOSS的一些问题"
+        ));
+
+    }
+
+    public static void add_V0714_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.1.5", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
         changes.hardlight(Window.TITLE_COLOR);
@@ -98,7 +138,7 @@ public class vM0_7_X_Changes {
         changes.addButton(new ChangeButton(new HollowKnightSprite(),("新NPC:小骑士"),
                 ("圣巢一哥。")));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKELETONGOLD), ("BossRushV1,6"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKELETONGOLD), ("BossRushV1.6"),
                 ("1.修复一些异常\n\n" +
                         "2.第四难度开放")));
 

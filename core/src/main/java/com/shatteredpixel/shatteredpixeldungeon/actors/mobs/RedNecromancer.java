@@ -32,12 +32,11 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BruteSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.SkeletonSprite;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -47,20 +46,24 @@ public class RedNecromancer extends Mob {
     {
         spriteClass = RedNecromancerSprite.class;
 
-        HP = HT = 1;
+
+        HP = HT = 70;
         defenseSkill = 14;
 
-        EXP = 7;
-        maxLvl = 14;
+        EXP = 16;
+        maxLvl = 20;
+
+        loot = new PotionOfLiquidFlame();
+        lootChance = 0.2f; //see lootChance()
+
+        EXP = 17;
+        maxLvl = 20;
+
         flying = true;
         properties.add(Property.UNDEAD);
         properties.add(Property.MINIBOSS);
+        properties.add(Property.FIERY);
         HUNTING = new Hunting();
-    }
-
-    @Override
-    public void damage( int dmg, Object src ) {
-        //flee();
     }
 
     public boolean summoning = false;
@@ -337,36 +340,18 @@ public class RedNecromancer extends Mob {
         }
     }
 
-    public static class NecroSkeleton extends XTG100 {
+    public static class NecroSkeleton extends Brute {
 
         {
             state = WANDERING;
-
+            HP = HT = 60;
+            maxLvl = -1;
             spriteClass = NecroSkeletonSprite.class;
-            gasTankPressure = Random.Int(100, 250);
-            gasTankPressure = Random.Int(100, 250);
-            //no loot or exp
-            maxLvl = 335;
-            loot = Red.class;
-            lootChance = 1f;
-            //20/25 health to start
-            HP =HT= 120;
             flying = true;
             properties.add(Property.INORGANIC);
             properties.add(Property.FIERY);
             properties.add(Property.MINIBOSS);
         }
-        @Override
-        public void die( Object cause ) {
-            for (Mob mob : (Iterable<Mob>) Dungeon.level.mobs.clone()) {
-                if (mob instanceof RedNecromancer) {
-                    mob.die(cause);
-                    //Badges.KILL_DEATHRED();
-                }
-            }
-            super.die(cause);
-        }
-
 
         @Override
         public float spawningWeight() {
@@ -377,22 +362,17 @@ public class RedNecromancer extends Mob {
             spend(TICK);
         }
 
-        public static class NecroSkeletonSprite extends SkeletonSprite{
-
-            public void link(Char var1) {
-                super.link(var1);
-                this.add(CharSprite.State.BURNING);
-            }
+        public static class NecroSkeletonSprite extends BruteSprite {
 
             public NecroSkeletonSprite(){
                 super();
-                tint(2, 0, 0, 0.4f);
+                brightness(0.75f);
             }
 
             @Override
             public void resetColor() {
                 super.resetColor();
-                tint(2, 2, 0, 0.4f);
+                brightness(0.75f);
             }
         }
 

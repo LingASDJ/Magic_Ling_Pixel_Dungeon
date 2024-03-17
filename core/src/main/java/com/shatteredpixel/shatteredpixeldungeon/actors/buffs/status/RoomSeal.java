@@ -35,14 +35,13 @@ public class RoomSeal extends Buff implements Hero.Doom {
         type = Buff.buffType.NEUTRAL;
     }
 
-
     @Override
     public boolean act() {
         if (!cells.isEmpty()) {
             if (!cells.contains(target.pos)) {
                 if(target instanceof Hero){
                     ((Hero) target).interrupt();
-                    ((Hero) target).damage((Dungeon.depth/5+1) * 2, new DM100.LightningBolt());
+                    target.damage((Dungeon.depth/5+1) * 2, new DM100.LightningBolt());
                 }
             }
 

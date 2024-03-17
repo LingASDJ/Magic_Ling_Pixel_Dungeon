@@ -465,6 +465,8 @@ public class Bestiary {
 					cl = Acidic.class;
 				} else if (cl == Spinner.class) {
 					cl = GnollShiled.class;
+				} else if (cl == RedSwarm.class) {
+					cl = RedNecromancer.class;
 				} else if (cl == Elemental.class && Dungeon.isChallenged(RLPT)) {
 					cl = RandomBlueFireDE.class;
 				} else if (cl == FireGhost.class && Dungeon.isChallenged(RLPT)) {

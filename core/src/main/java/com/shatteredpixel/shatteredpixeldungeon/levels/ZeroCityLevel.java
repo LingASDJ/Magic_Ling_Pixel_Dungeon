@@ -266,7 +266,10 @@ public class ZeroCityLevel extends Level {
                                     Game.switchScene(InterlevelScene.class);
                                     Buff.affect(hero, BlessBossRushLow.class, ChampionHero.DURATION*123456f);
                                     Statistics.difficultyDLCEXLevel = 1;
-
+                                    Statistics.deepestFloor = 100;
+                                    Statistics.bossRushMode = true;
+                                    Dungeon.gold = 0;
+                                    Dungeon.rushgold = 16;
                                 } else if (index == 1) {
                                     TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
                                     if (timeFreeze != null) timeFreeze.disarmPresses();
@@ -281,6 +284,10 @@ public class ZeroCityLevel extends Level {
                                     InterlevelScene.curTransition.centerCell = -1;
                                     Game.switchScene(InterlevelScene.class);
                                     Statistics.difficultyDLCEXLevel = 2;
+                                    Statistics.deepestFloor = 100;
+                                    Statistics.bossRushMode = true;
+                                    Dungeon.gold = 0;
+                                    Dungeon.rushgold = 16;
                                 } else if (index == 2) {
                                     TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
                                     if (timeFreeze != null) timeFreeze.disarmPresses();
@@ -295,6 +302,10 @@ public class ZeroCityLevel extends Level {
                                     InterlevelScene.curTransition.centerCell = -1;
                                     Game.switchScene(InterlevelScene.class);
                                     Statistics.difficultyDLCEXLevel = 3;
+                                    Statistics.deepestFloor = 100;
+                                    Statistics.bossRushMode = true;
+                                    Dungeon.gold = 0;
+                                    Dungeon.rushgold = 16;
                                 } else if (index == 3) {
                                     PaswordBadges.loadGlobal();
                                     List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
