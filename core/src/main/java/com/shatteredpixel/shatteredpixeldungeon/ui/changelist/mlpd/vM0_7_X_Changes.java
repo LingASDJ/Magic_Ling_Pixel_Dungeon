@@ -2,17 +2,22 @@ package com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.RivalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.PasswordBadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ArmyFlagSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusStarFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeepSeaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DragonGirlBlueSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DwarfGeneralSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DwarfSoliderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireCrystalSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HollowKnightSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KatydidSprites;
@@ -38,6 +43,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0714_Changes(changeInfos);
         add_V0713_Changes(changeInfos);
         add_V0712_Changes(changeInfos);
         add_V0711_Changes(changeInfos);
@@ -51,6 +57,78 @@ public class vM0_7_X_Changes {
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
     }
+    public static void add_V0714_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.1.5", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "pre"), false, null);
+        changes.hardlight(Window.ANSDO_COLOR);
+        changeInfos.add(changes);
+
+        Image cr = new DwarfGeneralSprite();
+        cr.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(cr, ("矮人将军"),
+                ("该数据已预载，将在下周六_2024-3.23_更新同步实装。")));
+
+        Image xr = new ArmyFlagSprite();
+        xr.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(xr, ("血刃帝国新篇"),
+                ("该数据已预载，将在下周六_2024-3.23_更新同步实装。")));
+
+        Image r = new DwarfSoliderSprite();
+        r.scale.set(PixelScene.align(0.9f));
+        changes.addButton(new ChangeButton(r, ("矮人军团"),
+                ("该数据已预载，将在下周六_2024-3.23_更新同步实装。")));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BZMDR_BOOKS), ("新玩家书籍"),
+                ("新玩家书籍加入")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GRILLED_FISH), ("新武器：烤鲱鱼"),
+                ("惊鸿杯第一届-百炼成钢胜出者，现已加入游戏内。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BUFFS), ("功能更新：效果按钮"),
+                ("现在可以主动取消有益效果")));
+
+        changes.addButton(new ChangeButton(new HollowKnightSprite(),("新NPC:小骑士"),
+                ("圣巢一哥。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKELETONGOLD), ("BossRushV1,6"),
+                ("1.修复一些异常\n\n" +
+                        "2.第四难度开放")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BOMB_SWORD), ("炸弹匕首"),
+                ("修复了炸弹可以被计数的问题")));
+
+        changes.addButton(new ChangeButton(new RivalSprite(),("暗影"),
+                ("强化AI，加强效果。")));
+
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS),("杂项调整"),
+                ("1.白宴NPC调整：优化对话逻辑\n" +
+                        "2.底层代码优化迭代\n" +
+                        "3.优化BGM大小\n" +
+                        "4.挑战等级调整：\n\n" +
+                        "1，2，3挑-D,\n" +
+                        "4，5，6挑-C,\n" +
+                        "7，8挑-B\n" +
+                        "9，10挑-B+\n" +
+                        "11，12，13挑-A\n" +
+                        "14挑-A+\n" +
+                        "15挑-S\n" +
+                        "16挑-SS\n" +
+                        "17挑-SSS")));
+    }
+
 
     public static void add_V0713_Changes( ArrayList<ChangeInfo> changeInfos ) {
         ChangeInfo changes = new ChangeInfo("v0.7.1.3-4", true, "");

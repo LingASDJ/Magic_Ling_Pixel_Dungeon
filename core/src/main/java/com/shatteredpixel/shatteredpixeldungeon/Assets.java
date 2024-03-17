@@ -413,6 +413,8 @@ public class Assets {
 
 		public static final String BZMR = "splashes/bzmdr_portraits.png";
 
+		public static final String HK = "splashes/hk.png";
+
 		public static final String YTZY = "splashes/yet_yog_portraits.png";
 
 		public static final String NYZ = "splashes/nyz_portraits.png";
@@ -445,6 +447,8 @@ public class Assets {
 
 		public static final String BZ	= "sprites/npc/bzmder.png";
 
+		public static final String HK	= "sprites/npc/hk.png";
+
 		public static final String PIA	= "sprites/npc/PianoLe.png";
 		public static final String JIT	= "sprites/npc/JIT.png";
 		public static final String WFS	    = "sprites/items/wf.png";
@@ -468,6 +472,8 @@ public class Assets {
 		public static final String DGS = "sprites/boss/dwarf_general.png";
 
 		public static final String DFL = "sprites/boss/army_flag.png";
+
+		public static final String DXL = "sprites/boss/dwarf_soldier.png";
 
 		public static final String TYPHON = "sprites/hollow/typhon.png";
 		public static final String MPHON = "sprites/hollow/morpheus.png";

@@ -62,9 +62,6 @@ public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        // 计算限制值，确保不低于最小值 1
-        int limit = Math.max(15 - level(), 1);
-
         spawnBomb(defender.pos);
         return super.proc(attacker, defender, damage);
     }

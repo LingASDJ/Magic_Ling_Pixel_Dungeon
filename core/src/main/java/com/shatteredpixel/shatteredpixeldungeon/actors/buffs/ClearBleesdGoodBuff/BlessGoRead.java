@@ -12,10 +12,6 @@ import com.watabou.utils.Bundle;
 
 public class BlessGoRead extends ClearLanterBuff {
 
-    {
-        type = buffType.POSITIVE;
-    }
-
     public static int level = 0;
     private int interval = 1;
 

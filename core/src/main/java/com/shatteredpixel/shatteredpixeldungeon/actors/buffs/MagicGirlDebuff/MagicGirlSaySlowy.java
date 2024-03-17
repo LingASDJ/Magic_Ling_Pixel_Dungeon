@@ -12,11 +12,6 @@ import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
 public class MagicGirlSaySlowy extends MagicGirlDebuff {
-
-    {
-        type = buffType.POSITIVE;
-    }
-
     public static int level = 0;
     private int interval = 1;
 

@@ -7,11 +7,6 @@ import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
 public class MagicGirlSayNoSTR extends MagicGirlDebuff {
-
-    {
-        type = buffType.POSITIVE;
-    }
-
     public static int level = 0;
     private int interval = 1;
 

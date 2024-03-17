@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingGold;
@@ -22,7 +23,11 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 abstract public class Boss extends Mob {
-
+        {
+            if(Statistics.difficultyDLCEXLevel==4){
+                immunities.add(Terror.class);
+            }
+        }
         protected boolean SprintableModeBoolean = (Statistics.bossRushMode || Dungeon.isChallenged(PRO));
 
         protected static float baseMin; //最小伤害
@@ -39,7 +44,6 @@ abstract public class Boss extends Mob {
             immunities.add(ScrollOfPsionicBlast.class); //添加ScrollOfPsionicBlast类
             immunities.add(ScrollOfRetribution.class); //添加ScrollOfRetribution类
             immunities.add(Corruption.class);
-
         }
 
         protected void initBaseStatus(float min, float max, float acc, float eva, float ht, float mid, float mad) {
@@ -173,7 +177,7 @@ abstract public class Boss extends Mob {
         super.notice();
         if (Statistics.bossRushMode && !(Dungeon.depth == 2 || Dungeon.depth == 4 || Dungeon.depth == 24 || Dungeon.depth == 27)){
             if(!first){
-                if(Statistics.difficultyDLCEXLevel == 3){
+                if(Statistics.difficultyDLCEXLevel >= 3){
                     RollEX();
                     RollCS();
                 } else if (Statistics.difficultyDLCEXLevel == 2){

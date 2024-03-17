@@ -343,7 +343,7 @@ public class DeepShadowLevel extends Level {
                 rival.misc2.level = rival.misc2.level()/2;
                 drop(rival.misc2, rivalJumpPoint );
 
-                rival.wand.level = rival.wand.level()*2;
+                rival.wand.level -= rival.wand.level()*4;
                 rival.wand.updateLevel();
                 drop(rival.wand, rivalJumpPoint );
 

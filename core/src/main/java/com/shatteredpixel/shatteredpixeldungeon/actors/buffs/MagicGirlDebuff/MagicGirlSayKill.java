@@ -7,10 +7,6 @@ import com.watabou.utils.Bundle;
 
 public class MagicGirlSayKill extends MagicGirlDebuff {
 
-    {
-        type = buffType.POSITIVE;
-    }
-
     public static int level = 0;
     private int interval = 1;
 

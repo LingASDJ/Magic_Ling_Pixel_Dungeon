@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 public abstract class Plot{
 
+
     public int process;
 
     public int needed_process = 0;

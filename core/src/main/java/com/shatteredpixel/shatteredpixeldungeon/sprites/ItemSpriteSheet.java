@@ -292,6 +292,9 @@ public class ItemSpriteSheet {
     public static final int WAR_SCYTHE      = WEP_TIER5+6;
 
     public static final int BOMB_SWORD     = WEP_TIER5+9;
+
+    public static final int GRILLED_FISH     = WEP_TIER5+11;
+    public static final int GRILLED_NOTE     = WEP_TIER5+12;
     static{
         assignItemRect(GREATSWORD,  16, 16);
         assignItemRect(WAR_HAMMER,  16, 16);
@@ -990,6 +993,7 @@ public class ItemSpriteSheet {
     public static final int  CITY_HOOD			= SCROLL_GOLD+2;
     public static final int  BOSSRUSH_GOLD			= SCROLL_GOLD+4;
 
+    public static final int  BZMDR_BOOKS			= SCROLL_GOLD+5;
     public static final int  BOSSRUSH_MINI			= SCROLL_GOLD+6;
 
     static {

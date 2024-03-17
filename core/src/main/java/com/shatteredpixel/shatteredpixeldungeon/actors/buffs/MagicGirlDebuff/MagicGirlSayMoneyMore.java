@@ -8,9 +8,6 @@ import com.watabou.utils.Bundle;
 
 public class MagicGirlSayMoneyMore extends MagicGirlDebuff {
 
-    {
-        type = buffType.POSITIVE;
-    }
 
     public static int level = 0;
     private int interval = 1;

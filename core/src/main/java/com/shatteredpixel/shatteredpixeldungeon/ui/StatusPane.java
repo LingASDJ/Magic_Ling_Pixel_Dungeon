@@ -430,9 +430,28 @@ public class StatusPane extends Component {
 			version.alpha(1f);
 			version.x = x + width - version.width();
 		} else if (!updateProgress.isEmpty()) {
-			version.text("Download:"+updateProgress);
+			version.text("Download:" + updateProgress);
 			version.alpha(1f);
 			version.x = x + width - version.width();
+		} else if(Statistics.bossRushMode) {
+			switch (Statistics.difficultyDLCEXLevel){
+				case 1:
+					version.text("v" + Game.version + "-"+"BossRush-EASY");
+					version.x = x + width - version.width();
+				break;
+				case 2:
+					version.text("v" + Game.version + "-"+"BossRush-NORMAL");
+					version.x = x + width - version.width();
+				break;
+				case 3:
+					version.text("v" + Game.version + "-"+"BossRush-HARD");
+					version.x = x + width - version.width();
+				break;
+				case 4:
+					version.text("v" + Game.version + "-"+"BossRush-HELL");
+					version.x = x + width - version.width();
+				break;
+			}
 		} else if(Challenges.activeChallenges()>13){
 			visual.am = 1f + 0.01f * Math.max(0f, (float) Math.sin(time += Game.elapsed));
 			time += Game.elapsed / 3.5f;

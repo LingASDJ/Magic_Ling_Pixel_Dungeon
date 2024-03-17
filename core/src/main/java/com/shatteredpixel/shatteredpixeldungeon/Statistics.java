@@ -45,6 +45,11 @@ public class Statistics {
 
 	public static int zeroItemLevel;
 
+	public static int hcDialogLevel;
+
+	public static int wcDialogLevel;
+
+
 	public static boolean youNoItem = false;
 
 	//中继器电话号码
@@ -310,6 +315,10 @@ public class Statistics {
 
 	private static final String ZEROLEVEL      = "zerolevel";
 
+	private static final String HKLEVEL      = "hklevel";
+	private static final String WKLEVEL      = "wklevel";
+
+
 	private static final String EXBOSS1		= "EXBOSS1";
 
 	private static final String XOL		= "xol";
@@ -345,6 +354,7 @@ public class Statistics {
 		ascended = false;
 
 		zeroItemLevel = 0;
+		hcDialogLevel = 0;
 		youNoItem = false;
 
 		gameTime = 0;
@@ -355,6 +365,7 @@ public class Statistics {
 
 
 		difficultyDLCEXLevel = 0;
+		wcDialogLevel = 0;
         bossRushMode = false;
 
         findMoon = false;
@@ -447,6 +458,10 @@ public class Statistics {
         bundle.put(LOVE,findMoon);
 
 		bundle.put(ZEROLEVEL,zeroItemLevel);
+
+		bundle.put(HKLEVEL,hcDialogLevel);
+
+		bundle.put(WKLEVEL,wcDialogLevel);
 
 		bundle.put(LOVX,deadGo);
 
@@ -582,6 +597,8 @@ public class Statistics {
 
 		iceCyanBlueSquareCoin = bundle.getInt(ICECLAN);
 
+		hcDialogLevel = bundle.getInt(HKLEVEL);
+
 		snow = bundle.getBoolean("SNOW");
 
 		CrivusbossTeleporter = bundle.getInt(BDK);
@@ -595,6 +612,8 @@ public class Statistics {
 		HiddenOK = bundle.getBoolean(HIDEEN);
 
 		difficultyDLCEXLevel = bundle.getInt(XOL);
+
+		wcDialogLevel = bundle.getInt(WKLEVEL);
 
 		CatFirst = bundle.getBoolean("CAT");
 

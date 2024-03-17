@@ -164,12 +164,77 @@ public class MenuPane extends Component {
 				public void update() {
 					super.update();
 					text(Integer.toString( Challenges.activeChallenges()));
-				    am = 1f + 0.01f*Math.max(0f, (float)Math.sin( time += Game.elapsed/1 ));
+				    am = 1f + 0.01f*Math.max(0f, (float)Math.sin( time += Game.elapsed));
 					time += Game.elapsed / 3.5f;
 					float r = 0.33f+0.57f*Math.max(0f, (float)Math.sin( time));
 					float g = 0.53f+0.57f*Math.max(0f, (float)Math.sin( time + 2*Math.PI/3 ));
 					float b = 0.63f+0.57f*Math.max(0f, (float)Math.sin( time + 4*Math.PI/3 ));
-					if (Challenges.activeChallenges() >= 12) {
+					switch (Challenges.activeChallenges()){
+						case 17:
+							challengeText.text("SSS");
+							challengeText.scale.set(PixelScene.align(0.67f));
+							challengeText.x = challengeIcon.x + (challengeIcon.width() - challengeText.width())/2f;
+							challengeText.y = challengeIcon.y + challengeIcon.height();
+							PixelScene.align(challengeText);
+							break;
+						case 16:
+							challengeText.text("SS");
+							challengeText.scale.set(PixelScene.align(0.67f));
+							challengeText.x = challengeIcon.x + (challengeIcon.width() - challengeText.width())/2f;
+							challengeText.y = challengeIcon.y + challengeIcon.height();
+							PixelScene.align(challengeText);
+							break;
+						case 15:
+							challengeText.text("S");
+							challengeText.scale.set(PixelScene.align(0.67f));
+							challengeText.x = challengeIcon.x + (challengeIcon.width() - challengeText.width())/2f;
+							challengeText.y = challengeIcon.y + challengeIcon.height();
+							PixelScene.align(challengeText);
+						break;
+						case 14:
+							challengeText.text("A+");
+							challengeText.scale.set(PixelScene.align(0.67f));
+							challengeText.x = challengeIcon.x + (challengeIcon.width() - challengeText.width())/2f;
+							challengeText.y = challengeIcon.y + challengeIcon.height();
+							PixelScene.align(challengeText);
+							break;
+						case 13:case 12:case 11:
+							challengeText.text("A");
+							challengeText.scale.set(PixelScene.align(0.67f));
+							challengeText.x = challengeIcon.x + (challengeIcon.width() - challengeText.width())/2f;
+							challengeText.y = challengeIcon.y + challengeIcon.height();
+							PixelScene.align(challengeText);
+						break;
+						case 9: case 10:
+							challengeText.text("B+");
+							challengeText.scale.set(PixelScene.align(0.67f));
+							challengeText.x = challengeIcon.x + (challengeIcon.width() - challengeText.width())/2f;
+							challengeText.y = challengeIcon.y + challengeIcon.height();
+							PixelScene.align(challengeText);
+							break;
+						case 8:case 7:
+							challengeText.text("B");
+							challengeText.scale.set(PixelScene.align(0.67f));
+							challengeText.x = challengeIcon.x + (challengeIcon.width() - challengeText.width())/2f;
+							challengeText.y = challengeIcon.y + challengeIcon.height();
+							PixelScene.align(challengeText);
+							break;
+						case 6:case 5:case 4:
+							challengeText.text("C");
+							challengeText.scale.set(PixelScene.align(0.67f));
+							challengeText.x = challengeIcon.x + (challengeIcon.width() - challengeText.width())/2f;
+							challengeText.y = challengeIcon.y + challengeIcon.height();
+							PixelScene.align(challengeText);
+							break;
+						case 3:case 2:case 1:
+							challengeText.text("D");
+							challengeText.scale.set(PixelScene.align(0.67f));
+							challengeText.x = challengeIcon.x + (challengeIcon.width() - challengeText.width())/2f;
+							challengeText.y = challengeIcon.y + challengeIcon.height();
+							PixelScene.align(challengeText);
+							break;
+					}
+					if (Challenges.activeChallenges() >= 13) {
 						challengeText.hardlight(r,g,b);
 						if (time >= 2f * Math.PI) time = 0;
 					} else if (Challenges.activeChallenges() > 9) {

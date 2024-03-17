@@ -202,7 +202,7 @@ public class CerDogBossLevel extends Level{
                                             Buff.affect( ncx, DiedCrused.class);
                                             DeathRong.tell(Messages.get(DeathRong.class, "fuck",hero.name()));
                                             if (Statistics.bossRushMode && !(Dungeon.depth == 2 || Dungeon.depth == 4 || Dungeon.depth == 24 || Dungeon.depth == 27)){
-                                                    if(Statistics.difficultyDLCEXLevel == 3){
+                                                    if(Statistics.difficultyDLCEXLevel >= 3){
                                                         Class<?extends ChampionEnemy> buffCls2;
                                                         switch (Random.Int(5)){
                                                             case 0: default:    buffCls2 = ChampionEnemy.Middle.class;      break;
@@ -591,7 +591,7 @@ public class CerDogBossLevel extends Level{
                                         }
                                     }
 
-                                    if(Statistics.difficultyDLCEXLevel == 3){
+                                    if(Statistics.difficultyDLCEXLevel >= 3){
                                         Class<?extends ChampionEnemy> buffCls2;
                                         switch (Random.Int(5)){
                                             case 0: default:    buffCls2 = ChampionEnemy.Middle.class;      break;

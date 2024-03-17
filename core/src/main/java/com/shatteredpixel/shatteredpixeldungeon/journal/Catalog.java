@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.IceCityBoo
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.NoKingMobBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.BzmdrBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.DeYiZiBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.MoneyMoreBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.PinkRandomBooks;
@@ -121,7 +122,7 @@ public enum Catalog {
 		PLAYBOOKS.seen.put( MoneyMoreBooks.class,          	 true);
 		PLAYBOOKS.seen.put( PinkRandomBooks.class,           true);
 		PLAYBOOKS.seen.put( DeYiZiBooks.class,          	 true);
-
+		PLAYBOOKS.seen.put(	BzmdrBooks.class,          	 true);
 	}
 	
 	public static LinkedHashMap<Catalog, Badges.Badge> catalogBadges = new LinkedHashMap<>();

@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
@@ -29,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
@@ -52,7 +54,10 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class Rival extends Boss implements Callback {
 
@@ -75,6 +80,60 @@ public class Rival extends Boss implements Callback {
     public KindofMisc misc2;
     public Wand wand;
     public MissileWeapon missile;
+
+    private int blinkCooldown = 0;
+
+    @Override
+    protected boolean getCloser( int target ) {
+        if (fieldOfView[target] && Dungeon.level.distance( pos, target ) > 2 && blinkCooldown <= 0 && !rooted) {
+
+            if (blink( target )) {
+                spend(-1 / speed());
+                return true;
+            } else {
+                return false;
+            }
+
+        } else {
+
+            blinkCooldown--;
+            return super.getCloser( target );
+
+        }
+    }
+
+    private boolean blink( int target ) {
+
+        Ballistica route = new Ballistica( pos, target, Ballistica.PROJECTILE);
+        int cell = route.collisionPos;
+
+        //can't occupy the same cell as another char, so move back one.
+        if (Actor.findChar( cell ) != null && cell != this.pos)
+            cell = route.path.get(route.dist-1);
+
+        if (Dungeon.level.avoid[ cell ] || (properties().contains(Property.LARGE) && !Dungeon.level.openSpace[cell])){
+            ArrayList<Integer> candidates = new ArrayList<>();
+            for (int n : PathFinder.NEIGHBOURS8) {
+                cell = route.collisionPos + n;
+                if (Dungeon.level.passable[cell]
+                        && Actor.findChar( cell ) == null
+                        && (!properties().contains(Property.LARGE) || Dungeon.level.openSpace[cell])) {
+                    candidates.add( cell );
+                }
+            }
+            if (candidates.size() > 0)
+                cell = Random.element(candidates);
+            else {
+                blinkCooldown = Random.IntRange(4, 6);
+                return false;
+            }
+        }
+
+        ScrollOfTeleportation.appear( this, cell );
+
+        blinkCooldown = Random.IntRange(4, 6);
+        return true;
+    }
 
     public Rival() {
         super();
@@ -134,7 +193,7 @@ public class Rival extends Boss implements Callback {
     private static final String MISC2	= "misc2";
     private static final String WAND	= "wand";
     private static final String MISSILE	= "missile";
-
+    private static final String BLINK_CD = "blink_cd";
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle( bundle );
@@ -144,6 +203,7 @@ public class Rival extends Boss implements Callback {
         bundle.put( MISC2, misc2 );
         bundle.put( WAND, wand );
         bundle.put( MISSILE, missile );
+        bundle.put(BLINK_CD, blinkCooldown);
     }
 
     @Override
@@ -154,6 +214,7 @@ public class Rival extends Boss implements Callback {
         misc1		= (KindofMisc)		bundle.get( MISC1 );
         misc2		= (KindofMisc)		bundle.get( MISC2 );
         wand		= (Wand)			bundle.get( WAND );
+        blinkCooldown = bundle.getInt(BLINK_CD);
         missile		= (MissileWeapon)	bundle.get( MISSILE );
         if (state != SLEEPING) BossHealthBar.assignBoss(this);
         if ((HP*2 <= HT)) BossHealthBar.bleed(true);
