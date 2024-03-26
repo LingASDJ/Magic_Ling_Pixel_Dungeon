@@ -80,7 +80,7 @@ public class Assets {
 
 
 		public static final String CITY_PO  = "environment/custom_tiles/parliament_above.png";
-		public static final String CITY_POX  = "environment/custom_tiles/parliament_behind.png";
+		public static final String CITY_POX  = "environment/custom_tiles/parliament_before_behind.png";
 
 
 		public static final String HOTEL_PO  = "environment/custom_tiles/hotel_above.png";
@@ -177,6 +177,10 @@ public class Assets {
 		public static final String Cerdog_Title  = "interfaces/bosslogo/cerberus-title.png";
 		public static final String Cerdog_Clear  = "interfaces/bosslogo/cerberus-clear.png";
 
+
+		public static final String General_Title  = "interfaces/bosslogo/general-title.png";
+		public static final String General_Clear  = "interfaces/bosslogo/general-clear.png";
+
 		public static final String Tengu_Title  = "interfaces/bosslogo/tengu-title.png";
 		public static final String Tengu_Clear  = "interfaces/bosslogo/tengu-clear.png";
 
@@ -226,6 +230,7 @@ public class Assets {
 		public static final String TOOLBAR  = "interfaces/toolbar.png";
 		public static final String SHADOW   = "interfaces/shadow.png";
 		public static final String BOSSHP   = "interfaces/boss_hp.png";
+		public static final String BOSSHPX   = "interfaces/dr_boss_hp.png";
 		public static final String BOSSHP_DARK   = "interfaces/boss_hp_normal.png";
 
 		public static final String SURFACE  = "interfaces/surface.png";
@@ -412,6 +417,8 @@ public class Assets {
 		public static final String ATRP = "splashes/ATRI_portraits.png";
 
 		public static final String BZMR = "splashes/bzmdr_portraits.png";
+
+		public static final String DG = "splashes/general_portraits.png";
 
 		public static final String HK = "splashes/hk.png";
 

@@ -228,7 +228,7 @@ public class Item implements Bundlable {
 	public String defaultAction(){
 		return defaultAction;
 	}
-	
+
 	public void execute( Hero hero ) {
 		String action = defaultAction();
 		if (action != null) {

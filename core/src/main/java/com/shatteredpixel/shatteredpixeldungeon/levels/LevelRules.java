@@ -24,14 +24,11 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.HotelLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.DeepShadowLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.ForestHardBossLevel;
@@ -117,12 +114,7 @@ public class LevelRules {
                 case 19:
                     return new CityLevel();
                 case 20:
-                    if ((Statistics.boss_enhance & 0x8) != 0) {
-                        Buff.affect(hero, TestDwarfMasterLock.class).set(1, 1);
-                        return new DwarfGeneralBossLevel();
-                    } else {
-                        return new NewCityBossLevel();
-                    }
+                    return new NewCityBossLevel();
                 case 21:
                 case 22:
                 case 23:
@@ -161,6 +153,8 @@ public class LevelRules {
                 switch (depth) {
                     case 0:
                         return new HotelLevel();
+                    case 5:
+                        return new LaveCavesBossLevel();
                     case 11:
                     case 12:
                     case 13:
@@ -168,6 +162,8 @@ public class LevelRules {
                         return new MiningLevel();
                     case 17: case 18:
                         return new AncientMysteryCityLevel();
+                    case 20:
+                        return new DwarfGeneralBossLevel();
                     default:
                         return new DeadEndLevel();
                 }

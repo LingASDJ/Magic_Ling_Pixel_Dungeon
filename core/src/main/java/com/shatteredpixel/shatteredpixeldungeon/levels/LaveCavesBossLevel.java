@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.FireDragon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.watabou.noosa.Tilemap;
@@ -140,7 +141,6 @@ public class LaveCavesBossLevel extends Level{
         via.pos(0, 0);
         customTiles.add(via);
 
-
         buildFlagMaps();
         cleanWalls();
 
@@ -215,6 +215,9 @@ public class LaveCavesBossLevel extends Level{
     @Override
     protected void createMobs() {
 
+        FireDragon boss = new FireDragon();
+        boss.pos =  32*15 + 23;
+        mobs.add(boss);
     }
 
     /**

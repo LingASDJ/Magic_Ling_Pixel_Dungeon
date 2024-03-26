@@ -1,4 +1,4 @@
-package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
+package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;

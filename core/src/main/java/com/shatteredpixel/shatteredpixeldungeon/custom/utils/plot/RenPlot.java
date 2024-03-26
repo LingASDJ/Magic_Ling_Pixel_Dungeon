@@ -1,6 +1,7 @@
-package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
+package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.REN;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Script;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.utils.Random;
@@ -107,7 +108,7 @@ public class RenPlot extends Plot {
 
     public static class End extends Plot {
         private static String[] TXT_RANDOM = {Messages.get(REN.class,"roll1"),Messages.get(REN.class,"roll2"),
-                Messages.get(REN.class,"roll3")};
+                Messages.get(REN.class,"roll3"), Messages.get(REN.class,"roll4"), Messages.get(REN.class,"roll5"), Messages.get(REN.class,"roll6"), Messages.get(REN.class,"roll7"), Messages.get(REN.class,"roll8"), Messages.get(REN.class,"roll9")};
         private final static int maxprocess = 1;
 
         {

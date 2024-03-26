@@ -1,4 +1,4 @@
-package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
+package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.zeroItemLevel;

@@ -1,32 +1,22 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.zeroItemLevel;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.BzmdrHotelPlot;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BzmdrSprite;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
-import java.util.ArrayList;
-
 public class Bzmdr extends NTNPC {
-
-    protected ArrayList<String> chat;
-    protected ArrayList<String> B_chat;
-    protected ArrayList<String> C_chat;
-    protected ArrayList<String> D_chat;
-    protected ArrayList<String> E_chat;
-
     private int died;
 
     private boolean first=true;
@@ -60,79 +50,32 @@ public class Bzmdr extends NTNPC {
     {
         spriteClass = BzmdrSprite.class;
 
-        chat = new ArrayList<String>() {
-            {
-                add((Messages.get(Bzmdr.class, "a_message1")));
-            }
-        };
-
-        B_chat = new ArrayList<String>() {
-            {
-                add((Messages.get(Bzmdr.class, "b_message1")));
-            }
-        };
-
-        C_chat = new ArrayList<String>() {
-            {
-                if(Statistics.lanterfireactive){
-                    add((Messages.get(Bzmdr.class, "c_message2")));
-                } else if(Challenges.activeChallenges()==0){
-                    add((Messages.get(Bzmdr.class, "c_message1")));
-                } else {
-                    add((Messages.get(Bzmdr.class, "c_message3")));
-                }
-
-            }
-        };
-
-        D_chat = new ArrayList<String>() {
-            {
-                if(Challenges.activeChallenges()>=16){
-                    add((Messages.get(Bzmdr.class, "d_message2")));
-                } else if(Challenges.activeChallenges()>=13) {
-                    add((Messages.get(Bzmdr.class, "d_message1")));
-                }
-            }
-        };
-
-        E_chat = new ArrayList<String>() {
-            {
-                add((Messages.get(Bzmdr.class, "e_message1")));
-                add((Messages.get(Bzmdr.class, "e_message2")));
-                add((Messages.get(Bzmdr.class, "e_message3")));
-            }
-        };
-
     }
 
     @Override
     public boolean interact(Char c) {
-        if(first){
-            WndQuest.chating(this,chat);
-            first=false;
-        } else if(secnod) {
-            WndQuest.chating(this,B_chat);
 
-            if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
-                Dungeon.level.drop(new Gold(1), hero.pos);
-            } else {
-                if(Random.NormalIntRange(0,100)<=50){
-                    Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.SEED ) ), hero.pos );
-                } else {
-                    Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.STONE) ), hero.pos );
+        sprite.turnTo(pos, hero.pos);
+        BzmdrHotelPlot plot = new BzmdrHotelPlot();
+        BzmdrHotelPlot.BzmdrHotelPlotEND plot2 = new  BzmdrHotelPlot.BzmdrHotelPlotEND();
+        if (first) {
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndDialog(plot,false));
                 }
-            }
-
-
-            zeroItemLevel++;
-            secnod = false;
-        } else if(!Statistics.amuletObtained) {
-            WndQuest.chating(this,C_chat);
-        } else if(rd) {
-            WndQuest.chating(this,D_chat);
-            rd = false;
+            });
+            //Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), hero.pos );
+            first=false;
+        } else if(Statistics.amuletObtained) {
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndDialog(plot2,false));
+                }
+            });
         } else {
-            WndQuest.chating(this,E_chat);
+            yell("……");
         }
         return true;
     }

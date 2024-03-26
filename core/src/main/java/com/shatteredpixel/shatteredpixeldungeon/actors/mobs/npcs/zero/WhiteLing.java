@@ -3,7 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.LingPlot;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.LingPlot;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhiteGirlSprites;

@@ -67,7 +67,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.DragonBluePlot;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.DragonBluePlot;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.EmoIcon;
@@ -1752,6 +1752,13 @@ public class GameScene extends PixelScene {
 						scene.showBanner(bossSlain);
 					}
 					break;
+				case 20:
+					if(Dungeon.branch == 1){
+						bossSlain.texture(Assets.Interfaces.General_Title);
+						bossSlain.show( Window.ANSDO_COLOR, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+					}
+					break;
 				case 25:
 					if(Dungeon.isChallenged(CS)) {
 						bossSlain.texture(Assets.Interfaces.YogZot_Title);
@@ -1812,6 +1819,13 @@ public class GameScene extends PixelScene {
 					if(Dungeon.branch == 3){
 						bossSlain.texture(Assets.Interfaces.SakaBJY_Clear);
 						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+					}
+					break;
+				case 20:
+					if(Dungeon.branch == 1){
+						bossSlain.texture(Assets.Interfaces.General_Clear);
+						bossSlain.show( Window.ANSDO_COLOR, 0.3f, 5f);
 						scene.showBanner(bossSlain);
 					}
 					break;

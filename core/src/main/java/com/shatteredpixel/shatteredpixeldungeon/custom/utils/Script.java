@@ -2,6 +2,8 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.RenPlot;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.tweeners.AlphaTweener;

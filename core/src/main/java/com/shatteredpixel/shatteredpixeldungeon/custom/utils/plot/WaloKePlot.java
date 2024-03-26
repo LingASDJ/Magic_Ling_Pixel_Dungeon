@@ -1,21 +1,21 @@
-package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
+package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 
-public class CryStalPlot extends Plot {
+public class WaloKePlot extends Plot {
 
 
-    private final static int maxprocess = 6;
+    private final static int maxprocess = 9;
 
     {
         process = 1;
     }
 
     protected String getPlotName() {
-        return "";
+        return SEWER_NAME;
     }
 
     @Override
@@ -50,15 +50,15 @@ public class CryStalPlot extends Plot {
                 case 6:
                     process_to_6();
                     break;
-//                case 7:
-//                    process_to_7();
-//                    break;
-//                case 8:
-//                    process_to_8();
-//                    break;
-//                case 9:
-//                    process_to_9();
-//                    break;
+                case 7:
+                    process_to_7();
+                    break;
+                case 8:
+                    process_to_8();
+                    break;
+                case 9:
+                    process_to_9();
+                    break;
 //                case 10:
 //                    process_to_10();
 //                    break;
@@ -82,32 +82,49 @@ public class CryStalPlot extends Plot {
 
     @Override
     public void skip() {
+        diagulewindow.cancel();
+        WndDialog.settedPlot = null;
     }
+
 
     private void process_to_1() {
         diagulewindow.hideAll();
-        diagulewindow.setLeftName(Messages.get(Amulet.class,"title"));
-        diagulewindow.changeText(Messages.get(Amulet.class, "end_message1"));
+        Dungeon.hero.interrupt();
+        diagulewindow.setLeftName(Messages.get(WaloKe.class, "name"));
+        diagulewindow.changeText(Messages.get(WaloKe.class, "message1",Dungeon.hero.name()));
     }
 
     private void process_to_2() {
-        diagulewindow.changeText(Messages.get(Amulet.class, "end_message2", Dungeon.hero.name()));
+        diagulewindow.changeText(Messages.get(WaloKe.class, "message2"));
     }
 
     private void process_to_3() {
-        diagulewindow.changeText(Messages.get(Amulet.class, "end_message3"));
+        diagulewindow.changeText(Messages.get(WaloKe.class, "message3"));
     }
 
     private void process_to_4() {
-        diagulewindow.changeText(Messages.get(Amulet.class, "end_message4"));
+        diagulewindow.changeText(Messages.get(WaloKe.class, "message4"));
     }
 
     private void process_to_5() {
-        diagulewindow.changeText(Messages.get(Amulet.class, "end_message5", Dungeon.hero.name()));
+        diagulewindow.changeText(Messages.get(WaloKe.class, "message5"));
     }
 
+
     private void process_to_6() {
-        diagulewindow.changeText(".................................");
+        diagulewindow.changeText(Messages.get(WaloKe.class, "message6"));
+    }
+
+    private void process_to_7() {
+        diagulewindow.changeText(Messages.get(WaloKe.class, "message7"));
+    }
+
+    private void process_to_8() {
+        diagulewindow.changeText(Messages.get(WaloKe.class, "message8"));
+    }
+
+    private void process_to_9() {
+        diagulewindow.changeText(Messages.get(WaloKe.class, "message9"));
     }
 
 }

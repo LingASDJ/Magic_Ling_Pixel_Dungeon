@@ -68,6 +68,8 @@ public class BGMPlayer {
                     playBGM(Assets.TOWN, true);
                 } else if(d == 16 || d == 17 || d == 18 || d == 19  ){
                     playBGM(Assets.Music.ANCITY, true);
+                } else if(d == 20 ) {
+                    playBGM(Assets.BGM_4, true);
                 }
                 if (d == 11 || d == 12 || d == 13 || d == 14) {
                     if(level.locked){
@@ -264,7 +266,7 @@ public class BGMPlayer {
                    }
                 }
             } else if (Dungeon.bossLevel() && t == 20) {
-                if((Statistics.boss_enhance & 0x8) != 0)  playBGM(Assets.BGM_BOSSD2, true);
+                if(s == 1) playBGM(Assets.BGM_BOSSD2, true);
                 else  playBGM(Assets.BGM_BOSSD, true);
             } else if (Dungeon.bossLevel() && t == 25 && Dungeon.isChallenged(CS) && !Statistics.NoTime) {
                 playBGM(Assets.BGM_BOSSE3, true);

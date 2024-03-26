@@ -16,13 +16,15 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneralNPC;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -33,8 +35,6 @@ public class DwarfGeneralBossLevel extends Level {
         color1 = 0x801500;
         color2 = 0xa68521;
     }
-
-
 
     private static final int WIDTH = 21;
     private static final int HEIGHT = 31;
@@ -69,18 +69,18 @@ public class DwarfGeneralBossLevel extends Level {
             C,C,C,C,W,E,W,W,W,W,W,W,W,W,W,W,C,C,C,C,C,
             C,C,C,C,W,E,W,C,C,C,C,C,C,C,C,C,C,C,C,C,C,
             C,C,C,C,W,E,W,S,S,S,S,S,S,S,C,C,C,C,C,C,C,
-            C,C,C,W,W,M,W,S,S,S,S,S,S,S,S,H,W,W,C,C,C,
-            C,C,C,W,R,E,E,E,V,V,V,E,V,R,E,E,E,W,C,C,C,
-            C,C,W,W,E,E,E,E,V,V,V,V,E,E,R,E,E,W,W,C,C,
-            C,C,W,R,E,E,E,E,E,E,E,E,E,V,E,E,V,V,W,C,C,
-            C,C,W,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,W,C,C,
-            C,C,W,E,E,V,E,E,E,E,E,E,E,E,E,E,E,E,W,C,C,
-            C,C,W,W,E,E,E,E,E,E,E,E,E,E,E,V,E,W,W,C,C,
-            C,C,C,W,E,E,E,E,E,E,E,E,E,E,E,V,E,W,C,C,C,
-            C,C,W,W,E,V,R,E,E,E,E,E,E,E,E,V,E,W,W,C,C,
-            C,C,W,E,E,V,E,E,E,E,E,E,E,E,E,E,E,E,W,C,C,
-            C,C,W,R,E,E,E,E,E,E,E,E,E,E,E,R,E,E,W,C,C,
-            C,C,W,W,E,E,E,V,V,E,E,E,V,V,V,E,E,W,W,C,C,
+            C,C,C,S,W,M,W,S,S,S,S,S,S,S,S,H,W,S,C,C,C,
+            C,C,C,S,R,E,E,E,V,V,V,E,V,R,E,E,E,S,C,C,C,
+            C,C,S,S,E,E,E,E,V,V,V,V,E,E,R,E,E,S,S,C,C,
+            C,C,S,R,E,E,E,E,E,E,E,E,E,V,E,E,V,V,S,C,C,
+            C,C,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,C,C,
+            C,C,S,E,E,V,E,E,E,E,E,E,E,E,E,E,E,E,S,C,C,
+            C,C,S,S,E,E,E,E,E,E,E,E,E,E,E,V,E,S,S,C,C,
+            C,C,C,S,E,E,E,E,E,E,E,E,E,E,E,V,E,S,C,C,C,
+            C,C,S,S,E,V,R,E,E,E,E,E,E,E,E,V,E,S,S,C,C,
+            C,C,S,E,E,V,E,E,E,E,E,E,E,E,E,E,E,E,W,C,C,
+            C,C,S,R,E,E,E,E,E,E,E,E,E,E,E,R,E,E,W,C,C,
+            C,C,S,W,E,E,E,V,V,E,E,E,V,V,V,E,E,W,W,C,C,
             C,C,C,W,W,W,R,E,E,E,E,E,V,V,V,W,W,W,C,C,C,
             C,C,C,C,C,W,W,E,R,E,E,E,E,R,W,W,C,C,C,C,C,
             C,C,C,C,C,C,W,W,W,W,D,W,W,W,W,C,C,C,C,C,C,
@@ -124,33 +124,36 @@ public class DwarfGeneralBossLevel extends Level {
     @Override
     public void occupyCell( Char ch ) {
         super.occupyCell(ch);
-        GLog.p(String.valueOf(hero.pos));
-        GLog.b("BOSS");
-
-        if (status == START && ch == Dungeon.hero) {
-            progress();
-            seal();
-        }
-
+        //GLog.p(String.valueOf(hero.pos));
+        //GLog.b("BOSS");
     }
-
-
 
     @Override
     public void seal() {
         super.seal();
 
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            if (mob instanceof DwarfGeneralNPC) {
+                mob.die(null);
+                GameScene.flash(Window.GDX_COLOR);
+                AlarmTrap goes = new AlarmTrap();
+                goes.pos = mob.pos;
+                goes.activate();
+            }
+        }
+
+
         DwarfGeneral boss = new DwarfGeneral();
         boss.pos = 367;
+        boss.notice();
+        boss.state = boss.HUNTING;
         GameScene.add(boss);
         ScrollOfTeleportation.appear(hero,493);
-
 
         Level.set(514, LOCKED_DOOR);
         GameScene.updateMap(514);
         Dungeon.observe();
 
-        GLog.p(Messages.get(this,"dead_go"));
         Sample.INSTANCE.play(Assets.Sounds.DEATH);
     }
 
@@ -240,7 +243,9 @@ public class DwarfGeneralBossLevel extends Level {
 
     @Override
     protected void createMobs() {
-
+        DwarfGeneralNPC boss = new DwarfGeneralNPC();
+        boss.pos = 367;
+        mobs.add(boss);
     }
 
     @Override

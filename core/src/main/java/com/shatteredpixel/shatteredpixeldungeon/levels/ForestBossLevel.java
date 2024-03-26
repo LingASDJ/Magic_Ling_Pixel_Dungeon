@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
@@ -177,7 +178,7 @@ public class ForestBossLevel extends Level {
 
         super.occupyCell( ch );
 
-        boolean isTrue = ch.pos == LDBossDoor && ch == hero && Dungeon.level.distance(ch.pos, entrance) >= 2;
+        boolean isTrue = ch.pos == LDBossDoor && ch == hero && level.distance(ch.pos, entrance) >= 2;
 
         //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
         if (map[getBossDoor] == Terrain.DOOR && isTrue || map[getBossDoor] == Terrain.EMBERS && isTrue) {
@@ -246,8 +247,10 @@ public class ForestBossLevel extends Level {
         switch(Random.NormalIntRange(1,6)){
             case 1:case 2:case 3:
                 for (int i : RatKingRoomASpawn) {
+                    //被注释的策略只能在下楼时才会更新，所以需要使用下面的策略 2023-9-10
                     //drop(new Gold( Random.IntRange( 10, 25 )),i).type = Heap.Type.CHEST;
-                    Heap droppedGold = Dungeon.level.drop( new Gold( Random.IntRange( 10, 25 )),i);
+
+                    Heap droppedGold = level.drop( new Gold( Random.IntRange( 10, 25 )),i);
                     droppedGold.type = Heap.Type.CHEST;
                     //必须追加一个view处理才能让金币的类型申请给地牢view处理后变成箱子样子
                     droppedGold.sprite.view( droppedGold );
@@ -258,14 +261,14 @@ public class ForestBossLevel extends Level {
 
                 drop( new CrystalKey(Statistics.bossRushMode ? 2 : 5 ), WIDTH*7+29 );
 
-                Heap droppedA = Dungeon.level.drop( Generator.randomUsingDefaults( Generator.Category.ARMOR),
+                Heap droppedA = level.drop( Generator.randomUsingDefaults( Generator.Category.ARMOR),
                         WIDTH*7+28 );
                 droppedA.type = Heap.Type.CRYSTAL_CHEST;
                 droppedA.sprite.view( droppedA );
             break;
             case 4: case 5: case 6:
                 for (int i : RatKingRoomBSpawn) {
-                    Heap droppedGold = Dungeon.level.drop( new Gold( Random.IntRange( 10, 25 )),i);
+                    Heap droppedGold = level.drop( new Gold( Random.IntRange( 10, 25 )),i);
                     droppedGold.type = Heap.Type.CHEST;
                     droppedGold.sprite.view( droppedGold );
                 }
@@ -275,7 +278,7 @@ public class ForestBossLevel extends Level {
 
                 drop( new CrystalKey(Statistics.bossRushMode ? 2 : 5 ), WIDTH*7+4 );
 
-                Heap droppedB = Dungeon.level.drop( Generator.randomUsingDefaults( Generator.Category.WEAPON),
+                Heap droppedB = level.drop( Generator.randomUsingDefaults( Generator.Category.WEAPON),
                         WIDTH*7+3 );
                 droppedB.type = Heap.Type.CRYSTAL_CHEST;
                 droppedB.sprite.view( droppedB );

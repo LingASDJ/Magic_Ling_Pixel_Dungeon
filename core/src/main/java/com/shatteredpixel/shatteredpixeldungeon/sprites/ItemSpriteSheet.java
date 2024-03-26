@@ -397,6 +397,9 @@ public class ItemSpriteSheet {
 
     public static final int ARMOR_ANCITY     = ARMOR+11;
 
+
+    public static final int DW_FT     = ARMOR+12;
+
     static{
         assignItemRect(ARMOR_WARRIOR,   15, 13);
         assignItemRect(ARMOR_MAGE,      13, 13);
@@ -411,6 +414,8 @@ public class ItemSpriteSheet {
         assignItemRect(ARMOR_PLATE,     15, 15);
         assignItemRect(ARMOR_ANCITY,    15, 14);
         assignItemRect(ARMOR_LAMELLAR,  14, 14);
+
+        assignItemRect(DW_FT,           10, 10);
     }
 
     //16 free slots

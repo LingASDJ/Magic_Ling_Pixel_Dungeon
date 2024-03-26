@@ -1,4 +1,4 @@
-package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
+package com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
@@ -12,7 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Image;
 
-public class HollowKnightPlot extends Plot  {
+public class HollowKnightPlot extends Plot {
     private final static int maxprocess = 1;
 
     {
@@ -76,7 +76,8 @@ public class HollowKnightPlot extends Plot  {
                 break;
             case 2:
             if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
-                    Dungeon.level.drop(new Gold(1), hero.pos);
+                Dungeon.level.drop(new Gold(1), hero.pos);
+                diagulewindow.changeText( Messages.get(HollowKnight.class, "message2B"));
             } else {
                 Dungeon.level.drop( new StoneOfBlink(), hero.pos );
                 Statistics.zeroItemLevel++;
