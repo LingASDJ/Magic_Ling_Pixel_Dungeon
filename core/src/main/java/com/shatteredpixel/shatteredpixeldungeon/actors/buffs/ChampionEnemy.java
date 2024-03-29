@@ -708,12 +708,12 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public float meleeDamageFactor() {
-			return 1+Statistics.gameDay*0.05f;
+			return 1+Statistics.gameDay*0.01f;
 		}
 
 		@Override
 		public float evasionAndAccuracyFactor() {
-			return 1+Statistics.gameDay*0.05f;
+			return 1+Statistics.gameDay*0.01f;
 		}
 
 		public static float statModifier(Char ch){
