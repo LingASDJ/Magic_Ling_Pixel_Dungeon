@@ -1376,10 +1376,20 @@ public class GameScene extends PixelScene {
 							WndStory.showChapter( WndStory.ID_SEWERS );
 							break;
 						case 5:
-							if(Statistics.ExFruit){
-								WndStory.showChapter( WndStory.ID_EXSEWERSBOSS );
-							} else {
-								WndStory.showChapter( WndStory.ID_SEWERSBOSS );
+							switch(Dungeon.branch) {
+								case 0:
+									if(Statistics.ExFruit){
+										WndStory.showChapter( WndStory.ID_EXSEWERSBOSS );
+									} else {
+										WndStory.showChapter( WndStory.ID_SEWERSBOSS );
+									}
+									break;
+								case 1:
+									WndStory.showChapter(WndStory.ID_LAVA);
+									break;
+								case 3:
+									WndStory.showChapter(WndStory.ID_LAVABOSS);
+									break;
 							}
 							break;
 						case 6:
@@ -1724,9 +1734,16 @@ public class GameScene extends PixelScene {
 						break;
 					}
 				case 5:
+					if(Dungeon.branch ==3 ){
+						bossSlain.texture(Assets.Interfaces.DIZF_Title);
+						bossSlain.show( Window.R_COLOR, 0.4f, 6f);
+						scene.showBanner(bossSlain);
+						break;
+					} else {
 						bossSlain.texture(Statistics.ExFruit ? Assets.Interfaces.QliPhothEX_Title : Assets.Interfaces.QliPhoth_Title);
 						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
+					}
 					break;
 				case 10:
 					if ( ((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && !Statistics.mustTengu) {

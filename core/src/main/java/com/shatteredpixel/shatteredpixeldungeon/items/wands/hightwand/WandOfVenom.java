@@ -70,7 +70,7 @@ public class WandOfVenom extends DamageWand {
     public void onZap(Ballistica bolt) {
         VenomGas gas = Blob.seed(bolt.collisionPos, 500 + 10 * buffedLvl(),  VenomGas.class);
         CellEmitter.get(bolt.collisionPos).burst(Speck.factory(Speck.CORROSION), 10 );
-        gas.setStrength(4 + buffedLvl(), getClass());
+        gas.setStrength(3 + buffedLvl(), getClass());
         GameScene.add(gas);
         Sample.INSTANCE.play(Assets.Sounds.GAS);
 

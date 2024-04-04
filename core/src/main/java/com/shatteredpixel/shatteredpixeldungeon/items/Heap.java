@@ -155,6 +155,13 @@ public class Heap implements Bundlable {
 		}
 		return this;
 	}
+
+	public Heap MustCursed(){
+		for (Item item : items) {
+			item.cursed = true;
+		}
+		return this;
+	}
 	
 	public int size() {
 		return items.size();

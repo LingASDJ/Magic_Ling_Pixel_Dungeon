@@ -8,15 +8,13 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.PasswordBadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ArmyFlagSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusStarFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeepSeaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DragonGirlBlueSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DwarfGeneralSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DwarfSoliderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireCrystalSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FireDragonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HollowKnightSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -44,6 +42,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0716_Changes(changeInfos);
         add_V0715_Changes(changeInfos);
         add_V0714_Changes(changeInfos);
         add_V0713_Changes(changeInfos);
@@ -61,29 +60,62 @@ public class vM0_7_X_Changes {
     }
 
 
+    public static void add_V0716_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.1.8", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        Image dragonSprite = new FireDragonSprite();
+        dragonSprite.scale.set(PixelScene.align(0.72f));
+        changes.addButton(new ChangeButton(dragonSprite, ("新Boss：熔岩火龙"),
+                ("丛林的幕后主谋，你能否与之一战？同时祝火龙一周年生日快乐。")));
+
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DRAGONSHILED), ("新boss专武：龙血鳞片"),
+                ("欢迎试水")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LINGPEA), ("新主线剧情：无光烈焰之章"),
+                ("丛林的真相，在这里呈现……")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES),("新徽章加入"),
+                ("一个隐藏徽章，一个常规徽章。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS),("其他改动"),
+                ("1.部分素材优化迭代\n" +
+                "2.部分文案优化\n" +
+                        "3.部分细节优化更新\n" +
+                        "4.图鉴系统初步应用")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BUFFS), ("平衡调整"),
+                ("1.归返秘卷和返回晶柱以及空间信标在子层无效\n" +
+                        "2.升级卷轴不会再在子层生成")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.1.8版本:\n\n" +
+                        "1.修复BR模式中的相关异常\n" +
+                        "2.部分文案异常修复\n" +
+                        "3.修复孤城数值异常相关问题,修复拟态王相关问题"
+        ));
+
+    }
+
+
     public static void add_V0715_Changes( ArrayList<ChangeInfo> changeInfos ) {
         ChangeInfo changes = new ChangeInfo("v0.7.1.6", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "pre"), false, null);
-        changes.hardlight(Window.ANSDO_COLOR);
-        changeInfos.add(changes);
-
-        Image cr = new DwarfGeneralSprite();
-        cr.scale.set(PixelScene.align(0.8f));
-        changes.addButton(new ChangeButton(cr, ("矮人将军"),
-                ("该数据已预载，将在下周六_2024-3.23_更新同步实装。")));
-
-        Image xr = new ArmyFlagSprite();
-        xr.scale.set(PixelScene.align(0.8f));
-        changes.addButton(new ChangeButton(xr, ("血刃帝国新篇"),
-                ("该数据已预载，将在下周六_2024-3.23_更新同步实装。")));
-
-        Image r = new DwarfSoliderSprite();
-        r.scale.set(PixelScene.align(0.9f));
-        changes.addButton(new ChangeButton(r, ("矮人军团"),
-                ("该数据已预载，将在下周六_2024-3.23_更新同步实装。")));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
         changes.hardlight(Window.TITLE_COLOR);

@@ -133,6 +133,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dairikyan;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dirk;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DragonShiled;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
@@ -525,8 +526,9 @@ public class Generator {
 					DiedCrossBow.class,
 					WarScythe.class,
 					SaiPlus.class,
+					DragonShiled.class
 			};
-			WEP_T5.probs = new float[]{ 6, 3, 3, 3, 3, 3,3,4,SPDSettings.isItemUnlock( new DiedCrossBow().getClass().getSimpleName() ) ? 1.5f : 0,2,SPDSettings.isItemUnlock( new SaiPlus().getClass().getSimpleName() ) ? 1f : 0};
+			WEP_T5.probs = new float[]{ 6, 3, 3, 3, 3, 3,3,4,SPDSettings.isItemUnlock( new DiedCrossBow().getClass().getSimpleName() ) ? 1.5f : 0,2,SPDSettings.isItemUnlock( new SaiPlus().getClass().getSimpleName() ) ? 1f : 0,0};
 
 			WEP_T6.classes = new Class<?>[]{
 					IceFishSword.class,

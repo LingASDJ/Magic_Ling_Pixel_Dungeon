@@ -23,10 +23,12 @@ package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -65,6 +67,9 @@ public class Pasty extends Food {
 			case CJ:
 				image = ItemSpriteSheet.Fish_A;
 				break;
+			case QMJ:
+				image = ItemSpriteSheet.QKA;
+				break;
 		}
 	}
 	
@@ -99,6 +104,15 @@ public class Pasty extends Food {
 				Buff.affect(hero, Haste.class, 4f);
 				Buff.affect(Dungeon.hero, ArtifactRecharge.class).prolong(hero.HT/10f);
 				break;
+			case QMJ:
+				//...but it also awards an extra item that restores 150 hunger
+				QingKong lings = new QingKong();
+				Dungeon.level.drop(lings, hero.pos).sprite.drop();
+				hero.belongings.charge(0.5f); //2 turns worth
+				ScrollOfRecharging.charge( hero );
+				Buff.affect(hero, Barrier.class).setShield(8);
+				Buff.affect( hero, MindVision.class, 8f );
+				break;
 		}
 	}
 
@@ -115,6 +129,8 @@ public class Pasty extends Food {
 				return Messages.get(this, "moon");
 			case CJ:
 				return Messages.get(this, "fish_name");
+			case QMJ:
+				return Messages.get(this, "qk_name");
 		}
 	}
 
@@ -131,6 +147,8 @@ public class Pasty extends Food {
 				return Messages.get(this, "moon_desc", Dungeon.hero.name());
 			case CJ:
 				return Messages.get(this, "fish_desc");
+			case QMJ:
+				return Messages.get(this, "qk_desc");
 		}
 	}
 
@@ -141,11 +159,23 @@ public class Pasty extends Food {
 			energy = Hunger.HUNGRY/2;
 		}
 
-		@Override
-		public int value() {
-			return 10 * quantity;
+    }
+
+	public static class QingKong extends Food {
+
+		{
+			image = ItemSpriteSheet.QKB;
+			energy = Hunger.HUNGRY/2;
 		}
-	}
+
+		@Override
+		protected void satisfy(Hero hero) {
+			super.satisfy(hero);
+			Buff.affect(hero, Barrier.class).setShield(8);
+			Buff.affect(hero, MindVision.class, 5f);
+		}
+
+    }
 	
 	@Override
 	public int value() {

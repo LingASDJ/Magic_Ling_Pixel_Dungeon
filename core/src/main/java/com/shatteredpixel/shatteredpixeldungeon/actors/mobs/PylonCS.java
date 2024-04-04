@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -32,7 +33,7 @@ public class PylonCS extends Mob {
     {
         spriteClass = PylonCSSprite.class;
 
-        HP = HT = 270;
+        HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 135 : 270;
 
         maxLvl = 324;
 
@@ -151,14 +152,20 @@ public class PylonCS extends Mob {
         super.die(cause);
         ((CaveTwoBossLevel)Dungeon.level).eliminatePylon();
 
-        int blobs = Random.chances(new float[]{4, 5, 6, 5, 4});
-        for (int i = 0; i < blobs; i++){
-            int ofs;
-            do {
-                ofs = PathFinder.NEIGHBOURS8[Random.NormalIntRange(1,3)];
-            } while (!Dungeon.level.passable[pos + ofs]);
-            Dungeon.level.drop( new PotionOfLightningShiled(), pos + ofs ).sprite.drop( pos );
+        if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+            Dungeon.level.drop( new PotionOfLightningShiled(), pos ).sprite.drop( pos );
+        } else {
+            int blobs = Random.chances(new float[]{4, 5, 6, 5, 4});
+            for (int i = 0; i < blobs; i++){
+                int ofs;
+                do {
+                    ofs = PathFinder.NEIGHBOURS8[Random.NormalIntRange(1,3)];
+                } while (!Dungeon.level.passable[pos + ofs]);
+                Dungeon.level.drop( new PotionOfLightningShiled(), pos + ofs ).sprite.drop( pos );
+            }
         }
+
+
     }
 
     private static final String ALIGNMENT = "alignment";

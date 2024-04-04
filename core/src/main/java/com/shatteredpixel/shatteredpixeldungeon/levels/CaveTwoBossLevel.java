@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -106,6 +107,16 @@ public class CaveTwoBossLevel extends Level {
     public static Rect mainArena = new Rect(5, 14, 28, 37);
     public static Rect gate = new Rect(14, 13, 19, 14);
     public static int[] pylonPositions = new int[]{ 4 + 13*WIDTH, 28 + 13*WIDTH, 4 + 37*WIDTH, 28 + 37*WIDTH };
+
+
+    public static int[] pylonHardPositions = new int[]{940,742,838,844};
+
+    public static int[] reDungeonLevel = new int[]{
+            830,831,832,834,835,836,
+            846,847,848,850,851,852,
+            478,511,544,610,643,676,
+            1006,1039,1072,1138,1171,1204
+    };
 
     private ArenaVisuals customArenaVisuals;
 
@@ -205,6 +216,14 @@ public class CaveTwoBossLevel extends Level {
             pylon.pos = i;
             mobs.add(pylon);
         }
+
+        if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+            for (int i : pylonHardPositions) {
+                PylonCS pylon = new PylonCS();
+                pylon.pos = i;
+                mobs.add(pylon);
+            }
+        }
     }
 
     @Override
@@ -248,6 +267,11 @@ public class CaveTwoBossLevel extends Level {
                 return false;
             }
         }
+        for (int i : pylonHardPositions){
+            if (Dungeon.level.distance(cell, i) <= 1){
+                return false;
+            }
+        }
 
         return super.setCellToWater(includeTraps, cell);
     }
@@ -255,6 +279,10 @@ public class CaveTwoBossLevel extends Level {
     @Override
     public void occupyCell(Char ch) {
         //seal the level when the hero moves near to a pylon, the level isn't already sealed, and the gate hasn't been destroyed
+
+//        GLog.p(String.valueOf(hero.pos));
+//        GLog.b("BOSS");
+
         int gatePos = pointToCell(new Point(gate.left, gate.top));
         if (ch == hero && !locked && solid[gatePos]){
             for (int pos : pylonPositions){
@@ -277,6 +305,21 @@ public class CaveTwoBossLevel extends Level {
 
         int entrance = entrance();
         set( entrance, Terrain.WALL );
+
+        if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+            for (int i : pylonHardPositions) {
+                set( i, Terrain.WATER );
+                GameScene.updateMap( i );
+            }
+            for (int i : reDungeonLevel) {
+                if (map[i] != Terrain.INACTIVE_TRAP){
+                    set( i, Terrain.BARRICADE );
+                    GameScene.updateMap( i );
+                }
+            }
+
+        }
+
 
         Heap heap = Dungeon.level.heaps.get( entrance );
         while (heap != null && !heap.isEmpty()) {

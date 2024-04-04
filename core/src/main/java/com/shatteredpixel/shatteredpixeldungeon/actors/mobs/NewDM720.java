@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -73,12 +74,17 @@ import com.watabou.utils.Rect;
 import com.watabou.utils.RectF;
 
 public class NewDM720 extends MolotovHuntsman {
+
+    public int totalPylonsToActivate(){
+        return Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 6 : 2;
+    }
+
     private static final float TIME_TO_BURN	= 1f;
     {
         //TODO improved sprite
         spriteClass = DM720Sprite.class;
 
-        HP = HT = 270;
+        HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 405 : 270;
         EXP = 40;
         defenseSkill = 15;
         properties.add(Property.BOSS);
@@ -148,7 +154,7 @@ public class NewDM720 extends MolotovHuntsman {
 
         if (turnsSinceLastAbility != -1){
             BossHealthBar.assignBoss(this);
-            if (!supercharged && pylonsActivated == 2) BossHealthBar.bleed(true);
+            if (!supercharged && pylonsActivated == totalPylonsToActivate()) BossHealthBar.bleed(true);
         }
     }
 
@@ -178,8 +184,6 @@ public class NewDM720 extends MolotovHuntsman {
 
         if (Dungeon.level.water[pos] && HP < HT) {
             sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
-            if (HP*4 == HT) {
-            }
             HP++;
         }
 
@@ -474,7 +478,12 @@ public class NewDM720 extends MolotovHuntsman {
         LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
         if (lock != null && !isImmune(src.getClass())) lock.addTime(dmg);
 
-        int threshold = HT/3 * (2- pylonsActivated);
+        int threshold;
+        if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+            threshold = HT / 7 * (6 - pylonsActivated);
+        } else {
+            threshold = HT / 3 * (2 - pylonsActivated);
+        }
 
         if (HP < threshold){
             HP = threshold;
@@ -510,12 +519,23 @@ public class NewDM720 extends MolotovHuntsman {
         return supercharged;
     }
 
+
+
     public void loseSupercharge(){
         supercharged = false;
         sprite.resetColor();
         ((DM720Sprite)sprite).updateChargeState(false);
-        if (pylonsActivated < 2){
+        if (pylonsActivated < totalPylonsToActivate()){
             yell(Messages.get(this, "charge_lost"));
+
+            if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && pylonsActivated == 4){
+                MoloHR m = new MoloHR();
+                m.pos = 478;
+                GameScene.add(m);
+                Buff.affect(m, ChampionHero.Light.class, ChampionHero.DURATION*200f);
+                m.notice();
+            }
+
         } else {
             yell(Messages.get(this, "pylons_destroyed"));
             BossHealthBar.bleed(true);
@@ -524,7 +544,7 @@ public class NewDM720 extends MolotovHuntsman {
 
     @Override
     public boolean isAlive() {
-        return HP > 0 || pylonsActivated < 2;
+        return super.isAlive() || pylonsActivated < totalPylonsToActivate();
     }
 
     @Override
@@ -534,11 +554,15 @@ public class NewDM720 extends MolotovHuntsman {
 //        }
 
         super.die(cause);
-        cause = new MoloHR();
-        ((MoloHR) cause).pos = pos;
-        GameScene.add(((Mob) (cause)));
-        Buff.affect((Mob) (cause), ChampionHero.Light.class, ChampionHero.DURATION*200f);
-        ((Mob) (cause)).notice();
+
+        if(!Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+            cause = new MoloHR();
+            ((MoloHR) cause).pos = pos;
+            GameScene.add(((Mob) (cause)));
+            Buff.affect((Mob) (cause), ChampionHero.Light.class, ChampionHero.DURATION*200f);
+            ((Mob) (cause)).notice();
+        }
+
         Badges.validateBossSlain();
         if (Statistics.qualifiedForBossChallengeBadge){
             Badges.validateBossChallengeCompleted();

@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 public class Assets {
+
+	public static final String BGM_1A = "music/tmp/drg.ogg";
 	public static final String BGM_1 = "music/Level1.ogg";
 	public static final String BGM_2 = "music/Level2.ogg";
 	public static final String BGM_3 = "music/Level3.ogg";
@@ -36,7 +38,7 @@ public class Assets {
 
 	public static final String TOWN = "music/town.ogg";
 	public static final String BGM_BOSSA = "music/Boss1.ogg";
-
+	public static final String BGM_BOSSA3 = "music/tmp/dra.ogg";
 	public static final String BGM_YOU = "music/tmp/you.ogg";
 	public static final String BGM_BOSSB = "music/Boss2.ogg";
 	public static final String BGM_BOSSB2 = "music/Tengu.ogg";
@@ -100,7 +102,7 @@ public class Assets {
 		public static final String TILES_COLDCHEST  = "environment/tiles_coldchest.png";
 		public static final String TILES_FIRE  = "environment/tiles_fire.png";
 		public static final String Dreamcatcher  = "environment/custom_tiles/blue_quest.png";
-
+		public static final String FireQuest  = "environment/custom_tiles/fire_quest.png";
 		public static final String OilWell  = "environment/custom_tiles/oil_well.png";
 		public static final String TILES_HOLLOW  = "environment/tiles_halloween.png";
 
@@ -163,7 +165,7 @@ public class Assets {
 		public static final String QliPhoth_Clear  = "interfaces/bosslogo/qliphoth-clear.png";
 
 		public static final String DMOR_Title  = "interfaces/bosslogo/dm300or-title.png";
-		public static final String DMOR_Clear  = "interfaces/bosslogo/dm300or-clear.png";
+		public static final String DIZF_Title  = "interfaces/bosslogo/dizzfar-title.png";
 
 		public static final String UPBARS  = "interfaces/updatebar.png";
 
@@ -420,6 +422,8 @@ public class Assets {
 
 		public static final String DG = "splashes/general_portraits.png";
 
+		public static final String FG = "splashes/guard_npc_portraits.png";
+
 		public static final String HK = "splashes/hk.png";
 
 		public static final String YTZY = "splashes/yet_yog_portraits.png";
@@ -433,6 +437,10 @@ public class Assets {
 		public static final String MOON = "splashes/moon_portraits.png";
 
 		public static final String LMOON = "splashes/lowmoon_portraits.png";
+
+		public static final String FYNX = "splashes/guard_portraits.png";
+
+
 
 		public static final String LINP = "splashes/Ling_portraits.png";
 
@@ -482,6 +490,7 @@ public class Assets {
 
 		public static final String DXL = "sprites/boss/dwarf_soldier.png";
 
+		public static final String DER = "sprites/boss/DiedElement.png";
 		public static final String TYPHON = "sprites/hollow/typhon.png";
 		public static final String MPHON = "sprites/hollow/morpheus.png";
 
@@ -523,6 +532,7 @@ public class Assets {
 		public static final String CFAS	= "sprites/boss/FruitsCrivus.png";
 
 		public static final String CFZS	= "sprites/boss/overworld/qliphoth_ex.png";
+		public static final String CLGR	= "sprites/boss/overworld/clearelemt_guard.png";
 		public static final String NECROREDEX	= "sprites/boss/rednecromancer_ex.png";
 		public static final String SLIMEPRINCESS	= "sprites/boss/SlimePrincess.png";
 		public static final String ICEALICE	= "sprites/boss/IceFireCrstal.png";
@@ -563,6 +573,8 @@ public class Assets {
 		public static final String KATID		= "sprites/venom_flower.png";
 
 		public static final String WHITE		= "sprites/npc/whiteling.png";
+
+		public static final String FAYINA		= "sprites/npc/guard_npc.png";
 
 		public static final String MOONC		= "sprites/npc/mooncat.png";
 

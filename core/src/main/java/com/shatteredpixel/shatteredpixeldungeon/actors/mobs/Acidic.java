@@ -39,6 +39,12 @@ public class Acidic extends Scorpio {
 		loot = new PotionOfExperience();
 		lootChance = 1f;
 	}
+
+	@Override
+	protected boolean getCloser( int target ) {
+		return super.getCloser( target );
+	}
+
 	@Override
 	public int attackProc(Char enemy, int damage) {
 		Buff.affect(enemy, Ooze.class).set( Ooze.DURATION );

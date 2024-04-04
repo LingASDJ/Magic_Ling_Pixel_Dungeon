@@ -43,6 +43,10 @@ public class PaswordBadges {
         displayBadge( Badge.WHATSUP );
     }
 
+    public static void SWORDDRAGON() {
+        displayBadge( Badge.SWORDDREAM );
+    }
+
     public static void ALLCS(int challenges){
         if (challenges == 0) return;
         if (challenges >= 13 && !(Dungeon.isChallenged(PRO))||!Statistics.bossRushMode && challenges >= 13){
@@ -99,6 +103,9 @@ public class PaswordBadges {
 
         BIG_X(13),
         EXSG(14),
+
+        SWORDDREAM(15),
+
         NIGHT_CAT(16),
         ZQJ_GHOST(17),
         GOOD_BLUE(18),

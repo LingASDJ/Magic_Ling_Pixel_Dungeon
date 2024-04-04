@@ -45,17 +45,6 @@ public class Rat extends Mob {
 	}
 
 	@Override
-	public void die( Object cause ) {
-		if( cause instanceof Rat){
-			Dungeon.discovered[0] = true;
-			discovered = true;
-		}
-		super.die( cause );
-	}
-
-
-
-	@Override
 	protected boolean act() {
 		if (Dungeon.level.heroFOV[pos] && hero.armorAbility instanceof Ratmogrify){
 			alignment = Alignment.ALLY;

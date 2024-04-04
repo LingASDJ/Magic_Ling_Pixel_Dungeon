@@ -6,6 +6,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -33,7 +34,7 @@ public class MoloHR extends Boss {
     private int combo;
 
     public MoloHR() {
-        this.spriteClass = MolotovHuntsmanSprite.class;
+        this.spriteClass = MolotovHuntsmanSprite.BossMolotovHuntsmanSprite.class;
         this.HT = 180;
         this.HP = 180;
         HUNTING = new Hunting();
@@ -41,7 +42,7 @@ public class MoloHR extends Boss {
         this.defenseSkill = 10;
         flying = true;
         this.EXP = 15;
-        this.baseSpeed = 2F;
+        this.baseSpeed =  Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 1F : 2F;
         this.combo = 0;
         properties.add(Property.BOSS);
         properties.add(Property.FIERY);
@@ -64,6 +65,18 @@ public class MoloHR extends Boss {
         return var5;
     }
 
+    @Override
+    public boolean isInvulnerable(Class effect) {
+        boolean invulnerable = false;
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            if (mob instanceof NewDM720) {
+                invulnerable = true;
+                break;
+            }
+        }
+        return Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && invulnerable;
+    }
+
     public int attackSkill(Char var1) {
         return 56;
     }
@@ -77,7 +90,7 @@ public class MoloHR extends Boss {
     }
 
     public int damageRoll() {
-        return Random.NormalIntRange(30, 40);
+        return Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? Random.NormalIntRange(15, 20) : Random.NormalIntRange(30, 40);
     }
     public static Brew food;
     public static ExoticScroll scrolls;

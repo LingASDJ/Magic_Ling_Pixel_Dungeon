@@ -122,7 +122,7 @@ public class Chasm implements Hero.Doom {
 		Sample.INSTANCE.play( Assets.Sounds.FALLING );
 
 		Level.beforeTransition();
-		if(Dungeon.depth == 5 || Dungeon.depth == 4 && Statistics.bossRushMode){
+		if(Dungeon.depth == 5 && Dungeon.branch == 0 || Dungeon.depth == 4 && Statistics.bossRushMode){
 			int SafePos = 0;
 			switch (Random.NormalIntRange(0,4)){
 				case 0:

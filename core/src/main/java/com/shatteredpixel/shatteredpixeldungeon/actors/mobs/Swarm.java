@@ -139,6 +139,7 @@ public class Swarm extends Mob {
 	@Override
 	public void die( Object cause ) {
 		super.die(cause);
+
 	}
 
 	@Override

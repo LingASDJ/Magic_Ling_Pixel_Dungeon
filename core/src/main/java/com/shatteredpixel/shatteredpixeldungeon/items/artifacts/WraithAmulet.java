@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.ClearElemtGuard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -213,7 +214,7 @@ public class WraithAmulet extends Artifact {
                 Char enemy = Actor.findChar(target);
                 if (!(((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && Dungeon.depth==10)) {
                     if (hero.rooted || Dungeon.level.distance(hero.pos, target) < 3) {
-                        if(enemy != null && !(enemy instanceof NPC)){
+                        if(enemy != null && !(enemy instanceof NPC || enemy instanceof ClearElemtGuard) ){
                             final WraithAmulet amulet = (WraithAmulet) curItem;
                             amulet.exp += 40;
                             hero.pos = target;

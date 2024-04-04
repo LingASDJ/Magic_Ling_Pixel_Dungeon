@@ -173,8 +173,7 @@ public class SewerLevel extends RegularLevel {
 						GameScene.show(new WndMessage(Messages.get(hero, "leave")));
 					}
 				});
-				return false;
-			} else {
+            } else {
 				TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
 				if (timeFreeze != null) timeFreeze.disarmPresses();
 				Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
@@ -187,9 +186,9 @@ public class SewerLevel extends RegularLevel {
 				InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
 				InterlevelScene.curTransition.centerCell = -1;
 				Game.switchScene(InterlevelScene.class);
-				return false;
-			}
-		} else {
+            }
+            return false;
+        } else {
 			return super.activateTransition(hero,transition);
 		}
 		return false;

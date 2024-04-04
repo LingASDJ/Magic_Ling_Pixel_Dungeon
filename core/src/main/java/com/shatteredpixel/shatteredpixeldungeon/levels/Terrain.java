@@ -50,7 +50,7 @@ public class Terrain {
 	public static final int EMPTY_DECO		= 20;
 	public static final int LOCKED_EXIT		= 21;
 	public static final int UNLOCKED_EXIT	= 22;
-	public static final int LAVA		    = 30;
+	public static final int LAVA		    = 200;
 	public static final int SIGN			= 123;
 	public static final int SIGN_SP			= 33;
 	public static final int WELL			= 24;
@@ -85,6 +85,7 @@ public class Terrain {
 		flags[GRASS]		= PASSABLE | FLAMABLE;
 		flags[EMPTY_WELL]	= PASSABLE;
 		flags[WATER]		= PASSABLE | LIQUID;
+		flags[LAVA]			= PASSABLE | FLAMABLE | LIQUID;
 		flags[WALL]			= LOS_BLOCKING | SOLID;
 		flags[DOOR]			= PASSABLE | LOS_BLOCKING | FLAMABLE | SOLID;
 		flags[OPEN_DOOR]	= PASSABLE | FLAMABLE;

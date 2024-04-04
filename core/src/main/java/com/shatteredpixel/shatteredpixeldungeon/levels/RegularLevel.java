@@ -32,10 +32,12 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -68,6 +70,8 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.builders.FigureEightBuild
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LoopBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.DragonCaveRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.FayiNaRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.GardenEntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.GardenExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
@@ -133,6 +137,11 @@ public abstract class RegularLevel extends Level {
 				if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
 					holiday = Holiday.XMAS;
 				break;
+			case Calendar.APRIL:
+				int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+				if (dayOfMonth >= 2 && dayOfMonth <= 20)
+					holiday = Holiday.QMJ;
+				break;
 			case Calendar.OCTOBER:
 				if (calendar.get(Calendar.WEEK_OF_MONTH) >= 2)
 					holiday = Holiday.HWEEN;
@@ -194,10 +203,11 @@ public abstract class RegularLevel extends Level {
     public enum Holiday {
         NONE,
         DWJ,
-        ZQJ, //TBD
+        ZQJ,
         HWEEN,//2nd week of october though first day of november
         XMAS,
 		CJ,
+		QMJ
     }
 	
 	protected ArrayList<Room> initRooms() {
@@ -270,8 +280,13 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
+		if(!SPDSettings.KillDragon() && !Statistics.noClearKill && depth == 9 && Badges.isUnlocked(Badges.Badge.KILL_APPLE)){
+			initRooms.add(new FayiNaRoom());
+			initRooms.add(new DragonCaveRoom());
+		} else if(depth == 9 && SPDSettings.KillDragon()){
+			initRooms.add(new DragonCaveRoom());
+		}
 
-		//		initRooms.add(new RangeMobRoom());
 
 		if (Dungeon.NyzshopOnLevel() && branch == 0 || Statistics.bossRushMode && Dungeon.NyzshopOnLevel()) {
 			Buff.affect(hero, RandomBuff.class).set( (4 + Random.Int(9)+hero.STR/6+hero.HP/30)/Random.Int(1,2)+5, 1 );

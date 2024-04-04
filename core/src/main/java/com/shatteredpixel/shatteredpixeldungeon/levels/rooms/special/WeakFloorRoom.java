@@ -43,7 +43,7 @@ public class WeakFloorRoom extends SpecialRoom {
 		
 		Painter.fill( level, this, Terrain.WALL );
 
-		if(Dungeon.depth == 17 && Dungeon.branch == 5 || Statistics.bossRushMode){
+		if(Dungeon.depth == 17 && Dungeon.branch == 5 || Statistics.bossRushMode || Dungeon.depth == 5){
 			Painter.fill( level, this, 1, Terrain.WATER );
 		}else{
 			Painter.fill( level, this, 1, Terrain.CHASM );

@@ -34,6 +34,8 @@ public class DM275 extends Mob {
         HP = HT = 120;
         defenseSkill = 12;
 
+        flying = true;
+
         EXP = 15;
         maxLvl = 30;
 

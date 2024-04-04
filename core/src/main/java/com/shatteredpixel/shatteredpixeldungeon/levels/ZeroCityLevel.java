@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessBossRushLow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.FayiNa;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LanFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NxhyNpc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
@@ -458,6 +459,12 @@ public class ZeroCityLevel extends Level {
             Slyl npc1 = new Slyl();
             npc1.pos = 254;
             mobs.add(npc1);
+
+            if(SPDSettings.KillDragon()){
+                FayiNa npc222= new FayiNa();
+                npc222.pos = 1213;
+                mobs.add(npc222);
+            }
 
             obSir npc2 = new obSir();
             npc2.pos = 380;

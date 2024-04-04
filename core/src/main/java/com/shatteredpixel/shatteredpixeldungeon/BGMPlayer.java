@@ -63,9 +63,14 @@ public class BGMPlayer {
                 if(d == 16 ||d == 17 || d == 18 || d == 19 ){
                     playBGM(Assets.Music.ANCITY, true);
                 }
+                if(d == 5 ){
+                    playBGM(Assets.BGM_1A, true);
+                }
             } else if(s == 1){
-                if(d == 0){
+                if(d == 0) {
                     playBGM(Assets.TOWN, true);
+                } else if(d == 5 ){
+                    playBGM(Assets.BGM_1A, true);
                 } else if(d == 16 || d == 17 || d == 18 || d == 19  ){
                     playBGM(Assets.Music.ANCITY, true);
                 } else if(d == 20 ) {
@@ -223,6 +228,8 @@ public class BGMPlayer {
             }
             if(s == 3 && t == 16 ||s == 3 && t == 17 || s == 3 && t == 18) {
                 playBGM(Assets.SKBJY, true);
+            } else if(t == 5 && s == 3){
+                playBGM(Assets.BGM_BOSSA3, true);
             } else if (Dungeon.bossLevel() && t == 5 || t == 4 && s == 2) {
                 playBGM(Assets.BGM_BOSSA, true);
             } else if (Dungeon.bossLevel() && t == 10) {
@@ -242,10 +249,10 @@ public class BGMPlayer {
                        CavesBossLevel level = (CavesBossLevel) Dungeon.level;
                        for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
                            if (m instanceof Pylon){
-                               if(BossHealthBar.isAssigned() && level.pylonsRemaining >= 2){
+                               if(BossHealthBar.isAssigned() && level.pylonsRemaining >= (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 4 : 2)) {
                                    playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
                                } else {
-                                   playBGM(Assets.Music.CAVES_BOSS, true);
+                                   playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
                                }
                            }
                        }
@@ -259,7 +266,7 @@ public class BGMPlayer {
                                }
                            } else {
                                if(m instanceof MoloHR){
-                                   playBGM(Assets.Music.PRISON_TENSE, true);
+                                   playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
                                }
                            }
                        }

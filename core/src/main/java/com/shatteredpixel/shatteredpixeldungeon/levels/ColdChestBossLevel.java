@@ -198,7 +198,7 @@ public class ColdChestBossLevel extends Level {
 
     private static final int[] MazeRoom_C = {
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
-            W,L,L,L,L,L,W,L,W,L,L,L,L,L,L,L,W,W,W,W,W,W,L,L,L,L,W,L,W,W,W,L,W,L,W,
+            W,L,L,L,L,L,W,L,W,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,W,L,W,W,W,L,W,L,W,
             W,W,W,W,W,L,W,L,W,L,L,L,L,W,W,L,L,L,L,L,L,L,W,L,L,W,L,W,W,L,L,L,L,L,W,
             W,W,W,B,L,L,W,L,L,L,W,L,L,L,W,L,L,L,W,L,L,L,L,L,L,W,L,L,W,L,W,W,L,L,W,
             W,W,W,L,W,W,W,L,W,W,W,L,W,L,L,L,L,L,W,L,L,L,L,W,W,W,L,L,L,L,L,L,L,L,W,

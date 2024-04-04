@@ -479,7 +479,7 @@ public class MobPlacer extends TestItem{
         }
     }
 
-    private enum DataPack{
+    public enum DataPack{
         RAT(Rat.class, DictSpriteSheet.RAT),
         FLWW(FlowerSlime.class, DictSpriteSheet.FLOWER),
         GNOLL(Gnoll.class, DictSpriteSheet.GNOLL),

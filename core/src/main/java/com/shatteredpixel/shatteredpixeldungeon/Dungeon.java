@@ -345,6 +345,10 @@ public class Dungeon {
 		return depth == 6 || depth == 11 || depth == 16;
 	}
 
+	public static boolean DragonBoss() {
+		return depth == 5;
+	}
+
 	public static boolean shopRushLevel() {
 		return depth == 5 || depth == 12 || depth == 19 || depth == 25;
 	}

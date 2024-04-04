@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonCaveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.HotelLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.DeepShadowLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.ForestHardBossLevel;
@@ -154,7 +155,7 @@ public class LevelRules {
                     case 0:
                         return new HotelLevel();
                     case 5:
-                        return new LaveCavesBossLevel();
+                        return new DragonCaveLevel();
                     case 11:
                     case 12:
                     case 13:
@@ -172,6 +173,8 @@ public class LevelRules {
                 switch (depth) {
                     case 4: case 14:
                        return new MiniBossLevel();
+                    case 5:
+                        return new DragonCaveLevel();
                    case 17: case 18:
                         return new AncientMysteryCityLevel();
                     default:
@@ -180,6 +183,8 @@ public class LevelRules {
 
             case 3:
                 switch (depth){
+                    case 5:
+                        return new LaveCavesBossLevel();
                     case 17: case 18:
                         return new AncientMysteryCityBossLevel();
                     default:
