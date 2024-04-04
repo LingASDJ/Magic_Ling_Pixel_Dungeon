@@ -30,7 +30,6 @@ public class Statistics {
 
 	//统计分数
 	public static int progressScore;
-
 	//种子处罚
 	public static boolean seedCustom = false;
 	public static boolean ExFruit = false;
@@ -39,6 +38,7 @@ public class Statistics {
 
 	//小叶12挑首次对话
 	public static boolean SmallLeafGet = false;
+	public static boolean noClearKill = false;
 
 	//吃保底
 	public static int bossWeapons;
@@ -46,6 +46,11 @@ public class Statistics {
 	public static int zeroItemLevel;
 
 	public static int hcDialogLevel;
+
+	public static boolean unLockedFireDargon = false;
+
+	//游戏局内杀死火龙
+	public static boolean GameKillFireDargon = false;
 
 	public static int wcDialogLevel;
 
@@ -339,6 +344,7 @@ public class Statistics {
 		CatFirst = false;
 
 		SmallLeafGet = false;
+		noClearKill = false;
 
         HealingIsDied = 0;
 
@@ -356,6 +362,9 @@ public class Statistics {
 		zeroItemLevel = 0;
 		hcDialogLevel = 0;
 		youNoItem = false;
+		unLockedFireDargon = false;
+
+		GameKillFireDargon = false;
 
 		gameTime = 0;
 		gameNight = false;
@@ -477,6 +486,8 @@ public class Statistics {
 
 		bundle.put("SMALLEAFTGET",SmallLeafGet);
 
+		bundle.put("NOCLEAR",noClearKill);
+
 		bundle.put("SNOW",snow);
 
 		bundle.put(DM720FIGHT,dm720Fight);
@@ -590,11 +601,14 @@ public class Statistics {
 		bundle.put("gameday",gameDay);
 
 		bundle.put("YOU",youNoItem);
-
+		bundle.put("DCXFG",unLockedFireDargon);
+		bundle.put("DRAM",GameKillFireDargon);
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
 
+		GameKillFireDargon = bundle.getBoolean("DRAM");
+		unLockedFireDargon = bundle.getBoolean("DCXFG");
 		iceCyanBlueSquareCoin = bundle.getInt(ICECLAN);
 
 		hcDialogLevel = bundle.getInt(HKLEVEL);
@@ -618,6 +632,8 @@ public class Statistics {
 		CatFirst = bundle.getBoolean("CAT");
 
 		SmallLeafGet = bundle.getBoolean("SMALLEAFTGET");
+
+		noClearKill = bundle.getBoolean("NOCLEAR");
 
 		doNotLookLing = bundle.getBoolean(LOCD);
 
