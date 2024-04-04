@@ -72,6 +72,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLingJing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMixShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessNoMoney;
@@ -169,6 +170,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMi
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
@@ -2293,7 +2295,7 @@ public class Hero extends Char {
 
 		if (sprite != null && added) {
 			String msg = buff.heroMessage();
-			if (msg != null){
+			if (msg != null && !msg.isEmpty()){
 				GLog.w(msg);
 			}
 
@@ -2539,6 +2541,13 @@ public class Hero extends Char {
         } else {
             Buff.detach(hero, BlessRedWhite.class);
         }
+
+		LingJing lingJing = hero.belongings.getItem(LingJing.class);
+		if(lingJing != null) {
+			Buff.affect(hero, BlessLingJing.class).set((100), 1);
+		} else {
+			Buff.detach(hero, BlessLingJing.class);
+		}
 
         DriedRose rose = hero.belongings.getItem(DriedRose.class);
         Red red = hero.belongings.getItem(Red.class);
