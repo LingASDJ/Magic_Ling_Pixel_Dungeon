@@ -33,6 +33,7 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 //宝藏迷宫 10层
 public class ColdChestBossLevel extends Level {
@@ -557,23 +558,24 @@ public class ColdChestBossLevel extends Level {
                             changeMap(EndMap);
                             //在切换房间的时候立刻切换全新坐标
 
-                            for (Heap heap : heaps.valueList()) {
+                            Iterator<Heap> iterator = heaps.valueList().iterator();
+                            while(iterator.hasNext()) {
+                                Heap heap = iterator.next();
                                 for (Item item : heap.items) {
                                     if(!(item instanceof MIME)){
                                         item.doPickUp(hero, 962);
-                                        heap.destroy();
+                                        iterator.remove();
                                     } else {
-                                        heap.destroy();
+                                        iterator.remove();
                                     }
                                 }
                             }
 
-                            setMapEnd();
+                            ScrollOfTeleportation.appear(hero, 962);
                             Buff.affect(boss, ChampionEnemy.Halo.class);
                             ScrollOfTeleportation.appear(boss,647);
-                            //玩家移动到初始位
-                            ScrollOfTeleportation.appear(hero, 962);
-                            //drop( new PotionOfPurity(),648 );
+
+                            setMapEnd();
 
                             //进行Roll判定
                             if(Statistics.fuckGeneratorAlone==2) {
