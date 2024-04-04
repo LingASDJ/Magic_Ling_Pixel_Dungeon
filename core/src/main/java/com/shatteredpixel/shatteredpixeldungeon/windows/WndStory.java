@@ -103,6 +103,8 @@ public class WndStory extends Window {
 	public static final int ID_DWADA		= 13;
 
 	public static final int ID_ALC		= 33;
+	public static final int ID_LAVA		= 34;
+	public static final int ID_LAVABOSS		= 35;
 
 	private static final SparseArray<String> CHAPTERS = new SparseArray<>();
 
@@ -143,6 +145,8 @@ public class WndStory extends Window {
 		CHAPTERS.put( ID_ANCITY, "aientncity" );
 
 		CHAPTERS.put( ID_ALC, "aic" );
+		CHAPTERS.put( ID_LAVA, "lava" );
+		CHAPTERS.put( ID_LAVABOSS, "lavaboss" );
 	}
 
 
@@ -214,6 +218,13 @@ public class WndStory extends Window {
 					mapnameSlain.texture( "interfaces/mapname/forest.png" );
 					mapnameSlain.show( Window.GREEN_COLOR, 0.6f, 3f );
 					scene.showLogo( mapnameSlain );
+					break;
+				case 5:
+					if (Dungeon.branch == 1) {
+						mapnameSlain.texture("interfaces/mapname/lava.png");
+						mapnameSlain.show(Window.ANSDO_COLOR, 0.6f, 3f);
+						scene.showLogo(mapnameSlain);
+					}
 					break;
 				case 6:
 					mapnameSlain.texture( "interfaces/mapname/prison.png" );
