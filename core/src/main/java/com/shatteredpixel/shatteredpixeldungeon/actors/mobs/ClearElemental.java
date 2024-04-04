@@ -100,7 +100,7 @@ public class ClearElemental extends Mob {
     @Override
     public void die( Object cause ) {
         super.die( cause );
-        if(!Statistics.noClearKill) Statistics.noClearKill = true;
+        if(!Statistics.noClearKill)Statistics.noClearKill = true;
     }
 
     @Override

@@ -15,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurs
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearGuardSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
@@ -35,7 +36,7 @@ public class ClearElemtGuard extends Statue {
         spriteClass = ClearGuardSprite.class;
 
         HP = HT = 100;
-
+        flying = true;
         defenseSkill = 14;
         state = WANDERING;
         maxLvl = -1;
@@ -67,6 +68,7 @@ public class ClearElemtGuard extends Statue {
         super.restoreFromBundle(bundle);
         clearCount = bundle.getInt("count");
         recovering = bundle.getBoolean(RECOVERING);
+        if (clearCount>=2) BossHealthBar.assignBoss(this);
     }
     @Override
     protected boolean act() {
@@ -100,6 +102,13 @@ public class ClearElemtGuard extends Statue {
         Mob mob = new ClearElemtGuardNPC();
         mob.pos = pos;
         GameScene.add(mob);
+    }
+
+    @Override
+    public void notice() {
+        if (!BossHealthBar.isAssigned()) {
+            BossHealthBar.assignBoss(this);
+        }
     }
 
     @Override
@@ -154,6 +163,7 @@ public class ClearElemtGuard extends Statue {
                     state = HUNTING;
                     Music.INSTANCE.play(Assets.Music.PRISON_TENSE, true);
                     yell(Messages.get(ClearElemtGuard.class, "attack"));
+                    notice();
                 }
             });
         } else {

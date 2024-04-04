@@ -3,11 +3,15 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.RivalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.ClearElemtPlot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearGuardSprite;
@@ -40,6 +44,7 @@ public class ClearElemtGuardNPC extends NTNPC {
         bundle.put(SECNOD, secnod);
         bundle.put(RD, rd);
         bundle.put(SD, sd);
+        bundle.put("progress", progress);
     }
 
     @Override
@@ -49,6 +54,7 @@ public class ClearElemtGuardNPC extends NTNPC {
         secnod = bundle.getBoolean(SECNOD);
         rd = bundle.getBoolean(RD);
         sd = bundle.getBoolean(SD);
+        progress = bundle.getInt("progress");
     }
 
     {
@@ -274,6 +280,7 @@ public class ClearElemtGuardNPC extends NTNPC {
                                 protected void onSelect(int index) {
                                     if (index == 0) {
                                         progress++;
+                                        yell( Messages.get(ClearElemtGuard.class, "thanks",hero.name()));
                                     }
                                 }
                             });
@@ -292,6 +299,9 @@ public class ClearElemtGuardNPC extends NTNPC {
                                 protected void onSelect(int index) {
                                     if (index == 0) {
                                         progress++;
+                                        Statistics.unLockedFireDargon = true;
+                                        Dungeon.level.drop(new LingJing(),hero.pos);
+                                        yell( Messages.get(ClearElemtGuard.class, "thanks2",hero.name()));
                                     }
                                 }
                             });
@@ -303,5 +313,26 @@ public class ClearElemtGuardNPC extends NTNPC {
         return true;
     }
 
+
+    @Override
+    public void die( Object cause ) {
+        super.die( cause );
+
+
+        if(SPDSettings.KillDragon()){
+            Mob mob = new FayiNa();
+            mob.pos = pos;
+            GameScene.add(mob);
+        }
+
+    }
+
+    @Override
+    protected boolean act() {
+        if (Statistics.GameKillFireDargon) {
+           die(true);
+        }
+        return super.act();
+    }
 
 }
