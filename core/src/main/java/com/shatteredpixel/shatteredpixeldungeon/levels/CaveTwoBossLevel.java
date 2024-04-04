@@ -308,7 +308,7 @@ public class CaveTwoBossLevel extends Level {
 
         if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
             for (int i : pylonHardPositions) {
-                set( i, Terrain.WATER );
+                set( i, Terrain.PEDESTAL );
                 GameScene.updateMap( i );
             }
             for (int i : reDungeonLevel) {
@@ -486,7 +486,8 @@ public class CaveTwoBossLevel extends Level {
     public void eliminatePylon(){
         customArenaVisuals.updateState();
         int pylonsRemaining = 0;
-        for (Mob m : mobs){
+
+        for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
             if (m instanceof NewDM720){
                 ((NewDM720) m).loseSupercharge();
                 PylonEnergy.energySourceSprite = m.sprite;
@@ -494,9 +495,11 @@ public class CaveTwoBossLevel extends Level {
                 pylonsRemaining++;
             }
         }
+
         if (pylonsRemaining > 2) {
             blobs.get(PylonEnergy.class).fullyClear();
         }
+
     }
 
     @Override
