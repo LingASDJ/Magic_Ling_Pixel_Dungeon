@@ -30,7 +30,7 @@ public class VenomGas extends Blob {
                     cell = i + j* Dungeon.level.width();
                     if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
                         if (!ch.isImmune(this.getClass()))
-                            Buff.affect(ch, Venom.class).set(4f, strength, source);
+                            Buff.affect(ch, Venom.class).set(2f, strength, source);
                     }
                 }
             }

@@ -11,7 +11,7 @@ import com.watabou.utils.Bundle;
 
 public class Venom extends Buff implements Hero.Doom {
 
-    private float damage = 4;
+    private float damage = 2;
     protected float left;
 
     private static final String DAMAGE	= "damage";
@@ -73,7 +73,7 @@ public class Venom extends Buff implements Hero.Doom {
     public boolean act() {
         if (target.isAlive()) {
             target.damage((int)damage, new CrivusFruits.DiedBlobs());
-            if (damage < (Dungeon.depth/2f)+1) {
+            if (damage < (Dungeon.depth/4f)+1) {
                 damage++;
             } else {
                 damage += 1f;
@@ -84,7 +84,7 @@ public class Venom extends Buff implements Hero.Doom {
             }
 
             if(damage>27){
-                Buff.affect(target, Paralysis.class, 8f);
+                Buff.affect(target, Bleeding.class).set(4f);
             }
 
             spend( TICK );
