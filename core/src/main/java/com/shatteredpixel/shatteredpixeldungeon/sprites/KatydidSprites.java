@@ -20,19 +20,19 @@ public class KatydidSprites extends MobSprite {
 
         TextureFilm frames = new TextureFilm( texture, 16, 16 );
 
-        idle = new MovieClip.Animation( 2, true );
-        idle.frames( frames, 0,1 );
+        idle = new MovieClip.Animation( 3, true );
+        idle.frames( frames, 0,1,2,3 );
 
-        run = new MovieClip.Animation( 12, true );
-        run.frames( frames, 2,3,4 );
+        run = new MovieClip.Animation( 9, true );
+        run.frames( frames, 4,5,6,7 );
 
-        attack = new MovieClip.Animation( 12, false );
-        attack.frames( frames, 4,5,6,7,8,0 );
+        attack = new MovieClip.Animation( 9, false );
+        attack.frames( frames, 8,9 );
 
         cast = attack.clone();
 
-        die = new MovieClip.Animation( 12, false );
-        die.frames( frames, 9,10 );
+        die = new MovieClip.Animation( 9, false );
+        die.frames( frames, 10,11 );
 
         play( idle );
     }
