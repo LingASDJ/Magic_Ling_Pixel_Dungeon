@@ -772,6 +772,9 @@ public class ItemSpriteSheet {
     public static final int Fish_A   = QUEST+16;
     public static final int Fish_B   = QUEST+17;
 
+    public static final int QKA   = QUEST+19;
+    public static final int QKB   = QUEST+20;
+
     static{
         assignItemRect(SKULL,   16, 11);
         assignItemRect(DUST,    12, 11);
@@ -794,6 +797,9 @@ public class ItemSpriteSheet {
 
         assignItemRect(Fish_A,    16, 12);
         assignItemRect(Fish_B,    16, 12);
+        assignItemRect(QKA,    16, 14);
+        assignItemRect(QKB,    16, 14);
+
     }
 
     //传奇武器
@@ -824,6 +830,8 @@ public class ItemSpriteSheet {
     public static final int  SHADOWMEAT= 	LENGYWEAPONS+12;
 
     public static final int  REDCRAB= 	LENGYWEAPONS+13;
+
+    public static final int  DRAGONHEART= 	LENGYWEAPONS+14;
 
     static {
         assignItemRect(DIEDCROSSBOW, 16, 15);
@@ -927,7 +935,7 @@ public class ItemSpriteSheet {
         assignItemRect(SKPOTION, 13, 15);
         assignItemRect(SKNANO, 15, 14);
         assignItemRect(WATERSOUL, 14, 16);
-        assignItemRect(WRALIPS, 16, 16);
+        assignItemRect(WRALIPS, 14, 12);
         assignItemRect(SDBlade, 15, 15);
     }
 
@@ -967,6 +975,18 @@ public class ItemSpriteSheet {
     public static final int PINKBOOKS=		MAINPALYBOOKS+2;
     public static final int DEBOOKS=		MAINPALYBOOKS+3;
 
+    public static final int LINGPEA=		MAINPALYBOOKS+5;
+    public static final int DARKCRYSTAL=		MAINPALYBOOKS+6;
+    public static final int HITLCRYSTAL=		MAINPALYBOOKS+7;
+
+    public static final int DRAGONSHILED=		MAINPALYBOOKS+8;
+
+    static {
+        assignItemRect(LINGPEA,13,15);
+        assignItemRect(DARKCRYSTAL,9,9);
+        assignItemRect(HITLCRYSTAL,9,9);
+        assignItemRect(DRAGONSHILED,12,16);
+    }
     //16 free slots                                                  //16 free slots
 
     private static final int CHALLANEESICONINDEX   	 = xy(1, 42);  //16 slots
