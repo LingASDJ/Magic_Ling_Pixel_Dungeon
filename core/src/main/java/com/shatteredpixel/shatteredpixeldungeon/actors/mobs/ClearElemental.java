@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ConfusionGas;
@@ -95,12 +94,6 @@ public class ClearElemental extends Mob {
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle(bundle);
         bundle.put(COMBO, combo);
-    }
-
-    @Override
-    public void die( Object cause ) {
-        super.die( cause );
-        if(!Statistics.noClearKill)Statistics.noClearKill = true;
     }
 
     @Override
