@@ -1,9 +1,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -29,9 +33,15 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.ClearCryStal;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.ClearHStal;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DragonHeart;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DragonShiled;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -62,8 +72,9 @@ public class FireDragon extends Boss implements Callback {
 
     {
         initProperty();
-        initBaseStatus(9, 15, 17, 12, 225, 7, 12);
-        initStatus(30);
+        initBaseStatus(9, 12, 14, 10, 233, 5, 9);
+        initStatus(40);
+        properties.add(Property.LARGE);
         spriteClass = FireDragonSprite.class;
         immunities.add(Burning.class);
         immunities.add(HalomethaneBurning.class);
@@ -71,6 +82,18 @@ public class FireDragon extends Boss implements Callback {
         immunities.add(Chill.class);
         immunities.add(Vertigo.class);
         immunities.add(ToxicGas.class);
+    }
+
+    @Override
+    public void damage(int dmg, Object src) {
+        float scaleFactor = AscensionChallenge.statModifier(this);
+        int scaledDmg = Math.round(dmg/scaleFactor);
+        if (scaledDmg >= 5){
+            //takes 5/6/7/8/9/10 dmg at 5/7/10/14/19/25 incoming dmg
+            scaledDmg = 4 + (int)(Math.sqrt(8*(scaledDmg - 4) + 1) - 1)/2;
+        }
+        dmg = (int)(scaledDmg*AscensionChallenge.statModifier(this));
+        super.damage(dmg, src);
     }
 
     @Override
@@ -87,7 +110,7 @@ public class FireDragon extends Boss implements Callback {
     public int drRoll() {
         int result = super.drRoll();
         if ( buff(VertigoEffect.class) != null){
-            result = result * 3;
+            result = (int) (result * 1.2f);
         }
         return result;
     }
@@ -140,13 +163,13 @@ public class FireDragon extends Boss implements Callback {
             testActor.state = testActor.HUNTING;
             GameScene.add(testActor);
             ScrollOfTeleportation.appear(testActor,334);
-            Buff.affect(this, SummonColdDown.class, HP<151 ? 5f : 10f);
+            Buff.affect(this, SummonColdDown.class, HP<151 ? 15f : 20f);
             // 更新召唤的元素数量
             summonedElementals++;
             //召唤精灵
             yell(Messages.get(this, "elemental"));
-            if(Random.Float()<=0.4f && HP<181){
-                Buff.affect(this, Healing.class).setHeal(30, 0f, 6);
+            if(Random.Float()<=0.4f && HP<141){
+                Buff.affect(this, Healing.class).setHeal(20, 0f, 6);
                 yell(Messages.get(this, "healing"));
             }
         }
@@ -341,6 +364,64 @@ public class FireDragon extends Boss implements Callback {
     @Override
     public void call() {
         next();
+    }
+
+    @Override
+    public void die( Object cause ) {
+
+        super.die( cause );
+        Dungeon.level.unseal();
+
+        GameScene.bossSlain();
+
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            if (mob instanceof DiedClearElemet) {
+                sprite.parent.add(new Chains(sprite.center(),
+                        mob.sprite.destinationCenter(),
+                        Effects.Type.RED_CHAIN,
+                        new Callback() {
+                            public void call() {
+                                Actor.add(new Pushing(mob, mob.pos, pos, new Callback() {
+                                    public void call() {
+                                        pullEnemy(mob, pos);
+                                        captured = false;
+                                    }
+                                }));
+                                next();
+                                eatCooldown = 0;
+                            }
+                        }));
+            }
+        }
+
+        if(!SPDSettings.KillDragon()){
+            Dungeon.level.drop( new DragonHeart(),  pos ).sprite.drop();
+        }
+
+        Dungeon.level.drop( new DragonShiled(), pos ).sprite.drop();
+
+        GetBossLoot();
+        Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.POTION),pos);
+        Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.WAND),pos);
+        Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.POTION),pos);
+        ArrayList<ClearCryStal> clearCryStals = hero.belongings.getAllItems(ClearCryStal.class);
+        for (ClearCryStal w : clearCryStals.toArray(new ClearCryStal[0])){
+            w.detachAll(hero.belongings.backpack);
+            new ClearHStal().quantity(w.quantity).identify().collect();
+        }
+
+        SPDSettings.KillDragon(true);
+        Statistics.GameKillFireDargon = true;
+
+        ArrayList<LingJing> lingjing = hero.belongings.getAllItems(LingJing.class);
+        for (LingJing w : lingjing.toArray(new LingJing[0])){
+            w.detachAll(hero.belongings.backpack);
+        }
+        GLog.n(Messages.get(this, "lingjing"));
+        Badges.KILL_FIRE();
+        Statistics.bossScores[0] += 2400;
+        yell( Messages.get(this, "defeated") );
+        GLog.w(Messages.get(this, "clear"));
     }
 
     @Override
