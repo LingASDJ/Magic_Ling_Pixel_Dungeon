@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -8,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 
 import java.util.ArrayList;
@@ -49,7 +51,12 @@ public class BossSettingWindows extends Window {
             cbs.add(cb);
             pos += BOX_HEIGHT + GAP;
 
-            if(i == 1 && !Badges.isUnlocked(Badges.Badge.KILL_SM) || i == 0 || i==3 || i==4){
+            if(i == 0){
+                cb.alpha(0f);
+                cb.active=false;
+                cb.visible = false;
+                cb.checked(false);
+            } else if(i == 1 && !Badges.isUnlocked(Badges.Badge.KILL_SM) || i==3 || i==4){
                 cb.alpha(0.4f);
                 cb.active=false;
                 cb.checked(false);
@@ -60,6 +67,15 @@ public class BossSettingWindows extends Window {
             }
 
         }
+        StyledButton button;
+        button = new StyledButton(Chrome.Type.RED_BUTTON,Badges.isUnlocked(Badges.Badge.KILL_FIRE_DRAGON) ? Messages.get(this, "kill_firedragon") : Messages.get(this, "un_kill_firedragon")) {
+            @Override
+            protected void onClick() {
+                add(new WndMessage(Badges.isUnlocked(Badges.Badge.KILL_FIRE_DRAGON) ? Messages.get(this, "forest_killinfo") : Messages.get(this, "forest_needkillinfo")));
+            }
+        };
+        button.setRect(GAP, 14, WIDTH - GAP * 2, BOX_HEIGHT);
+        add(button);
 
 //        level3 = new OptionSlider("", Messages.get(this, "dm300"),
 //                Messages.get(this, "ice"), 1, 3) {
