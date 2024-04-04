@@ -22,8 +22,8 @@ import java.util.HashSet;
 
 public class RoomSeal extends Buff implements Hero.Doom {
     private static final String CELLS = "cells";
-    private static final float LIMIT = 4;
-    private static int ARENA_SIZE = 3;
+    private static final float LIMIT = 2;
+    private static int ARENA_SIZE = 6;
     private static final String COOLDOWN = "cooldown";
     private final HashMap<Integer, Emitter> emitters = new HashMap<>();
     private final HashSet<Integer> cells = new HashSet<>();
@@ -41,7 +41,7 @@ public class RoomSeal extends Buff implements Hero.Doom {
             if (!cells.contains(target.pos)) {
                 if(target instanceof Hero){
                     ((Hero) target).interrupt();
-                    target.damage((Dungeon.depth/5+1) * 2, new DM100.LightningBolt());
+                     target.damage((Dungeon.depth/5+1) * 2, new DM100.LightningBolt());
                 }
             }
 
