@@ -499,23 +499,30 @@ public abstract class ChampionEnemy extends Buff {
 		//we roll for a champion enemy even if we aren't spawning one to ensure that
 		//mobsToChampion does not affect levelgen RNG (number of calls to Random.Int() is constant)
 		Class<?extends ChampionEnemy> buffCls;
-		switch (Random.Int(9)){
-			case 0: default:    buffCls = Blazing.class;      break;
-			case 1:             buffCls = Projecting.class;   break;
-			case 2:             buffCls = AntiMagic.class;    break;
-			case 3:             buffCls = Giant.class;        break;
-			case 4:             buffCls = Blessed.class;      break;
-			case 5:             buffCls = Growing.class;      break;
-			case 6:             buffCls = Halo.class;      	  break;
-			case 7:             buffCls = DelayMob.class;     break;
-			case 8:
-				if(Random.Int(100)==1 && Challenges.activeChallenges()>11){
-					buffCls = King.class;
-				} else {
-					buffCls = Blazing.class;
-				}
 
-			break;
+		if(Challenges.activeChallenges()>11){
+			switch (Random.Int(9)){
+				case 0: default:    buffCls = Blazing.class;      break;
+				case 1:             buffCls = Projecting.class;   break;
+				case 2:             buffCls = AntiMagic.class;    break;
+				case 3:             buffCls = Giant.class;        break;
+				case 4:             buffCls = Blessed.class;      break;
+				case 5:             buffCls = Growing.class;      break;
+				case 6:             buffCls = Halo.class;      	  break;
+				case 7:             buffCls = DelayMob.class;     break;
+				case 8:				buffCls = King.class;		  break;
+			}
+		} else {
+			switch (Random.Int(8)){
+				case 0: default:    buffCls = Blazing.class;      break;
+				case 1:             buffCls = Projecting.class;   break;
+				case 2:             buffCls = AntiMagic.class;    break;
+				case 3:             buffCls = Giant.class;        break;
+				case 4:             buffCls = Blessed.class;      break;
+				case 5:             buffCls = Growing.class;      break;
+				case 6:             buffCls = Halo.class;      	  break;
+				case 7:             buffCls = DelayMob.class;     break;
+			}
 		}
 
 		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) || Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) && depth>5 && Random.Float()<=0.45f || Statistics.bossRushMode && m.properties.contains(Char.Property.BOSS)) {
