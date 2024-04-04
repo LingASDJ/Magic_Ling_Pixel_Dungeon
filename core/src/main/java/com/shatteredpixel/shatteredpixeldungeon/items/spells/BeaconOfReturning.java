@@ -51,8 +51,29 @@ public class BeaconOfReturning extends Spell {
 	
 	{
 		image = ItemSpriteSheet.RETURN_BEACON;
+		defaultAction = AC_CAST;
 	}
-	
+
+	@Override
+	public String defaultAction() {
+		if( Dungeon.branch != 0){
+			return AC_THROW;
+		} else {
+			return AC_CAST;
+		}
+	}
+
+	@Override
+	public ArrayList<String> actions(Hero hero) {
+		if( Dungeon.branch != 0){
+			return new ArrayList<>(); //yup, no dropping this one
+		} else {
+			return super.actions(hero);
+		}
+
+	}
+
+
 	public int returnDepth	= -1;
 	public int returnBranch	= 0;
 	public int returnPos;

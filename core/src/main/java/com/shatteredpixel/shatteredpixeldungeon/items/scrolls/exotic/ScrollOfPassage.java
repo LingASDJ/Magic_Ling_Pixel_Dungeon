@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -30,12 +31,34 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Game;
 
+import java.util.ArrayList;
+
 public class ScrollOfPassage extends ExoticScroll {
 	
 	{
 		icon = ItemSpriteSheet.Icons.SCROLL_PASSAGE;
 	}
-	
+
+	@Override
+	public String defaultAction() {
+		if( Dungeon.branch != 0){
+			return AC_THROW;
+		} else {
+			return AC_READ;
+		}
+	}
+
+	@Override
+	public ArrayList<String> actions(Hero hero) {
+		if( Dungeon.branch != 0){
+			return new ArrayList<>(); //yup, no dropping this one
+		} else {
+			return super.actions(hero);
+		}
+
+	}
+
+
 	@Override
 	public void doRead() {
 
