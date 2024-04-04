@@ -49,7 +49,7 @@ public class WndInfoMob extends WndTitledMessage {
 
 	}
 
-	private static class MobTitle extends Component {
+	public static class MobTitle extends Component {
 
 		private static final int GAP	= 2;
 
@@ -153,7 +153,7 @@ public class WndInfoMob extends WndTitledMessage {
 			return level;
 		}
 
-		private String ProName(Mob mob) {
+		public static String ProName(Mob mob) {
 			String level;
 			if (mob.properties.contains(Char.Property.BOSS)){
 				level = Messages.get(WndInfoMob.class,"boss");
