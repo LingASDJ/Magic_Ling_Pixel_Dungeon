@@ -38,14 +38,14 @@ public class Gauntlet extends MeleeWeapon {
 		hitSound = Assets.Sounds.HIT_CRUSH;
 		hitSoundPitch = 1.2f;
 
-		//加强
+		//3阶换位4阶 加强 2023-10-4
 		tier = 4;
 		DLY = 0.35f; //2x speed
 	}
 
 	@Override
 	public int defenseFactor( Char owner ) {
-		return 6+3*buffedLvl();    //6 extra defence, plus 3 per level;
+		return 10;    //6 extra defence, plus 3 per level;
 	}
 
 	@Override
@@ -63,11 +63,22 @@ public class Gauntlet extends MeleeWeapon {
 		}
 	}
 
+
+	@Override
+	public int max(int lvl) {
+		return 25 + lvl * 3;
+	}
+
+	@Override
+	public int min(int lvl) {
+		return 4 + lvl;  // 最小伤害
+	}
+
 	public String statsInfo(){
 		if (isIdentified()){
-			return Messages.get(this, "stats_desc", 1+ buffedLvl());
+			return Messages.get(this, "stats_desc", 10);
 		} else {
-			return Messages.get(this, "typical_stats_desc", 1);
+			return Messages.get(this, "typical_stats_desc", 6);
 		}
 	}
 

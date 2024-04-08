@@ -776,10 +776,6 @@ public abstract class Char extends Actor {
 			return;
 		}
 
-//		if(buff(BlessImmune.class) != null && !this.isImmune(BlessImmune.class)){
-////			dmg = (int) Math.ceil(dmg * 0.75f);
-////		}
-
 		if(buff(Charm.CharmLing.class) != null && !this.isImmune(Charm.CharmLing.class)){
 			dmg = (int) Math.ceil(dmg * 1.25f);
 		}

@@ -25,7 +25,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
@@ -43,7 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDICLRPRO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogReal;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDiedTO;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.BallisticaReal;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.timing.VirtualActor;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
@@ -136,7 +135,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
     public int defenseSkill(Char enemy) {
         return (int)(super.defenseSkill(enemy) * ((HP*2 <= HT)? 1.5 : 1));
     }
-    private float[] skillBalance = new float[]{100f, 100f, 100f};
 
     @Override
     public int drRoll() {
@@ -310,14 +308,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         yell(Messages.get(this,"death_rattle"));
     }
 
-    private void extraSummonSubject(){
-        summonSubject(2);
-        summonsMade++;
-        summonSubject(3);
-        summonsMade++;
-        yell(Messages.get(this, "more_summon"));
-        new Flare(4, 32).color(0x4040FF, false).show(sprite, 1.5f);
-    }
     private static float[] chanceMap = {0f, 100f, 100f, 100f, 100f, 100f, 100f};
     private void rollForAbility(){
         lastAbility = Random.chances(chanceMap);
@@ -372,12 +362,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                 @Override
                 protected boolean act() {
                     Actor.remove(this);
-                    if (summonCooldown <= 0 && summonSubject(3)){
-                        summonsMade++;
-                        summonCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN)-1f;
-                    } else if (summonCooldown > 0){
-                        summonCooldown-=1f/speed();
-                    }
 
                     if (paralysed > 0){
                         spend(TICK);
@@ -427,7 +411,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                             abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
                             spend(TICK);
                         }else if(lastAbility == SUMMON){
-                            extraSummonSubject();
                             abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
                             spend(TICK);
                         }
@@ -449,7 +432,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                 @Override
                 protected boolean act() {
                     Actor.remove(this);
-                    if (summonSubject(2)) summonsMade++;
                     return true;
                 }
             });
@@ -464,7 +446,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                 @Override
                 protected boolean act() {
                     Actor.remove(this);
-                    actPhaseTwoSummon();
                     return true;
                 }
             });
@@ -733,7 +714,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                     Buff.append(hero, BeamTowerAdbility.class).towerPos = i;
                 }
                 //properties.add(Property.IMMOVABLE);
-                ScrollOfTeleportation.appear(this, ShopBossLevel.throneling);
+
                 ////doYogLasers();
                 sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
                 Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
@@ -752,8 +733,8 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                 HP = HT/2;
             }
         } else if (phase == 2 && shielding() == 0 && HP <= HT/3) {
-            actPhaseTwoSummon();
             yell(  Messages.get(this, "enraged" ));
+            ScrollOfTeleportation.teleportToLocation(this, ShopBossLevel.throneling);
             GLog.pink(  Messages.get(this, "xslx") );
             for (int i : CryStalPosition2) {
                 Buff.append(hero, BeamTowerAdbility.class).towerPos = i;
@@ -1022,7 +1003,8 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         @Override
         public int onHitProc(Char ch) {
             if(ch.alignment == Alignment.ENEMY) return 0;
-            ch.damage( Random.Int(15, 30), YogReal.class );
+            //改为魔法伤害
+            ch.damage( Random.Int(15, 30), new DM100.LightningBolt() );
             Buff.affect( ch, HalomethaneBurning.class ).reignite( ch, 7f );
             if(ch == Dungeon.hero){
                 Sample.INSTANCE.play(Assets.Sounds.BLAST, Random.Float(1.1f, 1.5f));
@@ -1141,111 +1123,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             delay = bundle.getInt(DELAY);
             pos = bundle.getInt(POS);
             summon = bundle.getClass(SUMMON);
-        }
-    }
-
-    private boolean summonSubject( int delay, Class<?extends Mob> type ){
-        Summoning s = new Summoning();
-        s.pos = ((ShopBossLevel)Dungeon.level).getSummoningPos();
-        if (s.pos == -1) return false;
-        s.summon = type;
-        s.delay = delay;
-        s.attachTo(this);
-        return true;
-    }
-
-    private boolean summonSubject( int delay ){
-
-        //4th summon is always a monk or warlock, otherwise ghoul
-        //4 1n 13 are monks/warlocks
-        if (summonsMade % 13 == 7 || summonsMade % 13 == 11) {
-            return summonSubject(delay, FireMagicDied.ColdGuradA.class );
-        } else if(summonsMade % 13 == 5 || summonsMade % 13 == 12) {
-            return summonSubject(delay, FireMagicDied.ColdGuradB.class);
-        }else{
-            return summonSubject(delay, FireMagicDied.ColdGuradC.class);
-        }
-
-    }
-
-    private void actPhaseTwoSummon(){
-        if(wave == 0){
-            yell(Messages.get(this, "wave_1",Dungeon.hero.name()));
-            summonSubject(2, FireMagicDied.ColdGuradA.class);
-            summonSubject(3, FireMagicDied.ColdGuradA.class);
-            ++wave;
-            spend(TICK*9);
-        }else if(wave == 1){
-            summonSubject(1, FireMagicDied.ColdGuradB.class);
-            summonSubject(5, FireMagicDied.ColdGuradB.class);
-            ++wave;
-            Char enemy = (this.enemy == null ? Dungeon.hero : this.enemy);
-            int w = Dungeon.level.width();
-            int dx = enemy.pos % w - pos % w;
-            int dy = enemy.pos / w - pos / w;
-            int direction = 2 * (Math.abs(dx) > Math.abs(dy) ? 0 : 1);
-            direction += (direction > 0 ? (dy > 0 ? 1 : 0) : (dx > 0 ? 1 : 0));
-            //Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);;
-            beamCD = 20 + 8 - (phase == 5 ? 19 : 0);
-            ScrollOfTeleportation.appear(hero, ShopBossLevel.throne);
-            yell(Messages.get(this, "active") );
-            spend(TICK*12);
-        }else if(wave == 2){
-            summonSubject(1, FireMagicDied.ColdGuradA.class);
-            summonSubject(2, FireMagicDied.ColdGuradC.class);
-            summonSubject(6, FireMagicDied.ColdGuradA.class);
-            summonSubject(6, FireMagicDied.ColdGuradA.class);
-            ScrollOfTeleportation.appear(hero, ShopBossLevel.throne);
-            yell(Messages.get(this, "active") );
-            ++wave;
-            spend(TICK*15);
-        }else if(wave == 3){
-            yell(Messages.get(this, "wave_2",Dungeon.hero.name()));
-            ScrollOfTeleportation.appear(hero, ShopBossLevel.throne);
-            yell(Messages.get(this, "active") );
-            //Eye.spawnAround(pos);
-            summonSubject(1, FireMagicDied.ColdGuradA.class);
-            summonSubject(2, FireMagicDied.ColdGuradC.class);
-            summonSubject(2, FireMagicDied.ColdGuradA.class);
-            summonSubject(11, FireMagicDied.ColdGuradA.class);
-            Char enemy = (this.enemy == null ? Dungeon.hero : this.enemy);
-            int w = Dungeon.level.width();
-            int dx = enemy.pos % w - pos % w;
-            int dy = enemy.pos / w - pos / w;
-            int direction = 2 * (Math.abs(dx) > Math.abs(dy) ? 0 : 1);
-            direction += (direction > 0 ? (dy > 0 ? 1 : 0) : (dx > 0 ? 1 : 0));
-            //Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);;
-            beamCD = 20 + 8 - (phase == 5 ? 19 : 0);
-            ++wave;
-            spend(TICK*15);
-        }else if(wave == 4){
-            summonSubject(2, FireMagicDied.ColdGuradA.class);
-            summonSubject(5, FireMagicDied.ColdGuradA.class);
-            summonSubject(2, FireMagicDied.ColdGuradA.class);
-            summonSubject(5, DM100.class);
-            summonSubject(7, SRPDICLRPRO.class);
-            ++wave;
-            spend(TICK*14);
-        }else if(wave == 5){
-            yell(Messages.get(this,"wave_3",Dungeon.hero.name()));
-            ScrollOfTeleportation.appear(hero, ShopBossLevel.throne);
-            yell(Messages.get(this, "active") );
-            summonSubject(2, FireMagicDied.ColdGuradA.class);
-            summonSubject(2, FireMagicDied.ColdGuradB.class);
-            summonSubject(2, FireMagicDied.ColdGuradC.class);
-            Buff.affect(this, Haste.class, 5f);
-            Char enemy = (this.enemy == null ? Dungeon.hero : this.enemy);
-            int w = Dungeon.level.width();
-            int dx = enemy.pos % w - pos % w;
-            int dy = enemy.pos / w - pos / w;
-            int direction = 2 * (Math.abs(dx) > Math.abs(dy) ? 0 : 1);
-            direction += (direction > 0 ? (dy > 0 ? 1 : 0) : (dx > 0 ? 1 : 0));
-            //Buff.affect(this, FireMagicDied.YogScanHalf.class).setPos(pos, direction);;
-            beamCD = 20 + 8 - (phase == 5 ? 19 : 0);
-            ++wave;
-            spend(TICK*100000);
-        }else{
-            spend(TICK*100000);
         }
     }
 

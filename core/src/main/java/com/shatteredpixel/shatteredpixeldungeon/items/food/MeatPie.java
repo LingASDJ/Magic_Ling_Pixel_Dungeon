@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
@@ -56,9 +57,37 @@ public class MeatPie extends Food {
 				hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
 				GLog.p(Messages.get(this, "eat_msg_2"));
 			} else if(Random.Float() > (0.25f + (hero.STR/5f)/10f)){
-				hero.STR++;
-				hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
-				GLog.p(Messages.get(this, "eat_msg_2"));
+				if(Statistics.deepestFloor>=20 && Statistics.deepestFloor<=26 && Statistics.GetFoodLing < 1 ){
+					Statistics.GetFoodLing++;
+					hero.STR++;
+					hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
+					GLog.p(Messages.get(this, "eat_msg_2"));
+				} else if(Statistics.deepestFloor>15 && Statistics.deepestFloor<20 && Statistics.GetFoodLing < 1 ){
+					Statistics.GetFoodLing++;
+					hero.STR++;
+					hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
+					GLog.p(Messages.get(this, "eat_msg_2"));
+				} else if(Statistics.deepestFloor>10 && Statistics.deepestFloor<15 && Statistics.GetFoodLing < 2 ){
+					Statistics.GetFoodLing++;
+					hero.STR++;
+					hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
+					GLog.p(Messages.get(this, "eat_msg_2"));
+				} else if(Statistics.deepestFloor>5 && Statistics.deepestFloor<10 && Statistics.GetFoodLing < 2 ){
+					Statistics.GetFoodLing++;
+					hero.STR++;
+					hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
+					GLog.p(Messages.get(this, "eat_msg_2"));
+				} else if(Statistics.deepestFloor>=0 && Statistics.deepestFloor<5 && Statistics.GetFoodLing < 1 ){
+					Statistics.GetFoodLing++;
+					hero.STR++;
+					hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "eat_msg_1"));
+					GLog.p(Messages.get(this, "eat_msg_2"));
+				} else if(Dungeon.bossLevel()) {
+					GLog.w(Messages.get(this, "eat_msg_4",Statistics.GetFoodLing));
+				} else {
+					GLog.w(Messages.get(this, "eat_msg_3",Statistics.GetFoodLing));
+				}
+
 			}
 		}
 		super.satisfy( hero );

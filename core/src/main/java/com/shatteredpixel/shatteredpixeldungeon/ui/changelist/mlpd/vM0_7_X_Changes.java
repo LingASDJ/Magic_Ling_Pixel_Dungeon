@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusStarFruitsSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeepSeaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DragonGirlBlueSprite;
@@ -42,6 +43,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0721_Changes(changeInfos);
         add_V0716_Changes(changeInfos);
         add_V0715_Changes(changeInfos);
         add_V0714_Changes(changeInfos);
@@ -59,6 +61,53 @@ public class vM0_7_X_Changes {
         add_GYD_Changes(changeInfos);
     }
 
+    public static void add_V0721_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.2.1", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        Image dragonSprite = new DM720Sprite();
+        dragonSprite.scale.set(PixelScene.align(0.72f));
+        changes.addButton(new ChangeButton(dragonSprite, ("DM720调整"),
+                ("1.去除常态在水上回复和导线加血。\n" +
+                        "2.绝命头目难度实装，详见挑战。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS),("第二轮平衡"),
+                        ( "1:挑战调整\n"  +
+                        "※ 药水瘾症:大饼获取力量每区拥有上限,在低于 12 力量必定追加\n" +
+                        "大层/限制次数：(1/2/3/4/5 大层，1/2/2/1/1 次)\n" +
+                        "※ 冻肉获取护盾调整为目前一半\n" +
+                        "※ 变幻莫测:固定大楼层取消，没有常规陷阱层，只有陷阱Plus层，以及仍然有概率出现大楼层（简单点说，就是地形仍然有，只不过多了精英，三井，常规陷阱换为刀山火海（陷阱Plus层））\n\n" +
+                        "2:武器调整\n" +
+                        "※ 碧灰:常规成长伤害数值改为1-3，格挡 0-3 改为 无成长格挡 0-10，无任何加成。\n" +
+                        "※ 荆棘:异果生命树掉落改为80%掉落，且无保底\n" +
+                        "※ 双斧:成长改为 1-2\n" +
+                        "※ 筝盾:格挡成长改为与圆盾一致\n" +
+                        "※ 龙血鳞片:格挡成长改为 0-4!!!\n\n" +
+                        "3:火魔女商店\n" +
+                        "※ 火魔女商店进行了优化，不能通过等待白嫖回合。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.2.0版本:\n\n" +
+                        "1、 修复拟态王闪退Bug\n" +
+                        "2、 修复DM720不合理的生成逻辑\n" +
+                        "3、 商店领主奖励进一步优化\n" +
+                        "4、 修正孤城移速异常，修正天狗和传送门护甲值异常\n" +
+                        "5、 修正爆炸体移速异常\n" +
+                        "6、 修正吸血鬼刀攻速异常",
+                "本次版本已经由中部群审核通过：\n" +
+                        "审核人：正经的仙，WTE\n" +
+                        "代码维护：JDSALing"
+        ));
+    }
 
     public static void add_V0716_Changes( ArrayList<ChangeInfo> changeInfos ) {
         ChangeInfo changes = new ChangeInfo("v0.7.1.8", true, "");

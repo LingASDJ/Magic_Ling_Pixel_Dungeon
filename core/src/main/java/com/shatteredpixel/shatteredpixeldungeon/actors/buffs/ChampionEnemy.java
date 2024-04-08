@@ -415,7 +415,7 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public float speedFactor() {
-			return super.speedFactor()*0.5f;
+			return 0.5f;
 		}
 
 		public void detach() {

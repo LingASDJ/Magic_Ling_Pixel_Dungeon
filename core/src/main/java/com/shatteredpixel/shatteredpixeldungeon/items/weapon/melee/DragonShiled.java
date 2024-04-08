@@ -36,15 +36,15 @@ public class DragonShiled extends MeleeWeapon {
 
     @Override
     public int defenseFactor( Char owner ) {
-        return 6+6*buffedLvl();    //6 extra defence, plus 3 per level;
+        return 1+4*buffedLvl();    //6 extra defence, plus 3 per level;
     }
 
     @Override
     public String statsInfo(){
         if (isIdentified()){
-            return Messages.get(this, "stats_desc", 6+6*buffedLvl());
+            return Messages.get(this, "stats_desc", 1+4*buffedLvl());
         } else {
-            return Messages.get(this, "typical_stats_desc", 9);
+            return Messages.get(this, "typical_stats_desc", 6);
         }
     }
 

@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReloadShop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReloadShopTwo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDiedTO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -53,103 +54,108 @@ public class WndRushShop extends Window {
         message.maxWidth(WIDTH);
         message.setPos(0, titlebar.bottom() + GAP);
         add( message );
+        RewardButton2 s1 = null;
+        RewardButton2 s6 = null;
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (mob instanceof NullDiedTO) {
+                RewardButton shop1 = new RewardButton(((NullDiedTO) mob).shop1);
+                shop1.setRect((WIDTH - BTN_GAP) / 6f - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE,
+                        BTN_SIZE);
+                add(shop1);
 
-        WndRushShop.RewardButton shop1 = new WndRushShop.RewardButton( NullDiedTO.shop1 );
-        shop1.setRect( (WIDTH - BTN_GAP) / 6f - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE,
-                BTN_SIZE );
-        add( shop1 );
+                RewardButton shop2 = new RewardButton(((NullDiedTO) mob).shop2);
+                shop2.setRect(shop1.right() + BTN_GAP, shop1.top(), BTN_SIZE, BTN_SIZE);
+                add(shop2);
 
-        WndRushShop.RewardButton shop2 = new WndRushShop.RewardButton( NullDiedTO.shop2 );
-        shop2.setRect( shop1.right() + BTN_GAP, shop1.top(), BTN_SIZE, BTN_SIZE );
-        add(shop2);
+                RewardButton shop3 = new RewardButton(((NullDiedTO) mob).shop3);
+                shop3.setRect(shop2.right() + BTN_GAP, shop2.top(), BTN_SIZE, BTN_SIZE);
+                add(shop3);
 
-        WndRushShop.RewardButton shop3 = new WndRushShop.RewardButton( NullDiedTO.shop3 );
-        shop3.setRect( shop2.right() + BTN_GAP, shop2.top(), BTN_SIZE, BTN_SIZE );
-        add(shop3);
+                RewardButton shop4 = new RewardButton(((NullDiedTO) mob).shop4);
+                shop4.setRect(shop3.right() + BTN_GAP, shop3.top(), BTN_SIZE, BTN_SIZE);
+                add(shop4);
 
-        WndRushShop.RewardButton shop4 = new WndRushShop.RewardButton( NullDiedTO.shop4 );
-        shop4.setRect( shop3.right() + BTN_GAP, shop3.top(), BTN_SIZE, BTN_SIZE );
-        add(shop4);
+                RewardButton shop5 = new RewardButton(((NullDiedTO) mob).shop5);
+                shop5.setRect(shop4.right() + BTN_GAP, shop4.top(), BTN_SIZE, BTN_SIZE);
+                add(shop5);
 
-        WndRushShop.RewardButton shop5 = new WndRushShop.RewardButton( NullDiedTO.shop5 );
-        shop5.setRect( shop4.right() + BTN_GAP, shop4.top(), BTN_SIZE, BTN_SIZE );
-        add(shop5);
+                RewardButton shop6 = new RewardButton(((NullDiedTO) mob).shop6);
+                shop6.setRect(shop5.right() + BTN_GAP, shop5.top(), BTN_SIZE, BTN_SIZE);
+                add(shop6);
 
-        WndRushShop.RewardButton shop6 = new WndRushShop.RewardButton( NullDiedTO.shop6 );
-        shop6.setRect( shop5.right() + BTN_GAP, shop5.top(), BTN_SIZE, BTN_SIZE );
-        add(shop6);
+                RewardButton2 bomb1 = new RewardButton2(((NullDiedTO) mob).shop7);
+                bomb1.setRect(shop1.left(), shop1.bottom(), BTN_SIZE, BTN_SIZE);
+                add(bomb1);
 
-        WndRushShop.RewardButton2 bomb1 = new WndRushShop.RewardButton2( NullDiedTO.shop7 );
-        bomb1.setRect( shop1.left() , shop1.bottom(), BTN_SIZE, BTN_SIZE );
-        add(bomb1);
+                RewardButton2 bomb2 = new RewardButton2(((NullDiedTO) mob).shop8);
+                bomb2.setRect(bomb1.right() + BTN_GAP, bomb1.top(), BTN_SIZE, BTN_SIZE);
+                add(bomb2);
 
-        WndRushShop.RewardButton2 bomb2 = new WndRushShop.RewardButton2( NullDiedTO.shop8 );
-        bomb2.setRect( bomb1.right()+ BTN_GAP , bomb1.top(), BTN_SIZE, BTN_SIZE );
-        add(bomb2);
+                RewardButton2 bomb3 = new RewardButton2(((NullDiedTO) mob).shop9);
+                bomb3.setRect(bomb2.right() + BTN_GAP, bomb2.top(), BTN_SIZE, BTN_SIZE);
+                add(bomb3);
 
-        WndRushShop.RewardButton2 bomb3 = new WndRushShop.RewardButton2( NullDiedTO.shop9 );
-        bomb3.setRect( bomb2.right()+ BTN_GAP , bomb2.top(), BTN_SIZE, BTN_SIZE );
-        add(bomb3);
+                RewardButton2 bomb4 = new RewardButton2(((NullDiedTO) mob).shop10);
+                bomb4.setRect(bomb3.right() + BTN_GAP, bomb3.top(), BTN_SIZE, BTN_SIZE);
+                add(bomb4);
 
-        WndRushShop.RewardButton2 bomb4 = new WndRushShop.RewardButton2( NullDiedTO.shop10);
-        bomb4.setRect( bomb3.right()+ BTN_GAP , bomb3.top(), BTN_SIZE, BTN_SIZE );
-        add(bomb4);
+                RewardButton2 bomb5 = new RewardButton2(((NullDiedTO) mob).shop11);
+                bomb5.setRect(bomb4.right() + BTN_GAP, bomb4.top(), BTN_SIZE, BTN_SIZE);
+                add(bomb5);
 
-        WndRushShop.RewardButton2 bomb5 = new WndRushShop.RewardButton2( NullDiedTO.shop11 );
-        bomb5.setRect( bomb4.right()+ BTN_GAP , bomb4.top(), BTN_SIZE, BTN_SIZE );
-        add(bomb5);
+                RewardButton2 bomb6 = new RewardButton2(((NullDiedTO) mob).shop12);
+                bomb6.setRect(bomb5.right() + BTN_GAP, bomb5.top(), BTN_SIZE, BTN_SIZE);
+                add(bomb6);
 
-        WndRushShop.RewardButton2 bomb6 = new WndRushShop.RewardButton2( NullDiedTO.shop12 );
-        bomb6.setRect( bomb5.right() + BTN_GAP, bomb5.top(), BTN_SIZE, BTN_SIZE );
-        add(bomb6);
+                RewardButton2 x1 = new RewardButton2(((NullDiedTO) mob).shop13);
+                x1.setRect(bomb1.left(), bomb1.bottom(), BTN_SIZE, BTN_SIZE);
+                add(x1);
 
-        WndRushShop.RewardButton2 x1 = new WndRushShop.RewardButton2( NullDiedTO.shop13 );
-        x1.setRect( bomb1.left() , bomb1.bottom(), BTN_SIZE, BTN_SIZE );
-        add(x1);
+                RewardButton2 x2 = new RewardButton2(((NullDiedTO) mob).shop14);
+                x2.setRect(x1.right() + BTN_GAP, x1.top(), BTN_SIZE, BTN_SIZE);
+                add(x2);
 
-        WndRushShop.RewardButton2 x2 = new WndRushShop.RewardButton2( NullDiedTO.shop14 );
-        x2.setRect( x1.right()+ BTN_GAP , x1.top(), BTN_SIZE, BTN_SIZE );
-        add(x2);
+                RewardButton2 x3 = new RewardButton2(((NullDiedTO) mob).shop15);
+                x3.setRect(x2.right() + BTN_GAP, x2.top(), BTN_SIZE, BTN_SIZE);
+                add(x3);
 
-        WndRushShop.RewardButton2 x3 = new WndRushShop.RewardButton2( NullDiedTO.shop15);
-        x3.setRect( x2.right()+ BTN_GAP , x2.top(), BTN_SIZE, BTN_SIZE );
-        add(x3);
+                RewardButton2 x4 = new RewardButton2(((NullDiedTO) mob).shop16);
+                x4.setRect(x3.right() + BTN_GAP, x3.top(), BTN_SIZE, BTN_SIZE);
+                add(x4);
 
-        WndRushShop.RewardButton2 x4 = new WndRushShop.RewardButton2( NullDiedTO.shop16);
-        x4.setRect( x3.right()+ BTN_GAP , x3.top(), BTN_SIZE, BTN_SIZE );
-        add(x4);
+                RewardButton2 x5 = new RewardButton2(((NullDiedTO) mob).shop17);
+                x5.setRect(x4.right() + BTN_GAP, x4.top(), BTN_SIZE, BTN_SIZE);
+                add(x5);
 
-        WndRushShop.RewardButton2 x5 = new WndRushShop.RewardButton2( NullDiedTO.shop17 );
-        x5.setRect( x4.right()+ BTN_GAP , x4.top(), BTN_SIZE, BTN_SIZE );
-        add(x5);
+                RewardButton2 x6 = new RewardButton2(((NullDiedTO) mob).shop18);
+                x6.setRect(x5.right() + BTN_GAP, x5.top(), BTN_SIZE, BTN_SIZE);
+                add(x6);
 
-        WndRushShop.RewardButton2 x6 = new WndRushShop.RewardButton2( NullDiedTO.shop18);
-        x6.setRect( x5.right() + BTN_GAP, x5.top(), BTN_SIZE, BTN_SIZE );
-        add(x6);
+                s1 = new RewardButton2(((NullDiedTO) mob).shop19);
+                s1.setRect(x1.left(), x1.bottom(), BTN_SIZE, BTN_SIZE);
+                add(s1);
 
-        WndRushShop.RewardButton2 s1 = new WndRushShop.RewardButton2( NullDiedTO.shop19 );
-        s1.setRect( x1.left() , x1.bottom(), BTN_SIZE, BTN_SIZE );
-        add(s1);
+                RewardButton2 s2 = new RewardButton2(((NullDiedTO) mob).shop20);
+                s2.setRect(s1.right() + BTN_GAP, s1.top(), BTN_SIZE, BTN_SIZE);
+                add(s2);
 
-        WndRushShop.RewardButton2 s2 = new WndRushShop.RewardButton2( NullDiedTO.shop20 );
-        s2.setRect( s1.right()+ BTN_GAP , s1.top(), BTN_SIZE, BTN_SIZE );
-        add(s2);
+                RewardButton2 s3 = new RewardButton2(((NullDiedTO) mob).shop21);
+                s3.setRect(s2.right() + BTN_GAP, s2.top(), BTN_SIZE, BTN_SIZE);
+                add(s3);
 
-        WndRushShop.RewardButton2 s3 = new WndRushShop.RewardButton2( NullDiedTO.shop21);
-        s3.setRect( s2.right()+ BTN_GAP , s2.top(), BTN_SIZE, BTN_SIZE );
-        add(s3);
+                RewardButton2 s4 = new RewardButton2(((NullDiedTO) mob).shop22);
+                s4.setRect(s3.right() + BTN_GAP, s3.top(), BTN_SIZE, BTN_SIZE);
+                add(s4);
 
-        WndRushShop.RewardButton2 s4 = new WndRushShop.RewardButton2( NullDiedTO.shop22);
-        s4.setRect( s3.right()+ BTN_GAP , s3.top(), BTN_SIZE, BTN_SIZE );
-        add(s4);
+                RewardButton2 s5 = new RewardButton2(((NullDiedTO) mob).shop23);
+                s5.setRect(s4.right() + BTN_GAP, s4.top(), BTN_SIZE, BTN_SIZE);
+                add(s5);
 
-        WndRushShop.RewardButton2 s5 = new WndRushShop.RewardButton2( NullDiedTO.shop23 );
-        s5.setRect( s4.right()+ BTN_GAP , s4.top(), BTN_SIZE, BTN_SIZE );
-        add(s5);
-
-        WndRushShop.RewardButton2 s6 = new WndRushShop.RewardButton2( NullDiedTO.shop24);
-        s6.setRect( s5.right() + BTN_GAP, s5.top(), BTN_SIZE, BTN_SIZE );
-        add(s6);
+                s6 = new RewardButton2(((NullDiedTO) mob).shop24);
+                s6.setRect(s5.right() + BTN_GAP, s5.top(), BTN_SIZE, BTN_SIZE);
+                add(s6);
+            }
+        }
 
         StyledButton btnReload = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this,"reloadshop"),6){
             @Override

@@ -30,11 +30,11 @@ public class Dairikyan extends MeleeWeapon {
     }
 
     public int min(int level) {
-        return (this.tier + 1) * 2 + (this.tier + 1) * level;
+        return 8 + level;
     }
 
     public int max(int level) {
-        return (this.tier + 1) * 3 + (this.tier + 1) * level;
+        return 12 + level*2;
     }
 
     @Override

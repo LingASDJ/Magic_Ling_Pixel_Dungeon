@@ -1603,8 +1603,8 @@ public class DwarfMaster extends Boss {
         super.die( cause );
         Statistics.bossScores[3] += 6000;
         Dungeon.level.unseal();
-        //酸液体清0
-        Statistics.SiderLing = 0;
+        
+        
        for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
             if (	mob instanceof DwarfMaster.DKMonk ||
                     mob instanceof DwarfMaster.DKGhoul ||

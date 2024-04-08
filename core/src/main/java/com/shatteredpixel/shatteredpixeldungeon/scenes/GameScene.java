@@ -1738,7 +1738,6 @@ public class GameScene extends PixelScene {
 						bossSlain.texture(Assets.Interfaces.DIZF_Title);
 						bossSlain.show( Window.R_COLOR, 0.4f, 6f);
 						scene.showBanner(bossSlain);
-						break;
 					} else {
 						bossSlain.texture(Statistics.ExFruit ? Assets.Interfaces.QliPhothEX_Title : Assets.Interfaces.QliPhoth_Title);
 						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
@@ -1817,9 +1816,16 @@ public class GameScene extends PixelScene {
 					}
 					break;
 				case 5:
+					if(Dungeon.branch == 3) {
+						bossSlain.texture(Assets.Interfaces.DIZF_Slain);
+						bossSlain.show(Window.R_COLOR, 0.4f, 6f);
+						scene.showBanner(bossSlain);
+					} else {
 						bossSlain.texture(Assets.Interfaces.QliPhoth_Clear);
 						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
+					}
+					Statistics.GetFoodLing=0;
 					break;
 				case 10:
 					if ( ((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && !Statistics.mustTengu) {
@@ -1831,6 +1837,10 @@ public class GameScene extends PixelScene {
 						bossSlain.show( Window.R_COLOR, 0.2f, 5f);
 						scene.showBanner(bossSlain);
 					}
+					Statistics.GetFoodLing=0;
+					break;
+				case 15:
+					Statistics.GetFoodLing=0;
 					break;
 				case 17:case 18:
 					if(Dungeon.branch == 3){
@@ -1845,6 +1855,7 @@ public class GameScene extends PixelScene {
 						bossSlain.show( Window.ANSDO_COLOR, 0.3f, 5f);
 						scene.showBanner(bossSlain);
 					}
+					Statistics.GetFoodLing=0;
 					break;
 				case 25:
 					if(Dungeon.isChallenged(CS)) {
@@ -1853,6 +1864,7 @@ public class GameScene extends PixelScene {
 						GameScene.flash(Window.TITLE_COLOR);
 						scene.showBanner(bossSlain);
 					}
+					Statistics.GetFoodLing=0;
 					break;
 				case 30: case 26:
 					bossSlain.texture(Assets.Interfaces.Cerdog_Clear);

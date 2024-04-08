@@ -116,7 +116,7 @@ public class Tengu extends Boss {
 
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 5);
+		return 0;
 	}
 
 	boolean loading = false;

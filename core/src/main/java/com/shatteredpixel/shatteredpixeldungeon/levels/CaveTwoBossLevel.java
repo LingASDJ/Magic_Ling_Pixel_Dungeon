@@ -216,14 +216,6 @@ public class CaveTwoBossLevel extends Level {
             pylon.pos = i;
             mobs.add(pylon);
         }
-
-        if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
-            for (int i : pylonHardPositions) {
-                PylonCS pylon = new PylonCS();
-                pylon.pos = i;
-                mobs.add(pylon);
-            }
-        }
     }
 
     @Override
@@ -311,6 +303,13 @@ public class CaveTwoBossLevel extends Level {
                 set( i, Terrain.PEDESTAL );
                 GameScene.updateMap( i );
             }
+
+            for (int i : pylonHardPositions) {
+                PylonCS pylon = new PylonCS();
+                pylon.pos = i;
+                GameScene.add(pylon);
+            }
+
             for (int i : reDungeonLevel) {
                 if (map[i] != Terrain.INACTIVE_TRAP){
                     set( i, Terrain.BARRICADE );

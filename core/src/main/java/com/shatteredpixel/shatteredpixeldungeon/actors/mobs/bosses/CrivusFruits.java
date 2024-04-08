@@ -370,8 +370,8 @@ public class CrivusFruits extends Boss {
     public void die(Object cause) {
         super.die(cause);
 
-        //酸液体清0
-        Statistics.SiderLing = 0;
+        
+        
 
         PotionOfPurity.PotionOfPurityLing potionOfPurityLing = Dungeon.hero.belongings.getItem(PotionOfPurity.PotionOfPurityLing.class);
         if(potionOfPurityLing != null){

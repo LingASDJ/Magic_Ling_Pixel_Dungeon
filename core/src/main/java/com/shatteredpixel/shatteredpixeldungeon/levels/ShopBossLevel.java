@@ -118,7 +118,10 @@ public class ShopBossLevel extends Level {
 
             NullDiedTO bossx = new NullDiedTO();
             bossx.pos = WIDTH*15 + 17;
+            bossx.ReloadShop();
             GameScene.add(bossx);
+
+
         }
 
 

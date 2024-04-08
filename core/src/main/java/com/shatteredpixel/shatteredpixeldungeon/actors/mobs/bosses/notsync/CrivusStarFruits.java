@@ -113,6 +113,9 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
     public void die(Object cause) {
         super.die(cause);
         boolean heroKilled = false;
+
+        int pos = 577;
+
         for (int i = 0; i < PathFinder.NEIGHBOURS49.length; i++) {
             Char ch = findChar( pos + PathFinder.NEIGHBOURS49[i] );
             if (ch != null && ch.isAlive()) {
@@ -148,7 +151,10 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
         Badges.validateBossSlain();
         Statistics.bossScores[0] += 2000;
         Badges.KILL_ST();
-        Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
+
+        //50%
+        if(Random.Float()>=0.7f) Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
+
         if(!Statistics.bossRushMode) {
             Dungeon.level.drop(new IceCyanBlueSquareCoin(15),pos);
             Dungeon.level.drop(new Gold(200),pos);

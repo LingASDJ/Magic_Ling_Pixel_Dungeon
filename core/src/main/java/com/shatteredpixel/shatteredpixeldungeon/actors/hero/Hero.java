@@ -77,6 +77,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessNoMoney;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessRedWhite;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessUnlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
@@ -791,7 +792,7 @@ public class Hero extends Char {
 			speed *= 1.2f;
 		}
 
-		if(Dungeon.isChallenged(CS) && gameNight){
+		if(Dungeon.isChallenged(CS) && !gameNight){
 			speed *= 1.10f;
 		} else if(gameTime>350 && gameTime<400) {
 			speed *= 1.05f;
@@ -959,7 +960,7 @@ public class Hero extends Char {
 						Buff.affect(hero, BlessMixShiled.class).set((100), 1);
 						break;
 					case 2:
-						Buff.affect(hero, BlessImmune.class, ChampionHero.DURATION*123456f);
+						Buff.affect(hero, BlessImmune.class).set((100), 1);
 						break;
 					case 3:
 						Buff.affect(hero, BlessGoRead.class).set((100), 1);
@@ -1135,7 +1136,7 @@ public class Hero extends Char {
                 break;
             case 4:
 				if(Dungeon.depth < 20){
-					Buff.affect(hero, BlessImmune.class,ChampionHero.DURATION*123456f);
+					Buff.affect(hero, BlessImmune.class).set((100), 1);
 				}
                 break;
         }
@@ -1412,13 +1413,12 @@ public class Hero extends Char {
 			boolean hasKey = false;
 			int door = Dungeon.level.map[doorCell];
 			
-			if (door == Terrain.LOCKED_DOOR
-					&& Notes.keyCount(new IronKey(Dungeon.depth)) > 0) {
+			if (door == Terrain.LOCKED_DOOR && Notes.keyCount(new IronKey(Dungeon.depth)) > 0 || checkUnlocked()) {
 				
 				hasKey = true;
 				
 			} else if (door == Terrain.CRYSTAL_DOOR
-					&& Notes.keyCount(new CrystalKey(Dungeon.depth)) > 0) {
+					&& Notes.keyCount(new CrystalKey(Dungeon.depth)) > 0 || checkUnlocked()) {
 
 				hasKey = true;
 
@@ -1801,6 +1801,11 @@ public class Hero extends Char {
 	
 	@Override
 	public void damage( int dmg, Object src ) {
+
+		if(buff(BlessImmune.class) != null && !this.isImmune(BlessImmune.class)){
+			dmg = (int) Math.ceil(dmg * 0.75f);
+		}
+
 
 		MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
 		if(getHeal != null && HT/4 > HP){
@@ -2825,6 +2830,11 @@ public class Hero extends Char {
 	public void onMotionComplete() {
 		GameScene.checkKeyHold();
 	}
+
+	//万能解锁
+	private boolean checkUnlocked() {
+		return Dungeon.hero.buff(BlessUnlock.class) != null;
+	}
 	
 	@Override
 	public void onOperateComplete() {
@@ -2837,15 +2847,17 @@ public class Hero extends Char {
 			if (Dungeon.level.distance(pos, doorCell) <= 1) {
 				boolean hasKey;
 				if (door == Terrain.LOCKED_DOOR) {
-					hasKey = Notes.remove(new IronKey(Dungeon.depth));
+					hasKey = Notes.remove(new IronKey(Dungeon.depth)) || checkUnlocked();
 					if (hasKey) Level.set(doorCell, Terrain.DOOR);
+					if(checkUnlocked()) Buff.detach(this,BlessUnlock.class);
 				} else if (door == Terrain.CRYSTAL_DOOR) {
-					hasKey = Notes.remove(new CrystalKey(Dungeon.depth));
+					hasKey = Notes.remove(new CrystalKey(Dungeon.depth)) || checkUnlocked();
 					if (hasKey) {
 						Level.set(doorCell, Terrain.EMPTY);
 						Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 						CellEmitter.get( doorCell ).start( Speck.factory( Speck.DISCOVER ), 0.025f, 20 );
 					}
+					if(checkUnlocked()) Buff.detach(this,BlessUnlock.class);
 				} else {
 					hasKey = Notes.remove(new SkeletonKey(Dungeon.depth));
 					if (hasKey) Level.set(doorCell, Terrain.UNLOCKED_EXIT);

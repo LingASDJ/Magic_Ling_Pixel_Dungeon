@@ -170,7 +170,7 @@ public class WndTradeItem extends WndInfoItem {
 
 		add( btnStole );
 
-		if(shopOnLevel()){
+		if(shopOnLevel() && Dungeon.branch == 0){
 			pos = btnStole.bottom();
 			btnStole.visible=true;
 		} else {

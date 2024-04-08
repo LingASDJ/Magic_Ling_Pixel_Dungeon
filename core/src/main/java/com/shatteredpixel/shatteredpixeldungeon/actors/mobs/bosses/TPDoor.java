@@ -31,6 +31,11 @@ import com.watabou.utils.Random;
 
 public class TPDoor extends Mob {
 
+    @Override
+    public int drRoll() {
+        return 0;
+    }
+
     {
         spriteClass = TPDoorSprites.class;
 

@@ -3,13 +3,30 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuf
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
-public class BlessImmune extends ClearLanterBuff {
-
+public class BlessUnlock extends ClearLanterBuff {
     public static int level = 0;
     private int interval = 1;
+    @Override
+    public String iconTextDisplay() {
+        return Integer.toString(level);
+    }
+    @Override
+    public boolean act() {
+        if (target.isAlive()) {
+
+            spend(interval);
+            if (--level <= 0) {
+                detach();
+            }
+
+        }
+
+        return true;
+    }
 
     public int level() {
         return level;
@@ -23,8 +40,6 @@ public class BlessImmune extends ClearLanterBuff {
             spend(time - cooldown() - 1);
         }
     }
-
-
 
     @Override
     public float iconFadePercent() {
@@ -42,7 +57,7 @@ public class BlessImmune extends ClearLanterBuff {
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc");
+        return Messages.get(this, "desc", level, dispTurns(visualcooldown()));
     }
 
     private static final String LEVEL	    = "level";
@@ -62,16 +77,17 @@ public class BlessImmune extends ClearLanterBuff {
         level = bundle.getInt( LEVEL );
     }
 
-
     @Override
     public void tintIcon(Image icon) {
-        icon.hardlight(0xD2691E);
+        icon.hardlight(Window.DeepPK_COLOR);
     }
 
     @Override
     public int icon() {
-        return BuffIndicator.GOBUFF_UPRD;
+        return BuffIndicator.MIND_VISION;
     }
 
 
 }
+
+

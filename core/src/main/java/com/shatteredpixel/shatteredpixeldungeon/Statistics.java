@@ -60,7 +60,7 @@ public class Statistics {
 	//中继器电话号码
 	public static int commonrelaycall;
 
-	public static int SiderLing;
+	public static int GetFoodLing;
 
 	//中秋节幽灵特别行动
 	public static boolean findMoon = false;
@@ -447,7 +447,7 @@ public class Statistics {
 		chalMultiplier  = 1;
 		totalScore      = 0;
 		seedCustom = false;
-		SiderLing = 0;
+		GetFoodLing = 0;
 		CrivusbossTeleporter = 0;
 	}
 
@@ -474,7 +474,7 @@ public class Statistics {
 
 		bundle.put(LOVX,deadGo);
 
-		bundle.put(SIDERLING,SiderLing);
+		bundle.put(SIDERLING, GetFoodLing);
 
 		bundle.put(FUCKALONE,fuckGeneratorAlone);
 
@@ -617,7 +617,7 @@ public class Statistics {
 
 		CrivusbossTeleporter = bundle.getInt(BDK);
 
-		SiderLing = bundle.getInt( SIDERLING);
+		GetFoodLing = bundle.getInt( SIDERLING);
 
 		gameDay = bundle.getInt("gameday");
 

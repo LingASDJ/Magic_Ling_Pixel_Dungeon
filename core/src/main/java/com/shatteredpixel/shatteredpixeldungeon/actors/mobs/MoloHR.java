@@ -105,8 +105,8 @@ public class MoloHR extends Boss {
             //如果新增临死前的话，请将1改为Random.IntRange
             this.sprite.showStatus(16711680, Messages.get(this,"death_msg_"+1));
         }
-        //酸液体清0
-        Statistics.SiderLing = 0;
+        
+        
         GetBossLoot();
         Statistics.bossScores[2] += 4000;
         Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.pos );

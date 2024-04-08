@@ -79,71 +79,93 @@ public class NullDiedTO extends NTNPC {
         CellEmitter.get( pos ).burst(EnergyParticle.FACTORY, 6 );
     }
 
+    public void ReloadShop() {
+        shop1 = Generator.random(Generator.Category.SCROLL );
+        shop1.windowsBuy = true;
+        shop2 = Generator.random(Generator.Category.STONE);
+        shop2.windowsBuy = true;
+        shop3 = Generator.random(Generator.Category.WAND);
+        shop3.windowsBuy = true;
+        shop4 = Generator.random(Generator.Category.ARTIFACT);
+        shop4.windowsBuy = true;
+        shop6 = Generator.random(Generator.Category.ARMOR );
+        shop6.windowsBuy = true;
+        shop5 = Generator.random(Generator.Category.RING );
+        shop5.windowsBuy = true;
+        shop7 = Generator.random( Generator.Category.WEP_T1 );
+        shop7.windowsBuy = true;
+        shop8 = Generator.random( Generator.Category.WEP_T2 );
+        shop8.windowsBuy = true;
+        shop9 = Generator.random( Generator.Category.WEP_T3 );
+        shop9.windowsBuy = true;
+        shop10 = Generator.random( Generator.Category.WEP_T4 );
+        shop10.windowsBuy = true;
+        shop11 = Generator.random( Generator.Category.WEP_T5 );
+        shop11.windowsBuy = true;
+        shop12 = Generator.random( Generator.Category.WEP_T6 );
+        shop12.windowsBuy = true;
+        shop13 = new PotionOfFrost().quantity(1).identify();
+        shop13.windowsBuy = true;
+        shop14 = new PotionOfLiquidFlame().quantity(1).identify();
+        shop14.windowsBuy = true;
+        shop15 = new MeatPie();
+        shop15.windowsBuy = true;
+        shop16 = new LightFood();
+        shop16.windowsBuy = true;
+        shop17 = new ScrollOfIdentify();
+        shop17.windowsBuy = true;
+        shop18 = new PotionOfLiquidFlame();
+        shop18.windowsBuy = true;
+
+        shop19 = new PotionOfHaste();
+        shop19.windowsBuy = true;
+        shop20 = new ScrollOfRemoveCurse();
+        shop20.windowsBuy = true;
+        shop21 = new Pasty().quantity(1).identify();
+        shop21.windowsBuy = true;
+        shop22 = new ScrollOfRemoveCurse().quantity(1).identify();
+        shop22.windowsBuy = true;
+        shop23 = new Firebomb().quantity(1);
+        shop23.windowsBuy = true;
+        shop24 = new FrostBomb().quantity(1);
+        shop24.windowsBuy = true;
+    }
+
 
     protected boolean act() {
         sprite.turnTo( pos, Dungeon.hero.pos );
         spend( TICK );
-
-        shop1 = Generator.randomUsingDefaults( Generator.Category.SCROLL );
-        shop2 = Generator.randomUsingDefaults( Generator.Category.STONE);
-        shop3 = Generator.randomUsingDefaults( Generator.Category.WAND);
-        shop4 = Generator.randomUsingDefaults( Generator.Category.ARTIFACT);
-        shop6 = Generator.randomUsingDefaults( Generator.Category.ARMOR );
-        shop5 = Generator.randomUsingDefaults( Generator.Category.RING );
-
-        shop7 =  Generator.randomUsingDefaults( Generator.Category.WEP_T1 );
-        shop8 =  Generator.randomUsingDefaults( Generator.Category.WEP_T2 );
-        shop9 =  Generator.randomUsingDefaults( Generator.Category.WEP_T3 );
-        shop10 = Generator.randomUsingDefaults( Generator.Category.WEP_T4 );
-        shop11 = Generator.randomUsingDefaults( Generator.Category.WEP_T5 );
-        shop12 = Generator.randomUsingDefaults( Generator.Category.WEP_T6 );
-
-        shop13 = new PotionOfFrost().quantity(1).identify();
-        shop14 = new PotionOfLiquidFlame().quantity(1).identify();
-        shop15 = new MeatPie();
-        shop16 = new LightFood();
-        shop17 = new ScrollOfIdentify();
-        shop18 = new PotionOfLiquidFlame();
-
-        shop19 = new PotionOfHaste();
-        shop20 = new ScrollOfRemoveCurse();
-        shop21 = new Pasty().quantity(1).identify();
-        shop22 = new ScrollOfRemoveCurse().quantity(1).identify();
-        shop23 = new Firebomb().quantity(1);
-        shop24 = new FrostBomb().quantity(1);
-
-
         throwItem();
         return NullDiedTO.super.act();
     }
 
-    public static Item shop1;
-    public static Item shop2;
-    public static Item shop3;
-    public static Item shop4;
-    public static Item shop5;
-    public static Item shop6;
+    public Item shop1;
+    public Item shop2;
+    public Item shop3;
+    public Item shop4;
+    public Item shop5;
+    public Item shop6;
 
-    public static Item shop7;
-    public static Item shop8;
-    public static Item shop9;
-    public static Item shop10;
-    public static Item shop11;
-    public static Item shop12;
+    public Item shop7;
+    public Item shop8;
+    public Item shop9;
+    public Item shop10;
+    public Item shop11;
+    public Item shop12;
 
-    public static Item shop13;
-    public static Item shop14;
-    public static Item shop15;
-    public static Item shop16;
-    public static Item shop17;
-    public static Item shop18;
+    public Item shop13;
+    public Item shop14;
+    public Item shop15;
+    public Item shop16;
+    public Item shop17;
+    public Item shop18;
 
-    public static Item shop19;
-    public static Item shop20;
-    public static Item shop21;
-    public static Item shop22;
-    public static Item shop23;
-    public static Item shop24;
+    public Item shop19;
+    public Item shop20;
+    public Item shop21;
+    public Item shop22;
+    public Item shop23;
+    public Item shop24;
 
     @Override
     public boolean interact(Char c) {

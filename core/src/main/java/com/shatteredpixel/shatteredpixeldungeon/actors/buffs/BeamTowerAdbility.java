@@ -25,7 +25,7 @@ public class BeamTowerAdbility extends Buff {
             Char ch = findChar(j);
             if (ch != null) {
                 if (ch.alignment != Char.Alignment.ENEMY) {
-                    ch.damage(Random.IntRange(6, 10), CrystalDiedTower.class);
+                    ch.damage(Random.IntRange(5, 8), CrystalDiedTower.class);
                     Statistics.bossScores[3] -= 300;
                     //hero.sprite.showStatus(CharSprite.NEGATIVE, "300");
                     Buff.affect(ch, Cripple.class, 2f);

@@ -225,8 +225,8 @@ public abstract class RegularLevel extends Level {
 
 		//force max standard rooms and multiple by 1.5x for large levels
 		//force max standard rooms and multiple by 1.5x for large levels
-		int standards = standardRooms(feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)));
-		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
+		int standards = standardRooms(feeling == Feeling.LARGE);
+		if (feeling == Feeling.LARGE){
 			standards = (int)Math.ceil(standards * 1.5f);
 		}
 
@@ -327,9 +327,9 @@ public abstract class RegularLevel extends Level {
 		}
 
 		if(feeling == Feeling.THREEWELL){
-			initRooms.add(new HealWellRoom());
-			initRooms.add(new RandomRoom());
 			initRooms.add(new IdenityRoom());
+			initRooms.add(new RandomRoom());
+			initRooms.add(new HealWellRoom());
 		}
 
 		if(feeling == Feeling.LINKROOM){
@@ -360,8 +360,8 @@ public abstract class RegularLevel extends Level {
 		}
 
 		//force max special rooms and add one more for large levels
-		int specials = specialRooms(feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)));
-		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
+		int specials = specialRooms(feeling == Feeling.LARGE);
+		if (feeling == Feeling.LARGE){
 			specials++;
 		}
 		SpecialRoom.initForFloor();
@@ -434,7 +434,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 		// 在特定挑战中怪物生成翻倍
-		if (Dungeon.isChallenged(MOREROOM) && (!(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) || !Dungeon.isChallenged(CS)))) {
+		if (Dungeon.isChallenged(MOREROOM)|| !Dungeon.isChallenged(CS)) {
 			mobs += Random.NormalIntRange(1,3);
 		}
 
@@ -587,7 +587,7 @@ public abstract class RegularLevel extends Level {
 		int nItems = 3 + Random.chances(new float[]{6, 3, 1});
 
 
-		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
+		if (feeling == Feeling.LARGE){
 			nItems += 2;
 		}
 

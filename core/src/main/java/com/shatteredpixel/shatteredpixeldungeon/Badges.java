@@ -1141,12 +1141,12 @@ public class Badges {
 		READ_BOOK_THREE				( 87 ),
 
 
-		HOLLOWCITY					( 88 ),
-		MASTER						( 89 ),
-		RED_DRAMATICUL				( 90 ),
-		GOD_PLEASE					( 91),
+		HOLLOWCITY					(  ),
+		MASTER						( ),
+		RED_DRAMATICUL				( ),
+		GOD_PLEASE					( ),
 
-		NOW_ANTATTCK				(92),
+		NOW_ANTATTCK				(),
 		WOC_MONEY_GIRL				(93),
 
 

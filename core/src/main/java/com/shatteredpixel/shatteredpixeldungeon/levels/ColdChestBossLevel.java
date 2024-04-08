@@ -33,7 +33,6 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 //宝藏迷宫 10层
 public class ColdChestBossLevel extends Level {
@@ -558,15 +557,13 @@ public class ColdChestBossLevel extends Level {
                             changeMap(EndMap);
                             //在切换房间的时候立刻切换全新坐标
 
-                            Iterator<Heap> iterator = heaps.valueList().iterator();
-                            while(iterator.hasNext()) {
-                                Heap heap = iterator.next();
-                                for (Item item : heap.items) {
-                                    if(!(item instanceof MIME)){
-                                        item.doPickUp(hero, 962);
-                                        iterator.remove();
-                                    } else {
-                                        iterator.remove();
+                            for (Heap heap : Dungeon.level.heaps.valueList()) {
+                                    for (Item item : heap.items) {
+                                        if(!(item instanceof MIME)){
+                                            item.doPickUp(hero, 962);
+                                            heap.destroy();
+                                        } else {
+                                            heap.destroy();
                                     }
                                 }
                             }

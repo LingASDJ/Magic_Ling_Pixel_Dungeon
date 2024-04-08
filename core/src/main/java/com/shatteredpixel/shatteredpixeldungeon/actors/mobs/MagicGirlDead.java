@@ -401,8 +401,8 @@ public class MagicGirlDead extends Boss {
         if (Statistics.qualifiedForBossChallengeBadge){
             Badges.validateBossChallengeCompleted();
         }
-        //酸液体清0
-        Statistics.SiderLing = 0;
+        
+        
 
         int shards = Random.chances(new float[]{0, 0, 6, 3, 1});
         for (int i = 0; i < shards; i++){

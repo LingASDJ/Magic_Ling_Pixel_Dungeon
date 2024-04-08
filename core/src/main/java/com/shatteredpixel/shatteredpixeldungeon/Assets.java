@@ -167,6 +167,8 @@ public class Assets {
 		public static final String DMOR_Title  = "interfaces/bosslogo/dm300or-title.png";
 		public static final String DIZF_Title  = "interfaces/bosslogo/dizzfar-title.png";
 
+		public static final String DIZF_Slain  = "interfaces/bosslogo/dizzfar-slain.png";
+
 		public static final String UPBARS  = "interfaces/updatebar.png";
 
 

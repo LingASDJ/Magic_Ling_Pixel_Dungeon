@@ -280,7 +280,7 @@ public abstract class Level implements Bundlable {
 			}
 			
 			if (depth > 1) {
-				if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
+				if(Dungeon.isChallenged(MOREROOM)){
 					int randomInt = Random.Int(10);
 					if(depth == 4){
 						feeling = Feeling.DIEDROOM;
@@ -295,7 +295,7 @@ public abstract class Level implements Bundlable {
 						addItemToSpawn(new Torch());
 						viewDistance = Math.round(viewDistance / 2f);
 					} else if (randomInt == 4) {
-						feeling = Feeling.TRAPS;
+						feeling = Feeling.LARGE;
 					} else if (randomInt == 5) {
 						feeling = Feeling.THREEWELL;
 					} else if (randomInt == 6) {

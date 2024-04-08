@@ -548,8 +548,8 @@ public class DwarfKing extends Boss {
 	public void die(Object cause) {
 
 		GameScene.bossSlain();
-		//酸液体清0
-		Statistics.SiderLing = 0;
+		
+		
 		super.die( cause );
 
 		Heap h = Dungeon.level.heaps.get(NewCityBossLevel.throne);

@@ -33,7 +33,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMixShiled;
@@ -320,7 +319,7 @@ public class WndStory extends Window {
 				Buff.affect(hero, BlessMixShiled.class).set(100, 1);
 				break;
 			case 4:
-				Buff.affect(hero, BlessImmune.class, ChampionHero.DURATION * DURATION_MULTIPLIER);
+				Buff.affect(hero, BlessImmune.class).set((100), 1);
 				break;
 		}
 	}

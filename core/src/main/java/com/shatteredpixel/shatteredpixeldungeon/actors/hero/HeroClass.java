@@ -68,7 +68,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.LingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
@@ -268,7 +267,7 @@ public enum HeroClass {
 			new ScrollOfFlameCursed().quantity(50).identify().collect();
 
 			Dungeon.gold = 600000000;
-			hero.STR = 27;
+			hero.STR = 30;
 			hero.lvl = 30;
 			hero.HP=hero.HT=120;
 			hero.exp=-1;

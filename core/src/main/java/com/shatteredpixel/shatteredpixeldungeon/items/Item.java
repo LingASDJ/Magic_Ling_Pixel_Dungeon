@@ -106,6 +106,10 @@ public class Item implements Bundlable {
 	public boolean levelKnown = false;
 	
 	public boolean cursed;
+
+	public boolean windowsBuy;
+
+
 	public boolean cursedKnown;
 	
 	// Unique items persist through revival
@@ -543,8 +547,6 @@ public class Item implements Bundlable {
 	}
 
 	public Emitter emitter() { return null; }
-
-	public void NO() {}
 	
 	public String info() {
 		return desc();
@@ -612,6 +614,8 @@ public class Item implements Bundlable {
 	private static final String KEPT_LOST       = "kept_lost";
 
 	private static final String ANLIX       = "anlix";
+
+	private static final String WINDOWSBUY       = "windowsbuy";
 	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -619,6 +623,9 @@ public class Item implements Bundlable {
 		bundle.put( LEVEL, level );
 		bundle.put( LEVEL_KNOWN, levelKnown );
 		bundle.put( CURSED, cursed );
+
+		bundle.put( WINDOWSBUY, windowsBuy );
+
 		bundle.put( CURSED_KNOWN, cursedKnown );
 		if (Dungeon.quickslot.contains(this)) {
 			bundle.put( QUICKSLOT, Dungeon.quickslot.getSlot(this) );
@@ -633,6 +640,8 @@ public class Item implements Bundlable {
 		quantity	= bundle.getInt( QUANTITY );
 		levelKnown	= bundle.getBoolean( LEVEL_KNOWN );
 		cursedKnown	= bundle.getBoolean( CURSED_KNOWN );
+
+		windowsBuy	= bundle.getBoolean( WINDOWSBUY );
 		
 		int level = bundle.getInt( LEVEL );
 		if (level > 0) {
