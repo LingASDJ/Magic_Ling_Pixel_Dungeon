@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
@@ -737,10 +738,6 @@ public abstract class Char extends Actor {
 
 		if ( buff( FrostBurning.class ) != null) speed *= 0.7f;
 
-		for (HasteLing.MobLing mobspeed : buffs(HasteLing.MobLing.class)){
-			speed *= mobspeed.speedFactor();
-		}
-
 		return speed;
 	}
 
@@ -782,6 +779,10 @@ public abstract class Char extends Actor {
 
 		for (ChampionHero buff : buffs(ChampionHero.class)){
 			dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
+		}
+
+		if(buff(BlessImmune.class) != null && !this.isImmune(BlessImmune.class)){
+			dmg = (int) Math.ceil(dmg * 0.75f);
 		}
 
 		if(isInvulnerable(src.getClass())){

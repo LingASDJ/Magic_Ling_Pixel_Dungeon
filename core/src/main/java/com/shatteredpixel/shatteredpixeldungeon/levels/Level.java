@@ -571,7 +571,7 @@ public abstract class Level implements Bundlable {
 		if(Dungeon.isChallenged(CS) && depth>2 && depth<25 && Random.Float()<0.25f){
 			Buff.affect(m, ChampionEnemy.AloneCity.class);
 		}
-		if(Dungeon.isChallenged(WARLING) && !(m.isStupid)  && depth>12 && Random.Float()<0.01f ){
+		if(Dungeon.isChallenged(WARLING) && !(m.isStupid)  && depth>12 && Random.Float()<=0.1f ){
 			Buff.affect(m, ChampionEnemy.Sider.class);
 		}
 		return m;
@@ -1287,7 +1287,7 @@ public abstract class Level implements Bundlable {
 		}
 
 		//we have to get this far as grass placement has RNG implications in levelgen
-		if (Dungeon.isChallenged(Challenges.NO_HERBALISM) && !Dungeon.isChallenged(WARLING)){
+		if (Dungeon.isChallenged(Challenges.NO_HERBALISM)){
 			return null;
 		}
 		

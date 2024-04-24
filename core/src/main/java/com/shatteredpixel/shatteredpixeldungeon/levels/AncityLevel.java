@@ -123,7 +123,7 @@ public class AncityLevel extends Level {
     }
 
     public String tilesTex() {
-        return Assets.Environment.TILES_COLD;
+        return Assets.Environment.TILES_CAVES;
     }
 
     public String waterTex() {

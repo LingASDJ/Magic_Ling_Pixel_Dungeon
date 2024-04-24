@@ -149,7 +149,7 @@ public class WndAutoShop extends Window {
                                 buff.detach();
                             }
                         }
-                    } else if(Dungeon.gold > 200 * (Dungeon.depth/5)) {
+                    } else if(Dungeon.gold >= 200 * (Dungeon.depth/5)) {
                         Dungeon.gold-=200 * (Dungeon.depth/5);
                         WndAutoShop.this.selectReward( item );
                         if(Dungeon.hero.buff(AutoRandomBuff.class) != null) {

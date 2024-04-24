@@ -72,6 +72,11 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
         properties.add(Property.BOSS);
     }
 
+    @Override
+    public int drRoll() {
+        return 5;
+    }
+
     {
         immunities.add( Paralysis.class );
         immunities.add( Amok.class );

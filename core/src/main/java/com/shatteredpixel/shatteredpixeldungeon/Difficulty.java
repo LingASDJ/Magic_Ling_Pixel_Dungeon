@@ -12,8 +12,8 @@ public class Difficulty {
     public enum DifficultyConduct {
         NULL,
         EASY(1.2f),
-        NORMAL(2.5f),
-        HARD(1.75f);
+        NORMAL(2.5f);
+//        HARD(1.75f);
 //        IMPOSSIBLE(1.5f);
 
         public float scoreMod;

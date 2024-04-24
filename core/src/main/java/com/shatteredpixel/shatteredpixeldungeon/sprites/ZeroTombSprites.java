@@ -4,16 +4,16 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
 
-public class ClearElemtGuardGirlSprites extends MobSprite {
-    public ClearElemtGuardGirlSprites(){
+public class ZeroTombSprites extends MobSprite {
+    public ZeroTombSprites(){
         super();
 
-        texture( Assets.Sprites.FAYINA );
+        texture( Assets.Sprites.TOMB );
 
-        TextureFilm frames = new TextureFilm( texture, 16, 16 );
+        TextureFilm frames = new TextureFilm( texture, 16, 32 );
 
         idle = new MovieClip.Animation( 12, true );
-        idle.frames( frames, 0,0,1,1,2,2,2,2,2,3,3,3,3,4,4,4,4,4,5,5,6,6,7,7,8,8,9,9);
+        idle.frames( frames, 1);
 
         run = new MovieClip.Animation( 14, true );
         run.frames( frames, 4,5,6,7,8,9 );
@@ -27,3 +27,4 @@ public class ClearElemtGuardGirlSprites extends MobSprite {
         play( idle );
     }
 }
+

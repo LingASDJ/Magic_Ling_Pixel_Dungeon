@@ -70,6 +70,17 @@ public class FireDragon extends Boss implements Callback {
     public int summonedElementals = 0;
     private int targetingPos = -1;
 
+    @Override
+    protected boolean getCloser(int target) {
+        if (state == HUNTING) {
+            if(Dungeon.level.distance(pos,target)>3)
+                return super.getCloser( target );
+            return enemySeen && getFurther( target );
+        } else {
+            return super.getCloser(target);
+        }
+    }
+
     {
         initProperty();
         initBaseStatus(9, 12, 14, 10, 233, 5, 9);
@@ -271,7 +282,6 @@ public class FireDragon extends Boss implements Callback {
         if (buff(BleedingEffect.class) != null){
             Buff.affect( enemy, Bleeding.class ).set( damage/3f );
         }
-
         return damage;
     }
 

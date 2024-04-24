@@ -23,6 +23,7 @@ public class LanFire extends NPC {
         spriteClass = LanFireSprites.class;
         properties.add(Property.BOSS);
         properties.add(Property.IMMOVABLE);
+        properties.add(Property.UNKNOWN);
     }
     public static boolean seenBefore = false;
 

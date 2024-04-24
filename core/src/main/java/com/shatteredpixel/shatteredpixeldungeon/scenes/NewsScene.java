@@ -144,7 +144,7 @@ public class NewsScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				super.onClick();
-				String link = "https://pd.qinyueqwq.top/";
+				String link = "https://mlpd.spldream.com";
 				ShatteredPixelDungeon.platform.openURI(link);
 			}
 		};
@@ -311,10 +311,6 @@ public class NewsScene extends PixelScene {
 				protected void onClick() {
 					super.onClick();
 					String link = article.URL;
-					//tracking codes, so that the website knows where this pageview came from
-					link += "?utm_source=shatteredpd";
-					link += "&utm_medium=news_page";
-					link += "&utm_campaign=ingame_link";
 					ShatteredPixelDungeon.platform.openURI(link);
 				}
 			};

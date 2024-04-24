@@ -81,7 +81,7 @@ import java.util.ArrayList;
 public class NewDM720 extends MolotovHuntsman {
 
     public int totalPylonsToActivate(){
-        return Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 6 : 2;
+        return Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 4 : 2;
     }
 
     private static final float TIME_TO_BURN	= 1f;
@@ -477,7 +477,7 @@ public class NewDM720 extends MolotovHuntsman {
 
         int threshold;
         if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
-            threshold = HT / 7 * (6 - pylonsActivated);
+            threshold = HT / 7 * (4 - pylonsActivated);
         } else {
             threshold = HT / 3 * (2 - pylonsActivated);
         }
@@ -525,7 +525,7 @@ public class NewDM720 extends MolotovHuntsman {
         if (pylonsActivated < totalPylonsToActivate()){
             yell(Messages.get(this, "charge_lost"));
 
-            if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && pylonsActivated == 4){
+            if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && pylonsActivated == 2){
                 MoloHR m = new MoloHR();
                 m.pos = 478;
                 GameScene.add(m);

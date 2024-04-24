@@ -316,9 +316,16 @@ public class WndKingShop extends Window {
                         WndKingShop.RewardWindow.this.hide();
                         WndKingShop.this.hide();
                     } else if(item instanceof Artifact && randomArtifact() == null) {
-                        tell(Messages.get(WndKingShop.class,"noara"));
-                        WndKingShop.RewardWindow.this.hide();
-                        WndKingShop.this.hide();
+
+                        if(!Statistics.ARLing){
+                            tell(Messages.get(WndKingShop.class,"noars"));
+                            WndKingShop.this.selectReward( item );
+                            Statistics.ARLing = true;
+                        } else {
+                            tell(Messages.get(WndKingShop.class,"noara"));
+                            WndKingShop.RewardWindow.this.hide();
+                            WndKingShop.this.hide();
+                        }
 
                         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                             if (mob instanceof NullDiedTO) {

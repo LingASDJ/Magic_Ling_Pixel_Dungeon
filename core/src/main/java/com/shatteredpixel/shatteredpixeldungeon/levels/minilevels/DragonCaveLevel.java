@@ -79,7 +79,7 @@ public class DragonCaveLevel extends RegularLevel {
     }
 
     protected int nTraps() {
-        return 40;
+        return 24;
     }
 
     @Override

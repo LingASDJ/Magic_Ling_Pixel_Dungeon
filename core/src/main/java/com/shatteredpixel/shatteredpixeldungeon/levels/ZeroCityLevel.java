@@ -29,6 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessBossRushLow;
@@ -55,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.SmallLeaf;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteYan;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroTomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -65,6 +68,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.BossRushBloodGold;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
@@ -82,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.List;
@@ -449,6 +454,18 @@ public class ZeroCityLevel extends Level {
         return Assets.Environment.WATER_CAVES;
     }
 
+    //修复跳楼错误
+    @Override
+    public int randomRespawnCell( Char ch ) {
+        int pos =  2960; //random cell adjacent to the entrance.
+        int cell;
+        do {
+            cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
+        } while (!passable[cell]
+                || (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
+                || Actor.findChar(cell) != null);
+        return cell;
+    }
     @Override
     protected void createMobs() {
 
@@ -462,8 +479,12 @@ public class ZeroCityLevel extends Level {
 
             if(SPDSettings.KillDragon()){
                 FayiNa npc222= new FayiNa();
-                npc222.pos = 1213;
+                npc222.pos = 2960;
                 mobs.add(npc222);
+                ZeroTomb npc1s2= new ZeroTomb();
+                npc1s2.pos = 2961;
+                mobs.add(npc1s2);
+                drop( new LingJing(),  2959);
             }
 
             obSir npc2 = new obSir();

@@ -7,9 +7,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReloadShop;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReloadShopTwo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDiedTO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
@@ -166,7 +163,11 @@ public class WndRushShop extends Window {
                     public void call() {
                         if(Dungeon.rushgold>=1) {
                             hide();
-                            Buff.prolong(hero, ReloadShopTwo.class, 1f);
+                            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                                if (mob instanceof NullDiedTO) {
+                                    ((NullDiedTO) mob).ReloadShop();
+                                }
+                            }
                             Dungeon.rushgold -= 1;
                         } else {
                             GLog.n(Messages.get(WndRushShop.class,"x_gold"));
@@ -267,10 +268,12 @@ public class WndRushShop extends Window {
                     if(Dungeon.rushgold >=sellPrice) {
                         Dungeon.rushgold-= sellPrice;
                         WndRushShop.this.selectReward( item );
-                        Buff.prolong( hero, ReloadShop.class, 1f);
-                        //Statistics.naiyaziCollected += 1;
+                        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                            if (mob instanceof NullDiedTO) {
+                                ((NullDiedTO) mob).ReloadShop();
+                            }
+                        }
                         WndRushShop.RewardWindow.this.hide();
-                        //Badges.nyzvalidateGoldCollected();
                     } else {
                         tell(Messages.get(WndRushShop.class,"nomoney"));
                         WndRushShop.RewardWindow.this.hide();

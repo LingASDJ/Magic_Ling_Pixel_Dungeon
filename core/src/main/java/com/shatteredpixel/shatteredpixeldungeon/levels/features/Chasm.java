@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.features;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.WARLING;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
@@ -44,7 +43,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.WeakFloorRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.RedTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
@@ -194,25 +192,8 @@ public class Chasm implements Hero.Doom {
 	}
 
 	public static void mobFall( Mob mob ) {
-
-		if(Dungeon.isChallenged(WARLING) && mob.sprite != null && !mob.isStupid){
-
-			if( Random.IntRange(0,100)<=20){
-				RedTrap trapx = new RedTrap();
-				trapx.pos = mob.pos;
-				trapx.activate() ;
-			} else {
-				((MobSprite)mob.sprite).fall();
-				mob.die( Chasm.class );
-			}
-		}
-
-		if (mob.isAlive() && mob.isStupid && Dungeon.isChallenged(WARLING)|| mob.isAlive() && !Dungeon.isChallenged(WARLING) ) {
-			mob.die( Chasm.class );
-		}
-		if(mob.sprite != null && !Dungeon.isChallenged(WARLING)){
-			((MobSprite)mob.sprite).fall();
-		}
+		if (mob.isAlive()) mob.die( Chasm.class );
+		if (mob.sprite != null) ((MobSprite)mob.sprite).fall();
 	}
 	
 	public static class Falling extends Buff {

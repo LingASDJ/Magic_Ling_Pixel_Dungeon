@@ -1802,11 +1802,6 @@ public class Hero extends Char {
 	@Override
 	public void damage( int dmg, Object src ) {
 
-		if(buff(BlessImmune.class) != null && !this.isImmune(BlessImmune.class)){
-			dmg = (int) Math.ceil(dmg * 0.75f);
-		}
-
-
 		MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
 		if(getHeal != null && HT/4 > HP){
 			this.HP = HT;
@@ -2552,6 +2547,7 @@ public class Hero extends Char {
 			Buff.affect(hero, BlessLingJing.class).set((100), 1);
 		} else {
 			Buff.detach(hero, BlessLingJing.class);
+			Buff.detach(hero, BlessLingJing.LanterBarrier.class);
 		}
 
         DriedRose rose = hero.belongings.getItem(DriedRose.class);

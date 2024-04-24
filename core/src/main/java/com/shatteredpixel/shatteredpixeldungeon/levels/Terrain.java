@@ -68,6 +68,8 @@ public class Terrain {
 	public static final int MINE_BOULDER    = 36;
 
 	public static final int WATER		    = 29;
+
+	public static final int GALAXY		    = 820;
 	
 	public static final int PASSABLE		= 0x01;
 	public static final int LOS_BLOCKING	= 0x02;
@@ -78,13 +80,14 @@ public class Terrain {
 	public static final int LIQUID			= 0x40;
 	public static final int PIT				= 0x80;
 	
-	public static final int[] flags = new int[256];
+	public static final int[] flags = new int[821];
 	static {
 		flags[CHASM]		= AVOID	| PIT;
 		flags[EMPTY]		= PASSABLE;
 		flags[GRASS]		= PASSABLE | FLAMABLE;
 		flags[EMPTY_WELL]	= PASSABLE;
 		flags[WATER]		= PASSABLE | LIQUID;
+		flags[GALAXY]		= PASSABLE;
 		flags[LAVA]			= PASSABLE | FLAMABLE | LIQUID;
 		flags[WALL]			= LOS_BLOCKING | SOLID;
 		flags[DOOR]			= PASSABLE | LOS_BLOCKING | FLAMABLE | SOLID;

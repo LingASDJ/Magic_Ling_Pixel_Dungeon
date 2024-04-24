@@ -30,10 +30,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.services.news.GameNesImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
-import com.shatteredpixel.shatteredpixeldungeon.services.news.UpdateNews;
 import com.shatteredpixel.shatteredpixeldungeon.update.UpdateImpl;
 import com.shatteredpixel.shatteredpixeldungeon.update.Updates;
 import com.watabou.noosa.Game;
@@ -117,7 +115,6 @@ public class DesktopLauncher {
 
 
 		if (NewsImpl.supportsNews()){
-			UpdateNews.service = GameNesImpl.getNewsService();
 			News.service = NewsImpl.getNewsService();
 			Updates.service = UpdateImpl.getUpdateService();
 		}

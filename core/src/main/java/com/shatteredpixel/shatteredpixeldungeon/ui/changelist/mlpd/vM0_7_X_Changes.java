@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MoonLowSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PianoLeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SakaFishBossSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SmallLeafSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhiteGirlSprites;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0723_Changes(changeInfos);
         add_V0721_Changes(changeInfos);
         add_V0716_Changes(changeInfos);
         add_V0715_Changes(changeInfos);
@@ -59,6 +61,54 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0723_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.2.2-5", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(NetIcons.get(NetIcons.GLOBE),("服务器升级"),
+                ( "MLPD服务器已全面升级，将为您带来全新体验。")));
+
+        Image xax = new SakaFishBossSprites();
+        xax.scale.set(PixelScene.align(0.72f));
+        changes.addButton(new ChangeButton(xax,  "萨卡班甲鱼",
+                "AI加强:萨卡班甲鱼将会主动避战，受到伤害有小概率传送。"));
+
+        Image dragonSprite = new FireDragonSprite();
+        dragonSprite.scale.set(PixelScene.align(0.52f));
+        changes.addButton(new ChangeButton(dragonSprite, ("熔岩火龙"),
+                ("AI加强：火龙会主动避战，召唤元素的效果更加频繁。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LINGPEA), ("主线剧情：无光烈焰之章 V0.3"),
+                ("1.部分错误选择不会再中止剧情\n" +
+                        "2.纯晶元素击杀后不会影响剧情\n" +
+                        "3.添加后续剧情，奥克拉赫线敬请期待\n" +
+                        "4.减少火龙层陷阱")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.2.2-5版本:\n\n" +
+                        "1、 修复BR相关问题\n" +
+                        "2、 修复0层复活的问题\n" +
+                        "3、 修复萨卡班甲鱼层未拾取背包造成的一些异常\n" +
+                        "4、 修复异果护甲防御异常\n" +
+                        "5、 修复自动售货机的金额异常\n" +
+                        "6、 优化部分文案"
+        ));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14), ("挑战：战术对抗V1.7"),
+                ("1.战术对抗不再影响 荒芜之地 挑战\n" +
+                        "2.战术对抗聪明的敌人不再会规避悬崖。\n" +
+                        "3.战术对抗的酸液体几率改为10%")));
     }
 
     public static void add_V0721_Changes( ArrayList<ChangeInfo> changeInfos ) {

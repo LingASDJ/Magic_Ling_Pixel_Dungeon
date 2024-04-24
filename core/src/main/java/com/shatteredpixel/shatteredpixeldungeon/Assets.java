@@ -65,6 +65,14 @@ public class Assets {
 	}
 
 	public static class Environment {
+
+		//GALAXY YOG EYE TO HAPPY BIRTHDAY 820-2024
+		public static final String GALAXY_AE  =  "environment/yog/bubble_above.png";
+		public static final String GALAXY_BD  = "environment/yog/bubble_behind.png";
+		public static final String GALAXY_TILED  =  "environment/yog/tiles_bubble.png";
+		public static final String GALAXY_WATER  = "environment/yog/starry.png";
+
+
 		public static final String TERRAIN_FEATURES = "environment/terrain_features.png";
 
 		public static final String TILES_GARDEN = "environment/tiles_garden.png";
@@ -577,6 +585,8 @@ public class Assets {
 		public static final String WHITE		= "sprites/npc/whiteling.png";
 
 		public static final String FAYINA		= "sprites/npc/guard_npc.png";
+
+		public static final String TOMB		= "sprites/npc/tomb.png";
 
 		public static final String MOONC		= "sprites/npc/mooncat.png";
 

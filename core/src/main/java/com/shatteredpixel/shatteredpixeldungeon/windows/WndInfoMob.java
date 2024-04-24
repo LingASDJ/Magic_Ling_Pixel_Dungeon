@@ -226,7 +226,7 @@ public class WndInfoMob extends WndTitledMessage {
 
 			mobSixInfo.info5 = PixelScene.renderTextBlock(ATBSettings() ? String.valueOf(mob.defenseSkill) : DKLevel(mob),6);
 			mobSixInfo.info6 = PixelScene.renderTextBlock(ATBSettings() ?
-					String.valueOf((double)Math.round(mob.speed()*10)/10): SPLevel(mob),6);
+					String.valueOf((double)Math.round(mob.speed()*100)/100): SPLevel(mob),6);
 
 			mobSixInfo.info7 = PixelScene.renderTextBlock(ProName(mob),6);
 			int dmg = 0;

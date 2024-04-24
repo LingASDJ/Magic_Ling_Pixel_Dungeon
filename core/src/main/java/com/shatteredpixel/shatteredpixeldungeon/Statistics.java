@@ -33,6 +33,8 @@ public class Statistics {
 	//种子处罚
 	public static boolean seedCustom = false;
 	public static boolean ExFruit = false;
+	//神器限制
+	public static boolean ARLing = false;
 	public static boolean CatFirst = false;
 	public static boolean snow = false;
 
@@ -341,6 +343,8 @@ public class Statistics {
 
 		ExFruit = false;
 
+		ARLing = false;
+
 		CatFirst = false;
 
 		SmallLeafGet = false;
@@ -481,6 +485,8 @@ public class Statistics {
 		bundle.put(SEEDCUSTOM,seedCustom);
 
 		bundle.put(EXBOSS1,ExFruit);
+
+		bundle.put("ARLing",ARLing);
 
 		bundle.put("CAT",CatFirst);
 
@@ -642,6 +648,8 @@ public class Statistics {
 		ankhToExit = bundle.getBoolean(XRTANKH);
 
 		ExFruit = bundle.getBoolean(EXBOSS1);
+
+		ARLing = bundle.getBoolean("ARLing");
 
 		onlyBzmdr = bundle.getBoolean("onlyB");
 

@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.IceGolem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ice_Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.KagenoNusujin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Katydid;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MagicGirlDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MolotovHuntsman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
@@ -51,7 +52,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDNQHZ;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDZSLS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PhantomPiranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedMurderer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedSwarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RipperDemon;
@@ -523,7 +523,7 @@ public class WndBestiary extends Window {
     private enum DataPack{
 
     //Forest
-    RAT(Rat.class, DictSpriteSheet.RAT),
+    RAT(MagicGirlDead.class, DictSpriteSheet.RAT),
     FLWW(FlowerSlime.class, DictSpriteSheet.FLOWER),
     GNOLL(Gnoll.class, DictSpriteSheet.GNOLL),
     SNAKE(Salamander.class, DictSpriteSheet.SNAKE),

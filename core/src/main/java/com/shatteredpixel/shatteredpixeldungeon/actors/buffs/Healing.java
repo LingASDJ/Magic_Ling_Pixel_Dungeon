@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Difficulty;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
@@ -75,15 +74,11 @@ public class Healing extends Buff {
 	
 	public void setHeal(int amount, float percentPerTick, int flatPerTick){
 		MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
-		if (Dungeon.isDIFFICULTY(Difficulty.DifficultyConduct.HARD)) {
-			healingLeft = amount/2;
-			percentHealPerTick = percentPerTick/2;
-			flatHealPerTick = flatPerTick/2;
-		} else {
-			healingLeft = amount;
-			percentHealPerTick = percentPerTick;
-			flatHealPerTick = flatPerTick;
-		}
+
+		healingLeft = amount;
+		percentHealPerTick = percentPerTick;
+		flatHealPerTick = flatPerTick;
+
 
 		if(getHeal!=null){
 			healingLeft = amount*2;

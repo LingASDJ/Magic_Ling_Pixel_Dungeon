@@ -39,10 +39,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.services.news.GameNesImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
-import com.shatteredpixel.shatteredpixeldungeon.services.news.UpdateNews;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
 import com.shatteredpixel.shatteredpixeldungeon.update.UpdateImpl;
 import com.shatteredpixel.shatteredpixeldungeon.update.Updates;
@@ -90,7 +88,6 @@ public class AndroidLauncher extends AndroidApplication {
 
 			if (NewsImpl.supportsNews()) {
 				Updates.service = UpdateImpl.getUpdateService();
-				UpdateNews.service = GameNesImpl.getNewsService();
 				News.service = NewsImpl.getNewsService();
 			}
 

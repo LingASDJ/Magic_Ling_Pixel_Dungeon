@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.RivalSprite;
@@ -18,6 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +66,18 @@ public class FayiNa extends NTNPC {
         spriteClass = ClearElemtGuardGirlSprites.class;
     }
 
+
+    private static String[] TXT_RANDOM = {
+            Messages.get(FayiNa.class,"roll1"),
+            Messages.get(FayiNa.class,"roll2"),
+            Messages.get(FayiNa.class,"roll3"),
+            Messages.get(FayiNa.class,"roll4"),
+            Messages.get(FayiNa.class,"roll5"),
+            Messages.get(FayiNa.class,"roll6", Dungeon.hero.name()),
+            Messages.get(FayiNa.class,"roll7"),
+            Messages.get(FayiNa.class,"roll8"),
+    };
+
     @Override
     public boolean interact(Char c) {
 
@@ -75,7 +89,7 @@ public class FayiNa extends NTNPC {
         List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
         if (passwordbadges.contains(PaswordBadges.Badge.SWORDDREAM)) {
-            yell("……");
+            yell(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
         } else {
             if (first) {
                 Game.runOnRenderThread(new Callback() {
@@ -122,9 +136,7 @@ public class FayiNa extends NTNPC {
                             @Override
                             protected void onSelect(int index) {
                                 if (index == 0) {
-                                    die(true);
                                     tell(Messages.get(FayiNa.class, "message4a"));
-                                    rd = false;
                                 } else if (index == 1){
                                     ArrayList<ClearHStal> clearCryStals = hero.belongings.getAllItems(ClearHStal.class);
                                     if(clearCryStals != null) {

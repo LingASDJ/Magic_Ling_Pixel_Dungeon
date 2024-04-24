@@ -108,9 +108,6 @@ public class CaveTwoBossLevel extends Level {
     public static Rect gate = new Rect(14, 13, 19, 14);
     public static int[] pylonPositions = new int[]{ 4 + 13*WIDTH, 28 + 13*WIDTH, 4 + 37*WIDTH, 28 + 37*WIDTH };
 
-
-    public static int[] pylonHardPositions = new int[]{940,742,838,844};
-
     public static int[] reDungeonLevel = new int[]{
             830,831,832,834,835,836,
             846,847,848,850,851,852,
@@ -259,11 +256,6 @@ public class CaveTwoBossLevel extends Level {
                 return false;
             }
         }
-        for (int i : pylonHardPositions){
-            if (Dungeon.level.distance(cell, i) <= 1){
-                return false;
-            }
-        }
 
         return super.setCellToWater(includeTraps, cell);
     }
@@ -299,16 +291,6 @@ public class CaveTwoBossLevel extends Level {
         set( entrance, Terrain.WALL );
 
         if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
-            for (int i : pylonHardPositions) {
-                set( i, Terrain.PEDESTAL );
-                GameScene.updateMap( i );
-            }
-
-            for (int i : pylonHardPositions) {
-                PylonCS pylon = new PylonCS();
-                pylon.pos = i;
-                GameScene.add(pylon);
-            }
 
             for (int i : reDungeonLevel) {
                 if (map[i] != Terrain.INACTIVE_TRAP){

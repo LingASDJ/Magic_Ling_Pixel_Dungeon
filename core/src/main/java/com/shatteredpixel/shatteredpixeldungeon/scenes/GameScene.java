@@ -24,7 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CHAMPION_ENEMIES;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.WARLING;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping.discover;
 
@@ -1450,7 +1449,7 @@ public class GameScene extends PixelScene {
 				int pos = Dungeon.level.randomRespawnCell( null );
 				if (item instanceof Potion) {
 					((Potion)item).shatter( pos );
-				} else if (item instanceof Plant.Seed && !Dungeon.isChallenged(Challenges.NO_HERBALISM) && !Dungeon.isChallenged(WARLING)) {
+				} else if (item instanceof Plant.Seed && !Dungeon.isChallenged(Challenges.NO_HERBALISM)) {
                     Dungeon.level.plant((Plant.Seed) item, pos);
                 } else if (item instanceof Honeypot) {
                     Dungeon.level.drop(((Honeypot) item).shatter(null, pos), pos);

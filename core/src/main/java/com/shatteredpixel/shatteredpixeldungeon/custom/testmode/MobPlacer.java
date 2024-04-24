@@ -86,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.XTG200;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.AnomaloCaris;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.ThreeLeafBug;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.Turtle;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.ClearElemtGuard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.ApprenticeWitch;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Butcher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Crumb;
@@ -595,7 +596,7 @@ public class MobPlacer extends TestItem{
 
         Crystal(CrystalGuardian.class,0),
         CrystalS(CrystalWisp.class,0),
-//        CBoss(CrystalSpire.class,0),
+        CBoss(ClearElemtGuard.class,0),
 //        GnollBoss(GnollGeomancer.class,0),
         GnollX(GnollGuard.class,0),
         GnollC(GnollSapper.class,0),

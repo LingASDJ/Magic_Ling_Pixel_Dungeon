@@ -8,6 +8,10 @@ import com.watabou.utils.Bundle;
 
 public class BlessImmune extends ClearLanterBuff {
 
+    {
+        immunities.addAll(com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic.RESISTS);
+    }
+
     public static int level = 0;
     private int interval = 1;
 
@@ -23,8 +27,6 @@ public class BlessImmune extends ClearLanterBuff {
             spend(time - cooldown() - 1);
         }
     }
-
-
 
     @Override
     public float iconFadePercent() {

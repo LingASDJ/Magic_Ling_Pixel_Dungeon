@@ -15,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DictFish;
@@ -345,7 +346,7 @@ public class AncientMysteryCityBossLevel extends Level{
 
         super.occupyCell( ch );
 
-        boolean isTrue = ch.pos == LDBossDoor && ch == hero && Dungeon.level.distance(ch.pos, entrance) >= 2;
+        boolean isTrue = ch.pos == LDBossDoor && ch == hero && Dungeon.level.distance(ch.pos, entrance) >= 2 && hero.buff(LostInventory.class) == null;
 
         //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
         //特别情况下 部分玩家可能会把门烧了 灰烬也可以作为检查点
@@ -388,6 +389,8 @@ public class AncientMysteryCityBossLevel extends Level{
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
             if (mob instanceof SakaFishBoss){
                 ScrollOfTeleportation.appear(mob, 337);
+                mob.state =mob.HUNTING;
+                mob.notice();
             }
         }
     }

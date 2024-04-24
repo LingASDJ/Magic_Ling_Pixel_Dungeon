@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.SakaMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CaveTwoBossLevel;
@@ -71,14 +72,13 @@ public class SakaFishBoss extends Boss {
     /***/
     {
         spriteClass = SakaFishBossSprites.class;
-        initBaseStatus(19, 25, 6, 0, 480, 5, 12);
+        initBaseStatus(19, 25, 6, 10, 480, 5, 12);
         state = SLEEPING;
         initProperty();
         HUNTING = new Hunting();
         baseSpeed = 1.75f;
         initStatus(76);
         HP=480;
-        defenseSkill = 10;
         HT=480;
         immunities.add(FrostBurning.class);
         immunities.add(HalomethaneBurning.class);
@@ -97,6 +97,11 @@ public class SakaFishBoss extends Boss {
         if (!Dungeon.level.mobs.contains(this)){
             return;
         }
+
+        if(Random.Float()<0.4f){
+            ScrollOfTeleportation.appear(this,337);
+        }
+
         AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
         if (level==AncientMysteryCityBossLevel.State.FALL_BOSS){
             dmg = 10 + (int)(Math.sqrt(2*(dmg - 4) + 1) - 1)/2;

@@ -21,9 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.plants;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.WARLING;
-
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -33,7 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -52,9 +48,7 @@ public class Sungrass extends Plant {
 		
 		if (ch != null){
 
-			if(Dungeon.isChallenged(Challenges.NO_HEALING) && ch instanceof Hero && Dungeon.isChallenged(WARLING)) {
-				PotionOfHealing.pharmacophobiaProc((Hero)ch);
-			} else if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN) {
+			if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN) {
 				Buff.affect(ch, Healing.class).setHeal(ch.HT, 0, 1);
 			} else if(ch instanceof Hero) {
 				Buff.affect(ch, Health.class).boost(ch.HT);
