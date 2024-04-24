@@ -511,9 +511,22 @@ public class SpawnWeapon extends TestItem{
         }
 
         private int maxSlots(int t) {
-            if (t <= 1) return 5;
-            if (t == 2 || t == 3) return 1145;
-            else return 12;
+            switch (t){
+                case 1:
+                    return t1_WeaponList.size();
+                case 2:
+                    return t2_WeaponList.size();
+                case 3:
+                    return t3_WeaponList.size();
+                case 4:
+                    return t4_WeaponList.size();
+                case 5:
+                    return t5_WeaponList.size();
+                case 6:
+                    return t6_WeaponList.size();
+                default:
+                    return 6;
+            }
         }
 
 

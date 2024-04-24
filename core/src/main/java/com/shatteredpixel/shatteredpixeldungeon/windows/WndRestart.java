@@ -117,7 +117,7 @@ public class WndRestart extends Window {
         RedButton cancel =new RedButton(Messages.get(this, "cancel")){
             @Override
             protected void onClick() {
-                super.onClick();
+                hide();
             }
         };
         add(cancel);
