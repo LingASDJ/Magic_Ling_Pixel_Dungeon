@@ -1,7 +1,7 @@
 # Suggestion
 
-If you dev,you must send me emali`clingsd@gmail.com,or remove google servers.  
-If you can not,you donot sync package,thanks
+If you want to develop, you have to contact me by sending me an email clingsd@gmail.com, or remove the Google service dependency package.  
+If you don't, you won't be able to compile the APK and Desktop won't be affected.  
 
 <div align="left"> 
 
