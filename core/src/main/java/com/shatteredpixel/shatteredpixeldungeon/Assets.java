@@ -566,6 +566,11 @@ public class Assets {
 		public static final String HUNTRESS	= "sprites/huntress.png";
 		public static final String COMINGSOON	= "sprites/slimekingch.png";
 		public static final String AVATARS	= "sprites/avatars.png";
+		public static final String AVATARS_WARRIOR	= "sprites/avatars_warrior.png";
+		public static final String AVATARS_MAGE	= "sprites/avatars_mage.png";
+		public static final String AVATARS_ROGUE	= "sprites/avatars_rogue.png";
+		public static final String AVATARS_HUNTRESS	= "sprites/avatars_huntress.png";
+		public static final String AVATARS_DUELIST	= "sprites/avatars_duelist.png";
 		public static final String AMULET	= "sprites/amulet.png";
 		public static final String JAMULET	= "sprites/jamulet.png";
 		public static final String COLDRAT	= "sprites/coldrat.png";

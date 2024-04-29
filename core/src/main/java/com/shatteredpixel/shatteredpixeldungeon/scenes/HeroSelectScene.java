@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -119,6 +120,7 @@ public class HeroSelectScene extends PixelScene {
 
 	private Avatar a;
 	private RedButton startBtn;
+	private IconButton skin;
 	private Image frame;
 
 	private IconButton infoButton;
@@ -251,6 +253,23 @@ public class HeroSelectScene extends PixelScene {
 		};
 		startBtn.icon(Icons.get(Icons.ENTER));
 		add( startBtn );
+
+		skin = new IconButton( NetIcons.get(NetIcons.GLOBE) ){
+			@Override
+			protected void onClick() {
+				super.onClick();
+				heroClass().SetSkin(heroClass().GetSkin()+1);
+				a.heroClass(heroClass());
+			}
+
+			@Override
+			protected String hoverText() {
+				return Messages.titleCase(Messages.get(WndKeyBindings.class, "switch_skin"));
+			}
+		};
+		skin.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
+		skin.setPos(frame.x+frame.width-12,frame.y);
+		add(skin);
 
 		infoButton = new IconButton(Icons.get(Icons.INFO)){
 			@Override
@@ -722,14 +741,14 @@ public class HeroSelectScene extends PixelScene {
 		private static final int HEIGHT	= 64;
 
 		public Avatar( HeroClass cl ) {
-			super( Assets.Sprites.AVATARS );
-			frame( new TextureFilm( texture, WIDTH, HEIGHT ).get( cl.ordinal() ) );
+			super( cl.GetSkinAssest() );
+			frame( new TextureFilm( texture, WIDTH, HEIGHT ).get( cl.GetSkin() ) );
 		}
 
 		public void heroClass( HeroClass cl ) {
-			frame( new TextureFilm( texture, WIDTH, HEIGHT ).get( cl.ordinal() ) );
+			texture(cl.GetSkinAssest());
+			frame( new TextureFilm( texture, WIDTH, HEIGHT ).get( cl.GetSkin() ) );
 		}
-
 	}
 
 	private static class GrassPatch extends Image {

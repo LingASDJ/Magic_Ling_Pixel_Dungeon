@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.RedTrap;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -266,30 +267,34 @@ public abstract class ChampionEnemy extends Buff {
         @Override
         public boolean canAttackWithExtraReach(Char enemy) {
             //attack range of 2
-            /** 实现效果，此外还要关联CharSprite.java和Mob.java以实现远程效果*/
-			if(scount<Random.NormalIntRange(6,24)){
-				if(Random.Float()<0.1f) {
-					switch (Random.NormalIntRange(0,6)){
-						//默认为毒雾
-						case 1:default:
-							GameScene.add(Blob.seed(enemy.pos, 45, ToxicGas.class));
-							break;
-						case 2:
-							GameScene.add(Blob.seed(enemy.pos, 45, CorrosiveGas.class));
-							break;
-						case 3:
-							GameScene.add(Blob.seed(enemy.pos, 45, ConfusionGas.class));
-							break;
-						case 4:
-							GameScene.add(Blob.seed(enemy.pos, 45, StormCloud.class));
-							break;
+			Ballistica attack = new Ballistica( target.pos, enemy.pos, Ballistica.PROJECTILE);
+			if(attack.collisionPos == enemy.pos) {
+				/** 实现效果，此外还要关联CharSprite.java和Mob.java以实现远程效果*/
+				if (scount < Random.NormalIntRange(6, 24)) {
+					if (Random.Float() < 0.1f) {
+						switch (Random.NormalIntRange(0, 6)) {
+							//默认为毒雾
+							case 1:
+							default:
+								GameScene.add(Blob.seed(enemy.pos, 45, ToxicGas.class));
+								break;
+							case 2:
+								GameScene.add(Blob.seed(enemy.pos, 45, CorrosiveGas.class));
+								break;
+							case 3:
+								GameScene.add(Blob.seed(enemy.pos, 45, ConfusionGas.class));
+								break;
+							case 4:
+								GameScene.add(Blob.seed(enemy.pos, 45, StormCloud.class));
+								break;
+						}
+						Sample.INSTANCE.play(Assets.Sounds.DEBUFF);
 					}
-					Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
+					scount++;
+					target.sprite.zaplink(enemy.pos);
+					int dmg = Random.NormalIntRange(target.damageRoll() / 5 + 3, target.damageRoll() / 5 + 7);
+					enemy.damage(dmg, new DarkBolt());
 				}
-				scount++;
-				target.sprite.zaplink( enemy.pos );
-				int dmg = Random.NormalIntRange( target.damageRoll()/5+3, target.damageRoll()/5+7 );
-				enemy.damage( dmg, new DarkBolt() );
 			}
 			return target.fieldOfView[enemy.pos] && Dungeon.level.distance(target.pos, enemy.pos) <= 3;
 		}
