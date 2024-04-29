@@ -19,6 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.watabou.noosa.Game;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class WndRestart extends Window {
@@ -80,6 +81,11 @@ public class WndRestart extends Window {
                         }
                     } );
                     return;
+                }
+                try {
+                    Dungeon.saveAll();
+                } catch (IOException e) {
+                    ShatteredPixelDungeon.reportException(e);
                 }
                 HeroClass oldHero = Dungeon.hero.heroClass;
                 //Difficulty.HardStorage oldDifficulty = SPDSettings.difficulty();

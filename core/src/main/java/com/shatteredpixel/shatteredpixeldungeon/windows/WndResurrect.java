@@ -99,6 +99,20 @@ public class WndResurrect extends Window {
 		btnItem2.setRect( btnItem1.right() + BTN_GAP, btnItem1.top(), BTN_SIZE, BTN_SIZE );
 		add( btnItem2 );
 
+		Item item3 = null, item4 =null;
+		if(hero.belongings.artifact() != null){
+			item3 = hero.belongings.artifact();
+		}else if(hero.belongings.misc() != null){
+			item3 = hero.belongings.misc();
+		}else {
+			item3 = hero.belongings.ring();
+		}
+		if( hero.belongings.misc() != null && item3!=hero.belongings.misc() ){
+			item4 = hero.belongings.misc();
+		}else if(item3!=hero.belongings.ring()){
+			item4 = hero.belongings.ring();
+		}
+
 		btnItem3 = new WndBlacksmith.ItemButtonX() {
 			@Override
 			protected void onClick() {
@@ -106,7 +120,7 @@ public class WndResurrect extends Window {
 				GameScene.selectItem( itemSelector );
 			}
 		};
-		btnItem3.item(hero.belongings.misc());
+		btnItem3.item(item3);
 		btnItem3.setRect( btnItem2.right() + BTN_GAP, btnItem2.top(), BTN_SIZE, BTN_SIZE );
 		add( btnItem3 );
 
@@ -118,7 +132,7 @@ public class WndResurrect extends Window {
 				GameScene.selectItem( itemSelector );
 			}
 		};
-		btnItem4.item(hero.belongings.misc());
+		btnItem4.item(item4);
 		btnItem4.setRect( btnItem3.right() + BTN_GAP, btnItem3.top(), BTN_SIZE, BTN_SIZE );
 		add( btnItem4);
 		

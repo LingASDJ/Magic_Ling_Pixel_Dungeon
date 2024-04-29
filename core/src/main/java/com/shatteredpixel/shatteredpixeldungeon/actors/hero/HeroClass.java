@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
@@ -103,6 +104,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSp
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.TextureFilm;
 import com.watabou.utils.DeviceCompat;
 
 import java.util.List;
@@ -479,4 +482,63 @@ public enum HeroClass {
 		return shortDesc() + "\n\n" + Messages.get(HeroClass.class, name()+"_unlock");
 	}
 
+	public String GetSkinAssest(){
+		switch (this) {
+			case WARRIOR: default:
+				return Assets.Sprites.AVATARS_WARRIOR;
+			case MAGE:
+				return Assets.Sprites.AVATARS_MAGE;
+			case ROGUE:
+				return Assets.Sprites.AVATARS_ROGUE;
+			case HUNTRESS:
+				return Assets.Sprites.AVATARS_HUNTRESS;
+			case DUELIST:
+				return Assets.Sprites.AVATARS_DUELIST;
+		}
+	}
+
+	public void SetSkin(int skinIndex){
+		boolean isSkinUnlock = false;
+		Image img = new Image(this.GetSkinAssest());
+		int skinCount = img.texture.width/64;
+
+		if(skinIndex==0){
+			isSkinUnlock = true;
+		}else {
+			while ( skinIndex < skinCount ) {
+				switch (this) {
+					case WARRIOR:
+					default:
+						isSkinUnlock = SPDSettings.isItemUnlock("avatars_warrior_" + skinIndex);
+						break;
+					case MAGE:
+						isSkinUnlock = SPDSettings.isItemUnlock("avatars_mage_" + skinIndex);
+						break;
+					case ROGUE:
+						isSkinUnlock = SPDSettings.isItemUnlock("avatars_rogue_" + skinIndex);
+						break;
+					case HUNTRESS:
+						isSkinUnlock = SPDSettings.isItemUnlock("avatars_huntress_" + skinIndex);
+						break;
+					case DUELIST:
+						isSkinUnlock = SPDSettings.isItemUnlock("avatars_duelist_" + skinIndex);
+						break;
+				}
+				if(!isSkinUnlock){
+					skinIndex++;
+				}else {
+					break;
+				}
+			}
+		}
+
+		if(!isSkinUnlock)
+			skinIndex=0;
+
+		SPDSettings.setHeroSkin(this.ordinal(),skinIndex);
+	}
+
+	public int GetSkin(){
+		return SPDSettings.getHeroSkin(this.ordinal());
+	}
 }

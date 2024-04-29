@@ -275,6 +275,8 @@ public class SPDSettings extends GameSettings {
 
 	public static final String KEY_UNLOCKITEM = "forever_unlock_item";
 
+	public static final String KEY_CURRENTHEROSKIN = "current_hero_skin";
+
     public static void cameraFollow(int value) {
         put(KEY_CAMERA_FOLLOW, value);
     }
@@ -712,6 +714,22 @@ public class SPDSettings extends GameSettings {
 
 	public static int iceCoin(){
 		return getInt( KEY_ICECOIN, 0);
+	}
+
+	public static void setHeroSkin(int hero,int skinIndex) {
+		StringBuilder items = new StringBuilder( getSkin() );
+		int index= hero * 2;
+		items.replace( index, index + 1 , String.valueOf(skinIndex));
+		put(KEY_CURRENTHEROSKIN, items.toString());
+	}
+
+	public static int getHeroSkin(int hero){
+		String[] itemArray = getSkin().split( ";" );
+		return Integer.parseInt(itemArray[hero]);
+	}
+
+	public static String getSkin(){
+		return getString( KEY_CURRENTHEROSKIN, "0;0;0;0;0;");
 	}
 
 
