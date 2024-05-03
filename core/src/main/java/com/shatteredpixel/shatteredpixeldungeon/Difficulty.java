@@ -11,10 +11,9 @@ import java.util.Arrays;
 public class Difficulty {
     public enum DifficultyConduct {
         NULL,
-        EASY(1.2f),
-        NORMAL(2.5f);
-//        HARD(1.75f);
-//        IMPOSSIBLE(1.5f);
+        EASY(0f),
+        NORMAL(1f),
+        HARD(2.5f);
 
         public float scoreMod;
 
