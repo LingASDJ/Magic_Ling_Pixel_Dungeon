@@ -57,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.SmallLeaf;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteYan;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroDreamShop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroTomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -454,6 +455,7 @@ public class ZeroCityLevel extends Level {
         return Assets.Environment.WATER_CAVES;
     }
 
+
     //修复跳楼错误
     @Override
     public int randomRespawnCell( Char ch ) {
@@ -569,6 +571,10 @@ public class ZeroCityLevel extends Level {
             npc14.pos = 479;
             mobs.add(npc14);
         }
+
+        ZeroDreamShop npc1111 = new ZeroDreamShop();
+        npc1111.pos = 1214;
+        mobs.add(npc1111);
 
     }
 
