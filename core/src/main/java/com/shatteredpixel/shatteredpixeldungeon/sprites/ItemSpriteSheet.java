@@ -1057,6 +1057,22 @@ public class ItemSpriteSheet {
             assignItemRect(i, 14, 14);
     }
 
+    private static final int SKIN  =                                   xy(1, 52);  //16 slots
+    public static final int SKIN_1  = + SKIN+0;
+    public static final int SKIN_2  = + SKIN+1;
+    public static final int SKIN_3  = + SKIN+2;
+    public static final int SKIN_4  = + SKIN+3;
+    public static final int SKIN_5  = + SKIN+4;
+    public static final int SKIN_6  = + SKIN+5;
+    public static final int SKIN_7  = + SKIN+6;
+    public static final int SKIN_8  = + SKIN+7;
+    public static final int SKIN_9  = + SKIN+8;
+    public static final int SKIN_10  = + SKIN+9;
+    static {
+        for (int i =SKIN; i < SKIN+10; i++)
+            assignItemRect(i, 16, 16);
+    }
+
     //for smaller 8x8 icons that often accompany an item sprite
     public static class Icons {
 

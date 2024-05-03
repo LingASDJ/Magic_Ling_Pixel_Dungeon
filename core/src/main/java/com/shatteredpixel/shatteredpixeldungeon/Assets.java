@@ -70,7 +70,7 @@ public class Assets {
 		public static final String GALAXY_AE  =  "environment/yog/bubble_above.png";
 		public static final String GALAXY_BD  = "environment/yog/bubble_behind.png";
 		public static final String GALAXY_TILED  =  "environment/yog/tiles_bubble.png";
-		public static final String GALAXY_WATER  = "environment/yog/starry.png";
+		public static final String GALAXY_WATER  = "environment/yog/starry_under.png";
 
 
 		public static final String TERRAIN_FEATURES = "environment/terrain_features.png";
@@ -438,6 +438,8 @@ public class Assets {
 
 		public static final String YTZY = "splashes/yet_yog_portraits.png";
 
+		public static final String YXF = "splashes/huntress_portraits.png";
+
 		public static final String NYZ = "splashes/nyz_portraits.png";
 		public static final String MT = "splashes/mint_portraits.png";
 		public static final String LN = "splashes/ln_portraits.png";
@@ -603,6 +605,8 @@ public class Assets {
 
 
 		public static final String WOLF		= "sprites/npc/wolf.png";
+		public static final String SKSH		= "sprites/npc/skin_shop.png";
+
 		public static final String KONG		= "sprites/npc/ChineseGongFu.png";
 		public static final String MOLX		= "sprites/npc/moonwhite-n.png";
 

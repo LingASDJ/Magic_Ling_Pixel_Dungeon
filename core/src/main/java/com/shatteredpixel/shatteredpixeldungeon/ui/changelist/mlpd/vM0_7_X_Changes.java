@@ -44,6 +44,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0730_Changes(changeInfos);
         add_V0723_Changes(changeInfos);
         add_V0721_Changes(changeInfos);
         add_V0716_Changes(changeInfos);
@@ -61,6 +62,48 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0730_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.3.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SKIN_7), ("新系统；皮肤系统"),
+                ("更新10款新皮肤，欢迎挑选。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ICEGOLD), ("限时活动：双倍钴币掉落"),
+                ("活动时间：2024-5.1-2024-5.20\n\n" +
+                        "活动期间，钴币双倍掉落，欢迎你的游玩。")));
+
+        changes.addButton(new ChangeButton(NetIcons.get(NetIcons.GLOBE),("服务器问题"),
+                ( "由于服务器近期有问题，目前仅提供更新接口。将在5月中旬恢复，还请谅解。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.3.0版本:\n\n" +
+                        "1、 修复子层的一些问题\n" +
+                        "2、 修复一些崩溃问题\n" +
+                        "3、 修复酸液体魔法攻击无视生物和障碍物的穿墙问题"
+        ));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_17), ("挑战改动预告"),
+                ("难度系统将在后续实装，孤城挑战将会迁移到困难模式中。\n\n同时，开发者模式也将迁移至难度系统中。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BUFFS), ("平衡调整"),
+                ("1.矮人术士血量和攻速降低\n" +
+                        "2.矮人术士血量和命中率降低")));
     }
 
     public static void add_V0723_Changes( ArrayList<ChangeInfo> changeInfos ) {

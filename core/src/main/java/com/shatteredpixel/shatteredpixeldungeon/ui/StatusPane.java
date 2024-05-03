@@ -35,7 +35,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.update.MLChangesButton.up
 import com.nlf.calendar.Solar;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -521,11 +520,9 @@ public class StatusPane extends Component {
 
 			joinxxx.setPos(0, 52);
 
-			if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
-				bossselect.setPos(0, 1000);
-			} else {
-				bossselect.setPos(0, 78);
-			}
+
+			bossselect.setPos(0, 78);
+
 
 
 			if(lanterfireactive){

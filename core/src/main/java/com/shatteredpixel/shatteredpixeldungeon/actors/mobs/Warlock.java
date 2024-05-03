@@ -48,7 +48,7 @@ public class Warlock extends Mob implements Callback {
 	{
 		spriteClass = WarlockSprite.class;
 		
-		HP = HT = 70;
+		HP = HT = 60;
 		defenseSkill = 18;
 		
 		EXP = 11;
@@ -67,7 +67,7 @@ public class Warlock extends Mob implements Callback {
 	
 	@Override
 	public int attackSkill( Char target ) {
-		return 25;
+		return 20;
 	}
 	
 	@Override

@@ -257,7 +257,23 @@ public enum Rankings {
 
         Statistics.totalScore *= Statistics.seedCustom ? 0.5 : 1;
 
+        Statistics.totalScore *= DifficultyScore();
+
         return Statistics.totalScore;
+    }
+
+    private int DifficultyScore() {
+        int DiffcultyScore;
+        if(Dungeon.isDLC(Conducts.Conduct.EASY)){
+            DiffcultyScore = 1;
+        } else if(Dungeon.isDLC(Conducts.Conduct.NORMAL)){
+            DiffcultyScore = 1;
+        } else if(Dungeon.isDLC(Conducts.Conduct.HARD)){
+            DiffcultyScore = 1;
+        } else {
+            DiffcultyScore = 1;
+        }
+        return DiffcultyScore;
     }
 
     public void saveGameData(Record rec) {

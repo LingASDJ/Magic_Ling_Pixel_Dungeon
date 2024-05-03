@@ -35,7 +35,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holid
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -142,6 +141,11 @@ public abstract class RegularLevel extends Level {
 				if (dayOfMonth >= 2 && dayOfMonth <= 20)
 					holiday = Holiday.QMJ;
 				break;
+			case Calendar.MAY:
+				int dayOfMonth2 = calendar.get(Calendar.DAY_OF_MONTH);
+				if (dayOfMonth2 >= 2 && dayOfMonth2 <= 20)
+					holiday = Holiday.GBJ;
+				break;
 			case Calendar.OCTOBER:
 				if (calendar.get(Calendar.WEEK_OF_MONTH) >= 2)
 					holiday = Holiday.HWEEN;
@@ -207,7 +211,8 @@ public abstract class RegularLevel extends Level {
         HWEEN,//2nd week of october though first day of november
         XMAS,
 		CJ,
-		QMJ
+		QMJ,
+		GBJ,
     }
 	
 	protected ArrayList<Room> initRooms() {
@@ -221,7 +226,7 @@ public abstract class RegularLevel extends Level {
 			initRooms.add( roomExit = new ExitRoom());
 		}
 
-
+		//initRooms.add( roomExit = new SkeletonFishRoom());
 
 		//force max standard rooms and multiple by 1.5x for large levels
 		//force max standard rooms and multiple by 1.5x for large levels
@@ -296,7 +301,7 @@ public abstract class RegularLevel extends Level {
 		if (Dungeon.aqiLevel() && (Dungeon.isChallenged(AQUAPHOBIA)))
 			initRooms.add(new AquariumRoom());
 
-		if(Statistics.goldchestmazeCollected>=3 && Dungeon.depth == 9 && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
+		if(Statistics.goldchestmazeCollected>=3 && Dungeon.depth == 9){
 			initRooms.add(new MagicDimandRoom());
 		}
 

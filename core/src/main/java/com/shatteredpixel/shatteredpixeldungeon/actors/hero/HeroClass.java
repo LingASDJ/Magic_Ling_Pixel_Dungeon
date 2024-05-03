@@ -26,7 +26,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -59,7 +58,6 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnMissile;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnRingOrWand;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.TerrainPlacer;
-import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -105,7 +103,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSt
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.TextureFilm;
 import com.watabou.utils.DeviceCompat;
 
 import java.util.List;
@@ -173,9 +170,6 @@ public enum HeroClass {
 //			hero.lvl = 100;
 //		}
 		//Buff.affect(hero, BlessImmune.class, ChampionHero.DURATION*123456f);
-		if(!Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3) && Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ){
-			Badges.BOSSTHREE();
-		}
 
 		//GLog.n(String.valueOf(Statistics.commonrelaycall));
 
@@ -201,11 +195,6 @@ public enum HeroClass {
 			if(!Dungeon.isChallenged(PRO)) {
 				new IceCyanBlueSquareCoin().quantity(3).identify().collect();
 			}
-		}
-
-		if ( Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
-			Dungeon.gold += 3000;
-			new Amulet().quantity(1).identify().collect();
 		}
 
 		hero.heroClass = this;

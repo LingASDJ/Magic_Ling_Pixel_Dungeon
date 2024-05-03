@@ -32,7 +32,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.ready;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -657,7 +656,7 @@ public abstract class Level implements Bundlable {
 
 		if (transition.type == LevelTransition.Type.REGULAR_EXIT
 				|| transition.type == LevelTransition.Type.BRANCH_EXIT || transition.type == LevelTransition.Type.DOUBLE_ENTRANCE) {
-			if (depth == 0 && !tipsgodungeon && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+			if (depth == 0 && !tipsgodungeon) {
 
 				if (!Dungeon.isChallenged(CS)) {
 					if(hero.belongings.getItem(BossRushBloodGold.class) != null){

@@ -27,9 +27,9 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.bossRushMode;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameNight;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameTime;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.bossRushMode;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.seedCustom;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.youNoItem;
@@ -586,11 +586,20 @@ public class Hero extends Char {
 		}
 
 	}
-	
+
 	public int tier() {
 		Armor armor = belongings.armor();
+
+		//TODO 临时皮肤策略
+		switch (hero.heroClass.GetSkin()){
+			case 1:
+				return 9;
+			case 2:
+				return 11;
+		}
+
 		if (armor instanceof ClassArmor){
-			return  RegularLevel.holiday == RegularLevel.Holiday.CJ ? 9 : 7;
+			return 7;
 		} else if (armor != null){
 			return armor.tier;
 		} else {

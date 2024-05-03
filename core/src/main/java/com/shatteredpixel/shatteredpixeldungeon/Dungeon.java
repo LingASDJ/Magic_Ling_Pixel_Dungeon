@@ -622,7 +622,7 @@ public class Dungeon {
 		challenges = SPDSettings.challenges();
 
 		//娱乐模式
-		//dlcs =  new Conducts.ConductStorage(SPDSettings.dlc());
+		dlcs =  new Conducts.ConductStorage(SPDSettings.dlc());
 
 		//难度模式
 		difficultys =  new Difficulty.HardStorage(SPDSettings.difficulty());
@@ -959,8 +959,8 @@ public class Dungeon {
 			bundle.put(CHALLENGES, challenges);
 			Dungeon.challenges = bundle.getInt(CHALLENGES);
 			//DLC模式
-			//bundle.put(DLCS, dlcs);
-			//dlcs.storeInBundle(bundle);
+			bundle.put(DLCS, dlcs);
+			dlcs.storeInBundle(bundle);
 			difficultys.storeInBundle(bundle);
 			//HARD选择
 			bundle.put(DIFFICULTY, difficultys);
@@ -1060,7 +1060,7 @@ public class Dungeon {
 			initialVersion = bundle.getInt( VERSION );
 		}
 
-		//dlcs.isConducted(Conducts.Conduct.BOSSRUSH);
+		dlcs.isConducted(Conducts.Conduct.EASY);
 		difficultys.restoreFromBundle(bundle);
 
 		version = bundle.getInt( VERSION );

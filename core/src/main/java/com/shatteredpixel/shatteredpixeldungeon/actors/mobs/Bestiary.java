@@ -26,7 +26,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.AnomaloCaris;
@@ -197,15 +196,11 @@ public class Bestiary {
 							Eye.class,ShieldHuntsman.class));
 				case 22:
 					//3x succubus, 3x evil eye
-					return Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? new ArrayList<>(Arrays.asList(
-							Eye.class,ShieldHuntsman.class,RedMurderer.class,MolotovHuntsman.class)) :
-							new ArrayList<>(Arrays.asList(
+					return new ArrayList<>(Arrays.asList(
 									Eye.class,ShieldHuntsman.class));
 				case 23:
 					//1x: succubus, 2x evil eye, 3x scorpio
-					return Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? new ArrayList<>(Arrays.asList(
-							Eye.class,ShieldHuntsman.class,Fire_Scorpio.class,Ice_Scorpio.class,RedMurderer.class)) :
-							new ArrayList<>(Arrays.asList(
+					return new ArrayList<>(Arrays.asList(
 									Eye.class,ShieldHuntsman.class,Ice_Scorpio.class));
 				//前半段决战
 				case 24:
@@ -362,15 +357,11 @@ public class Bestiary {
 						Eye.class,ShieldHuntsman.class, DrTerror.class));
 			case 22:
 				//3x succubus, 3x evil eye
-				return Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? new ArrayList<>(Arrays.asList(
-						Eye.class,ShieldHuntsman.class,RedMurderer.class,MolotovHuntsman.class)) :
-						new ArrayList<>(Arrays.asList(
+				return new ArrayList<>(Arrays.asList(
 								Eye.class,ShieldHuntsman.class,DrTerror.class));
 			case 23:
 				//1x: succubus, 2x evil eye, 3x scorpio
-				return Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? new ArrayList<>(Arrays.asList(
-						Eye.class,ShieldHuntsman.class,Fire_Scorpio.class,DrTerror.class,RedMurderer.class)) :
-						new ArrayList<>(Arrays.asList(
+				return new ArrayList<>(Arrays.asList(
 								Eye.class,ShieldHuntsman.class, DrTerror.class));
 			//前半段决战
 			case 24:

@@ -24,7 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.effects;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Game;
@@ -348,7 +347,7 @@ public class Speck extends Image {
 				break;
 
 			case STEAM:
-				if(depth == 10 || (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && (depth == 8))) {
+				if(depth == 10 ||(depth == 8)) {
 					hardlight(0x231d10);
 				}
 

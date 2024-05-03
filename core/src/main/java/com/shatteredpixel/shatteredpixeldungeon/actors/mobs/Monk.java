@@ -63,7 +63,7 @@ public class Monk extends Mob {
 	
 	@Override
 	public float attackDelay() {
-		return super.attackDelay()*0.75f;
+		return super.attackDelay()*0.85f;
 	}
 	
 	@Override
