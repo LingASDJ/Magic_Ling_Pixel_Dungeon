@@ -155,7 +155,7 @@ public class SPDSettings extends GameSettings {
 
 	private static final String KEY_ICE = "hice";
 
-	private static final String KEY_UP_ICE = "iceupdate9";
+	private static final String KEY_UP_ICE = "iceupdate10";
 
 	private static final String KEY_DARK	= "dark_ui";
 
