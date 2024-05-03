@@ -139,9 +139,7 @@ public class WndWaloKe extends Window {
 
     public void itemUnlock(Item item){
         if( (item instanceof BossRushBloodGold) && !SPDSettings.isItemUnlock( item.name() ) ){
-            if( item instanceof BossRushBloodGold)
-                Generator.setProbs( item, Generator.Category.WEP_T5, 0f );
-
+            Generator.setProbs( item, Generator.Category.WEP_T5, 0f );
             SPDSettings.unlockItem( item.getClass().getSimpleName() );
         }
     }

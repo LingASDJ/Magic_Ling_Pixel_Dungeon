@@ -29,7 +29,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireacti
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Clipboard;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -356,9 +355,7 @@ public class WndHero extends WndTabbed {
 
 		private String seedType(){
 			String seed;
-			if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-				seed = "BossRush";
-			}else if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
+			if(Dungeon.isChallenged(MOREROOM)){
 				seed = "B";
 			} else {
 				seed = "A";

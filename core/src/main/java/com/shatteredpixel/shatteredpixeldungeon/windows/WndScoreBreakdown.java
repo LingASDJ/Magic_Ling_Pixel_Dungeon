@@ -6,6 +6,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.activeChallenges;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -69,6 +70,20 @@ public class WndScoreBreakdown extends Window {
 
         if(Statistics.seedCustom){
             pos = statSlot(this, Messages.get(this, "seed_multiplier"), "0.5" + "x", pos, false);
+        }
+
+        if(Dungeon.isDLC(Conducts.Conduct.EASY)){
+            pos = statSlot(this, Messages.get(this, "diff_multiplier"), "1" + "x", pos, false);
+            pos = addInfo(this, Messages.get(this, "hard_desc"), pos);
+        } else if(Dungeon.isDLC(Conducts.Conduct.NORMAL)){
+            pos = statSlot(this, Messages.get(this, "diff_multiplier"), "1" + "x", pos, false);
+            pos = addInfo(this, Messages.get(this, "hard_desc"), pos);
+        } else if(Dungeon.isDLC(Conducts.Conduct.HARD)){
+            pos = statSlot(this, Messages.get(this, "diff_multiplier"), "1" + "x", pos, false);
+            pos = addInfo(this, Messages.get(this, "hard_desc"), pos);
+        } else {
+            pos = statSlot(this, Messages.get(this, "diff_multiplier"), "1" + "x", pos, false);
+            pos = addInfo(this, Messages.get(this, "hard_desc"), pos);
         }
 
         if (Statistics.chalMultiplier > 1) {

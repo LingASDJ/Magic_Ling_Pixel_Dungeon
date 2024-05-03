@@ -28,7 +28,6 @@ import com.badlogic.gdx.utils.Clipboard;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
@@ -80,9 +79,7 @@ public class WndRanking extends WndTabbed {
 	Clipboard clipboard;
 	private String seedType(){
 		String seed;
-		if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-			seed = "BossRush";
-		}else if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
+		if(Dungeon.isChallenged(MOREROOM)){
 			seed = "B";
 		} else {
 			seed = "A";

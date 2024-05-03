@@ -7,7 +7,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AutoRandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReloadShop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
@@ -33,7 +32,6 @@ import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
 public class WndLuoWhite extends Window {
     private static final int WIDTH		= 120;
@@ -172,16 +170,6 @@ public class WndLuoWhite extends Window {
                         SPDSettings.iceDownCoin(item.iceCoinValue());
                         WndLuoWhite.this.selectReward( item );
                         itemUnlock(item);
-                        if(Dungeon.hero.buff(AutoRandomBuff.class) != null) {
-                            AutoRandomBuff.level -= Random.Int(4);
-                            if(AutoRandomBuff.level <= 0) {
-                                for (Buff buff : hero.buffs()) {
-                                    if (buff instanceof AutoRandomBuff) {
-                                        buff.detach();
-                                    }
-                                }
-                            }
-                        }
                         item.cursed = true;
                         Buff.prolong( hero, ReloadShop.class, 1f);
                         RewardWindow.this.hide();
