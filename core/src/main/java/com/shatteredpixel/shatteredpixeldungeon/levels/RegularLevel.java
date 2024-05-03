@@ -141,11 +141,11 @@ public abstract class RegularLevel extends Level {
 				if (dayOfMonth >= 2 && dayOfMonth <= 20)
 					holiday = Holiday.QMJ;
 				break;
-			case Calendar.MAY:
-				int dayOfMonth2 = calendar.get(Calendar.DAY_OF_MONTH);
-				if (dayOfMonth2 >= 2 && dayOfMonth2 <= 20)
-					holiday = Holiday.GBJ;
-				break;
+//			case Calendar.MAY:
+//				int dayOfMonth2 = calendar.get(Calendar.DAY_OF_MONTH);
+//				if (dayOfMonth2 >= 2 && dayOfMonth2 <= 20)
+//					holiday = Holiday.GBJ;
+//				break;
 			case Calendar.OCTOBER:
 				if (calendar.get(Calendar.WEEK_OF_MONTH) >= 2)
 					holiday = Holiday.HWEEN;
@@ -211,8 +211,7 @@ public abstract class RegularLevel extends Level {
         HWEEN,//2nd week of october though first day of november
         XMAS,
 		CJ,
-		QMJ,
-		GBJ,
+		QMJ
     }
 	
 	protected ArrayList<Room> initRooms() {

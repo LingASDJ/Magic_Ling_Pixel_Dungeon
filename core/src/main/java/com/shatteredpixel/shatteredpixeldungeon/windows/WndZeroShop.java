@@ -35,7 +35,7 @@ public class WndZeroShop extends Window {
     public WndZeroShop() {
 
         //TODO 能跑就行
-        ZeroDreamShop.shop1 = SPDSettings.isItemUnlock("avatars_warrior_1")  ? null : new SKINITEM();
+        ZeroDreamShop.shop1 = SPDSettings.isItemUnlock("avatars_warrior_1")  ? null : new SKINITEM.SKIN_WA();
         ZeroDreamShop.shop2 = SPDSettings.isItemUnlock("avatars_mage_1")     ? null : new SKINITEM.SKIN_MA();
         ZeroDreamShop.shop3 = SPDSettings.isItemUnlock("avatars_rogue_1")    ? null : new SKINITEM.SKIN_RA();
         ZeroDreamShop.shop4 = SPDSettings.isItemUnlock("avatars_huntress_1") ? null : new SKINITEM.SKIN_HA();
@@ -127,7 +127,7 @@ public class WndZeroShop extends Window {
     };
 
     public void itemUnlock(Item item){
-        if(item instanceof SKINITEM){
+        if(item instanceof SKINITEM.SKIN_WA){
             SPDSettings.unlockItem("avatars_warrior_1");
         }
         if(item instanceof SKINITEM.SKIN_MA){

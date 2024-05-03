@@ -11,7 +11,18 @@ public class SKINITEM extends Item {
 
     @Override
     public int iceCoinValue() {
-        return 175;
+        return 1;
+    }
+
+
+    public static class SKIN_WA extends SKINITEM {
+        {
+            image = ItemSpriteSheet.SKIN_2;
+        }
+        @Override
+        public int iceCoinValue() {
+            return 195;
+        }
     }
 
     public static class SKIN_MA extends SKINITEM {

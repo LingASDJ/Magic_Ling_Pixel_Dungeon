@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -18,11 +17,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.KingGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
-import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 abstract public class Boss extends Mob {
         {
@@ -80,25 +79,31 @@ abstract public class Boss extends Mob {
                 Dungeon.level.drop(new KingGold(Random.NormalIntRange(3+Dungeon.depth/5,5+Dungeon.depth/5)),pos);
             }
 
+            final Calendar calendar = Calendar.getInstance();
+            boolean holiday = false;
+
+            if (calendar.get(Calendar.MONTH) == Calendar.MAY) {
+                int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+                if (dayOfMonth >= 2 && dayOfMonth <= 20)
+                    holiday = true;
+            }
+
             if(!Statistics.bossRushMode){
                 if(Challenges.activeChallenges()>9){
 
-                    if(holiday == RegularLevel.Holiday.GBJ){
+                    if(holiday){
                         Dungeon.level.drop(new IceCyanBlueSquareCoin(((5*(Dungeon.depth/5)) * (Challenges.activeChallenges() / 5)) * 2),pos);
                     } else {
                         Dungeon.level.drop(new IceCyanBlueSquareCoin(((5*(Dungeon.depth/5)) * (Challenges.activeChallenges() / 5))),pos);
                     }
 
-
                 } else {
 
-                    if(holiday == RegularLevel.Holiday.GBJ){
+                    if(holiday){
                         Dungeon.level.drop(new IceCyanBlueSquareCoin(5*(Dungeon.depth/5) * 2),pos);
                     } else {
                         Dungeon.level.drop(new IceCyanBlueSquareCoin(5*(Dungeon.depth/5)),pos);
                     }
-
-
                 }
             }
 
