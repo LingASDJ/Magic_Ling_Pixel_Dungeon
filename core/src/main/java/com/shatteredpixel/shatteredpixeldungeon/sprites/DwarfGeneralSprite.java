@@ -49,6 +49,12 @@ public class DwarfGeneralSprite extends MobSprite {
         play( skills );
     }
 
+    public void leap( int cell ){
+        turnTo( ch.pos, cell );
+        play( skills );
+    }
+
+
     @Override
     public void onComplete( Animation anim ) {
         if (anim == skills) {

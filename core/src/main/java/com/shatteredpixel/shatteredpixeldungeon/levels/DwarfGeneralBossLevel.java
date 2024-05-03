@@ -2,13 +2,14 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CHASM;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CRYSTAL_DOOR;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CUSTOM_DECO;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.DOOR;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.ENTRANCE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.HIGH_GRASS;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.LOCKED_DOOR;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.LOCKED_EXIT;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN_SP;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.STATUE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
@@ -46,13 +47,13 @@ public class DwarfGeneralBossLevel extends Level {
     private static final int E = EMPTY_SP;
 
     private static final int V = SIGN_SP;
-    private static final int S = SIGN;
+    private static final int S = CUSTOM_DECO;
     private static final int R = HIGH_GRASS;
 
     private static final int C = CHASM;
 
     private static final int H = LOCKED_EXIT;
-    private static final int M = LOCKED_DOOR;
+    private static final int M = CRYSTAL_DOOR;
 
     private static final int X = ENTRANCE;
 
@@ -70,9 +71,9 @@ public class DwarfGeneralBossLevel extends Level {
             C,C,C,C,W,E,W,C,C,C,C,C,C,C,C,C,C,C,C,C,C,
             C,C,C,C,W,E,W,S,S,S,S,S,S,S,C,C,C,C,C,C,C,
             C,C,C,S,W,M,W,S,S,S,S,S,S,S,S,H,W,S,C,C,C,
-            C,C,C,S,R,E,E,E,V,V,V,E,V,R,E,E,E,S,C,C,C,
-            C,C,S,S,E,E,E,E,V,V,V,V,E,E,R,E,E,S,S,C,C,
-            C,C,S,R,E,E,E,E,E,E,E,E,E,V,E,E,V,V,S,C,C,
+            C,C,C,S,R,E,E,E,S,S,S,S,S,R,E,E,E,S,C,C,C,
+            C,C,S,S,E,E,E,E,S,S,S,S,S,E,R,E,E,S,S,C,C,
+            C,C,S,R,E,E,E,E,S,S,S,S,S,V,E,E,V,V,S,C,C,
             C,C,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,C,C,
             C,C,S,E,E,V,E,E,E,E,E,E,E,E,E,E,E,E,S,C,C,
             C,C,S,S,E,E,E,E,E,E,E,E,E,E,E,V,E,S,S,C,C,
@@ -80,8 +81,8 @@ public class DwarfGeneralBossLevel extends Level {
             C,C,S,S,E,V,R,E,E,E,E,E,E,E,E,V,E,S,S,C,C,
             C,C,S,E,E,V,E,E,E,E,E,E,E,E,E,E,E,E,W,C,C,
             C,C,S,R,E,E,E,E,E,E,E,E,E,E,E,R,E,E,W,C,C,
-            C,C,S,W,E,E,E,V,V,E,E,E,V,V,V,E,E,W,W,C,C,
-            C,C,C,W,W,W,R,E,E,E,E,E,V,V,V,W,W,W,C,C,C,
+            C,C,S,W,E,E,E,E,E,E,E,E,V,V,E,E,E,W,W,C,C,
+            C,C,C,W,W,W,S,S,S,E,E,E,V,V,S,S,S,W,C,C,C,
             C,C,C,C,C,W,W,E,R,E,E,E,E,R,W,W,C,C,C,C,C,
             C,C,C,C,C,C,W,W,W,W,D,W,W,W,W,C,C,C,C,C,C,
             C,C,C,C,C,C,W,E,B,E,E,E,B,E,W,C,C,C,C,C,C,
@@ -124,8 +125,8 @@ public class DwarfGeneralBossLevel extends Level {
     @Override
     public void occupyCell( Char ch ) {
         super.occupyCell(ch);
-        //GLog.p(String.valueOf(hero.pos));
-        //GLog.b("BOSS");
+//        GLog.p(String.valueOf(hero.pos));
+//        GLog.b("BOSS");
     }
 
     @Override
