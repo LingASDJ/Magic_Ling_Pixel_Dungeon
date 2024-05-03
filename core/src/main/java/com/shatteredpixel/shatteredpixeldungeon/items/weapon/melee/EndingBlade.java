@@ -433,7 +433,6 @@ public class EndingBlade extends MeleeWeapon {
         return false;
     }
 
-    public int tier;
 
     @Override
     public String info() {
