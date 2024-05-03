@@ -67,7 +67,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Fury;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HaloFireImBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HasteLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -101,6 +100,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.IconFloatingText;
@@ -990,7 +990,7 @@ public abstract class Char extends Actor {
 			if (src instanceof AscensionChallenge) {
 				icon = IconFloatingText.AMULET;
 			}
-			if (src instanceof ScaryDamageBuff) {
+			if (src instanceof ScaryDamageBuff || src instanceof DwarfGeneral.MagicAttack) {
 				icon = IconFloatingText.HEARTDEMON_DMG;
 			}
 
