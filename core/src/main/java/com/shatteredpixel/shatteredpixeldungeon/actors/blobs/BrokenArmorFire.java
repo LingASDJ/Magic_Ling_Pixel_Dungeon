@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.blobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -77,7 +79,7 @@ public class BrokenArmorFire extends Blob {
 
     public static void burn( int pos ) {
         Char ch = Actor.findChar( pos );
-        if (ch != null && !ch.isImmune(BrokenArmorFire.class)) {
+        if (ch != null && !ch.isImmune(BrokenArmorFire.class) && ch == hero) {
             Buff.affect(ch, BrokenArmor.class, BrokenArmor.DURATION);
         }
 
