@@ -282,10 +282,6 @@ public class ColdChestBossLevel extends Level {
         LevelTransition exit = new LevelTransition(this, 0, LevelTransition.Type.REGULAR_EXIT);
         transitions.add(exit);
 
-        int doorPos =  WIDTH*3+17;
-        Mob.holdAllies(this, doorPos);
-        Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
-
         map = WorldRoomShort.clone();
     }
 
@@ -299,7 +295,7 @@ public class ColdChestBossLevel extends Level {
         LevelTransition exit2 = new LevelTransition(this, exit, LevelTransition.Type.REGULAR_EXIT);
         transitions.add(exit2);
 
-        int doorPos =  647;
+        int doorPos = 647;
         Mob.holdAllies(this, doorPos);
         Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
     }
@@ -365,6 +361,7 @@ public class ColdChestBossLevel extends Level {
 
             if(MAIN_PORTAL.containsKey(ch.pos) && pro == MAZE_START) {
                 ScrollOfTeleportation.appear(ch, IF_MAIN_PORTAL.get(ch.pos));
+
                 //传送目标区域 第二场景
                 hero.interrupt();
                 Dungeon.observe();
@@ -430,7 +427,6 @@ public class ColdChestBossLevel extends Level {
                             } else {
                                 changeMap(MazeRoom);
                             }
-
 
                             for (Heap heap : heaps.valueList()) {
                                 for (Item item : heap.items) {
@@ -546,6 +542,9 @@ public class ColdChestBossLevel extends Level {
                         }
                     }
                 }
+                //修复召唤物错误
+                Mob.holdAllies(this,STARTPOS);
+                Mob.restoreAllies(this, Dungeon.hero.pos, STARTPOS);
                 break;
             case MAZE_START:
                 //血量低于300后且在MAZE_START枚举中
