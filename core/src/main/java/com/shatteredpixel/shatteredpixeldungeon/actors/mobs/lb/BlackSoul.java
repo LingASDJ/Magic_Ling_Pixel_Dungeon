@@ -286,7 +286,7 @@ public class BlackSoul extends Mob implements Callback {
     @Override
     public void notice() {
         super.notice();
-        if (!BossHealthBar.isAssigned()) {
+        if (!BossHealthBar.isAssigned() && !Dungeon.bossLevel()) {
             BossHealthBar.assignBoss(this);
             yell(Messages.get(this, "question"));
         }
