@@ -66,8 +66,25 @@ public class ScrollOfTransmutation extends InventoryScroll {
 
 	@Override
 	protected boolean usableOnItem(Item item) {
-		return item instanceof MeleeWeapon ||
-				(item instanceof MissileWeapon && (!(item instanceof Dart) || item instanceof TippedDart)) ||
+		if(item instanceof MeleeWeapon) {
+			Generator.Category c = Generator.wepTiers[((MeleeWeapon) item).tier - 1];
+			int canChangeWeapon = 0;
+			int lastWeaponIndex = 0;
+			for(int i=0;i<c.probs.length;i++) {
+				if(c.probs[i] > 0){
+					canChangeWeapon++;
+					lastWeaponIndex = i;
+				}
+			}
+			if( canChangeWeapon > 1 )
+				return true;
+			else if( canChangeWeapon == 1 ){//针对只有一把武器能生成的情况，避免后续代码死循环导致的卡死
+				return item.getClass().getSimpleName() != c.classes[lastWeaponIndex].getSimpleName();
+			}else {//针对无法正常生成的武器
+				return false;
+			}
+		}
+		return (item instanceof MissileWeapon && (!(item instanceof Dart) || item instanceof TippedDart)) ||
 				(item instanceof Potion && !(item instanceof Elixir || item instanceof Brew || item instanceof AlchemicalCatalyst)) ||
 				//the extra check here prevents a single scroll being used on itself
 				(item instanceof Scroll && (!(item instanceof ScrollOfTransmutation) || item.quantity() > 1)) ||
@@ -201,7 +218,8 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		Weapon n;
 		Generator.Category c;
 		if (w instanceof MeleeWeapon) {
-			c = Generator.wepTiers[((MeleeWeapon)w).tier - 1];
+			//针对特殊武器修复：例如终焉的武器阶数是可以成长的
+			c = Generator.wepTiers[ ((MeleeWeapon) w).tier <= 6 ? ((MeleeWeapon) w).tier-1 : 5 ];
 		} else {
 			c = Generator.misTiers[((MissileWeapon)w).tier - 1];
 		}

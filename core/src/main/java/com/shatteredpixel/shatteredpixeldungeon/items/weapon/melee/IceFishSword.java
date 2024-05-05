@@ -101,8 +101,6 @@ public class IceFishSword extends MeleeWeapon {
                 callback);
     }
 
-    public int tier;
-
     @Override
     public String info() {
 
