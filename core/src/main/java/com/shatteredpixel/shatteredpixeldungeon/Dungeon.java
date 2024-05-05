@@ -50,12 +50,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniSaka;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
@@ -817,6 +819,19 @@ public class Dungeon {
 
 		GameScene.updateFog(l, t, width, height);
 
+		//SmallLightRoad();
+
+		if(hero.buff(SmallLightHeader.SAwareness.class) != null){
+			for (Mob m : level.mobs.toArray(new Mob[0])){
+				if (m instanceof SmallLight) {
+					BArray.or( level.visited, level.heroFOV, m.pos - 1 - level.width(), 3, level.visited );
+					BArray.or( level.visited, level.heroFOV, m.pos - 1, 3, level.visited );
+					BArray.or( level.visited, level.heroFOV, m.pos - 1 + level.width(), 3, level.visited );
+					GameScene.updateFog(m.pos, 2);
+				}
+			}
+		}
+
 		if (hero.buff(MindVision.class) != null){
 			for (Mob m : level.mobs.toArray(new Mob[0])){
 				BArray.or( level.visited, level.heroFOV, m.pos - 1 - level.width(), 3, level.visited );
@@ -889,6 +904,11 @@ public class Dungeon {
 		}
 
 		GameScene.afterObserve();
+	}
+
+	/** 微光向导共享视野 **/
+	private static void SmallLightRoad() {
+
 	}
 
 	//we store this to avoid having to re-allocate the array with each pathfind
