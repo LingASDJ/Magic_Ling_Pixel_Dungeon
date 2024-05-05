@@ -44,6 +44,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0731_Changes(changeInfos);
         add_V0730_Changes(changeInfos);
         add_V0723_Changes(changeInfos);
         add_V0721_Changes(changeInfos);
@@ -62,6 +63,36 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0731_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.3.1", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SMTITEM), ("预载物品：微光向导"),
+                ("将在后续版本更新，现在的半成品可在开发者模式测试。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.3.1版本:\n\n" +
+                        "1、 修复地狱犬楼层的一些问题\n" +
+                        "2、 修复灯火的暗影的一些异常错误\n" +
+                        "3、 修复6阶武器嬗变崩溃的问题\n" +
+                        "4、 优化拟态王三阶段变身秒人问题 和 拟态王楼层英雄的召唤物异常丢失的问题\n" +
+                        "5、 修复恶魔层刷怪异常的问题\n" +
+                        "6、 修复全肉大饼贴图异常问题"
+        ));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LINGPEA), ("棱晶调整"),
+                ("仅在最大深度为10层之前生效。")));
     }
 
     public static void add_V0730_Changes( ArrayList<ChangeInfo> changeInfos ) {
