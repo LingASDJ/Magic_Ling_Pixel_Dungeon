@@ -91,7 +91,7 @@ public class CerDogBossLevel extends Level{
         boolean isTrue = ch.pos == LDBossDoor && ch == hero && level.distance(ch.pos, entrance) >= 2;
 
         //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
-        if (map[getBossDoor] == Terrain.DOOR && isTrue || map[getBossDoor] == Terrain.EMBERS && isTrue) {
+        if (map[getBossDoor] == Terrain.OPEN_DOOR && isTrue ||map[getBossDoor] == Terrain.DOOR && isTrue || map[getBossDoor] == Terrain.EMBERS && isTrue) {
             seal();
 
         }
@@ -628,7 +628,7 @@ public class CerDogBossLevel extends Level{
                                         Buff.affect(ncx, buffCls);
                                     }
 
-
+                                    level.seal();
                                     ncx.state = ncx.WANDERING;
                                     GameScene.add(ncx);
                                 }

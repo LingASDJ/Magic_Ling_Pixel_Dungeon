@@ -59,7 +59,6 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class HallsLevel extends RegularLevel {
-
 	{
 		
 		viewDistance = Math.min( 26 - Dungeon.depth, viewDistance );
@@ -172,6 +171,8 @@ public class HallsLevel extends RegularLevel {
 
 	@Override
 	protected void createMobs() {
+		//
+		super.createMobs();
 		if(Dungeon.depth == 21 && Dungeon.branch == 0){
 			HKD npc20 = new HKD();
 			npc20.pos = entrance()-1;
