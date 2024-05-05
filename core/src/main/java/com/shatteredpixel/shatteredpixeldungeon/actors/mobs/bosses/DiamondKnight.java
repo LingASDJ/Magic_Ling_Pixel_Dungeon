@@ -52,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -302,15 +303,20 @@ public class DiamondKnight extends Boss implements Hero.Doom {
 
                 @Override
                 protected boolean act() {
-                    Actor.remove(this);
-                    ((ColdChestBossLevel)Dungeon.level).progress();
-                    phase++;
-                    GLog.n(Messages.get(DiamondKnight.class,"iswar_go"));
-                    GameScene.flash(0x808080);
-                    ((ColdChestBossLevel)Dungeon.level).progress();
-                    spriteClass=DimandKingSprite.PrismaticSprite.class;
-                    ShatteredPixelDungeon.resetScene();
-                    GameScene.flash(0x888888);
+                    if(phase == 2){
+                        Actor.remove(this);
+                        ((ColdChestBossLevel)Dungeon.level).progress();
+                        phase++;
+                        GLog.n(Messages.get(DiamondKnight.class,"iswar_go"));
+                        GameScene.flash(0x808080);
+                        ((ColdChestBossLevel)Dungeon.level).progress();
+                        spriteClass=DimandKingSprite.PrismaticSprite.class;
+                        ShatteredPixelDungeon.resetScene();
+                        GameScene.flash(0x888888);
+
+                        ScrollOfTeleportation.appear(hero, 962);
+                        ScrollOfTeleportation.appear(DiamondKnight.this,647);
+                    }
                     return true;
                 }
             });
