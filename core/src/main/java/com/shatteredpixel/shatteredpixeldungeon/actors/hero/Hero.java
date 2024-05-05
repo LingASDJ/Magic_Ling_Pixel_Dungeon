@@ -2553,7 +2553,7 @@ public class Hero extends Char {
         }
 
 		LingJing lingJing = hero.belongings.getItem(LingJing.class);
-		if(lingJing != null) {
+		if(lingJing != null && Statistics.deepestFloor <11) {
 			Buff.affect(hero, BlessLingJing.class).set((100), 1);
 		} else {
 			Buff.detach(hero, BlessLingJing.class);
