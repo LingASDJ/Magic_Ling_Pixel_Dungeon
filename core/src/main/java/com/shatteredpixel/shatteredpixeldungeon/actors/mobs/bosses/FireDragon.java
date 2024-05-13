@@ -5,6 +5,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -24,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
@@ -83,7 +85,7 @@ public class FireDragon extends Boss implements Callback {
 
     {
         initProperty();
-        initBaseStatus(9, 12, 14, 10, 233, 5, 9);
+        initBaseStatus(9, 12, 14, 10, 233, 3, 5);
         initStatus(40);
         properties.add(Property.LARGE);
         spriteClass = FireDragonSprite.class;
@@ -97,13 +99,13 @@ public class FireDragon extends Boss implements Callback {
 
     @Override
     public void damage(int dmg, Object src) {
-        float scaleFactor = AscensionChallenge.statModifier(this);
-        int scaledDmg = Math.round(dmg/scaleFactor);
-        if (scaledDmg >= 5){
-            //takes 5/6/7/8/9/10 dmg at 5/7/10/14/19/25 incoming dmg
-            scaledDmg = 4 + (int)(Math.sqrt(8*(scaledDmg - 4) + 1) - 1)/2;
+
+        LockedFloor lock = hero.buff(LockedFloor.class);
+        if (lock != null){
+            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg);
+            else                                                    lock.addTime(dmg*1.5f);
         }
-        dmg = (int)(scaledDmg*AscensionChallenge.statModifier(this));
+
         super.damage(dmg, src);
     }
 

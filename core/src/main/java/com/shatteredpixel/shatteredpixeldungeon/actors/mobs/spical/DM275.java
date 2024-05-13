@@ -51,7 +51,7 @@ public class DM275 extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 10, 25 );
+        return Random.NormalIntRange( 24, 32 );
     }
 
     @Override

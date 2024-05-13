@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.WARLING;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.tipsgodungeon;
@@ -166,7 +165,10 @@ public abstract class Level implements Bundlable {
 		BIGTRAP,
 		THREEWELL,
 		LINKROOM,
-		DIEDROOM
+		DIEDROOM,
+		SKYCITY,
+		BLOOD,
+		BIGROOMS,
 	}
 
 	protected int width;
@@ -286,7 +288,7 @@ public abstract class Level implements Bundlable {
 					if(depth == 4){
 						feeling = Feeling.DIEDROOM;
 					} else if (randomInt == 0) {
-						feeling = Feeling.CHASM;
+						feeling = Feeling.BLOOD;
 					} else if (randomInt == 1) {
 						feeling = Feeling.WATER;
 					} else if (randomInt == 2) {
@@ -296,7 +298,7 @@ public abstract class Level implements Bundlable {
 						addItemToSpawn(new Torch());
 						viewDistance = Math.round(viewDistance / 2f);
 					} else if (randomInt == 4) {
-						feeling = Feeling.LARGE;
+						feeling = Feeling.BIGROOMS;
 					} else if (randomInt == 5) {
 						feeling = Feeling.THREEWELL;
 					} else if (randomInt == 6) {
@@ -305,6 +307,8 @@ public abstract class Level implements Bundlable {
 						feeling = Feeling.LINKROOM;
 					} else if (randomInt == 8) {
 						feeling = Feeling.BIGTRAP;
+					} else if (randomInt == 9) {
+						feeling = Feeling.SKYCITY;
 					} else {
 						feeling = Feeling.CHASM;
 					}
@@ -372,6 +376,7 @@ public abstract class Level implements Bundlable {
 		length = w * h;
 		
 		map = new int[length];
+
 		Arrays.fill( map, feeling == Level.Feeling.CHASM ? Terrain.CHASM : Terrain.WALL );
 		
 		visited     = new boolean[length];
@@ -571,9 +576,6 @@ public abstract class Level implements Bundlable {
 		ChampionEnemy.rollForStateLing(m);
 		if(Dungeon.isChallenged(CS) && depth>2 && depth<25 && Random.Float()<0.25f){
 			Buff.affect(m, ChampionEnemy.AloneCity.class);
-		}
-		if(Dungeon.isChallenged(WARLING) && !(m.isStupid)  && depth>12 && Random.Float()<=0.1f ){
-			Buff.affect(m, ChampionEnemy.Sider.class);
 		}
 		return m;
 	}

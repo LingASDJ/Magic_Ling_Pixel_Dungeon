@@ -89,6 +89,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BigEyeRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BloodCrystalRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.CoinRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.DreamcatcherRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
@@ -230,7 +231,10 @@ public abstract class RegularLevel extends Level {
 		//force max standard rooms and multiple by 1.5x for large levels
 		//force max standard rooms and multiple by 1.5x for large levels
 		int standards = standardRooms(feeling == Feeling.LARGE);
-		if (feeling == Feeling.LARGE){
+
+		if (feeling == Feeling.BIGROOMS){
+			standards = (int)Math.ceil(standards * 2.5f);
+		} else if (feeling == Feeling.LARGE){
 			standards = (int)Math.ceil(standards * 1.5f);
 		}
 
@@ -270,13 +274,9 @@ public abstract class RegularLevel extends Level {
 		}
 
 		//20%
-		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) <= 30 || depth == 28 && !Statistics.bossRushMode) {
+		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) <= 40 || depth == 28 && !Statistics.bossRushMode) {
 			initRooms.add(new NxhyShopRoom());
 		}
-
-//		if(Dungeon.FireLevel()){
-//			initRooms.add(new LanFireRoom());
-//		}
 
 		if(depth>27 && depth <30){
 			if(Random.Float() < 0.5f){
@@ -328,6 +328,12 @@ public abstract class RegularLevel extends Level {
 
 		if(Dungeon.depth<26 && Random.Int(30) == 1 && (Dungeon.isChallenged(DHXD) || Statistics.lanterfireactive )){
 			initRooms.add(new OilWellRoom());
+		}
+
+
+
+		if(feeling == Feeling.BLOOD){
+			initRooms.add(new BloodCrystalRoom());
 		}
 
 		if(feeling == Feeling.THREEWELL){
@@ -433,6 +439,15 @@ public abstract class RegularLevel extends Level {
 		}
 
 		int mobs = 3 + Dungeon.depth % 5 + Random.Int(3);
+
+		if (feeling == Feeling.BIGROOMS){
+			mobs = (int)Math.ceil(mobs * 1.75f);
+		}
+
+		if (feeling == Feeling.SKYCITY){
+			mobs = (int)Math.ceil(mobs * 0.25f);
+		}
+
 		if (feeling == Feeling.LARGE){
 			mobs = (int)Math.ceil(mobs * 1.33f);
 		}
@@ -595,6 +610,14 @@ public abstract class RegularLevel extends Level {
 			nItems += 2;
 		}
 
+		if (feeling == Feeling.BIGROOMS){
+			nItems += 4;
+		}
+
+		if (feeling == Feeling.SKYCITY){
+			nItems -= 2;
+		}
+
 		//谜城资源量减半
 		if(Dungeon.isChallenged(CS)){
 			nItems = nItems/2;
@@ -676,7 +699,7 @@ public abstract class RegularLevel extends Level {
 				}
 				drop( new Torch(), cell );
 				//add a second torch to help with the larger floor
-				if (feeling == Feeling.LARGE){
+				if (feeling == Feeling.LARGE || feeling == Feeling.BIGROOMS){
 					cell = randomDropCell();
 					if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
 						map[cell] = Terrain.GRASS;

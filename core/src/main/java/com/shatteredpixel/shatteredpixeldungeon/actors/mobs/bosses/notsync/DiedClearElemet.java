@@ -1,5 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -14,6 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.FireDragon;
@@ -35,6 +39,20 @@ public abstract class DiedClearElemet extends Mob {
         zap();
         next();
     }
+
+
+    @Override
+    public void damage(int dmg, Object src) {
+
+        LockedFloor lock = hero.buff(LockedFloor.class);
+        if (lock != null){
+            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg);
+            else                                                    lock.addTime(dmg*1.5f);
+        }
+
+        super.damage(dmg, src);
+    }
+
 
     public int combo = 0;
     {

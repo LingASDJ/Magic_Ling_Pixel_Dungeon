@@ -118,6 +118,13 @@ public enum Icons {
 	DEPTH_LINK_ROOM,
 
 	DEPTH_DIED,
+
+	DEPTH_BIGROOM,
+
+	DEPTH_BLOOD,
+
+	DEPTH_SKYCITY,
+
 	MISSON_ON,
 	MISSON_OFF,
 
@@ -385,6 +392,15 @@ public enum Icons {
 			case DEPTH_DIED:
 				icon.frame( icon.texture.uvRectBySize( 136, 64, 7, 7 ) );
 				break;
+			case DEPTH_BIGROOM:
+				icon.frame( icon.texture.uvRectBySize( 80, 72, 7, 7 ) );
+				break;
+			case DEPTH_BLOOD:
+				icon.frame( icon.texture.uvRectBySize( 88, 72, 7, 7 ) );
+				break;
+			case DEPTH_SKYCITY:
+				icon.frame( icon.texture.uvRectBySize( 96, 72, 7, 7 ) );
+				break;
 			case MISSON_OFF:
 				icon.frame( icon.texture.uvRectBySize( 144, 64, 32, 14 ) );
 				break;
@@ -480,6 +496,12 @@ public enum Icons {
 				return get(DEPTH_LINK_ROOM);
 			case SECRETS:
 				return get(DEPTH_SECRETS);
+			case SKYCITY:
+				return get(DEPTH_SKYCITY);
+			case BIGROOMS:
+				return get(DEPTH_BIGROOM);
+			case BLOOD:
+				return get(DEPTH_BLOOD);
 		}
 	}
 }

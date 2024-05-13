@@ -80,6 +80,7 @@ public class LinkRoom extends StandardRoom {
                 break;
         }
         Buff.affect( n, buffCls);
+        n.state = n.WANDERING;
         level.mobs.add(n);
 
         Item prize = level.findPrizeItem();

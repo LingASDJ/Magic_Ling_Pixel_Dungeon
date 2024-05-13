@@ -72,7 +72,7 @@ public class LuoWhitePlot extends Plot {
         diagulewindow.setLeftName(Messages.get(LuoWhite.class, "name"));
 
         if(SPDSettings.UPICE() && !Dungeon.isChallenged(PRO)) {
-            int x = 150;
+            int x = 100;
             diagulewindow.changeText(Messages.get(LuoWhite.class, "message_ice2",x));
             Dungeon.level.drop_hard(new IceCyanBlueSquareCoin(x),hero.pos);
             SPDSettings.UPICE(false);
@@ -86,7 +86,6 @@ public class LuoWhitePlot extends Plot {
             } else {
                 diagulewindow.changeText(Messages.get(LuoWhite.class, "message1"));
             }
-
         }
 
 
