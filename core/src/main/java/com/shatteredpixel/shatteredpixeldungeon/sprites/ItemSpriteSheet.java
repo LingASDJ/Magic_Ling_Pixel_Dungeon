@@ -982,6 +982,8 @@ public class ItemSpriteSheet {
     public static final int DRAGONSHILED=		MAINPALYBOOKS+8;
 
     public static final int SMTITEM=		MAINPALYBOOKS+9;
+    public static final int SEEKSXS=		MAINPALYBOOKS+10;
+
 
     static {
         assignItemRect(LINGPEA,13,15);

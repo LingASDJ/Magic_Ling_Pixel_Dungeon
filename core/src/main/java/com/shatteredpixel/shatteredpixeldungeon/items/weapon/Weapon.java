@@ -74,7 +74,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 abstract public class Weapon extends KindOfWeapon {
-
+	public boolean isShining=false;
 	public float    ACC = 1f;	// Accuracy modifier
 	public float	DLY	= 1f;	// Speed modifier
 	public int      RCH = 1;    // Reach modifier (only applies to melee hits)
@@ -174,6 +174,7 @@ abstract public class Weapon extends KindOfWeapon {
 		bundle.put( CURSE_INFUSION_BONUS, curseInfusionBonus );
 		bundle.put( MASTERY_POTION_BONUS, masteryPotionBonus );
 		bundle.put( AUGMENT, augment );
+		bundle.put("is_shining",isShining);
 	}
 	
 	@Override
@@ -187,6 +188,9 @@ abstract public class Weapon extends KindOfWeapon {
 		masteryPotionBonus = bundle.getBoolean( MASTERY_POTION_BONUS );
 
 		augment = bundle.getEnum(AUGMENT, Augment.class);
+		if (bundle.contains("is_shining")){
+			isShining=bundle.getBoolean("is_shining");
+		}
 	}
 	
 	@Override
@@ -345,7 +349,7 @@ abstract public class Weapon extends KindOfWeapon {
 		} else if (effectRoll >= 0.9f){
 			enchant();
 		}
-
+		if (Random.Float()<0.1f) isShining=true;
 		return this;
 	}
 	

@@ -6,6 +6,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitsle
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -95,6 +96,12 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
         if(!crivusfruitslevel2 && HP<160){
             HP = 160;
             return;
+        }
+
+        LockedFloor lock = hero.buff(LockedFloor.class);
+        if (lock != null){
+            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg);
+            else                                                    lock.addTime(dmg*1.5f);
         }
 
         if(crivusfruitslevel2){

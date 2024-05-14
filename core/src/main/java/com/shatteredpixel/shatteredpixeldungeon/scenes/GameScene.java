@@ -1625,6 +1625,15 @@ public class GameScene extends PixelScene {
 				case DIEDROOM:
 					GLog.n(Messages.get(this, "died"));
 					break;
+				case BIGROOMS:
+					GLog.n(Messages.get(this, "broom"));
+					break;
+				case BLOOD:
+					GLog.n(Messages.get(this, "blood"));
+					break;
+				case SKYCITY:
+					GLog.n(Messages.get(this, "skyting"));
+					break;
 			}
 
 			for (Mob mob : Dungeon.level.mobs) {

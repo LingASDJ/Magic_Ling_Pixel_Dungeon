@@ -120,7 +120,7 @@ public class Challenges {
 		int chCount = 0;
 		int EXchCount = 0;
 		for (int ch : Challenges.MASKS) {
-			if ((Dungeon.challenges & ch) != 0 && ch <= CS && ch != PRO && ch != DHXD) {
+			if ((Dungeon.challenges & ch) != 0 && ch <= CS && ch != PRO && ch != DHXD && ch != WARLING) {
 				chCount++;
 				if(Statistics.lanterfireactive && EXchCount == 0){
 					EXchCount++;

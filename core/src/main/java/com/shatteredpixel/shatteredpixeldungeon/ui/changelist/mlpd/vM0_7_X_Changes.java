@@ -44,6 +44,8 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0735_Changes(changeInfos);
+        add_V0732_Changes(changeInfos);
         add_V0731_Changes(changeInfos);
         add_V0730_Changes(changeInfos);
         add_V0723_Changes(changeInfos);
@@ -63,6 +65,74 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0735_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.3.5", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_16), ("挑战：变幻莫测V0.5"),
+                ("对昨日临时更新的血晶层完全重做，\n\n" +
+                        "并且血晶层的门改为隐藏门。" +
+                        "\n\n不再需要钥匙开门。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEEKSXS), ("新武器：寻觅长枪"),
+                ("来自异界的物品，欢迎你的使用与尝鲜。完善武器数据，包括暴击效果。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.3.5版本:\n\n" +
+                        "1、 修复变幻莫测的一些小问题\n" +
+                        "2、 修复寻觅长枪的一些机制未生效的问题"
+        ));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        Image s =new CrivusStarFruitsSprite();
+        s.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(s, ("Boss调整:克里璃斯之果"),
+                "修复异果没有回合的问题。"));
+
+        Image dragonSprite = new FireDragonSprite();
+        dragonSprite.scale.set(PixelScene.align(0.52f));
+        changes.addButton(new ChangeButton(dragonSprite, ("熔岩火龙"),
+                ("修复火龙没有回合的问题，并且降低火龙的防御与移除限伤机制。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14), ("战术对抗挑战下线"),
+                ("下线战术对抗，同时移除酸液体。")));
+    }
+
+    public static void add_V0732_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.3.2", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_16), ("挑战：变幻莫测V0.4"),
+                ("修复了一堆问题，并追加了3个全新地形感知。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEEKSXS), ("新武器：寻觅长枪"),
+                ("来自异界的物品，欢迎你的使用与尝鲜。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_16), ("DM275"),
+                ("DM275伤害提升。")));
+
     }
 
     public static void add_V0731_Changes( ArrayList<ChangeInfo> changeInfos ) {

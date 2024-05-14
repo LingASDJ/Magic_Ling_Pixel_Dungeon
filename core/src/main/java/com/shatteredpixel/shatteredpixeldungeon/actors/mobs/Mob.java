@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.WARLING;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.bossLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
@@ -54,15 +53,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.RoomSeal;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Feint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.Pets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -89,12 +85,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Mageroyal;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Starflower;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -108,7 +98,6 @@ import com.watabou.utils.Reflection;
 import net.iharder.Base64;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -132,15 +121,6 @@ public abstract class Mob extends Char {
 
 	public boolean isStupid;
 	public HashSet<Class> beneficialPlants;
-
-	{
-		beneficialPlants = new HashSet<>();
-		isStupid = Dungeon.isChallenged(WARLING) && Random.Boolean();
-		beneficialPlants = new HashSet<Class>(Arrays.asList(
-				Sungrass.class, Starflower.class, Swiftthistle.class, AikeLaier.class, Mageroyal.class, Fadeleaf.class,
-				Earthroot.class
-		));
-	}
 
 
 	public Class<? extends CharSprite> spriteClass;
@@ -455,12 +435,6 @@ public abstract class Mob extends Char {
 			enemySeen = enemyInFOV;
 			spend( TICK );
 			return true;
-		}
-		if (focusingHero()) {
-			boolean Notenemy =(properties.contains(Property.NPC) || properties.contains(Property.MINIBOSS) ||properties.contains(Property.BOSS));
-			if (Dungeon.isChallenged(WARLING) && !isStupid && !Notenemy) {
-				Buff.affect(Dungeon.hero, RoomSeal.class).lock(this);
-			}
 		}
 
 		return state.act( enemyInFOV, justAlerted );
@@ -1042,7 +1016,9 @@ public abstract class Mob extends Char {
 			EXP /= 2;
 		}
 
-		if (alignment == Alignment.ENEMY){
+		if(Dungeon.level.feeling == Level.Feeling.SKYCITY && alignment == Alignment.ENEMY){
+			rollToDropLoot();
+		} else if (alignment == Alignment.ENEMY){
 			rollToDropLoot();
 
 			if (cause == Dungeon.hero || cause instanceof Weapon || cause instanceof Weapon.Enchantment){
@@ -1152,12 +1128,6 @@ public abstract class Mob extends Char {
 		}
 
 		String intelligence = isStupid ? Messages.get(this, "stupid", name()) : Messages.get(this, "smart",name());
-
-		if(Dungeon.isChallenged(WARLING) && !(properties.contains(Property.BOSS)) ){
-			desc += "\n\n"+intelligence;
-		}
-
-
 
 		return desc;
 	}
@@ -1528,67 +1498,67 @@ public abstract class Mob extends Char {
 	}
 
 
-	@Override
-	/**
-	 * 移动方法
-	 *
-	 * @param step 移动的步数
-	 */
-	public void move(int step) {
-		//npcs永远不会死！
-		if(!(this instanceof NPC) && Dungeon.isChallenged(WARLING)){
-			//部分属性生物不需要植物
-			if(!properties.contains(Property.INORGANIC) || !properties.contains(Property.IMMOVABLE)){
-				//检查布尔值和增益，因为每次对每个怪物调用的CP最少 且眩晕 飞行不会生效
-				if(!flying && buff( Vertigo.class ) == null){
-					//只有当HP达到50%或更低时才寻求踩在植物上
-					if(HP <= HT / 2){
-						//检查所有周围的瓷砖
-						for(int p : PathFinder.NEIGHBOURS8){
-							if(Dungeon.level.plants.get(pos+p) != null){
-								if(!isStupid){
-									//如果怪物很聪明，它只会寻找其.class中指定的有益植物
-									if(beneficialPlants.contains(Dungeon.level.plants.get(pos+p).getClass())){
-										//这个变量使得一切更容易输入
-										int newPos = pos+p;
-										//不能让两个怪物同时去同一个植物
-										if(Actor.findChar(newPos) == null){
-											triggerPlant(newPos);
-											return;
-										}
-									}
-									//只有在飞行怪物以某种方式失去了飞行状态时，才会发生这种情况，在这种情况下，我们假设它没有在地面上进化，也不知道什么是植物。
-									if(beneficialPlants.isEmpty()){
-										//这个变量使得一切更容易输入
-										int newPos = pos+p;
-										//不能让两个怪物同时去同一个植物
-										if(Actor.findChar(newPos) == null){
-											triggerPlant(newPos);
-											return;
-										} else {
-											super.move(step);
-										}
-									}
-								} else {
-									//如果怪物很笨，它会走进任何植物
-									//这个变量使得一切更容易输入
-									int newPos = pos+p;
-									//不能让两个怪物同时去同一个植物
-									if(Actor.findChar(newPos) == null){
-										triggerPlant(newPos);
-										return;
-									} else {
-										super.move(step);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		super.move(step);
-	}
+//	@Override
+//	/**
+//	 * 移动方法
+//	 *
+//	 * @param step 移动的步数
+//	 */
+//	public void move(int step) {
+//		//npcs永远不会死！
+//		if(!(this instanceof NPC) && Dungeon.isChallenged(WARLING)){
+//			//部分属性生物不需要植物
+//			if(!properties.contains(Property.INORGANIC) || !properties.contains(Property.IMMOVABLE)){
+//				//检查布尔值和增益，因为每次对每个怪物调用的CP最少 且眩晕 飞行不会生效
+//				if(!flying && buff( Vertigo.class ) == null){
+//					//只有当HP达到50%或更低时才寻求踩在植物上
+//					if(HP <= HT / 2){
+//						//检查所有周围的瓷砖
+//						for(int p : PathFinder.NEIGHBOURS8){
+//							if(Dungeon.level.plants.get(pos+p) != null){
+//								if(!isStupid){
+//									//如果怪物很聪明，它只会寻找其.class中指定的有益植物
+//									if(beneficialPlants.contains(Dungeon.level.plants.get(pos+p).getClass())){
+//										//这个变量使得一切更容易输入
+//										int newPos = pos+p;
+//										//不能让两个怪物同时去同一个植物
+//										if(Actor.findChar(newPos) == null){
+//											triggerPlant(newPos);
+//											return;
+//										}
+//									}
+//									//只有在飞行怪物以某种方式失去了飞行状态时，才会发生这种情况，在这种情况下，我们假设它没有在地面上进化，也不知道什么是植物。
+//									if(beneficialPlants.isEmpty()){
+//										//这个变量使得一切更容易输入
+//										int newPos = pos+p;
+//										//不能让两个怪物同时去同一个植物
+//										if(Actor.findChar(newPos) == null){
+//											triggerPlant(newPos);
+//											return;
+//										} else {
+//											super.move(step);
+//										}
+//									}
+//								} else {
+//									//如果怪物很笨，它会走进任何植物
+//									//这个变量使得一切更容易输入
+//									int newPos = pos+p;
+//									//不能让两个怪物同时去同一个植物
+//									if(Actor.findChar(newPos) == null){
+//										triggerPlant(newPos);
+//										return;
+//									} else {
+//										super.move(step);
+//									}
+//								}
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//		super.move(step);
+//	}
 
 	private void triggerPlant(int newPos){
 		//当位于水瓦片上时

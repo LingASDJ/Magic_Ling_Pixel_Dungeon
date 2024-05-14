@@ -162,6 +162,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Seekingspear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SkyShield;
@@ -510,8 +511,9 @@ public class Generator {
 					Katana.class,
 					GrilledHerring.class,
 					Gauntlet.class,
+					Seekingspear.class
 			};
-			WEP_T4.probs = new float[]{ 6, 5, 5, 4, 4, 4,2,3,2 };
+			WEP_T4.probs = new float[]{ 6, 5, 5, 4, 4, 4,2,3, 2, 4 };
 
 			WEP_T5.classes = new Class<?>[]{
 					LockSword.class,
