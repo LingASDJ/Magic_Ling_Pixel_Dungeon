@@ -91,7 +91,7 @@ public class Assets {
 
 		public static final String CITY_PO  = "environment/custom_tiles/parliament_above.png";
 		public static final String CITY_POX  = "environment/custom_tiles/parliament_before_behind.png";
-
+		public static final String CITY_PSD  = "environment/custom_tiles/parliament_behind.png";
 
 		public static final String HOTEL_PO  = "environment/custom_tiles/hotel_above.png";
 		public static final String HOTEL_POX  = "environment/custom_tiles/hotel_behind.png";
@@ -423,6 +423,8 @@ public class Assets {
 		public static final String TYPHON = "splashes/typhon_portraits.png";
 
 		public static final String SMLF = "splashes/smallleaf_portraits.png";
+		public static final String SMLS = "splashes/card_smallleaf_portraits.png";
+
 
 		public static final String PIANO = "splashes/piano_portraits.png";
 

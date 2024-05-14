@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeepSeaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DragonGirlBlueSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DwarfGeneralSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireCrystalSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireDragonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HollowKnightSprite;
@@ -26,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MintSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MoonLowSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PianoLeSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.QinWolfSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SakaFishBossSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
@@ -44,6 +46,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0740_Changes(changeInfos);
         add_V0735_Changes(changeInfos);
         add_V0732_Changes(changeInfos);
         add_V0731_Changes(changeInfos);
@@ -67,10 +70,66 @@ public class vM0_7_X_Changes {
         add_GYD_Changes(changeInfos);
     }
 
+    public static void add_V0740_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.4.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        Image s =new DwarfGeneralSprite();
+        s.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(s, ("新Boss：矮人将军"),
+                "剧情设计：QinYue\n\n代码设计：JDSALing\n\n技能原案：设寄师"));
+
+        changes.addButton(new ChangeButton(new QinWolfSprite(), ("秦月的生日"),
+                ("在5.14-5.21期间，与秦月交谈获得特别物品。在特定时间下有巨大的作用。\n\n" +
+                        "再次祝 秦月酱 生日快乐！！！")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.KINGAXE), ("新武器：王庭和约"),
+                ("矮人将军专武，武道技能也同步实装。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.THEDIED), ("肃杀优化"),
+                ("修复偷袭攻击伤害异常问题，回血效果略微调整")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES),("新徽章加入"),
+                ("两个隐藏徽章加入。")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.4.0版本:\n\n" +
+                        "1、 修复变幻莫测的一些小问题\n" +
+                        "2、 优化归返密卷的一些问题\n" +
+                        "3、 常规果子的地图发生一些小的改变\n" +
+                        "4、 修复寻觅长枪的一些问题"
+        ));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS),("其他改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分文案优化\n" +
+                        "3.部分细节优化更新")));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        Image issxsaxs =new DimandKingSprite();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs, ("拟态之王"),
+                ("现在拟态之王的套武器伤害不再完全复刻，而是75%。\n\n移速初始改为0.85。")));
+    }
+
     public static void add_V0735_Changes( ArrayList<ChangeInfo> changeInfos ) {
         ChangeInfo changes = new ChangeInfo("v0.7.3.5", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
+
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);

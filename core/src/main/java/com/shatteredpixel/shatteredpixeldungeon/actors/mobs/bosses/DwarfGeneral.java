@@ -4,7 +4,11 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -38,9 +42,16 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.BlackKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.KingAxe;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -80,6 +91,7 @@ public class DwarfGeneral extends Boss {
     private int jumpCooldown;
     private int armyCooldown;
 
+    private int enderCooldown;
     @Override
     public int damageRoll() {
         return Random.NormalIntRange( 20, 42 );
@@ -219,6 +231,17 @@ public class DwarfGeneral extends Boss {
             }
         }
 
+        if(phase>3){
+            if(enderCooldown>=10){
+                enderCooldown = 0;
+                summonGetNormal();
+                summonGetSolider();
+                damage(5,this);
+                alerted = false;
+                state = PASSIVE;
+            }
+        }
+
         int heroPos = Dungeon.hero.pos;
         int bossToHeroDistance = Dungeon.level.distance(pos, heroPos);
         if (targetingPos != -1 && bossToHeroDistance < 4){
@@ -343,6 +366,7 @@ public class DwarfGeneral extends Boss {
     private static final String LEAP_CD = "leap_cd";
     private static final String JUMP = "jump";
     private static final String COLDDOWN = "colddown";
+    private static final String EDCOLDDOWN = "edcolddown";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -367,6 +391,8 @@ public class DwarfGeneral extends Boss {
         bundle.put(COLDDOWN,armyCooldown);
 
         bundle.put(MAGICCOOLDOWN,magicAttackCooldown);
+
+        bundle.put(EDCOLDDOWN,enderCooldown);
     }
 
     @Override
@@ -393,6 +419,8 @@ public class DwarfGeneral extends Boss {
         armyCooldown = bundle.getInt(COLDDOWN);
 
         magicAttackCooldown = bundle.getInt(MAGICCOOLDOWN);
+
+        enderCooldown = bundle.getInt(EDCOLDDOWN);
     }
 
     private void armyPhase_one(){
@@ -587,8 +615,6 @@ public class DwarfGeneral extends Boss {
             }
         }
 
-
-
         if(phase == 0 && HP<800){
             armyPhase_one();
             yell(Messages.get(this,"army_one"));
@@ -601,6 +627,13 @@ public class DwarfGeneral extends Boss {
             yell(Messages.get(this,"army_two"));
             phase++;
             HP = 600;
+        } else if(phase == 3 && HP<200){
+            armyPhase_two();
+            summonGetNormal();
+            summonGetSolider();
+            yell(Messages.get(this,"army_three"));
+            phase++;
+            HP = 200;
         }
 
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
@@ -611,6 +644,8 @@ public class DwarfGeneral extends Boss {
                 }
             }
         }
+
+
 
         super.damage(dmg, src);
     }
@@ -715,12 +750,14 @@ public class DwarfGeneral extends Boss {
         public boolean act() {
             if (target.isAlive()) {
 
-                damageInc = Random.Int(5,12);
+                damageInc = Random.Int(2,5);
                 target.damage((int)damageInc, this);
                 damageInc -= (int)damageInc;
 
                 spend(1f);
-
+                if (--level <= 0) {
+                    detach();
+                }
                 if (target == hero && !target.isAlive()){
                     GLog.n(Messages.get(this, "on_kill"));
                 }
@@ -931,4 +968,49 @@ public class DwarfGeneral extends Boss {
         }
 
     }
+
+    @Override
+    public void die( Object cause ) {
+
+        super.die( cause );
+
+        Dungeon.level.unseal();
+
+        GameScene.bossSlain();
+        Dungeon.level.drop( new BlackKey( Dungeon.depth ).quantity(2), pos ).sprite.drop();
+        Dungeon.level.drop( new CrystalKey( Dungeon.depth ).quantity(2), pos ).sprite.drop();
+        Dungeon.level.drop( new SkeletonKey( Dungeon.depth ).quantity(1), pos ).sprite.drop();
+        Dungeon.level.drop( new GoldenKey( Dungeon.depth ).quantity(1), pos ).sprite.drop();
+
+        Badges.validateBossSlain();
+
+        PaswordBadges.UNLOCK_KING();
+
+        if(!SPDSettings.KillDwarf()) {
+            DwarfGeneralNTNPC boss = new DwarfGeneralNTNPC();
+            boss.pos = 367;
+            GameScene.add(boss);
+
+            Item w = new KingAxe();
+            w.level(Random.Int(5));
+            Dungeon.level.drop(w, pos).sprite.drop();
+
+        } else {
+            Statistics.dwarfKill = true;
+        }
+
+
+
+        Dungeon.level.drop(new KingsCrown(), pos).sprite.drop();
+
+        yell( Messages.get(this, "defeated") );
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            if (mob instanceof Warlock || mob instanceof Monk ||
+                    mob instanceof DwarfSolider || mob instanceof DwarfFuze) {
+                mob.die( cause );
+            }
+        }
+    }
+
+
 }

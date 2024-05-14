@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.DwDart;
 import com.watabou.noosa.MovieClip;
@@ -19,8 +20,14 @@ public class DwarfGeneralSprite extends MobSprite {
 
         TextureFilm frames = new TextureFilm(texture, 32, 32);
 
-        idle = new MovieClip.Animation(4, true);
-        idle.frames(frames, 0, 1, 2, 3);
+        idle = new MovieClip.Animation(4, !Statistics.dwarfKill);
+
+        if(Statistics.dwarfKill){
+            idle.frames(frames, 19,20,21,22);
+        } else {
+            idle.frames(frames, 0, 1, 2, 3);
+        }
+
 
         run = new MovieClip.Animation(14, true);
         run.frames(frames, 4,5,6,7,8,9);
@@ -32,7 +39,7 @@ public class DwarfGeneralSprite extends MobSprite {
         skills.frames(frames, 14,15,16,17,18);
 
         die = new MovieClip.Animation(14, false);
-        die.frames(frames, 19,20,21,23);
+        die.frames(frames, 19,20,21,22);
 
         play(idle);
     }

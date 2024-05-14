@@ -37,14 +37,35 @@ public class SaiPlus extends MeleeWeapon {
     }
 
     @Override
+    public int damageRoll(Char owner) {
+        if (owner instanceof Hero) {
+            Hero hero = (Hero)owner;
+            Char enemy = hero.enemy();
+            if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
+                //deals 50% toward max to max on surprise, instead of min to max.
+                int diff = max() - min();
+                int damage = augment.damageFactor(Random.NormalIntRange(
+                        min() + Math.round(diff*0.50f),
+                        max()));
+                int exStr = hero.STR() - STRReq();
+                if (exStr > 0) {
+                    damage += Random.IntRange(0, exStr);
+                }
+                return damage;
+            }
+        }
+        return super.damageRoll(owner);
+    }
+
+    @Override
     public int proc(Char attacker, Char defender, int damage) {
-        float lifeStealPercentage = (float) (3 + 0.6 * level()) * damage; // 偷袭成功时恢复生命的百分比
+        float lifeStealPercentage = (float) (3 + 0.6 * level()+1) * damage; // 偷袭成功时恢复生命的百分比
 
         if (attacker instanceof Hero) {
             Hero hero = (Hero) attacker;
             Char enemy = hero.enemy();
             if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
-                int stolenLife = Math.min(attacker.HT-attacker.HP,(int) ((int) lifeStealPercentage/100f));
+                int stolenLife = Math.min(attacker.HT-attacker.HP,(int) ((int) lifeStealPercentage/30f));
                 attacker.HP += stolenLife;
                 attacker.sprite.showStatus(CharSprite.POSITIVE, "+" + stolenLife + " HP");
                 GLog.p(Messages.get(this, "success", attacker.name()));

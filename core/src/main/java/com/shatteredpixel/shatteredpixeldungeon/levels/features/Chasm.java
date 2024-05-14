@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.features;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -36,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrossDiedTower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruits;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.FeatherFall;
@@ -120,9 +120,9 @@ public class Chasm implements Hero.Doom {
 		Sample.INSTANCE.play( Assets.Sounds.FALLING );
 
 		Level.beforeTransition();
-		if(Dungeon.depth == 5 && Dungeon.branch == 0 || Dungeon.depth == 4 && Statistics.bossRushMode){
+		if(Dungeon.depth == 5 && Dungeon.branch == 0 || Dungeon.depth == 4 && Statistics.bossRushMode) {
 			int SafePos = 0;
-			switch (Random.NormalIntRange(0,4)){
+			switch (Random.NormalIntRange(0, 4)) {
 				case 0:
 					SafePos = 325;
 					break;
@@ -139,10 +139,12 @@ public class Chasm implements Hero.Doom {
 			ScrollOfTeleportation.appear(hero, SafePos);
 			Dungeon.hero.interrupt();
 			Dungeon.observe();
-			if(Statistics.crivusfruitslevel2){
+			if (Statistics.crivusfruitslevel2) {
 				hero.damage(3, CrivusStarFruits.class);
 			}
-		} else if (Dungeon.hero.isAlive() && Dungeon.branch == 0 && Dungeon.depth!=30 || Statistics.bossRushMode) {
+		} else if(Statistics.HiddenOK && Dungeon.depth == 19 && !Statistics.dwarfKill) {
+			GLog.n(Messages.get(Imp.class,"mustdown"));
+		} else if (Dungeon.hero.isAlive() && Dungeon.branch == 0 && Dungeon.depth!=30|| Statistics.bossRushMode) {
 			Dungeon.hero.interrupt();
 			InterlevelScene.mode = InterlevelScene.Mode.FALL;
 			if (Dungeon.level instanceof RegularLevel && Dungeon.branch == 0) {
@@ -152,11 +154,6 @@ public class Chasm implements Hero.Doom {
 				InterlevelScene.fallIntoPit = false;
 			}
 			Game.switchScene(InterlevelScene.class);
-		} else {
-			int heroPos = level.entrance();
-			ScrollOfTeleportation.appear(hero, heroPos);
-			Dungeon.hero.interrupt();
-			Dungeon.observe();
 		}
 	}
 

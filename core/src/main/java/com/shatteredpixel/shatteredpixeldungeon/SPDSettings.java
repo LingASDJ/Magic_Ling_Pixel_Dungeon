@@ -174,6 +174,8 @@ public class SPDSettings extends GameSettings {
 
 	private static final String KEY_DRAGON = "DRAGON";
 
+	private static final String KEY_KILLADF = "DWAXF";
+
 	public static void fullscreen( boolean value ) {
 		put( KEY_FULLSCREEN, value );
 
@@ -898,6 +900,16 @@ public class SPDSettings extends GameSettings {
 
 	public static boolean KillDragon() {
 		return getBoolean(KEY_DRAGON, false);
+	}
+
+
+	//首次击败将军
+	public static void KillDwarf(boolean value) {
+		put(KEY_KILLADF, value );
+	}
+
+	public static boolean KillDwarf() {
+		return getBoolean(KEY_KILLADF, false);
 	}
 
 

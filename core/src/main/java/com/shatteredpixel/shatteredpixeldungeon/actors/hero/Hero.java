@@ -76,6 +76,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMixShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessNoMoney;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessQinyue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessRedWhite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessUnlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
@@ -171,6 +172,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMi
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.MagicBook;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
@@ -694,6 +696,11 @@ public class Hero extends Char {
 
 		if (belongings.armor() != null) {
 			evasion = belongings.armor().evasionFactor(this, evasion);
+		}
+
+		//提升10%的闪避
+		if (buff(BlessQinyue.class) != null){
+			evasion = evasion * 1.1f;
 		}
 
 		return Math.round(evasion);
@@ -2558,6 +2565,14 @@ public class Hero extends Char {
 		} else {
 			Buff.detach(hero, BlessLingJing.class);
 			Buff.detach(hero, BlessLingJing.LanterBarrier.class);
+		}
+
+
+		MagicBook qb = hero.belongings.getItem(MagicBook.class);
+		if(qb != null && !Dungeon.whiteDaymode && RegularLevel.birthday == RegularLevel.DevBirthday.CHAPTER_BIRTHDAY) {
+			Buff.affect(hero, BlessQinyue.class).set((100), 1);
+		} else {
+			Buff.detach(hero, BlessQinyue.class);
 		}
 
         DriedRose rose = hero.belongings.getItem(DriedRose.class);

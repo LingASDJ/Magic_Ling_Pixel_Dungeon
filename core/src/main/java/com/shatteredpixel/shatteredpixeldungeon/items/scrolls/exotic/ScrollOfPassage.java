@@ -50,12 +50,13 @@ public class ScrollOfPassage extends ExoticScroll {
 
 	@Override
 	public ArrayList<String> actions(Hero hero) {
-		if( Dungeon.branch != 0){
-			return new ArrayList<>(); //yup, no dropping this one
+		ArrayList<String> actions = super.actions(hero);
+		if (Dungeon.branch != 0) {
+			actions.remove(AC_READ);
 		} else {
-			return super.actions(hero);
+			return actions;
 		}
-
+		return actions;
 	}
 
 

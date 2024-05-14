@@ -278,8 +278,11 @@ public class NewCityBossLevel extends Level {
 	@Override
 	public void occupyCell( Char ch ) {
 		if (map[bottomDoor] != Terrain.LOCKED_DOOR && map[topDoor] == Terrain.LOCKED_DOOR
-				&& ch.pos < bottomDoor && ch == Dungeon.hero) {
+				&& ch.pos < bottomDoor && ch == Dungeon.hero && !Statistics.dwarfKill) {
 			seal();
+		} else if(Statistics.dwarfKill && !Statistics.Alone){
+			Statistics.Alone = true;
+			unseal();
 		}
 
 		super.occupyCell( ch );

@@ -50,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessQinyue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
@@ -127,6 +128,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazin
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.KingAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.ShockingDart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -734,6 +736,9 @@ public abstract class Char extends Actor {
 		if (buff(Stamina.class) != null) speed *= 1.5f;
 		if (buff(Adrenaline.class) != null) speed *= 2f;
 		if (buff(Haste.class) != null) speed *= 3f;
+
+		if (buff(BlessQinyue.class) != null) speed *= 1.25f;
+
 		if (buff(Dread.class) != null) speed *= 2f;
 
 		if ( buff( FrostBurning.class ) != null) speed *= 0.7f;
@@ -779,6 +784,10 @@ public abstract class Char extends Actor {
 
 		for (ChampionHero buff : buffs(ChampionHero.class)){
 			dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
+		}
+
+		if(buff(KingAxe.ArmorNoFear.class) != null){
+			dmg = (int) Math.ceil(dmg * 0.70f);
 		}
 
 		if(buff(BlessImmune.class) != null && !this.isImmune(BlessImmune.class)){
@@ -990,7 +999,7 @@ public abstract class Char extends Actor {
 			if (src instanceof AscensionChallenge) {
 				icon = IconFloatingText.AMULET;
 			}
-			if (src instanceof ScaryDamageBuff || src instanceof DwarfGeneral.MagicAttack) {
+			if (src instanceof ScaryDamageBuff || src instanceof DwarfGeneral.Wither) {
 				icon = IconFloatingText.HEARTDEMON_DMG;
 			}
 
