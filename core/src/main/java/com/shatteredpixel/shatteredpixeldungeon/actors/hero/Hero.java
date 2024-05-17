@@ -718,8 +718,6 @@ public class Hero extends Char {
 		}else {
 			return Math.round(evasion);
 		}
-
-		return Math.round(evasion);
 	}
 
 	@Override
