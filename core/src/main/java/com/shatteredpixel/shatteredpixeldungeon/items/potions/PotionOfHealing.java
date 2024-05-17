@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -56,7 +57,9 @@ public class PotionOfHealing extends Potion {
 	}
 
 	public static void heal( Char ch ){
-		if (ch == Dungeon.hero && Dungeon.isChallenged(Challenges.NO_HEALING)){
+		if (Dungeon.hero.buff(DwarfGeneral.Wither.class) != null) {
+			Buff.detach(ch,DwarfGeneral.Wither.class);
+		} else if (ch == Dungeon.hero && Dungeon.isChallenged(Challenges.NO_HEALING)){
 			pharmacophobiaProc(Dungeon.hero);
 		} else {
 			//starts out healing 30 hp, equalizes with hero health total at level 11

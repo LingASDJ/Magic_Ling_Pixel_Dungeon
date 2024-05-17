@@ -9,6 +9,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.MagicBook;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.QinWolfSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
@@ -24,6 +26,13 @@ public class QinYueWolf extends NTNPC {
     protected ArrayList<String> C_chat;
     protected ArrayList<String> D_chat;
     protected ArrayList<String> E_chat;
+
+    protected ArrayList<String> BD_chat;
+
+    protected ArrayList<String> BDS_chat;
+
+    protected ArrayList<String> BDX_chat;
+
 
     {
         spriteClass = QinWolfSprite.class;
@@ -62,6 +71,31 @@ public class QinYueWolf extends NTNPC {
             }
         };
 
+        BD_chat = new ArrayList<String>() {
+            {
+                add((Messages.get(QinYueWolf.class, "bd_message1",hero.name())));
+                add((Messages.get(QinYueWolf.class, "bd_message2")));
+                add((Messages.get(QinYueWolf.class, "bd_message3")));
+                add((Messages.get(QinYueWolf.class, "bd_message4")));
+                add((Messages.get(QinYueWolf.class, "bd_message5")));
+            }
+        };
+
+        BDS_chat = new ArrayList<String>() {
+            {
+                add((Messages.get(QinYueWolf.class, "bd_message6")));
+            }
+        };
+
+        BDX_chat = new ArrayList<String>() {
+            {
+                add((Messages.get(QinYueWolf.class, "bd_message7")));
+                add((Messages.get(QinYueWolf.class, "bd_message8")));
+            }
+        };
+
+
+
         properties.add(Property.IMMOVABLE);
     }
 
@@ -93,31 +127,44 @@ public class QinYueWolf extends NTNPC {
     public boolean interact(Char c) {
 
         sprite.turnTo(pos, hero.pos);
-
-        if(first){
-            WndQuest.chating(this,chat);
-            first=false;
-        } else if(secnod) {
-            WndQuest.chating(this,B_chat);
-
-            if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
-                Dungeon.level.drop(new Gold(1), hero.pos);
+        if(RegularLevel.birthday == RegularLevel.DevBirthday.CHAPTER_BIRTHDAY) {
+            if(first){
+                WndQuest.chating(this, BD_chat);
+                first = false;
+            } else if(secnod){
+                WndQuest.chating(this, BDS_chat);
+                Dungeon.level.drop((new MagicBook()), hero.pos);
+                secnod = false;
+            } else if (!Statistics.amuletObtained) {
+                WndQuest.chating(this, BDX_chat);
+            } else if (rd) {
+                WndQuest.chating(this, D_chat);
+                rd = false;
             } else {
-                Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), hero.pos );
+                WndQuest.chating(this, E_chat);
             }
-
-
-            zeroItemLevel++;
-            secnod = false;
-        } else if(!Statistics.amuletObtained) {
-            WndQuest.chating(this,C_chat);
-        } else if(rd) {
-            WndQuest.chating(this,D_chat);
-            rd = false;
         } else {
-            WndQuest.chating(this,E_chat);
+                if (first) {
+                    WndQuest.chating(this, chat);
+                    first = false;
+                } else if (secnod) {
+                    WndQuest.chating(this, B_chat);
+                    if (Statistics.zeroItemLevel >= 4 && Dungeon.depth == 0) {
+                        Dungeon.level.drop(new Gold(1), hero.pos);
+                    } else {
+                        Dungeon.level.drop((Generator.randomUsingDefaults(Generator.Category.POTION)), hero.pos);
+                    }
+                    zeroItemLevel++;
+                    secnod = false;
+                } else if (!Statistics.amuletObtained) {
+                    WndQuest.chating(this, C_chat);
+                } else if (rd) {
+                    WndQuest.chating(this, D_chat);
+                    rd = false;
+                } else {
+                    WndQuest.chating(this, E_chat);
+                }
         }
-
         return true;
     }
 

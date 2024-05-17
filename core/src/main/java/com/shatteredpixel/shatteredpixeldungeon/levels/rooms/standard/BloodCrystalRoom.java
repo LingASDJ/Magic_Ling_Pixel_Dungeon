@@ -68,7 +68,7 @@ public class BloodCrystalRoom extends SpecialRoom {
         Painter.fillEllipse( level, this, 1 , EMPTY );
 
         for (Door door : connected.values()) {
-            door.set( Door.Type.HIDDEN);
+            door.set( Door.Type.REGULAR);
             if (door.x == left || door.x == right){
                 Painter.drawInside(level, this, door, width()/2, WATER);
             } else {
@@ -117,10 +117,14 @@ public class BloodCrystalRoom extends SpecialRoom {
                    switch (Random.Int(6)){
                        default:
                        case 0:
-                           Buff.affect(boss, Fury.class).set((16), 1 );
-                            break;
+                           if(boss.buff(Fury.class) == null) {
+                               Buff.affect(boss, Fury.class).set((16), 1);
+                           }
+                           break;
                        case 1:
-                           Buff.affect(boss, Barrier.class).setShield(20);
+                           if(boss.buff(Barrier.class) == null){
+                               Buff.affect(boss, Barrier.class).setShield(20);
+                           }
                            break;
                        case 2:
                            Buff.affect(boss, HaloFireImBlue.class).set( 10f );

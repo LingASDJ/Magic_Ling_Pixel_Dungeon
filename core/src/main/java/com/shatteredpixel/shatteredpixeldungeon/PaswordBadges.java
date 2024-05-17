@@ -43,6 +43,14 @@ public class PaswordBadges {
         displayBadge( Badge.WHATSUP );
     }
 
+    public static void KILLDWG() {
+        displayBadge( Badge.KILL_DWG );
+    }
+
+    public static void UNLOCK_KING() {
+        displayBadge( Badge.KING_ISTO );
+    }
+
     public static void SWORDDRAGON() {
         displayBadge( Badge.SWORDDREAM );
     }
@@ -114,11 +122,9 @@ public class PaswordBadges {
 
         PINK_LING(22),
 
-        WHATSUP(23);
-
-
-
-
+        WHATSUP(23),
+        KILL_DWG(24),
+        KING_ISTO(25);
 
         public boolean meta;
 

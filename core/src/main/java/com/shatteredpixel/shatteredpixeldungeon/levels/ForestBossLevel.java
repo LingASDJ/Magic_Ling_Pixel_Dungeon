@@ -76,7 +76,7 @@ public class ForestBossLevel extends Level {
     private static final short T = Terrain.STATUE;
     private static final short X = Terrain.DOOR;
     private static final short D = Terrain.PEDESTAL;
-
+    private static final short V = Terrain.BARRICADE;
     private static final short B = Terrain.WALL_DECO;
     private static final short C = Terrain.WATER;
     private static final short S = Terrain.LOCKED_DOOR;
@@ -343,7 +343,7 @@ public class ForestBossLevel extends Level {
             W,M,M,M,M,M,M,C,C,C,C,L,L,W,M,C,H,C,M,W,L,L,C,C,C,C,M,M,M,M,M,W,
             W,B,B,B,B,B,B,W,W,W,W,B,W,B,M,C,H,C,M,B,W,B,W,W,W,B,B,B,B,B,B,W,
             W,C,C,C,C,C,C,W,W,W,M,C,M,C,M,C,H,C,M,C,M,C,W,W,W,C,C,C,C,C,C,W,
-            W,L,L,L,W,W,W,B,M,M,M,C,M,H,M,C,H,C,M,H,M,C,M,M,B,W,W,L,L,L,L,W,
+            W,L,L,L,W,W,W,V,M,M,M,C,M,H,M,C,H,C,M,H,M,C,M,M,V,W,W,L,L,L,L,W,
             W,L,L,W,W,M,M,C,M,M,M,C,C,C,C,C,H,C,C,C,M,C,M,M,C,M,W,W,L,L,L,W,
             W,W,W,W,B,M,M,W,M,M,M,H,C,C,H,H,H,H,H,C,M,H,M,M,W,M,M,B,W,W,W,W,
             W,W,C,C,C,C,C,W,C,C,C,C,C,C,H,C,C,C,H,C,C,C,C,C,W,C,C,C,C,C,W,W,

@@ -21,9 +21,15 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CityPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
@@ -44,7 +50,10 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WeakeningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.PixelParticle;
@@ -222,4 +231,26 @@ public class CityLevel extends RegularLevel {
 			size( 6 - p * 3 );
 		}
 	}
+
+	@Override
+	public boolean activateTransition(Hero hero, LevelTransition transition) {
+		if(Dungeon.depth == 19 && Statistics.HiddenOK && transition.type == LevelTransition.Type.REGULAR_EXIT){
+			TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+			if (timeFreeze != null) timeFreeze.disarmPresses();
+			Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+			if (timeBubble != null) timeBubble.disarmPresses();
+			InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+			InterlevelScene.curTransition = new LevelTransition();
+			InterlevelScene.curTransition.destDepth = depth + 1;
+			InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
+			InterlevelScene.curTransition.destBranch = 1;
+			InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_ENTRANCE;
+			InterlevelScene.curTransition.centerCell = -1;
+			Game.switchScene(InterlevelScene.class);
+			return false;
+		} else {
+			return super.activateTransition(hero,transition);
+		}
+	}
+
 }

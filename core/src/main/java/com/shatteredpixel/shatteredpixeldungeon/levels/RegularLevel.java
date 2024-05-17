@@ -142,11 +142,13 @@ public abstract class RegularLevel extends Level {
 				if (dayOfMonth >= 2 && dayOfMonth <= 20)
 					holiday = Holiday.QMJ;
 				break;
-//			case Calendar.MAY:
-//				int dayOfMonth2 = calendar.get(Calendar.DAY_OF_MONTH);
-//				if (dayOfMonth2 >= 2 && dayOfMonth2 <= 20)
-//					holiday = Holiday.GBJ;
-//				break;
+			//秦月的生日
+			case Calendar.MAY:
+				int dayOfMonth2 = calendar.get(Calendar.DAY_OF_MONTH);
+				if (dayOfMonth2 >= 13 && dayOfMonth2 <= 21)
+					birthday = DevBirthday.CHAPTER_BIRTHDAY;
+				break;
+			//
 			case Calendar.OCTOBER:
 				if (calendar.get(Calendar.WEEK_OF_MONTH) >= 2)
 					holiday = Holiday.HWEEN;

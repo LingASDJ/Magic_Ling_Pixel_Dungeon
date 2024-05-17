@@ -76,6 +76,8 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         EXP = 10;
         defenseSkill = 8;
 
+        baseSpeed = 0.85f;
+
         flying=true;
 
         if(Dungeon.isChallenged(STRONGER_BOSSES)){
@@ -109,18 +111,18 @@ public class DiamondKnight extends Boss implements Hero.Doom {
 
     @Override
     public int damageRoll() {
-        int min = 8;
-        int max = (HP*2 <= HT) ?  14 : 9;
+        int min = 6;
+        int max = (HP*2 <= HT) ?  10 : 9;
 
         if(Dungeon.isChallenged(STRONGER_BOSSES)){
             min = 8 + Statistics.dimandchestmazeCollected * 2 + 2;
-            max = (HP*2 <= HT) ?  14 : 9 + Statistics.dimandchestmazeCollected * 3 + 3;
+            max = (HP*2 <= HT) ?  10 : 9 + Statistics.dimandchestmazeCollected * 3 + 3;
         }
 
         //模仿玩家的伤害
         ColdChestBossLevel.State level = ((ColdChestBossLevel)Dungeon.level).pro();
         if (level == ColdChestBossLevel.State.VSYOU_START){
-            return hero.damageRoll();
+            return (int) (hero.damageRoll() * 0.75f);
         } else {
             return Random.NormalIntRange( min, max );
         }

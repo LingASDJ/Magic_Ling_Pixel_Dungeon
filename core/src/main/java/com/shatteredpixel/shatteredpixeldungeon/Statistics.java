@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
-import com.shatteredpixel.shatteredpixeldungeon.levels.features.Door;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.watabou.utils.SparseArray;
@@ -169,6 +168,7 @@ public class Statistics {
 	public static int fuckGeneratorAlone;
 
 	public static int dageCollected;
+	public static boolean Alone;
 
 	//首次对决
 	public static boolean mimicking = false;
@@ -187,6 +187,8 @@ public class Statistics {
 	public static int gameTime;
 	public static int gameDay;
 	public static boolean gameNight;
+
+	public static int dwarfchange;
 
 
 	//永久货币 冰蓝方孔货币
@@ -207,6 +209,7 @@ public class Statistics {
     private static final String FUCKALONE = "fuckplayer";
     private static final String WINGAME = "wingame";
     private static final String HIDEEN = "hideen";
+	private static final String DWSX = "dwsxxx";
     private static final String BOSS_CHALLENGE_QUALIFIED = "qualifiedForBossChallengeBadge";
 	//Directly add float time will cause accuracy lose and stop timing if time is long enough
 	//so use long to record seconds, float to count sub-seconds.
@@ -335,6 +338,7 @@ public class Statistics {
     public static boolean HiddenOK = false;
     //220---SPD
     public static boolean qualifiedForBossChallengeBadge = false;
+    public static boolean dwarfKill = false;
 
     public static void reset() {
         boss_enhance = 0;
@@ -343,7 +347,11 @@ public class Statistics {
 
 		ExFruit = false;
 
+		HiddenOK = false;
+
 		ARLing = false;
+
+		dwarfKill = false;
 
 		CatFirst = false;
 
@@ -352,7 +360,7 @@ public class Statistics {
 
         HealingIsDied = 0;
 
-		Door.reset();
+		dwarfchange = Random.Int(1,101);
 
 		NoTime = false;
 		dm720Fight = false;
@@ -410,6 +418,9 @@ public class Statistics {
         qualifiedForBossChallengeBadge = false;
         mimicking = false;
 
+		//生成商店限制
+		Alone = false;
+
 		commonrelaycall = Random.IntRange(10000000,99999999);
 
 		amuletObtained = false;
@@ -461,6 +472,8 @@ public class Statistics {
 
 
         bundle.put(HIDEEN, HiddenOK);
+
+		bundle.put(DWSX, dwarfKill);
 
         bundle.put(WINGAME, winGame);
 
@@ -596,6 +609,8 @@ public class Statistics {
 
 		bundle.put(MSTG,mustTengu);
 
+		bundle.put("DWCHSAG",dwarfchange);
+
 		//SPD
 		bundle.put("real_time_passed", second_elapsed);
 		bundle.put("real_seconds_passed", real_seconds);
@@ -609,6 +624,8 @@ public class Statistics {
 		bundle.put("YOU",youNoItem);
 		bundle.put("DCXFG",unLockedFireDargon);
 		bundle.put("DRAM",GameKillFireDargon);
+
+		bundle.put("ALXONE",Alone);
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
@@ -624,6 +641,8 @@ public class Statistics {
 		CrivusbossTeleporter = bundle.getInt(BDK);
 
 		GetFoodLing = bundle.getInt( SIDERLING);
+
+		dwarfchange = bundle.getInt("DWCHSAG");
 
 		gameDay = bundle.getInt("gameday");
 
@@ -651,6 +670,8 @@ public class Statistics {
 
 		ARLing = bundle.getBoolean("ARLing");
 
+		dwarfKill = bundle.getBoolean(DWSX);
+
 		onlyBzmdr = bundle.getBoolean("onlyB");
 
 		youNoItem = bundle.getBoolean("YOU");
@@ -671,6 +692,8 @@ public class Statistics {
 		gooFight = bundle.getBoolean(GOOFIGHT);
 
 		fuckGeneratorAlone = bundle.getInt(FUCKALONE);
+
+		Alone = bundle.getBoolean("ALXONE");
 
 		HealingIsDied   = bundle.getInt( HEALDIED );
 

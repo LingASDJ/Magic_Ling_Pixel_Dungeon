@@ -101,7 +101,12 @@ public class SmallLeafPlot extends Plot {
     private void process_to_1()
     {
         diagulewindow.hideAll();
-        diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLF));
+        if(Statistics.amuletObtained){
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLS));
+        } else {
+            diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLF));
+        }
+
         diagulewindow.setLeftName(Messages.get(SmallLeaf.class,"name"));
         diagulewindow.changeText(Messages.get(SmallLeaf.class,"message1"));
     }
@@ -160,7 +165,11 @@ public class SmallLeafPlot extends Plot {
         private void process_to_1()
         {
             diagulewindow.hideAll();
-            diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLF));
+            if(Statistics.amuletObtained){
+                diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLS));
+            } else {
+                diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLF));
+            }
             diagulewindow.setLeftName(Messages.get(SmallLeaf.class,"name"));
             switch (Dungeon.hero.heroClass){
                 default:
@@ -239,7 +248,11 @@ public class SmallLeafPlot extends Plot {
 
         private void process_to_1() {
             diagulewindow.hideAll();
-            diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLF));
+            if(Statistics.amuletObtained){
+                diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLS));
+            } else {
+                diagulewindow.setMainAvatar(new Image(Assets.Splashes.SMLF));
+            }
             diagulewindow.setLeftName(Messages.get(SmallLeaf.class, "name"));
 
             if(Challenges.activeChallenges()>=15 && !SPDSettings.SmallLeafGetCoin() && !Dungeon.isChallenged(PRO)) {

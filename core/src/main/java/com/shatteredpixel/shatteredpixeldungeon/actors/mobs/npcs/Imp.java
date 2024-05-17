@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
@@ -37,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndEXImp;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndImp;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
@@ -104,13 +106,17 @@ public class Imp extends NPC {
 		}
 
 		if (Quest.given) {
-			
 			DwarfToken tokens = Dungeon.hero.belongings.getItem( DwarfToken.class );
 			if (tokens != null && (tokens.quantity() >= 5 || (!Quest.alternative && tokens.quantity() >= 4))) {
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {
-						GameScene.show( new WndImp( Imp.this, tokens ) );
+						if(!SPDSettings.KillDwarf() && Statistics.deepestFloor<20){
+							GameScene.show( new WndEXImp( Imp.this, tokens ) );
+						} else {
+							GameScene.show( new WndImp( Imp.this, tokens ) );
+						}
+
 					}
 				});
 			} else {
