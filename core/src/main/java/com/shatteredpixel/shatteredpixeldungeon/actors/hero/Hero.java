@@ -715,9 +715,9 @@ public class Hero extends Char {
     
 		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && CustomPlayer.shouldOverride ){
 			return CustomPlayer.baseEvasion;
-		}else {
-			return Math.round(evasion);
 		}
+
+		return Math.round(evasion);
 	}
 
 	@Override
