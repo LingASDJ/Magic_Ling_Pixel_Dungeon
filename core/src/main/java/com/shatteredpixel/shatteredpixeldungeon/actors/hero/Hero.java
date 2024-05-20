@@ -128,6 +128,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
+import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -639,6 +640,10 @@ public class Hero extends Char {
 		KindOfWeapon wep = belongings.attackingWeapon();
 		
 		float accuracy = 1;
+		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
+			accuracy = CustomPlayer.baseAccuracy;
+		}
+
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
 		
 		if (wep instanceof MissileWeapon){
@@ -652,8 +657,10 @@ public class Hero extends Char {
 		if (buff(Scimitar.SwordDance.class) != null){
 			accuracy *= 1.25f;
 		}
-		
-		if (!RingOfForce.fightingUnarmed(this)) {
+
+		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
+			return  CustomPlayer.baseAccuracy;
+		} else if (!RingOfForce.fightingUnarmed(this)) {
 			return (int)(attackSkill * accuracy * wep.accuracyFactor( this, target ));
 		} else {
 			return (int)(attackSkill * accuracy);
@@ -675,6 +682,9 @@ public class Hero extends Char {
 		}
 		
 		float evasion = defenseSkill;
+		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
+			evasion = CustomPlayer.baseEvasion;
+		}
 		
 		evasion *= RingOfEvasion.evasionMultiplier( this );
 
@@ -701,6 +711,10 @@ public class Hero extends Char {
 		//提升10%的闪避
 		if (buff(BlessQinyue.class) != null){
 			evasion = evasion * 1.1f;
+		}
+    
+		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && CustomPlayer.shouldOverride ){
+			return CustomPlayer.baseEvasion;
 		}
 
 		return Math.round(evasion);
@@ -737,6 +751,9 @@ public class Hero extends Char {
 	@Override
 	public int drRoll() {
 		int dr = super.drRoll();
+		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&!CustomPlayer.shouldOverride ){
+			dr += CustomPlayer.baseArmor;
+		}
 
 		if (belongings.armor() != null) {
 			int armDr = Random.NormalIntRange( belongings.armor().DRMin(), belongings.armor().DRMax());
@@ -756,6 +773,10 @@ public class Hero extends Char {
 		if (buff(HoldFast.class) != null){
 			dr += buff(HoldFast.class).armorBonus();
 		}
+
+		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
+			dr = CustomPlayer.baseArmor;
+		}
 		
 		return dr;
 	}
@@ -763,16 +784,19 @@ public class Hero extends Char {
 	@Override
 	public int damageRoll() {
 		KindOfWeapon wep = belongings.attackingWeapon();
-		int dmg;
+		int dmg=0;
+		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&!CustomPlayer.shouldOverride ){
+			dmg = CustomPlayer.baseDamage;
+		}
 
 		if (!RingOfForce.fightingUnarmed(this)) {
-			dmg = wep.damageRoll( this );
+			dmg += wep.damageRoll( this );
 
 			if (!(wep instanceof MissileWeapon)) dmg += RingOfForce.armedDamageBonus(this);
 		} else {
-			dmg = RingOfForce.damageRoll(this);
+			dmg += RingOfForce.damageRoll(this);
 			if (RingOfForce.unarmedGetsWeaponAugment(this)){
-				dmg = ((Weapon)belongings.attackingWeapon()).augment.damageFactor(dmg);
+				dmg += ((Weapon)belongings.attackingWeapon()).augment.damageFactor(dmg);
 			}
 		}
 
@@ -792,14 +816,21 @@ public class Hero extends Char {
 			dmg = Math.round(dmg * 1.025f + (.025f*pointsInTalent(Talent.WEAPON_RECHARGING)));
 		}
 
+		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
+			dmg = CustomPlayer.baseDamage;
+		}
 		if (dmg < 0) dmg = 0;
 		return dmg;
 	}
 	
 	@Override
 	public float speed() {
+		float speed = 0;
+		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
+			speed += CustomPlayer.baseSpeed;
+		}
 
-		float speed = super.speed();
+		speed += super.speed();
 
 		speed *= RingOfHaste.speedMultiplier(this);
 
@@ -837,7 +868,11 @@ public class Hero extends Char {
 		}
 
 		speed = AscensionChallenge.modifyHeroSpeed(speed);
-		
+
+		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && CustomPlayer.shouldOverride ){
+			speed = CustomPlayer.baseSpeed;
+		}
+
 		return speed;
 		
 	}
@@ -885,6 +920,12 @@ public class Hero extends Char {
 		}
 
 		float delay = 1f;
+		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame ){
+			if(!CustomPlayer.shouldOverride)
+				delay = CustomPlayer.baseAttackDelay;
+			else if(CustomPlayer.shouldOverride)
+				return CustomPlayer.baseAttackDelay;
+		}
 
 		if (!RingOfForce.fightingUnarmed(this)) {
 			
