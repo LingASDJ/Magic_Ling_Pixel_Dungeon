@@ -5,26 +5,21 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blizzard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WorstBlizzardFx;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WorstBlizzard;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
-import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -106,18 +101,22 @@ public class WandOfGodIce extends DamageWand {
         int dmg = damageRoll();
 
         //three in (5+lvl) chance of failing
-        if (Random.Int(5+buffedLvl()) >= 3) {
-            Buff.prolong(ch, Chill.class, 2f + (buffedLvl() * 0.333f));
-            ch.sprite.emitter().burst(Speck.factory(Speck.STAR), 12 );
+        if(ch != null) {
+            if (Random.Int(5 + buffedLvl()) >= 3) {
+                Buff.prolong(ch, Chill.class, 2f + (buffedLvl() * 0.333f));
+                ch.sprite.emitter().burst(Speck.factory(Speck.STAR), 12);
+            }
         }
         dmg += level() > 4 ? level() - 4 : 0;
 
-        if (ch.properties().contains(Char.Property.BOSS)){
-            ch.sprite.emitter().start( ShadowParticle.CURSE, 0.05f, 10+buffedLvl() );
-            Sample.INSTANCE.play(Assets.Sounds.BURNING);
-            dmg = Math.round(dmg*2f);
-        } else {
-            ch.sprite.centerEmitter().burst( RainbowParticle.BURST, 10+buffedLvl() );
+        if(ch != null){
+            if (ch.properties().contains(Char.Property.BOSS)){
+                ch.sprite.emitter().start( ShadowParticle.CURSE, 0.05f, 10+buffedLvl() );
+                Sample.INSTANCE.play(Assets.Sounds.BURNING);
+                dmg = Math.round(dmg*2f);
+            } else {
+                ch.sprite.centerEmitter().burst( RainbowParticle.BURST, 10+buffedLvl() );
+            }
         }
         return dmg;
     }

@@ -51,10 +51,13 @@ public class WorstBlizzardFx extends Blob{
 
     public static void freeze( int cell ){
         Char ch = Actor.findChar( cell );
-        if( firstHit && ch.properties().contains(Char.Property.MINIBOSS)) {
-            firstHit = false;
-            ch.damage( ch.properties().contains(Char.Property.BOSS) ? damageTarget : damageTarget * 2, WandOfGodIce.class);
+        if(ch != null){
+            if( firstHit && ch.properties().contains(Char.Property.MINIBOSS)) {
+                firstHit = false;
+                ch.damage( ch.properties().contains(Char.Property.BOSS) ? damageTarget : damageTarget * 2, WandOfGodIce.class);
+            }
         }
+
         if (ch != null && !ch.isImmune(WorstBlizzardFx.class)) {
             if(ch.buff(WorstBlizzard.class)==null){
                 Buff.affect(ch, WorstBlizzard.class,1f);
