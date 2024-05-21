@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.utils.WndTextNumberInput;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
@@ -238,12 +239,12 @@ public class CustomPlayer extends TestItem{
                             Messages.get(CustomPlayer.class, "accuracy_desc"),
                             Float.toString(baseAttackDelay),
                             4, false, Messages.get(CustomPlayer.class, "confirm"),
-                            Messages.get(CustomPlayer.class, "cancel"),false) {
+                            Messages.get(CustomPlayer.class, "cancel"),true) {
                         @Override
                         public void onSelect(boolean check, String text) {
                             if (check && text.matches("\\d+")) {
-                                int value = Integer.parseInt(text);
-                                if(value>=1)
+                                float value = Float.parseFloat(text);
+                                if(value>0)
                                     baseAttackDelay = Math.min( value, 6666);
                                 updateAllButtonText();
                             }
