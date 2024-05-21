@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.badlogic.gdx.utils.Null;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -49,11 +50,26 @@ public class Statue extends Mob {
 	public boolean levelGenStatue = true;
 	public Weapon weapon;
 
-	public void createWeapon( boolean useDecks ){
+	public void createWeapon( boolean useDecks){
 		if (useDecks) {
 			weapon = (MeleeWeapon) Generator.random(Generator.Category.WEAPON);
 		} else {
 			weapon = (MeleeWeapon) Generator.randomUsingDefaults(Generator.Category.WEAPON);
+		}
+		levelGenStatue = useDecks;
+		weapon.cursed = false;
+		weapon.enchant( Enchantment.random() );
+	}
+
+	public void createWeapon( boolean useDecks ,Weapon customWeapon){
+		if(customWeapon != null){
+			weapon = customWeapon;
+		}else{
+			if (useDecks) {
+				weapon = (MeleeWeapon) Generator.random(Generator.Category.WEAPON);
+			} else {
+				weapon = (MeleeWeapon) Generator.randomUsingDefaults(Generator.Category.WEAPON);
+			}
 		}
 		levelGenStatue = useDecks;
 		weapon.cursed = false;
