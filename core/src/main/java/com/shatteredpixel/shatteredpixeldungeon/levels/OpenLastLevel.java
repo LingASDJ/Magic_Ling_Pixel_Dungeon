@@ -23,10 +23,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourg
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Halo;
@@ -113,18 +115,31 @@ public class OpenLastLevel extends Level {
         } else if (transition.type == LevelTransition.Type.REGULAR_EXIT) {
             return false;
         } else if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE || transition.type == LevelTransition.Type.BRANCH_EXIT) {
-            TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-            if (timeFreeze != null) timeFreeze.disarmPresses();
-            Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-            if (timeBubble != null) timeBubble.disarmPresses();
-            InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-            InterlevelScene.curTransition = new LevelTransition();
-            InterlevelScene.curTransition.destDepth = depth + 1;
-            InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
-            InterlevelScene.curTransition.destBranch = 0;
-            InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_ENTRANCE;
-            InterlevelScene.curTransition.centerCell  = -1;
-            Game.switchScene( InterlevelScene.class );
+
+            if((hero.belongings.getItem(Amulet.class) != null) ||(hero.belongings.getItem(JAmulet.class) != null) ){
+                TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+                if (timeFreeze != null) timeFreeze.disarmPresses();
+                Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+                if (timeBubble != null) timeBubble.disarmPresses();
+                InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+                InterlevelScene.curTransition = new LevelTransition();
+                InterlevelScene.curTransition.destDepth = depth + 1;
+                InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
+                InterlevelScene.curTransition.destBranch = 0;
+                InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_ENTRANCE;
+                InterlevelScene.curTransition.centerCell  = -1;
+                Game.switchScene( InterlevelScene.class );
+            } else {
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show( new WndMessage( Messages.get(hero, "leave3") ) );
+                    }
+                });
+                return false;
+            }
+
+
             return false;
         } else {
             return super.activateTransition(hero, transition);
@@ -199,7 +214,7 @@ public class OpenLastLevel extends Level {
         if(Dungeon.isChallenged(PRO)){
             drop( new JAmulet(), AMULET_POS );
         } else {
-            drop( new Amulet(), AMULET_POS );
+            drop( new Amulet(), 19 );
         }
 
     }

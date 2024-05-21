@@ -21,15 +21,18 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.ATBSettings;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.NoneSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HealthBar;
@@ -46,7 +49,7 @@ public class WndInfoMob extends WndTitledMessage {
 
 	}
 
-	private static class MobTitle extends Component {
+	public static class MobTitle extends Component {
 
 		private static final int GAP	= 2;
 
@@ -138,20 +141,24 @@ public class WndInfoMob extends WndTitledMessage {
 				level = "C";
 			} else if (mob.HP>20) {
 				level = "D";
-			} else if (mob.HP>10) {
+			} else if (mob.HP>2) {
 				level = "E";
 			} else if (mob.HP==1) {
 				level = "G";
+			} else if(mob.HP<=0) {
+				level = "?";
 			} else {
-				level = "F";
+				level = "Z";
 			}
 			return level;
 		}
 
-		private String ProName(Mob mob) {
+		public static String ProName(Mob mob) {
 			String level;
 			if (mob.properties.contains(Char.Property.BOSS)){
 				level = Messages.get(WndInfoMob.class,"boss");
+			} else if (mob.properties.contains(Char.Property.UNKNOWN)){
+				level = Messages.get(WndInfoMob.class,"unknown");
 			} else if (mob.properties.contains(Char.Property.MINIBOSS)){
 				level = Messages.get(WndInfoMob.class,"miniboss");
 			} else if (mob.properties.contains(Char.Property.HOLLOW)){
@@ -179,7 +186,7 @@ public class WndInfoMob extends WndTitledMessage {
 		private String MaxLevelName(Mob mob) {
 			String level;
 
-			if(Dungeon.hero.lvl <= mob.maxLvl || mob.properties.contains(Char.Property.BOSS) || mob.properties.contains(Char.Property.MINIBOSS)){
+			if(hero.lvl <= mob.maxLvl || mob.properties.contains(Char.Property.BOSS) || mob.properties.contains(Char.Property.MINIBOSS)){
 				level = Messages.get(WndInfoMob.class,"canroll");
 			} else {
 				level = Messages.get(WndInfoMob.class,"noroll");
@@ -191,11 +198,12 @@ public class WndInfoMob extends WndTitledMessage {
 
 		public MobTitle( Mob mob ) {
 
-			name = PixelScene.renderTextBlock( Messages.titleCase( mob.name() ), 9 );
+			name = PixelScene.renderTextBlock(Messages.titleCase( mob.name() ), 9 );
 			name.hardlight( TITLE_COLOR );
 			add( name );
 
-			image = mob.sprite();
+
+			image = mob.buff(ChampionEnemy.NoCode.class) != null ? new NoneSprite() : mob.sprite();
 			add( image );
 
 			health = new HealthBar();
@@ -218,7 +226,7 @@ public class WndInfoMob extends WndTitledMessage {
 
 			mobSixInfo.info5 = PixelScene.renderTextBlock(ATBSettings() ? String.valueOf(mob.defenseSkill) : DKLevel(mob),6);
 			mobSixInfo.info6 = PixelScene.renderTextBlock(ATBSettings() ?
-					String.valueOf((double)Math.round(mob.speed()*10)/10): SPLevel(mob),6);
+					String.valueOf((double)Math.round(mob.speed()*100)/100): SPLevel(mob),6);
 
 			mobSixInfo.info7 = PixelScene.renderTextBlock(ProName(mob),6);
 			int dmg = 0;
@@ -238,11 +246,7 @@ public class WndInfoMob extends WndTitledMessage {
 			add(mobSixInfo.info7);
 			add(mobSixInfo.info8);
 
-			if ((mob.alignment == Char.Alignment.NEUTRAL) && mob.properties.contains(Char.Property.HOLLOW)) {
-				reload = true;
-			} else {
-				reload = false;
-			}
+			reload = (mob.alignment == Char.Alignment.NEUTRAL) && mob.properties.contains(Char.Property.HOLLOW);
 		}
 
 		@Override
@@ -267,6 +271,21 @@ public class WndInfoMob extends WndTitledMessage {
 			);
 
 
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+				if(mob.buff(ChampionEnemy.NoCode.class) != null) {
+					mobSixInfo.info1.visible = false;	mobSixInfo.info2.visible = false;
+					mobSixInfo.info3.visible = false;	mobSixInfo.info4.visible = false;
+					mobSixInfo.info5.visible = false;	mobSixInfo.info6.visible = false;
+					mobSixInfo.info7.visible = false;	mobSixInfo.info8.visible = false;
+					mobSixInfo.image1.visible = false;	mobSixInfo.image2.visible = false;
+					mobSixInfo.image3.visible = false;	mobSixInfo.image4.visible = false;
+					mobSixInfo.image5.visible = false;	mobSixInfo.image6.visible = false;
+					mobSixInfo.image7.visible = false;	mobSixInfo.image8.visible = false;
+					health.visible = false;
+					height = health.bottom();
+					return;
+				}
+			}
 
 			if(reload){
 				height = health.bottom();

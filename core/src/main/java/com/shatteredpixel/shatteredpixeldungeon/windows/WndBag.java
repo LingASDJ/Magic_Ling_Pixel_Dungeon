@@ -23,12 +23,15 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.LingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
@@ -61,6 +64,8 @@ public class WndBag extends WndTabbed {
 
 	protected static final int COLS_P   = 7;
 	protected static final int COLS_L   = 7;
+
+	protected static final int FIRST_ROW_COLS = 5;
 
 	protected static int SLOT_WIDTH_P   = 18;
 	protected static int SLOT_WIDTH_L   = 18;
@@ -180,7 +185,12 @@ public class WndBag extends WndTabbed {
 			add(gold);
 
 			BitmapText amt = new BitmapText(Integer.toString(Dungeon.gold), PixelScene.pixelFont);
-			amt.hardlight(TITLE_COLOR);
+			if(Dungeon.gold>=0){
+				amt.hardlight(TITLE_COLOR);
+			} else {
+				amt.hardlight(RED_COLOR);
+			}
+
 			amt.measure();
 			amt.x = width - gold.width() - amt.width() - 1;
 			amt.y = (TITLE_HEIGHT - amt.baseLine()) / 2f - 1;
@@ -235,9 +245,13 @@ public class WndBag extends WndTabbed {
 		PixelScene.align(txtTitle);
 		add( txtTitle );
 	}
-	
+
 	protected void placeItems( Bag container ) {
-		
+		// 重置计数器和行列指示器
+		count = 0;
+		col = 0;
+		row = 0;
+
 		// Equipped items
 		Belongings stuff = Dungeon.hero.belongings;
 		placeItem( stuff.weapon != null ? stuff.weapon : new Placeholder( ItemSpriteSheet.WEAPON_HOLDER ) );
@@ -246,33 +260,71 @@ public class WndBag extends WndTabbed {
 		placeItem( stuff.misc != null ? stuff.misc : new Placeholder( ItemSpriteSheet.SOMETHING ) );
 		placeItem( stuff.ring != null ? stuff.ring : new Placeholder( ItemSpriteSheet.RING_HOLDER ) );
 
-		int equipped = 5;
-
-		//the container itself if it's not the root backpack
-		if (container != Dungeon.hero.belongings.backpack){
-			placeItem(container);
-			count--; //don't count this one, as it's not actually inside of itself
-		} else if (stuff.secondWep != null) {
-			//second weapon always goes to the front of view on main bag
-			placeItem(stuff.secondWep);
-			equipped++;
+		// 判断是否已经放置了首行的5个物品，如果是，则跳过三个位置
+		if (col == FIRST_ROW_COLS) {
+			placeIceCoinDisplay();
+			col += 1; // 跳过三个位置
+			row++; // 移动到下一行
+			col = 0; // 重置列指示器，因为下一行开始是完整的行
 		}
 
 		// Items in the bag, except other containers (they have tags at the bottom)
 		for (Item item : container.items.toArray(new Item[0])) {
-			if (!(item instanceof Bag)) {
-				placeItem( item );
-			} else {
-				count++;
-			}
+			placeItem( item );
 		}
-		
+
 		// Free Space
-		while ((count - equipped) < container.capacity()) {
+		while ((count - 5) < container.capacity()) {
 			placeItem( null );
 		}
 	}
-	
+
+
+	protected void placeIceCoinDisplay() {
+		int x = col * (slotWidth + SLOT_MARGIN);
+		int y = TITLE_HEIGHT + row * (slotHeight + SLOT_MARGIN);
+
+		if(Statistics.bossRushMode){
+			BitmapText iceCoinAmount = new BitmapText(Integer.toString(Dungeon.rushgold), PixelScene.pixelFont);
+			iceCoinAmount.hardlight(TITLE_COLOR);
+			iceCoinAmount.measure();
+			iceCoinAmount.x = x - iceCoinAmount.width()/5f+4;
+			iceCoinAmount.y = y + (slotHeight - iceCoinAmount.baseLine()) / 2f;
+			PixelScene.align(iceCoinAmount);
+			add(iceCoinAmount);
+			ItemSprite iceCoinSprite = new ItemSprite(ItemSpriteSheet.BOSSRUSH_GOLD, null);
+			iceCoinSprite.setPos(x+iceCoinSprite.width()*1.25f,iceCoinAmount.y-(slotHeight - iceCoinAmount.baseLine()) / 2f);
+			PixelScene.align(iceCoinSprite);
+			add(iceCoinSprite);
+		} else {
+			BitmapText iceCoinAmount = new BitmapText(Integer.toString(SPDSettings.iceCoin()), PixelScene.pixelFont);
+			if(SPDSettings.iceCoin()>9999){
+				iceCoinAmount.text("9999+");
+			}
+			iceCoinAmount.hardlight(TITLE_COLOR);
+			iceCoinAmount.measure();
+			// 数值文本紧随图标之后
+			iceCoinAmount.x = x - iceCoinAmount.width()/5f+4;
+			iceCoinAmount.y = y + (slotHeight - iceCoinAmount.baseLine()) / 2f;
+			PixelScene.align(iceCoinAmount);
+			add(iceCoinAmount);
+
+			// 创建冰蓝方孔币的ItemSprite
+			ItemSprite iceCoinSprite = new ItemSprite(ItemSpriteSheet.ICEGOLD, null);
+			iceCoinSprite.setPos(x+iceCoinSprite.width()*1.25f,iceCoinAmount.y-(slotHeight - iceCoinAmount.baseLine()) / 2f);
+			PixelScene.align(iceCoinSprite);
+			add(iceCoinSprite);
+		}
+
+
+
+		// 创建并设置冰蓝方孔币数值显示
+
+
+		// 更新列计数器，以反映冰蓝方孔币图标和数值的添加
+		col += 1; // 假设冰蓝方孔币图标和数值占用一个位置
+	}
+
 	protected void placeItem( final Item item ) {
 
 		count++;
@@ -404,6 +456,8 @@ public class WndBag extends WndTabbed {
 			return Icons.get( Icons.SCROLL_HOLDER );
 		} else if (bag instanceof MagicalHolster) {
 			return Icons.get( Icons.WAND_HOLSTER );
+		} else if (bag instanceof KingBag) {
+			return Icons.get( Icons.B_BACKPACK );
 		} else if (bag instanceof PotionBandolier) {
 			return Icons.get( Icons.POTION_BANDOLIER );
 		} else if (bag instanceof HerbBag) {

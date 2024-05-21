@@ -23,13 +23,10 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
@@ -42,13 +39,10 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GreenSltingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -61,7 +55,7 @@ import java.util.HashSet;
 
 public class DimandKing extends Boss {
     {
-        spriteClass = MimicSprite.Dimand.class;
+        spriteClass = GreenSltingSprite.class;
         initProperty();
         initBaseStatus(14, 23, 33, 22, 200, 5, 12);
         initStatus(120);
@@ -108,13 +102,6 @@ public class DimandKing extends Boss {
         bundle.put( ABILITY_CD, abilityCooldown );
         bundle.put( LAST_ABILITY, lastAbility );
         bundle.put("wavePhase2", wave);
-
-        //暴力Boss
-        int[] bundleArr = new int[targetedCells.size()];
-        for (int i = 0; i < targetedCells.size(); i++){
-            bundleArr[i] = targetedCells.get(i);
-        }
-        bundle.put(TARGETED_CELLS, bundleArr);
     }
 
     @Override
@@ -128,13 +115,6 @@ public class DimandKing extends Boss {
         wave = bundle.getInt("wavePhase2");
 
         if (phase == 2) properties.add(Property.IMMOVABLE);
-
-        //暴力Boss
-        int[] bundleArr = new int[targetedCells.size()];
-        for (int i = 0; i < targetedCells.size(); i++){
-            bundleArr[i] = targetedCells.get(i);
-        }
-        bundle.put(TARGETED_CELLS, bundleArr);
     }
 
     private void resetChanceMap(){
@@ -223,6 +203,7 @@ public class DimandKing extends Boss {
                     abilityCooldown += Random.NormalIntRange(MIN_COOLDOWN, MAX_COOLDOWN);
                     spend(TICK);
                 }
+               // doYogLasers();
 
             } else {
                 abilityCooldown--;
@@ -239,7 +220,6 @@ public class DimandKing extends Boss {
     }
 
     private boolean summonSubject( int delay ){
-
         //4th summon is always a monk or warlock, otherwise ghoul
         //4 1n 13 are monks/warlocks
         if (summonsMade % 13 == 7 || summonsMade % 13 == 11) {
@@ -366,14 +346,14 @@ public class DimandKing extends Boss {
         }
         new Flare(5, 32).color(0xFF6060, false).show(sprite, 1.5f);
         yell(Messages.get(this,"buff_all"));
-        //doYogLasers();
+       // doYogLasers();
     }
 
     private void sacrificeSubject(){
         Buff.affect(this,  SacrificeSubjectListener.class, 3f);
         new Flare(6, 32).color(0xFF22FF, false).show(sprite, 1.5f);
         yell(Messages.get(this, "sacrifice"));
-        //doYogLasers();
+       // doYogLasers();
     }
 
     private void deathRattleSubject(){
@@ -391,7 +371,7 @@ public class DimandKing extends Boss {
         }
         new Flare(7, 32).color(0x303030, false).show(sprite, 1.5f);
         yell(Messages.get(this,"death_rattle"));
-        //doYogLasers();
+       // doYogLasers();
     }
 
     private void extraSummonSubject(){
@@ -400,7 +380,7 @@ public class DimandKing extends Boss {
         summonSubject(3);
         summonsMade++;
         yell(Messages.get(this, "more_summon"));
-        //doYogLasers();
+       // doYogLasers();
         new Flare(4, 32).color(0x4040FF, false).show(sprite, 1.5f);
     }
 
@@ -493,7 +473,7 @@ public class DimandKing extends Boss {
 
     @Override
     public void die(Object cause) {
-//        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+//      if(Statistics.happyMode){
 //
 //            GetBossLoot();
 //        }
@@ -525,10 +505,6 @@ public class DimandKing extends Boss {
 
         //Dungeon.level.drop(new KingsCrown(), dropPos).sprite.drop();
         Dungeon.level.drop(new ScrollOfRecharging().quantity(2),  dropPos).sprite.drop(pos);
-        Ankh ankh = new Ankh();
-        ankh.bless();
-        Dungeon.level.drop(new Ankh(), dropPos).sprite.drop(pos);
-        Dungeon.level.drop(new Gold().quantity(Random.Int(400,900)), pos).sprite.drop();
         Badges.validateBossSlain();
         //Badges.KILL_DMK();
         Dungeon.level.unseal();
@@ -549,7 +525,7 @@ public class DimandKing extends Boss {
         return super.isImmune(effect);
     }
 
-    public static class DKGhoul extends OGPDLLS {
+    public static class DKGhoul extends Katydid {
         {
             state = HUNTING;
             immunities.add(Corruption.class);
@@ -585,7 +561,7 @@ public class DimandKing extends Boss {
         }
     }
 
-    public static class DKWarlock extends SRPDHBLR {
+    public static class DKWarlock extends Salamander {
         {
             state = HUNTING;
             immunities.add(Corruption.class);
@@ -948,99 +924,28 @@ public class DimandKing extends Boss {
         }
     }
 
-    public static class StrengthEmpower extends FlavourBuff{
+    public static class StrengthEmpower extends FlavourBuff {
         Emitter charge;
+
         @Override
-        public void fx(boolean on){
+        public void fx(boolean on) {
             if (on && charge == null) {
                 charge = target.sprite.emitter();
 
                 charge.pour(Speck.factory(Speck.UP), 0.7f);
 
             } else {
-                if(charge != null) {
+                if (charge != null) {
                     charge.on = false;
                     charge = null;
                 }
             }
         }
+
         @Override
-        public boolean attachTo(Char target){
+        public boolean attachTo(Char target) {
             GLog.n(Messages.get(DimandKing.class, "str_empower"));
             return super.attachTo(target);
         }
-    }
-
-
-    private static final int MIN_ABILITY_CD = 7;
-    private int lastHeroPos;
-    private static final int MAX_ABILITY_CD = 12;
-    private ArrayList<Integer> targetedCells = new ArrayList<>();
-
-    public void doYogLasers(){
-        boolean terrainAffected = false;
-        HashSet<Char> affected = new HashSet<>();
-        //delay fire on a rooted hero
-        if (!enemy.rooted) {
-            for (int i : targetedCells) {
-                Ballistica b = new Ballistica(i, lastHeroPos, Ballistica.WONT_STOP);
-                //shoot beams
-                sprite.parent.add(new Beam.DeathRayS(DungeonTilemap.raisedTileCenterToWorld(i),
-                        DungeonTilemap.raisedTileCenterToWorld(b.collisionPos)));
-                for (int p : b.path) {
-                    Char ch = Actor.findChar(p);
-                    if (ch != null && (ch.alignment != alignment || ch instanceof Bee)) {
-                        affected.add(ch);
-                    }
-                    if (Dungeon.level.flamable[p]) {
-                        Dungeon.level.destroy(p);
-                        GameScene.updateMap(p);
-                        terrainAffected = true;
-                    }
-                }
-            }
-            if (terrainAffected) {
-                Dungeon.observe();
-            }
-            for (Char ch : affected) {
-                ch.damage(Random.NormalIntRange(30, 50), new Eye.DeathGaze());
-
-                if (Dungeon.level.heroFOV[pos]) {
-                    ch.sprite.flash();
-                    CellEmitter.center(pos).burst(Speck.factory(Speck.COIN), Random.IntRange(2, 3));
-                }
-                if (!ch.isAlive() && ch == Dungeon.hero) {
-                    Dungeon.fail(getClass());
-                    GLog.n(Messages.get(Char.class, "kill", name()));
-                }
-            }
-            targetedCells.clear();
-        }
-
-        if (abilityCooldown <= 0 && HP < HT*0.8f){
-            lastHeroPos = enemy.pos;
-
-            int beams = (int) (4 + (HP * 1.0f / HT)*4);
-            for (int i = 0; i < beams; i++){
-                int randompos = Random.Int(Dungeon.level.width()) + Dungeon.level.width()*2;
-                targetedCells.add(randompos);
-            }
-
-            for (int i : targetedCells){
-                Ballistica b = new Ballistica(i, Dungeon.hero.pos, Ballistica.WONT_STOP);
-
-                for (int p : b.path){
-                    Game.scene().addToFront(new TargetedCell(p, Window.TITLE_COLOR));
-                }
-            }
-
-            spend(TICK*1.5f);
-            Dungeon.hero.interrupt();
-            GLog.p(Messages.get(DimandKing.class, "wrning", name()));
-            abilityCooldown += Random.NormalFloat(MIN_ABILITY_CD - 2*(1 - (HP * 1f / HT)), MAX_ABILITY_CD - 5*(1 - (HP * 1f / HT)));
-        } else {
-            spend(TICK);
-        }
-        if (abilityCooldown > 0) abilityCooldown--;
     }
 }

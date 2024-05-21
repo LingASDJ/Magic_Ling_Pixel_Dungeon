@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
@@ -51,8 +52,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -67,6 +71,8 @@ public class Heap implements Bundlable {
 	public enum Type {
 		HEAP,
 		FOR_SALE,
+		FOR_ICE,
+		FOR_RUSH,
 		CHEST,
 		LOCKED_CHEST,
 		CRYSTAL_CHEST,
@@ -75,7 +81,11 @@ public class Heap implements Bundlable {
 		WHITETOMB,
 		SKELETON,
 		REMAINS,
-		BLACK
+		BLACK,
+		MIMIC,
+		GOLDEN_MIMIC,
+		CRYSTAL_MIMIC,
+		STATUE
 	}
 
 	//好好好
@@ -105,7 +115,12 @@ public class Heap implements Bundlable {
 		case TELECRYSTL:
 			ScrollOfTeleportation.appear( hero,level.entrance );
 			break;
-		case REMAINS:
+			case REMAINS:
+				if (Dungeon.level.diedname != null) {
+					GameScene.show(new WndTitledMessage(new ItemSprite(ItemSpriteSheet.RIP, null), Messages.get(this, "rip"), level.diedname));
+					Dungeon.level.diedname = null;
+				}
+			break;
 		case SKELETON:
 			CellEmitter.center( pos ).start(Speck.factory(Speck.RATTLE), 0.1f, 3);
 			break;
@@ -140,6 +155,13 @@ public class Heap implements Bundlable {
 		}
 		return this;
 	}
+
+	public Heap MustCursed(){
+		for (Item item : items) {
+			item.cursed = true;
+		}
+		return this;
+	}
 	
 	public int size() {
 		return items.size();
@@ -167,7 +189,7 @@ public class Heap implements Bundlable {
 	
 	public void drop( Item item ) {
 		
-		if (item.stackable && type != Type.FOR_SALE) {
+		if (item.stackable && type != Type.FOR_SALE && type != Type.FOR_ICE && type != Type.FOR_RUSH ) {
 			
 			for (Item i : items) {
 				if (i.isSimilar( item )) {
@@ -180,7 +202,7 @@ public class Heap implements Bundlable {
 		}
 
 		//lost backpack must always be on top of a heap
-		if ((item.dropsDownHeap && type != Type.FOR_SALE) || peek() instanceof LostBackpack) {
+		if ((item.dropsDownHeap && type != Type.FOR_SALE && type != Type.FOR_ICE && type != Type.FOR_RUSH) || peek() instanceof LostBackpack) {
 			items.add( item );
 		} else {
 			items.addFirst( item );
@@ -279,8 +301,6 @@ public class Heap implements Bundlable {
 		}
 
 		if (type != Type.HEAP) {
-
-			return;
 
 		} else {
 
@@ -386,6 +406,25 @@ public class Heap implements Bundlable {
 				} else {
 					return i.toString();
 				}
+			case REMAINS:
+				if (level.diedname != null) {
+					return Messages.get(this, "grave");
+				}
+				return Messages.get(this, "remains");
+			case FOR_ICE:
+				Item ix = peek();
+				if (size() == 1) {
+					return Messages.get(this, "for_ice", Shopkeeper.sellIcePrice(ix), ix.toString());
+				} else {
+					return ix.toString();
+				}
+			case FOR_RUSH:
+				Item rush = peek();
+				if (size() == 1) {
+					return Messages.get(this, "for_dot", Shopkeeper.sellRushPrice(rush), rush.toString());
+				} else {
+					return rush.toString();
+				}
 			case CHEST:
 				return Messages.get(this, "chest");
 			case LOCKED_CHEST:
@@ -398,8 +437,6 @@ public class Heap implements Bundlable {
 				return Messages.get(this, "wtomb");
 			case SKELETON:
 				return Messages.get(this, "skeleton");
-			case REMAINS:
-				return Messages.get(this, "remains");
 			case BLACK:
 				return Messages.get(this, "black_chest");
 			default:
@@ -431,7 +468,11 @@ public class Heap implements Bundlable {
 			case SKELETON:
 				return Messages.get(this, "skeleton_desc");
 			case REMAINS:
-				return Messages.get(this, "remains_desc");
+				if (level.diedname != null) {
+					return level.diedname;
+				}
+				return Messages.get(this, "remains_desc", new Object[0]);
+
 			default:
 				return peek().info();
 		}

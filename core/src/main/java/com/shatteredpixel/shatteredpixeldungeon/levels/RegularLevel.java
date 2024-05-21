@@ -22,22 +22,21 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.anCityQuestLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.anCityQuestProgress;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
 
-import com.nlf.calendar.Lunar;
-import com.nlf.calendar.Solar;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -53,7 +52,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Gregorian;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -71,15 +69,19 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.builders.FigureEightBuild
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LoopBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.DragonCaveRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.FayiNaRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.GardenEntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.GardenExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.GoldRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.HealWellRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.IdenityRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NxhyShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NyzBombAndBooksRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.OilWellRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PumpkinRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.RandomRoom;
@@ -87,6 +89,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BigEyeRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BloodCrystalRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.CoinRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.DreamcatcherRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
@@ -128,22 +131,24 @@ public abstract class RegularLevel extends Level {
 
         holiday = Holiday.NONE;
 
-        /**农历计算*/
-        Gregorian.LunarCheckDate();
-
         final Calendar calendar = Calendar.getInstance();
-
-        Solar date = Solar.fromDate(calendar.getTime());
-        Lunar lunar = date.getLunar();
-
-        //计算中国传统节日的代码已迁移到最上方的"Gregorian.LunarCheckDate();"方法。
-
-
 		switch (calendar.get(Calendar.MONTH)) {
 			case Calendar.JANUARY:
 				if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
 					holiday = Holiday.XMAS;
 				break;
+			case Calendar.APRIL:
+				int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+				if (dayOfMonth >= 2 && dayOfMonth <= 20)
+					holiday = Holiday.QMJ;
+				break;
+			//秦月的生日
+			case Calendar.MAY:
+				int dayOfMonth2 = calendar.get(Calendar.DAY_OF_MONTH);
+				if (dayOfMonth2 >= 13 && dayOfMonth2 <= 21)
+					birthday = DevBirthday.CHAPTER_BIRTHDAY;
+				break;
+			//
 			case Calendar.OCTOBER:
 				if (calendar.get(Calendar.WEEK_OF_MONTH) >= 2)
 					holiday = Holiday.HWEEN;
@@ -157,9 +162,6 @@ public abstract class RegularLevel extends Level {
 					holiday = Holiday.XMAS;
 				break;
 		}
-
-
-
     }
 
     protected ArrayList<Room> rooms;
@@ -208,9 +210,11 @@ public abstract class RegularLevel extends Level {
     public enum Holiday {
         NONE,
         DWJ,
-        ZQJ, //TBD
+        ZQJ,
         HWEEN,//2nd week of october though first day of november
         XMAS,
+		CJ,
+		QMJ
     }
 	
 	protected ArrayList<Room> initRooms() {
@@ -224,14 +228,18 @@ public abstract class RegularLevel extends Level {
 			initRooms.add( roomExit = new ExitRoom());
 		}
 
-
+		//initRooms.add( roomExit = new SkeletonFishRoom());
 
 		//force max standard rooms and multiple by 1.5x for large levels
 		//force max standard rooms and multiple by 1.5x for large levels
-		int standards = standardRooms(feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)));
-		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
+		int standards = standardRooms(feeling == Feeling.LARGE);
+
+		if (feeling == Feeling.BIGROOMS){
+			standards = (int)Math.ceil(standards * 2.5f);
+		} else if (feeling == Feeling.LARGE){
 			standards = (int)Math.ceil(standards * 1.5f);
 		}
+
 
 
 		if(feeling == Feeling.DIEDROOM){
@@ -268,13 +276,9 @@ public abstract class RegularLevel extends Level {
 		}
 
 		//20%
-		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) < 20) {
+		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) <= 40 || depth == 28 && !Statistics.bossRushMode) {
 			initRooms.add(new NxhyShopRoom());
 		}
-
-//		if(Dungeon.FireLevel()){
-//			initRooms.add(new LanFireRoom());
-//		}
 
 		if(depth>27 && depth <30){
 			if(Random.Float() < 0.5f){
@@ -282,10 +286,15 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
+		if(!SPDSettings.KillDragon() && !Statistics.noClearKill && depth == 9 && Badges.isUnlocked(Badges.Badge.KILL_APPLE)){
+			initRooms.add(new FayiNaRoom());
+			initRooms.add(new DragonCaveRoom());
+		} else if(depth == 9 && SPDSettings.KillDragon()){
+			initRooms.add(new DragonCaveRoom());
+		}
 
-		//		initRooms.add(new RangeMobRoom());
 
-		if (Dungeon.NyzshopOnLevel() && branch == 0) {
+		if (Dungeon.NyzshopOnLevel() && branch == 0 || Statistics.bossRushMode && Dungeon.NyzshopOnLevel()) {
 			Buff.affect(hero, RandomBuff.class).set( (4 + Random.Int(9)+hero.STR/6+hero.HP/30)/Random.Int(1,2)+5, 1 );
 			initRooms.add(new NyzBombAndBooksRoom());
 		}
@@ -293,7 +302,7 @@ public abstract class RegularLevel extends Level {
 		if (Dungeon.aqiLevel() && (Dungeon.isChallenged(AQUAPHOBIA)))
 			initRooms.add(new AquariumRoom());
 
-		if(Statistics.goldchestmazeCollected>=3 && Dungeon.depth == 9 && !Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
+		if(Statistics.goldchestmazeCollected>=3 && Dungeon.depth == 9){
 			initRooms.add(new MagicDimandRoom());
 		}
 
@@ -317,10 +326,22 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new EyeRoom());
 		}
 
+		if(Dungeon.exgoldLevel()&&Dungeon.isChallenged(CS)) initRooms.add(new GoldRoom());
+
+		if(Dungeon.depth<26 && Random.Int(30) == 1 && (Dungeon.isChallenged(DHXD) || Statistics.lanterfireactive )){
+			initRooms.add(new OilWellRoom());
+		}
+
+
+
+		if(feeling == Feeling.BLOOD){
+			initRooms.add(new BloodCrystalRoom());
+		}
+
 		if(feeling == Feeling.THREEWELL){
-			initRooms.add(new HealWellRoom());
-			initRooms.add(new RandomRoom());
 			initRooms.add(new IdenityRoom());
+			initRooms.add(new RandomRoom());
+			initRooms.add(new HealWellRoom());
 		}
 
 		if(feeling == Feeling.LINKROOM){
@@ -336,35 +357,23 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(s);
 		}
 
-		if (!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)) {
+//		if (!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)) {
 			if (depth == 18 && !anCityQuestProgress) {
 				initRooms.add(new DreamcatcherRoom());
 				DragonGirlBlue.Quest.spawned = true;
 				anCityQuestProgress = true;
 			}
-		} else {
-			//49% chance
-			if(branch == 0){
-				if(Random.Float() <= 0.49f){
-					if (anCityQuestLevel() && anCityQuestLevel == depth && !anCityQuestProgress) {
-						initRooms.add(new DreamcatcherRoom());
-						DragonGirlBlue.Quest.spawned = true;
-						anCityQuestProgress = true;
-					} else if (!anCityQuestProgress && depth == anCityQuestLevel) {
-						initRooms.add(new DreamcatcherRoom());
-						anCityQuestProgress = true;
-						DragonGirlBlue.Quest.spawned = true;
-					}
-				}
-			}
+//		}
+
+		if (Dungeon.shopOnLevel() && branch == 0) {
+			initRooms.add(new ShopRoom());
+		} else if(Statistics.bossRushMode && branch == 8 && Dungeon.shopRushLevel()){
+			initRooms.add(new ShopRoom());
 		}
 
-		if (Dungeon.shopOnLevel() && branch == 0)
-			initRooms.add(new ShopRoom());
-
 		//force max special rooms and add one more for large levels
-		int specials = specialRooms(feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)));
-		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
+		int specials = specialRooms(feeling == Feeling.LARGE);
+		if (feeling == Feeling.LARGE){
 			specials++;
 		}
 		SpecialRoom.initForFloor();
@@ -432,13 +441,26 @@ public abstract class RegularLevel extends Level {
 		}
 
 		int mobs = 3 + Dungeon.depth % 5 + Random.Int(3);
+
+		if (feeling == Feeling.BIGROOMS){
+			mobs = (int)Math.ceil(mobs * 1.75f);
+		}
+
+		if (feeling == Feeling.SKYCITY){
+			mobs = (int)Math.ceil(mobs * 0.25f);
+		}
+
 		if (feeling == Feeling.LARGE){
 			mobs = (int)Math.ceil(mobs * 1.33f);
 		}
 
 		// 在特定挑战中怪物生成翻倍
-		if (Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
+		if (Dungeon.isChallenged(MOREROOM)|| !Dungeon.isChallenged(CS)) {
 			mobs += Random.NormalIntRange(1,3);
+		}
+
+		if(Dungeon.isChallenged(CS)){
+			mobs -= 1;
 		}
 
 		return mobs;
@@ -447,7 +469,7 @@ public abstract class RegularLevel extends Level {
 	@Override
 	protected void createMobs() {
 		//on floor 1, 10 pre-set mobs are created so the player can get level 2.
-		int mobsToSpawn = Dungeon.depth == 1 ? 10 : mobLimit();
+		int mobsToSpawn = Dungeon.depth == 1 ? Dungeon.isChallenged(CS) ? 5 : 10 : mobLimit();
 
 		ArrayList<Room> stdRooms = new ArrayList<>();
 		for (Room room : rooms) {
@@ -579,17 +601,31 @@ public abstract class RegularLevel extends Level {
 	
 	@Override
 	protected void createItems() {
-		
+
+
+
 		// drops 3/4/5 items 60%/30%/10% of the time
 		int nItems = 3 + Random.chances(new float[]{6, 3, 1});
 
 
-		if (feeling == Feeling.LARGE || Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
+		if (feeling == Feeling.LARGE){
 			nItems += 2;
 		}
-		
-		for (int i=0; i < nItems; i++) {
 
+		if (feeling == Feeling.BIGROOMS){
+			nItems += 4;
+		}
+
+		if (feeling == Feeling.SKYCITY){
+			nItems -= 2;
+		}
+
+		//谜城资源量减半
+		if(Dungeon.isChallenged(CS)){
+			nItems = nItems/2;
+		}
+
+		for (int i=0; i < nItems; i++) {
 			Item toDrop = Generator.random();
 			if (toDrop == null) continue;
 
@@ -641,7 +677,7 @@ public abstract class RegularLevel extends Level {
 					dropped.setHauntedIfCursed();
 				}
 			}
-			
+
 		}
 
 		for (Item item : itemsToSpawn) {
@@ -665,7 +701,7 @@ public abstract class RegularLevel extends Level {
 				}
 				drop( new Torch(), cell );
 				//add a second torch to help with the larger floor
-				if (feeling == Feeling.LARGE){
+				if (feeling == Feeling.LARGE || feeling == Feeling.BIGROOMS){
 					cell = randomDropCell();
 					if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
 						map[cell] = Terrain.GRASS;
@@ -768,6 +804,7 @@ public abstract class RegularLevel extends Level {
 		Random.popGenerator();
 	}
 
+
 	private static HashMap<Document, Dungeon.LimitedDrops> limitedDocs = new HashMap<>();
 	static {
 		limitedDocs.put(Document.SEWERS_GUARD, Dungeon.LimitedDrops.LORE_SEWERS);
@@ -869,11 +906,12 @@ public abstract class RegularLevel extends Level {
 		for (Heap h : heaps.valueList()){
 			if (h.autoExplored) continue;
 
-			if (!h.seen || (h.type != Heap.Type.HEAP && h.type != Heap.Type.FOR_SALE && h.type != Heap.Type.CRYSTAL_CHEST)){
+			if (!h.seen || (h.type != Heap.Type.HEAP && h.type != Heap.Type.FOR_SALE && h.type != Heap.Type.CRYSTAL_CHEST && h.type != Heap.Type.BLACK && h.type != Heap.Type.FOR_ICE && h.type != Heap.Type.FOR_RUSH)){
 				return false;
 			}
+
 			for (Item i : h.items){
-				if (i instanceof Key){
+				if (i instanceof Key ){
 					return false;
 				}
 			}

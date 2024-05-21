@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -50,8 +51,29 @@ public class BeaconOfReturning extends Spell {
 	
 	{
 		image = ItemSpriteSheet.RETURN_BEACON;
+		defaultAction = AC_CAST;
 	}
-	
+
+	@Override
+	public String defaultAction() {
+		if( Dungeon.branch != 0){
+			return AC_THROW;
+		} else {
+			return AC_CAST;
+		}
+	}
+
+	@Override
+	public ArrayList<String> actions(Hero hero) {
+		if( Dungeon.branch != 0){
+			return new ArrayList<>(); //yup, no dropping this one
+		} else {
+			return super.actions(hero);
+		}
+
+	}
+
+
 	public int returnDepth	= -1;
 	public int returnBranch	= 0;
 	public int returnPos;
@@ -109,6 +131,38 @@ public class BeaconOfReturning extends Spell {
 		Sample.INSTANCE.play( Assets.Sounds.BEACON );
 		updateQuickslot();
 	}
+
+	@Override
+	public void execute( final Hero hero, String action ) {
+
+		GameScene.cancel();
+		curUser = hero;
+		curItem = this;
+
+		if (action.equals( AC_DROP )) {
+
+			if (hero.belongings.backpack.contains(this) || isEquipped(hero)) {
+				doDrop(hero);
+			}
+
+		} else if (action.equals( AC_THROW )) {
+
+			if (hero.belongings.backpack.contains(this) || isEquipped(hero)) {
+				doThrow(hero);
+			}
+
+		} else if (action.equals( AC_CAST )) {
+
+			if (curUser.buff(MagicImmune.class) != null){
+				GLog.w( Messages.get(this, "no_magic") );
+			} else if (!Dungeon.interfloorTeleportAllowed()) {
+				GLog.n( Messages.get(this, "preventing_2") );
+			} else {
+				onCast(hero);
+			}
+
+		}
+	}
 	
 	private void returnBeacon( Hero hero ){
 		
@@ -150,10 +204,7 @@ public class BeaconOfReturning extends Spell {
 
 		} else {
 
-			if (!Dungeon.interfloorTeleportAllowed()) {
-				GLog.w( Messages.get(this, "preventing") );
-				return;
-			}
+
 
 			//cannot return to mining level
 			if (returnDepth >= 11 && returnDepth <= 14 && returnBranch == 1){

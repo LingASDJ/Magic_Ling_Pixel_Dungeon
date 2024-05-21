@@ -22,7 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -46,14 +48,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EarthParticle;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CaveTwoBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -66,19 +69,27 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 import com.watabou.utils.Rect;
 import com.watabou.utils.RectF;
 
+import java.util.ArrayList;
+
 public class NewDM720 extends MolotovHuntsman {
+
+    public int totalPylonsToActivate(){
+        return Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 4 : 2;
+    }
+
     private static final float TIME_TO_BURN	= 1f;
     {
         //TODO improved sprite
         spriteClass = DM720Sprite.class;
 
-        HP = HT = 270;
+        HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 405 : 270;
         EXP = 40;
         defenseSkill = 15;
         properties.add(Property.BOSS);
@@ -148,7 +159,7 @@ public class NewDM720 extends MolotovHuntsman {
 
         if (turnsSinceLastAbility != -1){
             BossHealthBar.assignBoss(this);
-            if (!supercharged && pylonsActivated == 2) BossHealthBar.bleed(true);
+            if (!supercharged && pylonsActivated == totalPylonsToActivate()) BossHealthBar.bleed(true);
         }
     }
 
@@ -176,12 +187,10 @@ public class NewDM720 extends MolotovHuntsman {
         GameScene.add(Blob.seed(pos, 0, FallingRocks.class));
         GameScene.add(Blob.seed(pos, 0, ToxicGas.class));
 
-        if (Dungeon.level.water[pos] && HP < HT) {
-            sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
-            if (HP*4 == HT) {
-            }
-            HP++;
-        }
+//        if (Dungeon.level.water[pos] && HP < HT) {
+//            sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
+//            HP++;
+//        }
 
         //ability logic only triggers if DM is not supercharged
         if (!supercharged){
@@ -331,16 +340,6 @@ public class NewDM720 extends MolotovHuntsman {
                 sprite.emitter().start(SparkParticle.STATIC, 0.05f, 6);
             }
 
-            if (Dungeon.level.map[step] == Terrain.INACTIVE_TRAP && HP < HT) {
-
-                HP += Random.Int( 2, HT - HP );
-                sprite.emitter().burst( ElmoParticle.FACTORY, 5 );
-
-                if (Dungeon.level.heroFOV[step] && Dungeon.hero.isAlive()) {
-                    GLog.n(Messages.get(this, "repair"));
-                }
-            }
-
             Buff.affect(this, Barrier.class).setShield( 10 + (HT - HP)/10);
 
         }
@@ -358,6 +357,7 @@ public class NewDM720 extends MolotovHuntsman {
             BossHealthBar.assignBoss(this);
             turnsSinceLastAbility = 0;
             yell(Messages.get(this, "notice"));
+            BGMPlayer.playBoss();
             for (Char ch : Actor.chars()){
                 if (ch instanceof DriedRose.GhostHero){
                     ((DriedRose.GhostHero) ch).sayBoss();
@@ -405,60 +405,61 @@ public class NewDM720 extends MolotovHuntsman {
         Dungeon.hero.interrupt();
         final int rockCenter;
 
+        //knock back 2 tiles if adjacent
         if (Dungeon.level.adjacent(pos, target.pos)){
             int oppositeAdjacent = target.pos + (target.pos - pos);
             Ballistica trajectory = new Ballistica(target.pos, oppositeAdjacent, Ballistica.MAGIC_BOLT);
-            WandOfBlastWave.throwChar(target, trajectory, 8, false, false, getClass());
+            WandOfBlastWave.throwChar(target, trajectory, 2, false, false, this);
             if (target == Dungeon.hero){
                 Dungeon.hero.interrupt();
             }
             rockCenter = trajectory.path.get(Math.min(trajectory.dist, 2));
+
+            //knock back 1 tile if there's 1 tile of space
+        } else if (fieldOfView[target.pos] && Dungeon.level.distance(pos, target.pos) == 2) {
+            int oppositeAdjacent = target.pos + (target.pos - pos);
+            Ballistica trajectory = new Ballistica(target.pos, oppositeAdjacent, Ballistica.MAGIC_BOLT);
+            WandOfBlastWave.throwChar(target, trajectory, 1, false, false, this);
+            if (target == Dungeon.hero){
+                Dungeon.hero.interrupt();
+            }
+            rockCenter = trajectory.path.get(Math.min(trajectory.dist, 1));
+
+            //otherwise no knockback
         } else {
             rockCenter = target.pos;
         }
 
-        //we handle this through an actor as it gives us fine-grainted control over when the blog acts vs. when the hero acts
-        //FIXME this is really messy to just get some fine-grained control. would be nice to build this into blob functionality, or just not use blobs for this at all
-        Actor a = new Actor() {
+        int safeCell;
+        do {
+            safeCell = rockCenter + PathFinder.NEIGHBOURS8[Random.Int(8)];
+        } while (safeCell == pos
+                || (Dungeon.level.solid[safeCell] && Random.Int(2) == 0)
+                || (Blob.volumeAt(safeCell, CavesBossLevel.PylonEnergy.class) > 0 && Random.Int(2) == 0));
 
-            {
-                actPriority = HERO_PRIO+1;
-            }
-            private static final float TIME_TO_ZAP	= 1f;
+        ArrayList<Integer> rockCells = new ArrayList<>();
 
-            @Override
-            protected boolean act() {
-
-                //pick an adjacent cell to the hero as a safe cell. This cell is less likely to be in a wall or containing hazards
-                int safeCell;
-                do {
-                    safeCell = rockCenter + PathFinder.NEIGHBOURS8[Random.Int(8)];
-                } while (safeCell == pos
-                        || (Dungeon.level.solid[safeCell] && Random.Int(2) == 0)
-                        || (Blob.volumeAt(safeCell, CaveTwoBossLevel.PylonEnergy.class) > 0 && Random.Int(2) == 0));
-
-                int start = rockCenter - Dungeon.level.width() * 3 - 3;
-                int pos;
-                for (int y = 0; y < 7; y++) {
-                    pos = start + Dungeon.level.width() * y;
-                    for (int x = 0; x < 7; x++) {
-                        if (!Dungeon.level.insideMap(pos)) {
-                            pos++;
-                            continue;
-                        }
-                        //add rock cell to pos, if it is not solid, and isn't the safecell
-                        if (!Dungeon.level.solid[pos] && pos != safeCell && Random.Int(Dungeon.level.distance(rockCenter, pos)) == 0) {
-                            //don't want to overly punish players with slow move or attack speed
-                            GameScene.add(Blob.seed(pos, 1, FallingRocks.class));
-                        }
-                        pos++;
-                    }
+        int start = rockCenter - Dungeon.level.width() * 3 - 3;
+        int pos;
+        for (int y = 0; y < 7; y++) {
+            pos = start + Dungeon.level.width() * y;
+            for (int x = 0; x < 7; x++) {
+                if (!Dungeon.level.insideMap(pos)) {
+                    pos++;
+                    continue;
                 }
-                Actor.remove(this);
-                return true;
+                //add rock cell to pos, if it is not solid, and isn't the safecell
+                if (!Dungeon.level.solid[pos] && pos != safeCell && Random.Int(Dungeon.level.distance(rockCenter, pos)) == 0) {
+                    rockCells.add(pos);
+                }
+                pos++;
             }
-        };
-        Actor.addDelayed(a, Math.min(target.cooldown(), 3*TICK));
+        }
+        for (int i : rockCells){
+            sprite.parent.add(new TargetedCell(i, 0xFF0000));
+        }
+        //don't want to overly punish players with slow move or attack speed
+        Buff.append(this, DM300.FallingRockBuff.class, GameMath.gate(TICK, (int)Math.ceil(target.cooldown()), 3*TICK)).setRockPositions(rockCells);
 
     }
 
@@ -474,7 +475,12 @@ public class NewDM720 extends MolotovHuntsman {
         LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
         if (lock != null && !isImmune(src.getClass())) lock.addTime(dmg);
 
-        int threshold = HT/3 * (2- pylonsActivated);
+        int threshold;
+        if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+            threshold = HT / 7 * (4 - pylonsActivated);
+        } else {
+            threshold = HT / 3 * (2 - pylonsActivated);
+        }
 
         if (HP < threshold){
             HP = threshold;
@@ -510,12 +516,24 @@ public class NewDM720 extends MolotovHuntsman {
         return supercharged;
     }
 
+
+
     public void loseSupercharge(){
         supercharged = false;
         sprite.resetColor();
         ((DM720Sprite)sprite).updateChargeState(false);
-        if (pylonsActivated < 2){
+        if (pylonsActivated < totalPylonsToActivate()){
             yell(Messages.get(this, "charge_lost"));
+
+            if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && pylonsActivated == 2){
+                MoloHR m = new MoloHR();
+                m.pos = 478;
+                GameScene.add(m);
+                Buff.affect(m, ChampionHero.Light.class, ChampionHero.DURATION*200f);
+                m.notice();
+                GLog.w(Messages.get(MoloHR.class, "attack_lost"));
+            }
+
         } else {
             yell(Messages.get(this, "pylons_destroyed"));
             BossHealthBar.bleed(true);
@@ -524,21 +542,25 @@ public class NewDM720 extends MolotovHuntsman {
 
     @Override
     public boolean isAlive() {
-        return HP > 0 || pylonsActivated < 2;
+        return super.isAlive() || pylonsActivated < totalPylonsToActivate();
     }
 
     @Override
     public void die( Object cause ) {
-//        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+//      if(Statistics.happyMode){
 //            GetBossLoot();
 //        }
 
         super.die(cause);
-        cause = new MoloHR();
-        ((MoloHR) cause).pos = pos;
-        GameScene.add(((Mob) (cause)));
-        Buff.affect((Mob) (cause), ChampionHero.Light.class, ChampionHero.DURATION*200f);
-        ((Mob) (cause)).notice();
+
+        if(!Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+            cause = new MoloHR();
+            ((MoloHR) cause).pos = pos;
+            GameScene.add(((Mob) (cause)));
+            Buff.affect((Mob) (cause), ChampionHero.Light.class, ChampionHero.DURATION*200f);
+            ((Mob) (cause)).notice();
+        }
+
         Badges.validateBossSlain();
         if (Statistics.qualifiedForBossChallengeBadge){
             Badges.validateBossChallengeCompleted();

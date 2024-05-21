@@ -9,6 +9,10 @@ dependencies {
 
     // 添加 Lunar-Java 依赖 接入农历计算
     implementation 'cn.6tail:lunar:1.3.10'
+    // https://mvnrepository.com/artifact/net.iharder/base64
+    implementation 'net.iharder:base64:2.3.9'
 
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.14.3'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.3'
 }
 

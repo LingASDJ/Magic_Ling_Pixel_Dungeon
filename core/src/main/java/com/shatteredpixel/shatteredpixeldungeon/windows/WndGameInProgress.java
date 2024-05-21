@@ -181,9 +181,13 @@ public class WndGameInProgress extends Window {
 			}
 		};
 		add(buttonSeed);
-		buttonSeed.setRect(btnGameInfo.right()+2, pos, buttonSeed.reqWidth() + 1, 18);
+		boolean multiLine=btnGameInfo.right()+buttonSeed.reqWidth()>WIDTH;
+		float btnX,btnY;
+		btnX = multiLine?2:btnGameInfo.right()+2;
+		btnY = multiLine?btnGameInfo.bottom()+2:pos;
+		buttonSeed.setRect(btnX, btnY, buttonSeed.reqWidth() + 1, 18);
 
-		pos = btnGameInfo.bottom() + GAP;
+		pos = buttonSeed.bottom() + GAP;
 		
 		pos += GAP;
 
@@ -195,7 +199,7 @@ public class WndGameInProgress extends Window {
 		else                statSlot( Messages.get(this, "health"), (info.hp) + "/" + info.ht );
 		statSlot( Messages.get(this, "exp"), info.exp + "/" + Hero.maxExp(info.level) );
 
-		statSlot( Messages.get(this, "icehp"), (info.icehp) + "/" + 100 );
+		//tatSlot( Messages.get(this, "icehp"), (info.icehp) + "/" + 100 );
 		
 		pos += GAP;
 		statSlot( Messages.get(this, "gold"), info.goldCollected );

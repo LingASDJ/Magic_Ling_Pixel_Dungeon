@@ -42,7 +42,7 @@ public class SkyShield extends MeleeWeapon {
 
     @Override
     public int defenseFactor( Char owner ) {
-        return 6+3*buffedLvl();    //6 extra defence, plus 3 per level;
+        return 6+buffedLvl();    //6 extra defence, plus 3 per level;
     }
 
     @Override

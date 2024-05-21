@@ -47,11 +47,17 @@ public class ShatteredPixelDungeon extends Game {
 	public static final int v2_0_2  = 700;
 	public static final int v2_1_4  = 737; //iOS was 737, other platforms were 736
 	public static final int v2_2_0  = 20231030;
+
+	public static final int v2_2_2  = 2024020140;
 	
 	public ShatteredPixelDungeon( PlatformSupport platform ) {
 		super( sceneClass == null ? GoScene.class : sceneClass, platform );
 
 		//pre-v2.2.0
+
+		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.StreamerKnife.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.RiverSlade" );
 
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceLingSword.class,

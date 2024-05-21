@@ -1,8 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -10,28 +7,8 @@ import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
 public class BlessRedWhite extends ClearLanterBuff {
-
-    {
-        type = buffType.POSITIVE;
-    }
-
     public static int level = 0;
     private int interval = 1;
-
-    @Override
-    public boolean act() {
-        if (target.isAlive()) {
-
-            spend(interval);
-            if (level <= 0) {
-                detach();
-            }
-
-            target.HP = Math.min( target.HT, target.HP + 1);
-            spend(5f);
-        }
-        return true;
-    }
 
     public int level() {
         return level;

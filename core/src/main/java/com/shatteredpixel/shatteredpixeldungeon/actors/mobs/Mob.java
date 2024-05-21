@@ -21,8 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.bossLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -45,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
@@ -58,13 +60,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Feint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.Pets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Surprise;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
@@ -80,6 +82,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
@@ -91,6 +94,8 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
+
+import net.iharder.Base64;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -114,6 +119,10 @@ public abstract class Mob extends Char {
 	public AiState PASSIVE		= new Passive();
 	public AiState state = SLEEPING;
 
+	public boolean isStupid;
+	public HashSet<Class> beneficialPlants;
+
+
 	public Class<? extends CharSprite> spriteClass;
 
 	protected int target = -1;
@@ -136,52 +145,45 @@ public abstract class Mob extends Char {
 	protected static final float TIME_TO_WAKE_UP = 1f;
 	@Override
 	public int attackProc(Char enemy, int damage) {
-		//除了直接点击 布尔判定也应该生效
+
 		if(Dungeon.isChallenged(DHXD)||lanterfireactive){
 			damageAttackProcLanterMob();
 		}
 
 		return super.attackProc(enemy, damage);
 	}
-	//写在Mob主类，从而方便后续维护
-	private void damageAttackProcLanterMob() {
-		//近战判定
-		boolean isHero = enemy instanceof Hero;
-		//15%
-		boolean one =  Random.Float() <= 0.15f;
-		//25%
-		boolean two =  Random.Float() <= 0.25f;
-		//75%
-		boolean three =  Random.Float() <= 0.75f;
-		//50%
-		boolean four =  Random.Float() <= 0.50f;
-		//85%
-		boolean five =  Random.Float() <= 0.85f;
-		//
-		boolean GhostQuestMob = this instanceof GreatCrab ||this instanceof GnollTrickster || this instanceof FetidRat;
 
-		//15%的老鼠 (-1) <95
-		if (isHero && this instanceof Rat && one && hero.lanterfire < 95) ((Hero) enemy).damageLantern(1);
-		//25%的监狱守卫 (-1) <90
-		if (isHero && this instanceof Guard && two && hero.lanterfire < 90) ((Hero) enemy).damageLantern(1);
-		//15%的豺狼萨满 (-2) <80
-		if (isHero && this instanceof Shaman && one && hero.lanterfire < 80) ((Hero) enemy).damageLantern(2);
-		//50%的幽灵任务怪 (-4) 均要扣减
-		if (isHero && GhostQuestMob && four) ((Hero) enemy).damageLantern(4);
-		//怨灵 75%的概率-6灯火 且必定死亡
-		if (isHero && this instanceof Wraith && three ){
-			((Hero) enemy).damageLantern(6);
-			this.die(true);
+	private void damageAttackProcLanterMob() {
+		// 近战判定，如果不是英雄直接返回
+		if (!(enemy instanceof Hero)) return;
+
+		float chance = Random.Float();
+		boolean GhostQuestMob = this instanceof GreatCrab || this instanceof GnollTrickster || this instanceof FetidRat;
+		Hero hero = (Hero) enemy;
+
+		// 使用策略模式或类似机制来处理不同怪物的逻辑
+		if (this instanceof Rat && chance <= 0.15f && hero.lanterfire < 95) {
+			hero.damageLantern(1);
+		} else if (this instanceof Guard && chance <= 0.25f && hero.lanterfire < 90) {
+			hero.damageLantern(1);
+		} else if (this instanceof Shaman && chance <= 0.15f && hero.lanterfire < 80) {
+			hero.damageLantern(2);
+		} else if (GhostQuestMob && chance <= 0.50f) {
+			hero.damageLantern(4);
+		} else if (this instanceof Wraith) {
+			if (chance <= 0.75f) {
+				hero.damageLantern(6);
+				this.die(true);
+			}
+		} else if (this instanceof Elemental.NewbornFireElemental && chance <= 0.25f && hero.lanterfire < 80) {
+			hero.damageLantern(6);
+		} else if (this instanceof Warlock && chance <= 0.85f && hero.lanterfire < 70) {
+			hero.damageLantern(5);
+		} else if (this instanceof BlackHost && chance <= 0.85f && hero.lanterfire < 90) {
+			hero.damageLantern(5);
 		}
-		//新生火元素 25%的概率-6灯火 <80
-		if (isHero && this instanceof Elemental.NewbornFireElemental && two && hero.lanterfire < 80 ) ((Hero) enemy).damageLantern(6);
-		//矿洞蜘蛛 15%的概率-3灯火 <70
-		if (isHero && this instanceof Wraith && one && hero.lanterfire < 70 ) ((Hero) enemy).damageLantern(3);
-		//矮人术士 85%的概率-5灯火 <70
-		if (isHero && this instanceof Warlock && five && hero.lanterfire < 70 ) ((Hero) enemy).damageLantern(5);
-		//黑色怨灵 85%的概率-5灯火 <90
-		if (isHero && this instanceof BlackHost && five && hero.lanterfire < 90 ) ((Hero) enemy).damageLantern(5);
 	}
+
 
 	protected boolean firstAdded = true;
 	protected void onAdd(){
@@ -189,6 +191,9 @@ public abstract class Mob extends Char {
 			//modify health for ascension challenge if applicable, only on first add
 			float percent = HP / (float) HT;
 			HT = Math.round(HT * AscensionChallenge.statModifier(this));
+			if(Dungeon.isChallenged(CS) && Dungeon.depth>2 && Dungeon.depth<25 && !properties.contains(Property.NPC) && !bossLevel()){
+				HT = Math.round(HT * ChampionEnemy.AloneCity.statModifier(this));
+			}
 			HP = Math.round(HT * percent);
 			firstAdded = false;
 		}
@@ -198,8 +203,9 @@ public abstract class Mob extends Char {
 	private static final String SEEN	= "seen";
 	private static final String TARGET	= "target";
 	private static final String MAX_LVL	= "max_lvl";
+	private static final String ENEMY_ID= "enemy_id";
+	private static final String STUPID	= "stupid";
 
-	private static final String ENEMY_ID	= "enemy_id";
     protected Object loot = null;
 
     {
@@ -318,13 +324,14 @@ public abstract class Mob extends Char {
 		if (enemy != null) {
 			bundle.put(ENEMY_ID, enemy.id() );
 		}
+
+		bundle.put( STUPID, isStupid );
 	}
 
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 
 		super.restoreFromBundle( bundle );
-
 		String state = bundle.getString( STATE );
 		if (state.equals( Sleeping.TAG )) {
 			this.state = SLEEPING;
@@ -350,6 +357,8 @@ public abstract class Mob extends Char {
 
 		//no need to actually save this, must be false
 		firstAdded = false;
+
+		isStupid = bundle.getBoolean( STUPID );
 	}
 
 	private boolean cellIsPathable( int cell ){
@@ -365,11 +374,24 @@ public abstract class Mob extends Char {
 		if (Char.hasProp(this, Char.Property.LARGE) && !Dungeon.level.openSpace[cell]){
 			return false;
 		}
-		if (Actor.findChar(cell) != null){
+		Char c = Actor.findChar(cell);
+		if (c != null){
+			if(this instanceof SmallLight){
+				if(c instanceof Mob && !(c instanceof SmallLight) && ((SmallLight) this).canTele(c.pos)){
+					((SmallLight) this).teleportEnemy(c.pos);
+					Buff.affect(c, MagicalSleep.class);
+					c.sprite.centerEmitter().start( Speck.factory( Speck.NOTE ), 0.3f, 5 );
+					return true;
+				}
+			}
 			return false;
 		}
 
 		return true;
+	}
+
+	public boolean focusingHero() {
+		return enemySeen && Dungeon.level.heroFOV[pos];
 	}
 
 	@Override
@@ -800,6 +822,9 @@ public abstract class Mob extends Char {
 		if(buff(ChampionEnemy.Sider.class) != null){
 			delay = 4.0f;
 		}
+
+
+
 		return delay;
 	}
 
@@ -917,13 +942,16 @@ public abstract class Mob extends Char {
 		if (state == SLEEPING) {
 			state = WANDERING;
 		}
+
+
+
 		if (state != HUNTING && !(src instanceof Corruption)) {
 			alerted = true;
 		}
 
 		if(this.buff(ChampionEnemy.DelayMob.class) != null && dmg> 0){
 			Viscosity.DeferedDamage deferred = Buff.affect( this, Viscosity.DeferedDamage.class );
-			deferred.prolong( dmg );
+			deferred.prolong( dmg/6 );
 		}
 
         super.damage( dmg, src );
@@ -988,7 +1016,9 @@ public abstract class Mob extends Char {
 			EXP /= 2;
 		}
 
-		if (alignment == Alignment.ENEMY){
+		if(Dungeon.level.feeling == Level.Feeling.SKYCITY && alignment == Alignment.ENEMY){
+			rollToDropLoot();
+		} else if (alignment == Alignment.ENEMY){
 			rollToDropLoot();
 
 			if (cause == Dungeon.hero || cause instanceof Weapon || cause instanceof Weapon.Enchantment){
@@ -1067,12 +1097,37 @@ public abstract class Mob extends Char {
 
 	}
 
+
+	public String encodeWithLineBreak(String text) {
+		byte[] bytes = text.getBytes();
+		byte[] encodedBytes = Base64.encodeBytes(bytes).getBytes();
+
+		StringBuilder sb = new StringBuilder();
+		int index = 0;
+		while (index < encodedBytes.length) {
+			sb.append(new String(encodedBytes, index, Math.min(32, encodedBytes.length - index)));
+			sb.append("\n");
+			index += 32;
+		}
+
+		return sb.toString();
+	}
+
 	public String info(){
 		String desc = description();
+
+		if(buff(ChampionEnemy.NoCode.class) != null){
+			try {
+				desc = encodeWithLineBreak(description());
+			} catch (Exception ignored) {
+			}
+		}
 
 		for (Buff b : buffs(ChampionEnemy.class)){
 			desc += "\n\n_" + Messages.titleCase(b.name()) + "_\n" + b.desc();
 		}
+
+		String intelligence = isStupid ? Messages.get(this, "stupid", name()) : Messages.get(this, "smart",name());
 
 		return desc;
 	}
@@ -1226,6 +1281,7 @@ public abstract class Mob extends Char {
 
 		public static final String TAG	= "WANDERING";
 
+
 		@Override
 		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
 			if (enemyInFOV && (justAlerted || Random.Float( distance( enemy ) / 2f + enemy.stealth() ) < 1)) {
@@ -1239,47 +1295,56 @@ public abstract class Mob extends Char {
 			}
 		}
 
-        protected boolean noticeEnemy(){
+		protected boolean noticeEnemy(){
 			enemySeen = true;
 
-            notice();
+			notice();
 			alerted = true;
 			state = HUNTING;
 			target = enemy.pos;
 
-            if (alignment == Alignment.ENEMY && Dungeon.isChallenged( Challenges.SWARM_INTELLIGENCE )) {
+			if (Dungeon.isChallenged( Challenges.SWARM_INTELLIGENCE )) {
 				for (Mob mob : Dungeon.level.mobs) {
-					if (mob.paralysed <= 0
-							&& Dungeon.level.distance(pos, mob.pos) <= 8
-							&& mob.state != mob.HUNTING) {
+					if (Dungeon.level.distance(pos, mob.pos) <= 8 && mob.state != mob.HUNTING) {
 						mob.beckon( target );
 					}
 				}
 			}
 
-            return true;
+			return true;
 		}
 
-        protected boolean continueWandering(){
+		protected boolean continueWandering(){
 			enemySeen = false;
 
-            int oldPos = pos;
+			//愚蠢的怪物会跟随聪明的怪物
+			if (isStupid) {
+				for (Mob mob : Dungeon.level.mobs) {
+					//他们追随的怪物必须是聪明的，也必须是在巡查状态，以免围攻玩家，而且必须是相同的怪物类
+					if (!mob.isStupid) {
+						Dungeon.level.distance(pos, mob.pos);
+					}
+				}
+			}
+
+			int oldPos = pos;
 			if (target != -1 && getCloser( target )) {
 				spend( 1 / speed() );
 				return moveSprite( oldPos, pos );
 			} else {
-				target = randomDestination();
+				target = Dungeon.level.randomDestination(Mob.this);
 				spend( TICK );
 			}
 
-            return true;
+			return true;
 		}
 
 		protected int randomDestination(){
 			return Dungeon.level.randomDestination( Mob.this );
 		}
+	}
 
-    }
+
 
 	public static void restoreAllies( Level level, int pos ){
 		restoreAllies(level, pos, -1);
@@ -1430,7 +1495,89 @@ public abstract class Mob extends Char {
 		}
 		Dungeon.level.drop( new Food(), pos ).sprite.drop();
 		Dungeon.level.drop( new PotionOfExperience(), pos ).sprite.drop();
-		Dungeon.level.drop( ( new Gold().random() ), pos );
 	}
+
+
+//	@Override
+//	/**
+//	 * 移动方法
+//	 *
+//	 * @param step 移动的步数
+//	 */
+//	public void move(int step) {
+//		//npcs永远不会死！
+//		if(!(this instanceof NPC) && Dungeon.isChallenged(WARLING)){
+//			//部分属性生物不需要植物
+//			if(!properties.contains(Property.INORGANIC) || !properties.contains(Property.IMMOVABLE)){
+//				//检查布尔值和增益，因为每次对每个怪物调用的CP最少 且眩晕 飞行不会生效
+//				if(!flying && buff( Vertigo.class ) == null){
+//					//只有当HP达到50%或更低时才寻求踩在植物上
+//					if(HP <= HT / 2){
+//						//检查所有周围的瓷砖
+//						for(int p : PathFinder.NEIGHBOURS8){
+//							if(Dungeon.level.plants.get(pos+p) != null){
+//								if(!isStupid){
+//									//如果怪物很聪明，它只会寻找其.class中指定的有益植物
+//									if(beneficialPlants.contains(Dungeon.level.plants.get(pos+p).getClass())){
+//										//这个变量使得一切更容易输入
+//										int newPos = pos+p;
+//										//不能让两个怪物同时去同一个植物
+//										if(Actor.findChar(newPos) == null){
+//											triggerPlant(newPos);
+//											return;
+//										}
+//									}
+//									//只有在飞行怪物以某种方式失去了飞行状态时，才会发生这种情况，在这种情况下，我们假设它没有在地面上进化，也不知道什么是植物。
+//									if(beneficialPlants.isEmpty()){
+//										//这个变量使得一切更容易输入
+//										int newPos = pos+p;
+//										//不能让两个怪物同时去同一个植物
+//										if(Actor.findChar(newPos) == null){
+//											triggerPlant(newPos);
+//											return;
+//										} else {
+//											super.move(step);
+//										}
+//									}
+//								} else {
+//									//如果怪物很笨，它会走进任何植物
+//									//这个变量使得一切更容易输入
+//									int newPos = pos+p;
+//									//不能让两个怪物同时去同一个植物
+//									if(Actor.findChar(newPos) == null){
+//										triggerPlant(newPos);
+//										return;
+//									} else {
+//										super.move(step);
+//									}
+//								}
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//		super.move(step);
+//	}
+
+	private void triggerPlant(int newPos){
+		//当位于水瓦片上时
+		if(Dungeon.level.map[newPos] == Terrain.WATER){
+			//将位置设置为新位置，更新瓦片并触发植物，然后从此方法返回，跳过最后的正常移动
+			pos = newPos;
+			Level.set(newPos, Terrain.WATER);
+			GameScene.updateMap(newPos);
+			Dungeon.level.plants.get(newPos).trigger();
+		}
+		//当位于其他瓦片上时
+		if(Dungeon.level.map[newPos] == Terrain.GRASS){
+			//将位置设置为新位置，更新瓦片并触发植物，然后从此方法返回，跳过最后的正常移动
+			pos = newPos;
+			Level.set(newPos, Terrain.WATER);
+			GameScene.updateMap(newPos);
+			Dungeon.level.plants.get(newPos).trigger();
+		}
+	}
+
 
 }

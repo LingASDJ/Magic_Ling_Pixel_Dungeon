@@ -4,13 +4,14 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVenom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -45,12 +46,32 @@ public class SpawnRingOrWand extends TestItem {
     private static final int RING_CAT = 0;
     private static final int WAND_CAT = 1;
     private static final String AC_SPAWN = "spawn";
+    private static ArrayList<Class<? extends Ring>> ringList = new ArrayList<>();
+    private static ArrayList<Class<? extends Wand>> wandList = new ArrayList<>();
 
     public SpawnRingOrWand(){
         this.item_level = 0;
         this.category = 0;
         this.cursed = false;
         this.item_id =0;
+
+        buildList();
+    }
+
+    private void buildList() {
+        if(ringList.isEmpty()) {
+            for (int i = 0; i < Generator.Category.RING.classes.length; ++i) {
+                ringList.add((Class<? extends Ring>) Generator.Category.RING.classes[i]);
+            }
+        }
+
+        if(wandList.isEmpty()) {
+            for (int i = 0; i < Generator.Category.WAND.classes.length; ++i) {
+                wandList.add((Class<? extends Wand>) Generator.Category.WAND.classes[i]);
+            }
+            wandList.add(WandOfAnmy.class);
+            wandList.add(WandOfVenom.class);
+        }
     }
 
     @Override
@@ -71,7 +92,7 @@ public class SpawnRingOrWand extends TestItem {
     private void createItem(){
         boolean collect = false;
         if (category == RING_CAT) {
-            Ring ring = (Ring) Reflection.newInstance(idToItem(item_id,RING_CAT));
+            Ring ring = (Ring) Reflection.newInstance(ringList.get(item_id));
             if(ring != null) {
                 if(Challenges.isItemBlocked(ring))
                     return;
@@ -92,7 +113,7 @@ public class SpawnRingOrWand extends TestItem {
                 }
             }
         } else if (category == WAND_CAT) {
-            Wand wand = (Wand) Reflection.newInstance(idToItem(item_id,WAND_CAT));
+            Wand wand = (Wand) Reflection.newInstance(wandList.get(item_id));
             if( wand != null) {
                 if(Challenges.isItemBlocked(wand))
                     return;
@@ -139,27 +160,6 @@ public class SpawnRingOrWand extends TestItem {
         wand.cursed = cursed;
     }
 
-    private Class idToItem(int item_id,int categoryIndex) {
-        return categoryIndex == RING_CAT?Generator.Category.RING.classes[item_id]:Generator.Category.WAND.classes[item_id];
-    }
-
-    private static ArrayList<Class<? extends Ring>> ringList = new ArrayList<>();
-    private static ArrayList<Class<? extends Wand>> wandList = new ArrayList<>();
-
-    private void buildRingList() {
-        if (!ringList.isEmpty()) return;
-        for (int i = 0; i < Generator.Category.RING.classes.length; ++i) {
-            ringList.add(idToItem(i,RING_CAT));
-        }
-    }
-
-    private void buildWandList() {
-        if (!wandList.isEmpty()) return;
-        for (int i = 0; i < Generator.Category.WAND.classes.length; ++i) {
-            wandList.add(idToItem(i,WAND_CAT));
-        }
-    }
-
     private int total(int category){
         if (category == RING_CAT) return ringList.size();
         if (category == WAND_CAT) return wandList.size();
@@ -177,9 +177,6 @@ public class SpawnRingOrWand extends TestItem {
         private ArrayList<IconButton> IconButtons = new ArrayList<>();
 
         public SettingsWindow() {
-            buildRingList();
-            buildWandList();
-
             OptionSlider_category = new OptionSlider(Messages.get(SettingsWindow.class, "category"), Messages.get(SettingsWindow.class, "ring"), Messages.get(SpawnRingOrWand.SettingsWindow.class, "wand"), 0, 1) {
                 @Override
                 protected void onChange() {
@@ -205,7 +202,7 @@ public class SpawnRingOrWand extends TestItem {
                                 Messages.get(SettingsWindow.class, "item_level"), Messages.get(SettingsWindow.class, "item_level_desc"),
                                 Integer.toString(item_level),
                                 4, false, Messages.get(SettingsWindow.class, "confirm"),
-                                Messages.get(SettingsWindow.class, "cancel")) {
+                                Messages.get(SettingsWindow.class, "cancel"),false) {
                             @Override
                             public void onSelect(boolean check, String text) {
                                 if (check && text.matches("\\d+")) {
@@ -254,11 +251,11 @@ public class SpawnRingOrWand extends TestItem {
         private void updateId() {
             switch (category){
                 case RING_CAT:
-                    if(item_id >= Generator.Category.RING.classes.length )
+                    if(item_id >= ringList.size() )
                         item_id = 0;
                     break;
                 case WAND_CAT:
-                    if (item_id >= Generator.Category.WAND.classes.length)
+                    if (item_id >= wandList.size())
                         item_id = 0;
                     break;
                 default:

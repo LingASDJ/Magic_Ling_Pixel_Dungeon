@@ -2,6 +2,10 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.testmode;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.CrivusbossTeleporter;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.TPDoorDieds;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel3;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
@@ -17,6 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
@@ -114,20 +119,20 @@ public class LevelTeleporter extends TestItem {
                 return;
             }
 
-            if(depth == 25 && branch == 0){
-                TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-                if (timeFreeze != null) timeFreeze.disarmPresses();
-                Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-                if (timeBubble != null) timeBubble.disarmPresses();
-                InterlevelScene.mode = InterlevelScene.Mode.AMULET;
-                InterlevelScene.curTransition = new LevelTransition();
-                InterlevelScene.curTransition.destDepth = depth;
-                InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
-                InterlevelScene.curTransition.destBranch = 5;
-                InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
-                InterlevelScene.curTransition.centerCell  = -1;
-                Game.switchScene( InterlevelScene.class );
-            } else {
+//            if(depth == 25 && branch == 0){
+//                TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+//                if (timeFreeze != null) timeFreeze.disarmPresses();
+//                Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+//                if (timeBubble != null) timeBubble.disarmPresses();
+//                InterlevelScene.mode = InterlevelScene.Mode.AMULET;
+//                InterlevelScene.curTransition = new LevelTransition();
+//                InterlevelScene.curTransition.destDepth = depth;
+//                InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
+//                InterlevelScene.curTransition.destBranch = 5;
+//                InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+//                InterlevelScene.curTransition.centerCell  = -1;
+//                Game.switchScene( InterlevelScene.class );
+//            } else {
                 TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
                 if (timeFreeze != null) timeFreeze.disarmPresses();
                 Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
@@ -140,10 +145,10 @@ public class LevelTeleporter extends TestItem {
                 InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
                 InterlevelScene.curTransition.centerCell  = -1;
                 Game.switchScene( InterlevelScene.class );
-            }
+//            }
 
         } else if(action.equals(AC_ASCEND)) {
-            if (Dungeon.hero.buff(LockedFloor.class) != null || depth <= 1) {
+            if (Dungeon.hero.buff(LockedFloor.class) != null || depth <= 0) {
                 GLog.w(Messages.get(this, "cannot_send"));
                 return;
             }
@@ -172,7 +177,7 @@ public class LevelTeleporter extends TestItem {
             }
 
         } else if (action.equals(AC_BRANCH_DESCEND)){
-            if(branch==5){
+            if(branch==8){
                 GLog.w(Messages.get(this, "cannot_asend_branch"));
                 return;
             }
@@ -217,6 +222,7 @@ public class LevelTeleporter extends TestItem {
             }
             GameScene.show(new WndSelectLevel());
         }else if (action.equals(AC_RESET)) {
+            Statistics.NoTime = false;
             switch (depth){
                 case 2:
                 case 3:
@@ -261,6 +267,27 @@ public class LevelTeleporter extends TestItem {
             if(Dungeon.level.locked)
                 Dungeon.level.unseal();
             InterlevelScene.mode = InterlevelScene.Mode.RESET;
+
+            //克里弗斯之果二阶段死亡的时候的给予重新评估
+            if(crivusfruitslevel2){
+                crivusfruitslevel2 = false;
+            }
+            if(crivusfruitslevel3){
+                crivusfruitslevel3 = false;
+            }
+            CrivusbossTeleporter = 0;
+            //拟态王二阶段死亡的时候给予重新评估
+            if(TPDoorDieds){
+                TPDoorDieds = false;
+            }
+
+            DragonGirlBlue.Quest.four_used_points = 0;
+
+
+            Statistics.doNotLookLing = false;
+
+            Statistics.sakaBackStage = 0;
+
             Game.switchScene(InterlevelScene.class);
         }
     }

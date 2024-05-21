@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.watabou.noosa.TextureFilm;
@@ -47,7 +48,7 @@ public class ShopkKingSprite extends MobSprite {
 
     public void link(Char sp) {
         super.link(sp);
-        this.add(State.ROSESHIELDED);
+        if(Dungeon.depth != 0) this.add(State.ROSESHIELDED);
     }
 
     @Override

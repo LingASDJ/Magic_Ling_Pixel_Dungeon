@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.RollLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
@@ -29,8 +30,8 @@ import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero.goodLant
 import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.scene;
 
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
@@ -66,6 +67,8 @@ public class WndStory extends Window {
 	public static final int ID_HALLS		= 4;
 
 	public static final int ID_SEWERSBOSS		= 5;
+
+	public static final int ID_EXSEWERSBOSS		= 30;
 	public static final int ID_PRISONBOSS		= 6;
 	public static final int ID_CAVESBOSS		= 7;
 	public static final int ID_CITYSBOSS		= 8;
@@ -98,6 +101,10 @@ public class WndStory extends Window {
 	//
 	public static final int ID_DWADA		= 13;
 
+	public static final int ID_ALC		= 33;
+	public static final int ID_LAVA		= 34;
+	public static final int ID_LAVABOSS		= 35;
+
 	private static final SparseArray<String> CHAPTERS = new SparseArray<>();
 
 	static {
@@ -108,6 +115,7 @@ public class WndStory extends Window {
 		CHAPTERS.put( ID_CITY, "city" );
 		CHAPTERS.put( ID_HALLS, "halls" );
 		CHAPTERS.put( ID_SEWERSBOSS, "sewersboss" );
+		CHAPTERS.put( ID_EXSEWERSBOSS, "exboss1" );
 		CHAPTERS.put( ID_PRISONBOSS, "prisonboss" );
 		CHAPTERS.put( ID_CAVESBOSS, "cavesboss" );
 		CHAPTERS.put( ID_CITYSBOSS, "cityboss" );
@@ -134,6 +142,10 @@ public class WndStory extends Window {
 		CHAPTERS.put( ID_DWADA, "drawfmaster" );
 
 		CHAPTERS.put( ID_ANCITY, "aientncity" );
+
+		CHAPTERS.put( ID_ALC, "aic" );
+		CHAPTERS.put( ID_LAVA, "lava" );
+		CHAPTERS.put( ID_LAVABOSS, "lavaboss" );
 	}
 
 
@@ -192,12 +204,26 @@ public class WndStory extends Window {
 	public void hide() {
 		super.hide();
 		Banner mapnameSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
-		if(!Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
+		if(!Statistics.bossRushMode){
 			switch (Dungeon.depth) {
+				case 0:
+					if(!Dungeon.isChallenged(CS)){
+						mapnameSlain.texture( "interfaces/mapname/snow.png" );
+						mapnameSlain.show( Window.TITLE_COLOR, 0.6f, 3f );
+						scene.showLogo( mapnameSlain );
+					}
+					break;
 				case 1:
 					mapnameSlain.texture( "interfaces/mapname/forest.png" );
 					mapnameSlain.show( Window.GREEN_COLOR, 0.6f, 3f );
 					scene.showLogo( mapnameSlain );
+					break;
+				case 5:
+					if (Dungeon.branch == 1) {
+						mapnameSlain.texture("interfaces/mapname/lava.png");
+						mapnameSlain.show(Window.ANSDO_COLOR, 0.6f, 3f);
+						scene.showLogo(mapnameSlain);
+					}
 					break;
 				case 6:
 					mapnameSlain.texture( "interfaces/mapname/prison.png" );
@@ -252,61 +278,62 @@ public class WndStory extends Window {
 		}
 	}
 
-	public static void lanterfireRoll(){
-		if(lanterfireactive) {
-			if (Dungeon.depth == 6){
-				//TODO 首次到达6层 给予1个增益Buff
-				switch (Random.Int(5)){
-					case 0: default:
-						Buff.affect(hero, BlessNoMoney.class).set( (100), 1 );
-						break;
-					case 1:
-						Buff.affect(hero, BlessGoodSTR.class).set( (100), 1 );
-						break;
-					case 2:
-						Buff.affect(hero, BlessMobDied.class).set( (100), 1 );
-						break;
-					case 3:
-						Buff.affect(hero, BlessMixShiled.class).set( (100), 1 );
-						break;
-					case 4:
-						Buff.affect(hero, BlessImmune.class).set( (100), 1 );
-						break;
-				}
-				GLog.b(Messages.get(WndStory.class,"start"));
-			}
-			if (RollLevel()) {
-				if (hero.lanterfire == 100){
-					goodLanterFire();
-				} else if (hero.lanterfire <= 99 && hero.lanterfire >= 90) {
-					goodLanterFire();
-				} else if (hero.lanterfire <= 89 && hero.lanterfire >= 80 && Random.Float() <= 0.05f ) {
-					badLanterFire();
-				} else if (hero.lanterfire <= 89 && hero.lanterfire >= 80 && Random.Float() <= 0.85f ) {
-					goodLanterFire();
-				} else if (hero.lanterfire <= 89 && hero.lanterfire >= 80) {
-					GLog.b(Messages.get(WndStory.class,"normoal"));
-				} else if (hero.lanterfire <= 79 && hero.lanterfire >= 60 && Random.Float() <= 0.25f ) {
-					badLanterFire();
-				} else if (hero.lanterfire <= 79 && hero.lanterfire >= 60 && Random.Float() <= 0.70f ) {
-					goodLanterFire();
-				} else if (hero.lanterfire <= 79 && hero.lanterfire >= 60) {
-					GLog.b(Messages.get(WndStory.class,"normoal"));
-				} else if (hero.lanterfire <= 59 && hero.lanterfire >= 35 && Random.Float() <= 0.40f ) {
-					badLanterFire();
-				} else if (hero.lanterfire <= 59 && hero.lanterfire >= 35 && Random.Float() <= 0.20f ) {
-					goodLanterFire();
-				} else if (hero.lanterfire <= 59 && hero.lanterfire >= 35) {
-					GLog.b(Messages.get(WndStory.class,"normoal"));
-				} else if (hero.lanterfire <= 34 && hero.lanterfire >= 1 && Random.Float() <= 0.40f ) {
-					badLanterFire();
-				} else if (hero.lanterfire <= 34 && hero.lanterfire >= 1) {
-					GLog.b(Messages.get(WndStory.class,"normoal"));
-				} else {
-					badLanterFire();
-				}
-			}
+	static final float DURATION_MULTIPLIER = 123456f;
+	public static void lanterfireRoll() {
+		if (!lanterfireactive) return;
+
+		if (Dungeon.depth == 6) {
+			applyRandomBuff();
+			GLog.b(Messages.get(WndStory.class, "start"));
+		}
+		if (!RollLevel()) return;
+
+		if (hero.lanterfire >= 90) {
+			goodLanterFire();
+		} else if (hero.lanterfire >= 80) {
+			applyEffectBasedOnChance(0.85f, 0.05f);
+		} else if (hero.lanterfire >= 60) {
+			applyEffectBasedOnChance(0.70f, 0.25f);
+		} else if (hero.lanterfire >= 35) {
+			applyEffectBasedOnChance(0.20f, 0.40f);
+		} else if (hero.lanterfire >= 1) {
+			applyEffectBasedOnChance(0f, 0.40f);
+		} else {
+			badLanterFire();
 		}
 	}
+
+	private static void applyRandomBuff() {
+		switch (Random.Int(5)) {
+			case 0:
+			default:
+				Buff.affect(hero, BlessNoMoney.class).set(100, 1);
+				break;
+			case 1:
+				Buff.affect(hero, BlessGoodSTR.class).set(100, 1);
+				break;
+			case 2:
+				Buff.affect(hero, BlessMobDied.class).set(100, 1);
+				break;
+			case 3:
+				Buff.affect(hero, BlessMixShiled.class).set(100, 1);
+				break;
+			case 4:
+				Buff.affect(hero, BlessImmune.class).set((100), 1);
+				break;
+		}
+	}
+
+	private static void applyEffectBasedOnChance(float goodChance, float badChance) {
+		float roll = Random.Float();
+		if (roll <= badChance) {
+			badLanterFire();
+		} else if (roll <= badChance + goodChance) {
+			goodLanterFire();
+		} else {
+			GLog.b(Messages.get(WndStory.class, "normoal"));
+		}
+	}
+
 
 }

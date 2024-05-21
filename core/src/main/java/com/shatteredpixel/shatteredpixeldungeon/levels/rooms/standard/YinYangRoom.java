@@ -66,20 +66,22 @@ public class YinYangRoom extends SpecialRoom {
         prizeClasses.add(cat);
         Item prize;
         do {
-            prize = Generator.random(cat);
-            prize.level(Random.NormalIntRange(0,2));
+            prize = Generator.random(Generator.Category.RING);
+            prize.level=0;
             prize.cursed = false;
         } while (Challenges.isItemBlocked(prize));
         return prize;
     }
+
 
     private Item Blackprize() {
         Generator.Category cat = prizeClasses.remove(0);
         prizeClasses.add(cat);
         Item prize;
         do {
-            prize = Generator.random(cat);
-            prize.level(Random.NormalIntRange(1,3));
+            prize = Generator.random(Generator.Category.WAND);
+            prize.level(Random.NormalIntRange(0,1));
+            prize.upgrade();
             prize.cursed = true;
         } while (Challenges.isItemBlocked(prize));
         return prize;
@@ -133,7 +135,7 @@ public class YinYangRoom extends SpecialRoom {
         if (Random.Int(10) == 0){
             level.mobs.add(Mimic.spawnAt(chestPos2,CrystalMimic.class,Blackprize()));
         } else {
-            level.drop(prize(), chestPos2).type = Heap.Type.CRYSTAL_CHEST;
+            level.drop(Blackprize(), chestPos2).type = Heap.Type.CRYSTAL_CHEST;
         }
 
         Painter.set(level,left + 1,top + 1,Terrain.WALL);

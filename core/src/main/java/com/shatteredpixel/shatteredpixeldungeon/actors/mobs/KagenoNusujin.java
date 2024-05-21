@@ -9,11 +9,11 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ShockingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KagenoNusujinSprite;
 import com.watabou.utils.Random;
 
-public class KagenoNusujin extends Thief {
+public class KagenoNusujin extends Mob {
 
    {
         spriteClass = KagenoNusujinSprite.class;
-
+        properties.add(Property.NOBIG);
         HT = HP = 30;
 
         defenseSkill = 12;

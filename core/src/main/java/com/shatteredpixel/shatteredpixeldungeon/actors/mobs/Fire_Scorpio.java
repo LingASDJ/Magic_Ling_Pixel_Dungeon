@@ -25,7 +25,10 @@ public class Fire_Scorpio extends Scorpio{
         properties.add(Property.DEMONIC);
         properties.add(Property.MINIBOSS);
     }
-
+    @Override
+    protected boolean getCloser( int target ) {
+        return super.getCloser( target );
+    }
     @Override
     public int attackProc(Char enemy, int damage ) {
         damage = super.attackProc( enemy, damage );

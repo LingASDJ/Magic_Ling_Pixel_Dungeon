@@ -21,10 +21,15 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameNight;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameTime;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
@@ -37,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WorstBlizzard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
@@ -45,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessQinyue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
@@ -62,7 +69,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Fury;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HaloFireImBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HasteLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -93,8 +99,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Ch
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.DeathMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.IconFloatingText;
@@ -121,6 +129,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazin
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.KingAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.ShockingDart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -259,8 +268,17 @@ public abstract class Char extends Actor {
 		}
 		return false;
 	}
-
+	private static String[] TXT_RANDOM = {
+			Messages.get(Rat.class,"404"),
+			Messages.get(Rat.class,"405"),
+			Messages.get(Rat.class,"406"),
+			Messages.get(Rat.class,"407"),
+			Messages.get(Rat.class,"408")
+	};
 	public String name(){
+		if(buff(ChampionEnemy.NoCode.class) != null){
+			return TXT_RANDOM[Random.Int(TXT_RANDOM.length)];
+		}
 		return Messages.get(this, "name");
 	}
 
@@ -514,6 +532,13 @@ public abstract class Char extends Actor {
 					effectiveDamage *= 1.33f;
 				}
 
+				if(Dungeon.isChallenged(CS) && gameNight){
+					effectiveDamage *= 0.92f;
+				} else if(gameTime>400 && gameTime<600) {
+					effectiveDamage *= 0.96f;
+				}
+
+
 				effectiveDamage = attackProc(enemy, effectiveDamage);
 			}
 			if (visibleFight) {
@@ -531,6 +556,7 @@ public abstract class Char extends Actor {
 			enemy.damage( effectiveDamage, this );
 
 			if (buff(FireImbue.class) != null)  buff(FireImbue.class).proc(enemy);
+			if (buff(HaloFireImBlue.class) != null)  buff(HaloFireImBlue.class).proc(enemy);
 			if (buff(FrostImbue.class) != null) buff(FrostImbue.class).proc(enemy);
 			if (buff(FrostImbueEX.class) != null) buff(FrostImbueEX.class).proc(enemy);
 
@@ -652,6 +678,10 @@ public abstract class Char extends Actor {
 			buff.onAttackProc( enemy );
 		}
 
+		if ( buff(Charm.CharmLing.class) != null ){
+			damage *= 0.75f;
+		}
+
 		//削弱10%伤害
 		if ( buff(MagicGirlSayKill.class) != null ){
 			damage *= 0.90f;
@@ -660,8 +690,26 @@ public abstract class Char extends Actor {
 			damage *= 1.5f;
 		}
 
+		if(Dungeon.isChallenged(CS) && !gameNight){
+			damage *= 1.1f;
+		} else if(gameTime>400 && gameTime<600) {
+			damage *= 1.05f;
+		}
+
 		if ( buff(AnkhInvulnerability.GodDied.class) != null ) {
 			damage *= 2.25f;
+		}
+
+		if(properties.contains(Property.UNDEAD) && Statistics.gameNight){
+			Buff.affect( enemy, Bleeding.class ).set((damage/3f));
+		}
+
+		if(properties.contains(Property.DEMONIC) && Statistics.gameNight){
+			if(Random.Int(10)==1 && buff(CrivusFruits.CFBarrior.class) == null){
+				Buff.affect( this, CrivusFruits.CFBarrior.class ).setShield(damage/2);
+			}
+		} else {
+			Buff.detach( this, CrivusFruits.CFBarrior.class);
 		}
 
 		for (ChampionHero buff : buffs(ChampionHero.class)){
@@ -677,17 +725,24 @@ public abstract class Char extends Actor {
 		//创世神
 		if ( buff( AnkhInvulnerability.GodDied.class ) != null ) speed *= 2f;
 
+		if ((properties().contains(Property.BOSS) || properties().contains(Property.MINIBOSS) && !properties().contains(Property.ABYSS)) && Statistics.gameNight) {
+			speed *= 1.2f;
+		}
+
+		for (ChampionEnemy buff : buffs(ChampionEnemy.class)) {
+			speed = buff.speedFactor();
+		}
+
 		if (buff(Cripple.class) != null) speed /= 2f;
 		if (buff(Stamina.class) != null) speed *= 1.5f;
 		if (buff(Adrenaline.class) != null) speed *= 2f;
 		if (buff(Haste.class) != null) speed *= 3f;
+
+		if (buff(BlessQinyue.class) != null) speed *= 1.25f;
+
 		if (buff(Dread.class) != null) speed *= 2f;
 
 		if ( buff( FrostBurning.class ) != null) speed *= 0.7f;
-
-		for (HasteLing.MobLing mobspeed : buffs(HasteLing.MobLing.class)){
-			speed *= mobspeed.speedFactor();
-		}
 
 		return speed;
 	}
@@ -724,12 +779,20 @@ public abstract class Char extends Actor {
 			return;
 		}
 
-		if(buff(BlessImmune.class) != null && !this.isImmune(BlessImmune.class)){
-			dmg = (int) Math.ceil(dmg * 0.75f);
+		if(buff(Charm.CharmLing.class) != null && !this.isImmune(Charm.CharmLing.class)){
+			dmg = (int) Math.ceil(dmg * 1.25f);
 		}
 
 		for (ChampionHero buff : buffs(ChampionHero.class)){
 			dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
+		}
+
+		if(buff(KingAxe.ArmorNoFear.class) != null){
+			dmg = (int) Math.ceil(dmg * 0.70f);
+		}
+
+		if(buff(BlessImmune.class) != null && !this.isImmune(BlessImmune.class)){
+			dmg = (int) Math.ceil(dmg * 0.75f);
 		}
 
 		if(isInvulnerable(src.getClass())){
@@ -911,6 +974,10 @@ public abstract class Char extends Actor {
 				icon = IconFloatingText.HALO;
 			}
 
+			if (src instanceof FrostBurning) {
+				icon = IconFloatingText.ICEFIRE;
+			}
+
 			if(src instanceof ScaryBuff){
 				icon = IconFloatingText.HEARTDEMON;
 			}
@@ -933,7 +1000,7 @@ public abstract class Char extends Actor {
 			if (src instanceof AscensionChallenge) {
 				icon = IconFloatingText.AMULET;
 			}
-			if (src instanceof ScaryDamageBuff) {
+			if (src instanceof ScaryDamageBuff || src instanceof DwarfGeneral.Wither) {
 				icon = IconFloatingText.HEARTDEMON_DMG;
 			}
 
@@ -1036,6 +1103,10 @@ public abstract class Char extends Actor {
 		if (buff(Speed.class) != null) {
 			timeScale *= 2.0f;
 		}
+		if(buff(WorstBlizzard.class)!=null){
+			timeScale *= buff(WorstBlizzard.class).speedFactor();
+		}
+
 
 		super.spend(time / timeScale);
 	}
@@ -1294,7 +1365,8 @@ public abstract class Char extends Actor {
 		HOLLOW,
 		IMMOVABLE,
 		PETS,
-		ABYSS;
+		ABYSS,
+		UNKNOWN;
 
 		private final HashSet<Class> resistances;
 		private final HashSet<Class> immunities;

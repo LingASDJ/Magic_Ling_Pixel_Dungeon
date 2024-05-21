@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.TPDoorDieds;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel3;
 
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
@@ -98,6 +99,20 @@ public class WndResurrect extends Window {
 		btnItem2.setRect( btnItem1.right() + BTN_GAP, btnItem1.top(), BTN_SIZE, BTN_SIZE );
 		add( btnItem2 );
 
+		Item item3 = null, item4 =null;
+		if(hero.belongings.artifact() != null){
+			item3 = hero.belongings.artifact();
+		}else if(hero.belongings.misc() != null){
+			item3 = hero.belongings.misc();
+		}else {
+			item3 = hero.belongings.ring();
+		}
+		if( hero.belongings.misc() != null && item3!=hero.belongings.misc() ){
+			item4 = hero.belongings.misc();
+		}else if(item3!=hero.belongings.ring()){
+			item4 = hero.belongings.ring();
+		}
+
 		btnItem3 = new WndBlacksmith.ItemButtonX() {
 			@Override
 			protected void onClick() {
@@ -105,7 +120,7 @@ public class WndResurrect extends Window {
 				GameScene.selectItem( itemSelector );
 			}
 		};
-		btnItem3.item(hero.belongings.misc());
+		btnItem3.item(item3);
 		btnItem3.setRect( btnItem2.right() + BTN_GAP, btnItem2.top(), BTN_SIZE, BTN_SIZE );
 		add( btnItem3 );
 
@@ -117,7 +132,7 @@ public class WndResurrect extends Window {
 				GameScene.selectItem( itemSelector );
 			}
 		};
-		btnItem4.item(hero.belongings.misc());
+		btnItem4.item(item4);
 		btnItem4.setRect( btnItem3.right() + BTN_GAP, btnItem3.top(), BTN_SIZE, BTN_SIZE );
 		add( btnItem4);
 		
@@ -143,10 +158,21 @@ public class WndResurrect extends Window {
 					btnItem4.item.keptThoughLostInvent = true;
 				}
 
-				//克里弗斯之果二阶段死亡的时候的给予重新评估
-				if(crivusfruitslevel2){
-					crivusfruitslevel2 = false;
+				if(Statistics.bossRushMode){
+					//克里弗斯之果二阶段死亡的时候的给予重新评估
+					if(crivusfruitslevel2){
+						crivusfruitslevel2 = false;
+					}
+					if(crivusfruitslevel3){
+						crivusfruitslevel3 = false;
+					}
+				} else {
+					//克里弗斯之果二阶段死亡的时候的给予重新评估
+					if(crivusfruitslevel2){
+						crivusfruitslevel2 = false;
+					}
 				}
+
 
 				//拟态王二阶段死亡的时候给予重新评估
 				if(TPDoorDieds){

@@ -23,6 +23,7 @@ public class LanFire extends NPC {
         spriteClass = LanFireSprites.class;
         properties.add(Property.BOSS);
         properties.add(Property.IMMOVABLE);
+        properties.add(Property.UNKNOWN);
     }
     public static boolean seenBefore = false;
 
@@ -100,6 +101,11 @@ public class LanFire extends NPC {
 
     @Override
     protected boolean act() {
+
+        if(Dungeon.depth == 0){
+            return super.act();
+        }
+
         if (!seenBefore && Dungeon.level.heroFOV[pos] && Dungeon.level.distance(pos, hero.pos) <= 3) {
             seenBefore = true;
             Buff.affect(hero, IceHealHP.class).set( (100), 1 );

@@ -52,7 +52,7 @@ public class Bag extends Item implements Iterable<Item> {
 	public ArrayList<Item> items = new ArrayList<>();
 
 	public int capacity(){
-		return 44; // default container size
+		return 36; // default container size
 	}
 	
 	@Override
@@ -66,6 +66,11 @@ public class Bag extends Item implements Iterable<Item> {
 			
 		}
 	}
+
+//	@Override
+//	public ArrayList<String> actions(Hero hero) {
+//		return new ArrayList<>(); //yup, no dropping this one
+//	}
 	
 	@Override
 	public boolean collect( Bag container ) {

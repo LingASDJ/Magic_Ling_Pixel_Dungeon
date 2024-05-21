@@ -21,9 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.badlogic.gdx.utils.Null;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
@@ -46,13 +48,28 @@ public class Statue extends Mob {
 		properties.add(Property.INORGANIC);
 	}
 	public boolean levelGenStatue = true;
-	protected Weapon weapon;
+	public Weapon weapon;
 
-	public void createWeapon( boolean useDecks ){
+	public void createWeapon( boolean useDecks){
 		if (useDecks) {
 			weapon = (MeleeWeapon) Generator.random(Generator.Category.WEAPON);
 		} else {
 			weapon = (MeleeWeapon) Generator.randomUsingDefaults(Generator.Category.WEAPON);
+		}
+		levelGenStatue = useDecks;
+		weapon.cursed = false;
+		weapon.enchant( Enchantment.random() );
+	}
+
+	public void createWeapon( boolean useDecks ,Weapon customWeapon){
+		if(customWeapon != null){
+			weapon = customWeapon;
+		}else{
+			if (useDecks) {
+				weapon = (MeleeWeapon) Generator.random(Generator.Category.WEAPON);
+			} else {
+				weapon = (MeleeWeapon) Generator.randomUsingDefaults(Generator.Category.WEAPON);
+			}
 		}
 		levelGenStatue = useDecks;
 		weapon.cursed = false;
@@ -187,4 +204,7 @@ public class Statue extends Mob {
 		}
 	}
 
+	public Item weapon() {
+		return weapon;
+	}
 }

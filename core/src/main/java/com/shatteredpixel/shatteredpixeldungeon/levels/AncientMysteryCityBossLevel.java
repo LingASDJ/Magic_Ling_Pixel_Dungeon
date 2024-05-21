@@ -10,16 +10,20 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCity
 import static com.shatteredpixel.shatteredpixeldungeon.levels.AncientMysteryCityBossLevel.State.TWO_BOSS;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DictFish;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.RoomStone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.SakaFishBoss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -36,6 +40,7 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AncientMysteryCityBossLevel extends Level{
@@ -199,7 +204,36 @@ public class AncientMysteryCityBossLevel extends Level{
 
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
-        if (transition.type == LevelTransition.Type.BRANCH_EXIT) {
+
+        if(Statistics.bossRushMode && transition.type == LevelTransition.Type.BRANCH_EXIT) {
+            TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+            if (timeFreeze != null) timeFreeze.disarmPresses();
+            Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+            if (timeBubble != null) timeBubble.disarmPresses();
+            InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+            InterlevelScene.curTransition = new LevelTransition();
+            InterlevelScene.curTransition.destDepth = depth + 1;
+            InterlevelScene.curTransition.destType = LevelTransition.Type.BRANCH_EXIT;
+            InterlevelScene.curTransition.destBranch = 8;
+            InterlevelScene.curTransition.type = LevelTransition.Type.BRANCH_EXIT;
+            InterlevelScene.curTransition.centerCell = -1;
+            Game.switchScene(InterlevelScene.class);
+            return false;
+        } else if(Statistics.bossRushMode && transition.type == LevelTransition.Type.BRANCH_ENTRANCE){
+            TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+            if (timeFreeze != null) timeFreeze.disarmPresses();
+            Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+            if (timeBubble != null) timeBubble.disarmPresses();
+            InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+            InterlevelScene.curTransition = new LevelTransition();
+            InterlevelScene.curTransition.destDepth = depth-1;
+            InterlevelScene.curTransition.destType = LevelTransition.Type.BRANCH_EXIT;
+            InterlevelScene.curTransition.destBranch = 8;
+            InterlevelScene.curTransition.type = LevelTransition.Type.BRANCH_EXIT;
+            InterlevelScene.curTransition.centerCell  = -1;
+            Game.switchScene( InterlevelScene.class );
+            return false;
+        } else if (transition.type == LevelTransition.Type.BRANCH_EXIT) {
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {
@@ -312,7 +346,7 @@ public class AncientMysteryCityBossLevel extends Level{
 
         super.occupyCell( ch );
 
-        boolean isTrue = ch.pos == LDBossDoor && ch == hero && Dungeon.level.distance(ch.pos, entrance) >= 2;
+        boolean isTrue = ch.pos == LDBossDoor && ch == hero && Dungeon.level.distance(ch.pos, entrance) >= 2 && hero.buff(LostInventory.class) == null;
 
         //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
         //特别情况下 部分玩家可能会把门烧了 灰烬也可以作为检查点
@@ -355,6 +389,8 @@ public class AncientMysteryCityBossLevel extends Level{
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
             if (mob instanceof SakaFishBoss){
                 ScrollOfTeleportation.appear(mob, 337);
+                mob.state =mob.HUNTING;
+                mob.notice();
             }
         }
     }
@@ -374,6 +410,17 @@ public class AncientMysteryCityBossLevel extends Level{
      */
     @Override
     protected void createItems() {
-
+        Random.pushGenerator(Random.Long());
+        ArrayList<Item> bonesItems = Bones.get();
+        if (bonesItems != null) {
+            int pos;
+            do {
+                pos = randomRespawnCell(null);
+            } while (pos == entrance());
+            for (Item i : bonesItems) {
+                drop(i, pos).setHauntedIfCursed().type = Heap.Type.REMAINS;
+            }
+        }
+        Random.popGenerator();
     }
 }

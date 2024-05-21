@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.watabou.noosa.Game;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
@@ -191,5 +192,50 @@ public abstract class PlatformSupport {
 	public boolean openURI( String URI ) {
 		return Gdx.net.openURI(URI);
 	}
+	// 更新游戏
+	public abstract void updateGame(String url, UpdateCallback listener);
 
+	public abstract void install(File file);
+	public interface UpdateCallback {
+
+		/**
+		 * 最开始调用(在onStart之前调用)
+		 *
+		 * @param isDownloading 为true时，表示已经在下载；为false时，表示当前未开始下载，即将开始下载
+		 */
+		void onDownloading(boolean isDownloading);
+
+		/**
+		 * 开始
+		 */
+		void onStart(String url);
+
+		/**
+		 * 更新进度
+		 *
+		 * @param progress  当前进度大小
+		 * @param total     总文件大小
+		 * @param isChanged 进度百分比是否有改变，（主要可以用来过滤无用的刷新，从而降低刷新频率）
+		 */
+		void onProgress(long progress, long total, boolean isChanged);
+
+		/**
+		 * 完成
+		 *
+		 * @param file APK文件
+		 */
+		void onFinish(File file);
+
+		/**
+		 * 错误
+		 *
+		 * @param e 异常
+		 */
+		void onError(Exception e);
+
+		/**
+		 * 取消
+		 */
+		void onCancel();
+	}
 }

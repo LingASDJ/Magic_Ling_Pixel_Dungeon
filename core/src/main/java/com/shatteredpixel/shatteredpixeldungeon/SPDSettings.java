@@ -66,6 +66,23 @@ public class SPDSettings extends GameSettings {
 		return getBoolean(KEY_TIME, true);
 	}
 
+	public static void HiICE(boolean value) {
+		put(KEY_ICE, value );
+	}
+
+	public static boolean HiICE() {
+		return getBoolean(KEY_ICE, true);
+	}
+
+	public static void UPICE(boolean value) {
+		put(KEY_UP_ICE, value );
+	}
+
+	public static boolean UPICE() {
+		return getBoolean(KEY_UP_ICE, true);
+	}
+
+
 	private static final String DEBUG_REPORT  = "debug_report";
 	public static boolean debugReport() {
 		return getBoolean(DEBUG_REPORT,false);
@@ -105,6 +122,8 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_GRID 	    = "visual_grid";
 	public static final String KEY_SPLASH_SCREEN= "splash_screen";
 
+	public static final String KEY_TIMEOUT= "timeout";
+
 	private static final String START_PORT  = "start_report";
 
 	//瀑布系统
@@ -116,6 +135,14 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_SPLASH_SCREEN, 1 );
 	}
 
+	public static void timeOutSeed( int value ) {
+		put( KEY_TIMEOUT, value );
+	}
+
+	public static int  timeOutSeed() {
+		return getInt( KEY_TIMEOUT, 4 );
+	}
+
 	public static void customSeed( String value ){
 		put( KEY_CUSTOM_SEED, value );
 	}
@@ -125,6 +152,10 @@ public class SPDSettings extends GameSettings {
 	}
 
 	private static final String KEY_TIME = "fps";
+
+	private static final String KEY_ICE = "hice";
+
+	private static final String KEY_UP_ICE = "iceupdate12";
 
 	private static final String KEY_DARK	= "dark_ui";
 
@@ -138,6 +169,12 @@ public class SPDSettings extends GameSettings {
 	private static final String ATBSettings	= "ATBsettings";
 
 	private static final String V1TOOL = "v1tool";
+
+	private static final String KEY_SMALLLEAF = "SMALLLEAF";
+
+	private static final String KEY_DRAGON = "DRAGON";
+
+	private static final String KEY_KILLADF = "DWAXF";
 
 	public static void fullscreen( boolean value ) {
 		put( KEY_FULLSCREEN, value );
@@ -235,6 +272,12 @@ public class SPDSettings extends GameSettings {
     public static final String KEY_SUPPORT_NAGGED = "support_nagged";
     public static final String KEY_CONTROLLER_SENS = "controller_sens";
     public static final String KEY_MOVE_SENS = "move_sens";
+
+	public static final String KEY_ICECOIN = "iceGoldMagic2";
+
+	public static final String KEY_UNLOCKITEM = "forever_unlock_item";
+
+	public static final String KEY_CURRENTHEROSKIN = "current_hero_skin";
 
     public static void cameraFollow(int value) {
         put(KEY_CAMERA_FOLLOW, value);
@@ -638,5 +681,236 @@ public class SPDSettings extends GameSettings {
     public static int movementHoldSensitivity() {
         return getInt(KEY_MOVE_SENS, 3, 0, 4);
     }
+
+	public static void Cheating(boolean value) {
+		put("cheatingfuck", value);
+	}
+
+	public static boolean Cheating() {
+		return getBoolean("cheatingfuck", false);
+	}
+
+
+
+	public static void WT3(boolean value) {
+		put("WT3", value);
+	}
+
+	public static boolean WT3() {
+		return getBoolean("WT3", false);
+	}
+
+
+	//永久货币逻辑
+	public static void iceCoin(int value) {
+		int currentCoin = iceCoin();
+		int newCoin = currentCoin + value;
+		put(KEY_ICECOIN, newCoin);
+	}
+
+	public static void iceDownCoin(int value) {
+		int currentCoin = iceCoin();
+		int newCoin = currentCoin - value;
+		put(KEY_ICECOIN, newCoin);
+	}
+
+	public static int iceCoin(){
+		return getInt( KEY_ICECOIN, 0);
+	}
+
+	public static void setHeroSkin(int hero,int skinIndex) {
+		StringBuilder items = new StringBuilder( getSkin() );
+		int index= hero * 2;
+		items.replace( index, index + 1 , String.valueOf(skinIndex));
+		put(KEY_CURRENTHEROSKIN, items.toString());
+	}
+
+	public static int getHeroSkin(int hero){
+		String[] itemArray = getSkin().split( ";" );
+		return Integer.parseInt(itemArray[hero]);
+	}
+
+	public static String getSkin(){
+		return getString( KEY_CURRENTHEROSKIN, "0;0;0;0;0;");
+	}
+
+
+	/*
+	 * @Breif 永久解锁物品，允许批量解锁，以","作为元素分隔符,";"作为物品分隔符
+	 * 输入格式为String itemName1,boolean allowMulti1,int itemLimit1;String itemName2,boolean allowMulti2,int itemLimit2;...
+	 * @Pramas String
+	 * @NativeName: unlockItem
+	 * @NativeFunction: void unlockItem(String)
+	 */
+	public static void unlockItem( String itemName ){
+		String[] itemArray = itemName.split( ";" );
+		StringBuilder items = new StringBuilder( unlockItem() );
+
+		for( String item : itemArray) {
+			String[] tempItem = item.split( "," );
+			if( !isItemUnlock( tempItem[0] ) ){
+				switch( tempItem.length ){
+					case 1:
+						items.append( item ).append( ",false,1;" );
+						break;
+					case 2:
+						if( tempItem[1].matches( "\\d+" ) ){
+							items.append( tempItem[0] ).append( ",false," ).append( tempItem[1] ).append( ";" );
+						}else if( tempItem[1].equals( "true" ) || tempItem[1].equals( "false" ) ){
+							items.append( item ).append( ",1;" );
+						}else {
+							continue;
+						}
+						break;
+					case 3:
+						items.append( item ).append( ";" );
+						break;
+				}
+			}
+		}
+
+		put( KEY_UNLOCKITEM, items.toString() );
+	}
+
+	/*
+	 * @Breif 永久解锁物品，第一个参数为itemName，即物品的名称；第二个参数为allowMulti，即是否允许多持该物品
+	 * @Pramas String,boolean
+	 * @NativeName: unlockItem
+	 * @NativeFunction: void unlockItem(String,boolean)
+	 */
+	public static void unlockItem( String itemName, boolean allowMulti ){
+		if( !isItemUnlock( itemName ) ){
+			StringBuilder items = new StringBuilder( unlockItem() );
+			items.append( itemName ).append( "," );
+			items.append( allowMulti ).append( ",1;" );
+			put( KEY_UNLOCKITEM, items.toString() );
+		}
+	}
+
+	/*
+	 * @Breif 永久解锁物品，第一个参数为itemName，即物品的名称；第二个参数为allowMulti，即是否允许多持该物品；第三个参数为limit，即持有该物品的上限
+	 * @Pramas String,boolean,int
+	 * @NativeName: unlockItem
+	 * @NativeFunction: void unlockItem(String,boolean,int)
+	 */
+	public static void unlockItem( String itemName, boolean allowMulti, int limit ){
+		if( !isItemUnlock( itemName ) ){
+			StringBuilder items = new StringBuilder( unlockItem() );
+			items.append( itemName ).append( "," );
+			items.append( allowMulti ).append( "," );
+			items.append( limit ).append( ";" );
+			put( KEY_UNLOCKITEM, items.toString() );
+		}
+	}
+
+	/*
+	 * @Breif 获取已解锁的物品列表，以","作为元素分隔符,";"作为物品分隔符
+	 * 输出格式为String itemName1,boolean allowMulti1,int itemLimit1;String itemName2,boolean allowMulti2,int itemLimit2;...
+	 * @Pramas
+	 * @NativeName: unlockItem
+	 * @NativeFunction: String unlockItem()
+	 */
+	public static String unlockItem(){ return getString( KEY_UNLOCKITEM, ""); }
+
+	/*
+	 * @Breif 返回目标物品是否已经解锁
+	 * @Pramas String
+	 * @NativeName: isItemUnlock
+	 * @NativeFunction: Boolean isItemUnlock(String)
+	 */
+	public static Boolean isItemUnlock( String itemName ){ return unlockItem().indexOf( itemName ) != -1; }
+
+	/*
+	 * @Breif 返回目标物品是否允许多持
+	 * @Pramas String
+	 * @NativeName: isUnlockItemAllowMulti
+	 * @NativeFunction: Boolean isUnlockItemAllowMulti(String)
+	 */
+	public static Boolean isUnlockItemAllowMulti( String itemName ){
+		if( !isItemUnlock( itemName ) ){
+			return false;
+		}
+
+		String[] items = unlockItem().split( ";" );
+		for( String item : items ){
+			if( item.indexOf( itemName ) != -1 ){
+				return Boolean.parseBoolean( item.split( "," )[1] );
+			}
+		}
+
+		return false;
+	}
+
+	/*
+	 * @Breif 返回目标物品的持有上限
+	 * @Pramas int
+	 * @NativeName: getUnlockItemLimit
+	 * @NativeFunction: int getUnlockItemLimit(String)
+	 */
+	public static int getUnlockItemLimit( String itemName ){
+		if( !isItemUnlock( itemName ) ){
+			return -1;
+		}
+
+		String[] items = unlockItem().split( ";" );
+		for( String item : items ){
+			if( item.indexOf( itemName ) != -1 ){
+				return Integer.parseInt( item.split( ",")[2] );
+			}
+		}
+
+		return -1;
+	}
+
+
+	/*
+	 * @Breif 将已解锁物品移除，允许同时移除多个物品
+	 * @Pramas String
+	 * @NativeName: removeUnlockItem
+	 * @NativeFunction: void removeUnlockItem(String)
+	 */
+	public static void removeUnlockItem( String itemName ){
+		String[] itemArray = itemName.split( ";" );
+		StringBuilder items = new StringBuilder( unlockItem() );
+
+		int index;
+		for( String target : itemArray ) {
+			if ( ( index = items.indexOf( target ) ) != -1 ) {
+					items.delete( index, index + items.indexOf( ";", index ) + 1 );
+			}
+		}
+
+		put( KEY_UNLOCKITEM, items.toString() );
+	}
+
+	//首次给予钴币 小叶
+	public static void SmallLeafGetCoin(boolean value) {
+		put(KEY_SMALLLEAF, value );
+	}
+
+	public static boolean SmallLeafGetCoin() {
+		return getBoolean(KEY_SMALLLEAF, false);
+	}
+
+
+	//首次击败火龙
+	public static void KillDragon(boolean value) {
+		put(KEY_DRAGON, value );
+	}
+
+	public static boolean KillDragon() {
+		return getBoolean(KEY_DRAGON, false);
+	}
+
+
+	//首次击败将军
+	public static void KillDwarf(boolean value) {
+		put(KEY_KILLADF, value );
+	}
+
+	public static boolean KillDwarf() {
+		return getBoolean(KEY_KILLADF, false);
+	}
+
 
 }

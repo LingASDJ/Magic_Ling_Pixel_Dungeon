@@ -3,10 +3,8 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
-    compileSdkVersion 30
 
-    buildToolsVersion "30.0.2"
-//    compileSdkVersion appAndroidCompileSDK
+    compileSdkVersion appAndroidCompileSDK
     compileOptions.sourceCompatibility = compileOptions.targetCompatibility = appJavaCompatibility
 
     sourceSets.main.assets.srcDirs = [new File(project(':core').projectDir, "/src/main/assets")]
@@ -36,6 +34,10 @@ android {
             dependencies {
                 releaseImplementation project(':services:news:shatteredNews')
             }
+            shrinkResources true
+            minifyEnabled true
+            firebaseCrashlytics {mappingFileUploadEnabled false}
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {
 
@@ -67,7 +69,7 @@ dependencies {
 
     // Import the Firebase BoM
 
-    implementation platform('com.google.firebase:firebase-bom:31.4.0')
+    implementation platform('com.google.firebase:firebase-bom:32.7.4')
     // Declare the dependencies for the Crashlytics and Analytics libraries
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-crashlytics'
@@ -79,6 +81,7 @@ dependencies {
     //接入多DEX
     implementation 'com.android.support:multidex:1.0.3'
 
+    //LIBGDX资源
     //noinspection GradleDependency
     implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
 
@@ -98,9 +101,19 @@ dependencies {
     //noinspection GradleDependency
     implementation 'androidx.appcompat:appcompat:1.0.2'
 
+    //崩溃报告
     implementation 'cat.ereza:customactivityoncrash:2.3.0'
 
+    //Base 64解析库
+    implementation 'net.iharder:base64:2.3.9'
     implementation project(':services:news:shatteredNews')
+
+    //只考虑安卓端 电脑端直接呼出URL
+    //----------AndroidX 版本
+    //app-updater
+    implementation 'com.github.jenly1314.AppUpdater:app-updater:1.2.0'
+    //app-dialog
+    implementation 'com.github.jenly1314.AppUpdater:app-dialog:1.2.0'
 }
 
 // called every time gradle gets executed, takes the native dependencies of

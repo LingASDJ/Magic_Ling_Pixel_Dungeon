@@ -27,7 +27,8 @@ import com.watabou.utils.DeviceCompat;
 import java.util.ArrayList;
 
 
-public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继承PixelScene类
+public class GameNewsScene extends PixelScene {
+    //定义GameNewsScene类，继承PixelScene类
 
     boolean displayingNoArticles = false;  //声明一个布尔类型的变量，用于标记是否需要显示文章
 
@@ -142,16 +143,7 @@ public class GameNewsScene extends PixelScene {  //定义GameNewsScene类，继�
                 add(title);  //将文本块添加到场景中
             }
         } else if (SPDSettings.WiFi() && !Game.platform.connectedToUnmeteredNetwork()){
-            add(new WndHardNotification(NetIcons.get(NetIcons.ALERT),
-                    Messages.get(this, "no_web"),
-                    Messages.get(this, "no_inter"),
-                    Messages.get(this, "continue"),
-                    0){
-                @Override
-                public void hide() {
-                    ShatteredPixelDungeon.switchNoFade(TitleScene.class);
-                }
-            });
+            ShatteredPixelDungeon.switchNoFade(TitleScene.class);
         }
 
     }

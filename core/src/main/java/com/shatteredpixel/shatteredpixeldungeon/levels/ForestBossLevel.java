@@ -2,10 +2,12 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
+import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -15,12 +17,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RatKing;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 //克里弗斯之果 5层
 public class ForestBossLevel extends Level {
@@ -29,6 +34,7 @@ public class ForestBossLevel extends Level {
     protected void createMobs() {
 
     }
+
 
     //修复跳楼错误
     @Override
@@ -46,9 +52,18 @@ public class ForestBossLevel extends Level {
     //二选一
     @Override
     protected void createItems() {
-        drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.width * 28 + 10 );
-
-        drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 28 + 22 );
+        Random.pushGenerator(Random.Long());
+        ArrayList<Item> bonesItems = Bones.get();
+        if (bonesItems != null) {
+            int pos;
+            do {
+                pos = randomRespawnCell(null);
+            } while (pos == entrance());
+            for (Item i : bonesItems) {
+                drop(i, pos).setHauntedIfCursed().type = Heap.Type.REMAINS;
+            }
+        }
+        Random.popGenerator();
     }
 
     public static final int WIDTH = 32;
@@ -61,7 +76,7 @@ public class ForestBossLevel extends Level {
     private static final short T = Terrain.STATUE;
     private static final short X = Terrain.DOOR;
     private static final short D = Terrain.PEDESTAL;
-
+    private static final short V = Terrain.BARRICADE;
     private static final short B = Terrain.WALL_DECO;
     private static final short C = Terrain.WATER;
     private static final short S = Terrain.LOCKED_DOOR;
@@ -163,7 +178,7 @@ public class ForestBossLevel extends Level {
 
         super.occupyCell( ch );
 
-        boolean isTrue = ch.pos == LDBossDoor && ch == hero && Dungeon.level.distance(ch.pos, entrance) >= 2;
+        boolean isTrue = ch.pos == LDBossDoor && ch == hero && level.distance(ch.pos, entrance) >= 2;
 
         //如果有生物来到BossDoor的下一个坐标，且生物是玩家，那么触发seal().
         if (map[getBossDoor] == Terrain.DOOR && isTrue || map[getBossDoor] == Terrain.EMBERS && isTrue) {
@@ -213,6 +228,11 @@ public class ForestBossLevel extends Level {
     public void unseal() {
         super.unseal();
 
+        drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.width * 28 + 10 );
+
+        drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 28 + 22 );
+
+
         set( getBossDoor, Terrain.EMPTY );
         GameScene.updateMap( getBossDoor );
 
@@ -227,8 +247,10 @@ public class ForestBossLevel extends Level {
         switch(Random.NormalIntRange(1,6)){
             case 1:case 2:case 3:
                 for (int i : RatKingRoomASpawn) {
+                    //被注释的策略只能在下楼时才会更新，所以需要使用下面的策略 2023-9-10
                     //drop(new Gold( Random.IntRange( 10, 25 )),i).type = Heap.Type.CHEST;
-                    Heap droppedGold = Dungeon.level.drop( new Gold( Random.IntRange( 10, 25 )),i);
+
+                    Heap droppedGold = level.drop( new Gold( Random.IntRange( 10, 25 )),i);
                     droppedGold.type = Heap.Type.CHEST;
                     //必须追加一个view处理才能让金币的类型申请给地牢view处理后变成箱子样子
                     droppedGold.sprite.view( droppedGold );
@@ -237,16 +259,16 @@ public class ForestBossLevel extends Level {
                 king.pos = WIDTH*7+3;
                 GameScene.add(king);
 
-                drop( new CrystalKey(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? 2 : 5 ), WIDTH*7+29 );
+                drop( new CrystalKey(Statistics.bossRushMode ? 2 : 5 ), WIDTH*7+29 );
 
-                Heap droppedA = Dungeon.level.drop( Generator.randomUsingDefaults( Generator.Category.ARMOR),
+                Heap droppedA = level.drop( Generator.randomUsingDefaults( Generator.Category.ARMOR),
                         WIDTH*7+28 );
                 droppedA.type = Heap.Type.CRYSTAL_CHEST;
                 droppedA.sprite.view( droppedA );
             break;
             case 4: case 5: case 6:
                 for (int i : RatKingRoomBSpawn) {
-                    Heap droppedGold = Dungeon.level.drop( new Gold( Random.IntRange( 10, 25 )),i);
+                    Heap droppedGold = level.drop( new Gold( Random.IntRange( 10, 25 )),i);
                     droppedGold.type = Heap.Type.CHEST;
                     droppedGold.sprite.view( droppedGold );
                 }
@@ -254,9 +276,9 @@ public class ForestBossLevel extends Level {
                 king2.pos = WIDTH*7+28;
                 GameScene.add(king2);
 
-                drop( new CrystalKey(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? 2 : 5 ), WIDTH*7+4 );
+                drop( new CrystalKey(Statistics.bossRushMode ? 2 : 5 ), WIDTH*7+4 );
 
-                Heap droppedB = Dungeon.level.drop( Generator.randomUsingDefaults( Generator.Category.WEAPON),
+                Heap droppedB = level.drop( Generator.randomUsingDefaults( Generator.Category.WEAPON),
                         WIDTH*7+3 );
                 droppedB.type = Heap.Type.CRYSTAL_CHEST;
                 droppedB.sprite.view( droppedB );
@@ -321,7 +343,7 @@ public class ForestBossLevel extends Level {
             W,M,M,M,M,M,M,C,C,C,C,L,L,W,M,C,H,C,M,W,L,L,C,C,C,C,M,M,M,M,M,W,
             W,B,B,B,B,B,B,W,W,W,W,B,W,B,M,C,H,C,M,B,W,B,W,W,W,B,B,B,B,B,B,W,
             W,C,C,C,C,C,C,W,W,W,M,C,M,C,M,C,H,C,M,C,M,C,W,W,W,C,C,C,C,C,C,W,
-            W,L,L,L,W,W,W,B,M,M,M,C,M,H,M,C,H,C,M,H,M,C,M,M,B,W,W,L,L,L,L,W,
+            W,L,L,L,W,W,W,V,M,M,M,C,M,H,M,C,H,C,M,H,M,C,M,M,V,W,W,L,L,L,L,W,
             W,L,L,W,W,M,M,C,M,M,M,C,C,C,C,C,H,C,C,C,M,C,M,M,C,M,W,W,L,L,L,W,
             W,W,W,W,B,M,M,W,M,M,M,H,C,C,H,H,H,H,H,C,M,H,M,M,W,M,M,B,W,W,W,W,
             W,W,C,C,C,C,C,W,C,C,C,C,C,C,H,C,C,C,H,C,C,C,C,C,W,C,C,C,C,C,W,W,

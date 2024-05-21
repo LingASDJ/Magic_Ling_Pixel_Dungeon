@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
+
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
@@ -195,6 +197,9 @@ public enum Rankings {
 
         if (Dungeon.initialVersion > ShatteredPixelDungeon.v1_2_3) {
             Statistics.progressScore = Dungeon.hero.lvl * Statistics.deepestFloor * 65;
+            if(Statistics.amuletObtained && Dungeon.isChallenged(CS)){
+                Statistics.progressScore = 50000;
+            }
             Statistics.progressScore = Math.min(Statistics.progressScore, 50_000);
 
             if (Statistics.heldItemValue == 0) {
@@ -252,7 +257,23 @@ public enum Rankings {
 
         Statistics.totalScore *= Statistics.seedCustom ? 0.5 : 1;
 
+        Statistics.totalScore *= DifficultyScore();
+
         return Statistics.totalScore;
+    }
+
+    private int DifficultyScore() {
+        int DiffcultyScore;
+        if(Dungeon.isDLC(Conducts.Conduct.EASY)){
+            DiffcultyScore = 1;
+        } else if(Dungeon.isDLC(Conducts.Conduct.NORMAL)){
+            DiffcultyScore = 1;
+        } else if(Dungeon.isDLC(Conducts.Conduct.HARD)){
+            DiffcultyScore = 1;
+        } else {
+            DiffcultyScore = 1;
+        }
+        return DiffcultyScore;
     }
 
     public void saveGameData(Record rec) {

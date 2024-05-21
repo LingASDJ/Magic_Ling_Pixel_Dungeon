@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -70,7 +72,7 @@ public class Goo extends Mob {
 		int max = (HP*2 <= HT) ? 12 : 8;
 		if (pumpedUp > 0) {
 			pumpedUp = 0;
-			if (enemy == Dungeon.hero) {
+			if (enemy == hero) {
 				Statistics.qualifiedForBossChallengeBadge = false;
 				Statistics.bossScores[0] -= 100;
 			}
@@ -110,7 +112,7 @@ public class Goo extends Mob {
 			HP += healInc;
 			Statistics.qualifiedForBossChallengeBadge = false;
 
-			LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+			LockedFloor lock = hero.buff(LockedFloor.class);
 			if (lock != null){
 				if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.removeTime(healInc);
 				else                                                    lock.removeTime(healInc*1.5f);
@@ -210,7 +212,7 @@ public class Goo extends Mob {
 			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
 				pumpedUp += 2;
 				//don't want to overly punish players with slow move or attack speed
-				spend(GameMath.gate(attackDelay(), Dungeon.hero.cooldown(), 3*attackDelay()));
+				spend(GameMath.gate(attackDelay(), hero.cooldown(), 3*attackDelay()));
 			} else {
 				pumpedUp++;
 				spend( attackDelay() );
@@ -232,7 +234,7 @@ public class Goo extends Mob {
 		boolean result = super.attack( enemy, dmgMulti, dmgBonus, accMulti );
 		if (pumpedUp > 0) {
 			pumpedUp = 0;
-			if (enemy == Dungeon.hero) {
+			if (enemy == hero) {
 				Statistics.qualifiedForBossChallengeBadge = false;
 				Statistics.bossScores[0] -= 100;
 			}
@@ -272,7 +274,7 @@ public class Goo extends Mob {
 			((GooSprite)sprite).spray(true);
 			yell(Messages.get(this, "gluuurp"));
 		}
-		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+		LockedFloor lock = hero.buff(LockedFloor.class);
 		if (lock != null){
 			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg);
 			else                                                    lock.addTime(dmg*1.5f);
@@ -290,7 +292,7 @@ public class Goo extends Mob {
 
 		//Dungeon.level.drop( Generator.random( Generator.Category.WAND), pos) .sprite.drop();
 
-		Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
+		Dungeon.level.drop( new CrystalKey( Dungeon.depth ), hero.pos ).sprite.drop();
 		Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
 
 		//60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5

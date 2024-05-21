@@ -442,5 +442,9 @@ public class Wandmaker extends NPC {
 			Notes.remove( Notes.Landmark.WANDMAKER );
 			Statistics.questScores[1] = 2000;
 		}
+
+		public static int type() {
+			return type;
+		}
 	}
 }

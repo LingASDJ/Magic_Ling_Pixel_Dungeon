@@ -2,8 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.windows.PageWindows;
 
 public class LanterFireCator extends Button {
 
@@ -37,7 +35,7 @@ public class LanterFireCator extends Button {
             @Override
             protected void onClick() {
                 super.onClick();
-                GameScene.show(new PageWindows());
+                //GameScene.show(new PageWindows());
             }
         });
 

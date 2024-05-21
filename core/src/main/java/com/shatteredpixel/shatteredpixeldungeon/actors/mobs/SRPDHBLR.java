@@ -62,7 +62,7 @@ public class SRPDHBLR extends Mob {
 
     public int attackProc(Char enemy, int damage) {
         if (Random.Int(0, 10) > 7) {
-            this.sprite.showStatus(16711680, Messages.get(this,"attack_msg_"+Random.IntRange(1, 10)), new Object[0]);
+            this.sprite.showStatus(16711680, Messages.get(this,"attack_msg_"+Random.IntRange(1, 10)));
         }
         int damage2 = SRPDHBLR.super.attackProc(enemy, this.combo + damage);
         this.combo++;
@@ -81,7 +81,6 @@ public class SRPDHBLR extends Mob {
     public void die(Object cause) {
         SRPDHBLR.super.die(cause);
         if (cause != Chasm.class) {
-            this.sprite.showStatus(16711680, Messages.get(this,"death_msg_"+Random.IntRange(1, 8)), new Object[0]);
-
+            this.sprite.showStatus(16711680, Messages.get(this,"death_msg_"+Random.IntRange(1, 8)));
         }
     }}

@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DimandKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -32,8 +33,8 @@ public class DimandKingLevel extends Level {
         color2 = 0xf2f2f2;
     }
 
-    private static int WIDTH = 15;
-    private static int HEIGHT = 48;
+    private static final int WIDTH = 15;
+    private static final int HEIGHT = 48;
 
     private static final Rect entry = new Rect(1, 37, 14, 48);
     private static final Rect arena = new Rect(1, 25, 14, 38);
@@ -96,8 +97,9 @@ public class DimandKingLevel extends Level {
 
         Painter.set(this, c.x, entry.top, Terrain.DOOR);
 
-        entrance = c.x + (c.y+2)*width();
+        int entrance = c.x + (c.y+2)*width();
         Painter.set(this, entrance, Terrain.ENTRANCE);
+        transitions.add(new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE));
 
         //DK's throne room
         Painter.fillDiamond(this, arena, 1, Terrain.EMPTY);
@@ -119,10 +121,14 @@ public class DimandKingLevel extends Level {
         Painter.set(this, c.x, arena.top, Terrain.LOCKED_DOOR);
 
         //exit hallway
-        Painter.fill(this, end, Terrain.STATUE);
+        Painter.fill(this, end, Terrain.CHASM);
         Painter.fill(this, end.left+4, end.top+5, 7, 18, Terrain.EMPTY);
         Painter.fill(this, end.left+4, end.top+5, 1, 1, Terrain.EXIT);
-        exit = end.left+1 + (end.top+1)*width();
+
+        int exitCell = end.left+7 + (end.top+8)*width();
+        LevelTransition exit = new LevelTransition(this, exitCell, LevelTransition.Type.REGULAR_EXIT);
+        exit.set(end.left+4, end.top+4, end.left+4+6, end.top+4+4);
+        transitions.add(exit);
 
         Painter.fill(this, end.left+5, end.bottom+1, 5, 1, Terrain.EMPTY);
         Painter.fill(this, end.left+6, end.bottom+2, 3, 1, Terrain.EMPTY);
@@ -199,7 +205,7 @@ public class DimandKingLevel extends Level {
     public int randomRespawnCell( Char ch ) {
         int cell;
         do {
-            cell = entrance + PathFinder.NEIGHBOURS8[Random.Int(8)];
+            cell = entrance() + PathFinder.NEIGHBOURS8[Random.Int(8)];
         } while (!passable[cell]
                 || (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
                 || Actor.findChar(cell) != null);
@@ -354,7 +360,7 @@ public class DimandKingLevel extends Level {
 
                     //final ground stiching with city tiles
                     if (i/tileW == 21){
-                        data[i] = 11*8 + 0;
+                        data[i] = 11 * 8;
                         data[++i] = 11*8 + 1;
                         data[++i] = 11*8 + 2;
                         data[++i] = 11*8 + 3;
@@ -422,11 +428,11 @@ public class DimandKingLevel extends Level {
 
                         //otherwise entrance carpet
                     } else if (map[i-tileW] != Terrain.EMPTY_SP){
-                        data[i] = 13*8 + 0;
+                        data[i] = 13 * 8;
                     } else if (map[i+tileW] != Terrain.EMPTY_SP){
-                        data[i] = 15*8 + 0;
+                        data[i] = 15 * 8;
                     } else {
-                        data[i] = 14*8 + 0;
+                        data[i] = 14 * 8;
                     }
 
                     //otherwise no tile here
@@ -532,7 +538,7 @@ public class DimandKingLevel extends Level {
             //custom shadow  for stairs
             for (int i = 0; i < 8; i++){
                 if (i < 4){
-                    data[shadowTop] = i*8 + 0;
+                    data[shadowTop] = i * 8;
                     data[shadowTop+1] = data[shadowTop+2] = data[shadowTop+3] = data[shadowTop+4] =
                             data[shadowTop+5] = data[shadowTop+6] = i*8 + 1;
                     data[shadowTop+7] = i*8 + 2;

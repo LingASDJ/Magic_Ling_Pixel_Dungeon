@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.GO_START;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel.State.MAZE_START;
@@ -21,6 +22,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.TPDoor;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -69,7 +72,7 @@ public class ColdChestBossLevel extends Level {
 
     @Override
     public int randomRespawnCell( Char ch ) {
-        int pos = WIDTH + 16;
+        int pos = WIDTH*19+17;
         int cell;
         do {
             cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
@@ -82,6 +85,13 @@ public class ColdChestBossLevel extends Level {
     @Override
     protected boolean build() {
         setSize(WIDTH,HEIGHT);
+        int entrance = WIDTH*2+17;
+
+        LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
+        transitions.add(enter);
+
+        LevelTransition exit = new LevelTransition(this, 0, LevelTransition.Type.REGULAR_EXIT);
+        transitions.add(exit);
 
         //首次构建地图
         pro = GO_START;
@@ -90,6 +100,10 @@ public class ColdChestBossLevel extends Level {
         return true;
     }
     private static final short W = Terrain.WALL;
+
+    private static final short X =Terrain.WALL;
+    private static final short A = Terrain.CHASM;
+
     private static final short M = Terrain.WELL;
     private static final short E = Terrain.CHASM;
     private static final short J = Terrain.ENTRANCE;
@@ -108,9 +122,9 @@ public class ColdChestBossLevel extends Level {
 
     private static final int[] WorldRoomShort = {
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
-            W,E,E,E,W,W,W,W,W,E,E,E,E,E,E,E,W,J,W,E,E,E,E,E,E,E,W,W,W,W,W,E,E,E,W,
-            W,E,E,E,O,O,O,O,O,E,E,E,E,E,E,E,W,P,W,E,E,E,E,E,E,E,O,O,O,O,O,E,E,E,W,
-            W,E,E,E,P,P,P,P,P,E,E,E,E,E,E,E,W,P,W,E,E,E,E,E,E,E,P,P,P,P,P,E,E,E,W,
+            W,E,E,E,W,W,W,W,W,E,E,E,E,E,E,E,W,W,W,E,E,E,E,E,E,E,W,W,W,W,W,E,E,E,W,
+            W,E,E,E,O,O,O,O,O,E,E,E,E,E,E,E,W,J,W,E,E,E,E,E,E,E,O,O,O,O,O,E,E,E,W,
+            W,E,E,E,P,P,P,P,P,E,E,E,E,E,E,E,W,O,W,E,E,E,E,E,E,E,P,P,P,P,P,E,E,E,W,
             W,E,E,E,P,E,E,E,P,E,E,E,E,E,E,E,W,K,W,E,E,E,E,E,E,E,P,E,E,E,P,E,E,E,W,
             W,E,P,E,P,E,M,E,P,E,P,E,P,E,P,E,W,P,W,E,P,E,P,E,P,E,P,E,M,E,P,E,P,E,W,
             W,E,E,E,P,E,E,E,P,E,E,E,E,E,E,E,W,P,W,E,E,E,E,E,E,E,P,E,E,E,P,E,E,E,W,
@@ -142,7 +156,6 @@ public class ColdChestBossLevel extends Level {
             W,E,E,W,W,W,W,W,W,W,W,W,W,W,K,K,P,P,P,K,K,W,W,W,W,W,W,W,W,W,W,E,E,E,W,
             W,E,E,E,E,E,E,E,E,E,E,E,E,W,K,K,K,P,K,K,K,W,E,E,E,E,E,E,E,E,E,E,E,E,W,
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
-
     };
 
     private static final int[] MazeRoom = {
@@ -173,12 +186,50 @@ public class ColdChestBossLevel extends Level {
             W,T,W,W,W,W,L,L,W,L,L,W,W,W,W,L,L,W,L,W,L,W,L,L,W,W,W,L,W,L,L,L,L,L,W,
             W,W,W,L,L,L,L,L,W,L,L,L,L,L,W,L,L,W,L,L,L,W,L,L,L,L,W,L,W,W,W,W,W,W,W,
             W,W,W,L,W,L,W,W,W,L,L,L,W,L,W,L,L,W,W,W,L,W,W,W,W,W,W,L,W,L,L,L,L,L,W,
-            W,W,W,L,W,L,L,L,W,L,L,L,W,L,W,L,L,W,L,L,L,L,L,L,L,L,W,L,L,L,W,W,W,L,W,
-            W,W,W,L,W,L,L,W,W,L,W,L,W,L,L,L,L,W,L,W,W,W,L,W,L,L,W,L,W,L,W,E,W,L,W,
-            W,W,W,W,W,L,L,W,W,L,W,L,W,L,W,W,W,W,L,L,W,L,L,W,L,L,L,L,W,L,W,W,W,L,W,
+            W,W,W,L,W,L,L,L,W,L,L,L,W,L,W,L,L,W,L,L,L,L,L,L,L,L,W,L,L,L,X,X,X,L,W,
+            W,W,W,L,W,L,L,W,W,L,W,L,W,L,L,L,L,W,L,W,W,W,L,W,L,L,W,L,W,L,X,A,X,L,W,
+            W,W,W,W,W,L,L,W,W,L,W,L,W,L,W,W,W,W,L,L,W,L,L,W,L,L,L,L,W,L,X,X,X,L,W,
             W,W,W,L,L,L,W,W,W,L,W,L,W,L,L,W,L,L,L,L,L,L,L,W,L,L,L,L,W,L,L,L,L,L,W,
             W,W,W,L,W,L,L,L,W,L,W,L,W,L,L,W,L,W,W,W,W,W,L,W,W,W,W,W,W,W,W,W,W,W,W,
             W,W,W,L,W,L,W,L,W,W,W,W,W,L,W,W,T,L,L,L,W,L,L,L,W,L,L,L,W,L,L,L,W,L,W,
+            W,B,L,L,W,L,W,L,L,L,L,L,L,L,L,W,W,W,W,W,W,L,W,L,L,L,W,L,L,L,W,L,T,L,W,
+            W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+    };
+
+    private static final int[] MazeRoom_C = {
+            W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+            W,L,L,L,L,L,W,L,W,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,L,W,L,W,W,W,L,W,L,W,
+            W,W,W,W,W,L,W,L,W,L,L,L,L,W,W,L,L,L,L,L,L,L,W,L,L,W,L,W,W,L,L,L,L,L,W,
+            W,W,W,B,L,L,W,L,L,L,W,L,L,L,W,L,L,L,W,L,L,L,L,L,L,W,L,L,W,L,W,W,L,L,W,
+            W,W,W,L,W,W,W,L,W,W,W,L,W,L,L,L,L,L,W,L,L,L,L,W,W,W,L,L,L,L,L,L,L,L,W,
+            W,L,L,L,W,L,L,L,L,L,L,L,W,L,L,L,W,L,W,W,W,L,L,W,L,L,L,L,L,L,W,L,L,L,W,
+            W,T,W,L,W,L,W,W,W,L,L,L,W,W,L,L,W,L,W,L,L,L,L,L,L,L,W,W,W,W,W,T,W,L,W,
+            W,W,W,L,L,L,L,L,L,L,L,L,L,L,L,L,W,W,W,L,L,W,W,L,L,L,L,L,L,L,W,W,W,L,W,
+            W,W,W,L,W,W,W,W,W,L,L,L,L,L,W,L,W,L,L,L,L,W,L,L,L,L,W,W,W,L,W,L,L,L,W,
+            W,W,W,L,L,W,L,W,L,L,L,L,L,L,W,L,W,W,W,W,W,W,L,W,L,L,L,L,W,L,W,L,L,L,W,
+            W,W,W,L,L,W,L,W,L,W,W,W,W,W,W,L,W,L,W,L,L,W,L,W,L,L,W,L,W,L,L,L,W,L,W,
+            W,W,W,L,L,L,L,W,L,L,W,L,L,L,W,L,L,L,W,L,L,W,L,W,L,L,W,L,W,L,W,W,W,L,W,
+            W,W,W,W,W,W,L,L,L,L,W,L,L,L,W,L,L,W,W,L,L,L,L,L,L,L,W,L,L,L,L,L,W,L,W,
+            W,W,W,L,L,L,L,L,L,L,W,L,L,L,L,L,L,L,D,B,L,W,L,W,L,L,W,W,W,W,L,W,W,L,W,
+            W,W,W,W,W,L,L,W,L,L,L,L,L,L,L,L,W,W,W,L,L,W,L,W,L,L,L,L,L,L,L,L,W,L,W,
+            W,W,W,L,L,L,W,W,B,W,W,L,L,W,L,L,L,L,W,L,W,W,W,W,W,L,L,L,L,L,L,L,W,L,W,
+            W,W,W,L,L,L,L,W,L,D,L,L,L,W,L,L,L,L,W,L,L,W,L,L,L,L,L,W,W,W,W,W,W,L,W,
+            W,W,W,L,L,L,L,W,L,W,W,L,L,W,L,L,W,L,L,L,L,W,L,W,L,L,L,L,L,L,L,L,L,B,W,
+            W,W,W,L,W,W,W,W,L,L,L,L,L,L,L,L,W,L,L,L,L,W,L,W,W,W,L,L,W,L,L,L,L,W,W,
+            W,W,W,L,L,L,L,W,L,L,L,L,L,L,L,L,W,W,W,W,L,L,L,W,L,W,W,L,W,W,L,W,L,W,W,
+            W,W,W,L,L,L,L,W,L,L,L,L,W,W,W,L,W,L,L,L,L,L,L,W,L,L,L,L,L,L,L,L,L,W,W,
+            W,L,L,L,L,L,L,L,L,L,L,L,W,L,L,L,W,L,W,W,W,W,L,W,L,W,W,W,W,W,W,W,L,W,W,
+            W,L,W,L,L,W,W,W,W,L,W,W,W,W,W,W,W,L,L,L,L,W,L,L,L,L,L,L,L,L,L,W,L,L,W,
+            W,L,W,L,L,L,L,L,W,L,L,L,L,L,W,L,W,W,W,W,L,W,L,L,L,L,L,L,W,L,L,W,L,L,W,
+            W,T,W,W,W,W,L,L,W,L,L,W,W,W,W,L,L,W,L,W,L,W,L,L,W,W,W,L,W,L,L,L,L,L,W,
+            W,W,W,L,L,L,L,L,W,L,L,L,L,L,W,L,L,W,L,L,L,W,L,L,L,L,W,L,W,W,W,W,W,W,W,
+            W,W,W,L,W,L,W,W,W,L,L,L,W,L,W,L,L,W,W,W,L,W,W,W,W,W,W,L,W,L,L,L,L,L,W,
+            W,W,W,L,W,L,L,L,W,L,L,L,W,L,W,L,L,W,L,L,L,L,L,L,L,L,W,L,L,L,O,O,O,L,W,
+            W,W,W,L,W,L,L,W,W,L,W,L,W,L,L,L,L,W,L,W,W,W,L,W,L,L,W,L,W,L,O,P,O,L,W,
+            W,W,W,W,W,L,L,W,W,L,L,L,W,L,W,W,W,W,L,L,W,L,L,W,L,L,L,L,W,L,O,O,O,L,W,
+            W,W,W,L,L,L,W,W,W,L,L,L,W,L,L,W,L,L,L,L,L,L,L,W,L,L,L,L,W,L,L,L,L,L,W,
+            W,W,W,L,W,L,L,L,W,L,L,L,W,L,L,L,L,W,W,W,W,W,L,W,W,W,W,W,W,W,W,W,W,W,W,
+            W,W,W,L,W,L,W,L,W,L,W,L,W,L,W,L,T,L,L,L,W,L,L,L,W,L,L,L,W,L,L,L,W,L,W,
             W,B,L,L,W,L,W,L,L,L,L,L,L,L,L,W,W,W,W,W,W,L,W,L,L,L,W,L,L,L,W,L,T,L,W,
             W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
     };
@@ -223,14 +274,10 @@ public class ColdChestBossLevel extends Level {
 
 
     private void setMapStart() {
-        int entrance = HOME;
+        int entrance = WIDTH*2+17;
 
         LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(enter);
-
-        int doorPos =  WIDTH*3+17;
-        Mob.holdAllies(this, doorPos);
-        Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
 
         LevelTransition exit = new LevelTransition(this, 0, LevelTransition.Type.REGULAR_EXIT);
         transitions.add(exit);
@@ -247,6 +294,10 @@ public class ColdChestBossLevel extends Level {
 
         LevelTransition exit2 = new LevelTransition(this, exit, LevelTransition.Type.REGULAR_EXIT);
         transitions.add(exit2);
+
+        int doorPos = 647;
+        Mob.holdAllies(this, doorPos);
+        Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
     }
 
     private static final HashMap<Integer, Integer> MAIN_PORTAL = new HashMap<>(5);
@@ -304,12 +355,13 @@ public class ColdChestBossLevel extends Level {
                 if(ch.pos==682){
                     Buff.detach(hero, Levitation.class);
                 } else if(ch.pos==111||ch.pos==133) {
-                    Buff.affect( hero, Levitation.class, 114514f );
+                    Buff.affect( hero, Levitation.class, 99999999999999999999999999999999f );
                 }
             }
 
             if(MAIN_PORTAL.containsKey(ch.pos) && pro == MAZE_START) {
                 ScrollOfTeleportation.appear(ch, IF_MAIN_PORTAL.get(ch.pos));
+
                 //传送目标区域 第二场景
                 hero.interrupt();
                 Dungeon.observe();
@@ -369,8 +421,25 @@ public class ColdChestBossLevel extends Level {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于360 1阶段
                         if (pro == START && boss.HP <= 360) {
-                            //动态修改整个房间
-                            changeMap(MazeRoom);
+                            //动态修改整个房间形态
+                            if(Dungeon.isChallenged(STRONGER_BOSSES)){
+                                changeMap(MazeRoom_C);
+                            } else {
+                                changeMap(MazeRoom);
+                            }
+
+                            for (Heap heap : heaps.valueList()) {
+                                for (Item item : heap.items) {
+                                    if(!(item instanceof MIME)){
+                                        item.doPickUp(hero, STARTPOS);
+                                        heap.destroy();
+                                    } else {
+                                        heap.destroy();
+                                    }
+                                }
+                            }
+
+
                             Buff.detach(hero, Levitation.class);
                             //宝箱王移动到看戏位
                             ScrollOfTeleportation.appear(boss, MDX);
@@ -473,6 +542,9 @@ public class ColdChestBossLevel extends Level {
                         }
                     }
                 }
+                //修复召唤物错误
+                Mob.holdAllies(this,STARTPOS);
+                Mob.restoreAllies(this, Dungeon.hero.pos, STARTPOS);
                 break;
             case MAZE_START:
                 //血量低于300后且在MAZE_START枚举中
@@ -483,12 +555,23 @@ public class ColdChestBossLevel extends Level {
                             //动态修改整个房间 宝藏迷宫
                             changeMap(EndMap);
                             //在切换房间的时候立刻切换全新坐标
-                            setMapEnd();
+
+                            for (Heap heap : Dungeon.level.heaps.valueList()) {
+                                    for (Item item : heap.items) {
+                                        if(!(item instanceof MIME)){
+                                            item.doPickUp(hero, 962);
+                                            heap.destroy();
+                                        } else {
+                                            heap.destroy();
+                                    }
+                                }
+                            }
+
+                            ScrollOfTeleportation.appear(hero, 962);
                             Buff.affect(boss, ChampionEnemy.Halo.class);
                             ScrollOfTeleportation.appear(boss,647);
-                            //玩家移动到初始位
-                            ScrollOfTeleportation.appear(hero, 962);
-                            //drop( new PotionOfPurity(),648 );
+
+                            setMapEnd();
 
                             //进行Roll判定
                             if(Statistics.fuckGeneratorAlone==2) {
@@ -543,7 +626,7 @@ public class ColdChestBossLevel extends Level {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于200 4阶段
                         if (pro == VSLINK_START && boss.HP <= 200) {
-                            Buff.detach(boss, ChampionEnemy.Halo.class);
+                            //Buff.detach(boss, ChampionEnemy.Halo.class);
                             boss.baseSpeed *= 2;
                             pro = VSYOU_START;
                         }
@@ -557,19 +640,18 @@ public class ColdChestBossLevel extends Level {
                         //如果楼层为开始且boss血量小于100 判定WIN
                         if (pro == VSYOU_START && boss.HP <= 100) {
                             pro = WIN;
-                            //Buff.detach(boss, ChampionEnemy.Halo.class);
+                            Buff.detach(boss, ChampionEnemy.Halo.class);
                         }
                     }
                 }
                 //水晶自爆
+                break;
+            case WIN:
                 for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
                     if (boss instanceof DCrystal) {
                         boss.die(true);
                     }
                 }
-                break;
-            case WIN:
-                //
                 break;
         }
     }
@@ -591,7 +673,14 @@ public class ColdChestBossLevel extends Level {
 
     @Override
     protected void createItems() {
-
+//        Random.pushGenerator(Random.Long());
+//        ArrayList<Item> bonesItems = Bones.get();
+//        if (bonesItems != null) {
+//            for (Item i : bonesItems) {
+//                drop(i, WIDTH*5+17).setHauntedIfCursed().type = Heap.Type.REMAINS;
+//            }
+//        }
+//        Random.popGenerator();
     }
 
 

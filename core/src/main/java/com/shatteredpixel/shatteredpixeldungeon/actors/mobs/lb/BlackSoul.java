@@ -2,10 +2,12 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -17,7 +19,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor.Glyph;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfPrismaticLight;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -25,7 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWea
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.watabou.utils.Bundle;
@@ -72,22 +76,11 @@ public class BlackSoul extends Mob implements Callback {
         if (lvl >= 8) armor.inscribe(Glyph.random());
         armor.identify();
 
-        //misc1
-        do {
-            misc1 = (KindofMisc)Generator.random(Generator.Category.RING);
-        } while (misc1.cursed);
-        misc1.identify();
-
-        //misc2
-        do {
-            misc2 = (KindofMisc)Generator.random(Generator.Category.RING);
-        } while (misc2.cursed);
-        misc2.identify();
-
         //wand
         do {
-            wand = new WandOfCorrosion();
+            wand = RandomWand();
         } while (wand.cursed);
+        wand.level(Dungeon.depth/5 + Challenges.activeChallenges()/4);
         wand.updateLevel();
         wand.curCharges = Math.min( 10, wand.maxCharges );
         wand.identify();
@@ -99,11 +92,26 @@ public class BlackSoul extends Mob implements Callback {
 
         properties.add(Property.ABYSS);
 
-        HP = HT = (40 + 5*(hero.lvl-1) + hero.HTBoost)/2;
+        HP = HT = (20 + 5*(hero.lvl-1) + hero.HTBoost)/2;
         defenseSkill = (int)(armor.evasionFactor( this, 7 + lvl ));
+    }
 
-        EXP = lvl * 2;
-        if (lvl >= 20) EXP = 100;
+    private Wand RandomWand() {
+        switch (Random.Int(15)){
+            case 6:
+                wand = new WandOfBlastWave();
+                break;
+            case 7:
+                wand = new WandOfCorrosion();
+                break;
+            case 9:
+                wand = new WandOfPrismaticLight();
+                break;
+            default:
+                wand = new WandOfMagicMissile();
+                break;
+        }
+        return wand;
     }
 
     private static final String WEAPON	= "weapon";
@@ -122,6 +130,7 @@ public class BlackSoul extends Mob implements Callback {
         bundle.put( MISC2, misc2 );
         bundle.put( WAND, wand );
         bundle.put( MISSILE, missile );
+        bundle.put( "gold", gold);
     }
 
     @Override
@@ -133,6 +142,7 @@ public class BlackSoul extends Mob implements Callback {
         misc2		= (KindofMisc)		bundle.get( MISC2 );
         wand		= (Wand)			bundle.get( WAND );
         missile		= (MissileWeapon)	bundle.get( MISSILE );
+        gold		= bundle.getInt( "gold" );
         BossHealthBar.assignBoss(this);
     }
 
@@ -191,13 +201,13 @@ public class BlackSoul extends Mob implements Callback {
                 }
                 wand.curCharges--;
 
-            } else if (missile.quantity() > 0) {
+            } else if (missile.quantity() > -1) {
                 if (visible) {
                     sprite.toss( enemy.pos );
                 } else {
                     toss();
                 }
-                missile.quantity--;
+                //missile.quantity--;
             }
 
             return !visible;
@@ -222,15 +232,17 @@ public class BlackSoul extends Mob implements Callback {
         }
     }
 
+    public void onTossComplete() {
+        toss();
+        next();
+    }
+
     public void onZapComplete() {
         zap();
         next();
     }
 
-    public void onTossComplete() {
-        toss();
-        next();
-    }
+
 
     @Override
     public void call() {
@@ -260,12 +272,13 @@ public class BlackSoul extends Mob implements Callback {
     @Override
     public void die( Object cause ) {
         super.die(cause);
-        
-        if (gold > 0) {
-            Dungeon.level.drop( new Gold(gold), pos ).sprite.drop();
+
+        if (hero.buff(LostInventory.class) != null){
+            Dungeon.level.drop( new LostBackpack(), pos).sprite.drop( pos );
+            if (gold > 0) {
+                Dungeon.level.drop( new Gold(gold), pos ).sprite.drop();
+            }
         }
-        Dungeon.level.drop( new LostBackpack(), pos).sprite.drop( pos );
-        GameScene.bossSlain();
 
         yell(Messages.get(this, "ellipsis"));
     }
@@ -273,7 +286,7 @@ public class BlackSoul extends Mob implements Callback {
     @Override
     public void notice() {
         super.notice();
-        if (!BossHealthBar.isAssigned()) {
+        if (!BossHealthBar.isAssigned() && !Dungeon.bossLevel()) {
             BossHealthBar.assignBoss(this);
             yell(Messages.get(this, "question"));
         }

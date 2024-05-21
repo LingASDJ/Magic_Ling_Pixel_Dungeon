@@ -6,9 +6,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
@@ -27,12 +29,12 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
-public class MoloHR extends Mob {
+public class MoloHR extends Boss {
 
     private int combo;
 
     public MoloHR() {
-        this.spriteClass = MolotovHuntsmanSprite.class;
+        this.spriteClass = MolotovHuntsmanSprite.BossMolotovHuntsmanSprite.class;
         this.HT = 180;
         this.HP = 180;
         HUNTING = new Hunting();
@@ -40,7 +42,7 @@ public class MoloHR extends Mob {
         this.defenseSkill = 10;
         flying = true;
         this.EXP = 15;
-        this.baseSpeed = 2F;
+        this.baseSpeed =  Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 1F : 2F;
         this.combo = 0;
         properties.add(Property.BOSS);
         properties.add(Property.FIERY);
@@ -63,6 +65,18 @@ public class MoloHR extends Mob {
         return var5;
     }
 
+    @Override
+    public boolean isInvulnerable(Class effect) {
+        boolean invulnerable = false;
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            if (mob instanceof NewDM720) {
+                invulnerable = true;
+                break;
+            }
+        }
+        return Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && invulnerable;
+    }
+
     public int attackSkill(Char var1) {
         return 56;
     }
@@ -76,7 +90,7 @@ public class MoloHR extends Mob {
     }
 
     public int damageRoll() {
-        return Random.NormalIntRange(30, 40);
+        return Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? Random.NormalIntRange(15, 20) : Random.NormalIntRange(30, 40);
     }
     public static Brew food;
     public static ExoticScroll scrolls;
@@ -91,8 +105,10 @@ public class MoloHR extends Mob {
             //如果新增临死前的话，请将1改为Random.IntRange
             this.sprite.showStatus(16711680, Messages.get(this,"death_msg_"+1));
         }
-        //酸液体清0
-        Statistics.SiderLing = 0;
+
+        if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+            GetBossLoot();
+        }
 
         Statistics.bossScores[2] += 4000;
         Dungeon.level.drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.pos );

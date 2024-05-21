@@ -29,25 +29,25 @@ public class FireMagicGirlSprite extends MobSprite {
 
         texture( Assets.Sprites.FRAS );
 
-        TextureFilm frames = new TextureFilm( texture, 12, 16 );
+        TextureFilm frames = new TextureFilm( texture, 24, 24 );
 
         idle = new Animation( 10, true );
-        idle.frames( frames, 0, 0, 0, 1, 1, 1 );
+        idle.frames( frames, 0, 0, 0, 1, 1, 1,2,2,2 );
 
         run = new Animation( 10, true );
-        run.frames( frames, 0,1,0,1,0,1 );
+        run.frames( frames, 3,4,5 );
 
         pump = new Animation( 12, true );
-        pump.frames( frames, 2,3,2,3,2,3);
+        pump.frames( frames, 6,7,6,7,6,7);
 
         pumpAttack = new Animation ( 12, false );
-        pumpAttack.frames( frames,2,3,2,3,2,3);
+        pumpAttack.frames( frames,7,8,7,8,7,8);
 
         attack = new Animation( 10, false );
-        attack.frames( frames, 2,3,2,3,2,3);
+        attack.frames( frames, 6,7,8);
 
         die = new Animation( 10, false );
-        die.frames( frames,2,3,4,5 );
+        die.frames( frames,9,10,11 );
         zap = attack.clone();
         play(idle);
 
@@ -76,7 +76,7 @@ public class FireMagicGirlSprite extends MobSprite {
                         && new Ballistica( ch.pos, i, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID).collisionPos == i
                         && new Ballistica( i, ch.pos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID).collisionPos == ch.pos){
                     Emitter e = CellEmitter.get(i);
-                    CellEmitter.get( Dungeon.hero.pos ).start(Speck.factory(Speck.STAR), 0.14f, 8);
+                    CellEmitter.get( ch.pos ).start(Speck.factory(Speck.STAR), 0.14f, 8);
                     pumpUpEmitters.add(e);
                 }
             }
@@ -146,6 +146,24 @@ public class FireMagicGirlSprite extends MobSprite {
             super.attack( cell );
 
         }
+    }
+
+    public void zap( int cell ) {
+
+        turnTo( ch.pos , cell );
+        play( zap );
+
+        MagicMissile.boltFromChar( parent,
+                MagicMissile.FIRE,
+                this,
+                cell,
+                new Callback() {
+                    @Override
+                    public void call() {
+                        ((FireMagicDied)ch).onZapComplete();
+                    }
+                } );
+        Sample.INSTANCE.play( Assets.Sounds.ZAP );
     }
 
     @Override

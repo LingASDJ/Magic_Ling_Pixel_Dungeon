@@ -1,14 +1,20 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
@@ -17,6 +23,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Game;
+
+import java.util.ArrayList;
 
 public class WndGoShop extends Window {
     private static final int WIDTH		= 120;
@@ -54,10 +62,27 @@ public class WndGoShop extends Window {
                         }
                 }
                 } else {
-                    InterlevelScene.mode = InterlevelScene.Mode.EXBOSS;
+                    TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+                    if (timeFreeze != null) timeFreeze.disarmPresses();
+                    Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+                    if (timeBubble != null) timeBubble.disarmPresses();
+                    InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+                    InterlevelScene.curTransition = new LevelTransition();
+                    InterlevelScene.curTransition.destDepth = depth;
+                    InterlevelScene.curTransition.destType = LevelTransition.Type.BRANCH_EXIT;
+                    InterlevelScene.curTransition.destBranch = 6;
+                    InterlevelScene.curTransition.type = LevelTransition.Type.BRANCH_EXIT;
+                    InterlevelScene.curTransition.centerCell = -1;
+                    Game.switchScene(InterlevelScene.class);
                     Buff.affect(hero, Cost.class).set((6), 1);
                     Game.switchScene(InterlevelScene.class);
                     //商店抢劫
+                    Buff.affect(hero, MagicGirlSayTimeLast.class).set( (100), 1 );
+                    ArrayList<Ankh> ankh = hero.belongings.getAllItems(Ankh.class);
+                    for (Ankh w : ankh.toArray(new Ankh[0])){
+                        w.detachAll(hero.belongings.backpack);
+                    }
+
                     Statistics.fireGirlnoshopping = true;
                 }
             }

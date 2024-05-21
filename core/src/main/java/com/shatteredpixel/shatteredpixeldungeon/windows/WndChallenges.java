@@ -56,8 +56,6 @@ public class WndChallenges extends Window {
 	private boolean editable;
 	private ArrayList<ChallengeButton> boxes;
 
-	private int totalBoxCount;
-
 	public int index;
 	private static int boundIndex(int index) {
 		int result = index;
@@ -128,11 +126,12 @@ public class WndChallenges extends Window {
 			cb.active = editable;
 
 			//Disable
-			if(Challenges.NAME_IDS[i].equals("cs")||(Challenges.NAME_IDS[i].equals("icedied"))){
+			if(Challenges.NAME_IDS[i].equals("warling")){
 				cb.active = false;
 				cb.checked(false);
 				cb.visible=false;
 			}
+
 
 			for (int ch : Challenges.MASKS) {
 				if ((Dungeon.challenges & ch) != 0 && ch <= MOREROOM && ch != PRO && ch != DHXD) {
@@ -150,7 +149,8 @@ public class WndChallenges extends Window {
 				pos = infoBottom;
 			}
 		}
-		RedButton btnPrev; RedButton btnNext; RedButton btnFirst; RedButton btnLast;
+		RedButton btnPrev;
+		RedButton btnNext;
 		btnPrev = new RedButton(Messages.get(WndChallenges.class,"prev")) {
 			@Override
 			protected void onClick() {
@@ -204,10 +204,24 @@ public class WndChallenges extends Window {
 				}
 			}
 		};
-		btnClear.setRect(btnEnableAll.left()+ GAP, pos+20, (WIDTH - GAP), BTN_HEIGHT);
+		btnClear.setRect(btnEnableAll.left()+ GAP, pos+20, (WIDTH/2f - GAP), BTN_HEIGHT);
 		add(btnClear);
 		if (!editable) {
 			btnClear.enable(false);
+		}
+
+		RedButton btnEnabll = new RedButton(Messages.get(WndChallenges.class,"enablealls"), 7) {
+			@Override
+			protected void onClick() {
+				for (int i = 0; i < boxes.size(); i++) {
+					setOpenCheckedNoUpdate(i);
+				}
+			}
+		};
+		btnEnabll.setRect(btnClear.right()+ GAP, pos+20, (WIDTH/2f - GAP), BTN_HEIGHT);
+		add(btnEnabll);
+		if (!editable) {
+			btnEnabll.enable(false);
 		}
 
 		pos += BTN_HEIGHT+20;
@@ -218,6 +232,10 @@ public class WndChallenges extends Window {
 	private void setCheckedNoUpdate(int id) {
 		boxes.get(id).checked(false);
 	}
+	private void setOpenCheckedNoUpdate(int id) {
+		boxes.get(id).checked(true);
+	}
+
 
 
 	@Override
@@ -358,14 +376,12 @@ public class WndChallenges extends Window {
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_12, new ItemSprite.Glowing(0xd1ce9f));
 			case "stronger_bosses":
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_13, new ItemSprite.Glowing(0xff0000));
-			case "icedied":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14, new ItemSprite.Glowing(0x009999));
 			case "dhxd":
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_15, new ItemSprite.Glowing(0x384976));
 			case "morelevel":
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_16, new ItemSprite.Glowing(0x98bc76));
 			case "cs":
-				return Icons.get(Icons.WARNING);
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_17, new ItemSprite.Glowing(0x08bed5));
 			default:
 				return Icons.get(Icons.PREFS);
 		}

@@ -32,6 +32,7 @@ import com.watabou.utils.PlatformSupport;
 import com.watabou.utils.Point;
 
 import java.awt.Desktop;
+import java.io.File;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -170,5 +171,14 @@ public class DesktopPlatformSupport extends PlatformSupport {
 		} else {
 			return regularsplitter.split(text);
 		}
+	}
+	@Override
+	public void updateGame(String url, UpdateCallback listener) {
+		// TODO
+	}
+
+	@Override
+	public void install(File file) {
+		// TODO
 	}
 }

@@ -22,22 +22,28 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.happyMode;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.bossRushMode;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameNight;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameTime;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.seedCustom;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.youNoItem;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.zeroItemLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
+import static java.lang.Math.min;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -61,14 +67,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessAnmy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessBossRushLow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoRead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessGoodSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLingJing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMixShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessNoMoney;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessQinyue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessRedWhite;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessUnlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
@@ -93,7 +103,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.Mag
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySoftDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
@@ -106,6 +115,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WaterSoulX;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.NightorDay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
@@ -118,6 +128,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
+import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -162,10 +173,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMi
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.MagicBook;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RedWhiteRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
@@ -184,6 +198,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
@@ -213,8 +228,11 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndIceTradeItem;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndRushTradeItem;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
 import com.watabou.noosa.Game;
@@ -231,6 +249,7 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.Objects;
 
 public class Hero extends Char {
 
@@ -310,7 +329,7 @@ public class Hero extends Char {
 		if (boostHP){
 			HP += Math.max(HT - curHT, 0);
 		}
-		HP = Math.min(HP, HT);
+		HP = min(HP, HT);
 	}
 
 	public int STR() {
@@ -455,6 +474,8 @@ public class Hero extends Char {
 		info.heroClass = bundle.getEnum( CLASS, HeroClass.class );
 		info.subClass = bundle.getEnum( SUBCLASS, HeroSubClass.class );
 		Belongings.preview( info, bundle );
+
+		info.name = bundle.contains("name") ? bundle.getString("name") : "";
 	}
 
 	public boolean hasTalent( Talent talent ){
@@ -511,14 +532,16 @@ public class Hero extends Char {
 			return 0;
 		}
 	}
-	
+
 	public String className() {
-		return subClass == null || subClass == HeroSubClass.NONE ? heroClass.title() : subClass.title();
+		HeroSubClass heroSubClass = this.subClass;
+		return (heroSubClass == null || heroSubClass == HeroSubClass.NONE) ? this.heroClass.title() : heroSubClass.title();
 	}
 
+
 	@Override
-	public String name(){
-		return className();
+	public String name() {
+		return this.name.equals("") ? className() : this.name;
 	}
 
 	@Override
@@ -557,10 +580,28 @@ public class Hero extends Char {
 			Buff.affect( this, Nyctophobia.class );
 		}
 
+		if(Dungeon.isChallenged(CS)){
+			Buff.affect( this, NightorDay.class ).set((100), 1);
+		}
+
+		//春游模式
+		if(Statistics.difficultyDLCEXLevel == 1){
+			Buff.affect(hero, BlessBossRushLow.class, ChampionHero.DURATION*123456f);
+		}
+
 	}
-	
+
 	public int tier() {
 		Armor armor = belongings.armor();
+
+		//TODO 临时皮肤策略
+		switch (hero.heroClass.GetSkin()){
+			case 1:
+				return 9;
+			case 2:
+				return 11;
+		}
+
 		if (armor instanceof ClassArmor){
 			return 7;
 		} else if (armor != null){
@@ -599,6 +640,10 @@ public class Hero extends Char {
 		KindOfWeapon wep = belongings.attackingWeapon();
 		
 		float accuracy = 1;
+		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
+			accuracy = CustomPlayer.baseAccuracy;
+		}
+
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
 		
 		if (wep instanceof MissileWeapon){
@@ -612,8 +657,10 @@ public class Hero extends Char {
 		if (buff(Scimitar.SwordDance.class) != null){
 			accuracy *= 1.25f;
 		}
-		
-		if (!RingOfForce.fightingUnarmed(this)) {
+
+		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
+			return  CustomPlayer.baseAccuracy;
+		} else if (!RingOfForce.fightingUnarmed(this)) {
 			return (int)(attackSkill * accuracy * wep.accuracyFactor( this, target ));
 		} else {
 			return (int)(attackSkill * accuracy);
@@ -635,6 +682,9 @@ public class Hero extends Char {
 		}
 		
 		float evasion = defenseSkill;
+		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
+			evasion = CustomPlayer.baseEvasion;
+		}
 		
 		evasion *= RingOfEvasion.evasionMultiplier( this );
 
@@ -656,6 +706,15 @@ public class Hero extends Char {
 
 		if (belongings.armor() != null) {
 			evasion = belongings.armor().evasionFactor(this, evasion);
+		}
+
+		//提升10%的闪避
+		if (buff(BlessQinyue.class) != null){
+			evasion = evasion * 1.1f;
+		}
+    
+		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && CustomPlayer.shouldOverride ){
+			return CustomPlayer.baseEvasion;
 		}
 
 		return Math.round(evasion);
@@ -692,6 +751,9 @@ public class Hero extends Char {
 	@Override
 	public int drRoll() {
 		int dr = super.drRoll();
+		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&!CustomPlayer.shouldOverride ){
+			dr += CustomPlayer.baseArmor;
+		}
 
 		if (belongings.armor() != null) {
 			int armDr = Random.NormalIntRange( belongings.armor().DRMin(), belongings.armor().DRMax());
@@ -711,6 +773,10 @@ public class Hero extends Char {
 		if (buff(HoldFast.class) != null){
 			dr += buff(HoldFast.class).armorBonus();
 		}
+
+		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
+			dr = CustomPlayer.baseArmor;
+		}
 		
 		return dr;
 	}
@@ -718,16 +784,19 @@ public class Hero extends Char {
 	@Override
 	public int damageRoll() {
 		KindOfWeapon wep = belongings.attackingWeapon();
-		int dmg;
+		int dmg=0;
+		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&!CustomPlayer.shouldOverride ){
+			dmg = CustomPlayer.baseDamage;
+		}
 
 		if (!RingOfForce.fightingUnarmed(this)) {
-			dmg = wep.damageRoll( this );
+			dmg += wep.damageRoll( this );
 
 			if (!(wep instanceof MissileWeapon)) dmg += RingOfForce.armedDamageBonus(this);
 		} else {
-			dmg = RingOfForce.damageRoll(this);
+			dmg += RingOfForce.damageRoll(this);
 			if (RingOfForce.unarmedGetsWeaponAugment(this)){
-				dmg = ((Weapon)belongings.attackingWeapon()).augment.damageFactor(dmg);
+				dmg += ((Weapon)belongings.attackingWeapon()).augment.damageFactor(dmg);
 			}
 		}
 
@@ -747,14 +816,21 @@ public class Hero extends Char {
 			dmg = Math.round(dmg * 1.025f + (.025f*pointsInTalent(Talent.WEAPON_RECHARGING)));
 		}
 
+		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
+			dmg = CustomPlayer.baseDamage;
+		}
 		if (dmg < 0) dmg = 0;
 		return dmg;
 	}
 	
 	@Override
 	public float speed() {
+		float speed = 0;
+		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
+			speed += CustomPlayer.baseSpeed;
+		}
 
-		float speed = super.speed();
+		speed += super.speed();
 
 		speed *= RingOfHaste.speedMultiplier(this);
 
@@ -762,6 +838,12 @@ public class Hero extends Char {
 		MIME.GOLD_THREE getSpeed = Dungeon.hero.belongings.getItem(MIME.GOLD_THREE.class);
 		if (getSpeed!=null) {
 			speed *= 1.2f;
+		}
+
+		if(Dungeon.isChallenged(CS) && !gameNight){
+			speed *= 1.10f;
+		} else if(gameTime>350 && gameTime<400) {
+			speed *= 1.05f;
 		}
 
 		if(Dungeon.hero.buff(BlessRedWhite.class) != null) {
@@ -786,7 +868,11 @@ public class Hero extends Char {
 		}
 
 		speed = AscensionChallenge.modifyHeroSpeed(speed);
-		
+
+		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && CustomPlayer.shouldOverride ){
+			speed = CustomPlayer.baseSpeed;
+		}
+
 		return speed;
 		
 	}
@@ -797,7 +883,7 @@ public class Hero extends Char {
 		if (!(w instanceof Weapon))             return true;
 		if (RingOfForce.fightingUnarmed(this))  return true;
 		if (STR() < ((Weapon)w).STRReq())       return false;
-		if (w instanceof Flail)                 return false;
+		if (w instanceof Flail || w instanceof MagicTorch)	return false;
 
 		return super.canSurpriseAttack();
 	}
@@ -834,6 +920,12 @@ public class Hero extends Char {
 		}
 
 		float delay = 1f;
+		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame ){
+			if(!CustomPlayer.shouldOverride)
+				delay = CustomPlayer.baseAttackDelay;
+			else if(CustomPlayer.shouldOverride)
+				return CustomPlayer.baseAttackDelay;
+		}
 
 		if (!RingOfForce.fightingUnarmed(this)) {
 			
@@ -884,6 +976,62 @@ public class Hero extends Char {
 	
 	@Override
 	public boolean act() {
+
+		if(Statistics.zeroItemLevel == 8 && Dungeon.depth == 0){
+			PaswordBadges.WHATSUP();
+			zeroItemLevel++;
+		}
+
+		if(!youNoItem && Statistics.zeroItemLevel >= 4){
+
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					GameScene.show( new WndMessage(Messages.get(Hero.class,"no_item")));
+					GLog.p(Messages.get(Hero.class,"no_item"));
+					youNoItem = true;
+				}
+			});
+		}
+
+		if (Challenges.activeChallenges() >= 10 && !lanterfireactive && !Dungeon.isChallenged(PRO)) {
+			GLog.n(Messages.get(WndStory.class, "warning"));
+		}
+
+		if (Challenges.activeChallenges() >= 10 && !lanterfireactive && !Dungeon.isChallenged(PRO) || Dungeon.isChallenged(DHXD) && !lanterfireactive) {
+			//灯火前行 4.0
+			hero.lanterfire = 100 - min(Challenges.activeChallenges() * 4, 45);
+
+			new OilLantern().quantity(1).identify().collect();
+
+			lanterfireactive = true;
+
+			Buff.affect( this, Nyctophobia.class );
+
+			if(lanterfire>50){
+				switch (Random.Int(5)) {
+					case 0:
+					default:
+						Buff.affect(hero, BlessMobDied.class).set((100), 1);
+						break;
+					case 1:
+						Buff.affect(hero, BlessMixShiled.class).set((100), 1);
+						break;
+					case 2:
+						Buff.affect(hero, BlessImmune.class).set((100), 1);
+						break;
+					case 3:
+						Buff.affect(hero, BlessGoRead.class).set((100), 1);
+						break;
+					case 4:
+						new WandOfAnmy().quantity(1).identify().collect();
+						Buff.affect(hero, BlessAnmy.class).set((100), 1);
+				}
+				GLog.b(Messages.get(WndStory.class, "letxz"));
+			}
+
+
+		}
 		
 		//calls to dungeon.observe will also update hero's local FOV.
 		fieldOfView = Dungeon.level.heroFOV;
@@ -894,7 +1042,7 @@ public class Hero extends Char {
 		
 		if (!ready) {
 			//do a full observe (including fog update) if not resting.
-			if (!resting || buff(MindVision.class) != null || buff(Awareness.class) != null) {
+			if (!resting || buff(MindVision.class) != null || buff(Awareness.class) != null || buff(SmallLightHeader.SAwareness.class)!=null) {
 				Dungeon.observe();
 			} else {
 				//otherwise just directly re-calculate FOV
@@ -940,6 +1088,12 @@ public class Hero extends Char {
 				
 			} else if (curAction instanceof HeroAction.Buy) {
 				actResult = actBuy( (HeroAction.Buy)curAction );
+
+			} else if (curAction instanceof HeroAction.BuyIce) {
+				actResult = actBuyIce( (HeroAction.BuyIce)curAction );
+
+			} else if (curAction instanceof HeroAction.BuyRush) {
+				actResult = actBuyRush( (HeroAction.BuyRush)curAction );
 				
 			}else if (curAction instanceof HeroAction.PickUp) {
 				actResult = actPickUp( (HeroAction.PickUp)curAction );
@@ -973,7 +1127,7 @@ public class Hero extends Char {
 		
 		return actResult;
 	}
-	
+
 	public void busy() {
 		ready = false;
 	}
@@ -1025,6 +1179,8 @@ public class Hero extends Char {
             default:
 				if(Dungeon.depth < 20){
 					Buff.affect(hero, BlessNoMoney.class).set((100), 1);
+				} else {
+					Buff.affect(hero, BlessMixShiled.class).set((100), 1);
 				}
                 break;
             case 1:
@@ -1044,6 +1200,8 @@ public class Hero extends Char {
         }
         GLog.p(Messages.get(WndStory.class, "good"));
     }
+
+
 	
 	private boolean actInteract( HeroAction.Interact action ) {
 		
@@ -1076,11 +1234,72 @@ public class Hero extends Char {
 			ready();
 			
 			Heap heap = Dungeon.level.heaps.get( dst );
-			if (heap != null && heap.type == Type.FOR_SALE && heap.size() == 1) {
+			if (heap != null && heap.type == Type.FOR_SALE && heap.size() == 1 ) {
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {
-						GameScene.show( new WndTradeItem( heap ) );
+						if(bossRushMode){
+							GameScene.show( new WndRushTradeItem( heap ) );
+						} else {
+							GameScene.show( new WndTradeItem( heap ) );
+						}
+
+					}
+				});
+			}
+
+			return false;
+
+		} else if (getCloser( dst )) {
+
+			return true;
+
+		} else {
+			ready();
+			return false;
+		}
+	}
+
+	private boolean actBuyIce( HeroAction.BuyIce action ) {
+		int dst = action.dst;
+		if (pos == dst) {
+
+			ready();
+
+			Heap heap = Dungeon.level.heaps.get( dst );
+			if (heap != null && heap.type == Type.FOR_ICE && heap.size() == 1) {
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						GameScene.show( new WndIceTradeItem( heap ) );
+					}
+				});
+			}
+
+			return false;
+
+		} else if (getCloser( dst )) {
+
+			return true;
+
+		} else {
+			ready();
+			return false;
+		}
+	}
+
+	private boolean actBuyRush( HeroAction.BuyRush action ) {
+		int dst = action.dst;
+		if (pos == dst) {
+
+			ready();
+
+			Heap heap = Dungeon.level.heaps.get( dst );
+			if (heap != null && heap.type == Type.FOR_RUSH && heap.size() == 1) {
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						GameScene.show( new WndRushTradeItem( heap ) );
 					}
 				});
 			}
@@ -1203,7 +1422,7 @@ public class Hero extends Char {
 			path = null;
 			
 			Heap heap = Dungeon.level.heaps.get( dst );
-			if (heap != null && (heap.type != Type.HEAP && heap.type != Type.FOR_SALE)) {
+			if (heap != null && (heap.type != Type.HEAP && heap.type != Type.FOR_SALE && heap.type != Type.FOR_ICE && heap.type != Type.FOR_RUSH)) {
 				
 				if ((heap.type == Type.LOCKED_CHEST && Notes.keyCount(new GoldenKey(Dungeon.depth)) < 1)
 					|| (heap.type == Type.CRYSTAL_CHEST && Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1)|| (heap.type == Type.BLACK && Notes.keyCount(new BlackKey(Dungeon.depth)) < 1)){
@@ -1252,13 +1471,12 @@ public class Hero extends Char {
 			boolean hasKey = false;
 			int door = Dungeon.level.map[doorCell];
 			
-			if (door == Terrain.LOCKED_DOOR
-					&& Notes.keyCount(new IronKey(Dungeon.depth)) > 0) {
+			if (door == Terrain.LOCKED_DOOR && Notes.keyCount(new IronKey(Dungeon.depth)) > 0 || checkUnlocked()) {
 				
 				hasKey = true;
 				
 			} else if (door == Terrain.CRYSTAL_DOOR
-					&& Notes.keyCount(new CrystalKey(Dungeon.depth)) > 0) {
+					&& Notes.keyCount(new CrystalKey(Dungeon.depth)) > 0 || checkUnlocked()) {
 
 				hasKey = true;
 
@@ -1594,16 +1812,15 @@ public class Hero extends Char {
 		if (wep != null) damage = wep.proc( this, enemy, damage );
 
 		damage = Talent.onAttackProc( this, enemy, damage );
-		
-		switch (subClass) {
-		case SNIPER:
+
+		if (Objects.requireNonNull(subClass) == HeroSubClass.SNIPER) {
 			if (wep instanceof MissileWeapon && !(wep instanceof SpiritBow.SpiritArrow) && enemy != this) {
 				Actor.add(new Actor() {
-					
+
 					{
 						actPriority = VFX_PRIO;
 					}
-					
+
 					@Override
 					protected boolean act() {
 						if (enemy.isAlive()) {
@@ -1615,8 +1832,6 @@ public class Hero extends Char {
 					}
 				});
 			}
-			break;
-		default:
 		}
 		
 		return damage;
@@ -1727,7 +1942,7 @@ public class Hero extends Char {
 		float flashIntensity = 0.25f * (percentDMG * percentDMG) / percentHP;
 		//if the intensity is very low don't flash at all
 		if (flashIntensity >= 0.05f){
-			flashIntensity = Math.min(1/3f, flashIntensity); //cap intensity at 1/3
+			flashIntensity = min(1/3f, flashIntensity); //cap intensity at 1/3
 			GameScene.flash( (int)(0xFF*flashIntensity) << 16 );
 			if (isAlive()) {
 				if (flashIntensity >= 1/6f) {
@@ -1882,7 +2097,7 @@ public class Hero extends Char {
 					&& (!flying || buff(Levitation.class) != null && buff(Levitation.class).detachesWithinDelay(delay))){
 				if (!Chasm.jumpConfirmed){
 
-					if(Dungeon.branch != 0){
+					if(Dungeon.branch != 0 && !bossRushMode || Dungeon.depth == 5 ){
 						if(buff(Levitation.class) != null){
 							GLog.n(Messages.get(Hero.class, "error_no"));
 						}
@@ -1961,7 +2176,7 @@ public class Hero extends Char {
 				//moving to an item doesn't auto-pickup when enemies are near...
 				&& (visibleEnemies.size() == 0 || cell == pos ||
 				//...but only for standard heaps. Chests and similar open as normal.
-				(heap.type != Type.HEAP && heap.type != Type.FOR_SALE))) {
+				(heap.type != Type.HEAP && heap.type != Type.FOR_SALE && heap.type != Type.FOR_ICE && heap.type != Type.FOR_RUSH))) {
 
 			switch (heap.type) {
 			case HEAP:
@@ -1972,6 +2187,16 @@ public class Hero extends Char {
 					new HeroAction.Buy( cell ) :
 					new HeroAction.PickUp( cell );
 				break;
+			case FOR_ICE:
+					curAction = heap.size() == 1 && heap.peek().iceCoinValue() > 0 ?
+							new HeroAction.BuyIce( cell ) :
+							new HeroAction.PickUp( cell );
+					break;
+			case FOR_RUSH:
+				curAction = heap.size() == 1 && heap.peek().RushValue() > 0 ?
+						new HeroAction.BuyRush( cell ) :
+						new HeroAction.PickUp( cell );
+			break;
 			default:
 				curAction = new HeroAction.OpenChest( cell );
 			}
@@ -1989,13 +2214,9 @@ public class Hero extends Char {
 			curAction = new HeroAction.LvlTransition( cell );
 			
 		}  else {
-			
-			if (!Dungeon.level.visited[cell] && !Dungeon.level.mapped[cell]
-					&& Dungeon.level.traps.get(cell) != null && Dungeon.level.traps.get(cell).visible) {
-				walkingToVisibleTrapInFog = true;
-			} else {
-				walkingToVisibleTrapInFog = false;
-			}
+
+			walkingToVisibleTrapInFog = !Dungeon.level.visited[cell] && !Dungeon.level.mapped[cell]
+					&& Dungeon.level.traps.get(cell) != null && Dungeon.level.traps.get(cell).visible;
 			
 			curAction = new HeroAction.Move( cell );
 			lastAction = null;
@@ -2063,7 +2284,7 @@ public class Hero extends Char {
 		boolean levelUp = false;
 		while (this.exp >= maxExp()) {
 			this.exp -= maxExp();
-			if (lvl < MAX_LEVEL || Dungeon.depth>25 && lvl < 40) {
+			if (lvl < MAX_LEVEL) {
 				lvl++;
 				levelUp = true;
 				
@@ -2132,7 +2353,7 @@ public class Hero extends Char {
 
 		if (sprite != null && added) {
 			String msg = buff.heroMessage();
-			if (msg != null){
+			if (msg != null && !msg.isEmpty()){
 				GLog.w(msg);
 			}
 
@@ -2171,21 +2392,20 @@ public class Hero extends Char {
         switch (Random.Int(5)) {
             case 0:
             default:
-                Buff.affect(hero, MagicGirlSayMoneyMore.class).set((100), 1);
+				if(Dungeon.shopOnLevel()){
+					Buff.affect(hero, MagicGirlSayMoneyMore.class).set((100), 1);
+				}
                 break;
             case 1:
-                Buff.affect(hero, MagicGirlSaySoftDied.class).set((100), 1);
-                break;
-            case 2:
                 Buff.affect(hero, MagicGirlSayCursed.class).set((100), 1);
                 break;
-            case 3:
+            case 2:
                 Buff.affect(hero, MagicGirlSaySlowy.class).set((100), 1);
                 break;
-            case 4:
+            case 3:
                 Buff.affect(hero, MagicGirlSayKill.class).set((100), 1);
                 break;
-            case 5:
+            case 4:
                 Buff.affect(hero, MagicGirlSayNoSTR.class).set((100), 1);
                 break;
         }
@@ -2218,10 +2438,9 @@ public class Hero extends Char {
 
         bundle.put(CAKEUSED, CakeUsed);
 
-        if (!this.name.equals("")) {
-            bundle.put("name", this.name);
-        }
-
+		if (!this.name.equals("")) {
+			bundle.put("name", this.name);
+		}
 
         belongings.storeInBundle(bundle);
     }
@@ -2362,9 +2581,10 @@ public class Hero extends Char {
 	}
 
 	private boolean actMove( HeroAction.Move action ) {
-
 		//水中祝福
-		MoveWater();
+		if(Dungeon.branch == 0){
+			MoveWater();
+		}
 
 		if(!seedCustom && !Dungeon.customSeedText.isEmpty()){
 			seedCustom = true;
@@ -2379,6 +2599,22 @@ public class Hero extends Char {
         } else {
             Buff.detach(hero, BlessRedWhite.class);
         }
+
+		LingJing lingJing = hero.belongings.getItem(LingJing.class);
+		if(lingJing != null && Statistics.deepestFloor <11) {
+			Buff.affect(hero, BlessLingJing.class).set((100), 1);
+		} else {
+			Buff.detach(hero, BlessLingJing.class);
+			Buff.detach(hero, BlessLingJing.LanterBarrier.class);
+		}
+
+
+		MagicBook qb = hero.belongings.getItem(MagicBook.class);
+		if(qb != null && !Dungeon.whiteDaymode && RegularLevel.birthday == RegularLevel.DevBirthday.CHAPTER_BIRTHDAY) {
+			Buff.affect(hero, BlessQinyue.class).set((100), 1);
+		} else {
+			Buff.detach(hero, BlessQinyue.class);
+		}
 
         DriedRose rose = hero.belongings.getItem(DriedRose.class);
         Red red = hero.belongings.getItem(Red.class);
@@ -2431,52 +2667,15 @@ public class Hero extends Char {
         }
 
 
-        int chCount = 0;
-        for (int ch : Challenges.MASKS) {
-            if ((Dungeon.challenges & ch) != 0) chCount++;
-        }
+
+//        // 深度调查
+//        if ((Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
+//            happyMode = true;
+//            GLog.n(Messages.get(WndStory.class, "letsplay"));
+//        }
 
 
-        // 深度调查
-        if ((Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
-            happyMode = true;
-            GLog.n(Messages.get(WndStory.class, "letsplay"));
-        }
 
-
-        if (chCount >= 6 && !lanterfireactive && !Dungeon.isChallenged(PRO)) {
-            GLog.n(Messages.get(WndStory.class, "warning"));
-        }
-
-        if (chCount >= 3 && !lanterfireactive && !Dungeon.isChallenged(PRO) || Dungeon.isChallenged(DHXD) && !lanterfireactive) {
-            //灯火前行 3.2
-            lanterfire = 100 - (chCount >= 6 ? chCount * 3 : 0);
-            new OilLantern().quantity(1).identify().collect();
-
-            lanterfireactive = true;
-
-			Buff.affect( this, Nyctophobia.class );
-
-            switch (Random.Int(5)) {
-                case 0:
-                default:
-                    Buff.affect(hero, BlessMobDied.class).set((100), 1);
-                    break;
-                case 1:
-                    Buff.affect(hero, BlessMixShiled.class).set((100), 1);
-                    break;
-                case 2:
-                    Buff.affect(hero, BlessImmune.class).set((100), 1);
-                    break;
-                case 3:
-                    Buff.affect(hero, BlessGoRead.class).set((100), 1);
-                    break;
-                case 4:
-                    new WandOfAnmy().quantity(1).identify().collect();
-                    Buff.affect(hero, BlessAnmy.class).set((100), 1);
-            }
-            GLog.b(Messages.get(WndStory.class, "letxz"));
-        }
 
         if (getCloser(action.dst)) {
             canSelfTrample = false;
@@ -2514,13 +2713,17 @@ public class Hero extends Char {
             }
         }
 
-        //灯火值低于35死亡生成自己的邪恶面，并清空金币，将金币保存到json文件。（灵感：空洞骑士）
+        //灯火值低于40 死亡生成自己的邪恶面，并清空金币，背包也一并带走。（灵感：空洞骑士）
         for (Ankh i : belongings.getAllItems(Ankh.class)) {
             if (ankh != null || i.isBlessed()) {
-                if (lanterfireactive && hero.lanterfire <= 30 && !i.isBlessed()) {
+                if (lanterfireactive && hero.lanterfire <= 40 && !i.isBlessed() || hero.buff(LostInventory.class) != null) {
                     BlackSoul s = new BlackSoul();
-                    s.pos = Dungeon.hero.pos;
-                    //s.gold = Dungeon.gold;
+					if(Statistics.ankhToExit){
+						s.pos = Dungeon.level.entrance();
+					} else {
+						s.pos = Dungeon.hero.pos;
+					}
+					s.gold = Dungeon.gold;
                     Dungeon.gold = 0;
                     s.state = s.SLEEPING;
                     GameScene.add(s);
@@ -2689,27 +2892,34 @@ public class Hero extends Char {
 	public void onMotionComplete() {
 		GameScene.checkKeyHold();
 	}
+
+	//万能解锁
+	private boolean checkUnlocked() {
+		return Dungeon.hero.buff(BlessUnlock.class) != null;
+	}
 	
 	@Override
 	public void onOperateComplete() {
 		
 		if (curAction instanceof HeroAction.Unlock) {
 
-			int doorCell = ((HeroAction.Unlock)curAction).dst;
+			int doorCell = curAction.dst;
 			int door = Dungeon.level.map[doorCell];
 			
 			if (Dungeon.level.distance(pos, doorCell) <= 1) {
-				boolean hasKey = true;
+				boolean hasKey;
 				if (door == Terrain.LOCKED_DOOR) {
-					hasKey = Notes.remove(new IronKey(Dungeon.depth));
+					hasKey = Notes.remove(new IronKey(Dungeon.depth)) || checkUnlocked();
 					if (hasKey) Level.set(doorCell, Terrain.DOOR);
+					if(checkUnlocked()) Buff.detach(this,BlessUnlock.class);
 				} else if (door == Terrain.CRYSTAL_DOOR) {
-					hasKey = Notes.remove(new CrystalKey(Dungeon.depth));
+					hasKey = Notes.remove(new CrystalKey(Dungeon.depth)) || checkUnlocked();
 					if (hasKey) {
 						Level.set(doorCell, Terrain.EMPTY);
 						Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 						CellEmitter.get( doorCell ).start( Speck.factory( Speck.DISCOVER ), 0.025f, 20 );
 					}
+					if(checkUnlocked()) Buff.detach(this,BlessUnlock.class);
 				} else {
 					hasKey = Notes.remove(new SkeletonKey(Dungeon.depth));
 					if (hasKey) Level.set(doorCell, Terrain.UNLOCKED_EXIT);
@@ -2724,7 +2934,7 @@ public class Hero extends Char {
 			
 		} else if (curAction instanceof HeroAction.OpenChest) {
 			
-			Heap heap = Dungeon.level.heaps.get( ((HeroAction.OpenChest)curAction).dst );
+			Heap heap = Dungeon.level.heaps.get( curAction.dst );
 			
 			if (Dungeon.level.distance(pos, heap.pos) <= 1){
 				boolean hasKey = true;
@@ -2828,7 +3038,7 @@ public class Hero extends Char {
 
 		int left, right;
 		int curr;
-		for (int y = Math.max(0, c.y - distance); y <= Math.min(Dungeon.level.height()-1, c.y + distance); y++) {
+		for (int y = Math.max(0, c.y - distance); y <= min(Dungeon.level.height()-1, c.y + distance); y++) {
 			if (!circular){
 				left = c.x - distance;
 			} else if (rounding[Math.abs(c.y - y)] < Math.abs(c.y - y)) {
@@ -2840,7 +3050,7 @@ public class Hero extends Char {
 				}
 				left = c.x - left;
 			}
-			right = Math.min(Dungeon.level.width()-1, c.x + c.x - left);
+			right = min(Dungeon.level.width()-1, c.x + c.x - left);
 			left = Math.max(0, left);
 			for (curr = left + y * Dungeon.level.width(); curr <= right + y * Dungeon.level.width(); curr++){
 
@@ -3024,24 +3234,24 @@ public class Hero extends Char {
 	}
 
     public void healLantern(float value) {
-        lanterfire = Math.min(lanterfire + value, 100);
+        lanterfire = min(lanterfire + value, 100);
         hero.sprite.showStatus(0x00ff00, String.valueOf(value));
     }
 
     //寒冰值系统
     public void damageIcehp(int value) {
         icehp += value;
-        hero.sprite.showStatus(0x009999, String.valueOf("-" + value));
+        hero.sprite.showStatus(0x009999, "-" + value);
     }
 
     public void healIcehp(int value) {
         if (icehp > 0) {
             icehp -= value;
         }
-        hero.sprite.showStatus(0x00ffff, String.valueOf("+" + value));
+        hero.sprite.showStatus(0x00ffff, "+" + value);
     }
 
-    public static interface Doom {
-        public void onDeath();
+    public interface Doom {
+        void onDeath();
     }
 }

@@ -2,26 +2,37 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.Cerberus;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.TyphonPlot;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.TyphonPlot;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TyphonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
+import com.watabou.noosa.tweeners.Delayer;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
@@ -91,6 +102,53 @@ public class Typhon extends NTNPC {
             });
             first = false;
             return true;
+        } else if(!secnod && !rd) {
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndOptions(new TyphonSprite(),
+                            Messages.titleCase(Messages.get(Typhon.class, "name")),
+                            Messages.get(Typhon.class, "quest_start_prompt"),
+                            Messages.get(Typhon.class, "enter_yes"),
+                            Messages.get(Typhon.class, "enter_no")) {
+                        @Override
+                        protected void onSelect(int index) {
+                            if (index == 0) {
+                                Statistics.questScores[4] += 30000;
+                                Dungeon.win( Typhon.class );
+                                Dungeon.deleteGame( GamesInProgress.curSlot, true );
+                                Badges.CITY_END();
+                                GameScene.scene.add(new Delayer(0.1f){
+                                    @Override
+                                    protected void onComplete() {
+                                        GameScene.scene.add(new Delayer(3f){
+                                            @Override
+                                            protected void onComplete() {
+                                                Game.switchScene( RankingsScene.class );
+                                            }
+                                        });
+                                    }
+                                });
+                                Music.INSTANCE.playTracks(
+                                        new String[]{Assets.Music.THEME_2, Assets.Music.THEME_1},
+                                        new float[]{1, 1},
+                                        false);
+                            } else if(index == 1){
+                                yell( Messages.get(Typhon.class, "goodluck", Dungeon.hero.name()) );
+                                Buff buff = hero.buff(TimekeepersHourglass.timeFreeze.class);
+                                if (buff != null) buff.detach();
+                                buff = hero.buff(Swiftthistle.TimeBubble.class);
+                                if (buff != null) buff.detach();
+                                InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+                                InterlevelScene.returnDepth = 25;
+                                InterlevelScene.returnPos = -1;
+                                Game.switchScene( InterlevelScene.class );
+                            }
+                        }
+                    });
+                }
+
+            });
         } else {
             tell(Messages.get(Typhon.class,"now_letgo"));
         }
@@ -107,7 +165,7 @@ public class Typhon extends NTNPC {
 
         final int chance = Random.NormalIntRange(50,120);
 
-        if(look>chance && rd) {
+        if(look>chance && rd && secnod) {
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                 if (mob instanceof Cerberus) {
                     ScrollOfTeleportation.appear(mob, 356);

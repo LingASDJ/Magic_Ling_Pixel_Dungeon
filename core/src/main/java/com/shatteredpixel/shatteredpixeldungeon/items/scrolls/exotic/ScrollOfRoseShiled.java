@@ -45,10 +45,10 @@ public class ScrollOfRoseShiled extends Scroll {
             inputs =  new Class[]{PotionOfPurity.class, AlchemicalCatalyst.class, StoneOfBlink.class};
             inQuantity = new int[]{1, 1, 1};
 
-            cost = 14;
+            cost = 20;
 
             output = ScrollOfRoseShiled.class;
-            outQuantity = 3;
+            outQuantity = 2;
         }
 
     }
@@ -67,7 +67,7 @@ public class ScrollOfRoseShiled extends Scroll {
     @Override
     public void doRead() {
         detach(curUser.belongings.backpack);
-        Buff.prolong(hero, RoseShiled.class, 10f);
+        Buff.prolong(hero, RoseShiled.class, 6f);
         setKnown();
         new Flare( 5, 32 ).color( 0xFF00FF, true ).show( curUser.sprite, 2f );
 

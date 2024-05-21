@@ -14,11 +14,6 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 public class MagicGirlSayTimeLast extends MagicGirlDebuff {
-
-    {
-        type = buffType.POSITIVE;
-    }
-
     public static int level = 0;
     private int interval = 1;
 

@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -75,7 +76,7 @@ import com.watabou.utils.Reflection;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class DwarfKing extends Mob {
+public class DwarfKing extends Boss {
 
 	{
 		spriteClass = KingSprite.class;
@@ -547,8 +548,8 @@ public class DwarfKing extends Mob {
 	public void die(Object cause) {
 
 		GameScene.bossSlain();
-		//酸液体清0
-		Statistics.SiderLing = 0;
+		
+		
 		super.die( cause );
 
 		Heap h = Dungeon.level.heaps.get(NewCityBossLevel.throne);
@@ -784,7 +785,7 @@ public class DwarfKing extends Mob {
 		@Override
 		public void detach() {
 			super.detach();
-			for (Mob m : Dungeon.level.mobs){
+			for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
 				if (m instanceof DwarfKing){
 					int damage = m.HT / (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 18 : 12);
 					m.damage(damage, this);

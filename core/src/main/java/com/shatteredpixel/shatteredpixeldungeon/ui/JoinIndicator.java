@@ -4,6 +4,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndBestiary;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
@@ -68,7 +70,7 @@ public class JoinIndicator extends Button {
             @Override
             protected void onClick() {
                 super.onClick();
-                //GameScene.show(new WndBestiary());
+                GameScene.show(new WndBestiary());
             }
 
         });

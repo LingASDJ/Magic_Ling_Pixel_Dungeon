@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
@@ -46,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
@@ -75,7 +77,7 @@ import com.watabou.utils.Rect;
 
 import java.util.ArrayList;
 
-public class DM300 extends Mob {
+public class DM300 extends Boss {
 
 	{
 		spriteClass = DM300Sprite.class;
@@ -560,8 +562,8 @@ public class DM300 extends Mob {
 
 		super.die( cause );
 
-		//酸液体清0
-		Statistics.SiderLing = 0;
+		
+		
 
 		GameScene.bossSlain();
 		Dungeon.level.unseal();
@@ -581,6 +583,10 @@ public class DM300 extends Mob {
 			Badges.validateBossChallengeCompleted();
 		}
 		Statistics.bossScores[2] += 3000;
+
+		if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+			Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.RING),pos);
+		}
 
 		LloydsBeacon beacon = Dungeon.hero.belongings.getItem(LloydsBeacon.class);
 		if (beacon != null) {

@@ -5,6 +5,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDiedTO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
+import com.shatteredpixel.shatteredpixeldungeon.items.KingGold;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 
 public class AncityLevel extends Level {
@@ -32,6 +34,12 @@ public class AncityLevel extends Level {
         color1 = 5459774;
         color2 = 12179041;
     }
+
+//    public void occupyCell(Char ch) {
+//        super.occupyCell(ch);
+//        GLog.p(String.valueOf(hero.pos));
+//        GLog.b(String.valueOf(Statistics.zeroItemLevel));
+//    }
 
     public AncityLevel() {
         this.viewDistance = 34;
@@ -72,9 +80,9 @@ public class AncityLevel extends Level {
 
 
         int entranceCell =  (this.width * 8 + 8);
-        int exitCell =  (this.width * 8 + 8);
+        int exitCell =  0;
 
-        LevelTransition enter = new LevelTransition(this, entranceCell, LevelTransition.Type.REGULAR_ENTRANCE);
+        LevelTransition enter = new LevelTransition(this, entranceCell, LevelTransition.Type.REGULAR_EXIT);
         transitions.add(enter);
 
         LevelTransition exit = new LevelTransition(this, exitCell, LevelTransition.Type.REGULAR_ENTRANCE);
@@ -103,7 +111,11 @@ public class AncityLevel extends Level {
 
     @Override
     protected void createItems() {
-        // TODO Auto-generated method stub
+        drop( new PotionOfExperience(), 143 );
+        drop( new PotionOfExperience(), 145 );
+        drop( new PotionOfExperience(), 161 );
+        drop( new PotionOfExperience(), 127 );
+        drop( new KingGold(), 144 );
     }
 
     public int randomRespawnCell() {
@@ -111,7 +123,7 @@ public class AncityLevel extends Level {
     }
 
     public String tilesTex() {
-        return Assets.Environment.TILES_COLD;
+        return Assets.Environment.TILES_CAVES;
     }
 
     public String waterTex() {

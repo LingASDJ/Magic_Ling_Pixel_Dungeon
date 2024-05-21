@@ -23,12 +23,10 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
@@ -36,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Music;
 
 import java.io.IOException;
@@ -45,7 +44,6 @@ public class WndGame extends Window {
 	private static final int WIDTH		= 120;
 	private static final int BTN_HEIGHT	= 20;
 	private static final int GAP		= 2;
-	
 	private int pos;
 	
 	public WndGame() {
@@ -75,20 +73,20 @@ public class WndGame extends Window {
 			curBtn.icon(Icons.get(Icons.CHALLENGE_ON));
 		}
 
-		// Restart
-		if (Dungeon.hero == null || !Dungeon.hero.isAlive()) {
+		boolean shouldRestart = Dungeon.hero == null || !Dungeon.hero.isAlive();
 
-			addButton( curBtn = new RedButton( Messages.get(this, "start") ) {
-				@Override
-				protected void onClick() {
-					GamesInProgress.selectedClass = Dungeon.hero.heroClass;
-					GamesInProgress.curSlot = GamesInProgress.firstEmpty();
-					ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
-				}
-			} );
-			curBtn.icon(Icons.get(Icons.ENTER));
+		addButton(curBtn = new RedButton(Messages.get(this, shouldRestart ? "start" : "restart" )) {
+			@Override
+			protected void onClick() {
+				super.onClick();
+				GameScene.show(new WndRestart());
+			}
+		});
+		curBtn.icon(Icons.get( shouldRestart ? Icons.ENTER : Icons.CHANGES ));
+
+		// Restart
+		if (shouldRestart) {
 			curBtn.textColor(Window.TITLE_COLOR);
-			
 			addButton( curBtn = new RedButton( Messages.get(this, "rankings") ) {
 				@Override
 				protected void onClick() {
@@ -117,6 +115,17 @@ public class WndGame extends Window {
 		});
 		curBtn.icon(Icons.get(Icons.DISPLAY));
 		if (SPDSettings.intro()) curBtn.enable(false);
+
+		if(!Dungeon.hero.ready) {
+			// Debug
+			addButton(curBtn = new RedButton(Messages.get(this, "debug")) {
+				@Override
+				protected void onClick() {
+					GameScene.logActorThread = true;
+				}
+			});
+			curBtn.icon(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16));
+		}
 
 		resize( WIDTH, pos );
 	}

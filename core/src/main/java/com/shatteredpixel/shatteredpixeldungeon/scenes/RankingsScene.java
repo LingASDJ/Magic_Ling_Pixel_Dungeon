@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogReal;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Typhon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -180,6 +181,7 @@ public class RankingsScene extends PixelScene {
 		
 		private static final int[] TEXT_WIN	= {0xFFFF88, 0xB2B25F};
 		private static final int[] TEXT_WIN2	= {0xCF6E28, 0xC66c28};
+		private static final int[] TEXT_WIN3	= {0x6ECF28, 0xC6286c};
 		private static final int[] TEXT_LOSE= {0xDDDDDD, 0x888888};
 		private static final int FLARE_WIN	= 0x888866;
 		private static final int FLARE_LOSE	= 0x666666;
@@ -225,12 +227,18 @@ public class RankingsScene extends PixelScene {
 
 
 			if (rec.win) {
-				if (rec.cause == Typhon.class){
-					shield.copy( new ItemSprite(ItemSpriteSheet.CITY_HOOD));
-					position.hardlight( TEXT_WIN2[odd] );
-					desc.hardlight( TEXT_WIN2[odd] );
-					depth.hardlight( TEXT_WIN2[odd] );
-					level.hardlight( TEXT_WIN2[odd] );
+				if (rec.cause == Typhon.class) {
+					shield.copy(new ItemSprite(ItemSpriteSheet.CITY_HOOD));
+					position.hardlight(TEXT_WIN2[odd]);
+					desc.hardlight(TEXT_WIN2[odd]);
+					depth.hardlight(TEXT_WIN2[odd]);
+					level.hardlight(TEXT_WIN2[odd]);
+				} else if (rec.cause == YogReal.class) {
+					shield.copy(new ItemSprite(ItemSpriteSheet.SKELETONGOLD));
+					position.hardlight(TEXT_WIN3[odd]);
+					desc.hardlight(TEXT_WIN3[odd]);
+					depth.hardlight(TEXT_WIN3[odd]);
+					level.hardlight(TEXT_WIN3[odd]);
 				} else {
 					shield.copy( new ItemSprite(ItemSpriteSheet.AMULET) );
 					position.hardlight( TEXT_WIN[odd] );
@@ -270,9 +278,11 @@ public class RankingsScene extends PixelScene {
 			if (rec.daily){
 				shield.copy( Icons.get(Icons.CALENDAR) );
 				shield.hardlight(0.5f, 1f, 2f);
+			} else if (!rec.customSeed.isEmpty() && !rec.win){
+				shield.copy(new Image(new ItemSprite( ItemSpriteSheet.RIP, null )));
 			} else if (!rec.customSeed.isEmpty()){
-				shield.copy(new Image(new ItemSprite( ItemSpriteSheet.GRAVE, null )));
-				shield.hardlight(1f, 1.5f, 0.67f);
+				shield.copy(new Image(new ItemSprite( ItemSpriteSheet.AMULET, null )));
+				shield.hardlight(Window.SHPX_COLOR);
 			}
 
 		}

@@ -1,6 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
@@ -14,9 +17,14 @@ public class ShadowSprite extends MobSprite {
     public ShadowSprite() {
         super();
 
-        texture(Dungeon.hero.heroClass.spritesheet());
+        if(hero == null){
+            texture( Assets.Sprites.MAGE);
+        } else {
+            texture(hero.heroClass.spritesheet());
+        }
 
-        TextureFilm film = new TextureFilm(HeroSprite.tiers(), 7, 12, 15);
+
+        TextureFilm film = new TextureFilm(HeroSprite.tiers(), RegularLevel.holiday == RegularLevel.Holiday.CJ ?9 : 7, 12, 15);
 
         idle = new Animation(1, true);
         idle.frames(film, 0, 0, 0, 1, 0, 0, 1, 1);

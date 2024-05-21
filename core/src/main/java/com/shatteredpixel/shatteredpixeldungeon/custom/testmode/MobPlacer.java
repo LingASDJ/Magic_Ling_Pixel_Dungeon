@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ArmoredStatue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bandit;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BlackHost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BrownBat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CausticSlime;
@@ -20,6 +21,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ClearElemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdGurad;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdMagicRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalGuardian;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalWisp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
@@ -29,8 +32,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FetidRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Fire_Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlameC01;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlowerSlime;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FungalSpinner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gnoll;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGuard;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollSapper;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollTrickster;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
@@ -39,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.IceGolem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ice_Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.KagenoNusujin;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Katydid;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MolotovHuntsman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
@@ -76,8 +83,24 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.TormentedSpirit;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.XTG200;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.AnomaloCaris;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.ThreeLeafBug;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.Turtle;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.ClearElemtGuard;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.ApprenticeWitch;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Butcher;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Crumb;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Frankenstein;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.HollowMimic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.PumkingBomber;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.DrTerror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.GunHuntsman;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.DM275;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GnollHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GreenSlting;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SlimeKingMob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SuccubusQueen;
 import com.shatteredpixel.shatteredpixeldungeon.custom.dict.DictSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -211,7 +234,9 @@ public class MobPlacer extends TestItem{
             case 5: return DataPack.ACIDIC.ordinal() - DataPack.ELE_CHAOS.ordinal() - 1;
             case 6: return DataPack.PIRANHA.ordinal() - DataPack.ACIDIC.ordinal() - 1;
             case 7: return DataPack.NQHZ.ordinal() - DataPack.PIRANHA.ordinal() - 1;
-            case 8: default: return DataPack.IAS.ordinal() - DataPack.NQHZ.ordinal() - 1;
+            case 8: return DataPack.IAS.ordinal() - DataPack.NQHZ.ordinal() - 1;
+            case 9: return DataPack.DiedP.ordinal() - DataPack.DR.ordinal() - 1;
+            case 10: default: return DataPack.FLXX.ordinal() - DataPack.Crystal.ordinal() - 1;
         }
     }
     private int dataThreshold(int tier){
@@ -232,6 +257,10 @@ public class MobPlacer extends TestItem{
                 return DataPack.PIRANHA.ordinal()+1;
             case 8:
                 return DataPack.NQHZ.ordinal()+1;
+            case 9:
+                return DataPack.IAS.ordinal()+1;
+            case 10:
+                return DataPack.Crystal.ordinal()+1;
         }
     }
 
@@ -279,8 +308,8 @@ public class MobPlacer extends TestItem{
                 @Override
                 public void onClick(){
                     mobTier--;
-                    if(mobTier < 1 || mobTier>8){
-                        mobTier = 8;
+                    if(mobTier < 1 || mobTier>10){
+                        mobTier = 10;
                     }
                     mobIndex = Math.min(mobIndex, maxMobIndex(mobTier));
                     refreshImage();
@@ -294,7 +323,7 @@ public class MobPlacer extends TestItem{
                 @Override
                 public void onClick(){
                     mobTier++;
-                    if(mobTier < 1 || mobTier > 8){
+                    if(mobTier < 1 || mobTier >10){
                         mobTier = 1;
                     }
                     mobIndex = Math.min(mobIndex, maxMobIndex(mobTier));
@@ -338,7 +367,7 @@ public class MobPlacer extends TestItem{
                 }
 
                 OptionSlider op = new OptionSlider
-                        ("_修改血量_","1x","6x",1,6) {
+                        (Messages.get(MobPlacer.class,"modify_health"),"1x","6x",1,6) {
                     @Override
                     public int getTitleTextSize(){
                         return 6;
@@ -354,9 +383,6 @@ public class MobPlacer extends TestItem{
 
                 column++;
             }
-
-
-
 
             createMobImage();
 
@@ -375,7 +401,7 @@ public class MobPlacer extends TestItem{
         private void updateSelectedMob(){
             int selected = mobTier;
             StringBuilder sb = new StringBuilder();
-            for(int i=1;i<=8;++i){
+            for(int i=1;i<=10;++i){
                 sb.append((i==selected? "* ":"- "));
             }
             selectedPage.text(sb.toString());
@@ -454,10 +480,9 @@ public class MobPlacer extends TestItem{
         }
     }
 
-    private enum DataPack{
+    public enum DataPack{
         RAT(Rat.class, DictSpriteSheet.RAT),
         FLWW(FlowerSlime.class, DictSpriteSheet.FLOWER),
-        TESTRAT(GreenSlting.class, DictSpriteSheet.GLTX),
         GNOLL(Gnoll.class, DictSpriteSheet.GNOLL),
         SNAKE(Snake.class, DictSpriteSheet.SNAKE),
         ALBINO(Albino.class, DictSpriteSheet.ALBINO),
@@ -466,9 +491,6 @@ public class MobPlacer extends TestItem{
         SLIME(Slime.class, DictSpriteSheet.SLIME),
         C_SLIME(CausticSlime.class, DictSpriteSheet.CAUSTIC_SLIME),
         F_RAT(FetidRat.class, DictSpriteSheet.F_RAT),
-
-
-
         GNOLL_DARTER(GnollTrickster.class, DictSpriteSheet.GNOLL_DARTER),
         GREAT_CRAB(GreatCrab.class, DictSpriteSheet.GREAT_CRAB),
 
@@ -540,6 +562,7 @@ public class MobPlacer extends TestItem{
         CLEARS(ClearElemental.class, DictSpriteSheet.CLEARS),
         SLXJ(SpectralNecromancer.class, DictSpriteSheet.SLXJ),
         BMHR(ShieldHuntsman.class, DictSpriteSheet.BMHR),
+        KTX(Katydid.class,0),
         STX(Salamander.class, DictSpriteSheet.STX),
         XHDD(RedMurderer.class, DictSpriteSheet.XHDD),
         IAX(Ice_Scorpio.class, DictSpriteSheet.IAX),
@@ -548,7 +571,38 @@ public class MobPlacer extends TestItem{
         GOO(XTG200.class,DictSpriteSheet.GOO),
         IKS(ColdGurad.class,DictSpriteSheet.GKS),
         BRTX(BruteBot.class, DictSpriteSheet.BRTX),
-        IAS(IceGolem.class, DictSpriteSheet.IAS);
+
+        BRBAT(BrownBat.class, 0),
+        IAS(IceGolem.class, DictSpriteSheet.IAS),
+
+
+        DR(DrTerror.class, 0),
+        CLIX(GunHuntsman.class, 0),
+        GQ(GreenSlting.class, 0),
+        GNOLLHERO(GnollHero.class, 0),
+        DM275RPG(DM275.class, 0),
+        SQ(SuccubusQueen.class, 0),
+        Appwitch(ApprenticeWitch.class, 0),
+        Zombie(Frankenstein.class, 0),
+        Brute(Butcher.class, 0),
+        Pump(Crumb.class, 0),
+        Pump2(PumkingBomber.class, 0),
+        HOWW(HollowMimic.class, 0),
+        BlackSoulx(BlackSoul.class, 0),
+        ANO(AnomaloCaris.class, 0),
+        TB(ThreeLeafBug.class, 0),
+        DiedXP(Turtle.class, 0),
+        DiedP(Turtle.class, 0),
+
+        Crystal(CrystalGuardian.class,0),
+        CrystalS(CrystalWisp.class,0),
+        CBoss(ClearElemtGuard.class,0),
+//        GnollBoss(GnollGeomancer.class,0),
+        GnollX(GnollGuard.class,0),
+        GnollC(GnollSapper.class,0),
+        FLX(CrystalGuardian.class,0),
+        FLXX(FungalSpinner.class,0);
+
 
 
         private Class<? extends Mob> mobClass;

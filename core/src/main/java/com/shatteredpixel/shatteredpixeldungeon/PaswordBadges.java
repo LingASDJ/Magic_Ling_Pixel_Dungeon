@@ -39,11 +39,31 @@ public class PaswordBadges {
         displayBadge( PaswordBadges.Badge.BRCLER );
     }
 
+    public static void WHATSUP() {
+        displayBadge( Badge.WHATSUP );
+    }
+
+    public static void KILLDWG() {
+        displayBadge( Badge.KILL_DWG );
+    }
+
+    public static void UNLOCK_KING() {
+        displayBadge( Badge.KING_ISTO );
+    }
+
+    public static void SWORDDRAGON() {
+        displayBadge( Badge.SWORDDREAM );
+    }
+
     public static void ALLCS(int challenges){
         if (challenges == 0) return;
-        if (challenges >= 13 && !(Dungeon.isChallenged(PRO))||!Statistics.happyMode && challenges >= 13){
+        if (challenges >= 13 && !(Dungeon.isChallenged(PRO))||!Statistics.bossRushMode && challenges >= 13){
             displayBadge(PaswordBadges.Badge.ALLCHSX );
         }
+    }
+
+    public static void KILLALLBOSS() {
+        displayBadge( Badge.SPICEALBOSS );
     }
 
     public static void BIGX() {
@@ -66,30 +86,45 @@ public class PaswordBadges {
         displayBadge( Badge.GOOD_BLUE);
     }
 
+    public static void NightOrHell() {
+        displayBadge( Badge.HELLORWORLD);
+    }
+
+    public static void HelloLing() {
+        displayBadge( Badge.PINK_LING);
+    }
+
 
     public enum Badge {
 
         TAKE_ITEM( 0 ),
-        FIREGIRL,
+        FIREGIRL(1),
         SLIMEPRS(2),
         DRAWF_HEAD(3),
         SPICEALBOSS 				 (4),
         SAKA_DIED(5),
         RESET_DAY(6),
-        BRCLER,
+        BRCLER(7),
         ALLCHSX(8),
 
         GODD_MAKE(12),
 
         BIG_X(13),
         EXSG(14),
+
+        SWORDDREAM(15),
+
         NIGHT_CAT(16),
         ZQJ_GHOST(17),
-        GOOD_BLUE(18);
+        GOOD_BLUE(18),
 
+        HELLORWORLD(21),
 
+        PINK_LING(22),
 
-
+        WHATSUP(23),
+        KILL_DWG(24),
+        KING_ISTO(25);
 
         public boolean meta;
 

@@ -1,7 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TribesmanSprite;
 import com.watabou.utils.Random;
 
@@ -9,11 +11,17 @@ public class GnollHero extends Mob {
 
     {
         spriteClass = TribesmanSprite.class;
-        HP = HT = 50;
-        baseSpeed = 2f;
+        HP = HT = 30;
+        baseSpeed = 1.2f;
+        maxLvl = 30;
+        EXP = 9;
     }
 
-
+    @Override
+    public void die(Object cause) {
+        super.die(cause);
+        Dungeon.level.drop(new Gold( Random.Int(250,401)), pos).sprite.drop();
+    }
 
     @Override
     public float attackDelay() {
@@ -22,7 +30,7 @@ public class GnollHero extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 20, 32 );
+        return Random.NormalIntRange( 15, 21 );
     }
 
     @Override

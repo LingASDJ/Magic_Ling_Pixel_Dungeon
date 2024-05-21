@@ -180,7 +180,7 @@ public class WndDragonGirlBlue extends Window {
             buttons.add(maxring);
         }
 
-        if(DragonGirlBlue.Quest.one_used_points == 3 && DragonGirlBlue.Quest.two_used_points ==3) {
+        if(DragonGirlBlue.Quest.one_used_points == 3 && DragonGirlBlue.Quest.two_used_points == 3) {
             int UpgradePoint = 500;
             int OtherPoint = 400;
 

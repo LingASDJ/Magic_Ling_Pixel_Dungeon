@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -36,12 +38,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.REN;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.obSir;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
@@ -138,40 +140,44 @@ public class ZeroLevel extends Level {
             drop( new Guidebook(),  (this.width * 2) + 4 );
         }
 
-        drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.width * 17 + 16 );
-        drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.width * 16 + 17 );
 
-        drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 20 + 17 );
-        drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 19 + 16 );
+            drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.width * 17 + 16 );
 
-        drop( new RandomChest(), this.width * 17 + 20  ).type = Heap.Type.FOR_SALE;
-        drop( new RandomChest(), this.width * 19 + 20  ).type = Heap.Type.FOR_SALE;
+            drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 20 + 17 );
 
-        drop( ( Generator.randomUsingDefaults( Generator.Category.STONE ) ), this.width * 16 + 19 );
-        drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), this.width * 20 + 19 );
+            drop( new RandomChest(), this.width * 19 + 20  ).type = Heap.Type.FOR_ICE;
 
-        drop( new Pasty(), this.width * 20 + 19  );
+            drop( ( Generator.randomUsingDefaults( Generator.Category.FOOD ) ), this.width * 16 + 19 );
 
-        PaswordBadges.loadGlobal();
-        List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
 
-        if(passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)){
-            drop( ( Generator.random( Generator.Category.RING ) ), this.width * 17 + 18 );
-        }
-        if(passwordbadges.contains(PaswordBadges.Badge.BIG_X)){
-            if(Dungeon.isChallenged(Challenges.NO_ARMOR)){
-                drop( ( Generator.random( Generator.Category.WAND ) ), this.width * 19 + 18 );
-            } else {
-                drop( ( Generator.random( Generator.Category.ARMOR ) ), this.width * 19 + 18 );
+            if(!Dungeon.isChallenged(CS)) {
+                PaswordBadges.loadGlobal();
+                List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
+
+                drop( ( Generator.randomUsingDefaults( Generator.Category.STONE ) ), this.width * 20 + 19 );
+
+                if (passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)) {
+                    drop((Generator.random(Generator.Category.RING)), this.width * 17 + 18);
+                }
+                if (passwordbadges.contains(PaswordBadges.Badge.BIG_X)) {
+                    if (Dungeon.isChallenged(Challenges.NO_ARMOR)) {
+                        drop((Generator.random(Generator.Category.WAND)), this.width * 19 + 18);
+                    } else {
+                        drop((Generator.random(Generator.Category.ARMOR)), this.width * 19 + 18);
+                    }
+                }
+                if (Badges.isUnlocked(Badges.Badge.KILL_DM720) || Badges.isUnlocked(Badges.Badge.KILL_MG)) {
+                    drop((Generator.random(Generator.Category.WEP_T2)), this.width * 18 + 17);
+                }
+                if (Badges.isUnlocked(Badges.Badge.RLPT) && !Dungeon.LimitedDrops.BOOK_BAG.dropped() && !Dungeon.isChallenged(Challenges.PRO)) {
+                    Item item = new BookBag();
+                    drop(item, this.width * 18 + 19);
+                    Dungeon.LimitedDrops.BOOK_BAG.drop();
+                }
+
+                drop( ( Generator.randomUsingDefaults( Generator.Category.POTION ) ), this.width * 16 + 17 );
+                drop( ( Generator.randomUsingDefaults( Generator.Category.SCROLL ) ), this.width * 19 + 16 );
             }
-        }
-        if ( Badges.isUnlocked(Badges.Badge.KILL_DM720)||Badges.isUnlocked(Badges.Badge.KILL_MG)  ){
-            drop(( Generator.random( Generator.Category.WEP_T2 )), this.width * 18 + 17  );
-        }
-        if ( Badges.isUnlocked(Badges.Badge.RLPT)){
-            Item item =new BookBag();
-            drop(item, this.width * 18 + 19 );
-        }
     }
 
     public Mob createMob() {
@@ -199,27 +205,33 @@ public class ZeroLevel extends Level {
     };
 
     protected void createMobs() {
-        REN n = new REN();
-        n.pos = (this.width * 18 + 16);
-        mobs.add(n);
+        if(!Dungeon.isChallenged(CS)) {
+            REN n = new REN();
+            n.pos = (this.width * 18 + 16);
+            mobs.add(n);
 
-        Slyl npc1 = new Slyl();
-        npc1.pos = (this.width * 16 + 18);
-        mobs.add(npc1);
+            Slyl npc1 = new Slyl();
+            npc1.pos = (this.width * 16 + 18);
+            mobs.add(npc1);
 
-        obSir npc2= new obSir();
-        npc2.pos = (this.width * 20 + 18);
-        mobs.add(npc2);
+            obSir npc2 = new obSir();
+            npc2.pos = (this.width * 20 + 18);
+            mobs.add(npc2);
 
-        NxhyNpc npc3= new NxhyNpc();
-        npc3.pos = (this.width * 18 + 20);
-        mobs.add(npc3);
-
+            NxhyNpc npc3 = new NxhyNpc();
+            npc3.pos = (this.width * 18 + 20);
+            mobs.add(npc3);
+        }
 //        PinkLing god1= new PinkLing();
 //        god1.pos = (this.width * 28 + 30);
 //        mobs.add(god1);
 
         if (Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
+
+            YetYog npc3 = new YetYog();
+            npc3.pos = 1066;
+            mobs.add(npc3);
+
             Nyz npc4= new Nyz();
             npc4.pos = (this.width * 28 + 7);
             mobs.add(npc4);
@@ -285,5 +297,9 @@ public class ZeroLevel extends Level {
     public String waterTex() {
         return Assets.Environment.WATER_PRISON;
     }
-
+//    public void occupyCell(Char ch) {
+//        super.occupyCell(ch);
+//        GLog.p(String.valueOf(hero.pos));
+//        GLog.b(String.valueOf(Statistics.zeroItemLevel));
+//    }
 }

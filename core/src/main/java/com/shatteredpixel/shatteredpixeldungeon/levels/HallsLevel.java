@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.HKD;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.HallsPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -58,7 +59,6 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class HallsLevel extends RegularLevel {
-
 	{
 		
 		viewDistance = Math.min( 26 - Dungeon.depth, viewDistance );
@@ -167,6 +167,17 @@ public class HallsLevel extends RegularLevel {
 		super.addVisuals();
 		addHallsVisuals( this, visuals );
 		return visuals;
+	}
+
+	@Override
+	protected void createMobs() {
+		//
+		super.createMobs();
+		if(Dungeon.depth == 21 && Dungeon.branch == 0){
+			HKD npc20 = new HKD();
+			npc20.pos = entrance()-1;
+			mobs.add(npc20);
+		}
 	}
 	
 	public static void addHallsVisuals( Level level, Group group ) {

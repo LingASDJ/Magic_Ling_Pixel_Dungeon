@@ -4,7 +4,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -31,11 +30,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TestDwarfMasterLock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BlackHost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FungalSpinner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGuard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
@@ -68,7 +69,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
@@ -1401,7 +1401,7 @@ public class DwarfMaster extends Boss {
         }
     }
 
-    public static class DKGhoul extends BlackHost {
+    public static class DKGhoul extends GnollGuard {
         {
             state = HUNTING;
             immunities.add(Corruption.class);
@@ -1424,7 +1424,7 @@ public class DwarfMaster extends Boss {
         }
     }
 
-    public static class DKMonk extends Monk {
+    public static class DKMonk extends Eye {
         {
             state = HUNTING;
             immunities.add(Corruption.class);
@@ -1462,7 +1462,7 @@ public class DwarfMaster extends Boss {
         }
     }
 
-    public static class DKWarlock extends Warlock {
+    public static class DKWarlock extends FungalSpinner {
         {
             state = HUNTING;
             immunities.add(Corruption.class);
@@ -1603,8 +1603,8 @@ public class DwarfMaster extends Boss {
         super.die( cause );
         Statistics.bossScores[3] += 6000;
         Dungeon.level.unseal();
-        //酸液体清0
-        Statistics.SiderLing = 0;
+        
+        
        for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
             if (	mob instanceof DwarfMaster.DKMonk ||
                     mob instanceof DwarfMaster.DKGhoul ||
@@ -1613,7 +1613,7 @@ public class DwarfMaster extends Boss {
                 mob.die( cause );
             }
         }
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+      if(Statistics.bossRushMode){
             GetBossLoot();
         }
         for (Buff buff : hero.buffs()) {
@@ -1636,7 +1636,7 @@ public class DwarfMaster extends Boss {
             } while (!Dungeon.level.passable[pos + ofs]);
             Dungeon.level.drop(new Gold().quantity(Random.Int(340, 450)), pos+ofs).sprite.drop();
         }
-        Dungeon.level.drop(new KingsCrown(), pos).sprite.drop();
+        //Dungeon.level.drop(new KingsCrown(), pos).sprite.drop();
         Dungeon.level.drop(new PotionOfHealing().quantity(Random.NormalIntRange(2,4)), pos).sprite.drop();
         Dungeon.level.drop(new MeatPie().quantity(Random.NormalIntRange(1,2)), pos).sprite.drop();
         PaswordBadges.KILLDWARF();

@@ -11,9 +11,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Cake;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.ChargrilledMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.LightFood;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Switch;
@@ -113,7 +113,7 @@ public class AutoShopReBot extends NPC {
         sprite.turnTo( pos, Dungeon.hero.pos );
         spend( TICK );
 
-        shop6 = new ChargrilledMeat();
+        shop6 = new MysteryMeat();
         shop5 = new Pasty();
         shop4 = new Switch();
         shop3 = new Cake();

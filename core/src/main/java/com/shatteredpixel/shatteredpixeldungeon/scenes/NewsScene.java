@@ -144,7 +144,7 @@ public class NewsScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				super.onClick();
-				String link = "http://www.pd.qinyueqwq.top/";
+				String link = "https://mlpd.spldream.com";
 				ShatteredPixelDungeon.platform.openURI(link);
 			}
 		};
@@ -262,7 +262,7 @@ public class NewsScene extends PixelScene {
 			super(Chrome.Type.GREY_BUTTON_TR, article.title, 6);
 			this.article = article;
 
-			icon(News.parseArticleIcon(article));
+			icon(News.parseArticleIcon(article,true));
 			long lastRead = SPDSettings.newsLastRead();
 			if (lastRead > 0 && article.date.getTime() > lastRead) {
 				textColor(Window.Pink_COLOR);
@@ -304,17 +304,13 @@ public class NewsScene extends PixelScene {
 	private static class WndArticle extends WndTitledMessage {
 
 		public WndArticle(NewsArticle article ) {
-			super(News.parseArticleIcon(article), article.title, article.summary);
+			super(News.parseArticleIcon(article,false), article.title, article.summary);
 
 			RedButton link = new RedButton(Messages.get(NewsScene.class, "read_more")){
 				@Override
 				protected void onClick() {
 					super.onClick();
 					String link = article.URL;
-					//tracking codes, so that the website knows where this pageview came from
-					link += "?utm_source=shatteredpd";
-					link += "&utm_medium=news_page";
-					link += "&utm_campaign=ingame_link";
 					ShatteredPixelDungeon.platform.openURI(link);
 				}
 			};

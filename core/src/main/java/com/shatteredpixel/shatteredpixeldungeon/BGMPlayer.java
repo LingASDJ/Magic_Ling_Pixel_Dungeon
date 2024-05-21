@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
@@ -19,7 +20,9 @@ public class BGMPlayer {
 
     //解决电脑端高质量ogg的线程安全闪退问题
     public static void playBGM(String name, boolean loop) {
-        Game.runOnRenderThread(() -> Music.INSTANCE.play(name, loop));
+        if(SPDSettings.music()){
+            Game.runOnRenderThread(() -> Music.INSTANCE.play(name, loop));
+        }
     }
 
     public static void playBGMWithDepth() {
@@ -32,27 +35,18 @@ public class BGMPlayer {
         int d = depth;
         int s = branch;
 
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-            if (d == -1) {
-                playBGM(Assets.SNOWCYON, true);
-            }else if (d == 0||d==27) {
-                playBGM(Assets.SNOWCYON, true);
-            } else if (d > 0 && d <= 5) {
+        if (Statistics.bossRushMode) {
+            if (d == 1) {
+                playBGM(Assets.TOWN, true);
+            } else if (d >= 2 && d <= 7) {
                 playBGM(Assets.BGM_1, true);
-            } else if (d > 5 && d <= 10) {
+            } else if (d >= 8 && d <= 14) {
                 playBGM(Assets.BGM_2, true);
-            } else if (d > 10 && d <= 15) {
-                playBGM(Assets.BGM_3, true);
-            } else if (d > 15 && d <= 20) {
+            } else if (d >= 15 && d <= 21) {
                 playBGM(Assets.BGM_4, true);
-            } else if (d > 20 && d <= 25) {
+            } else if (d >= 22 && d <= 31) {
                 playBGM(Assets.BGM_5, true);
-            } else if (d >= 26 && d <= 30) {
-                playBGM(Assets.HOLLOW_CITY, true);
-            } else if (d ==-5||d ==-15) {
-                playBGM(Assets.SNOWCYON, true);
             } else
-                //default
                 playBGM(Assets.Music.THEME, true);
         } else {
             if(s == 5){
@@ -60,26 +54,35 @@ public class BGMPlayer {
                     playBGM(Assets.FL_CITY, true);
                 }
                 if(d == 25){
-                    playBGM(Assets.Music.RESET_FINALE, true);
+                    playBGM(Assets.Music.THEME_FINALE, true);
                 }
             } else if(s == 2 || s == 3 || s == 4){
                 if(d == 25){
-                    playBGM(Assets.Music.RESET_FINALE, true);
+                    playBGM(Assets.Music.THEME_FINALE, true);
                 }
                 if(d == 16 ||d == 17 || d == 18 || d == 19 ){
                     playBGM(Assets.Music.ANCITY, true);
                 }
-            } else if(s == 1){
-                if(d == 16 || d == 17 || d == 18 || d == 19  ){
-                    playBGM(Assets.Music.ANCITY, true);
+                if(d == 5 ){
+                    playBGM(Assets.BGM_1A, true);
                 }
-//                if (d == 11 || d == 12 || d == 13 || d == 14) {
-//                    if(level.locked){
-//                        playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
-//                    } else {
-//                        playBGM(Assets.Music.CAVES_TENSE, true);
-//                    }
-//                }
+            } else if(s == 1){
+                if(d == 0) {
+                    playBGM(Assets.TOWN, true);
+                } else if(d == 5 ){
+                    playBGM(Assets.BGM_1A, true);
+                } else if(d == 16 || d == 17 || d == 18 || d == 19  ){
+                    playBGM(Assets.Music.ANCITY, true);
+                } else if(d == 20 ) {
+                    playBGM(Assets.BGM_4, true);
+                }
+                if (d == 11 || d == 12 || d == 13 || d == 14) {
+                    if(level.locked){
+                        playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
+                    } else {
+                        playBGM(Assets.Music.CAVES_TENSE, true);
+                    }
+                }
             } else {
                 if (d == -1) {
                     playBGM(Assets.TOWN, true);
@@ -150,63 +153,106 @@ public class BGMPlayer {
         int t = depth;
         int s = branch;
 
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+        if (Statistics.bossRushMode) {
             switch (depth){
-                case 2: case 4:case 5:
+                case 2: case 4: case 6: case 13: case 7:
                     playBGM(Assets.BGM_BOSSA, true);
                     break;
-                case 8: case 10:
+                case 11:
+                    playBGM(Assets.BGM_BOSSB, true);
+                    break;
+                case 14:
+                    playBGM(Assets.BGM_YOU, true);
+                    break;
+                case 9:
+                    playBGM(Assets.BGM_BOSSB2, true);
+                    break;
+                case 16: case 17:
+                    playBGM(Assets.BGM_BOSSC, true);
+                    try {
+                        CavesBossLevel level = (CavesBossLevel) Dungeon.level;
+                        for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
+                            if (m instanceof Pylon){
+                                if(BossHealthBar.isAssigned() && level.pylonsRemaining >= 2){
+                                    playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
+                                } else {
+                                    playBGM(Assets.Music.CAVES_BOSS, true);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
+                            if (m instanceof DM300){
+                                if(BossHealthBar.isAssigned()){
+                                    playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
+                                } else {
+                                    playBGM(Assets.Music.CAVES_BOSS, true);
+                                }
+                            } else {
+                                if(Statistics.bossRushMode && depth == 17){
+                                    playBGM(Assets.Music.PRISON_TENSE, true);
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case 18:
                     playBGM(Assets.BGM_BOSSC, true);
                     break;
-                case 12: case 14:
-                    playBGM(Assets.BGM_BOSSD, true);
-                    break;
-                case 16:
-                    playBGM(Assets.BGM_BOSSC3, true);
-                    break;
-                case 19: case 21:
-                    playBGM(Assets.BGM_BOSSD2, true);
-                    break;
-                case 25:
+                case 21:
                     playBGM(Assets.BGM_FRBOSS, true);
                     break;
+                case 23:
+                    playBGM(Assets.SKBJY, true);
+                    break;
+                case 24:
+                    playBGM(Assets.BGM_BOSSD, true);
+                    break;
                 case 26:
-                    playBGM(Assets.BGM_BOSSE3, true);
+                    playBGM(Assets.BOSSDOG, true);
                     break;
-                case 28:
-                    playBGM( Assets.BGM_0, true );
+                case 27:
+                    playBGM(Assets.BGM_BOSSD2, true);
                     break;
-                case -31:
-                    playBGM( Assets.SKBJY, true );
+                case 29:
+                    playBGM( Assets.Music.HALLS_BOSS, true );
+                    break;
+                case 31:
+                    playBGM( Assets.BGM_BOSSE4, true );
                     break;
 
             }
         } else {
+            if(s == 7){
+                playBGM(Assets.BGM_SHOP, true);
+            }
             if(s == 3 && t == 16 ||s == 3 && t == 17 || s == 3 && t == 18) {
                 playBGM(Assets.SKBJY, true);
+            } else if(t == 5 && s == 3){
+                playBGM(Assets.BGM_BOSSA3, true);
             } else if (Dungeon.bossLevel() && t == 5 || t == 4 && s == 2) {
                 playBGM(Assets.BGM_BOSSA, true);
-            } else if (Dungeon.bossLevel() && t == 10 && Statistics.mimicking) {
-                playBGM(Assets.BGM_BOSSB, true);
             } else if (Dungeon.bossLevel() && t == 10) {
-                playBGM(Assets.BGM_BOSSB2, true);
-//            } else if ((t == 11 || t == 12 || t == 13 || t == 14) && s == 1)  {
-//                playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
+                if(((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && !Statistics.mustTengu){
+                    playBGM(Assets.BGM_BOSSB, true);
+                } else {
+                    playBGM(Assets.BGM_BOSSB2, true);
+                }
             } else if (t == 14) {
                 playBGM(Assets.BGM_BOSSC, true);
             } else if (Dungeon.bossLevel() && t == 15) {
                 if((Statistics.boss_enhance & 0x4) != 0) {
-                    playBGM(Assets.BGM_BOSSC3, true);
+                    playBGM(Assets.BGM_BOSSC, true);
                 } else {
                    //最抽象的一集
                    try {
                        CavesBossLevel level = (CavesBossLevel) Dungeon.level;
                        for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
                            if (m instanceof Pylon){
-                               if(BossHealthBar.isAssigned() && level.pylonsRemaining >= 2){
+                               if(BossHealthBar.isAssigned() && level.pylonsRemaining >= (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 4 : 2)) {
                                    playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
                                } else {
-                                   playBGM(Assets.Music.CAVES_BOSS, true);
+                                   playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
                                }
                            }
                        }
@@ -220,18 +266,20 @@ public class BGMPlayer {
                                }
                            } else {
                                if(m instanceof MoloHR){
-                                   playBGM(Assets.Music.PRISON_TENSE, true);
+                                   playBGM(Assets.Music.CAVES_BOSS_FINALE, true);
                                }
                            }
                        }
                    }
                 }
             } else if (Dungeon.bossLevel() && t == 20) {
-                if((Statistics.boss_enhance & 0x8) != 0)  playBGM(Assets.BGM_BOSSD2, true);
+                if(s == 1) playBGM(Assets.BGM_BOSSD2, true);
                 else  playBGM(Assets.BGM_BOSSD, true);
-            } else if (Dungeon.bossLevel() && t == 25 && (Statistics.spawnersAlive > 0)) {
+            } else if (Dungeon.bossLevel() && t == 25 && Dungeon.isChallenged(CS) && !Statistics.NoTime) {
                 playBGM(Assets.BGM_BOSSE3, true);
-            }else if (Dungeon.bossLevel() && t == 25){
+            } else if(Dungeon.bossLevel() && t == 25 && Dungeon.isChallenged(CS) && Statistics.NoTime) {
+                playBGM(Assets.BGM_BOSSE4, true);
+            } else if (Dungeon.bossLevel() && t == 25){
                 level.playLevelMusic();
             } else if (Dungeon.bossLevel() && t == 30) {
                 playBGM(Assets.BOSSDOG, true);

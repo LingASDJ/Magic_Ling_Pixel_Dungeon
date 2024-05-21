@@ -50,6 +50,18 @@ public class HeroAction {
 			this.dst = dst;
 		}
 	}
+
+	public static class BuyIce extends HeroAction {
+		public BuyIce( int dst ) {
+			this.dst = dst;
+		}
+	}
+
+	public static class BuyRush extends HeroAction {
+		public BuyRush( int dst ) {
+			this.dst = dst;
+		}
+	}
 	
 	public static class Interact extends HeroAction {
 		public Char ch;

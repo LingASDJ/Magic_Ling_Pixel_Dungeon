@@ -106,7 +106,7 @@ public class RenderedText extends Image {
 								toException = toException.substring(0, 30) + "...";
 							}
 							font = Game.platform.getFont(size, text, true, true, false);
-							Game.reportException(new Throwable("font file " + font.toString() + " could not render " + c + " from string: " + toException));
+							//Game.reportException(new Throwable("font file " + font.toString() + " could not render " + c + " from string: " + toException));
 						}
 					}
 					break;

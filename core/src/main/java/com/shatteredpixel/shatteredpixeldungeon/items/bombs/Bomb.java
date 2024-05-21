@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.bombs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand.procChanceMultiplier;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -30,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.DrTerror;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
@@ -66,6 +68,8 @@ import java.util.LinkedHashMap;
 public class Bomb extends Item {
 
     public Fuse fuse;
+
+	public boolean isLit = false;
 
     {
         image = ItemSpriteSheet.BOMB;
@@ -119,7 +123,7 @@ public class Bomb extends Item {
             for (Char ch : affected) {
 
                 //if they have already been killed by another bomb
-                if (!ch.isAlive()) {
+                if (!ch.isAlive() || ch instanceof DrTerror) {
                     continue;
                 }
 
@@ -180,7 +184,7 @@ public class Bomb extends Item {
 		super.execute(hero, action);
 	}
 
-	protected Fuse createFuse(){
+	public Fuse createFuse(){
 		return new Fuse();
 	}
 
@@ -202,10 +206,20 @@ public class Bomb extends Item {
 
 	@Override
 	public boolean doPickUp(Hero hero, int pos) {
+
+
+
 		if (fuse != null) {
+			if (isLit) {
+				fuse = null;
+				GLog.n( Messages.get(this, "snuff_fuse_no") );
+				return false;
+			}
 			GLog.w( Messages.get(this, "snuff_fuse") );
 			fuse = null;
 		}
+
+
 		return super.doPickUp(hero, pos);
 	}
 
@@ -262,7 +276,7 @@ public class Bomb extends Item {
 
 
 				if (ch.pos != cell){
-					dmg = Math.round(dmg*0.67f);
+					dmg = (int) (Math.round(dmg*0.67f) * procChanceMultiplier(ch));
 				}
 
 				dmg -= ch.drRoll();
@@ -323,6 +337,7 @@ public class Bomb extends Item {
 			
 			for (Char ch : affected){
 
+
 				//if they have already been killed by another bomb
 				if(!ch.isAlive()){
 					continue;
@@ -337,7 +352,7 @@ public class Bomb extends Item {
 
 				dmg -= ch.drRoll();
 
-				if (dmg > 0) {
+				if (dmg > 0){
 					ch.damage(dmg, this);
 				}
 				
@@ -401,11 +416,16 @@ public class Bomb extends Item {
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put( FUSE, fuse );
+
+		bundle.put( "isLit", isLit );
 	}
 
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
+
+		bundle.put( "isLit", isLit );
+
 		if (bundle.contains( FUSE ))
 			Actor.add( fuse = ((Fuse)bundle.get(FUSE)).ignite(this) );
 	}
@@ -419,7 +439,7 @@ public class Bomb extends Item {
 			actPriority = BLOB_PRIO+1; //after hero, before other actors
 		}
 
-		protected Bomb bomb;
+		public Bomb bomb;
 
 		public Fuse ignite(Bomb bomb){
 			this.bomb = bomb;

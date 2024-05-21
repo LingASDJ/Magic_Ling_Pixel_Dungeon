@@ -29,7 +29,7 @@ import java.util.ArrayList;
 public class WandOfScale extends DamageWand {
 
     {
-        image = ItemSpriteSheet.DG17;
+        image = ItemSpriteSheet.HIGHTWAND_2;
 
         collisionProperties = Ballistica.STOP_SOLID;
     }

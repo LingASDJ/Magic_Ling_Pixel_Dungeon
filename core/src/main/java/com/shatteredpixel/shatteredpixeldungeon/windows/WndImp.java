@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
@@ -62,8 +64,24 @@ public class WndImp extends Window {
 		};
 		btnReward.setRect( 0, message.top() + message.height() + GAP, WIDTH, BTN_HEIGHT );
 		add( btnReward );
+
+		if(SPDSettings.KillDwarf()){
+			RedButton btnChallenges = new RedButton( Messages.get(this, "challenges") ) {
+				@Override
+				protected void onClick() {
+					Statistics.HiddenOK = true;
+					takeReward( imp, tokens, Imp.Quest.reward );
+					GLog.n(Messages.get(Imp.class,"dxb"));
+				}
+			};
+			btnChallenges.setRect( 0, btnReward.bottom() + GAP, WIDTH, BTN_HEIGHT );
+			add( btnChallenges );
+			resize( WIDTH, (int)btnChallenges.bottom() );
+		} else {
+			resize( WIDTH, (int)btnReward.bottom() );
+		}
 		
-		resize( WIDTH, (int)btnReward.bottom() );
+
 	}
 	
 	private void takeReward( Imp imp, DwarfToken tokens, Item reward ) {
@@ -79,7 +97,7 @@ public class WndImp extends Window {
 		} else {
 			Dungeon.level.drop( reward, imp.pos ).sprite.drop();
 		}
-		
+
 		imp.flee();
 		
 		Imp.Quest.complete();

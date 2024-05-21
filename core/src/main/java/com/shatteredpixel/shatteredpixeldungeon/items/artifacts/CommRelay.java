@@ -146,7 +146,7 @@ public class CommRelay extends Artifact implements Item.AnimationItem {
                     Messages.get(CommRelay.class, "call_title"), Messages.get(CommRelay.class, "call_desc"),
                     "",
                     8, false, Messages.get(CommRelay.class, "confirm"),
-                    Messages.get(CommRelay.class, "cancel")) {
+                    Messages.get(CommRelay.class, "cancel"),false) {
                 @Override
                 public void onSelect(boolean check, String text) {
                     if (text.matches("^[1-9]\\d*$")) {

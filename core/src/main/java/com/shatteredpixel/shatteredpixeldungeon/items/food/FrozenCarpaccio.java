@@ -49,8 +49,8 @@ public class FrozenCarpaccio extends Food {
 	protected void satisfy(Hero hero) {
 		if (Dungeon.isChallenged(Challenges.EXSG)) {
 				//~75% of a potion of healing
-				Buff.affect(hero, Barrier.class).setShield((int) (0.6f * hero.HT + 10));
-				Talent.onPotionUsed(curUser, curUser.pos, energy/10f );
+				Buff.affect(hero, Barrier.class).setShield((int) (0.3f * hero.HT + 5));
+				Talent.onPotionUsed(curUser, curUser.pos, energy/15f );
 		}
 		super.satisfy(hero);
 

@@ -1,8 +1,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
+import static com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane.asset;
 
+import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
@@ -10,20 +13,24 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedAnalysisScene;
+import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedFinderScene;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Gregorian;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SliceGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.EndButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.update.MLChangesButton;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHardNotification;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings;
 import com.watabou.glwrap.Blending;
@@ -45,6 +52,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class TitleScene extends PixelScene {
 	public static boolean Reusable = false;
@@ -59,6 +72,33 @@ public class TitleScene extends PixelScene {
 
 	public static boolean NTP_NOINTER_VEFY = false;
 
+	public static boolean NTP_LINK = false;
+
+	public void noInter(){
+		if(NTP_NOINTER || NTP_ERROR || NTP_NOINTER_VEFY || NTP_ERROR_VEFY){
+			//启用破碎默认活动
+			final Calendar calendar = Calendar.getInstance();
+			switch (calendar.get(Calendar.MONTH)) {
+				case Calendar.JANUARY:
+					if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
+						holiday = RegularLevel.Holiday.XMAS;
+					break;
+				case Calendar.OCTOBER:
+					if (calendar.get(Calendar.WEEK_OF_MONTH) >= 2)
+						holiday = RegularLevel.Holiday.HWEEN;
+					break;
+				case Calendar.NOVEMBER:
+					if (calendar.get(Calendar.DAY_OF_MONTH) == 1)
+						holiday = RegularLevel.Holiday.HWEEN;
+					break;
+				case Calendar.DECEMBER:
+					if (calendar.get(Calendar.WEEK_OF_MONTH) >= 3)
+						holiday = RegularLevel.Holiday.XMAS;
+					break;
+			}
+		}
+	}
+
 	@Override
 	public void create() {
 		super.create();
@@ -70,43 +110,78 @@ public class TitleScene extends PixelScene {
 		Badges.loadGlobal();
 		boolean whiteDaymode = currentHour > 7 && currentHour < 22;
 
-		try {
-			//NTP服务器有严重延迟 直接使用百度的地址进行监测
-			URL url = new URL("https://www.baidu.com");
-			URLConnection conn = url.openConnection();
-			conn.connect();
-			long dateL = conn.getDate();
-			Date onlineDate = new Date(dateL);
+		if(!NTP_LINK){
+			ExecutorService executor = Executors.newSingleThreadExecutor();
+			Future<?> future = executor.submit(() -> {
+				try {
+					// NTP服务器需要合理分配，根据语言环使用不同的地址进行监测
+					String ntpServer;
+					switch (SPDSettings.language()){
+						default:
+						case CHINESE:
+							ntpServer = "www.baidu.com";
+							break;
+						case GREEK:case ENGLISH:case RUSSIAN:case JAPANESE:case HARDCHINESE:
+							ntpServer = "www.bing.com";
+							break;
+					}
+					URL url = new URL("https://" + ntpServer);
+					URLConnection conn = url.openConnection();
+					conn.connect();
+					long dateL = conn.getDate();
+					Date onlineDate = new Date(dateL);
 
-			Date localDate = new Date(); // 获取本地时间
-			String strDateFormat = "yyyy-MM-dd";
-			SimpleDateFormat dateFormat = new SimpleDateFormat(strDateFormat, Locale.getDefault());
-			String onlineTimeStr = dateFormat.format(onlineDate); // 在线时间的字符串表示
-			String localTimeStr = dateFormat.format(localDate); // 本地时间的字符串表示
+					Date localDate = new Date(); // 获取本地时间
+					String strDateFormat = "yyyy-MM-dd";
+					SimpleDateFormat dateFormat = new SimpleDateFormat(strDateFormat, Locale.getDefault());
+					String onlineTimeStr = dateFormat.format(onlineDate); // 在线时间的字符串表示
+					String localTimeStr = dateFormat.format(localDate); // 本地时间的字符串表示
 
-			if (onlineTimeStr.equals(localTimeStr)) {
-				if(Random.Int(10) == 1 && !NightDay && !whiteDaymode){
-					NightDay = true;
-				} else if(Badges.isUnlocked(Badges.Badge.VICTORY) && Random.Int(10) == 1 && !Reusable){
-					Reusable = true;
+					if (onlineTimeStr.equals(localTimeStr)) {
+						if (Random.Int(10) <= 4 && !NightDay && !whiteDaymode) {
+							NightDay = true;
+						} else if (Badges.isUnlocked(Badges.Badge.VICTORY) && Random.Int(10) == 1 && !Reusable) {
+							Reusable = true;
+						}
+						/**农历计算*/
+						Gregorian.LunarCheckDate();
+					} else if (!NTP_ERROR_VEFY) {
+						noInter();
+
+						NTP_ERROR = true;
+						NTP_ERROR_VEFY = true;
+					}
+				} catch (IOException e) {
+					if (!NTP_NOINTER_VEFY || SPDSettings.WiFi() && !Game.platform.connectedToUnmeteredNetwork()) {
+						NTP_NOINTER = true;
+
+						NTP_NOINTER_VEFY = true;
+					}
 				}
-			} else if(!NTP_ERROR_VEFY) {
-				NTP_ERROR = true;
-				NTP_ERROR_VEFY = true;
+			});
+
+			try {
+				//超时1s 实际3s
+				future.get(4, TimeUnit.SECONDS);
+			} catch (InterruptedException | ExecutionException | TimeoutException e) {
+				if (!NTP_NOINTER_VEFY || SPDSettings.WiFi() && !Game.platform.connectedToUnmeteredNetwork()) {
+					NTP_NOINTER = true;
+					NTP_NOINTER_VEFY = true;
+				}
+				noInter();
 			}
-		} catch (IOException e) {
-			if(!NTP_NOINTER_VEFY || SPDSettings.WiFi() && !Game.platform.connectedToUnmeteredNetwork())  {
-				NTP_NOINTER = true;
-				NTP_NOINTER_VEFY = true;
-			}
+			NTP_LINK = true;
+			executor.shutdown();
 		}
 
 
-
 		if(holiday == XMAS){
-			Music.INSTANCE.play(Assets.Music.CHRAMSS, true);
+			playBGM(Assets.Music.CHRAMSS, true);
 		} else {
-			Music.INSTANCE.play(Assets.Music.THEME_1, true);
+			Music.INSTANCE.playTracks(
+					new String[]{Assets.Music.THEME, Assets.Music.THEME_2,Assets.Music.CAVES_TENSE, Assets.Music.PRISON_BOSS},
+					new float[]{1, 1, 1, 1},
+					true);
 		}
 
 		uiCamera.visible = false;
@@ -138,7 +213,11 @@ public class TitleScene extends PixelScene {
 				this.x = - this.width + curTime/ time * (Camera.main.width / 2f + this.width / 2f);
 				this.angle = 90 - curTime/ time *225;
 				am = curTime*curTime*curTime/(time * time * time);
-
+				if (SPDSettings.ClassUI()) {
+					asset = Assets.Interfaces.STATUS;
+				} else {
+					asset =  Assets.Interfaces.STATUS_DARK;
+				}
 				float preTime = 0.9f;
 				if (preCurTime < preTime) {
 					preCurTime += Game.elapsed;
@@ -200,10 +279,6 @@ public class TitleScene extends PixelScene {
 		archs.setSize( w, h );
 		addToBack( archs );
 
-//		ReloadButton btnReload = new ReloadButton();
-//		btnReload.setRect(0, 0, 16, 20);
-//		add( btnReload );
-
 		Image signs = new Image( BannerSprites.get( BannerSprites.Type.PIXEL_DUNGEON_SIGNS ) ) {
 			private float time = 0;
 			@Override
@@ -229,45 +304,61 @@ public class TitleScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				if(NTP_ERROR) {
-					try {
-						//NTP服务器有严重延迟 直接使用百度的地址进行监测
-						URL url = new URL("https://www.baidu.com");
-						URLConnection conn = url.openConnection();
-						conn.connect();
-						long dateL = conn.getDate();
-						Date onlineDate = new Date(dateL);
 
-						Date localDate = new Date(); // 获取本地时间
-						String strDateFormat = "yyyy-MM-dd";
-						SimpleDateFormat dateFormat = new SimpleDateFormat(strDateFormat, Locale.getDefault());
-						String onlineTimeStr = dateFormat.format(onlineDate); // 在线时间的字符串表示
-						String localTimeStr = dateFormat.format(localDate); // 本地时间的字符串表示
-
-						ShatteredPixelDungeon.scene().add(new WndHardNotification(NetIcons.get(NetIcons.ALERT),
-								Messages.get(this, "ntp_error"),
-								Messages.get(this, "ntp_desc", onlineTimeStr, localTimeStr),
-								Messages.get(this, "ok"),
-								0) {
-							@Override
-							public void hide() {
-								NTP_ERROR = false;
-								if (GamesInProgress.checkAll().size() == 0) {
-									GamesInProgress.selectedClass = null;
-									GamesInProgress.curSlot = 1;
-								}
-								ShatteredPixelDungeon.switchNoFade(StartScene.class);
+					ExecutorService executor = Executors.newSingleThreadExecutor();
+					executor.submit(() -> {
+						try {
+							// NTP服务器有严重延迟，直接使用百度的地址进行监测
+							String ntpServer;
+							switch (SPDSettings.language()){
+								default:
+								case CHINESE:
+									ntpServer = "www.baidu.com";
+									break;
+								case GREEK:case ENGLISH:case RUSSIAN:case JAPANESE:case HARDCHINESE:
+									ntpServer = "www.bing.com";
+									break;
 							}
+							URL url = new URL("https://" + ntpServer);
+							URLConnection conn = url.openConnection();
+							conn.connect();
+							long dateL = conn.getDate();
+							Date onlineDate = new Date(dateL);
 
-							@Override
-							public void onBackPressed() {
-								NTP_ERROR = false;
-								ShatteredPixelDungeon.switchNoFade(TitleScene.class);
-							}
-						});
+							Date localDate = new Date(); // 获取本地时间
+							String strDateFormat = "yyyy-MM-dd";
+							SimpleDateFormat dateFormat = new SimpleDateFormat(strDateFormat, Locale.getDefault());
+							String onlineTimeStr = dateFormat.format(onlineDate); // 在线时间的字符串表示
+							String localTimeStr = dateFormat.format(localDate); // 本地时间的字符串表示
 
-					} catch (IOException e) {
+							// 在主线程中更新UI
+							Gdx.app.postRunnable(() -> {
+								ShatteredPixelDungeon.scene().add(new WndHardNotification(NetIcons.get(NetIcons.ALERT),
+										Messages.get(this, "ntp_error"),
+										Messages.get(this, "ntp_desc", onlineTimeStr, localTimeStr),
+										Messages.get(this, "ok"),
+										0) {
+									@Override
+									public void hide() {
+										NTP_ERROR = false;
+										if (GamesInProgress.checkAll().size() == 0) {
+											GamesInProgress.selectedClass = null;
+											GamesInProgress.curSlot = 1;
+										}
+										ShatteredPixelDungeon.switchNoFade(StartScene.class);
+									}
 
-					}
+									@Override
+									public void onBackPressed() {
+										NTP_ERROR = false;
+										ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+									}
+								});
+							});
+
+						} catch (IOException ignored) {}
+					});
+					executor.shutdown();
 				} else if(NTP_NOINTER){
 					ShatteredPixelDungeon.scene().add(new WndHardNotification(NetIcons.get(NetIcons.ALERT),
 							Messages.get(this, "lntp_error"),
@@ -283,7 +374,6 @@ public class TitleScene extends PixelScene {
 							}
 							ShatteredPixelDungeon.switchNoFade( StartScene.class );
 						}
-
 						@Override
 						public void onBackPressed() {
 							NTP_NOINTER = false;
@@ -297,8 +387,6 @@ public class TitleScene extends PixelScene {
 					}
 					ShatteredPixelDungeon.switchNoFade( StartScene.class );
 				}
-
-
 			}
 
 			@Override
@@ -309,6 +397,10 @@ public class TitleScene extends PixelScene {
 					textColor(ColorMath.interpolate( 0xFFFFFF, Window.CBLACK,
 							0.1f + (float)Math.sin(Game.timeTotal*5)/2f));
 					text(Messages.get(TitleScene.class, "dark"));
+					Music.INSTANCE.playTracks(
+							new String[]{Assets.Music.SAND, Assets.Music.NBPL,Assets.Music.HALLS_BOSS_FINALE, Assets.Music.CITY_BOSS_FINALE},
+							new float[]{1, 1, 1, 1},
+							false);
 					icon(BadgeBanner.image(Badges.Badge.STORM.image));
 				} else if (TitleScene.Reusable){
 					textColor(ColorMath.interpolate( 0xFFFFFF, Window.CYELLOW,
@@ -341,7 +433,7 @@ public class TitleScene extends PixelScene {
 			}
 		};
 		btnPlay.icon(holiday == XMAS ?  new Image(new SliceGirlSprite()) :
-				new ItemSprite(ItemSpriteSheet.MAGICGIRLBOOKS, null));
+				new Image(Icons.get(Icons.ENTER)));
 		add(btnPlay);
 
 		StyledButton btnRankings = new StyledButton(GREY_TR,Messages.get(this, "rankings")) {
@@ -350,7 +442,7 @@ public class TitleScene extends PixelScene {
 				ShatteredPixelDungeon.switchNoFade(RankingsScene.class);
 			}
 		};
-		btnRankings.icon(new ItemSprite(ItemSpriteSheet.LANTERNB, null));
+		btnRankings.icon(new Image(Icons.get(Icons.RANKINGS)));
 		add(btnRankings);
 
 		StyledButton btnBadges = new StyledButton(GREY_TR, Messages.get(this, "badges")) {
@@ -367,19 +459,19 @@ public class TitleScene extends PixelScene {
 				return super.onLongClick();
 			}
 		};
-		btnBadges.icon(new ItemSprite(ItemSpriteSheet.GREENBOOKS, null));
+		btnBadges.icon(new Image(Icons.get(Icons.BADGES)));
 		add(btnBadges);
 
 		StyledButton btnSupport = new SupportButton(GREY_TR, Messages.get(this, "support"));
 		add(btnSupport);
 
-		StyledButton btnChanges = new ChangesButton(GREY_TR, Messages.get(this, "changes"));
-		btnChanges.icon(new ItemSprite(ItemSpriteSheet.ICEBOOK, null));
+		StyledButton btnChanges = new MLChangesButton(GREY_TR, Messages.get(this, "changes"));
+		btnChanges.icon(new Image(Icons.get(Icons.CHANGES)));
 		add(btnChanges);
 
-		StyledButton reloadButton = new ReloadButton(landscape() ? Chrome.Type.GREY_BUTTON_TR : Chrome.Type.BLANK, Messages.get(this, "update_web"));
-		reloadButton.icon(NetIcons.get(NetIcons.GLOBE));
-		add(reloadButton);
+		StyledButton seed = new SeedButton(landscape() ? Chrome.Type.GREY_BUTTON_TR : Chrome.Type.BLANK, Messages.get(this, "seed"));
+		seed.icon(NetIcons.get(NetIcons.CHAT));
+		add(seed);
 
 		StyledButton btnSettings = new SettingsButton(GREY_TR, Messages.get(this, "settings"));
 		add(btnSettings);
@@ -390,12 +482,11 @@ public class TitleScene extends PixelScene {
 				ShatteredPixelDungeon.switchNoFade( AboutSelectScene.class );
 			}
 		};
-		btnAbout.icon(new ItemSprite(ItemSpriteSheet.FIRELIYD, null));
+		btnAbout.icon(new Image(Icons.get(Icons.SHPX)));
 		add(btnAbout);
 
 		StyledButton btnNews = new NewsButton(GREY_TR, Messages.get(this, "news"));
-		btnNews.icon(new ItemSprite(ItemSpriteSheet.YELLOWBOOKS, null));
-		btnNews.icon(new ItemSprite(ItemSpriteSheet.YELLOWBOOKS, null));
+		btnNews.icon(new Image(Icons.get(Icons.NEWS)));
 		add(btnNews);
 
 		final int BTN_HEIGHT = 20;
@@ -421,14 +512,11 @@ public class TitleScene extends PixelScene {
 			btnSettings.setRect(btnSupport.right() + 2, btnSupport.top(), btnRankings.width(), BTN_HEIGHT);
 			btnAbout.setRect(btnSettings.left(), btnSettings.bottom() + GAP, btnRankings.width(), BTN_HEIGHT);
 			btnNews.setRect(btnPlay.left(), btnAbout.bottom() + GAP, btnAbout.width() + 157 - 1, BTN_HEIGHT);
-
-			reloadButton.setRect(0, 0,40,20);
-
+			seed.setRect(0, 0,40,20);
 			align(btnNews);
 		}
 		else {
-			reloadButton.setRect(0, version.y-10,40,20);
-
+			seed.setRect(0, version.y-10,40,20);
 			btnPlay.setRect(title.x, topRegion + GAP, title.width(), BTN_HEIGHT);
 			align(btnPlay);
 			btnRankings.setRect(btnPlay.left(), btnPlay.bottom()+ GAP, (btnPlay.width() / 2) - 1, BTN_HEIGHT);
@@ -498,7 +586,7 @@ public class TitleScene extends PixelScene {
 		}
 	}
 
-	private static class ChangesButton extends StyledButton {
+	public static class ChangesButton extends StyledButton {
 
 		public ChangesButton( Chrome.Type type, String label ){
 			super(type, label);
@@ -511,15 +599,21 @@ public class TitleScene extends PixelScene {
 
 	}
 
-	private static class ReloadButton extends StyledButton {
+	private static class SeedButton extends StyledButton {
 
-		public ReloadButton( Chrome.Type type, String label ){
+		public SeedButton( Chrome.Type type, String label ){
 			super(type, label);
 		}
 
 		@Override
 		protected void onClick() {
-			ShatteredPixelDungeon.switchNoFade(GameNewsScene.class);
+			ShatteredPixelDungeon.switchNoFade(SeedFinderScene.class);
+		}
+
+		@Override
+		protected boolean onLongClick() {
+			ShatteredPixelDungeon.switchNoFade(SeedAnalysisScene.class);
+			return true;
 		}
 
 	}
@@ -531,8 +625,7 @@ public class TitleScene extends PixelScene {
 
 		public SettingsButton(Chrome.Type type, String label){
 			super(type, label);
-			icon(new ItemSprite(ItemSpriteSheet.BREDBOOK, null));
-			textColor(Window.Pink_COLOR);
+			icon(new Image(Icons.get(Icons.PREFS)));
 		}
 
 		@Override
@@ -550,8 +643,7 @@ public class TitleScene extends PixelScene {
 
 		public SupportButton( Chrome.Type type, String label ){
 			super(type, label);
-			icon(new ItemSprite(ItemSpriteSheet.NOKING, null));
-			textColor(Window.TITLE_COLOR);
+			icon(new Image(Icons.get(Icons.THANKS)));
 		}
 
 		@Override

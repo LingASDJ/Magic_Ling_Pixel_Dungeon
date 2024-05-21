@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -41,7 +42,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GoldenMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LanFire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Mint;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonCat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.SmallLeaf;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.ZeroTomb;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -215,7 +224,8 @@ public class CursedWand {
 						toHeal = target;
 						toDamage = user;
 					}
-					toHeal.HP = Math.min(toHeal.HT, toHeal.HP + damage);
+
+					toHeal.HP = Math.min(toHeal.HT, toHeal.properties().contains(Char.Property.BOSS) ? toHeal.HP +0 : toHeal.HP + damage);
 					toHeal.sprite.emitter().burst(Speck.factory(Speck.HEALING), 3);
 					toHeal.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(damage), FloatingText.HEALING );
 
@@ -267,7 +277,7 @@ public class CursedWand {
 			case 0: default:
 
 				Char ch = Actor.findChar( targetPos );
-				if (ch != null && !(ch instanceof Hero)
+				if (ch != null && !(ch instanceof Hero || ch instanceof SmallLeaf || ch instanceof WhiteLing ||ch instanceof MoonCat||ch instanceof Nyz ||ch instanceof YetYog||ch instanceof Mint|| ch instanceof ZeroTomb || ch instanceof LanFire)
 						&& !ch.properties().contains(Char.Property.BOSS)
 						&& !ch.properties().contains(Char.Property.MINIBOSS)){
 					Sheep sheep = new Sheep();
@@ -297,19 +307,24 @@ public class CursedWand {
 
 			//inter-level teleportation
 			case 2:
-				if (Dungeon.depth > 1 && Dungeon.interfloorTeleportAllowed() && user == Dungeon.hero) {
+				if (Dungeon.depth > 1 && Dungeon.interfloorTeleportAllowed() && user == Dungeon.hero && !Statistics.bossRushMode) {
 
-					//each depth has 1 more weight than the previous depth.
-					float[] depths = new float[Dungeon.depth-1];
-					for (int i = 1; i < Dungeon.depth; i++) depths[i-1] = i;
-					int depth = 1+Random.chances(depths);
+					if(Dungeon.branch == 0){
+						//each depth has 1 more weight than the previous depth.
+						float[] depths = new float[Dungeon.depth-1];
+						for (int i = 1; i < Dungeon.depth; i++) depths[i-1] = i;
+						int depth = 1+Random.chances(depths);
 
-					Level.beforeTransition();
-					InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-					InterlevelScene.returnDepth = depth;
-					InterlevelScene.returnBranch = 0;
-					InterlevelScene.returnPos = -1;
-					Game.switchScene(InterlevelScene.class);
+						Level.beforeTransition();
+						InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+						InterlevelScene.returnDepth = depth;
+						InterlevelScene.returnBranch = 0;
+						InterlevelScene.returnPos = -1;
+						Game.switchScene(InterlevelScene.class);
+					} else {
+						GLog.w("Crash Game!This is Joke");
+					}
+
 
 				} else {
 					ScrollOfTeleportation.teleportChar(user);

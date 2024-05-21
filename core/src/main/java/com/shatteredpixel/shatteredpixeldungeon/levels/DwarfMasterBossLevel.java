@@ -11,14 +11,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfMaster;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
@@ -29,8 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
-import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ImpShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -60,16 +57,6 @@ public class DwarfMasterBossLevel extends Level {
     private static final int FIGHTING = 1;
     private static final int WON = 2;
     private static final int ERROR = 9999999;
-
-    private void progress(){
-        if(status == START){
-            status = FIGHTING;
-        }else if(status == FIGHTING){
-            status = WON;
-        }else{
-            status = ERROR;
-        }
-    }
 
 
     @Override
@@ -121,11 +108,6 @@ public class DwarfMasterBossLevel extends Level {
         setSize(WIDTH, HEIGHT);
         map = codedMap.clone();
 
-        //小恶魔的逻辑
-        impShop = new ImpShopRoom();
-        impShop.set(end.left+4, end.top+23, end.left+11, end.top+30);
-        Painter.set(this, impShop.center(), Terrain.PEDESTAL);
-
         int entrance = (this.width * 31) + 18;
         int exit = 94;
 
@@ -166,36 +148,16 @@ public class DwarfMasterBossLevel extends Level {
     protected void createMobs() {
 
     }
-    private ImpShopRoom impShop;
-    private static final String IMP_SHOP = "imp_shop";
 
-    private void spawnShop(){
-        while (impShop.itemCount() >= 7*(impShop.height()-3)){
-            impShop.bottom++;
-        }
-        impShop.spawnShop(this);
-    }
-
-    @Override
     public void storeInBundle( Bundle bundle ) {
-        super.storeInBundle( bundle );
-        bundle.put( IMP_SHOP, impShop );
-        bundle.put( "level_status", status );
+        super.storeInBundle(bundle);
+        bundle.put("level_status", status);
     }
 
     @Override
     public void restoreFromBundle( Bundle bundle ) {
         super.restoreFromBundle( bundle );
         //pre-1.3.0 saves, modifies exit transition with custom size
-        if (bundle.contains("exit")){
-            LevelTransition exit = getTransition(LevelTransition.Type.REGULAR_EXIT);
-            impShop.set(end.left+4, end.top+23, end.left+11, end.top+30);
-            transitions.add(exit);
-        }
-        impShop = (ImpShopRoom) bundle.get( IMP_SHOP );
-        if (map[topDoor] != Terrain.LOCKED_DOOR && Imp.Quest.isCompleted() && !impShop.shopSpawned()){
-            spawnShop();
-        }
         status = bundle.getInt("level_status");
     }
 
@@ -223,7 +185,9 @@ public class DwarfMasterBossLevel extends Level {
         mw.cursed = false;
         mw.identify();
         drop(mw, 16 + WIDTH * 34).type = Heap.Type.LOCKED_CHEST;
-        drop(new LloydsBeacon(), 18 + WIDTH * 34).type = Heap.Type.LOCKED_CHEST;
+        Item item = new ChaliceOfBlood();
+        item.level = 5;
+        drop(item, 18 + WIDTH * 34).type = Heap.Type.LOCKED_CHEST;
         Wand w;
         do {
             w = (Wand) Generator.random(Generator.Category.WAND);
@@ -345,9 +309,9 @@ public class DwarfMasterBossLevel extends Level {
         super.occupyCell(ch);
         int entrance = (this.width * 31) + 18;
 
-        if (status == START && ch == Dungeon.hero) {
-            progress();
+        if (status == 0 && ch == Dungeon.hero) {
             seal();
+            status++;
             CellEmitter.get( entrance ).start( FlameParticle.FACTORY, 0.1f, 10 );
         }
 
@@ -402,10 +366,6 @@ public class DwarfMasterBossLevel extends Level {
         set( entrance(), Terrain.ENTRANCE );
         GameScene.updateMap( entrance() );
         Dungeon.observe();
-
-        if (Imp.Quest.isCompleted()) {
-            spawnShop();
-        }
     }
 
     @Override

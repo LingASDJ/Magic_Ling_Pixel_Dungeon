@@ -144,12 +144,12 @@ public class ColdGurad extends Mob implements Callback {
 
     @Override
     public int attackSkill( Char target ) {
-        return 5;
+        return 12+Dungeon.depth;
     }
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(0, 2);
+        return Random.NormalIntRange(4, 6);
     }
 
     @Override
@@ -233,6 +233,11 @@ public class ColdGurad extends Mob implements Callback {
     public void onZapComplete() {
         zap();
         next();
+    }
+
+    @Override
+    public int damageRoll() {
+        return Random.NormalIntRange( 10+Dungeon.depth, 16+Dungeon.depth );
     }
 
     @Override

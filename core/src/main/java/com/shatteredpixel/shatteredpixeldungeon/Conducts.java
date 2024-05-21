@@ -9,9 +9,11 @@ import java.util.ArrayList;
 public class Conducts {
     public enum Conduct {
         NULL,
-        BOSSRUSH;
-        /**深海副本*/
-        //SEADLC
+        EASY,
+        NORMAL,
+        HARD,
+        DEV;
+
 
         @Override
         public String toString() {

@@ -25,7 +25,9 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireacti
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
@@ -151,7 +153,12 @@ public class ShopRoom extends SpecialRoom {
 				} while (level.heaps.get( cell ) != null || level.findMob( cell ) != null);
 			}
 
-			level.drop( item, cell ).type = Heap.Type.FOR_SALE;
+			if(Statistics.bossRushMode){
+				level.drop( item, cell ).type = Heap.Type.FOR_RUSH;
+			} else {
+				level.drop( item, cell ).type = Heap.Type.FOR_SALE;
+			}
+
 		}
 
 	}
@@ -165,24 +172,38 @@ public class ShopRoom extends SpecialRoom {
 		LockSword w2 = new LockSword();
 
 		switch (Dungeon.depth) {
-		case 6: default:
+			case 5:case 6: default:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[1]);
 			itemsToSpawn.add( Generator.random(Generator.misTiers[1]).quantity(2).identify(false) );
 			itemsToSpawn.add( new LeatherArmor().identify(false) );
 
-			if(Random.Int(10)>2) {
+            if(!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)){
+                if(Random.Int(1)<1){
+                    //50%
+                    w2.lvl = Random.Int(0, 301);
+	    			itemsToSpawn.add(w2.identify(false));
+	    		}
+            }else if(Random.Int(10)<1 ) {
+			    //10%
 				w2.lvl = Random.Int(0, 301);
 				itemsToSpawn.add(w2.identify(false));
 			}
 
 			break;
 			
-		case 11:
+		case 11:case 12:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[2]);
 			itemsToSpawn.add( Generator.random(Generator.misTiers[2]).quantity(2).identify(false) );
 			itemsToSpawn.add( new MailArmor().identify(false) );
 
-			if(Random.Int(10)>8) {
+			if(!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)){
+                if(Random.Int(1)<1){
+                    //50%
+                    w2.lvl = Random.Int(100, 301);
+	    			itemsToSpawn.add(w2.identify(false));
+	    		}
+            }else if(Random.Int(200)<15) {
+			//7.5%
 				w2 = new LockSword();
 				((LockSword) w2).lvl = Random.Int(100, 301);
 				itemsToSpawn.add(w2.identify(false));
@@ -191,7 +212,7 @@ public class ShopRoom extends SpecialRoom {
 
 			break;
 			
-		case 16:
+		case 16:case 19:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[3]);
 			itemsToSpawn.add( Generator.random(Generator.misTiers[3]).quantity(2).identify(false) );
 			if(Random.Int(10) == 0){
@@ -200,7 +221,16 @@ public class ShopRoom extends SpecialRoom {
 				itemsToSpawn.add( new ScaleArmor().identify(false) );
 			}
 
-			if(Random.Int(10)==1) {
+			if(!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)){
+                if(Random.Int(1)<1){
+                    //50%
+                    //合计期望为87.5%
+                    w2.lvl = Random.Int(200, 501);
+	    			itemsToSpawn.add(w2.identify(false));
+	    		}
+            }else if(Random.Int(20)<1) {
+			//5%
+			//合计期望大概为21%
 				w2 = new LockSword();
 				((LockSword) w2).lvl = Random.Int(200, 501);
 				itemsToSpawn.add( w2.identify(false) );
@@ -209,7 +239,7 @@ public class ShopRoom extends SpecialRoom {
 
 
 
-		case 20: case 21:
+		case 20: case 21:case 25:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[4]);
 			itemsToSpawn.add( Generator.random(Generator.misTiers[4]).quantity(2).identify(false) );
 			if(Random.Int(10) == 0){
@@ -221,11 +251,6 @@ public class ShopRoom extends SpecialRoom {
 			itemsToSpawn.add( new Torch() );
 			itemsToSpawn.add( new Torch() );
 
-			if(Random.Int(50)==1) {
-				w2 = new LockSword();
-				((LockSword) w2).lvl = Random.Int(300, 601);
-				itemsToSpawn.add(w2.identify(false));
-			}
 			break;
 		}
 		w.enchant(null);
@@ -292,7 +317,10 @@ public class ShopRoom extends SpecialRoom {
 				break;
 		}
 
-		itemsToSpawn.add( new Ankh() );
+		if(!Statistics.bossRushMode){
+			itemsToSpawn.add( new Ankh() );
+		}
+
 		itemsToSpawn.add( new StoneOfAugmentation() );
 
 		TimekeepersHourglass hourglass = Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);
@@ -352,6 +380,7 @@ public class ShopRoom extends SpecialRoom {
 	}
 
 	public static Bag ChooseBag(Belongings pack){
+		if(Dungeon.isChallenged(Challenges.PRO)) return null;
 
 		//generate a hashmap of all valid bags.
 		HashMap<Bag, Integer> bags = new HashMap<>();

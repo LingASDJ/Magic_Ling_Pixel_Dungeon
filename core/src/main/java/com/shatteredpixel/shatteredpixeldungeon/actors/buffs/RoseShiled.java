@@ -30,16 +30,17 @@ import com.watabou.noosa.Image;
 
 public class RoseShiled extends FlavourBuff {
 
-    public static final float DURATION	= 70f;
+    public static final float DURATION	= 10f;
 
     {
         type = buffType.POSITIVE;
         announced = true;
     }
 
+
     @Override
-    public String iconTextDisplay() {
-        return Integer.toString((int)DURATION);
+    public float iconFadePercent() {
+        return Math.max(0, (DURATION - visualcooldown()) / DURATION);
     }
 
     @Override

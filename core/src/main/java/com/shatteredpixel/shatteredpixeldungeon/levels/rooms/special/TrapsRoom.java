@@ -156,5 +156,6 @@ public class TrapsRoom extends SpecialRoom {
 			{GrimTrap.class},
 			//Holiday
 			{GrimTrap.class, DisintegrationTrap.class, GatewayTrap.class},
+			{FlashingTrap.class, DisintegrationTrap.class, GrimTrap.class},
 	};
 }

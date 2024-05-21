@@ -1,6 +1,12 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
@@ -32,7 +38,17 @@ public class WndShopKing extends Window {
             @Override
             protected void onClick() {
                 hide();
-                InterlevelScene.mode = InterlevelScene.Mode.FRGIRLBOSS;
+                TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+                if (timeFreeze != null) timeFreeze.disarmPresses();
+                Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+                if (timeBubble != null) timeBubble.disarmPresses();
+                InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+                InterlevelScene.curTransition = new LevelTransition();
+                InterlevelScene.curTransition.destDepth = depth;
+                InterlevelScene.curTransition.destType = LevelTransition.Type.BRANCH_EXIT;
+                InterlevelScene.curTransition.destBranch = 7;
+                InterlevelScene.curTransition.type = LevelTransition.Type.BRANCH_EXIT;
+                InterlevelScene.curTransition.centerCell = -1;
                 Game.switchScene(InterlevelScene.class);
             }
         };

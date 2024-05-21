@@ -4,11 +4,15 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.FireMagicGirlPlot;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FireMagicGirlSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 
 import java.util.ArrayList;
 
@@ -32,8 +36,14 @@ public class FireMagicDiedNPC extends NTNPC {
     @Override
     public boolean interact(Char c) {
         sprite.turnTo( pos, hero.pos );
+        FireMagicGirlPlot plot = new FireMagicGirlPlot();
         if(xfirst){
-            WndQuest.chating(this,chat);
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndDialog(plot,false));
+                }
+            });
             xfirst=false;
         }else {
             GLog.n( Messages.get(FireMagicDiedNPC.class, "talk_5", Dungeon.hero.name()) );

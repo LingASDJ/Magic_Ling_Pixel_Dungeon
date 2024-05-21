@@ -854,6 +854,8 @@ public class WndSettings extends WndTabbed {
 
 		CheckBox ATBSwitch;
 
+		OptionSlider timeOut;
+
 //		RedButton ResetButton;
 
 		@Override
@@ -885,6 +887,20 @@ public class WndSettings extends WndTabbed {
 			ATBSwitch.checked(SPDSettings.ATBSettings());
 			add(ATBSwitch);
 
+			timeOut = new OptionSlider(Messages.get(this, "time_out"),
+					"4s",
+					"15s",
+					4, 15) {
+				@Override
+				protected void onChange() {
+					if (getSelectedValue() != SPDSettings.timeOutSeed()) {
+						SPDSettings.timeOutSeed(getSelectedValue());
+					}
+				}
+			};
+			timeOut.setSelectedValue(SPDSettings.timeOutSeed());
+			add(timeOut);
+
 		}
 
 		@Override
@@ -901,12 +917,14 @@ public class WndSettings extends WndTabbed {
 			if (width > 200){
 				LockFing.setRect(0, bottom, width, SLIDER_HEIGHT);
 				ATBSwitch.setRect(0, LockFing.bottom() + GAP, width, SLIDER_HEIGHT);
+				timeOut.setRect(0, ATBSwitch.bottom() + GAP, width, SLIDER_HEIGHT);
 			} else {
 				LockFing.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
 				ATBSwitch.setRect(0, LockFing.bottom() + GAP, width, SLIDER_HEIGHT);
+				timeOut.setRect(0, ATBSwitch.bottom() + GAP, width, SLIDER_HEIGHT);
 			}
 
-			height = ATBSwitch.bottom();
+			height = timeOut.bottom();
 		}
 
 	}
@@ -918,7 +936,6 @@ public class WndSettings extends WndTabbed {
 		CheckBox chkNews;
 		CheckBox chkBetas;
 		CheckBox chkWifi;
-		CheckBox chkFireBase;
 
 		@Override
 		protected void createChildren() {
@@ -951,16 +968,6 @@ public class WndSettings extends WndTabbed {
 				chkWifi.checked(SPDSettings.WiFi());
 				add(chkWifi);
 			}
-
-			chkFireBase = new CheckBox(Messages.get(this, "autoupdate")) {
-				@Override
-				protected void onClick() {
-					super.onClick();
-					SPDSettings.firebase(checked());
-				}
-			};
-			chkFireBase.checked( SPDSettings.firebase() );
-			add( chkFireBase );
 		}
 
 		@Override
@@ -971,17 +978,13 @@ public class WndSettings extends WndTabbed {
 
 			float pos;
 
-			if (width > 200 && chkFireBase != null){
+			if (width > 200){
 				chkNews.setRect(0, sep1.y + 1 + GAP, width/2-1, BTN_HEIGHT);
-				//chkUpdates.setRect(chkNews.right() + GAP, chkNews.top(), width/2-1, BTN_HEIGHT);
-				chkFireBase.setRect(chkNews.right() + GAP, chkNews.top(), width/2-1, BTN_HEIGHT);
-				pos = chkFireBase.bottom();
 			} else {
 				chkNews.setRect(0, sep1.y + 1 + GAP, width, BTN_HEIGHT);
-				chkFireBase.setRect(0, chkNews.bottom() + GAP, width, BTN_HEIGHT);
-				pos = chkNews.bottom();
 			}
 
+			pos = chkNews.bottom();
 			if (chkBetas != null){
 				chkBetas.setRect(0, pos + GAP, width, BTN_HEIGHT);
 				pos = chkBetas.bottom();

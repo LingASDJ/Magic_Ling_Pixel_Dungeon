@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holid
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
@@ -123,13 +124,16 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVenom;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BoomSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dairikyan;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dirk;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DragonShiled;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
@@ -158,6 +162,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SDBSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Seekingspear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SkyShield;
@@ -168,6 +173,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WashCrime;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WitheWoodSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.KingAxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.thanks.GrilledHerring;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ForceCube;
@@ -176,8 +185,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Javelin;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.RedBlock;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.RiverSlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.StreamerKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingClub;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
@@ -191,6 +200,7 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Icecap;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Mageroyal;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Rotberry;
 import com.shatteredpixel.shatteredpixeldungeon.plants.SkyBlueFireBloom;
@@ -220,6 +230,42 @@ public class Generator {
 						cat.probs[i]++;
 					}
 				}
+			}
+		}
+	}
+
+	/*
+	 * @Breif 将对应category中item的生成率改为overrideProbs
+	 * @Pramas Item,Category,float
+	 * @NativeName: setProbs
+	 * @NativeFunction: void setProbs(Item,Category,float)
+	 */
+	public static void setProbs(Item item,Category category,float overrideProbs){
+		if( !category.superClass.isAssignableFrom(item.getClass()) ) {
+			return;
+		}
+
+		for(int i = 0;i<category.classes.length;i++){
+			if(category.classes[i] == item.getClass()){
+				category.probs[i] = overrideProbs;
+			}
+		}
+	}
+
+	/*
+	 * @Breif 将对应category中item的生成率和默认生成率分别改为overrideProbs和overrideDefaultProbs
+	 * @Pramas Item,Category,float,float
+	 * @NativeName: setProbs
+	 * @NativeFunction: void setProbs(Item,Category,float,float)
+	 */
+	public static void setProbs(Item item,Category category,float overrideProbs,float overrideDefaultProbs){
+		if( !item.getClass().isAssignableFrom(category.superClass) )
+			return;
+
+		for(int i = 0;i<category.classes.length;i++){
+			if(category.classes[i] == item.getClass()){
+				category.defaultProbs[i] = overrideDefaultProbs;
+				category.probs[i] = overrideProbs;
 			}
 		}
 	}
@@ -350,8 +396,9 @@ public class Generator {
 					Stormvine.Seed.class,
 					Earthroot.Seed.class,
 					Starflower.Seed.class,
-					AikeLaier.Seed.class,};
-			SEED.defaultProbs = new float[]{ 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,3};
+					AikeLaier.Seed.class,
+					Mageroyal.Seed.class};
+			SEED.defaultProbs = new float[]{ 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,3,4};
 			SEED.probs = SEED.defaultProbs.clone();
 
 			SCROLL.classes = new Class<?>[]{
@@ -405,9 +452,10 @@ public class Generator {
 
 					WandOfBlueFuck.class,
 					WandOfHightHunderStorm.class,
-					WandOfGodIce.class
+					WandOfGodIce.class,
+					WandOfVenom.class
 			};
-			WAND.probs = new float[]{ 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 1,0,0,0 };
+			WAND.probs = new float[]{ 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 1,0,0,0,0 };
 
 			//see generator.randomWeapon
 			WEAPON.classes = new Class<?>[]{};
@@ -448,9 +496,11 @@ public class Generator {
 
 					SDBSword.class,
 					RedBloodMoon.class,
-					LifeTreeSword.class
+					LifeTreeSword.class,
+
+					MoonDao.class,
 			};
-			WEP_T3.probs = new float[]{ 1, 5, 4, 4, 4 ,3,5,3,6,0, 0,0,0};
+			WEP_T3.probs = new float[]{ 1, 5, 4, 4, 4 ,3,5,3,6,0, 0,0,0, SPDSettings.isItemUnlock(MoonDao.class.getSimpleName() ) ? 1.5f : 0 };
 
 			WEP_T4.classes = new Class<?>[]{
 					Longsword.class,
@@ -460,9 +510,11 @@ public class Generator {
 					AssassinsBlade.class,
 					Crossbow.class,
 					Katana.class,
+					GrilledHerring.class,
 					Gauntlet.class,
+					Seekingspear.class
 			};
-			WEP_T4.probs = new float[]{ 6, 5, 5, 4, 4, 4,2,2 };
+			WEP_T4.probs = new float[]{ 6, 5, 5, 4, 4, 4,2,3, 2, 4 };
 
 			WEP_T5.classes = new Class<?>[]{
 					LockSword.class,
@@ -472,12 +524,15 @@ public class Generator {
 					Greataxe.class,
 					Greatshield.class,
 					WashCrime.class,
+					BoomSword.class,
 					//传奇武器
 					DiedCrossBow.class,
 					WarScythe.class,
-
+					SaiPlus.class,
+					DragonShiled.class,
+					KingAxe.class
 			};
-			WEP_T5.probs = new float[]{ 0, 3, 3, 3, 3, 3,3,0,2};
+			WEP_T5.probs = new float[]{ 6, 3, 3, 3, 3, 3,3,4,SPDSettings.isItemUnlock(DiedCrossBow.class.getSimpleName() ) ? 1.5f : 0,2,SPDSettings.isItemUnlock(SaiPlus.class.getSimpleName() ) ? 1f : 0,0,SPDSettings.KillDwarf() ? 1.2f : 0};
 
 			WEP_T6.classes = new Class<?>[]{
 					IceFishSword.class,
@@ -526,7 +581,7 @@ public class Generator {
 					Javelin.class,
 					Tomahawk.class,
 					HeavyBoomerang.class,
-					RiverSlade.class
+					StreamerKnife.class
 			};
 			MIS_T4.probs = new float[]{ 6, 5, 4, 5 };
 

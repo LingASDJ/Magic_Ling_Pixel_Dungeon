@@ -71,7 +71,7 @@ public class WarpBeacon extends ArmorAbility {
 
 	@Override
 	protected void activate(ClassArmor armor, Hero hero, Integer target) {
-		if (target == null){
+		if (target == null || Dungeon.branch != 0){
 			return;
 		}
 

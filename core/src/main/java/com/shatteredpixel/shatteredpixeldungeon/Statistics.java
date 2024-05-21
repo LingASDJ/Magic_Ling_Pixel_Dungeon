@@ -29,17 +29,39 @@ public class Statistics {
 
 	//统计分数
 	public static int progressScore;
-
 	//种子处罚
 	public static boolean seedCustom = false;
+	public static boolean ExFruit = false;
+	//神器限制
+	public static boolean ARLing = false;
+	public static boolean CatFirst = false;
+	public static boolean snow = false;
+
+	//小叶12挑首次对话
+	public static boolean SmallLeafGet = false;
+	public static boolean noClearKill = false;
 
 	//吃保底
 	public static int bossWeapons;
 
+	public static int zeroItemLevel;
+
+	public static int hcDialogLevel;
+
+	public static boolean unLockedFireDargon = false;
+
+	//游戏局内杀死火龙
+	public static boolean GameKillFireDargon = false;
+
+	public static int wcDialogLevel;
+
+
+	public static boolean youNoItem = false;
+
 	//中继器电话号码
 	public static int commonrelaycall;
 
-	public static int SiderLing;
+	public static int GetFoodLing;
 
 	//中秋节幽灵特别行动
 	public static boolean findMoon = false;
@@ -49,10 +71,17 @@ public class Statistics {
 
 	public static boolean doNotLookLing = false;
 
-	public static boolean happyMode = false;
+	public static boolean bossRushMode = false;
+
+	public static boolean NoTime = false;
 
 	//萨卡班甲鱼二阶段
 	public static int sakaBackStage;
+
+
+	//难度等级
+	public static int difficultyDLCEXLevel;
+
 	public static int readBooks;
 	public static int treasureScore;
 	public static SparseArray<Boolean> floorsExplored = new SparseArray<>();
@@ -113,13 +142,17 @@ public class Statistics {
 	//克里弗斯之果
 	public static boolean crivusfruitslevel2 = false;
 
+	//异果
+	public static int CrivusbossTeleporter;
+	public static boolean crivusfruitslevel3 = false;
+
 	//仙人跳背包问题
 	public static boolean ankhToExit = false;
 
 	//拟态之王
 	public static boolean TPDoorDieds = false;
 
-	//修复同步
+	//前路优化
 	public static boolean noGoReadHungry = false;
 
 	//警告
@@ -135,6 +168,7 @@ public class Statistics {
 	public static int fuckGeneratorAlone;
 
 	public static int dageCollected;
+	public static boolean Alone;
 
 	//首次对决
 	public static boolean mimicking = false;
@@ -147,6 +181,25 @@ public class Statistics {
 
 	public static boolean gooFight = false;
 
+	public static boolean onlyBzmdr = false;
+
+	//昼夜更替
+	public static int gameTime;
+	public static int gameDay;
+	public static boolean gameNight;
+
+	public static int dwarfchange;
+
+
+	//永久货币 冰蓝方孔货币
+	public static int iceCyanBlueSquareCoin;
+
+	private static final String ICECLAN ="iceCyanBlueSquareCoin";
+
+	private static final String GAMETIME = "gameTime";
+
+	private static final String GAMENIGHT = "gamenight";
+
     private static final String LOVX = "lovx";
 
 	private static final String MSTG = "musttengu";
@@ -156,6 +209,7 @@ public class Statistics {
     private static final String FUCKALONE = "fuckplayer";
     private static final String WINGAME = "wingame";
     private static final String HIDEEN = "hideen";
+	private static final String DWSX = "dwsxxx";
     private static final String BOSS_CHALLENGE_QUALIFIED = "qualifiedForBossChallengeBadge";
 	//Directly add float time will cause accuracy lose and stop timing if time is long enough
 	//so use long to record seconds, float to count sub-seconds.
@@ -205,6 +259,8 @@ public class Statistics {
 	//克里弗斯之果
 	private static final String CrivusFruitsLevel2		= "crivusfruitslevel2";
 
+	private static final String CrivusFruitsLevel3		= "crivusfruitslevel3";
+
 	//拟态之王
 	private static final String TPDoorDied		= "TPDoorDieds";
 
@@ -219,6 +275,8 @@ public class Statistics {
 	private static final String MMC		= "mmcsx";
 
 	private static final String DDK		= "dada";
+
+	private static final String BDK		= "bossLingCR";
 
 	private static final String BossSelect	= "bossselect";
 
@@ -265,24 +323,71 @@ public class Statistics {
 
 	private static final String GOOFIGHT      = "gooFIGHT";
 
+	private static final String ZEROLEVEL      = "zerolevel";
+
+	private static final String HKLEVEL      = "hklevel";
+	private static final String WKLEVEL      = "wklevel";
+
+
+	private static final String EXBOSS1		= "EXBOSS1";
+
+	private static final String XOL		= "xol";
+
     public static boolean TryUsedAnmy = false;
     public static boolean winGame = false;
     public static boolean HiddenOK = false;
     //220---SPD
     public static boolean qualifiedForBossChallengeBadge = false;
+    public static boolean dwarfKill = false;
 
     public static void reset() {
         boss_enhance = 0;
         ChaicBlood = 0;
         readBooks = 0;
+
+		ExFruit = false;
+
+		HiddenOK = false;
+
+		ARLing = false;
+
+		dwarfKill = false;
+
+		CatFirst = false;
+
+		SmallLeafGet = false;
+		noClearKill = false;
+
         HealingIsDied = 0;
 
+		dwarfchange = Random.Int(1,101);
+
+		NoTime = false;
 		dm720Fight = false;
 		dm300Fight = false;
+		onlyBzmdr = false;
+
+		gameDay = 1;
+
+		ascended = false;
+
+		zeroItemLevel = 0;
+		hcDialogLevel = 0;
+		youNoItem = false;
+		unLockedFireDargon = false;
+
+		GameKillFireDargon = false;
+
+		gameTime = 0;
+		gameNight = false;
+
 		gooFight = false;
 		mustTengu = false;
 
-        happyMode = false;
+
+		difficultyDLCEXLevel = 0;
+		wcDialogLevel = 0;
+        bossRushMode = false;
 
         findMoon = false;
 		deadGo = false;
@@ -313,6 +418,9 @@ public class Statistics {
         qualifiedForBossChallengeBadge = false;
         mimicking = false;
 
+		//生成商店限制
+		Alone = false;
+
 		commonrelaycall = Random.IntRange(10000000,99999999);
 
 		amuletObtained = false;
@@ -329,7 +437,7 @@ public class Statistics {
 		noGoReadHungry =  false;
 
 		crivusfruitslevel2 = false;
-
+		crivusfruitslevel3 = false;
 		ankhToExit = false;
 
 		TPDoorDieds = false;
@@ -339,7 +447,6 @@ public class Statistics {
 		second_elapsed = 0f;
 		real_seconds = 0;
 		turnsPassed = 0f;
-
 
 		//得分
 		progressScore   = 0;
@@ -355,12 +462,18 @@ public class Statistics {
 		chalMultiplier  = 1;
 		totalScore      = 0;
 		seedCustom = false;
-		SiderLing = 0;
+		GetFoodLing = 0;
+		CrivusbossTeleporter = 0;
 	}
 
     public static void storeInBundle(Bundle bundle) {
 
+		bundle.put(ICECLAN,iceCyanBlueSquareCoin);
+
+
         bundle.put(HIDEEN, HiddenOK);
+
+		bundle.put(DWSX, dwarfKill);
 
         bundle.put(WINGAME, winGame);
 
@@ -369,19 +482,42 @@ public class Statistics {
         bundle.put(BDTX, bossWeapons);
 
         bundle.put(LOVE,findMoon);
+
+		bundle.put(ZEROLEVEL,zeroItemLevel);
+
+		bundle.put(HKLEVEL,hcDialogLevel);
+
+		bundle.put(WKLEVEL,wcDialogLevel);
+
 		bundle.put(LOVX,deadGo);
 
-		bundle.put(SIDERLING,SiderLing);
+		bundle.put(SIDERLING, GetFoodLing);
 
 		bundle.put(FUCKALONE,fuckGeneratorAlone);
 
 		bundle.put(SEEDCUSTOM,seedCustom);
+
+		bundle.put(EXBOSS1,ExFruit);
+
+		bundle.put("ARLing",ARLing);
+
+		bundle.put("CAT",CatFirst);
+
+		bundle.put("SMALLEAFTGET",SmallLeafGet);
+
+		bundle.put("NOCLEAR",noClearKill);
+
+		bundle.put("SNOW",snow);
 
 		bundle.put(DM720FIGHT,dm720Fight);
 
 		bundle.put(DM300FIGHT,dm300Fight);
 
 		bundle.put(GOOFIGHT,gooFight);
+
+		bundle.put("onlyB",onlyBzmdr);
+
+		bundle.put("NOTIME",NoTime);
 
 		//分数
 		bundle.put( PROG_SCORE,  progressScore );
@@ -398,7 +534,7 @@ public class Statistics {
 
 		bundle.put( EXPL_SCORE,  exploreScore );
 
-		bundle.put( HAPPY,  happyMode );
+		bundle.put( HAPPY, bossRushMode);
 
 		bundle.put( BOSS_SCORES, bossScores );
 		bundle.put( TOT_BOSS,    totalBossScore );
@@ -421,7 +557,11 @@ public class Statistics {
 
 		bundle.put(DDK,dimandchestmazeCollected);
 
+		bundle.put(BDK,CrivusbossTeleporter);
+
 		bundle.put( CrivusFruitsLevel2, crivusfruitslevel2 );
+
+		bundle.put( CrivusFruitsLevel3, crivusfruitslevel3 );
 
 		bundle.put( TPDoorDied, TPDoorDieds );
 
@@ -465,28 +605,80 @@ public class Statistics {
 
 		bundle.put( SAKATWO, sakaBackStage );
 
+		bundle.put( XOL, difficultyDLCEXLevel);
+
 		bundle.put(MSTG,mustTengu);
+
+		bundle.put("DWCHSAG",dwarfchange);
 
 		//SPD
 		bundle.put("real_time_passed", second_elapsed);
 		bundle.put("real_seconds_passed", real_seconds);
         bundle.put("turns_passed", turnsPassed);
         bundle.put(BOSS_CHALLENGE_QUALIFIED, qualifiedForBossChallengeBadge);
+
+		bundle.put(GAMETIME,gameTime);
+		bundle.put(GAMENIGHT,gameNight);
+		bundle.put("gameday",gameDay);
+
+		bundle.put("YOU",youNoItem);
+		bundle.put("DCXFG",unLockedFireDargon);
+		bundle.put("DRAM",GameKillFireDargon);
+
+		bundle.put("ALXONE",Alone);
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
 
-		SiderLing = bundle.getInt( SIDERLING);
+		GameKillFireDargon = bundle.getBoolean("DRAM");
+		unLockedFireDargon = bundle.getBoolean("DCXFG");
+		iceCyanBlueSquareCoin = bundle.getInt(ICECLAN);
+
+		hcDialogLevel = bundle.getInt(HKLEVEL);
+
+		snow = bundle.getBoolean("SNOW");
+
+		CrivusbossTeleporter = bundle.getInt(BDK);
+
+		GetFoodLing = bundle.getInt( SIDERLING);
+
+		dwarfchange = bundle.getInt("DWCHSAG");
+
+		gameDay = bundle.getInt("gameday");
 
 		winGame = bundle.getBoolean(WINGAME);
 
 		HiddenOK = bundle.getBoolean(HIDEEN);
+
+		difficultyDLCEXLevel = bundle.getInt(XOL);
+
+		wcDialogLevel = bundle.getInt(WKLEVEL);
+
+		CatFirst = bundle.getBoolean("CAT");
+
+		SmallLeafGet = bundle.getBoolean("SMALLEAFTGET");
+
+		noClearKill = bundle.getBoolean("NOCLEAR");
 
 		doNotLookLing = bundle.getBoolean(LOCD);
 
 		seedCustom = bundle.getBoolean(SEEDCUSTOM);
 
 		ankhToExit = bundle.getBoolean(XRTANKH);
+
+		ExFruit = bundle.getBoolean(EXBOSS1);
+
+		ARLing = bundle.getBoolean("ARLing");
+
+		dwarfKill = bundle.getBoolean(DWSX);
+
+		onlyBzmdr = bundle.getBoolean("onlyB");
+
+		youNoItem = bundle.getBoolean("YOU");
+
+		zeroItemLevel = bundle.getInt(ZEROLEVEL);
+
+		NoTime = bundle.getBoolean("NOTIME");
 
 		//嗜血荆棘等级处理
 		ChaicBlood   = bundle.getInt( CHACEBLOOD );
@@ -501,6 +693,8 @@ public class Statistics {
 
 		fuckGeneratorAlone = bundle.getInt(FUCKALONE);
 
+		Alone = bundle.getBoolean("ALXONE");
+
 		HealingIsDied   = bundle.getInt( HEALDIED );
 
 		readBooks = bundle.getInt( READBOOKS );
@@ -511,6 +705,10 @@ public class Statistics {
 		deadGo = bundle.getBoolean(LOVX);
 
 		mustTengu = bundle.getBoolean(MSTG);
+
+		gameTime = bundle.getInt(GAMETIME);
+
+		gameNight = bundle.getBoolean(GAMENIGHT);
 
 		//分数
 		progressScore   = bundle.getInt( PROG_SCORE );
@@ -536,7 +734,7 @@ public class Statistics {
 		highestAscent   = bundle.getInt( HIGHEST );
 		gameWon         = bundle.getBoolean( WON );
 		ascended        = bundle.getBoolean( ASCENDED );
-		happyMode		= bundle.getBoolean(HAPPY);
+		bossRushMode = bundle.getBoolean(HAPPY);
 
 		dimandchestmazeCollected = bundle.getInt(DDK);
 
@@ -583,6 +781,8 @@ public class Statistics {
 		noGoReadHungry = bundle.getBoolean( BUG_SYNC_FIXED );
 
 		crivusfruitslevel2 = bundle.getBoolean( CrivusFruitsLevel2 );
+
+		crivusfruitslevel3 = bundle.getBoolean( CrivusFruitsLevel3 );
 
 		TPDoorDieds  = bundle.getBoolean( TPDoorDied );
 

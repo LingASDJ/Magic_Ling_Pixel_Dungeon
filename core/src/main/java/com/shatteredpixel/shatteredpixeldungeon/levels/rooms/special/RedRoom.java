@@ -22,8 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedNecromancer;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -72,7 +72,7 @@ public class RedRoom extends SpecialRoom {
             do {
                 pos = level.pointToCell(random());
             } while (!validPlantPos(level, pos));
-            placePlant(level, pos, new Necromancer());
+            placePlant(level, pos, new Brute());
         }
     }
 

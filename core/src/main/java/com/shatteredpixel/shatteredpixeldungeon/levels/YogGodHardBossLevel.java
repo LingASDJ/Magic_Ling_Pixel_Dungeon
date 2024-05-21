@@ -5,22 +5,36 @@ import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogReal;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.watabou.noosa.Game;
+import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -31,7 +45,7 @@ public class YogGodHardBossLevel extends Level {
         color1 = 0x801500;
         color2 = 0xa68521;
 
-        viewDistance = Math.min(4, viewDistance);
+        viewDistance = Math.min(8, viewDistance);
     }
 
     private static final int WIDTH = 41;
@@ -106,13 +120,10 @@ public class YogGodHardBossLevel extends Level {
             map[i] = codeToTerrain(codedMap[i]);
         }
 
-        int entrance=ENTRANCE;
-        int exits=EXIT;
+        LevelTransition entrance = new LevelTransition(this, ENTRANCE, LevelTransition.Type.REGULAR_ENTRANCE);
+        transitions.add(entrance);
 
-        LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
-        transitions.add(enter);
-
-        LevelTransition exit = new LevelTransition(this, exits, LevelTransition.Type.REGULAR_EXIT);
+        LevelTransition exit = new LevelTransition(this, EXIT, LevelTransition.Type.REGULAR_EXIT);
         transitions.add(exit);
 
         return true;
@@ -144,17 +155,18 @@ public class YogGodHardBossLevel extends Level {
 
     @Override
     protected void createItems() {
-        ArrayList<Item> bonesItems = Bones.get();
-        if (bonesItems != null) {
+        ArrayList<Item> item = Bones.get();
+        if (item != null) {
             int pos;
             do {
                 pos = randomRespawnCell(null);
-            } while (pos == entrance());
-            for (Item i : bonesItems) {
-                drop(i, pos).setHauntedIfCursed().type = Heap.Type.REMAINS;
+            } while (pos % WIDTH == 20);
+
+            for (Item i : item) {
+                drop( i, pos ).setHauntedIfCursed().type = Heap.Type.REMAINS;
             }
+
         }
-        Random.popGenerator();
 
         int[] plates = new int[]{4+WIDTH*4, 4+WIDTH*36, 36+WIDTH*36, 36+WIDTH*4};
         for(int i =0; i<4;++i){
@@ -164,19 +176,54 @@ public class YogGodHardBossLevel extends Level {
             plates[rand] = prev;
         }
 
-        drop(new BrokenSeal(), plates[0]).type = Heap.Type.LOCKED_CHEST;
-        drop(new MagesStaff(new WandOfMagicMissile()), plates[1]).type = Heap.Type.LOCKED_CHEST;
-        drop(new CloakOfShadows(), plates[2]).type = Heap.Type.LOCKED_CHEST;
-        drop(new SpiritBow(), plates[3]).type = Heap.Type.LOCKED_CHEST;
+        drop(new BrokenSeal(), plates[0]).type = Heap.Type.CRYSTAL_CHEST;
+        drop(new MagesStaff(new WandOfMagicMissile()), plates[1]).type = Heap.Type.CRYSTAL_CHEST;
+        drop(new CloakOfShadows(), plates[2]).type = Heap.Type.CRYSTAL_CHEST;
+        drop(new SpiritBow(), plates[3]).type = Heap.Type.CRYSTAL_CHEST;
 
     }
+
+    @Override
+    public int randomRespawnCell(Char ch) {
+        //hero should not fall outside of arena.
+        if(/*ch instanceof Hero*/true){
+            int cell = -1;
+            do {
+                cell = entrance() + PathFinder.NEIGHBOURS8[Random.Int(8)];
+            } while (!passable[cell]);
+            return cell;
+        }
+        return super.randomRespawnCell(ch);
+    }
+
 
     @Override
     public void occupyCell( Char ch ) {
         super.occupyCell( ch );
 
-        if (map[entrance] == Terrain.ENTRANCE && map[exit] != Terrain.EXIT
-                && ch == Dungeon.hero && Dungeon.level.distance(ch.pos, entrance) >= 2) {
+        if (map[ENTRANCE] == Terrain.ENTRANCE && map[EXIT] == Terrain.WALL){
+            if(ch == Dungeon.hero){
+                if(MAIN_PORTAL.containsKey(ch.pos)) {
+                    if (ch.buff(LockedFloor.class) != null) {
+                        ScrollOfTeleportation.appear(ch, MAIN_PORTAL.get(ch.pos));
+                    }else{
+                        ScrollOfTeleportation.appear(ch, IF_MAIN_PORTAL.get(ch.pos));
+                    }
+                    Dungeon.hero.interrupt();
+                    Dungeon.observe();
+                    GameScene.updateFog();
+                }else if(SUB_PORTAL.containsKey(ch.pos)){
+                    ScrollOfTeleportation.appear(ch, SUB_PORTAL.get(ch.pos));
+                    Dungeon.hero.interrupt();
+                    Dungeon.observe();
+                    GameScene.updateFog();
+                }
+            }
+            return;
+        }
+
+        if (map[ENTRANCE] == Terrain.ENTRANCE && map[EXIT] != Terrain.EXIT
+                && ch == Dungeon.hero && Dungeon.level.distance(ch.pos, ENTRANCE) >= 2) {
             seal();
         }
 
@@ -200,11 +247,51 @@ public class YogGodHardBossLevel extends Level {
     }
 
     @Override
+    public boolean activateTransition(Hero hero, LevelTransition transition) {
+        if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
+                && hero.belongings.getItem(Amulet.class) != null) {
+
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show( new WndOptions( new ItemSprite(ItemSpriteSheet.AMULET),
+                            Messages.get(Amulet.class, "xascent_title"),
+                            Messages.get(Amulet.class, "xascent_desc"),
+                            Messages.get(Amulet.class, "xascent_yes"),
+                            Messages.get(Amulet.class, "xascent_no")){
+                        @Override
+                        protected void onSelect(int index) {
+                            if (index == 0){
+                                Buff.detach(hero, AscensionChallenge.class);
+                                TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+                                if (timeFreeze != null) timeFreeze.disarmPresses();
+                                Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+                                if (timeBubble != null) timeBubble.disarmPresses();
+                                InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
+                                InterlevelScene.curTransition = new LevelTransition();
+                                InterlevelScene.curTransition.destDepth = 0;
+                                InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+                                InterlevelScene.curTransition.destBranch = 0;
+                                InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+                                InterlevelScene.curTransition.centerCell = -1;
+                                Game.switchScene(InterlevelScene.class);
+                            }
+                        }
+                    } );
+                }
+            });
+            return false;
+        } else {
+            return super.activateTransition(hero, transition);
+        }
+    }
+
+    @Override
     public void seal() {
         super.seal();
-        set( entrance, Terrain.WALL );
-        GameScene.updateMap( entrance );
-        CellEmitter.get( entrance ).start( FlameParticle.FACTORY, 0.1f, 10 );
+        set( ENTRANCE, Terrain.WALL );
+        GameScene.updateMap( ENTRANCE );
+        CellEmitter.get( ENTRANCE ).start( FlameParticle.FACTORY, 0.1f, 10 );
 
         Dungeon.observe();
 
@@ -217,11 +304,12 @@ public class YogGodHardBossLevel extends Level {
     @Override
     public void unseal() {
         super.unseal();
-        set( entrance, Terrain.ENTRANCE );
-        GameScene.updateMap( entrance );
 
-        set( exit, Terrain.EXIT );
-        GameScene.updateMap( exit );
+        set( ENTRANCE, Terrain.ENTRANCE );
+        GameScene.updateMap( ENTRANCE );
+
+        set( EXIT, Terrain.WALL );
+        GameScene.updateMap( EXIT );
 
         CellEmitter.get(CENTER-1).burst(ShadowParticle.UP, 25);
         CellEmitter.get(CENTER).burst(ShadowParticle.UP, 100);
@@ -341,4 +429,3 @@ public class YogGodHardBossLevel extends Level {
             65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65
     };
 }
-

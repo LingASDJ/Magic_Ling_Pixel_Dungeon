@@ -20,7 +20,6 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 public class SkullShaman extends Mob implements Callback {
-    private static final float TIME_TO_ZAP = 1.0F;
 
     public SkullShaman() {
         this.spriteClass = SkullShamanSprite.class;

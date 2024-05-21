@@ -22,12 +22,13 @@ public class CrystalDiedTower extends Mob {
 
         HP = HT = 1;
 
+        invisible = 1;
+        state = PASSIVE;
+
         properties.add(Property.MINIBOSS);
         properties.add(Property.INORGANIC);
         properties.add(Property.ELECTRIC);
         properties.add(Property.IMMOVABLE);
-
-        state = HUNTING;
     }
 
     @Override
@@ -134,6 +135,7 @@ public class CrystalDiedTower extends Mob {
         alignment = bundle.getEnum("ALIGNMENT", Char.Alignment.class);
         lastTargeting = bundle.getInt("lastPos");
         count = bundle.getInt("countDown");
+        alignment = Alignment.ENEMY;
     }
 
     protected int lastTargeting=-1;

@@ -24,10 +24,16 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.ClearElemtGuard;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.ClearElemtGuardNPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.PrisonPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
@@ -46,7 +52,13 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TeleportationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ToxicTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearGuardSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Halo;
@@ -180,6 +192,78 @@ public class PrisonLevel extends RegularLevel {
 				return super.tileName( tile );
 		}
 	}
+
+	@Override
+	public boolean activateTransition(Hero hero, LevelTransition transition) {
+		if (transition.type == LevelTransition.Type.BRANCH_EXIT) {
+
+			if (!Statistics.unLockedFireDargon && !SPDSettings.KillDragon()){
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						GameScene.show(new WndMessage((Messages.get(ClearElemtGuard.class, "cant_enter_a"))));
+					}
+				});
+				return false;
+			}
+			if (!SPDSettings.KillDragon()) {
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						GameScene.show(new WndOptions(new ClearGuardSprite(),
+								Messages.titleCase(Messages.get(ClearElemtGuardNPC.class, "name")),
+								Messages.get(ClearElemtGuard.class, "reason_ling", hero.name()),
+								Messages.get(ClearElemtGuard.class, "enter_letsgo"),
+								Messages.get(ClearElemtGuard.class, "enter_nonx")) {
+							@Override
+							protected void onSelect(int index) {
+								if (index == 0) {
+									TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+									if (timeFreeze != null) timeFreeze.disarmPresses();
+									Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+									if (timeBubble != null) timeBubble.disarmPresses();
+									InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+									InterlevelScene.curTransition = new LevelTransition();
+									InterlevelScene.curTransition.destDepth = 5;
+									InterlevelScene.curTransition.destType = LevelTransition.Type.BRANCH_ENTRANCE;
+									InterlevelScene.curTransition.destBranch = 1;
+									InterlevelScene.curTransition.type = LevelTransition.Type.BRANCH_ENTRANCE;
+									InterlevelScene.curTransition.centerCell = -1;
+									Game.switchScene(InterlevelScene.class);
+								}
+							}
+						});
+					}
+				});
+			} else if (Statistics.deepestFloor>9){
+					Game.runOnRenderThread(new Callback() {
+						@Override
+						public void call() {
+							GameScene.show(new WndMessage(Messages.get(ClearElemtGuard.class, "cant_enter_b")));
+						}
+					});
+					return false;
+			} else {
+				TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+				if (timeFreeze != null) timeFreeze.disarmPresses();
+				Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+				if (timeBubble != null) timeBubble.disarmPresses();
+				InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+				InterlevelScene.curTransition = new LevelTransition();
+				InterlevelScene.curTransition.destDepth = 5;
+				InterlevelScene.curTransition.destType = LevelTransition.Type.BRANCH_ENTRANCE;
+				InterlevelScene.curTransition.destBranch = 1;
+				InterlevelScene.curTransition.type = LevelTransition.Type.BRANCH_ENTRANCE;
+				InterlevelScene.curTransition.centerCell = -1;
+				Game.switchScene(InterlevelScene.class);
+			}
+		} else {
+			return super.activateTransition(hero,transition);
+		}
+		return false;
+	}
+
+
 
 	@Override
 	public String tileDesc(int tile) {

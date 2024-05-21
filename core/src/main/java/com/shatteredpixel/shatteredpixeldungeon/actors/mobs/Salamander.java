@@ -26,7 +26,7 @@ public class Salamander extends Mob {
         defenseSkill = 25;
 
         loot = Generator.Category.SEED;
-        lootChance = 0.05f;
+        lootChance = 0.5f;
 
         maxLvl = 12;
     }
@@ -67,11 +67,12 @@ public class Salamander extends Mob {
 
     @Override
     protected boolean canAttack( Char enemy ) {
+        if(Dungeon.level.distance(pos,target)>3)
+            return false;
         Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
         return !Dungeon.level.adjacent(pos, enemy.pos) && attack.collisionPos == enemy.pos;
     }
 
-    //todo Ghost Quest Mob-2
     @Override
     public int attackProc( Char enemy, int damage ) {
         damage = super.attackProc( enemy, damage );
@@ -94,13 +95,16 @@ public class Salamander extends Mob {
     }
 
     @Override
-    protected boolean getCloser( int target ) {
-        combo = 0; //if he's moving, he isn't attacking, reset combo.
+    protected boolean getCloser(int target) {
+        combo = 0;
         if (state == HUNTING) {
+            if(Dungeon.level.distance(pos,target)>3)
+                return super.getCloser( target );
             return enemySeen && getFurther( target );
         } else {
-            return super.getCloser( target );
+            return super.getCloser(target);
         }
+        //return false;
     }
 
     @Override

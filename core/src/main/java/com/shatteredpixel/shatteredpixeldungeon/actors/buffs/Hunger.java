@@ -204,6 +204,7 @@ public class Hunger extends Buff implements Hero.Doom {
 			if(Statistics.noGoReadHungry) Statistics.noGoReadHungry = false;
 			return BuffIndicator.HUNGER;
 		} else {
+			if(!Statistics.noGoReadHungry) Statistics.noGoReadHungry = true;
 			return BuffIndicator.STARVATION;
 		}
 	}

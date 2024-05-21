@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -19,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Constants;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -54,7 +56,7 @@ public class BackGoKey extends TestItem {
     @Override
     public ArrayList<String> actions(Hero hero ) {
         ArrayList<String> actions = super.actions( hero );
-        if(Dungeon.hero.buff(ShopLimitLock.class) != null || Dungeon.depth == -5) {
+        if(Dungeon.hero.buff(ShopLimitLock.class) != null || Dungeon.branch == 6) {
             actions.add(AC_INTER_TP);
         }
         return actions;
@@ -136,14 +138,18 @@ public class BackGoKey extends TestItem {
                 @Override
                 protected void onClick() {
                     super.onClick();
-                    Buff buff = hero.buff(TimekeepersHourglass.timeFreeze.class);
-                    if (buff != null) buff.detach();
-                    buff = hero.buff(Swiftthistle.TimeBubble.class);
-                    if (buff != null) buff.detach();
+                    TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+                    if (timeFreeze != null) timeFreeze.disarmPresses();
+                    Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+                    if (timeBubble != null) timeBubble.disarmPresses();
                     InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-                    InterlevelScene.returnDepth = selectedLevel;
-                    InterlevelScene.returnPos = -1;
-                    Game.switchScene( InterlevelScene.class );
+                    InterlevelScene.curTransition = new LevelTransition();
+                    InterlevelScene.curTransition.destDepth = depth;
+                    InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+                    InterlevelScene.curTransition.destBranch = 0;
+                    InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+                    InterlevelScene.curTransition.centerCell = -1;
+                    Game.switchScene(InterlevelScene.class);
 
                     if(Dungeon.hero.buff(ShopLimitLock.class) != null) {
                         for (Buff buffx : hero.buffs()) {

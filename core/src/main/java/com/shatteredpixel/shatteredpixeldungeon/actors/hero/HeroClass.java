@@ -21,13 +21,14 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
@@ -47,6 +48,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.Smok
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
+import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
+import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.LevelTeleporter;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.MobPlacer;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnArmor;
@@ -56,13 +59,18 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnMissile;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnRingOrWand;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.SpawnWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.TerrainPlacer;
-import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.BookBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.TestBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
@@ -72,8 +80,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlam
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.BlessingNecklace;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
@@ -93,7 +104,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSp
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Image;
 import com.watabou.utils.DeviceCompat;
 
 import java.util.List;
@@ -151,11 +162,18 @@ public enum HeroClass {
 
 	public void initHero( Hero hero ) {
 
-		if(!Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3) && Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ){
-			Badges.BOSSTHREE();
+		if (Challenges.activeChallenges() >= 10) {
+			hero.lanterfire = 100 - Challenges.activeChallenges() * 4;
 		}
 
-		GLog.n(String.valueOf(Statistics.commonrelaycall));
+//		if(SPDSettings.Cheating()){
+//			hero.HT = hero.HP = 114514;
+//			hero.exp = -1919810;
+//			hero.lvl = 100;
+//		}
+		//Buff.affect(hero, BlessImmune.class, ChampionHero.DURATION*123456f);
+
+		//GLog.n(String.valueOf(Statistics.commonrelaycall));
 
 		if(RegularLevel.birthday == RegularLevel.DevBirthday.DEV_BIRTHDAY){
 			new CrystalLing().quantity(1).identify().collect();
@@ -167,19 +185,18 @@ public enum HeroClass {
 		}
 
 		if ( Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
+			Dungeon.gold += 320;
 			Buff.affect(hero, RandomBuff.class).set( (5), 1 );
-			Dungeon.gold += 400;
 		}
+
 		//Buff.affect(hero, ScaryDamageBuff.class).set((50),1);
 		PaswordBadges.loadGlobal();
 		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
 		if(passwordbadges.contains(PaswordBadges.Badge.EXSG)){
-			Dungeon.gold += 648;
-		}
-
-		if ( Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)){
-			Dungeon.gold += 3000;
-			new Amulet().quantity(1).identify().collect();
+			Dungeon.gold += 400;
+			if(!Dungeon.isChallenged(PRO)) {
+				new IceCyanBlueSquareCoin().quantity(3).identify().collect();
+			}
 		}
 
 		hero.heroClass = this;
@@ -195,26 +212,46 @@ public enum HeroClass {
 		Dungeon.LimitedDrops.VELVET_POUCH.drop();
 
 		new HerbBag().quantity(1).identify().collect();
-
+		Dungeon.LimitedDrops.HERB_BAG.drop();
+		new KingBag().quantity(1).identify().collect();
+		Dungeon.LimitedDrops.KING_BAG.drop();
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
-
+		//new Amulet().quantity(1).identify().collect();
 		new ScrollOfIdentify().identify();
-
+		//new KingGold().quantity(1).identify().collect();
 		if (Dungeon.isChallenged(Challenges.PRO)){
+			new PotionBandolier().collect();
+			Dungeon.LimitedDrops.POTION_BANDOLIER.dropped();
+			new ScrollHolder().collect();
+			Dungeon.LimitedDrops.SCROLL_HOLDER.dropped();
+			new MagicalHolster().collect();
+			Dungeon.LimitedDrops.MAGICAL_HOLSTER.dropped();
+			new BookBag().collect();
+			Dungeon.LimitedDrops.BOOK_BAG.dropped();
+			new BlessingNecklace().quantity(1).identify().collect();
+			Dungeon.LimitedDrops.BLESSING_NECKLACE.dropped();
+
 			new SpawnMisc().quantity(1).identify().collect();
 			new LevelTeleporter().quantity(1).identify().collect();
 			new SakaFishSketon().quantity(1).identify().collect();
+			new SmallLightHeader().quantity(1).identify().collect();
 			new SpawnWeapon().quantity(1).identify().collect();
 			new SpawnArmor().quantity(1).identify().collect();
 			new SpawnArtifact().quantity(1).identify().collect();
 			new SpawnRingOrWand().quantity(1).identify().collect();
 			new SpawnMissile().quantity(1).identify().collect();
-			//new WandOfVenom().quantity(1).identify().collect();
+			new CustomPlayer().quantity(1).identify().collect();
+
+			CustomWeapon customWeapon = new CustomWeapon();
+			customWeapon.adjustStatus();
+			customWeapon.identify().collect();
+
+			new CrystalLing().quantity(1).identify().collect();
 			new TerrainPlacer().quantity(1).identify().collect();
 
 			new MobPlacer().quantity(1).identify().collect();
-
+			new Pickaxe().quantity(1).identify().collect();
 			new PotionOfMindVision().quantity(50).identify().collect();
 			new PotionOfHealing().quantity(50).identify().collect();
 			new PotionOfLiquidFlame().quantity(50).identify().collect();
@@ -226,7 +263,7 @@ public enum HeroClass {
 			new ScrollOfFlameCursed().quantity(50).identify().collect();
 
 			Dungeon.gold = 600000000;
-			hero.STR = 27;
+			hero.STR = 30;
 			hero.lvl = 30;
 			hero.HP=hero.HT=120;
 			hero.exp=-1;
@@ -438,4 +475,63 @@ public enum HeroClass {
 		return shortDesc() + "\n\n" + Messages.get(HeroClass.class, name()+"_unlock");
 	}
 
+	public String GetSkinAssest(){
+		switch (this) {
+			case WARRIOR: default:
+				return Assets.Sprites.AVATARS_WARRIOR;
+			case MAGE:
+				return Assets.Sprites.AVATARS_MAGE;
+			case ROGUE:
+				return Assets.Sprites.AVATARS_ROGUE;
+			case HUNTRESS:
+				return Assets.Sprites.AVATARS_HUNTRESS;
+			case DUELIST:
+				return Assets.Sprites.AVATARS_DUELIST;
+		}
+	}
+
+	public void SetSkin(int skinIndex){
+		boolean isSkinUnlock = false;
+		Image img = new Image(this.GetSkinAssest());
+		int skinCount = img.texture.width/64;
+
+		if(skinIndex==0){
+			isSkinUnlock = true;
+		}else {
+			while ( skinIndex < skinCount ) {
+				switch (this) {
+					case WARRIOR:
+					default:
+						isSkinUnlock = SPDSettings.isItemUnlock("avatars_warrior_" + skinIndex);
+						break;
+					case MAGE:
+						isSkinUnlock = SPDSettings.isItemUnlock("avatars_mage_" + skinIndex);
+						break;
+					case ROGUE:
+						isSkinUnlock = SPDSettings.isItemUnlock("avatars_rogue_" + skinIndex);
+						break;
+					case HUNTRESS:
+						isSkinUnlock = SPDSettings.isItemUnlock("avatars_huntress_" + skinIndex);
+						break;
+					case DUELIST:
+						isSkinUnlock = SPDSettings.isItemUnlock("avatars_duelist_" + skinIndex);
+						break;
+				}
+				if(!isSkinUnlock){
+					skinIndex++;
+				}else {
+					break;
+				}
+			}
+		}
+
+		if(!isSkinUnlock)
+			skinIndex=0;
+
+		SPDSettings.setHeroSkin(this.ordinal(),skinIndex);
+	}
+
+	public int GetSkin(){
+		return SPDSettings.getHeroSkin(this.ordinal());
+	}
 }

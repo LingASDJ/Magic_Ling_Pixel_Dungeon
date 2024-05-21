@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -42,6 +43,14 @@ public class DiedCrossBow extends LegendWeapon {
         min = Lmin();
         max = Lmax();
         usesTargeting = cooldown == 0;
+    }
+
+    @Override
+    public int iceCoinValue() {
+        if (Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
+            return (int) ((175 + tier*25) * 0.9f);
+        }
+        return 175 + tier*25;
     }
 
     @Override
@@ -293,13 +302,13 @@ public class DiedCrossBow extends LegendWeapon {
 
     @Override
     public int min(int lvl) {
-        return 4 + lvl * (tier + 1);   //scaling unchanged
+        return 4 + lvl;   //scaling unchanged
     }
-
+    //你要是喜欢写成lvl*1也行
 
     @Override
     public int max(int lvl) {
-        return 25 + lvl * (tier + 5);   //scaling unchanged
+        return 25 + lvl * 6;   //scaling unchanged
     }
-
+    //最高成长6，写成lvl*6和tm写成lvl*(tier+1)是tm一样的，别被Evan棍进去了，你清醒一点，不要当谜语人了！！！！！
 }

@@ -84,6 +84,7 @@ public class ScorpioSprite extends MobSprite {
 				@Override
 				public void call() {
 					ch.onAttackComplete();
+					ch.next();
 				}
 			} );
 		} else {

@@ -21,9 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -34,16 +38,22 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FireGhostDead;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.RedTrap;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
@@ -51,6 +61,9 @@ import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
+
+import java.util.ArrayList;
 
 public abstract class ChampionEnemy extends Buff {
 	//public static final float shopDURATION	= 2000000000f;
@@ -59,6 +72,12 @@ public abstract class ChampionEnemy extends Buff {
 	}
 
 	protected int color;
+
+	public static int Mcolor = 0x808080;
+
+	public static int mutationcolor() {
+		return Mcolor;
+	}
 
 	@Override
 	public int icon() {
@@ -107,7 +126,7 @@ public abstract class ChampionEnemy extends Buff {
 	}
 
 	public float speedFactor(){
-		return 1f;
+		return target.baseSpeed;
 	}
 
 	{
@@ -131,7 +150,7 @@ public abstract class ChampionEnemy extends Buff {
 //				buffCls = ChampionEnemy.Sider.class;
 //				Statistics.SiderLing++;
 //			} else {
-				switch (randomNumber % 5) {
+				switch (randomNumber % 6) {
 					case 0: default:
 						buffCls = ChampionEnemy.Small.class;
 						break;
@@ -152,7 +171,7 @@ public abstract class ChampionEnemy extends Buff {
 		} else if (randomNumber < 10) {
 			buffCls = ChampionEnemy.Bomber.class;
 		} else {
-			switch (randomNumber % 5) {
+			switch (randomNumber % 6) {
 				case 0: default:
 					buffCls = ChampionEnemy.Small.class;
 					break;
@@ -166,12 +185,16 @@ public abstract class ChampionEnemy extends Buff {
 					buffCls = ChampionEnemy.LongSider.class;
 					break;
 				case 4:
-					buffCls = ChampionEnemy.HealRight.class;
+					if (m.properties.contains(Char.Property.NOBIG)) {
+						buffCls = ChampionEnemy.Bomber.class;
+					} else {
+						buffCls = ChampionEnemy.HealRight.class;
+					}
 					break;
 			}
 		}
 
-		if (Dungeon.mobsToStateLing <= 0 && Dungeon.isChallenged(Challenges.SBSG) && !m.properties.contains(Char.Property.NOBIG)) {
+		if (Dungeon.mobsToStateLing <= 0 && Dungeon.isChallenged(Challenges.SBSG) && !m.properties.contains(Char.Property.NOBIG) || Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.SBSG) && depth>5 && Random.Float()<=0.45f ||  Statistics.bossRushMode && m.properties.contains(Char.Property.BOSS)) {
 			Buff.affect(m, buffCls);
 			m.state = m.WANDERING;
 		}
@@ -181,6 +204,13 @@ public abstract class ChampionEnemy extends Buff {
 	public static class LongSider extends ChampionEnemy {
 		{
 			color = 0xff00ff;
+			Mcolor = color;
+		}
+
+		@Override
+		public void fx(boolean on) {
+			if (on) {target.sprite.add(CharSprite.State.MUTATION_6);
+			} else target.sprite.remove(CharSprite.State.MUTATION_6);
 		}
 
 		@Override
@@ -210,7 +240,14 @@ public abstract class ChampionEnemy extends Buff {
 	public static class Sider extends ChampionEnemy implements Hero.Doom {
         {
             color = 0xED186E;
+			Mcolor = color;
         }
+
+		@Override
+		public void fx(boolean on) {
+			if (on) {target.sprite.add(CharSprite.State.MUTATION_2);
+			} else target.sprite.remove(CharSprite.State.MUTATION_2);
+		}
 
 		int scount = 0;
 		private final String SCOUNT = "counts";
@@ -230,30 +267,34 @@ public abstract class ChampionEnemy extends Buff {
         @Override
         public boolean canAttackWithExtraReach(Char enemy) {
             //attack range of 2
-            /** 实现效果，此外还要关联CharSprite.java和Mob.java以实现远程效果*/
-			if(scount<Random.NormalIntRange(6,24)){
-				if(Random.Float()<0.1f) {
-					switch (Random.NormalIntRange(0,6)){
-						//默认为毒雾
-						case 1:default:
-							GameScene.add(Blob.seed(enemy.pos, 45, ToxicGas.class));
-							break;
-						case 2:
-							GameScene.add(Blob.seed(enemy.pos, 45, CorrosiveGas.class));
-							break;
-						case 3:
-							GameScene.add(Blob.seed(enemy.pos, 45, ConfusionGas.class));
-							break;
-						case 4:
-							GameScene.add(Blob.seed(enemy.pos, 45, StormCloud.class));
-							break;
+			Ballistica attack = new Ballistica( target.pos, enemy.pos, Ballistica.PROJECTILE);
+			if(attack.collisionPos == enemy.pos) {
+				/** 实现效果，此外还要关联CharSprite.java和Mob.java以实现远程效果*/
+				if (scount < Random.NormalIntRange(6, 24)) {
+					if (Random.Float() < 0.1f) {
+						switch (Random.NormalIntRange(0, 6)) {
+							//默认为毒雾
+							case 1:
+							default:
+								GameScene.add(Blob.seed(enemy.pos, 45, ToxicGas.class));
+								break;
+							case 2:
+								GameScene.add(Blob.seed(enemy.pos, 45, CorrosiveGas.class));
+								break;
+							case 3:
+								GameScene.add(Blob.seed(enemy.pos, 45, ConfusionGas.class));
+								break;
+							case 4:
+								GameScene.add(Blob.seed(enemy.pos, 45, StormCloud.class));
+								break;
+						}
+						Sample.INSTANCE.play(Assets.Sounds.DEBUFF);
 					}
-					Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
+					scount++;
+					target.sprite.zaplink(enemy.pos);
+					int dmg = Random.NormalIntRange(target.damageRoll() / 5 + 3, target.damageRoll() / 5 + 7);
+					enemy.damage(dmg, new DarkBolt());
 				}
-				scount++;
-				target.sprite.zaplink( enemy.pos );
-				int dmg = Random.NormalIntRange( target.damageRoll()/5+3, target.damageRoll()/5+7 );
-				enemy.damage( dmg, new DarkBolt() );
 			}
 			return target.fieldOfView[enemy.pos] && Dungeon.level.distance(target.pos, enemy.pos) <= 3;
 		}
@@ -273,6 +314,12 @@ public abstract class ChampionEnemy extends Buff {
 		private final String COUNT = "count";
 
 		@Override
+		public void fx(boolean on) {
+			if (on) {target.sprite.add(CharSprite.State.MUTATION_7);
+			} else target.sprite.remove(CharSprite.State.MUTATION_7);
+		}
+
+		@Override
 		public void storeInBundle( Bundle bundle ) {
 			super.storeInBundle(bundle);
 			bundle.put( COUNT , count );
@@ -286,6 +333,12 @@ public abstract class ChampionEnemy extends Buff {
 
 		{
 			color = 0xB085D5;
+			Mcolor = color;
+		}
+
+		@Override
+		public String desc() {
+			return Messages.get(this, "desc", count);
 		}
 
 		@Override
@@ -296,6 +349,8 @@ public abstract class ChampionEnemy extends Buff {
 				run.pos = target.pos;
 				run.activate();
 				CellEmitter.get(target.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
+			} else {
+				super.onAttackProc(enemy);
 			}
 		}
 	}
@@ -304,16 +359,44 @@ public abstract class ChampionEnemy extends Buff {
 
 		{
 			color = 0x8f8f8f;
+			Mcolor = color;
 		}
 
 		@Override
 		public float meleeDamageFactor() {
-			return 0.75f;
+			return 0.65f;
+		}
+
+		@Override
+		public void fx(boolean on) {
+			if (on) {target.sprite.add(CharSprite.State.MUTATION_1);
+			} else target.sprite.remove(CharSprite.State.MUTATION_1);
 		}
 
 		@Override
 		public float speedFactor() {
-			return 1.3f;
+			return super.speedFactor()*1.3f;
+		}
+
+
+	}
+
+	public static class NoCode extends ChampionEnemy {
+
+		{
+			color = 0x333333;
+			Mcolor = color;
+		}
+
+		@Override
+		public float meleeDamageFactor() {
+			return 1.2f;
+		}
+
+		@Override
+		public void fx(boolean on) {
+			if (on) {target.sprite.add(CharSprite.State.MUTATION_8);
+			} else target.sprite.remove(CharSprite.State.MUTATION_8);
 		}
 
 
@@ -323,8 +406,13 @@ public abstract class ChampionEnemy extends Buff {
 
 		{
 			color = 0x00FF00;
+			Mcolor = color;
 		}
-
+		@Override
+		public void fx(boolean on) {
+			if (on) {target.sprite.add(CharSprite.State.MUTATION_3);
+			} else target.sprite.remove(CharSprite.State.MUTATION_3);
+		}
 		@Override
 		public float meleeDamageFactor() {
 			return 0.7f;
@@ -345,21 +433,26 @@ public abstract class ChampionEnemy extends Buff {
 
 		{
 			color = 0xFFFF00;
+			Mcolor = color;
 		}
 
 		@Override
 		public float meleeDamageFactor() {
 			return 1.25f;
 		}
-
+		@Override
+		public void fx(boolean on) {
+			if (on) {target.sprite.add(CharSprite.State.MUTATION_4);
+			} else target.sprite.remove(CharSprite.State.MUTATION_4);
+		}
 		@Override
 		public float speedFactor() {
-			return 1.25f;
+			return super.speedFactor()*1.25f;
 		}
 
 		@Override
 		public float damageTakenFactor() {
-			return 0.3f;
+			return 0.7f;
 		}
 
 	}
@@ -370,8 +463,13 @@ public abstract class ChampionEnemy extends Buff {
 
 		{
 			color = 0xFF0000;
+			Mcolor = color;
 		}
-
+		@Override
+		public void fx(boolean on) {
+			if (on) {target.sprite.add(CharSprite.State.MUTATION_5);
+			} else target.sprite.remove(CharSprite.State.MUTATION_5);
+		}
 		@Override
 		public float meleeDamageFactor() {
 			return 1.30f;
@@ -406,19 +504,33 @@ public abstract class ChampionEnemy extends Buff {
 		//we roll for a champion enemy even if we aren't spawning one to ensure that
 		//mobsToChampion does not affect levelgen RNG (number of calls to Random.Int() is constant)
 		Class<?extends ChampionEnemy> buffCls;
-		switch (Random.Int(8)){
-			case 0: default:    buffCls = Blazing.class;      break;
-			case 1:             buffCls = Projecting.class;   break;
-			case 2:             buffCls = AntiMagic.class;    break;
-			case 3:             buffCls = Giant.class;        break;
-			case 4:             buffCls = Blessed.class;      break;
-			case 5:             buffCls = Growing.class;      break;
-			case 6:             buffCls = Halo.class;      	  break;
-			case 7:             buffCls = DelayMob.class;     break;
-			//case 8:             buffCls = King.class;     	  break;
+
+		if(Challenges.activeChallenges()>11){
+			switch (Random.Int(9)){
+				case 0: default:    buffCls = Blazing.class;      break;
+				case 1:             buffCls = Projecting.class;   break;
+				case 2:             buffCls = AntiMagic.class;    break;
+				case 3:             buffCls = Giant.class;        break;
+				case 4:             buffCls = Blessed.class;      break;
+				case 5:             buffCls = Growing.class;      break;
+				case 6:             buffCls = Halo.class;      	  break;
+				case 7:             buffCls = DelayMob.class;     break;
+				case 8:				buffCls = King.class;		  break;
+			}
+		} else {
+			switch (Random.Int(8)){
+				case 0: default:    buffCls = Blazing.class;      break;
+				case 1:             buffCls = Projecting.class;   break;
+				case 2:             buffCls = AntiMagic.class;    break;
+				case 3:             buffCls = Giant.class;        break;
+				case 4:             buffCls = Blessed.class;      break;
+				case 5:             buffCls = Growing.class;      break;
+				case 6:             buffCls = Halo.class;      	  break;
+				case 7:             buffCls = DelayMob.class;     break;
+			}
 		}
 
-		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES)) {
+		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) || Dungeon.isChallenged(CS) && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) && depth>5 && Random.Float()<=0.45f || Statistics.bossRushMode && m.properties.contains(Char.Property.BOSS)) {
 			Buff.affect(m, buffCls);
 			m.state = m.WANDERING;
 		}
@@ -588,6 +700,54 @@ public abstract class ChampionEnemy extends Buff {
 		}
 	}
 
+	public static class AloneCity extends ChampionEnemy {
+
+		{
+			color = Window.WATA_COLOR;
+		}
+
+		@Override
+		public void fx(boolean on) {
+			if (on) {target.sprite.add(CharSprite.State.SMOKER);
+			} else target.sprite.remove(CharSprite.State.SMOKER);
+		}
+		@Override
+		public boolean act() {
+
+			spend(3*TICK);
+			return true;
+		}
+
+		@Override
+		public float meleeDamageFactor() {
+			return 1+Statistics.gameDay*0.01f;
+		}
+
+		@Override
+		public float evasionAndAccuracyFactor() {
+			return 1+Statistics.gameDay*0.01f;
+		}
+
+		public static float statModifier(Char ch){
+			if (ch instanceof Ratmogrify.TransmogRat){
+				ch = ((Ratmogrify.TransmogRat) ch).getOriginal();
+			}
+
+			if (ch.buff(AscensionChallenge.AscensionBuffBlocker.class) != null){
+				return 1f;
+			}
+			return 1+Statistics.gameDay*0.01f;
+		}
+		@Override
+		public int icon() {
+			return BuffIndicator.TERROR;
+		}
+		@Override
+		public String desc() {
+			return Messages.get(this, "desc", (int)(100*(Statistics.gameDay*0.01f)),(int)(100*(Statistics.gameDay*0.01f)));
+		}
+	}
+
 	public static class Growing extends ChampionEnemy {
 
 		{
@@ -651,7 +811,6 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public float meleeDamageFactor() {
-
 			return 1.45f;
 		}
 
@@ -662,12 +821,38 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public void onAttackProc(Char enemy) {
-			if(Random.NormalIntRange(1,8)>2){
-				new FireGhostDead().spawnAround(enemy.pos+1);
+			if(Random.Int(100)<20){
+					Mob m;
+					ArrayList<Integer> spawnPoints = new ArrayList<>();
+					for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+						int p = enemy.pos + PathFinder.NEIGHBOURS8[i];
+						if (Actor.findChar( p ) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
+							spawnPoints.add( p );
+						}
+					}
+					if (spawnPoints.size() > 0) {
+						Actor.fixTime();
+						m =  Reflection.newInstance(Bestiary.getMobRotation(depth).get(0));
+						for (Buff s : target.buffs(WandOfAnmy.AllyToRestartOK.class)){
+						if(s!=null) Buff.affect(m,WandOfAnmy.AllyToRestartOK.class);
+					}
+						if (m != null) {
+							if (Char.hasProp(m, Char.Property.LARGE)){
+								for ( int i : spawnPoints.toArray(new Integer[0])){
+									if (!Dungeon.level.openSpace[i]){
+										spawnPoints.remove((Integer) i);
+									}
+								}
+							}
+						if (!spawnPoints.isEmpty()) {
+							m.pos = Random.element(spawnPoints);
+							GameScene.add(m);
+							ScrollOfTeleportation.appear(m, m.pos);
+						}
+					}
+				}
 			}
 		}
-
-
 	}
 
 	public static class DeadSoulSX extends ChampionEnemy {

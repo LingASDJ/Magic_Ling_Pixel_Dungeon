@@ -29,6 +29,10 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocking;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
@@ -55,6 +59,15 @@ public class WelcomeScene extends PixelScene {
 
 		final int previousVersion = SPDSettings.version();
 
+		String[] Patch1 = {new DiedCrossBow().name(),Messages.get(Blocking.class,"name",new MoonDao().name()),new MoonDao().name(),new SaiPlus().name()};
+		String[] Patch2 = {DiedCrossBow.class.getSimpleName(),MoonDao.class.getSimpleName(),MoonDao.class.getSimpleName(),SaiPlus.class.getSimpleName()};
+		for( int i=0;i<Patch1.length;i++ ){
+			if(SPDSettings.isItemUnlock(Patch1[i])){
+				SPDSettings.removeUnlockItem(Patch1[i]);
+				SPDSettings.unlockItem( Patch2[i] );
+			}
+		}
+
 		if (FileUtils.cleanTempFiles()){
 			add(new WndHardNotification(Icons.get(Icons.WARNING),
 					Messages.get(WndError.class, "title"),
@@ -70,9 +83,7 @@ public class WelcomeScene extends PixelScene {
 			return;
 		}
 
-		if (!SPDSettings.intro() && SPDSettings.firebase()) {
-			ShatteredPixelDungeon.switchNoFade(GameNewsScene.class);
-		} else {
+		if (ShatteredPixelDungeon.versionCode == previousVersion && !SPDSettings.intro()) {
 			ShatteredPixelDungeon.switchNoFade(TitleScene.class);
 			return;
 		}

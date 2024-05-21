@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AutoRandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReloadShop;
@@ -103,7 +104,11 @@ public class WndAutoShop extends Window {
         public void onSelect( Item item ) {
             if (item != null) {
                 WndBag parentWnd = sell();
-                GameScene.show( new WndTradeItem( item, parentWnd ) );
+                if(Statistics.bossRushMode){
+                    GameScene.show( new WndRushTradeItem( item, parentWnd ) );
+                } else {
+                    GameScene.show( new WndTradeItem( item, parentWnd ) );
+                }
             }
         }
     };
@@ -144,7 +149,7 @@ public class WndAutoShop extends Window {
                                 buff.detach();
                             }
                         }
-                    } else if(Dungeon.gold > 200 * (Dungeon.depth/5)) {
+                    } else if(Dungeon.gold >= 200 * (Dungeon.depth/5)) {
                         Dungeon.gold-=200 * (Dungeon.depth/5);
                         WndAutoShop.this.selectReward( item );
                         if(Dungeon.hero.buff(AutoRandomBuff.class) != null) {

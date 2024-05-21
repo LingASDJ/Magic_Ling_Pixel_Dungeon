@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.ShadowSprite;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.PasswordBadgeBanner;
@@ -11,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ApprenticeWitchSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.AutoShopRoBotSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ButcherSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CerberusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -18,18 +20,23 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ColdRatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrivusFruitsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300AttackSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DeathRongSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiedMonkLoaderSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DimandKingSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DrTerrorSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DragonGirlBlueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FlowerSlimeSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FrankensteinSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GunHuntsmanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.IceSlowGirlSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.KatydidSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MiniSakaFishBossSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MolotovHuntsmanSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MurdererSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NxhySprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PoltergeistSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PumkingBomberSprite;
@@ -37,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.RedDragonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShamanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SpectralNecromancerSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SuccubusQueenSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TyphonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZeroBoatDiedSprite;
@@ -53,6 +61,9 @@ import java.util.ArrayList;
 public class vM0_6_6_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_SC5_Changes(changeInfos);
+        add_SC4_Changes(changeInfos);
+        add_SC3_Changes(changeInfos);
         add_SC2_Changes(changeInfos);
         add_SC1_Changes(changeInfos);
         add_SC_Changes(changeInfos);
@@ -110,6 +121,266 @@ public class vM0_6_6_Changes {
         c.scale.set(PixelScene.align(0.74f));
         changes.addButton(new ChangeButton(c, ("冰雪魔女重做"),
                 ("石碑上记录了有关于她的一切，她的过去，她的现在，她的未来。而当你与她对峙时，你是否能够看清她的真实面目？")));
+    }
+
+    public static void add_SC5_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.6.9.8-RC->PD", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 80, 16
+                , 16), "房间改动",
+                "全新特别房间：\n\n" +
+                        "神秘补给房，将在孤城恶魔层前必定生成四个，为孤城保驾护航。"));
+
+        Image issxsaxs =new YogSprite();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs, ("Yog-Zot 第五阶段"),
+                ("为Yog-Zot第五阶段进行调整，在第五阶段变幻莫测四大天王和鬼磷霜火双拳会登场，以及召唤最后一批怪物\n\n" +
+                        "但第五阶段Yog-Zot不会再额外召唤怪物，且孤城时间陷入混沌状态。")));
+
+
+        changes.addButton(new ChangeButton(new KatydidSprites(), ("新怪物：巨拟叶螽"),
+                ("丛林中的小生物，因为丛林的异变变得异常暴躁。常常对入侵者吐唾液，它们的唾液有着极强的腐蚀性，所以仍然非常危险。且自身较为灵活，必须趁其不备将其杀掉。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), "部分灯火Buff调整",
+                "部分灯火buff都进行了一定的调整：\n" +
+                        "1.纯洁的祝福--隐没--进行重做，具体参考游戏内部描述\n\n" +
+                        "2.魔女的低语-软弱移除"));
+
+        changes.addButton(new ChangeButton(new MurdererSprite.RedMuderer(), ("支离破碎怪物调整"),
+                ("支离破碎部分怪物得到优化，为支离破碎带来难度的同时不会绝杀无解：\n\n" +
+                        "具体如下：\n" +
+                        "1.兽型猎人血量略微降低，装弹时间最低9回合，最高16回合。且仅在14层有概率生成\n\n" +
+                        "2.破碎矿洞任务怪豺狼守卫加入三区战场\n\n" +
+                        "3.猩红大盗不在常规生成，而是火幽灵的精英形态。以及诡异磷魂是元素怪的精英形态--(仅在支离破碎挑战中生效)")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化\n" +
+                        "2.开发者模式优化，近期所有怪物全部可生成")));
+
+        changes.addButton(new ChangeButton(new AutoShopRoBotSprite(), ("自动食品售货机"),
+                ("熟肉改为生肉，少量bug修正" )));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "RC版本:\n\n" +
+                        "1.诡异磷魂修复了一些问题\n" +
+                        "2.拟态王窗口进行了一些优化\n" +
+                        "3.夜晚速度回归正常\n" +
+                        "4.水灵在没有恐药挑战时治疗完全失效异常修复\n" +
+                        "5.棕色蝙蝠失明始终索敌英雄修正，并加强了它的生存能力\n" +
+                        "6.修正对恐怖博士使用驱邪卷轴出现错误的咒缚灵文本提示\n" +
+                        "7.小偷如果Roll到相位体自动变为爆炸体\n" +
+                        "8.基因突变文本优化，索敌精英描述已得到\n" +
+                        "9.支离破碎小蓝和粉幽相关问题修复\n" +
+                        "10.拟态王房间跳楼问题修正",
+                        "ZC版本:\n\n" +
+                        "1.修复提灯可以被嬗变泉嬗变成其他神器的问题，注意仍然会消耗嬗变泉的使用次数\n" +
+                        "2.提灯充能保底10%\n" +
+                        "3.修复棕色蝙蝠的一些异常崩溃\n" +
+                        "4.修复矮人国王在某些情况下的极端崩溃\n" +
+                        "5.修复DM275在某些情况下的极端崩溃",
+                        "RS版本:\n\n" +
+                        "1.修复深蓝蝾螈的索敌异常--修复者：潘多拉\n" +
+                        "2.修复孤城夜晚加速，白天减速\n" +
+                        "3.标题界面卡顿优化\n" +
+                        "4.修复拟态王的一些闪退问题\n" +
+                        "5.修复了古堡的一些小问题\n" +
+                        "6.修复部分突变体的移速加成尚未生效的问题",
+                        "PD版本:\n\n" +
+                        "1.修复拟态王的少量Bug\n" +
+                        "2.优化古堡入口的一些东西\n" +
+                        "3.修复突变完全体的减伤代码与实际描述不符"
+
+        ));
+
+    }
+
+    public static void add_SC4_Changes( ArrayList<ChangeInfo> changeInfos ) {
+
+
+        ChangeInfo changes = new ChangeInfo("v0.6.9.7-RC", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(PasswordBadgeBanner.image(PaswordBadges.Badge.HELLORWORLD.image), ("新徽章：终末赞歌"),
+                ("完成孤城挑战即可获得。")));
+
+        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.GREATAXE,
+                new ItemSprite.Glowing( 0x00FFFF )), "新稀有附魔：鬼磷",
+                "这个附魔会使磷火从武器中喷薄而出，能够使用点燃敌人并对正在燃烧的敌人造成中毒的额外伤害。\n\n奥术戒加成效果：提升鬼磷几率"));
+
+        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.GREATSWORD,
+                new ItemSprite.Glowing( 0xcc7770 )), "新常规附魔：爆破",
+                "这个附魔会让使用者陷入癫狂，能使爆炸的能量从武器中喷薄而出，能够使敌人目标处受到一次范围伤害亦或者给造成敌人短暂的残废效果。\n\n奥术戒加成效果：提升伤害"));
+
+        changes.addButton(new ChangeButton(new GunHuntsmanSprite(), ("新敌人：血月兽型猎人"),
+                ("支离破碎3区特供，主要攻击手段是远程攻击。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WATERSOUL), ("水灵改动"),
+                ("污泥浊水的水灵药剂的治疗不再受药水异症影响，也不会中毒，且有效时间变为250回合。但合成表有所改变")));
+
+        changes.addButton(new ChangeButton(new DeathRongSprite(), ("新商人：卡戎"),
+                ("她发现冥河渡人的生意越来越难做，所以现在在万圣大厅开起了商店，不久她就赚的盆满钵满。")));
+
+        changes.addButton(new ChangeButton(new DrTerrorSprite(), ("新敌人：恐怖博士"),
+                ("曾经的名人，而如今沦落到如此田地。物是人非，指的就是这个了吧。")));
+
+        changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 80, 16
+                , 16), "房间改动",
+                "全新隐藏房间：\n\n" +
+                        "1.双蜂相争房\n\n" +
+                        "2.鱼与飞镖的故事"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_17), ("挑战改进:孤城迷境"),
+                ("1.夜晚状态下玩家不会受到失明效果，夜晚状态下主要是部分怪物属性有所提升\n\n" +
+                        "2.清晨到正午 物理伤害提升10%，移速提升10%，所有伤害减免8%\n\n" +
+                        "3.黄昏状态下，物理伤害提升5%，移速提升5%，所有伤害减免6%\n\n" +
+                        "4.添加游戏天数显示\n\n" +
+                        "5.精英生成概率提升，而非100%\n\n" +
+                        "6.资源生成从固定-10变为减半\n\n" +
+                        "7.第一层调整为5个老鼠，但经验翻倍\n\n" +
+                        "8.优化时间显示逻辑")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_10), ("挑战改进:支离破碎"),
+                ("支离破碎重做，现在更有趣，具体如下:\n\n" +
+                        "1.每大层后两层有概率入侵下层敌人\n\n" +
+                        "2.在6层后，将遭遇更多新的敌人\n\n" +
+                        "3.整体难度优化")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("灯火前路-V4.1"),
+                ("1.灯火能量开局不会低于55，以确保拥有正向buff。\n\n" +
+                        "2.隐没祝福修复了一些小型问题")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化\n" +
+                        "2.开发者模式优化，近期所有怪物全部可生成")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "修复了以下Bug:\n\n" +
+                        "1.修复了魅魔女王闪退的问题。\n" +
+                        "2.修复了提灯的异常崩溃问题\n" +
+                        "3.修复了炼狱精英的处理问题\n" +
+                        "4.修复了豺狼炼药长老的闪退问题\n" +
+                        "5.修复了鱼与飞镖的故事飞镖异常问题"
+        ));
+
+        changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.CORRUPT, true), ("基因突变"),
+                ("移除酸液体，在变幻莫测中也移除。")));
+
+    }
+
+    public static void add_SC3_Changes( ArrayList<ChangeInfo> changeInfos ) {
+
+
+        ChangeInfo changes = new ChangeInfo("v0.6.9.6-RC", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton( new ChangeButton(Icons.get(Icons.LANGS), Messages.get(ChangesScene.class, "language"),
+                "语言更新：繁体中文\n\n同步0.6.9.6的翻译--贡献者：Sotis"));
+
+        changes.addButton(new ChangeButton(new ShadowSprite(), ("暗影"),
+                ("在低于40，包括40灯火的情况下，死亡会产生自己的暗影，他会掠走你的金币和背包。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_17), ("挑战改进:孤城迷境"),
+                ("魔绫像素地牢-v0696-HF1版更新说明:\n" +
+                        "挑战优化:\n" +
+                        "1.在6层后才是全精英\n" +
+                        "2.在孤城状态下的精英生成异常和支离破碎挑战1层怪物生成异常修正\n" +
+                        "3.在黑夜点亮提灯可以免疫失明\n" +
+                        "4.修复黑夜状态下领袖伤害没有生效的问题")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "修复了以下Bug:\n\n" +
+                        "1.修复0.6.9.6果子层闪退问题。\n" +
+                        "2.修复孤城挑战下的部分NPC的不合理对话\n" +
+                        "3.修复油井房在非灯火状态下出现\n" +
+                        "4.修复暗影活死人现象"
+        ));
+
+        changes = new ChangeInfo("v0.6.9.6", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        Image issxsaxs =new DimandKingSprite();
+        issxsaxs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(issxsaxs, ("拟态之王"),
+                ("现在拟态之王二阶段进行了一些优化，并且神秘传送门也进行了一些调整,在特定情况下传送门可以打人。")));
+
+        changes.addButton(new ChangeButton(new SuccubusQueenSprite(), ("变幻莫测V0.4"),
+                ("为精英地形添加独立怪物，四区原计划拟态魔，由于一些原因暂时搁置。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LANTERNB), ("灯火前路-V4.0"),
+                ("灯火从现在开始在10挑以上计为1挑，且难度调整为：" +
+                        "\n\n新房间：油井\n" +
+                        "在此房间中将提灯扔进井中将可以填充一定的灯油。\n\n" +
+                        "随着挑战的深入，火把给予的灯油充能将会更加困难。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_17), ("新挑战:孤城迷境"),
+                ("这是魔绫像素地牢的最后一个挑战，他非常的困难，所以还请小心行事。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEED_SKYBLUEFIRE), ("种子复制V2.0"),
+                ("现在种子复制后会携带一些关键信息")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_9), ("新精英：炼狱"),
+                ("炼狱精英回归，并修复了苦痛精英的问题")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_10), ("挑战改进:支离破碎"),
+                ("支离破碎卷土重来，还带来更多恐怖的东西。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WHITEROSE), ("白玫瑰"),
+                ("修复一些异常错误")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.REDWHITEROSE), ("一种载体"),
+                ("取消自然回血加成")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("杂项改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分无用音乐删除\n" +
+                        "3.部分细节优化更新\n" +
+                        "4.部分界面优化迭代\n" +
+                        "5.字体数据源更新")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "修复了以下Bug:\n\n" +
+                        "1.修复了提丰一言不发的问题\n" +
+                        "2.修复了小蓝任务的一些异常问题\n" +
+                        "3.其他小型错误纠正"
+        ));
+
     }
 
     public static void add_SC2_Changes( ArrayList<ChangeInfo> changeInfos ) {

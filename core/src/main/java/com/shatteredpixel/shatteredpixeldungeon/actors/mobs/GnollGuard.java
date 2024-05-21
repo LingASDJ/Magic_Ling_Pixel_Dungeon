@@ -24,6 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spear;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -41,7 +43,7 @@ public class GnollGuard extends Mob {
 		defenseSkill = 15;
 
 		EXP = 7;
-		maxLvl = -2;
+		maxLvl = Dungeon.branch == 0 ? 21 : -2;
 
 		loot = Spear.class;
 		lootChance = 0.1f;
@@ -92,6 +94,7 @@ public class GnollGuard extends Mob {
 	public int attackProc(Char enemy, int damage) {
 		int dmg = super.attackProc(enemy, damage);
 		if (enemy == Dungeon.hero && !Dungeon.level.adjacent(pos, enemy.pos) && dmg > 12){
+			Buff.affect(enemy, Chill.class, 5f);
 			GLog.n(Messages.get(this, "spear_warn"));
 		}
 		return dmg;

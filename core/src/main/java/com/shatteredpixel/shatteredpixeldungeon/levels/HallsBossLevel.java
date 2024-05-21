@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
@@ -42,13 +40,10 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
@@ -356,25 +351,6 @@ public class HallsBossLevel extends Level {
 			});
 			return false;
 
-		} else if (transition.type == LevelTransition.Type.REGULAR_EXIT) {
-			Game.runOnRenderThread(new Callback() {
-				@Override
-				public void call() {
-					TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-					if (timeFreeze != null) timeFreeze.disarmPresses();
-					Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-					if (timeBubble != null) timeBubble.disarmPresses();
-					InterlevelScene.mode = InterlevelScene.Mode.AMULET;
-					InterlevelScene.curTransition = new LevelTransition();
-					InterlevelScene.curTransition.destDepth = depth;
-					InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
-					InterlevelScene.curTransition.destBranch = 4;
-					InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
-					InterlevelScene.curTransition.centerCell  = -1;
-					Game.switchScene( InterlevelScene.class );
-				}
-			});
-			return false;
 		} else {
 			return super.activateTransition(hero, transition);
 		}

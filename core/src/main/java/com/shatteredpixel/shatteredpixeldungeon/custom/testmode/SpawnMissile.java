@@ -13,7 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Javelin;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.RedBlock;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.RiverSlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.StreamerKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingClub;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingHammer;
@@ -70,7 +70,7 @@ public class SpawnMissile extends TestItem {
             ThrowingHammer.class,
             Trident.class,
             ForceCube.class,
-            RiverSlade.class,
+            StreamerKnife.class,
             RedBlock.class
     };
 
@@ -166,7 +166,7 @@ public class SpawnMissile extends TestItem {
                                 Messages.get(SettingsWindow.class, "item_level"), Messages.get(SettingsWindow.class, "item_level_desc"),
                                 Integer.toString(item_level),
                                 4, false, Messages.get(SettingsWindow.class, "confirm"),
-                                Messages.get(SettingsWindow.class, "cancel")) {
+                                Messages.get(SettingsWindow.class, "cancel"),false) {
                             @Override
                             public void onSelect(boolean check, String text) {
 
@@ -192,7 +192,7 @@ public class SpawnMissile extends TestItem {
                                 Messages.get(SettingsWindow.class, "item_level"), Messages.get(SettingsWindow.class, "item_level_desc"),
                                 Integer.toString(item_quantity),
                                 4, false, Messages.get(SettingsWindow.class, "confirm"),
-                                Messages.get(SettingsWindow.class, "cancel")) {
+                                Messages.get(SettingsWindow.class, "cancel"),false) {
                             @Override
                             public void onSelect(boolean check, String text) {
                                 if (check && item_quantity > 0 &&text.matches("^[1-9]\\d*$")) {

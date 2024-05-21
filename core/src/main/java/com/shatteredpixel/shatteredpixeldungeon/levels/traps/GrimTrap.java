@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Bzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
@@ -98,6 +99,11 @@ public class GrimTrap extends Trap {
 										if (finalTarget == Dungeon.hero) {
 											Sample.INSTANCE.play(Assets.Sounds.CURSED);
 											if (!finalTarget.isAlive()) {
+												if(Dungeon.depth == 0) {
+													Dungeon.fail(Bzmdr.class);
+													GLog.n(Messages.get(GrimTrap.class, "ondeath"));
+													return;
+												}
 												//Badges.validateDeathFromGrimOrDisintTrap();
 												Dungeon.fail( GrimTrap.this );
 												GLog.n( Messages.get(GrimTrap.class, "ondeath") );

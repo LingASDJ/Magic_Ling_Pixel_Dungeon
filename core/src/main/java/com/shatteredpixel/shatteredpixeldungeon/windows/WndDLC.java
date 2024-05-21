@@ -22,7 +22,7 @@ import java.util.Arrays;
 public class WndDLC extends Window {
 
     private final int WIDTH = Math.min(138, (int) (PixelScene.uiCamera.width * 0.9));
-    private final int HEIGHT = (int) (PixelScene.uiCamera.height * 0.4);
+    private final int HEIGHT = (int) (PixelScene.uiCamera.height * 0.49);
     private static final int TTL_HEIGHT    = 18;
     private static final int BTN_HEIGHT    = 18;
     private static final int GAP        = 1;
@@ -70,7 +70,7 @@ public class WndDLC extends Window {
                                 new WndTitledMessage(
                                         new Image(Assets.Interfaces.HAICONS,
                                                 (allConducts.get(index).ordinal() - 1) * 16,
-                                                16, 16, 16),
+                                                0, 16, 16),
                                         title, message)
                         );
 
@@ -113,7 +113,7 @@ public class WndDLC extends Window {
                 info.setRect(cb.right(), pos, 16, BTN_HEIGHT);
                 content.add(info);
                 infos.add(info);
-                Image icon = new Image(Assets.Interfaces.HAICONS, (i.ordinal() - 1) * 16, 16, 16, 16);
+                Image icon = new Image(Assets.Interfaces.HAICONS, (i.ordinal() - 1) * 16, 0, 16, 16);
                 icon.x = cb.left()+1;
                 icon.y = cb.top()+1;
                 content.add(icon);
@@ -153,7 +153,7 @@ public class WndDLC extends Window {
         protected void onClick() {
             super.onClick();
             if (active){
-                boolean disableEverything = this.conduct == Conducts.Conduct.BOSSRUSH || SPDSettings.oneConduct();
+                boolean disableEverything = this.conduct == Conducts.Conduct.EASY|| SPDSettings.oneConduct();
                 for (CheckBox slot : boxes){
                     if (slot != this && disableEverything) slot.checked(false);
                 }

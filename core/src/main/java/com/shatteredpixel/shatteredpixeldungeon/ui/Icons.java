@@ -39,6 +39,7 @@ public enum Icons {
 	CHANGES,
 	PREFS,
 	SHPX,
+	THANKS,
 
 	//rankings and hero select icons, spacing for 16x16
 	STAIRS,
@@ -87,6 +88,7 @@ public enum Icons {
 	COIN_SML,
 	ENERGY_SML,
 	BACKPACK,
+	B_BACKPACK,
 	SEED_POUCH,
 	SCROLL_HOLDER,
 	WAND_HOLSTER,
@@ -116,6 +118,13 @@ public enum Icons {
 	DEPTH_LINK_ROOM,
 
 	DEPTH_DIED,
+
+	DEPTH_BIGROOM,
+
+	DEPTH_BLOOD,
+
+	DEPTH_SKYCITY,
+
 	MISSON_ON,
 	MISSON_OFF,
 
@@ -172,6 +181,9 @@ public enum Icons {
 				break;
 			case SHPX:
 				icon.frame( icon.texture.uvRectBySize( 119, 0, 16, 16 ) );
+				break;
+			case THANKS:
+				icon.frame( icon.texture.uvRectBySize( 135, 0, 16, 16 ) );
 				break;
 			case DUELIST:
 				icon.frame( icon.texture.uvRectBySize( 176, 0, 16, 16 ));
@@ -307,6 +319,9 @@ public enum Icons {
 			case BACKPACK:
 				icon.frame( icon.texture.uvRectBySize( 201, 48, 10, 10 ) );
 				break;
+			case B_BACKPACK:
+				icon.frame( icon.texture.uvRectBySize( 201, 59, 10, 10 ) );
+				break;
 			case SCROLL_HOLDER:
 				icon.frame( icon.texture.uvRectBySize( 211, 48, 10, 10 ) );
 				break;
@@ -376,6 +391,15 @@ public enum Icons {
 				break;
 			case DEPTH_DIED:
 				icon.frame( icon.texture.uvRectBySize( 136, 64, 7, 7 ) );
+				break;
+			case DEPTH_BIGROOM:
+				icon.frame( icon.texture.uvRectBySize( 80, 72, 7, 7 ) );
+				break;
+			case DEPTH_BLOOD:
+				icon.frame( icon.texture.uvRectBySize( 88, 72, 7, 7 ) );
+				break;
+			case DEPTH_SKYCITY:
+				icon.frame( icon.texture.uvRectBySize( 96, 72, 7, 7 ) );
 				break;
 			case MISSON_OFF:
 				icon.frame( icon.texture.uvRectBySize( 144, 64, 32, 14 ) );
@@ -472,6 +496,12 @@ public enum Icons {
 				return get(DEPTH_LINK_ROOM);
 			case SECRETS:
 				return get(DEPTH_SECRETS);
+			case SKYCITY:
+				return get(DEPTH_SKYCITY);
+			case BIGROOMS:
+				return get(DEPTH_BIGROOM);
+			case BLOOD:
+				return get(DEPTH_BLOOD);
 		}
 	}
 }

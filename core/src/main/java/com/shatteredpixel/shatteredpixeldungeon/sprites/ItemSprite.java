@@ -211,7 +211,7 @@ public class ItemSprite extends MovieClip {
 		}
 		
 		switch (heap.type) {
-			case HEAP: case FOR_SALE:
+			case HEAP: case FOR_SALE:case FOR_ICE:case FOR_RUSH:
 				return view( heap.peek() );
 			case CHEST:
 				return view( ItemSpriteSheet.CHEST, null );
@@ -226,7 +226,11 @@ public class ItemSprite extends MovieClip {
 			case SKELETON:
 				return view( ItemSpriteSheet.BONES, null );
 			case REMAINS:
-				return view( ItemSpriteSheet.REMAINS, null );
+				if (Dungeon.level.diedname == null) {
+					return view(ItemSpriteSheet.REMAINS, null);
+				}
+				return view(ItemSpriteSheet.RIP, null);
+
 			case BLACK:
 				return view( ItemSpriteSheet.EBONY_CHEST, null );
 			default:

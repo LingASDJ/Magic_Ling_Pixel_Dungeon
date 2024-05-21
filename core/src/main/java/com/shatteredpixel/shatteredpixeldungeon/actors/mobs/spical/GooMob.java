@@ -5,7 +5,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -35,8 +34,6 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class GooMob extends Mob {
-
-
 
     {
         HP = HT = Random.NormalIntRange(90,180);
@@ -113,7 +110,7 @@ public class GooMob extends Mob {
         if (lock == null && Dungeon.level.heroFOV[pos]){
             SewerLevel level = (SewerLevel) Dungeon.level;
             level.seal();
-            if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
+            if(Dungeon.isChallenged(MOREROOM)) {
                 AlarmTrap alarmTrap = new AlarmTrap();
                 alarmTrap.pos = pos;
                 alarmTrap.activate();

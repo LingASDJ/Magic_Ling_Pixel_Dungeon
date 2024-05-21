@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CHAMPION_ENEMIES;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping.discover;
@@ -32,7 +33,6 @@ import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
@@ -59,7 +59,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.Mag
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayNoSTR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySlowy;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSaySoftDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayTimeLast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -67,8 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.DragonBluePlot;
-import com.shatteredpixel.shatteredpixeldungeon.custom.utils.HollowPlot;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.DragonBluePlot;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.EmoIcon;
@@ -145,6 +143,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndRestart;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
 import com.watabou.glwrap.Blending;
@@ -338,8 +337,7 @@ public class GameScene extends PixelScene {
 			@Override
 			protected void onClick() {
                 //InterlevelScene.noStory = true;
-				GamesInProgress.selectedClass = Dungeon.hero.heroClass;
-				ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
+				GameScene.show(new WndRestart());
 			}
 
 			@Override
@@ -521,9 +519,9 @@ public class GameScene extends PixelScene {
 				}
 				Class<? extends Actor> cl =
 						Actor.getCurrentActorClass();
-				String msg = "Actor therad dump was requested." + "Seed:" + Dungeon.seed +
-						"depth:" + Dungeon.depth + "challenges:" + "current actor:" + cl +
-						"\ntrace:" + s;
+				String msg = "Actor therad dump was requested.\n\n" + "Seed:" + Dungeon.seed +
+						"\n\ndepth:" + Dungeon.depth + "\n\nchallenges:" + "\n\ncurrent actor:" + cl +
+						"\n\n\ntrace:" + s;
 				Gdx.app.getClipboard().setContents(msg);
 				ShatteredPixelDungeon.reportException(new RuntimeException(msg)
 				);
@@ -541,8 +539,6 @@ public class GameScene extends PixelScene {
 			return;
 		}
 
-
-
 		super.update();
 
 		if (notifyDelay > 0) notifyDelay -= Game.elapsed;
@@ -551,7 +547,6 @@ public class GameScene extends PixelScene {
 
 		if (!Actor.processing() && Dungeon.hero.isAlive()) {
 			if (actorThread == null || !actorThread.isAlive()) {
-				
 				actorThread = new Thread() {
 					@Override
 					public void run() {
@@ -573,6 +568,7 @@ public class GameScene extends PixelScene {
 					actorThread.notify();
 				}
 			}
+
 		}
 
 		if (Dungeon.hero.ready && Dungeon.hero.paralysed == 0) {
@@ -1354,7 +1350,7 @@ public class GameScene extends PixelScene {
 		switch (InterlevelScene.mode) {
 			case RESURRECT:
 				Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
-				ScrollOfTeleportation.appear( Dungeon.hero, Dungeon.hero.pos );
+				ScrollOfTeleportation.appearVFX( Dungeon.hero );
 				SpellSprite.show(Dungeon.hero, SpellSprite.ANKH);
 				new Flare( 5, 16 ).color( 0xFFFF00, true ).show( hero, 4f ) ;
 				break;
@@ -1366,67 +1362,34 @@ public class GameScene extends PixelScene {
 			case ANCITYBOSS:
 			case AMULET:
 			case GARDEN:
-				if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+				if(!Statistics.bossRushMode){
 					switch (Dungeon.depth) {
 						case 0:
-							WndStory.showChapter(WndStory.ID_GAME);
-							break;
-						case 1:
-							WndStory.showChapter(WndStory.ID_NOMOBS);
-							break;
-						case 2:
-							WndStory.showChapter(WndStory.ID_CALA);
-							break;
-						case 4:
-							WndStory.showChapter(WndStory.ID_SEWS);
-							break;
-						case 5:
-							WndStory.showChapter(WndStory.ID_SKBS);
-							break;
-						case 8:
-							WndStory.showChapter(WndStory.ID_TGKS);
-							break;
-						case 10:
-							WndStory.showChapter(WndStory.ID_DKBS);
-							break;
-						case 12:
-							WndStory.showChapter(WndStory.ID_DMBS);
-							break;
-						case 14:
-							WndStory.showChapter(WndStory.ID_DKVS);
-							break;
-						case 16:
-							WndStory.showChapter(WndStory.ID_ICES);
-							break;
-						case 19:
-							WndStory.showChapter(WndStory.ID_FBXA);
-							break;
-						case 21:
-							WndStory.showChapter(WndStory.ID_DKKX);
-							break;
-						case 25:
-							WndStory.showChapter(WndStory.ID_LXKS);
-							break;
-						case 26:
-							WndStory.showChapter(WndStory.ID_ZTBS);
-							break;
-						case 27:
-							WndStory.showChapter(WndStory.ID_DMZR);
-							break;
-						case 28:
-							WndStory.showChapter(WndStory.ID_ENDS);
-							break;
-					}
-				} else {
-					switch (Dungeon.depth) {
-						case 0:
-							WndStory.showChapter( WndStory.ID_FOREST );
+							if(Dungeon.isChallenged(CS)) {
+								WndStory.showChapter(WndStory.ID_ALC);
+							} else {
+								WndStory.showChapter(WndStory.ID_FOREST);
+							}
 							break;
 						case 1:
 							WndStory.showChapter( WndStory.ID_SEWERS );
 							break;
 						case 5:
-							WndStory.showChapter( WndStory.ID_SEWERSBOSS );
+							switch(Dungeon.branch) {
+								case 0:
+									if(Statistics.ExFruit){
+										WndStory.showChapter( WndStory.ID_EXSEWERSBOSS );
+									} else {
+										WndStory.showChapter( WndStory.ID_SEWERSBOSS );
+									}
+									break;
+								case 1:
+									WndStory.showChapter(WndStory.ID_LAVA);
+									break;
+								case 3:
+									WndStory.showChapter(WndStory.ID_LAVABOSS);
+									break;
+							}
 							break;
 						case 6:
 							WndStory.showChapter( WndStory.ID_PRISON );
@@ -1465,16 +1428,11 @@ public class GameScene extends PixelScene {
 							WndStory.showChapter( WndStory.ID_HALLS );
 							break;
 						case 25:
-							if(Dungeon.branch == 5) WndStory.showChapter( WndStory.ID_CHAPTONEEND );
-							break;
-						case 26:
-							HollowPlot plot = new HollowPlot();
-							Game.runOnRenderThread(new Callback() {
-								@Override
-								public void call() {
-									GameScene.show(new WndDialog(plot,false));
-								}
-							});
+							if(Dungeon.branch == 5){
+								WndStory.showChapter( WndStory.ID_CHAPTONEEND );
+							} else if(Dungeon.isChallenged(CS)&& Dungeon.branch == 0){
+								WndStory.showChapter(WndStory.ID_ZTBS);
+							}
 							break;
 					}
 				}
@@ -1667,6 +1625,15 @@ public class GameScene extends PixelScene {
 				case DIEDROOM:
 					GLog.n(Messages.get(this, "died"));
 					break;
+				case BIGROOMS:
+					GLog.n(Messages.get(this, "broom"));
+					break;
+				case BLOOD:
+					GLog.n(Messages.get(this, "blood"));
+					break;
+				case SKYCITY:
+					GLog.n(Messages.get(this, "skyting"));
+					break;
 			}
 
 			for (Mob mob : Dungeon.level.mobs) {
@@ -1748,7 +1715,6 @@ public class GameScene extends PixelScene {
 		Buff.detach( ch, MagicGirlSayKill.class );
 		Buff.detach( ch, MagicGirlSayMoneyMore.class );
 		Buff.detach( ch, MagicGirlSaySlowy.class );
-		Buff.detach( ch, MagicGirlSaySoftDied.class );
 		Buff.detach( ch, MagicGirlSayNoSTR.class );
 		Buff.detach( ch, MagicGirlSayTimeLast.class );
 	}
@@ -1762,21 +1728,41 @@ public class GameScene extends PixelScene {
 			//Boss开始后的处理Logo,不在Switch中就是默认的Logo。
 			switch (Dungeon.depth){
 				case 2:
-					if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ){
+					if(Statistics.bossRushMode){
 						bossSlain.texture( Assets.Interfaces.QliPhoth_Title );
 						bossSlain.show( 0xFFFFFF, 0.3f, 5f );
 						scene.showBanner( bossSlain );
 					}
 					break;
-				case 5:
-						bossSlain.texture(Assets.Interfaces.QliPhoth_Title);
+				case 4:
+					if(Statistics.bossRushMode){
+						bossSlain.texture(Assets.Interfaces.QliPhothEX_Title);
 						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
+						break;
+					}
+				case 5:
+					if(Dungeon.branch ==3 ){
+						bossSlain.texture(Assets.Interfaces.DIZF_Title);
+						bossSlain.show( Window.R_COLOR, 0.4f, 6f);
+						scene.showBanner(bossSlain);
+					} else {
+						bossSlain.texture(Statistics.ExFruit ? Assets.Interfaces.QliPhothEX_Title : Assets.Interfaces.QliPhoth_Title);
+						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+					}
 					break;
 				case 10:
-					bossSlain.texture(Assets.Interfaces.Tengu_Title);
-					bossSlain.show( Window.R_COLOR, 0.3f, 4f);
-					scene.showBanner(bossSlain);
+					if ( ((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && !Statistics.mustTengu) {
+						bossSlain.texture(Assets.Interfaces.D_Title);
+						bossSlain.show( Window.TITLE_COLOR, 0.3f, 4f);
+						scene.showBanner(bossSlain);
+					} else {
+						bossSlain.texture(Assets.Interfaces.Tengu_Title);
+						bossSlain.show( Window.R_COLOR, 0.3f, 4f);
+						scene.showBanner(bossSlain);
+					}
+
 					break;
 				case 14:
 					bossSlain.texture(Assets.Interfaces.DMOR_Title);
@@ -1790,7 +1776,22 @@ public class GameScene extends PixelScene {
 						scene.showBanner(bossSlain);
 					}
 					break;
-				case 30:
+				case 20:
+					if(Dungeon.branch == 1){
+						bossSlain.texture(Assets.Interfaces.General_Title);
+						bossSlain.show( Window.ANSDO_COLOR, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+					}
+					break;
+				case 25:
+					if(Dungeon.isChallenged(CS)) {
+						bossSlain.texture(Assets.Interfaces.YogZot_Title);
+						bossSlain.show(Window.R_COLOR, 0.3f, 5f);
+						GameScene.flash(Window.GDX_COLOR);
+						scene.showBanner(bossSlain);
+					}
+					break;
+				case 30: case 26:
 					bossSlain.texture(Assets.Interfaces.Cerdog_Title);
 					bossSlain.show(Window.CYELLOW, 0.3f, 5f);
 					scene.showBanner(bossSlain);
@@ -1816,26 +1817,38 @@ public class GameScene extends PixelScene {
 			//Boss死亡后的处理Logo,不在Switch中就是默认的Logo。
 			switch (Dungeon.depth){
 				case 2:
-					if(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ){
+					if(Statistics.bossRushMode){
 						bossSlain.texture( Assets.Interfaces.QliPhoth_Clear );
 						bossSlain.show( 0xFFFFFF, 0.3f, 5f );
 						scene.showBanner( bossSlain );
 					}
 					break;
 				case 5:
+					if(Dungeon.branch == 3) {
+						bossSlain.texture(Assets.Interfaces.DIZF_Slain);
+						bossSlain.show(Window.R_COLOR, 0.4f, 6f);
+						scene.showBanner(bossSlain);
+					} else {
 						bossSlain.texture(Assets.Interfaces.QliPhoth_Clear);
 						bossSlain.show( Window.CYELLOW, 0.3f, 5f);
 						scene.showBanner(bossSlain);
+					}
+					Statistics.GetFoodLing=0;
 					break;
 				case 10:
-					bossSlain.texture(Assets.Interfaces.Tengu_Clear);
-					bossSlain.show( Window.R_COLOR, 0.2f, 5f);
-					scene.showBanner(bossSlain);
+					if ( ((Statistics.boss_enhance & 0x2) != 0 || Statistics.mimicking) && !Statistics.mustTengu) {
+						bossSlain.texture(Assets.Interfaces.D_Clear);
+						bossSlain.show( Window.TITLE_COLOR, 0.2f, 5f);
+						scene.showBanner(bossSlain);
+					} else {
+						bossSlain.texture(Assets.Interfaces.Tengu_Clear);
+						bossSlain.show( Window.R_COLOR, 0.2f, 5f);
+						scene.showBanner(bossSlain);
+					}
+					Statistics.GetFoodLing=0;
 					break;
-				case 14:
-					bossSlain.texture(Assets.Interfaces.DMOR_Clear);
-					bossSlain.show( Window.GDX_COLOR, 0.3f, 5f);
-					scene.showBanner(bossSlain);
+				case 15:
+					Statistics.GetFoodLing=0;
 					break;
 				case 17:case 18:
 					if(Dungeon.branch == 3){
@@ -1844,14 +1857,31 @@ public class GameScene extends PixelScene {
 						scene.showBanner(bossSlain);
 					}
 					break;
-				case 30:
+				case 20:
+					if(Dungeon.branch == 1){
+						bossSlain.texture(Assets.Interfaces.General_Clear);
+						bossSlain.show( Window.ANSDO_COLOR, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+					}
+					Statistics.GetFoodLing=0;
+					break;
+				case 25:
+					if(Dungeon.isChallenged(CS)) {
+						bossSlain.texture(Assets.Interfaces.YogZot_Slain);
+						bossSlain.show(Window.GDX_COLOR, 0.3f, 5f);
+						GameScene.flash(Window.TITLE_COLOR);
+						scene.showBanner(bossSlain);
+					}
+					Statistics.GetFoodLing=0;
+					break;
+				case 30: case 26:
 					bossSlain.texture(Assets.Interfaces.Cerdog_Clear);
 					bossSlain.show( 0xF7941D, 0.3f, 5f);
 					scene.showBanner(bossSlain);
 					break;
 			}
 
-			if(lanterfireactive && Dungeon.branch == 0){
+			if(lanterfireactive && Dungeon.branch == 0 || Dungeon.branch == 6 || Statistics.bossRushMode){
 				cure( Dungeon.hero );
 			}
 

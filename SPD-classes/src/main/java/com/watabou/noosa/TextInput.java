@@ -33,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.watabou.glscripts.Script;
 import com.watabou.glwrap.Blending;
@@ -220,5 +221,17 @@ public class TextInput extends Component {
 			Game.platform.setOnscreenKeyboardVisible(false);
 			if (!DeviceCompat.isDesktop()) Game.platform.updateSystemUI();
 		}
+	}
+
+	public int getCursorPosition(){
+		return textField.getCursorPosition();
+	}
+
+	public void setCursorPosition (int cursorPosition){
+		textField.setCursorPosition(cursorPosition);
+	}
+
+	public void setTextFieldListener(@Null TextField.TextFieldListener listener){
+		textField.setTextFieldListener(listener);
 	}
 }

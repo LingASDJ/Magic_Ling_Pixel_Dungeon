@@ -250,7 +250,7 @@ public class Badges {
 			badge = Badge.HIGH_SCORE_3;
 			local.add( badge );
 		}
-		if (score >=  SSS_SCORE * chalMultiplier/2 * (amuletObtained ? 1 : 4)) {
+		if (score >= SSS_SCORE * chalMultiplier/2 * (amuletObtained ? 1 : 4)) {
 			badge = Badge.HIGH_SCORE_4;
 			local.add( badge );
 		}
@@ -811,6 +811,14 @@ public class Badges {
 		displayBadge( Badge.KILL_DOG );
     }
 
+	public static void KILL_ST() {
+		displayBadge( Badge.KILL_CLSISTER );
+	}
+
+	public static void KILL_FIRE() {
+		displayBadge( Badge.KILL_FIRE_DRAGON );
+	}
+
 
 	public static void CITY_END() {
 		displayBadge( Badge.HOLLOWCITY );
@@ -979,22 +987,22 @@ public class Badges {
     public static void validateChampion(int challenges) {
         if (challenges == 0) return;
         Badge badge = null;
-        if (challenges >= 1 && !(Dungeon.isChallenged(PRO)) || !Statistics.happyMode && challenges >= 1) {
+        if (challenges >= 1 && !(Dungeon.isChallenged(PRO)) || !Statistics.bossRushMode && challenges >= 1) {
             badge = Badge.CHAMPION_1X;
         }
-        if (challenges >= 3 && !(Dungeon.isChallenged(PRO)) || !Statistics.happyMode && challenges >= 3) {
+        if (challenges >= 3 && !(Dungeon.isChallenged(PRO)) || !Statistics.bossRushMode && challenges >= 3) {
             addGlobal(badge);
 			badge = Badge.CHAMPION_2X;
 		}
-		if (challenges >= 6 && !(Dungeon.isChallenged(PRO))|| !Statistics.happyMode && challenges >= 6){
+		if (challenges >= 6 && !(Dungeon.isChallenged(PRO))|| !Statistics.bossRushMode && challenges >= 6){
 			addGlobal(badge);
 			badge = Badge.CHAMPION_3X;
 		}
-		if (challenges >= 8 && !(Dungeon.isChallenged(PRO))||!Statistics.happyMode && challenges >= 8){
+		if (challenges >= 8 && !(Dungeon.isChallenged(PRO))||!Statistics.bossRushMode && challenges >= 8){
 			addGlobal(badge);
 			badge = Badge.CHAMPION_4X;
 		}
-		if (challenges >= 10 && !(Dungeon.isChallenged(PRO))||!Statistics.happyMode && challenges >= 10){
+		if (challenges >= 10 && !(Dungeon.isChallenged(PRO))||!Statistics.bossRushMode && challenges >= 10){
 			addGlobal(badge);
 			badge = Badge.CHAMPION_5X;
 		}
@@ -1133,12 +1141,12 @@ public class Badges {
 		READ_BOOK_THREE				( 87 ),
 
 
-		HOLLOWCITY					( 88 ),
-		MASTER						( 89 ),
-		RED_DRAMATICUL				( 90 ),
-		GOD_PLEASE					( 91),
+		HOLLOWCITY					(  ),
+		MASTER						( ),
+		RED_DRAMATICUL				( ),
+		GOD_PLEASE					( ),
 
-		NOW_ANTATTCK				(92),
+		NOW_ANTATTCK				(),
 		WOC_MONEY_GIRL				(93),
 
 
@@ -1180,6 +1188,10 @@ public class Badges {
         HIGH_SCORE_5(137),
 
 		KILL_DOG(138),
+
+		KILL_CLSISTER(140),
+
+		KILL_FIRE_DRAGON(141),
 
         BOSS_CHALLENGE_1(152),
         BOSS_CHALLENGE_2(153),

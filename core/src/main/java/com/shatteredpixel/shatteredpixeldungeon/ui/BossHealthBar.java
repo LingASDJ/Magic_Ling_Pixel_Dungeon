@@ -56,7 +56,7 @@ public class BossHealthBar extends Component {
 	private Image skull;
 	private Emitter blood;
 
-	private static String asset = SPDSettings.ClassUI() ? Assets.Interfaces.BOSSHP : Assets.Interfaces.BOSSHP_DARK;
+	private static String asset = SPDSettings.ClassUI() ?  Assets.Interfaces.BOSSHP : Assets.Interfaces.BOSSHP_DARK;
 
 	private static BossHealthBar instance;
 	private static boolean bleeding;
@@ -121,7 +121,7 @@ public class BossHealthBar extends Component {
 			add(buffs);
 		}
 
-		skull = new Image(asset, 5, 18, 6, 6);
+		skull = new Image(asset, 5, 18,  6,  6);
 		add(skull);
 
 		blood = new Emitter();

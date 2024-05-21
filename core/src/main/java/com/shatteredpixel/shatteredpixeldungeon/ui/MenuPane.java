@@ -94,9 +94,14 @@ public class MenuPane extends Component {
 				break;
 				case 5: abcd = "E";
 				break;
+				case 6: case 7:
+				abcd = "?";
+				break;
 		}
 
-		if(branch!=0){
+		if(branch == 8){
+			depth = "BR-"+depth;
+		} else if(branch!=0){
 			depth += "-" + abcd;
 		}
 
@@ -113,6 +118,11 @@ public class MenuPane extends Component {
 		depthIcon = Icons.get(Dungeon.level.feeling);
 		add(depthIcon);
 
+//		depthText = PixelScene.renderTextBlock(4);
+//		depthText.text("桃源岛");
+//		depthText.hardlight( Window.Pink_COLOR );
+//		//depthText.measure();
+//		add(depthText);
 
 		depthText = new BitmapText(displayText(), PixelScene.pixelFont);
 		depthText.hardlight( 0xCACFC2 );
@@ -153,12 +163,13 @@ public class MenuPane extends Component {
 				@Override
 				public void update() {
 					super.update();
-					am = 1f + 0.01f*Math.max(0f, (float)Math.sin( time += Game.elapsed/1 ));
+					text(Integer.toString( Challenges.activeChallenges()));
+				    am = 1f + 0.01f*Math.max(0f, (float)Math.sin( time += Game.elapsed));
 					time += Game.elapsed / 3.5f;
 					float r = 0.33f+0.57f*Math.max(0f, (float)Math.sin( time));
 					float g = 0.53f+0.57f*Math.max(0f, (float)Math.sin( time + 2*Math.PI/3 ));
 					float b = 0.63f+0.57f*Math.max(0f, (float)Math.sin( time + 4*Math.PI/3 ));
-					if (Challenges.activeChallenges() >= 12) {
+					if (Challenges.activeChallenges() >= 13) {
 						challengeText.hardlight(r,g,b);
 						if (time >= 2f * Math.PI) time = 0;
 					} else if (Challenges.activeChallenges() > 9) {

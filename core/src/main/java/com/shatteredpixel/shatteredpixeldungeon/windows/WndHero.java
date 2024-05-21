@@ -29,7 +29,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireacti
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Clipboard;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -48,12 +47,13 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.text.HeroStat;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
@@ -226,6 +226,48 @@ public class WndHero extends WndTabbed {
 			infoButton.setRect(title.right(), 0, 16, 16);
 			add(infoButton);
 
+			IconButton seedButton = new IconButton(new Image(new ItemSprite(ItemSpriteSheet.SEED_SKYBLUEFIRE))){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					clipboard.setContents(DungeonSeed.convertToCode(Dungeon.seed));
+					GLog.i(Messages.get(HeroStat.class, "copy_success"));
+				}
+
+				@Override
+				protected String hoverText() {
+					return Messages.titleCase(Messages.get(HeroStat.class, "item_seed"));
+				}
+
+			};
+			seedButton.setRect(title.right(), infoButton.bottom()+seedButton.height()+2, 16, 16);
+			add(seedButton);
+
+			IconButton itemButton = new IconButton(Icons.get(Icons.MAGNIFY)){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					GameScene.show(new StatsTab.WndTreasureGenerated());
+				}
+
+				@Override
+				protected String hoverText() {
+					return Messages.titleCase(Messages.get(HeroStat.class, "item_enter"));
+				}
+
+			};
+			itemButton.setRect(title.right(), seedButton.bottom()+itemButton.height()+2, 16, 16);
+			add(itemButton);
+
+			if(HelpSettings() && Dungeon.isChallenged(PRO)){
+				itemButton.active = true;
+			} else {
+				itemButton.active = false;
+				itemButton.visible = false;
+			}
+
+
+
 //			IconButton scoreButton = new IconButton(Icons.get(Icons.BUFFS)){
 //				@Override
 //				protected void onClick() {
@@ -266,7 +308,7 @@ public class WndHero extends WndTabbed {
 				RestatSlot( Messages.get(this, "lanterfire"), (double)(hero.lanterfire) + "/" + 100 );
 			}
 
-			IcestatSlot( Messages.get(this, "icehp"), (hero.icehp) + "/" + 100 );
+//			IcestatSlot( Messages.get(this, "icehp"), (hero.icehp) + "/" + 100 );
 
 			pos += GAP;
 
@@ -278,34 +320,6 @@ public class WndHero extends WndTabbed {
 			statSlot( M.L(HeroStat.class, "hunger"), hunger_str);
 
 			pos += GAP;
-
-			RedButton buttonItem = new RedButton(M.L(HeroStat.class, "item_enter"), 8){
-				@Override
-				protected void onClick() {
-					super.onClick();
-					GameScene.show(new StatsTab.WndTreasureGenerated());
-				}
-			};
-			add(buttonItem);
-			buttonItem.setRect(2, pos, WIDTH /2-4, 16);
-			boolean developerMode = HelpSettings() && Dungeon.isChallenged(PRO);
-			if(developerMode){
-				buttonItem.active = true;
-			} else {
-				buttonItem.active = false;
-				buttonItem.visible = false;
-			}
-
-			RedButton buttonSeed = new RedButton(M.L(HeroStat.class, "item_seed"), 8){
-				@Override
-				protected void onClick() {
-					super.onClick();
-					clipboard.setContents(DungeonSeed.convertToCode(Dungeon.seed));
-					GLog.i(Messages.get(HeroStat.class, "copy_success"));
-				}
-			};
-			add(buttonSeed);
-			buttonSeed.setRect(developerMode ? buttonItem.right()+2 : 2, pos, developerMode ? WIDTH /2-4 : WIDTH-4, 16);
 		}
 
 		private void statSlot( String label, String value ) {
@@ -341,9 +355,7 @@ public class WndHero extends WndTabbed {
 
 		private String seedType(){
 			String seed;
-			if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-				seed = "BossRush";
-			}else if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))){
+			if(Dungeon.isChallenged(MOREROOM)){
 				seed = "B";
 			} else {
 				seed = "A";

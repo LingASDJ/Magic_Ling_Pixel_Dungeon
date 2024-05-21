@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSE
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.bossWeapons;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel3;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel.BRatKingRoom;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel.ForestBossLasherTWOPos;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel.RatKingRoom;
@@ -12,10 +13,10 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
@@ -67,7 +68,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 //克里弗斯之果 本体
-public class CrivusFruits extends Mob {
+public class CrivusFruits extends Boss {
     //the actual affected cells
     private HashSet<Integer> affectedCells;
     private static final int MIN_ABILITY_CD = 7;
@@ -337,8 +338,7 @@ public class CrivusFruits extends Mob {
                     cell = i + j*Dungeon.level.width();
                     if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
                         if (!ch.isImmune(this.getClass())) {
-                            if( hero.buff(LockedFloor.class) != null) {
-                                //不为空为4 否则就是0
+                            if( hero.buff(LockedFloor.class) != null ) {
                                 ch.damage(hero.buff(LockedFloor.class) != null ? damage : 0, this);
                                 Statistics.bossScores[0] -= 200;
                             }
@@ -370,12 +370,23 @@ public class CrivusFruits extends Mob {
     public void die(Object cause) {
         super.die(cause);
 
-        //酸液体清0
-        Statistics.SiderLing = 0;
+        
+        
 
         PotionOfPurity.PotionOfPurityLing potionOfPurityLing = Dungeon.hero.belongings.getItem(PotionOfPurity.PotionOfPurityLing.class);
         if(potionOfPurityLing != null){
             potionOfPurityLing.detachAll( hero.belongings.backpack );
+        }
+
+        //共存
+        if(Statistics.bossRushMode){
+            //克里弗斯之果二阶段死亡的时候的给予重新评估
+            if(crivusfruitslevel2){
+                crivusfruitslevel2 = false;
+            }
+            if(crivusfruitslevel3){
+                crivusfruitslevel3 = false;
+            }
         }
 
         Dungeon.level.unseal();
@@ -420,7 +431,7 @@ public class CrivusFruits extends Mob {
             Dungeon.level.drop( new CrivusFruitsFlake(), pos + ofs ).sprite.drop( pos );
         }
 
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
+      if(Statistics.bossRushMode){
             GetBossLoot();
         }
     }

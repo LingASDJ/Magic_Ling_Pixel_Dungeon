@@ -24,8 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.effects;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.TextureFilm;
@@ -52,6 +52,17 @@ public class Speck extends Image {
 	public static final int BUBBLE = 12;
 	public static final int STEAM = 13;
 	public static final int COIN = 14;
+
+	public static final int MUTATION_1 = 15;
+	public static final int MUTATION_2 = 16;
+	public static final int MUTATION_3 = 17;
+	public static final int MUTATION_4 = 18;
+	public static final int MUTATION_5 = 19;
+	public static final int MUTATION_6 = 20;
+
+	public static final int MUTATION_7 = 21;
+
+	public static final int MUTATION_8 = 23;
 
 	public static final int DISCOVER = 101;
 	public static final int EVOKE = 102;
@@ -281,6 +292,54 @@ public class Speck extends Image {
 				lifespan = 1f;
 				break;
 
+			case MUTATION_1:
+				speed.set(0, -20);
+				lifespan = 1f;
+				hardlight(0x8f8f8f);
+				//alpha(0.8f);
+				break;
+			case MUTATION_2:
+				speed.set(0, -20);
+				lifespan = 1f;
+				hardlight(0xED186E);
+				//alpha(0.8f);
+				break;
+			case MUTATION_3:
+				speed.set(0, -20);
+				lifespan = 1f;
+				hardlight(0x00ff00);
+				//alpha(0.8f);
+				break;
+			case MUTATION_4:
+				speed.set(0, -20);
+				lifespan = 1f;
+				hardlight(Window.CYELLOW);
+				//alpha(0.8f);
+				break;
+			case MUTATION_5:
+				speed.set(0, -20);
+				lifespan = 1f;
+				hardlight(Window.RED_COLOR);
+				//alpha(0.8f);
+				break;
+			case MUTATION_6:
+				speed.set(0, -20);
+				lifespan = 1f;
+				hardlight(0xff00ff);
+				//alpha(0.8f);
+				break;
+			case MUTATION_7:
+				speed.set(0, -20);
+				lifespan = 1f;
+				hardlight(0xB085D5);
+				//alpha(0.8f);
+				break;
+			case MUTATION_8:
+				scale.set(1f);
+				lifespan = 1f;
+				angle = Random.Float(360);
+				break;
+
 			case BUBBLE:
 				speed.set(0, -15);
 				scale.set(Random.Float(0.8f, 1));
@@ -288,7 +347,7 @@ public class Speck extends Image {
 				break;
 
 			case STEAM:
-				if(depth == 10 || (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) && (depth == 8))) {
+				if(depth == 10 ||(depth == 8)) {
 					hardlight(0x231d10);
 				}
 
@@ -427,7 +486,11 @@ public class Speck extends Image {
 				case EVOKE:
 
 				case HEALING:
-					am = p < 0.5f ? 1 : 2 - p * 2;
+					break;
+
+				case MUTATION_1:case MUTATION_2:case MUTATION_3:
+				case MUTATION_4:case MUTATION_5: case MUTATION_6:case MUTATION_7:case MUTATION_8:
+					am = (float) Math.sqrt((p < 0.5f ? p : 1 - p) * 1.1f);
 					break;
 
 				case RED_LIGHT:

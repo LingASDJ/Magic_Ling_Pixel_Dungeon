@@ -25,16 +25,26 @@ public class Crushing extends Weapon.Enchantment {
 
         if (Random.Int( level + 12 ) >= 5) {
 
-            if (Random.Int( 2 ) == 0) {
+            if (Random.Int( 4 ) == 0) {
                 Buff.prolong( defender, Cripple.class, Random.Float( 1f, 1f + level/2f ) );
             }
-            defender.damage( Random.Int( 1, level + 2 ), this );
+            defender.damage( Random.Int((int) (1 * procChanceMultiplier(attacker)), (int) (level + 2 * 1 * procChanceMultiplier(attacker))), this );
 
             defender.sprite.emitter().burst(BlastParticle.FACTORY, 30 );
             defender.sprite.emitter().burst(SmokeParticle.FACTORY, 4 );
-            if (Random.Int( 2 ) == 0) {
+
+            String[] TXT_RANDOM = {
+                    Messages.get(Crushing.class,"kill",defender.name(),attacker.name()),
+                    Messages.get(Crushing.class,"kill1",defender.name(),attacker.name()),
+                    Messages.get(Crushing.class,"kill3",defender.name(),attacker.name()),
+                    Messages.get(Crushing.class,"kill4",defender.name(),attacker.name()),
+                    Messages.get(Crushing.class,"kill5",defender.name(),attacker.name()),
+                    Messages.get(Crushing.class,"kill6",defender.name(),attacker.name())
+            };
+
+            if (Random.Int( 4 ) == 0) {
                 damage += level;
-                GLog.n(Messages.get(Crushing.class,"kill",defender.name(),attacker.name()));
+                GLog.n(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
                 new Bomb().explodeHeros(defender.pos);
             }
         }

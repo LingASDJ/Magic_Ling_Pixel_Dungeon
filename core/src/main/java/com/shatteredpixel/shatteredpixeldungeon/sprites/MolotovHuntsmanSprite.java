@@ -11,14 +11,25 @@ import com.watabou.noosa.TextureFilm;
 import com.watabou.utils.Callback;
 
 public class MolotovHuntsmanSprite extends MobSprite {
-    public MolotovHuntsmanSprite() {
-        if(Dungeon.depth == 15 || Dungeon.hero == null){
-            this.texture("sprites/boss/huntsman.png");
-        } else {
-            this.texture("SRPD/MolotovHuntsman.png");
+
+    public static class BossMolotovHuntsmanSprite extends MolotovHuntsmanSprite {
+        public BossMolotovHuntsmanSprite() {
+            texture("sprites/boss/huntsman.png");
+            TextureFilm var1 = new TextureFilm(this.texture, 16, 16);
+            this.idle = new Animation(2, true);
+            this.idle.frames(var1, 0, 0, 0, 1, 0, 0, 1, 1);
+            this.run = new Animation(12, true);
+            this.run.frames(var1, 2, 3, 4, 5, 6);
+            this.attack = new Animation(12, false);
+            this.attack.frames(var1, 11, 12, 13, 14);
+            this.die = new Animation(12, false);
+            this.die.frames(var1, 7, 8, 9, 10);
+            this.play(this.idle);
         }
+    }
 
-
+    public MolotovHuntsmanSprite() {
+        this.texture("SRPD/MolotovHuntsman.png");
         TextureFilm var1 = new TextureFilm(this.texture, 16, 16);
         this.idle = new Animation(2, true);
         this.idle.frames(var1, 0, 0, 0, 1, 0, 0, 1, 1);

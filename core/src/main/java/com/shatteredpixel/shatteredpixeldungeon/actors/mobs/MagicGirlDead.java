@@ -4,7 +4,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SpellCaster;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -395,16 +394,15 @@ public class MagicGirlDead extends Boss {
     public void die(Object src){
         Statistics.bossScores[2] += 5000;
         super.die(src);
-        if (Dungeon.isDLC(Conducts.Conduct.BOSSRUSH)) {
-
+      if(Statistics.bossRushMode){
             GetBossLoot();
         }
         Badges.validateBossSlain();
         if (Statistics.qualifiedForBossChallengeBadge){
             Badges.validateBossChallengeCompleted();
         }
-        //酸液体清0
-        Statistics.SiderLing = 0;
+        
+        
 
         int shards = Random.chances(new float[]{0, 0, 6, 3, 1});
         for (int i = 0; i < shards; i++){

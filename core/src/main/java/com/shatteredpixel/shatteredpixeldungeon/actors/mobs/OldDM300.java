@@ -26,7 +26,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -96,7 +95,7 @@ public class OldDM300 extends FlameC02 {
 		if (lock == null && Dungeon.level.heroFOV[pos]){
 			CavesLevel level = (CavesLevel) Dungeon.level;
 			level.seal();
-			if(Dungeon.isChallenged(MOREROOM) && !(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH))) {
+			if(Dungeon.isChallenged(MOREROOM)) {
 				AlarmTrap alarmTrap = new AlarmTrap();
 				alarmTrap.pos = pos;
 				alarmTrap.activate();
