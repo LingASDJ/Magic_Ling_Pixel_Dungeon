@@ -5,33 +5,23 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blizzard;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WorstBlizzardFx;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WorstBlizzard;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
-import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
-import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
-import com.watabou.utils.Point;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
@@ -68,41 +58,11 @@ public class WandOfGodIce extends DamageWand {
         Char ch = Actor.findChar(beam.collisionPos);
         if (ch != null){
             processSoulMark(ch, chargesPerCast());
-            ch.damage(affectTarget(ch),this);
-        }
-        Point c = Dungeon.level.cellToPoint(beam.collisionPos);
-        int dist = Math.min(2+level(),6);
-        int[] rounding = ShadowCaster.rounding[dist];
-
-        int left, right;
-        int curr;
-        for (int y = Math.max(0, c.y - dist); y <= Math.min(Dungeon.level.height()-1, c.y + dist); y++) {
-            if (rounding[Math.abs(c.y - y)] < Math.abs(c.y - y)) {
-                left = c.x - rounding[Math.abs(c.y - y)];
-            } else {
-                left = dist;
-                while (rounding[left] < rounding[Math.abs(c.y - y)]) {
-                    left--;
-                }
-                left = c.x - left;
-            }
-            right = Math.min(Dungeon.level.width() - 1, c.x + c.x - left);
-            left = Math.max(0, left);
-            for (curr = left + y * Dungeon.level.width(); curr <= right + y * Dungeon.level.width(); curr++) {
-                if (!Dungeon.level.solid[curr]) {
-                    WorstBlizzardFx.keepTime = Math.min(2+level(),14);
-                    WorstBlizzardFx.damageTarget = affectTarget(null);
-                    GameScene.add(Blob.seed(curr, 10, WorstBlizzardFx.class));
-                    Char charAt= Actor.findChar(curr);
-                    if(charAt!=null ){
-                        Buff.affect(charAt, WorstBlizzard.class,1f);
-                    }
-                }
-            }
+            affectTarget(ch);
         }
     }
 
-    private int affectTarget(Char ch){
+    private void affectTarget(Char ch){
         int dmg = damageRoll();
 
         //three in (5+lvl) chance of failing
@@ -110,16 +70,18 @@ public class WandOfGodIce extends DamageWand {
             Buff.prolong(ch, Chill.class, 2f + (buffedLvl() * 0.333f));
             ch.sprite.emitter().burst(Speck.factory(Speck.STAR), 12 );
         }
-        dmg += level() > 4 ? level() - 4 : 0;
 
         if (ch.properties().contains(Char.Property.BOSS)){
             ch.sprite.emitter().start( ShadowParticle.CURSE, 0.05f, 10+buffedLvl() );
             Sample.INSTANCE.play(Assets.Sounds.BURNING);
-            dmg = Math.round(dmg*2f);
+
+            ch.damage(Math.round(dmg*2f), this);
         } else {
             ch.sprite.centerEmitter().burst( RainbowParticle.BURST, 10+buffedLvl() );
+
+            ch.damage(dmg, this);
         }
-        return dmg;
+
     }
 
     private void affectMap(Ballistica beam){

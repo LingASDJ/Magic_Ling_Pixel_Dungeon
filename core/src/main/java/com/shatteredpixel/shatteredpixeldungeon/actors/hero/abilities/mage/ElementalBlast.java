@@ -109,7 +109,7 @@ public class ElementalBlast extends ArmorAbility {
 		effectTypes.put(WandOfRegrowth.class,       MagicMissile.FOLIAGE_CONE);
 
 		//TODO FIXED 将要修复的
-		effectTypes.put(WandOfGodIce.class,       MagicMissile.FROST_CONE);
+
 		effectTypes.put(WandOfBlueFuck.class,       MagicMissile.HALOFIRE);
 		effectTypes.put(WandOfScale.class,       MagicMissile.SHAMAN_BLUE);
 

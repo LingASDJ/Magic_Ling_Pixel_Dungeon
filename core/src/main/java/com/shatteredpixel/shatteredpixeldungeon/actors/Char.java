@@ -42,7 +42,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WorstBlizzard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
@@ -1102,9 +1101,6 @@ public abstract class Char extends Actor {
 		}
 		if (buff(Speed.class) != null) {
 			timeScale *= 2.0f;
-		}
-		if(buff(WorstBlizzard.class)!=null){
-			timeScale *= buff(WorstBlizzard.class).speedFactor();
 		}
 
 
