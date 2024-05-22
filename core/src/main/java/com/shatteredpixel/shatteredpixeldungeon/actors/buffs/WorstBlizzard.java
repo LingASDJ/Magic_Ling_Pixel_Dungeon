@@ -36,6 +36,6 @@ public class WorstBlizzard extends FlavourBuff{
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc", Messages.decimalFormat("#.##", speedFactor()*100f));
+        return Messages.get(this, "desc", (int)(speedFactor()*100))+"%";
     }
 }
