@@ -70,35 +70,13 @@ public class WandOfGodIce extends DamageWand {
             processSoulMark(ch, chargesPerCast());
             ch.damage(affectTarget(ch),this);
         }
-        Point c = Dungeon.level.cellToPoint(beam.collisionPos);
-        int dist = Math.min(2+level(),6);
-        int[] rounding = ShadowCaster.rounding[dist];
+        WorstBlizzardFx.wandLevel = level();
+        WorstBlizzardFx.damageTarget = affectTarget(null);
+        WorstBlizzardFx.zapPos = beam.collisionPos;
 
-        int left, right;
-        int curr;
-        for (int y = Math.max(0, c.y - dist); y <= Math.min(Dungeon.level.height()-1, c.y + dist); y++) {
-            if (rounding[Math.abs(c.y - y)] < Math.abs(c.y - y)) {
-                left = c.x - rounding[Math.abs(c.y - y)];
-            } else {
-                left = dist;
-                while (rounding[left] < rounding[Math.abs(c.y - y)]) {
-                    left--;
-                }
-                left = c.x - left;
-            }
-            right = Math.min(Dungeon.level.width() - 1, c.x + c.x - left);
-            left = Math.max(0, left);
-            for (curr = left + y * Dungeon.level.width(); curr <= right + y * Dungeon.level.width(); curr++) {
-                if (!Dungeon.level.solid[curr]) {
-                    WorstBlizzardFx.keepTime = Math.min(2+level(),14);
-                    WorstBlizzardFx.damageTarget = affectTarget(null);
-                    GameScene.add(Blob.seed(curr, 10, WorstBlizzardFx.class));
-                    Char charAt= Actor.findChar(curr);
-                    if(charAt!=null ){
-                        Buff.affect(charAt, WorstBlizzard.class,1f);
-                    }
-                }
-            }
+        for(int i:PathFinder.NEIGHBOURS9){
+            if(!Dungeon.level.solid[beam.collisionPos+i])
+                GameScene.add(Blob.seed(beam.collisionPos+i, 500, WorstBlizzardFx.class));
         }
     }
 
