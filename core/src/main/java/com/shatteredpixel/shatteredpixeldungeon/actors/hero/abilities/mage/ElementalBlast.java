@@ -115,7 +115,7 @@ public class ElementalBlast extends ArmorAbility {
 		effectTypes.put(WandOfScale.class,       MagicMissile.SHAMAN_BLUE);
 
 
-		effectTypes.put(WandOfGodIce.class,       MagicMissile.FOLIAGE_CONE);
+		effectTypes.put(WandOfGodIce.class,        Speck.BLIZZARD);
 		effectTypes.put(WandOfHightHunderStorm.class,       MagicMissile.FOLIAGE_CONE);
 	}
 

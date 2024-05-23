@@ -10,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WorstBlizzard;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SnowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
@@ -17,13 +18,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfGodIce;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -31,7 +32,7 @@ public class WorstBlizzardFx extends Blob{
     public static int wandLevel = 0;
     public static int damageTarget = 0;
     public static int zapPos=0;
-    private static boolean firstHit = false;
+    private boolean firstHit = false;
 
     @Override
     public boolean act() {
@@ -100,9 +101,6 @@ public class WorstBlizzardFx extends Blob{
 
         if( ch != null && !firstHit &&  ch.properties().contains(Char.Property.MINIBOSS)) {
             firstHit = true;
-            affected.clear();
-            arcs.clear();
-
             affected.add(ch);
             arc(ch);
             for (Char target : affected) {
@@ -111,6 +109,18 @@ public class WorstBlizzardFx extends Blob{
                 }else {
                     target.damage(target.properties().contains(Char.Property.BOSS) ? damageTarget * 2 : damageTarget, WandOfGodIce.class);
                 }
+            }
+
+            ArrayList<Integer> cells = new ArrayList<>();
+            for (int i = 4; i > 0; i--) {
+                int c = Random.Int(Dungeon.level.length());
+                final boolean b = c >= 0 && c < Dungeon.level.length() && hero.fieldOfView[c] && !cells.contains(c);
+                if(b)cells.add(c);
+            }
+
+            for(int p : cells){
+                arcs.add( new Lightning.Arc(ch.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(p)));
+                CellEmitter.center( p ).burst( SparkParticle.FACTORY, 5 );
             }
 
             ch.sprite.parent.addToFront( new Lightning( arcs, null ) );
