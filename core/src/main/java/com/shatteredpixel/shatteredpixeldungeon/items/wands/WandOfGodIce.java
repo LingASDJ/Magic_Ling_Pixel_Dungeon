@@ -76,8 +76,9 @@ public class WandOfGodIce extends DamageWand {
 
         for(int i:PathFinder.NEIGHBOURS9){
             if(!Dungeon.level.solid[beam.collisionPos+i])
-                GameScene.add(Blob.seed(beam.collisionPos+i, 500, WorstBlizzardFx.class));
+                GameScene.add(Blob.seed(beam.collisionPos+i, Math.min(level()*50+10,500), WorstBlizzardFx.class));
         }
+
     }
 
     private int affectTarget(Char ch){

@@ -32,6 +32,15 @@ public class WorstBlizzardFx extends Blob{
     public static int damageTarget = 0;
     public static int zapPos=0;
     private static boolean firstHit = false;
+
+    @Override
+    public boolean act() {
+        boolean result = super.act();
+        if(volume<=0)
+            firstHit = false;
+        return result;
+    }
+
     @Override
     protected void evolve() {
         super.evolve();
@@ -72,11 +81,7 @@ public class WorstBlizzardFx extends Blob{
                                 off[cell] = cur[cell] = 0;
                                 continue;
                             }
-
                             freeze(cell);
-
-                            if(volume==0)
-                                firstHit = false;
                         }
                     }
                 }
