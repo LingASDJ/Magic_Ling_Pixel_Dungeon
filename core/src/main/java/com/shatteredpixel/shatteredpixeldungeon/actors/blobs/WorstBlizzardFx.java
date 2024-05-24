@@ -132,12 +132,19 @@ public class WorstBlizzardFx extends Blob{
                 Buff.affect(ch, WorstBlizzard.class,1f);
             }
 
-            if (ch.buff(Frost.class) != null){
-                Buff.affect(ch, Frost.class, 2f);
-            } else {
-                if (Dungeon.level.water[cell]&&!ch.isImmune(Frost.class)){
-                    Buff.affect(ch, Frost.class, Math.min(2+wandLevel,14));
+            if(!effectedTargets.contains(ch)) {
+                if (ch.buff(Frost.class) != null) {
+                    Buff.affect(ch, Frost.class, 2f);
+                } else {
+                    if (Dungeon.level.water[cell] && !ch.isImmune(Frost.class)) {
+                        Buff.affect(ch, Frost.class, Math.min(2 + wandLevel, 14));
+
+                    }
                 }
+                effectedTargets.add(ch);
+            }else {
+                if(ch.buff(Frost.class) == null)
+                    effectedTargets.remove(ch);
             }
         }
 
@@ -148,6 +155,8 @@ public class WorstBlizzardFx extends Blob{
     private ArrayList<Char> affected = new ArrayList<>();
 
     private ArrayList<Lightning.Arc> arcs = new ArrayList<>();
+
+    private ArrayList<Char> effectedTargets = new ArrayList<>();
 
     private void arc( Char ch) {
         int dist = Dungeon.level.water[ch.pos] ? 2 : 1;
