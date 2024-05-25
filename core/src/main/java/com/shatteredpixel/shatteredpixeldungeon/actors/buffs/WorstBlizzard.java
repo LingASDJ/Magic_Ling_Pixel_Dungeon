@@ -30,8 +30,8 @@ public class WorstBlizzard extends FlavourBuff{
 
     @Override
     public void fx(boolean on) {
-        if (on) target.sprite.add(CharSprite.State.CHILLED);
-        else target.sprite.remove(CharSprite.State.CHILLED);
+        if (on) target.sprite.add(CharSprite.State.CHILLED_2);
+        else target.sprite.remove(CharSprite.State.CHILLED_2);
     }
 
     @Override
