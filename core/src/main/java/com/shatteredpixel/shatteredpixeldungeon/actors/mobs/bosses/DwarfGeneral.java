@@ -437,9 +437,6 @@ public class DwarfGeneral extends Boss {
         ScrollOfTeleportation.appear(flag, 364);
         ScrollOfTeleportation.appear(flag2, 370);
 
-        Buff.affect(flag, ArmyFlag.NoEnter.class, 30f);
-        Buff.affect(flag2, ArmyFlag.NoEnter.class, 30f);
-
         GameScene.flash(Window.GDX_COLOR);
     }
 
@@ -468,11 +465,6 @@ public class DwarfGeneral extends Boss {
         GameScene.add(flag4);
 
         ScrollOfTeleportation.appear(this, 367);
-
-        Buff.affect(flag, ArmyFlag.NoEnter.class,  15f);
-        Buff.affect(flag2, ArmyFlag.NoEnter.class, 15f);
-        Buff.affect(flag3, ArmyFlag.NoEnter.class, 15f);
-        Buff.affect(flag4, ArmyFlag.NoEnter.class, 15f);
 
         Buff.affect(flag, CrivusFruits.CFBarrior.class).setShield(20);
         Buff.affect(flag2, CrivusFruits.CFBarrior.class).setShield(20);

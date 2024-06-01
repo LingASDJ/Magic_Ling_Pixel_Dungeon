@@ -12,7 +12,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
@@ -20,7 +19,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ArmyFlagSprite;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Bundle;
 
 public class ArmyFlag extends Mob {
@@ -114,12 +112,6 @@ public class ArmyFlag extends Mob {
             lock.addTime(dmg*multiple);
         }
 
-        NoEnter f = buff(NoEnter.class);
-
-        if(f != null){
-            dmg = (int) (dmg*0.1f);
-        }
-
         super.damage(dmg, src);
     }
 
@@ -145,26 +137,6 @@ public class ArmyFlag extends Mob {
         friendPhase = bundle.getInt(FRIENPHASE);
         spawnCooldown = bundle.getFloat(SPAWN_COOLDOWN);
         ThreePhase = bundle.getInt(THREE_PHAE);
-    }
-
-    public static class NoEnter extends FlavourBuff {
-
-        {
-            type = buffType.POSITIVE;
-        }
-
-        public static final float DURATION	= 30f;
-
-        @Override
-        public int icon() {
-            return BuffIndicator.CHALLENGE;
-        }
-
-        @Override
-        public float iconFadePercent() {
-            return Math.max(0, (DURATION - visualcooldown()) / DURATION);
-        }
-
     }
 
 }
