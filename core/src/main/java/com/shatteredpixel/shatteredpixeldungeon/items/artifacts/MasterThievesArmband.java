@@ -156,10 +156,13 @@ public class MasterThievesArmband extends Artifact {
 								GLog.w(Messages.get(MasterThievesArmband.class, "no_steal"));
 							} else if (Random.Float() <= lootChance){
 								Item loot = ((Mob) ch).createLoot();
-								if (Challenges.isItemBlocked(loot)){
+								if( loot == null ){
+									GLog.i(Messages.get(MasterThievesArmband.class, "no_steal"));
+									Buff.affect(ch, StolenTracker.class).setItemStolen(false);
+								} else if (Challenges.isItemBlocked(loot)){
 									GLog.i(Messages.get(MasterThievesArmband.class, "failed_steal"));
 									Buff.affect(ch, StolenTracker.class).setItemStolen(false);
-								} else {
+								} else if( loot != null ){
 									if (loot.doPickUp(curUser)) {
 										//item collection happens instantly
 										curUser.spend(-TIME_TO_PICK_UP);
