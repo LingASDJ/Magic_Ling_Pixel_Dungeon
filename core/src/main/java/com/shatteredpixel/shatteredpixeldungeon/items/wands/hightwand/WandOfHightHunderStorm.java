@@ -9,8 +9,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WorstStormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.StormCloudDied;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
@@ -127,6 +129,12 @@ public class WandOfHightHunderStorm extends DamageWand {
                 ch.damage(Math.round(damageRoll() * multipler * 0.8f), this);
             } else {
                 ch.damage(Math.round(damageRoll() * multipler), this);
+            }
+
+            if(ch.isAlive()){
+                Buff.affect(ch, Vertigo.class,6+level());
+                for(int i:PathFinder.NEIGHBOURS8)
+                    GameScene.add(Blob.seed(ch.pos+i,10, WorstStormCloud.class));
             }
         }
 

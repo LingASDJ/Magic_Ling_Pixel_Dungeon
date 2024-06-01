@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WorstBlizzardFx;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
@@ -43,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WorstBlizzard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
@@ -109,12 +111,11 @@ public class ElementalBlast extends ArmorAbility {
 		effectTypes.put(WandOfRegrowth.class,       MagicMissile.FOLIAGE_CONE);
 
 		//TODO FIXED 将要修复的
-		effectTypes.put(WandOfGodIce.class,       MagicMissile.FROST_CONE);
 		effectTypes.put(WandOfBlueFuck.class,       MagicMissile.HALOFIRE);
 		effectTypes.put(WandOfScale.class,       MagicMissile.SHAMAN_BLUE);
 
 
-		effectTypes.put(WandOfGodIce.class,       MagicMissile.FOLIAGE_CONE);
+		effectTypes.put(WandOfGodIce.class,        Speck.BLIZZARD);
 		effectTypes.put(WandOfHightHunderStorm.class,       MagicMissile.FOLIAGE_CONE);
 	}
 
@@ -174,7 +175,7 @@ public class ElementalBlast extends ArmorAbility {
 			projectileProps = Ballistica.STOP_TARGET;
 
 			//*** Wand of Fireblast ***
-		} else if (wandCls == WandOfFireblast.class){
+		} else if (wandCls == WandOfFireblast.class || wandCls==WandOfGodIce.class){
 			projectileProps = projectileProps | Ballistica.IGNORE_SOFT_SOLID;
 
 			//*** Wand of Warding ***
@@ -219,16 +220,26 @@ public class ElementalBlast extends ArmorAbility {
 								}
 
 								//*** Wand of Fireblast ***
-							} else if (finalWandCls == WandOfFireblast.class){
-								if (Dungeon.level.map[cell] == Terrain.DOOR){
+							} else if (finalWandCls == WandOfFireblast.class) {
+								if (Dungeon.level.map[cell] == Terrain.DOOR) {
 									Level.set(cell, Terrain.OPEN_DOOR);
 									GameScene.updateMap(cell);
 								}
-								if (freeze != null){
+								if (freeze != null) {
 									freeze.clear(cell);
 								}
-								if (Dungeon.level.flamable[cell]){
-									GameScene.add( Blob.seed( cell, 4, Fire.class ) );
+								if (Dungeon.level.flamable[cell]) {
+									GameScene.add(Blob.seed(cell, 4, Fire.class));
+								}
+
+								//*** Wand of GodIce ***
+							} else if (finalWandCls == WandOfGodIce.class) {
+								if (fire != null){
+									fire.clear(cell);
+								}
+
+								if (!Dungeon.level.solid[cell]) {
+									GameScene.add(Blob.seed(cell, 4, WorstBlizzardFx.class));
 								}
 
 								//*** Wand of Frost ***
@@ -291,9 +302,15 @@ public class ElementalBlast extends ArmorAbility {
 									}
 
 									//*** Wand of Fireblast ***
-								} else if (finalWandCls == WandOfFireblast.class){
+								} else if (finalWandCls == WandOfFireblast.class) {
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
-										Buff.affect( mob, Burning.class ).reignite( mob );
+										Buff.affect(mob, Burning.class).reignite(mob);
+									}
+
+									//*** Wand of GodIce ***
+								}else if(finalWandCls == WandOfGodIce.class){
+									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
+										Buff.affect(mob, WorstBlizzard.class);
 									}
 
 									//*** Wand of Corrosion ***

@@ -30,12 +30,12 @@ public class WorstBlizzard extends FlavourBuff{
 
     @Override
     public void fx(boolean on) {
-        if (on) target.sprite.add(CharSprite.State.CHILLED);
-        else target.sprite.remove(CharSprite.State.CHILLED);
+        if (on) target.sprite.add(CharSprite.State.CHILLED_2);
+        else target.sprite.remove(CharSprite.State.CHILLED_2);
     }
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc", Messages.decimalFormat("#.##", speedFactor()*100f));
+        return Messages.get(this, "desc", (int)(speedFactor()*100))+"%";
     }
 }
