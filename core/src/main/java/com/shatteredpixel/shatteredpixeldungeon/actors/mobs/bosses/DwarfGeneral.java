@@ -989,7 +989,7 @@ public class DwarfGeneral extends Boss {
 
         } else {
             Statistics.dwarfKill = true;
-            yell( Messages.get(this, "died",enemy.name()) );
+            yell( Messages.get(this, "died",hero.name()) );
         }
 
         Dungeon.level.drop(new KingsCrown(), pos).sprite.drop();
