@@ -1,9 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -79,7 +79,7 @@ public class ClearElemtGuard extends Statue {
             Music.INSTANCE.play(Assets.Music.PRISON_TENSE, true);
         }
 
-        if (clearCount>=2 || Dungeon.isChallenged(PRO)) {
+        if (clearCount>=2 || Dungeon.isDLC(Conducts.Conduct.DEV)) {
             state = HUNTING;
         } else {
             state = PASSIVE;
@@ -89,7 +89,7 @@ public class ClearElemtGuard extends Statue {
     }
     @Override
     public boolean add(Buff buff ) {
-        if (clearCount>=2|| Dungeon.isChallenged(PRO)) {
+        if (clearCount>=2|| Dungeon.isDLC(Conducts.Conduct.DEV)) {
            return super.add(buff);
         }  else {
             return false;
@@ -119,7 +119,7 @@ public class ClearElemtGuard extends Statue {
     @Override
     public void damage( int dmg, Object src ) {
 
-        if (clearCount>=2 ||Dungeon.isChallenged(PRO) ) {
+        if (clearCount>=2 ||Dungeon.isDLC(Conducts.Conduct.DEV) ) {
 
             super.damage( dmg, src );
         } else {

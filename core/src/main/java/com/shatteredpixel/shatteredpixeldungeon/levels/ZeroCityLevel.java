@@ -24,6 +24,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WELL;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
@@ -656,7 +657,7 @@ public class ZeroCityLevel extends Level {
                 }
             }
 
-            if (Badges.isUnlocked(Badges.Badge.RLPT) && !Dungeon.LimitedDrops.BOOK_BAG.dropped() && !Dungeon.isChallenged(Challenges.PRO)) {
+            if (Badges.isUnlocked(Badges.Badge.RLPT) && !Dungeon.LimitedDrops.BOOK_BAG.dropped() && !Dungeon.isDLC(Conducts.Conduct.DEV)) {
                 Item item = new BookBag();
                 drop(item, 3129);
                 Dungeon.LimitedDrops.BOOK_BAG.drop();

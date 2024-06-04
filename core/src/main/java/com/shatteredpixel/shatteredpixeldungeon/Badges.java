@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.amuletObtained;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.chalMultiplier;
 import static com.shatteredpixel.shatteredpixeldungeon.windows.LevelChecker.A_SCORE;
@@ -987,22 +986,22 @@ public class Badges {
     public static void validateChampion(int challenges) {
         if (challenges == 0) return;
         Badge badge = null;
-        if (challenges >= 1 && !(Dungeon.isChallenged(PRO)) || !Statistics.bossRushMode && challenges >= 1) {
+        if (challenges >= 1 && !(Dungeon.isDLC(Conducts.Conduct.DEV)) || !Statistics.bossRushMode && challenges >= 1) {
             badge = Badge.CHAMPION_1X;
         }
-        if (challenges >= 3 && !(Dungeon.isChallenged(PRO)) || !Statistics.bossRushMode && challenges >= 3) {
+        if (challenges >= 3 && !(Dungeon.isDLC(Conducts.Conduct.DEV)) || !Statistics.bossRushMode && challenges >= 3) {
             addGlobal(badge);
 			badge = Badge.CHAMPION_2X;
 		}
-		if (challenges >= 6 && !(Dungeon.isChallenged(PRO))|| !Statistics.bossRushMode && challenges >= 6){
+		if (challenges >= 6 && !(Dungeon.isDLC(Conducts.Conduct.DEV))|| !Statistics.bossRushMode && challenges >= 6){
 			addGlobal(badge);
 			badge = Badge.CHAMPION_3X;
 		}
-		if (challenges >= 8 && !(Dungeon.isChallenged(PRO))||!Statistics.bossRushMode && challenges >= 8){
+		if (challenges >= 8 && !(Dungeon.isDLC(Conducts.Conduct.DEV))||!Statistics.bossRushMode && challenges >= 8){
 			addGlobal(badge);
 			badge = Badge.CHAMPION_4X;
 		}
-		if (challenges >= 10 && !(Dungeon.isChallenged(PRO))||!Statistics.bossRushMode && challenges >= 10){
+		if (challenges >= 10 && !(Dungeon.isDLC(Conducts.Conduct.DEV))||!Statistics.bossRushMode && challenges >= 10){
 			addGlobal(badge);
 			badge = Badge.CHAMPION_5X;
 		}

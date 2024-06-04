@@ -42,7 +42,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WorstBlizzard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
@@ -51,7 +50,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessQinyue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
@@ -92,6 +90,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WorstBlizzard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -639,13 +638,24 @@ public abstract class Char extends Actor {
 	public int drRoll() {
 		int dr = 0;
 
+		if(buff(WorstBlizzard.class)!=null && Dungeon.iceLevel()){
+			dr *= 1-(int) (Dungeon.depth * 15f/5/100);
+		}
+
 		dr += Random.NormalIntRange(0, Barkskin.currentLevel(this));
 
 		return dr;
 	}
 
 	public int attackSkill( Char target ) {
-		return 0;
+
+		int org = 0;
+
+		if(buff(WorstBlizzard.class)!=null && Dungeon.iceLevel()){
+			org *= 1-(int) (Dungeon.depth * 6f/5/100);
+		}
+
+		return org;
 	}
 
 	public int defenseSkill( Char enemy ) {
@@ -737,8 +747,6 @@ public abstract class Char extends Actor {
 		if (buff(Stamina.class) != null) speed *= 1.5f;
 		if (buff(Adrenaline.class) != null) speed *= 2f;
 		if (buff(Haste.class) != null) speed *= 3f;
-
-		if (buff(BlessQinyue.class) != null) speed *= 1.25f;
 
 		if (buff(Dread.class) != null) speed *= 2f;
 

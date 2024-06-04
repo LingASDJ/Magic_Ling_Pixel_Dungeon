@@ -155,7 +155,7 @@ public class SPDSettings extends GameSettings {
 
 	private static final String KEY_ICE = "hice";
 
-	private static final String KEY_UP_ICE = "iceupdate12";
+	private static final String KEY_UP_ICE = "iceupdate13";
 
 	private static final String KEY_DARK	= "dark_ui";
 
@@ -311,6 +311,8 @@ public class SPDSettings extends GameSettings {
 
 	public static final String KEY_LAST_CLASS	= "last_class";
 	public static final String KEY_CHALLENGES	= "challenges";
+
+	public static final String KEY_FOUND_DEPTH	= "foundepth";
 
 	public static final String KEY_DLC	= "dlc";
 	public static final String KEY_DIFFICULTY	= "difficulty";
@@ -912,5 +914,14 @@ public class SPDSettings extends GameSettings {
 		return getBoolean(KEY_KILLADF, false);
 	}
 
+
+	//查找深度
+	public static void FoundDepth(int value) {
+		put(KEY_FOUND_DEPTH, value);
+	}
+
+	public static int FoundDepth() {
+		return getInt(KEY_FOUND_DEPTH, 0, 0, 30);
+	}
 
 }

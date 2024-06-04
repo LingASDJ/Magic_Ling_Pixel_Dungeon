@@ -41,7 +41,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.IceGolem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ice_Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.KagenoNusujin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Katydid;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MagicGirlDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MolotovHuntsman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
@@ -52,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDNQHZ;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDZSLS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PhantomPiranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedMurderer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedSwarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RipperDemon;
@@ -135,16 +135,16 @@ public class WndBestiary extends Window {
     protected int maxMobIndex(int tier){
         switch (tier){
             case 1: return DataPack.GREAT_CRAB.ordinal();
-            case 2: default: return DataPack.CRXBOSS.ordinal() - DataPack.GREAT_CRAB.ordinal() - 1;
-//            case 3: return WndBestiary.DataPack.DM201.ordinal() - DataPack.CRXBOSS.ordinal() - 1;
-//
-//            case 4: return WndBestiary.DataPack.ELE_CHAOS.ordinal() - WndBestiary.DataPack.DM201.ordinal() - 1;
-//            case 5: return WndBestiary.DataPack.ACIDIC.ordinal() - WndBestiary.DataPack.ELE_CHAOS.ordinal() - 1;
-//            case 6: return WndBestiary.DataPack.PIRANHA.ordinal() - WndBestiary.DataPack.ACIDIC.ordinal() - 1;
-//            case 7: return WndBestiary.DataPack.NQHZ.ordinal() - WndBestiary.DataPack.PIRANHA.ordinal() - 1;
-//            case 8: return WndBestiary.DataPack.IAS.ordinal() - WndBestiary.DataPack.NQHZ.ordinal() - 1;
-//            case 9: return WndBestiary.DataPack.DiedP.ordinal() - WndBestiary.DataPack.DR.ordinal() - 1;
-//            case 10: default: return WndBestiary.DataPack.FLXX.ordinal() - WndBestiary.DataPack.Crystal.ordinal() - 1;
+            case 2: return DataPack.CRXBOSS.ordinal() - DataPack.GREAT_CRAB.ordinal() - 1;
+            case 3: return WndBestiary.DataPack.DM201.ordinal() - DataPack.CRXBOSS.ordinal() - 1;
+
+            case 4: return WndBestiary.DataPack.ELE_CHAOS.ordinal() - WndBestiary.DataPack.DM201.ordinal() - 1;
+            case 5: return WndBestiary.DataPack.ACIDIC.ordinal() - WndBestiary.DataPack.ELE_CHAOS.ordinal() - 1;
+            case 6: return WndBestiary.DataPack.PIRANHA.ordinal() - WndBestiary.DataPack.ACIDIC.ordinal() - 1;
+            case 7: return WndBestiary.DataPack.NQHZ.ordinal() - WndBestiary.DataPack.PIRANHA.ordinal() - 1;
+            case 8: return WndBestiary.DataPack.IAS.ordinal() - WndBestiary.DataPack.NQHZ.ordinal() - 1;
+            case 9: return WndBestiary.DataPack.DiedP.ordinal() - WndBestiary.DataPack.DR.ordinal() - 1;
+            case 10: default: return WndBestiary.DataPack.FLXX.ordinal() - WndBestiary.DataPack.Crystal.ordinal() - 1;
         }
     }
     private int dataThreshold(int tier) {
@@ -156,20 +156,20 @@ public class WndBestiary extends Window {
                 return DataPack.GREAT_CRAB.ordinal() + 1;
             case 3:
                 return DataPack.CRXBOSS.ordinal() + 1;
-//            case 4:
-//                return WndBestiary.DataPack.DM201.ordinal() + 1;
-//            case 5:
-//                return WndBestiary.DataPack.ELE_CHAOS.ordinal() + 1;
-//            case 6:
-//                return WndBestiary.DataPack.ACIDIC.ordinal() + 1;
-//            case 7:
-//                return WndBestiary.DataPack.PIRANHA.ordinal() + 1;
-//            case 8:
-//                return WndBestiary.DataPack.NQHZ.ordinal() + 1;
-//            case 9:
-//                return WndBestiary.DataPack.IAS.ordinal() + 1;
-//            case 10:
-//                return WndBestiary.DataPack.Crystal.ordinal() + 1;
+            case 4:
+                return WndBestiary.DataPack.DM201.ordinal() + 1;
+            case 5:
+                return WndBestiary.DataPack.ELE_CHAOS.ordinal() + 1;
+            case 6:
+                return WndBestiary.DataPack.ACIDIC.ordinal() + 1;
+            case 7:
+                return WndBestiary.DataPack.PIRANHA.ordinal() + 1;
+            case 8:
+                return WndBestiary.DataPack.NQHZ.ordinal() + 1;
+            case 9:
+                return WndBestiary.DataPack.IAS.ordinal() + 1;
+            case 10:
+                return WndBestiary.DataPack.Crystal.ordinal() + 1;
         }
     }
 
@@ -197,8 +197,8 @@ public class WndBestiary extends Window {
             @Override
             public void onClick(){
                 mobTier--;
-                if(mobTier < 1 || mobTier>2){
-                    mobTier = 2;
+                if(mobTier < 1 || mobTier>10){
+                    mobTier = 10;
                 }
                 mobIndex = Math.min(mobIndex, maxMobIndex(mobTier));
                 refreshImage();
@@ -222,7 +222,7 @@ public class WndBestiary extends Window {
             @Override
             public void onClick(){
                 mobTier++;
-                if(mobTier < 1 || mobTier >2){
+                if(mobTier < 1 || mobTier>10){
                     mobTier = 1;
                 }
                 mobIndex = Math.min(mobIndex, maxMobIndex(mobTier));
@@ -369,7 +369,7 @@ public class WndBestiary extends Window {
     private void updateSelectedMob() {
         int selected = mobTier;
         StringBuilder sb = new StringBuilder();
-        for (int i = 1; i <= 3; ++i) {
+        for (int i = 1; i <= 10; ++i) {
             sb.append((i == selected ? "* " : "- "));
         }
         selectedPage.text(sb.toString());
@@ -523,7 +523,7 @@ public class WndBestiary extends Window {
     private enum DataPack{
 
     //Forest
-    RAT(MagicGirlDead.class, DictSpriteSheet.RAT),
+    RAT(Rat.class, DictSpriteSheet.RAT),
     FLWW(FlowerSlime.class, DictSpriteSheet.FLOWER),
     GNOLL(Gnoll.class, DictSpriteSheet.GNOLL),
     SNAKE(Salamander.class, DictSpriteSheet.SNAKE),

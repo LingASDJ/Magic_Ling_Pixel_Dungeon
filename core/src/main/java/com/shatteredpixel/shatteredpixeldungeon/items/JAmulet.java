@@ -21,8 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
-
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
@@ -46,7 +45,7 @@ public class JAmulet extends Item {
 
     @Override
     public ItemSprite.Glowing glowing() {
-        return Dungeon.isChallenged(PRO)? new ItemSprite.Glowing(0x008888, 6f) : null;
+        return Dungeon.isDLC(Conducts.Conduct.DEV)? new ItemSprite.Glowing(0x008888, 6f) : null;
     }
 
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe {

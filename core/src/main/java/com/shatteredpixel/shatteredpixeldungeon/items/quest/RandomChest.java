@@ -209,7 +209,7 @@ public class RandomChest  extends Item {
                 }
                 break;
             case 22:
-                switch (Random.Int(5)){
+                switch (Random.Int(6)){
                     default:
                     case 1: w = new WaterSoul();   break;
                     case 2: w = new BlizzardBrew(); break;

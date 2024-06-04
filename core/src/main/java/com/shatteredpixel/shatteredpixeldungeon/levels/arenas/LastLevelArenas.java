@@ -25,7 +25,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.arenas;
 
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
-
 import com.watabou.utils.Random;
 
 public class LastLevelArenas {

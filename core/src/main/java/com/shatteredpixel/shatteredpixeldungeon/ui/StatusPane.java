@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.ClassPage;
+import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.ClassUI;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameDay;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameNight;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameTime;
@@ -35,6 +36,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.update.MLChangesButton.up
 import com.nlf.calendar.Solar;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -100,9 +102,9 @@ public class StatusPane extends Component {
 	private Button heroInfoOnBar;
 	private Image hg;
 
-	private Image icehp;
+	private Image lanterFireEnergy;
 
-	private BitmapText icehpText;
+	private BitmapText lanterText;
 
 	private Image lanterfirevae;
 	private BitmapText hgText;
@@ -140,7 +142,7 @@ public class StatusPane extends Component {
 
 		this.large = large;
 
-		if (SPDSettings.ClassUI()) {
+		if (ClassUI()) {
 			asset = Assets.Interfaces.STATUS;
 		} else {
 			asset =  Assets.Interfaces.STATUS_DARK;
@@ -195,12 +197,12 @@ public class StatusPane extends Component {
 		add( hg );
 
 		if (large)
-			icehp =  new Image(asset, 0, 135, 128, 6);
-		else     icehp = new Image(asset, 0, 49, 52, 4);
+			lanterFireEnergy =  new Image(asset, 0, 135, 128, 6);
+		else     lanterFireEnergy = new Image(asset, 0, 49, 52, 4);
 
-		//add( icehp );
+		add(lanterFireEnergy);
 
-	 	lanterfirevae = SPDSettings.ClassUI() ? new Image(Assets.Interfaces.LANTERLING) : new Image(Assets.Interfaces.LANTERLING_N);
+		lanterfirevae = ClassUI() ? new Image(Assets.Interfaces.LANTERLING) : new Image(Assets.Interfaces.LANTERLING_N);
 		add(lanterfirevae);
 
 		hpText = new BitmapText(PixelScene.pixelFont);
@@ -211,9 +213,9 @@ public class StatusPane extends Component {
 		hgText.alpha(0.6f);
 		add(hgText);
 
-		icehpText = new BitmapText(PixelScene.pixelFont);
-		icehpText.alpha(0.6f);
-		//add(icehpText);
+		lanterText = new BitmapText(PixelScene.pixelFont);
+		lanterText.alpha(0.6f);
+		add(lanterText);
 
 		//TIME TEXT
 		timeText = PixelScene.renderTextBlock(5);
@@ -314,12 +316,12 @@ public class StatusPane extends Component {
 			hgText.y = hg.y;
 			PixelScene.align(hgText);
 
-			icehp.x = x+ 30;
-			icehp.y = y + 2f;
+			lanterFireEnergy.x = x+ 30;
+			lanterFireEnergy.y = y + 2f;
 
-			icehpText.x = x+80;
-			icehpText.y = icehp.y-0.6f;
-			PixelScene.align(icehpText);
+			lanterText.x = lanterFireEnergy.x + (100 - lanterText.width())/2f;
+			lanterText.y = lanterFireEnergy.y-1;
+			PixelScene.align(lanterText);
 
 			expText.x = exp.x + (128 - expText.width())/2f;
 			expText.y = exp.y;
@@ -338,6 +340,7 @@ public class StatusPane extends Component {
 				timeStatusText.active=false;
 				timeStatusText.visible=false;
 			}
+
 			lanter.setPos(0, 1000);
 			busy.x = x + bg.width + 1;
 			busy.y = y + bg.height - 9;
@@ -362,14 +365,8 @@ public class StatusPane extends Component {
 			hgText.y -= 0.001f; //prefer to be slightly higher
 			PixelScene.align(hgText);
 
-			icehp.x = 30.0f;
-			icehp.y = 13.0f;
-
-			icehpText.scale.set(PixelScene.align(0.5f));
-			icehpText.x = icehp.x + 1;
-			icehpText.y = icehp.y + (icehp.height - (icehpText.baseLine()+icehpText.scale.y))/2f;
-			icehpText.y -= 0.001f; //prefer to be slightly higher
-			PixelScene.align(icehpText);
+			lanterFireEnergy.x = 30.0f;
+			lanterFireEnergy.y = 13.0f;
 
 			heroInfoOnBar.setRect(heroInfo.right(), y, 50, 9);
 
@@ -383,6 +380,9 @@ public class StatusPane extends Component {
 			busy.y = y + 33;
 
 			lanter.setPos(0, 1000);
+
+			lanterFireEnergy.active = false;
+			lanterFireEnergy.visible = false;
 		}
 
 		if(SPDSettings.TimeLimit()) {
@@ -410,7 +410,7 @@ public class StatusPane extends Component {
 	public void update() {
 		super.update();
 
-		if (SPDSettings.ClassUI()) {
+		if (ClassUI()) {
 			if(Dungeon.depth>25) {
 				asset = Assets.Interfaces.STATUS_HOLLOW;
 			} else {
@@ -419,6 +419,8 @@ public class StatusPane extends Component {
 		} else {
 			asset =  Assets.Interfaces.STATUS_DARK;
 		}
+
+
 
 		Visual visual = new Visual(0,0,0,0);
 		visual.am = 1f + 0.01f*Math.max(0f, (float)Math.sin( time += Game.elapsed ));
@@ -451,7 +453,7 @@ public class StatusPane extends Component {
 					version.x = x + width - version.width();
 				break;
 			}
-		} else if(Challenges.activeChallenges()>13){
+		} else if(Challenges.activeChallenges()>13 && !Dungeon.isDLC(Conducts.Conduct.DEV)){
 			visual.am = 1f + 0.01f * Math.max(0f, (float) Math.sin(time += Game.elapsed));
 			time += Game.elapsed / 3.5f;
 			// 宝石蓝渐变到黑金色
@@ -488,14 +490,14 @@ public class StatusPane extends Component {
 		int mtPureSole = 100;
 
 		//冰血聪明 x
-		int maxIceHp = hero.icehp;
-		int mtIceHp = 100;
+		int maxLFSHp = hero.lanterfire;
+		int mjsLFSHp = 100;
 
 		int health = hero.HP;
 		int shield = hero.shielding();
 		int max = hero.HT;
 
-		if (SPDSettings.ClassUI()) {
+		if (ClassUI()) {
 			if(Dungeon.depth>25){
 				bg.texture = TextureCache.get(Assets.Interfaces.STATUS_HOLLOW);
 			} else {
@@ -514,38 +516,67 @@ public class StatusPane extends Component {
 			}
 		}
 
+		if(lanterfireactive && !large){
+			lanter.setPos(0, 30);
+			lanter.visible = true;
+			lanter.active  = true;
+			lanterfirevae.visible = true;
+			lanterfirevae.x= 1.0f;
+
+			if(ClassUI()){
+				lanterfirevae.y= 31.0f;
+			} else {
+				lanterfirevae.y= 30.0f;
+			}
+			float r =  0.53f+0.57f*Math.max(0f, (float)Math.sin( time - 10/Math.PI/3 ));
+			float g =  0.03f+0.57f*Math.max(0f, (float)Math.sin( time + 4/Math.PI/2 ));
+			float b =  0.93f+0.57f*Math.max(0f, (float)Math.sin( time));
+
+			float lanter = hero.lanterfire;
+			lanterText.text(lanter+"/"+100);
+			lanterText.scale.set(PixelScene.align(0.5f));
+			lanterText.x = 3;
+			lanterText.y = 25;
+			lanterText.y -= 0.001f; //prefer to be slightly higher
+			PixelScene.align(lanterText);
+			lanterText.measure();
+
+			if(hero.lanterfire<50){
+				lanterfirevae.hardlight(r,g,b);
+				lanterfirevae.scale.x = 1.0f;
+				lanterText.hardlight(Window.RED_COLOR);
+				lanterText.alpha(1f);
+			} else {
+				lanterfirevae.resetColor();
+				lanterText.resetColor();
+			}
+		} else if (lanterfireactive){
+			lanterText.visible = true;
+			if(hero.lanterfire<50){
+				lanterText.hardlight(Window.RED_COLOR);
+				lanterText.alpha(1f);
+			} else {
+				lanterText.resetColor();
+			}
+
+			lanter.visible = false;
+			lanterfirevae.visible = false;
+			lanterText.alpha(0.6f);
+		} else {
+			lanterText.visible = false;
+		}
+
 		if (ClassPage()) {
 			page.setPos(0, 40);
 			pageb.setPos(0, 1000);
-
 			joinxxx.setPos(0, 52);
-
-
 			bossselect.setPos(0, 78);
-
-
-
-			if(lanterfireactive){
-				lanter.setPos(0, 1000);
-				lanterfirevae.visible = false;
-			}
-
 		} else {
 			page.setPos(0, 1000);
 			pageb.setPos(0, 40);
 
 			joinxxx.setPos(0, 1000);
 			bossselect.setPos(0, 1000);
-
-			if(lanterfireactive){
-				lanter.setPos(0, 75);
-				lanter.visible = true;
-				lanter.active  = true;
-				lanterfirevae.visible =true;
-				lanterfirevae.x= 1.0f;
-				lanterfirevae.y= 142.0f;
-			}
-
 		}
 
 		if (hero != null && hero.isAlive()) {
@@ -607,20 +638,10 @@ public class StatusPane extends Component {
 		shieldedHP.scale.x = health/(float)max;
 
 		if(lanterfireactive) {
-			lanterfirevae.scale.y = -Math.max( 0, (maxPureSole)/(float)mtPureSole);
+			lanterfirevae.scale.x = Math.max( 0, (maxPureSole)/(float)mtPureSole);
 		} else {
-			lanterfirevae.scale.y = -1.0f;
+			lanterfirevae.scale.x = 1.0f;
 		}
-
-		float r =  0.53f+0.57f*Math.max(0f, (float)Math.sin( time - 10/Math.PI/3 ));
-		float g =  0.03f+0.57f*Math.max(0f, (float)Math.sin( time + 4/Math.PI/2 ));
-		float b =  0.93f+0.57f*Math.max(0f, (float)Math.sin( time));
-
-		if(hero.lanterfire<50){
-			lanterfirevae.hardlight(r,g,b);
-		}
-
-//		icehp.scale.x = Math.max( 0, (maxIceHp)/(float)mtIceHp);
 
 		if (shield > health) {
 			rawShielding.scale.x = shield / (float) max;
@@ -634,8 +655,13 @@ public class StatusPane extends Component {
 			hpText.text(health + "+" + shield +  "/" + max);
 		}
 
-//		icehpText.text(maxIceHp + "/" + mtIceHp);
+		lanterText.text(maxLFSHp + "/" + mjsLFSHp);
 
+		if (hero.isAlive() && lanterfireactive) {
+			lanterFireEnergy.scale.x = (float) maxLFSHp / mjsLFSHp;
+		} else {
+			lanterFireEnergy.scale.x = 1f;
+		}
 
 		Hunger hungerBuff = hero.buff(Hunger.class);
 		if (hungerBuff != null) {

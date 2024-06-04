@@ -46,6 +46,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0750_Changes(changeInfos);
         add_V0740_Changes(changeInfos);
         add_V0735_Changes(changeInfos);
         add_V0732_Changes(changeInfos);
@@ -68,6 +69,66 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0750_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.5.0-SUMMER", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG25), ("开发者模式v0.8"),
+                ("1、追加 自定义属性 物品，可调节英雄属性\n\n" +
+                        "2.开发者模式已经搬迁至难度选择，请注意。")));
+
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_1), ("高阶法杖调整"),
+                ("风暴雷霆法杖 与 冰雪魔女 掉落的法杖基本重新制作，磷火法杖伤害略微提升。")));
+
+        changes.addButton(new ChangeButton(NetIcons.get(NetIcons.CHAT), ("查种器V0.4"),
+                ("重新制作了查种器界面，并且取消钴币支付\n\n" +
+                        "同时再次强调：长按可以进行输入一个参数查找种子（种子分析器）")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("徽章改进"),
+                ("徽章部分奖励进行了调整：\n\n" +
+                        "1.DM720徽章-猫人给予额外一个诅咒菱晶\n" +
+                        "2.冰雪公主徽章-法杖可以自然生成在地牢中\n" +
+                        "更多调整，参阅徽章具体说明")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS),("其他改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分文案优化\n" +
+                        "3.部分细节优化更新")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(CharSprite.POSITIVE);
+        changeInfos.add(changes);
+
+        Image s =new DwarfGeneralSprite();
+        s.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(s, ("新Boss：矮人将军"),
+                "1.削弱一些技能\n2.完善剧情方面\n3.小恶魔商店在每局击败将军后有强化"));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.THEDIED), ("肃杀"),
+                ("修复回血效果偷袭100%触发问题，修复死神附魔的触发异常问题")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.4.0版本:\n\n" +
+                        "1、 修复挑战解锁的异常问题\n" +
+                        "2、 修复0层部分NPC的对话异常\n" +
+                        "3、 修复部分神器的崩溃异常"));
     }
 
     public static void add_V0740_Changes( ArrayList<ChangeInfo> changeInfos ) {

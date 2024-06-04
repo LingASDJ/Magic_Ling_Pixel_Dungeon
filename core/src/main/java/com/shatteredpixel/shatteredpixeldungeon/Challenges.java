@@ -41,15 +41,11 @@ public class Challenges {
 	public static final int EXSG = 2048;
 	public static final int STRONGER_BOSSES  = 4096;
 	public static final int DHXD = 8192;
-	public static final int WARLING = 16384;
+	public static final int MOREROOM   = 16384;
 
-	public static final int PRO  = 32768;
+	public static final int CS   = 32768;
 
-	public static final int MOREROOM   = 65536;
-
-	public static final int CS   = 131072;
-
-	public static final int MAX_VALUE = 131072*2;
+	public static final int MAX_VALUE = 65536;
 	public static final String[] NAME_IDS = {
 			"no_food",
 			"no_armor",
@@ -65,15 +61,13 @@ public class Challenges {
 			"exsg",
 			"stronger_bosses",
 			"dhxd",
-			"warling",
-			"pro",
 			"morelevel",
 			"cs",
 	};
 
 	public static final int[] MASKS = {
 			NO_FOOD, NO_ARMOR, NO_HEALING, NO_HERBALISM, SWARM_INTELLIGENCE, DARKNESS, NO_SCROLLS
-			, AQUAPHOBIA, CHAMPION_ENEMIES,RLPT,SBSG,EXSG,STRONGER_BOSSES,DHXD, WARLING,PRO,MOREROOM,CS,
+			, AQUAPHOBIA, CHAMPION_ENEMIES,RLPT,SBSG,EXSG,STRONGER_BOSSES,DHXD,MOREROOM,CS,
 	};
 	public String name;
 
@@ -120,9 +114,9 @@ public class Challenges {
 		int chCount = 0;
 		int EXchCount = 0;
 		for (int ch : Challenges.MASKS) {
-			if ((Dungeon.challenges & ch) != 0 && ch <= CS && ch != PRO && ch != DHXD && ch != WARLING) {
+			if ((Dungeon.challenges & ch) != 0 && ch != DHXD) {
 				chCount++;
-				if(Statistics.lanterfireactive && EXchCount == 0){
+				if(Statistics.lanterfireactive && EXchCount == 0 && ch>=10){
 					EXchCount++;
 					chCount += EXchCount;
 				}

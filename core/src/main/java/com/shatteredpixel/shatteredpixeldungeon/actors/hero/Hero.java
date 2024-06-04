@@ -24,7 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.bossRushMode;
@@ -41,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
@@ -372,7 +372,7 @@ public class Hero extends Char {
     // for enemies we know we aren't seeing normally, resulting in better performance
     public ArrayList<Mob> mindVisionEnemies = new ArrayList<>();
     //灯火前行
-    public float lanterfire;
+    public int lanterfire;
     public int icehp;
     //蛋糕
     public int CakeUsed;
@@ -640,7 +640,7 @@ public class Hero extends Char {
 		KindOfWeapon wep = belongings.attackingWeapon();
 		
 		float accuracy = 1;
-		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
 			accuracy = CustomPlayer.baseAccuracy;
 		}
 
@@ -658,7 +658,7 @@ public class Hero extends Char {
 			accuracy *= 1.25f;
 		}
 
-		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
 			return  CustomPlayer.baseAccuracy;
 		} else if (!RingOfForce.fightingUnarmed(this)) {
 			return (int)(attackSkill * accuracy * wep.accuracyFactor( this, target ));
@@ -682,7 +682,7 @@ public class Hero extends Char {
 		}
 		
 		float evasion = defenseSkill;
-		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
 			evasion = CustomPlayer.baseEvasion;
 		}
 		
@@ -712,8 +712,9 @@ public class Hero extends Char {
 		if (buff(BlessQinyue.class) != null){
 			evasion = evasion * 1.1f;
 		}
+
     
-		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && CustomPlayer.shouldOverride ){
 			return CustomPlayer.baseEvasion;
 		}
 
@@ -751,7 +752,7 @@ public class Hero extends Char {
 	@Override
 	public int drRoll() {
 		int dr = super.drRoll();
-		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&!CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) &&CustomPlayer.overrideGame &&!CustomPlayer.shouldOverride ){
 			dr += CustomPlayer.baseArmor;
 		}
 
@@ -774,7 +775,7 @@ public class Hero extends Char {
 			dr += buff(HoldFast.class).armorBonus();
 		}
 
-		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) &&CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
 			dr = CustomPlayer.baseArmor;
 		}
 		
@@ -785,7 +786,7 @@ public class Hero extends Char {
 	public int damageRoll() {
 		KindOfWeapon wep = belongings.attackingWeapon();
 		int dmg=0;
-		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&!CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) &&CustomPlayer.overrideGame &&!CustomPlayer.shouldOverride ){
 			dmg = CustomPlayer.baseDamage;
 		}
 
@@ -816,7 +817,7 @@ public class Hero extends Char {
 			dmg = Math.round(dmg * 1.025f + (.025f*pointsInTalent(Talent.WEAPON_RECHARGING)));
 		}
 
-		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) &&CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
 			dmg = CustomPlayer.baseDamage;
 		}
 		if (dmg < 0) dmg = 0;
@@ -826,13 +827,15 @@ public class Hero extends Char {
 	@Override
 	public float speed() {
 		float speed = 0;
-		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
 			speed += CustomPlayer.baseSpeed;
 		}
 
 		speed += super.speed();
 
 		speed *= RingOfHaste.speedMultiplier(this);
+
+		if (buff(BlessQinyue.class) != null) speed *= 1.25f;
 
 		//提升20%移速
 		MIME.GOLD_THREE getSpeed = Dungeon.hero.belongings.getItem(MIME.GOLD_THREE.class);
@@ -869,7 +872,7 @@ public class Hero extends Char {
 
 		speed = AscensionChallenge.modifyHeroSpeed(speed);
 
-		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && CustomPlayer.shouldOverride ){
 			speed = CustomPlayer.baseSpeed;
 		}
 
@@ -920,7 +923,7 @@ public class Hero extends Char {
 		}
 
 		float delay = 1f;
-		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame ){
 			if(!CustomPlayer.shouldOverride)
 				delay = CustomPlayer.baseAttackDelay;
 			else if(CustomPlayer.shouldOverride)
@@ -994,11 +997,11 @@ public class Hero extends Char {
 			});
 		}
 
-		if (Challenges.activeChallenges() >= 10 && !lanterfireactive && !Dungeon.isChallenged(PRO)) {
+		if (Challenges.activeChallenges() >= 10 && !lanterfireactive && !Dungeon.isDLC(Conducts.Conduct.DEV)) {
 			GLog.n(Messages.get(WndStory.class, "warning"));
 		}
 
-		if (Challenges.activeChallenges() >= 10 && !lanterfireactive && !Dungeon.isChallenged(PRO) || Dungeon.isChallenged(DHXD) && !lanterfireactive) {
+		if (Challenges.activeChallenges() >= 10 && !lanterfireactive && !Dungeon.isDLC(Conducts.Conduct.DEV) || Dungeon.isChallenged(DHXD) && !lanterfireactive) {
 			//灯火前行 4.0
 			hero.lanterfire = 100 - min(Challenges.activeChallenges() * 4, 45);
 
@@ -2651,7 +2654,7 @@ public class Hero extends Char {
             }
         }
 
-        if (hero.exp < 0 && !(Dungeon.isChallenged(PRO))) {
+        if (hero.exp < 0 && !(Dungeon.isDLC(Conducts.Conduct.DEV))) {
             exp = Random.NormalIntRange(10, 20);
         }
 
@@ -3233,7 +3236,7 @@ public class Hero extends Char {
 		hero.sprite.showStatus(0x808080, String.valueOf(value));
 	}
 
-    public void healLantern(float value) {
+    public void healLantern(int value) {
         lanterfire = min(lanterfire + value, 100);
         hero.sprite.showStatus(0x00ff00, String.valueOf(value));
     }

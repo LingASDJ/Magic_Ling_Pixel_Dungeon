@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.ROGUE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createBranchLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createStandardLevel;
@@ -364,6 +363,10 @@ public class Dungeon {
 		return depth == 6 || depth == 11 || depth == 16|| depth == 21;
 	}
 
+	public static boolean iceLevel() {
+		return depth > 5 && depth < 16;
+	}
+
 	public static boolean aqiLevel() {
 		return depth == 4 || depth == 8 || depth == 13 || depth == 18;
 	}
@@ -627,7 +630,7 @@ public class Dungeon {
 		dlcs =  new Conducts.ConductStorage(SPDSettings.dlc());
 
 		//难度模式
-		difficultys =  new Difficulty.HardStorage(SPDSettings.difficulty());
+		difficultys = new Difficulty.HardStorage(SPDSettings.difficulty());
 
 		TitleScene.Reusable = false;
 
@@ -755,7 +758,7 @@ public class Dungeon {
 		if (WndResurrect.instance == null) {
 			updateLevelExplored();
 			Statistics.gameWon = false;
-			if(!Dungeon.isChallenged(PRO)) {
+			if(!Dungeon.isDLC(Conducts.Conduct.DEV)) {
 				Rankings.INSTANCE.submit(false, cause);
 			}
 		}
@@ -767,7 +770,7 @@ public class Dungeon {
 		Statistics.gameWon = true;
 
 		hero.belongings.identify();
-		if(!Dungeon.isChallenged(PRO)) {
+		if(!Dungeon.isDLC(Conducts.Conduct.DEV)) {
 			Rankings.INSTANCE.submit(true, cause);
 		}
 	}
@@ -1081,7 +1084,7 @@ public class Dungeon {
 			initialVersion = bundle.getInt( VERSION );
 		}
 
-		dlcs.isConducted(Conducts.Conduct.EASY);
+//		dlcs.isConducted(Conducts.Conduct.EASY);
 		difficultys.restoreFromBundle(bundle);
 
 		version = bundle.getInt( VERSION );
@@ -1231,7 +1234,7 @@ public class Dungeon {
 	}
 
 	public static boolean isDLC(Conducts.Conduct mask) {
-		return dlcs.isConducted(Conducts.Conduct.NULL);
+		return dlcs.isConducted(mask);
 	}
 
 	public static boolean isDIFFICULTY(Difficulty.DifficultyConduct mask) {

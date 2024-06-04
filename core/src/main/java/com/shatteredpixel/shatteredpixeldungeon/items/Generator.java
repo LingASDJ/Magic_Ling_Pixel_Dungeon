@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.DWJ;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
@@ -455,7 +456,8 @@ public class Generator {
 					WandOfGodIce.class,
 					WandOfVenom.class
 			};
-			WAND.probs = new float[]{ 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 1,0,0,0,0 };
+			WAND.probs = new float[]{ 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 2,0,0,
+					Badges.isUnlocked(Badges.Badge.KILL_MG) ? 2 : 0,0 };
 
 			//see generator.randomWeapon
 			WEAPON.classes = new Class<?>[]{};

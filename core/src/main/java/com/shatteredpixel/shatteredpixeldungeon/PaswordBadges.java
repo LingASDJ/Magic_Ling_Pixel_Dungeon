@@ -1,7 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
-
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -57,7 +55,7 @@ public class PaswordBadges {
 
     public static void ALLCS(int challenges){
         if (challenges == 0) return;
-        if (challenges >= 13 && !(Dungeon.isChallenged(PRO))||!Statistics.bossRushMode && challenges >= 13){
+        if (challenges >= 13 && !(Dungeon.isDLC(Conducts.Conduct.DEV))||!Statistics.bossRushMode && challenges >= 13){
             displayBadge(PaswordBadges.Badge.ALLCHSX );
         }
     }

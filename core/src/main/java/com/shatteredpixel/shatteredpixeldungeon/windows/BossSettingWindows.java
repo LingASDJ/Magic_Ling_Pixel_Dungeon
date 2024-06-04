@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -51,12 +52,12 @@ public class BossSettingWindows extends Window {
             cbs.add(cb);
             pos += BOX_HEIGHT + GAP;
 
-            if(i == 0){
+            if(i == 0|| i==3){
                 cb.alpha(0f);
                 cb.active=false;
                 cb.visible = false;
                 cb.checked(false);
-            } else if(i == 1 && !Badges.isUnlocked(Badges.Badge.KILL_SM) || i==3 || i==4){
+            } else if(i == 1 && !Badges.isUnlocked(Badges.Badge.KILL_SM) || i==4 ){
                 cb.alpha(0.4f);
                 cb.active=false;
                 cb.checked(false);
@@ -76,6 +77,16 @@ public class BossSettingWindows extends Window {
         };
         button.setRect(GAP, 14, WIDTH - GAP * 2, BOX_HEIGHT);
         add(button);
+
+        StyledButton button2;
+        button2 = new StyledButton(Chrome.Type.RED_BUTTON, SPDSettings.KillDwarf() ? Messages.get(this, "kill_dwn") : Messages.get(this, "un_kill_dwn")) {
+            @Override
+            protected void onClick() {
+                add(new WndMessage(SPDSettings.KillDwarf() ? Messages.get(this, "bos_killinfo") : Messages.get(this, "bos_needkillinfo")));
+            }
+        };
+        button2.setRect(GAP, 68, WIDTH - GAP * 2, BOX_HEIGHT);
+        add(button2);
 
 //        level3 = new OptionSlider("", Messages.get(this, "dm300"),
 //                Messages.get(this, "ice"), 1, 3) {

@@ -5,9 +5,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -102,7 +101,7 @@ public class LockSword extends MeleeWeapon {
 
     @Override
     public int level() {
-        if(Dungeon.isChallenged(PRO)){
+        if(Dungeon.isDLC(Conducts.Conduct.DEV)){
             return super.level();
         } else {
             if(lvl <=1000){
@@ -140,7 +139,7 @@ public class LockSword extends MeleeWeapon {
 
     @Override
     public boolean isUpgradable() {
-        return Dungeon.isChallenged(PRO);
+        return Dungeon.isDLC(Conducts.Conduct.DEV);
     }
 
     public int proc(Char attacker, Char defender, int damage ) {

@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -125,16 +124,8 @@ public class WndChallenges extends Window {
 			cb.checked((checked & Challenges.MASKS[i]) != 0);
 			cb.active = editable;
 
-			//Disable
-			if(Challenges.NAME_IDS[i].equals("warling")){
-				cb.active = false;
-				cb.checked(false);
-				cb.visible=false;
-			}
-
-
 			for (int ch : Challenges.MASKS) {
-				if ((Dungeon.challenges & ch) != 0 && ch <= MOREROOM && ch != PRO && ch != DHXD) {
+				if ((Dungeon.challenges & ch) != 0 && ch <= MOREROOM && ch != DHXD) {
 					getSelectedButtonCount();
 				}
 			}
@@ -161,7 +152,7 @@ public class WndChallenges extends Window {
 			}
 		};
 		add( btnPrev );
-		pos += GAP;
+		pos = 120;
 
 		btnPrev.setRect(0, pos, (WIDTH - GAP) * 0.5f, BTN_HEIGHT);
 		btnNext = new RedButton(Messages.get(WndChallenges.class,"prex")) {

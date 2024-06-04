@@ -335,7 +335,7 @@ public class Statistics {
 
     public static boolean TryUsedAnmy = false;
     public static boolean winGame = false;
-    public static boolean HiddenOK = false;
+    public static boolean DwarfMasterKing = false;
     //220---SPD
     public static boolean qualifiedForBossChallengeBadge = false;
     public static boolean dwarfKill = false;
@@ -347,7 +347,7 @@ public class Statistics {
 
 		ExFruit = false;
 
-		HiddenOK = false;
+		DwarfMasterKing = false;
 
 		ARLing = false;
 
@@ -471,7 +471,7 @@ public class Statistics {
 		bundle.put(ICECLAN,iceCyanBlueSquareCoin);
 
 
-        bundle.put(HIDEEN, HiddenOK);
+        bundle.put(HIDEEN, DwarfMasterKing);
 
 		bundle.put(DWSX, dwarfKill);
 
@@ -648,7 +648,7 @@ public class Statistics {
 
 		winGame = bundle.getBoolean(WINGAME);
 
-		HiddenOK = bundle.getBoolean(HIDEEN);
+		DwarfMasterKing = bundle.getBoolean(HIDEEN);
 
 		difficultyDLCEXLevel = bundle.getInt(XOL);
 

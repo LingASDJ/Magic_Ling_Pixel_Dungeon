@@ -453,9 +453,7 @@ public class TitleScene extends PixelScene {
 			@Override
 			protected boolean onLongClick() {
 				Badges.silentValidateHDEX();
-
 				ShatteredPixelDungeon.switchNoFade(PassWordBadgesScene.class);
-
 				return super.onLongClick();
 			}
 		};

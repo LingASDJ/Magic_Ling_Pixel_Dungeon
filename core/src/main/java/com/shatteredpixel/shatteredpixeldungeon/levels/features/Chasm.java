@@ -142,7 +142,7 @@ public class Chasm implements Hero.Doom {
 			if (Statistics.crivusfruitslevel2) {
 				hero.damage(3, CrivusStarFruits.class);
 			}
-		} else if(Statistics.HiddenOK && Dungeon.depth == 19 && !Statistics.dwarfKill) {
+		} else if(Statistics.DwarfMasterKing && Dungeon.depth == 19 && !Statistics.dwarfKill) {
 			GLog.n(Messages.get(Imp.class,"mustdown"));
 		} else if (Dungeon.hero.isAlive() && Dungeon.branch == 0 && Dungeon.depth!=30|| Statistics.bossRushMode) {
 			Dungeon.hero.interrupt();

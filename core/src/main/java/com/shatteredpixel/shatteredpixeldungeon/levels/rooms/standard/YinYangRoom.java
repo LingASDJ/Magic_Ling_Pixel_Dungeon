@@ -80,7 +80,7 @@ public class YinYangRoom extends SpecialRoom {
         Item prize;
         do {
             prize = Generator.random(Generator.Category.WAND);
-            prize.level(Random.NormalIntRange(0,1));
+            prize.level(Random.NormalIntRange(1,3));
             prize.upgrade();
             prize.cursed = true;
         } while (Challenges.isItemBlocked(prize));

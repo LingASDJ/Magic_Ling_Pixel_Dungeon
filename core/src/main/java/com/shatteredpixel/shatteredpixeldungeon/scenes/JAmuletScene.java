@@ -1,10 +1,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
@@ -37,7 +37,7 @@ public class JAmuletScene extends PixelScene {
        playBGM( Assets.Music.NBPL, true );
         RenderedTextBlock text = null;
         if (!noText) {
-            text = renderTextBlock( Dungeon.isChallenged(PRO) ? Messages.get(this, "text") : Messages.get(this, "text_le"), 8 );
+            text = renderTextBlock( Dungeon.isDLC(Conducts.Conduct.DEV) ? Messages.get(this, "text") : Messages.get(this, "text_le"), 8 );
             text.maxWidth(WIDTH);
             add( text );
         }

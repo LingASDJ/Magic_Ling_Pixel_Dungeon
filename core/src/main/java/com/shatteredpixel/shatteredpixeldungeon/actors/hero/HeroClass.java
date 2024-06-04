@@ -21,11 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -194,7 +193,7 @@ public enum HeroClass {
 		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
 		if(passwordbadges.contains(PaswordBadges.Badge.EXSG)){
 			Dungeon.gold += 400;
-			if(!Dungeon.isChallenged(PRO)) {
+			if(!Dungeon.isDLC(Conducts.Conduct.DEV)) {
 				new IceCyanBlueSquareCoin().quantity(3).identify().collect();
 			}
 		}
@@ -220,7 +219,7 @@ public enum HeroClass {
 		//new Amulet().quantity(1).identify().collect();
 		new ScrollOfIdentify().identify();
 		//new KingGold().quantity(1).identify().collect();
-		if (Dungeon.isChallenged(Challenges.PRO)){
+		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
 			new PotionBandolier().collect();
 			Dungeon.LimitedDrops.POTION_BANDOLIER.dropped();
 			new ScrollHolder().collect();

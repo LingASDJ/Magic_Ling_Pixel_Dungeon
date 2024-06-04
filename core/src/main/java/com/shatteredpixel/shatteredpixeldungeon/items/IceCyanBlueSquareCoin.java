@@ -1,8 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -39,7 +38,7 @@ public class IceCyanBlueSquareCoin extends Item {
 
     @Override
     public boolean doPickUp(Hero hero, int pos) {
-        if(Dungeon.isChallenged(PRO) || Statistics.bossRushMode)
+        if(Dungeon.isDLC(Conducts.Conduct.DEV) || Statistics.bossRushMode)
         {
             GLog.n(Messages.get(this,"no"));
             return false;

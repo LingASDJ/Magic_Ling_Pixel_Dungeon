@@ -23,9 +23,10 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
@@ -53,11 +54,23 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAntiMagic;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -281,6 +294,38 @@ public class ShopRoom extends SpecialRoom {
 			}
 		}
 
+		//小恶魔奖励
+		if(Statistics.dwarfKill){
+			itemsToSpawn.add( new ScrollOfUpgrade() );
+			itemsToSpawn.add( new CurseInfusion() );
+
+			Item brew;
+			switch (Random.Int(6)){
+				default:
+				case 1: brew = new WaterSoul();   break;
+				case 2: brew = new BlizzardBrew(); break;
+				case 3: brew = new CausticBrew();    break;
+				case 4: brew = new InfernalBrew();   break;
+				case 5: brew = new ShockingBrew();   break;
+			}
+
+			itemsToSpawn.add( brew );
+
+			Item w21;
+			switch (Random.Int(5)){
+				default:
+				case 0: w21 = new ScrollOfSirensSong(); break;
+				case 1: w21 = new ScrollOfChallenge(); break;
+				case 2: w21 = new ScrollOfMetamorphosis(); break;
+				case 3: w21 = new ScrollOfAntiMagic();    break;
+				case 4: w21 = new ScrollOfPsionicBlast();   break;
+			}
+			itemsToSpawn.add( w21 );
+
+			Ankh ankhPlus = new Ankh();
+			ankhPlus.blessed = true;
+			itemsToSpawn.add( ankhPlus );
+		}
 
 		itemsToSpawn.add( new ScrollOfIdentify() );
 		itemsToSpawn.add( new ScrollOfRemoveCurse() );
@@ -380,7 +425,7 @@ public class ShopRoom extends SpecialRoom {
 	}
 
 	public static Bag ChooseBag(Belongings pack){
-		if(Dungeon.isChallenged(Challenges.PRO)) return null;
+		if(Dungeon.isDLC(Conducts.Conduct.DEV)) return null;
 
 		//generate a hashmap of all valid bags.
 		HashMap<Bag, Integer> bags = new HashMap<>();

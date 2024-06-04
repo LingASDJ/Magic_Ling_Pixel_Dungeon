@@ -69,7 +69,7 @@ public class WndImp extends Window {
 			RedButton btnChallenges = new RedButton( Messages.get(this, "challenges") ) {
 				@Override
 				protected void onClick() {
-					Statistics.HiddenOK = true;
+					Statistics.DwarfMasterKing = true;
 					takeReward( imp, tokens, Imp.Quest.reward );
 					GLog.n(Messages.get(Imp.class,"dxb"));
 				}

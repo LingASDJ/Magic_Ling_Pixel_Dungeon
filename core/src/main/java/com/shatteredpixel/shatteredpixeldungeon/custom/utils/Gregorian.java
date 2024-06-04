@@ -44,11 +44,9 @@ public class Gregorian {
 
         boolean isDevBirthday = lunar.getMonth() == 8 && lunar.getDay() >= 22 && lunar.getDay() <= 25;
 
-        boolean isDWJ = lunar.getMonth() == 5 && (lunar.getDay() >= 5 - 3 && lunar.getDay() <= 5 + 7);
+        boolean isDWJ = lunar.getMonth() == 5 && (lunar.getDay() >= 0 && lunar.getDay() <= 5 + 7);
 
         boolean isSF = lunar.getMonth() == 1 && (lunar.getDay() >= 1 && lunar.getDay() <= 1 + 19);
-
-
 
         if(isSF){
             holiday = RegularLevel.Holiday.CJ;
@@ -62,7 +60,7 @@ public class Gregorian {
         if (isDevBirthday) {
             birthday = RegularLevel.DevBirthday.DEV_BIRTHDAY;
         }
-        // 判断是否是端午节前3天到端午节后7天
+        // 判断是否是端午节前4天到端午节后7天
         if (isDWJ) {
             holiday = RegularLevel.Holiday.DWJ;
         }

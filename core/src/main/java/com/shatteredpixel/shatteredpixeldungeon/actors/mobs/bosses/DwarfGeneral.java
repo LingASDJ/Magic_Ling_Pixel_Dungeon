@@ -982,20 +982,19 @@ public class DwarfGeneral extends Boss {
             DwarfGeneralNTNPC boss = new DwarfGeneralNTNPC();
             boss.pos = 367;
             GameScene.add(boss);
-
+            yell( Messages.get(this, "defeated") );
             Item w = new KingAxe();
             w.level(Random.Int(5));
             Dungeon.level.drop(w, pos).sprite.drop();
 
         } else {
             Statistics.dwarfKill = true;
+            yell( Messages.get(this, "died",enemy.name()) );
         }
-
-
 
         Dungeon.level.drop(new KingsCrown(), pos).sprite.drop();
 
-        yell( Messages.get(this, "defeated") );
+
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
             if (mob instanceof Warlock || mob instanceof Monk ||
                     mob instanceof DwarfSolider || mob instanceof DwarfFuze) {
