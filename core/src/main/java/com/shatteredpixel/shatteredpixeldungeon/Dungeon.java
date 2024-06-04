@@ -1086,6 +1086,7 @@ public class Dungeon {
 
 //		dlcs.isConducted(Conducts.Conduct.EASY);
 		difficultys.restoreFromBundle(bundle);
+		dlcs.restoreFromBundle(bundle);
 
 		version = bundle.getInt( VERSION );
 
