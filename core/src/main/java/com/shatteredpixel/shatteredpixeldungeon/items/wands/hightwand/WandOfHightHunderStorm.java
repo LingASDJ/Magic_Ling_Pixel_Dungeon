@@ -131,7 +131,7 @@ public class WandOfHightHunderStorm extends DamageWand {
                 ch.damage(Math.round(damageRoll() * multipler), this);
             }
 
-            if(ch.isAlive()){
+            if(ch.isAlive() && ch != curUser){
                 Buff.affect(ch, Vertigo.class,6+level());
                 for(int i:PathFinder.NEIGHBOURS8)
                     GameScene.add(Blob.seed(ch.pos+i,10, WorstStormCloud.class));

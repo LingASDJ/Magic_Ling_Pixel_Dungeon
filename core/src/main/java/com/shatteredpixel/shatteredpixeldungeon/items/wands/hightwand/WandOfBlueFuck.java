@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
@@ -152,7 +153,7 @@ public class WandOfBlueFuck extends DamageWand {
                         Buff.affect(ch, Blindness.class, 4f);
                         break;
                     case 3:
-                        Buff.affect(ch, Haste.class, 4f);
+                        Buff.affect(ch, Paralysis.class, 4f);
                         break;
                 }
             }
