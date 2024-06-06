@@ -38,30 +38,32 @@ public class WorstStormCloud extends Blob{
         for (int i = area.left-2; i <= area.right; i++) {
             for (int j = area.top - 2; j <= area.bottom; j++) {
                 cell = i + j * Dungeon.level.width();
-                if (Dungeon.level.insideMap(cell) && Dungeon.level.solid[cell] && cur[cell] > 0) {
-                    Dungeon.level.setCellToWater(true, cell);
-                    if (fire != null) {
-                        fire.clear(cell);
-                    }
+                if (Dungeon.level.insideMap(cell)){
+                    if(Dungeon.level.solid[cell] && cur[cell] > 0) {
+                        Dungeon.level.setCellToWater(true, cell);
+                        if (fire != null) {
+                            fire.clear(cell);
+                        }
 
-                    if (!getIndex(cell)) {
-                        int length = affectedCell.length;
-                        affectedCell = Arrays.copyOf(affectedCell, length == 0 ? 1 : length + 1);
-                        affectedCell[length] = cell;
-                    }
+                        if (!getIndex(cell)) {
+                            int length = affectedCell.length;
+                            affectedCell = Arrays.copyOf(affectedCell, length == 0 ? 1 : length + 1);
+                            affectedCell[length] = cell;
+                        }
 
-                    off[cell] = cur[cell] - 1;
-                    volume += off[cell];
+                        off[cell] = cur[cell] - 1;
+                        volume += off[cell];
 
-                    //fiery enemies take damage as if they are in toxic gas
-                    Char ch = Actor.findChar(cell);
-                    if (ch != null
-                            && !ch.isImmune(getClass())
-                            && Char.hasProp(ch, Char.Property.FIERY)) {
-                        ch.damage(1 + Dungeon.scalingDepth() / 5, this);
+                        //fiery enemies take damage as if they are in toxic gas
+                        Char ch = Actor.findChar(cell);
+                        if (ch != null
+                                && !ch.isImmune(getClass())
+                                && Char.hasProp(ch, Char.Property.FIERY)) {
+                            ch.damage(1 + Dungeon.scalingDepth() / 5, this);
+                        }
+                    } else {
+                        off[cell] = 0;
                     }
-                } else {
-                    off[cell] = 0;
                 }
             }
         }
