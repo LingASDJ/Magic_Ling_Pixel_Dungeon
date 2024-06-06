@@ -38,7 +38,7 @@ public class WorstStormCloud extends Blob{
         for (int i = area.left-2; i <= area.right; i++) {
             for (int j = area.top - 2; j <= area.bottom; j++) {
                 cell = i + j * Dungeon.level.width();
-                if (cur[cell] > 0) {
+                if (Dungeon.level.insideMap(cell) && Dungeon.level.solid[cell] && cur[cell] > 0) {
                     Dungeon.level.setCellToWater(true, cell);
                     if (fire != null) {
                         fire.clear(cell);
