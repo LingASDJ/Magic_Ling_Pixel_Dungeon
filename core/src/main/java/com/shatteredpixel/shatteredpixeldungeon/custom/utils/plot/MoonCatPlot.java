@@ -94,6 +94,8 @@ public class MoonCatPlot extends Plot {
             Dungeon.level.drop(new Gold(1), hero.pos);
         } else {
             Item item = ( Generator.randomUsingDefaults( Generator.Category.WEP_T1 ));
+            item.level(0);
+            item.identify();
             Dungeon.level.drop( item , hero.pos );
             if (Badges.isUnlocked(Badges.Badge.KILL_DM720)) {
                 Dungeon.level.drop( new CurseInfusion(), hero.pos );

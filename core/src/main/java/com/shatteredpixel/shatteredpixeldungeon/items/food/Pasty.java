@@ -52,7 +52,7 @@ public class Pasty extends Food {
 	public void reset() {
 		super.reset();
 		switch(RegularLevel.holiday){
-			case NONE:
+			case NONE: default:
 				image = ItemSpriteSheet.PASTY;
 				break;
 			case HWEEN:

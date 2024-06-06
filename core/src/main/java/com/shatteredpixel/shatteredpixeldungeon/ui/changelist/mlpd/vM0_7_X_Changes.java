@@ -46,6 +46,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0751_Changes(changeInfos);
         add_V0750_Changes(changeInfos);
         add_V0740_Changes(changeInfos);
         add_V0735_Changes(changeInfos);
@@ -69,6 +70,34 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0751_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.5.1", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(CharSprite.POSITIVE);
+        changeInfos.add(changes);
+
+        changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 80, 16, 16 ), "房间调整",
+                "太极房间现在保底+1，最高+3，\n" +
+                        "且裂缝区域必定诅咒高等级，\n水面区域必定非诅咒但有概率白板"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.5.1版本:\n\n" +
+                        "1.修复难度没有正确加载的问题\n" +
+                        "2.人生模拟器难度选项启用\n" +
+                        "3.优化人生模拟器逻辑\n" +
+                        "4.修复暴风水汽扩散至地图外导致的闪退问题\n" +
+                        "5.修复挑战异常问题，修复难度异常\n" +
+                        "6.修复0层部分NPC奖励异常问题"));
+
     }
 
     public static void add_V0750_Changes( ArrayList<ChangeInfo> changeInfos ) {

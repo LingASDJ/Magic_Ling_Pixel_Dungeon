@@ -411,11 +411,7 @@ public class StatusPane extends Component {
 		super.update();
 
 		if (ClassUI()) {
-			if(Dungeon.depth>25) {
-				asset = Assets.Interfaces.STATUS_HOLLOW;
-			} else {
-				asset = Assets.Interfaces.STATUS;
-			}
+			asset = Assets.Interfaces.STATUS;
 		} else {
 			asset =  Assets.Interfaces.STATUS_DARK;
 		}
@@ -522,7 +518,7 @@ public class StatusPane extends Component {
 			lanter.active  = true;
 			lanterfirevae.visible = true;
 			lanterfirevae.x= 1.0f;
-
+			lanterText.visible = true;
 			if(ClassUI()){
 				lanterfirevae.y= 31.0f;
 			} else {
