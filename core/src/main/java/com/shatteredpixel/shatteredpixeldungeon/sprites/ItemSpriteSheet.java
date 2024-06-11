@@ -987,7 +987,7 @@ public class ItemSpriteSheet {
     public static final int BOOKSQINYUE=		MAINPALYBOOKS+11;
 
     public static final int KINGAXE=		MAINPALYBOOKS+14;
-
+    public static final int RICESWORD=		MAINPALYBOOKS+15;
 
     static {
         assignItemRect(LINGPEA,13,15);

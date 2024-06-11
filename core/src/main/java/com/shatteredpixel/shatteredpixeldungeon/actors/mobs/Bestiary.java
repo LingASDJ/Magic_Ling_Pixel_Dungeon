@@ -31,6 +31,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.AnomaloCaris;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.ThreeLeafBug;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.Turtle;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.dragon.PiraLand;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.dragon.RiceRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.ApprenticeWitch;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Butcher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Crumb;
@@ -82,6 +84,11 @@ public class Bestiary {
 							ThreeLeafBug.class,ThreeLeafBug.class, AnomaloCaris.class, AnomaloCaris.class,
 							ThreeLeafBug.class));
 				}
+				case 3:
+					if(Dungeon.depth == 11 || Dungeon.depth == 12|| Dungeon.depth == 13|| Dungeon.depth == 14){
+						return new ArrayList<>(Arrays.asList(
+								PiraLand.class, RiceRat.class));
+					}
 				case 5:
 					if(Dungeon.depth == 17){
 						return new ArrayList<>(Arrays.asList(BlueWraith.class));

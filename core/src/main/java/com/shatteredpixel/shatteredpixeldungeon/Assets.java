@@ -638,6 +638,11 @@ public class Assets {
 		public static final String UNDEAD	= "sprites/undead.png";
 		public static final String KING		= "sprites/king.png";
 		public static final String PIRANHA	= "sprites/piranha.png";
+
+		public static final String PIRANHA_LAND	= "sprites/boss/piranha_land.png";
+		public static final String PIRANHA_KING	= "sprites/boss/piranha_king.png";
+		public static final String RICE_RAT	= "sprites/boss/ricemouse.png";
+
 		public static final String EYE		= "sprites/eye.png";
 		public static final String GNOLL	= "sprites/gnoll.png";
 		public static final String CRAB		= "sprites/crab.png";

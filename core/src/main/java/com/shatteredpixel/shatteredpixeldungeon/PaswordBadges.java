@@ -49,6 +49,14 @@ public class PaswordBadges {
         displayBadge( Badge.KING_ISTO );
     }
 
+    public static void KILL_FISH() {
+        displayBadge( Badge.KILL_FISHBOSS );
+    }
+
+    public static void UNLOCK_RICESWORD() {
+        displayBadge( Badge.UNLOCK_RICESWORD );
+    }
+
     public static void SWORDDRAGON() {
         displayBadge( Badge.SWORDDREAM );
     }
@@ -122,7 +130,11 @@ public class PaswordBadges {
 
         WHATSUP(23),
         KILL_DWG(24),
-        KING_ISTO(25);
+        KING_ISTO(25),
+
+        KILL_FISHBOSS(26),
+
+        UNLOCK_RICESWORD(27);
 
         public boolean meta;
 

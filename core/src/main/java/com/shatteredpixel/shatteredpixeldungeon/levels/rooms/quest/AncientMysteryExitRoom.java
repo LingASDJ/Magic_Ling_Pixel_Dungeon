@@ -47,14 +47,15 @@ public class AncientMysteryExitRoom extends ExitRoom {
 
         Point c = center();
 
-        Painter.fill( level, c.x-1, c.y-1, 3, 4, Terrain.WALL_DECO );
-        Painter.fill( level, c.x-1, c.y+1, 3, 1, Terrain.WALL );
-        Painter.set ( level,c.x, c.y+1, Terrain.EMPTY_SP);
-        Painter.set ( level,c.x, c.y+2, Terrain.DOOR);
+        if(Dungeon.branch != 3){
+            Painter.fill( level, c.x-1, c.y-1, 3, 4, Terrain.WALL_DECO );
+            Painter.fill( level, c.x-1, c.y+1, 3, 1, Terrain.WALL );
+            Painter.set ( level,c.x, c.y+1, Terrain.EMPTY_SP);
+            Painter.set ( level,c.x, c.y+2, Terrain.DOOR);
+        }
 
         int topPos = (top + 5) * level.width() + left + 4;
         Painter.set( level, topPos, Terrain.EXIT );
-
         level.transitions.add(new LevelTransition(level,
                 topPos,
                 LevelTransition.Type.BRANCH_EXIT,

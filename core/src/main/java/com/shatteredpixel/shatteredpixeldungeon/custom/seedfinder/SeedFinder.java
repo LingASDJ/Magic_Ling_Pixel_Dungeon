@@ -143,7 +143,7 @@ public class SeedFinder {
             }
 
             // 检查是否超时
-            if (System.currentTimeMillis() - startTime > SPDSettings.timeOutSeed()* 500L) {
+            if (System.currentTimeMillis() - startTime > SPDSettings.timeOutSeed() * 500L) {
                 findingStatus = FINDING.STOP;
                 result = Messages.get(this, "result");
                 break;

@@ -35,7 +35,7 @@ public class Rat extends Mob {
 
 	{
 		spriteClass = RatSprite.class;
-		discovered = Dungeon.discovered[0];
+
 		HP = HT = 8;
 		defenseSkill = 2;
 

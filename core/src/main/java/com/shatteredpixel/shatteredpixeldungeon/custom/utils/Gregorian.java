@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
 
+import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.altHoliday;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.birthday;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 
@@ -46,6 +47,8 @@ public class Gregorian {
 
         boolean isDWJ = lunar.getMonth() == 5 && (lunar.getDay() >= 0 && lunar.getDay() <= 5 + 7);
 
+        boolean isDWJ_2024TWO = lunar.getMonth() == 5 && (lunar.getDay() >= 5 && lunar.getDay() <= 5 + 16);
+
         boolean isSF = lunar.getMonth() == 1 && (lunar.getDay() >= 1 && lunar.getDay() <= 1 + 19);
 
         if(isSF){
@@ -63,6 +66,10 @@ public class Gregorian {
         // 判断是否是端午节前4天到端午节后7天
         if (isDWJ) {
             holiday = RegularLevel.Holiday.DWJ;
+        }
+
+        if (isDWJ_2024TWO) {
+            altHoliday = RegularLevel.AltHoliday.DWJ_2024;
         }
 
     }

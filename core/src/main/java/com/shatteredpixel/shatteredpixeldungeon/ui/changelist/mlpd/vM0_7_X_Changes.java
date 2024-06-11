@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MintSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MoonLowSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PianoLeSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.PiraLandSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.QinWolfSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SakaFishBossSprites;
@@ -46,6 +47,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0755_Changes(changeInfos);
         add_V0751_Changes(changeInfos);
         add_V0750_Changes(changeInfos);
         add_V0740_Changes(changeInfos);
@@ -72,6 +74,37 @@ public class vM0_7_X_Changes {
         add_GYD_Changes(changeInfos);
     }
 
+    public static void add_V0755_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.5.5", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        Image s =new PiraLandSprite();
+        s.scale.set(PixelScene.align(1f));
+        changes.addButton(new ChangeButton(s, ("新MiniBoss：鱼人号"),
+                "端午节特别行动限时作战Boss，作战时间6.11-6.21"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RICESWORD), ("新传奇武器：糯米大剑"),
+                ("击败端午节限时行动后获得生成权利！")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.5.5版本:\n\n" +
+                        "1.修复难度没有正确加载的问题\n" +
+                        "2.修复部分数据异常问题\n" +
+                        "3.修复矮人将军楼层未准确加载问题\n" +
+                        "4.修复隐藏徽章的一些潜在问题\n" +
+                        "5.修复FireBase上次提到的一些主要问题"));
+
+    }
+
     public static void add_V0751_Changes( ArrayList<ChangeInfo> changeInfos ) {
         ChangeInfo changes = new ChangeInfo("v0.7.5.1", true, "");
         changes.hardlight(Window.TITLE_COLOR);
@@ -82,8 +115,8 @@ public class vM0_7_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 80, 16, 16 ), "房间调整",
-                "太极房间现在保底+1，最高+3，\n" +
-                        "且裂缝区域必定诅咒高等级，\n水面区域必定非诅咒但有概率白板"));
+                "太极房间现在诅咒区域保底+1，最高+3，\n" +
+                        "且裂缝区域必定诅咒高等级，\n水面区域必定非诅咒但有必定白板"));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);

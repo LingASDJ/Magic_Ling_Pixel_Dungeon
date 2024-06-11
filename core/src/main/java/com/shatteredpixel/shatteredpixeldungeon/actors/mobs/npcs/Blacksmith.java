@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
@@ -33,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.BlacksmithRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -48,6 +50,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class Blacksmith extends NPC {
 	
@@ -104,6 +107,7 @@ public class Blacksmith extends NPC {
 					case Quest.CRYSTAL: msg2 += Messages.get(Blacksmith.this, "intro_quest_crystal"); break;
 					case Quest.GNOLL:   msg2 += Messages.get(Blacksmith.this, "intro_quest_gnoll"); break;
 					case Quest.FUNGI:   msg2 += Messages.get(Blacksmith.this, "intro_quest_fungi"); break;
+					case Quest.FISHBOSS:msg2 += Messages.get(Blacksmith.this, "intro_quest_fish"); break;
 				}
 
 			}
@@ -195,6 +199,8 @@ public class Blacksmith extends NPC {
 					case Quest.CRYSTAL: msg += Messages.get(Blacksmith.this, "reminder_crystal"); break;
 					case Quest.GNOLL:   msg += Messages.get(Blacksmith.this, "reminder_gnoll"); break;
 					case Quest.FUNGI:   msg += Messages.get(Blacksmith.this, "reminder_fungi"); break;
+					//TODO SP
+					case Quest.FISHBOSS:   msg += Messages.get(Blacksmith.this, "reminder_fish"); break;
 				}
 				tell(msg);
 
@@ -267,6 +273,8 @@ public class Blacksmith extends NPC {
 		public static final int CRYSTAL = 1;
 		public static final int GNOLL = 2;
 		public static final int FUNGI = 3; //The fungi quest is not implemented, only exists partially in code
+		public static final int FISHBOSS = 4;
+
 		//pre-v2.2.0
 		private static boolean alternative; //false for mining gold, true for bat blood
 
@@ -398,9 +406,10 @@ public class Blacksmith extends NPC {
 				
 				rooms.add(new BlacksmithRoom());
 				spawned = true;
-
+				PaswordBadges.loadGlobal();
+				List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 				//Currently cannot roll the fungi quest, as it is not fully implemented
-				type = Random.IntRange(1, 2);
+				type = RegularLevel.altHoliday == RegularLevel.AltHoliday.DWJ_2024 && !passwordbadges.contains(PaswordBadges.Badge.KILL_FISHBOSS) ? 4 : RegularLevel.altHoliday == RegularLevel.AltHoliday.DWJ_2024 && Random.Float()<0.5f ? 4 : Random.IntRange(1, 2);
 				alternative = false;
 				
 				given = false;

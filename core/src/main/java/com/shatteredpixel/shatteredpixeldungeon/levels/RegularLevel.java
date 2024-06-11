@@ -125,6 +125,8 @@ public abstract class RegularLevel extends Level {
 
     public static Holiday holiday;
 
+	public static AltHoliday altHoliday;
+
     public static DevBirthday birthday;
 
     static {
@@ -206,6 +208,11 @@ public abstract class RegularLevel extends Level {
         //清扬 L-12.3
         ART_CY_BIRTHDAY,
     }
+
+	public enum AltHoliday {
+		NONE,
+		DWJ_2024
+	}
 
     public enum Holiday {
         NONE,
