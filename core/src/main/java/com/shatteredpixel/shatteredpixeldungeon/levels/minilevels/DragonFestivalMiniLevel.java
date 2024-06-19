@@ -21,6 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.BigFishBossRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.MineEntrance;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.MineGiantRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.MineLargeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.NukeRoom;
@@ -93,6 +94,13 @@ public class DragonFestivalMiniLevel extends CavesLevel {
         int rooms = 3;
         for (int i = 0; i < rooms; i++){
             s = new MineLargeRoom();
+            s.setSizeCat();
+            initRooms.add(s);
+        }
+
+        int trooms = 2;
+        for (int i = 0; i < trooms; i++){
+            s = new MineGiantRoom();
             s.setSizeCat();
             initRooms.add(s);
         }

@@ -409,7 +409,7 @@ public class Blacksmith extends NPC {
 				PaswordBadges.loadGlobal();
 				List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 				//Currently cannot roll the fungi quest, as it is not fully implemented
-				type = RegularLevel.altHoliday == RegularLevel.AltHoliday.DWJ_2024 && !passwordbadges.contains(PaswordBadges.Badge.KILL_FISHBOSS) ? 4 : RegularLevel.altHoliday == RegularLevel.AltHoliday.DWJ_2024 && Random.Float()<0.5f ? 4 : Random.IntRange(1, 2);
+				type = RegularLevel.altHoliday == RegularLevel.AltHoliday.DWJ_2024 && !passwordbadges.contains(PaswordBadges.Badge.KILL_FISHBOSS) ? 4 : RegularLevel.altHoliday == RegularLevel.AltHoliday.DWJ_2024 && Random.Float()<=0.5f ? 4 : Random.IntRange(1, 2);
 				alternative = false;
 				
 				given = false;

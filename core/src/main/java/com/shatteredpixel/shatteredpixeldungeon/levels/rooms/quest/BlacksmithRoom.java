@@ -91,7 +91,7 @@ public class BlacksmithRoom extends StandardRoom {
 		level.customTiles.add(vis);
 
 		//TODO SP
-		if(RegularLevel.altHoliday == RegularLevel.AltHoliday.DWJ_2024){
+		if(RegularLevel.altHoliday == RegularLevel.AltHoliday.DWJ_2024 && Blacksmith.Quest.Type()==4){
 			level.transitions.add(new LevelTransition(level,
 					entrancePos,
 					LevelTransition.Type.BRANCH_EXIT,

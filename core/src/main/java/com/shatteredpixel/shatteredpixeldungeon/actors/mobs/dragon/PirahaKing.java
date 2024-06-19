@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.dragon;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -44,7 +45,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
@@ -406,7 +406,7 @@ public class PirahaKing extends Boss {
         if (state != SLEEPING) BossHealthBar.assignBoss(this);
         if ((HP*2 <= HT)) BossHealthBar.bleed(true);
         lastEnemyPos = bundle.getInt(LAST_ENEMY_POS);
-        Music.INSTANCE.play(Assets.Music.CAVES_BOSS_FINALE,true);
+        BGMPlayer.playBGM(Assets.Music.CAVES_BOSS_FINALE,true);
         leapPos = bundle.getInt(LEAP_POS);
         leapCooldown = bundle.getFloat(LEAP_CD);
     }
@@ -418,7 +418,7 @@ public class PirahaKing extends Boss {
             BossHealthBar.assignBoss(this);
             Dungeon.level.seal();
             yell(Messages.get(this, "notice"));
-            Music.INSTANCE.play(Assets.Music.CAVES_BOSS_FINALE,true);
+            BGMPlayer.playBGM(Assets.Music.CAVES_BOSS_FINALE,true);
             Camera.main.shake(1f,3f);
         }
     }

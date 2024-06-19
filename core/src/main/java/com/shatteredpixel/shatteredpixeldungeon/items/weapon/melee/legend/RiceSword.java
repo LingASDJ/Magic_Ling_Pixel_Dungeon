@@ -37,7 +37,7 @@ public class RiceSword extends MeleeWeapon {
     }
     @Override
     public int min(int lvl) {
-        return 5 + lvl * 3;
+        return 3 + lvl * 3;
     }
     @Override
     public int max(int lvl) {

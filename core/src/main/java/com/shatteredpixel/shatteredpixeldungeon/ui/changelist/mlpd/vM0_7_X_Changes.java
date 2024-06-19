@@ -75,7 +75,7 @@ public class vM0_7_X_Changes {
     }
 
     public static void add_V0755_Changes( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("v0.7.5.5", true, "");
+        ChangeInfo changes = new ChangeInfo("v0.7.5.5-6", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -86,10 +86,10 @@ public class vM0_7_X_Changes {
         Image s =new PiraLandSprite();
         s.scale.set(PixelScene.align(1f));
         changes.addButton(new ChangeButton(s, ("新MiniBoss：鱼人号"),
-                "端午节特别行动限时作战Boss，作战时间6.11-6.21"));
+                "端午节特别行动限时作战Boss，作战时间6.11-6.21\n\n6.15:修复重大异常Bug"));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RICESWORD), ("新传奇武器：糯米大剑"),
-                ("击败端午节限时行动后获得生成权利！")));
+                ("击败端午节限时行动后获得生成权利！\n\n6.15:修复异常问题")));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);

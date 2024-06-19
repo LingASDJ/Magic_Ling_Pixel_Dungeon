@@ -213,6 +213,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonFestivalMiniLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -2166,7 +2167,7 @@ public class Hero extends Char {
 			}
 
 		//TODO perhaps only trigger this if hero is already adjacent? reducing mistaps
-		} else if (Dungeon.level instanceof MiningLevel &&
+		} else if ((Dungeon.level instanceof MiningLevel || Dungeon.level instanceof DragonFestivalMiniLevel) &&
 					belongings.getItem(Pickaxe.class) != null &&
 				(Dungeon.level.map[cell] == Terrain.WALL
 						|| Dungeon.level.map[cell] == Terrain.WALL_DECO
