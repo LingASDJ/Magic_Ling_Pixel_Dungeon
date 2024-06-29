@@ -30,11 +30,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.LockedDamage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
@@ -46,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
@@ -53,6 +56,7 @@ import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
@@ -245,6 +249,7 @@ public class Item implements Bundlable {
 		if (!heap.isEmpty()) {
 			heap.sprite.drop( cell );
 		}
+
 	}
 	
 	//takes two items and merges them (if possible)
@@ -703,10 +708,41 @@ public class Item implements Bundlable {
 							if (curUser.hasTalent(Talent.IMPROVISED_PROJECTILES)
 									&& !(Item.this instanceof MissileWeapon)
 									&& curUser.buff(Talent.ImprovisedProjectileCooldown.class) == null){
-								if (enemy != null && enemy.alignment != curUser.alignment){
+								if (enemy.alignment != curUser.alignment){
 									Sample.INSTANCE.play(Assets.Sounds.HIT);
 									Buff.affect(enemy, Blindness.class, 1f + curUser.pointsInTalent(Talent.IMPROVISED_PROJECTILES));
+									Buff.affect(enemy, LockedDamage.class).set(((1 + curUser.pointsInTalent(Talent.IMPROVISED_PROJECTILES))), 1);
 									Buff.affect(curUser, Talent.ImprovisedProjectileCooldown.class, 50f);
+
+									if (Dungeon.hero.pointsInTalent(Talent.IMPROVISED_PROJECTILES) == 2) {
+										GameScene.show(
+												new WndOptions(new ItemSprite(Item.this),
+														Messages.titleCase(hero.name()),
+														Messages.get(Hero.class, "quest_start_prompt"),
+														Messages.get(Hero.class, "enter_yes"),
+														Messages.get(Hero.class, "enter_no")) {
+													@Override
+													protected void onSelect(int index) {
+														if (index == 0){
+															Char ch;
+															ch = Actor.findChar(cell);
+															if(ch!=null){
+																for(int i: PathFinder.NEIGHBOURS8){
+																	if (Actor.findChar( cell+ i ) == null) {
+																		ScrollOfTeleportation.appear(hero,cell);
+																	}
+																}
+																ScrollOfTeleportation.appear(ch, cell+1);
+															}
+
+															hero.busy();
+															hero.sprite.operate(cell);
+														}
+													}
+												}
+										);
+									}
+
 								}
 							}
 							if (user.buff(Talent.LethalMomentumTracker.class) != null){

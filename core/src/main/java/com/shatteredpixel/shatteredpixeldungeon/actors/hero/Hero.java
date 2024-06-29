@@ -79,6 +79,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessQinyue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessRedWhite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessUnlock;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.LockedDamage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
@@ -90,6 +91,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbueEX;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HasteLing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
@@ -181,6 +183,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RedWhiteRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfFuror;
@@ -249,6 +252,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 
@@ -1806,6 +1810,12 @@ public class Hero extends Char {
 	public int attackProc( final Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
 
+		if(enemy != null){
+			if (enemy.buff(LockedDamage.class) != null){
+				damage *= 1.1f;
+			}
+		}
+
 		KindOfWeapon wep;
 		if (RingOfForce.fightingUnarmed(this) && !RingOfForce.unarmedGetsWeaponEnchantment(this)){
 			wep = null;
@@ -1880,6 +1890,8 @@ public class Hero extends Char {
 		if (buff(TimekeepersHourglass.timeStasis.class) != null)
 			return;
 
+
+
 		//regular damage interrupt, triggers on any damage except specific mild DOT effects
 		// unless the player recently hit 'continue moving', in which case this is ignored
 		if (!(src instanceof Hunger || src instanceof Viscosity.DeferedDamage) && damageInterrupt) {
@@ -1913,6 +1925,11 @@ public class Hero extends Char {
 			dmg = thorns.proc(dmg, (src instanceof Char ? (Char)src : null),  this);
 		}
 
+		Talent.WarriorFoodImmunity thornsTalent = buff( Talent.WarriorFoodImmunity.class );
+		if (thornsTalent != null) {
+			dmg = thornsTalent.proc(dmg, (src instanceof Char ? (Char)src : null),  this);
+		}
+
 		dmg = (int)Math.ceil(dmg * RingOfTenacity.damageMultiplier( this ));
 
 		//TODO improve this when I have proper damage source logic
@@ -1922,16 +1939,46 @@ public class Hero extends Char {
 		}
 
 		if (buff(Talent.WarriorFoodImmunity.class) != null){
-			if (pointsInTalent(Talent.IRON_STOMACH) == 1)       dmg = Math.round(dmg*0.25f);
-			else if (pointsInTalent(Talent.IRON_STOMACH) == 2)  dmg = Math.round(dmg*0.00f);
+			if (pointsInTalent(Talent.IRON_STOMACH) == 1){
+				dmg = Math.round(dmg*0.25f);
+				//Buff.affect(hero, CapeOfThorns.HeroThorns.class,1);
+			} else if(pointsInTalent(Talent.IRON_STOMACH) == 2) {
+				dmg = Math.round(dmg * 0.00f);
+				//Buff.affect(hero, CapeOfThorns.HeroThorns.class,2);
+			}
 		}
 
 		int preHP = HP + shielding();
+		int preTrueHP = HP;
 		if (src instanceof Hunger) preHP -= shielding();
 		super.damage( dmg, src );
 		int postHP = HP + shielding();
 		if (src instanceof Hunger) postHP -= shielding();
 		int effectiveDamage = preHP - postHP;
+
+		int trueDamage=preTrueHP-HP;
+
+		if (trueDamage>0){
+			if (this.hasTalent(Talent.LIQUID_WILLPOWER )){
+				Class<?> srcClass = src.getClass();
+				HashSet<Class> resists = new HashSet<>(RingOfElements.RESISTS);
+				boolean flag = true;
+				for (Class c : resists){
+					if (c.isAssignableFrom(srcClass)){
+						flag=false;
+						break;
+					}
+				}
+				if (flag) {
+					Buff.affect(this,Barrier.class).setShield(2*pointsInTalent(Talent.LIQUID_WILLPOWER));
+
+					Hunger hungerBuff = hero.buff(Hunger.class);
+					if(pointsInTalent(Talent.LIQUID_WILLPOWER) == 2 && !hungerBuff.isStarving()){
+						Buff.affect(this, Healing.class).setHeal(Math.round(HT*0.07f), 0.5f, 0);
+					}
+				}
+			}
+		}
 
 		if (effectiveDamage <= 0) return;
 
@@ -2588,6 +2635,11 @@ public class Hero extends Char {
 		//水中祝福
 		if(Dungeon.branch == 0){
 			MoveWater();
+		}
+
+		CapeOfThorns.HeroThorns thornsTalent = buff( CapeOfThorns.HeroThorns.class );
+		if(thornsTalent != null){
+			thornsTalent.detach();
 		}
 
 		if(!seedCustom && !Dungeon.customSeedText.isEmpty()){

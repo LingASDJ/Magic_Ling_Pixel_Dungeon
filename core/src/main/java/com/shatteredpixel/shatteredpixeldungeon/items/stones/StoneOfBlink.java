@@ -48,6 +48,7 @@ public class StoneOfBlink extends Runestone {
 			cell = throwPath.path.get(throwPath.dist-1);
 		}
 		throwPath = null;
+
 		super.onThrow(cell);
 	}
 	

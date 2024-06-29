@@ -47,6 +47,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0760_Changes(changeInfos);
         add_V0755_Changes(changeInfos);
         add_V0751_Changes(changeInfos);
         add_V0750_Changes(changeInfos);
@@ -72,6 +73,67 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0760_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.6.0-NER2", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WORN_SHORTSWORD), ("战士天赋调整"),
+                ("战士的天赋进一步加强，具体参考下方说明\n\n" +
+                        "T1调整：\n" +
+                        "丰收喜悦<--加强-->丰收一餐：\n" +
+                        "种子概率提升\n" +
+                        "T2调整：\n\n" +
+                        "钢铁之胃<--加强-->荆棘之胃：\n" +
+                        "+1 进食期间受到攻击则反伤_9点_伤害\n" +
+                        "+2 进食期间受到攻击则反伤_12点_伤害")));
+
+
+        changes = new ChangeInfo("v0.7.6.0-NER", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WORN_SHORTSWORD), ("战士天赋加强"),
+                ("战士1 和 2阶 的天赋进行加强，具体参考下方说明\n\n" +
+                        "T1调整：\n\n" +
+                        "丰盛一餐-->加强-->丰收时刻：\n" +
+                        "+1 在原有基础上，给予食用种子权利，并且有5%概率触发有益种子的相同药水效果\n" +
+                        "+2 在+1基础上，触发药水概率提升至10%\n\n" +
+                        "重做-->钢铁意志：\n" +
+                        "+1 斩杀敌人后获得_2点护盾_。\n" +
+                        "+2 斩杀敌人后获得_3点护盾_。\n\n" +
+                        "T2调整：\n" +
+                        "钢铁之胃<--加强-->荆棘之胃：\n" +
+                        "+1 进食期间受到攻击则获得_ 1回合 荆棘护身效果_\n" +
+                        "+2 进食期间受到攻击则获得_ 2回合 荆棘护身效果_\n\n" +
+                        "液蕴意志<--重做-->再生愈合：\n" +
+                        "+1：每当 蕾零安洁 受到一次直接损失生命值的物理伤害后，她在下一回合可获得_ 2点 _护盾。\n" +
+                        "+2：每当 蕾零安洁 受到一次直接损失生命值的物理伤害后，她在下一回合获得_ 4点 _护盾，且获得 _ 弱效治疗 _效果\n" +
+                        "弱效治疗：最大生命的_ 5% _的恢复量\n\n" +
+                        "即兴投掷<--重做-->靶心瞄准：\n" +
+                        "+1：蕾零安洁向敌人扔出非投掷武器的物品时会对其造成 _2 回合_的瞄准效果和_ 2回合 _致盲效果。这个天赋有 50 回合的冷却时间。\n" +
+                        "+2：蕾零安洁向敌人扔出非投掷武器的物品时会对其造成 _3 回合_的瞄准效果和_ 3回合 _致盲效果，并且可以_选择 闪现 _到目标面前。这个天赋有 50 回合的冷却时间。\n" +
+                        "瞄准效果：物理伤害提升10%。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.5.6版本:\n\n" +
+                        "1.修复超级远古版本跨版本升级异常" +
+                        "2.灯火现在不再有挑战限制，勾选即为一挑。但后续版本灯火会从挑战下线，并作为特别模块在常规局启用。"));
+
     }
 
     public static void add_V0755_Changes( ArrayList<ChangeInfo> changeInfos ) {

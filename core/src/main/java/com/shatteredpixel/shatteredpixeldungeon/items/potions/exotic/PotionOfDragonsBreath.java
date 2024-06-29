@@ -60,7 +60,7 @@ public class PotionOfDragonsBreath extends ExoticPotion {
 
 	@Override
 	//need to override drink so that time isn't spent right away
-	protected void drink(final Hero hero) {
+    public void drink(final Hero hero) {
 
 		if (!isKnown()) {
 			identify();

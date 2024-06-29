@@ -21,9 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -138,6 +142,41 @@ public class CapeOfThorns extends Artifact {
 			cooldown = 0;
 			charge = 0;
 			super.detach();
+		}
+
+	}
+
+	public static class HeroThorns extends FlavourBuff {
+
+		public int proc(int damage, Char attacker, Char defender){
+
+			try {
+				int deflected = Math.round(attacker.HT*0.09f);
+				int deflectedHigh = Math.round(attacker.HT*0.12f);
+
+				if(defender.isAlive()){
+					//钢铁之胃--->荆棘之胃
+					if (hero.pointsInTalent(Talent.IRON_STOMACH) == 1){
+						attacker.damage(deflected, this);
+					} else if(hero.pointsInTalent(Talent.IRON_STOMACH) == 2) {
+						attacker.damage(deflectedHigh, this);
+					}
+				}
+			} catch (Exception e) {
+				return 0;
+			}
+
+			return damage;
+		}
+
+		@Override
+		public String desc() {
+			return Messages.get(this, "desc", dispTurns());
+		}
+
+		@Override
+		public int icon() {
+			return BuffIndicator.THORNS;
 		}
 
 	}

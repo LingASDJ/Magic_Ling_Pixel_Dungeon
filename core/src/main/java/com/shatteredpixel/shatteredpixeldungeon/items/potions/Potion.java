@@ -108,7 +108,7 @@ public class Potion extends Item {
 		}
 	};
 
-	private static final HashSet<Class<?extends Potion>> mustThrowPots = new HashSet<>();
+	public static final HashSet<Class<?extends Potion>> mustThrowPots = new HashSet<>();
 	static{
 		mustThrowPots.add(PotionOfToxicGas.class);
 		mustThrowPots.add(PotionOfLiquidFlame.class);
@@ -281,7 +281,7 @@ public class Potion extends Item {
 		}
 	}
 	
-	protected void drink( Hero hero ) {
+	public void drink(Hero hero) {
 		
 		detach( hero.belongings.backpack );
 		

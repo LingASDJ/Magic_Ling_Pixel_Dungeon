@@ -110,18 +110,12 @@ public class Challenges {
 
 	}
 
-	public static int activeChallenges() {
+	public static int activeChallenges(){
 		int chCount = 0;
-		int EXchCount = 0;
-		for (int ch : Challenges.MASKS) {
-			if ((Dungeon.challenges & ch) != 0 && ch != DHXD) {
-				chCount++;
-				if(Statistics.lanterfireactive && EXchCount == 0 && ch>=10){
-					EXchCount++;
-					chCount += EXchCount;
-				}
-			}
+		for (int ch : Challenges.MASKS){
+			if ((Dungeon.challenges & ch) != 0) chCount++;
 		}
+
 		return chCount;
 	}
 }

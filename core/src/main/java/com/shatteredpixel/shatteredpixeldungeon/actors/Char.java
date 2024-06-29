@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameNight;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameTime;
 
@@ -303,7 +304,7 @@ public abstract class Char extends Actor {
 			return true;
 		} else return c instanceof Hero
 				&& alignment == Alignment.ALLY
-				&& Dungeon.level.distance(pos, c.pos) <= 2 * Dungeon.hero.pointsInTalent(Talent.ALLY_WARP);
+				&& Dungeon.level.distance(pos, c.pos) <= 2 * hero.pointsInTalent(Talent.ALLY_WARP);
 	}
 
 	//swaps places by default
@@ -327,7 +328,7 @@ public abstract class Char extends Actor {
 		int newPos = c.pos;
 
 		//warp instantly with allies in this case
-		if (c == Dungeon.hero && Dungeon.hero.hasTalent(Talent.ALLY_WARP)) {
+		if (c == hero && hero.hasTalent(Talent.ALLY_WARP)) {
 			PathFinder.buildDistanceMap(c.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
 			if (PathFinder.distance[pos] == Integer.MAX_VALUE) {
 				return true;
@@ -356,12 +357,12 @@ public abstract class Char extends Actor {
 
 		c.spend(1 / c.speed());
 
-		if (c == Dungeon.hero) {
-			if (Dungeon.hero.subClass == HeroSubClass.FREERUNNER) {
-				Buff.affect(Dungeon.hero, Momentum.class).gainStack();
+		if (c == hero) {
+			if (hero.subClass == HeroSubClass.FREERUNNER) {
+				Buff.affect(hero, Momentum.class).gainStack();
 			}
 
-			Dungeon.hero.busy();
+			hero.busy();
 		}
 
 		return true;
@@ -469,8 +470,8 @@ public abstract class Char extends Actor {
 			Preparation prep = buff(Preparation.class);
 			if (prep != null) {
 				dmg = prep.damageRoll(this);
-				if (this == Dungeon.hero && Dungeon.hero.hasTalent(Talent.BOUNTY_HUNTER)) {
-					Buff.affect(Dungeon.hero, Talent.BountyHunterTracker.class, 0.0f);
+				if (this == hero && hero.hasTalent(Talent.BOUNTY_HUNTER)) {
+					Buff.affect(hero, Talent.BountyHunterTracker.class, 0.0f);
 				}
 			} else {
 				dmg = damageRoll();
@@ -601,9 +602,9 @@ public abstract class Char extends Actor {
 			}
 
 			if (!enemy.isAlive() && visibleFight) {
-				if (enemy == Dungeon.hero) {
+				if (enemy == hero) {
 
-					if (this == Dungeon.hero) {
+					if (this == hero) {
 						return true;
 					}
 
@@ -615,7 +616,7 @@ public abstract class Char extends Actor {
 					Dungeon.fail(this);
 					GLog.n(Messages.capitalize(Messages.get(Char.class, "kill", name())));
 
-				} else if (this == Dungeon.hero) {
+				} else if (this == hero) {
 					GLog.i(Messages.capitalize(Messages.get(Char.class, "defeat", enemy.name())));
 				}
 			}
@@ -947,7 +948,7 @@ public abstract class Char extends Actor {
 			if (src instanceof Pickaxe) {
 				icon = IconFloatingText.PICK_DMG;
 			}
-			if (src == Dungeon.hero && Dungeon.hero.subClass == HeroSubClass.SNIPER && !Dungeon.level.adjacent(Dungeon.hero.pos, this.pos) && (Dungeon.hero.belongings.attackingWeapon() instanceof MissileWeapon)) {
+			if (src == hero && hero.subClass == HeroSubClass.SNIPER && !Dungeon.level.adjacent(hero.pos, this.pos) && (hero.belongings.attackingWeapon() instanceof MissileWeapon)) {
 				icon = IconFloatingText.PHYS_DMG_NO_BLOCK;
 			}
 			if (src instanceof Hunger) {
@@ -1249,7 +1250,7 @@ public abstract class Char extends Actor {
 
 		pos = step;
 
-		if (this != Dungeon.hero) {
+		if (this != hero) {
 			sprite.visible = Dungeon.level.heroFOV[pos];
 		}
 

@@ -1,9 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -11,8 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
-public class BlessGoRead extends ClearLanterBuff {
-
+public class LockedDamage extends Buff {
     public static int level = 0;
     private int interval = 1;
 
@@ -20,19 +16,14 @@ public class BlessGoRead extends ClearLanterBuff {
     public boolean act() {
         if (target.isAlive()) {
 
-            spend(interval);
-            if (level <= 0) {
+            spend( interval );
+            if (--level <= 0) {
                 detach();
             }
 
-            Hunger hungerBuff = hero.buff(Hunger.class);
+        } else {
 
-            if(hero.lanterfire > 90 && !hungerBuff.isStarving()) {
-                //effectively 1HP at lvl 0-5, 2HP lvl 6-8, 3HP lvl 9, and 5HP lvl 10.
-                target.HP = Math.min( target.HT, target.HP + 1);
-                spend(7f);
-            }
-
+            detach();
 
         }
 
@@ -52,8 +43,6 @@ public class BlessGoRead extends ClearLanterBuff {
         }
     }
 
-
-
     @Override
     public float iconFadePercent() {
         if (target instanceof Hero){
@@ -65,19 +54,13 @@ public class BlessGoRead extends ClearLanterBuff {
 
     @Override
     public String toString() {
-            return Messages.get(this, "name");
+        return Messages.get(this, "name");
     }
 
     @Override
     public String desc() {
-        if(hero.lanterfire<90 && !Statistics.noGoReadHungry){
-            return Messages.get(this, "desc_lanter");
-        } else if (Statistics.noGoReadHungry) {
-            return Messages.get(this, "desc_rest");
-        } else
-            return Messages.get(this, "desc");
-
-        }
+        return Messages.get(this, "desc", level, dispTurns(visualcooldown()));
+    }
 
     private static final String LEVEL	    = "level";
     private static final String INTERVAL    = "interval";
@@ -98,26 +81,15 @@ public class BlessGoRead extends ClearLanterBuff {
 
     @Override
     public void tintIcon(Image icon) {
-
-        if(hero.lanterfire<90 && !Statistics.noGoReadHungry){
-            icon.hardlight(Window.CYELLOW);
-        } else if (Statistics.noGoReadHungry) {
-            icon.hardlight(0x993333);
-        } else
-            icon.hardlight(0xFF1493);
+        icon.hardlight(Window.DeepPK_COLOR);
     }
 
     @Override
     public int icon() {
-
-        if(hero.lanterfire<90 && !Statistics.noGoReadHungry){
-            return BuffIndicator.DEBUFF_DOWN;
-        } else if (Statistics.noGoReadHungry) {
-            return BuffIndicator.DEBUFF_DOWN;
-        } else
-            return BuffIndicator.GOBUFF_UPRD;
+        return BuffIndicator.INVERT_MARK;
     }
 
 
 }
+
 
