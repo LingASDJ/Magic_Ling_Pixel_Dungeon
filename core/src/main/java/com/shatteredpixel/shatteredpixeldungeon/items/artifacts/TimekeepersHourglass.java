@@ -170,11 +170,14 @@ public class TimekeepersHourglass extends Artifact {
 	public void charge(Hero target, float amount) {
 		if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null){
 			partialCharge += 0.25f*amount;
-			if (partialCharge >= 1){
+			while (partialCharge >= 1){
 				partialCharge--;
 				charge++;
-				updateQuickslot();
 			}
+			if (charge >= chargeCap){
+				partialCharge = 0;
+			}
+			updateQuickslot();
 		}
 	}
 
@@ -248,7 +251,7 @@ public class TimekeepersHourglass extends Artifact {
 				chargeGain *= RingOfEnergy.artifactChargeMultiplier(target);
 				partialCharge += chargeGain;
 
-				if (partialCharge >= 1) {
+				while (partialCharge >= 1) {
 					partialCharge --;
 					charge ++;
 
@@ -366,13 +369,13 @@ public class TimekeepersHourglass extends Artifact {
 
 		public void triggerPresses(){
 			for (int cell : presses){
-				Trap t = Dungeon.level.traps.get(cell);
-				if (t != null){
-					t.trigger();
-				}
 				Plant p = Dungeon.level.plants.get(cell);
 				if (p != null){
 					p.trigger();
+				}
+				Trap t = Dungeon.level.traps.get(cell);
+				if (t != null){
+					t.trigger();
 				}
 			}
 
@@ -381,14 +384,13 @@ public class TimekeepersHourglass extends Artifact {
 
 		public void disarmPresses(){
 			for (int cell : presses){
-				Trap t = Dungeon.level.traps.get(cell);
-				if (t != null && t.disarmedByActivation) {
-					t.disarm();
-				}
-
 				Plant p = Dungeon.level.plants.get(cell);
 				if (p != null && !(p instanceof Rotberry)) {
 					Dungeon.level.uproot(cell);
+				}
+				Trap t = Dungeon.level.traps.get(cell);
+				if (t != null && t.disarmedByActivation) {
+					t.disarm();
 				}
 			}
 
@@ -436,12 +438,12 @@ public class TimekeepersHourglass extends Artifact {
 
 		@Override
 		public String iconTextDisplay() {
-			return Integer.toString((int)turnsToCost);
+			return Integer.toString((int)(turnsToCost + 0.001f));
 		}
 
 		@Override
 		public String desc() {
-			return Messages.get(this, "desc", Messages.decimalFormat("#.##", turnsToCost));
+			return Messages.get(this, "desc", Messages.decimalFormat("#.##", Math.max(0, turnsToCost)));
 		}
 
 		private static final String PRESSES = "presses";

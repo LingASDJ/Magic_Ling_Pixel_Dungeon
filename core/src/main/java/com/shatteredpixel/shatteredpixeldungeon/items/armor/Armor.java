@@ -62,6 +62,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Thorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
@@ -271,7 +272,7 @@ public class Armor extends EquipableItem {
 			((HeroSprite)hero.sprite).updateArmor();
 			activate(hero);
 			Talent.onItemEquipped(hero, this);
-			hero.spendAndNext( time2equip( hero ) );
+			hero.spendAndNext( timeToEquip( hero ) );
 			return true;
 
 		} else {
@@ -308,8 +309,8 @@ public class Armor extends EquipableItem {
 	}
 
 	@Override
-	protected float time2equip( Hero hero ) {
-		return 2 / hero.speed();
+	protected float timeToEquip(Hero hero ) {
+		return 2f / hero.speed();
 	}
 
 	@Override
@@ -420,11 +421,20 @@ public class Armor extends EquipableItem {
 
 		if (hasGlyph(Swiftness.class, owner)) {
 			boolean enemyNear = false;
-			PathFinder.buildDistanceMap(owner.pos, Dungeon.level.passable, 2);
+			//for each enemy, check if they are adjacent, or within 2 tiles and an adjacent cell is open
 			for (Char ch : Actor.chars()){
-				if ( PathFinder.distance[ch.pos] != Integer.MAX_VALUE && owner.alignment != ch.alignment){
-					enemyNear = true;
-					break;
+				if ( Dungeon.level.distance(ch.pos, owner.pos) <= 2 && owner.alignment != ch.alignment && ch.alignment != Char.Alignment.NEUTRAL){
+					if (Dungeon.level.adjacent(ch.pos, owner.pos)){
+						enemyNear = true;
+						break;
+					} else {
+						for (int i : PathFinder.NEIGHBOURS8){
+							if (Dungeon.level.adjacent(owner.pos+i, ch.pos) && !Dungeon.level.solid[owner.pos+i]){
+								enemyNear = true;
+								break;
+							}
+						}
+					}
 				}
 			}
 			if (!enemyNear) speed *= (1.2f + 0.04f * buffedLvl());
@@ -612,10 +622,10 @@ public class Armor extends EquipableItem {
 		//30% chance to be cursed
 		//15% chance to be inscribed
 		float effectRoll = Random.Float();
-		if (effectRoll < 0.3f) {
+		if (effectRoll < 0.3f * ParchmentScrap.curseChanceMultiplier()) {
 			inscribe(Glyph.randomCurse());
 			cursed = true;
-		} else if (effectRoll >= 0.85f){
+		} else if (effectRoll >= 1f - (0.15f * ParchmentScrap.enchantChanceMultiplier())){
 			inscribe();
 		}
 
