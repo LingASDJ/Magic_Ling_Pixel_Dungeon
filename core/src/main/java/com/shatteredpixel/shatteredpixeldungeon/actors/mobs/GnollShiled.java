@@ -9,7 +9,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BombGnollTricksterSprites;
@@ -28,7 +27,8 @@ public class GnollShiled extends Gnoll {
         this.defenseSkill = 5;
         this.EXP = 8;
         this.state = this.WANDERING;
-        this.loot = AlchemicalCatalyst.class;
+        //TODO 待定
+        //this.loot = AlchemicalCatalyst.class;
         this.lootChance = 0.3f;
         this.properties.add(Char.Property.MINIBOSS);
     }

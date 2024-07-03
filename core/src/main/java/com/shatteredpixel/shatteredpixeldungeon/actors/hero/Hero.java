@@ -202,7 +202,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
@@ -2927,17 +2926,17 @@ public class Hero extends Char {
 			Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
 		}
 
-		RingOfForce.BrawlersStance brawlStance = buff(RingOfForce.BrawlersStance.class);
-		if (brawlStance != null && brawlStance.hitsLeft() > 0){
-			MeleeWeapon.Charger charger = Buff.affect(this, MeleeWeapon.Charger.class);
-			charger.partialCharge -= RingOfForce.BrawlersStance.HIT_CHARGE_USE;
-			while (charger.partialCharge < 0) {
-				charger.charges--;
-				charger.partialCharge++;
-			}
-			BuffIndicator.refreshHero();
-			Item.updateQuickslot();
-		}
+//		RingOfForce.BrawlersStance brawlStance = buff(RingOfForce.BrawlersStance.class);
+//		if (brawlStance != null && brawlStance.hitsLeft() > 0){
+//			MeleeWeapon.Charger charger = Buff.affect(this, MeleeWeapon.Charger.class);
+//			charger.partialCharge -= RingOfForce.BrawlersStance.HIT_CHARGE_USE;
+//			while (charger.partialCharge < 0) {
+//				charger.charges--;
+//				charger.partialCharge++;
+//			}
+//			BuffIndicator.refreshHero();
+//			Item.updateQuickslot();
+//		}
 
 		curAction = null;
 

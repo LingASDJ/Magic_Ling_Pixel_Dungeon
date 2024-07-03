@@ -71,8 +71,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.DragonCaveRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.FayiNaRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.GardenEntranceRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.GardenExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.GoldRoom;
@@ -227,13 +225,8 @@ public abstract class RegularLevel extends Level {
 	protected ArrayList<Room> initRooms() {
 		ArrayList<Room> initRooms = new ArrayList<>();
 
-		if(branch == 5 && depth == 17){
-			initRooms.add(roomEntrance = new GardenEntranceRoom());
-			initRooms.add(roomExit = new GardenExitRoom());
-		} else {
-			initRooms.add ( roomEntrance = new EntranceRoom());
-			initRooms.add( roomExit = new ExitRoom());
-		}
+		initRooms.add ( roomEntrance = EntranceRoom.createEntrance());
+		initRooms.add( roomExit = ExitRoom.createExit());
 
 		//initRooms.add( roomExit = new SkeletonFishRoom());
 

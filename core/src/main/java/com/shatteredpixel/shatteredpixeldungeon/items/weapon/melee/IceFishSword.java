@@ -13,7 +13,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
@@ -61,10 +60,10 @@ public class IceFishSword extends MeleeWeapon {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
         {
-            inputs =  new Class[]{FrozenCarpaccio.class, MagicalInfusion.class, AlchemicalCatalyst.class};
+            inputs =  new Class[]{FrozenCarpaccio.class, MagicalInfusion.class};
             inQuantity = new int[]{1, 1, 1};
 
-            cost = 20+Dungeon.depth/2;
+            cost = 26+Dungeon.depth/2;
 
             output = IceFishSword.class;
             outQuantity = 1;

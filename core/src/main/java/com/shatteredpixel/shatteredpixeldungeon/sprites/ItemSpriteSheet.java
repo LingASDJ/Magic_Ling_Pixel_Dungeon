@@ -1081,6 +1081,32 @@ public class ItemSpriteSheet {
             assignItemRect(i, 16, 16);
     }
 
+    private static final int TRINKETS        =                               xy(1, 54);  //24 slots
+    public static final int RAT_SKULL       = TRINKETS+0;
+    public static final int PARCHMENT_SCRAP = TRINKETS+1;
+    public static final int PETRIFIED_SEED  = TRINKETS+2;
+    public static final int EXOTIC_CRYSTALS = TRINKETS+3;
+    public static final int MOSSY_CLUMP     = TRINKETS+4;
+    public static final int SUNDIAL         = TRINKETS+5;
+    public static final int CLOVER          = TRINKETS+6;
+    public static final int TRAP_MECHANISM  = TRINKETS+7;
+    public static final int MIMIC_TOOTH     = TRINKETS+8;
+    public static final int WONDROUS_RESIN  = TRINKETS+9;
+    public static final int EYE_OF_NEWT     = TRINKETS+10;
+    static{
+        assignItemRect(RAT_SKULL,       16, 11);
+        assignItemRect(PARCHMENT_SCRAP, 10, 14);
+        assignItemRect(PETRIFIED_SEED,  10, 10);
+        assignItemRect(EXOTIC_CRYSTALS, 14, 13);
+        assignItemRect(MOSSY_CLUMP,     12, 11);
+        assignItemRect(SUNDIAL,         16, 12);
+        assignItemRect(CLOVER,          11, 15);
+        assignItemRect(TRAP_MECHANISM,  13, 15);
+        assignItemRect(MIMIC_TOOTH,     8,  15);
+        assignItemRect(WONDROUS_RESIN,  12, 11);
+        assignItemRect(EYE_OF_NEWT,     12, 12);
+    }
+
     //for smaller 8x8 icons that often accompany an item sprite
     public static class Icons {
 

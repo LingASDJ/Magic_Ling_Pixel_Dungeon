@@ -240,10 +240,10 @@ public class SummonElemental extends Spell {
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
 		{
-			inputs =  new Class[]{Embers.class, ArcaneCatalyst.class};
+			inputs =  new Class[]{Embers.class};
 			inQuantity = new int[]{1, 1};
 
-			cost = 6;
+			cost = 12;
 
 			output = SummonElemental.class;
 			outQuantity = 5;

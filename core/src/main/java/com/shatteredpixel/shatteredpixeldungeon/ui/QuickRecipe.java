@@ -41,7 +41,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -50,13 +49,16 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlam
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfNoWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.UnstableBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfArcaneArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
@@ -73,12 +75,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCurse
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTerror;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfRoseShiled;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.ArcaneCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.FeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
@@ -86,7 +84,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Recycle;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDeepSleep;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -332,8 +329,7 @@ public class QuickRecipe extends Component {
 								new FrozenCarpaccio())),
 						new LightFood()));
 				result.add(new QuickRecipe( new WaterSoul.Recipe(),
-						new ArrayList<Item>(Arrays.asList(new PotionOfHealing(), new FrozenCarpaccio()
-								,new AlchemicalCatalyst())),
+						new ArrayList<Item>(Arrays.asList(new PotionOfHealing(), new FrozenCarpaccio())),
 						new WaterSoul().quantity(2)));
 				result.add(new QuickRecipe( new PotionOfNoWater.Recipe(),
 						new ArrayList<Item>(Arrays.asList(new Blindweed.Seed(), new Firebloom.Seed())),
@@ -400,12 +396,22 @@ public class QuickRecipe extends Component {
 						new ArcaneResin()));
 				return result;
 			case 7:
-				result.add(new QuickRecipe(new AlchemicalCatalyst.Recipe(), new ArrayList<>(Arrays.asList(new Potion.PlaceHolder(), new Plant.Seed.PlaceHolder())), new AlchemicalCatalyst()));
-				result.add(new QuickRecipe(new AlchemicalCatalyst.Recipe(), new ArrayList<>(Arrays.asList(new Potion.PlaceHolder(), new Runestone.PlaceHolder())), new AlchemicalCatalyst()));
+				result.add(new QuickRecipe(new UnstableBrew.Recipe(), new ArrayList<>(Arrays.asList(new Potion.PlaceHolder(), new  Plant.Seed.PlaceHolder())), new UnstableBrew()));
+				result.add(new QuickRecipe(new CausticBrew.Recipe()));
+				result.add(new QuickRecipe(new BlizzardBrew.Recipe()));
+				result.add(new QuickRecipe(new ShockingBrew.Recipe()));
+				result.add(new QuickRecipe(new InfernalBrew.Recipe()));
+				result.add(new QuickRecipe(new AquaBrew.Recipe()));
 				result.add(null);
 				result.add(null);
-				result.add(new QuickRecipe(new ArcaneCatalyst.Recipe(), new ArrayList<>(Arrays.asList(new Scroll.PlaceHolder(), new Runestone.PlaceHolder())), new ArcaneCatalyst()));
-				result.add(new QuickRecipe(new ArcaneCatalyst.Recipe(), new ArrayList<>(Arrays.asList(new Scroll.PlaceHolder(), new Plant.Seed.PlaceHolder())), new ArcaneCatalyst()));
+				result.add(new QuickRecipe(new ElixirOfHoneyedHealing.Recipe()));
+				result.add(new QuickRecipe(new ElixirOfAquaticRejuvenation.Recipe()));
+				result.add(new QuickRecipe(new ElixirOfArcaneArmor.Recipe()));
+				result.add(new QuickRecipe(new ElixirOfIcyTouch.Recipe()));
+				result.add(new QuickRecipe(new ElixirOfToxicEssence.Recipe()));
+				result.add(new QuickRecipe(new ElixirOfDragonsBlood.Recipe()));
+				result.add(new QuickRecipe(new ElixirOfMight.Recipe()));
+				result.add(new QuickRecipe(new ElixirOfFeatherFall.Recipe()));
 				return result;
 			case 8:
 				result.add(new QuickRecipe(new CausticBrew.Recipe()));
@@ -429,11 +435,8 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe(new BeaconOfReturning.Recipe()));
 				result.add(new QuickRecipe(new SummonElemental.Recipe()));
 				result.add(null);
-				result.add(new QuickRecipe(new AquaBlast.Recipe()));
 				result.add(new QuickRecipe(new ReclaimTrap.Recipe()));
-				result.add(new QuickRecipe(new FeatherFall.Recipe()));
 				result.add(null);
-				result.add(new QuickRecipe(new Alchemize.Recipe()));
 				result.add(new QuickRecipe(new MagicalInfusion.Recipe()));
 				result.add(new QuickRecipe(new CurseInfusion.Recipe()));
 				result.add(new QuickRecipe(new Recycle.Recipe()));
@@ -456,7 +459,7 @@ public class QuickRecipe extends Component {
 								new PotionOfFrost())),
 						new ScrollOfFlameCursed().quantity(2)));
 				result.add(new QuickRecipe( new ScrollOfRoseShiled.Recipe(),
-						new ArrayList<Item>(Arrays.asList(new PotionOfPurity(), new  AlchemicalCatalyst(),
+						new ArrayList<Item>(Arrays.asList(new PotionOfPurity(),
 								new StoneOfBlink())),
 						new ScrollOfRoseShiled().quantity(3)));
 				result.add(null);
@@ -467,8 +470,7 @@ public class QuickRecipe extends Component {
 								new LifeTreeSword.PlaceHolder())),
 						new BloodthirstyThorn()));
 				result.add(new QuickRecipe( new IceFishSword.Recipe(),
-						new ArrayList<Item>(Arrays.asList(new FrozenCarpaccio(), new MagicalInfusion(),
-								new AlchemicalCatalyst())),
+						new ArrayList<Item>(Arrays.asList(new FrozenCarpaccio(), new MagicalInfusion())),
 						new IceFishSword()));
 				result.add(null);
 				result.add(null);

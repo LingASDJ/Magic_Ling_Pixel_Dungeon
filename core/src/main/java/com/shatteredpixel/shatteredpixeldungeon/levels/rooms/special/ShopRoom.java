@@ -19,16 +19,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
+		package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
-
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
@@ -39,7 +33,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
@@ -52,27 +45,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
-import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.SakaFishSketon;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAntiMagic;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -83,36 +61,49 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class ShopRoom extends SpecialRoom {
 
 	protected ArrayList<Item> itemsToSpawn;
-	
+
 	@Override
 	public int minWidth() {
-		return Math.max(7, (int)(Math.sqrt(itemCount())+3));
-	}
-	
-	@Override
-	public int minHeight() {
-		return Math.max(7, (int)(Math.sqrt(itemCount())+3));
+		return Math.max(7, (int)(Math.sqrt(spacesNeeded())+3));
 	}
 
-	public int itemCount(){
-		if (itemsToSpawn == null) itemsToSpawn = generateItems();
-		return itemsToSpawn.size();
+	@Override
+	public int minHeight() {
+		return Math.max(7, (int)(Math.sqrt(spacesNeeded())+3));
 	}
-	
+
+	public int spacesNeeded(){
+		if (itemsToSpawn == null) itemsToSpawn = generateItems();
+
+		//sandbags spawn based on current level of an hourglass the player may be holding
+		// so, to avoid rare cases of min sizes differing based on that, we ignore all sandbags
+		// and then add 4 items in all cases, which is max number of sandbags that can be in the shop
+		int spacesNeeded = itemsToSpawn.size();
+		for (Item i : itemsToSpawn){
+			if (i instanceof TimekeepersHourglass.sandBag){
+				spacesNeeded--;
+			}
+		}
+		spacesNeeded += 4;
+
+		//we also add 1 more space, for the shopkeeper
+		spacesNeeded++;
+		return spacesNeeded;
+	}
+
 	public void paint( Level level ) {
-		
+
 		Painter.fill( level, this, Terrain.WALL );
 		Painter.fill( level, this, 1, Terrain.EMPTY_SP );
 
 		placeShopkeeper( level );
 
 		placeItems( level );
-		
+
 		for (Door door : connected.values()) {
 			door.set( Door.Type.REGULAR );
 		}
@@ -135,143 +126,131 @@ public class ShopRoom extends SpecialRoom {
 			itemsToSpawn = generateItems();
 		}
 
-		Point itemPlacement = new Point(entrance());
-		if (itemPlacement.y == top){
-			itemPlacement.y++;
-		} else if (itemPlacement.y == bottom) {
-			itemPlacement.y--;
-		} else if (itemPlacement.x == left){
-			itemPlacement.x++;
+		Point entryInset = new Point(entrance());
+		if (entryInset.y == top){
+			entryInset.y++;
+		} else if (entryInset.y == bottom) {
+			entryInset.y--;
+		} else if (entryInset.x == left){
+			entryInset.x++;
 		} else {
-			itemPlacement.x--;
+			entryInset.x--;
 		}
 
-		for (Item item : itemsToSpawn) {
+		Point curItemPlace = entryInset.clone();
 
-			if (itemPlacement.x == left+1 && itemPlacement.y != top+1){
-				itemPlacement.y--;
-			} else if (itemPlacement.y == top+1 && itemPlacement.x != right-1){
-				itemPlacement.x++;
-			} else if (itemPlacement.x == right-1 && itemPlacement.y != bottom-1){
-				itemPlacement.y++;
+		int inset = 1;
+
+		for (Item item : itemsToSpawn.toArray(new Item[0])) {
+
+			//place items in a clockwise pattern
+			if (curItemPlace.x == left+inset && curItemPlace.y != top+inset){
+				curItemPlace.y--;
+			} else if (curItemPlace.y == top+inset && curItemPlace.x != right-inset){
+				curItemPlace.x++;
+			} else if (curItemPlace.x == right-inset && curItemPlace.y != bottom-inset){
+				curItemPlace.y++;
 			} else {
-				itemPlacement.x--;
+				curItemPlace.x--;
 			}
 
-			int cell = level.pointToCell(itemPlacement);
+			//once we get to the inset from the entrance again, move another cell inward and loop
+			if (curItemPlace.equals(entryInset)){
 
-			if (level.heaps.get( cell ) != null) {
-				do {
-					cell = level.pointToCell(random());
-				} while (level.heaps.get( cell ) != null || level.findMob( cell ) != null);
+				if (entryInset.y == top+inset){
+					entryInset.y++;
+				} else if (entryInset.y == bottom-inset){
+					entryInset.y--;
+				}
+				if (entryInset.x == left+inset){
+					entryInset.x++;
+				} else if (entryInset.x == right-inset){
+					entryInset.x--;
+				}
+				inset++;
+
+				if (inset > (Math.min(width(), height())-3)/2){
+					break; //out of space!
+				}
+
+				curItemPlace = entryInset.clone();
+
+				//make sure to step forward again
+				if (curItemPlace.x == left+inset && curItemPlace.y != top+inset){
+					curItemPlace.y--;
+				} else if (curItemPlace.y == top+inset && curItemPlace.x != right-inset){
+					curItemPlace.x++;
+				} else if (curItemPlace.x == right-inset && curItemPlace.y != bottom-inset){
+					curItemPlace.y++;
+				} else {
+					curItemPlace.x--;
+				}
 			}
 
-			if(Statistics.bossRushMode){
-				level.drop( item, cell ).type = Heap.Type.FOR_RUSH;
-			} else {
-				level.drop( item, cell ).type = Heap.Type.FOR_SALE;
-			}
+			int cell = level.pointToCell(curItemPlace);
+			level.drop( item, cell ).type = Heap.Type.FOR_SALE;
+			itemsToSpawn.remove(item);
+		}
 
+		//we didn't have enough space to place everything neatly, so now just fill in anything left
+		if (!itemsToSpawn.isEmpty()){
+			for (Point p : getPoints()){
+				int cell = level.pointToCell(p);
+				if ((level.map[cell] == Terrain.EMPTY_SP || level.map[cell] == Terrain.EMPTY)
+						&& level.heaps.get(cell) == null && level.findMob(cell) == null){
+					level.drop( itemsToSpawn.remove(0), level.pointToCell(p) ).type = Heap.Type.FOR_SALE;
+				}
+				if (itemsToSpawn.isEmpty()){
+					break;
+				}
+			}
+		}
+
+		if (!itemsToSpawn.isEmpty()){
+			ShatteredPixelDungeon.reportException(new RuntimeException("failed to place all items in a shop!"));
 		}
 
 	}
-	
+
 	protected static ArrayList<Item> generateItems() {
 
 		ArrayList<Item> itemsToSpawn = new ArrayList<>();
 
 		MeleeWeapon w;
-
-		LockSword w2 = new LockSword();
-
 		switch (Dungeon.depth) {
-			case 5:case 6: default:
-			w = (MeleeWeapon) Generator.random(Generator.wepTiers[1]);
-			itemsToSpawn.add( Generator.random(Generator.misTiers[1]).quantity(2).identify(false) );
-			itemsToSpawn.add( new LeatherArmor().identify(false) );
-
-            if(!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)){
-                if(Random.Int(1)<1){
-                    //50%
-                    w2.lvl = Random.Int(0, 301);
-	    			itemsToSpawn.add(w2.identify(false));
-	    		}
-            }else if(Random.Int(10)<1 ) {
-			    //10%
-				w2.lvl = Random.Int(0, 301);
-				itemsToSpawn.add(w2.identify(false));
-			}
-
-			break;
-			
-		case 11:case 12:
-			w = (MeleeWeapon) Generator.random(Generator.wepTiers[2]);
-			itemsToSpawn.add( Generator.random(Generator.misTiers[2]).quantity(2).identify(false) );
-			itemsToSpawn.add( new MailArmor().identify(false) );
-
-			if(!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)){
-                if(Random.Int(1)<1){
-                    //50%
-                    w2.lvl = Random.Int(100, 301);
-	    			itemsToSpawn.add(w2.identify(false));
-	    		}
-            }else if(Random.Int(200)<15) {
-			//7.5%
-				w2 = new LockSword();
-				((LockSword) w2).lvl = Random.Int(100, 301);
-				itemsToSpawn.add(w2.identify(false));
-			}
-
-
-			break;
-			
-		case 16:case 19:
-			w = (MeleeWeapon) Generator.random(Generator.wepTiers[3]);
-			itemsToSpawn.add( Generator.random(Generator.misTiers[3]).quantity(2).identify(false) );
-			if(Random.Int(10) == 0){
+			case 6: default:
+				w = (MeleeWeapon) Generator.random(Generator.wepTiers[1]);
+				itemsToSpawn.add( Generator.random(Generator.misTiers[1]).quantity(2).identify(false) );
 				itemsToSpawn.add( new LeatherArmor().identify(false) );
-			} else {
+				break;
+
+			case 11:
+				w = (MeleeWeapon) Generator.random(Generator.wepTiers[2]);
+				itemsToSpawn.add( Generator.random(Generator.misTiers[2]).quantity(2).identify(false) );
+				itemsToSpawn.add( new MailArmor().identify(false) );
+				break;
+
+			case 16:
+				w = (MeleeWeapon) Generator.random(Generator.wepTiers[3]);
+				itemsToSpawn.add( Generator.random(Generator.misTiers[3]).quantity(2).identify(false) );
 				itemsToSpawn.add( new ScaleArmor().identify(false) );
-			}
+				break;
 
-			if(!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)){
-                if(Random.Int(1)<1){
-                    //50%
-                    //合计期望为87.5%
-                    w2.lvl = Random.Int(200, 501);
-	    			itemsToSpawn.add(w2.identify(false));
-	    		}
-            }else if(Random.Int(20)<1) {
-			//5%
-			//合计期望大概为21%
-				w2 = new LockSword();
-				((LockSword) w2).lvl = Random.Int(200, 501);
-				itemsToSpawn.add( w2.identify(false) );
-			}
-			break;
-
-
-
-		case 20: case 21:case 25:
-			w = (MeleeWeapon) Generator.random(Generator.wepTiers[4]);
-			itemsToSpawn.add( Generator.random(Generator.misTiers[4]).quantity(2).identify(false) );
-			if(Random.Int(10) == 0){
-				itemsToSpawn.add( new LamellarArmor().identify(false) );
-			} else {
+			case 20: case 21:
+				w = (MeleeWeapon) Generator.random(Generator.wepTiers[4]);
+				itemsToSpawn.add( Generator.random(Generator.misTiers[4]).quantity(2).identify(false) );
 				itemsToSpawn.add( new PlateArmor().identify(false) );
-			}
-			itemsToSpawn.add( new Torch() );
-			itemsToSpawn.add( new Torch() );
-			itemsToSpawn.add( new Torch() );
-
-			break;
+				itemsToSpawn.add( new Torch() );
+				itemsToSpawn.add( new Torch() );
+				itemsToSpawn.add( new Torch() );
+				break;
 		}
 		w.enchant(null);
 		w.cursed = false;
 		w.level(0);
 		w.identify(false);
 		itemsToSpawn.add(w);
-		
+
 		itemsToSpawn.add( TippedDart.randomTipped(2) );
 
 		itemsToSpawn.add( new Alchemize().quantity(Random.IntRange(2, 3)));
@@ -284,48 +263,6 @@ public class ShopRoom extends SpecialRoom {
 		itemsToSpawn.add( new PotionOfHealing() );
 		itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.POTION ) );
 		itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.POTION ) );
-
-		if(lanterfireactive) {
-			if(Challenges.activeChallenges() > 6){
-				itemsToSpawn.add(new OilPotion());
-				itemsToSpawn.add(new OilPotion());
-			} else {
-				itemsToSpawn.add(new OilPotion());
-			}
-		}
-
-		//小恶魔奖励
-		if(Statistics.dwarfKill){
-			itemsToSpawn.add( new ScrollOfUpgrade() );
-			itemsToSpawn.add( new CurseInfusion() );
-
-			Item brew;
-			switch (Random.Int(6)){
-				default:
-				case 1: brew = new WaterSoul();   break;
-				case 2: brew = new BlizzardBrew(); break;
-				case 3: brew = new CausticBrew();    break;
-				case 4: brew = new InfernalBrew();   break;
-				case 5: brew = new ShockingBrew();   break;
-			}
-
-			itemsToSpawn.add( brew );
-
-			Item w21;
-			switch (Random.Int(5)){
-				default:
-				case 0: w21 = new ScrollOfSirensSong(); break;
-				case 1: w21 = new ScrollOfChallenge(); break;
-				case 2: w21 = new ScrollOfMetamorphosis(); break;
-				case 3: w21 = new ScrollOfAntiMagic();    break;
-				case 4: w21 = new ScrollOfPsionicBlast();   break;
-			}
-			itemsToSpawn.add( w21 );
-
-			Ankh ankhPlus = new Ankh();
-			ankhPlus.blessed = true;
-			itemsToSpawn.add( ankhPlus );
-		}
 
 		itemsToSpawn.add( new ScrollOfIdentify() );
 		itemsToSpawn.add( new ScrollOfRemoveCurse() );
@@ -340,15 +277,6 @@ public class ShopRoom extends SpecialRoom {
 		itemsToSpawn.add( new SmallRation() );
 		itemsToSpawn.add( new SmallRation() );
 
-		PaswordBadges.loadGlobal();
-		List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered( true );
-
-		if(passwordbadges.contains(PaswordBadges.Badge.RESET_DAY)) {
-			if (Random.Int(4) == 0) {
-				itemsToSpawn.add(new SakaFishSketon());
-			}
-		}
-		
 		switch (Random.Int(4)){
 			case 0:
 				itemsToSpawn.add( new Bomb() );
@@ -362,10 +290,7 @@ public class ShopRoom extends SpecialRoom {
 				break;
 		}
 
-		if(!Statistics.bossRushMode){
-			itemsToSpawn.add( new Ankh() );
-		}
-
+		itemsToSpawn.add( new Ankh() );
 		itemsToSpawn.add( new StoneOfAugmentation() );
 
 		TimekeepersHourglass hourglass = Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);
@@ -410,22 +335,16 @@ public class ShopRoom extends SpecialRoom {
 		rare.cursedKnown = true;
 		itemsToSpawn.add( rare );
 
-		//hard limit is 63 items + 1 shopkeeper, as shops can't be bigger than 8x8=64 internally
-		if (itemsToSpawn.size() > 63) {
-			throw new RuntimeException("Shop attempted to carry more than 63 items!");
-		}
-
 		//use a new generator here to prevent items in shop stock affecting levelgen RNG (e.g. sandbags)
 		//we can use a random long for the seed as it will be the same long every time
 		Random.pushGenerator(Random.Long());
-			Random.shuffle(itemsToSpawn);
+		Random.shuffle(itemsToSpawn);
 		Random.popGenerator();
 
 		return itemsToSpawn;
 	}
 
-	public static Bag ChooseBag(Belongings pack){
-		if(Dungeon.isDLC(Conducts.Conduct.DEV)) return null;
+	protected static Bag ChooseBag(Belongings pack){
 
 		//generate a hashmap of all valid bags.
 		HashMap<Bag, Integer> bags = new HashMap<>();

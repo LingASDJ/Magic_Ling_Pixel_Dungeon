@@ -254,6 +254,9 @@ public class SPDSettings extends GameSettings {
 	}
 
 	//Interface
+
+	public static final String KEY_VIBRATION    = "vibration";
+
     public static final String KEY_ONE_CONDUCT = "one_conduct";
     public static final String KEY_TWO_CONDUCT = "two_conduct";
 
@@ -278,6 +281,15 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_UNLOCKITEM = "forever_unlock_item";
 
 	public static final String KEY_CURRENTHEROSKIN = "current_hero_skin";
+
+
+	public static void vibration(boolean value){
+		put(KEY_VIBRATION, value);
+	}
+
+	public static boolean vibration(){
+		return getBoolean(KEY_VIBRATION, true);
+	}
 
     public static void cameraFollow(int value) {
         put(KEY_CAMERA_FOLLOW, value);

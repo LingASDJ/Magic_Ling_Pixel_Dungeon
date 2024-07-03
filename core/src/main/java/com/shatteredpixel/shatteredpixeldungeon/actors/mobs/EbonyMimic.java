@@ -45,7 +45,7 @@ import com.watabou.utils.Random;
 public class EbonyMimic extends Mimic {
 
 	{
-		spriteClass = MimicSprite.Ebony.class;
+		spriteClass = MimicSprite.Black.class;
 	}
 
 	@Override

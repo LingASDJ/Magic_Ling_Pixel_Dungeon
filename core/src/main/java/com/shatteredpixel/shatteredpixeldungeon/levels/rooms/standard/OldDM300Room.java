@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CursingTrap;
@@ -35,10 +36,10 @@ public class OldDM300Room extends SpecialRoom {
     public int maxWidth() { return 39; }
     @Override
     public int maxHeight() { return 39; }
-    @Override
-    public boolean canMerge(Level l, Point p, int mergeTerrain) {
-        return false;
-    }
+	@Override
+	public boolean canMerge(Level l, Room other, Point p, int mergeTerrain) {
+		return false;
+	}
 
     public void paint( Level level ) {
 

@@ -24,10 +24,10 @@ public class GardenEntranceRoom extends EntranceRoom {
         return Math.max(super.minHeight(), 5);
     }
 
-    @Override
-    public boolean canMerge(Level l, Point p, int mergeTerrain) {
-        return false;
-    }
+	@Override
+	public boolean canMerge(Level l, Room other, Point p, int mergeTerrain) {
+		return false;
+	}
 
     @Override
     public boolean canPlaceTrap(Point p) {

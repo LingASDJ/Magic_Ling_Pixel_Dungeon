@@ -131,7 +131,7 @@ public class InputHandler extends InputAdapter {
 		return true;
 	}
 
-	@Override
+	//@Override
 	public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
 		//currently emulating functionality from libGDX 1.11.0, do we keep this?
 		//in particular this is probably a more graceful way to handle things like system swipes on iOS

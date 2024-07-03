@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit;
+package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -27,7 +27,16 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit.CaveExitRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit.CavesFissureExitRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit.ChasmBridgeExitRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit.ChasmExitRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit.CircleBasinExitRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit.HallwayExitRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit.PillarsExitRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit.RitualExitRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit.StatuesExitRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit.WaterBridgeExitRoom;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;

@@ -20,7 +20,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WaterSoulX;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -74,10 +73,10 @@ public class WaterSoul extends Elixir {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
         {
-            inputs =  new Class[]{PotionOfHealing.class, FrozenCarpaccio.class, AlchemicalCatalyst.class};
+            inputs =  new Class[]{PotionOfHealing.class, FrozenCarpaccio.class};
             inQuantity = new int[]{1, 1, 1};
 
-            cost = 10;
+            cost = 16;
 
             output = WaterSoul.class;
             outQuantity = 2;

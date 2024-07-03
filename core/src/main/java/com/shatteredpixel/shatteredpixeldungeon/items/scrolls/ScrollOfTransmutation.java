@@ -32,7 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.Brew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.Elixir;
@@ -85,7 +84,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 			}
 		}
 		return (item instanceof MissileWeapon && (!(item instanceof Dart) || item instanceof TippedDart)) ||
-				(item instanceof Potion && !(item instanceof Elixir || item instanceof Brew || item instanceof AlchemicalCatalyst)) ||
+				(item instanceof Potion && !(item instanceof Elixir || item instanceof Brew)) ||
 				//the extra check here prevents a single scroll being used on itself
 				(item instanceof Scroll && (!(item instanceof ScrollOfTransmutation) || item.quantity() > 1)) ||
 				item instanceof Ring ||

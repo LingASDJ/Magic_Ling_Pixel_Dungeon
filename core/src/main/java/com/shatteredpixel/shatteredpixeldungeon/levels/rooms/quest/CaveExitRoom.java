@@ -6,7 +6,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom;
-import com.watabou.utils.Point;
 
 public class CaveExitRoom extends ExitRoom {
 
@@ -28,12 +27,6 @@ public class CaveExitRoom extends ExitRoom {
     @Override
     public int maxHeight() {
         return 9;
-    }
-    @Override
-    public boolean canMerge(Level l, Point p, int mergeTerrain) {
-        //StandardRoom.canMerge
-        int cell = l.pointToCell(pointInside(p, 1));
-        return (Terrain.flags[l.map[cell]] & Terrain.SOLID) == 0;
     }
 
     @Override

@@ -29,12 +29,11 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class SupplyRation extends Food {
 
 	{
-		image = ItemSpriteSheet.SUPPLY_RATION;
+		//image = ItemSpriteSheet.SUPPLY_RATION;
 		energy = 2*Hunger.HUNGRY/3f; //200 food value
 
 		bones = false;

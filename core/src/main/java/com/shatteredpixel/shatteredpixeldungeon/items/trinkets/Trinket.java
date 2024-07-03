@@ -65,7 +65,7 @@ public abstract class Trinket extends Item {
 	public static class PlaceHolder extends Trinket {
 
 		{
-			image = ItemSpriteSheet.TRINKET_HOLDER;
+			image = ItemSpriteSheet.BREW_INFERNAL;
 		}
 
 		@Override

@@ -432,10 +432,14 @@ public class MeleeWeapon extends Weapon {
 				info += "\n\n" + Messages.get(MeleeWeapon.class, "ability_not_desc");
 				return info;
 			}
-			info += "\n\n" + Messages.get(this, "ability_desc");
+			info += "\n\n" + abilityInfo();
 		}
 		
 		return info;
+	}
+
+	public String abilityInfo() {
+		return Messages.get(this, "ability_desc");
 	}
 	
 	public String statsInfo(){

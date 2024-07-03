@@ -235,6 +235,7 @@ public enum Document {
 	public static final String GUIDE_SURPRISE_ATKS  = "Surprise_Attacks";
 	public static final String GUIDE_IDING          = "Identifying";
 	public static final String GUIDE_FOOD           = "Food";
+	public static final String GUIDE_ALCHEMY  = "Alchemy";
 	public static final String GUIDE_DIEING         = "Dieing";
 
 	public static final String GUIDE_SEARCHING      = "Searching";

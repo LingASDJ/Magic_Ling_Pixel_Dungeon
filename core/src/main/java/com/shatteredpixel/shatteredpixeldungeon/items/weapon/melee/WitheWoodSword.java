@@ -83,7 +83,9 @@ public class WitheWoodSword extends MeleeWeapon {
 
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
-		Mace.heavyBlowAbility(hero, target, 1.40f, this);
+		//+(6+1.5*lvl) damage, roughly +40% base dmg, +45% scaling
+		int dmgBoost = augment.damageFactor(6 + Math.round(1.5f*buffedLvl()));
+		Mace.heavyBlowAbility(hero, target, 1, dmgBoost, this);
 	}
 
 }

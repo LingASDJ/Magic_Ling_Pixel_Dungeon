@@ -69,6 +69,10 @@ public enum Icons {
 	STATS,
 	CHALLENGE_OFF,
 	CHALLENGE_ON,
+
+	//Base on SHPD 2.4.2
+	REPEAT,
+
 	RENAME_OFF,
 	RENAME_ON,
 
@@ -255,6 +259,9 @@ public enum Icons {
 				break;
 			case CHALLENGE_ON:
 				icon.frame( icon.texture.uvRectBySize( 144, 32, 14, 12 ) );
+				break;
+			case REPEAT:
+				icon.frame( icon.texture.uvRectBySize( 192, 32, 11, 11 ) );
 				break;
 			case RENAME_OFF:
 				icon.frame( icon.texture.uvRectBySize( 160, 32, 15, 14 ) );

@@ -62,7 +62,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Switch;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfNoWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
@@ -97,11 +96,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCurse
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfRoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.ArcaneCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.FeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
@@ -241,7 +237,7 @@ public class SpawnMisc extends TestItem {
             brewList.add(ElixirOfIcyTouch.class);
             brewList.add(ElixirOfMight.class);
             brewList.add(ElixirOfToxicEssence.class);
-            brewList.add(AlchemicalCatalyst.class);
+            //brewList.add(AlchemicalCatalyst.class);
             brewList.add(WaterSoul.class);
             brewList.add(ElixirOfNukeCole.class);
         }
@@ -249,10 +245,10 @@ public class SpawnMisc extends TestItem {
         //Spell
         if(spellList.isEmpty()) {
             spellList.add(Alchemize.class);
-            spellList.add(AquaBlast.class);
+            //spellList.add(AquaBlast.class);
             spellList.add(BeaconOfReturning.class);
             spellList.add(CurseInfusion.class);
-            spellList.add(FeatherFall.class);
+            //spellList.add(FeatherFall.class);
             spellList.add(MagicalInfusion.class);
             spellList.add(TelekineticGrab.class);
             spellList.add(PhaseShift.class);
@@ -260,7 +256,7 @@ public class SpawnMisc extends TestItem {
             spellList.add(Recycle.class);
             spellList.add(WildEnergy.class);
             spellList.add(SummonElemental.class);
-            spellList.add(ArcaneCatalyst.class);
+            //spellList.add(ArcaneCatalyst.class);
         }
 
         if(foodList.isEmpty()) {
