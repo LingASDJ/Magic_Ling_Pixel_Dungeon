@@ -41,9 +41,6 @@ public class Statistics {
 	public static boolean SmallLeafGet = false;
 	public static boolean noClearKill = false;
 
-	//吃保底
-	public static int bossWeapons;
-
 	public static int zeroItemLevel;
 
 	public static int hcDialogLevel;
@@ -479,8 +476,6 @@ public class Statistics {
 
 		bundle.put(LOCD,doNotLookLing);
 
-        bundle.put(BDTX, bossWeapons);
-
         bundle.put(LOVE,findMoon);
 
 		bundle.put(ZEROLEVEL,zeroItemLevel);
@@ -682,8 +677,6 @@ public class Statistics {
 
 		//嗜血荆棘等级处理
 		ChaicBlood   = bundle.getInt( CHACEBLOOD );
-
-		bossWeapons = bundle.getInt(BDTX);
 
 		dm720Fight = bundle.getBoolean(DM720FIGHT);
 

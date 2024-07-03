@@ -271,7 +271,7 @@ public class BeaconOfReturning extends Spell {
 		
 		{
 			inputs =  new Class[]{ScrollOfPassage.class};
-			inQuantity = new int[]{1, 1};
+			inQuantity = new int[]{1};
 			
 			cost = 12;
 			
