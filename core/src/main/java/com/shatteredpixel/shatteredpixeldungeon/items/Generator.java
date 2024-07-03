@@ -507,8 +507,12 @@ public class Generator {
 					WandOfGodIce.class,
 					WandOfVenom.class
 			};
+
+			Badges.loadGlobal();
+			List<Badges.Badge> badges = Badges.filterReplacedBadges(true);
+
 			WAND.probs = new float[]{ 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 2,0,0,
-					Badges.isUnlocked(Badges.Badge.KILL_MG) ? 2 : 0,0 };
+					badges.contains(Badges.Badge.KILL_MG) ? 2 : 0,0 };
 
 			//see generator.randomWeapon
 			WEAPON.classes = new Class<?>[]{};

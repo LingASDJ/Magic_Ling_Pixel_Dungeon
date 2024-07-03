@@ -65,7 +65,7 @@ public class WndImp extends Window {
 		btnReward.setRect( 0, message.top() + message.height() + GAP, WIDTH, BTN_HEIGHT );
 		add( btnReward );
 
-		if(SPDSettings.KillDwarf()){
+		if(SPDSettings.KillDwarf() && !(Statistics.deepestFloor >=20) ){
 			RedButton btnChallenges = new RedButton( Messages.get(this, "challenges") ) {
 				@Override
 				protected void onClick() {

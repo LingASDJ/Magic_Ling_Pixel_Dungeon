@@ -244,7 +244,8 @@ public abstract class Plant implements Bundlable {
 
 					boolean isNoSeedAdd =
 							curItem instanceof Firebloom.Seed || curItem instanceof Icecap.Seed
-									|| curItem instanceof Sorrowmoss.Seed || curItem instanceof SkyBlueFireBloom.Seed;
+									|| curItem instanceof Sorrowmoss.Seed || curItem instanceof SkyBlueFireBloom.Seed ||
+									curItem instanceof Earthroot.Seed;
 					if(!isNoSeedAdd && !Dungeon.isChallenged(Challenges.EXSG)){
 						if(hero.pointsInTalent(Talent.HEARTY_MEAL) == 1 && Random.Float()<=0.25f) {
 							potion.drink(hero);

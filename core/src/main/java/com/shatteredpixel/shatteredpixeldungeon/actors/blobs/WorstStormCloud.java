@@ -22,8 +22,10 @@ public class WorstStormCloud extends Blob{
         boolean result = super.act();
         if(volume<=0) {
             for(int i=0;i<affectedCell.length;i++){
-                Level.set(affectedCell[i], Terrain.EMBERS);
-                GameScene.updateMap(affectedCell[i]);
+                if(Dungeon.level.solid[i] && cur[i] > 0) {
+                    Level.set(affectedCell[i], Terrain.EMBERS);
+                    GameScene.updateMap(affectedCell[i]);
+                }
             }
             affectedCell= new int[]{};
         }

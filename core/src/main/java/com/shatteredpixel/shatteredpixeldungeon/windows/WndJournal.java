@@ -359,6 +359,8 @@ public class WndJournal extends WndTabbed {
 					return new ItemSprite(ItemSpriteSheet.LANTERNB);
 				case "Readyherobook":
 					return new ItemSprite(ItemSpriteSheet.YELLOWBOOKS);
+				case "Alchemy":
+					return new ItemSprite(ItemSpriteSheet.EYE_OF_NEWT);
 			}
 		}
 

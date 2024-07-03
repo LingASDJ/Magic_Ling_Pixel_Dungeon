@@ -29,7 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.JAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
-import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlBooks;
@@ -472,7 +471,7 @@ public class QuickRecipe extends Component {
 						new MIME.GOLD_FIVE()));
 				result.add(new QuickRecipe( new JAmulet.Recipe(),
 						new ArrayList<Item>(Arrays.asList(new MIME.GOLD_FIVE(), new CrystalLing(),
-								new Waterskin())),
+								new UnstableSpell())),
 						new JAmulet()));
 				result.add(null);
 				result.add(null);

@@ -195,6 +195,7 @@ public abstract class Recipe {
 			new Alchemize.Recipe(),
 			new StewedMeat.oneMeat(),
 
+			new JAmulet.CrystalRecipe(),
 			//SHPD 2.4.2
 			new TrinketCatalyst.Recipe(),
 			new Trinket.UpgradeTrinket(),

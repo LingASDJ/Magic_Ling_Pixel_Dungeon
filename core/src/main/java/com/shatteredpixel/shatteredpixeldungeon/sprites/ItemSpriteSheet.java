@@ -192,19 +192,22 @@ public class ItemSpriteSheet {
 
     public static final int CRYSTAL_QUESTION    = BOMBS+14;
 
+    public static final int RICKROLL   = BOMBS+15;
+
+
     static{
-        assignItemRect(BOMB,            10, 13);
-        assignItemRect(DBL_BOMB,        14, 13);
-        assignItemRect(FIRE_BOMB,       13, 12);
-        assignItemRect(FROST_BOMB,      13, 12);
-        assignItemRect(REGROWTH_BOMB,   13, 12);
-        assignItemRect(FLASHBANG,       13, 12);
-        assignItemRect(SHOCK_BOMB,      10, 13);
-        assignItemRect(HOLY_BOMB,       10, 13);
-        assignItemRect(WOOLY_BOMB,      10, 13);
-        assignItemRect(NOISEMAKER,      10, 13);
-        assignItemRect(ARCANE_BOMB,     10, 13);
-        assignItemRect(SHRAPNEL_BOMB,   10, 13);
+        assignItemRect(BOMB,            12, 14);
+        assignItemRect(DBL_BOMB,        16, 14);
+        assignItemRect(FIRE_BOMB,       11, 14);
+        assignItemRect(FROST_BOMB,      10, 13);
+        assignItemRect(REGROWTH_BOMB,   9, 12);
+        assignItemRect(FLASHBANG,       11, 14);
+        assignItemRect(SHOCK_BOMB,      13, 15);
+        assignItemRect(HOLY_BOMB,       14, 13);
+        assignItemRect(WOOLY_BOMB,      11, 14);
+        assignItemRect(NOISEMAKER,      13, 15);
+        assignItemRect(ARCANE_BOMB,     10, 14);
+        assignItemRect(SHRAPNEL_BOMB,   12, 15);
         assignItemRect(BLACK_KEY,        8, 14);
         assignItemRect(CRYSTAL_QUESTION, 15,11);
     }

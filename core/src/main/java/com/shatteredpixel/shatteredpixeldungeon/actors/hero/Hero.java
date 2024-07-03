@@ -1947,12 +1947,16 @@ public class Hero extends Char {
 		}
 
 		int preHP = HP + shielding();
+
 		int preTrueHP = HP;
+
 		if (src instanceof Hunger) preHP -= shielding();
 		super.damage( dmg, src );
 		int postHP = HP + shielding();
 		if (src instanceof Hunger) postHP -= shielding();
 		int effectiveDamage = preHP - postHP;
+
+		if (effectiveDamage <= 0) return;
 
 		int trueDamage=preTrueHP-HP;
 
@@ -1972,8 +1976,6 @@ public class Hero extends Char {
 				}
 			}
 		}
-
-		if (effectiveDamage <= 0) return;
 
 		if (buff(Challenge.DuelParticipant.class) != null){
 			buff(Challenge.DuelParticipant.class).addDamage(effectiveDamage);
