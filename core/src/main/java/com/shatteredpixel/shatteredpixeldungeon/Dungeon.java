@@ -102,6 +102,7 @@ public class Dungeon {
 		UPGRADE_SCROLLS,
 		ARCANE_STYLI,
 		BBAT,
+		TRINKET_CATA,
 		//Health potion sources
 		//enemies
 		SWARM_HP,
@@ -278,7 +279,10 @@ public class Dungeon {
 		return level;
 	}
 
-
+	public static boolean trinketCataNeeded(){
+		//one trinket catalyst on floors 1-3
+		return depth < 5 && !LimitedDrops.TRINKET_CATA.dropped() && Random.Int(4-depth) == 0;
+	}
 
 	public static void resetLevel() {
 

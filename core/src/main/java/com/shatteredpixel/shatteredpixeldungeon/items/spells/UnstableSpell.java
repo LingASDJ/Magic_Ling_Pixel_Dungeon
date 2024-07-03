@@ -49,7 +49,7 @@ import java.util.HashSet;
 public class UnstableSpell extends Spell {
 
 	{
-		image = ItemSpriteSheet.BREW_BLIZZARD;
+		image = ItemSpriteSheet.MISC_ROLLBLOCK;
 	}
 	
 	private static HashMap<Class<? extends Scroll>, Float> scrollChances = new HashMap<>();

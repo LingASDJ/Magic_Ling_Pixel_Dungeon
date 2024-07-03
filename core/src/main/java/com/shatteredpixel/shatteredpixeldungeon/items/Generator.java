@@ -387,12 +387,26 @@ public class Generator {
 			subOrderings.put(Scroll.class, new ArrayList<>(Arrays.asList(Scroll.class, ExoticScroll.class, Spell.class, ArcaneResin.class)));
 		}
 
+		//in case there are multiple matches, this will return the latest match
 		public static int order( Item item ) {
+			int catResult = -1, subResult = 0;
 			for (int i=0; i < values().length; i++) {
-				if (values()[i].superClass.isInstance( item )) {
-					return i;
+				ArrayList<Class> subOrdering = subOrderings.get(values()[i].superClass);
+				if (subOrdering != null){
+					for (int j=0; j < subOrdering.size(); j++){
+						if (subOrdering.get(j).isInstance(item)){
+							catResult = i;
+							subResult = j;
+						}
+					}
+				} else {
+					if (values()[i].superClass.isInstance(item)) {
+						catResult = i;
+						subResult = 0;
+					}
 				}
 			}
+			if (catResult != -1) return catResult*100 + subResult;
 
 			//items without a category-defined order are sorted based on the spritesheet
 			return Short.MAX_VALUE+item.image();
@@ -740,6 +754,7 @@ public class Generator {
 	public static void generalReset(){
 		for (Category cat : Category.values()) {
 			categoryProbs.put( cat, usingFirstDeck ? cat.firstProb : cat.secondProb );
+			defaultCatProbs.put( cat, cat.firstProb + cat.secondProb );
 		}
 	}
 
@@ -771,20 +786,48 @@ public class Generator {
 				//if we're out of artifacts, return a ring instead.
 				return item != null ? item : random(Category.RING);
 			default:
+				if (cat.defaultProbs != null && cat.seed != null){
+					Random.pushGenerator(cat.seed);
+					for (int i = 0; i < cat.dropped; i++) Random.Long();
+				}
+
 				int i = Random.chances(cat.probs);
 				if (i == -1) {
 					reset(cat);
 					i = Random.chances(cat.probs);
 				}
 				if (cat.defaultProbs != null) cat.probs[i]--;
-				return ((Item) Reflection.newInstance(cat.classes[i])).random();
+				Class<?> itemCls = cat.classes[i];
+
+				if (cat.defaultProbs != null && cat.seed != null){
+					Random.popGenerator();
+					cat.dropped++;
+				}
+
+				if (ExoticPotion.regToExo.containsKey(itemCls)){
+					if (Random.Float() < ExoticCrystals.consumableExoticChance()){
+						itemCls = ExoticPotion.regToExo.get(itemCls);
+					}
+				} else if (ExoticScroll.regToExo.containsKey(itemCls)){
+					if (Random.Float() < ExoticCrystals.consumableExoticChance()){
+						itemCls = ExoticScroll.regToExo.get(itemCls);
+					}
+				}
+				return ((Item) Reflection.newInstance(itemCls)).random();
 		}
 	}
 
 	//overrides any deck systems and always uses default probs
+	// except for artifacts, which must always use a deck
 	public static Item randomUsingDefaults( Category cat ){
-		if (cat.defaultProbs == null) {
-			return random(cat); //currently covers weapons/armor/missiles
+		if (cat == Category.WEAPON){
+			return randomWeapon(true);
+		} else if (cat == Category.MISSILE){
+			return randomMissile(true);
+		} else if (cat.defaultProbs == null || cat == Category.ARTIFACT) {
+			return random(cat);
+		} else if (cat.defaultProbsTotal != null){
+			return ((Item) Reflection.newInstance(cat.classes[Random.chances(cat.defaultProbsTotal)])).random();
 		} else {
 			return ((Item) Reflection.newInstance(cat.classes[Random.chances(cat.defaultProbs)])).random();
 		}

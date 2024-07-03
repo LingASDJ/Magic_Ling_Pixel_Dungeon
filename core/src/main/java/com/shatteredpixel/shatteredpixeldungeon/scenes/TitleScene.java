@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedAnalysisScene;
+import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedFinderScene;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Gregorian;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
@@ -604,8 +605,7 @@ public class TitleScene extends PixelScene {
 
 		@Override
 		protected void onClick() {
-			//ShatteredPixelDungeon.switchNoFade(SeedFinderScene.class);
-			ShatteredPixelDungeon.switchNoFade(SeedAnalysisScene.class);
+			ShatteredPixelDungeon.switchNoFade(SeedFinderScene.class);
 		}
 
 		@Override

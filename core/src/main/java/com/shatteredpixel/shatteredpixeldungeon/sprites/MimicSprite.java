@@ -23,10 +23,11 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
 import com.watabou.noosa.TextureFilm;
 
 public class MimicSprite extends MobSprite {
-
+	protected Animation advancedHiding;
 	private static Animation hiding;
 
 	{
@@ -48,6 +49,9 @@ public class MimicSprite extends MobSprite {
 		texture( Assets.Sprites.MIMIC );
 
 		TextureFilm frames = new TextureFilm( texture, 16, 16 );
+
+		advancedHiding = new Animation( 1, true );
+		advancedHiding.frames( frames, 0+c);
 
 		hiding = new Animation( 1, true );
 		hiding.frames( frames, 0+c, 0+c, 0+c, 0+c, 0+c, 1+c);
@@ -76,13 +80,17 @@ public class MimicSprite extends MobSprite {
 	}
 
 	public void hideMimic(){
-		play(hiding);
+		if (MimicTooth.stealthyMimics()){
+			play(advancedHiding);
+		} else {
+			play(hiding);
+		}
 		hideSleep();
 	}
 
 	@Override
 	public void showSleep() {
-		if (curAnim == hiding){
+		if (curAnim == hiding || curAnim == advancedHiding){
 			return;
 		}
 		super.showSleep();
@@ -90,6 +98,19 @@ public class MimicSprite extends MobSprite {
 
 
 	public static class Black extends MimicSprite{
+		@Override
+		public void hideMimic() {
+			super.hideMimic();
+			alpha(0.2f);
+		}
+
+		@Override
+		public void play(Animation anim) {
+			if (curAnim == advancedHiding && anim != advancedHiding){
+				alpha(1f);
+			}
+			super.play(anim);
+		}
 		@Override
 		protected int texOffset() {
 			return 48;

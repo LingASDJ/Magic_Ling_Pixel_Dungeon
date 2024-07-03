@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotio
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -87,8 +88,8 @@ public class ScrollOfTransmutation extends InventoryScroll {
 				(item instanceof Potion && !(item instanceof Elixir || item instanceof Brew)) ||
 				//the extra check here prevents a single scroll being used on itself
 				(item instanceof Scroll && (!(item instanceof ScrollOfTransmutation) || item.quantity() > 1)) ||
-				item instanceof Ring ||
-				item instanceof Wand ||
+				item instanceof Ring || item instanceof Trinket
+				|| item instanceof Wand ||
 				item instanceof Plant.Seed ||
 				item instanceof Runestone ||
 				item instanceof Artifact && !(item instanceof OilLantern);
@@ -164,6 +165,8 @@ public class ScrollOfTransmutation extends InventoryScroll {
 			return changeWand( (Wand)item );
 		} else if (item instanceof Plant.Seed) {
 			return changeSeed((Plant.Seed) item);
+		} else if (item instanceof Trinket) {
+			return changeTrinket((Trinket) item);
 		} else if (item instanceof Runestone) {
 			return changeStone((Runestone) item);
 		} else if (item instanceof Artifact) {
@@ -328,6 +331,19 @@ public class ScrollOfTransmutation extends InventoryScroll {
 			n = (Plant.Seed)Generator.randomUsingDefaults( Generator.Category.SEED );
 		} while (n.getClass() == s.getClass());
 		
+		return n;
+	}
+
+	private static Trinket changeTrinket( Trinket t ){
+		Trinket n;
+		do {
+			n = (Trinket)Generator.random(Generator.Category.TRINKET);
+		} while ( Challenges.isItemBlocked(n) || n.getClass() == t.getClass());
+
+		n.level(t.trueLevel());
+		n.levelKnown = t.levelKnown;
+		n.cursed = t.cursed;
+
 		return n;
 	}
 	

@@ -29,7 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class AquaBrew extends Brew {
 
 	{
-		image = ItemSpriteSheet.POTION_CATALYST;
+		image = ItemSpriteSheet.MISC_WATERBOMB;
 
 		talentChance = 1/(float)Recipe.OUT_QUANTITY;
 	}

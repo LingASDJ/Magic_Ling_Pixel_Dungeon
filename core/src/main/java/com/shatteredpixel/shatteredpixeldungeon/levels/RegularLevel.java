@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AutoRandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.EbonyMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GoldenMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -62,6 +63,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.GuidePage;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.Builder;
@@ -644,6 +647,13 @@ public abstract class RegularLevel extends Level {
 			case 2:
 			case 3:
 			case 4:
+				//base mimic chance is 1/20, regular chest is 4/20
+				// so each +1x mimic spawn rate converts to a 25% chance here
+				if (Random.Float() < (MimicTooth.mimicChanceMultiplier() - 1f)/4f  && findMob(cell) == null){
+					mobs.add(Mimic.spawnAt(cell, toDrop));
+					continue;
+				}
+
 				type = Heap.Type.CHEST;
 				break;
 			case 5:
@@ -661,7 +671,8 @@ public abstract class RegularLevel extends Level {
 			if ((toDrop instanceof Artifact && Random.Int(2) == 0) ||
 					(toDrop.isUpgradable() && Random.Int(4 - toDrop.level()) == 0)){
 
-				if (Dungeon.depth > 1 && Random.Int(10) == 0 && findMob(cell) == null){
+				float mimicChance = 1/10f * MimicTooth.mimicChanceMultiplier();
+				if (Dungeon.depth > 1 && Random.Float() < mimicChance && findMob(cell) == null){
 					mobs.add(Mimic.spawnAt(cell, GoldenMimic.class, toDrop));
 				} else {
 					Heap dropped = drop(toDrop, cell);
@@ -677,12 +688,21 @@ public abstract class RegularLevel extends Level {
 					dropped.setHauntedIfCursed();
 				}
 			}
-
 		}
 
 		for (Item item : itemsToSpawn) {
 			int cell = randomDropCell();
-			drop( item, cell ).type = Heap.Type.HEAP;
+			if (item instanceof TrinketCatalyst){
+				drop( item, cell ).type = Heap.Type.LOCKED_CHEST;
+				int keyCell = randomDropCell();
+				drop( new GoldenKey(Dungeon.depth), keyCell ).type = Heap.Type.HEAP;
+				if (map[keyCell] == Terrain.HIGH_GRASS || map[keyCell] == Terrain.FURROWED_GRASS) {
+					map[keyCell] = Terrain.GRASS;
+					losBlocking[keyCell] = false;
+				}
+			} else {
+				drop( item, cell ).type = Heap.Type.HEAP;
+			}
 			if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
 				map[cell] = Terrain.GRASS;
 				losBlocking[cell] = false;
@@ -801,6 +821,35 @@ public abstract class RegularLevel extends Level {
 				}
 				drop( p, cell );
 			}
+		Random.popGenerator();
+
+		//ebony mimics >:)
+		Random.pushGenerator(Random.Long());
+		if (Random.Float() < MimicTooth.ebonyMimicChance()){
+			ArrayList<Integer> candidateCells = new ArrayList<>();
+			if (Random.Int(2) == 0){
+				for (Heap h : heaps.valueList()){
+					if (h.type == Heap.Type.HEAP
+							&& !(room(h.pos) instanceof SpecialRoom)
+							&& findMob(h.pos) == null){
+						candidateCells.add(h.pos);
+					}
+				}
+			} else {
+				if (Random.Int(5) == 0 && findMob(exit()) == null){
+					candidateCells.add(exit());
+				} else {
+					for (int i = 0; i < length(); i++) {
+						if (map[i] == Terrain.DOOR && findMob(i) == null) {
+							candidateCells.add(i);
+						}
+					}
+				}
+			}
+
+			int pos = Random.element(candidateCells);
+			mobs.add(Mimic.spawnAt(pos, EbonyMimic.class, false));
+		}
 		Random.popGenerator();
 	}
 

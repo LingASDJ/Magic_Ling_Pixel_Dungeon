@@ -35,7 +35,7 @@ import com.watabou.noosa.Image;
 public class ElixirOfFeatherFall extends Elixir {
 
 	{
-		image = ItemSpriteSheet.FEATHER_FALL;
+		image = ItemSpriteSheet.MISC_EXFALLING;
 
 		talentChance = 1/(float)Recipe.OUT_QUANTITY;
 	}

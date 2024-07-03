@@ -50,8 +50,8 @@ import java.util.Collection;
 public class TrinketCatalyst extends Item {
 
 	{
-        //TODO SX
-		image = ItemSpriteSheet.THEDIED;
+
+		image = ItemSpriteSheet.SCROLL_CATALYST;
 
 		unique = true;
 	}

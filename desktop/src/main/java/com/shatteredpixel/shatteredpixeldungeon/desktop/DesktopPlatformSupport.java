@@ -25,13 +25,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.watabou.input.ControllerHandler;
 import com.watabou.noosa.Game;
 import com.watabou.utils.PlatformSupport;
 import com.watabou.utils.Point;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,11 +49,11 @@ public class DesktopPlatformSupport extends PlatformSupport {
 	public void updateDisplaySize() {
 		if (previousSizes == null){
 			previousSizes = new Point[2];
-			previousSizes[1] = SPDSettings.windowResolution();
+			previousSizes[0] = previousSizes[1] = new Point(Game.width, Game.height);
 		} else {
 			previousSizes[1] = previousSizes[0];
+			previousSizes[0] = new Point(Game.width, Game.height);
 		}
-		previousSizes[0] = new Point(Game.width, Game.height);
 		if (!SPDSettings.fullscreen()) {
 			SPDSettings.windowResolution( previousSizes[0] );
 		}
@@ -78,8 +81,34 @@ public class DesktopPlatformSupport extends PlatformSupport {
 
 	@Override
 	public boolean supportsVibration() {
-		//only supports vibration via controller
 		return ControllerHandler.vibrationSupported();
+	}
+
+	//TODO backported openURI fix from libGDX-1.10.1-SNAPSHOT, remove when updating libGDX
+	public boolean openURI( String uri ){
+		if (SharedLibraryLoader.isMac) {
+			try {
+				(new ProcessBuilder("open", (new URI(uri).toString()))).start();
+				return true;
+			} catch (Throwable t) {
+				return false;
+			}
+		} else if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+			try {
+				Desktop.getDesktop().browse(new URI(uri));
+				return true;
+			} catch (Throwable t) {
+				return false;
+			}
+		} else if (SharedLibraryLoader.isLinux) {
+			try {
+				(new ProcessBuilder("xdg-open", (new URI(uri).toString()))).start();
+				return true;
+			} catch (Throwable t) {
+				return false;
+			}
+		}
+		return false;
 	}
 
 	/* FONT SUPPORT */
@@ -101,15 +130,13 @@ public class DesktopPlatformSupport extends PlatformSupport {
 		resetGenerators(false);
 		fonts = new HashMap<>();
 
-		if (systemfont) {
-			basicFontGenerator = asianFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/droid_sans.ttf"));
-		} else {
-			basicFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/pixel_font.ttf"));
-			asianFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/droid_sans.ttf"));
-		}
+		basicFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/pixel_font.ttf"));
+		asianFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/fusion_pixel.ttf"));
+		fallbackFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/droid_sans.ttf"));
 
 		fonts.put(basicFontGenerator, new HashMap<>());
 		fonts.put(asianFontGenerator, new HashMap<>());
+		fonts.put(fallbackFontGenerator, new HashMap<>());
 
 		packer = new PixmapPacker(pageSize, pageSize, Pixmap.Format.RGBA8888, 1, false);
 	}
@@ -151,14 +178,13 @@ public class DesktopPlatformSupport extends PlatformSupport {
 			return regularsplitter.split(text);
 		}
 	}
-
 	@Override
 	public void updateGame(String url, UpdateCallback listener) {
-
+		// TODO
 	}
 
 	@Override
 	public void install(File file) {
-
+		// TODO
 	}
 }

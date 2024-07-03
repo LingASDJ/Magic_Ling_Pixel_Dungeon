@@ -656,7 +656,7 @@ public class ItemSpriteSheet {
     }
 
     private static final int BREWS          =                               xy(1, 25);  //8 slots
-    public static final int BREW_INFERNAL   = BREWS+0;
+    public static final int  BREW_INFERNAL   = BREWS+0;
     public static final int BREW_BLIZZARD   = BREWS+1;
     public static final int BREW_SHOCKING   = BREWS+2;
     public static final int BREW_CAUSTIC    = BREWS+3;
@@ -1093,18 +1093,33 @@ public class ItemSpriteSheet {
     public static final int MIMIC_TOOTH     = TRINKETS+8;
     public static final int WONDROUS_RESIN  = TRINKETS+9;
     public static final int EYE_OF_NEWT     = TRINKETS+10;
+    public static final int TRINT_PLOCHR    = TRINKETS+15;
     static{
-        assignItemRect(RAT_SKULL,       16, 11);
-        assignItemRect(PARCHMENT_SCRAP, 10, 14);
-        assignItemRect(PETRIFIED_SEED,  10, 10);
-        assignItemRect(EXOTIC_CRYSTALS, 14, 13);
-        assignItemRect(MOSSY_CLUMP,     12, 11);
-        assignItemRect(SUNDIAL,         16, 12);
-        assignItemRect(CLOVER,          11, 15);
-        assignItemRect(TRAP_MECHANISM,  13, 15);
-        assignItemRect(MIMIC_TOOTH,     8,  15);
-        assignItemRect(WONDROUS_RESIN,  12, 11);
-        assignItemRect(EYE_OF_NEWT,     12, 12);
+        assignItemRect(RAT_SKULL,       15, 11);
+        assignItemRect(PARCHMENT_SCRAP, 15, 14);
+        assignItemRect(PETRIFIED_SEED,  15, 14);
+        assignItemRect(EXOTIC_CRYSTALS, 13, 9);
+        assignItemRect(MOSSY_CLUMP,     15, 14);
+        assignItemRect(SUNDIAL,         15, 11);
+        assignItemRect(CLOVER,          15, 14);
+        assignItemRect(TRAP_MECHANISM,  15, 15);
+        assignItemRect(MIMIC_TOOTH,     11,  15);
+        assignItemRect(WONDROUS_RESIN,  15, 14);
+        assignItemRect(EYE_OF_NEWT,     14, 13);
+        assignItemRect(TRINT_PLOCHR,     16, 11);
+    }
+
+    private static final int MISC        =                               xy(1, 56);  //24 slots
+    public static final int MISC_ROLLBLOCK        = MISC+1;
+    public static final int MISC_WATERBOMB        = MISC+3;
+    public static final int MISC_ROLLPOTION       = MISC+4;
+    public static final int MISC_EXFALLING        = MISC+5;
+
+    static{
+        assignItemRect(MISC_ROLLBLOCK,       12, 13);
+        assignItemRect(MISC_WATERBOMB,       9, 11);
+        assignItemRect(MISC_ROLLPOTION,       12, 14);
+        assignItemRect(MISC_EXFALLING,       14, 16);
     }
 
     //for smaller 8x8 icons that often accompany an item sprite

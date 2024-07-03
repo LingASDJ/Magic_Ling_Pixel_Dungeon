@@ -91,7 +91,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbueEX;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HasteLing;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
@@ -1970,11 +1969,6 @@ public class Hero extends Char {
 				}
 				if (flag) {
 					Buff.affect(this,Barrier.class).setShield(2*pointsInTalent(Talent.LIQUID_WILLPOWER));
-
-					Hunger hungerBuff = hero.buff(Hunger.class);
-					if(pointsInTalent(Talent.LIQUID_WILLPOWER) == 2 && !hungerBuff.isStarving()){
-						Buff.affect(this, Healing.class).setHeal(Math.round(HT*0.07f), 0.5f, 0);
-					}
 				}
 			}
 		}

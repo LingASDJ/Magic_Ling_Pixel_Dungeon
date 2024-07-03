@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
@@ -318,6 +319,15 @@ public class Ghost extends NPC {
 				}
 				itemLevel = 3;
 			}
+
+			// 20% base chance to be enchanted, stored separately so status isn't revealed early
+			float enchantRoll = Random.Float();
+			if (enchantRoll < 0.2f * ParchmentScrap.enchantChanceMultiplier()){
+				enchant = Weapon.Enchantment.random();
+				glyph = Armor.Glyph.random();
+			}
+
+
 			weapon.upgrade(itemLevel);
 			armor.upgrade(itemLevel);
 		}

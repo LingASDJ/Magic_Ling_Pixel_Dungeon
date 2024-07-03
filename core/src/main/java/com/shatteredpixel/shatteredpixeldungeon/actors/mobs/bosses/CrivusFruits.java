@@ -77,6 +77,13 @@ public class CrivusFruits extends Boss {
     private ArrayList<Integer> targetedCells = new ArrayList<>();
     //the cells to trace fire shots to, for visual effects.
     private HashSet<Integer> visualCells;
+
+
+    @Override
+    public int drRoll() {
+        return Random.Int(2);
+    }
+
     //基本属性
     {
         spriteClass = CrivusFruitsSprite.class;

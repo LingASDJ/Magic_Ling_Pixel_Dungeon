@@ -60,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
@@ -85,6 +86,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundial;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MossyClump;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrapMechanism;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoomerang;
@@ -271,6 +278,10 @@ public abstract class Level implements Bundlable {
 				Dungeon.LimitedDrops.ARCANE_STYLI.count++;
 				addItemToSpawn( new Stylus() );
 			}
+			if ( Dungeon.trinketCataNeeded() ){
+				Dungeon.LimitedDrops.TRINKET_CATA.drop();
+				addItemToSpawn( new TrinketCatalyst());
+			}
 			//one scroll of transmutation is guaranteed to spawn somewhere on chapter 2-4
 			int enchChapter = (int)((Dungeon.seed / 10) % 3) + 1;
 			if ( depth / 5 == enchChapter &&
@@ -284,33 +295,59 @@ public abstract class Level implements Bundlable {
 			
 			if (depth > 1) {
 				if(Dungeon.isChallenged(MOREROOM)){
-					int randomInt = Random.Int(10);
 					if(depth == 4){
 						feeling = Feeling.DIEDROOM;
-					} else if (randomInt == 0) {
-						feeling = Feeling.BLOOD;
-					} else if (randomInt == 1) {
-						feeling = Feeling.WATER;
-					} else if (randomInt == 2) {
-						feeling = Feeling.GRASS;
-					} else if (randomInt == 3) {
-						feeling = Feeling.DARK;
-						addItemToSpawn(new Torch());
-						viewDistance = Math.round(viewDistance / 2f);
-					} else if (randomInt == 4) {
-						feeling = Feeling.BIGROOMS;
-					} else if (randomInt == 5) {
-						feeling = Feeling.THREEWELL;
-					} else if (randomInt == 6) {
-						feeling = Feeling.SECRETS;
-					} else if (randomInt == 7 && !(depth == 6) ) {
-						feeling = Feeling.LINKROOM;
-					} else if (randomInt == 8) {
-						feeling = Feeling.BIGTRAP;
-					} else if (randomInt == 9) {
-						feeling = Feeling.SKYCITY;
 					} else {
-						feeling = Feeling.CHASM;
+						switch (Random.Int( 14 )) {
+							case 0:
+								feeling = Feeling.CHASM;
+								break;
+							case 1:
+								feeling = Feeling.WATER;
+								break;
+							case 2:
+								feeling = Feeling.GRASS;
+								break;
+							case 3:
+								feeling = Feeling.DARK;
+								addItemToSpawn(new Torch());
+								viewDistance = Math.round(viewDistance/2f);
+								break;
+							case 4:
+								if(Random.Float()>0.4f){
+									feeling = Feeling.SKYCITY;
+								} else {
+									feeling = Feeling.BIGROOMS;
+								}
+								addItemToSpawn(Generator.random(Generator.Category.FOOD));
+								break;
+							case 5:
+								feeling = Feeling.BIGTRAP;
+								break;
+							case 6:
+								feeling = Feeling.SECRETS;
+								break;
+							case 7:
+								feeling = Feeling.BLOOD;
+								break;
+							case 8:
+								feeling = Feeling.THREEWELL;
+								break;
+							case 9:
+								feeling = Feeling.LINKROOM;
+								break;
+							case 10:case 11:case 12:case 13:
+							default:
+								//if-else statements are fine here as only one chance can be above 0 at a time
+								if (Random.Float() < MossyClump.overrideNormalLevelChance()){
+									feeling = MossyClump.getNextFeeling();
+								} else if (Random.Float() < TrapMechanism.overrideNormalLevelChance()) {
+									feeling = TrapMechanism.getNextFeeling();
+								} else {
+									feeling = Feeling.NONE;
+								}
+								break;
+						}
 					}
 				} else {
 					switch (Random.Int( 14 )) {
@@ -337,6 +374,16 @@ public abstract class Level implements Bundlable {
 							break;
 						case 6:
 							feeling = Feeling.SECRETS;
+							break;
+						default:
+							//if-else statements are fine here as only one chance can be above 0 at a time
+							if (Random.Float() < MossyClump.overrideNormalLevelChance()){
+								feeling = MossyClump.getNextFeeling();
+							} else if (Random.Float() < TrapMechanism.overrideNormalLevelChance()) {
+								feeling = TrapMechanism.getNextFeeling();
+							} else {
+								feeling = Feeling.NONE;
+							}
 							break;
 					}
 				}
@@ -954,20 +1001,23 @@ public abstract class Level implements Bundlable {
 		}
 	}
 
+	//日晷效果 2024.7.3
 	public float respawnCooldown(){
+		float cooldown;
 		if (Statistics.amuletObtained){
 			if (depth == 1){
 				//very fast spawns on floor 1! 0/2/4/6/8/10/12, etc.
-				return (Dungeon.level.mobCount()) * (TIME_TO_RESPAWN / 25f);
+				cooldown = (Dungeon.level.mobCount()) * (TIME_TO_RESPAWN / 25f);
 			} else {
 				//respawn time is 5/5/10/15/20/25/25, etc.
-				return Math.round(GameMath.gate( TIME_TO_RESPAWN/10f, Dungeon.level.mobCount() * (TIME_TO_RESPAWN / 10f), TIME_TO_RESPAWN / 2f));
+				cooldown = Math.round(GameMath.gate( TIME_TO_RESPAWN/10f, Dungeon.level.mobCount() * (TIME_TO_RESPAWN / 10f), TIME_TO_RESPAWN / 2f));
 			}
 		} else if (Dungeon.level.feeling == Feeling.DARK){
-			return 2*TIME_TO_RESPAWN/3f;
+			cooldown = 2*TIME_TO_RESPAWN/3f;
 		} else {
-			return TIME_TO_RESPAWN;
+			cooldown = TIME_TO_RESPAWN;
 		}
+		return cooldown / DimensionalSundial.spawnMultiplierAtCurrentTime();
 	}
 
 	public boolean spawnMob(int disLimit){
@@ -1032,6 +1082,14 @@ public abstract class Level implements Bundlable {
 			return null;
 
 		if (match == null){
+			//if we have a trinket catalyst, always return that first
+			for (Item item : itemsToSpawn){
+				if (item instanceof TrinketCatalyst){
+					itemsToSpawn.remove(item);
+					return item;
+				}
+			}
+
 			Item item = Random.element(itemsToSpawn);
 			itemsToSpawn.remove(item);
 			return item;
@@ -1573,6 +1631,7 @@ public abstract class Level implements Bundlable {
 			int viewDist = c.viewDistance;
 			if (c instanceof Hero){
 				viewDist *= 1f + 0.25f*((Hero) c).pointsInTalent(Talent.FARSIGHT);
+				viewDist *= EyeOfNewt.visionRangeMultiplier();
 			}
 
 			ShadowCaster.castShadow( cx, cy, width(), fieldOfView, blocking, Math.round(viewDist) );
@@ -1642,25 +1701,39 @@ public abstract class Level implements Bundlable {
 			}
 
 			hero.mindVisionEnemies.clear();
+			Dungeon.hero.mindVisionEnemies.clear();
+			boolean stealthyMimics = MimicTooth.stealthyMimics();
 			if (c.buff( MindVision.class ) != null) {
 				for (Mob mob : mobs) {
+					if (stealthyMimics && mob instanceof Mimic && mob.alignment == Char.Alignment.NEUTRAL){
+						continue;
+					}
 					for (int i : PathFinder.NEIGHBOURS9) {
-							heroMindFov[mob.pos + i] = true;
+						heroMindFov[mob.pos + i] = true;
 					}
 				}
-			} else if (((Hero) c).hasTalent(Talent.HEIGHTENED_SENSES)) {
-				Hero h = (Hero) c;
-				int range = 1+h.pointsInTalent(Talent.HEIGHTENED_SENSES);
-				for (Mob mob : mobs) {
-					int p = mob.pos;
-					if (!fieldOfView[p] && distance(c.pos, p) <= range) {
-						for (int i : PathFinder.NEIGHBOURS9) {
-							heroMindFov[mob.pos + i] = true;
+			} else {
+
+				int mindVisRange = 0;
+				if (((Hero) c).hasTalent(Talent.HEIGHTENED_SENSES)){
+					mindVisRange = 1+((Hero) c).pointsInTalent(Talent.HEIGHTENED_SENSES);
+				}
+				mindVisRange = Math.max(mindVisRange, EyeOfNewt.mindVisionRange());
+
+				if (mindVisRange >= 1) {
+					for (Mob mob : mobs) {
+						if (stealthyMimics && mob instanceof Mimic && mob.alignment == Char.Alignment.NEUTRAL) {
+							continue;
+						}
+						int p = mob.pos;
+						if (!fieldOfView[p] && distance(c.pos, p) <= mindVisRange) {
+							for (int i : PathFinder.NEIGHBOURS9) {
+								heroMindFov[mob.pos + i] = true;
+							}
 						}
 					}
 				}
 			}
-			
 			if (c.buff( Awareness.class ) != null) {
 				for (Heap heap : heaps.valueList()) {
 					int p = heap.pos;

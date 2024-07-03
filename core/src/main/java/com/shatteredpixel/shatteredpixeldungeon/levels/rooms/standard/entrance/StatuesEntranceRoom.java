@@ -56,7 +56,7 @@ public class StatuesEntranceRoom extends StatuesRoom {
 			}
 		}
 
-		Painter.set( level, entrance, Terrain.ENTRANCE_SP );
+		Painter.set( level, entrance, Terrain.ENTRANCE );
 		level.transitions.add(new LevelTransition(level, entrance, LevelTransition.Type.REGULAR_ENTRANCE));
 
 	}

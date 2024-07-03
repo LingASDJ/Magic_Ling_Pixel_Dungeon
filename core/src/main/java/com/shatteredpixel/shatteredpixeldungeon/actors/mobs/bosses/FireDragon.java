@@ -72,17 +72,6 @@ public class FireDragon extends Boss implements Callback {
     public int summonedElementals = 0;
     private int targetingPos = -1;
 
-    @Override
-    protected boolean getCloser(int target) {
-        if (state == HUNTING) {
-            if(Dungeon.level.distance(pos,target)>3)
-                return super.getCloser( target );
-            return enemySeen && getFurther( target );
-        } else {
-            return super.getCloser(target);
-        }
-    }
-
     {
         initProperty();
         initBaseStatus(9, 12, 14, 10, 233, 3, 5);
@@ -121,7 +110,7 @@ public class FireDragon extends Boss implements Callback {
 
     @Override
     public int drRoll() {
-        int result = super.drRoll();
+        int result = 2;
         if ( buff(VertigoEffect.class) != null){
             result = (int) (result * 1.2f);
         }
@@ -263,16 +252,6 @@ public class FireDragon extends Boss implements Callback {
     @Override
     public int attackSkill( Char target ) {
         return 12;
-    }
-
-    @Override
-    protected boolean canAttack( Char enemy ) {
-        if(fireAttackCooldown<21 && Dungeon.level.distance(pos,target)>1){
-            return false;
-        } else {
-            return super.canAttack(enemy) || new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
-        }
-
     }
 
     @Override

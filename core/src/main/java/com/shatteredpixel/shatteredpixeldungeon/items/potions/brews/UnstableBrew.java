@@ -49,7 +49,7 @@ import java.util.HashMap;
 public class UnstableBrew extends Brew {
 
 	{
-		image = ItemSpriteSheet.BREW_INFERNAL;
+		image = ItemSpriteSheet.MISC_ROLLPOTION;
 	}
 
 	@Override
