@@ -253,8 +253,6 @@ public abstract class Level implements Bundlable {
 
 		Random.pushGenerator( Dungeon.seedCurDepth() );
 
-
-
 		//TODO maybe just make this part of RegularLevel?
 		if (!Dungeon.bossLevel() && Dungeon.branch == 0) {
 
@@ -278,10 +276,11 @@ public abstract class Level implements Bundlable {
 				Dungeon.LimitedDrops.ARCANE_STYLI.count++;
 				addItemToSpawn( new Stylus() );
 			}
-			if ( Dungeon.trinketCataNeeded() ){
-				Dungeon.LimitedDrops.TRINKET_CATA.drop();
-				addItemToSpawn( new TrinketCatalyst());
-			}
+//			TODO 由于生成有异常 暂时使用其他方法生成
+//			if ( Dungeon.trinketCataNeeded() ){
+//				Dungeon.LimitedDrops.TRINKET_CATA.drop();
+//				addItemToSpawn( new TrinketCatalyst());
+//			}
 			//one scroll of transmutation is guaranteed to spawn somewhere on chapter 2-4
 			int enchChapter = (int)((Dungeon.seed / 10) % 3) + 1;
 			if ( depth / 5 == enchChapter &&

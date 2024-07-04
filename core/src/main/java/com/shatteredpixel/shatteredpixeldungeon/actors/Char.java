@@ -101,6 +101,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Ch
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.DeathMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
@@ -706,6 +707,10 @@ public abstract class Char extends Actor {
 			damage *= 0.75f;
 		}
 
+		if ( buff(ScaryBuff.class) != null && enemy instanceof Mob) {
+			damage *= 0.80f;
+		}
+
 		//削弱10%伤害
 		if ( buff(MagicGirlSayKill.class) != null ){
 			damage *= 0.90f;
@@ -750,7 +755,9 @@ public abstract class Char extends Actor {
 		if ( buff( AnkhInvulnerability.GodDied.class ) != null ) speed *= 2f;
 
 		if ((properties().contains(Property.BOSS) || properties().contains(Property.MINIBOSS) && !properties().contains(Property.ABYSS)) && Statistics.gameNight) {
-			speed *= 1.2f;
+			if(buff(ChampionEnemy.Bomber.class) == null || buff(ChampionEnemy.Middle.class) == null) {
+				speed *= 1.2f;
+			}
 		}
 
 		for (ChampionEnemy buff : buffs(ChampionEnemy.class)) {
