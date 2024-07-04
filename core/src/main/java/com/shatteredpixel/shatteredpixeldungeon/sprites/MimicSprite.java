@@ -27,8 +27,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
 import com.watabou.noosa.TextureFilm;
 
 public class MimicSprite extends MobSprite {
+
 	protected Animation advancedHiding;
-	private static Animation hiding;
+
+	protected Animation hiding;
 
 	{
 		//adjust shadow slightly to account for 1 empty bottom pixel (used for border while hiding)
@@ -54,23 +56,23 @@ public class MimicSprite extends MobSprite {
 		advancedHiding.frames( frames, 0+c);
 
 		hiding = new Animation( 1, true );
-		hiding.frames( frames, 0+c, 0+c, 0+c, 0+c, 0+c, 1+c);
+		hiding.frames( frames, 1+c, 1+c, 1+c, 1+c, 1+c, 2+c);
 
 		idle = new Animation( 5, true );
-		idle.frames( frames, 2+c, 2+c, 2+c, 3+c, 3+c );
+		idle.frames( frames, 3+c, 3+c, 3+c, 4+c, 4+c );
 
 		run = new Animation( 10, true );
-		run.frames( frames, 2+c, 3+c, 4+c, 5+c, 5+c, 4+c, 3+c );
+		run.frames( frames, 3+c, 4+c, 5+c, 6+c, 6+c, 5+c, 4+c );
 
 		attack = new Animation( 10, false );
-		attack.frames( frames, 2+c, 6+c, 7+c, 8+c );
+		attack.frames( frames, 3+c, 7+c, 8+c, 9+c );
 
 		die = new Animation( 5, false );
-		die.frames( frames, 9+c, 10+c, 11+c );
+		die.frames( frames, 10+c, 11+c, 12+c );
 
 		play( idle );
 	}
-	
+
 	@Override
 	public void linkVisuals(Char ch) {
 		super.linkVisuals(ch);
@@ -95,7 +97,6 @@ public class MimicSprite extends MobSprite {
 		}
 		super.showSleep();
 	}
-
 
 	public static class Black extends MimicSprite{
 		@Override

@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -119,6 +120,8 @@ public class Mimic extends Mob {
 	public String description() {
 		if (alignment == Alignment.NEUTRAL && properties.contains(Property.HOLLOW)) {
 			return Messages.get(HollowMimic.class, "midescs");
+		} else if (MimicTooth.stealthyMimics()) {
+			return Messages.get(Heap.class, "chest_desc");
 		} else if (alignment == Alignment.NEUTRAL){
 			return Messages.get(Heap.class, "chest_desc") + "\n\n" + Messages.get(this, "hidden_hint");
 		} else {
