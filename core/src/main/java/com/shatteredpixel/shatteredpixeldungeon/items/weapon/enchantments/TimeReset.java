@@ -30,7 +30,7 @@ public class TimeReset extends Weapon.Enchantment {
         Buff.affect(defender, ScaryBuff.class).set((100), 1);
         ScaryBuff existingX = defender.buff(ScaryBuff.class);
         if (existingX != null) {
-            existingX.damgeScary(Random.Int(2, 6)*level == 0?1:level);
+            existingX.damgeScary(Random.Int(2, 6)*level == 0 ? 1:level);
         }
 
         if(mobs.isEmpty() && !mobpos.isEmpty()){
