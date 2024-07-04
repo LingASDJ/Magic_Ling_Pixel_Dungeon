@@ -281,7 +281,7 @@ public class Dungeon {
 
 	public static boolean trinketCataNeeded(){
 		//one trinket catalyst on floors 1-3
-		return depth < 5 && !LimitedDrops.TRINKET_CATA.dropped() && Random.Int(4-depth) == 0;
+		return depth < 5 && depth != 0 && !LimitedDrops.TRINKET_CATA.dropped() && Random.Int(4-depth) == 0;
 	}
 
 	public static void resetLevel() {
