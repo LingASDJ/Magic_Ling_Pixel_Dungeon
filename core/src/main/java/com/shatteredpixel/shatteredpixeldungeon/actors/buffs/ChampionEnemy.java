@@ -221,7 +221,7 @@ public abstract class ChampionEnemy extends Buff {
 		@Override
 		public boolean canAttackWithExtraReach(Char enemy) {
 			//attack range of 2
-			return target.fieldOfView[enemy.pos] && Dungeon.level.distance(target.pos, enemy.pos) <= 2;
+			return target.fieldOfView[enemy.pos] && Dungeon.level.distance(target.pos, enemy.pos) <= 1;
 		}
 
 
@@ -372,13 +372,6 @@ public abstract class ChampionEnemy extends Buff {
 			if (on) {target.sprite.add(CharSprite.State.MUTATION_1);
 			} else target.sprite.remove(CharSprite.State.MUTATION_1);
 		}
-
-		@Override
-		public float speedFactor() {
-			return super.speedFactor()*1.3f;
-		}
-
-
 	}
 
 	public static class NoCode extends ChampionEnemy {
@@ -452,7 +445,7 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public float damageTakenFactor() {
-			return 0.7f;
+			return 0.9f;
 		}
 
 	}
