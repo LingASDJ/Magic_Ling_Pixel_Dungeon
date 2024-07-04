@@ -78,8 +78,6 @@ public class DiamondKnight extends Boss implements Hero.Doom {
 
         baseSpeed = 0.85f;
 
-        flying=true;
-
         if(Dungeon.isChallenged(STRONGER_BOSSES)){
             viewDistance = 24;
         }

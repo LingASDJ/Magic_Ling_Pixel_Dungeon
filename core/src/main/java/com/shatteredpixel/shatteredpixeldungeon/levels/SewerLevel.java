@@ -33,7 +33,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nxhy;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.JunglePainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -130,9 +129,6 @@ public class SewerLevel extends RegularLevel {
 	protected void createItems() {
 		if(Dungeon.depth == 1){
 			drop(new ScrollOfUpgrade(), exit()-1 );
-
-			//TODO 暂时魔能触媒固定生成于1层
-			addItemToSpawn( new TrinketCatalyst());
 		}
 		super.createItems();
 	}
