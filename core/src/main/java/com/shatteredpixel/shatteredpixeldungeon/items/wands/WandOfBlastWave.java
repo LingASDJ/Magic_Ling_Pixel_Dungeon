@@ -214,7 +214,7 @@ public class WandOfBlastWave extends DamageWand {
 
 	private static class BlastWaveOnHit extends Elastic{
 		@Override
-		protected float procChanceMultiplier(Char attacker) {
+		public float procChanceMultiplier(Char attacker) {
 			return Wand.procChanceMultiplier(attacker);
 		}
 	}

@@ -179,7 +179,7 @@ public class WandOfFireblast extends DamageWand {
 
 	public static class FireBlastOnHit extends Blazing {
 		@Override
-		protected float procChanceMultiplier(Char attacker) {
+		public float procChanceMultiplier(Char attacker) {
 			return Wand.procChanceMultiplier(attacker);
 		}
 	}

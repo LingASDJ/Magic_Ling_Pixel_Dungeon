@@ -56,7 +56,7 @@ public class MimicSprite extends MobSprite {
 		advancedHiding.frames( frames, 0+c);
 
 		hiding = new Animation( 1, true );
-		hiding.frames( frames, 1+c, 1+c, 1+c, 1+c, 1+c, 2+c);
+		hiding.frames( frames, 0+c, 0+c, 0+c, 0+c, 0+c, 1+c);
 
 		idle = new Animation( 5, true );
 		idle.frames( frames, 3+c, 3+c, 3+c, 4+c, 4+c );
@@ -98,33 +98,6 @@ public class MimicSprite extends MobSprite {
 		super.showSleep();
 	}
 
-	public static class Black extends MimicSprite{
-		@Override
-		public void hideMimic() {
-			super.hideMimic();
-			alpha(0.2f);
-		}
-
-		@Override
-		public void play(Animation anim) {
-			if (curAnim == advancedHiding && anim != advancedHiding){
-				alpha(1f);
-			}
-			super.play(anim);
-		}
-		@Override
-		protected int texOffset() {
-			return 48;
-		}
-	}
-
-	public static class Dimand extends MimicSprite{
-		@Override
-		protected int texOffset() {
-			return 64;
-		}
-	}
-
 	public static class Golden extends MimicSprite{
 		@Override
 		protected int texOffset() {
@@ -139,6 +112,26 @@ public class MimicSprite extends MobSprite {
 		}
 	}
 
+	public static class Ebony extends MimicSprite{
+		@Override
+		protected int texOffset() {
+			return 48;
+		}
+
+		@Override
+		public void hideMimic() {
+			super.hideMimic();
+			alpha(0.2f);
+		}
+
+		@Override
+		public void play(Animation anim) {
+			if (curAnim == advancedHiding && anim != advancedHiding){
+				alpha(1f);
+			}
+			super.play(anim);
+		}
+	}
 
 	public static class HollowWall extends MimicSprite{
 		@Override
@@ -179,6 +172,12 @@ public class MimicSprite extends MobSprite {
 			play( idle );
 		}
 
+	}
+
+	public static class Dimand extends MimicSprite {
+		protected int texOffset() {
+			return 64;
+		}
 	}
 
 }

@@ -127,7 +127,7 @@ public class WandOfLightning extends DamageWand {
 
 	public static class LightningOnHit extends Shocking {
 		@Override
-		protected float procChanceMultiplier(Char attacker) {
+		public float procChanceMultiplier(Char attacker) {
 			return Wand.procChanceMultiplier(attacker);
 		}
 	}

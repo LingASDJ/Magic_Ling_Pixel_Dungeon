@@ -433,7 +433,7 @@ abstract public class Weapon extends KindOfWeapon {
 			
 		public abstract int proc( Weapon weapon, Char attacker, Char defender, int damage );
 
-		protected float procChanceMultiplier( Char attacker ){
+		public float procChanceMultiplier( Char attacker ){
 			return genericProcChanceMultiplier( attacker );
 		}
 
