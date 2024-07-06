@@ -238,7 +238,7 @@ public abstract class RegularLevel extends Level {
 		int standards = standardRooms(feeling == Feeling.LARGE);
 
 		if (feeling == Feeling.BIGROOMS){
-			standards = (int)Math.ceil(standards * 2.5f);
+			standards = (int)Math.ceil(standards * 2.75f);
 		} else if (feeling == Feeling.LARGE){
 			standards = (int)Math.ceil(standards * 1.5f);
 		}
@@ -375,8 +375,8 @@ public abstract class RegularLevel extends Level {
 		}
 
 		//force max special rooms and add one more for large levels
-		int specials = specialRooms(feeling == Feeling.LARGE);
-		if (feeling == Feeling.LARGE){
+		int specials = specialRooms(feeling == Feeling.LARGE || feeling == Feeling.BIGROOMS);
+		if (feeling == Feeling.LARGE || feeling == Feeling.BIGROOMS){
 			specials++;
 		}
 		SpecialRoom.initForFloor();
@@ -616,7 +616,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 		if (feeling == Feeling.BIGROOMS){
-			nItems += 4;
+			nItems += 6;
 		}
 
 		if (feeling == Feeling.SKYCITY){

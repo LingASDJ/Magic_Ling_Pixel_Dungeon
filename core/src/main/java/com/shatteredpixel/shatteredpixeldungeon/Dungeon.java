@@ -828,8 +828,6 @@ public class Dungeon {
 
 		GameScene.updateFog(l, t, width, height);
 
-		//SmallLightRoad();
-
 		boolean stealthyMimics = MimicTooth.stealthyMimics();
 		if (hero.buff(MindVision.class) != null){
 			for (Mob m : level.mobs.toArray(new Mob[0])){
@@ -929,11 +927,6 @@ public class Dungeon {
 		}
 
 		GameScene.afterObserve();
-	}
-
-	/** 微光向导共享视野 **/
-	private static void SmallLightRoad() {
-
 	}
 
 	//we store this to avoid having to re-allocate the array with each pathfind

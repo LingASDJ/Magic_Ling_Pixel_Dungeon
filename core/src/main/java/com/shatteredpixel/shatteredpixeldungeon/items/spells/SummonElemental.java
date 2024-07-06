@@ -228,11 +228,10 @@ public class SummonElemental extends Spell {
 
 	public static class InvisAlly extends AllyBuff{
 
-		//暂时换成护盾 时间问题（
 		@Override
 		public void fx(boolean on) {
-			if (on) target.sprite.add(CharSprite.State.SHIELDED);
-			else    target.sprite.remove(CharSprite.State.SHIELDED);
+			if (on) target.sprite.add(CharSprite.State.HEARTS);
+			else    target.sprite.remove(CharSprite.State.HEARTS);
 		}
 
 	}

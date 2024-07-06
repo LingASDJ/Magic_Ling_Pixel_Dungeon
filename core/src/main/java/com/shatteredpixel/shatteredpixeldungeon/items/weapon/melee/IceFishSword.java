@@ -61,9 +61,9 @@ public class IceFishSword extends MeleeWeapon {
 
         {
             inputs =  new Class[]{FrozenCarpaccio.class, MagicalInfusion.class};
-            inQuantity = new int[]{1, 1, 1};
+            inQuantity = new int[]{1, 1};
 
-            cost = 26+Dungeon.depth/2;
+            cost = 16+Dungeon.depth/2;
 
             output = IceFishSword.class;
             outQuantity = 1;
