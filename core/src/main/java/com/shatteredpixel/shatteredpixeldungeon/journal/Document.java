@@ -235,6 +235,7 @@ public enum Document {
 	public static final String GUIDE_SURPRISE_ATKS  = "Surprise_Attacks";
 	public static final String GUIDE_IDING          = "Identifying";
 	public static final String GUIDE_FOOD           = "Food";
+	public static final String GUIDE_ALCHEMY  = "Alchemy";
 	public static final String GUIDE_DIEING         = "Dieing";
 
 	public static final String GUIDE_SEARCHING      = "Searching";
@@ -256,7 +257,8 @@ public enum Document {
 		ADVENTURERS_GUIDE.pagesStates.put("Killboss",           debug ? READ : NOT_FOUND);
 		ADVENTURERS_GUIDE.pagesStates.put("Waterbless",         debug ? READ : NOT_FOUND);
 		ADVENTURERS_GUIDE.pagesStates.put("Readyherobook",      debug ? READ : NOT_FOUND);
-		ADVENTURERS_GUIDE.pagesStates.put("Lanterfire",      debug ? READ : NOT_FOUND);
+		ADVENTURERS_GUIDE.pagesStates.put("Alchemy",      		debug ? READ : NOT_FOUND);
+		ADVENTURERS_GUIDE.pagesStates.put("Lanterfire",      	debug ? READ : NOT_FOUND);
 		ADVENTURERS_GUIDE.pagesStates.put("Looting",            debug ? READ : NOT_FOUND);
 		ADVENTURERS_GUIDE.pagesStates.put("Levelling",          debug ? READ : NOT_FOUND);
 		ADVENTURERS_GUIDE.pagesStates.put("Positioning",        debug ? READ : NOT_FOUND);
@@ -273,7 +275,7 @@ public enum Document {
 		//given in prison
 		ALCHEMY_GUIDE.pagesStates.put("Bombs",                  debug ? READ : NOT_FOUND);
 		ALCHEMY_GUIDE.pagesStates.put("Weapons",                debug ? READ : NOT_FOUND);
-		ALCHEMY_GUIDE.pagesStates.put("Catalysts",              debug ? READ : NOT_FOUND);
+		//ALCHEMY_GUIDE.pagesStates.put("Catalysts",              debug ? READ : NOT_FOUND);
 		ALCHEMY_GUIDE.pagesStates.put("Brews_Elixirs",          debug ? READ : NOT_FOUND);
 		ALCHEMY_GUIDE.pagesStates.put("Spells",                 debug ? READ : NOT_FOUND);
 

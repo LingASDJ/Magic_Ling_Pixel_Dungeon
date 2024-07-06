@@ -208,6 +208,7 @@ public class CavesLevel extends RegularLevel {
 			case Terrain.STATUE_SP:
 				return Messages.get(CavesLevel.class, "statue_desc");
 			case Terrain.ENTRANCE:
+			case Terrain.ENTRANCE_SP:
 				return Messages.get(CavesLevel.class, "entrance_desc");
 			case Terrain.EXIT:
 				return Messages.get(CavesLevel.class, "exit_desc");

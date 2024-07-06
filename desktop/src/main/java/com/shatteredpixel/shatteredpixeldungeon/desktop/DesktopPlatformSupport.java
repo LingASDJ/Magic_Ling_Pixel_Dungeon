@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.watabou.input.ControllerHandler;
 import com.watabou.noosa.Game;
 import com.watabou.utils.PlatformSupport;
 import com.watabou.utils.Point;
@@ -76,6 +77,11 @@ public class DesktopPlatformSupport extends PlatformSupport {
 	@Override
 	public boolean connectedToUnmeteredNetwork() {
 		return true; //no easy way to check this in desktop, just assume user doesn't care
+	}
+
+	@Override
+	public boolean supportsVibration() {
+		return ControllerHandler.vibrationSupported();
 	}
 
 	//TODO backported openURI fix from libGDX-1.10.1-SNAPSHOT, remove when updating libGDX

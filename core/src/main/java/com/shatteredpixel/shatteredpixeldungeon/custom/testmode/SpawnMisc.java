@@ -62,7 +62,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Switch;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfNoWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
@@ -97,11 +96,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCurse
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfRoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.ArcaneCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.FeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
@@ -112,6 +108,19 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFear;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundial;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MossyClump;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.PetrifiedSeed;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrapMechanism;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WondrousResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
@@ -154,6 +163,9 @@ public class SpawnMisc extends TestItem {
     private static ArrayList<Class<? extends Spell>> spellList = new ArrayList<>();
     private static ArrayList<Class<? extends Food>> foodList = new ArrayList<>();
     private static ArrayList<Class<? extends Books>> bookList = new ArrayList<>();
+
+    private static ArrayList<Class<? extends Trinket>> trList = new ArrayList<>();
+
     private static ArrayList<Class<? extends Item>> miscList = new ArrayList<>();
 
     public SpawnMisc(){
@@ -241,7 +253,7 @@ public class SpawnMisc extends TestItem {
             brewList.add(ElixirOfIcyTouch.class);
             brewList.add(ElixirOfMight.class);
             brewList.add(ElixirOfToxicEssence.class);
-            brewList.add(AlchemicalCatalyst.class);
+
             brewList.add(WaterSoul.class);
             brewList.add(ElixirOfNukeCole.class);
         }
@@ -249,10 +261,10 @@ public class SpawnMisc extends TestItem {
         //Spell
         if(spellList.isEmpty()) {
             spellList.add(Alchemize.class);
-            spellList.add(AquaBlast.class);
+            //spellList.add(AquaBlast.class);
             spellList.add(BeaconOfReturning.class);
             spellList.add(CurseInfusion.class);
-            spellList.add(FeatherFall.class);
+            //spellList.add(FeatherFall.class);
             spellList.add(MagicalInfusion.class);
             spellList.add(TelekineticGrab.class);
             spellList.add(PhaseShift.class);
@@ -260,7 +272,7 @@ public class SpawnMisc extends TestItem {
             spellList.add(Recycle.class);
             spellList.add(WildEnergy.class);
             spellList.add(SummonElemental.class);
-            spellList.add(ArcaneCatalyst.class);
+            //spellList.add(ArcaneCatalyst.class);
         }
 
         if(foodList.isEmpty()) {
@@ -301,8 +313,24 @@ public class SpawnMisc extends TestItem {
             bookList.add(YellowSunBooks.class);
         }
 
+        //Book
+        if(trList.isEmpty()) {
+            trList.add(DimensionalSundial.class);
+            trList.add(ExoticCrystals.class);
+            trList.add(EyeOfNewt.class);
+            trList.add(MimicTooth.class);
+            trList.add(MossyClump.class);
+            trList.add(ParchmentScrap.class);
+            trList.add(PetrifiedSeed.class);
+            trList.add(RatSkull.class);
+            trList.add(ThirteenLeafClover.class);
+            trList.add(TrapMechanism.class);
+            trList.add(WondrousResin.class);
+        }
+
         //Misc
         if(miscList.isEmpty()) {
+            miscList.add(TrinketCatalyst.class);
             miscList.add(Torch.class);
             miscList.add(GooBlob.class);
             miscList.add(MetalShard.class);
@@ -400,7 +428,8 @@ public class SpawnMisc extends TestItem {
             case 9: return spellList.get(id);
             case 10: return foodList.get(id);
             case 11: return bookList.get(id);
-            case 12: default: return miscList.get(id);
+            case 12: return trList.get(id);
+            case 13: default: return miscList.get(id);
         }
     }
 
@@ -418,7 +447,8 @@ public class SpawnMisc extends TestItem {
             case 9: return ItemSpriteSheet.PHASE_SHIFT;
             case 10: return ItemSpriteSheet.RATION;
             case 11: return ItemSpriteSheet.MASTERY;
-            case 12: default: return ItemSpriteSheet.CHEST;
+            case 12: return ItemSpriteSheet.EYE_OF_NEWT;
+            case 13: default: return ItemSpriteSheet.CHEST;
         }
     }
 
@@ -449,6 +479,8 @@ public class SpawnMisc extends TestItem {
             case 11:
                 return bookList.size() - 1;
             case 12:
+                return trList.size() - 1;
+            case 13:
                 return miscList.size() - 1;
             default:
                 return 11;
@@ -456,7 +488,7 @@ public class SpawnMisc extends TestItem {
     }
 
     private int maxCategory(){
-        return 12;
+        return 13;
     }
 
     private class SettingsWindow extends Window {
@@ -524,7 +556,7 @@ public class SpawnMisc extends TestItem {
         private void createCategoryImage(){
             float left;
             float top = GAP + TITLE_BTM;
-            int length = 13;
+            int length = 14;
             int maxImageCount = 6;
             for (int i = 0; i < length; ++i) {
                 final int j = i;
@@ -559,7 +591,7 @@ public class SpawnMisc extends TestItem {
             float left;
             float top = GAP + cateButtonList.get(cateButtonList.size() - 1 ).bottom() + 2 * GAP;
             int length = maxIndex(cateSelected)+1;
-            int maxImageCount = 6;
+            int maxImageCount = 9;
             for (int i = 0; i < length; ++i) {
                 final int j = i;
                 IconButton btn = new IconButton() {
@@ -651,12 +683,19 @@ public class SpawnMisc extends TestItem {
                         im.scale.set(1.0f);
                         btn.icon(im);
                     } break;
-                    case 12: default:{
+                    case 12:{
+                        Image im = new Image(Assets.Sprites.ITEMS);
+                        im.frame(ItemSpriteSheet.film.get(Objects.requireNonNull(Reflection.newInstance(trList.get(i))).image));
+                        im.scale.set(1.0f);
+                        btn.icon(im);
+                    }break;
+                    case 13: default:{
                         Image im = new Image(Assets.Sprites.ITEMS);
                         im.frame(ItemSpriteSheet.film.get(Objects.requireNonNull(Reflection.newInstance(miscList.get(i))).image));
                         im.scale.set(1.0f);
                         btn.icon(im);
                     }
+                    break;
                 }
 
                 left = (WIDTH - BTN_SIZE * maxImageCount) / 2f;

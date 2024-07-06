@@ -17,6 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.Brew;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
@@ -106,7 +107,7 @@ public class GameTracker extends Buff {
         if(item != null) {
             if (
                     ((item instanceof Weapon || item instanceof Armor) && item.level() > 0)
-                            || (item instanceof Ring || item instanceof Wand || item instanceof Artifact || item instanceof ExoticScroll|| item instanceof Brew)
+                            || (item instanceof Ring || item instanceof Wand || item instanceof Artifact || item instanceof ExoticScroll|| item instanceof Brew || item instanceof TrinketCatalyst)
             ) {
                 String name = item.trueName();
                 int index = name.indexOf('+');

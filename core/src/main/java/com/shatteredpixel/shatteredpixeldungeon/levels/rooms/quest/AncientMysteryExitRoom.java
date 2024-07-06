@@ -29,12 +29,6 @@ public class AncientMysteryExitRoom extends ExitRoom {
     public int maxHeight() {
         return 9;
     }
-    @Override
-    public boolean canMerge(Level l, Point p, int mergeTerrain) {
-        //StandardRoom.canMerge
-        int cell = l.pointToCell(pointInside(p, 1));
-        return (Terrain.flags[l.map[cell]] & Terrain.SOLID) == 0;
-    }
 
     @Override
     public void paint(Level level) {

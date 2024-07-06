@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -51,6 +53,15 @@ public class KingsCrown extends Item {
 		defaultAction = AC_WEAR;
 
 		unique = true;
+	}
+
+	@Override
+	public String defaultAction() {
+		if((hero.belongings.armor instanceof CustomArmor)){
+			return AC_THROW;
+		} else {
+			return super.defaultAction();
+		}
 	}
 	
 	@Override

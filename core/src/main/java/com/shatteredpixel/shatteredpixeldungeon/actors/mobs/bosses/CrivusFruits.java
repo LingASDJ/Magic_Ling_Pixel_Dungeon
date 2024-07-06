@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.STRONGER_BOSSES;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.bossWeapons;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel3;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ForestBossLevel.BRatKingRoom;
@@ -14,6 +13,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
@@ -77,6 +77,13 @@ public class CrivusFruits extends Boss {
     private ArrayList<Integer> targetedCells = new ArrayList<>();
     //the cells to trace fire shots to, for visual effects.
     private HashSet<Integer> visualCells;
+
+
+    @Override
+    public int drRoll() {
+        return Random.Int(2);
+    }
+
     //基本属性
     {
         spriteClass = CrivusFruitsSprite.class;
@@ -400,11 +407,11 @@ public class CrivusFruits extends Boss {
 
         if (!Badges.isUnlocked(Badges.Badge.KILL_APPLE)){
             Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
-        } else if (Random.Float()<0.4f || Statistics.bossWeapons>=3) {
-            bossWeapons++;
+        } else if (Random.Float()<0.4f || SPDSettings.BossWeaponCount1() >= 3) {
+            SPDSettings.BossWeaponCount1(SPDSettings.BossWeaponCount1() + 1);
             Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
-            if(Statistics.bossWeapons>=3){
-                Statistics.bossWeapons=0;
+            if(SPDSettings.BossWeaponCount1() >= 3){
+                SPDSettings.BossWeaponCount1(0);
                 GLog.w(Messages.get(this,"weapon"));
             }
         } else {

@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
+		package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -88,31 +89,45 @@ import java.util.List;
 public class ShopRoom extends SpecialRoom {
 
 	protected ArrayList<Item> itemsToSpawn;
-	
+
 	@Override
 	public int minWidth() {
-		return Math.max(7, (int)(Math.sqrt(itemCount())+3));
-	}
-	
-	@Override
-	public int minHeight() {
-		return Math.max(7, (int)(Math.sqrt(itemCount())+3));
+		return Math.max(7, (int)(Math.sqrt(spacesNeeded())+3));
 	}
 
-	public int itemCount(){
-		if (itemsToSpawn == null) itemsToSpawn = generateItems();
-		return itemsToSpawn.size();
+	@Override
+	public int minHeight() {
+		return Math.max(7, (int)(Math.sqrt(spacesNeeded())+3));
 	}
-	
+
+	public int spacesNeeded(){
+		if (itemsToSpawn == null) itemsToSpawn = generateItems();
+
+		//sandbags spawn based on current level of an hourglass the player may be holding
+		// so, to avoid rare cases of min sizes differing based on that, we ignore all sandbags
+		// and then add 4 items in all cases, which is max number of sandbags that can be in the shop
+		int spacesNeeded = itemsToSpawn.size();
+		for (Item i : itemsToSpawn){
+			if (i instanceof TimekeepersHourglass.sandBag){
+				spacesNeeded--;
+			}
+		}
+		spacesNeeded += 4;
+
+		//we also add 1 more space, for the shopkeeper
+		spacesNeeded++;
+		return spacesNeeded;
+	}
+
 	public void paint( Level level ) {
-		
+
 		Painter.fill( level, this, Terrain.WALL );
 		Painter.fill( level, this, 1, Terrain.EMPTY_SP );
 
 		placeShopkeeper( level );
 
 		placeItems( level );
-		
+
 		for (Door door : connected.values()) {
 			door.set( Door.Type.REGULAR );
 		}
@@ -135,47 +150,92 @@ public class ShopRoom extends SpecialRoom {
 			itemsToSpawn = generateItems();
 		}
 
-		Point itemPlacement = new Point(entrance());
-		if (itemPlacement.y == top){
-			itemPlacement.y++;
-		} else if (itemPlacement.y == bottom) {
-			itemPlacement.y--;
-		} else if (itemPlacement.x == left){
-			itemPlacement.x++;
+		Point entryInset = new Point(entrance());
+		if (entryInset.y == top){
+			entryInset.y++;
+		} else if (entryInset.y == bottom) {
+			entryInset.y--;
+		} else if (entryInset.x == left){
+			entryInset.x++;
 		} else {
-			itemPlacement.x--;
+			entryInset.x--;
 		}
 
-		for (Item item : itemsToSpawn) {
+		Point curItemPlace = entryInset.clone();
 
-			if (itemPlacement.x == left+1 && itemPlacement.y != top+1){
-				itemPlacement.y--;
-			} else if (itemPlacement.y == top+1 && itemPlacement.x != right-1){
-				itemPlacement.x++;
-			} else if (itemPlacement.x == right-1 && itemPlacement.y != bottom-1){
-				itemPlacement.y++;
+		int inset = 1;
+
+		for (Item item : itemsToSpawn.toArray(new Item[0])) {
+
+			//place items in a clockwise pattern
+			if (curItemPlace.x == left+inset && curItemPlace.y != top+inset){
+				curItemPlace.y--;
+			} else if (curItemPlace.y == top+inset && curItemPlace.x != right-inset){
+				curItemPlace.x++;
+			} else if (curItemPlace.x == right-inset && curItemPlace.y != bottom-inset){
+				curItemPlace.y++;
 			} else {
-				itemPlacement.x--;
+				curItemPlace.x--;
 			}
 
-			int cell = level.pointToCell(itemPlacement);
+			//once we get to the inset from the entrance again, move another cell inward and loop
+			if (curItemPlace.equals(entryInset)){
 
-			if (level.heaps.get( cell ) != null) {
-				do {
-					cell = level.pointToCell(random());
-				} while (level.heaps.get( cell ) != null || level.findMob( cell ) != null);
+				if (entryInset.y == top+inset){
+					entryInset.y++;
+				} else if (entryInset.y == bottom-inset){
+					entryInset.y--;
+				}
+				if (entryInset.x == left+inset){
+					entryInset.x++;
+				} else if (entryInset.x == right-inset){
+					entryInset.x--;
+				}
+				inset++;
+
+				if (inset > (Math.min(width(), height())-3)/2){
+					break; //out of space!
+				}
+
+				curItemPlace = entryInset.clone();
+
+				//make sure to step forward again
+				if (curItemPlace.x == left+inset && curItemPlace.y != top+inset){
+					curItemPlace.y--;
+				} else if (curItemPlace.y == top+inset && curItemPlace.x != right-inset){
+					curItemPlace.x++;
+				} else if (curItemPlace.x == right-inset && curItemPlace.y != bottom-inset){
+					curItemPlace.y++;
+				} else {
+					curItemPlace.x--;
+				}
 			}
 
-			if(Statistics.bossRushMode){
-				level.drop( item, cell ).type = Heap.Type.FOR_RUSH;
-			} else {
-				level.drop( item, cell ).type = Heap.Type.FOR_SALE;
-			}
+			int cell = level.pointToCell(curItemPlace);
+			level.drop( item, cell ).type = Heap.Type.FOR_SALE;
+			itemsToSpawn.remove(item);
+		}
 
+		//we didn't have enough space to place everything neatly, so now just fill in anything left
+		if (!itemsToSpawn.isEmpty()){
+			for (Point p : getPoints()){
+				int cell = level.pointToCell(p);
+				if ((level.map[cell] == Terrain.EMPTY_SP || level.map[cell] == Terrain.EMPTY)
+						&& level.heaps.get(cell) == null && level.findMob(cell) == null){
+					level.drop( itemsToSpawn.remove(0), level.pointToCell(p) ).type = Heap.Type.FOR_SALE;
+				}
+				if (itemsToSpawn.isEmpty()){
+					break;
+				}
+			}
+		}
+
+		if (!itemsToSpawn.isEmpty()){
+			ShatteredPixelDungeon.reportException(new RuntimeException("failed to place all items in a shop!"));
 		}
 
 	}
-	
+
 	protected static ArrayList<Item> generateItems() {
 
 		ArrayList<Item> itemsToSpawn = new ArrayList<>();
@@ -186,92 +246,92 @@ public class ShopRoom extends SpecialRoom {
 
 		switch (Dungeon.depth) {
 			case 5:case 6: default:
-			w = (MeleeWeapon) Generator.random(Generator.wepTiers[1]);
-			itemsToSpawn.add( Generator.random(Generator.misTiers[1]).quantity(2).identify(false) );
-			itemsToSpawn.add( new LeatherArmor().identify(false) );
-
-            if(!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)){
-                if(Random.Int(1)<1){
-                    //50%
-                    w2.lvl = Random.Int(0, 301);
-	    			itemsToSpawn.add(w2.identify(false));
-	    		}
-            }else if(Random.Int(10)<1 ) {
-			    //10%
-				w2.lvl = Random.Int(0, 301);
-				itemsToSpawn.add(w2.identify(false));
-			}
-
-			break;
-			
-		case 11:case 12:
-			w = (MeleeWeapon) Generator.random(Generator.wepTiers[2]);
-			itemsToSpawn.add( Generator.random(Generator.misTiers[2]).quantity(2).identify(false) );
-			itemsToSpawn.add( new MailArmor().identify(false) );
-
-			if(!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)){
-                if(Random.Int(1)<1){
-                    //50%
-                    w2.lvl = Random.Int(100, 301);
-	    			itemsToSpawn.add(w2.identify(false));
-	    		}
-            }else if(Random.Int(200)<15) {
-			//7.5%
-				w2 = new LockSword();
-				((LockSword) w2).lvl = Random.Int(100, 301);
-				itemsToSpawn.add(w2.identify(false));
-			}
-
-
-			break;
-			
-		case 16:case 19:
-			w = (MeleeWeapon) Generator.random(Generator.wepTiers[3]);
-			itemsToSpawn.add( Generator.random(Generator.misTiers[3]).quantity(2).identify(false) );
-			if(Random.Int(10) == 0){
+				w = (MeleeWeapon) Generator.random(Generator.wepTiers[1]);
+				itemsToSpawn.add( Generator.random(Generator.misTiers[1]).quantity(2).identify(false) );
 				itemsToSpawn.add( new LeatherArmor().identify(false) );
-			} else {
-				itemsToSpawn.add( new ScaleArmor().identify(false) );
-			}
 
-			if(!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)){
-                if(Random.Int(1)<1){
-                    //50%
-                    //合计期望为87.5%
-                    w2.lvl = Random.Int(200, 501);
-	    			itemsToSpawn.add(w2.identify(false));
-	    		}
-            }else if(Random.Int(20)<1) {
-			//5%
-			//合计期望大概为21%
-				w2 = new LockSword();
-				((LockSword) w2).lvl = Random.Int(200, 501);
-				itemsToSpawn.add( w2.identify(false) );
-			}
-			break;
+				if(!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)){
+					if(Random.Int(1)<1){
+						//50%
+						w2.lvl = Random.Int(0, 301);
+						itemsToSpawn.add(w2.identify(false));
+					}
+				}else if(Random.Int(10)<1 ) {
+					//10%
+					w2.lvl = Random.Int(0, 301);
+					itemsToSpawn.add(w2.identify(false));
+				}
+
+				break;
+
+			case 11:case 12:
+				w = (MeleeWeapon) Generator.random(Generator.wepTiers[2]);
+				itemsToSpawn.add( Generator.random(Generator.misTiers[2]).quantity(2).identify(false) );
+				itemsToSpawn.add( new MailArmor().identify(false) );
+
+				if(!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)){
+					if(Random.Int(1)<1){
+						//50%
+						w2.lvl = Random.Int(100, 301);
+						itemsToSpawn.add(w2.identify(false));
+					}
+				}else if(Random.Int(200)<15) {
+					//7.5%
+					w2 = new LockSword();
+					((LockSword) w2).lvl = Random.Int(100, 301);
+					itemsToSpawn.add(w2.identify(false));
+				}
+
+
+				break;
+
+			case 16:case 19:
+				w = (MeleeWeapon) Generator.random(Generator.wepTiers[3]);
+				itemsToSpawn.add( Generator.random(Generator.misTiers[3]).quantity(2).identify(false) );
+				if(Random.Int(10) == 0){
+					itemsToSpawn.add( new LeatherArmor().identify(false) );
+				} else {
+					itemsToSpawn.add( new ScaleArmor().identify(false) );
+				}
+
+				if(!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)){
+					if(Random.Int(1)<1){
+						//50%
+						//合计期望为87.5%
+						w2.lvl = Random.Int(200, 501);
+						itemsToSpawn.add(w2.identify(false));
+					}
+				}else if(Random.Int(20)<1) {
+					//5%
+					//合计期望大概为21%
+					w2 = new LockSword();
+					((LockSword) w2).lvl = Random.Int(200, 501);
+					itemsToSpawn.add( w2.identify(false) );
+				}
+				break;
 
 
 
-		case 20: case 21:case 25:
-			w = (MeleeWeapon) Generator.random(Generator.wepTiers[4]);
-			itemsToSpawn.add( Generator.random(Generator.misTiers[4]).quantity(2).identify(false) );
-			if(Random.Int(10) == 0){
-				itemsToSpawn.add( new LamellarArmor().identify(false) );
-			} else {
-				itemsToSpawn.add( new PlateArmor().identify(false) );
-			}
-			itemsToSpawn.add( new Torch() );
-			itemsToSpawn.add( new Torch() );
-			itemsToSpawn.add( new Torch() );
+			case 20: case 21:case 25:
+				w = (MeleeWeapon) Generator.random(Generator.wepTiers[4]);
+				itemsToSpawn.add( Generator.random(Generator.misTiers[4]).quantity(2).identify(false) );
+				if(Random.Int(10) == 0){
+					itemsToSpawn.add( new LamellarArmor().identify(false) );
+				} else {
+					itemsToSpawn.add( new PlateArmor().identify(false) );
+				}
+				itemsToSpawn.add( new Torch() );
+				itemsToSpawn.add( new Torch() );
+				itemsToSpawn.add( new Torch() );
 
-			break;
+				break;
 		}
 		w.enchant(null);
 		w.cursed = false;
 		w.level(0);
 		w.identify(false);
 		itemsToSpawn.add(w);
-		
+
 		itemsToSpawn.add( TippedDart.randomTipped(2) );
 
 		itemsToSpawn.add( new Alchemize().quantity(Random.IntRange(2, 3)));
@@ -348,7 +408,7 @@ public class ShopRoom extends SpecialRoom {
 				itemsToSpawn.add(new SakaFishSketon());
 			}
 		}
-		
+
 		switch (Random.Int(4)){
 			case 0:
 				itemsToSpawn.add( new Bomb() );
@@ -418,15 +478,14 @@ public class ShopRoom extends SpecialRoom {
 		//use a new generator here to prevent items in shop stock affecting levelgen RNG (e.g. sandbags)
 		//we can use a random long for the seed as it will be the same long every time
 		Random.pushGenerator(Random.Long());
-			Random.shuffle(itemsToSpawn);
+		Random.shuffle(itemsToSpawn);
 		Random.popGenerator();
 
 		return itemsToSpawn;
 	}
 
-	public static Bag ChooseBag(Belongings pack){
+	protected static Bag ChooseBag(Belongings pack){
 		if(Dungeon.isDLC(Conducts.Conduct.DEV)) return null;
-
 		//generate a hashmap of all valid bags.
 		HashMap<Bag, Integer> bags = new HashMap<>();
 		if (!Dungeon.LimitedDrops.VELVET_POUCH.dropped()) bags.put(new VelvetPouch(), 1);

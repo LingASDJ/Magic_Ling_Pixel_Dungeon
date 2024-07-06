@@ -21,7 +21,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsi
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfPrismaticLight;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
@@ -98,6 +97,7 @@ public class BlackSoul extends Mob implements Callback {
 
     private Wand RandomWand() {
         switch (Random.Int(15)){
+            default:
             case 6:
                 wand = new WandOfBlastWave();
                 break;
@@ -106,9 +106,6 @@ public class BlackSoul extends Mob implements Callback {
                 break;
             case 9:
                 wand = new WandOfPrismaticLight();
-                break;
-            default:
-                wand = new WandOfMagicMissile();
                 break;
         }
         return wand;

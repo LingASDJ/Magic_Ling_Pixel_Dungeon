@@ -69,6 +69,7 @@ public enum Icons {
 	STATS,
 	CHALLENGE_OFF,
 	CHALLENGE_ON,
+
 	RENAME_OFF,
 	RENAME_ON,
 
@@ -124,7 +125,8 @@ public enum Icons {
 	DEPTH_BLOOD,
 
 	DEPTH_SKYCITY,
-
+	//Base on SHPD 2.4.2
+	REPEAT,
 	MISSON_ON,
 	MISSON_OFF,
 
@@ -403,6 +405,9 @@ public enum Icons {
 				break;
 			case MISSON_OFF:
 				icon.frame( icon.texture.uvRectBySize( 144, 64, 32, 14 ) );
+				break;
+			case REPEAT:
+				icon.frame( icon.texture.uvRectBySize( 192, 80, 11, 11 ) );
 				break;
 			case MISSON_ON:
 				icon.frame( icon.texture.uvRectBySize( 144, 80, 32, 14 ) );

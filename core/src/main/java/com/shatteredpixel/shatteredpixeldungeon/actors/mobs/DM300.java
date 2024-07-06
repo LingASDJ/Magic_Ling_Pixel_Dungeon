@@ -93,7 +93,7 @@ public class DM300 extends Boss {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 15, 25 );
+		return Char.combatRoll( 15, 25 );
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class DM300 extends Boss {
 
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 10);
+		return super.drRoll() + Char.combatRoll(0, 10);
 	}
 
 	public int pylonsActivated = 0;
@@ -478,7 +478,7 @@ public class DM300 extends Boss {
 		int dmgTaken = preHP - HP;
 		if (dmgTaken > 0) {
 			LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-			if (lock != null && !isImmune(src.getClass())){
+			if (lock != null && !isImmune(src.getClass()) && !isInvulnerable(src.getClass())){
 				if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmgTaken/2f);
 				else                                                    lock.addTime(dmgTaken);
 			}
@@ -491,7 +491,7 @@ public class DM300 extends Boss {
 			threshold = HT / 3 * (2 - pylonsActivated);
 		}
 
-		if (HP < threshold){
+		if (HP <= threshold && threshold > 0){
 			HP = threshold;
 			supercharge();
 		}

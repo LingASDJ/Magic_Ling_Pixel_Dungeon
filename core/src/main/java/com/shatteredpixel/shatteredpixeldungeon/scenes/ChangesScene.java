@@ -204,7 +204,7 @@ public class ChangesScene extends PixelScene {
 				panel.innerHeight() + 2);
 		list.scrollTo(0, 0);
 
-		StyledButton btn0_9 = new StyledButton(Chrome.Type.TOAST, "2.2-0.9"){
+		StyledButton btn0_9 = new StyledButton(Chrome.Type.TOAST, "2.4-0.9"){
 			@Override
 			protected void onClick() {
 				super.onClick();

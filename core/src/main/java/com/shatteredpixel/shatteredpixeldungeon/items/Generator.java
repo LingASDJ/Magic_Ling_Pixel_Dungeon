@@ -51,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesi
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WraithAmulet;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
@@ -70,6 +71,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticG
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.Brew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.Elixir;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
@@ -96,6 +100,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTerror;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Spell;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
@@ -108,6 +114,19 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFlock;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfShock;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundial;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MossyClump;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.PetrifiedSeed;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrapMechanism;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WondrousResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
@@ -217,6 +236,8 @@ import com.watabou.utils.GameMath;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -292,6 +313,8 @@ public class Generator {
 	}
 
 	public enum Category {
+		TRINKET ( 0, 0, Trinket.class),
+
 		WEAPON	( 2, 2, MeleeWeapon.class),
 		WEP_T1	( 0, 0, MeleeWeapon.class),
 		WEP_T2	( 0, 0, MeleeWeapon.class),
@@ -353,12 +376,37 @@ public class Generator {
 			this.superClass = superClass;
 		}
 
+		//some generator categories can have ordering within that category as well
+		// note that sub category ordering doesn't need to always include items that belong
+		// to that categories superclass, e.g. bombs are ordered within thrown weapons
+		private static HashMap<Class, ArrayList<Class>> subOrderings = new HashMap<>();
+		static {
+			subOrderings.put(Trinket.class, new ArrayList<>(Arrays.asList(Trinket.class, TrinketCatalyst.class)));
+			subOrderings.put(MissileWeapon.class, new ArrayList<>(Arrays.asList(MissileWeapon.class, Bomb.class)));
+			subOrderings.put(Potion.class, new ArrayList<>(Arrays.asList(Potion.class, ExoticPotion.class, Brew.class, Elixir.class, LiquidMetal.class)));
+			subOrderings.put(Scroll.class, new ArrayList<>(Arrays.asList(Scroll.class, ExoticScroll.class, Spell.class, ArcaneResin.class)));
+		}
+
+		//in case there are multiple matches, this will return the latest match
 		public static int order( Item item ) {
+			int catResult = -1, subResult = 0;
 			for (int i=0; i < values().length; i++) {
-				if (values()[i].superClass.isInstance( item )) {
-					return i;
+				ArrayList<Class> subOrdering = subOrderings.get(values()[i].superClass);
+				if (subOrdering != null){
+					for (int j=0; j < subOrdering.size(); j++){
+						if (subOrdering.get(j).isInstance(item)){
+							catResult = i;
+							subResult = j;
+						}
+					}
+				} else {
+					if (values()[i].superClass.isInstance(item)) {
+						catResult = i;
+						subResult = 0;
+					}
 				}
 			}
+			if (catResult != -1) return catResult*100 + subResult;
 
 			//items without a category-defined order are sorted based on the spritesheet
 			return Short.MAX_VALUE+item.image();
@@ -459,8 +507,12 @@ public class Generator {
 					WandOfGodIce.class,
 					WandOfVenom.class
 			};
+
+			Badges.loadGlobal();
+			List<Badges.Badge> badges = Badges.filterReplacedBadges(true);
+
 			WAND.probs = new float[]{ 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 2,0,0,
-					Badges.isUnlocked(Badges.Badge.KILL_MG) ? 2 : 0,0 };
+					badges.contains(Badges.Badge.KILL_MG) ? 2 : 0,0 };
 
 			//see generator.randomWeapon
 			WEAPON.classes = new Class<?>[]{};
@@ -653,6 +705,24 @@ public class Generator {
 			ARTIFACT.defaultProbs = new float[]{ 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1,1, 0};
 			ARTIFACT.probs = ARTIFACT.defaultProbs.clone();
 
+			//Trinkets are unique like artifacts, but unlike them you can only have one at once
+			//So we don't need the same enforcement of uniqueness
+			TRINKET.classes = new Class<?>[]{
+					RatSkull.class,
+					ParchmentScrap.class,
+					PetrifiedSeed.class,
+					ExoticCrystals.class,
+					MossyClump.class,
+					DimensionalSundial.class,
+					ThirteenLeafClover.class,
+					TrapMechanism.class,
+					MimicTooth.class,
+					WondrousResin.class,
+					EyeOfNewt.class
+			};
+			TRINKET.defaultProbs = new float[]{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+			TRINKET.probs = TRINKET.defaultProbs.clone();
+
 			for (Category cat : Category.values()){
 				if (cat.defaultProbs2 != null){
 					cat.defaultProbsTotal = new float[cat.defaultProbs.length];
@@ -675,6 +745,7 @@ public class Generator {
 
 	private static boolean usingFirstDeck = false;
 	private static HashMap<Category,Float> categoryProbs = new LinkedHashMap<>();
+	private static HashMap<Category,Float> defaultCatProbs = new LinkedHashMap<>();
 
 	public static void fullReset() {
 		usingFirstDeck = Random.Int(2) == 0;
@@ -687,6 +758,7 @@ public class Generator {
 	public static void generalReset(){
 		for (Category cat : Category.values()) {
 			categoryProbs.put( cat, usingFirstDeck ? cat.firstProb : cat.secondProb );
+			defaultCatProbs.put( cat, cat.firstProb + cat.secondProb );
 		}
 	}
 
@@ -718,24 +790,57 @@ public class Generator {
 				//if we're out of artifacts, return a ring instead.
 				return item != null ? item : random(Category.RING);
 			default:
+				if (cat.defaultProbs != null && cat.seed != null){
+					Random.pushGenerator(cat.seed);
+					for (int i = 0; i < cat.dropped; i++) Random.Long();
+				}
+
 				int i = Random.chances(cat.probs);
 				if (i == -1) {
 					reset(cat);
 					i = Random.chances(cat.probs);
 				}
 				if (cat.defaultProbs != null) cat.probs[i]--;
-				return ((Item) Reflection.newInstance(cat.classes[i])).random();
+				Class<?> itemCls = cat.classes[i];
+
+				if (cat.defaultProbs != null && cat.seed != null){
+					Random.popGenerator();
+					cat.dropped++;
+				}
+
+				if (ExoticPotion.regToExo.containsKey(itemCls)){
+					if (Random.Float() < ExoticCrystals.consumableExoticChance()){
+						itemCls = ExoticPotion.regToExo.get(itemCls);
+					}
+				} else if (ExoticScroll.regToExo.containsKey(itemCls)){
+					if (Random.Float() < ExoticCrystals.consumableExoticChance()){
+						itemCls = ExoticScroll.regToExo.get(itemCls);
+					}
+				}
+				return ((Item) Reflection.newInstance(itemCls)).random();
 		}
 	}
 
 	//overrides any deck systems and always uses default probs
+	// except for artifacts, which must always use a deck
 	public static Item randomUsingDefaults( Category cat ){
-		if (cat.defaultProbs == null) {
-			return random(cat); //currently covers weapons/armor/missiles
+		if (cat == Category.WEAPON){
+			return randomWeapon(true);
+		} else if (cat == Category.MISSILE){
+			return randomMissile(true);
+		} else if (cat.defaultProbs == null || cat == Category.ARTIFACT) {
+			return random(cat);
+		} else if (cat.defaultProbsTotal != null){
+			return ((Item) Reflection.newInstance(cat.classes[Random.chances(cat.defaultProbsTotal)])).random();
 		} else {
 			return ((Item) Reflection.newInstance(cat.classes[Random.chances(cat.defaultProbs)])).random();
 		}
 	}
+
+	public static Item randomUsingDefaults(){
+		return randomUsingDefaults(Random.chances( defaultCatProbs ));
+	}
+
 
 	public static Item random( Class<? extends Item> cl ) {
 		return Reflection.newInstance(cl).random();

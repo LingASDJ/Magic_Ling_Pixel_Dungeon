@@ -359,6 +359,8 @@ public class WndJournal extends WndTabbed {
 					return new ItemSprite(ItemSpriteSheet.LANTERNB);
 				case "Readyherobook":
 					return new ItemSprite(ItemSpriteSheet.YELLOWBOOKS);
+				case "Alchemy":
+					return new ItemSprite(ItemSpriteSheet.EYE_OF_NEWT);
 			}
 		}
 
@@ -367,9 +369,9 @@ public class WndJournal extends WndTabbed {
 	public static class AlchemyTab extends Component {
 
 		private RedButton[] pageButtons;
-		private static final int NUM_BUTTONS = 11;
+		private static final int NUM_BUTTONS = 10;
 
-		private static final int[] spriteIndexes = {10, 12, 7, 9, 11, 8, 3, 13, 14, 15, 4};
+		private static final int[] spriteIndexes = {10, 12, 7, 9, 11, 8, 3, 14, 15, 4};
 
 		public static int currentPageIdx   = -1;
 

@@ -665,7 +665,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
     @Override
     public boolean isAlive() {
-        return super.isAlive() || Dungeon.level.mobs.contains(this);
+        return super.isAlive() || Dungeon.level.mobs.contains(this) && HP>0;
     }
     @Override
     public void damage(int dmg, Object src) {
@@ -682,7 +682,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         super.damage(dmg, src);
         int hpBracket = HT / 8;
 
-        int curbracket = HP / hpBracket+1;
+        int curbracket = hpBracket == 0 ? 1 : HP / hpBracket;
 
         int beforeHitHP = HP;
 

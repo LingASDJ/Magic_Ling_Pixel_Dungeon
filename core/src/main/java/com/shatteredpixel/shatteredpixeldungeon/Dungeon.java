@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BloodBat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
@@ -59,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
@@ -102,6 +104,7 @@ public class Dungeon {
 		UPGRADE_SCROLLS,
 		ARCANE_STYLI,
 		BBAT,
+		TRINKET_CATA,
 		//Health potion sources
 		//enemies
 		SWARM_HP,
@@ -278,7 +281,10 @@ public class Dungeon {
 		return level;
 	}
 
-
+	public static boolean trinketCataNeeded(){
+		//one trinket catalyst on floors 1-3
+		return depth < 5 && depth != 0 && !LimitedDrops.TRINKET_CATA.dropped() && Random.Int(4-depth) == 0;
+	}
 
 	public static void resetLevel() {
 
@@ -822,7 +828,20 @@ public class Dungeon {
 
 		GameScene.updateFog(l, t, width, height);
 
-		//SmallLightRoad();
+		boolean stealthyMimics = MimicTooth.stealthyMimics();
+		if (hero.buff(MindVision.class) != null){
+			for (Mob m : level.mobs.toArray(new Mob[0])){
+				if (stealthyMimics && m instanceof Mimic && m.alignment == Char.Alignment.NEUTRAL){
+					continue;
+				}
+
+				BArray.or( level.visited, level.heroFOV, m.pos - 1 - level.width(), 3, level.visited );
+				BArray.or( level.visited, level.heroFOV, m.pos - 1, 3, level.visited );
+				BArray.or( level.visited, level.heroFOV, m.pos - 1 + level.width(), 3, level.visited );
+				//updates adjacent cells too
+				GameScene.updateFog(m.pos, 2);
+			}
+		}
 
 		if(hero.buff(SmallLightHeader.SAwareness.class) != null){
 			for (Mob m : level.mobs.toArray(new Mob[0])){
@@ -908,11 +927,6 @@ public class Dungeon {
 		}
 
 		GameScene.afterObserve();
-	}
-
-	/** 微光向导共享视野 **/
-	private static void SmallLightRoad() {
-
 	}
 
 	//we store this to avoid having to re-allocate the array with each pathfind

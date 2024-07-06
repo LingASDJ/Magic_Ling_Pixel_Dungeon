@@ -11,6 +11,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.watabou.utils.Point;
 
 public class SkeletonFishRoom extends SpecialRoom {
@@ -30,10 +31,10 @@ public class SkeletonFishRoom extends SpecialRoom {
     public int maxHeight() {
         return 13;
     }
-    @Override
-    public boolean canMerge(Level l, Point p, int mergeTerrain) {
-        return false;
-    }
+	@Override
+	public boolean canMerge(Level l, Room other, Point p, int mergeTerrain) {
+		return false;
+	}
     @Override
     public boolean canConnect(Point p) {
         if (!super.canConnect(p)){

@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Frankenstein;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.PumkingBomber;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.DrTerror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.GunHuntsman;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -436,8 +437,9 @@ public class Bestiary {
 
 	//switches out regular mobs for their alt versions when appropriate
 	private static void swapMobAlts(ArrayList<Class<?extends Mob>> rotation){
+		float altChance = 1/50f * RatSkull.exoticChanceMultiplier();
 		for (int i = 0; i < rotation.size(); i++){
-			if (Random.Int( 50 ) == 0 || Dungeon.isChallenged(CS) && (!Dungeon.isChallenged(SBSG) || !Dungeon.isChallenged(CHAMPION_ENEMIES)) && Random.Int(50)<=20) {
+			if (Random.Float() < altChance || Dungeon.isChallenged(CS) && (!Dungeon.isChallenged(SBSG) || !Dungeon.isChallenged(CHAMPION_ENEMIES)) && Random.Float() < altChance) {
 				Class<? extends Mob> cl = rotation.get(i);
 				if (cl == FlowerSlime.class) {
 					cl = Albino.class;
