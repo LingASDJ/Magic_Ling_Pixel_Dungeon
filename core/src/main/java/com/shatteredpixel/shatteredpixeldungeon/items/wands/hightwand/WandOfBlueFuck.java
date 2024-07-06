@@ -31,7 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlameX;
@@ -62,6 +62,7 @@ public class WandOfBlueFuck extends DamageWand {
 
         collisionProperties = Ballistica.MAGIC_BOLT;
     }
+
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
         {
@@ -90,12 +91,12 @@ public class WandOfBlueFuck extends DamageWand {
 
     //1x/2x/3x damage
     public int min(int lvl){
-        return (1+lvl+Dungeon.depth/5) * chargesPerCast();
+        return (2+lvl+Dungeon.depth/5) * chargesPerCast();
     }
 
     //1x/2x/3x damage
     public int max(int lvl){
-        return (4*lvl+Dungeon.depth/5) * chargesPerCast();
+        return (3*lvl+Dungeon.depth/5) * chargesPerCast();
     }
 
     ConeAOE cone;
@@ -152,7 +153,7 @@ public class WandOfBlueFuck extends DamageWand {
                         Buff.affect(ch, Blindness.class, 4f);
                         break;
                     case 3:
-                        Buff.affect(ch, Haste.class, 4f);
+                        Buff.affect(ch, Paralysis.class, 4f);
                         break;
                 }
             }

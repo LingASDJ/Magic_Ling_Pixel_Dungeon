@@ -26,7 +26,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HaloFireImBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonKingBreath;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
@@ -58,10 +57,10 @@ public class ElixirOfDragonKing extends Elixir {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
         {
-            inputs =  new Class[]{PotionOfDragonKingBreath.class, AlchemicalCatalyst.class};
-            inQuantity = new int[]{1, 1};
+            inputs =  new Class[]{PotionOfDragonKingBreath.class};
+            inQuantity = new int[]{1};
 
-            cost = 9;
+            cost = 15;
 
             output = ElixirOfDragonKing.class;
             outQuantity = 1;

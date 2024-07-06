@@ -91,10 +91,6 @@ public class LevelTeleporter extends TestItem {
         actions.add( AC_ASCEND );
         actions.add(AC_DESCEND);
 
-
-
-
-
         actions.add(AC_VIEW);
         actions.add(AC_TP);
         actions.add(AC_INTER_TP);

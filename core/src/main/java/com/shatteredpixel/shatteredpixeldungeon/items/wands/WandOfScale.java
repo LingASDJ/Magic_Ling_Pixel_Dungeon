@@ -13,7 +13,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -155,10 +154,10 @@ public class WandOfScale extends DamageWand {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
         {
-            inputs =  new Class[]{MagicalInfusion.class, ScrollOfMysticalEnergy.class, AquaBlast.class};
+            inputs =  new Class[]{MagicalInfusion.class, ScrollOfMysticalEnergy.class};
             inQuantity = new int[]{1, 1, 1};
 
-            cost = 10;
+            cost = 15;
 
             output = WandOfScale.class;
             outQuantity = 1;

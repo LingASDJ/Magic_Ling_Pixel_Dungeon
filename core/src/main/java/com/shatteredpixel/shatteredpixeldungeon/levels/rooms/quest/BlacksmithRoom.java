@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -89,13 +90,24 @@ public class BlacksmithRoom extends StandardRoom {
 		vis.pos(entrancePos, level);
 		level.customTiles.add(vis);
 
-		level.transitions.add(new LevelTransition(level,
-				entrancePos,
-				LevelTransition.Type.BRANCH_EXIT,
-				Dungeon.depth,
-				Dungeon.branch + 1,
-				LevelTransition.Type.BRANCH_ENTRANCE));
-		Painter.set(level, entrancePos, Terrain.EXIT);
+		//TODO SP
+		if(RegularLevel.altHoliday == RegularLevel.AltHoliday.DWJ_2024 && Blacksmith.Quest.Type()==4){
+			level.transitions.add(new LevelTransition(level,
+					entrancePos,
+					LevelTransition.Type.BRANCH_EXIT,
+					Dungeon.depth,
+					Dungeon.branch + 3,
+					LevelTransition.Type.BRANCH_ENTRANCE));
+			Painter.set(level, entrancePos, Terrain.EXIT);
+		} else {
+			level.transitions.add(new LevelTransition(level,
+					entrancePos,
+					LevelTransition.Type.BRANCH_EXIT,
+					Dungeon.depth,
+					Dungeon.branch + 1,
+					LevelTransition.Type.BRANCH_ENTRANCE));
+			Painter.set(level, entrancePos, Terrain.EXIT);
+		}
 
 		for(Point p : getPoints()) {
 			int cell = level.pointToCell(p);

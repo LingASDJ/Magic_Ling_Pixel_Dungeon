@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -60,7 +61,7 @@ public class PotionOfDragonsBreath extends ExoticPotion {
 
 	@Override
 	//need to override drink so that time isn't spent right away
-	protected void drink(final Hero hero) {
+    public void drink(final Hero hero) {
 
 		if (!isKnown()) {
 			identify();
@@ -198,7 +199,7 @@ public class PotionOfDragonsBreath extends ExoticPotion {
 
 										curUser.spendAndNext(1f);
 
-										if (!anonymous){
+										if (!anonymous && Random.Float() < talentChance){
 											Talent.onPotionUsed(curUser, curUser.pos, talentFactor);
 										}
 									}

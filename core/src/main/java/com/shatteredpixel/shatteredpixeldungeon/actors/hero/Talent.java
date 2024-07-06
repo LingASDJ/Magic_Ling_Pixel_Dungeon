@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
@@ -193,7 +195,10 @@ public enum Talent {
 	public static class LethalMomentumTracker extends FlavourBuff{};
 	public static class StrikingWaveTracker extends FlavourBuff{};
 	public static class WandPreservationCounter extends CounterBuff{{revivePersists = true;}};
-	public static class EmpoweredStrikeTracker extends FlavourBuff{};
+	public static class EmpoweredStrikeTracker extends FlavourBuff{
+		//blast wave on-hit doesn't resolve instantly, so we delay detaching for it
+		public boolean delayedDetach = false;
+	};
 	public static class ProtectiveShadowsTracker extends Buff {
 		float barrierInc = 0.5f;
 
@@ -530,6 +535,27 @@ public enum Talent {
 
 	public static class WarriorFoodImmunity extends FlavourBuff{
 		{ actPriority = HERO_PRIO+1; }
+
+		public int proc(int damage, Char attacker, Char defender){
+
+			try {
+				int deflected = 9;
+				int deflectedHigh = 12;
+
+				if(defender.isAlive()){
+					if (hero.pointsInTalent(Talent.IRON_STOMACH) == 1){
+						attacker.damage(deflected, this);
+					} else if(hero.pointsInTalent(Talent.IRON_STOMACH) == 2) {
+						attacker.damage(deflectedHigh, this);
+					}
+				}
+			} catch (Exception e) {
+				return 0;
+			}
+
+			return damage;
+		}
+
 	}
 
 	public static float itemIDSpeedFactor( Hero hero, Item item ){
@@ -567,11 +593,6 @@ public enum Talent {
 					hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
 					shield.supercharge(shieldToGive);
 				}
-			} else {
-				// 5/7.5% of max HP
-				int shieldToGive = Math.round( factor * hero.HT * (0.025f * (1+hero.pointsInTalent(LIQUID_WILLPOWER))));
-				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
-				Buff.affect(hero, Barrier.class).setShield(shieldToGive);
 			}
 		}
 		if (hero.hasTalent(LIQUID_NATURE)){
@@ -674,13 +695,13 @@ public enum Talent {
 
 	//note that IDing can happen in alchemy scene, so be careful with VFX here
 	public static void onItemIdentified( Hero hero, Item item ){
-		if (hero.hasTalent(TEST_SUBJECT)){
-			//heal for 2/3 HP
-			hero.HP = Math.min(hero.HP + 1 + hero.pointsInTalent(TEST_SUBJECT), hero.HT);
-			if (hero.sprite != null) {
-				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(1 + hero.pointsInTalent(TEST_SUBJECT)), FloatingText.HEALING);
-			}
-		}
+//		if (hero.hasTalent(TEST_SUBJECT)){
+//			//heal for 2/3 HP
+//			hero.HP = Math.min(hero.HP + 1 + hero.pointsInTalent(TEST_SUBJECT), hero.HT);
+//			if (hero.sprite != null) {
+//				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(1 + hero.pointsInTalent(TEST_SUBJECT)), FloatingText.HEALING);
+//			}
+//		}
 		if (hero.hasTalent(TESTED_HYPOTHESIS)){
 			//2/3 turns of wand recharging
 			Buff.affect(hero, Recharging.class, 1f + hero.pointsInTalent(TESTED_HYPOTHESIS));

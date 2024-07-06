@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuf
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -23,7 +24,10 @@ public class BlessGoRead extends ClearLanterBuff {
             if (level <= 0) {
                 detach();
             }
-            if(hero.lanterfire > 90 && !Statistics.noGoReadHungry) {
+
+            Hunger hungerBuff = hero.buff(Hunger.class);
+
+            if(hero.lanterfire > 90 && !hungerBuff.isStarving()) {
                 //effectively 1HP at lvl 0-5, 2HP lvl 6-8, 3HP lvl 9, and 5HP lvl 10.
                 target.HP = Math.min( target.HT, target.HP + 1);
                 spend(7f);

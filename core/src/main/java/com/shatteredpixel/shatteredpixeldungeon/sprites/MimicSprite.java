@@ -23,11 +23,14 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
 import com.watabou.noosa.TextureFilm;
 
 public class MimicSprite extends MobSprite {
 
-	private static Animation hiding;
+	protected Animation advancedHiding;
+
+	protected Animation hiding;
 
 	{
 		//adjust shadow slightly to account for 1 empty bottom pixel (used for border while hiding)
@@ -49,24 +52,27 @@ public class MimicSprite extends MobSprite {
 
 		TextureFilm frames = new TextureFilm( texture, 16, 16 );
 
+		advancedHiding = new Animation( 1, true );
+		advancedHiding.frames( frames, 0+c);
+
 		hiding = new Animation( 1, true );
 		hiding.frames( frames, 0+c, 0+c, 0+c, 0+c, 0+c, 1+c);
 
 		idle = new Animation( 5, true );
-		idle.frames( frames, 2+c, 2+c, 2+c, 3+c, 3+c );
+		idle.frames( frames, 3+c, 3+c, 3+c, 4+c, 4+c );
 
 		run = new Animation( 10, true );
-		run.frames( frames, 2+c, 3+c, 4+c, 5+c, 5+c, 4+c, 3+c );
+		run.frames( frames, 3+c, 4+c, 5+c, 6+c, 6+c, 5+c, 4+c );
 
 		attack = new Animation( 10, false );
-		attack.frames( frames, 2+c, 6+c, 7+c, 8+c );
+		attack.frames( frames, 3+c, 7+c, 8+c, 9+c );
 
 		die = new Animation( 5, false );
-		die.frames( frames, 9+c, 10+c, 11+c );
+		die.frames( frames, 10+c, 11+c, 12+c );
 
 		play( idle );
 	}
-	
+
 	@Override
 	public void linkVisuals(Char ch) {
 		super.linkVisuals(ch);
@@ -76,31 +82,20 @@ public class MimicSprite extends MobSprite {
 	}
 
 	public void hideMimic(){
-		play(hiding);
+		if (MimicTooth.stealthyMimics()){
+			play(advancedHiding);
+		} else {
+			play(hiding);
+		}
 		hideSleep();
 	}
 
 	@Override
 	public void showSleep() {
-		if (curAnim == hiding){
+		if (curAnim == hiding || curAnim == advancedHiding){
 			return;
 		}
 		super.showSleep();
-	}
-
-
-	public static class Black extends MimicSprite{
-		@Override
-		protected int texOffset() {
-			return 48;
-		}
-	}
-
-	public static class Dimand extends MimicSprite{
-		@Override
-		protected int texOffset() {
-			return 64;
-		}
 	}
 
 	public static class Golden extends MimicSprite{
@@ -117,6 +112,26 @@ public class MimicSprite extends MobSprite {
 		}
 	}
 
+	public static class Ebony extends MimicSprite{
+		@Override
+		protected int texOffset() {
+			return 48;
+		}
+
+		@Override
+		public void hideMimic() {
+			super.hideMimic();
+			alpha(0.2f);
+		}
+
+		@Override
+		public void play(Animation anim) {
+			if (curAnim == advancedHiding && anim != advancedHiding){
+				alpha(1f);
+			}
+			super.play(anim);
+		}
+	}
 
 	public static class HollowWall extends MimicSprite{
 		@Override
@@ -157,6 +172,12 @@ public class MimicSprite extends MobSprite {
 			play( idle );
 		}
 
+	}
+
+	public static class Dimand extends MimicSprite {
+		protected int texOffset() {
+			return 64;
+		}
 	}
 
 }

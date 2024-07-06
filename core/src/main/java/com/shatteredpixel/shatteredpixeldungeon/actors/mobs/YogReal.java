@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
@@ -11,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
@@ -613,7 +613,7 @@ public class YogReal extends Boss {
             Dungeon.level.drop(new CrystalKey(Dungeon.depth), pos+ ofs).sprite.drop();
         }
 
-        if(!Dungeon.isChallenged(PRO)){
+        if(!Dungeon.isDLC(Conducts.Conduct.DEV)){
             Dungeon.level.drop(new Amulet(), pos).sprite.drop();
         } else {
             Dungeon.level.drop(new JAmulet(), pos).sprite.drop();

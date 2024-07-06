@@ -434,6 +434,7 @@ public class Rival extends Boss implements Callback {
                     super.die( cause );
                     wand = new WandOfMagicMissile();
                     misc1 = new RingOfTenacity();
+                    wand.curCharges = 4;
                     Statistics.doNotLookLing = true;
                     GameScene.bossSlain();
 

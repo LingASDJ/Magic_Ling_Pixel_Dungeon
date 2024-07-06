@@ -183,7 +183,7 @@ public class WndWaloKe extends Window {
 
                 }
             };
-            btnConfirm.setRect(0, height+2, WIDTH, 16);
+            btnConfirm.setRect(0, height+2, width, 16);
             add(btnConfirm);
 
             resize(width, (int)btnConfirm.bottom());

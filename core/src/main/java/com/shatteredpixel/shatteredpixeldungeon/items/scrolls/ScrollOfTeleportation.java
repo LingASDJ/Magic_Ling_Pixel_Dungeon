@@ -38,10 +38,10 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.watabou.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.AlphaTweener;
+import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
@@ -225,7 +225,7 @@ public class ScrollOfTeleportation extends Scroll {
 		boolean[] passable = Dungeon.level.passable;
 
 		if (Char.hasProp(ch, Char.Property.LARGE)){
-			passable = BArray.or(passable, Dungeon.level.openSpace, null);
+			passable = BArray.and(passable, Dungeon.level.openSpace, null);
 		}
 
 		PathFinder.buildDistanceMap(ch.pos, passable);

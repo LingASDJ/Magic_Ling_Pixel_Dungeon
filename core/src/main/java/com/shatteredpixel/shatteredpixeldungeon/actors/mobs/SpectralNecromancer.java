@@ -75,7 +75,7 @@ public class SpectralNecromancer extends Necromancer {
 	public void die(Object cause) {
 		for (int ID : wraithIDs){
 			Actor a = Actor.findById(ID);
-			if (a instanceof Wraith){
+			if (a instanceof Wraith && ((Wraith) a).alignment == alignment){
 				((Wraith) a).die(null);
 			}
 		}
@@ -136,7 +136,7 @@ public class SpectralNecromancer extends Necromancer {
 
 				Char blocker = Actor.findChar(summoningPos);
 				if (blocker.alignment != alignment){
-					blocker.damage( Random.NormalIntRange(2, 10), new SummoningBlockDamage() );
+					blocker.damage( Char.combatRoll(2, 10), new SummoningBlockDamage() );
 					if (blocker == Dungeon.hero && !blocker.isAlive()){
 						Badges.validateDeathFromEnemyMagic();
 						Dungeon.fail(this);

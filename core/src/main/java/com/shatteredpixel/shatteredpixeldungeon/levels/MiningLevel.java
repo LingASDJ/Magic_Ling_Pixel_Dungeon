@@ -274,6 +274,8 @@ public class MiningLevel extends CavesLevel {
 					case Blacksmith.Quest.CRYSTAL: warnText += "\n\n" + Messages.get(Blacksmith.class, "exit_warn_crystal"); break;
 					case Blacksmith.Quest.GNOLL: warnText += "\n\n" + Messages.get(Blacksmith.class, "exit_warn_gnoll"); break;
 					case Blacksmith.Quest.FUNGI: warnText += "\n\n" + Messages.get(Blacksmith.class, "exit_warn_fungi"); break;
+
+					case Blacksmith.Quest.FISHBOSS: warnText += "\n\n" + Messages.get(Blacksmith.class, "exit_warn_fish"); break;
 				}
 			}
 

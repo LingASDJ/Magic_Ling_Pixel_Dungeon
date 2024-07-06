@@ -298,7 +298,7 @@ public class HeroSelectScene extends PixelScene {
 				Icons.get( SPDSettings.challenges() > 0 ? Icons.CHALLENGE_ON :Icons.CHALLENGE_OFF)){
 			@Override
 			protected void onClick() {
-				if (DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY)||Badges.isUnlocked(Badges.Badge.HOLLOWCITY)) {
+				if (DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY) ||Badges.isUnlocked(Badges.Badge.HOLLOWCITY) ||  Badges.isUnlocked(Badges.Badge.HAPPY_END) || Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_4)) {
 					ShatteredPixelDungeon.scene().addToFront(new WndChallenges(SPDSettings.challenges(), true,null) {
 						public void onBackPressed() {
 							super.onBackPressed();
@@ -526,7 +526,7 @@ public class HeroSelectScene extends PixelScene {
 		add( btnExit );
 		btnExit.visible = !SPDSettings.intro() || Rankings.INSTANCE.totalNumber > 0;
 		if (landscape()) {
-			Image title = new Image(Assets.Interfaces.MENUTITLE, 0, 0, 126, 34);
+			Image title = new Image(Assets.Interfaces.MENUTITLE, 0, 0, 126, 37);
 
 			//float topRegion = Math.max(title.height/2, 20f);
 
@@ -543,10 +543,9 @@ public class HeroSelectScene extends PixelScene {
 			twotitle.setPos(frame.x - frame.width / 5f + FRAME_MARGIN_X / 5f, frame.y + frame.height / 2 - BUTTON_HEIGHT + 100);
 			add(twotitle);
 		} else {
-			Image title = new Image(Assets.Interfaces.MENUTITLE, 0, 0, 126, 34);
+			Image title = new Image(Assets.Interfaces.MENUTITLE, 0, 0, 126, 37);
 
 			//float topRegion = Math.max(title.height/2, 20f);
-
 
 			title.setPos(frame.x - frame.width / 5f + FRAME_MARGIN_X / 5f, frame.y + frame.height / 8 - BUTTON_HEIGHT - 45);
 			placeTorch(title.x - 8, title.y + 42);

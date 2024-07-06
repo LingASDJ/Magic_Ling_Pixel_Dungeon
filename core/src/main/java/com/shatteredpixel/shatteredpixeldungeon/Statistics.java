@@ -41,9 +41,6 @@ public class Statistics {
 	public static boolean SmallLeafGet = false;
 	public static boolean noClearKill = false;
 
-	//吃保底
-	public static int bossWeapons;
-
 	public static int zeroItemLevel;
 
 	public static int hcDialogLevel;
@@ -335,7 +332,7 @@ public class Statistics {
 
     public static boolean TryUsedAnmy = false;
     public static boolean winGame = false;
-    public static boolean HiddenOK = false;
+    public static boolean DwarfMasterKing = false;
     //220---SPD
     public static boolean qualifiedForBossChallengeBadge = false;
     public static boolean dwarfKill = false;
@@ -347,7 +344,7 @@ public class Statistics {
 
 		ExFruit = false;
 
-		HiddenOK = false;
+		DwarfMasterKing = false;
 
 		ARLing = false;
 
@@ -471,15 +468,13 @@ public class Statistics {
 		bundle.put(ICECLAN,iceCyanBlueSquareCoin);
 
 
-        bundle.put(HIDEEN, HiddenOK);
+        bundle.put(HIDEEN, DwarfMasterKing);
 
 		bundle.put(DWSX, dwarfKill);
 
         bundle.put(WINGAME, winGame);
 
 		bundle.put(LOCD,doNotLookLing);
-
-        bundle.put(BDTX, bossWeapons);
 
         bundle.put(LOVE,findMoon);
 
@@ -648,7 +643,7 @@ public class Statistics {
 
 		winGame = bundle.getBoolean(WINGAME);
 
-		HiddenOK = bundle.getBoolean(HIDEEN);
+		DwarfMasterKing = bundle.getBoolean(HIDEEN);
 
 		difficultyDLCEXLevel = bundle.getInt(XOL);
 
@@ -682,8 +677,6 @@ public class Statistics {
 
 		//嗜血荆棘等级处理
 		ChaicBlood   = bundle.getInt( CHACEBLOOD );
-
-		bossWeapons = bundle.getInt(BDTX);
 
 		dm720Fight = bundle.getBoolean(DM720FIGHT);
 

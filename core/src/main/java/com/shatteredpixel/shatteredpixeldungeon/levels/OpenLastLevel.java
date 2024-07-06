@@ -1,6 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CUSTOM_DECO;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
@@ -12,6 +11,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL_DECO;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -211,7 +211,7 @@ public class OpenLastLevel extends Level {
 
     @Override
     protected void createItems() {
-        if(Dungeon.isChallenged(PRO)){
+        if(Dungeon.isDLC(Conducts.Conduct.DEV)){
             drop( new JAmulet(), AMULET_POS );
         } else {
             drop( new Amulet(), 19 );

@@ -74,7 +74,7 @@ public class RiceDumplings extends Food {
             if (Dungeon.isChallenged(Challenges.NO_HEALING)){
                 Buff.affect(hero, Healing.class).setHeal((int) (0.2f * hero.HT + 3), 0.25f, 0);
             } else {
-                Buff.affect(hero, Healing.class).setHeal((int) (0.8f * hero.HT + 14), 0.25f, 0);
+                Buff.affect(hero, Healing.class).setHeal((int) (0.6f * hero.HT + 14), 0.25f, 0);
             }
         }
     }

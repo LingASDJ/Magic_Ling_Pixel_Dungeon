@@ -21,12 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
-
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.JAmuletScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -46,7 +46,7 @@ public class JAmulet extends Item {
 
     @Override
     public ItemSprite.Glowing glowing() {
-        return Dungeon.isChallenged(PRO)? new ItemSprite.Glowing(0x008888, 6f) : null;
+        return Dungeon.isDLC(Conducts.Conduct.DEV)? new ItemSprite.Glowing(0x008888, 6f) : null;
     }
 
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe {
@@ -63,7 +63,7 @@ public class JAmulet extends Item {
                         cling = true;
                     } else if (ingredient instanceof CrystalLing) {
                         read = true;
-                    } else if(ingredient instanceof Waterskin) {
+                    } else if(ingredient instanceof UnstableSpell) {
                         book = true;
                     }
                 }
@@ -148,6 +148,20 @@ public class JAmulet extends Item {
     @Override
     public boolean isUpgradable() {
         return false;
+    }
+
+    public static class CrystalRecipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
+
+        {
+            inputs =  new Class[]{JAmulet.class};
+            inQuantity = new int[]{1};
+
+            cost = 3;
+
+            output = MIME.GOLD_FIVE.class;
+            outQuantity = 1;
+        }
+
     }
 
 }

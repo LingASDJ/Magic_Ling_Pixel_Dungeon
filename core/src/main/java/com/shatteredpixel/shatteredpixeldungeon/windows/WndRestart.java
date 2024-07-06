@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -59,21 +60,18 @@ public class WndRestart extends Window {
             cbs.add(cb);
             pos += BOX_HEIGHT + GAP;
         }
-        boolean shouldRestart = Dungeon.hero == null || !Dungeon.hero.isAlive();
+        boolean shouldRestart = ( Dungeon.hero == null || !Dungeon.hero.isAlive() );
         if(shouldRestart){
             cbs.get(4).active = false;
             cbs.get(4).checked = false;
             cbs.get(4).visible = false;
         }
 
-        cbs.get(3).alpha(0.4f);
-        cbs.get(3).active=false;
-        cbs.get(3).checked(false);
-
         RedButton confirm =new RedButton(Messages.get(this, "confirm")){
             @Override
             protected void onClick() {
                 super.onClick();
+
                 if( !cbs.get(4).checked() && GamesInProgress.checkAll().size() >= GamesInProgress.MAX_SLOTS ){
                     add( new WndError( Messages.get(WndRestart.class,"error") ) {
                         public void onBackPressed() {
@@ -82,35 +80,49 @@ public class WndRestart extends Window {
                     } );
                     return;
                 }
+
+                HeroClass nextHero;
+                Conducts.ConductStorage nextDifficulty;
+                int nextChallenges;
+                String nextSeed;
+                String saveCustomSeed;
+                long saveSeed;
+                boolean heroAlive;
+                GamesInProgress.Info info;
+
                 try {
                     Dungeon.saveAll();
                 } catch (IOException e) {
                     ShatteredPixelDungeon.reportException(e);
                 }
-                HeroClass oldHero = Dungeon.hero.heroClass;
-                //Difficulty.HardStorage oldDifficulty = SPDSettings.difficulty();
-                int oldChallenges = SPDSettings.challenges();
-                long oldSeed = SPDSettings.customSeed().isEmpty() ? Dungeon.seed : DungeonSeed.convertFromText(SPDSettings.customSeed());
-                if(cbs.get(0).checked()){
-                    SPDSettings.customSeed(DungeonSeed.convertToCode(oldSeed));
-                }else{
-                    SPDSettings.customSeed("");
+
+                heroAlive = Dungeon.hero.isAlive();
+                info = GamesInProgress.check( GamesInProgress.curSlot );
+                saveCustomSeed = heroAlive ? info.customSeed : SPDSettings.customSeed();
+                saveSeed = heroAlive ? info.seed : Dungeon.seed;
+                nextSeed = cbs.get(0).checked() ? DungeonSeed.convertToCode( saveCustomSeed.isEmpty() ? saveSeed : DungeonSeed.convertFromText( saveCustomSeed ) ) : "";
+                nextHero = cbs.get(1).checked() ? ( heroAlive ? info.heroClass : Dungeon.hero.heroClass ) : Dungeon.hero.heroClass;
+                nextChallenges = cbs.get(2).checked() ? ( heroAlive ? info.challenges : SPDSettings.challenges() ) : 0;
+                if (cbs.get(3).checked()) {
+                    nextDifficulty = ( heroAlive ? info.dlcs : SPDSettings.dlc() );
+                } else {
+                    nextDifficulty = new Conducts.ConductStorage();
+                    nextDifficulty.conducts.add(Conducts.Conduct.NULL);
                 }
-                if(cbs.get(1).checked()){
-                    GamesInProgress.selectedClass = oldHero;
-                }else{
-                    GamesInProgress.selectedClass = Dungeon.hero.heroClass;
-                }
-                SPDSettings.challenges( cbs.get(2).checked() ? oldChallenges : 0 );
-                //SPDSettings.difficulty( cbs.get(3).checked() ? oldDifficulty : new Difficulty.HardStorage(Difficulty.DifficultyConduct.NULL) );
+
+                SPDSettings.customSeed( nextSeed );
+                GamesInProgress.selectedClass = nextHero;
+                SPDSettings.challenges( nextChallenges );
+                SPDSettings.dlc( nextDifficulty );
 
                 try {
                     if( cbs.get(4).checked() && !shouldRestart )
-                        Dungeon.deleteGame(GamesInProgress.curSlot,true);
-                    GamesInProgress.curSlot=GamesInProgress.firstEmpty();
+                        Dungeon.deleteGame( GamesInProgress.curSlot,true );
+                    GamesInProgress.curSlot = GamesInProgress.firstEmpty();
                 } catch (Exception e) {
                     ShatteredPixelDungeon.reportException(e);
                 }
+
                 Dungeon.hero = null;
                 ActionIndicator.action = null;
                 InterlevelScene.mode = InterlevelScene.Mode.DESCEND;

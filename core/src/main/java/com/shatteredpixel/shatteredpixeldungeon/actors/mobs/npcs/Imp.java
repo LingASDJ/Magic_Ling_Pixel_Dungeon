@@ -38,8 +38,9 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndEXImp;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndImp;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
@@ -111,12 +112,7 @@ public class Imp extends NPC {
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {
-						if(!SPDSettings.KillDwarf() && Statistics.deepestFloor<20){
-							GameScene.show( new WndEXImp( Imp.this, tokens ) );
-						} else {
-							GameScene.show( new WndImp( Imp.this, tokens ) );
-						}
-
+						GameScene.show( new WndImp( Imp.this, tokens ) );
 					}
 				});
 			} else {
@@ -265,6 +261,35 @@ public class Imp extends NPC {
 
 			Statistics.questScores[3] = 4000;
 			Notes.remove( Notes.Landmark.IMP );
+
+			if(!SPDSettings.KillDwarf()){
+
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						GameScene.show(new WndOptions(new ImpSprite(),
+								Messages.titleCase(Messages.get(Imp.class, "name")),
+								Messages.get(Imp.class, "cs_start_prompt"),
+								Messages.get(Imp.class, "cs_yes"),
+								Messages.get(Imp.class, "cs_no")) {
+							@Override
+							protected void onSelect(int index) {
+								if (index == 0) {
+									Statistics.DwarfMasterKing = true;
+									GLog.n(Messages.get(Imp.class, "cs_a"));
+								} else {
+									GLog.n(Messages.get(Imp.class, "cs_c"));
+								}
+							}
+							@Override
+							public void onBackPressed() {
+
+							}
+						});
+					}
+				});
+			}
+
 		}
 		
 		public static boolean isCompleted() {

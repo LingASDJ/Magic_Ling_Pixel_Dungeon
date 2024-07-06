@@ -22,8 +22,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
-
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
@@ -184,7 +183,7 @@ public abstract class ChampionHero extends FlavourBuff {
 
         @Override
         public void fx(boolean on) {
-            if(!Dungeon.isChallenged(PRO)){
+            if(!Dungeon.isDLC(Conducts.Conduct.DEV)){
                 if (on) target.sprite.aura( color );
                 else target.sprite.clearAura();
             }

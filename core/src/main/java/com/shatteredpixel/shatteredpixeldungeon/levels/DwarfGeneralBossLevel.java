@@ -17,7 +17,10 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
@@ -46,14 +49,17 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class DwarfGeneralBossLevel extends Level {
@@ -171,6 +177,19 @@ public class DwarfGeneralBossLevel extends Level {
         return Assets.Environment.WATER_CITY;
     }
 
+
+    //修复跳楼错误
+    @Override
+    public int randomRespawnCell( Char ch ) {
+        int pos = 598; //random cell adjacent to the entrance.
+        int cell;
+        do {
+            cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
+        } while (!passable[cell]
+                || (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
+                || Actor.findChar(cell) != null);
+        return cell;
+    }
 
     protected boolean build() {
         setSize(WIDTH, HEIGHT);
@@ -379,7 +398,7 @@ public class DwarfGeneralBossLevel extends Level {
 
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
-        if(Dungeon.branch == 1 && Statistics.dwarfKill){
+        if(Dungeon.branch == 1 && Statistics.dwarfKill && SPDSettings.KillDwarf()) {
             TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
             if (timeFreeze != null) timeFreeze.disarmPresses();
             Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
@@ -392,6 +411,9 @@ public class DwarfGeneralBossLevel extends Level {
             InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_ENTRANCE;
             InterlevelScene.curTransition.centerCell = -1;
             Game.switchScene(InterlevelScene.class);
+            return false;
+        } else if(Statistics.dwarfKill && !SPDSettings.KillDwarf()) {
+            GLog.n(Messages.get(DwarfGeneral.class,"story"));
             return false;
         } else {
             return false;

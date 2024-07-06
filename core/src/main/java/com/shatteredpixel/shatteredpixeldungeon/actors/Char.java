@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameNight;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.gameTime;
 
@@ -35,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AnkhInvulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArcaneArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
@@ -42,7 +44,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WorstBlizzard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
@@ -51,7 +52,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessMobDied;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessQinyue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
@@ -84,6 +84,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Speed;
@@ -92,6 +93,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WorstBlizzard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -99,6 +101,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Ch
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.DeathMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
@@ -120,6 +123,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetributio
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
@@ -177,6 +181,16 @@ public abstract class Char extends Actor {
 	private final LinkedHashSet<Buff> buffs = new LinkedHashSet<>();
 
 	public boolean[] fieldOfView = null;
+
+	//used for damage and blocking calculations, normally just calls NormalIntRange
+	// but may be affected by things that specifically impact combat number ranges
+	public static int combatRoll(int min, int max ){
+		if (Random.Float() < ThirteenLeafClover.combatDistributionInverseChance()){
+			return ThirteenLeafClover.invCombatRoll(min, max);
+		} else {
+			return Random.NormalIntRange(min, max);
+		}
+	}
 
 	public void dispel() {
 		Invisibility buff = buff( Invisibility.class );
@@ -304,7 +318,7 @@ public abstract class Char extends Actor {
 			return true;
 		} else return c instanceof Hero
 				&& alignment == Alignment.ALLY
-				&& Dungeon.level.distance(pos, c.pos) <= 2 * Dungeon.hero.pointsInTalent(Talent.ALLY_WARP);
+				&& Dungeon.level.distance(pos, c.pos) <= 2 * hero.pointsInTalent(Talent.ALLY_WARP);
 	}
 
 	//swaps places by default
@@ -328,7 +342,7 @@ public abstract class Char extends Actor {
 		int newPos = c.pos;
 
 		//warp instantly with allies in this case
-		if (c == Dungeon.hero && Dungeon.hero.hasTalent(Talent.ALLY_WARP)) {
+		if (c == hero && hero.hasTalent(Talent.ALLY_WARP)) {
 			PathFinder.buildDistanceMap(c.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
 			if (PathFinder.distance[pos] == Integer.MAX_VALUE) {
 				return true;
@@ -357,12 +371,12 @@ public abstract class Char extends Actor {
 
 		c.spend(1 / c.speed());
 
-		if (c == Dungeon.hero) {
-			if (Dungeon.hero.subClass == HeroSubClass.FREERUNNER) {
-				Buff.affect(Dungeon.hero, Momentum.class).gainStack();
+		if (c == hero) {
+			if (hero.subClass == HeroSubClass.FREERUNNER) {
+				Buff.affect(hero, Momentum.class).gainStack();
 			}
 
-			Dungeon.hero.busy();
+			hero.busy();
 		}
 
 		return true;
@@ -470,8 +484,8 @@ public abstract class Char extends Actor {
 			Preparation prep = buff(Preparation.class);
 			if (prep != null) {
 				dmg = prep.damageRoll(this);
-				if (this == Dungeon.hero && Dungeon.hero.hasTalent(Talent.BOUNTY_HUNTER)) {
-					Buff.affect(Dungeon.hero, Talent.BountyHunterTracker.class, 0.0f);
+				if (this == hero && hero.hasTalent(Talent.BOUNTY_HUNTER)) {
+					Buff.affect(hero, Talent.BountyHunterTracker.class, 0.0f);
 				}
 			} else {
 				dmg = damageRoll();
@@ -602,9 +616,9 @@ public abstract class Char extends Actor {
 			}
 
 			if (!enemy.isAlive() && visibleFight) {
-				if (enemy == Dungeon.hero) {
+				if (enemy == hero) {
 
-					if (this == Dungeon.hero) {
+					if (this == hero) {
 						return true;
 					}
 
@@ -616,7 +630,7 @@ public abstract class Char extends Actor {
 					Dungeon.fail(this);
 					GLog.n(Messages.capitalize(Messages.get(Char.class, "kill", name())));
 
-				} else if (this == Dungeon.hero) {
+				} else if (this == hero) {
 					GLog.i(Messages.capitalize(Messages.get(Char.class, "defeat", enemy.name())));
 				}
 			}
@@ -639,13 +653,24 @@ public abstract class Char extends Actor {
 	public int drRoll() {
 		int dr = 0;
 
+		if(buff(WorstBlizzard.class)!=null && Dungeon.iceLevel()){
+			dr *= 1-(int) (Dungeon.depth * 15f/5/100);
+		}
+
 		dr += Random.NormalIntRange(0, Barkskin.currentLevel(this));
 
 		return dr;
 	}
 
 	public int attackSkill( Char target ) {
-		return 0;
+
+		int org = 0;
+
+		if(buff(WorstBlizzard.class)!=null && Dungeon.iceLevel()){
+			org *= 1-(int) (Dungeon.depth * 6f/5/100);
+		}
+
+		return org;
 	}
 
 	public int defenseSkill( Char enemy ) {
@@ -680,6 +705,10 @@ public abstract class Char extends Actor {
 
 		if ( buff(Charm.CharmLing.class) != null ){
 			damage *= 0.75f;
+		}
+
+		if ( buff(ScaryBuff.class) != null && enemy instanceof Mob) {
+			damage *= 0.80f;
 		}
 
 		//削弱10%伤害
@@ -726,7 +755,9 @@ public abstract class Char extends Actor {
 		if ( buff( AnkhInvulnerability.GodDied.class ) != null ) speed *= 2f;
 
 		if ((properties().contains(Property.BOSS) || properties().contains(Property.MINIBOSS) && !properties().contains(Property.ABYSS)) && Statistics.gameNight) {
-			speed *= 1.2f;
+			if(buff(ChampionEnemy.Bomber.class) == null || buff(ChampionEnemy.Middle.class) == null) {
+				speed *= 1.2f;
+			}
 		}
 
 		for (ChampionEnemy buff : buffs(ChampionEnemy.class)) {
@@ -737,8 +768,6 @@ public abstract class Char extends Actor {
 		if (buff(Stamina.class) != null) speed *= 1.5f;
 		if (buff(Adrenaline.class) != null) speed *= 2f;
 		if (buff(Haste.class) != null) speed *= 3f;
-
-		if (buff(BlessQinyue.class) != null) speed *= 1.25f;
 
 		if (buff(Dread.class) != null) speed *= 2f;
 
@@ -939,7 +968,7 @@ public abstract class Char extends Actor {
 			if (src instanceof Pickaxe) {
 				icon = IconFloatingText.PICK_DMG;
 			}
-			if (src == Dungeon.hero && Dungeon.hero.subClass == HeroSubClass.SNIPER && !Dungeon.level.adjacent(Dungeon.hero.pos, this.pos) && (Dungeon.hero.belongings.attackingWeapon() instanceof MissileWeapon)) {
+			if (src == hero && hero.subClass == HeroSubClass.SNIPER && !Dungeon.level.adjacent(hero.pos, this.pos) && (hero.belongings.attackingWeapon() instanceof MissileWeapon)) {
 				icon = IconFloatingText.PHYS_DMG_NO_BLOCK;
 			}
 			if (src instanceof Hunger) {
@@ -1241,7 +1270,7 @@ public abstract class Char extends Actor {
 
 		pos = step;
 
-		if (this != Dungeon.hero) {
+		if (this != hero) {
 			sprite.visible = Dungeon.level.heroFOV[pos];
 		}
 
@@ -1366,7 +1395,11 @@ public abstract class Char extends Actor {
 		IMMOVABLE,
 		PETS,
 		ABYSS,
-		UNKNOWN;
+		UNKNOWN,
+		//A character that acts in an unchanging manner. immune to AI state debuffs or stuns/slows
+		STATIC( new HashSet<Class>(),
+				new HashSet<Class>( Arrays.asList(AllyBuff.class, Dread.class, Terror.class, Amok.class, Charm.class, Sleep.class,
+						Paralysis.class, Frost.class, Chill.class, Slow.class, Speed.class) ));
 
 		private final HashSet<Class> resistances;
 		private final HashSet<Class> immunities;

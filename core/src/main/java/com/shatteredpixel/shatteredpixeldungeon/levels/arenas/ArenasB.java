@@ -24,10 +24,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.arenas;
 
-import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
-
-import com.watabou.utils.Random;
-
 public class ArenasB extends LastLevelArenas {
 	
 	//phase 2

@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 
 public class PotionOfMastery extends ExoticPotion {
 	
@@ -51,7 +52,7 @@ public class PotionOfMastery extends ExoticPotion {
 
 	@Override
 	//need to override drink so that time isn't spent right away
-	protected void drink(final Hero hero) {
+    public void drink(final Hero hero) {
 
 		if (!isKnown()) {
 			identify();
@@ -120,7 +121,7 @@ public class PotionOfMastery extends ExoticPotion {
 				}
 				identifiedByUse = false;
 
-				if (!anonymous){
+				if (!anonymous && Random.Float() < talentChance){
 					Talent.onPotionUsed(curUser, curUser.pos, talentFactor);
 				}
 			}

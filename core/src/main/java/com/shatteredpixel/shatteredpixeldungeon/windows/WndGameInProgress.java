@@ -76,7 +76,7 @@ public class WndGameInProgress extends Window {
 		IconTitle title = new IconTitle();
 		title.icon( HeroSprite.avatar(info.heroClass, info.armorTier) );
 
-		if (info.name.equals("")) {
+		if (info.name.isEmpty()) {
 			title.label(Messages.get(this, "title", info.level, className.toUpperCase(Locale.ENGLISH)));
 		} else {
 			String csname = info.name +

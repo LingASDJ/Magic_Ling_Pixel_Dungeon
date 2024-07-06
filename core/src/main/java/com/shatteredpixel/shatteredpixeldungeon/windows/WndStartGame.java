@@ -310,10 +310,6 @@ public class WndStartGame extends Window {
 			challengeButton.setRect(WIDTH - 20, HEIGHT - 20, 20, 20);
 			challengeButton.visible = false;
 			add(challengeButton);
-
-		} else {
-			Dungeon.challenges = 0;
-			SPDSettings.challenges(0);
 		}
 
 		optionsPane = new GameOptions(){

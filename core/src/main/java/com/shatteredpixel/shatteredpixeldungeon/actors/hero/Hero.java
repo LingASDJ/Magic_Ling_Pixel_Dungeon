@@ -24,7 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.bossRushMode;
@@ -41,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
@@ -79,6 +79,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessQinyue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessRedWhite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessUnlock;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.LockedDamage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
@@ -96,6 +97,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.InvisibilityRing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LighS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayCursed;
@@ -181,6 +183,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Red;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RedWhiteRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfFuror;
@@ -199,7 +202,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
@@ -213,6 +215,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonFestivalMiniLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -248,6 +251,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 
@@ -372,7 +376,7 @@ public class Hero extends Char {
     // for enemies we know we aren't seeing normally, resulting in better performance
     public ArrayList<Mob> mindVisionEnemies = new ArrayList<>();
     //灯火前行
-    public float lanterfire;
+    public int lanterfire;
     public int icehp;
     //蛋糕
     public int CakeUsed;
@@ -578,6 +582,9 @@ public class Hero extends Char {
 
 		if( lanterfireactive || Dungeon.isChallenged(DHXD)){
 			Buff.affect( this, Nyctophobia.class );
+
+			//修正异常
+			Buff.affect( this, LighS.class );
 		}
 
 		if(Dungeon.isChallenged(CS)){
@@ -640,7 +647,7 @@ public class Hero extends Char {
 		KindOfWeapon wep = belongings.attackingWeapon();
 		
 		float accuracy = 1;
-		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
 			accuracy = CustomPlayer.baseAccuracy;
 		}
 
@@ -658,7 +665,7 @@ public class Hero extends Char {
 			accuracy *= 1.25f;
 		}
 
-		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
 			return  CustomPlayer.baseAccuracy;
 		} else if (!RingOfForce.fightingUnarmed(this)) {
 			return (int)(attackSkill * accuracy * wep.accuracyFactor( this, target ));
@@ -682,7 +689,7 @@ public class Hero extends Char {
 		}
 		
 		float evasion = defenseSkill;
-		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
 			evasion = CustomPlayer.baseEvasion;
 		}
 		
@@ -712,8 +719,9 @@ public class Hero extends Char {
 		if (buff(BlessQinyue.class) != null){
 			evasion = evasion * 1.1f;
 		}
+
     
-		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && CustomPlayer.shouldOverride ){
 			return CustomPlayer.baseEvasion;
 		}
 
@@ -751,7 +759,7 @@ public class Hero extends Char {
 	@Override
 	public int drRoll() {
 		int dr = super.drRoll();
-		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&!CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) &&CustomPlayer.overrideGame &&!CustomPlayer.shouldOverride ){
 			dr += CustomPlayer.baseArmor;
 		}
 
@@ -774,7 +782,7 @@ public class Hero extends Char {
 			dr += buff(HoldFast.class).armorBonus();
 		}
 
-		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) &&CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
 			dr = CustomPlayer.baseArmor;
 		}
 		
@@ -785,7 +793,7 @@ public class Hero extends Char {
 	public int damageRoll() {
 		KindOfWeapon wep = belongings.attackingWeapon();
 		int dmg=0;
-		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&!CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) &&CustomPlayer.overrideGame &&!CustomPlayer.shouldOverride ){
 			dmg = CustomPlayer.baseDamage;
 		}
 
@@ -816,7 +824,7 @@ public class Hero extends Char {
 			dmg = Math.round(dmg * 1.025f + (.025f*pointsInTalent(Talent.WEAPON_RECHARGING)));
 		}
 
-		if( Dungeon.isChallenged(PRO) &&CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) &&CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
 			dmg = CustomPlayer.baseDamage;
 		}
 		if (dmg < 0) dmg = 0;
@@ -826,13 +834,15 @@ public class Hero extends Char {
 	@Override
 	public float speed() {
 		float speed = 0;
-		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && !CustomPlayer.shouldOverride ){
 			speed += CustomPlayer.baseSpeed;
 		}
 
 		speed += super.speed();
 
 		speed *= RingOfHaste.speedMultiplier(this);
+
+		if (buff(BlessQinyue.class) != null) speed *= 1.25f;
 
 		//提升20%移速
 		MIME.GOLD_THREE getSpeed = Dungeon.hero.belongings.getItem(MIME.GOLD_THREE.class);
@@ -869,7 +879,7 @@ public class Hero extends Char {
 
 		speed = AscensionChallenge.modifyHeroSpeed(speed);
 
-		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame && CustomPlayer.shouldOverride ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && CustomPlayer.shouldOverride ){
 			speed = CustomPlayer.baseSpeed;
 		}
 
@@ -920,7 +930,7 @@ public class Hero extends Char {
 		}
 
 		float delay = 1f;
-		if( Dungeon.isChallenged(PRO) && CustomPlayer.overrideGame ){
+		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame ){
 			if(!CustomPlayer.shouldOverride)
 				delay = CustomPlayer.baseAttackDelay;
 			else if(CustomPlayer.shouldOverride)
@@ -994,11 +1004,11 @@ public class Hero extends Char {
 			});
 		}
 
-		if (Challenges.activeChallenges() >= 10 && !lanterfireactive && !Dungeon.isChallenged(PRO)) {
+		if (Challenges.activeChallenges() >= 10 && !lanterfireactive && !Dungeon.isDLC(Conducts.Conduct.DEV)) {
 			GLog.n(Messages.get(WndStory.class, "warning"));
 		}
 
-		if (Challenges.activeChallenges() >= 10 && !lanterfireactive && !Dungeon.isChallenged(PRO) || Dungeon.isChallenged(DHXD) && !lanterfireactive) {
+		if (Challenges.activeChallenges() >= 10 && !lanterfireactive && !Dungeon.isDLC(Conducts.Conduct.DEV) || Dungeon.isChallenged(DHXD) && !lanterfireactive) {
 			//灯火前行 4.0
 			hero.lanterfire = 100 - min(Challenges.activeChallenges() * 4, 45);
 
@@ -1802,6 +1812,12 @@ public class Hero extends Char {
 	public int attackProc( final Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
 
+		if(enemy != null){
+			if (enemy.buff(LockedDamage.class) != null){
+				damage *= 1.1f;
+			}
+		}
+
 		KindOfWeapon wep;
 		if (RingOfForce.fightingUnarmed(this) && !RingOfForce.unarmedGetsWeaponEnchantment(this)){
 			wep = null;
@@ -1876,6 +1892,8 @@ public class Hero extends Char {
 		if (buff(TimekeepersHourglass.timeStasis.class) != null)
 			return;
 
+
+
 		//regular damage interrupt, triggers on any damage except specific mild DOT effects
 		// unless the player recently hit 'continue moving', in which case this is ignored
 		if (!(src instanceof Hunger || src instanceof Viscosity.DeferedDamage) && damageInterrupt) {
@@ -1909,6 +1927,11 @@ public class Hero extends Char {
 			dmg = thorns.proc(dmg, (src instanceof Char ? (Char)src : null),  this);
 		}
 
+		Talent.WarriorFoodImmunity thornsTalent = buff( Talent.WarriorFoodImmunity.class );
+		if (thornsTalent != null) {
+			dmg = thornsTalent.proc(dmg, (src instanceof Char ? (Char)src : null),  this);
+		}
+
 		dmg = (int)Math.ceil(dmg * RingOfTenacity.damageMultiplier( this ));
 
 		//TODO improve this when I have proper damage source logic
@@ -1918,11 +1941,19 @@ public class Hero extends Char {
 		}
 
 		if (buff(Talent.WarriorFoodImmunity.class) != null){
-			if (pointsInTalent(Talent.IRON_STOMACH) == 1)       dmg = Math.round(dmg*0.25f);
-			else if (pointsInTalent(Talent.IRON_STOMACH) == 2)  dmg = Math.round(dmg*0.00f);
+			if (pointsInTalent(Talent.IRON_STOMACH) == 1){
+				dmg = Math.round(dmg*0.25f);
+				//Buff.affect(hero, CapeOfThorns.HeroThorns.class,1);
+			} else if(pointsInTalent(Talent.IRON_STOMACH) == 2) {
+				dmg = Math.round(dmg * 0.00f);
+				//Buff.affect(hero, CapeOfThorns.HeroThorns.class,2);
+			}
 		}
 
 		int preHP = HP + shielding();
+
+		int preTrueHP = HP;
+
 		if (src instanceof Hunger) preHP -= shielding();
 		super.damage( dmg, src );
 		int postHP = HP + shielding();
@@ -1930,6 +1961,25 @@ public class Hero extends Char {
 		int effectiveDamage = preHP - postHP;
 
 		if (effectiveDamage <= 0) return;
+
+		int trueDamage=preTrueHP-HP;
+
+		if (trueDamage>0){
+			if (this.hasTalent(Talent.LIQUID_WILLPOWER )){
+				Class<?> srcClass = src.getClass();
+				HashSet<Class> resists = new HashSet<>(RingOfElements.RESISTS);
+				boolean flag = true;
+				for (Class c : resists){
+					if (c.isAssignableFrom(srcClass)){
+						flag=false;
+						break;
+					}
+				}
+				if (flag) {
+					Buff.affect(this,Barrier.class).setShield(2*pointsInTalent(Talent.LIQUID_WILLPOWER));
+				}
+			}
+		}
 
 		if (buff(Challenge.DuelParticipant.class) != null){
 			buff(Challenge.DuelParticipant.class).addDamage(effectiveDamage);
@@ -2163,7 +2213,7 @@ public class Hero extends Char {
 			}
 
 		//TODO perhaps only trigger this if hero is already adjacent? reducing mistaps
-		} else if (Dungeon.level instanceof MiningLevel &&
+		} else if ((Dungeon.level instanceof MiningLevel || Dungeon.level instanceof DragonFestivalMiniLevel) &&
 					belongings.getItem(Pickaxe.class) != null &&
 				(Dungeon.level.map[cell] == Terrain.WALL
 						|| Dungeon.level.map[cell] == Terrain.WALL_DECO
@@ -2586,6 +2636,11 @@ public class Hero extends Char {
 			MoveWater();
 		}
 
+		CapeOfThorns.HeroThorns thornsTalent = buff( CapeOfThorns.HeroThorns.class );
+		if(thornsTalent != null){
+			thornsTalent.detach();
+		}
+
 		if(!seedCustom && !Dungeon.customSeedText.isEmpty()){
 			seedCustom = true;
 		}
@@ -2651,7 +2706,7 @@ public class Hero extends Char {
             }
         }
 
-        if (hero.exp < 0 && !(Dungeon.isChallenged(PRO))) {
+        if (hero.exp < 0 && !(Dungeon.isDLC(Conducts.Conduct.DEV))) {
             exp = Random.NormalIntRange(10, 20);
         }
 
@@ -2871,17 +2926,17 @@ public class Hero extends Char {
 			Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
 		}
 
-		RingOfForce.BrawlersStance brawlStance = buff(RingOfForce.BrawlersStance.class);
-		if (brawlStance != null && brawlStance.hitsLeft() > 0){
-			MeleeWeapon.Charger charger = Buff.affect(this, MeleeWeapon.Charger.class);
-			charger.partialCharge -= RingOfForce.BrawlersStance.HIT_CHARGE_USE;
-			while (charger.partialCharge < 0) {
-				charger.charges--;
-				charger.partialCharge++;
-			}
-			BuffIndicator.refreshHero();
-			Item.updateQuickslot();
-		}
+//		RingOfForce.BrawlersStance brawlStance = buff(RingOfForce.BrawlersStance.class);
+//		if (brawlStance != null && brawlStance.hitsLeft() > 0){
+//			MeleeWeapon.Charger charger = Buff.affect(this, MeleeWeapon.Charger.class);
+//			charger.partialCharge -= RingOfForce.BrawlersStance.HIT_CHARGE_USE;
+//			while (charger.partialCharge < 0) {
+//				charger.charges--;
+//				charger.partialCharge++;
+//			}
+//			BuffIndicator.refreshHero();
+//			Item.updateQuickslot();
+//		}
 
 		curAction = null;
 
@@ -3233,7 +3288,7 @@ public class Hero extends Char {
 		hero.sprite.showStatus(0x808080, String.valueOf(value));
 	}
 
-    public void healLantern(float value) {
+    public void healLantern(int value) {
         lanterfire = min(lanterfire + value, 100);
         hero.sprite.showStatus(0x00ff00, String.valueOf(value));
     }

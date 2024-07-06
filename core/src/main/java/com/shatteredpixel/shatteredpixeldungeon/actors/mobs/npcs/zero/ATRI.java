@@ -94,6 +94,7 @@ public class ATRI extends NTNPC {
                     GameScene.show(new WndDialog(B_plot,false));
                 }
             });
+            zeroItemLevel++;
             secnod = false;
             GameScene.scene.add(new Delayer(3f){
                 @Override
@@ -102,8 +103,6 @@ public class ATRI extends NTNPC {
                     for (Food w : food.toArray(new Food[0])){
                         w.detach(hero.belongings.backpack);
                     }
-                    zeroItemLevel++;
-
                     if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0){
                         Dungeon.level.drop( new Gold(1), hero.pos );
                     } else {

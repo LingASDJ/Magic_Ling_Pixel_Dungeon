@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.slimeking;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.watabou.noosa.Image;
@@ -37,10 +38,10 @@ public abstract class SlimeKingBossRoom extends StandardRoom {
         return new float[]{0, 1, 0};
     }
 
-    @Override
-    public boolean canMerge(Level l, Point p, int mergeTerrain) {
-        return false;
-    }
+	@Override
+	public boolean canMerge(Level l, Room other, Point p, int mergeTerrain) {
+		return false;
+	}
 
     public static SlimeKingBossRoom randomGooRoom(){
         switch (Random.Int(1)){

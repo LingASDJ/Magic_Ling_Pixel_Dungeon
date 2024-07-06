@@ -98,7 +98,7 @@ public class Dart extends MissileWeapon {
 		}
 	}
 	
-	private static Crossbow bow;
+	public static Crossbow bow;
 
 	private static DiedCrossBow diedCrossBow;
 	

@@ -155,7 +155,7 @@ public class SPDSettings extends GameSettings {
 
 	private static final String KEY_ICE = "hice";
 
-	private static final String KEY_UP_ICE = "iceupdate12";
+	private static final String KEY_UP_ICE = "iceupdate13";
 
 	private static final String KEY_DARK	= "dark_ui";
 
@@ -254,6 +254,9 @@ public class SPDSettings extends GameSettings {
 	}
 
 	//Interface
+
+	public static final String KEY_VIBRATION    = "vibration";
+
     public static final String KEY_ONE_CONDUCT = "one_conduct";
     public static final String KEY_TWO_CONDUCT = "two_conduct";
 
@@ -278,6 +281,17 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_UNLOCKITEM = "forever_unlock_item";
 
 	public static final String KEY_CURRENTHEROSKIN = "current_hero_skin";
+
+	public static final String KEY_BOSS_WEAPON_COUNT1 = "boss_weapon_count1";
+
+
+	public static void vibration(boolean value){
+		put(KEY_VIBRATION, value);
+	}
+
+	public static boolean vibration(){
+		return getBoolean(KEY_VIBRATION, true);
+	}
 
     public static void cameraFollow(int value) {
         put(KEY_CAMERA_FOLLOW, value);
@@ -311,6 +325,8 @@ public class SPDSettings extends GameSettings {
 
 	public static final String KEY_LAST_CLASS	= "last_class";
 	public static final String KEY_CHALLENGES	= "challenges";
+
+	public static final String KEY_FOUND_DEPTH	= "foundepth";
 
 	public static final String KEY_DLC	= "dlc";
 	public static final String KEY_DIFFICULTY	= "difficulty";
@@ -912,5 +928,22 @@ public class SPDSettings extends GameSettings {
 		return getBoolean(KEY_KILLADF, false);
 	}
 
+
+	//查找深度
+	public static void FoundDepth(int value) {
+		put(KEY_FOUND_DEPTH, value);
+	}
+
+	public static int FoundDepth() {
+		return getInt(KEY_FOUND_DEPTH, 0, 0, 30);
+	}
+
+	public static void BossWeaponCount1(int value) {
+		put(KEY_BOSS_WEAPON_COUNT1, value);
+	}
+
+	public static int BossWeaponCount1(){
+		return getInt( KEY_BOSS_WEAPON_COUNT1, 0);
+	}
 
 }

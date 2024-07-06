@@ -1,9 +1,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -29,7 +29,7 @@ abstract public class Boss extends Mob {
                 immunities.add(Terror.class);
             }
         }
-        protected boolean SprintableModeBoolean = (Statistics.bossRushMode || Dungeon.isChallenged(PRO));
+        protected boolean SprintableModeBoolean = (Statistics.bossRushMode || Dungeon.isDLC(Conducts.Conduct.DEV));
 
         protected static float baseMin; //最小伤害
         protected static float baseMax; //最大伤害

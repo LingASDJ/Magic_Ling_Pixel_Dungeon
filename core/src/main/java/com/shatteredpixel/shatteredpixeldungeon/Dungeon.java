@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.ROGUE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createBranchLevel;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.LevelRules.createStandardLevel;
@@ -42,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BloodBat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
@@ -60,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
@@ -103,6 +104,7 @@ public class Dungeon {
 		UPGRADE_SCROLLS,
 		ARCANE_STYLI,
 		BBAT,
+		TRINKET_CATA,
 		//Health potion sources
 		//enemies
 		SWARM_HP,
@@ -279,7 +281,10 @@ public class Dungeon {
 		return level;
 	}
 
-
+	public static boolean trinketCataNeeded(){
+		//one trinket catalyst on floors 1-3
+		return depth < 5 && depth != 0 && !LimitedDrops.TRINKET_CATA.dropped() && Random.Int(4-depth) == 0;
+	}
 
 	public static void resetLevel() {
 
@@ -362,6 +367,10 @@ public class Dungeon {
 	//Todo Roll 一下
 	public static boolean RollLevel() {
 		return depth == 6 || depth == 11 || depth == 16|| depth == 21;
+	}
+
+	public static boolean iceLevel() {
+		return depth > 5 && depth < 16;
 	}
 
 	public static boolean aqiLevel() {
@@ -627,7 +636,7 @@ public class Dungeon {
 		dlcs =  new Conducts.ConductStorage(SPDSettings.dlc());
 
 		//难度模式
-		difficultys =  new Difficulty.HardStorage(SPDSettings.difficulty());
+		difficultys = new Difficulty.HardStorage(SPDSettings.difficulty());
 
 		TitleScene.Reusable = false;
 
@@ -755,7 +764,7 @@ public class Dungeon {
 		if (WndResurrect.instance == null) {
 			updateLevelExplored();
 			Statistics.gameWon = false;
-			if(!Dungeon.isChallenged(PRO)) {
+			if(!Dungeon.isDLC(Conducts.Conduct.DEV)) {
 				Rankings.INSTANCE.submit(false, cause);
 			}
 		}
@@ -767,7 +776,7 @@ public class Dungeon {
 		Statistics.gameWon = true;
 
 		hero.belongings.identify();
-		if(!Dungeon.isChallenged(PRO)) {
+		if(!Dungeon.isDLC(Conducts.Conduct.DEV)) {
 			Rankings.INSTANCE.submit(true, cause);
 		}
 	}
@@ -819,7 +828,20 @@ public class Dungeon {
 
 		GameScene.updateFog(l, t, width, height);
 
-		//SmallLightRoad();
+		boolean stealthyMimics = MimicTooth.stealthyMimics();
+		if (hero.buff(MindVision.class) != null){
+			for (Mob m : level.mobs.toArray(new Mob[0])){
+				if (stealthyMimics && m instanceof Mimic && m.alignment == Char.Alignment.NEUTRAL){
+					continue;
+				}
+
+				BArray.or( level.visited, level.heroFOV, m.pos - 1 - level.width(), 3, level.visited );
+				BArray.or( level.visited, level.heroFOV, m.pos - 1, 3, level.visited );
+				BArray.or( level.visited, level.heroFOV, m.pos - 1 + level.width(), 3, level.visited );
+				//updates adjacent cells too
+				GameScene.updateFog(m.pos, 2);
+			}
+		}
 
 		if(hero.buff(SmallLightHeader.SAwareness.class) != null){
 			for (Mob m : level.mobs.toArray(new Mob[0])){
@@ -905,11 +927,6 @@ public class Dungeon {
 		}
 
 		GameScene.afterObserve();
-	}
-
-	/** 微光向导共享视野 **/
-	private static void SmallLightRoad() {
-
 	}
 
 	//we store this to avoid having to re-allocate the array with each pathfind
@@ -1081,8 +1098,9 @@ public class Dungeon {
 			initialVersion = bundle.getInt( VERSION );
 		}
 
-		dlcs.isConducted(Conducts.Conduct.EASY);
+//		dlcs.isConducted(Conducts.Conduct.EASY);
 		difficultys.restoreFromBundle(bundle);
+		dlcs.restoreFromBundle(bundle);
 
 		version = bundle.getInt( VERSION );
 
@@ -1231,7 +1249,7 @@ public class Dungeon {
 	}
 
 	public static boolean isDLC(Conducts.Conduct mask) {
-		return dlcs.isConducted(Conducts.Conduct.NULL);
+		return dlcs.isConducted(mask);
 	}
 
 	public static boolean isDIFFICULTY(Difficulty.DifficultyConduct mask) {

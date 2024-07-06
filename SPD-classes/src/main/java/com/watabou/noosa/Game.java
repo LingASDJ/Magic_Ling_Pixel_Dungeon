@@ -232,6 +232,10 @@ public class Game implements ApplicationListener {
 	public static Scene scene() {
 		return instance.scene;
 	}
+
+	public static boolean switchingScene() {
+		return instance.requestedReset;
+	}
 	
 	protected void step() {
 		
@@ -317,7 +321,9 @@ public class Game implements ApplicationListener {
 	}
 	
 	public static void vibrate( int milliseconds ) {
-		platform.vibrate( milliseconds );
+		if (platform.supportsVibration()) {
+			platform.vibrate(milliseconds);
+		}
 	}
 
 	public interface SceneChangeCallback{

@@ -149,6 +149,12 @@ public class BuffIndicator extends Component {
 	public static final int NIGHT_DAY        = 89;
 	public static final int NIGHT_CAT        = 90;
 
+	//ICE BUFF
+	public static final int STORM_SNOW        = 91;
+	public static final int SNOW_SHILED       = 92;
+	public static final int SNOW_RAIN     	  = 93;
+	public static final int SNOW_EYE          = 94;
+
 
 	//ELEMENTS
 	public static final int SCARY        = 112;

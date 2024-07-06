@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
@@ -31,8 +32,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.BlacksmithRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -48,6 +51,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class Blacksmith extends NPC {
 	
@@ -104,6 +108,7 @@ public class Blacksmith extends NPC {
 					case Quest.CRYSTAL: msg2 += Messages.get(Blacksmith.this, "intro_quest_crystal"); break;
 					case Quest.GNOLL:   msg2 += Messages.get(Blacksmith.this, "intro_quest_gnoll"); break;
 					case Quest.FUNGI:   msg2 += Messages.get(Blacksmith.this, "intro_quest_fungi"); break;
+					case Quest.FISHBOSS:msg2 += Messages.get(Blacksmith.this, "intro_quest_fish"); break;
 				}
 
 			}
@@ -195,6 +200,8 @@ public class Blacksmith extends NPC {
 					case Quest.CRYSTAL: msg += Messages.get(Blacksmith.this, "reminder_crystal"); break;
 					case Quest.GNOLL:   msg += Messages.get(Blacksmith.this, "reminder_gnoll"); break;
 					case Quest.FUNGI:   msg += Messages.get(Blacksmith.this, "reminder_fungi"); break;
+					//TODO SP
+					case Quest.FISHBOSS:   msg += Messages.get(Blacksmith.this, "reminder_fish"); break;
 				}
 				tell(msg);
 
@@ -267,6 +274,8 @@ public class Blacksmith extends NPC {
 		public static final int CRYSTAL = 1;
 		public static final int GNOLL = 2;
 		public static final int FUNGI = 3; //The fungi quest is not implemented, only exists partially in code
+		public static final int FISHBOSS = 4;
+
 		//pre-v2.2.0
 		private static boolean alternative; //false for mining gold, true for bat blood
 
@@ -287,6 +296,8 @@ public class Blacksmith extends NPC {
 
 		//pre-generate these so they are consistent between seeds
 		public static ArrayList<Item> smithRewards;
+		public static Weapon.Enchantment smithEnchant;
+		public static Armor.Glyph smithGlyph;
 		
 		public static void reset() {
 			type        = 0;
@@ -306,6 +317,8 @@ public class Blacksmith extends NPC {
 			smiths      = 0;
 
 			smithRewards = null;
+			smithEnchant = null;
+			smithGlyph = null;
 		}
 		
 		private static final String NODE	= "blacksmith";
@@ -326,6 +339,8 @@ public class Blacksmith extends NPC {
 		private static final String UPGRADES	= "upgrades";
 		private static final String SMITHS	    = "smiths";
 		private static final String SMITH_REWARDS = "smith_rewards";
+		private static final String ENCHANT		= "enchant";
+		private static final String GLYPH		= "glyph";
 		
 		public static void storeInBundle( Bundle bundle ) {
 			
@@ -349,7 +364,13 @@ public class Blacksmith extends NPC {
 				node.put( UPGRADES, upgrades );
 				node.put( SMITHS, smiths );
 
-				if (smithRewards != null) node.put( SMITH_REWARDS, smithRewards );
+				if (smithRewards != null) {
+					node.put( SMITH_REWARDS, smithRewards );
+					if (smithEnchant != null) {
+						node.put(ENCHANT, smithEnchant);
+						node.put(GLYPH, smithGlyph);
+					}
+				}
 			}
 			
 			bundle.put( NODE, node );
@@ -386,6 +407,10 @@ public class Blacksmith extends NPC {
 
 				if (node.contains( SMITH_REWARDS )){
 					smithRewards = new ArrayList<>((Collection<Item>) ((Collection<?>) node.getCollection( SMITH_REWARDS )));
+					if (node.contains(ENCHANT)) {
+						smithEnchant = (Weapon.Enchantment) node.get(ENCHANT);
+						smithGlyph   = (Armor.Glyph) node.get(GLYPH);
+					}
 				}
 
 			} else {
@@ -398,9 +423,10 @@ public class Blacksmith extends NPC {
 				
 				rooms.add(new BlacksmithRoom());
 				spawned = true;
-
+				PaswordBadges.loadGlobal();
+				List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 				//Currently cannot roll the fungi quest, as it is not fully implemented
-				type = Random.IntRange(1, 2);
+				type = RegularLevel.altHoliday == RegularLevel.AltHoliday.DWJ_2024 && !passwordbadges.contains(PaswordBadges.Badge.KILL_FISHBOSS) ? 4 : RegularLevel.altHoliday == RegularLevel.AltHoliday.DWJ_2024 && Random.Float()<=0.5f ? 4 : Random.IntRange(1, 2);
 				alternative = false;
 				
 				given = false;
@@ -447,6 +473,14 @@ public class Blacksmith extends NPC {
 				}
 				i.cursed = false;
 			}
+
+			// 30% base chance to be enchanted, stored separately so status isn't revealed early
+			float enchantRoll = Random.Float();
+			if (enchantRoll <= 0.3f * ParchmentScrap.enchantChanceMultiplier()){
+				smithEnchant = Weapon.Enchantment.random();
+				smithGlyph = Armor.Glyph.random();
+			}
+
 		}
 
 		public static int Type(){

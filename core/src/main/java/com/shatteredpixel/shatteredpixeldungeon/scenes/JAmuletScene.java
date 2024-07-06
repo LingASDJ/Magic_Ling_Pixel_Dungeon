@@ -1,18 +1,14 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
-import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.watabou.noosa.Camera;
@@ -37,7 +33,7 @@ public class JAmuletScene extends PixelScene {
        playBGM( Assets.Music.NBPL, true );
         RenderedTextBlock text = null;
         if (!noText) {
-            text = renderTextBlock( Dungeon.isChallenged(PRO) ? Messages.get(this, "text") : Messages.get(this, "text_le"), 8 );
+            text = renderTextBlock( Dungeon.isDLC(Conducts.Conduct.DEV) ? Messages.get(this, "text") : Messages.get(this, "text_le"), 8 );
             text.maxWidth(WIDTH);
             add( text );
         }
@@ -96,18 +92,7 @@ public class JAmuletScene extends PixelScene {
 
     @Override
     protected void onBackPressed() {
-        TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-        if (timeFreeze != null) timeFreeze.disarmPresses();
-        Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-        if (timeBubble != null) timeBubble.disarmPresses();
-        InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
-        InterlevelScene.curTransition = new LevelTransition();
-        InterlevelScene.curTransition.destDepth = depth;
-        InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
-        InterlevelScene.curTransition.destBranch = 0;
-        InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
-        InterlevelScene.curTransition.centerCell  = -1;
-        Game.switchScene( InterlevelScene.class );
+        Game.switchScene( GameScene.class );
     }
 
     private float timer = 0;

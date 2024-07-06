@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.activeChallenges;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -95,7 +94,7 @@ public class WndScoreBreakdown extends Window {
 
         int chCount = 0;
         for (int ch : Challenges.MASKS){
-            if ((Dungeon.challenges & ch) != 0 && ch <= CS && ch != PRO && ch != DHXD) {
+            if ((Dungeon.challenges & ch) != 0 && ch <= CS && ch != DHXD) {
                 chCount++;
             }
         }

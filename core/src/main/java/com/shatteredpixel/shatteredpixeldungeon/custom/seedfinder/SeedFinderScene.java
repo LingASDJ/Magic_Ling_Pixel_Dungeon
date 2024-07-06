@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder;
 
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -12,12 +11,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Group;
 import com.watabou.noosa.ui.Component;
 
 import java.util.Arrays;
@@ -25,25 +20,6 @@ import java.util.Arrays;
 public class SeedFinderScene extends PixelScene {
 
     public static String result;
-
-    public void message(String message) {
-        Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndEXMessage(message)));
-    }
-    public static class WndEXMessage extends WndMessage{
-
-        public WndEXMessage(String text) {
-            super(text);
-        }
-
-        public void hide() {
-            if (parent != null) {
-                parent.erase(this);
-            }
-            ShatteredPixelDungeon.switchNoFade(TitleScene.class);
-            destroy();
-        }
-
-    }
 
     @Override
     public void create() {
@@ -67,11 +43,11 @@ public class SeedFinderScene extends PixelScene {
 
         Component content = list.content();
         content.clear();
-        final RenderedTextBlock txtBody = PixelScene.renderTextBlock(  Messages.get(this, "body"), 6);
-        ShatteredPixelDungeon.scene().addToFront(new WndTextInput(Messages.get(this, "title"), Messages.get(this, "body2",SPDSettings.timeOutSeed(),SPDSettings.iceCoin()), Messages.get(this, "initial_value"), 1000, true, Messages.get(this, "find"), Messages.get(HeroSelectScene.class, "custom_seed_clear")) {
+
+        ShatteredPixelDungeon.scene().addToFront(new WndSeedTextInput(Messages.get(this, "title"), Messages.get(this, "body2",SPDSettings.challenges(),SPDSettings.timeOutSeed()), Messages.get(this, "initial_value",SPDSettings.FoundDepth()), 1000, true, Messages.get(this, "find"), Messages.get(HeroSelectScene.class, "custom_seed_clear")) {
             @Override
             public void onSelect(boolean positive, String text) {
-                int floor = 26;
+                int floor = 30;
                 String up_to_floor = "floor end";
                 String strFloor = "floor";
 
@@ -82,34 +58,26 @@ public class SeedFinderScene extends PixelScene {
                     } catch (NumberFormatException ignored) {
                     }
                 }
-                txtBody.visible = false;
+
                 if (positive) {
-                    int price = RegularLevel.holiday == RegularLevel.Holiday.CJ ? 5 : 15;
-                    if(SPDSettings.iceCoin()>=price){
-                        if (text.contains("floor end")) {
-                            String[] itemList = Arrays.copyOfRange(text.split("\n"), 1, text.split("\n").length);
+                    if (text.contains("floor end")) {
+                        String[] itemList = Arrays.copyOfRange(text.split("\n"), 1, text.split("\n").length);
 
-                            Component content = list.content();
-                            content.clear();
+                        Component content = list.content();
+                        content.clear();
 
-                            CreditsBlock txt = new CreditsBlock(true, Window.TITLE_COLOR, new SeedFinder().findSeed(itemList, floor));
-                            txt.visible = false;
-                            txt.setRect((Camera.main.width - colWidth)/2f, 12, colWidth, 0);
-                            content.add(txt);
+                        CreditsBlock txt = new CreditsBlock(true, Window.TITLE_COLOR, new SeedFinder().findSeed(itemList, floor));
+                        txt.visible = false;
+                        txt.setRect((Camera.main.width - colWidth) / 2f, 12, colWidth, 0);
+                        content.add(txt);
 
-                            content.setSize( fullWidth, txt.bottom()+10 );
+                        content.setSize(fullWidth, txt.bottom() + 10);
 
-                            list.setRect( 0, 0, w, h );
-                            list.scrollTo(0, 0);
+                        list.setRect(0, 0, w, h);
+                        list.scrollTo(0, 0);
 
-                            result = new SeedFinder().findSeed(itemList, floor);
-                        } else {
-                            message(Messages.get(SeedFinderScene.class,"error"));
-                        }
-                    } else {
-                        message(Messages.get(SeedFinderScene.class,"no_money"));
+                        result = new SeedFinder().findSeed(itemList, floor);
                     }
-
                 } else {
                     SPDSettings.customSeed("");
                     ShatteredPixelDungeon.switchNoFade(TitleScene.class);
@@ -117,31 +85,18 @@ public class SeedFinderScene extends PixelScene {
             }
         });
 
-
-        txtBody.setPos(colWidth/6f, Camera.main.height/1.8f);
-        add(txtBody);
-
-
         ExitButton btnExit = new ExitButton();
         btnExit.setPos(Camera.main.width - btnExit.width(), 0);
         add(btnExit);
 
-        //fadeIn();
+        fadeIn();
     }
 
     @Override
     protected void onBackPressed() {
         ShatteredPixelDungeon.switchScene(TitleScene.class);
         System.gc();
-        SeedFinder.Nofinding = true;
     }
-
-    private void addLine(float y, Group content) {
-        ColorBlock line = new ColorBlock(Camera.main.width, 1, 0xFF333333);
-        line.y = y;
-        content.add(line);
-    }
-
 
     public static class CreditsBlock extends Component {
 

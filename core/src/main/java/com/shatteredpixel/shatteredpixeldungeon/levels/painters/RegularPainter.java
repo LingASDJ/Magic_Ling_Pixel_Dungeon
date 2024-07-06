@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.painters;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedFinderScene;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Patch;
@@ -33,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.Connecti
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
+import com.watabou.noosa.Game;
 import com.watabou.utils.Graph;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
@@ -137,7 +139,7 @@ public abstract class RegularPainter extends Painter {
 			paintGrass( level, rooms );
 		}
 		
-		if (nTraps > 0){
+		if (nTraps > 0 && Game.scene().getClass() != SeedFinderScene.class){
 			paintTraps( level, rooms );
 		}
 		
@@ -302,12 +304,12 @@ public abstract class RegularPainter extends Painter {
 			merge.top = merge.bottom = start != null ? start.y : intersect.center().y;
 
 			Point p = new Point(merge.left, merge.top);
-			while(merge.top > intersect.top && n.canMerge(l, p, mergeTerrain) && r.canMerge(l, p, mergeTerrain)) {
+			while(merge.top > intersect.top && n.canMerge(l, r, p, mergeTerrain) && r.canMerge(l, n, p, mergeTerrain)) {
 				merge.top--;
 				p.y--;
 			}
 			p.y = merge.bottom;
-			while(merge.bottom < intersect.bottom && n.canMerge(l, p, mergeTerrain) && r.canMerge(l, p, mergeTerrain)) {
+			while(merge.bottom < intersect.bottom && n.canMerge(l, r, p, mergeTerrain) && r.canMerge(l, n, p, mergeTerrain)) {
 				merge.bottom++;
 				p.y++;
 			}
@@ -326,12 +328,12 @@ public abstract class RegularPainter extends Painter {
 			merge.top = merge.bottom = intersect.top;
 
 			Point p = new Point(merge.left, merge.top);
-			while(merge.left > intersect.left && n.canMerge(l, p, mergeTerrain) && r.canMerge(l, p, mergeTerrain)) {
+			while(merge.left > intersect.left && n.canMerge(l, r, p, mergeTerrain) && r.canMerge(l, n, p, mergeTerrain)) {
 				merge.left--;
 				p.x--;
 			}
 			p.x = merge.right;
-			while(merge.right < intersect.right && n.canMerge(l, p, mergeTerrain) && r.canMerge(l, p, mergeTerrain)) {
+			while(merge.right < intersect.right && n.canMerge(l, r, p, mergeTerrain) && r.canMerge(l, n, p, mergeTerrain)) {
 				merge.right++;
 				p.x++;
 			}
@@ -456,28 +458,29 @@ public abstract class RegularPainter extends Painter {
 				validCells.size()/5);
 
 		//5x traps on traps level feeling, but the extra traps are all visible
-		for (int i = 0; i < (l.feeling == Level.Feeling.BIGTRAP ? 16*nTraps : l.feeling == Level.Feeling.TRAPS ?
+		for (int i = 0; i < (l.feeling == Level.Feeling.BIGTRAP ? 18 * nTraps : l.feeling == Level.Feeling.TRAPS ?
 				5*nTraps :
 				nTraps); i++) {
 
-			Trap trap = Reflection.newInstance(trapClasses[Random.chances( trapChances )]);
-
 			Integer trapPos;
-			if (trap.avoidsHallways && !validNonHallways.isEmpty()){
-				trapPos = Random.element(validNonHallways);
-			} else {
-				trapPos = Random.element(validCells);
+			Trap trap = Reflection.newInstance(trapClasses[Random.chances( trapChances )]);
+			if(trap != null){
+				if (trap.avoidsHallways && !validNonHallways.isEmpty()){
+					trapPos = Random.element(validNonHallways);
+				} else {
+					trapPos = Random.element(validCells);
+				}
+				//removes the integer object, not at the index
+				validCells.remove(trapPos);
+				validNonHallways.remove(trapPos);
+
+				if (i < nTraps) trap.hide();
+				else            trap.reveal();
+
+				l.setTrap( trap, trapPos );
+				//some traps will not be hidden
+				l.map[trapPos] = trap.visible ? Terrain.TRAP : Terrain.SECRET_TRAP;
 			}
-			//removes the integer object, not at the index
-			validCells.remove(trapPos);
-			validNonHallways.remove(trapPos);
-
-			if (i < nTraps) trap.hide();
-			else            trap.reveal();
-
-			l.setTrap( trap, trapPos );
-			//some traps will not be hidden
-			l.map[trapPos] = trap.visible ? Terrain.TRAP : Terrain.SECRET_TRAP;
 		}
 	}
 	

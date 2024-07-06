@@ -42,7 +42,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDICLRPRO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NullDiedTO;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.BallisticaReal;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.timing.VirtualActor;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
@@ -666,7 +665,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
     @Override
     public boolean isAlive() {
-        return super.isAlive() || Dungeon.level.mobs.contains(this);
+        return super.isAlive() || Dungeon.level.mobs.contains(this) && HP>0;
     }
     @Override
     public void damage(int dmg, Object src) {
@@ -683,7 +682,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         super.damage(dmg, src);
         int hpBracket = HT / 8;
 
-        int curbracket = HP / hpBracket+1;
+        int curbracket = hpBracket == 0 ? 1 : HP / hpBracket;
 
         int beforeHitHP = HP;
 

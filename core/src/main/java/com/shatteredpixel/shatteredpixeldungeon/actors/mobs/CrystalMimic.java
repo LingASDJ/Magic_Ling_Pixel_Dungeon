@@ -37,7 +37,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -83,7 +85,10 @@ public class CrystalMimic extends Mimic {
 			if (desc == null) {
 				desc = Messages.get(Heap.class, "locked_chest_desc");
 			}
-			return desc + "\n\n" + Messages.get(this, "hidden_hint");
+			if (!MimicTooth.stealthyMimics()){
+				desc += "\n\n" + Messages.get(this, "hidden_hint");
+			}
+			return desc;
 		} else {
 			return super.description();
 		}
@@ -151,7 +156,7 @@ public class CrystalMimic extends Mimic {
 			item = hero.belongings.randomUnequipped();
 		} while (tries-- > 0 && (item == null || item.unique || item.level() > 0));
 
-		if (item != null && !item.unique && item.level() < 1 ) {
+		if (item != null && !item.unique && item.level() < 1 && !(item instanceof WandOfAnmy)) {
 
 			GLog.w( Messages.get(this, "ate", item.name()) );
 			if (!item.stackable) {

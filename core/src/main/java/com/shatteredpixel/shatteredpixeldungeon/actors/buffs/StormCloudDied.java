@@ -49,9 +49,6 @@ public class StormCloudDied extends Buff {
         this.left = duration;
     }
     public static class LightningBolt{}
-
-
-
     @Override
     public boolean act() {
 

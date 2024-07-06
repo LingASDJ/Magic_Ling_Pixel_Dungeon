@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
@@ -40,10 +41,10 @@ public class DreamcatcherRoom extends SpecialRoom {
         return 13;
     }
 
-    @Override
-    public boolean canMerge(Level l, Point p, int mergeTerrain) {
-        return false;
-    }
+	@Override
+	public boolean canMerge(Level l, Room other, Point p, int mergeTerrain) {
+		return false;
+	}
 
     @Override
     public void paint(Level level) {

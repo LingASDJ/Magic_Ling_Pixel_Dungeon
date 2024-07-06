@@ -35,17 +35,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -95,6 +87,7 @@ public class YogDzewa extends Boss {
 		properties.add(Property.BOSS);
 		properties.add(Property.IMMOVABLE);
 		properties.add(Property.DEMONIC);
+		properties.add(Property.STATIC);
 	}
 
 	private int phase = 0;
@@ -263,9 +256,9 @@ public class YogDzewa extends Boss {
 
 					if (hit( this, ch, true )) {
 						if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-							ch.damage(Random.NormalIntRange(30, 50), new Eye.DeathGaze());
+							ch.damage(Char.combatRoll(30, 50), new Eye.DeathGaze());
 						} else {
-							ch.damage(Random.NormalIntRange(20, 30), new Eye.DeathGaze());
+							ch.damage(Char.combatRoll(20, 30), new Eye.DeathGaze());
 						}
 						if (Dungeon.level.heroFOV[pos]) {
 							ch.sprite.flash();
@@ -447,7 +440,7 @@ public class YogDzewa extends Boss {
 		}
 
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-		if (lock != null){
+		if (lock != null && !isImmune(src.getClass()) && !isInvulnerable(src.getClass())){
 			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmgTaken/3f);
 			else                                                    lock.addTime(dmgTaken/2f);
 		}
@@ -489,9 +482,12 @@ public class YogDzewa extends Boss {
 	public void updateVisibility( Level level ){
 		int viewDistance = 4;
 		if (phase > 1 && isAlive()){
-			viewDistance = 4 - (phase-1);
+			viewDistance = Math.max(4 - (phase-1), 1);
 		}
-		level.viewDistance = (int)GameMath.gate(1, viewDistance, level.viewDistance);
+		if (Dungeon.isChallenged(Challenges.DARKNESS)) {
+			viewDistance = Math.min(viewDistance, 2);
+		}
+		level.viewDistance = viewDistance;
 		if (Dungeon.hero != null) {
 			if (Dungeon.hero.buff(Light.class) == null) {
 				Dungeon.hero.viewDistance = level.viewDistance;
@@ -521,7 +517,7 @@ public class YogDzewa extends Boss {
 	@Override
 	public void aggro(Char ch) {
 		for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
-			if (Dungeon.level.distance(pos, mob.pos) <= 4 &&
+			if (mob != ch && Dungeon.level.distance(pos, mob.pos) <= 4 &&
 					(mob instanceof Larva || mob instanceof YogRipper || mob instanceof YogEye || mob instanceof YogScorpio)) {
 				mob.aggro(ch);
 			}
@@ -610,17 +606,6 @@ public class YogDzewa extends Boss {
 		return desc;
 	}
 
-	{
-		immunities.add( Dread.class );
-		immunities.add( Terror.class );
-		immunities.add( Amok.class );
-		immunities.add( Charm.class );
-		immunities.add( Sleep.class );
-		immunities.add( Vertigo.class );
-		immunities.add( Frost.class );
-		immunities.add( Paralysis.class );
-	}
-
 	private static final String PHASE = "phase";
 
 	private static final String ABILITY_CD = "ability_cd";
@@ -698,12 +683,12 @@ public class YogDzewa extends Boss {
 
 		@Override
 		public int damageRoll() {
-			return Random.NormalIntRange( 15, 25 );
+			return Char.combatRoll( 15, 25 );
 		}
 
 		@Override
 		public int drRoll() {
-			return super.drRoll() + Random.NormalIntRange(0, 4);
+			return super.drRoll() + Char.combatRoll(0, 4);
 		}
 
 	}

@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MintSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MoonLowSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PianoLeSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.PiraLandSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.QinWolfSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SakaFishBossSprites;
@@ -46,6 +47,10 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0760_Changes(changeInfos);
+        add_V0755_Changes(changeInfos);
+        add_V0751_Changes(changeInfos);
+        add_V0750_Changes(changeInfos);
         add_V0740_Changes(changeInfos);
         add_V0735_Changes(changeInfos);
         add_V0732_Changes(changeInfos);
@@ -68,6 +73,186 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0760_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.6.0-NER2", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WORN_SHORTSWORD), ("战士天赋调整"),
+                ("战士的天赋进一步加强，具体参考下方说明\n\n" +
+                        "T1调整：\n" +
+                        "丰收喜悦<--加强-->丰收一餐：\n" +
+                        "种子概率提升\n" +
+                        "T2调整：\n\n" +
+                        "钢铁之胃<--加强-->荆棘之胃：\n" +
+                        "+1 进食期间受到攻击则反伤_9点_伤害\n" +
+                        "+2 进食期间受到攻击则反伤_12点_伤害")));
+
+
+        changes = new ChangeInfo("v0.7.6.0-NER", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WORN_SHORTSWORD), ("战士天赋加强"),
+                ("战士1 和 2阶 的天赋进行加强，具体参考下方说明\n\n" +
+                        "T1调整：\n\n" +
+                        "丰盛一餐-->加强-->丰收时刻：\n" +
+                        "+1 在原有基础上，给予食用种子权利，并且有5%概率触发有益种子的相同药水效果\n" +
+                        "+2 在+1基础上，触发药水概率提升至10%\n\n" +
+                        "重做-->钢铁意志：\n" +
+                        "+1 斩杀敌人后获得_2点护盾_。\n" +
+                        "+2 斩杀敌人后获得_3点护盾_。\n\n" +
+                        "T2调整：\n" +
+                        "钢铁之胃<--加强-->荆棘之胃：\n" +
+                        "+1 进食期间受到攻击则获得_ 1回合 荆棘护身效果_\n" +
+                        "+2 进食期间受到攻击则获得_ 2回合 荆棘护身效果_\n\n" +
+                        "液蕴意志<--重做-->再生愈合：\n" +
+                        "+1：每当 蕾零安洁 受到一次直接损失生命值的物理伤害后，她在下一回合可获得_ 2点 _护盾。\n" +
+                        "+2：每当 蕾零安洁 受到一次直接损失生命值的物理伤害后，她在下一回合获得_ 4点 _护盾，且获得 _ 弱效治疗 _效果\n" +
+                        "弱效治疗：最大生命的_ 5% _的恢复量\n\n" +
+                        "即兴投掷<--重做-->靶心瞄准：\n" +
+                        "+1：蕾零安洁向敌人扔出非投掷武器的物品时会对其造成 _2 回合_的瞄准效果和_ 2回合 _致盲效果。这个天赋有 50 回合的冷却时间。\n" +
+                        "+2：蕾零安洁向敌人扔出非投掷武器的物品时会对其造成 _3 回合_的瞄准效果和_ 3回合 _致盲效果，并且可以_选择 闪现 _到目标面前。这个天赋有 50 回合的冷却时间。\n" +
+                        "瞄准效果：物理伤害提升10%。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.5.6版本:\n\n" +
+                        "1.修复超级远古版本跨版本升级异常" +
+                        "2.灯火现在不再有挑战限制，勾选即为一挑。但后续版本灯火会从挑战下线，并作为特别模块在常规局启用。"));
+
+    }
+
+    public static void add_V0755_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.5.5-6", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        Image s =new PiraLandSprite();
+        s.scale.set(PixelScene.align(1f));
+        changes.addButton(new ChangeButton(s, ("新MiniBoss：鱼人号"),
+                "端午节特别行动限时作战Boss，作战时间6.11-6.21\n\n6.15:修复重大异常Bug"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RICESWORD), ("新传奇武器：糯米大剑"),
+                ("击败端午节限时行动后获得生成权利！\n\n6.15:修复异常问题")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.5.5版本:\n\n" +
+                        "1.修复难度没有正确加载的问题\n" +
+                        "2.修复部分数据异常问题\n" +
+                        "3.修复矮人将军楼层未准确加载问题\n" +
+                        "4.修复隐藏徽章的一些潜在问题\n" +
+                        "5.修复FireBase上次提到的一些主要问题"));
+
+    }
+
+    public static void add_V0751_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.5.1", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(CharSprite.POSITIVE);
+        changeInfos.add(changes);
+
+        changes.addButton( new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 80, 16, 16 ), "房间调整",
+                "太极房间现在诅咒区域保底+1，最高+3，\n" +
+                        "且裂缝区域必定诅咒高等级，\n水面区域必定非诅咒但有必定白板"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.5.1版本:\n\n" +
+                        "1.修复难度没有正确加载的问题\n" +
+                        "2.人生模拟器难度选项启用\n" +
+                        "3.优化人生模拟器逻辑\n" +
+                        "4.修复暴风水汽扩散至地图外导致的闪退问题\n" +
+                        "5.修复挑战异常问题，修复难度异常\n" +
+                        "6.修复0层部分NPC奖励异常问题"));
+
+    }
+
+    public static void add_V0750_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.5.0-SUMMER", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG25), ("开发者模式v0.8"),
+                ("1、追加 自定义属性 物品，可调节英雄属性\n\n" +
+                        "2.开发者模式已经搬迁至难度选择，请注意。")));
+
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_1), ("高阶法杖调整"),
+                ("风暴雷霆法杖 与 冰雪魔女 掉落的法杖基本重新制作，磷火法杖伤害略微提升。")));
+
+        changes.addButton(new ChangeButton(NetIcons.get(NetIcons.CHAT), ("查种器V0.4"),
+                ("重新制作了查种器界面，并且取消钴币支付\n\n" +
+                        "同时再次强调：长按可以进行输入一个参数查找种子（种子分析器）")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("徽章改进"),
+                ("徽章部分奖励进行了调整：\n\n" +
+                        "1.DM720徽章-猫人给予额外一个诅咒菱晶\n" +
+                        "2.冰雪公主徽章-法杖可以自然生成在地牢中\n" +
+                        "更多调整，参阅徽章具体说明")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS),("其他改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分文案优化\n" +
+                        "3.部分细节优化更新")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(CharSprite.POSITIVE);
+        changeInfos.add(changes);
+
+        Image s =new DwarfGeneralSprite();
+        s.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(s, ("新Boss：矮人将军"),
+                "1.削弱一些技能\n2.完善剧情方面\n3.小恶魔商店在每局击败将军后有强化"));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.THEDIED), ("肃杀"),
+                ("修复回血效果偷袭100%触发问题，修复死神附魔的触发异常问题")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.4.0版本:\n\n" +
+                        "1、 修复挑战解锁的异常问题\n" +
+                        "2、 修复0层部分NPC的对话异常\n" +
+                        "3、 修复部分神器的崩溃异常"));
     }
 
     public static void add_V0740_Changes( ArrayList<ChangeInfo> changeInfos ) {

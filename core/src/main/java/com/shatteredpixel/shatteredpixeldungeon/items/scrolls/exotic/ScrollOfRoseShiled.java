@@ -26,7 +26,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
@@ -42,10 +41,10 @@ public class ScrollOfRoseShiled extends Scroll {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
         {
-            inputs =  new Class[]{PotionOfPurity.class, AlchemicalCatalyst.class, StoneOfBlink.class};
-            inQuantity = new int[]{1, 1, 1};
+            inputs =  new Class[]{PotionOfPurity.class, StoneOfBlink.class};
+            inQuantity = new int[]{1, 1};
 
-            cost = 20;
+            cost = 24;
 
             output = ScrollOfRoseShiled.class;
             outQuantity = 2;
@@ -67,7 +66,7 @@ public class ScrollOfRoseShiled extends Scroll {
     @Override
     public void doRead() {
         detach(curUser.belongings.backpack);
-        Buff.prolong(hero, RoseShiled.class, 6f);
+        Buff.prolong(hero, RoseShiled.class, 8f);
         setKnown();
         new Flare( 5, 32 ).color( 0xFF00FF, true ).show( curUser.sprite, 2f );
 

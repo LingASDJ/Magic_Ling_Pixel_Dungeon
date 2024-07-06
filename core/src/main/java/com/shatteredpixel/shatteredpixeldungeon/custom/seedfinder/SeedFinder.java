@@ -36,7 +36,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
-import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.watabou.noosa.Game;
@@ -46,15 +45,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-//TODO 仍然有问题
 public class SeedFinder {
     enum Condition {ANY, ALL}
     enum FINDING {STOP,CONTINUE}
@@ -135,57 +126,28 @@ public class SeedFinder {
         }
     }
 
-    private String result= Messages.get(this, "result");
-    public static boolean Nofinding = false;
-    public static boolean Pay = false;
-
-    public void findSeed(boolean stop){
-        if(!stop){
-            findingStatus = FINDING.STOP;
-        }
-    }
-
-    static int timeOut = SPDSettings.timeOutSeed();
-    static ExecutorService executorService= Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     public String findSeed(String[] wanted, int floor) {
+        long startTime = System.currentTimeMillis();
         itemList = new ArrayList<>(Arrays.asList(wanted));
-        Nofinding = false;
-        if(!Pay) {
-            int price = RegularLevel.holiday == RegularLevel.Holiday.CJ ? 5 : 15;
-            SPDSettings.iceDownCoin(price);
-            Pay = true;
-        }
 
         String seedDigits = Integer.toString(Random.Int(500000));
         findingStatus = FINDING.CONTINUE;
         Options.condition = Condition.ALL;
 
-        int cs = SPDSettings.challenges();
+        String result="NONE";
 
-
-
-        Future<String> future = executorService.submit(new Callable<String>() {
-
-            @Override
-            public String call() {
-                for (long i = Random.Long(DungeonSeed.randomSeed());
-                     i < DungeonSeed.TOTAL_SEEDS && findingStatus == FINDING.CONTINUE ; i++) {
-                    if (testSeedALL(seedDigits + i, floor)) {
-                        result = logSeedItems(seedDigits + i, floor, cs);
-                        break;
-                    }
-                }
-                return result;
+        for (int i = Random.Int(9999999); i < DungeonSeed.TOTAL_SEEDS && findingStatus == FINDING.CONTINUE ; i++) {
+            if (testSeedALL(seedDigits + i, floor)) {
+                result = logSeedItems(seedDigits + i, floor, SPDSettings.challenges());
+                break;
             }
-        });
-        try {
-            result = future.get(timeOut, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            future.cancel(true);
-            int pricex = RegularLevel.holiday == RegularLevel.Holiday.CJ ? 5 : 15;
-            SPDSettings.iceCoin(pricex);
-            Pay = false;
-            findingStatus = FINDING.STOP;
+
+            // 检查是否超时
+            if (System.currentTimeMillis() - startTime > SPDSettings.timeOutSeed() * 500L) {
+                findingStatus = FINDING.STOP;
+                result = Messages.get(this, "result");
+                break;
+            }
         }
         return result;
     }
@@ -405,7 +367,6 @@ public class SeedFinder {
                 rewards.add(Ghost.Quest.armor.identify());
                 rewards.add(Ghost.Quest.weapon.identify());
                 Ghost.Quest.complete();
-
                 addTextQuest("【 " + Messages.get(this, "sad_ghost_reward") + " 】", rewards, builder);
             }
 
@@ -416,7 +377,6 @@ public class SeedFinder {
                 rewards.add(RedDragon.Quest.food.identify());
                 rewards.add(RedDragon.Quest.scrolls.identify());
                 RedDragon.Quest.complete();
-
                 addTextQuest("【 " + Messages.get(this, "red_dragon_reward") + " 】", rewards, builder);
             }
 
@@ -427,7 +387,6 @@ public class SeedFinder {
                 Wandmaker.Quest.complete();
 
                 builder.append("【 " + Messages.get(this, "wandmaker_need") +" 】:\n ");
-
 
                 switch (Wandmaker.Quest.type()) {
                     case 1: default:
@@ -483,6 +442,9 @@ public class SeedFinder {
 
             Dungeon.depth++;
         }
+
+        findingStatus = FINDING.STOP;
+
         return result.toString();
     }
 

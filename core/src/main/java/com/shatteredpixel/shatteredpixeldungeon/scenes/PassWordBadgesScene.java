@@ -94,7 +94,7 @@ public class PassWordBadgesScene extends PixelScene {
     @Override
     public void destroy() {
 
-        Badges.saveGlobal();
+        PaswordBadges.saveGlobal();
 
         super.destroy();
     }

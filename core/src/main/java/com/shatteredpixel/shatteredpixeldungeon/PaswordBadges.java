@@ -1,7 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
-
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -51,13 +49,21 @@ public class PaswordBadges {
         displayBadge( Badge.KING_ISTO );
     }
 
+    public static void KILL_FISH() {
+        displayBadge( Badge.KILL_FISHBOSS );
+    }
+
+    public static void UNLOCK_RICESWORD() {
+        displayBadge( Badge.UNLOCK_RICESWORD );
+    }
+
     public static void SWORDDRAGON() {
         displayBadge( Badge.SWORDDREAM );
     }
 
     public static void ALLCS(int challenges){
         if (challenges == 0) return;
-        if (challenges >= 13 && !(Dungeon.isChallenged(PRO))||!Statistics.bossRushMode && challenges >= 13){
+        if (challenges >= 13 && !(Dungeon.isDLC(Conducts.Conduct.DEV))||!Statistics.bossRushMode && challenges >= 13){
             displayBadge(PaswordBadges.Badge.ALLCHSX );
         }
     }
@@ -124,7 +130,11 @@ public class PaswordBadges {
 
         WHATSUP(23),
         KILL_DWG(24),
-        KING_ISTO(25);
+        KING_ISTO(25),
+
+        KILL_FISHBOSS(26),
+
+        UNLOCK_RICESWORD(27);
 
         public boolean meta;
 

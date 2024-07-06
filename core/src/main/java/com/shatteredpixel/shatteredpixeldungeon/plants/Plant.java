@@ -21,24 +21,38 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.plants;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion.SeedToPotion.types;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -63,9 +77,9 @@ public abstract class Plant implements Bundlable {
 			((Hero) ch).interrupt();
 		}
 
-		if (Dungeon.level.heroFOV[pos] && Dungeon.hero.hasTalent(Talent.NATURES_AID)){
+		if (Dungeon.level.heroFOV[pos] && hero.hasTalent(Talent.NATURES_AID)){
 			// 3/5 turns based on talent points spent
-			Barkskin.conditionallyAppend(Dungeon.hero, 2, 1 + 2*(Dungeon.hero.pointsInTalent(Talent.NATURES_AID)));
+			Barkskin.conditionallyAppend(hero, 2, 1 + 2*(hero.pointsInTalent(Talent.NATURES_AID)));
 		}
 
 		wither();
@@ -117,7 +131,7 @@ public abstract class Plant implements Bundlable {
 
 	public String desc() {
 		String desc = Messages.get(this, "desc");
-		if (Dungeon.hero.subClass == HeroSubClass.WARDEN){
+		if (hero.subClass == HeroSubClass.WARDEN){
 			desc += "\n\n" + Messages.get(this, "warden_desc");
 		}
 		return desc;
@@ -126,9 +140,26 @@ public abstract class Plant implements Bundlable {
 	public static class Seed extends Item {
 
 		public static final String AC_PLANT	= "PLANT";
+
+		public static final String AC_EATSEED	= "EATSEED";
 		
 		private static final float TIME_TO_PLANT = 1f;
-		
+
+
+		@Override
+		public String actionName(String action, Hero hero){
+			return Messages.get(Seed.class, "ac_" + action);
+		}
+
+		@Override
+		public String defaultAction() {
+			if(hero.heroClass== HeroClass.WARRIOR){
+				return AC_EATSEED;
+			} else {
+				return AC_THROW;
+			}
+		}
+
 		{
 			stackable = true;
 			defaultAction = AC_THROW;
@@ -140,7 +171,22 @@ public abstract class Plant implements Bundlable {
 		public ArrayList<String> actions( Hero hero ) {
 			ArrayList<String> actions = super.actions( hero );
 			actions.add( AC_PLANT );
+			if(hero.heroClass== HeroClass.WARRIOR){
+				actions.add(AC_EATSEED);
+			}
 			return actions;
+		}
+
+		protected void satisfy( Hero hero ){
+			float foodVal = 30f;
+
+			Artifact.ArtifactBuff buff = hero.buff( HornOfPlenty.hornRecharge.class );
+			if (buff != null && buff.isCursed()){
+				foodVal *= 0.67f;
+				GLog.n( Messages.get(Hunger.class, "cursedhorn") );
+			}
+
+			Buff.affect(hero, Hunger.class).satisfy(foodVal);
 		}
 		
 		@Override
@@ -152,7 +198,7 @@ public abstract class Plant implements Bundlable {
 				super.onThrow( cell );
 			} else {
 				Dungeon.level.plant( this, cell );
-				if (Dungeon.hero.subClass == HeroSubClass.WARDEN) {
+				if (hero.subClass == HeroSubClass.WARDEN) {
 					for (int i : PathFinder.NEIGHBOURS8) {
 						int c = Dungeon.level.map[cell + i];
 						if ( c == Terrain.EMPTY || c == Terrain.EMPTY_DECO
@@ -165,7 +211,19 @@ public abstract class Plant implements Bundlable {
 				}
 			}
 		}
-		
+		public static final float TIME_TO_EAT	= 3f;
+		protected float eatingTime(){
+			if (Dungeon.hero.hasTalent(Talent.IRON_STOMACH)
+					|| Dungeon.hero.hasTalent(Talent.ENERGIZING_MEAL)
+					|| Dungeon.hero.hasTalent(Talent.MYSTICAL_MEAL)
+					|| Dungeon.hero.hasTalent(Talent.INVIGORATING_MEAL)
+					|| Dungeon.hero.hasTalent(Talent.FOCUSED_MEAL)){
+				return TIME_TO_EAT - 2;
+			} else {
+				return TIME_TO_EAT;
+			}
+		}
+
 		@Override
 		public void execute( Hero hero, String action ) {
 
@@ -179,9 +237,42 @@ public abstract class Plant implements Bundlable {
 
 				hero.sprite.operate( hero.pos );
 				
+			} else if (action.equals( AC_EATSEED )) {
+				Potion potion = Reflection.newInstance(types.get(getClass()));
+				if(potion != null){
+					satisfy(hero);
+
+					boolean isNoSeedAdd =
+							curItem instanceof Firebloom.Seed || curItem instanceof Icecap.Seed
+									|| curItem instanceof Sorrowmoss.Seed || curItem instanceof SkyBlueFireBloom.Seed ||
+									curItem instanceof Earthroot.Seed;
+					if(!isNoSeedAdd && !Dungeon.isChallenged(Challenges.EXSG)){
+						if(hero.pointsInTalent(Talent.HEARTY_MEAL) == 1 && Random.Float()<=0.25f) {
+							potion.drink(hero);
+						} else if(hero.pointsInTalent(Talent.HEARTY_MEAL) == 2 && Random.Float()<=0.35f) {
+							potion.drink(hero);
+						}
+					}
+
+					detach( hero.belongings.backpack );
+					GLog.i( Messages.get(Food.class, "eat_msg") );
+
+					hero.sprite.operate( hero.pos );
+					hero.busy();
+					SpellSprite.show( hero, SpellSprite.FOOD );
+					Sample.INSTANCE.play( Assets.Sounds.EAT );
+
+					hero.spend( eatingTime() );
+
+					Talent.onFoodEaten(hero, 10f, this);
+
+					Statistics.foodEaten++;
+					Badges.validateFoodEaten();
+				}
+
 			}
 		}
-		
+
 		public Plant couch( int pos, Level level ) {
 			if (level != null && level.heroFOV != null && level.heroFOV[pos]) {
 				Sample.INSTANCE.play(Assets.Sounds.PLANT);
@@ -214,7 +305,7 @@ public abstract class Plant implements Bundlable {
 		@Override
 		public String desc() {
 			String desc = Messages.get(plantClass, "desc");
-			if (Dungeon.hero.subClass == HeroSubClass.WARDEN){
+			if (hero.subClass == HeroSubClass.WARDEN){
 				desc += "\n\n" + Messages.get(plantClass, "warden_desc");
 			}
 			return desc;

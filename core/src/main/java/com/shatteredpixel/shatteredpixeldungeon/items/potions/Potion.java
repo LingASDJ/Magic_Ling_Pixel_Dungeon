@@ -108,7 +108,7 @@ public class Potion extends Item {
 		}
 	};
 
-	private static final HashSet<Class<?extends Potion>> mustThrowPots = new HashSet<>();
+	public static final HashSet<Class<?extends Potion>> mustThrowPots = new HashSet<>();
 	static{
 		mustThrowPots.add(PotionOfToxicGas.class);
 		mustThrowPots.add(PotionOfLiquidFlame.class);
@@ -124,9 +124,9 @@ public class Potion extends Item {
 		//also all brews, hardcoded
 	}
 	
-	private static final HashSet<Class<?extends Potion>> canThrowPots = new HashSet<>();
+	public static final HashSet<Class<?extends Potion>> canThrowPots = new HashSet<>();
 	static{
-		canThrowPots.add(AlchemicalCatalyst.class);
+		//canThrowPots.add(AlchemicalCatalyst.class);
 		
 		canThrowPots.add(PotionOfPurity.class);
 		canThrowPots.add(PotionOfLevitation.class);
@@ -144,6 +144,9 @@ public class Potion extends Item {
 
 	//affects how strongly on-potion talents trigger from this potion
 	protected float talentFactor = 1;
+
+	//the chance (0-1) of whether on-potion talents trigger from this potion
+	protected float talentChance = 1;
 	
 	{
 		stackable = true;
@@ -281,7 +284,7 @@ public class Potion extends Item {
 		}
 	}
 	
-	protected void drink( Hero hero ) {
+	public void drink(Hero hero) {
 		
 		detach( hero.belongings.backpack );
 		

@@ -22,13 +22,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Clipboard;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -259,7 +259,7 @@ public class WndHero extends WndTabbed {
 			itemButton.setRect(title.right(), seedButton.bottom()+itemButton.height()+2, 16, 16);
 			add(itemButton);
 
-			if(HelpSettings() && Dungeon.isChallenged(PRO)){
+			if(HelpSettings() && Dungeon.isDLC(Conducts.Conduct.DEV)){
 				itemButton.active = true;
 			} else {
 				itemButton.active = false;

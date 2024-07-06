@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kineti
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.TimeReset;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
@@ -241,6 +242,8 @@ public class SpawnWeapon extends TestItem{
                         return HaloBlazing.class;
                     case 4:
                         return Crushing.class;
+                    case 5:
+                        return TimeReset.class;
                     default:
                         return null;
                 }
@@ -537,7 +540,7 @@ public class SpawnWeapon extends TestItem{
                 case 2:
                     return 6;
                 case 3:
-                    return 5;
+                    return 6;
                 case 4:
                     return 8;
             }

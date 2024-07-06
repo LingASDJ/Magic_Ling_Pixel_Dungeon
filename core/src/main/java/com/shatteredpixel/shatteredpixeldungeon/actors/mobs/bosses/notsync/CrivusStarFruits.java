@@ -75,7 +75,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
 
     @Override
     public int drRoll() {
-        return 5;
+        return Random.Int(4);
     }
 
     {

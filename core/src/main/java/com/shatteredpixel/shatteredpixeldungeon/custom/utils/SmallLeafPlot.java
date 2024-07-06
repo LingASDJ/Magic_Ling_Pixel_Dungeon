@@ -1,10 +1,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.custom.utils;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.PRO;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -255,7 +255,7 @@ public class SmallLeafPlot extends Plot {
             }
             diagulewindow.setLeftName(Messages.get(SmallLeaf.class, "name"));
 
-            if(Challenges.activeChallenges()>=15 && !SPDSettings.SmallLeafGetCoin() && !Dungeon.isChallenged(PRO)) {
+            if(Challenges.activeChallenges()>=15 && !SPDSettings.SmallLeafGetCoin() && !Dungeon.isDLC(Conducts.Conduct.DEV)) {
                 diagulewindow.changeText(Messages.get(SmallLeaf.class, "wtf_sister"));
                 Dungeon.level.drop_hard(new IceCyanBlueSquareCoin(80), hero.pos);
                 SPDSettings.SmallLeafGetCoin(true);

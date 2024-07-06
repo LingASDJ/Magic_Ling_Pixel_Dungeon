@@ -140,6 +140,7 @@ public class CityLevel extends RegularLevel {
 	public String tileDesc(int tile) {
 		switch (tile) {
 			case Terrain.ENTRANCE:
+			case Terrain.ENTRANCE_SP:
 				return Messages.get(CityLevel.class, "entrance_desc");
 			case Terrain.EXIT:
 				return Messages.get(CityLevel.class, "exit_desc");
@@ -234,7 +235,7 @@ public class CityLevel extends RegularLevel {
 
 	@Override
 	public boolean activateTransition(Hero hero, LevelTransition transition) {
-		if(Dungeon.depth == 19 && Statistics.HiddenOK && transition.type == LevelTransition.Type.REGULAR_EXIT){
+		if(Dungeon.depth == 19 && Statistics.DwarfMasterKing && transition.type == LevelTransition.Type.REGULAR_EXIT){
 			TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
 			if (timeFreeze != null) timeFreeze.disarmPresses();
 			Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);

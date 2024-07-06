@@ -37,8 +37,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrossDiedTowe
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.FeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
@@ -142,7 +142,7 @@ public class Chasm implements Hero.Doom {
 			if (Statistics.crivusfruitslevel2) {
 				hero.damage(3, CrivusStarFruits.class);
 			}
-		} else if(Statistics.HiddenOK && Dungeon.depth == 19 && !Statistics.dwarfKill) {
+		} else if(Statistics.DwarfMasterKing && Dungeon.depth == 19 && !Statistics.dwarfKill) {
 			GLog.n(Messages.get(Imp.class,"mustdown"));
 		} else if (Dungeon.hero.isAlive() && Dungeon.branch == 0 && Dungeon.depth!=30|| Statistics.bossRushMode) {
 			Dungeon.hero.interrupt();
@@ -168,8 +168,8 @@ public class Chasm implements Hero.Doom {
 	public static void heroLand() {
 		
 		Hero hero = Dungeon.hero;
-		
-		FeatherFall.FeatherBuff b = hero.buff(FeatherFall.FeatherBuff.class);
+
+		ElixirOfFeatherFall.FeatherBuff b = hero.buff(ElixirOfFeatherFall.FeatherBuff.class);
 		
 		if (b != null){
 			hero.sprite.emitter().burst( Speck.factory( Speck.JET ), 20);

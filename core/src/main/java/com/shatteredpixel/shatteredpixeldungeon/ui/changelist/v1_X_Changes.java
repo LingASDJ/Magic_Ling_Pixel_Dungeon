@@ -74,7 +74,7 @@ public class v1_X_Changes {
 				"_-_ Released October 4th, 2022\n" +
 				"_-_ 90 days after Shattered v1.3.0\n" +
 				"\n" +
-				"Dev commentary will be added here in the future."));
+				"Dev commentary will be added here in the next major update."));
 
 		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GUIDE_PAGE), "Lore Additions",
 				"_30 pages of lore text have been added to the game, scattered around the regions of the dungeon!_\n\n" +
@@ -294,7 +294,11 @@ public class v1_X_Changes {
 		changes.addButton( new ChangeButton(Icons.get(Icons.SHPX), "Developer Commentary",
 				"_-_ Released July 6th, 2022\n" +
 				"_-_ 105 days after Shattered v1.2.0\n\n" +
-				"Dev commentary will be added here in the next major update."));
+				"v1.3.0 was largely a followup update to v1.2, with an emphasis on adding features that better fleshed out the game for all the new players on desktop platforms.\n" +
+				"\n" +
+				"The headline feature for this update was the addition of custom seeds, daily runs, and a new scoring system for them to make use of. Prior to this update the scoring system was totally based on depth reached and treasure collected, rather than actual performance during the run. A better score system gave players a better way to measure their performance, against themselves or other players.\n" +
+				"\n" +
+				"v1.3.0 also introduced a new much harder ascension challenge. Prior to this ascending was mostly a chore with no real increase to difficulty. With more challenge and a score bonus for doing it, players finally had a reason to try to ascend instead of ending the game on floor 26."));
 
 		Image ic;
 		ic = Icons.get(Icons.SEED);
@@ -465,10 +469,10 @@ public class v1_X_Changes {
 				"_-_ Released March 23rd, 2022\n" +
 				"_-_ 103 days after Shattered v1.1.0\n\n" +
 				"v1.2.0 focused on a number of improvements to try and make Shattered play just as well for desktop users as it does for phone users. While these changes weren't perfect right at launch, they played a major role in making Shattered feel like more than a mobile port and helped it have a successful launch on Steam.\n" +
-						"\n" +
-						"One big change for desktop users that's external to the game itself was native executables. Previously Shattered's desktop version required a separate installation of Java to run. After v1.2.0, I started making versions of Shattered with built-in Java instead. This meant that most users could just download the game and run it, much nicer.\n" +
-						"\n" +
-						"v1.2.0 also included a variety of little additions and tweaks. Most of them are self-explanatory, but the badge additions in particular were timed with the game's release on Steam so they could tie into steamworks achievements and give newer players a little more to do."));
+				"\n" +
+				"One big change for desktop users that's external to the game itself was native executables. Previously Shattered's desktop version required a separate installation of Java to run. After v1.2.0, I started making versions of Shattered with built-in Java instead. This meant that most users could just download the game and run it, much nicer.\n" +
+				"\n" +
+				"v1.2.0 also included a variety of little additions and tweaks. Most of them are self-explanatory, but the badge additions in particular were timed with the game's release on Steam so they could tie into steamworks achievements and give newer players a little more to do."));
 
 		changes.addButton( new ChangeButton(Icons.get(Icons.DISPLAY_LAND), "Desktop Enhancements and Steam Release!",
 				"_Shattered Pixel Dungeon has received a bunch of new features in preparation for its release on Steam!_\n\n" +
@@ -570,7 +574,7 @@ public class v1_X_Changes {
 				"_- Summon Elemental_ energy cost down to 6 from 8\n" +
 				"_- Alchemize_ energy cost down to 2 from 3"));
 
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.AQUA_BLAST), "Alchemy Buffs",
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.ENERGY), "Alchemy Buffs",
 				"Several recipes have also been buffed, in addition to the cost reductions:\n\n" +
 				"_- Scroll of Foresight_ duration up to 400 from 250\n" +
 				"_- Scroll of Dread_ now grants 1/2 exp for defeated enemies\n" +

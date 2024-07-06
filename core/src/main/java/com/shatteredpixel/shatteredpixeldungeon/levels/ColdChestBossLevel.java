@@ -187,7 +187,7 @@ public class ColdChestBossLevel extends Level {
             W,W,W,L,L,L,L,L,W,L,L,L,L,L,W,L,L,W,L,L,L,W,L,L,L,L,W,L,W,W,W,W,W,W,W,
             W,W,W,L,W,L,W,W,W,L,L,L,W,L,W,L,L,W,W,W,L,W,W,W,W,W,W,L,W,L,L,L,L,L,W,
             W,W,W,L,W,L,L,L,W,L,L,L,W,L,W,L,L,W,L,L,L,L,L,L,L,L,W,L,L,L,X,X,X,L,W,
-            W,W,W,L,W,L,L,W,W,L,W,L,W,L,L,L,L,W,L,W,W,W,L,W,L,L,W,L,W,L,X,A,X,L,W,
+            W,W,W,L,W,L,L,W,W,L,W,L,W,L,L,L,L,W,L,W,W,W,L,W,L,L,W,L,W,L,X,L,X,L,W,
             W,W,W,W,W,L,L,W,W,L,W,L,W,L,W,W,W,W,L,L,W,L,L,W,L,L,L,L,W,L,X,X,X,L,W,
             W,W,W,L,L,L,W,W,W,L,W,L,W,L,L,W,L,L,L,L,L,L,L,W,L,L,L,L,W,L,L,L,L,L,W,
             W,W,W,L,W,L,L,L,W,L,W,L,W,L,L,W,L,W,W,W,W,W,L,W,W,W,W,W,W,W,W,W,W,W,W,

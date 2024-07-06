@@ -74,7 +74,7 @@ public class WandOfPrismaticLight extends DamageWand {
 		
 		if (Dungeon.level.viewDistance < 6 ){
 			if(Dungeon.isChallenged(Challenges.DHXD) && hero.buff(Talent.LanterCooldown.class) == null || Statistics.lanterfireactive && hero.buff(Talent.LanterCooldown.class) == null){
-				hero.healLantern(5f);
+				hero.healLantern(5);
 				Buff.affect(curUser, Talent.LanterCooldown.class, 200f);
 			} else if (Dungeon.isChallenged(Challenges.DARKNESS) && !Dungeon.isChallenged(Challenges.DHXD)){
 				Buff.prolong( curUser, Light.class, 2f + buffedLvl());

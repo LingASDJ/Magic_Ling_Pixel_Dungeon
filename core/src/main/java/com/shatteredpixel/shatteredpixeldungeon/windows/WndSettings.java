@@ -889,8 +889,8 @@ public class WndSettings extends WndTabbed {
 
 			timeOut = new OptionSlider(Messages.get(this, "time_out"),
 					"4s",
-					"15s",
-					4, 15) {
+					"30s",
+					4, 30) {
 				@Override
 				protected void onChange() {
 					if (getSelectedValue() != SPDSettings.timeOutSeed()) {

@@ -32,9 +32,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.El
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Explosion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfFuror;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Annoying;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Dazzling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Displacing;
@@ -52,12 +55,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Chilli
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Corrupting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Crushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.ExplosionX;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.HaloBlazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.TimeReset;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
@@ -67,6 +72,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
@@ -343,10 +349,10 @@ abstract public class Weapon extends KindOfWeapon {
 		//30% chance to be cursed
 		//10% chance to be enchanted
 		float effectRoll = Random.Float();
-		if (effectRoll < 0.3f) {
+		if (effectRoll < 0.3f * ParchmentScrap.curseChanceMultiplier()) {
 			enchant(Enchantment.randomCurse());
 			cursed = true;
-		} else if (effectRoll >= 0.9f){
+		} else if (effectRoll >= 1f - (0.1f * ParchmentScrap.enchantChanceMultiplier())){
 			enchant();
 		}
 		if (Random.Float()<0.1f) isShining=true;
@@ -388,6 +394,17 @@ abstract public class Weapon extends KindOfWeapon {
 
 	public static abstract class Enchantment implements Bundlable {
 
+		public static void comboProc(Enchantment enchantment, Armor.Glyph glyph, Char attacker, Char defender, int damage) {
+
+			//giant explosion
+			if (enchantment instanceof ExplosionX && glyph instanceof Explosion) {
+				for (int ec : PathFinder.NEIGHBOURS8) {
+					new Explosion().explode(ec, attacker);
+				}
+			}
+		}
+
+
 		public static final Class<?>[] common = new Class<?>[]{
 				Blazing.class, Chilling.class, Kinetic.class, Shocking.class};
 
@@ -397,7 +414,8 @@ abstract public class Weapon extends KindOfWeapon {
 				HaloBlazing.class};
 
 		public static final Class<?>[] rare = new Class<?>[]{
-				Corrupting.class, Grim.class, Vampiric.class, Crushing.class
+				Corrupting.class, Grim.class, Vampiric.class,
+				Crushing.class, TimeReset.class
 		};
 
 		public static final float[] typeChances = new float[]{
@@ -415,7 +433,7 @@ abstract public class Weapon extends KindOfWeapon {
 			
 		public abstract int proc( Weapon weapon, Char attacker, Char defender, int damage );
 
-		protected float procChanceMultiplier( Char attacker ){
+		public float procChanceMultiplier( Char attacker ){
 			return genericProcChanceMultiplier( attacker );
 		}
 
@@ -427,7 +445,7 @@ abstract public class Weapon extends KindOfWeapon {
 			}
 
 			if (attacker.buff(RunicBlade.RunicSlashTracker.class) != null){
-				multi += 3f;
+				multi += attacker.buff(RunicBlade.RunicSlashTracker.class).boost;
 				attacker.buff(RunicBlade.RunicSlashTracker.class).detach();
 			}
 

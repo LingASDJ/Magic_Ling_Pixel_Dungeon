@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonCat;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Image;
@@ -93,13 +94,12 @@ public class MoonCatPlot extends Plot {
             Dungeon.level.drop(new Gold(1), hero.pos);
         } else {
             Item item = ( Generator.randomUsingDefaults( Generator.Category.WEP_T1 ));
-            if (Badges.isUnlocked(Badges.Badge.KILL_DM720) || Badges.isUnlocked(Badges.Badge.KILL_MG)) {
-                item.level = 1;
-                item.identify();
-            } else {
-                item.level = 0;
-            }
+            item.level(0);
+            item.identify();
             Dungeon.level.drop( item , hero.pos );
+            if (Badges.isUnlocked(Badges.Badge.KILL_DM720)) {
+                Dungeon.level.drop( new CurseInfusion(), hero.pos );
+            }
         }
 
 

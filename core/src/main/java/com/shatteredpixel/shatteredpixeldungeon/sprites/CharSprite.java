@@ -96,7 +96,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	public enum State {
 		BURNING, LEVITATING, INVISIBLE,TRUE_INVISIBLE,
-		PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED,
+		PARALYSED, FROZEN, ILLUMINATED, CHILLED,CHILLED_2, DARKENED, MARKED, HEALING, SHIELDED,
 		ROSESHIELDED, HALOMETHANEBURNING, FROSTBURNING, BUTTER, SPINVISIBLE, SMOKER, HEARTS,
 		MUTATION_1,MUTATION_2,MUTATION_3,MUTATION_4,MUTATION_5,MUTATION_6,MUTATION_7,MUTATION_8,MUTATION_9
 	}
@@ -116,6 +116,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	protected Emitter burning;
 	protected Emitter chilled;
+	protected Emitter chilled_2;
 	protected Emitter marked;
 	protected Emitter levitation;
 	protected Emitter healing;
@@ -382,6 +383,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	public void die() {
 		sleeping = false;
+		remove( State.PARALYSED );
 		play( die );
 
 		hideEmo();
@@ -477,6 +479,10 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 			case CHILLED:
 				chilled = emitter();
 				chilled.pour(SnowParticle.FACTORY, 0.1f);
+				break;
+			case CHILLED_2:
+				chilled_2 = emitter();
+				chilled_2.pour(SnowParticle.FACTORY, 0.1f);
 				break;
 			case DARKENED:
 				darkBlock = DarkBlock.darken( this );
@@ -594,6 +600,12 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				if (chilled != null){
 					chilled.on = false;
 					chilled = null;
+				}
+				break;
+			case CHILLED_2:
+				if (chilled_2 != null){
+					chilled_2.on = false;
+					chilled_2 = null;
 				}
 				break;
 			case DARKENED:
@@ -754,6 +766,9 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		}
 		if (chilled != null) {
 			chilled.visible = visible;
+		}
+		if (chilled_2 != null) {
+			chilled_2.visible = visible;
 		}
 		if (marked != null) {
 			marked.visible = visible;
