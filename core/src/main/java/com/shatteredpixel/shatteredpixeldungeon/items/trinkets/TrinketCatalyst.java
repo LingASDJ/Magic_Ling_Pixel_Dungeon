@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoItem;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSadGhost;
 import com.watabou.utils.Bundle;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -159,6 +160,11 @@ public class TrinketCatalyst extends Item {
 			//roll new trinkets if trinkets were not already rolled
 			while (cata.rolledTrinkets.size() < NUM_TRINKETS){
 				cata.rolledTrinkets.add((Trinket) Generator.random(Generator.Category.TRINKET));
+			}
+			try {
+				Dungeon.saveAll();
+			} catch (IOException e) {
+				ShatteredPixelDungeon.reportException(e);
 			}
 
 			for (int i = 0; i < NUM_TRINKETS; i++){
