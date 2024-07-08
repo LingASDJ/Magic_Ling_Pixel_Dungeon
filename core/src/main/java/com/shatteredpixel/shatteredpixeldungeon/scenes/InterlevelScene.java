@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.DeepShadowLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.GameLog;
@@ -420,7 +421,7 @@ public class InterlevelScene extends PixelScene {
 
 			LevelTransition destTransition = level.getTransition(curTransition.destType);
 			curTransition = null;
-			if(Dungeon.depth == 14 && branch == 8 && Statistics.difficultyDLCEXLevel>1){
+			if(Dungeon.depth == 14 && branch == 0 && Statistics.difficultyDLCEXLevel>1 || Statistics.RandMode && level instanceof DeepShadowLevel ){
 				Dungeon.switchLevel( level, 847 );
 			} else {
 				Dungeon.switchLevel( level, destTransition.cell() );
@@ -463,7 +464,7 @@ public class InterlevelScene extends PixelScene {
 
 		LevelTransition destTransition = level.getTransition(curTransition.destType);
 		curTransition = null;
-		if(Dungeon.depth == 14 && branch == 8 && Statistics.difficultyDLCEXLevel>1){
+		if(Dungeon.depth == 14 && branch == 0 && Statistics.difficultyDLCEXLevel>1 || Statistics.RandMode && level instanceof DeepShadowLevel){
 			Dungeon.switchLevel( level, 495 );
 		} else {
 			Dungeon.switchLevel( level, destTransition.cell() );

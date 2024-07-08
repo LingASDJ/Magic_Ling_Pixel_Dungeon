@@ -14,9 +14,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.LuoWhite;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.RiceSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -45,9 +45,7 @@ public class WndLuoWhite extends Window {
         LuoWhite.shop2 = new DiedCrossBow();
         LuoWhite.shop1 = new SaiPlus();
 
-        LuoWhite.shop4 = new RandomChest();
-        LuoWhite.shop5 = Generator.random(Generator.Category.MISSILE);
-        LuoWhite.shop6 = new RandomChest();
+        LuoWhite.shop4 = new RiceSword();
 
         IconTitle titlebar = new IconTitle();
         titlebar.setRect(0, 0, WIDTH, 0);
@@ -73,17 +71,17 @@ public class WndLuoWhite extends Window {
         shop3.setRect( shop2.right() + BTN_GAP, shop2.top(), BTN_SIZE, BTN_SIZE );
         add(shop3);
 
-//        RewardButton bomb1 = new RewardButton( LuoWhite.shop4 );
-//        bomb1.setRect( shop1.left() , shop1.bottom(), BTN_SIZE, BTN_SIZE );
-//        add(bomb1);
-//
-//        RewardButton bomb2 = new RewardButton( LuoWhite.shop5);
-//        bomb2.setRect( bomb1.right()+ BTN_GAP , bomb1.top(), BTN_SIZE, BTN_SIZE );
-//        add(bomb2);
-//
-//        RewardButton bomb3 = new RewardButton( LuoWhite.shop6 );
-//        bomb3.setRect( bomb2.right()+ BTN_GAP , bomb2.top(), BTN_SIZE, BTN_SIZE );
-//        add(bomb3);
+        RewardButton bomb1 = new RewardButton( LuoWhite.shop4 );
+        bomb1.setRect( shop1.left() , shop1.bottom(), BTN_SIZE, BTN_SIZE );
+        add(bomb1);
+
+        RewardButton bomb2 = new RewardButton( LuoWhite.shop5);
+        bomb2.setRect( bomb1.right()+ BTN_GAP , bomb1.top(), BTN_SIZE, BTN_SIZE );
+        add(bomb2);
+
+        RewardButton bomb3 = new RewardButton( LuoWhite.shop6 );
+        bomb3.setRect( bomb2.right()+ BTN_GAP , bomb2.top(), BTN_SIZE, BTN_SIZE );
+        add(bomb3);
 
         resize(WIDTH, (int) shop3.bottom());
     }
@@ -144,13 +142,15 @@ public class WndLuoWhite extends Window {
     }
 
     public void itemUnlock(Item item){
-        if( (item instanceof DiedCrossBow|| item instanceof MoonDao || item instanceof SaiPlus) && !SPDSettings.isItemUnlock( item.name() ) ){
+        if( (item instanceof DiedCrossBow|| item instanceof MoonDao || item instanceof SaiPlus|| item instanceof RiceSword) && !SPDSettings.isItemUnlock( item.name() ) ){
             if( item instanceof DiedCrossBow )
                 Generator.setProbs( item, Generator.Category.WEP_T5, 1.5f );
             if( item instanceof MoonDao )
                 Generator.setProbs( item,Generator.Category.WEP_T3, 1.5f );
             if( item instanceof SaiPlus )
                 Generator.setProbs( item, Generator.Category.WEP_T5, 1 );
+            if( item instanceof RiceSword )
+                Generator.setProbs( item, Generator.Category.WEP_T5, 1.4f );
 
             SPDSettings.unlockItem( item.getClass().getSimpleName() );
         }

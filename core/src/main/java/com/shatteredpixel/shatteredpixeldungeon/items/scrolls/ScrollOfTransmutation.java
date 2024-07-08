@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
@@ -189,7 +190,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		}
 	}
 	
-	private static MagesStaff changeStaff( MagesStaff staff ){
+	public static MagesStaff changeStaff( MagesStaff staff ){
 		Class<?extends Wand> wandClass = staff.wandClass();
 		
 		if (wandClass == null){
@@ -207,7 +208,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return staff;
 	}
 
-	private static TippedDart changeTippedDart( TippedDart dart ){
+	public static TippedDart changeTippedDart( TippedDart dart ){
 		TippedDart n;
 		do {
 			n = TippedDart.randomTipped(1);
@@ -216,7 +217,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return n;
 	}
 	
-	private static Weapon changeWeapon( Weapon w ) {
+	public static Weapon changeWeapon( Weapon w ) {
 		Weapon n;
 		Generator.Category c;
 		if (w instanceof MeleeWeapon) {
@@ -227,7 +228,11 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		}
 		
 		do {
-			n = (Weapon)Generator.randomUsingDefaults(c);
+			if(Statistics.RandMode){
+				n = Generator.randomWeapon(true);
+			} else {
+				n = (Weapon)Generator.randomUsingDefaults(c);
+			}
 		} while (Challenges.isItemBlocked(n) || n.getClass() == w.getClass());
 
 		n.level(0);
@@ -252,7 +257,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		
 	}
 	
-	private static Ring changeRing( Ring r ) {
+	public static Ring changeRing( Ring r ) {
 		Ring n;
 		do {
 			n = (Ring)Generator.randomUsingDefaults( Generator.Category.RING );
@@ -274,7 +279,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return n;
 	}
 	
-	private static Artifact changeArtifact( Artifact a ) {
+	public static Artifact changeArtifact( Artifact a ) {
 		Artifact n;
 		do {
 			n = Generator.randomArtifact();
@@ -301,7 +306,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return null;
 	}
 	
-	private static Wand changeWand( Wand w ) {
+	public static Wand changeWand( Wand w ) {
 		Wand n;
 		do {
 			n = (Wand)Generator.randomUsingDefaults( Generator.Category.WAND );
@@ -324,7 +329,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return n;
 	}
 	
-	private static Plant.Seed changeSeed( Plant.Seed s ) {
+	public static Plant.Seed changeSeed( Plant.Seed s ) {
 		Plant.Seed n;
 		
 		do {
@@ -334,7 +339,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return n;
 	}
 
-	private static Trinket changeTrinket( Trinket t ){
+	public static Trinket changeTrinket( Trinket t ){
 		Trinket n;
 		do {
 			n = (Trinket)Generator.random(Generator.Category.TRINKET);
@@ -347,7 +352,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return n;
 	}
 	
-	private static Runestone changeStone( Runestone r ) {
+	public static Runestone changeStone( Runestone r ) {
 		Runestone n;
 		
 		do {
@@ -357,7 +362,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return n;
 	}
 
-	private static Scroll changeScroll( Scroll s ) {
+	public static Scroll changeScroll( Scroll s ) {
 		if (s instanceof ExoticScroll) {
 			return Reflection.newInstance(ExoticScroll.exoToReg.get(s.getClass()));
 		} else {
@@ -365,7 +370,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		}
 	}
 
-	private static Potion changePotion( Potion p ) {
+	public static Potion changePotion( Potion p ) {
 		if	(p instanceof ExoticPotion) {
 			return Reflection.newInstance(ExoticPotion.exoToReg.get(p.getClass()));
 		} else {

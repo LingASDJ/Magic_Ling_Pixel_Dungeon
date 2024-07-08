@@ -43,7 +43,7 @@ public class IceSan extends MeleeWeapon {
         image = ItemSpriteSheet.DG13;
 
         tier = 5;
-        DLY = 2f; //4x speed
+        DLY = 1.5f; //4x speed
     }
 
     @Override

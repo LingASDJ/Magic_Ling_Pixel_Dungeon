@@ -49,7 +49,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfTo
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
@@ -233,7 +232,7 @@ public abstract class Recipe {
 			new PotionOfNoWater.Recipe(),
 			new UnstableSpell.Recipe(),
 			new Alchemize.Recipe(),
-			new SmallLightHeader.Recipe(),
+			//new SmallLightHeader.Recipe(),
 	};
 	
 	private static Recipe[] threeIngredientRecipes = new Recipe[]{

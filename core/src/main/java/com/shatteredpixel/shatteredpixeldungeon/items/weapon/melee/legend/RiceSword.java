@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
@@ -22,6 +23,16 @@ public class RiceSword extends MeleeWeapon {
         tier = 5;
         RCH = 2;
     }
+
+    @Override
+    public int iceCoinValue() {
+        if (Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
+            return (int) (200 * 0.9f);
+        }
+        return 200;
+    }
+
+
     @Override
     public int proc(Char attacker, Char defender, int damage) {
 

@@ -7,6 +7,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireacti
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DeathRongShop;
@@ -31,6 +32,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMastery;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
@@ -153,6 +156,11 @@ public class NxhyShopRoom extends SpecialRoom {
         itemsToSpawn2.add(Generator.randomUsingDefaults(Generator.Category.POTION));
         itemsToSpawn2.add(Generator.randomUsingDefaults(Generator.Category.WAND));
         itemsToSpawn2.add(Generator.randomUsingDefaults(Generator.Category.WAND));
+
+        if(Statistics.RandMode){
+            itemsToSpawn2.add(new ElixirOfMight());
+            itemsToSpawn2.add(new PotionOfMastery());
+        }
 
         if(lanterfireactive) {
             if(Challenges.activeChallenges() > 6){

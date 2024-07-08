@@ -80,11 +80,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfTo
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.BlessingNecklace;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.CeremonialCandle;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.MagicBook;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.LingJing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.RandomChest;
@@ -361,6 +364,9 @@ public class SpawnMisc extends TestItem {
             miscList.add(Red.class);
             miscList.add(CrystalLing.class);
             miscList.add(RedWhiteRose.class);
+            miscList.add(CeremonialCandle.class);
+            miscList.add(MagicBook.class);
+            miscList.add(LingJing.class);
         }
     }
 

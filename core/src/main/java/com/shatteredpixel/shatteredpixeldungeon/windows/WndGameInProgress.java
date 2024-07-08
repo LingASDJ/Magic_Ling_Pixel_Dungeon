@@ -118,7 +118,7 @@ public class WndGameInProgress extends Window {
 					try {
 						Bundle bundle = FileUtils.bundleFromFile(GamesInProgress.gameFile(slot));
 						String ing =
-								Messages.get(WndGameInProgress.class,"gameversion") +info.version+"\n\n"+
+								Messages.get(WndGameInProgress.class,"gameversion") +(info.version == 0 ? "NULL": info.version)+"\n\n"+
 										Messages.get(WndGameInProgress.class,"gameseed")+ DungeonSeed.convertToCode(bundle.getLong("seed"))+"\n\n"+
 										Messages.get(WndGameInProgress.class,"gamegold") + bundle.getInt("gold") +"\n\n"+
 										Messages.get(WndGameInProgress.class,"gamenayzi") + bundle.getInt("naiyaziCollected")+
@@ -156,18 +156,10 @@ public class WndGameInProgress extends Window {
 			btnGameInfo.icon(new ItemSprite(ItemSpriteSheet.SEED_SKYBLUEFIRE));
 			btnGameInfo.setRect( 20, pos, btnGameInfo.reqWidth() + 1 , 18 );
 			add( btnGameInfo );
-
-//			RedButton btDLC = new RedButton( Messages.get(this, "dlc") ) {
-//				@Override
-//				protected void onClick() {
-//					ShatteredPixelDungeon.scene().addToFront(new WndDLC(SPDSettings.dlc(), true));
-//				}
-//			};
-//			float btnX = btDLC.reqWidth() + 10;
-//			btDLC.icon(new ItemSprite(ItemSpriteSheet.LANTERNB));
-//			btDLC.setRect( (WIDTH - btnX)/2, pos, btnX , 18 );
-//			add( btDLC );
 		}
+
+
+
 		RedButton buttonSeed = new RedButton(M.L(WndGameInProgress.class, "copy_seed"), 8){
 			@Override
 			protected void onClick() {
@@ -186,6 +178,17 @@ public class WndGameInProgress extends Window {
 		btnX = multiLine?2:btnGameInfo.right()+2;
 		btnY = multiLine?btnGameInfo.bottom()+2:pos;
 		buttonSeed.setRect(btnX, btnY, buttonSeed.reqWidth() + 1, 18);
+
+		RedButton btDLC = new RedButton( Messages.get(this, "dlc") ) {
+			@Override
+			protected void onClick() {
+				//
+			}
+		};
+		btDLC.icon(new ItemSprite(ItemSpriteSheet.DIFFCULTBOOT));
+		btDLC.alpha(0.7f);
+		btDLC.setRect( 80, title.y, 40 , 18 );
+		//add( btDLC );
 
 		pos = buttonSeed.bottom() + GAP;
 		

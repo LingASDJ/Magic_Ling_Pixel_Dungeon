@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nxhy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.DM275;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GnollHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GreenSlting;
@@ -58,8 +59,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.JAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -574,8 +575,28 @@ public class YogReal extends Boss {
         } else {
             Statistics.qualifiedForBossChallengeBadge = false;
         }
-
-        if(Statistics.bossRushMode){
+        if(Statistics.RandMode){
+            PaswordBadges.KILLALLBOSS();
+            PaswordBadges.BOSSRUSH();
+            Statistics.questScores[4] += 30000;
+            Dungeon.win( Nxhy.class );
+            Dungeon.deleteGame( GamesInProgress.curSlot, true );
+            GameScene.scene.add(new Delayer(0.1f){
+                @Override
+                protected void onComplete() {
+                    GameScene.scene.add(new Delayer(3f){
+                        @Override
+                        protected void onComplete() {
+                            Game.switchScene( RankingsScene.class );
+                        }
+                    });
+                }
+            });
+            Music.INSTANCE.playTracks(
+                    new String[]{Assets.Music.THEME_2, Assets.Music.THEME_1},
+                    new float[]{1, 1},
+                    false);
+        } else if(Statistics.bossRushMode){
             PaswordBadges.KILLALLBOSS();
             PaswordBadges.BOSSRUSH();
             Statistics.questScores[4] += 30000;

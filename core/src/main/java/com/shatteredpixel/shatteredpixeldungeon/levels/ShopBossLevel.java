@@ -94,7 +94,7 @@ public class ShopBossLevel extends Level {
     public void unseal() {
         super.unseal();
 
-        if(Dungeon.depth == 21){
+        if(Dungeon.depth == 21 || Dungeon.bossLevel() && Statistics.RandMode){
 
             int entrance =  WIDTH*17 + 17;
             set(  entrance, Terrain.EXIT );

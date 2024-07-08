@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
@@ -33,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GooMob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -139,6 +141,15 @@ public class WandOfLivingEarth extends DamageWand {
 					guardian.pos = closest;
 					GameScene.add(guardian, 1);
 					Dungeon.level.occupyCell(guardian);
+
+					if(Statistics.RandMode){
+						Mob gooFriend = new GooMob();
+						gooFriend.alignment = Char.Alignment.ALLY;
+						gooFriend.pos = closest;
+						GameScene.add(gooFriend);
+					}
+
+
 				}
 
 				if (ch.alignment == Char.Alignment.ENEMY || ch.buff(Amok.class) != null) {
@@ -406,6 +417,12 @@ public class WandOfLivingEarth extends DamageWand {
 					Dungeon.hero.sprite.centerEmitter().burst(MagicMissile.EarthParticle.ATTRACT, 8 + wandLevel/2);
 					destroy();
 					sprite.die();
+					for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+						if (mob instanceof GooMob) {
+							mob.die(true);
+							break;
+						}
+					}
 					return true;
 				} else {
 					return super.act(enemyInFOV, justAlerted);

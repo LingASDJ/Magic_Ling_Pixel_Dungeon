@@ -347,6 +347,13 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new HealWellRoom());
 		}
 
+		if(Statistics.RandMode){
+			initRooms.add(new RandomRoom());
+			if(depth == 1 && branch == 0){
+				initRooms.add(new NxhyShopRoom());
+			}
+		}
+
 		if(feeling == Feeling.LINKROOM){
 			initRooms.add(new LinkRoom());
 		}
@@ -369,8 +376,6 @@ public abstract class RegularLevel extends Level {
 //		}
 
 		if (Dungeon.shopOnLevel() && branch == 0) {
-			initRooms.add(new ShopRoom());
-		} else if(Statistics.bossRushMode && branch == 8 && Dungeon.shopRushLevel()){
 			initRooms.add(new ShopRoom());
 		}
 

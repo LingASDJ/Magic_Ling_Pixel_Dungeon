@@ -267,7 +267,10 @@ public class StatusPane extends Component {
 		add(pageb);
 
 		bossselect=new BossSelectIndicator();
-		add(bossselect);
+		if(!(Statistics.RandMode || Statistics.bossRushMode)){
+			add(bossselect);
+		}
+
 
 		joinxxx=new JoinIndicator();
 		add(joinxxx);

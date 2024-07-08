@@ -724,38 +724,33 @@ public class Item implements Bundlable {
 									Buff.affect(enemy, Blindness.class, 1f + curUser.pointsInTalent(Talent.IMPROVISED_PROJECTILES));
 									Buff.affect(enemy, LockedDamage.class).set(((1 + curUser.pointsInTalent(Talent.IMPROVISED_PROJECTILES))), 1);
 									Buff.affect(curUser, Talent.ImprovisedProjectileCooldown.class, 50f);
-
-									if (Dungeon.hero.pointsInTalent(Talent.IMPROVISED_PROJECTILES) == 2) {
-										GameScene.show(
-												new WndOptions(new ItemSprite(Item.this),
-														Messages.titleCase(hero.name()),
-														Messages.get(Hero.class, "quest_start_prompt"),
-														Messages.get(Hero.class, "enter_yes"),
-														Messages.get(Hero.class, "enter_no")) {
-													@Override
-													protected void onSelect(int index) {
-														if (index == 0){
-															Char ch;
-															ch = Actor.findChar(cell);
-															if(ch!=null){
-																for(int i: PathFinder.NEIGHBOURS8){
-																	if (Actor.findChar( cell+ i ) == null) {
-																		ScrollOfTeleportation.appear(hero,cell);
-																	}
-																}
-																ScrollOfTeleportation.appear(ch, cell+1);
-															}
-
-															hero.busy();
-															hero.sprite.operate(cell);
-														}
-													}
-												}
-										);
-									}
-
 								}
 							}
+
+							if (Dungeon.hero.pointsInTalent(Talent.IMPROVISED_PROJECTILES) == 2) {
+								GameScene.show(
+										new WndOptions(new ItemSprite(Item.this),
+												Messages.titleCase(hero.name()),
+												Messages.get(Hero.class, "quest_start_prompt"),
+												Messages.get(Hero.class, "enter_yes"),
+												Messages.get(Hero.class, "enter_no")) {
+											@Override
+											protected void onSelect(int index) {
+												if (index == 0){
+                                                    for (int i : PathFinder.NEIGHBOURS8) {
+                                                        if (Actor.findChar(cell + i) == null) {
+                                                            ScrollOfTeleportation.appear(hero, cell);
+                                                        }
+                                                    }
+													ScrollOfTeleportation.appear(enemy, cell+1);
+                                                    hero.busy();
+													hero.sprite.operate(cell);
+												}
+											}
+										}
+								);
+							}
+
 							if (user.buff(Talent.LethalMomentumTracker.class) != null){
 								user.buff(Talent.LethalMomentumTracker.class).detach();
 								user.next();

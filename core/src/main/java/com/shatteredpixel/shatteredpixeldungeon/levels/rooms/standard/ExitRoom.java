@@ -49,7 +49,7 @@ public class ExitRoom extends StandardRoom {
 	public int minWidth() {
 		return Math.max(super.minWidth(), 5);
 	}
-	
+
 	@Override
 	public int minHeight() {
 		return Math.max(super.minHeight(), 5);

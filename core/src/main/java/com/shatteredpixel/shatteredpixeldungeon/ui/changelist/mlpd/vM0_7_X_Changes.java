@@ -47,6 +47,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0765_Changes(changeInfos);
         add_V0760_Changes(changeInfos);
         add_V0755_Changes(changeInfos);
         add_V0751_Changes(changeInfos);
@@ -73,6 +74,45 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0765_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.6.5", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_GOLD), ("百变之旅1.0"),
+                ("全新特殊模式：百变之旅登场")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHANGES), ("重大更新"),
+                ("魔绫现已更新底层到破碎V2.4.2版本!\n\n" +
+                        "全新饰品，炼金系统等你来玩")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("UI优化改动"),
+                ("魔绫已经对UI优化改动进行调整，欢迎前来体验")));
+
+        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MOONDAILY,
+                new ItemSprite.Glowing( Window.BLUE_COLOR )), "新附魔：流逝",
+                "这个附魔会让视野中的敌人的时间回溯到较早的时候且带有一次和冲击波法杖效果相似的一次冲击，并且对敌人可造成_心魔损伤:我方_元素损伤效果。"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.6,5版本:\n\n" +
+                        "修复了一堆问题，具体可在Q群中查阅魔绫错误日志汇总"));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("挑战调整"),
+                ("基因突变 和 变幻莫测 挑战优化调整")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WORN_SHORTSWORD), ("战士天赋调整"),
+                ("战士天赋的再生不再可以回血，修复战士靶心瞄准的瞬移异常")));
+
     }
 
     public static void add_V0760_Changes( ArrayList<ChangeInfo> changeInfos ) {

@@ -69,7 +69,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTerror;
@@ -432,7 +431,7 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe(new ReclaimTrap.Recipe()));
 				result.add(new QuickRecipe(new SummonElemental.Recipe()));
 				result.add(new QuickRecipe(new BeaconOfReturning.Recipe()));
-				result.add(new QuickRecipe(new SmallLightHeader.Recipe()));
+				//result.add(new QuickRecipe(new SmallLightHeader.Recipe()));
 				return result;
 			case 9:
 				result.add(new QuickRecipe( new WandOfBlueFuck.Recipe(),
