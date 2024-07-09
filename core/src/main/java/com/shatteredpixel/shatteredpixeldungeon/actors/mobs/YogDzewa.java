@@ -528,6 +528,8 @@ public class YogDzewa extends Boss {
 	@Override
 	public void die( Object cause ) {
 
+
+
 		for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
 			if (mob instanceof Larva || mob instanceof YogRipper || mob instanceof YogEye || mob instanceof YogScorpio) {
 				mob.die( cause );

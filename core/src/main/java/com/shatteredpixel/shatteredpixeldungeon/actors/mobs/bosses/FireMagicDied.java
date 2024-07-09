@@ -93,7 +93,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
     {
         //TODO 喜欢返程抢劫 2024血量完全体浊焰魔女莲娜小姐来教你做人了
-        HP = HT = Statistics.amuletObtained ? 2024 : 270 * (Dungeon.depth/5);
+        HP = HT = (Statistics.amuletObtained || Statistics.RandMode) ? 2024 : 270 * (Dungeon.depth/5);
         EXP = 80;
         defenseSkill = 4 + (5*Dungeon.depth/5);
         spriteClass = FireMagicGirlSprite.class;
@@ -741,7 +741,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
                 csp.pos = i;
                 GameScene.add(csp);
             }
-            if(Statistics.amuletObtained){
+            if(Statistics.amuletObtained || Statistics.RandMode){
                 for (int i : CryStalPosition2) {
                     Buff.append(hero, BeamTowerAdbility.class).towerPos = i;
                     ColdGuradA csp = new ColdGuradA();
@@ -759,7 +759,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
             Buff.affect(this, DwarfMaster.DKBarrior.class).setShield(HT/4);
 
-            if(Statistics.amuletObtained){
+            if(Statistics.amuletObtained|| Statistics.RandMode){
                 Buff.append(hero, BeamTowerAdbility.class).towerPos = TRUEPosition;
             }
             Buff.append(hero, BeamTowerAdbility.class).towerPos = TRUEPosition;
@@ -822,12 +822,11 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
     @Override
     public void die( Object cause ) {
-      if(Statistics.bossRushMode){
-
+        if(Statistics.bossRushMode){
             GetBossLoot();
         }
 
-        if(Statistics.amuletObtained){
+        if(Statistics.amuletObtained|| Statistics.RandMode){
             Dungeon.level.drop(new IceCyanBlueSquareCoin(15),pos);
         }
 

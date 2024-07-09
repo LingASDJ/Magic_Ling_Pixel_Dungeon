@@ -248,7 +248,9 @@ public class BGMPlayer {
             } else if (t == 14) {
                 playBGM(Assets.BGM_BOSSC, true);
             } else if (Dungeon.bossLevel() && t == 15) {
-                if((Statistics.boss_enhance & 0x4) != 0) {
+                if(Statistics.RandMode){
+                    playBGM(Assets.BGM_YOU, true);
+                } else if((Statistics.boss_enhance & 0x4) != 0) {
                     playBGM(Assets.BGM_BOSSC, true);
                 } else {
                    //最抽象的一集
@@ -287,6 +289,7 @@ public class BGMPlayer {
             } else if(Dungeon.bossLevel() && t == 25 && Dungeon.isChallenged(CS) && Statistics.NoTime) {
                 playBGM(Assets.BGM_BOSSE4, true);
             } else if (Dungeon.bossLevel() && t == 25){
+                if(Statistics.RandMode)playBGM( Assets.BGM_BOSSE4, true );
                 level.playLevelMusic();
             } else if (Dungeon.bossLevel() && t == 30) {
                 playBGM(Assets.BOSSDOG, true);

@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -99,8 +100,10 @@ public class MenuPane extends Component {
 				break;
 		}
 
-		if(branch == 8){
-			depth = "BR-"+depth;
+		if(Statistics.bossRushMode && Dungeon.depth != 0 && branch == 0) {
+			depth = "BR-" + depth;
+		} else if(Statistics.RandMode && Dungeon.depth != 0 && branch == 0){
+			depth = "RS-"+depth;
 		} else if(branch!=0){
 			depth += "-" + abcd;
 		}

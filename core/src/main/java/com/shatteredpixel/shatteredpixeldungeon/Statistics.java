@@ -68,8 +68,6 @@ public class Statistics {
 
 	public static boolean doNotLookLing = false;
 
-	public static boolean bossRushMode = false;
-
 	public static boolean NoTime = false;
 
 	//萨卡班甲鱼二阶段
@@ -187,9 +185,12 @@ public class Statistics {
 
 	public static int dwarfchange;
 
+	//随机嬗变
+	public static int RandModeCount;
 
-	//永久货币 冰蓝方孔货币
-	public static int iceCyanBlueSquareCoin;
+	//特殊模式
+	public static boolean bossRushMode = false;
+	public static boolean RandMode = false;
 
 	private static final String ICECLAN ="iceCyanBlueSquareCoin";
 
@@ -217,6 +218,8 @@ public class Statistics {
 	
 	private static final String GOLD		= "score";
 	private static final String HAPPY		= "happy";
+	private static final String RAND		= "randmode";
+
 	private static final String DEEPEST		= "maxDepth";
 	private static final String SLAIN		= "enemiesSlain";
 	private static final String FOOD		= "foodEaten";
@@ -337,6 +340,7 @@ public class Statistics {
     public static boolean qualifiedForBossChallengeBadge = false;
     public static boolean dwarfKill = false;
 
+
     public static void reset() {
         boss_enhance = 0;
         ChaicBlood = 0;
@@ -385,6 +389,8 @@ public class Statistics {
 		difficultyDLCEXLevel = 0;
 		wcDialogLevel = 0;
         bossRushMode = false;
+		RandMode = false;
+		RandModeCount = 0;
 
         findMoon = false;
 		deadGo = false;
@@ -465,7 +471,7 @@ public class Statistics {
 
     public static void storeInBundle(Bundle bundle) {
 
-		bundle.put(ICECLAN,iceCyanBlueSquareCoin);
+		bundle.put(ICECLAN, RandModeCount);
 
 
         bundle.put(HIDEEN, DwarfMasterKing);
@@ -530,6 +536,7 @@ public class Statistics {
 		bundle.put( EXPL_SCORE,  exploreScore );
 
 		bundle.put( HAPPY, bossRushMode);
+		bundle.put( RAND, RandMode);
 
 		bundle.put( BOSS_SCORES, bossScores );
 		bundle.put( TOT_BOSS,    totalBossScore );
@@ -627,7 +634,7 @@ public class Statistics {
 
 		GameKillFireDargon = bundle.getBoolean("DRAM");
 		unLockedFireDargon = bundle.getBoolean("DCXFG");
-		iceCyanBlueSquareCoin = bundle.getInt(ICECLAN);
+		RandModeCount = bundle.getInt(ICECLAN);
 
 		hcDialogLevel = bundle.getInt(HKLEVEL);
 
@@ -728,6 +735,7 @@ public class Statistics {
 		gameWon         = bundle.getBoolean( WON );
 		ascended        = bundle.getBoolean( ASCENDED );
 		bossRushMode = bundle.getBoolean(HAPPY);
+		RandMode = bundle.getBoolean(RAND);
 
 		dimandchestmazeCollected = bundle.getInt(DDK);
 

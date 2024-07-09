@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.GameRules;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -45,8 +46,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessBossRushLow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
@@ -67,7 +66,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Slyl;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ColdSnowParticles;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlowParticle;
@@ -80,8 +78,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.BossRushBloodGold;
+import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.RushMobScrollOfRandom;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.BossRushBloodGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
@@ -109,7 +108,6 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -280,6 +278,10 @@ public abstract class Level implements Bundlable {
 			if ( Dungeon.trinketCataNeeded() ){
 				Dungeon.LimitedDrops.TRINKET_CATA.drop();
 				addItemToSpawn( new TrinketCatalyst());
+				if(Statistics.RandMode){
+					addItemToSpawn( new TrinketCatalyst());
+					addItemToSpawn( new TrinketCatalyst());
+				}
 			}
 			//one scroll of transmutation is guaranteed to spawn somewhere on chapter 2-4
 			int enchChapter = (int)((Dungeon.seed / 10) % 3) + 1;
@@ -708,90 +710,20 @@ public abstract class Level implements Bundlable {
 				|| transition.type == LevelTransition.Type.BRANCH_EXIT || transition.type == LevelTransition.Type.DOUBLE_ENTRANCE) {
 			if (depth == 0 && !tipsgodungeon) {
 
-				if (!Dungeon.isChallenged(CS)) {
+				if (!Dungeon.isChallenged(CS) && Statistics.deepestFloor == 0) {
 					if(hero.belongings.getItem(BossRushBloodGold.class) != null){
 						Game.runOnRenderThread(new Callback() {
 							@Override
 							public void call() {
 								GameScene.show(new WndOptions(Icons.get(Icons.WARNING),
-										Messages.get(Level.class, "boss_rush_title"),
-										Messages.get(Level.class, "boss_rush_body", new BossRushBloodGold().name()),
-										Messages.get(Level.class, "boss_rush_yes"),
-										Messages.get(Level.class, "boss_rush_no")
+										Messages.get(Level.class, "sp_mode_title"),
+										Messages.get(Level.class, "sp_mode_body", new BossRushBloodGold().name()),
+										Messages.get(Level.class, "sp_mode_yes",Modename())
 								) {
 									@Override
 									protected void onSelect(int index) {
 										if (index == 0) {
-											Game.runOnRenderThread(new Callback() {
-												@Override
-												public void call() {
-													GameScene.show(new WndOptions(new ShopkKingSprite(),
-															Messages.titleCase(Messages.get(WaloKe.class, "name")),
-															Messages.get(WaloKe.class, "quest_start_prompt"),
-															Messages.get(WaloKe.class, "easy"),
-															Messages.get(WaloKe.class, "normal"),
-															Messages.get(WaloKe.class, "hard")) {
-														@Override
-														protected void onSelect(int index) {
-															if (index == 0) {
-																TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-																if (timeFreeze != null)
-																	timeFreeze.disarmPresses();
-																Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-																if (timeBubble != null)
-																	timeBubble.disarmPresses();
-																InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-																InterlevelScene.curTransition = new LevelTransition();
-																InterlevelScene.curTransition.destDepth = depth + 1;
-																InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
-																InterlevelScene.curTransition.destBranch = 8;
-																InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
-																InterlevelScene.curTransition.centerCell = -1;
-																Game.switchScene(InterlevelScene.class);
-																Buff.affect(hero, BlessBossRushLow.class, ChampionHero.DURATION * 123456f);
-																Statistics.difficultyDLCEXLevel = 1;
-
-															} else if (index == 1) {
-																TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-																if (timeFreeze != null)
-																	timeFreeze.disarmPresses();
-																Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-																if (timeBubble != null)
-																	timeBubble.disarmPresses();
-																InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-																InterlevelScene.curTransition = new LevelTransition();
-																InterlevelScene.curTransition.destDepth = depth + 1;
-																InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
-																InterlevelScene.curTransition.destBranch = 8;
-																InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
-																InterlevelScene.curTransition.centerCell = -1;
-																Game.switchScene(InterlevelScene.class);
-																Statistics.difficultyDLCEXLevel = 2;
-															} else if (index == 2) {
-																TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-																if (timeFreeze != null)
-																	timeFreeze.disarmPresses();
-																Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-																if (timeBubble != null)
-																	timeBubble.disarmPresses();
-																InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-																InterlevelScene.curTransition = new LevelTransition();
-																InterlevelScene.curTransition.destDepth = depth + 1;
-																InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
-																InterlevelScene.curTransition.destBranch = 8;
-																InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
-																InterlevelScene.curTransition.centerCell = -1;
-																Game.switchScene(InterlevelScene.class);
-																Statistics.difficultyDLCEXLevel = 3;
-															}
-															Statistics.deepestFloor = 100;
-															Statistics.bossRushMode = true;
-															Dungeon.gold = 0;
-															Dungeon.rushgold = 16;
-														}
-													});
-												}
-											});
+											GameRules.BossRush();
 										} else if (index == 1) {
 											talkToHero();
 										}
@@ -799,7 +731,27 @@ public abstract class Level implements Bundlable {
 								});
 							}
 						});
-					}else {
+					} else if(hero.belongings.getItem(RushMobScrollOfRandom.class) != null){
+						Game.runOnRenderThread(new Callback() {
+							@Override
+							public void call() {
+								GameScene.show(new WndOptions(Icons.get(Icons.WARNING),
+										Messages.get(Level.class, "sp_mode_title"),
+										Messages.get(Level.class, "sp_mode_body", new RushMobScrollOfRandom().name()),
+										Messages.get(Level.class, "sp_mode_yes", Modename())
+								) {
+									@Override
+									protected void onSelect(int index) {
+										if (index == 0) {
+											GameRules.RandMode();
+										} else if (index == 1) {
+											talkToHero();
+										}
+									}
+								});
+							}
+						});
+					} else {
 						talkToHero();
 					}
 					return false;
@@ -837,6 +789,19 @@ public abstract class Level implements Bundlable {
 		}
 		Game.switchScene(InterlevelScene.class);
 		return true;
+	}
+
+	private String Modename() {
+		String mode;
+		if(hero.belongings.getItem(RushMobScrollOfRandom.class) != null) {
+			mode = Messages.get(RushMobScrollOfRandom.class,"mode");
+		} else if(hero.belongings.getItem(BossRushBloodGold.class) != null){
+			mode = "BossRush";
+		} else {
+			mode = "Normal";
+		}
+
+		return mode;
 	}
 
 	//some buff effects have special logic or are cancelled from the hero before transitioning levels

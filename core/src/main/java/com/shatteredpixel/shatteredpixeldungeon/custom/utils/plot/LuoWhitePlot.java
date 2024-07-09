@@ -72,7 +72,7 @@ public class LuoWhitePlot extends Plot {
         diagulewindow.setLeftName(Messages.get(LuoWhite.class, "name"));
 
         if(SPDSettings.UPICE() && !Dungeon.isDLC(Conducts.Conduct.DEV)) {
-            int x = 60;
+            int x = 200;
             diagulewindow.changeText(Messages.get(LuoWhite.class, "message_ice2",x));
             Dungeon.level.drop_hard(new IceCyanBlueSquareCoin(x),hero.pos);
             SPDSettings.UPICE(false);
