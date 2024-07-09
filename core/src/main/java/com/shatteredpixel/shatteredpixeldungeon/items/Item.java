@@ -739,11 +739,14 @@ public class Item implements Bundlable {
 															ch = Actor.findChar(cell);
 															if(ch!=null){
 																for(int i: PathFinder.NEIGHBOURS8){
-																	if (Actor.findChar( cell+ i ) == null) {
+
+																	if (Actor.findChar( cell+ i ) == null && Dungeon.level.passable[cell + i]) {
 																		ScrollOfTeleportation.appear(hero,cell);
+																		ScrollOfTeleportation.appear(ch, cell+i);
 																	}
+
 																}
-																ScrollOfTeleportation.appear(ch, cell+1);
+
 															}
 
 															hero.busy();

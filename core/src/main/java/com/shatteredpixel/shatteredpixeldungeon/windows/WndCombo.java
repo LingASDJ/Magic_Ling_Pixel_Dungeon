@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -36,7 +37,7 @@ import com.watabou.noosa.Image;
 public class WndCombo extends Window {
 
 	private static final int WIDTH_P = 120;
-	private static final int WIDTH_L = 180;
+	private static final int WIDTH_L = 160;
 
 	private static final int MARGIN  = 2;
 
@@ -46,7 +47,8 @@ public class WndCombo extends Window {
 		int width = PixelScene.landscape() ? WIDTH_L : WIDTH_P;
 
 		float pos = MARGIN;
-		RenderedTextBlock title = PixelScene.renderTextBlock(Messages.titleCase(Messages.get(this, "title")), 9);
+		String titleKey=combo.isFinish?"finish_title":"title";
+		RenderedTextBlock title = PixelScene.renderTextBlock(Messages.titleCase(Messages.get(this, titleKey)), 9);
 		title.hardlight(TITLE_COLOR);
 		title.setPos((width-title.width())/2, pos);
 		title.maxWidth(width - MARGIN * 2);
@@ -62,8 +64,13 @@ public class WndCombo extends Window {
 		}
 
 		for (Combo.ComboMove move : Combo.ComboMove.values()) {
-
-			String text = "_" + Messages.titleCase(move.title()) + " " + Messages.get(this, "combo_req", move.comboReq) + ":_ " + move.desc(combo.getComboCount());
+			if(move== Combo.ComboMove.FINISH &&combo.isFinish){
+				continue;
+			}
+			if (move== Combo.ComboMove.CALM&&!combo.isFinish){
+				continue;
+			}
+			String text = "_" + Messages.titleCase(move.title()) + " " +":_  " + move.desc(combo.getComboCount(),combo.isFinish);
 			RedButton moveBtn = new RedButton(text, 6){
 				@Override
 				protected void onClick() {
