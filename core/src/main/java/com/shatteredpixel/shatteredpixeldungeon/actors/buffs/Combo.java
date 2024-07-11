@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -30,9 +29,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
-import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.Door;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -43,13 +45,14 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
+import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndCombo;
 import com.watabou.noosa.BitmapText;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
@@ -60,28 +63,45 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		type = buffType.POSITIVE;
 	}
 
-	private int count = 0;
-	private float comboTime = 0f;
-	private float initialComboTime = 5f;
+	private int count = 0;//连击数
+	private float comboTime = 0f;//消退时间
+	public boolean isFinish=false;//是否是终结技
+	public int couldUseTime=0;//允许使用次数
 
 	@Override
 	public int icon() {
 		return BuffIndicator.COMBO;
 	}
-
+	//buff图标颜色
 	@Override
 	public void tintIcon(Image icon) {
-		ComboMove move = getHighestMove();
-		if (move != null){
-			icon.hardlight(move.tintColor);
-		} else {
-			icon.resetColor();
-		}
+			if (count >= 9)    icon.hardlight(1f, 0f, 0f);
+		else if (count >= 7)icon.hardlight(1f, 0.8f, 0f);
+		else if (count >= 5)icon.hardlight(1f, 1f, 0f);
+		else if (count >= 3)icon.hardlight(0.8f, 1f, 0f);
+		else if (count >= 1)icon.hardlight(0f, 1f, 0f);
+		else                icon.resetColor();
 	}
 
 	@Override
 	public float iconFadePercent() {
-		return Math.max(0, (initialComboTime - comboTime)/ initialComboTime);
+		float time;
+		int point=Dungeon.hero.pointsInTalent(Talent.KEEP_VIGILANCE);
+		switch (point){
+			case 1:
+				time=6;
+				break;
+			case 2:
+				time=15;
+				break;
+			case 3:
+				time=999;
+				break;
+			default:
+				time=4;
+				break;
+		}
+		return Math.max(0, (time- comboTime)/time);
 	}
 
 	@Override
@@ -89,18 +109,26 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		return Integer.toString((int)comboTime);
 	}
 
-	public void hit( Char enemy ) {
-
+	public void hit() {
 		count++;
-		comboTime = 5f;
-
-		if (!enemy.isAlive() || (enemy.buff(Corruption.class) != null && enemy.HP == enemy.HT)){
-			comboTime = Math.max(comboTime, 15*((Hero)target).pointsInTalent(Talent.CLEAVE));
+		if(count%2==1)couldUseTime++;
+		int point=Dungeon.hero.pointsInTalent(Talent.KEEP_VIGILANCE);
+		switch (point){
+			case 1:
+				comboTime=6;
+				break;
+			case 2:
+				comboTime=15;
+				break;
+			case 3:
+				comboTime=999;
+				break;
+			default:
+				comboTime=4;
+				break;
 		}
 
-		initialComboTime = comboTime;
-
-		if ((getHighestMove() != null)) {
+		if (count >0&&couldUseTime>0) {
 
 			ActionIndicator.setAction( this );
 			Badges.validateMasteryCombo( count );
@@ -109,7 +137,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 
 		}
 
-		BuffIndicator.refreshHero(); //refresh the buff visually on-hit
+		BuffIndicator.refreshHero(); //击中时刷新可视buff。 refresh the buff visually on-hit
 
 	}
 
@@ -138,22 +166,37 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		return Messages.get(this, "desc", count, dispTurns(comboTime));
 	}
 
+	private boolean crushUsed = false;
+	private boolean parryUsed = false;
+	private boolean cleaveUsed = false;
+	private boolean furyUsed = false;
+	private boolean spurtUsed = false;
+
+
+	private static final String CRUSH_USED = "slap_used";
+	private static final String PARRY_USED   = "parry_used";
+	private static final String CLEAVE_USED   = "cleave_used";
+	private static final String FURY_USED   = "fury_used";
+	private static final String SPURT_USED = "spurt_used";
 	private static final String COUNT = "count";
 	private static final String TIME  = "combotime";
-	private static final String INITIAL_TIME  = "initialComboTime";
+	private static final String ISFINISH  = "isfinish";
+	private static final String COULDUSETIME  = "couldusetime";
 
-	private static final String CLOBBER_USED = "clobber_used";
-	private static final String PARRY_USED   = "parry_used";
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put(COUNT, count);
 		bundle.put(TIME, comboTime);
-		bundle.put(INITIAL_TIME, initialComboTime);
+		bundle.put(ISFINISH, isFinish);
+		bundle.put(COULDUSETIME, couldUseTime);
 
-		bundle.put(CLOBBER_USED, clobberUsed);
+		bundle.put(CRUSH_USED, crushUsed);
 		bundle.put(PARRY_USED, parryUsed);
+		bundle.put(CLEAVE_USED, cleaveUsed);
+		bundle.put(FURY_USED, furyUsed);
+		bundle.put(SPURT_USED, spurtUsed);
 	}
 
 	@Override
@@ -161,13 +204,15 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		super.restoreFromBundle(bundle);
 		count = bundle.getInt( COUNT );
 		comboTime = bundle.getFloat( TIME );
+		isFinish = bundle.getBoolean( ISFINISH );
+		couldUseTime = bundle.getInt( COULDUSETIME );
 
-		initialComboTime = bundle.getFloat( INITIAL_TIME );
-
-		clobberUsed = bundle.getBoolean(CLOBBER_USED);
+		crushUsed = bundle.getBoolean(CRUSH_USED);
 		parryUsed = bundle.getBoolean(PARRY_USED);
-
-		if (getHighestMove() != null) ActionIndicator.setAction(this);
+		cleaveUsed= bundle.getBoolean(CLEAVE_USED);
+		furyUsed = bundle.getBoolean(FURY_USED);
+		spurtUsed = bundle.getBoolean(SPURT_USED);
+		if (count >= 2) ActionIndicator.setAction(this);
 	}
 
 	@Override
@@ -179,7 +224,6 @@ public class Combo extends Buff implements ActionIndicator.Action {
 	public int actionIcon() {
 		return HeroIcon.COMBO;
 	}
-
 	@Override
 	public Visual secondaryVisual() {
 		BitmapText txt = new BitmapText(PixelScene.pixelFont);
@@ -191,16 +235,13 @@ public class Combo extends Buff implements ActionIndicator.Action {
 
 	@Override
 	public int indicatorColor() {
-		ComboMove best = getHighestMove();
-		if (best == null) {
-			return 0xDFDFDF;
-		} else {
-			//take the tint color and darken slightly to match buff icon
-			int r = (int) ((best.tintColor >> 16) * 0.875f);
-			int g = (int) (((best.tintColor >> 8) & 0xFF) * 0.875f);
-			int b = (int) ((best.tintColor & 0xFF) * 0.875f);
-			return (r << 16) + (g << 8) + b;
-		}
+
+		if (count >= 9)    return 0xFF0000;
+		else if (count >= 7)return 0xFFCC00;
+		else if (count >= 5)return 0xFFFF00;
+		else if (count >= 3)return 0xCCFF00;
+		else if (count >= 1)return 0x00FF00;
+		else return 0xDFDFDF;
 	}
 
 	@Override
@@ -209,114 +250,110 @@ public class Combo extends Buff implements ActionIndicator.Action {
 	}
 
 	public enum ComboMove {
-		CLOBBER(2, 0x00FF00),
-		SLAM   (4, 0xCCFF00),
-		PARRY  (6, 0xFFFF00),
-		CRUSH  (8, 0xFFCC00),
-		FURY   (10, 0xFF0000);
-
-		public int comboReq, tintColor;
-
-		ComboMove(int comboReq, int tintColor){
-			this.comboReq = comboReq;
-			this.tintColor = tintColor;
+		CRUSH, PARRY,  CLEAVE,FURY, SPURT,FINISH,CALM;
+		public String desc(int count,boolean isFinish){
+			String key=isFinish?".finish_desc":".desc";
+			switch (this){
+				case CRUSH:
+					return Messages.get(this, name()+key, count*15);
+				case PARRY:
+					return Messages.get(this, name()+key, count*20);
+				case CLEAVE:
+					return Messages.get(this, name()+key, count*25);
+				case FURY:
+					return Messages.get(this, name()+key, count);
+				case SPURT:
+					return Messages.get(this, name()+key, count/2,count/2);
+				case FINISH:
+					return Messages.get(this, name()+key);
+				case CALM:
+					return Messages.get(this, name()+key,count*2);
+				default:
+					return Messages.get(this, name()+key);
+			}
 		}
-
 		public String title(){
 			return Messages.get(this, name() + ".name");
 		}
-
-		public String desc(int count){
-			switch (this){
-				case CLOBBER: default:
-					if (count >= 7 && Dungeon.hero.pointsInTalent(Talent.ENHANCED_COMBO) >= 1){
-						return Messages.get(this, name() + ".empower_desc");
-					} else {
-						return Messages.get(this, name() + ".desc");
-					}
-				case SLAM:
-					if (count >= 3 && Dungeon.hero.pointsInTalent(Talent.ENHANCED_COMBO) >= 3){
-						return Messages.get(this, name() + ".empower_desc", count/3, count*20);
-					} else {
-						return Messages.get(this, name() + ".desc", count*20);
-					}
-				case PARRY:
-					if (count >= 9 && Dungeon.hero.pointsInTalent(Talent.ENHANCED_COMBO) >= 2){
-						return Messages.get(this, name() + ".empower_desc");
-					} else {
-						return Messages.get(this, name() + ".desc");
-					}
-				case CRUSH:
-					if (count >= 3 && Dungeon.hero.pointsInTalent(Talent.ENHANCED_COMBO) >= 3){
-						return Messages.get(this, name() + ".empower_desc", count/3, count*25);
-					} else {
-						return Messages.get(this,  name() + ".desc", count*25);
-					}
-				case FURY:
-					if (count >= 3 && Dungeon.hero.pointsInTalent(Talent.ENHANCED_COMBO) >= 3){
-						return Messages.get(this, name() + ".empower_desc", count/3);
-					} else {
-						return Messages.get(this,  name() + ".desc");
-					}
-			}
-		}
-
-	}
-
-	private boolean clobberUsed = false;
-	private boolean parryUsed = false;
-
-	public ComboMove getHighestMove(){
-		ComboMove best = null;
-		for (ComboMove move : ComboMove.values()){
-			if (count >= move.comboReq){
-				best = move;
-			}
-		}
-		return best;
 	}
 
 	public int getComboCount(){
 		return count;
 	}
-
 	public boolean canUseMove(ComboMove move){
-		if (move == ComboMove.CLOBBER && clobberUsed)   return false;
-		if (move == ComboMove.PARRY && parryUsed)       return false;
-		return move.comboReq <= count;
-	}
+		if (move == ComboMove.CRUSH && crushUsed)   return false;
+		if (move == ComboMove.PARRY && parryUsed)  return false;
+		if (move == ComboMove.CLEAVE && cleaveUsed)  return false;
+		if (move == ComboMove.FURY && furyUsed)  return false;
+		if (move == ComboMove.SPURT && spurtUsed)  return false;
+		if (move == ComboMove.FINISH){
+			if(count<7&&Dungeon.hero.pointsInTalent(Talent.VENT_NOPLACE)<2){
+				return false;
+			}else if (count<5&&Dungeon.hero.pointsInTalent(Talent.VENT_NOPLACE)>1){
+				return  false;
+			}
 
+		}
+		return true;
+	}
 	public void useMove(ComboMove move){
 		if (move == ComboMove.PARRY){
 			parryUsed = true;
 			comboTime = 5f;
 			Invisibility.dispel();
-			Buff.affect(target, ParryTracker.class, Actor.TICK);
-			((Hero)target).spendAndNext(Actor.TICK);
+			Buff.affect(target, ParryTracker.class, Actor.TICK).SetFinish(isFinish);
+			((Hero)target).spendAndNext(TICK);
 			Dungeon.hero.busy();
-		} else {
+		} else if(move == ComboMove.FINISH){
+			isFinish=true;
+			if (Dungeon.hero.hasTalent(Talent.VENT_NOPLACE)){
+				hit();
+				if (Dungeon.hero.pointsInTalent(Talent.VENT_NOPLACE)==3)hit();
+			}
+			GameScene.show(new WndCombo(this));
+		}else if (move==ComboMove.CALM){
+			int heal =Math.round(count*0.02f* (target.HT-target.HP));
+			PotionOfHealing.cure(target);
+			Buff.affect(target, Healing.class).setHeal(heal, 0, 1);
+			Dungeon.hero.sprite.operate(Dungeon.hero.pos);
+			detach();
+			ActionIndicator.clearAction(Combo.this);
+			((Hero)target).spendAndNext(TICK);
+		}else {
 			moveBeingUsed = move;
 			GameScene.selectCell(listener);
 		}
 	}
-
+	public void resetCombo(){
+		crushUsed = false;
+		parryUsed = false;
+		cleaveUsed = false;
+		furyUsed = false;
+		spurtUsed = false;
+		isFinish=false;
+		couldUseTime=0;
+	}
 	public static class ParryTracker extends FlavourBuff{
 		{ actPriority = HERO_PRIO+1;}
 
-		public boolean parried;
-
+		boolean isFinish;
+		public void SetFinish( boolean finish){
+			isFinish=finish;
+		}
+		public void parry(){
+			if(!isFinish){
+				detach();
+			}
+		}
 		@Override
 		public void detach() {
-			if (!parried && target.buff(Combo.class) != null) target.buff(Combo.class).detach();
+			if (isFinish) target.buff(Combo.class).detach();
 			super.detach();
 		}
 	}
-
 	public static class RiposteTracker extends Buff{
 		{ actPriority = VFX_PRIO;}
-
 		public Char enemy;
-
 		@Override
 		public boolean act() {
 			if (target.buff(Combo.class) != null) {
@@ -336,11 +373,8 @@ public class Combo extends Buff implements ActionIndicator.Action {
 			}
 		}
 	}
-
 	private static ComboMove moveBeingUsed;
-
 	private void doAttack(final Char enemy) {
-
 		AttackIndicator.target(enemy);
 
 		boolean wasAlly = enemy.alignment == target.alignment;
@@ -348,195 +382,242 @@ public class Combo extends Buff implements ActionIndicator.Action {
 
 		float dmgMulti = 1f;
 		int dmgBonus = 0;
+		float accMulti=1f;
+
 
 		//variance in damage dealt
 		switch (moveBeingUsed) {
-			case CLOBBER:
-				dmgMulti = 0;
-				break;
-			case SLAM:
-				dmgBonus = Math.round(target.drRoll() * count / 5f);
-				break;
 			case CRUSH:
-				dmgMulti = 0.25f * count;
+				dmgMulti =isFinish?count*0.15f:0.6f;
+				dmgBonus+=enemy.drRoll();
+				accMulti=Char.INFINITE_ACCURACY;
+				break;
+			case PARRY:
+				dmgMulti = isFinish?count*0.2f:1f;
+				if (isFinish)accMulti=Char.INFINITE_ACCURACY;
+				break;
+			case CLEAVE:
+				dmgMulti = isFinish?0.25f*count:1f;
+				accMulti=Char.INFINITE_ACCURACY;
 				break;
 			case FURY:
-				dmgMulti = 0.6f;
+				dmgMulti = 0.75f;
+				accMulti=0.85f;
+				break;
+			case SPURT:
+
 				break;
 		}
-
-		int oldPos = enemy.pos;
-		if (hero.attack(enemy, dmgMulti, dmgBonus, Char.INFINITE_ACCURACY)){
+		if (hero.attack(enemy, dmgMulti, dmgBonus,accMulti)){
 			//special on-hit effects
 			switch (moveBeingUsed) {
-				case CLOBBER:
-					if (!wasAlly) hit(enemy);
-					//trace a ballistica to our target (which will also extend past them
-					Ballistica trajectory = new Ballistica(target.pos, enemy.pos, Ballistica.STOP_TARGET);
-					//trim it to just be the part that goes past them
-					trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
-					//knock them back along that ballistica, ensuring they don't fall into a pit
-					int dist = 2;
-					if (enemy.isAlive() && count >= 7 && hero.pointsInTalent(Talent.ENHANCED_COMBO) >= 1) {
-						dist++;
-						Buff.prolong(enemy, Vertigo.class, 3);
-					} else if (!enemy.flying) {
-						while (dist > trajectory.dist ||
-								(dist > 0 && Dungeon.level.pit[trajectory.path.get(dist)])) {
-							dist--;
-						}
-					}
-					if (enemy.pos == oldPos) {
-						WandOfBlastWave.throwChar(enemy, trajectory, dist, true, false, hero);
-					}
-					break;
-				case PARRY:
-					hit(enemy);
-					break;
 				case CRUSH:
-					WandOfBlastWave.BlastWave.blast(enemy.pos);
-					PathFinder.buildDistanceMap(target.pos, BArray.not(Dungeon.level.solid, null), 3);
-					for (Char ch : Actor.chars()) {
-						if (ch != enemy && ch.alignment == Char.Alignment.ENEMY
-								&& PathFinder.distance[ch.pos] < Integer.MAX_VALUE) {
-							int aoeHit = Math.round(target.damageRoll() * 0.25f * count);
-							aoeHit /= 2;
-							aoeHit -= ch.drRoll();
-							if (ch.buff(Vulnerable.class) != null) aoeHit *= 1.33f;
-							if (ch instanceof DwarfKing){
-								//change damage type for DK so that crush AOE doesn't count for DK's challenge badge
-								ch.damage(aoeHit, this);
-							} else {
-								ch.damage(aoeHit, target);
-							}
-							ch.sprite.bloodBurstA(target.sprite.center(), aoeHit);
-							ch.sprite.flash();
+						WandOfBlastWave.BlastWave.blast(enemy.pos);
+						PathFinder.buildDistanceMap(enemy.pos, BArray.not(Dungeon.level.solid, null), isFinish?3:1);
+						for (Char ch : Actor.chars()) {
+							if (ch != enemy && ch.alignment == Char.Alignment.ENEMY
+									&& PathFinder.distance[ch.pos] < Integer.MAX_VALUE) {
+								int aoeHit = Math.round(target.damageRoll() * 0.15f * count);
+								if (ch.buff(Vulnerable.class) != null) aoeHit *= 1.33f;
+								if (ch instanceof DwarfKing){
+									//change damage type for DK so that crush AOE doesn't count for DK's challenge badge
+									ch.damage(aoeHit, this);
+								} else {
+									ch.damage(aoeHit, target);
+								}
+								ch.sprite.bloodBurstA(enemy.sprite.center(), aoeHit);
+								ch.sprite.flash();
 
-							if (!ch.isAlive()) {
-								if (hero.hasTalent(Talent.LETHAL_DEFENSE) && hero.buff(BrokenSeal.WarriorShield.class) != null) {
-									BrokenSeal.WarriorShield shield = hero.buff(BrokenSeal.WarriorShield.class);
-									int shieldAmt = Math.round(shield.maxShield() * hero.pointsInTalent(Talent.LETHAL_DEFENSE) / 3f);
-									shield.supercharge(shieldAmt);
-									hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldAmt), FloatingText.SHIELDING);
+								if (!ch.isAlive()) {
+									if (hero.hasTalent(Talent.LETHAL_DEFENSE) && hero.buff(BrokenSeal.WarriorShield.class) != null) {
+										BrokenSeal.WarriorShield shield = hero.buff(BrokenSeal.WarriorShield.class);
+										shield.supercharge(Math.round(shield.maxShield() * hero.pointsInTalent(Talent.LETHAL_DEFENSE) / 3f));
+									}
 								}
 							}
 						}
+				case FURY:
+					if (!isFinish)hit();
+					break;
+				default:
+					hit();
+					break;
+			}
+		}
+		Invisibility.dispel();
+		//Post-attack behaviour
+		if(isFinish){
+			switch(moveBeingUsed) {
+				case CLEAVE:
+					if (!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)) {
+						Combo.this.resetCombo();
+						count = count / 2 - 1;
+						hit();
+						couldUseTime = (count + 1) / 2;
+						hero.spendAndNext(hero.attackDelay());
+					}
+					break;
+				case PARRY:
+					break;
+				case FURY:
+					count--;
+					if (count > 0 && enemy.isAlive() && hero.canAttack(enemy) &&
+							(wasAlly || enemy.alignment != target.alignment)){
+						target.sprite.attack(enemy.pos, new Callback() {
+							@Override
+							public void call() {
+								doAttack(enemy);
+							}
+						});
+					} else {
+						detach();
+						Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+						ActionIndicator.clearAction(Combo.this);
+						hero.spendAndNext(hero.attackDelay());
 					}
 					break;
 				default:
-					//nothing
+					detach();
+					ActionIndicator.clearAction(Combo.this);
+					hero.spendAndNext(hero.attackDelay());
+					break;
+			}
+		}else {
+			switch(moveBeingUsed){
+				case CRUSH:
+					crushUsed = true;
+					hero.spendAndNext(hero.attackDelay());
+					break;
+				case CLEAVE:
+					cleaveUsed=true;
+					if(!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)){
+						hit();hit();
+					}
+					hero.spendAndNext(hero.attackDelay());
+					break;
+				case FURY:
+					furyUsed=true;
+					if (enemy.isAlive() && hero.canAttack(enemy)
+							&& (wasAlly || enemy.alignment != target.alignment)) {
+						target.sprite.attack(enemy.pos, new Callback() {
+							@Override
+							public void call() {
+								if (hero.attack(enemy, 0.75f, 0, 0.85f)){
+									hit();
+								}
+								hero.spendAndNext(hero.attackDelay());
+							}
+						});
+					}else {
+						hero.spendAndNext(hero.attackDelay());
+					}
+					break;
+				default:
+					break;
+			}
+			couldUseTime--;
+			if (couldUseTime<=0)ActionIndicator.clearAction(Combo.this);
+		}
+		if (!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)) {
+			if (hero.hasTalent(Talent.LETHAL_DEFENSE) && hero.buff(BrokenSeal.WarriorShield.class) != null){
+				BrokenSeal.WarriorShield shield = hero.buff(BrokenSeal.WarriorShield.class);
+				shield.supercharge(Math.round(shield.maxShield() * hero.pointsInTalent(Talent.LETHAL_DEFENSE)/3f));
+			}
+		}
+
+		if( !isFinish && Dungeon.hero.hasTalent(Talent.LETHAL_DEFENSE)){
+			Buff.affect( target , LethalDefense.class );
+			Dungeon.hero.buff(LethalDefense.class).resetTime();
+		}else if(isFinish && Dungeon.hero.buff(LethalDefense.class)!=null){
+			Dungeon.hero.buff(LethalDefense.class).detach();
+			int point = Dungeon.hero.pointsInTalent(Talent.LETHAL_DEFENSE);
+			switch (point){
+				case 1:
+					Buff.affect(target,Adrenaline.class,2);
+					count++;
+					break;
+				case 2:
+					Buff.affect(target,Adrenaline.class,2);
+					count+=2;
+					break;
+				case 3:
+					Buff.affect(target, Adrenaline.class,3);
+					count+=2;
 					break;
 			}
 		}
 
-		Invisibility.dispel();
+	}
+	private CellSelector.Listener listener = new CellSelector.Listener() {
 
-		//Post-attack behaviour
-		switch(moveBeingUsed){
-			case CLOBBER:
-				clobberUsed = true;
-				if (getHighestMove() == null) ActionIndicator.clearAction(Combo.this);
-				hero.spendAndNext(hero.attackDelay());
-				break;
+		@Override
+		public void onSelect(Integer cell) {
+			if (cell == null||cell==-1) return;
+			final Char enemy = Actor.findChar( cell );
+			final Hero hero=(Hero) target;
+			boolean couldAttak=(enemy != null && enemy != hero
+					&&Dungeon.level.heroFOV[cell] &&!hero.isCharmedBy( enemy ));
 
-			case PARRY:
-				//do nothing
-				break;
+			if (moveBeingUsed==ComboMove.SPURT){
+				int range = 4;
+				if (isFinish)range=count/2;
+				if (hero.rooted){
+					Camera.main.shake(1, 1f);
+					return;
+				}
 
-			case FURY:
-				count--;
-				//fury attacks as many times as you have combo count
-				if (count > 0 && enemy.isAlive() && hero.canAttack(enemy) &&
-						(wasAlly || enemy.alignment != target.alignment)){
-					target.sprite.attack(enemy.pos, new Callback() {
+				if (Dungeon.level.distance(hero.pos, cell) > range){
+					GLog.w(Messages.get(Combo.class, "bad_target"));
+					return;
+				}
+
+				Ballistica dash = new Ballistica(hero.pos, cell, Ballistica.PROJECTILE);
+
+				if (!dash.collisionPos.equals(cell)
+						|| Actor.findChar(cell) != null
+						|| (Dungeon.level.solid[cell] && !Dungeon.level.passable[cell])){
+					GLog.w(Messages.get(Combo.class, "bad_target"));
+					return;
+				}
+
+				hero.busy();
+				Sample.INSTANCE.play(Assets.Sounds.MISS);
+				float distance = Math.max( 1f, Dungeon.level.trueDistance( hero.pos, cell ));
+				hero.sprite.emitter().start(Speck.factory(Speck.JET), 0.01f, Math.round(1 +distance));
+				hero.sprite.jump(hero.pos, cell, 2f*distance, 0.07f*distance, new Callback() {
+					@Override
+					public void call() {
+						if (Dungeon.level.map[hero.pos] == Terrain.OPEN_DOOR) {
+							Door.leave( hero.pos );
+						}
+						hero.pos = cell;
+						Dungeon.level.occupyCell(hero);
+						hero.spendAndNext(TICK);
+					}
+				});
+				if (isFinish){
+					Buff.affect(hero, Adrenaline.class,count/2);
+					detach();
+					ActionIndicator.clearAction(Combo.this);
+				}else {
+					spurtUsed =true;
+					couldUseTime--;
+					if (couldUseTime<=0)ActionIndicator.clearAction(Combo.this);
+				}
+			}else {
+				if(couldAttak&&hero.canAttack(enemy)){
+					hero.busy();
+					hero.sprite.attack(cell, new Callback() {
 						@Override
 						public void call() {
 							doAttack(enemy);
 						}
 					});
-				} else {
-					detach();
-					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-					ActionIndicator.clearAction(Combo.this);
-					hero.spendAndNext(hero.attackDelay());
-				}
-				break;
-
-			default:
-				detach();
-				ActionIndicator.clearAction(Combo.this);
-				hero.spendAndNext(hero.attackDelay());
-				break;
-		}
-
-		if (!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)) {
-			if (hero.hasTalent(Talent.LETHAL_DEFENSE) && hero.buff(BrokenSeal.WarriorShield.class) != null){
-				BrokenSeal.WarriorShield shield = hero.buff(BrokenSeal.WarriorShield.class);
-				int shieldAmt = Math.round(shield.maxShield() * hero.pointsInTalent(Talent.LETHAL_DEFENSE) / 3f);
-				shield.supercharge(shieldAmt);
-				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldAmt), FloatingText.SHIELDING);
-			}
-		}
-
-	}
-
-	private CellSelector.Listener listener = new CellSelector.Listener() {
-
-		@Override
-		public void onSelect(Integer cell) {
-			if (cell == null) return;
-			final Char enemy = Actor.findChar( cell );
-			if (enemy == null
-					|| enemy == target
-					|| !Dungeon.level.heroFOV[cell]
-					|| target.isCharmedBy( enemy )) {
-				GLog.w(Messages.get(Combo.class, "bad_target"));
-
-			} else if (!((Hero)target).canAttack(enemy)){
-				if (((Hero) target).pointsInTalent(Talent.ENHANCED_COMBO) < 3
-						|| Dungeon.level.distance(target.pos, enemy.pos) > 1 + target.buff(Combo.class).count/3){
+				}else {
 					GLog.w(Messages.get(Combo.class, "bad_target"));
-				} else {
-					Ballistica c = new Ballistica(target.pos, enemy.pos, Ballistica.PROJECTILE);
-					if (c.collisionPos == enemy.pos){
-						final int leapPos = c.path.get(c.dist-1);
-						if (!Dungeon.level.passable[leapPos] && !(target.flying && Dungeon.level.avoid[leapPos])){
-							GLog.w(Messages.get(Combo.class, "bad_target"));
-						} else if (Dungeon.hero.rooted) {
-							PixelScene.shake( 1, 1f );
-							GLog.w(Messages.get(Combo.class, "bad_target"));
-						} else {
-							Dungeon.hero.busy();
-							target.sprite.jump(target.pos, leapPos, new Callback() {
-								@Override
-								public void call() {
-									target.move(leapPos);
-									Dungeon.level.occupyCell(target);
-									Dungeon.observe();
-									GameScene.updateFog();
-									target.sprite.attack(cell, new Callback() {
-										@Override
-										public void call() {
-											doAttack(enemy);
-										}
-									});
-								}
-							});
-						}
-					} else {
-						GLog.w(Messages.get(Combo.class, "bad_target"));
-					}
 				}
-
-			} else {
-				Dungeon.hero.busy();
-				target.sprite.attack(cell, new Callback() {
-					@Override
-					public void call() {
-						doAttack(enemy);
-					}
-				});
 			}
+
 		}
 
 		@Override
@@ -545,3 +626,88 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		}
 	};
 }
+	/*
+	private void doVolley(final Char enemy){
+
+		Hero hero = (Hero) target;
+		ArrayList<MissileWeapon> missiles = hero.belongings.getAllItems(MissileWeapon.class);
+		ArrayList<MissileWeapon> list = new ArrayList<>(missiles);
+		for(MissileWeapon m :list){
+			for (int i=1;i<m.quantity();i++){
+				missiles.add(m);
+			}
+		}
+		hero.busy();
+		Random.shuffle(missiles);
+		Buff.affect(hero, VolleyTracker.class, 0f);
+		castMissile(missiles,hero,enemy);
+		if (hero.hasTalent(Talent.LETHAL_DEFENSE) && hero.buff(BrokenSeal.WarriorShield.class) != null) {
+			BrokenSeal.WarriorShield shield = hero.buff(BrokenSeal.WarriorShield.class);
+			shield.recoverShield(Math.round(shield.maxShield() * hero.pointsInTalent(Talent.LETHAL_DEFENSE) / 3f));
+		}
+	}
+	public static class VolleyTracker extends FlavourBuff{};
+	Actor volleyActor = null;
+	private void castMissile( ArrayList<MissileWeapon> missiles, Hero hero, Char enemy){
+		MissileWeapon cur = missiles.remove(0);
+		hero.sprite.zap(enemy.pos);
+		hero.busy();
+		float startTime = Game.timeTotal;
+		((MissileSprite) hero.sprite.parent.recycle(MissileSprite.class)).
+				reset(hero.sprite,
+						enemy.sprite,
+						cur,
+						new Callback() {
+							@Override
+							public void call() {
+								cur.throwSound();
+								Item i = cur.detach(hero.belongings.backpack);
+								boolean wasAlly = enemy.alignment == target.alignment;
+								if (i != null) i.Throw(hero,enemy.pos);
+								if (Game.timeTotal - startTime < 0.33f){
+									hero.sprite.parent.add(new Delayer(0.33f - (Game.timeTotal - startTime)) {
+										@Override
+										protected void onComplete() {
+											afterCast( missiles, hero, enemy,wasAlly);
+										}
+									});
+								} else {
+									afterCast(missiles, hero, enemy,wasAlly);
+								}
+							}
+						});
+	}
+	private void afterCast(  ArrayList<MissileWeapon> missiles, Hero hero, Char enemy,boolean wasAlly){
+		if (volleyActor != null){
+			volleyActor.next();
+			volleyActor = null;
+		}
+		count--;
+		boolean enemyDie=!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment);
+		if (!missiles.isEmpty() &&!enemyDie&&hero.isAlive()&&count!=0) {
+			Actor.add(new Actor() {
+				{
+					actPriority = VFX_PRIO-1;
+				}
+
+				@Override
+				protected boolean act() {
+					volleyActor = this;
+					castMissile(missiles, hero, enemy);
+					Actor.remove(this);
+					return false;
+				}
+			});
+			hero.next();
+		} else {
+			if (hero.buff(WildMagic.WildMagicTracker.class) != null) {
+				hero.buff(WildMagic.WildMagicTracker.class).detach();
+			}
+			detach();
+			ActionIndicator.clearAction(Combo.this);
+			hero.spendAndNext(1f/ RingOfFuror.attackSpeedMultiplier(hero));
+			Item.updateQuickslot();
+		}
+	}
+
+	 */

@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -35,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Image;
@@ -68,6 +70,33 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 	private static final String TURN_RECOVERY = "turn_recovery";
 	private static final String POWER = "power";
 	private static final String POWER_BUFFER = "power_buffer";
+
+	public float getPower(){
+		return power;
+	}
+
+	public void reducePower(float reduce){
+		power = Math.max( 0 , power - reduce);
+	}
+
+	public int WandBuffedLvl(){
+		int lvl = 0;
+		if(Dungeon.hero.hasTalent(Talent.FANATICISM_MAGIC)){
+			switch (Dungeon.hero.pointsInTalent(Talent.FANATICISM_MAGIC)){
+				case 2:
+					for(float i = power;i>0.75f;i-=0.75f){
+						lvl++;
+					}
+					break;
+				case 3:
+					for(float i = power;i>0.5f;i-=0.5f){
+						lvl++;
+					}
+					break;
+			}
+		}
+		return lvl;
+	}
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
@@ -165,24 +194,11 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 		ActionIndicator.clearAction(this);
 	}
 
-	public float enchantFactor(float chance){
-		return chance + ((Math.min(1f, power) * 0.15f) * ((Hero) target).pointsInTalent(Talent.ENRAGED_CATALYST));
-	}
-
 	public float damageFactor(float dmg){
-		return dmg * Math.min(1.5f, 1f + (power / 2f));
+		return dmg * Math.min(2f, 1f + (power / 2f));
 	}
 
 	public boolean berserking(){
-		if (target.HP == 0
-				&& state == State.NORMAL
-				&& power >= 1f
-				&& target.buff(WarriorShield.class) != null
-				&& ((Hero)target).hasTalent(Talent.DEATHLESS_FURY)){
-			startBerserking();
-			ActionIndicator.clearAction(this);
-		}
-
 		return state == State.BERSERK && target.shielding() > 0;
 	}
 
@@ -196,19 +212,12 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 			turnRecovery = TURN_RECOVERY_START;
 			levelRecovery = 0;
 		} else {
-			levelRecovery = LEVEL_RECOVER_START - ((Hero)target).pointsInTalent(Talent.DEATHLESS_FURY);
+			levelRecovery = LEVEL_RECOVER_START;
 			turnRecovery = 0;
 		}
 
-		//base multiplier scales at 2/3/4/5/6x at 100/37/20/9/0% HP
-		float shieldMultiplier = 2f + 4*(float)Math.pow((1f-(target.HP/(float)target.HT)), 3);
-
-		//Endless rage effect on shield and cooldown
-		if (power > 1f){
-			shieldMultiplier *= power;
-			levelRecovery *= 2f - power;
-			turnRecovery *= 2f - power;
-		}
+		//获得护盾倍数为 2/3/4/5/6x 在 100/80/60/40/20% HP
+		float shieldMultiplier = 2f + (float) (target.HT - target.HP) / target.HT *5;
 
 		WarriorShield shield = target.buff(WarriorShield.class);
 		int shieldAmount = Math.round(shield.maxShield() * shieldMultiplier);
@@ -217,11 +226,17 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 
 		BuffIndicator.refreshHero();
 	}
-	
+
 	public void damage(int damage){
 		if (state != State.NORMAL) return;
-		float maxPower = 1f + 0.1667f*((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE);
-		power = Math.min(maxPower, power + (damage/(float)target.HT)/3f );
+
+		float decrease=0;
+		for(int i=Statistics.deepestFloor; i>5 ; i-=5){
+			decrease++;
+		}
+
+		float maxPower = Dungeon.hero.hasTalent(Talent.ENDLESS_RAGE) ?  1.25f + 0.25f*((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE) : 1f ;
+		power = Math.min(maxPower, power + 0.01f * (damage - decrease));
 		BuffIndicator.refreshHero(); //show new power immediately
 		powerLossBuffer = 3; //2 turns until rage starts dropping
 		if (power >= 1f){
@@ -307,7 +322,7 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 				return 0f;
 			case RECOVERING:
 				if (levelRecovery > 0) {
-					return 1f - levelRecovery/(LEVEL_RECOVER_START-Dungeon.hero.pointsInTalent(Talent.DEATHLESS_FURY));
+					return 1f - levelRecovery;
 				} else {
 					return 1f - turnRecovery/(float)TURN_RECOVERY_START;
 				}

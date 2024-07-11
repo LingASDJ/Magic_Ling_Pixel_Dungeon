@@ -476,6 +476,22 @@ public abstract class Char extends Actor {
 					//3 turns with standard attack delay
 					Buff.prolong(h, MonkEnergy.MonkAbility.JustHitTracker.class, 4f);
 				}
+
+
+				if( h.hasTalent(Talent.FURY_FLAME) && h.buff(Berserk.class) != null){
+
+					float limit = 0.75f - h.pointsInTalent(Talent.FURY_FLAME) * 0.15f ;
+					// 60%/45%/30%
+					float reduce = 0.035f - h.pointsInTalent(Talent.FURY_FLAME) * 0.005f;
+					// 3%/2.5%/2%
+
+					if(h.buff(Berserk.class).getPower() > limit){
+						h.buff(Berserk.class).reducePower(reduce);
+
+							Buff.affect(enemy, Burning.class).reignite(enemy,5f);
+
+					}
+				}
 			}
 
 			//we use a float here briefly so that we don't have to constantly round while
