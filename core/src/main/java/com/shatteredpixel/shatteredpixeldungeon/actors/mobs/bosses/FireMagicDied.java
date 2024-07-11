@@ -828,6 +828,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
         if(Statistics.amuletObtained|| Statistics.RandMode){
             Dungeon.level.drop(new IceCyanBlueSquareCoin(15),pos);
+            Buff.detach(hero, BeamTowerAdbility.class);
         }
 
         super.die( cause );
@@ -867,6 +868,9 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
         GameScene.bossSlain();
         Buff.detach(hero, MagicGirlSayTimeLast.class);
+
+
+
         PaswordBadges.KILLFIREGIRL();
 
         yell( Messages.get(this, "defeated",Dungeon.hero.name()) );

@@ -93,7 +93,7 @@ public class Typhon extends NTNPC {
         TyphonPlot typhonPlot = new TyphonPlot();
 
 
-        if(!secnod && first && Statistics.RandMode){
+        if(!secnod && first && !Statistics.RandMode){
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {

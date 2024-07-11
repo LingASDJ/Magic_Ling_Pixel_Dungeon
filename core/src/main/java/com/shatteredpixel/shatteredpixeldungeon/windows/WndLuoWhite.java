@@ -35,7 +35,7 @@ import com.watabou.utils.Callback;
 
 public class WndLuoWhite extends Window {
     private static final int WIDTH		= 120;
-    private static final int BTN_SIZE	= 32;
+    private static final int BTN_SIZE	= 24;
     private static final int BTN_GAP	= 6;
     private static final int GAP		= 6;
 
@@ -83,7 +83,7 @@ public class WndLuoWhite extends Window {
         bomb3.setRect( bomb2.right()+ BTN_GAP , bomb2.top(), BTN_SIZE, BTN_SIZE );
         add(bomb3);
 
-        resize(WIDTH, (int) shop3.bottom());
+        resize(WIDTH, (int) bomb3.bottom());
     }
 
     public static WndBag sell() {

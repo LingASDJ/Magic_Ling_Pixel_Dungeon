@@ -377,6 +377,8 @@ public abstract class RegularLevel extends Level {
 
 		if (Dungeon.shopOnLevel() && branch == 0) {
 			initRooms.add(new ShopRoom());
+		} else if(Statistics.bossRushMode && branch == 8 && Dungeon.shopRushLevel()){
+			initRooms.add(new ShopRoom());
 		}
 
 		//force max special rooms and add one more for large levels
