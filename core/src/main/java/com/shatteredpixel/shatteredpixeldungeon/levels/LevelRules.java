@@ -51,7 +51,7 @@ public class LevelRules {
                     case 4:
                         return new ForestHardBossLevel();
 
-                    case 6: return new SLMKingLevel();a
+                    case 6: return new SLMKingLevel();
 
                     case 7:
                         if(Statistics.difficultyDLCEXLevel >=2){
