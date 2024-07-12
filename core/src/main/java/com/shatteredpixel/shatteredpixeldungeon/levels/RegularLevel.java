@@ -368,7 +368,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 //		if (!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)) {
-			if (depth == 18 && !anCityQuestProgress) {
+			if (depth == 18 && !anCityQuestProgress && !Statistics.RandMode) {
 				initRooms.add(new DreamcatcherRoom());
 				DragonGirlBlue.Quest.spawned = true;
 				anCityQuestProgress = true;

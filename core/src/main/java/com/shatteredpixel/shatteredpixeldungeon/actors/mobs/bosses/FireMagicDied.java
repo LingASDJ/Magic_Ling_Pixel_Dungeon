@@ -505,22 +505,22 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
         }
     }
 
-    @Override
-    protected boolean canAttack( Char enemy ) {
-        if (pumpedUp > 0) {
-            //we check both from and to in this case as projectile logic isn't always symmetrical.
-            //this helps trim out BS edge-cases
-            return Dungeon.level.distance(enemy.pos, pos) <= 2
-                    && new Ballistica(pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos
-                    && new Ballistica(enemy.pos, pos, Ballistica.PROJECTILE).collisionPos == pos;
-        } else if (HP < HT / 2) {
-            return Dungeon.level.distance(enemy.pos, pos) <= 3
-                    && new Ballistica(pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos
-                    && new Ballistica(enemy.pos, pos, Ballistica.PROJECTILE).collisionPos == pos;
-        } else {
-            return super.canAttack(enemy);
-        }
-    }
+//    @Override
+//    protected boolean canAttack( Char enemy ) {
+//        if (pumpedUp > 0) {
+//            //we check both from and to in this case as projectile logic isn't always symmetrical.
+//            //this helps trim out BS edge-cases
+//            return Dungeon.level.distance(enemy.pos, pos) <= 2
+//                    && new Ballistica(pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos
+//                    && new Ballistica(enemy.pos, pos, Ballistica.PROJECTILE).collisionPos == pos;
+//        } else if (HP < HT / 2) {
+//            return Dungeon.level.distance(enemy.pos, pos) <= 3
+//                    && new Ballistica(pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos
+//                    && new Ballistica(enemy.pos, pos, Ballistica.PROJECTILE).collisionPos == pos;
+//        } else {
+//            return super.canAttack(enemy);
+//        }
+//    }
 
     public void bolt(Integer target, final Char mob){
         if (target != null) {
@@ -860,12 +860,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             }
         }
 
-        for (Buff buff : hero.buffs()) {
-            if (buff instanceof BeamTowerAdbility) {
-                buff.detach();
-            }
-        }
-
         GameScene.bossSlain();
         Buff.detach(hero, MagicGirlSayTimeLast.class);
 
@@ -878,7 +872,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
     @Override
     public void notice() {
-        super.notice();
+
         BossHealthBar.assignBoss(this);
 
        playBGM(Assets.BGM_SHOP, true);

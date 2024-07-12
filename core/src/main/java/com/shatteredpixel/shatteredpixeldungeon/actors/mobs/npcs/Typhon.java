@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.Cerberus;
@@ -102,7 +103,7 @@ public class Typhon extends NTNPC {
             });
             first = false;
             return true;
-        } else if(!secnod && !rd) {
+        } else if(!secnod && !rd && !Statistics.RandMode) {
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {
@@ -169,6 +170,7 @@ public class Typhon extends NTNPC {
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                 if (mob instanceof Cerberus) {
                     ScrollOfTeleportation.appear(mob, 356);
+                    Buff.affect(mob, Frost.class, 200f);
                     mob.sprite.idle();
                     mob.sprite.jump(46, 356, 95, 12f,new Callback() {
                         @Override
@@ -199,6 +201,7 @@ public class Typhon extends NTNPC {
                                             mob.die(null);
                                             yell(Messages.get(Typhon.class,"dog_home"));
                                             Buff.detach(mob, BruteBot.BruteBotRage.class);
+                                            die(null);
                                         }
                                     }));
                                 }

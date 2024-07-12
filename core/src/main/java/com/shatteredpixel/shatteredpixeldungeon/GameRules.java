@@ -30,7 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.DLCItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.RushMobScrollOfRandom;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
@@ -218,10 +217,10 @@ public class GameRules {
 //                    hero.belongings.misc = changeArtifact(Dungeon.hero.belongings.artifact);
 //                }
 //            }
-//            if (hero.belongings.ring != null) {
-//                hero.belongings.ring = changeRing(Dungeon.hero.belongings.ring);
-//                hero.belongings.ring.upgrade();
-//            }
+            if (hero.belongings.ring != null) {
+                hero.belongings.ring = changeRing(Dungeon.hero.belongings.ring);
+                hero.belongings.ring.upgrade();
+            }
 //            if (hero.belongings.artifact != null) {
 //                hero.belongings.artifact = changeArtifact(hero.belongings.artifact);
 //            }
@@ -236,9 +235,6 @@ public class GameRules {
                 } else if (item instanceof MeleeWeapon || item instanceof MissileWeapon) {
                     item.upgrade();
                     result = changeWeapon((Weapon) item);
-                } else if (item instanceof Ring) {
-                    item.upgrade();
-                    result = changeRing((Ring) item);
                 } else if (item instanceof Wand) {
                     item.upgrade();
                     result = changeWand((Wand) item);
@@ -269,7 +265,7 @@ public class GameRules {
                 }
 
                 if(!(item instanceof Bag || item instanceof DLCItem|| item instanceof TestItem || item instanceof Trinket || item instanceof TestBooks|| item instanceof SpiritBow
-                || item instanceof Potion || item instanceof Scroll || item instanceof Waterskin) && result !=null){
+                || item instanceof Potion || item instanceof Scroll || item instanceof Waterskin || item.unique) && result !=null){
                     item.detach(Dungeon.hero.belongings.backpack);
                 }
 

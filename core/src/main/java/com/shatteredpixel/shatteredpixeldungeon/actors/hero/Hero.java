@@ -780,7 +780,7 @@ public class Hero extends Char {
 		if (hasTalent(Talent.HOLD_FAST)){
 			int drBouns = Char.combatRoll(0, 2* pointsInTalent(Talent.HOLD_FAST));
 			if(buff(Chill.class) != null || buff(Frost.class) != null || buff(Slow.class) != null || buff(Roots.class) != null || buff(Paralysis.class) != null || buff(Cripple.class) != null){
-				dr += drBouns *3;
+				dr += drBouns * 3;
 			}else{
 				dr += drBouns;
 			}
