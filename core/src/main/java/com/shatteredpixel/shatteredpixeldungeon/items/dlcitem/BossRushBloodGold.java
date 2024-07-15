@@ -9,24 +9,13 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndHardNotification;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Callback;
 
-import java.util.ArrayList;
-
 public class BossRushBloodGold extends DLCItem {
-    public static final String AC_READ	= "READ";
+
     {
         image = ItemSpriteSheet.SKELETONGOLD;
 
         stackable = true;
         unique = true;
-    }
-
-
-    @Override
-    public ArrayList<String> actions(Hero hero) {
-        ArrayList<String> actions = super.actions(hero);
-        actions.remove(AC_DROP);
-        actions.add(AC_READ);
-        return actions;
     }
 
     @Override

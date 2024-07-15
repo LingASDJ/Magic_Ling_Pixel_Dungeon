@@ -79,7 +79,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessQinyue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessRedWhite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessUnlock;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.LockedDamage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
@@ -942,14 +941,21 @@ public class Hero extends Char {
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame ){
 			if(!CustomPlayer.shouldOverride)
 				delay = CustomPlayer.baseAttackDelay;
-			else if(CustomPlayer.shouldOverride)
-				return CustomPlayer.baseAttackDelay;
+			else return CustomPlayer.baseAttackDelay;
+		}
+
+		if (buff(Talent.LethalMomentumTracker.class) != null){
+			buff(Talent.LethalMomentumTracker.class).detach();
+			switch (pointsInTalent(Talent.LETHAL_MOMENTUM)){
+				case 1: default: delay=1f;break;
+				case 2:delay=1.5f;
+			}
 		}
 
 		if (!RingOfForce.fightingUnarmed(this)) {
-			
+
 			return delay * belongings.attackingWeapon().delayFactor( this );
-			
+
 		} else {
 			//Normally putting furor speed on unarmed attacks would be unnecessary
 			//But there's going to be that one guy who gets a furor+force ring combo
@@ -1823,12 +1829,6 @@ public class Hero extends Char {
 		}
 
 		damage = super.attackProc( enemy, damage );
-
-		if(enemy != null){
-			if (enemy.buff(LockedDamage.class) != null){
-				damage *= 1.1f;
-			}
-		}
 
 		KindOfWeapon wep;
 		if (RingOfForce.fightingUnarmed(this) && !RingOfForce.unarmedGetsWeaponEnchantment(this)){

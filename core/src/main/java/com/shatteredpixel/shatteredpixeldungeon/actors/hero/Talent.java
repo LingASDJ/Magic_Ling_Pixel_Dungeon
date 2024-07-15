@@ -88,7 +88,9 @@ import java.util.LinkedHashMap;
 public enum Talent {
 
 	//Warrior T1
-	HEARTY_MEAL(0), VETERANS_INTUITION(1), TEST_SUBJECT(2), IRON_WILL(3),
+	HEARTY_MEAL(0), VETERANS_INTUITION(1), PROVOKED_ANGER(2), IRON_WILL(3),
+	//T1 EX
+	LIGHT_ATTACK(160),
 	//Warrior T2
 	IRON_STOMACH(4), LIQUID_WILLPOWER(5), RUNIC_TRANSFERENCE(6), LETHAL_MOMENTUM(7), IMPROVISED_PROJECTILES(8),
 	//Warrior T3
@@ -717,6 +719,12 @@ public enum Talent {
 			Buff.affect(enemy, SuckerPunchTracker.class);
 		}
 
+		if (hero.hasTalent(Talent.PROVOKED_ANGER)
+				&& hero.buff(ProvokedAngerTracker.class) != null){
+			dmg += 1 + hero.pointsInTalent(Talent.PROVOKED_ANGER);
+			hero.buff(ProvokedAngerTracker.class).detach();
+		}
+
 		if (hero.hasTalent(Talent.FOLLOWUP_STRIKE) && enemy.isAlive() && enemy.alignment == Char.Alignment.ENEMY) {
 			if (hero.belongings.attackingWeapon() instanceof MissileWeapon) {
 				Buff.prolong(hero, FollowupStrikeTracker.class, 5f).object = enemy.id();
@@ -754,6 +762,13 @@ public enum Talent {
 		}
 
 		return dmg;
+	}
+
+	public static class ProvokedAngerTracker extends FlavourBuff{
+		{ type = Buff.buffType.POSITIVE; }
+		public int icon() { return BuffIndicator.WEAPON; }
+		public void tintIcon(Image icon) { icon.hardlight(1.43f, 1.43f, 1.43f); }
+		public float iconFadePercent() { return Math.max(0, 1f - (visualcooldown() / 5)); }
 	}
 
 	public static class SuckerPunchTracker extends Buff{};
@@ -796,7 +811,7 @@ public enum Talent {
 		//tier 1
 		switch (cls){
 			case WARRIOR: default:
-				Collections.addAll(tierTalents, HEARTY_MEAL, VETERANS_INTUITION, TEST_SUBJECT, IRON_WILL);
+				Collections.addAll(tierTalents, HEARTY_MEAL, VETERANS_INTUITION, PROVOKED_ANGER, IRON_WILL);
 				break;
 			case MAGE:
 				Collections.addAll(tierTalents, EMPOWERING_MEAL, SCHOLARS_INTUITION, TESTED_HYPOTHESIS, BACKUP_BARRIER);
