@@ -120,7 +120,7 @@ public class HeroSelectScene extends PixelScene {
 
 	private Avatar a;
 	private RedButton startBtn;
-	private IconButton skin;
+	private StyledButton skin;
 	private Image frame;
 
 	private IconButton infoButton;
@@ -254,10 +254,12 @@ public class HeroSelectScene extends PixelScene {
 		startBtn.icon(Icons.get(Icons.ENTER));
 		add( startBtn );
 
-		skin = new IconButton( NetIcons.get(NetIcons.GLOBE) ){
+		skin = new StyledButton( Chrome.Type.BLANK,Messages.get(WndKeyBindings.class, "skin") ){
 			@Override
 			protected void onClick() {
 				super.onClick();
+
+
 				heroClass().SetSkin(heroClass().GetSkin()+1);
 				a.heroClass(heroClass());
 			}
@@ -267,8 +269,9 @@ public class HeroSelectScene extends PixelScene {
 				return Messages.titleCase(Messages.get(WndKeyBindings.class, "switch_skin"));
 			}
 		};
-		skin.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
-		skin.setPos(frame.x+frame.width-12,frame.y);
+		skin.icon(NetIcons.get(NetIcons.GLOBE));
+		skin.setSize( 60, BUTTON_HEIGHT );
+		skin.setPos(frame.x- 39 + frame.width - 39 + FRAME_MARGIN_X,frame.y+7);
 		add(skin);
 
 		infoButton = new IconButton(Icons.get(Icons.INFO)){

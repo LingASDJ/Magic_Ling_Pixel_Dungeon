@@ -687,7 +687,7 @@ public class Item implements Bundlable {
 	public void throwSound(){
 		Sample.INSTANCE.play(Assets.Sounds.MISS, 0.6f, 0.6f, 1.5f);
 	}
-	
+
 	public void cast( final Hero user, final int dst ) {
 
 		final int cell = throwPos( user, dst );
@@ -698,7 +698,7 @@ public class Item implements Bundlable {
 
 		Char enemy = Actor.findChar( cell );
 		QuickSlotButton.target(enemy);
-		
+
 		final float delay = castDelay(user, dst);
 
 		if (enemy != null) {
@@ -707,56 +707,47 @@ public class Item implements Bundlable {
 							enemy.sprite,
 							this,
 							new Callback() {
-						@Override
-						public void call() {
-							curUser = user;
-							Item i = Item.this.detach(user.belongings.backpack);
-							if (i != null) i.onThrow(cell);
-							if (curUser.hasTalent(Talent.IMPROVISED_PROJECTILES)
-									&& !(Item.this instanceof MissileWeapon)
-									&& curUser.buff(Talent.ImprovisedProjectileCooldown.class) == null){
-								if (enemy.alignment != curUser.alignment){
-									Sample.INSTANCE.play(Assets.Sounds.HIT);
-									Buff.affect(enemy, Blindness.class, 1f + curUser.pointsInTalent(Talent.IMPROVISED_PROJECTILES));
-									Buff.affect(curUser, Talent.ImprovisedProjectileCooldown.class, 50f);
+								@Override
+								public void call() {
+									curUser = user;
+									Item i = Item.this.detach(user.belongings.backpack);
+									if (i != null) i.onThrow(cell);
+									if (curUser.hasTalent(Talent.IMPROVISED_PROJECTILES)
+											&& !(Item.this instanceof MissileWeapon)
+											&& curUser.buff(Talent.ImprovisedProjectileCooldown.class) == null){
+										if (enemy != null && enemy.alignment != curUser.alignment){
+											Sample.INSTANCE.play(Assets.Sounds.HIT);
+											Buff.affect(enemy, Blindness.class, 1f + curUser.pointsInTalent(Talent.IMPROVISED_PROJECTILES));
+											Buff.affect(curUser, Talent.ImprovisedProjectileCooldown.class, 50f);
+										}
+									}
+									if (user.buff(Talent.LethalMomentumTracker.class) != null){
+										float dec_dly=0f;
+										user.buff(Talent.LethalMomentumTracker.class).detach();
+										switch (user.pointsInTalent(Talent.LETHAL_MOMENTUM)){
+											case 1: default: dec_dly=1f;break;
+											case 2:dec_dly=1.5f;
+										}
+										user.spendAndNext(Math.max(0f,delay-dec_dly));
+									} else {
+										user.spendAndNext(delay);
+									}
 								}
-							}
-
-							if (user.buff(Talent.LethalMomentumTracker.class) != null){
-								float dec_dly;
-								user.buff(Talent.LethalMomentumTracker.class).detach();
-								switch (user.pointsInTalent(Talent.LETHAL_MOMENTUM)){
-									case 1: default: dec_dly=1f;break;
-									case 2:dec_dly=1.5f;
-								}
-								user.spendAndNext(Math.max(0f,delay-dec_dly));
-							} else {
-								user.spendAndNext(delay);
-							}
-
-							if (user.buff(Talent.LethalMomentumTracker.class) != null){
-								user.buff(Talent.LethalMomentumTracker.class).detach();
-								user.next();
-							} else {
-								user.spendAndNext(delay);
-							}
-						}
-					});
+							});
 		} else {
 			((MissileSprite) user.sprite.parent.recycle(MissileSprite.class)).
 					reset(user.sprite,
 							cell,
 							this,
 							new Callback() {
-						@Override
-						public void call() {
-							curUser = user;
-							Item i = Item.this.detach(user.belongings.backpack);
-							user.spend(delay);
-							if (i != null) i.onThrow(cell);
-							user.next();
-						}
-					});
+								@Override
+								public void call() {
+									curUser = user;
+									Item i = Item.this.detach(user.belongings.backpack);
+									if (i != null) i.onThrow(cell);
+									user.spendAndNext(delay);
+								}
+							});
 		}
 	}
 	
