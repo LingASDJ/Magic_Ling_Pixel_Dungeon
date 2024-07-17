@@ -833,7 +833,7 @@ public class Hero extends Char {
 		}
 
 		if( attackDelay() >1 && hasTalent(Talent.STRONGMAN)){
-			dmg += dmg * (attackDelay()-1f) * ( 1/3 * pointsInTalent(Talent.STRONGMAN));
+			dmg += (int) (dmg * (attackDelay()-1f) * ( 1f/3f * pointsInTalent(Talent.STRONGMAN)));
 		}
 
 		if (dmg < 0) dmg = 0;
