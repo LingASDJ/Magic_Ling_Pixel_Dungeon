@@ -1899,7 +1899,38 @@ public class Hero extends Char {
 		if (buff(TimekeepersHourglass.timeStasis.class) != null)
 			return;
 
-
+		if(hasTalent(Talent.PAIN_SCAR) && HP-dmg<=0){
+			int point = pointsInTalent(Talent.PAIN_SCAR);
+			float ber = 0;
+			if(buff(Berserk.class)!=null)
+				ber = buff(Berserk.class).getPower();
+			switch (point){
+				case 1:
+					if(ber>=0.2f&&HT>20) {
+						HT -= 20;
+						buff(Berserk.class).reducePower(0.2f);
+						GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+						return;
+					}
+					break;
+				case 2:
+					if(ber>=0.15f&&HT>15) {
+						HT -= 15;
+						buff(Berserk.class).reducePower(0.15f);
+						GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+						return;
+					}
+					break;
+				case 3:
+					if(ber>=0.1f&&HT>10) {
+						HT -= 10;
+						buff(Berserk.class).reducePower(0.1f);
+						GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+						return;
+					}
+					break;
+			}
+		}
 
 		//regular damage interrupt, triggers on any damage except specific mild DOT effects
 		// unless the player recently hit 'continue moving', in which case this is ignored
