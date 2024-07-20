@@ -63,6 +63,10 @@ public class Item implements Bundlable {
 
 	public interface AnimationItem{}
 
+	public void getCurse(boolean extraEffect){
+		cursed=cursedKnown=true;
+	}
+
 	@Override
 	public String toString() {
 
@@ -90,6 +94,8 @@ public class Item implements Bundlable {
 	
 	public String defaultAction;
 	public boolean usesTargeting;
+
+	public boolean curseInfusionBonus = false;
 
 	//TODO should these be private and accessed through methods?
 	public int image = 0;

@@ -3313,6 +3313,12 @@ public class Hero extends Char {
         hero.sprite.showStatus(0x00ffff, "+" + value);
     }
 
+	@Override
+	public float talentProc(){
+		if (hasTalent(Talent.RUNIC_TRANSFERENCE) && (pointsInTalent(Talent.RUNIC_TRANSFERENCE)>1)) return 1.25f;
+		return super.talentProc();
+	}
+
     public interface Doom {
         void onDeath();
     }
