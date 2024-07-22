@@ -304,6 +304,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 			Buff.affect(target, ParryTracker.class, Actor.TICK).SetFinish(isFinish);
 			((Hero)target).spendAndNext(TICK);
 			Dungeon.hero.busy();
+			Dungeon.hero.onOperateComplete();
 		} else if(move == ComboMove.FINISH){
 			isFinish=true;
 			if (Dungeon.hero.hasTalent(Talent.VENT_NOPLACE)){
@@ -454,8 +455,8 @@ public class Combo extends Buff implements ActionIndicator.Action {
 						count = count / 2 - 1;
 						hit();
 						couldUseTime = (count + 1) / 2;
-						hero.spendAndNext(hero.attackDelay());
 					}
+					hero.spendAndNext(hero.attackDelay());
 					break;
 				case PARRY:
 					break;
@@ -491,7 +492,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 				case CLEAVE:
 					cleaveUsed=true;
 					if(!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)){
-						hit();hit();
+						hit();
 					}
 					hero.spendAndNext(hero.attackDelay());
 					break;
