@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.LuoWhite;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.RiceSword;
@@ -46,6 +47,7 @@ public class WndLuoWhite extends Window {
         LuoWhite.shop1 = new SaiPlus();
 
         LuoWhite.shop4 = new RiceSword();
+        LuoWhite.shop5 = new RedBloodMoon();
 
         IconTitle titlebar = new IconTitle();
         titlebar.setRect(0, 0, WIDTH, 0);
@@ -142,7 +144,9 @@ public class WndLuoWhite extends Window {
     }
 
     public void itemUnlock(Item item){
-        if( (item instanceof DiedCrossBow|| item instanceof MoonDao || item instanceof SaiPlus|| item instanceof RiceSword) && !SPDSettings.isItemUnlock( item.name() ) ){
+        if( (item instanceof DiedCrossBow|| item instanceof MoonDao
+                || item instanceof SaiPlus || item instanceof RiceSword
+                || item instanceof RedBloodMoon) && !SPDSettings.isItemUnlock( item.name() ) ){
             if( item instanceof DiedCrossBow )
                 Generator.setProbs( item, Generator.Category.WEP_T5, 1.5f );
             if( item instanceof MoonDao )
@@ -151,7 +155,8 @@ public class WndLuoWhite extends Window {
                 Generator.setProbs( item, Generator.Category.WEP_T5, 1 );
             if( item instanceof RiceSword )
                 Generator.setProbs( item, Generator.Category.WEP_T5, 1.4f );
-
+            if( item instanceof RedBloodMoon)
+                Generator.setProbs( item,Generator.Category.WEP_T4, 1.2f );
             SPDSettings.unlockItem( item.getClass().getSimpleName() );
         }
     }

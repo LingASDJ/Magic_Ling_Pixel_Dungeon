@@ -5,6 +5,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -32,48 +33,51 @@ public class RedBloodMoon extends MeleeWeapon {
             image = ItemSpriteSheet.RedBloodMoonEX;
         }
     }
-
+    @Override
+    public int iceCoinValue() {
+        if (Badges.isUnlocked(Badges.Badge.NYZ_SHOP)){
+            return (int) ((235 + tier*25) * 0.9f);
+        }
+        return 235 + tier*25;
+    }
     public static int deadking=0;
 
     public RedBloodMoon() {
         this.image = ItemSpriteSheet.RedBloodMoon;
-        this.tier = 3;
+        this.tier = 5;
     }
 
-    public int damageRoll(Char var1) {
-        if (var1 instanceof Hero) {
-            Hero var2 = (Hero)var1;
-            Char var3 = var2.enemy();
-            if (var3 instanceof Mob && ((Mob)var3).surprisedBy(var2)) {
-                int var4 = this.max();
-                int var5 = this.min();
-                var4 = this.augment.damageFactor(Random.NormalIntRange(this.min() + Math.round((float)(var4 - var5) * 0.9F), this.max()));
-                int var6 = var2.STR() - this.STRReq();
-                var5 = var4;
-                if (var6 > 0) {
-                    var5 = var4 + Random.IntRange(0, var6);
+    public int damageRoll(Char ch) {
+        if (ch instanceof Hero) {
+            Hero object = (Hero)ch;
+            Char enemied = object.enemy();
+            if (enemied instanceof Mob && ((Mob)enemied).surprisedBy(object)) {
+                int max = this.max();
+                int min = this.min();
+                max = this.augment.damageFactor(Random.NormalIntRange(this.min() + Math.round((float)(max - min) * 0.9F), this.max()));
+                int STR = object.STR() - this.STRReq();
+                min = max;
+                if (STR > 0) {
+                    min = max + Random.IntRange(0, STR);
                 }
 
                 if (Random.Int(2) == 0) {
-                    Buff.affect(var3, Bleeding.class).set((float)(var5 * 4));
+                    Buff.affect(enemied, Bleeding.class).set((float)(min * 4));
                 }
 
-                return var5;
+                return min;
             }
         }
 
-        return super.damageRoll(var1);
+        return super.damageRoll(ch);
     }
 
-    public int max(int var1) {
-        int var2 = Math.round((float)(this.tier + 1) * 1.125F);
-        int var3 = Math.round((float)(this.tier + 4) * 1.125F);
-        this.DLY = 1.25F;
-        return var2 * var1 + var3;
+    public int min(int level) {
+        return 3 + level;
     }
 
-    public int min(int var1) {
-        return Math.round((float)(this.tier + 0) * 1.08F) * var1 + Math.round((float)(this.tier + 1) * 0.6675F);
+    public int max(int level) {
+        return 12 + level * 5;
     }
 
   @Override
@@ -122,7 +126,7 @@ public class RedBloodMoon extends MeleeWeapon {
     }
 
 
-    public static class RedMagicDied extends MolotovHuntsman {
+    public class RedMagicDied extends MolotovHuntsman {
         {
             state = WANDERING;
             spriteClass = REDPDHBLRTT.class;
@@ -130,8 +134,15 @@ public class RedBloodMoon extends MeleeWeapon {
         }
 
         public RedMagicDied() {
-            HP = HT = 5 + Dungeon.escalatingDepth() * 2;
-            defenseSkill = 4 + Dungeon.escalatingDepth();
+            HP = HT = 5 + RedBloodMoon.this.level() * 2;
+            defenseSkill = 4 + RedBloodMoon.this.level();
+        }
+        private class TRUE { }
+        @Override
+        public boolean attack(Char enemy, float dmgMulti, float dmgBonus, float accMulti ) {
+            boolean result = super.attack( enemy, dmgMulti, dmgBonus, accMulti );
+            damage(1,new TRUE());
+            return result;
         }
 
         @Override
@@ -147,9 +158,10 @@ public class RedBloodMoon extends MeleeWeapon {
             }
         }
 
+
     }
 
-    public static class GuardianKnight extends xykl {
+    public class GuardianKnight extends xykl {
         {
             state = WANDERING;
             spriteClass = SRPDHBLRTT.class;
@@ -157,8 +169,8 @@ public class RedBloodMoon extends MeleeWeapon {
         }
 
         public GuardianKnight() {
-            HP = HT = 5 + Dungeon.escalatingDepth() * 2;
-            defenseSkill = 4 + Dungeon.escalatingDepth();
+            HP = HT = 5 + RedBloodMoon.this.level() * 2;
+            defenseSkill = 4 + RedBloodMoon.this.level();
         }
 
         @Override

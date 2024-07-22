@@ -555,12 +555,12 @@ public class Generator {
 					GreenSword.class,
 
 					SDBSword.class,
-					RedBloodMoon.class,
+
 					LifeTreeSword.class,
 
 					MoonDao.class,
 			};
-			WEP_T3.probs = new float[]{ 1, 5, 4, 4, 4 ,3,5,3,6,0, 0,Statistics.RandMode ? 5 : 0,0, SPDSettings.isItemUnlock(MoonDao.class.getSimpleName() ) ? 1.5f : 0 };
+			WEP_T3.probs = new float[]{ 1, 5, 4, 4, 4 ,3,5,3,6,0, 0,0, SPDSettings.isItemUnlock(MoonDao.class.getSimpleName() ) ? 1.5f : 0 };
 
 			WEP_T4.classes = new Class<?>[]{
 					Longsword.class,
@@ -572,9 +572,11 @@ public class Generator {
 					Katana.class,
 					GrilledHerring.class,
 					Gauntlet.class,
-					Seekingspear.class
+					Seekingspear.class,
+
+					RedBloodMoon.class,
 			};
-			WEP_T4.probs = new float[]{ 6, 5, 5, 4, 4, 4,2,3, 2, 4 };
+			WEP_T4.probs = new float[]{ 6, 5, 5, 4, 4, 4,2,3, 2, 4, SPDSettings.isItemUnlock(RedBloodMoon.class.getSimpleName() ) ? 1.2f : 0 };
 
 			WEP_T5.classes = new Class<?>[]{
 					LockSword.class,
