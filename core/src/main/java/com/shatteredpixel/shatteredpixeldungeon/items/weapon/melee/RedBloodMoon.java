@@ -5,6 +5,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -13,16 +15,16 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MolotovHuntsman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.xykl;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MolotovHuntsmanSprite;
-import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -40,11 +42,10 @@ public class RedBloodMoon extends MeleeWeapon {
         }
         return 235 + tier*25;
     }
-    public static int deadking=0;
 
     public RedBloodMoon() {
         this.image = ItemSpriteSheet.RedBloodMoon;
-        this.tier = 5;
+        this.tier = 4;
     }
 
     public int damageRoll(Char ch) {
@@ -80,22 +81,39 @@ public class RedBloodMoon extends MeleeWeapon {
         return 12 + level * 5;
     }
 
+    @Override
+    public boolean doUnequip(Hero hero, boolean collect, boolean single) {
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            if (mob instanceof RedBloodMoon.GuardianKnight
+                    || mob instanceof RedBloodMoon.RedMagicDied) {
+                mob.die(null);
+            }
+        }
+        return super.doUnequip(hero, collect, single);
+    }
+
   @Override
     public int proc(Char attacker, Char defender, int damage) {
         for (int i : PathFinder.NEIGHBOURS9){
+            float count = 0;
+
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                if (mob instanceof RedBloodMoon.GuardianKnight
+                        || mob instanceof RedBloodMoon.RedMagicDied) {
+                    count += mob.spawningWeight();
+                }
+            }
 
             if (!Dungeon.level.solid[attacker.pos + i]
                     && !Dungeon.level.pit[attacker.pos + i]
                     && Actor.findChar(attacker.pos + i) == null
-                    && attacker == Dungeon.hero && deadking<3) {
-
+                    && attacker == hero && count < 2) {
                 if(level()>=3){
                     RedMagicDied guardianKnight1 = new RedMagicDied();
                     guardianKnight1.pos = attacker.pos + i;
                     guardianKnight1.aggro(defender);
                     GameScene.add(guardianKnight1);
                     Dungeon.level.occupyCell(guardianKnight1);
-                    deadking++;
                     CellEmitter.get(guardianKnight1.pos).burst(Speck.factory(Speck.EVOKE), 4);
                 } else {
                     GuardianKnight guardianKnight1 = new GuardianKnight();
@@ -104,64 +122,93 @@ public class RedBloodMoon extends MeleeWeapon {
                     guardianKnight1.aggro(defender);
                     GameScene.add(guardianKnight1);
                     Dungeon.level.occupyCell(guardianKnight1);
-                    deadking++;
                     CellEmitter.get(guardianKnight1.pos).burst(Speck.factory(Speck.EVOKE), 4);
                 }
-
-
                 break;
             } else if(!Dungeon.level.solid[attacker.pos + i]) {
                 return super.proc( attacker, defender, damage );
             }
         }
-
-      for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-          if (!(mob instanceof GuardianKnight)) {
-              deadking = 0;
-              break;
-          }
-      }
-
         return super.proc(attacker, defender, damage);
     }
 
 
-    public class RedMagicDied extends MolotovHuntsman {
+    public static class RedMagicDied extends Mob {
         {
             state = WANDERING;
             spriteClass = REDPDHBLRTT.class;
             alignment = Alignment.ALLY;
         }
 
+        @Override
+        public int attackProc(Char var1, int var2) {
+            int var4;
+            if (Random.Int(0, 10) > 7) {
+
+                var4 = Random.IntRange(1, 10);
+                this.sprite.showStatus(16711680, Messages.get(MolotovHuntsmanSprite.class,"attack_msg_"+var4));
+            }
+
+            int var5 = super.attackProc(var1, var2);
+            var4 = var1.pos;
+            CellEmitter.center(var4).burst(BlastParticle.FACTORY, 30);
+            return var5;
+        }
+
         public RedMagicDied() {
-            HP = HT = 5 + RedBloodMoon.this.level() * 2;
-            defenseSkill = 4 + RedBloodMoon.this.level();
+            if(hero.belongings.weapon instanceof RedBloodMoon){
+                HP = HT = 5 + hero.belongings.weapon.level() * 2;
+                defenseSkill = 4 + hero.belongings.weapon.level();
+            } else {
+                HP = HT = 5 * 2;
+                defenseSkill = 4;
+            }
         }
         private class TRUE { }
         @Override
         public boolean attack(Char enemy, float dmgMulti, float dmgBonus, float accMulti ) {
+            damage(Random.NormalIntRange(1,hero.belongings.weapon.level()/3+2),new TRUE());
             boolean result = super.attack( enemy, dmgMulti, dmgBonus, accMulti );
-            damage(1,new TRUE());
             return result;
         }
 
-        @Override
-        public int drRoll() {
-            return Random.Int(Dungeon.escalatingDepth(), Dungeon.escalatingDepth());
+        protected boolean canAttack(Char e) {
+            Ballistica var2 = new Ballistica(this.pos, e.pos, 7);
+            boolean var3;
+            var3 = !Dungeon.level.adjacent(this.pos, e.pos) && var2.collisionPos == e.pos;
+            if(Random.Float()<0.2f) new Bomb().explodeMobs(e.pos);
+            return var3;
         }
-        public void die(Object cause) {
-            super.die(cause);
-            RedBloodMoon.deadking--;
-            if (cause != Chasm.class) {
-                this.sprite.showStatus(16711680, Messages.get(this,"death_msg_"+Random.IntRange(1, 8)));
 
+        public int damageRoll() {
+            if(hero.belongings.weapon instanceof RedBloodMoon){
+                return Random.NormalIntRange(4, 9 + hero.belongings.weapon.level());
+            } else {
+                return Random.NormalIntRange(4, 9);
             }
         }
 
 
+        protected boolean getCloser(int var1) {
+            boolean var2 = false;
+            if (this.state == this.HUNTING) {
+                boolean var3 = var2;
+                if (this.enemySeen) {
+                    if (this.getFurther(var1)) {
+                        var3 = true;
+                    }
+                }
+                return var3;
+            } else {
+                return super.getCloser(var1);
+            }
+        }
+        public int attackSkill(Char target) {
+            return 14;
+        }
     }
 
-    public class GuardianKnight extends xykl {
+    public static class GuardianKnight extends xykl {
         {
             state = WANDERING;
             spriteClass = SRPDHBLRTT.class;
@@ -169,19 +216,19 @@ public class RedBloodMoon extends MeleeWeapon {
         }
 
         public GuardianKnight() {
-            HP = HT = 5 + RedBloodMoon.this.level() * 2;
-            defenseSkill = 4 + RedBloodMoon.this.level();
+            if(hero.belongings.weapon instanceof RedBloodMoon){
+                HP = HT = 2 + hero.belongings.weapon.level();
+                defenseSkill = 4 + hero.belongings.weapon.level();
+            } else {
+                HP = HT = 2;
+                defenseSkill = 4;
+            }
         }
 
         @Override
         public void die(Object cause) {
             weapon = null;
             super.die(cause);
-        }
-
-        @Override
-        public int drRoll() {
-            return Random.Int(Dungeon.escalatingDepth(), Dungeon.escalatingDepth());
         }
     }
 
@@ -212,20 +259,4 @@ public class RedBloodMoon extends MeleeWeapon {
             tint(1, 0, 0, 0.4f);
         }
     }
-
-    private static final String partcold   = "partcold";
-
-    @Override
-    public void storeInBundle(Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put(partcold, deadking);
-    }
-
-    @Override
-    public void restoreFromBundle(Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        deadking = bundle.getInt(partcold);
-    }
-
-
 }
