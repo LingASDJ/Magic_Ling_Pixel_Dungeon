@@ -491,6 +491,8 @@ public enum HeroClass {
 		}
 	}
 
+	private static boolean onlyMode = false;
+
 	public void SetSkin(int skinIndex){
 		boolean isSkinUnlock = false;
 		Image img = new Image(this.GetSkinAssest());
@@ -528,7 +530,10 @@ public enum HeroClass {
 
 		if(!isSkinUnlock){
 			skinIndex=0;
-			ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(HeroClass.class,"switch_skin2")));
+			if(!onlyMode){
+				ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(HeroClass.class,"switch_skin2")));
+				onlyMode = true;
+			}
 		}
 
 

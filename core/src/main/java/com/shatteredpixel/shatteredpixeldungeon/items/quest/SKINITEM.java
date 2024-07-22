@@ -17,7 +17,7 @@ public class SKINITEM extends Item {
 
     public static class SKIN_WA extends SKINITEM {
         {
-            image = ItemSpriteSheet.SKIN_2;
+            image = ItemSpriteSheet.SKIN_1;
         }
         @Override
         public int iceCoinValue() {
