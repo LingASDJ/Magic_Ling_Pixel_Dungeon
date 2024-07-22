@@ -230,7 +230,7 @@ public class Bestiary {
 					return new ArrayList<>(Arrays.asList(
 							ApprenticeWitch.class, Crumb.class, ApprenticeWitch.class,Butcher.class,Crumb.class));
 
-				case 29:
+				case 29: case 30:
 					return new ArrayList<>(Arrays.asList(
 							ApprenticeWitch.class, Crumb.class, PumkingBomber.class, ApprenticeWitch.class));
 

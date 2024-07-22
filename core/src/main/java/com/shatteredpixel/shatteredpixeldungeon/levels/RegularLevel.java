@@ -368,7 +368,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 //		if (!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)) {
-			if (depth == 18 && !anCityQuestProgress) {
+			if (depth == 18 && !anCityQuestProgress && !Statistics.RandMode) {
 				initRooms.add(new DreamcatcherRoom());
 				DragonGirlBlue.Quest.spawned = true;
 				anCityQuestProgress = true;
@@ -376,6 +376,8 @@ public abstract class RegularLevel extends Level {
 //		}
 
 		if (Dungeon.shopOnLevel() && branch == 0) {
+			initRooms.add(new ShopRoom());
+		} else if(Statistics.bossRushMode && branch == 8 && Dungeon.shopRushLevel()){
 			initRooms.add(new ShopRoom());
 		}
 

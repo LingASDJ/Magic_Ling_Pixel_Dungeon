@@ -24,7 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
@@ -142,12 +141,12 @@ public class WandOfLivingEarth extends DamageWand {
 					GameScene.add(guardian, 1);
 					Dungeon.level.occupyCell(guardian);
 
-					if(Statistics.RandMode){
-						Mob gooFriend = new GooMob();
-						gooFriend.alignment = Char.Alignment.ALLY;
-						gooFriend.pos = closest;
-						GameScene.add(gooFriend);
-					}
+//					if(Statistics.RandMode){
+//						Mob gooFriend = new GooMob();
+//						gooFriend.alignment = Char.Alignment.ALLY;
+//						gooFriend.pos = closest;
+//						GameScene.add(gooFriend);
+//					}
 
 
 				}

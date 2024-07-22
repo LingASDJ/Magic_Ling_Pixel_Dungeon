@@ -21,6 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
@@ -28,10 +29,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.TestBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.DLCItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.RushMobScrollOfRandom;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilLantern;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -206,21 +209,21 @@ public class GameRules {
                 hero.belongings.weapon.identify();
                 hero.belongings.weapon.upgrade();
             }
-            if (Dungeon.hero.belongings.misc != null) {
-                if (hero.belongings.misc instanceof Ring) {
-                    hero.belongings.misc = changeRing(Dungeon.hero.belongings.ring);
-                    hero.belongings.misc.upgrade();
-                } else if(hero.belongings.misc instanceof Artifact) {
-                    hero.belongings.misc = changeArtifact(Dungeon.hero.belongings.artifact);
-                }
-            }
+//            if (Dungeon.hero.belongings.misc != null) {
+//                if (hero.belongings.misc instanceof Ring) {
+//                    hero.belongings.misc = changeRing(Dungeon.hero.belongings.ring);
+//                    hero.belongings.misc.upgrade();
+//                } else if(hero.belongings.misc instanceof Artifact) {
+//                    hero.belongings.misc = changeArtifact(Dungeon.hero.belongings.artifact);
+//                }
+//            }
             if (hero.belongings.ring != null) {
                 hero.belongings.ring = changeRing(Dungeon.hero.belongings.ring);
                 hero.belongings.ring.upgrade();
             }
-            if (hero.belongings.artifact != null) {
-                hero.belongings.artifact = changeArtifact(hero.belongings.artifact);
-            }
+//            if (hero.belongings.artifact != null) {
+//                hero.belongings.artifact = changeArtifact(hero.belongings.artifact);
+//            }
             for (Item item : is.toArray(new Item[0])) {
                 if (item instanceof MagesStaff) {
                     result = changeStaff((MagesStaff) item);
@@ -232,9 +235,6 @@ public class GameRules {
                 } else if (item instanceof MeleeWeapon || item instanceof MissileWeapon) {
                     item.upgrade();
                     result = changeWeapon((Weapon) item);
-                } else if (item instanceof Ring) {
-                    item.upgrade();
-                    result = changeRing((Ring) item);
                 } else if (item instanceof Wand) {
                     item.upgrade();
                     result = changeWand((Wand) item);
@@ -264,7 +264,8 @@ public class GameRules {
 
                 }
 
-                if(!(item instanceof Bag || item instanceof DLCItem|| item instanceof TestItem || item instanceof Trinket || item instanceof TestBooks) && result !=null){
+                if(!(item instanceof Bag || item instanceof DLCItem|| item instanceof TestItem || item instanceof Trinket || item instanceof TestBooks|| item instanceof SpiritBow
+                || item instanceof Potion || item instanceof Scroll || item instanceof Waterskin || item.unique) && result !=null){
                     item.detach(Dungeon.hero.belongings.backpack);
                 }
 

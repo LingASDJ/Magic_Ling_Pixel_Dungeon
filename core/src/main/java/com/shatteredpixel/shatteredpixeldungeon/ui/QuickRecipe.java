@@ -453,7 +453,7 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe( new ScrollOfRoseShiled.Recipe(),
 						new ArrayList<Item>(Arrays.asList(new PotionOfPurity(),
 								new StoneOfBlink())),
-						new ScrollOfRoseShiled().quantity(3)));
+						new ScrollOfRoseShiled().quantity(4)));
 				result.add(null);
 				result.add(null);
 				result.add(new QuickRecipe( new BloodthirstyThorn.Recipe(),

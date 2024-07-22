@@ -79,7 +79,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessQinyue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessRedWhite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessUnlock;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.LockedDamage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
@@ -789,7 +788,7 @@ public class Hero extends Char {
 		if (hasTalent(Talent.HOLD_FAST)){
 			int drBouns = Char.combatRoll(0, 2* pointsInTalent(Talent.HOLD_FAST));
 			if(buff(Chill.class) != null || buff(Frost.class) != null || buff(Slow.class) != null || buff(Roots.class) != null || buff(Paralysis.class) != null || buff(Cripple.class) != null){
-				dr += drBouns *3;
+				dr += drBouns * 3;
 			}else{
 				dr += drBouns;
 			}
@@ -951,14 +950,21 @@ public class Hero extends Char {
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame ){
 			if(!CustomPlayer.shouldOverride)
 				delay = CustomPlayer.baseAttackDelay;
-			else if(CustomPlayer.shouldOverride)
-				return CustomPlayer.baseAttackDelay;
+			else return CustomPlayer.baseAttackDelay;
+		}
+
+		if (buff(Talent.LethalMomentumTracker.class) != null){
+			buff(Talent.LethalMomentumTracker.class).detach();
+			switch (pointsInTalent(Talent.LETHAL_MOMENTUM)){
+				case 1: default: delay=1f;break;
+				case 2:delay=1.5f;
+			}
 		}
 
 		if (!RingOfForce.fightingUnarmed(this)) {
-			
+
 			return delay * belongings.attackingWeapon().delayFactor( this );
-			
+
 		} else {
 			//Normally putting furor speed on unarmed attacks would be unnecessary
 			//But there's going to be that one guy who gets a furor+force ring combo
@@ -1827,12 +1833,6 @@ public class Hero extends Char {
 	public int attackProc( final Char enemy, int damage ) {
 
 		damage = super.attackProc( enemy, damage );
-
-		if(enemy != null){
-			if (enemy.buff(LockedDamage.class) != null){
-				damage *= 1.1f;
-			}
-		}
 
 		KindOfWeapon wep;
 		if (RingOfForce.fightingUnarmed(this) && !RingOfForce.unarmedGetsWeaponEnchantment(this)){
@@ -3358,6 +3358,12 @@ public class Hero extends Char {
         }
         hero.sprite.showStatus(0x00ffff, "+" + value);
     }
+
+	@Override
+	public float talentProc(){
+		if (hasTalent(Talent.RUNIC_TRANSFERENCE) && (pointsInTalent(Talent.RUNIC_TRANSFERENCE)>1)) return 1.25f;
+		return super.talentProc();
+	}
 
     public interface Doom {
         void onDeath();

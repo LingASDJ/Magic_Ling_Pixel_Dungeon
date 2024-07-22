@@ -266,12 +266,8 @@ abstract public class ClassArmor extends Armor {
 									// we assume the player wants the glyph on the destination armor
 									// they can always manually detach first if they don't.
 									// otherwise we automate glyph transfer just like upgrades
-									if (armor.glyph == null && seal.canTransferGlyph()){
-										//do nothing, keep our glyph
-									} else {
-										inscribe(armor.glyph);
-										seal.setGlyph(null);
-									}
+									inscribe(armor.glyph);
+									seal.setGlyph(null);
 								} else {
 									inscribe(armor.glyph);
 								}

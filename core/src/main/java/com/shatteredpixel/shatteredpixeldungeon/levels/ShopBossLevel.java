@@ -68,6 +68,8 @@ public class ShopBossLevel extends Level {
 
         FireMagicDied boss = new FireMagicDied();
         boss.pos = WIDTH*16 + 17;
+        boss.notice();
+        boss.state = boss.HUNTING;
         GameScene.add(boss);
 
         //activateAll();

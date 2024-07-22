@@ -39,15 +39,6 @@ import com.watabou.utils.Random;
 
 //Level Rules
 public class LevelRules {
-//    public static Level createBossRushLevel() {
-//
-//    }
-
-    public static Level createCheatingLevel() {
-        return new CaveTwoBossLevel();
-    }
-
-
 
     public static Level createStandardLevel() {
 

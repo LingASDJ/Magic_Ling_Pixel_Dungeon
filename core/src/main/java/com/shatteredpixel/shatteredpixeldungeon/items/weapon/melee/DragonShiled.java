@@ -3,7 +3,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
@@ -48,9 +47,9 @@ public class DragonShiled extends MeleeWeapon {
         }
     }
 
-    @Override
-    protected void duelistAbility(Hero hero, Integer target) {
-        RoundShield.guardAbility(hero, 2, this);
-    }
+//    @Override
+//    protected void duelistAbility(Hero hero, Integer target) {
+//        RoundShield.guardAbility(hero, 2, this);
+//    }
 
 }

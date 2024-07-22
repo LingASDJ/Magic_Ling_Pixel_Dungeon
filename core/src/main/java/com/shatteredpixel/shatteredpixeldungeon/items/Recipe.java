@@ -233,17 +233,18 @@ public abstract class Recipe {
 			new UnstableSpell.Recipe(),
 			new Alchemize.Recipe(),
 			//new SmallLightHeader.Recipe(),
+
+			new ScrollOfRoseShiled.Recipe(),
+			new IceFishSword.Recipe(),
+			new WaterSoul.Recipe(),
 	};
 	
 	private static Recipe[] threeIngredientRecipes = new Recipe[]{
 			new Potion.SeedToPotion(),
 			new StewedMeat.threeMeat(),
-			new WaterSoul.Recipe(),
 			new MeatPie.Recipe(),
-			new ScrollOfRoseShiled.Recipe(),
 			new ScrollOfFlameCursed.Recipe(),
 			new WandOfBlueFuck.Recipe(),
-			new IceFishSword.Recipe(),
 			new LightFood.Recipe(),
 			new WandOfHightHunderStorm.Recipe(),
 			new BloodthirstyThorn.Recipe(),

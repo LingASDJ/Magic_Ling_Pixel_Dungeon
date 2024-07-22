@@ -352,7 +352,7 @@ public class Rival extends Boss implements Callback {
     public void die( Object cause ) {
         Dungeon.level.unseal();
         DeepShadowLevel.State state = ((DeepShadowLevel)Dungeon.level).state();
-        if (Statistics.bossRushMode && state != DeepShadowLevel.State.WON) {
+        if (state != DeepShadowLevel.State.WON) {
 
             //cures doom and drops missile weapons
             for (Buff buff : buffs()) {
@@ -420,10 +420,9 @@ public class Rival extends Boss implements Callback {
                             break;
                         case PHASE_4:
                             wand = new WandOfVenom();
-                            wand.level(8);
+                            wand.level(4);
                             wand.updateLevel();
                             misc1 = new RingOfTenacity();
-                            wand.curCharges = 100;
                             break;
                     }
                     HP = HT;
