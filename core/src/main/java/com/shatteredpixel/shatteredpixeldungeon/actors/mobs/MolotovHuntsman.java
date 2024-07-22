@@ -32,8 +32,6 @@ public class MolotovHuntsman extends Mob {
         this.EXP = 15;
         this.state = this.SLEEPING;
         this.baseSpeed = 0.5625F;
-//        this.loot = new RedBloodMoon();
-//        this.lootChance = 0.005F;
         this.combo = 0;
     }
 
@@ -70,11 +68,7 @@ public class MolotovHuntsman extends Mob {
     protected boolean canAttack(Char var1) {
         Ballistica var2 = new Ballistica(this.pos, var1.pos, 7);
         boolean var3;
-        if (!Dungeon.level.adjacent(this.pos, var1.pos) && var2.collisionPos == var1.pos) {
-            var3 = true;
-        } else {
-            var3 = false;
-        }
+        var3 = !Dungeon.level.adjacent(this.pos, var1.pos) && var2.collisionPos == var1.pos;
 
         return var3;
     }
