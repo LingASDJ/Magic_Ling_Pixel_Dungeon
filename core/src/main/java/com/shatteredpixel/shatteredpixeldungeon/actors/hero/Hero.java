@@ -309,7 +309,10 @@ public class Hero extends Char {
 	public int STR;
 	
 	public float awareness;
-	
+
+	private int resistHealth = 0;
+	private int originalHT = 20;
+
 	public int lvl = 1;
     private static final String ATTACK = "attackSkill";
     private static final String DEFENSE = "defenseSkill";
@@ -319,10 +322,13 @@ public class Hero extends Char {
     private static final String HTBOOST = "htboost";
     private static final String LANTERFTR = "lanterfire";
     private static final String ICEHP = "icehp";
-	
+	private static final String RESIST = "resistHealth";
+
 	public void updateHT( boolean boostHP ){
 		int curHT = HT;
-		
+
+		originalHT = 20 + 5*(lvl-1);
+
 		HT = 20 + 5*(lvl-1) + HTBoost;
 		float multiplier = RingOfMight.HTMultiplier(this);
 		HT = Math.round(multiplier * HT);
@@ -334,6 +340,9 @@ public class Hero extends Char {
 		if (boostHP){
 			HP += Math.max(HT - curHT, 0);
 		}
+
+		HT -= resistHealth;
+
 		HP = min(HP, HT);
 	}
 
@@ -1823,11 +1832,6 @@ public class Hero extends Char {
 	@Override
 	public int attackProc( final Char enemy, int damage ) {
 
-		if (damage > 0 && subClass == HeroSubClass.BERSERKER){
-			Berserk berserk = Buff.affect(this, Berserk.class);
-			berserk.damage(damage);
-		}
-
 		damage = super.attackProc( enemy, damage );
 
 		KindOfWeapon wep;
@@ -1860,6 +1864,11 @@ public class Hero extends Char {
 					}
 				});
 			}
+		}
+
+		if (damage > 0 && subClass == HeroSubClass.BERSERKER){
+			Berserk berserk = Buff.affect(this, Berserk.class);
+			berserk.damage(damage);
 		}
 		
 		return damage;
@@ -1906,26 +1915,29 @@ public class Hero extends Char {
 				ber = buff(Berserk.class).getPower();
 			switch (point){
 				case 1:
-					if(ber>=0.2f&&HT>20) {
+					if(ber>=0.2f&&originalHT-resistHealth>20) {
 						HT -= 20;
 						buff(Berserk.class).reducePower(0.2f);
 						GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+						resistHealth +=20;
 						return;
 					}
 					break;
 				case 2:
-					if(ber>=0.15f&&HT>15) {
+					if(ber>=0.15f&&originalHT-resistHealth>15) {
 						HT -= 15;
 						buff(Berserk.class).reducePower(0.15f);
 						GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+						resistHealth += 15;
 						return;
 					}
 					break;
 				case 3:
-					if(ber>=0.1f&&HT>10) {
+					if(ber>=0.1f&&originalHT-resistHealth>10) {
 						HT -= 10;
 						buff(Berserk.class).reducePower(0.1f);
 						GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+						resistHealth += 10;
 						return;
 					}
 					break;
@@ -2512,6 +2524,7 @@ public class Hero extends Char {
 
         bundle.put(ATTACK, attackSkill);
         bundle.put(DEFENSE, defenseSkill);
+		bundle.put(RESIST, resistHealth);
 
         bundle.put(STRENGTH, STR);
 
@@ -2550,6 +2563,7 @@ public class Hero extends Char {
 
         attackSkill = bundle.getInt(ATTACK);
         defenseSkill = bundle.getInt(DEFENSE);
+		resistHealth = bundle.getInt(RESIST);
 
         STR = bundle.getInt(STRENGTH);
 
@@ -3248,6 +3262,7 @@ public class Hero extends Char {
 	}
 	
 	public void resurrect() {
+
         HP = HT;
         live();
 
