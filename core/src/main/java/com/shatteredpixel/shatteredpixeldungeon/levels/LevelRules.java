@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.HotelLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.DeepShadowLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.ForestHardBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.SkyGooBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.spical.PeachGodBossLevel;
 import com.watabou.utils.Random;
 
 //Level Rules

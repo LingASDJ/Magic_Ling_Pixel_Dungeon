@@ -100,7 +100,9 @@ public class Assets {
 		public static final String ICE_POX  = "environment/custom_tiles/ice_above.png";
 
 		public static final String PEACH_PO  =  "environment/custom_tiles/peach_forest_above.png";
-		public static final String PEACH_POX  = "environment/custom_tiles/peach_forest_behind.png";
+
+		public static final String PEACH_BOSS  = "environment/peach/peach_boss.png";
+		public static final String PEACH_PATCH  = "environment/peach/peach_patch.png";
 
 		public static final String VISUAL_GRID  = "environment/visual_grid.png";
 		public static final String WALL_BLOCKING= "environment/wall_blocking.png";
