@@ -455,6 +455,8 @@ public class Combo extends Buff implements ActionIndicator.Action {
 						count = count / 2 - 1;
 						hit();
 						couldUseTime = (count + 1) / 2;
+					} else {
+						cleaveUsed=true;
 					}
 					hero.spendAndNext(hero.attackDelay());
 					break;

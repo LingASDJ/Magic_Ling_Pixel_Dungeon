@@ -204,7 +204,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RedBloodMoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
@@ -589,9 +588,9 @@ public class Hero extends Char {
 
 		if( lanterfireactive || Dungeon.isChallenged(DHXD)){
 			Buff.affect( this, Nyctophobia.class );
-
-			//修正异常
-			Buff.affect( this, LighS.class );
+			if(Dungeon.depth != 0){
+				Buff.affect( this, LighS.class );
+			}
 		}
 
 		if(Dungeon.isChallenged(CS)){
@@ -952,14 +951,6 @@ public class Hero extends Char {
 			if(!CustomPlayer.shouldOverride)
 				delay = CustomPlayer.baseAttackDelay;
 			else return CustomPlayer.baseAttackDelay;
-		}
-
-		if (buff(Talent.LethalMomentumTracker.class) != null){
-			buff(Talent.LethalMomentumTracker.class).detach();
-			switch (pointsInTalent(Talent.LETHAL_MOMENTUM)){
-				case 1: default: delay=1f;break;
-				case 2:delay=1.5f;
-			}
 		}
 
 		if (!RingOfForce.fightingUnarmed(this)) {
@@ -2766,11 +2757,6 @@ public class Hero extends Char {
             exp = Random.NormalIntRange(10, 20);
         }
 
-//		///测试坐标用
-//		GLog.w(String.valueOf(holiday));
-
-        //携带该物品时，玩家血量低于一半后自动隐身一段回合。
-        //actMove实现
         MIME.GOLD_TWO getFalseBody = hero.belongings.getItem(MIME.GOLD_TWO.class);
         if (getFalseBody != null && HT / 5 > HP) {
             //给予一个看不见的隐形Buff,继承至Invisibility

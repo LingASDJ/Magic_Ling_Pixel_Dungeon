@@ -59,6 +59,7 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 	public void doRead() {
 		if (!isKnown()) {
 			identify();
+			curItem = detach(curUser.belongings.backpack);
 			identifiedByUse = true;
 		} else {
 			identifiedByUse = false;
@@ -67,10 +68,13 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 	}
 
 	public static void onMetamorph( Talent oldTalent, Talent newTalent ){
-		((ScrollOfMetamorphosis) curItem).readAnimation();
-		Sample.INSTANCE.play( Assets.Sounds.READ );
+		if (curItem instanceof ScrollOfMetamorphosis) {
+			((ScrollOfMetamorphosis) curItem).readAnimation();
+			Sample.INSTANCE.play(Assets.Sounds.READ);
+		}
 		curUser.sprite.emitter().start(Speck.factory(Speck.CHANGE), 0.2f, 10);
 		Transmuting.show(curUser, oldTalent, newTalent);
+
 		if (Dungeon.hero.hasTalent(newTalent)) {
 			Talent.onTalentUpgraded(Dungeon.hero, newTalent);
 		}
@@ -200,6 +204,11 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 		public WndMetamorphReplace(Talent replacing, int tier){
 			super();
 
+			if (!identifiedByUse && curItem instanceof ScrollOfMetamorphosis) {
+				curItem.detach(curUser.belongings.backpack);
+			}
+			identifiedByUse = false;
+
 			INSTANCE = this;
 
 			this.replacing = replacing;
@@ -220,10 +229,6 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 						break;
 					} else {
 						if (curTalentsAtTier.contains(talent)){
-							clsTalentsAtTier.remove(talent);
-						}
-						if (restrictedTalents.containsKey(talent)
-								&& restrictedTalents.get(talent) != curUser.heroClass){
 							clsTalentsAtTier.remove(talent);
 						}
 					}

@@ -35,11 +35,28 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.HotelLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.DeepShadowLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.ForestHardBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.nosync.SkyGooBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.spical.PeachGodBossLevel;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //Level Rules
 public class LevelRules {
+
+    private List<Level> availableLevels;
+
+    public void LevelGenerator() {
+        availableLevels = new ArrayList<>();
+        availableLevels.add(new SLMKingLevel());
+        availableLevels.add(new ForestHardBossLevel());
+    }
+
+    public Level generateRandomLevel() {
+        int index = Random.Int(availableLevels.size());
+        Level selectedLevel = availableLevels.get(index);
+        availableLevels.remove(index);
+        return selectedLevel;
+    }
 
     public static Level createStandardLevel() {
 
@@ -145,7 +162,6 @@ public class LevelRules {
                        if(Statistics.RandMode){
                            switch (Random.Int(9)){
                                case 1: return new SLMKingLevel();
-                               case 2: return new ForestHardBossLevel();
                                default:
                                case 3: return new DeepShadowLevel();
                                case 4: return new ColdChestBossLevel();
@@ -160,7 +176,7 @@ public class LevelRules {
                             return new ColdChestBossLevel();
                         } else {
                             return new PrisonBossLevel();
-                        }
+                       }
                     case 11:
                     case 12:
                     case 13:
@@ -168,14 +184,12 @@ public class LevelRules {
                         return new CavesLevel();
                     case 15:
                         if(Statistics.RandMode){
-                            switch (Random.Int(7)){
+                            switch (Random.Int(5)){
                                 default:
                                 case 1: return new AncientMysteryCityBossLevel();
                                 case 2: return new CavesGirlDeadLevel();
                                 case 3: return new CaveTwoBossLevel();
                                 case 4: return new DwarfMasterBossLevel();
-                                case 5: return new DeepShadowLevel();
-                                case 6: return new SLMKingLevel();
                             }
                         } else if ((Statistics.boss_enhance & 0x4) != 0) {
                             return new CavesGirlDeadLevel();
@@ -216,18 +230,6 @@ public class LevelRules {
                         }
                     case 26:
                         return new LastLevel();
-//                case 27:
-//                case 28:
-//                case 29:
-//                    return new HollowLevel();
-//                case 30:
-//                    return new CerDogBossLevel();
-//                case 31:
-//                    if ((Statistics.boss_enhance & 0x12) != 0) {
-//                        return new LastLevel();
-//                    } else {
-//                        return new LaveCavesBossLevel();
-//                    }
                     default:
                         Statistics.deepestFloor--;
                         return new DeadEndLevel();

@@ -102,7 +102,7 @@ public class Challenges {
 //			}
 //		}
 
-		if (Dungeon.isChallenged(NO_HERBALISM)) {
+		if (Dungeon.isChallenged(NO_HERBALISM) && !(Dungeon.depth == 5 && Dungeon.branch == 3)) {
 			return item instanceof Dewdrop;
 		}
 

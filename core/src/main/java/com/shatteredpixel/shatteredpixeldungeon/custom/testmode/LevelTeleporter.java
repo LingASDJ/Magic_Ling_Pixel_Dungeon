@@ -18,6 +18,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.DragonWall;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
@@ -263,7 +264,7 @@ public class LevelTeleporter extends TestItem {
             if(Dungeon.level.locked)
                 Dungeon.level.unseal();
             InterlevelScene.mode = InterlevelScene.Mode.RESET;
-
+            Buff.detach( hero, DragonWall.class);
             //克里弗斯之果二阶段死亡的时候的给予重新评估
             if(crivusfruitslevel2){
                 crivusfruitslevel2 = false;

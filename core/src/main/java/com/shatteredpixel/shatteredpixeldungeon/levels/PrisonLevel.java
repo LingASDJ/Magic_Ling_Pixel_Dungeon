@@ -235,7 +235,7 @@ public class PrisonLevel extends RegularLevel {
 						});
 					}
 				});
-			} else if (Statistics.deepestFloor>9){
+			} else if (Statistics.deepestFloor>11){
 					Game.runOnRenderThread(new Callback() {
 						@Override
 						public void call() {

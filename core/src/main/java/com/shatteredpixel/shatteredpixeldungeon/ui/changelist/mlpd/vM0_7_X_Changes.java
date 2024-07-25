@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.PiraLandSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.QinWolfSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RedNecromancerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SakaFishBossSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SmallLeafSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhiteGirlSprites;
@@ -47,6 +48,8 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0770_Changes(changeInfos);
+
         add_V0765_Changes(changeInfos);
         add_V0760_Changes(changeInfos);
         add_V0755_Changes(changeInfos);
@@ -74,6 +77,60 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0770_Changes( ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.7.7.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RedBloodMoon), ("血剑回归"),
+                ("猩红血剑回归，并且成为传奇武器！！！")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WORN_SHORTSWORD), ("战士天赋全面升级"),
+                ("战士天赋T1-T3都进行了一些相应改进，欢迎各位前来游玩")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DIFFCULTBOOT), ("难度系统预载"),
+                ("难度系统底层预载成功，8月不见不散！")));
+
+        Image i = new Image("sprites/boss/fireDragon.png", 0, 0, 24, 24);
+        i.scale.set(PixelScene.align(0.74f));
+        changes.addButton(new ChangeButton(i, ("熔岩火龙-完整版"),
+                ("丛林暴乱的真相，追加扫尾和龙车，血量略微提升，限制调整为11层前\n\n" +
+                        "奖励调整：固定一个_祝福十字架_+_20滴露珠_+—_一个神器_，其他奖励与现在一致")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.SKULL), ("暗影AI加强"),
+                ("暗影现在更加聪明，你能否击败“你”?")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS),("其他改动"),
+                ("1.部分素材优化迭代\n" +
+                        "2.部分文案优化\n" +
+                        "3.部分细节优化更新")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.7.7.0版本:\n\n" +
+                        "1.修复部分炼金合成异常\n" +
+                        "2.修复中部群反馈的一些bug\n" +
+                        "3.其他bug修正\n"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ShopkKingSprite(), ("商店Boss优化"),
+                ("不再出现敌法精英效果加成，并且激素涌动有效时长减少")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS),("其他改动"),
+                ("查找器移除，日后作为网页版上线。若仍要查询种子，请到开发者模式使用物品查询器观看")));
+
     }
 
     public static void add_V0765_Changes( ArrayList<ChangeInfo> changeInfos ) {

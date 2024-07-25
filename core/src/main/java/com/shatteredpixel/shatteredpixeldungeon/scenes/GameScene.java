@@ -1383,7 +1383,7 @@ public class GameScene extends PixelScene {
 			case ANCITYBOSS:
 			case AMULET:
 			case GARDEN:
-				if(!Statistics.bossRushMode){
+				if(!Statistics.bossRushMode || !Statistics.RandMode){
 					switch (Dungeon.depth) {
 						case 0:
 							if(Dungeon.isChallenged(CS)) {
