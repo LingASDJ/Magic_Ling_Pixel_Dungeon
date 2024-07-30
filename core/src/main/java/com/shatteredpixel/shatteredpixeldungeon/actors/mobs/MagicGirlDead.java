@@ -168,12 +168,7 @@ public class MagicGirlDead extends Boss {
 
     public void shoot(Char ch, int pos){
         final Ballistica shot = new Ballistica( ch.pos, pos, Ballistica.MAGIC_BOLT);
-        fx(shot, new Callback() {
-            @Override
-            public void call() {
-                onZap(shot);
-            }
-        }, ch);
+        fx(shot, () -> onZap(shot), ch);
     }
 
     protected void fx(Ballistica bolt, Callback callback, Char ch ) {
@@ -234,14 +229,6 @@ public class MagicGirlDead extends Boss {
 //            visualCells.add(cell);
 //    }
 
-    private int left(int direction){
-        return direction == 0 ? 3 : direction-1;
-    }
-
-    private int right(int direction){
-        return direction == 7 ? 0 : direction+1;
-    }
-    private static final float TIME_TO_BURN	= 6f;
     @Override
     public boolean act(){
 

@@ -434,6 +434,16 @@ public class Assets {
 
 		public static final String BZMR = "splashes/bzmdr_portraits.png";
 
+		//WhiteYan Boss Emoji
+		public static final String WY_HAPPY = "splashes/peach/whiteyan_happy.png";
+		public static final String WY_NOLAN = "splashes/peach/whiteyan_nolang.png";
+		public static final String WY_SMALE = "splashes/peach/whiteyan_smale.png";
+		public static final String WY_WORRY = "splashes/peach/whiteyan_worry.png";
+		public static final String WY_SORRY = "splashes/peach/whiteyan_sorry.png";
+		public static final String WY_STICK = "splashes/peach/whiteyan_stick.png";
+		public static final String WY_WXHAT = "splashes/peach/whiteyan_what.png";
+		public static final String WY_WARLS = "splashes/peach/whiteyan_war.png";
+
 		public static final String DG = "splashes/general_portraits.png";
 
 		public static final String FG = "splashes/guard_npc_portraits.png";

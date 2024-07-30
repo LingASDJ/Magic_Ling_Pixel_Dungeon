@@ -8,6 +8,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.peach.WhiteYan;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
@@ -123,6 +124,9 @@ public class PeachGodBossLevel extends Level {
     @Override
     protected void createMobs() {
 
+        WhiteYan boss = new WhiteYan();
+        boss.pos = 326;
+        mobs.add(boss);
     }
 
     @Override
