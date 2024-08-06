@@ -406,13 +406,24 @@ public class AndroidPlatformSupport extends PlatformSupport {
 
 	@Override
 	public void install(File file) {
-		Intent intent = new Intent(Intent.ACTION_VIEW);
-		String packageName = AndroidLauncher.instance.getContext().getPackageName();
-		String authorities = packageName + ".fileprovider";
-		Uri apkUri = FileProvider.getUriForFile(AndroidLauncher.instance.getContext(), authorities, file);
-		intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-		AndroidLauncher.instance.getContext().startActivity(intent);
+		//兼容安卓7.0以下的安装
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+			File apk = new File(String.valueOf(file));
+			Uri uri = Uri.fromFile(apk);
+			Intent intent = new Intent();
+			intent.setClassName("com.android.packageinstaller", "com.android.packageinstaller.PackageInstallerActivity");
+			intent.setData(uri);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			AndroidLauncher.instance.getContext().startActivity(intent);
+		} else {
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			String packageName = AndroidLauncher.instance.getContext().getPackageName();
+			String authorities = packageName + ".fileprovider";
+			Uri apkUri = FileProvider.getUriForFile(AndroidLauncher.instance.getContext(), authorities, file);
+			intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+			AndroidLauncher.instance.getContext().startActivity(intent);
+		}
 	}
 }
