@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,8 +24,10 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.traps;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -50,20 +52,20 @@ public class CursingTrap extends Trap {
 
 	@Override
 	public void activate() {
-		if (Dungeon.level.heroFOV[ pos ]) {
+		if (Dungeon.level.heroFOV[pos]) {
 			CellEmitter.get(pos).burst(ShadowParticle.UP, 5);
 			Sample.INSTANCE.play(Assets.Sounds.CURSED);
 		}
 
-		Heap heap = Dungeon.level.heaps.get( pos );
-		if (heap != null){
-			for (Item item : heap.items){
-				if (item.isUpgradable() && !(item instanceof MissileWeapon))
+		Heap heap = Dungeon.level.heaps.get(pos);
+		if (heap != null) {
+			for (Item item : heap.items) {
+				if ((item.isUpgradable() && !(item instanceof MissileWeapon)) || (item instanceof BrokenSeal && Dungeon.hero.hasTalent(Talent.RUNIC_TRANSFERENCE)))
 					curse(item);
 			}
 		}
 
-		if (Dungeon.hero.pos == pos && !Dungeon.hero.flying){
+		if (Dungeon.hero.pos == pos && !Dungeon.hero.flying) {
 			curse(Dungeon.hero);
 		}
 	}

@@ -16,7 +16,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.BossRushBloodGold;
+import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.BossRushBloodGold;
+import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.DLCItem;
+import com.shatteredpixel.shatteredpixeldungeon.items.dlcitem.RushMobScrollOfRandom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -33,6 +35,8 @@ import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
+import java.util.ArrayList;
+
 public class WndWaloKe extends Window {
     private static final int WIDTH		= 120;
     private static final int BTN_SIZE	= 32;
@@ -42,6 +46,7 @@ public class WndWaloKe extends Window {
 
     public WndWaloKe() {
         WaloKe.shop1 = new BossRushBloodGold ();
+        WaloKe.shop2 = new RushMobScrollOfRandom();
 
         IconTitle titlebar = new IconTitle();
         titlebar.setRect(0, 0, WIDTH, 0);
@@ -142,6 +147,12 @@ public class WndWaloKe extends Window {
             Generator.setProbs( item, Generator.Category.WEP_T5, 0f );
             SPDSettings.unlockItem( item.getClass().getSimpleName() );
         }
+
+        if( (item instanceof RushMobScrollOfRandom) && !SPDSettings.isItemUnlock( item.name() ) ){
+            Generator.setProbs( item, Generator.Category.WEP_T5, 0f );
+            SPDSettings.unlockItem( item.getClass().getSimpleName() );
+        }
+
     }
 
     private class RewardWindow extends WndInfoItem {
@@ -154,7 +165,18 @@ public class WndWaloKe extends Window {
             StyledButton btnConfirm = new StyledButton(SPDSettings.isItemUnlock(item.getClass().getSimpleName())? Chrome.Type.SCROLL : Chrome.Type.RED_BUTTON,Messages.get(WndWaloKe.class, (locked) ? "unlocked":"buy",item.iceCoinValue())){
                 @Override
                 protected void onClick() {
-                    if(SPDSettings.iceCoin() >= item.iceCoinValue() && !SPDSettings.isItemUnlock(item.getClass().getSimpleName())) {
+                    boolean onlyMode = false;
+                    ArrayList<DLCItem> dlcItems = hero.belongings.getAllItems(DLCItem.class);
+                    for (DLCItem w : dlcItems.toArray(new DLCItem[0])){
+                        if (w != null) {
+                            onlyMode = true;
+                            break;
+                        }
+                    }
+                    if(onlyMode){
+                        tell(Messages.get(WndWaloKe.class,"onlymode"));
+                        WndWaloKe.RewardWindow.this.hide();
+                    } else if(SPDSettings.iceCoin() >= item.iceCoinValue() && !SPDSettings.isItemUnlock(item.getClass().getSimpleName())) {
                         SPDSettings.iceDownCoin(item.iceCoinValue());
                         WndWaloKe.this.selectReward( item );
                         itemUnlock(item);

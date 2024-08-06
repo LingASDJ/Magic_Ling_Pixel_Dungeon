@@ -88,15 +88,17 @@ import java.util.LinkedHashMap;
 public enum Talent {
 
 	//Warrior T1
-	HEARTY_MEAL(0), VETERANS_INTUITION(1), TEST_SUBJECT(2), IRON_WILL(3),
+	HEARTY_MEAL(0), VETERANS_INTUITION(1), PROVOKED_ANGER(2), IRON_WILL(3),
+	//T1 EX
+	LIGHT_ATTACK(160),
 	//Warrior T2
 	IRON_STOMACH(4), LIQUID_WILLPOWER(5), RUNIC_TRANSFERENCE(6), LETHAL_MOMENTUM(7), IMPROVISED_PROJECTILES(8),
 	//Warrior T3
 	HOLD_FAST(9, 3), STRONGMAN(10, 3),
 	//Berserker T3
-	ENDLESS_RAGE(11, 3), DEATHLESS_FURY(12, 3), ENRAGED_CATALYST(13, 3),
+	ENDLESS_RAGE(11, 3), PAIN_SCAR(12, 3), FANATICISM_MAGIC(13, 3),
 	//Gladiator T3
-	CLEAVE(14, 3), LETHAL_DEFENSE(15, 3), ENHANCED_COMBO(16, 3),
+	KEEP_VIGILANCE(14, 3), LETHAL_DEFENSE(15, 3), VENT_NOPLACE(16, 3),
 	//Heroic Leap T4
 	BODY_SLAM(17, 4), IMPACT_WAVE(18, 4), DOUBLE_JUMP(19, 4),
 	//Shockwave T4
@@ -404,12 +406,12 @@ public enum Talent {
 	}
 
 	public String desc(boolean metamorphed){
-		if (metamorphed){
-			String metaDesc = Messages.get(this, name() + ".meta_desc");
-			if (!metaDesc.equals("Ms:"+Messages.baseNameX)){
-				return Messages.get(this, name() + ".desc") + "\n\n" + metaDesc;
-			}
-		}
+//		if (metamorphed){
+//			String metaDesc = Messages.get(this, name() + ".meta_desc");
+//			if (!metaDesc.equals("Ms:"+Messages.baseNameX)){
+//				return Messages.get(this, name() + ".desc") + "\n\n" + metaDesc;
+//			}
+//		}
 		return Messages.get(this, name() + ".desc");
 	}
 
@@ -717,6 +719,12 @@ public enum Talent {
 			Buff.affect(enemy, SuckerPunchTracker.class);
 		}
 
+		if (hero.hasTalent(Talent.PROVOKED_ANGER)
+				&& hero.buff(ProvokedAngerTracker.class) != null){
+			dmg += 1 + hero.pointsInTalent(Talent.PROVOKED_ANGER);
+			hero.buff(ProvokedAngerTracker.class).detach();
+		}
+
 		if (hero.hasTalent(Talent.FOLLOWUP_STRIKE) && enemy.isAlive() && enemy.alignment == Char.Alignment.ENEMY) {
 			if (hero.belongings.attackingWeapon() instanceof MissileWeapon) {
 				Buff.prolong(hero, FollowupStrikeTracker.class, 5f).object = enemy.id();
@@ -754,6 +762,13 @@ public enum Talent {
 		}
 
 		return dmg;
+	}
+
+	public static class ProvokedAngerTracker extends FlavourBuff{
+		{ type = Buff.buffType.POSITIVE; }
+		public int icon() { return BuffIndicator.WEAPON; }
+		public void tintIcon(Image icon) { icon.hardlight(1.43f, 1.43f, 1.43f); }
+		public float iconFadePercent() { return Math.max(0, 1f - (visualcooldown() / 5)); }
 	}
 
 	public static class SuckerPunchTracker extends Buff{};
@@ -796,7 +811,7 @@ public enum Talent {
 		//tier 1
 		switch (cls){
 			case WARRIOR: default:
-				Collections.addAll(tierTalents, HEARTY_MEAL, VETERANS_INTUITION, TEST_SUBJECT, IRON_WILL);
+				Collections.addAll(tierTalents, HEARTY_MEAL, VETERANS_INTUITION, PROVOKED_ANGER, IRON_WILL);
 				break;
 			case MAGE:
 				Collections.addAll(tierTalents, EMPOWERING_MEAL, SCHOLARS_INTUITION, TESTED_HYPOTHESIS, BACKUP_BARRIER);
@@ -891,10 +906,10 @@ public enum Talent {
 		//tier 3
 		switch (cls){
 			case BERSERKER: default:
-				Collections.addAll(tierTalents, ENDLESS_RAGE, DEATHLESS_FURY, ENRAGED_CATALYST);
+				Collections.addAll(tierTalents, ENDLESS_RAGE, PAIN_SCAR, FANATICISM_MAGIC);
 				break;
 			case GLADIATOR:
-				Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, ENHANCED_COMBO);
+				Collections.addAll(tierTalents, KEEP_VIGILANCE, LETHAL_DEFENSE, VENT_NOPLACE);
 				break;
 			case BATTLEMAGE:
 				Collections.addAll(tierTalents, EMPOWERED_STRIKE, MYSTICAL_CHARGE, EXCESS_CHARGE);

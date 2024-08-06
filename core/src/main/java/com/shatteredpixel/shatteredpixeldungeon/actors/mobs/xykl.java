@@ -82,7 +82,6 @@ public class xykl extends Mob {
         xykl.super.die(cause);
         if (cause != Chasm.class) {
             this.sprite.showStatus(16711680, Messages.get(this,"death_msg_"+Random.IntRange(1, 8)));
-            RedBloodMoon.deadking--;
         }
     }
 

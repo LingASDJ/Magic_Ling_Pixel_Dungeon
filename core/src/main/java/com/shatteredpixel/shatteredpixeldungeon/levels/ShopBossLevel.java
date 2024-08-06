@@ -68,6 +68,8 @@ public class ShopBossLevel extends Level {
 
         FireMagicDied boss = new FireMagicDied();
         boss.pos = WIDTH*16 + 17;
+        boss.notice();
+        boss.state = boss.HUNTING;
         GameScene.add(boss);
 
         //activateAll();
@@ -94,7 +96,7 @@ public class ShopBossLevel extends Level {
     public void unseal() {
         super.unseal();
 
-        if(Dungeon.depth == 21){
+        if(Dungeon.depth == 21 || Dungeon.bossLevel() && Statistics.RandMode){
 
             int entrance =  WIDTH*17 + 17;
             set(  entrance, Terrain.EXIT );

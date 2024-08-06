@@ -925,6 +925,12 @@ public abstract class Char extends Actor {
 		shielded -= dmg;
 		HP -= dmg;
 
+		if (HP > 0 && shielded > 0 && shielding() == 0){
+			if (this instanceof Hero && ((Hero) this).hasTalent(Talent.PROVOKED_ANGER)){
+				Buff.affect(this, Talent.ProvokedAngerTracker.class, 5f);
+			}
+		}
+
 		if (HP > 0 && buff(Grim.GrimTracker.class) != null) {
 
 			float finalChance = buff(Grim.GrimTracker.class).maxChance;
@@ -1426,4 +1432,9 @@ public abstract class Char extends Actor {
 	public static boolean hasProp( Char ch, Property p){
 		return (ch != null && ch.properties().contains(p));
 	}
+
+	public float talentProc(){//for RUNIC_TRANSFERENCE
+		return 1f;
+	}
+
 }

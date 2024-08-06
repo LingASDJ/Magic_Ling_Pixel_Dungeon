@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -39,6 +40,11 @@ public class BeamTowerAdbility extends Buff {
 
     @Override
     public boolean act() {
+
+       if(!level.locked){
+           detach();
+       }
+
         PointF p = DungeonTilemap.raisedTileCenterToWorld(towerPos);
 /*
             if(target instanceof Boss && target.HP <= target.HT * 2 /10) {

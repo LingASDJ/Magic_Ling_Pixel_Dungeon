@@ -1,11 +1,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical;
 
-import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
@@ -14,7 +13,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.GooNPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
@@ -30,19 +28,19 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class GooMob extends Mob {
 
     {
-        HP = HT = Random.NormalIntRange(90,180);
-
+        HP = HT = Statistics.RandMode ?  Random.NormalIntRange(20,40) : Random.NormalIntRange(90,180);
+        state = HUNTING;
+        intelligentAlly = true;
         EXP = 10;
         defenseSkill = 8;
         maxLvl = 30;
         spriteClass = GooSprite.class;
-        state = PASSIVE;
+
         flying = Dungeon.isChallenged(MOREROOM);
 
         properties.add(Property.MINIBOSS);
@@ -56,7 +54,7 @@ public class GooMob extends Mob {
     @Override
     public int damageRoll() {
         int min = 1;
-        int max = (HP*2 <= HT) ? 16 : 10;
+        int max = (HP*2 <= HT) ? 16+Dungeon.depth : 10+Dungeon.depth;
         if (pumpedUp > 0) {
             pumpedUp = 0;
             return Random.NormalIntRange( min*3, max*3 );
@@ -67,8 +65,7 @@ public class GooMob extends Mob {
 
     @Override
     public int attackSkill( Char target ) {
-        int attack = 10;
-        if (HP*2 <= HT) attack = 15;
+        int attack = 100;
         if (pumpedUp > 0) attack *= 2;
         return attack;
     }
@@ -82,7 +79,6 @@ public class GooMob extends Mob {
     public int drRoll() {
         return Random.NormalIntRange(0, 2);
     }
-    public static boolean seenBefore = false;
 
     private void tell(String text) {
         Game.runOnRenderThread(new Callback() {
@@ -94,20 +90,11 @@ public class GooMob extends Mob {
         );
     }
 
-//    @Override
-//    public boolean add(Buff buff) {
-//        super.add(buff);
-//        if (state == PASSIVE && buff.type == Buff.buffType.NEGATIVE){
-//            state = HUNTING;
-//        }
-//        return false;
-//    }
-
     @Override
     public boolean act() {
         LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 
-        if (lock == null && Dungeon.level.heroFOV[pos]){
+        if (lock == null && Dungeon.level.heroFOV[pos] && !Statistics.RandMode){
             SewerLevel level = (SewerLevel) Dungeon.level;
             level.seal();
             if(Dungeon.isChallenged(MOREROOM)) {
@@ -244,7 +231,7 @@ public class GooMob extends Mob {
         boolean bleeding = (HP*2 <= HT);
         super.damage(dmg, src);
 
-        if (state == PASSIVE) {
+        if (state == PASSIVE && !Statistics.RandMode) {
             state = HUNTING;
             notice();
             ScrollOfTeleportation.appear(hero, pos+3);
@@ -264,28 +251,10 @@ public class GooMob extends Mob {
     @Override
     public void notice() {
         super.notice();
-        if (!BossHealthBar.isAssigned()) {
+        if (!BossHealthBar.isAssigned() && !Statistics.RandMode) {
             BossHealthBar.assignBoss(this);
             yell(Messages.get(this, "notice"));
         }
-    }
-
-    @Override
-    public void die( Object cause ) {
-        super.die( cause );
-        SewerLevel level = (SewerLevel) Dungeon.level;
-        level.unseal();
-        //60% chance of 2 blobs, 30% chance of 3, 10% chance for 4. Average of 2.5
-        int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
-        for (int i = 0; i < blobs; i++){
-            int ofs;
-            do {
-                ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
-            } while (!Dungeon.level.passable[pos + ofs]);
-            Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
-        }
-        playBGM(Assets.BGM_1, true);
-        GameScene.bossSlain();
     }
 
     private final String PUMPEDUP = "pumpedup";
@@ -304,7 +273,7 @@ public class GooMob extends Mob {
     public void restoreFromBundle( Bundle bundle ) {
 
         super.restoreFromBundle( bundle );
-        if (state == HUNTING){
+        if (state == HUNTING && !Statistics.RandMode){
             BossHealthBar.assignBoss(this);
         }
         pumpedUp = bundle.getInt( PUMPEDUP );

@@ -69,7 +69,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfFlameCursed;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTerror;
@@ -432,7 +431,7 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe(new ReclaimTrap.Recipe()));
 				result.add(new QuickRecipe(new SummonElemental.Recipe()));
 				result.add(new QuickRecipe(new BeaconOfReturning.Recipe()));
-				result.add(new QuickRecipe(new SmallLightHeader.Recipe()));
+				//result.add(new QuickRecipe(new SmallLightHeader.Recipe()));
 				return result;
 			case 9:
 				result.add(new QuickRecipe( new WandOfBlueFuck.Recipe(),
@@ -454,7 +453,7 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe( new ScrollOfRoseShiled.Recipe(),
 						new ArrayList<Item>(Arrays.asList(new PotionOfPurity(),
 								new StoneOfBlink())),
-						new ScrollOfRoseShiled().quantity(3)));
+						new ScrollOfRoseShiled().quantity(4)));
 				result.add(null);
 				result.add(null);
 				result.add(new QuickRecipe( new BloodthirstyThorn.Recipe(),

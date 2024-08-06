@@ -64,8 +64,6 @@ public class SlimeKing extends Boss {
     private boolean PartCold = false;
 
 
-
-
     @Override
     public int defenseProc( Char enemy, int damage ) {
 
@@ -114,8 +112,8 @@ public class SlimeKing extends Boss {
     }
 
     {
-        HP =190;
-        HT= 190;
+        HP =190 * Dungeon.depth/5;
+        HT= 190 * Dungeon.depth/5;
 
         EXP = 20;
         defenseSkill = 12;

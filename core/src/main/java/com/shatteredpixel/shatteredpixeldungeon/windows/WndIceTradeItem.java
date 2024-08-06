@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.RiceSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -193,13 +194,15 @@ public class WndIceTradeItem extends WndInfoItem {
         int price = Shopkeeper.sellIcePrice( item );
         SPDSettings.iceDownCoin(price);
 
-        if( (item instanceof DiedCrossBow|| item instanceof MoonDao || item instanceof SaiPlus) && !SPDSettings.isItemUnlock( item.getClass().getSimpleName() ) ){
+        if( (item instanceof DiedCrossBow|| item instanceof MoonDao || item instanceof SaiPlus|| item instanceof RiceSword) && !SPDSettings.isItemUnlock( item.name() ) ){
             if( item instanceof DiedCrossBow )
                 Generator.setProbs( item, Generator.Category.WEP_T5, 1.5f );
             if( item instanceof MoonDao )
                 Generator.setProbs( item,Generator.Category.WEP_T3, 1.5f );
             if( item instanceof SaiPlus )
                 Generator.setProbs( item, Generator.Category.WEP_T5, 1 );
+            if( item instanceof RiceSword )
+                Generator.setProbs( item, Generator.Category.WEP_T5, 1.4f );
 
             SPDSettings.unlockItem( item.getClass().getSimpleName() );
         }

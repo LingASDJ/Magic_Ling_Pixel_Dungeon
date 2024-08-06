@@ -10,10 +10,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
@@ -22,6 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.RivalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
@@ -37,8 +40,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFirebolt;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfGodIce;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVenom;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -72,6 +75,8 @@ public class Rival extends Boss implements Callback {
     {
         spriteClass = RivalSprite.class;
         properties.add(Property.BOSS);
+        HUNTING = new Hunting();
+        WANDERING = new Wandering();
     }
 
     public MeleeWeapon weapon;
@@ -85,7 +90,9 @@ public class Rival extends Boss implements Callback {
 
     @Override
     protected boolean getCloser( int target ) {
-        if (fieldOfView[target] && Dungeon.level.distance( pos, target ) > 2 && blinkCooldown <= 0 && !rooted) {
+        if(HP<HT/2 && state == HUNTING){
+            return enemySeen && getFurther( target );
+        } else if (fieldOfView[target] && Dungeon.level.distance( pos, target ) > 2 && blinkCooldown <= 0 && !rooted) {
 
             if (blink( target )) {
                 spend(-1 / speed());
@@ -106,6 +113,14 @@ public class Rival extends Boss implements Callback {
 
         Ballistica route = new Ballistica( pos, target, Ballistica.PROJECTILE);
         int cell = route.collisionPos;
+
+        BlobImmunity mb = buff(BlobImmunity.class);{
+            if(mb == null && Random.Int(10)<4){
+                GLog.w( Messages.get(this, "protected",name()) );
+                Buff.prolong( this, BlobImmunity.class, BlobImmunity.DURATION*2 );
+                SpellSprite.show(this, SpellSprite.PURITY);
+            }
+        }
 
         //can't occupy the same cell as another char, so move back one.
         if (Actor.findChar( cell ) != null && cell != this.pos)
@@ -239,7 +254,7 @@ public class Rival extends Boss implements Callback {
 
     @Override
     public int attackSkill( Char target ) {
-        return (int)((12 + Dungeon.depth) * weapon.accuracyFactor( this,target ));
+        return (int)((16 + Dungeon.depth) * weapon.accuracyFactor( this,target ));
     }
 
     @Override
@@ -262,9 +277,12 @@ public class Rival extends Boss implements Callback {
 
     @Override
     protected boolean canAttack( Char enemy ) {
-        return super.canAttack(enemy)
-                || weapon.canReach(this, enemy.pos)
-                || (new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos);
+        if(HP<HT/2){
+            return !Dungeon.level.adjacent( pos, enemy.pos )
+                    && (super.canAttack(enemy) || new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos);
+        } else {
+            return super.canAttack(enemy) || weapon.canReach(this, enemy.pos) || (new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos);
+        }
     }
 
     protected boolean doAttack( Char enemy ) {
@@ -352,7 +370,7 @@ public class Rival extends Boss implements Callback {
     public void die( Object cause ) {
         Dungeon.level.unseal();
         DeepShadowLevel.State state = ((DeepShadowLevel)Dungeon.level).state();
-        if (Statistics.bossRushMode && state != DeepShadowLevel.State.WON) {
+        if (state != DeepShadowLevel.State.WON) {
 
             //cures doom and drops missile weapons
             for (Buff buff : buffs()) {
@@ -419,11 +437,11 @@ public class Rival extends Boss implements Callback {
                             wand.curCharges = 80;
                             break;
                         case PHASE_4:
-                            wand = new WandOfVenom();
-                            wand.level(8);
+                            wand = new WandOfGodIce();
+                            wand.curCharges = 10;
+                            wand.level(4);
                             wand.updateLevel();
                             misc1 = new RingOfTenacity();
-                            wand.curCharges = 100;
                             break;
                     }
                     HP = HT;
@@ -495,5 +513,35 @@ public class Rival extends Boss implements Callback {
         return wand;
     }
 
+    public class Hunting extends Mob.Hunting {
+
+        @Override
+        public boolean act(boolean enemyInFOV, boolean justAlerted) {
+            enemySeen = enemyInFOV;
+            if (!enemyInFOV) {
+                PotionOfHealing.cure(Rival.this);
+            }
+            if(Random.Int(10)==1){
+                Buff.affect(Rival.this, Healing.class).setHeal(5, 0f, 6);
+            }
+            return super.act( enemyInFOV, justAlerted );
+        }
+
+    }
+
+    protected class Wandering extends Mob.Wandering{
+        @Override
+        protected int randomDestination() {
+            //of two potential wander positions, picks the one closest to the hero
+            int pos1 = super.randomDestination();
+            int pos2 = super.randomDestination();
+            PathFinder.buildDistanceMap(Dungeon.hero.pos, Dungeon.level.passable);
+            if (PathFinder.distance[pos2] < PathFinder.distance[pos1]){
+                return pos2;
+            } else {
+                return pos1;
+            }
+        }
+    }
 
 }

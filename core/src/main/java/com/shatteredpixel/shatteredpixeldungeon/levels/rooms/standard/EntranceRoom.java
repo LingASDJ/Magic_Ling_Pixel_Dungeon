@@ -66,11 +66,7 @@ public class EntranceRoom extends StandardRoom {
 
 	@Override
 	public boolean canMerge(Level l, Room other, Point p, int mergeTerrain) {
-		if (Dungeon.depth <= 2) {
-			return false;
-		} else {
-			return super.canMerge(l, other, p, mergeTerrain);
-		}
+		return false;
 	}
 
 	@Override
@@ -156,7 +152,7 @@ public class EntranceRoom extends StandardRoom {
 		rooms.add(RitualEntranceRoom.class);
 	}
 
-	private static float[][] chances = new float[27][];
+	private static float[][] chances = new float[31][];
 	static {
 		chances[1] =  new float[]{1,  0,0, 0,0, 0,0, 0,0, 0,0};
 		chances[2] =  chances[1];
@@ -173,7 +169,8 @@ public class EntranceRoom extends StandardRoom {
 		chances[20] = chances[19] = chances[18] = chances[17] = chances[16];
 
 		chances[21] = new float[]{3,  0,0, 0,0, 0,0, 0,0, 6,1};
-		chances[26] = chances[25] = chances[24] = chances[23] = chances[22] = chances[21];
+		chances[30] = chances[29] = chances[28] = chances[27] = chances[26] =
+		chances[25] = chances[24] = chances[23] = chances[22] = chances[21];
 	}
 
 	public static StandardRoom createEntrance(){

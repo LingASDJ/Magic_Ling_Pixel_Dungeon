@@ -9,7 +9,8 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 
 public class FireDragonSprite extends MobSprite {
-
+    private Animation leap;
+    private Animation prep;
     public FireDragonSprite() {
         super();
 
@@ -31,6 +32,12 @@ public class FireDragonSprite extends MobSprite {
 
         zap = new Animation( 12, false );
         zap.frames( frames, 13,14,15);
+
+        leap = new Animation( 1, true );
+        leap.frames( frames, 12 );
+
+        prep = new Animation( 1, true );
+        prep.frames( frames, 9 );
 
         play( idle );
     }
@@ -80,6 +87,11 @@ public class FireDragonSprite extends MobSprite {
             idle();
         }
         super.onComplete( anim );
+    }
+
+    public void leapPrep( int cell ){
+        turnTo( ch.pos, cell );
+        play( prep );
     }
 
 }

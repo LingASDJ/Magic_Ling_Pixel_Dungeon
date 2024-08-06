@@ -47,7 +47,7 @@ public class ScrollOfRoseShiled extends Scroll {
             cost = 24;
 
             output = ScrollOfRoseShiled.class;
-            outQuantity = 2;
+            outQuantity = 4;
         }
 
     }

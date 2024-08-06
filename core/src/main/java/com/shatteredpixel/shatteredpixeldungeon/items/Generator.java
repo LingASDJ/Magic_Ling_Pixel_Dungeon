@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
@@ -156,6 +157,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dairikyan;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dirk;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DragonShiled;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.EndingBlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive;
@@ -167,6 +169,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.GreenSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceLingSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceSan;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
@@ -552,12 +555,12 @@ public class Generator {
 					GreenSword.class,
 
 					SDBSword.class,
-					RedBloodMoon.class,
+
 					LifeTreeSword.class,
 
 					MoonDao.class,
 			};
-			WEP_T3.probs = new float[]{ 1, 5, 4, 4, 4 ,3,5,3,6,0, 0,0,0, SPDSettings.isItemUnlock(MoonDao.class.getSimpleName() ) ? 1.5f : 0 };
+			WEP_T3.probs = new float[]{ 1, 5, 4, 4, 4 ,3,5,3,6,0, 0,0, SPDSettings.isItemUnlock(MoonDao.class.getSimpleName() ) ? 1.5f : 0 };
 
 			WEP_T4.classes = new Class<?>[]{
 					Longsword.class,
@@ -569,9 +572,11 @@ public class Generator {
 					Katana.class,
 					GrilledHerring.class,
 					Gauntlet.class,
-					Seekingspear.class
+					Seekingspear.class,
+
+					RedBloodMoon.class,
 			};
-			WEP_T4.probs = new float[]{ 6, 5, 5, 4, 4, 4,2,3, 2, 4 };
+			WEP_T4.probs = new float[]{ 6, 5, 5, 4, 4, 4,2,3, 2, 4, SPDSettings.isItemUnlock(RedBloodMoon.class.getSimpleName() ) ? 1.2f : 0 };
 
 			WEP_T5.classes = new Class<?>[]{
 					LockSword.class,
@@ -588,21 +593,25 @@ public class Generator {
 					SaiPlus.class,
 					DragonShiled.class,
 					KingAxe.class,
-					RiceSword.class
+					RiceSword.class,
+
+					//超模武器
+					IceSan.class,
 			};
 
 			PaswordBadges.loadGlobal();
 			List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
-			WEP_T5.probs = new float[]{ 6, 3, 3, 3, 3, 3,3,4,SPDSettings.isItemUnlock(DiedCrossBow.class.getSimpleName() ) ? 1.5f : 0,2,SPDSettings.isItemUnlock(SaiPlus.class.getSimpleName() ) ? 1f : 0,0,SPDSettings.KillDwarf() ? 1.2f : 0,passwordbadges.contains(PaswordBadges.Badge.UNLOCK_RICESWORD)?1.4f : 0};
+			WEP_T5.probs = new float[]{ 6, 3, 3, 3, 3, 3,3,4,SPDSettings.isItemUnlock(DiedCrossBow.class.getSimpleName() ) ? 1.5f : 0,2,SPDSettings.isItemUnlock(SaiPlus.class.getSimpleName() ) ? 1f : 0,0,SPDSettings.KillDwarf() ? 1.2f : 0,passwordbadges.contains(PaswordBadges.Badge.UNLOCK_RICESWORD)?1.4f : SPDSettings.isItemUnlock(RiceSword.class.getSimpleName() ) ? 1.4f : 0, Statistics.RandMode ? 5 : 0};
 
 			WEP_T6.classes = new Class<?>[]{
 					IceFishSword.class,
 					//IceDewVialSword.class,
 					BloodthirstyThorn.class,
 					EndingBlade.class,
+					FireFishSword.class,
 			};
-			WEP_T6.probs = new float[]{ 1,0,0,0 };
+			WEP_T6.probs = new float[]{ 1,0,0,0,Statistics.RandMode ? 1 : 0 };
 
 			//see Generator.randomArmor
 			ARMOR.classes = new Class<?>[]{

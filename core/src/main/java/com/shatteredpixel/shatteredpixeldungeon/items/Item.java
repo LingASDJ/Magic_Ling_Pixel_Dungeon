@@ -30,13 +30,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.LockedDamage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
@@ -48,7 +46,6 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
@@ -56,7 +53,6 @@ import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
@@ -66,6 +62,10 @@ import java.util.Comparator;
 public class Item implements Bundlable {
 
 	public interface AnimationItem{}
+
+	public void getCurse(boolean extraEffect){
+		cursed=cursedKnown=true;
+	}
 
 	@Override
 	public String toString() {
@@ -94,6 +94,8 @@ public class Item implements Bundlable {
 	
 	public String defaultAction;
 	public boolean usesTargeting;
+
+	public boolean curseInfusionBonus = false;
 
 	//TODO should these be private and accessed through methods?
 	public int image = 0;
@@ -691,7 +693,7 @@ public class Item implements Bundlable {
 	public void throwSound(){
 		Sample.INSTANCE.play(Assets.Sounds.MISS, 0.6f, 0.6f, 1.5f);
 	}
-	
+
 	public void cast( final Hero user, final int dst ) {
 
 		final int cell = throwPos( user, dst );
@@ -702,7 +704,7 @@ public class Item implements Bundlable {
 
 		Char enemy = Actor.findChar( cell );
 		QuickSlotButton.target(enemy);
-		
+
 		final float delay = castDelay(user, dst);
 
 		if (enemy != null) {
@@ -711,74 +713,37 @@ public class Item implements Bundlable {
 							enemy.sprite,
 							this,
 							new Callback() {
-						@Override
-						public void call() {
-							curUser = user;
-							Item i = Item.this.detach(user.belongings.backpack);
-							if (i != null) i.onThrow(cell);
-							if (curUser.hasTalent(Talent.IMPROVISED_PROJECTILES)
-									&& !(Item.this instanceof MissileWeapon)
-									&& curUser.buff(Talent.ImprovisedProjectileCooldown.class) == null){
-								if (enemy.alignment != curUser.alignment){
-									Sample.INSTANCE.play(Assets.Sounds.HIT);
-									Buff.affect(enemy, Blindness.class, 1f + curUser.pointsInTalent(Talent.IMPROVISED_PROJECTILES));
-									Buff.affect(enemy, LockedDamage.class).set(((1 + curUser.pointsInTalent(Talent.IMPROVISED_PROJECTILES))), 1);
-									Buff.affect(curUser, Talent.ImprovisedProjectileCooldown.class, 50f);
-
-									if (Dungeon.hero.pointsInTalent(Talent.IMPROVISED_PROJECTILES) == 2) {
-										GameScene.show(
-												new WndOptions(new ItemSprite(Item.this),
-														Messages.titleCase(hero.name()),
-														Messages.get(Hero.class, "quest_start_prompt"),
-														Messages.get(Hero.class, "enter_yes"),
-														Messages.get(Hero.class, "enter_no")) {
-													@Override
-													protected void onSelect(int index) {
-														if (index == 0){
-															Char ch;
-															ch = Actor.findChar(cell);
-															if(ch!=null){
-																for(int i: PathFinder.NEIGHBOURS8){
-																	if (Actor.findChar( cell+ i ) == null) {
-																		ScrollOfTeleportation.appear(hero,cell);
-																	}
-																}
-																ScrollOfTeleportation.appear(ch, cell+1);
-															}
-
-															hero.busy();
-															hero.sprite.operate(cell);
-														}
-													}
-												}
-										);
+								@Override
+								public void call() {
+									curUser = user;
+									Item i = Item.this.detach(user.belongings.backpack);
+									if (i != null) i.onThrow(cell);
+									if (curUser.hasTalent(Talent.IMPROVISED_PROJECTILES)
+											&& !(Item.this instanceof MissileWeapon)
+											&& curUser.buff(Talent.ImprovisedProjectileCooldown.class) == null){
+										if (enemy != null && enemy.alignment != curUser.alignment){
+											Sample.INSTANCE.play(Assets.Sounds.HIT);
+											Buff.affect(enemy, Blindness.class, 1f + curUser.pointsInTalent(Talent.IMPROVISED_PROJECTILES));
+											Buff.affect(curUser, Talent.ImprovisedProjectileCooldown.class, 50f);
+										}
 									}
-
+									user.spendAndNext(delay);
 								}
-							}
-							if (user.buff(Talent.LethalMomentumTracker.class) != null){
-								user.buff(Talent.LethalMomentumTracker.class).detach();
-								user.next();
-							} else {
-								user.spendAndNext(delay);
-							}
-						}
-					});
+							});
 		} else {
 			((MissileSprite) user.sprite.parent.recycle(MissileSprite.class)).
 					reset(user.sprite,
 							cell,
 							this,
 							new Callback() {
-						@Override
-						public void call() {
-							curUser = user;
-							Item i = Item.this.detach(user.belongings.backpack);
-							user.spend(delay);
-							if (i != null) i.onThrow(cell);
-							user.next();
-						}
-					});
+								@Override
+								public void call() {
+									curUser = user;
+									Item i = Item.this.detach(user.belongings.backpack);
+									if (i != null) i.onThrow(cell);
+									user.spendAndNext(delay);
+								}
+							});
 		}
 	}
 	

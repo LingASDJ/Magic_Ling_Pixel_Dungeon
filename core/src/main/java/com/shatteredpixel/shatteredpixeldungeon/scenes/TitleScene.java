@@ -467,10 +467,6 @@ public class TitleScene extends PixelScene {
 		btnChanges.icon(new Image(Icons.get(Icons.CHANGES)));
 		add(btnChanges);
 
-		StyledButton seed = new SeedButton(landscape() ? Chrome.Type.GREY_BUTTON_TR : Chrome.Type.BLANK, Messages.get(this, "seed"));
-		seed.icon(NetIcons.get(NetIcons.CHAT));
-		add(seed);
-
 		StyledButton btnSettings = new SettingsButton(GREY_TR, Messages.get(this, "settings"));
 		add(btnSettings);
 
@@ -510,11 +506,9 @@ public class TitleScene extends PixelScene {
 			btnSettings.setRect(btnSupport.right() + 2, btnSupport.top(), btnRankings.width(), BTN_HEIGHT);
 			btnAbout.setRect(btnSettings.left(), btnSettings.bottom() + GAP, btnRankings.width(), BTN_HEIGHT);
 			btnNews.setRect(btnPlay.left(), btnAbout.bottom() + GAP, btnAbout.width() + 157 - 1, BTN_HEIGHT);
-			seed.setRect(0, 0,40,20);
 			align(btnNews);
 		}
 		else {
-			seed.setRect(0, version.y-10,40,20);
 			btnPlay.setRect(title.x, topRegion + GAP, title.width(), BTN_HEIGHT);
 			align(btnPlay);
 			btnRankings.setRect(btnPlay.left(), btnPlay.bottom()+ GAP, (btnPlay.width() / 2) - 1, BTN_HEIGHT);

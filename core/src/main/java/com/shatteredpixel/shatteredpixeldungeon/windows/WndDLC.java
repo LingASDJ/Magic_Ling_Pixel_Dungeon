@@ -22,7 +22,7 @@ import java.util.Arrays;
 public class WndDLC extends Window {
 
     private final int WIDTH = Math.min(138, (int) (PixelScene.uiCamera.width * 0.9));
-    private final int HEIGHT = (int) (PixelScene.uiCamera.height * 0.49);
+    private final int HEIGHT = 115;
     private static final int TTL_HEIGHT    = 18;
     private static final int BTN_HEIGHT    = 18;
     private static final int GAP        = 1;

@@ -1036,16 +1036,16 @@ public abstract class Mob extends Char {
 				}
 			}
 
-			if (cause == hero || cause instanceof Weapon || cause instanceof Weapon.Enchantment){
-				if (hero.hasTalent(Talent.LETHAL_MOMENTUM)
-						&& Random.Float() < 0.34f + 0.33f* hero.pointsInTalent(Talent.LETHAL_MOMENTUM)){
-					Buff.affect(hero, Talent.LethalMomentumTracker.class, 0f);
+			if (cause == Dungeon.hero || cause instanceof Weapon || cause instanceof Weapon.Enchantment){
+				if (Dungeon.hero.hasTalent(Talent.LETHAL_MOMENTUM)
+						&& Random.Float() < 0.34f + 0.33f* Dungeon.hero.pointsInTalent(Talent.LETHAL_MOMENTUM)){
+					Buff.affect(Dungeon.hero, Talent.LethalMomentumTracker.class, 0f);
 				}
-				if (hero.heroClass != HeroClass.DUELIST
-						&& hero.hasTalent(Talent.LETHAL_HASTE)
-						&& hero.buff(Talent.LethalHasteCooldown.class) == null){
-					Buff.affect(hero, Talent.LethalHasteCooldown.class, 100f);
-					Buff.affect(hero, Haste.class, 1.67f + hero.pointsInTalent(Talent.LETHAL_HASTE));
+				if (Dungeon.hero.heroClass != HeroClass.DUELIST
+						&& Dungeon.hero.hasTalent(Talent.LETHAL_HASTE)
+						&& Dungeon.hero.buff(Talent.LethalHasteCooldown.class) == null){
+					Buff.affect(Dungeon.hero, Talent.LethalHasteCooldown.class, 100f);
+					Buff.affect(Dungeon.hero, Haste.class, 1.67f + Dungeon.hero.pointsInTalent(Talent.LETHAL_HASTE));
 				}
 			}
 

@@ -22,7 +22,7 @@ public class TyphonSprite extends MobSprite {
         attack.frames( frames, 4,5,6,7,8,9,0 );
 
         die = new Animation( 18, false );
-        die.frames( frames, 10, 12, 13 );
+        die.frames( frames, 0, 1, 2, 3, 4 );
 
         play( idle );
     }

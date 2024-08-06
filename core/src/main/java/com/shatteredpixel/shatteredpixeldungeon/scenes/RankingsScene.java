@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogReal;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nxhy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Typhon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -182,6 +183,9 @@ public class RankingsScene extends PixelScene {
 		private static final int[] TEXT_WIN	= {0xFFFF88, 0xB2B25F};
 		private static final int[] TEXT_WIN2	= {0xCF6E28, 0xC66c28};
 		private static final int[] TEXT_WIN3	= {0x6ECF28, 0xC6286c};
+
+		private static final int[] TEXT_WIN4	= {Window.Pink_COLOR, Window.DeepPK_COLOR};
+
 		private static final int[] TEXT_LOSE= {0xDDDDDD, 0x888888};
 		private static final int FLARE_WIN	= 0x888866;
 		private static final int FLARE_LOSE	= 0x666666;
@@ -239,6 +243,12 @@ public class RankingsScene extends PixelScene {
 					desc.hardlight(TEXT_WIN3[odd]);
 					depth.hardlight(TEXT_WIN3[odd]);
 					level.hardlight(TEXT_WIN3[odd]);
+				} else if (rec.cause == Nxhy.class) {
+					shield.copy(new ItemSprite(ItemSpriteSheet.SCROLL_GOLD));
+					position.hardlight(TEXT_WIN4[odd]);
+					desc.hardlight(TEXT_WIN4[odd]);
+					depth.hardlight(TEXT_WIN4[odd]);
+					level.hardlight(TEXT_WIN4[odd]);
 				} else {
 					shield.copy( new ItemSprite(ItemSpriteSheet.AMULET) );
 					position.hardlight( TEXT_WIN[odd] );

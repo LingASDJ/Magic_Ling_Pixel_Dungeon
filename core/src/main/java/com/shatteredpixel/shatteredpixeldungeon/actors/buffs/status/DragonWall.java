@@ -3,14 +3,12 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.AttackFlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.BArray;
@@ -20,10 +18,10 @@ import com.watabou.utils.PathFinder;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class RoomSeal extends Buff implements Hero.Doom {
+public class DragonWall extends Buff {
     private static final String CELLS = "cells";
     private static final float LIMIT = 2;
-    private static int ARENA_SIZE = 6;
+    private static int ARENA_SIZE = 10;
     private static final String COOLDOWN = "cooldown";
     private final HashMap<Integer, Emitter> emitters = new HashMap<>();
     private final HashSet<Integer> cells = new HashSet<>();
@@ -39,14 +37,11 @@ public class RoomSeal extends Buff implements Hero.Doom {
     public boolean act() {
         if (!cells.isEmpty()) {
             if (!cells.contains(target.pos)) {
-                if(target instanceof Hero){
-                    ((Hero) target).interrupt();
-                     target.damage((Dungeon.depth/5+1) * 2, new DM100.LightningBolt());
+                if(!Dungeon.level.water[target.pos]){
+                     Buff.affect( target, HalomethaneBurning.class ).reignite( target, 2f );
+                } else {
+                    Buff.detach( target, HalomethaneBurning.class);
                 }
-            }
-
-            if ((cooldown -= TICK) <= 0) {
-                unlock();
             }
         }
         updateEmitter();
@@ -58,7 +53,7 @@ public class RoomSeal extends Buff implements Hero.Doom {
         if (spriteEmitter == null) return;
         if (!cells.isEmpty() && !cells.contains(target.pos)) {
             if (!spriteEmitter.on) {
-                spriteEmitter.pour( AttackFlameParticle.FACTORY, 0.06f);
+                spriteEmitter.pour( HalomethaneFlameParticle.FACTORY, 0.06f);
             }
            
         } else {
@@ -67,7 +62,6 @@ public class RoomSeal extends Buff implements Hero.Doom {
     }
 
     public void lock(Char caller) {
-        if (Dungeon.bossLevel()) return;
         cooldown = LIMIT;
         if (cells.isEmpty()) {
             PathFinder.buildDistanceMap(target.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null), ARENA_SIZE);
@@ -92,14 +86,6 @@ public class RoomSeal extends Buff implements Hero.Doom {
         }
     }
 
-    public void unlock() {
-        if (!cells.isEmpty()) {
-            cells.clear();
-            BuffIndicator.refreshHero();
-            clearBorders();
-        }
-    }
-
     private void showBorders() {
         clearBorders();
         if (fx && !cells.isEmpty()) {
@@ -118,7 +104,7 @@ public class RoomSeal extends Buff implements Hero.Doom {
         if (!Dungeon.level.passable[c] && !Dungeon.level.avoid[c]) return;
         if (emitters.containsKey(c)) return;
         Emitter e = CellEmitter.get(c);
-        e.pour(AttackFlameParticle.FACTORY, 0.02f);
+        e.pour(HalomethaneFlameParticle.FACTORY, 0.02f);
         emitters.put(c, e);
     }
 
@@ -138,7 +124,6 @@ public class RoomSeal extends Buff implements Hero.Doom {
             spriteEmitter.autoKill = false;
         } else {
             clearBorders();
-            target.sprite.die();
             spriteEmitter = null;
         }
     }
@@ -150,11 +135,7 @@ public class RoomSeal extends Buff implements Hero.Doom {
 
     @Override
     public int icon() {
-        if (!cells.isEmpty()) {
-            return BuffIndicator.INVERT_MARK;
-        } else {
-            return BuffIndicator.NONE;
-        }
+        return BuffIndicator.NONE;
     }
 
     @Override
@@ -170,12 +151,6 @@ public class RoomSeal extends Buff implements Hero.Doom {
     @Override
     public String desc() {
         return Messages.get(this, "desc",(Dungeon.depth/5+1) * 2);
-    }
-
-    @Override
-    public void onDeath() {
-        Dungeon.fail(getClass());
-        GLog.n(Messages.get(this, "ondeath"));
     }
 
     @Override

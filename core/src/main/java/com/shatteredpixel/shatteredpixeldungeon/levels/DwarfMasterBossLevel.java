@@ -61,12 +61,22 @@ public class DwarfMasterBossLevel extends Level {
 
     @Override
     public String tilesTex() {
-        return Assets.Environment.TILES_CITY;
+        if(Dungeon.depth == 15){
+            return Assets.Environment.TILES_CAVES_GNOLL;
+        } else {
+            return Assets.Environment.TILES_HALLS;
+        }
+
     }
 
     @Override
     public String waterTex() {
-        return Assets.Environment.WATER_CITY;
+        if(Dungeon.depth == 15){
+            return Assets.Environment.WATER_SEWERS;
+        } else {
+            return Assets.Environment.WATER_HALLS;
+        }
+
     }
 
 

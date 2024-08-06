@@ -79,7 +79,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessQinyue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessRedWhite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessUnlock;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.LockedDamage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
@@ -88,11 +87,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.DamageBuff.ScaryDamageBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbueEX;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HasteLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.InvisibilityRing;
@@ -114,6 +113,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WaterSoulX;
@@ -308,7 +309,10 @@ public class Hero extends Char {
 	public int STR;
 	
 	public float awareness;
-	
+
+	private int resistHealth = 0;
+	private int originalHT = 20;
+
 	public int lvl = 1;
     private static final String ATTACK = "attackSkill";
     private static final String DEFENSE = "defenseSkill";
@@ -318,10 +322,13 @@ public class Hero extends Char {
     private static final String HTBOOST = "htboost";
     private static final String LANTERFTR = "lanterfire";
     private static final String ICEHP = "icehp";
-	
+	private static final String RESIST = "resistHealth";
+
 	public void updateHT( boolean boostHP ){
 		int curHT = HT;
-		
+
+		originalHT = 20 + 5*(lvl-1);
+
 		HT = 20 + 5*(lvl-1) + HTBoost;
 		float multiplier = RingOfMight.HTMultiplier(this);
 		HT = Math.round(multiplier * HT);
@@ -333,6 +340,9 @@ public class Hero extends Char {
 		if (boostHP){
 			HP += Math.max(HT - curHT, 0);
 		}
+
+		HT -= resistHealth;
+
 		HP = min(HP, HT);
 	}
 
@@ -344,10 +354,6 @@ public class Hero extends Char {
 		AdrenalineSurge buff = buff(AdrenalineSurge.class);
 		if (buff != null){
 			strBonus += buff.boost();
-		}
-
-		if (hasTalent(Talent.STRONGMAN)){
-			strBonus += (int)Math.floor(STR * (0.03f + 0.05f*pointsInTalent(Talent.STRONGMAN)));
 		}
 
 		//无力 本大层-3力量 : 坚毅 本大层力量+2
@@ -582,9 +588,9 @@ public class Hero extends Char {
 
 		if( lanterfireactive || Dungeon.isChallenged(DHXD)){
 			Buff.affect( this, Nyctophobia.class );
-
-			//修正异常
-			Buff.affect( this, LighS.class );
+			if(Dungeon.depth != 0){
+				Buff.affect( this, LighS.class );
+			}
 		}
 
 		if(Dungeon.isChallenged(CS)){
@@ -632,7 +638,7 @@ public class Hero extends Char {
 		belongings.thrownWeapon = null;
 
 		if (hit && subClass == HeroSubClass.GLADIATOR && wasEnemy){
-			Buff.affect( this, Combo.class ).hit( enemy );
+			Buff.affect( this, Combo.class ).hit();
 		}
 
 		if (hit && heroClass == HeroClass.DUELIST && wasEnemy){
@@ -663,6 +669,10 @@ public class Hero extends Char {
 
 		if (buff(Scimitar.SwordDance.class) != null){
 			accuracy *= 1.25f;
+		}
+
+		if(attackDelay() >1 && hasTalent(Talent.STRONGMAN)){
+			accuracy += accuracy * (attackDelay()-1f) * ( 0.5f * pointsInTalent(Talent.STRONGMAN));
 		}
 
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
@@ -732,10 +742,7 @@ public class Hero extends Char {
 	public String defenseVerb() {
 		Combo.ParryTracker parry = buff(Combo.ParryTracker.class);
 		if (parry != null){
-			parry.parried = true;
-			if (buff(Combo.class).getComboCount() < 9 || pointsInTalent(Talent.ENHANCED_COMBO) < 2){
-				parry.detach();
-			}
+			parry.parry();
 			return Messages.get(Monk.class, "parried");
 		}
 
@@ -778,8 +785,13 @@ public class Hero extends Char {
 			if (wepDr > 0) dr += wepDr;
 		}
 
-		if (buff(HoldFast.class) != null){
-			dr += buff(HoldFast.class).armorBonus();
+		if (hasTalent(Talent.HOLD_FAST)){
+			int drBouns = Char.combatRoll(0, 2* pointsInTalent(Talent.HOLD_FAST));
+			if(buff(Chill.class) != null || buff(Frost.class) != null || buff(Slow.class) != null || buff(Roots.class) != null || buff(Paralysis.class) != null || buff(Cripple.class) != null){
+				dr += drBouns * 3;
+			}else{
+				dr += drBouns;
+			}
 		}
 
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) &&CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
@@ -827,6 +839,11 @@ public class Hero extends Char {
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) &&CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
 			dmg = CustomPlayer.baseDamage;
 		}
+
+		if( attackDelay() >1 && hasTalent(Talent.STRONGMAN)){
+			dmg += (int) (dmg * (attackDelay()-1f) * ( 1f/3f * pointsInTalent(Talent.STRONGMAN)));
+		}
+
 		if (dmg < 0) dmg = 0;
 		return dmg;
 	}
@@ -933,14 +950,13 @@ public class Hero extends Char {
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame ){
 			if(!CustomPlayer.shouldOverride)
 				delay = CustomPlayer.baseAttackDelay;
-			else if(CustomPlayer.shouldOverride)
-				return CustomPlayer.baseAttackDelay;
+			else return CustomPlayer.baseAttackDelay;
 		}
 
 		if (!RingOfForce.fightingUnarmed(this)) {
-			
+
 			return delay * belongings.attackingWeapon().delayFactor( this );
-			
+
 		} else {
 			//Normally putting furor speed on unarmed attacks would be unnecessary
 			//But there's going to be that one guy who gets a furor+force ring combo
@@ -986,6 +1002,9 @@ public class Hero extends Char {
 	
 	@Override
 	public boolean act() {
+
+
+
 
 		if(Statistics.zeroItemLevel == 8 && Dungeon.depth == 0){
 			PaswordBadges.WHATSUP();
@@ -1794,9 +1813,6 @@ public class Hero extends Char {
 	
 	public void rest( boolean fullRest ) {
 		spendAndNextConstant( TIME_TO_REST );
-		if (hasTalent(Talent.HOLD_FAST)){
-			Buff.affect(this, HoldFast.class).pos = pos;
-		}
 		if (hasTalent(Talent.PATIENT_STRIKE)){
 			Buff.affect(Dungeon.hero, Talent.PatientStrikeTracker.class).pos = Dungeon.hero.pos;
 		}
@@ -1810,13 +1826,8 @@ public class Hero extends Char {
 	
 	@Override
 	public int attackProc( final Char enemy, int damage ) {
-		damage = super.attackProc( enemy, damage );
 
-		if(enemy != null){
-			if (enemy.buff(LockedDamage.class) != null){
-				damage *= 1.1f;
-			}
-		}
+		damage = super.attackProc( enemy, damage );
 
 		KindOfWeapon wep;
 		if (RingOfForce.fightingUnarmed(this) && !RingOfForce.unarmedGetsWeaponEnchantment(this)){
@@ -1849,17 +1860,17 @@ public class Hero extends Char {
 				});
 			}
 		}
+
+		if (damage > 0 && subClass == HeroSubClass.BERSERKER){
+			Berserk berserk = Buff.affect(this, Berserk.class);
+			berserk.damage(damage);
+		}
 		
 		return damage;
 	}
 	
 	@Override
 	public int defenseProc( Char enemy, int damage ) {
-		
-		if (damage > 0 && subClass == HeroSubClass.BERSERKER){
-			Berserk berserk = Buff.affect(this, Berserk.class);
-			berserk.damage(damage);
-		}
 		
 		if (belongings.armor() != null) {
 			damage = belongings.armor().proc( enemy, this, damage );
@@ -1892,7 +1903,41 @@ public class Hero extends Char {
 		if (buff(TimekeepersHourglass.timeStasis.class) != null)
 			return;
 
-
+		if(hasTalent(Talent.PAIN_SCAR) && HP-dmg<=0){
+			int point = pointsInTalent(Talent.PAIN_SCAR);
+			float ber = 0;
+			if(buff(Berserk.class)!=null)
+				ber = buff(Berserk.class).getPower();
+			switch (point){
+				case 1:
+					if(ber>=0.2f&&originalHT-resistHealth>20) {
+						HT -= 20;
+						buff(Berserk.class).reducePower(0.2f);
+						GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+						resistHealth +=20;
+						return;
+					}
+					break;
+				case 2:
+					if(ber>=0.15f&&originalHT-resistHealth>15) {
+						HT -= 15;
+						buff(Berserk.class).reducePower(0.15f);
+						GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+						resistHealth += 15;
+						return;
+					}
+					break;
+				case 3:
+					if(ber>=0.1f&&originalHT-resistHealth>10) {
+						HT -= 10;
+						buff(Berserk.class).reducePower(0.1f);
+						GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+						resistHealth += 10;
+						return;
+					}
+					break;
+			}
+		}
 
 		//regular damage interrupt, triggers on any damage except specific mild DOT effects
 		// unless the player recently hit 'continue moving', in which case this is ignored
@@ -2474,6 +2519,7 @@ public class Hero extends Char {
 
         bundle.put(ATTACK, attackSkill);
         bundle.put(DEFENSE, defenseSkill);
+		bundle.put(RESIST, resistHealth);
 
         bundle.put(STRENGTH, STR);
 
@@ -2512,6 +2558,7 @@ public class Hero extends Char {
 
         attackSkill = bundle.getInt(ATTACK);
         defenseSkill = bundle.getInt(DEFENSE);
+		resistHealth = bundle.getInt(RESIST);
 
         STR = bundle.getInt(STRENGTH);
 
@@ -2710,11 +2757,6 @@ public class Hero extends Char {
             exp = Random.NormalIntRange(10, 20);
         }
 
-//		///测试坐标用
-//		GLog.w(String.valueOf(holiday));
-
-        //携带该物品时，玩家血量低于一半后自动隐身一段回合。
-        //actMove实现
         MIME.GOLD_TWO getFalseBody = hero.belongings.getItem(MIME.GOLD_TWO.class);
         if (getFalseBody != null && HT / 5 > HP) {
             //给予一个看不见的隐形Buff,继承至Invisibility
@@ -2908,7 +2950,7 @@ public class Hero extends Char {
 			super.onAttackComplete();
 			return;
 		}
-		
+
 		AttackIndicator.target(enemy);
 		boolean wasEnemy = enemy.alignment == Alignment.ENEMY
 				|| (enemy instanceof Mimic && enemy.alignment == Alignment.NEUTRAL);
@@ -2919,7 +2961,7 @@ public class Hero extends Char {
 		spend( attackDelay() );
 
 		if (hit && subClass == HeroSubClass.GLADIATOR && wasEnemy){
-			Buff.affect( this, Combo.class ).hit( enemy );
+			Buff.affect( this, Combo.class ).hit();
 		}
 
 		if (hit && heroClass == HeroClass.DUELIST && wasEnemy){
@@ -3210,6 +3252,7 @@ public class Hero extends Char {
 	}
 	
 	public void resurrect() {
+
         HP = HT;
         live();
 
@@ -3305,6 +3348,12 @@ public class Hero extends Char {
         }
         hero.sprite.showStatus(0x00ffff, "+" + value);
     }
+
+	@Override
+	public float talentProc(){
+		if (hasTalent(Talent.RUNIC_TRANSFERENCE) && (pointsInTalent(Talent.RUNIC_TRANSFERENCE)>1)) return 1.25f;
+		return super.talentProc();
+	}
 
     public interface Doom {
         void onDeath();
