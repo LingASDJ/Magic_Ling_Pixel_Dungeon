@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.peach.WhiteYan;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.watabou.noosa.MovieClip;
@@ -48,6 +49,12 @@ public class WhiteYanBossSprite extends MobSprite {
         } else {
             super.attack( cell );
         }
+    }
+
+    @Override
+    public void link( Char ch ) {
+        super.link( ch );
+        scale.set(0.75f);
     }
 
 }

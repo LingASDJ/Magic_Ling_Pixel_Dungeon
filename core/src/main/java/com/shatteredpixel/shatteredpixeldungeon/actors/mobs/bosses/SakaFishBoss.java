@@ -15,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.FrostFire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
@@ -615,6 +616,14 @@ public class SakaFishBoss extends Boss {
                     ch.damage( Random.NormalIntRange( 40, 60 ), new DeathGaze() );
                 } else {
                     ch.damage( Random.NormalIntRange( 30, 60 ), new DeathGaze() );
+                }
+
+                //8-18 ADD
+
+                for (int offset : PathFinder.NEIGHBOURS4){
+                    if (!Dungeon.level.solid[ch.pos+offset]) {
+                        GameScene.add(Blob.seed(ch.pos+offset, 2, HalomethaneFire.class));
+                    }
                 }
 
                 if(DragonGirlBlue.Quest.four_used_points<2){

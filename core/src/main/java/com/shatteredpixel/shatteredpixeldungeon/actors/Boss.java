@@ -14,6 +14,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingGold;
+import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
+import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
@@ -83,6 +85,14 @@ abstract public class Boss extends Mob {
                     }
 
                 }
+            }
+
+            if(Statistics.RandMode && Dungeon.depth == 10){
+                Dungeon.level.drop(new TengusMask(),pos);
+            }
+
+            if(Statistics.RandMode && Dungeon.depth == 20){
+                Dungeon.level.drop(new KingsCrown(),pos);
             }
 
             if(Statistics.bossRushMode){

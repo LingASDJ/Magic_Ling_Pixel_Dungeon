@@ -35,7 +35,7 @@ public class DragonWall extends Buff {
 
     @Override
     public boolean act() {
-        if (!cells.isEmpty()) {
+        if (!cells.isEmpty() && Dungeon.branch != 0) {
             if (!cells.contains(target.pos)) {
                 if(!Dungeon.level.water[target.pos]){
                      Buff.affect( target, HalomethaneBurning.class ).reignite( target, 2f );
@@ -43,6 +43,8 @@ public class DragonWall extends Buff {
                     Buff.detach( target, HalomethaneBurning.class);
                 }
             }
+        } else {
+            detach();
         }
         updateEmitter();
         spend(TICK);

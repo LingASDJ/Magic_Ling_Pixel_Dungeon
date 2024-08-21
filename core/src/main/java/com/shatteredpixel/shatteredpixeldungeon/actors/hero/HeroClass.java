@@ -48,6 +48,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.Smok
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.AbyssBook;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SliverLockSword;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.LevelTeleporter;
@@ -218,7 +220,10 @@ public enum HeroClass {
 		Dungeon.LimitedDrops.KING_BAG.drop();
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
-		//new Amulet().quantity(1).identify().collect();
+		new AbyssBook().quantity(1).identify().collect();
+
+		new SliverLockSword().quantity(1).identify().collect();
+
 		new ScrollOfIdentify().identify();
 		//new KingGold().quantity(1).identify().collect();
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){

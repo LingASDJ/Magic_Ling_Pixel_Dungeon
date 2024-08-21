@@ -81,7 +81,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		revive();
 
 		if (item == null)   view(0, null);
-		else                view( item );
+		else                view( item,true );
 
 		setup( from,
 				to,

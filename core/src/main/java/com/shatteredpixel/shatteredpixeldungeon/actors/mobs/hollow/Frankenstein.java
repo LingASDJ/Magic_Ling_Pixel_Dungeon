@@ -43,7 +43,7 @@ public class Frankenstein extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 20, 35 );
+        return Char.combatRoll( 20, 35 );
     }
 
     @Override

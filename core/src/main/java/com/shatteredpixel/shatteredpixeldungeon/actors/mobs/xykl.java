@@ -56,7 +56,7 @@ public class xykl extends Mob {
     }
 
     public int damageRoll() {
-        return Random.NormalIntRange(1, 5);
+        return Char.combatRoll(1, 5);
     }
 
     public int attackProc(Char enemy, int damage) {

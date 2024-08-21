@@ -446,23 +446,19 @@ public class FireDragon extends Boss implements Callback {
         if(noAlive){
             Dungeon.level.unseal();
             GameScene.bossSlain();
-            Buff.detach( enemy, DragonWall.class);
+            Buff.detach( hero, DragonWall.class);
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
                 if (mob instanceof DiedClearElemet) {
                     sprite.parent.add(new Chains(sprite.center(),
                             mob.sprite.destinationCenter(),
                             Effects.Type.RED_CHAIN,
-                            new Callback() {
-                                public void call() {
-                                    Actor.add(new Pushing(mob, mob.pos, pos, new Callback() {
-                                        public void call() {
-                                            pullEnemy(mob, pos);
-                                            captured = false;
-                                        }
-                                    }));
-                                    next();
-                                    eatCooldown = 0;
-                                }
+                            () -> {
+                                Actor.add(new Pushing(mob, mob.pos, pos, () -> {
+                                    pullEnemy(mob, pos);
+                                    captured = false;
+                                }));
+                                next();
+                                eatCooldown = 0;
                             }));
                 }
             }

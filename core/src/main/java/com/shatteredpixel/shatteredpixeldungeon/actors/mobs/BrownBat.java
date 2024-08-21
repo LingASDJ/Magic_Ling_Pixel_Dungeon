@@ -75,7 +75,7 @@ public class BrownBat extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 5, 9 );
+        return Char.combatRoll( 5, 9 );
     }
 
     @Override

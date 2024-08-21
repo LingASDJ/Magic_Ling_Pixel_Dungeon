@@ -881,8 +881,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
     @Override
     public void onDeath() {
-        Dungeon.fail( getClass() );
-        GLog.n( Messages.get(this, "ondeath") );
         Statistics.bossScores[3] -= 1500;
     }
 

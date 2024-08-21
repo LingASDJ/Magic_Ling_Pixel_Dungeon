@@ -46,7 +46,7 @@ public class GunHuntsman extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 10, 12 );
+        return Char.combatRoll( 10, 12 );
     }
 
     private int combo = 0;

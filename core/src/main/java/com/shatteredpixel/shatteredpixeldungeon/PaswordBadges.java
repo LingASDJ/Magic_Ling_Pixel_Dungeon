@@ -57,6 +57,10 @@ public class PaswordBadges {
         displayBadge( Badge.UNLOCK_RICESWORD );
     }
 
+    public static void KILL_YOGSTS() {
+        displayBadge( Badge.KILL_YOGSTS );
+    }
+
     public static void SWORDDRAGON() {
         displayBadge( Badge.SWORDDREAM );
     }
@@ -135,7 +139,9 @@ public class PaswordBadges {
 
         KILL_FISHBOSS(26),
 
-        UNLOCK_RICESWORD(27);
+        UNLOCK_RICESWORD(27),
+
+        KILL_YOGSTS(28);
 
         public boolean meta;
 

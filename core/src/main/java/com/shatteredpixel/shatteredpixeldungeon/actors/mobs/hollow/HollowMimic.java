@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
@@ -24,7 +25,7 @@ public class HollowMimic extends Mimic {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 30, 50 );
+        return Char.combatRoll( 30, 50 );
     }
 
     @Override

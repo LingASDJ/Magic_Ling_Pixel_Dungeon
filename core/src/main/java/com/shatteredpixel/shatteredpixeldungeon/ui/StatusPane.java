@@ -497,11 +497,7 @@ public class StatusPane extends Component {
 		int max = hero.HT;
 
 		if (ClassUI()) {
-			if(Dungeon.depth>25){
-				bg.texture = TextureCache.get(Assets.Interfaces.STATUS_HOLLOW);
-			} else {
-				bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
-			}
+			bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
 
 		} else {
 			bg.texture = TextureCache.get(Assets.Interfaces.STATUS_DARK);

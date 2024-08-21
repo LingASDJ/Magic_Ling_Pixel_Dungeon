@@ -29,7 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
-import com.shatteredpixel.shatteredpixeldungeon.items.JAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -160,6 +159,9 @@ public class LastLevel extends Level {
 
 	@Override
 	protected void createMobs() {
+		//TrueYog npc = new TrueYog();
+		//npc.pos = 184;
+		//mobs.add(npc);
 	}
 
 	public Actor addRespawner() {
@@ -169,7 +171,7 @@ public class LastLevel extends Level {
 	@Override
 	protected void createItems() {
 		if(Dungeon.isDLC(Conducts.Conduct.DEV)){
-			drop( new JAmulet(), AMULET_POS );
+			drop( new Amulet(), AMULET_POS );
 		} else {
 			drop( new Amulet(), AMULET_POS );
 		}
@@ -180,7 +182,13 @@ public class LastLevel extends Level {
 
 	}
 
-	@Override
+//	@Override
+//	public void occupyCell( Char ch ) {
+//		super.occupyCell(ch);
+//		GLog.p(String.valueOf(hero.pos));
+//	}
+
+		@Override
 	public int randomRespawnCell( Char ch ) {
 		ArrayList<Integer> candidates = new ArrayList<>();
 		for (int i : PathFinder.NEIGHBOURS8){

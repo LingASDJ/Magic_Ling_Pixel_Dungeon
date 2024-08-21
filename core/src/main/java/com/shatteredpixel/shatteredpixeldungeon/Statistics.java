@@ -192,6 +192,16 @@ public class Statistics {
 	public static boolean bossRushMode = false;
 	public static boolean RandMode = false;
 
+	public static boolean TryUsedAnmy = false;
+	public static boolean winGame = false;
+	public static boolean DwarfMasterKing = false;
+	//220---SPD
+	public static boolean qualifiedForBossChallengeBadge = false;
+	public static boolean dwarfKill = false;
+	public static boolean TrueYogNoDied = false;
+
+	public static int killYogMobsAnargy;
+
 	private static final String ICECLAN ="iceCyanBlueSquareCoin";
 
 	private static final String GAMETIME = "gameTime";
@@ -208,6 +218,9 @@ public class Statistics {
     private static final String WINGAME = "wingame";
     private static final String HIDEEN = "hideen";
 	private static final String DWSX = "dwsxxx";
+
+	private static final String STS = "sts";
+
     private static final String BOSS_CHALLENGE_QUALIFIED = "qualifiedForBossChallengeBadge";
 	//Directly add float time will cause accuracy lose and stop timing if time is long enough
 	//so use long to record seconds, float to count sub-seconds.
@@ -333,12 +346,6 @@ public class Statistics {
 
 	private static final String XOL		= "xol";
 
-    public static boolean TryUsedAnmy = false;
-    public static boolean winGame = false;
-    public static boolean DwarfMasterKing = false;
-    //220---SPD
-    public static boolean qualifiedForBossChallengeBadge = false;
-    public static boolean dwarfKill = false;
 
 
     public static void reset() {
@@ -377,6 +384,8 @@ public class Statistics {
 		youNoItem = false;
 		unLockedFireDargon = false;
 
+		TrueYogNoDied = false;
+
 		GameKillFireDargon = false;
 
 		gameTime = 0;
@@ -391,6 +400,8 @@ public class Statistics {
         bossRushMode = false;
 		RandMode = false;
 		RandModeCount = 0;
+
+		killYogMobsAnargy = 0;
 
         findMoon = false;
 		deadGo = false;
@@ -476,7 +487,11 @@ public class Statistics {
 
         bundle.put(HIDEEN, DwarfMasterKing);
 
+		bundle.put("KILL_YOG",killYogMobsAnargy);
+
 		bundle.put(DWSX, dwarfKill);
+
+		bundle.put(STS, TrueYogNoDied);
 
         bundle.put(WINGAME, winGame);
 
@@ -633,8 +648,13 @@ public class Statistics {
 	public static void restoreFromBundle( Bundle bundle ) {
 
 		GameKillFireDargon = bundle.getBoolean("DRAM");
+
+		TrueYogNoDied = bundle.getBoolean(STS);
+
 		unLockedFireDargon = bundle.getBoolean("DCXFG");
 		RandModeCount = bundle.getInt(ICECLAN);
+
+		killYogMobsAnargy = bundle.getInt("KILL_YOG");
 
 		hcDialogLevel = bundle.getInt(HKLEVEL);
 

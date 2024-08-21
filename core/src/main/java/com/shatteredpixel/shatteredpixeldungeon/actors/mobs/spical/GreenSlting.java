@@ -23,7 +23,7 @@ public class GreenSlting extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 5 + Dungeon.depth, 9 + Dungeon.depth );
+        return Char.combatRoll( 5 + Dungeon.depth, 9 + Dungeon.depth );
     }
 
     @Override

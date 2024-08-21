@@ -138,7 +138,12 @@ public class RedBloodMoon extends MeleeWeapon {
         private class TRUE { }
         @Override
         public boolean attack(Char enemy, float dmgMulti, float dmgBonus, float accMulti ) {
-            damage(Random.NormalIntRange(1,hero.belongings.weapon.level()/3+2),new TRUE());
+
+            int wepdamge;
+
+            wepdamge = hero.belongings.weapon != null ? hero.belongings.weapon.level()/3 : 4;
+
+            damage(Random.NormalIntRange(1+2,wepdamge),new TRUE());
             return super.attack( enemy, dmgMulti, dmgBonus, accMulti );
         }
 

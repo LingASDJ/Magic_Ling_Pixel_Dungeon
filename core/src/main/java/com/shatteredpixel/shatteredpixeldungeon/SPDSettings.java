@@ -176,6 +176,9 @@ public class SPDSettings extends GameSettings {
 
 	private static final String KEY_KILLADF = "DWAXF";
 
+
+	private static final String KEY_VSB = "VSB";
+
 	public static void fullscreen( boolean value ) {
 		put( KEY_FULLSCREEN, value );
 
@@ -946,4 +949,11 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_BOSS_WEAPON_COUNT1, 0);
 	}
 
+	public static void visualBuddle(boolean value) {
+		put(KEY_KILLADF, value );
+	}
+
+	public static boolean visualBuddle() {
+		return getBoolean(KEY_KILLADF, true);
+	}
 }

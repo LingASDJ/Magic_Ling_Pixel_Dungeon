@@ -54,7 +54,7 @@ public class KagenoNusujin extends Mob {
     }
 
     public int damageRoll() {
-        return Random.NormalIntRange(3, 9);
+        return Char.combatRoll(3, 9);
     }
 
     public int drRoll() {
