@@ -43,7 +43,7 @@ public class ArmoredStatue extends Statue {
 		spriteClass = StatueSprite.class;
 	}
 
-	protected Armor armor;
+	public Armor armor;
 
 	@SuppressWarnings("unchecked")
 	public ArmoredStatue(){

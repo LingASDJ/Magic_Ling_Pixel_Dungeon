@@ -240,7 +240,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	public void showStatus(int color, String text, Object... args) {
 		//TODO 实验性功能 ICONTYPE
-		if(SPDSettings.ClassSkin()){
+		if(SPDSettings.V2IconDamage()){
 			showStatusWithIcon(color, text, IconFloatingText.NO_ICON, args);
 		} else {
 			if (visible) {

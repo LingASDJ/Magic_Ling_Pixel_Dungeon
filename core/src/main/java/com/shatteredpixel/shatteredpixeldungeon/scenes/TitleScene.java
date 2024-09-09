@@ -13,8 +13,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedAnalysisScene;
-import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedFinderScene;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Gregorian;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
@@ -479,6 +477,10 @@ public class TitleScene extends PixelScene {
 		btnAbout.icon(new Image(Icons.get(Icons.SHPX)));
 		add(btnAbout);
 
+		StyledButton seed = new SeedButton(landscape() ? Chrome.Type.GREY_BUTTON_TR : Chrome.Type.BLANK, Messages.get(this, "seed"));
+		seed.icon(NetIcons.get(NetIcons.CHAT));
+		add(seed);
+
 		StyledButton btnNews = new NewsButton(GREY_TR, Messages.get(this, "news"));
 		btnNews.icon(new Image(Icons.get(Icons.NEWS)));
 		add(btnNews);
@@ -506,9 +508,12 @@ public class TitleScene extends PixelScene {
 			btnSettings.setRect(btnSupport.right() + 2, btnSupport.top(), btnRankings.width(), BTN_HEIGHT);
 			btnAbout.setRect(btnSettings.left(), btnSettings.bottom() + GAP, btnRankings.width(), BTN_HEIGHT);
 			btnNews.setRect(btnPlay.left(), btnAbout.bottom() + GAP, btnAbout.width() + 157 - 1, BTN_HEIGHT);
+			seed.setRect(0, 0,40,20);
+
 			align(btnNews);
 		}
 		else {
+			seed.setRect(0, version.y-10,40,20);
 			btnPlay.setRect(title.x, topRegion + GAP, title.width(), BTN_HEIGHT);
 			align(btnPlay);
 			btnRankings.setRect(btnPlay.left(), btnPlay.bottom()+ GAP, (btnPlay.width() / 2) - 1, BTN_HEIGHT);
@@ -604,7 +609,7 @@ public class TitleScene extends PixelScene {
 
 		@Override
 		protected boolean onLongClick() {
-			ShatteredPixelDungeon.switchNoFade(SeedAnalysisScene.class);
+			ShatteredPixelDungeon.switchNoFade(SeedFinderScene.class);
 			return true;
 		}
 

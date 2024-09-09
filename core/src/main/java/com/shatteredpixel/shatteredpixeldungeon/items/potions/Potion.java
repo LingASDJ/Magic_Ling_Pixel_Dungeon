@@ -80,6 +80,11 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 public class Potion extends Item {
+	
+	@Override
+	public String anonymousName() {
+		return Messages.get(this, color);
+	}
 
 	public static final String AC_DRINK = "DRINK";
 	

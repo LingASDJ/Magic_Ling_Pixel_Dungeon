@@ -62,11 +62,11 @@ public class GoScene extends PixelScene {
             playBGM(Assets.Sounds.ANSDOSHIP, false);
         }
 
-        TitleScene.NTP_ERROR = false;
-        TitleScene.NTP_NOINTER = false;
-        TitleScene.NTP_LINK = false;
-        TitleScene.NTP_ERROR_VEFY = false;
-        TitleScene.NTP_NOINTER_VEFY = false;
+//        TitleScene.NTP_ERROR = false;
+//        TitleScene.NTP_NOINTER = false;
+//        TitleScene.NTP_LINK = false;
+//        TitleScene.NTP_ERROR_VEFY = false;
+//        TitleScene.NTP_NOINTER_VEFY = false;
 
         PixelScene.uiCamera.visible = false;
 
