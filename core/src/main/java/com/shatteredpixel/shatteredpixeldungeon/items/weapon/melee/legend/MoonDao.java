@@ -24,7 +24,7 @@ public class MoonDao extends MeleeWeapon {
     public MoonDao() {
         image = ItemSpriteSheet.MOONDAILY;
         tier = 3;
-        ACC = 1.54F;
+        ACC = 1f;
         DLY = 0.3F;
     }
 

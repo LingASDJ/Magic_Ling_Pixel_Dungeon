@@ -226,6 +226,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
@@ -672,7 +673,7 @@ public class Hero extends Char {
 		}
 
 		if(attackDelay() >1 && hasTalent(Talent.STRONGMAN)){
-			accuracy += accuracy * (attackDelay()-1f) * ( 0.5f * pointsInTalent(Talent.STRONGMAN));
+			accuracy += accuracy * Math.max((attackDelay()-1f) * ( (0.5f / 3f) * pointsInTalent(Talent.STRONGMAN)),0.5f);
 		}
 
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
@@ -840,8 +841,8 @@ public class Hero extends Char {
 			dmg = CustomPlayer.baseDamage;
 		}
 
-		if( attackDelay() >1 && hasTalent(Talent.STRONGMAN)){
-			dmg += (int) (dmg * (attackDelay()-1f) * ( 1f/3f * pointsInTalent(Talent.STRONGMAN)));
+		if( attackDelay() >1 && hasTalent(Talent.STRONGMAN) && !(wep instanceof SpiritBow)){
+			dmg += (int) (dmg * Math.max (attackDelay()-1f * ( 1f/3f * pointsInTalent(Talent.STRONGMAN)) ,0.75f));
 		}
 
 		if (dmg < 0) dmg = 0;
@@ -1908,42 +1909,6 @@ public class Hero extends Char {
 		if (buff(TimekeepersHourglass.timeStasis.class) != null)
 			return;
 
-		if(hasTalent(Talent.PAIN_SCAR) && HP-dmg<=0){
-			int point = pointsInTalent(Talent.PAIN_SCAR);
-			float ber = 0;
-			if(buff(Berserk.class)!=null)
-				ber = buff(Berserk.class).getPower();
-			switch (point){
-				case 1:
-					if(ber>=0.2f&&originalHT-resistHealth>20) {
-						HT -= 20;
-						buff(Berserk.class).reducePower(0.2f);
-						GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
-						resistHealth +=20;
-						return;
-					}
-					break;
-				case 2:
-					if(ber>=0.15f&&originalHT-resistHealth>15) {
-						HT -= 15;
-						buff(Berserk.class).reducePower(0.15f);
-						GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
-						resistHealth += 15;
-						return;
-					}
-					break;
-				case 3:
-					if(ber>=0.1f&&originalHT-resistHealth>10) {
-						HT -= 10;
-						buff(Berserk.class).reducePower(0.1f);
-						GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
-						resistHealth += 10;
-						return;
-					}
-					break;
-			}
-		}
-
 		//regular damage interrupt, triggers on any damage except specific mild DOT effects
 		// unless the player recently hit 'continue moving', in which case this is ignored
 		if (!(src instanceof Hunger || src instanceof Viscosity.DeferedDamage) && damageInterrupt) {
@@ -1998,6 +1963,110 @@ public class Hero extends Char {
 				dmg = Math.round(dmg * 0.00f);
 				//Buff.affect(hero, CapeOfThorns.HeroThorns.class,2);
 			}
+		}
+
+
+		if(hasTalent(Talent.PAIN_SCAR) && HP+ shielding() -dmg<=0){
+			int point = pointsInTalent(Talent.PAIN_SCAR);
+			float ber = 0;
+
+			if(buff(Berserk.class)!=null)
+				ber = buff(Berserk.class).getPower();
+
+			Ankh ankh = null;
+			for (Ankh i : belongings.getAllItems(Ankh.class)) {
+				if (ankh == null || i.isBlessed()) {
+					ankh = i;
+				}
+			}
+
+			boolean canResist = false;
+
+			switch (point){
+
+				case 1:
+					if(ber>=0.2f&&(originalHT-resistHealth)>20) {
+						canResist = true;
+					}
+					break;
+
+				case 2:
+
+					if(ber>=0.15f&&(originalHT-resistHealth)>15) {
+						canResist = true;
+					}
+					break;
+
+				case 3:
+
+					if(ber>=0.1f&&(originalHT-resistHealth)>10) {
+						canResist = true;
+					}
+					break;
+			}
+
+			int RH = resistHealth;
+
+			if(ankh != null && canResist){
+				GameScene.show(new WndOptions(new ItemSprite(ItemSpriteSheet.ANKH),
+						Messages.get(Talent.PAIN_SCAR,"title"),
+						Messages.get(Talent.PAIN_SCAR,"desc"),
+						Messages.get(Talent.PAIN_SCAR,"prompt"),
+						Messages.get(Talent.PAIN_SCAR,"cancel")){
+					@Override
+					protected void onSelect(int index){
+						super.onSelect(index);
+						if( index == 0 ){
+							switch(pointsInTalent(Talent.PAIN_SCAR)){
+								case 1:
+									HT -= 20;
+									buff(Berserk.class).reducePower(0.2f);
+									GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+									resistHealth +=20;
+									return;
+								case 2:
+									HT -= 15;
+									buff(Berserk.class).reducePower(0.15f);
+									GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+									resistHealth += 15;
+									return;
+								case 3:
+									HT -= 10;
+									buff(Berserk.class).reducePower(0.1f);
+									GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+									resistHealth += 10;
+									return;
+							}
+						}else if(index == 1 ){
+							die(src);
+						}
+					}
+				});
+				return;
+			} else if (canResist) {
+				switch(pointsInTalent(Talent.PAIN_SCAR)){
+					case 1:
+						HT -= 20;
+						buff(Berserk.class).reducePower(0.2f);
+						GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+						resistHealth +=20;
+						return;
+					case 2:
+						HT -= 15;
+						buff(Berserk.class).reducePower(0.15f);
+						GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+						resistHealth += 15;
+						return;
+					case 3:
+						HT -= 10;
+						buff(Berserk.class).reducePower(0.1f);
+						GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+						resistHealth += 10;
+						return;
+				}
+			}
+			if(RH < resistHealth) return;
+
 		}
 
 		int preHP = HP + shielding();
@@ -3323,6 +3392,7 @@ public class Hero extends Char {
 			}
 		}
 
+		resistHealth *= 0.8f;
 		updateHT(false);
 	}
 

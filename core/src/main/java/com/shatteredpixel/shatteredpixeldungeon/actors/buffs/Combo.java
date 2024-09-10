@@ -110,7 +110,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 	}
 
 	public void hit() {
-		count++;
+		if(count <50) count++;
 		if(count%2==1)couldUseTime++;
 		int point=Dungeon.hero.pointsInTalent(Talent.KEEP_VIGILANCE);
 		switch (point){

@@ -70,6 +70,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.TestBooks;
@@ -216,6 +217,12 @@ public enum HeroClass {
 		Dungeon.LimitedDrops.HERB_BAG.drop();
 		new KingBag().quantity(1).identify().collect();
 		Dungeon.LimitedDrops.KING_BAG.drop();
+
+		//插个眼
+
+		//new PropBag().quantity(1).identify().collect();
+		Dungeon.LimitedDrops.PROP_BAG.drop();
+
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
 		//new Amulet().quantity(1).identify().collect();
