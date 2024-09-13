@@ -272,6 +272,12 @@ public class LevelTeleporter extends TestItem {
             if(crivusfruitslevel3){
                 crivusfruitslevel3 = false;
             }
+
+            if(Statistics.TrueYogNoDied){
+                Statistics.TrueYogNoDied   = false;
+            }
+
+
             CrivusbossTeleporter = 0;
             //拟态王二阶段死亡的时候给予重新评估
             if(TPDoorDieds){

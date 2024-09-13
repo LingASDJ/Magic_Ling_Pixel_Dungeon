@@ -270,7 +270,7 @@ public class CrivusStarFruitsLasher extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 1, 7 );
+        return Char.combatRoll( 1, 7 );
     }
 
     @Override

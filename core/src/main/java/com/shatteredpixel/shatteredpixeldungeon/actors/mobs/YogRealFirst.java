@@ -453,22 +453,22 @@ public abstract class YogRealFirst extends Mob {
         @Override
         protected void zap() {
             spend( 1f );
+            if(enemy != null){
+                if (hit( this, enemy, true )) {
 
-            if (hit( this, enemy, true )) {
+                    enemy.damage( Random.NormalIntRange(10, 20), new LightRay() );
+                    Buff.prolong( enemy, Blindness.class, Blindness.DURATION/2f );
 
-                enemy.damage( Random.NormalIntRange(10, 20), new LightRay() );
-                Buff.prolong( enemy, Blindness.class, Blindness.DURATION/2f );
+                    if (!enemy.isAlive() && enemy == Dungeon.hero) {
+                        Dungeon.fail( getClass() );
+                        GLog.n( Messages.get(Char.class, "kill", name()) );
+                    }
 
-                if (!enemy.isAlive() && enemy == Dungeon.hero) {
-                    Dungeon.fail( getClass() );
-                    GLog.n( Messages.get(Char.class, "kill", name()) );
+                } else {
+
+                    enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
                 }
-
-            } else {
-
-                enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
             }
-
         }
 
         @Override

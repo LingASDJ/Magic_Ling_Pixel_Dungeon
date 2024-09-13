@@ -1040,7 +1040,7 @@ public abstract class Char extends Actor {
 			}
 
 			//换成你自己的布尔控制
-			if(SPDSettings.ClassSkin()){
+			if(SPDSettings.V2IconDamage()){
 				sprite.showStatusWithIcon(CharSprite.NEGATIVE, Integer.toString(dmg + shielded), icon);
 			} else {
 				sprite.showStatus(HP > HT / 2 ?

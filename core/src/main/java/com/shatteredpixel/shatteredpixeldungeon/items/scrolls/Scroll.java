@@ -62,6 +62,11 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 public abstract class Scroll extends Item {
+
+	@Override
+	public String anonymousName() {
+		return Messages.get(this, rune);
+	}
 	
 	public static final String AC_READ	= "READ";
 	

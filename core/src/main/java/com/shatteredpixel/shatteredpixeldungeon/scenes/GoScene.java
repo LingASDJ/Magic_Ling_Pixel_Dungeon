@@ -30,9 +30,9 @@ public class GoScene extends PixelScene {
     private static float gdxScaleFactor = 1.0f;
     private static float ansdoShipScaleFactor = 1.0f;
 
-    private static final float RIPPLE_AMPLITUDE = 0.5f; // 水波振幅
+    private static final float RIPPLE_AMPLITUDE = 0.9f; // 水波振幅
     private static final float RIPPLE_FREQUENCY = 1f; // 水波频率
-    private static final float RIPPLE_SPEED = 4f; // 水波速度
+    private static final float RIPPLE_SPEED = 2f; // 水波速度
 
     public static void isClassExistInSourceCode() {
         String base64ClassName = Messages.get(TPDoor.class,"ymfzzty");
@@ -56,17 +56,17 @@ public class GoScene extends PixelScene {
         super.create();
         isClassExistInSourceCode();
         if (SPDSettings.splashScreen() < 1 || done) {
-            ShatteredPixelDungeon.switchForceFade(WelcomeScene.class);
+            ShatteredPixelDungeon.switchScene(WelcomeScene.class);
             return;
         } else if(SPDSettings.music()) {
-            playBGM(Assets.Music.GO, true);
+            playBGM(Assets.Sounds.ANSDOSHIP, false);
         }
 
-        TitleScene.NTP_ERROR = false;
-        TitleScene.NTP_NOINTER = false;
-        TitleScene.NTP_LINK = false;
-        TitleScene.NTP_ERROR_VEFY = false;
-        TitleScene.NTP_NOINTER_VEFY = false;
+//        TitleScene.NTP_ERROR = false;
+//        TitleScene.NTP_NOINTER = false;
+//        TitleScene.NTP_LINK = false;
+//        TitleScene.NTP_ERROR_VEFY = false;
+//        TitleScene.NTP_NOINTER_VEFY = false;
 
         PixelScene.uiCamera.visible = false;
 
@@ -140,7 +140,7 @@ public class GoScene extends PixelScene {
                 } else if (!done) {
                     done = true;
                     if (ansdoShip.visible) ansdoShip.visible = false;
-                    ShatteredPixelDungeon.switchForceFade(WelcomeScene.class);
+                    ShatteredPixelDungeon.switchScene(WelcomeScene.class);
                 }
             }
         };

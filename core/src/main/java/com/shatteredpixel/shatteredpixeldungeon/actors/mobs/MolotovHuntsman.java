@@ -74,7 +74,7 @@ public class MolotovHuntsman extends Mob {
     }
 
     public int damageRoll() {
-        return Random.NormalIntRange(7, 12);
+        return Char.combatRoll(7, 12);
     }
 
     public void die(Object var1) {

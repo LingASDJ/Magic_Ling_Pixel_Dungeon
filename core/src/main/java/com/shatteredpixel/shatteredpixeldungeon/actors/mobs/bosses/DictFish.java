@@ -82,7 +82,7 @@ public class DictFish extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 30, 40 );
+        return Char.combatRoll( 30, 40 );
     }
 
     @Override

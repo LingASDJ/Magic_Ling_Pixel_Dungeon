@@ -47,7 +47,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Bzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Gudaszi;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonCat;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteLing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -288,8 +287,7 @@ public class CursedWand {
 						//ignores bosses, questgivers, rat king, etc.
 						&& !ch.properties().contains(Char.Property.BOSS)
 						&& !ch.properties().contains(Char.Property.MINIBOSS)
-						&& !(ch instanceof Bzmdr || ch instanceof MoonCat || ch instanceof WhiteLing
-						|| ch instanceof Gudaszi || ch instanceof GodNPC)) {
+						&& !(ch instanceof Bzmdr || ch instanceof MoonCat || ch instanceof Gudaszi || ch instanceof GodNPC)) {
 					Sheep sheep = new Sheep();
 					sheep.lifespan = 10;
 					sheep.pos = ch.pos;

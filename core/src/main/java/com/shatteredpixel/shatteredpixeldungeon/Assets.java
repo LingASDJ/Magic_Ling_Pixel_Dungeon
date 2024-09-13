@@ -34,6 +34,10 @@ public class Assets {
 
 	public static final String NIGHT	= "music/DwarfGeneral.ogg";
 
+	public static final String YOGALXY	= "music/rgjt/galaxy.mp3";
+	public static final String YOGGOD	= "music/rgjt/god.mp3";
+	public static final String STARLXY	= "music/rgjt/star.mp3";
+
 	public static final String SKBJY	= "music/Boss-Saka.ogg";
 
 	public static final String TOWN = "music/town.ogg";
@@ -70,7 +74,7 @@ public class Assets {
 		public static final String GALAXY_AE  =  "environment/yog/bubble_above.png";
 		public static final String GALAXY_BD  = "environment/yog/bubble_behind.png";
 		public static final String GALAXY_TILED  =  "environment/yog/tiles_bubble.png";
-		public static final String GALAXY_WATER  = "environment/yog/starry_under.png";
+		public static final String GALAXY_WATER  = "environment/yog/starry.png";
 
 
 		public static final String TERRAIN_FEATURES = "environment/terrain_features.png";
@@ -194,6 +198,9 @@ public class Assets {
 
 		public static final String General_Title  = "interfaces/bosslogo/general-title.png";
 		public static final String General_Clear  = "interfaces/bosslogo/general-clear.png";
+
+		public static final String Tawi_Title  = "interfaces/bosslogo/Tawil-title.png";
+		public static final String Tawi_Clear  = "interfaces/bosslogo/Tawil-slain.png";
 
 		public static final String Tengu_Title  = "interfaces/bosslogo/tengu-title.png";
 		public static final String Tengu_Clear  = "interfaces/bosslogo/tengu-clear.png";
@@ -434,6 +441,16 @@ public class Assets {
 
 		public static final String BZMR = "splashes/bzmdr_portraits.png";
 
+		//WhiteYan Boss Emoji
+		public static final String WY_HAPPY = "splashes/peach/whiteyan_happy.png";
+		public static final String WY_NOLAN = "splashes/peach/whiteyan_nolang.png";
+		public static final String WY_SMALE = "splashes/peach/whiteyan_smale.png";
+		public static final String WY_WORRY = "splashes/peach/whiteyan_worry.png";
+		public static final String WY_SORRY = "splashes/peach/whiteyan_sorry.png";
+		public static final String WY_STICK = "splashes/peach/whiteyan_stick.png";
+		public static final String WY_WXHAT = "splashes/peach/whiteyan_what.png";
+		public static final String WY_WARLS = "splashes/peach/whiteyan_war.png";
+
 		public static final String DG = "splashes/general_portraits.png";
 
 		public static final String FG = "splashes/guard_npc_portraits.png";
@@ -441,6 +458,8 @@ public class Assets {
 		public static final String HK = "splashes/hk.png";
 
 		public static final String YTZY = "splashes/yet_yog_portraits.png";
+
+		public static final String TRZY = "splashes/true_yog_portraits.png";
 
 		public static final String YXF = "splashes/huntress_portraits.png";
 
@@ -535,6 +554,11 @@ public class Assets {
 		public static final String SXGR	= "sprites/boss/IceSlowGirl.png";
 
 		public static final String SKFS	 = "sprites/boss/SakaFishBoss.png";
+
+		public static final String SOTS	 = "sprites/boss/yog_sts.png";
+		public static final String LATS	 = "sprites/boss/sts_lasher.png";
+		public static final String SATS	 = "sprites/boss/yog_servantavgomon.png";
+		public static final String FSOE	= "sprites/boss/four_stone.png";
 
 		public static final String WHITEYAN = "sprites/boss/white_yan_boss.png";
 		public static final String DIMK	 = "sprites/boss/DimandKing.png";
@@ -732,8 +756,11 @@ public class Assets {
 
 		//Animation Item
 		public static final String ANIMATIONS_TERMIAL = "sprites/items/Animation/DM100-Terminal.png";
-
 		public static final String ANIMATIONS_BOMBSWORD = "sprites/items/Animation/BoomSword.png";
+		public static final String ANIMATIONS_SOS = "sprites/items/Animation/DistressSignalNesting.png";
+		public static final String ANIMATIONS_SXS = "sprites/items/Animation/SliverLockSword.png";
+
+
 	}
 
 

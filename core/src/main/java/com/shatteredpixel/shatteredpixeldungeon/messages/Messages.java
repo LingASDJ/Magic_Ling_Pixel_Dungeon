@@ -51,7 +51,7 @@ public class Messages {
 	private static Languages lang;
 	private static Locale locale;
 	public static String baseNameX;
-
+	public static final String NO_TEXT_FOUND = "!!!NO TEXT FOUND!!!";
 
 	public static Languages lang(){
 		return lang;

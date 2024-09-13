@@ -60,7 +60,7 @@ public class RandomBlueFireDE extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 5, 12 );
+        return Char.combatRoll( 5, 12 );
     }
 
     public int attackProc( Char enemy, int damage ) {

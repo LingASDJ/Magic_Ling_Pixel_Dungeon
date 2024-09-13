@@ -218,7 +218,10 @@ public enum HeroClass {
 		Dungeon.LimitedDrops.KING_BAG.drop();
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
-		//new Amulet().quantity(1).identify().collect();
+
+		//new AbyssBook().quantity(1).identify().collect();
+		//new SliverLockSword().quantity(1).identify().collect();
+
 		new ScrollOfIdentify().identify();
 		//new KingGold().quantity(1).identify().collect();
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){

@@ -709,7 +709,7 @@ public class Generator {
 					LloydsBeacon.class,
 					EtherealChains.class,
 					WraithAmulet.class,
-					CommRelay.class
+					CommRelay.class,
 			};
 			ARTIFACT.defaultProbs = new float[]{ 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1,1, 0};
 			ARTIFACT.probs = ARTIFACT.defaultProbs.clone();

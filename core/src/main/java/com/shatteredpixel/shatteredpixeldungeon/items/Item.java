@@ -62,7 +62,9 @@ import java.util.Comparator;
 public class Item implements Bundlable {
 
 	public interface AnimationItem{}
-
+	public String anonymousName() {
+		return "ITEM_NAME_ANONYMOUS";
+	}
 	public void getCurse(boolean extraEffect){
 		cursed=cursedKnown=true;
 	}

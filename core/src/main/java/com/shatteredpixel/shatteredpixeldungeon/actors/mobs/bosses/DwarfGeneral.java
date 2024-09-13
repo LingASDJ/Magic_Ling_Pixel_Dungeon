@@ -94,7 +94,7 @@ public class DwarfGeneral extends Boss {
     private int enderCooldown;
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 20, 42 );
+        return Char.combatRoll( 20, 42 );
     }
 
 

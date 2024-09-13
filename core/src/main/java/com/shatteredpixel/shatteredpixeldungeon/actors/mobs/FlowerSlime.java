@@ -20,7 +20,7 @@ public class FlowerSlime extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 1, 5 );
+        return Char.combatRoll( 1, 5 );
     }
 
     @Override

@@ -599,7 +599,7 @@ public class ToobarV extends Component {
         }
 
         public void reset( Item item, int cell, float endX, float endY ) {
-            view( item );
+            view( item,true );
 
             active =
                     visible =

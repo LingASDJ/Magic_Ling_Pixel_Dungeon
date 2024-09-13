@@ -269,7 +269,7 @@ public class Blacksmith extends NPC {
 
 	public static class Quest {
 
-		private static int type = 0;
+		public static int type = 0;
 		public static final int OLD = 0;
 		public static final int CRYSTAL = 1;
 		public static final int GNOLL = 2;

@@ -176,6 +176,9 @@ public class SPDSettings extends GameSettings {
 
 	private static final String KEY_KILLADF = "DWAXF";
 
+
+	private static final String KEY_VSB = "VSB";
+
 	public static void fullscreen( boolean value ) {
 		put( KEY_FULLSCREEN, value );
 
@@ -646,11 +649,11 @@ public class SPDSettings extends GameSettings {
 		return getBoolean(ATBSettings, false);
 	}
 
-	public static boolean ClassSkin() {
-		return getBoolean(KEY_SKIN, false);
+	public static boolean V2IconDamage() {
+		return getBoolean(KEY_SKIN, true);
 	}
 
-	public static void ClassSkin(boolean value) {
+	public static void V2IconDamage(boolean value) {
 		put( KEY_SKIN, value );
 	}
 
@@ -944,6 +947,140 @@ public class SPDSettings extends GameSettings {
 
 	public static int BossWeaponCount1(){
 		return getInt( KEY_BOSS_WEAPON_COUNT1, 0);
+	}
+
+	public static void visualBuddle(boolean value) {
+		put(KEY_KILLADF, value );
+	}
+
+	public static boolean visualBuddle() {
+		return getBoolean(KEY_KILLADF, true);
+	}
+
+	//Seedfinder
+
+	public static final String KEY_FLOORS	= "number_of_floors";
+	public static final String KEY_USEROOMS	= "use_rooms";
+	public static final String KEY_IGNOREBLACKLIST	= "ignore_blacklist";
+
+	public static final String KEY_LOGTRINKETS	= "logging_option_trinkets";
+	public static final String KEY_LOGEQUIPMENT	= "logging_option_equipment";
+	public static final String KEY_LOGSCROLLS	= "logging_option_scrolls";
+	public static final String KEY_LOGPOTIONS= "logging_option_potions";
+	public static final String KEY_LOGRINGS	= "logging_option_rings";
+	public static final String KEY_LOGWANDS= "logging_option_wands";
+	public static final String KEY_LOGARTIFACTS	= "logging_option_artifacts";
+	public static final String KEY_LOGMISC= "logging_option_other";
+
+	public static final String KEY_SEEDITEMS_TEXT= "remember_seeditems_text";
+	public static final String KEY_SEEDINPUT_TEXT= "remember_seedinput_text";
+	public static final String KEY_CONDITION= "seedfinder_condition";
+
+	public static void seedfinderFloors( int value ) {
+		put( KEY_FLOORS, value );
+	}
+
+	public static int seedfinderFloors() {
+		return getInt( KEY_FLOORS, 9, 1, 24 );
+	}
+
+	public static void seeditemsText(String value) {
+		put(KEY_SEEDITEMS_TEXT, value);
+	}
+
+	public static String seeditemsText() {
+		return getString(KEY_SEEDITEMS_TEXT, "焰浪法杖 +1");
+	}
+
+	public static void seedinputText(String value) {
+		put(KEY_SEEDINPUT_TEXT, value);
+	}
+
+	public static String seedinputText() {
+		return getString(KEY_SEEDINPUT_TEXT, "");
+	}
+
+	public static void seedfinderConditionANY(boolean value) {
+		put(KEY_CONDITION, value);
+	}
+
+	public static boolean seedfinderConditionANY() {
+		return getBoolean(KEY_CONDITION, false);
+	}
+
+	public static void useRooms( boolean value ) {
+		put( KEY_USEROOMS, value );
+	}
+
+	public static boolean useRooms() {
+		return getBoolean( KEY_USEROOMS, false );
+	}
+
+	public static void ignoreBlacklist( boolean value ) {
+		put( KEY_IGNOREBLACKLIST, value );
+	}
+
+	public static boolean ignoreBlacklist() {
+		return getBoolean( KEY_IGNOREBLACKLIST, false );
+	}
+
+	public static void logTrinkets( boolean value ) {
+		put( KEY_LOGTRINKETS, value );
+	}
+
+	public static boolean logTrinkets() {
+		return getBoolean( KEY_LOGTRINKETS, true );
+	}
+
+	public static void logEquipment( boolean value ) {
+		put( KEY_LOGEQUIPMENT, value );
+	}
+
+	public static boolean logEquipment() {
+		return getBoolean( KEY_LOGEQUIPMENT, true );
+	}
+
+	public static void logScrolls( boolean value ) {
+		put( KEY_LOGSCROLLS, value );
+	}
+
+	public static boolean logScrolls() {
+		return getBoolean( KEY_LOGSCROLLS, true );
+	}
+	public static void logPotions( boolean value ) {
+		put( KEY_LOGPOTIONS, value );
+	}
+
+	public static boolean logPotions() {
+		return getBoolean( KEY_LOGPOTIONS, true );
+	}
+	public static void logRings( boolean value ) {
+		put( KEY_LOGRINGS, value );
+	}
+
+	public static boolean logRings() {
+		return getBoolean( KEY_LOGRINGS, true );
+	}
+	public static void logWands( boolean value ) {
+		put( KEY_LOGWANDS, value );
+	}
+
+	public static boolean logWands() {
+		return getBoolean( KEY_LOGWANDS, true );
+	}
+	public static void logArtifacts( boolean value ) {
+		put( KEY_LOGARTIFACTS, value );
+	}
+
+	public static boolean logArtifacts() {
+		return getBoolean( KEY_LOGARTIFACTS, true );
+	}
+	public static void logMisc( boolean value ) {
+		put( KEY_LOGMISC, value );
+	}
+
+	public static boolean logMisc() {
+		return getBoolean( KEY_LOGMISC, false );
 	}
 
 }

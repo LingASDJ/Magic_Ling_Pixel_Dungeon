@@ -32,10 +32,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocki
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.TimeReset;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FireFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FiveRen;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceDewVialSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceSan;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicBlueSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -124,7 +122,6 @@ public class SpawnWeapon extends TestItem{
             for (int i = 0; i < Generator.Category.WEP_T5.classes.length; i++) {
                 t5_WeaponList.add((Class<? extends MeleeWeapon>) Generator.Category.WEP_T5.classes[i]);
             }
-            t5_WeaponList.add(IceSan.class);
             t5_WeaponList.add(FiveRen.class);
         }
 
@@ -133,7 +130,7 @@ public class SpawnWeapon extends TestItem{
                 t6_WeaponList.add((Class<? extends MeleeWeapon>) Generator.Category.WEP_T6.classes[i]);
             }
             t6_WeaponList.add(IceDewVialSword.class);
-            t6_WeaponList.add(FireFishSword.class);
+            //t6_WeaponList.add(FireFishSword.class);
         }
     }
 

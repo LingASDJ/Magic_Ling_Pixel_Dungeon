@@ -35,7 +35,7 @@ public class DwarfFuze extends Scorpio {
     }
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(10, 30 );
+        return Char.combatRoll(10, 30 );
     }
     @Override
     public int attackProc(Char enemy, int damage ) {

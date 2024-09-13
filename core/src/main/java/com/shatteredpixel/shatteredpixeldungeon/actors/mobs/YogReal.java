@@ -384,6 +384,9 @@ public class YogReal extends Boss {
     @Override
     protected boolean act() {
 
+        //Fixed 0 HP
+        if(HP<1) die(null);
+
         for (Buff buff : hero.buffs()) {
             if (buff instanceof RoseShiled) {
                 buff.detach();

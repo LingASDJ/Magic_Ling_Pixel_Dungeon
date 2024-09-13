@@ -129,6 +129,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.ServantAvgomon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.Sothoth;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SothothEyeDied;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SothothLasher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
@@ -613,6 +617,8 @@ public class Hero extends Char {
 				return 9;
 			case 2:
 				return 11;
+			case 3:
+				return 12;
 		}
 
 		if (armor instanceof ClassArmor){
@@ -800,7 +806,7 @@ public class Hero extends Char {
 		
 		return dr;
 	}
-	
+
 	@Override
 	public int damageRoll() {
 		KindOfWeapon wep = belongings.attackingWeapon();
@@ -840,9 +846,17 @@ public class Hero extends Char {
 			dmg = CustomPlayer.baseDamage;
 		}
 
-		if( attackDelay() >1 && hasTalent(Talent.STRONGMAN)){
-			dmg += (int) (dmg * (attackDelay()-1f) * ( 1f/3f * pointsInTalent(Talent.STRONGMAN)));
+		if(Dungeon.hero.heroClass == HeroClass.WARRIOR){
+			if( attackDelay() >1 && hasTalent(Talent.STRONGMAN)){
+				dmg += (int) (dmg * (attackDelay()-1f) * ( 1f/3f * pointsInTalent(Talent.STRONGMAN)));
+			}
+		} else {
+			if(hasTalent(Talent.STRONGMAN)){
+				//3 6 9
+				dmg += dmg + (3 * pointsInTalent(Talent.STRONGMAN));
+			}
 		}
+
 
 		if (dmg < 0) dmg = 0;
 		return dmg;
@@ -2613,6 +2627,13 @@ public class Hero extends Char {
     }
 
 	private void MoveWater(){
+
+		if(Dungeon.depth == 26 && Dungeon.branch == 10 && Dungeon.level.water[pos] && flying){
+			Buff.prolong( hero, Slow.class, 2f);
+		} else {
+			Buff.detach( hero, Slow.class);
+		}
+
 		if(Dungeon.GodWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {
 			for (Buff buff : hero.buffs()) {
 				if (buff instanceof Cripple) {
@@ -2679,7 +2700,7 @@ public class Hero extends Char {
 
 	private boolean actMove( HeroAction.Move action ) {
 		//水中祝福
-		if(Dungeon.branch == 0){
+		if(Dungeon.branch == 0 || Dungeon.branch == 10){
 			MoveWater();
 		}
 
@@ -2831,7 +2852,7 @@ public class Hero extends Char {
             }
         }
 
-        if (ankh != null) {
+		if (ankh != null) {
             interrupt();
             resting = false;
 
@@ -2846,6 +2867,11 @@ public class Hero extends Char {
 				Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 				GLog.w(Messages.get(this, "revive"));
 				Statistics.ankhsUsed++;
+
+				//Chinese
+				if(Dungeon.branch == 10 && Dungeon.depth == 26){
+					GLog.w("索托斯：谨慎一点，再失误一次可就危险了。");
+				}
 
 				ankh.detach(belongings.backpack);
 
@@ -2879,7 +2905,39 @@ public class Hero extends Char {
 					sacMark.detach();
 				}
 
+
+
+
 			}
+			return;
+
+		} else if(Dungeon.branch == 10 && Dungeon.depth == 26){
+			this.HP = HT / 4;
+			PotionOfHealing.cure(this);
+			Buff.prolong(this, AnkhInvulnerability.class, AnkhInvulnerability.DURATION);
+			SpellSprite.show(this, SpellSprite.ANKH);
+			GameScene.flash(0x80FFFF40);
+			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+			ScrollOfTeleportation.appear(hero, 91);
+			Statistics.TrueYogNoDied = true;
+			//Chinese
+			GLog.w("索托斯：真是遗憾，不过下次也有机会，做好准备再来尝试吧。");
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+				if (mob instanceof Sothoth || mob instanceof SothothEyeDied) {
+					mob.destroy();
+				}
+			}
+
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+				if (mob instanceof SothothLasher
+						|| mob instanceof ServantAvgomon) {
+					mob.die(null);
+				}
+			}
+
+			Dungeon.level.unseal();
+
+
 			return;
 		}
 

@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
@@ -31,6 +32,8 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class DiedCrossBow extends LegendWeapon {
 
@@ -116,18 +119,55 @@ public class DiedCrossBow extends LegendWeapon {
         @Override
         public void onSelect( Integer target ) {
             if (target != null) {
-                final Ballistica shot = new Ballistica( curUser.pos, target, target);
-                int cell = shot.collisionPos;
-
-                if (Actor.findChar(target) != null) {
-                    QuickSlotButton.target(Actor.findChar(target));
+                // Main arrow towards the primary target
+                Ballistica mainBall = new Ballistica(curUser.pos, target, Ballistica.PROJECTILE);
+                if (Char.findChar(mainBall.collisionPos) == null || Char.findChar(mainBall.collisionPos).alignment != Char.Alignment.ENEMY) {
+                    knockArrow().cast(curUser, target);
                 } else {
-                    QuickSlotButton.target(Actor.findChar(cell));
-                }
-                cooldown = 60-level()*2;
-                knockArrow().cast(curUser, target);
-                QuickSlotButton.target(Actor.findChar(target));
+                    // Proceed with primary target logic
+                    if (Char.findChar(mainBall.collisionPos) == Char.findChar(target)) {
+                        Collection<Mob> mobs = Dungeon.level.mobs;
+                        if (!mobs.isEmpty()) {
+                            // Filter mobs within hero's FOV
+                            List<Mob> visibleMobs = new ArrayList<>();
+                            for (Mob mob : mobs) {
+                                if (Dungeon.level.heroFOV[mob.pos] && mob.alignment == Char.Alignment.ENEMY) {
+                                    visibleMobs.add(mob);
+                                }
+                            }
+                            if (!visibleMobs.isEmpty() && !(visibleMobs.size() == 1 && visibleMobs.get(0).equals(Char.findChar(target)))) {
+                                // Select the first secondary target (different from primary)
+                                Mob secondaryTarget1;
+                                int randomIndex1;
+                                do {
+                                    randomIndex1 = (int) (Math.random() * visibleMobs.size());
+                                    secondaryTarget1 = visibleMobs.get(randomIndex1);
+                                } while (secondaryTarget1.equals(Char.findChar(target)));
 
+                                // Launch the first secondary arrow
+                                Ballistica secondaryBall1 = new Ballistica(curUser.pos, secondaryTarget1.pos, Ballistica.PROJECTILE);
+                                if (secondaryBall1.collisionPos.equals(secondaryTarget1.pos)) {
+                                    knockArrow().cast(curUser, secondaryTarget1.pos);
+                                }
+
+                                // Select the second secondary target (different from primary and first secondary)
+                                List<Mob> remainingMobs = new ArrayList<>(visibleMobs);
+                                remainingMobs.remove(secondaryTarget1); // Remove the first secondary target
+                                if (!remainingMobs.isEmpty()) {
+                                    Mob secondaryTarget2 = remainingMobs.get((int) (Math.random() * remainingMobs.size()));
+
+                                    // Launch the second secondary arrow
+                                    Ballistica secondaryBall2 = new Ballistica(curUser.pos, secondaryTarget2.pos, Ballistica.PROJECTILE);
+                                    if (secondaryBall2.collisionPos.equals(secondaryTarget2.pos)) {
+                                        knockArrow().cast(curUser, secondaryTarget2.pos);
+                                    }
+                                }
+                            }
+                        }
+                        // Always shoot the main arrow at the primary target
+                        knockArrow().cast(curUser, target);
+                    }
+                }
             }
         }
         @Override
@@ -195,18 +235,13 @@ public class DiedCrossBow extends LegendWeapon {
                                     public void call() {
                                         curUser = user;
                                         onThrow(cell);
-                                        onThrow(cell+2);
-                                        onThrow(cell-2);
                                     }
                                 });
 
-                user.sprite.zap(cell, new Callback() {
-                    @Override
-                    public void call() {
-                        flurryCount--;
-                        if (flurryCount > 0){
-                            cast(user, dst);
-                        }
+                user.sprite.zap(cell, () -> {
+                    flurryCount--;
+                    if (flurryCount > 0){
+                        cast(user, dst);
                     }
                 });
                 super.cast(user, dst);

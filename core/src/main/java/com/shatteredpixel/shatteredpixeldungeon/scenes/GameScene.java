@@ -527,7 +527,7 @@ public class GameScene extends PixelScene {
 				String msg = "Actor therad dump was requested.\n\n" +
 						"Seed:" + Dungeon.seed +
 						"\n\ndepth:" + Dungeon.depth +
-						"\n\nchallenges:" +
+						"\n\nchallenges:" + Dungeon.challenges +
 						"\n\ncurrent actor:" + cl +
 						"\n\ntrace:" + s;
 				Gdx.app.getClipboard().setContents(msg);
@@ -1383,6 +1383,7 @@ public class GameScene extends PixelScene {
 			case ANCITYBOSS:
 			case AMULET:
 			case GARDEN:
+			case YOG:
 				if(!Statistics.bossRushMode || !Statistics.RandMode){
 					switch (Dungeon.depth) {
 						case 0:
@@ -1513,6 +1514,7 @@ public class GameScene extends PixelScene {
 			case ANCITYBOSS:
 			case AMULET:
 			case GARDEN:
+			case YOG:
                 Camera.main.snapTo(hero.center().x,
                         hero.center().y - DungeonTilemap.SIZE * (defaultZoom / Camera.main.zoom));
                 break;
@@ -1825,9 +1827,15 @@ public class GameScene extends PixelScene {
 					}
 					break;
 				case 30: case 26:
-					bossSlain.texture(Assets.Interfaces.Cerdog_Title);
-					bossSlain.show(Window.CYELLOW, 0.3f, 5f);
-					scene.showBanner(bossSlain);
+					if(Dungeon.branch == 10){
+						bossSlain.texture(Assets.Interfaces.Tawi_Title);
+						bossSlain.show( 0x800080, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+					} else {
+						bossSlain.texture(Assets.Interfaces.Cerdog_Title);
+						bossSlain.show(Window.CYELLOW, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+					}
 					break;
 			}
 
@@ -1907,10 +1915,17 @@ public class GameScene extends PixelScene {
 					}
 					Statistics.GetFoodLing=0;
 					break;
-				case 30: case 26:
-					bossSlain.texture(Assets.Interfaces.Cerdog_Clear);
-					bossSlain.show( 0xF7941D, 0.3f, 5f);
-					scene.showBanner(bossSlain);
+				case 30:
+					case 26:
+					if(Dungeon.branch == 10){
+						bossSlain.texture(Assets.Interfaces.Tawi_Clear);
+						bossSlain.show( 0x800080, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+					} else {
+						bossSlain.texture(Assets.Interfaces.Cerdog_Clear);
+						bossSlain.show( 0xF7941D, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+					}
 					break;
 			}
 

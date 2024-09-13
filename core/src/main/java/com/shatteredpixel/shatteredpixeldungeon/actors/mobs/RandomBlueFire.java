@@ -97,7 +97,7 @@ public class RandomBlueFire extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 10, 20 );
+        return Char.combatRoll( 10, 20 );
     }
 
     public void die(Object var1) {

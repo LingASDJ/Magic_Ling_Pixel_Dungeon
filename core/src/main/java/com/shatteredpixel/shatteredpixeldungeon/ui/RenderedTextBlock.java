@@ -66,6 +66,18 @@ public class RenderedTextBlock extends Component {
 	public static final int RIGHT_ALIGN = 3;
 	private int alignment = LEFT_ALIGN;
 
+	//for manual text block splitting, a space between each word is assumed
+	public void tokens(String... words){
+		StringBuilder fullText = new StringBuilder();
+		for (String word : words) {
+			fullText.append(word);
+		}
+		text = fullText.toString();
+
+		tokens = words;
+		build();
+	}
+
 	public RenderedTextBlock(int size){
 		this.size = size;
 	}

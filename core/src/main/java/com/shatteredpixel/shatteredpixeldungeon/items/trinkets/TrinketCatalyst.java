@@ -80,9 +80,11 @@ public class TrinketCatalyst extends Item {
 		}
 	}
 
-	private ArrayList<Trinket> rolledTrinkets = new ArrayList<>();
+	public ArrayList<Trinket> rolledTrinkets = new ArrayList<>();
 
 	private static final String ROLLED_TRINKETS = "rolled_trinkets";
+
+
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
@@ -142,7 +144,7 @@ public class TrinketCatalyst extends Item {
 		private static final int BTN_GAP	= 5;
 		private static final int GAP		= 2;
 
-		private static final int NUM_TRINKETS = 3;
+		public static final int NUM_TRINKETS = 3;
 
 		public WndTrinket( TrinketCatalyst cata ){
 

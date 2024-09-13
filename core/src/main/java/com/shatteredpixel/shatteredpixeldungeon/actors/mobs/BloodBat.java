@@ -133,7 +133,7 @@ public class BloodBat extends Mob implements Callback {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( (2*Dungeon.depth/5)+3, 4*Dungeon.depth/5 );
+        return Char.combatRoll( (2*Dungeon.depth/5)+3, 4*Dungeon.depth/5 );
     }
 
     @Override

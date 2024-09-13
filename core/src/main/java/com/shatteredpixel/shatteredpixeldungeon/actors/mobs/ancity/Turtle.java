@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -21,7 +22,7 @@ public class Turtle extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 15, 27 );
+        return Char.combatRoll( 15, 27 );
     }
 
     @Override

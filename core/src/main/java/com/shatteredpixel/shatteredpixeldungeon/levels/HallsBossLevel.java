@@ -22,7 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogDzewa;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra.TrueYog;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
@@ -81,7 +82,7 @@ public class HallsBossLevel extends Level {
 		} else if (map[exit()] != Terrain.EXIT){
 			Music.INSTANCE.end();
 		} else {
-			BGMPlayer.playBGMWithDepth();
+			Music.INSTANCE.play(Assets.YOGALXY, true);
 		}
 	}
 
@@ -232,12 +233,29 @@ public class HallsBossLevel extends Level {
 		}
 	}
 
+	private boolean SothothEye = false;
+
+	private static int[] FirstPos = new int[]{462,336,466,366,370};
+	private static int[] EndPos   = new int[]{336,466,366,370,462};
+
 	@Override
 	public void occupyCell( Char ch ) {
 		if (map[entrance()] == Terrain.ENTRANCE && map[exit()] != Terrain.EXIT
 				&& ch == Dungeon.hero && Dungeon.level.distance(ch.pos, entrance()) >= 2) {
 			seal();
 		}
+
+		if(Statistics.amuletObtained &&
+				Badges.isUnlocked(Badges.Badge.CHAMPION_1X) && !SothothEye){
+
+			TrueYog npc = new TrueYog();
+			npc.pos = exit() + width*3;
+			mobs.add(npc);
+			GameScene.add( npc );
+
+			SothothEye = true;
+		}
+
 
 		super.occupyCell( ch );
 	}
@@ -315,8 +333,15 @@ public class HallsBossLevel extends Level {
 	}
 
 	@Override
+	public void storeInBundle( Bundle bundle ) {
+		super.storeInBundle(bundle);
+		bundle.put("sothotheye",SothothEye);
+	}
+
+	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
+		SothothEye = bundle.getBoolean("sothotheye");
 		for (Mob m : mobs){
 			if (m instanceof YogDzewa){
 				((YogDzewa) m).updateVisibility(this);

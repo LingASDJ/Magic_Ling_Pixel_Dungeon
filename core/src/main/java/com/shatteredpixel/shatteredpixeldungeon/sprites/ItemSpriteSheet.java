@@ -240,7 +240,7 @@ public class ItemSpriteSheet {
     public static final int DIRK            = WEP_TIER2+4;
     public static final int SICKLE          = WEP_TIER2+5;
 
-    public static final int	ENDDIED			= WEP_TIER2+6;
+    public static final int	ENDDIED			= WEP_TIER2+7;
     static{
         assignItemRect(SHORTSWORD,      13, 13);
         assignItemRect(HAND_AXE,        12, 14);
@@ -1078,9 +1078,17 @@ public class ItemSpriteSheet {
     public static final int SKIN_8  = + SKIN+7;
     public static final int SKIN_9  = + SKIN+8;
     public static final int SKIN_10  = + SKIN+9;
+
+    public static final int RGJT_1  = + SKIN+11;
+    public static final int RGJT_2  = + SKIN+12;
+    public static final int RGJT_3  = + SKIN+13;
+    public static final int RGJT_4  = + SKIN+14;
+
     static {
         for (int i =SKIN; i < SKIN+10; i++)
             assignItemRect(i, 16, 16);
+
+        assignItemRect(RGJT_1, 13, 16);
     }
 
     private static final int TRINKETS        =                               xy(1, 54);  //24 slots
@@ -1117,11 +1125,27 @@ public class ItemSpriteSheet {
     public static final int MISC_ROLLPOTION       = MISC+4;
     public static final int MISC_EXFALLING        = MISC+5;
 
+    public static final int RUIKE        = MISC+6;
+
+    public static final int SOS_0        = MISC+8;
+    public static final int SOS_1        = MISC+9;
+    public static final int SOS_2       = MISC+10;
+    public static final int SOS_3        = MISC+11;
+
+    public static final int FLARE        = MISC+15;
+
     static{
         assignItemRect(MISC_ROLLBLOCK,       12, 13);
         assignItemRect(MISC_WATERBOMB,       9, 11);
         assignItemRect(MISC_ROLLPOTION,       12, 14);
         assignItemRect(MISC_EXFALLING,       14, 16);
+
+        assignItemRect(SOS_0,       14, 6);
+        assignItemRect(SOS_1,       14, 6);
+        assignItemRect(SOS_2,       14, 6);
+        assignItemRect(SOS_3,       14, 6);
+
+        assignItemRect(FLARE,       14, 15);
     }
 
     //for smaller 8x8 icons that often accompany an item sprite

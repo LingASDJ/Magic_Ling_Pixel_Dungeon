@@ -76,7 +76,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
@@ -638,11 +637,11 @@ public class Dungeon {
 		//难度模式
 		difficultys = new Difficulty.HardStorage(SPDSettings.difficulty());
 
-		TitleScene.Reusable = false;
+		//TitleScene.Reusable = false;
 
 		BloodBat.level = 1;
 
-		TitleScene.NightDay = false;
+		//TitleScene.NightDay = false;
 
 		Arrays.fill(discovered, false);
 

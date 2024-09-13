@@ -1,6 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.spical;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CHASM;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.ENTRANCE;
@@ -8,10 +7,10 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.peach.WhiteYan;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Tilemap;
 
 public class PeachGodBossLevel extends Level {
@@ -35,42 +34,48 @@ public class PeachGodBossLevel extends Level {
     @Override
     public void occupyCell( Char ch ) {
         super.occupyCell(ch);
-        GLog.p(String.valueOf(hero.pos));
+        //GLog.p(String.valueOf(hero.pos));
     }
 
-    private static final int WIDTH = 21;
-    private static final int HEIGHT = 24;
+    private static final int WIDTH = 26;
+    private static final int HEIGHT = 29;
 
     private static final int E = EMPTY;
-    private static final int R = SIGN;
-    private static final int S = CHASM;
-    private static final int V = ENTRANCE;
+    private static final int S = SIGN;
+    private static final int W = CHASM;
+    private static final int R = ENTRANCE;
 
     private static final int[] code_map = {
-            S,S,S,S,R,R,R,R,S,S,S,S,S,S,R,S,S,S,S,S,S,
-            S,S,R,R,R,R,R,R,R,S,S,S,S,R,R,S,S,R,R,S,S,
-            S,S,R,R,R,R,R,R,R,R,R,S,S,R,R,R,R,R,R,S,S,
-            S,S,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,S,S,
-            S,S,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,
-            S,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,
-            S,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,
-            S,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,R,
-            S,R,R,R,R,R,R,R,R,R,E,E,R,R,R,R,R,R,R,R,R,
-            S,R,R,R,E,E,E,E,E,R,E,E,E,R,R,R,R,R,R,R,R,
-            S,R,R,E,E,E,E,E,E,R,E,E,E,E,E,E,E,R,R,R,R,
-            S,R,R,E,E,E,E,E,E,E,E,E,E,E,E,E,E,R,R,R,S,
-            S,R,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,R,S,
-            S,R,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,R,S,
-            S,R,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,R,S,
-            S,R,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,R,S,
-            S,R,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,R,S,
-            S,R,R,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,R,R,S,
-            S,S,R,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,R,S,S,
-            S,S,R,R,E,E,E,E,E,E,E,E,E,E,E,E,E,R,R,S,S,
-            S,S,S,R,E,E,E,E,E,E,E,E,E,E,E,E,R,R,S,S,S,
-            S,S,S,R,R,R,R,R,R,R,E,E,E,R,R,R,R,S,S,S,S,
-            S,S,S,S,S,S,S,S,S,R,V,R,R,R,R,S,S,S,S,S,S,
-            S,S,S,S,S,S,S,S,S,R,R,R,R,R,R,S,S,S,S,S,S,
+            W,W,W,W,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,
+            W,W,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,
+            W,W,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,
+            W,W,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,
+            W,W,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,
+            W,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,
+            W,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,
+            W,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,
+            W,S,S,S,S,S,S,S,S,S,E,E,E,E,S,S,S,S,S,S,S,S,S,S,S,S,
+            W,S,S,S,E,E,E,E,E,S,E,E,E,E,E,E,S,S,S,S,S,S,S,S,S,S,
+            W,S,S,E,E,E,E,E,E,S,E,E,E,E,E,E,S,E,E,E,E,E,S,S,S,S,
+            W,S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,S,S,
+            W,S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,
+            W,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,
+            W,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,
+            W,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,
+            S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,
+            S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,
+            S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,W,
+            S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,W,
+            S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,W,
+            S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,W,
+            S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,W,
+            W,S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,W,
+            W,W,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,W,
+            W,W,S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,W,W,
+            W,W,W,S,S,S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,W,W,W,
+            W,W,W,W,S,S,S,S,S,S,S,S,E,E,E,S,S,S,S,S,S,S,W,W,W,W,
+            W,W,W,W,W,W,W,W,W,W,W,S,R,S,S,S,S,S,S,S,W,W,W,W,W,W,
+
     };
 
     @Override
@@ -123,6 +128,9 @@ public class PeachGodBossLevel extends Level {
     @Override
     protected void createMobs() {
 
+        WhiteYan boss = new WhiteYan();
+        boss.pos = 326;
+        mobs.add(boss);
     }
 
     @Override
