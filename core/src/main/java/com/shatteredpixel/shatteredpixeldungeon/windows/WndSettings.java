@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Constants;
+import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -71,6 +72,7 @@ public class WndSettings extends WndTabbed {
 	private LangsTab    langs;
 	private ExtendTab    extabs;
 	private HelpTab    helps;
+	private SeedfinderTab    seeds;
 
 	public static int last_index = 0;
 
@@ -192,6 +194,20 @@ public class WndSettings extends WndTabbed {
 				super.select(value);
 				helps.visible = helps.active = value;
 				if (value) last_index = 6;
+			}
+		});
+
+		seeds = new SeedfinderTab();
+		seeds.setSize(width, 0);
+		height = Math.max(height, audio.height());
+		add( seeds );
+
+		add( new IconTab(NetIcons.get(NetIcons.GLOBE)){
+			@Override
+			protected void select(boolean value) {
+				super.select(value);
+				seeds.visible = seeds.active = value;
+				if (value) last_index = 7;
 			}
 		});
 
@@ -770,10 +786,10 @@ public class WndSettings extends WndTabbed {
 				@Override
 				protected void onClick() {
 					super.onClick();
-					SPDSettings.ClassSkin(checked());
+					SPDSettings.V2IconDamage(checked());
 				}
 			};
-			optIcon.checked(SPDSettings.ClassSkin());
+			optIcon.checked(SPDSettings.V2IconDamage());
 			add(optIcon);
 
 			quickslots = new OptionSlider(Messages.get(this, "quickslots"), "" + Constants.MIN_QUICKSLOTS,
@@ -842,6 +858,275 @@ public class WndSettings extends WndTabbed {
 			}
 
 			height = quickslots.bottom();
+		}
+
+	}
+
+	private static class SeedfinderTab extends Component {
+		RenderedTextBlock title;
+		ColorBlock sep1;
+		OptionSlider numFloors;
+		RedButton btnLoggingSettings;
+		RedButton btnChallenges;
+		RedButton btnMode;
+
+		@Override
+		protected void createChildren() {
+			title = PixelScene.renderTextBlock(Messages.get(this, "title"), 9);
+			title.hardlight(TITLE_COLOR);
+			add(title);
+
+			numFloors = new OptionSlider(Messages.get(this, "floors_slider") + " (" + SPDSettings.seedfinderFloors() + ")",
+					"1", "16", 1, 16) {
+				@Override
+				protected void onChange() {
+					SPDSettings.seedfinderFloors(getSelectedValue());
+
+					// reload scene for floor number desc
+					ShatteredPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback() {
+						@Override
+						public void beforeCreate() {
+						}
+
+						@Override
+						public void afterCreate() {
+							//do nothing
+						}
+					});
+				}
+			};
+			numFloors.setSelectedValue(SPDSettings.seedfinderFloors());
+			add(numFloors);
+
+			sep1 = new ColorBlock(1, 1, 0xFF000000);
+			add(sep1);
+
+			btnLoggingSettings = new RedButton(Messages.get(this, "logoptions_button"), 9) {
+				@Override
+				protected void onClick() {
+					ShatteredPixelDungeon.scene().addToFront(new Window() {
+						RenderedTextBlock barDesc;
+
+						CheckBox chkTrinkets;
+						CheckBox chkEquipment;
+						CheckBox chkScrolls;
+						CheckBox chkPotions;
+						CheckBox chkRings;
+						CheckBox chkWands;
+						CheckBox chkArtifacts;
+						CheckBox chkMisc;
+
+						ColorBlock sep2;
+						ColorBlock sep3;
+						CheckBox chkRooms;
+						CheckBox chkBlacklist;
+
+						{
+							barDesc = PixelScene.renderTextBlock(Messages.get(WndSettings.SeedfinderTab.this, "logging_options"), 6);
+							add(barDesc);
+
+							sep2 = new ColorBlock(1, 1, 0xFF000000);
+							add(sep2);
+
+							chkTrinkets = new CheckBox(Messages.get(WndSettings.SeedfinderTab.this, "trinkets")){
+								@Override
+								protected void onClick() {
+									super.onClick();
+									SPDSettings.logTrinkets(checked());
+								}
+							};
+							chkTrinkets.checked(SPDSettings.logTrinkets());
+							add(chkTrinkets);
+
+							chkEquipment = new CheckBox(Messages.get(WndSettings.SeedfinderTab.this, "equipment")){
+								@Override
+								protected void onClick() {
+									super.onClick();
+									SPDSettings.logEquipment(checked());
+								}
+							};
+							chkEquipment.checked(SPDSettings.logEquipment());
+							add(chkEquipment);
+
+							chkScrolls = new CheckBox(Messages.get(WndSettings.SeedfinderTab.this, "scrolls")){
+								@Override
+								protected void onClick() {
+									super.onClick();
+									SPDSettings.logScrolls(checked());
+								}
+							};
+							chkScrolls.checked(SPDSettings.logScrolls());
+							add(chkScrolls);
+
+							chkPotions = new CheckBox(Messages.get(WndSettings.SeedfinderTab.this, "potions")){
+								@Override
+								protected void onClick() {
+									super.onClick();
+									SPDSettings.logPotions(checked());
+								}
+							};
+							chkPotions.checked(SPDSettings.logPotions());
+							add(chkPotions);
+
+							chkRings = new CheckBox(Messages.get(WndSettings.SeedfinderTab.this, "rings")){
+								@Override
+								protected void onClick() {
+									super.onClick();
+									SPDSettings.logRings(checked());
+								}
+							};
+							chkRings.checked(SPDSettings.logRings());
+							add(chkRings);
+
+							chkWands = new CheckBox(Messages.get(WndSettings.SeedfinderTab.this, "wands")){
+								@Override
+								protected void onClick() {
+									super.onClick();
+									SPDSettings.logWands(checked());
+								}
+							};
+							chkWands.checked(SPDSettings.logWands());
+							add(chkWands);
+
+							chkArtifacts = new CheckBox(Messages.get(WndSettings.SeedfinderTab.this, "artifacts")){
+								@Override
+								protected void onClick() {
+									super.onClick();
+									SPDSettings.logArtifacts(checked());
+								}
+							};
+							chkArtifacts.checked(SPDSettings.logArtifacts());
+							add(chkArtifacts);
+
+							chkMisc = new CheckBox(Messages.get(WndSettings.SeedfinderTab.this, "misc")){
+								@Override
+								protected void onClick() {
+									super.onClick();
+									SPDSettings.logMisc(checked());
+								}
+							};
+							chkMisc.checked(SPDSettings.logMisc());
+							add(chkMisc);
+
+							sep3 = new ColorBlock(1, 1, 0xFF000000);
+							add(sep3);
+
+							chkRooms = new CheckBox(Messages.get(WndSettings.SeedfinderTab.this, "use_rooms")){
+								@Override
+								protected void onClick() {
+									super.onClick();
+									SPDSettings.useRooms(checked());
+								}
+							};
+							chkRooms.checked(SPDSettings.useRooms());
+							add(chkRooms);
+
+							chkBlacklist = new CheckBox(Messages.get(WndSettings.SeedfinderTab.this, "blacklist")){
+								@Override
+								protected void onClick() {
+									super.onClick();
+									SPDSettings.ignoreBlacklist(checked());
+								}
+							};
+							chkBlacklist.checked(SPDSettings.ignoreBlacklist());
+							add(chkBlacklist);
+
+							//layout
+							resize(WIDTH_P, 0);
+
+							barDesc.setPos((width - barDesc.width()) / 2f, GAP);
+							PixelScene.align(barDesc);
+
+							sep2.size(width, 1);
+							sep2.y = barDesc.bottom() + GAP;
+
+							chkTrinkets.setRect(0, sep2.y + 1 + GAP, width, BTN_HEIGHT);
+							chkEquipment.setRect(0, chkTrinkets.bottom() + GAP, width, BTN_HEIGHT);
+							chkScrolls.setRect(0, chkEquipment.bottom() + GAP, width, BTN_HEIGHT);
+							chkPotions.setRect(0, chkScrolls.bottom() + GAP, width, BTN_HEIGHT);
+							chkRings.setRect(0, chkPotions.bottom() + GAP, width, BTN_HEIGHT);
+							chkWands.setRect(0, chkRings.bottom() + GAP, width, BTN_HEIGHT);
+							chkArtifacts.setRect(0, chkWands.bottom() + GAP, width, BTN_HEIGHT);
+							chkMisc.setRect(0, chkArtifacts.bottom() + GAP, width, BTN_HEIGHT);
+
+							sep3.size(width, 1);
+							sep3.y = chkMisc.bottom() + GAP;
+
+							chkRooms.setRect(0, sep3.y + 1 + GAP, width, BTN_HEIGHT);
+							chkBlacklist.setRect(0, chkRooms.bottom() + GAP, width, BTN_HEIGHT);
+
+							resize(WIDTH_P, (int)chkBlacklist.bottom());
+
+						}
+					});
+				}
+			};
+			add(btnLoggingSettings);
+
+			btnChallenges = new RedButton(Messages.get(WndSettings.SeedfinderTab.this, "challenges")){
+				@Override
+				protected void onClick() {
+					ShatteredPixelDungeon.scene().addToFront(new WndChallenges(SPDSettings.challenges(), true,null) {
+						public void onBackPressed() {
+							super.onBackPressed();
+
+							// reload scene for new button color
+							ShatteredPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback() {
+								@Override
+								public void beforeCreate() {
+								}
+
+								@Override
+								public void afterCreate() {
+									//do nothing
+								}
+							});
+						}
+					});
+				}
+			};
+			btnChallenges.textColor(SPDSettings.challenges() == 0 ? WHITE : TITLE_COLOR);
+			add(btnChallenges);
+
+			String modeBtnDescKey = SPDSettings.seedfinderConditionANY() ? "mode_any" : "mode_all";
+			btnMode = new RedButton(Messages.get(WndSettings.SeedfinderTab.this, modeBtnDescKey)){
+				@Override
+				protected void onClick() {
+					SPDSettings.seedfinderConditionANY(!SPDSettings.seedfinderConditionANY());
+
+					// reload scene for new button text
+					ShatteredPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback() {
+						@Override
+						public void beforeCreate() {
+						}
+
+						@Override
+						public void afterCreate() {
+							//do nothing
+						}
+					});
+				}
+			};
+			add(btnMode);
+		}
+
+		@Override
+		protected void layout() {
+
+			float bottom = y;
+
+			title.setPos((width - title.width())/2, bottom + GAP);
+			sep1.size(width, 1);
+			sep1.y = title.bottom() + 3*GAP;
+
+			bottom = sep1.y + 1;
+
+			numFloors.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
+
+			btnLoggingSettings.setRect(0, numFloors.bottom() + GAP, width, BTN_HEIGHT);
+
+			btnChallenges.setRect(0, btnLoggingSettings.bottom() + GAP, width / 2 - 1, BTN_HEIGHT);
+			btnMode.setRect(width/2 + 1, btnLoggingSettings.bottom() + GAP, width / 2, BTN_HEIGHT);
 		}
 
 	}

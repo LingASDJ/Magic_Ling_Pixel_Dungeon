@@ -130,6 +130,8 @@ public abstract class RegularLevel extends Level {
 
     public static DevBirthday birthday;
 
+	public static ArrayList<Room> roomList;
+
     static {
 
         holiday = Holiday.NONE;
@@ -178,6 +180,7 @@ public abstract class RegularLevel extends Level {
 		builder = builder();
 
 		ArrayList<Room> initRooms = initRooms();
+		roomList = initRooms;
 		Random.shuffle(initRooms);
 
 		do {
@@ -331,11 +334,9 @@ public abstract class RegularLevel extends Level {
 
 		if(Dungeon.exgoldLevel()&&Dungeon.isChallenged(CS)) initRooms.add(new GoldRoom());
 
-		if(Dungeon.depth<26 && Random.Int(30) == 1 && (Dungeon.isChallenged(DHXD) || Statistics.lanterfireactive )){
+		if( Dungeon.depth<26 && Random.Int(30) == 1 && (Dungeon.isChallenged(DHXD) || Statistics.lanterfireactive )){
 			initRooms.add(new OilWellRoom());
 		}
-
-
 
 		if(feeling == Feeling.BLOOD){
 			initRooms.add(new BloodCrystalRoom());
@@ -347,6 +348,10 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new HealWellRoom());
 		}
 
+		if(feeling == Feeling.LINKROOM ){
+			initRooms.add(new LinkRoom());
+		}
+
 		if(Statistics.RandMode){
 			initRooms.add(new RandomRoom());
 			if(depth == 1 && branch == 0){
@@ -354,9 +359,7 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-		if(feeling == Feeling.LINKROOM){
-			initRooms.add(new LinkRoom());
-		}
+
 
 		for (int i = 0; i < standards; i++) {
 			StandardRoom s;
@@ -465,7 +468,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 		// 在特定挑战中怪物生成翻倍
-		if (Dungeon.isChallenged(MOREROOM)|| !Dungeon.isChallenged(CS)) {
+		if (Dungeon.isChallenged(MOREROOM) || !Dungeon.isChallenged(CS)) {
 			mobs += Random.NormalIntRange(1,3);
 		}
 

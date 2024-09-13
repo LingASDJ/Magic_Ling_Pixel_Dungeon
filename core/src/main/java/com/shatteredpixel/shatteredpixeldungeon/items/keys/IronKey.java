@@ -37,7 +37,12 @@ public class IronKey extends Key {
 	@Override
 	public boolean doPickUp(Hero hero, int pos) {
 		super.doPickUp(hero, pos);
+		//TODO 获取背包中的最后一个 LockSword.class 对象，将它定义为 lcokSword 对象名
 		LockSword lockSword = Dungeon.hero.belongings.getItem(LockSword.class);
+
+		//TODO 现在 你拥有了一个lockSword的对象,
+		// 相当于程序知道了 lvl来源为 lockSword，为此即可调用（前提这个方法是公开的（public)
+
 		if(lockSword != null) {
 			int index = 5;
 			lockSword.lvl += index;

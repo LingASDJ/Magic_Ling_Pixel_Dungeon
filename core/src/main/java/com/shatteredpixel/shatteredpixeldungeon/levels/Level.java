@@ -136,7 +136,7 @@ import java.util.HashSet;
 
 public abstract class Level implements Bundlable {
 	public String diedname;
-
+	public Item sacrificialFireItem = null;
     //静态地图改变的轮子调用
 	public void changeMap(int[] map){
 		//构建全新地图，通过MAPCSV构建，并清理当前地块
@@ -159,7 +159,7 @@ public abstract class Level implements Bundlable {
 		Dungeon.observe();
 	}
 	
-	public static enum Feeling {
+	public enum Feeling {
 		NONE,
 		CHASM,
 		WATER,
@@ -294,13 +294,16 @@ public abstract class Level implements Bundlable {
 			if ( depth == ((Dungeon.seed % 3) + 1)){
 				addItemToSpawn( new StoneOfIntuition() );
 			}
-			
+
+
+			boolean moreRoomActivated = Dungeon.isChallenged(MOREROOM);
+
 			if (depth > 1) {
-				if(Dungeon.isChallenged(MOREROOM)){
-					if(depth == 4){
+					if (depth == 4 && moreRoomActivated) {
 						feeling = Feeling.DIEDROOM;
 					} else {
-						switch (Random.Int( 14 )) {
+						switch (Random.Int(14)) {
+							default:
 							case 0:
 								feeling = Feeling.CHASM;
 								break;
@@ -313,35 +316,40 @@ public abstract class Level implements Bundlable {
 							case 3:
 								feeling = Feeling.DARK;
 								addItemToSpawn(new Torch());
-								viewDistance = Math.round(viewDistance/2f);
+								viewDistance = Math.round(viewDistance / 2f);
 								break;
 							case 4:
-								if(Random.Float()>0.4f){
-									feeling = Feeling.SKYCITY;
-								} else {
-									feeling = Feeling.BIGROOMS;
-								}
+								feeling = Feeling.LARGE;
 								addItemToSpawn(Generator.random(Generator.Category.FOOD));
 								break;
 							case 5:
-								feeling = Feeling.BIGTRAP;
+								feeling = Feeling.TRAPS;
 								break;
 							case 6:
 								feeling = Feeling.SECRETS;
 								break;
+							//MOREROOM
 							case 7:
-								feeling = Feeling.BLOOD;
+								feeling = moreRoomActivated ? Feeling.BIGTRAP : Feeling.NONE;
 								break;
 							case 8:
-								feeling = Feeling.THREEWELL;
+								feeling =  moreRoomActivated ? Feeling.BIGROOMS : Feeling.NONE;
 								break;
 							case 9:
-								feeling = Feeling.LINKROOM;
+								feeling =  moreRoomActivated ? Feeling.BLOOD : Feeling.NONE;
 								break;
-							case 10:case 11:case 12:case 13:
-							default:
+							case 10:
+								feeling =  moreRoomActivated ? Feeling.LINKROOM : Feeling.NONE;
+								break;
+							case 11:
+								feeling =  moreRoomActivated ? Feeling.THREEWELL : Feeling.NONE;
+								break;
+							case 12:
+								feeling =  moreRoomActivated ? Feeling.SKYCITY : Feeling.NONE;
+								break;
+							case 13:
 								//if-else statements are fine here as only one chance can be above 0 at a time
-								if (Random.Float() < MossyClump.overrideNormalLevelChance()){
+								if (Random.Float() < MossyClump.overrideNormalLevelChance()) {
 									feeling = MossyClump.getNextFeeling();
 								} else if (Random.Float() < TrapMechanism.overrideNormalLevelChance()) {
 									feeling = TrapMechanism.getNextFeeling();
@@ -351,44 +359,6 @@ public abstract class Level implements Bundlable {
 								break;
 						}
 					}
-				} else {
-					switch (Random.Int( 14 )) {
-						case 0:
-							feeling = Feeling.CHASM;
-							break;
-						case 1:
-							feeling = Feeling.WATER;
-							break;
-						case 2:
-							feeling = Feeling.GRASS;
-							break;
-						case 3:
-							feeling = Feeling.DARK;
-							addItemToSpawn(new Torch());
-							viewDistance = Math.round(viewDistance/2f);
-							break;
-						case 4:
-							feeling = Feeling.LARGE;
-							addItemToSpawn(Generator.random(Generator.Category.FOOD));
-							break;
-						case 5:
-							feeling = Feeling.TRAPS;
-							break;
-						case 6:
-							feeling = Feeling.SECRETS;
-							break;
-						default:
-							//if-else statements are fine here as only one chance can be above 0 at a time
-							if (Random.Float() < MossyClump.overrideNormalLevelChance()){
-								feeling = MossyClump.getNextFeeling();
-							} else if (Random.Float() < TrapMechanism.overrideNormalLevelChance()) {
-								feeling = TrapMechanism.getNextFeeling();
-							} else {
-								feeling = Feeling.NONE;
-							}
-							break;
-					}
-				}
 			}
 		}
 		
