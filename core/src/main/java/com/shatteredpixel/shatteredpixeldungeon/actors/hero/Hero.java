@@ -174,6 +174,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.MagicBook;
@@ -676,6 +682,12 @@ public class Hero extends Char {
 			accuracy += accuracy * Math.max((attackDelay()-1f) * ( (0.5f / 3f) * pointsInTalent(Talent.STRONGMAN)),0.5f);
 		}
 
+		for(StarSachet star : belongings.getAllItems(StarSachet.class)) {
+			if(star!=null){
+				accuracy += (float) getZone();
+			}
+		};
+
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
 			return  CustomPlayer.baseAccuracy;
 		} else if (!RingOfForce.fightingUnarmed(this)) {
@@ -683,6 +695,10 @@ public class Hero extends Char {
 		} else {
 			return (int)(attackSkill * accuracy);
 		}
+	}
+
+	public double getZone(){
+		return Math.floor(Dungeon.scalingDepth()/5 + 1 );
 	}
 	
 	@Override
@@ -735,6 +751,12 @@ public class Hero extends Char {
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) && CustomPlayer.overrideGame && CustomPlayer.shouldOverride ){
 			return CustomPlayer.baseEvasion;
 		}
+
+		for(StarSachet star : belongings.getAllItems(StarSachet.class)) {
+			if(star!=null){
+				evasion += (float) getZone();
+			}
+		};
 
 		return Math.round(evasion);
 	}
@@ -844,6 +866,8 @@ public class Hero extends Char {
 		if( attackDelay() >1 && hasTalent(Talent.STRONGMAN) && !(wep instanceof SpiritBow)){
 			dmg += (int) (dmg * Math.max (attackDelay()-1f * ( 1f/3f * pointsInTalent(Talent.STRONGMAN)) ,0.75f));
 		}
+
+		if(belongings.getItem(PortableWhetstone.class)!=null)  dmg += (int) (getZone()*2-1);
 
 		if (dmg < 0) dmg = 0;
 		return dmg;
@@ -1356,7 +1380,7 @@ public class Hero extends Char {
 		if (Dungeon.level.distance(dst, pos) <= 1) {
 
 			ready();
-			
+
 			AlchemistsToolkit.kitEnergy kit = buff(AlchemistsToolkit.kitEnergy.class);
 			if (kit != null && kit.isCursed()){
 				GLog.w( Messages.get(AlchemistsToolkit.class, "cursed"));
@@ -1893,6 +1917,11 @@ public class Hero extends Char {
 	@Override
 	public void damage( int dmg, Object src ) {
 
+		if(hero.belongings.getItem(EmotionalAggregation.class)!=null && Math.random()>0.9){
+			GLog.n(Messages.get(EmotionalAggregation.class,"block"));
+			return;
+		}
+
 		MIME.GOLD_FIVE getHeal = Dungeon.hero.belongings.getItem(MIME.GOLD_FIVE.class);
 		if(getHeal != null && HT/4 > HP){
 			this.HP = HT;
@@ -2078,6 +2107,8 @@ public class Hero extends Char {
 		int postHP = HP + shielding();
 		if (src instanceof Hunger) postHP -= shielding();
 		int effectiveDamage = preHP - postHP;
+
+		if(belongings.getItem(ArmorScalesOfBzmdr.class)!=null) effectiveDamage -= (int) getZone();
 
 		if (effectiveDamage <= 0) return;
 

@@ -27,9 +27,10 @@ public class VenomGas extends Blob {
 
 
     public void setLevel(Wand wand){
-        level = wand.buffedLvl();
+        level = Math.max(wand.buffedLvl(),level);
     }
 
+    @SuppressWarnings("SuspiciousIndentation")
     @Override
     protected void evolve() {
         super.evolve();

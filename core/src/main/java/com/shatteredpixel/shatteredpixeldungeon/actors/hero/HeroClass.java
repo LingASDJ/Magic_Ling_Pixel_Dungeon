@@ -81,6 +81,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlam
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DeliciousRecipe;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.NewStem;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.RapidEarthRoot;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.BlessingNecklace;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
@@ -220,7 +228,15 @@ public enum HeroClass {
 
 		//插个眼
 
-		//new PropBag().quantity(1).identify().collect();
+		//if(Dungeon.isDLC(Conducts.Conduct.HARD)){
+			new PropBag().quantity(1).identify().collect();
+
+			//Prop.randomProp().collect();
+			new RapidEarthRoot().collect();
+			new WenStudyingPaperOne().collect();
+			new YanStudyingPaperTwo().collect();
+			//Prop.randomProp().collect();
+		//}
 		Dungeon.LimitedDrops.PROP_BAG.drop();
 
 		Waterskin waterskin = new Waterskin();
