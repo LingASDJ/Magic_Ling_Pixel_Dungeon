@@ -8,7 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class YanStudyingPaperTwo extends Prop{
     {
         rareness = 0;
-        icon = ItemSpriteSheet.YANSTUDYINGPAPERTWO;
+        image = ItemSpriteSheet.YANSTUDYINGPAPERTWO;
     }
 
     @Override

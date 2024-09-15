@@ -5,6 +5,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class NewStem extends Prop{
     {
         rareness = 1;
-        icon = ItemSpriteSheet.NEWSTEM;
+        image = ItemSpriteSheet.NEWSTEM;
     }
 }

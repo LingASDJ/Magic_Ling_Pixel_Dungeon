@@ -5,6 +5,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class LuckyGlove extends Prop{
     {
         rareness = 2;
-        icon = ItemSpriteSheet.LUCKYGLOVE;
+        image = ItemSpriteSheet.LUCKYGLOVE;
     }
 }

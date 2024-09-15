@@ -5,6 +5,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class DeliciousRecipe extends Prop{
     {
         rareness = 1;
-        icon = ItemSpriteSheet.DELICIOUSRECIPE;
+        image = ItemSpriteSheet.DELICIOUSRECIPE;
     }
 }
