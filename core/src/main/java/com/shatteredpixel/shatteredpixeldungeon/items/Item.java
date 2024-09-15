@@ -62,7 +62,9 @@ import java.util.Comparator;
 public class Item implements Bundlable {
 
 	public interface AnimationItem{}
-
+	public String anonymousName() {
+		return "ITEM_NAME_ANONYMOUS";
+	}
 	public void getCurse(boolean extraEffect){
 		cursed=cursedKnown=true;
 	}
@@ -727,17 +729,7 @@ public class Item implements Bundlable {
 											Buff.affect(curUser, Talent.ImprovisedProjectileCooldown.class, 50f);
 										}
 									}
-									if (user.buff(Talent.LethalMomentumTracker.class) != null){
-										float dec_dly=0f;
-										user.buff(Talent.LethalMomentumTracker.class).detach();
-										switch (user.pointsInTalent(Talent.LETHAL_MOMENTUM)){
-											case 1: default: dec_dly=1f;break;
-											case 2:dec_dly=1.5f;
-										}
-										user.spendAndNext(Math.max(0f,delay-dec_dly));
-									} else {
-										user.spendAndNext(delay);
-									}
+									user.spendAndNext(delay);
 								}
 							});
 		} else {

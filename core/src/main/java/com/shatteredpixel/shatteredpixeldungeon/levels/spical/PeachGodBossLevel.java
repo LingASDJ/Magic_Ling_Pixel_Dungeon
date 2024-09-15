@@ -2,11 +2,12 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.spical;
 
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CHASM;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY_SP;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.ENTRANCE;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SIGN;
-import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.peach.WhiteYan;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
@@ -30,64 +31,51 @@ public class PeachGodBossLevel extends Level {
         return Assets.Environment.WATER_CITY;
     }
 
+    @Override
+    public void occupyCell( Char ch ) {
+        super.occupyCell(ch);
+        //GLog.p(String.valueOf(hero.pos));
+    }
 
-    private static final int WIDTH = 31;
-    private static final int HEIGHT = 47;
+    private static final int WIDTH = 26;
+    private static final int HEIGHT = 29;
 
-    private static final int W = WALL;
-    private static final int D = EMPTY;
-    private static final int X = SIGN;
-    private static final int C = CHASM;
-    private static final int M = EMPTY_SP;
+    private static final int E = EMPTY;
+    private static final int S = SIGN;
+    private static final int W = CHASM;
+    private static final int R = ENTRANCE;
 
     private static final int[] code_map = {
-            C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,
-            C,C,C,C,C,C,C,C,C,C,C,W,W,W,W,W,W,W,W,W,W,W,C,C,C,C,C,C,C,C,C,
-            C,C,C,C,C,C,C,W,W,W,W,W,X,X,X,X,X,X,X,X,X,W,W,W,C,C,C,C,C,C,C,
-            C,C,C,C,C,W,W,W,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,W,W,W,W,C,C,C,C,
-            C,C,C,W,W,W,X,X,X,X,X,X,X,X,X,D,D,D,D,D,X,X,X,X,X,X,W,W,W,C,C,
-            C,C,C,W,X,X,X,X,X,D,D,X,D,D,D,D,D,D,D,D,X,X,X,X,X,X,X,X,W,C,C,
-            C,C,C,W,X,X,X,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,D,X,X,X,X,W,C,C,
-            C,C,W,W,X,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,X,X,X,W,W,C,
-            C,W,W,X,X,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,X,X,X,W,C,
-            C,W,X,X,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,X,X,W,C,
-            C,W,X,X,D,D,X,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,X,W,W,
-            W,W,X,X,X,D,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,X,X,W,
-            W,X,X,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,X,W,W,
-            W,X,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,X,X,D,X,X,X,W,W,
-            W,X,X,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,X,D,X,X,X,X,W,
-            W,X,X,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,D,D,D,X,X,X,W,
-            W,X,X,X,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,X,X,W,
-            W,X,X,X,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,X,X,W,
-            W,X,X,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,X,X,W,
-            W,X,X,X,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,X,X,X,W,
-            W,W,X,X,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,X,X,W,W,
-            C,W,X,X,X,X,D,D,D,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,X,X,W,C,
-            C,W,X,X,X,X,D,D,D,X,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,X,X,X,W,C,
-            C,W,W,X,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,X,W,W,C,
-            C,C,W,W,X,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,X,W,W,C,C,
-            C,C,C,W,W,X,X,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,X,X,X,X,W,C,C,C,
-            C,C,C,C,W,W,X,X,X,D,X,X,D,D,D,D,D,D,D,D,D,X,X,X,X,X,W,W,C,C,C,
-            C,C,C,C,C,W,W,X,X,X,X,X,D,D,D,D,D,D,X,X,X,X,X,X,X,W,W,C,C,C,C,
-            C,C,C,C,C,C,W,W,W,X,X,X,X,X,X,D,D,X,X,X,X,X,X,X,W,W,C,C,C,C,C,
-            C,C,C,C,C,C,C,C,W,W,W,W,W,W,W,M,W,W,W,W,W,W,W,W,W,C,C,C,C,C,C,
-            C,C,C,C,C,C,C,C,C,C,X,X,X,X,X,D,X,X,X,X,X,C,C,C,C,C,C,C,C,C,C,
-            C,C,C,C,C,C,C,C,C,C,X,X,X,X,X,D,X,X,X,X,X,C,C,C,C,C,C,C,C,C,C,
-            C,C,C,C,C,C,C,C,C,C,X,X,X,X,D,X,X,X,X,X,C,C,C,C,C,C,C,C,C,C,C,
-            C,C,C,C,C,C,C,C,C,C,C,X,X,X,D,X,X,X,C,X,C,C,C,C,C,C,C,C,C,C,C,
-            C,C,C,C,C,C,C,C,C,C,C,C,X,X,D,X,X,X,C,C,C,C,C,C,C,C,C,C,C,C,C,
-            C,C,C,C,C,C,C,C,C,C,C,C,X,X,X,D,C,X,X,X,C,C,C,C,C,C,C,C,C,C,C,
-            C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,D,D,X,X,X,C,C,C,C,C,C,C,C,C,C,C,
-            C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,X,D,X,C,C,C,C,C,C,C,C,C,C,C,C,
-            C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,X,D,C,C,C,C,C,C,C,C,C,C,C,C,
-            C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,D,C,C,C,C,C,C,C,C,C,C,C,C,
-            C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,D,C,C,C,C,C,C,C,C,C,C,C,C,
-            C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,X,D,C,C,C,C,C,C,C,C,C,C,C,C,
-            C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,X,D,C,C,C,C,C,C,C,C,C,C,C,C,C,
-            C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,D,X,C,C,C,C,C,C,C,C,C,C,C,C,C,
-            C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,X,D,C,C,C,C,C,C,C,C,C,C,C,C,C,C,
-            C,C,C,C,C,C,C,C,C,C,C,C,C,C,D,D,D,D,D,D,C,C,C,C,C,C,C,C,C,C,C,
-            C,C,C,C,C,C,C,C,C,C,C,C,C,C,D,D,D,D,D,D,C,C,C,C,C,C,C,C,C,C,C,
+            W,W,W,W,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,
+            W,W,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,
+            W,W,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,
+            W,W,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,
+            W,W,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,
+            W,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,
+            W,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,
+            W,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,
+            W,S,S,S,S,S,S,S,S,S,E,E,E,E,S,S,S,S,S,S,S,S,S,S,S,S,
+            W,S,S,S,E,E,E,E,E,S,E,E,E,E,E,E,S,S,S,S,S,S,S,S,S,S,
+            W,S,S,E,E,E,E,E,E,S,E,E,E,E,E,E,S,E,E,E,E,E,S,S,S,S,
+            W,S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,S,S,
+            W,S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,
+            W,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,
+            W,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,
+            W,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,
+            S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,
+            S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,
+            S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,W,
+            S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,W,
+            S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,W,
+            S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,W,
+            S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,W,
+            W,S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,W,
+            W,W,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,W,
+            W,W,S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,W,W,
+            W,W,W,S,S,S,S,E,E,E,E,E,E,E,E,E,E,E,E,E,E,S,S,W,W,W,
+            W,W,W,W,S,S,S,S,S,S,S,S,E,E,E,S,S,S,S,S,S,S,W,W,W,W,
+            W,W,W,W,W,W,W,W,W,W,W,S,R,S,S,S,S,S,S,S,W,W,W,W,W,W,
+
     };
 
     @Override
@@ -95,7 +83,7 @@ public class PeachGodBossLevel extends Level {
         setSize(WIDTH, HEIGHT);
         map = code_map.clone();
 
-        int entrance = 47 + WIDTH * 43;
+        int entrance = 472;
         int exit = 0;
 
         LevelTransition enter = new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE);
@@ -107,9 +95,6 @@ public class PeachGodBossLevel extends Level {
         CustomTilemap vis = new townBehind();
         vis.pos(0, 0);
         customTiles.add(vis);
-        CustomTilemap via = new townAbove();
-        via.pos(0, 0);
-        customTiles.add(via);
 
         //map[exit] = Terrain.LOCKED_EXIT;
 
@@ -119,37 +104,13 @@ public class PeachGodBossLevel extends Level {
     public static class townBehind extends CustomTilemap {
 
         {
-            texture = Assets.Environment.PEACH_POX;
+            texture = Assets.Environment.PEACH_BOSS;
 
-            tileW = 31;
-            tileH = 47;
+            tileW = WIDTH;
+            tileH = HEIGHT;
         }
 
-        final int TEX_WIDTH = 31*16;
-
-        @Override
-        public Tilemap create() {
-
-            Tilemap v = super.create();
-
-            int[] data = mapSimpleImage(0, 0, TEX_WIDTH);
-
-            v.map(data, tileW);
-            return v;
-        }
-
-    }
-
-    public static class townAbove extends CustomTilemap {
-
-        {
-            texture = Assets.Environment.PEACH_PO;
-
-            tileW = 31;
-            tileH = 47;
-        }
-
-        final int TEX_WIDTH = 31*16;
+        final int TEX_WIDTH = WIDTH*16;
 
         @Override
         public Tilemap create() {
@@ -167,6 +128,9 @@ public class PeachGodBossLevel extends Level {
     @Override
     protected void createMobs() {
 
+        WhiteYan boss = new WhiteYan();
+        boss.pos = 326;
+        mobs.add(boss);
     }
 
     @Override

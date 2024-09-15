@@ -49,7 +49,11 @@ public class BGMPlayer {
             } else
                 playBGM(Assets.Music.THEME, true);
         } else {
-            if(s == 5){
+            if(s == 10){
+                if(d == 26){
+                    playBGM(Assets.YOGALXY, true);
+                }
+            } else if(s == 5){
                 if(d == 17){
                     playBGM(Assets.FL_CITY, true);
                 }
@@ -230,7 +234,13 @@ public class BGMPlayer {
 
             }
         } else {
-            if(s == 7){
+            if(s == 10) {
+                if (t == 26 && !Statistics.TrueYogNoDied) {
+                    playBGM(Assets.STARLXY, true);
+                } else {
+                    playBGM(Assets.YOGGOD, true);
+                }
+            } else if(s == 7){
                 playBGM(Assets.BGM_SHOP, true);
             }
             if(s == 3 && t == 16 ||s == 3 && t == 17 || s == 3 && t == 18) {

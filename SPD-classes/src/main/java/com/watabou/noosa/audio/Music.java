@@ -86,7 +86,7 @@ public enum Music {
 		}
 
 		//iOS cannot play ogg, so we use an mp3 alternative instead
-		if (tracks != null && DeviceCompat.isiOS()){
+		if (DeviceCompat.isiOS()){
 			for (int i = 0; i < tracks.length; i ++){
 				tracks[i] = tracks[i].replace(".ogg", ".mp3");
 			}

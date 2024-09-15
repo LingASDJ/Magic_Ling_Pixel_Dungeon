@@ -33,7 +33,7 @@ public class Katydid extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 2, 4 );
+        return Char.combatRoll( 2, 4 );
     }
 
     public void onZapComplete() {

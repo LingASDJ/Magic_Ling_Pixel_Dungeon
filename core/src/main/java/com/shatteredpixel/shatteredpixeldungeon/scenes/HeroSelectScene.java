@@ -258,8 +258,6 @@ public class HeroSelectScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				super.onClick();
-
-
 				heroClass().SetSkin(heroClass().GetSkin()+1);
 				a.heroClass(heroClass());
 			}
@@ -271,7 +269,7 @@ public class HeroSelectScene extends PixelScene {
 		};
 		skin.icon(NetIcons.get(NetIcons.GLOBE));
 		skin.setSize( 60, BUTTON_HEIGHT );
-		skin.setPos(frame.x- 39 + frame.width - 39 + FRAME_MARGIN_X,frame.y+7);
+		skin.setPos(frame.x- 35 + frame.width - 35 + FRAME_MARGIN_X,frame.y+7);
 		add(skin);
 
 		infoButton = new IconButton(Icons.get(Icons.INFO)){

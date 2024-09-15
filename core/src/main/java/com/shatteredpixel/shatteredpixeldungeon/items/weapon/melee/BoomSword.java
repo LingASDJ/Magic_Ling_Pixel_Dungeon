@@ -24,7 +24,7 @@ public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
     public BoomSword() {
         image = ItemSpriteSheet.BOMB_SWORD;
         tier = 5;
-       // animation = true;
+        animation = true;
     }
 
     @Override
@@ -32,8 +32,8 @@ public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
         if(animation) {
             itemSprite.texture(Assets.Sprites.ANIMATIONS_BOMBSWORD);
             TextureFilm frames = new TextureFilm(itemSprite.texture, 16, 16);
-            MovieClip.Animation idle = new MovieClip.Animation(8, true);
-            idle.frames( frames,0,0,1,1,2,2,2,3,3,4,4,5,5);
+            MovieClip.Animation idle = new MovieClip.Animation(14, true);
+            idle.frames( frames,0,0,1,1,2,2,2,3,3);
             itemSprite.play(idle);
         } else {
             itemSprite.view(image(),glowing());
@@ -91,12 +91,12 @@ public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
 
     @Override
     public int min(int lvl) {
-        return 3 + lvl*3;
+        return 8 + lvl*3;
     }
 
     @Override
     public int max(int lvl) {
-        return  10 + lvl*6;
+        return  15 + lvl*6;
     }
 
     private void spawnBomb(int position) {

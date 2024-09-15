@@ -51,7 +51,8 @@
 			android:exported="true"
 			android:name=".AndroidMissingNativesHandler"
 			android:screenOrientation="nosensor"
-			android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize">
+			android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
+            tools:ignore="DiscouragedApi">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 				<category android:name="android.intent.category.DEFAULT" />

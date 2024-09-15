@@ -2,7 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.GodNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.LingPlot;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -17,7 +17,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class WhiteLing extends NTNPC {
+public class WhiteLing extends GodNPC {
 
     {
         spriteClass = WhiteGirlSprites.class;

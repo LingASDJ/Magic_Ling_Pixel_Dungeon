@@ -45,7 +45,13 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 public class Ring extends KindofMisc {
-	
+
+	@Override
+	public String anonymousName() {
+		return Messages.get(Ring.class, gem);
+	}
+
+
 	protected Buff buff;
 
 	private static final LinkedHashMap<String, Integer> gems = new LinkedHashMap<String, Integer>() {

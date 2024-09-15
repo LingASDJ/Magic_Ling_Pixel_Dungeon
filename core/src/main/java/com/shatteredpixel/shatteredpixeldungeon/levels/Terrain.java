@@ -88,7 +88,7 @@ public class Terrain {
 		flags[GRASS]		= PASSABLE | FLAMABLE;
 		flags[EMPTY_WELL]	= PASSABLE;
 		flags[WATER]		= PASSABLE | LIQUID;
-		flags[GALAXY]		= PASSABLE;
+		flags[GALAXY]		= PASSABLE | LIQUID;
 		flags[LAVA]			= PASSABLE | FLAMABLE | LIQUID;
 		flags[WALL]			= LOS_BLOCKING | SOLID;
 		flags[DOOR]			= PASSABLE | LOS_BLOCKING | FLAMABLE | SOLID;

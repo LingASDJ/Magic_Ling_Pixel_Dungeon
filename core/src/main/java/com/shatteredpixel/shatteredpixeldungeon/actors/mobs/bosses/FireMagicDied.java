@@ -783,8 +783,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             beamCD = 40 + 8 - (phase == 10 ? 38 : 0);
             sprite.showStatus(0xff0000, Messages.get(this, "dead"));
             Buff.affect(this, ChampionEnemy.Halo.class);
-            Buff.affect(this, ChampionEnemy.AntiMagic.class);
-            Buff.affect(this, Adrenaline.class, 100f);
+            Buff.affect(this, Adrenaline.class, 50f);
             Buff.affect(this, RoseShiled.class, 20f);
         } else if (phase == 3 && preHP > 10 && HP <= 20){
             yell( Messages.get(this, "losing") );
@@ -882,8 +881,6 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
     @Override
     public void onDeath() {
-        Dungeon.fail( getClass() );
-        GLog.n( Messages.get(this, "ondeath") );
         Statistics.bossScores[3] -= 1500;
     }
 

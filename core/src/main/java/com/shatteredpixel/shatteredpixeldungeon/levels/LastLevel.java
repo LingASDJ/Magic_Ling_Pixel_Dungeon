@@ -160,6 +160,9 @@ public class LastLevel extends Level {
 
 	@Override
 	protected void createMobs() {
+		//TrueYog npc = new TrueYog();
+		//npc.pos = 184;
+		//mobs.add(npc);
 	}
 
 	public Actor addRespawner() {
@@ -180,7 +183,13 @@ public class LastLevel extends Level {
 
 	}
 
-	@Override
+//	@Override
+//	public void occupyCell( Char ch ) {
+//		super.occupyCell(ch);
+//		GLog.p(String.valueOf(hero.pos));
+//	}
+
+		@Override
 	public int randomRespawnCell( Char ch ) {
 		ArrayList<Integer> candidates = new ArrayList<>();
 		for (int i : PathFinder.NEIGHBOURS8){

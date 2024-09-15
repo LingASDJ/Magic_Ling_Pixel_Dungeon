@@ -294,40 +294,40 @@ public class Ghost extends NPC {
 			}
 		}
 
-		private static void ghostQuest(){
+		private static void ghostQuest() {
+
 			float itemLevelRoll = Random.Float();
 			int itemLevel;
-			if (itemLevelRoll < 0.74f){
-				itemLevel = 0;
-			} else if (itemLevelRoll < 0.75f){
-				itemLevel = 1;
-			} else if (itemLevelRoll < 0.85f){
-				itemLevel = 2;
-			} else if (itemLevelRoll < 0.90f) {
-				itemLevel = 3;
-				if ((!Badges.isUnlocked(Badges.Badge.GHOSTDAGE))) {
+
+			if (itemLevelRoll < 0.26f) {
+				itemLevel = 0;  // 物品等级为0
+			} else if (itemLevelRoll < 0.51f) {
+				itemLevel = 1;  // 物品等级为1
+			} else if (itemLevelRoll < 0.66f) {
+				itemLevel = 2;  // 物品等级为2
+			} else if (itemLevelRoll < 0.76f) {
+				itemLevel = 3;  // 物品等级为3
+				// 如果没有解锁特定徽章，则更新统计数据
+				if (!Badges.isUnlocked(Badges.Badge.GHOSTDAGE)) {
 					Statistics.dageCollected = 1;
 				}
-			} else if (itemLevelRoll < 0.95f && Badges.isUnlocked(Badges.Badge.GHOSTDAGE)) {
-				if ((!Badges.isUnlocked(Badges.Badge.DAGETO))) {
+			} else {
+				// 物品等级为4
+				itemLevel = 4;
+				// 如果没有解锁另一个特定徽章，则更新统计数据
+				if (!Badges.isUnlocked(Badges.Badge.DAGETO)) {
 					Statistics.dageCollected = 2;
 				}
-				itemLevel = 4;
-			} else {
-				if ((!Badges.isUnlocked(Badges.Badge.GHOSTDAGE))) {
-					Statistics.dageCollected = 1;
-				}
-				itemLevel = 3;
 			}
 
-			// 20% base chance to be enchanted, stored separately so status isn't revealed early
+			// 20%的基础概率决定是否附魔，附魔状态在这里不会立即暴露
 			float enchantRoll = Random.Float();
-			if (enchantRoll < 0.2f * ParchmentScrap.enchantChanceMultiplier()){
-				enchant = Weapon.Enchantment.random();
-				glyph = Armor.Glyph.random();
+			if (enchantRoll < 0.2f * ParchmentScrap.enchantChanceMultiplier()) {
+				enchant = Weapon.Enchantment.random();  // 随机选择一个武器附魔
+				glyph = Armor.Glyph.random();  // 随机选择一个护甲符文
 			}
 
-
+			// 升级武器和护甲到确定的等级
 			weapon.upgrade(itemLevel);
 			armor.upgrade(itemLevel);
 		}

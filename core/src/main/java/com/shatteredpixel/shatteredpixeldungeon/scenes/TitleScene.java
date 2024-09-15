@@ -13,8 +13,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedAnalysisScene;
-import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedFinderScene;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Gregorian;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
@@ -467,10 +465,6 @@ public class TitleScene extends PixelScene {
 		btnChanges.icon(new Image(Icons.get(Icons.CHANGES)));
 		add(btnChanges);
 
-		StyledButton seed = new SeedButton(landscape() ? Chrome.Type.GREY_BUTTON_TR : Chrome.Type.BLANK, Messages.get(this, "seed"));
-		seed.icon(NetIcons.get(NetIcons.CHAT));
-		add(seed);
-
 		StyledButton btnSettings = new SettingsButton(GREY_TR, Messages.get(this, "settings"));
 		add(btnSettings);
 
@@ -482,6 +476,10 @@ public class TitleScene extends PixelScene {
 		};
 		btnAbout.icon(new Image(Icons.get(Icons.SHPX)));
 		add(btnAbout);
+
+		StyledButton seed = new SeedButton(landscape() ? Chrome.Type.GREY_BUTTON_TR : Chrome.Type.BLANK, Messages.get(this, "seed"));
+		seed.icon(NetIcons.get(NetIcons.CHAT));
+		add(seed);
 
 		StyledButton btnNews = new NewsButton(GREY_TR, Messages.get(this, "news"));
 		btnNews.icon(new Image(Icons.get(Icons.NEWS)));
@@ -511,6 +509,7 @@ public class TitleScene extends PixelScene {
 			btnAbout.setRect(btnSettings.left(), btnSettings.bottom() + GAP, btnRankings.width(), BTN_HEIGHT);
 			btnNews.setRect(btnPlay.left(), btnAbout.bottom() + GAP, btnAbout.width() + 157 - 1, BTN_HEIGHT);
 			seed.setRect(0, 0,40,20);
+
 			align(btnNews);
 		}
 		else {
@@ -610,7 +609,7 @@ public class TitleScene extends PixelScene {
 
 		@Override
 		protected boolean onLongClick() {
-			ShatteredPixelDungeon.switchNoFade(SeedAnalysisScene.class);
+			ShatteredPixelDungeon.switchNoFade(SeedFinderScene.class);
 			return true;
 		}
 

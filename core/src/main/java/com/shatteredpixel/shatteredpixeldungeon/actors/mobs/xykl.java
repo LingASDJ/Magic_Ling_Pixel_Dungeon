@@ -56,7 +56,7 @@ public class xykl extends Mob {
     }
 
     public int damageRoll() {
-        return Random.NormalIntRange(1, 5);
+        return Char.combatRoll(1, 5);
     }
 
     public int attackProc(Char enemy, int damage) {
@@ -80,7 +80,6 @@ public class xykl extends Mob {
 
     public void die(Object cause) {
         xykl.super.die(cause);
-        RedBloodMoon.deadking--;
         if (cause != Chasm.class) {
             this.sprite.showStatus(16711680, Messages.get(this,"death_msg_"+Random.IntRange(1, 8)));
         }

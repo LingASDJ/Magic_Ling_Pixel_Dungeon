@@ -186,7 +186,11 @@ public class ItemSprite extends MovieClip {
 		}
 	}
 
-	public ItemSprite view( Item item ){
+	public ItemSprite view(Item item){
+		return view(item,false);
+	}
+
+	public ItemSprite view( Item item,boolean b){
 		view(item.image(), item.glowing());
 		Emitter emitter = item.emitter();
 
@@ -198,7 +202,7 @@ public class ItemSprite extends MovieClip {
 
 		//有布尔且必须是继承的AnimationItem才有动画
 		//避免与其他Item的view冲突
-		if (item.animation && item instanceof Item.AnimationItem) {
+		if (!b && item.animation && item instanceof Item.AnimationItem && parent != null) {
 			item.frames(this);
 		}
 
@@ -212,7 +216,7 @@ public class ItemSprite extends MovieClip {
 		
 		switch (heap.type) {
 			case HEAP: case FOR_SALE:case FOR_ICE:case FOR_RUSH:
-				return view( heap.peek() );
+				return view( heap.peek(),true );
 			case CHEST:
 				return view( ItemSpriteSheet.CHEST, null );
 			case LOCKED_CHEST:

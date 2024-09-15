@@ -129,6 +129,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.ServantAvgomon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.Sothoth;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SothothEyeDied;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SothothLasher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
 import com.shatteredpixel.shatteredpixeldungeon.custom.ch.GameTracker;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
@@ -595,9 +599,9 @@ public class Hero extends Char {
 
 		if( lanterfireactive || Dungeon.isChallenged(DHXD)){
 			Buff.affect( this, Nyctophobia.class );
-
-			//修正异常
-			Buff.affect( this, LighS.class );
+			if(Dungeon.depth != 0){
+				Buff.affect( this, LighS.class );
+			}
 		}
 
 		if(Dungeon.isChallenged(CS)){
@@ -620,6 +624,8 @@ public class Hero extends Char {
 				return 9;
 			case 2:
 				return 11;
+			case 3:
+				return 12;
 		}
 
 		if (armor instanceof ClassArmor){
@@ -823,7 +829,7 @@ public class Hero extends Char {
 		
 		return dr;
 	}
-	
+
 	@Override
 	public int damageRoll() {
 		KindOfWeapon wep = belongings.attackingWeapon();
@@ -862,7 +868,7 @@ public class Hero extends Char {
 		if( Dungeon.isDLC(Conducts.Conduct.DEV) &&CustomPlayer.overrideGame &&CustomPlayer.shouldOverride ){
 			dmg = CustomPlayer.baseDamage;
 		}
-
+    
 		if( attackDelay() >1 && hasTalent(Talent.STRONGMAN) && !(wep instanceof SpiritBow)){
 			dmg += (int) (dmg * Math.max (attackDelay()-1f * ( 1f/3f * pointsInTalent(Talent.STRONGMAN)) ,0.75f));
 		}
@@ -978,14 +984,6 @@ public class Hero extends Char {
 			else return CustomPlayer.baseAttackDelay;
 		}
 
-		if (buff(Talent.LethalMomentumTracker.class) != null){
-			buff(Talent.LethalMomentumTracker.class).detach();
-			switch (pointsInTalent(Talent.LETHAL_MOMENTUM)){
-				case 1: default: delay=1f;break;
-				case 2:delay=1.5f;
-			}
-		}
-
 		if (!RingOfForce.fightingUnarmed(this)) {
 
 			return delay * belongings.attackingWeapon().delayFactor( this );
@@ -1035,6 +1033,9 @@ public class Hero extends Char {
 	
 	@Override
 	public boolean act() {
+
+
+
 
 		if(Statistics.zeroItemLevel == 8 && Dungeon.depth == 0){
 			PaswordBadges.WHATSUP();
@@ -2718,6 +2719,13 @@ public class Hero extends Char {
     }
 
 	private void MoveWater(){
+
+		if(Dungeon.depth == 26 && Dungeon.branch == 10 && Dungeon.level.water[pos] && flying){
+			Buff.prolong( hero, Slow.class, 2f);
+		} else {
+			Buff.detach( hero, Slow.class);
+		}
+
 		if(Dungeon.GodWaterLevel() && Dungeon.level.water[pos] && flying && Dungeon.isChallenged(AQUAPHOBIA)) {
 			for (Buff buff : hero.buffs()) {
 				if (buff instanceof Cripple) {
@@ -2784,7 +2792,7 @@ public class Hero extends Char {
 
 	private boolean actMove( HeroAction.Move action ) {
 		//水中祝福
-		if(Dungeon.branch == 0){
+		if(Dungeon.branch == 0 || Dungeon.branch == 10){
 			MoveWater();
 		}
 
@@ -2862,11 +2870,6 @@ public class Hero extends Char {
             exp = Random.NormalIntRange(10, 20);
         }
 
-//		///测试坐标用
-//		GLog.w(String.valueOf(holiday));
-
-        //携带该物品时，玩家血量低于一半后自动隐身一段回合。
-        //actMove实现
         MIME.GOLD_TWO getFalseBody = hero.belongings.getItem(MIME.GOLD_TWO.class);
         if (getFalseBody != null && HT / 5 > HP) {
             //给予一个看不见的隐形Buff,继承至Invisibility
@@ -2941,7 +2944,7 @@ public class Hero extends Char {
             }
         }
 
-        if (ankh != null) {
+		if (ankh != null) {
             interrupt();
             resting = false;
 
@@ -2956,6 +2959,11 @@ public class Hero extends Char {
 				Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 				GLog.w(Messages.get(this, "revive"));
 				Statistics.ankhsUsed++;
+
+				//Chinese
+				if(Dungeon.branch == 10 && Dungeon.depth == 26){
+					GLog.w("索托斯：谨慎一点，再失误一次可就危险了。");
+				}
 
 				ankh.detach(belongings.backpack);
 
@@ -2989,7 +2997,39 @@ public class Hero extends Char {
 					sacMark.detach();
 				}
 
+
+
+
 			}
+			return;
+
+		} else if(Dungeon.branch == 10 && Dungeon.depth == 26){
+			this.HP = HT / 4;
+			PotionOfHealing.cure(this);
+			Buff.prolong(this, AnkhInvulnerability.class, AnkhInvulnerability.DURATION);
+			SpellSprite.show(this, SpellSprite.ANKH);
+			GameScene.flash(0x80FFFF40);
+			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+			ScrollOfTeleportation.appear(hero, 91);
+			Statistics.TrueYogNoDied = true;
+			//Chinese
+			GLog.w("索托斯：真是遗憾，不过下次也有机会，做好准备再来尝试吧。");
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+				if (mob instanceof Sothoth || mob instanceof SothothEyeDied) {
+					mob.destroy();
+				}
+			}
+
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+				if (mob instanceof SothothLasher
+						|| mob instanceof ServantAvgomon) {
+					mob.die(null);
+				}
+			}
+
+			Dungeon.level.unseal();
+
+
 			return;
 		}
 

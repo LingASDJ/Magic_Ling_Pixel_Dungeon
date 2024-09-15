@@ -85,7 +85,8 @@ public class Heap implements Bundlable {
 		MIMIC,
 		GOLDEN_MIMIC,
 		CRYSTAL_MIMIC,
-		STATUE
+		STATUE,
+		TrinketCatalyst
 	}
 
 	//好好好
@@ -439,6 +440,8 @@ public class Heap implements Bundlable {
 				return Messages.get(this, "skeleton");
 			case BLACK:
 				return Messages.get(this, "black_chest");
+			case TrinketCatalyst:
+				return Messages.get(this, "catalyst");
 			default:
 				return peek().toString();
 		}

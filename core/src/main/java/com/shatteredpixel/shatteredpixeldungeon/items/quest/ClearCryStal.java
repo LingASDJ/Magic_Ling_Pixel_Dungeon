@@ -21,5 +21,11 @@ public class ClearCryStal extends Item {
     public boolean isIdentified() {
         return true;
     }
+
+
+    @Override
+    public int value() {
+        return quantity * 50;
+    }
 }
 

@@ -36,7 +36,7 @@ public class AnomaloCaris extends Mob {
 
     @Override
     public int attackSkill( Char target ) {
-        return 15;
+        return first ? 20 : 75;
     }
 
     @Override
@@ -68,6 +68,8 @@ public class AnomaloCaris extends Mob {
         }
         return dmg;
     }
+
+
 
     @Override
     public void die( Object cause ) {

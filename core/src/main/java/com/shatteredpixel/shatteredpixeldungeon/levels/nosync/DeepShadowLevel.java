@@ -24,7 +24,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.arenas.LastLevelArenas;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EmptyRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BurningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ChillingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ConfusionTrap;
@@ -255,14 +254,10 @@ public class DeepShadowLevel extends Level {
         super.occupyCell(ch);
         //GLog.p(String.valueOf(hero.pos));
 
-
-
         if (ch == hero && rival != null){
             //hero reaches amulet
-            if (state == State.BRIDGE && (new EmptyRoom().set(7, 7, 23, 33)).inside(cellToPoint(ch.pos))){
+            if (state == State.BRIDGE){
                 progress();
-            }
-            if (state == State.BRIDGE && (new EmptyRoom().set(6, 6, 24, 34)).inside(cellToPoint(ch.pos))){
                 rival.notice();
             }
         }
@@ -389,11 +384,10 @@ public class DeepShadowLevel extends Level {
 
         hero.spendAndNext(JUMP_TIME);
 
-        hero.sprite.jump( hero.pos, heroJumpPoint, new Callback() {
+        hero.sprite.jump( hero.pos,heroJumpPoint, 0,1f, new Callback() {
             @Override
             public void call() {
                 hero.move( heroJumpPoint );
-
                 Dungeon.observe();
                 GameScene.updateFog();
 
@@ -403,10 +397,16 @@ public class DeepShadowLevel extends Level {
         });
 
         if (alive) {
+            Buff.affect(rival, Paralysis.class);
+            Buff.affect(rival, RoseShiled.class);
+            rival.HP = rival.HT;
             rival.sprite.jump( rival.pos, rivalJumpPoint, new Callback() {
                 @Override
                 public void call() {
                     rival.move( rivalJumpPoint );
+                    Buff.detach(rival, Paralysis.class);
+                    Buff.detach(rival, RoseShiled.class);
+                    rival.state = rival.WANDERING;
                     Dungeon.level.occupyCell(  rival );
                     if (Dungeon.level.heroFOV[rivalJumpPoint]) {
                         CellEmitter.center( rivalJumpPoint ).burst(Speck.factory(Speck.DUST), 10);

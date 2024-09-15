@@ -193,7 +193,7 @@ public class PirahaKing extends Boss {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(18, 22);
+        return Char.combatRoll(18, 22);
     }
 
     public class Hunting extends Mob.Hunting {
