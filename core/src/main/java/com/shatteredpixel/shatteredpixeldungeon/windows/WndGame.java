@@ -70,7 +70,7 @@ public class WndGame extends Window {
 					GameScene.show( new WndChallenges( Dungeon.challenges, false,null ) );
 				}
 			} );
-			curBtn.icon(Icons.get(Icons.CHALLENGE_ON));
+			curBtn.icon(Icons.get(Icons.CHALLENGE_COLOR));
 		}
 
 		boolean shouldRestart = Dungeon.hero == null || !Dungeon.hero.isAlive();

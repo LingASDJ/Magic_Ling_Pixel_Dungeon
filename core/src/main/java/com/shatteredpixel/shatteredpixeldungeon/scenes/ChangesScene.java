@@ -32,7 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ChangeInfo;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ChangeSelection;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.WndChanges;
@@ -71,10 +70,10 @@ public class ChangesScene extends PixelScene {
 		int w = Camera.main.width;
 		int h = Camera.main.height;
 
-		RenderedTextBlock title = PixelScene.renderTextBlock( Messages.get(this, "title"), 9 );
-		title.hardlight(Window.TITLE_COLOR);
+		IconTitle title = new IconTitle(Icons.CHANGES.get(), Messages.get(this, "title"));
+		title.setSize(200, 0);
 		title.setPos(
-				(w - title.width()) / 2f,
+				(w - title.reqWidth()) / 2f,
 				(20 - title.height()) / 2f
 		);
 		align(title);
@@ -89,9 +88,43 @@ public class ChangesScene extends PixelScene {
 		int pw = 135 + panel.marginLeft() + panel.marginRight() - 2;
 		int ph = h - 36;
 
-		panel.size( pw, ph );
-		panel.x = (w - pw) / 2f;
-		panel.y = title.bottom() + 5;
+		if (h >= PixelScene.MIN_HEIGHT_FULL && w >= 300) {
+			panel.size( pw, ph );
+			panel.x = (w - pw) / 2f - pw/2 - 1;
+			panel.y = 20;
+
+			rightPanel = Chrome.get(Chrome.Type.TOAST);
+			rightPanel.size( pw, ph );
+			rightPanel.x = (w - pw) / 2f + pw/2 + 1;
+			rightPanel.y = 20;
+			add(rightPanel);
+
+			rightScroll = new ScrollPane(new Component());
+			add(rightScroll);
+			rightScroll.setRect(
+					rightPanel.x + rightPanel.marginLeft(),
+					rightPanel.y + rightPanel.marginTop()-1,
+					rightPanel.innerWidth() + 2,
+					rightPanel.innerHeight() + 2);
+			rightScroll.scrollTo(0, 0);
+
+			changeTitle = new IconTitle(Icons.get(Icons.CHANGES), Messages.get(this, "right_title"));
+			changeTitle.setPos(0, 1);
+			changeTitle.setSize(pw, 20);
+			rightScroll.content().add(changeTitle);
+
+			String body = Messages.get(this, "right_body");
+
+			changeBody = PixelScene.renderTextBlock(body, 6);
+			changeBody.maxWidth(pw - panel.marginHor());
+			changeBody.setPos(0, changeTitle.bottom()+2);
+			rightScroll.content().add(changeBody);
+
+		} else {
+			panel.size( pw, ph );
+			panel.x = (w - pw) / 2f;
+			panel.y = 20;
+		}
 		align( panel );
 		add( panel );
 

@@ -47,6 +47,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -84,6 +86,8 @@ public abstract class Plant implements Bundlable {
 
 		wither();
 		activate( ch );
+		Bestiary.setSeen(getClass());
+		Bestiary.countEncounter(getClass());
 	}
 	
 	public abstract void activate( Char ch );
@@ -131,7 +135,7 @@ public abstract class Plant implements Bundlable {
 
 	public String desc() {
 		String desc = Messages.get(this, "desc");
-		if (hero.subClass == HeroSubClass.WARDEN){
+		if (Dungeon.hero != null && Dungeon.hero.subClass == HeroSubClass.WARDEN){
 			desc += "\n\n" + Messages.get(this, "warden_desc");
 		}
 		return desc;
@@ -197,6 +201,7 @@ public abstract class Plant implements Bundlable {
 					|| Dungeon.isChallenged(Challenges.NO_HERBALISM)) {
 				super.onThrow( cell );
 			} else {
+				Catalog.countUse(getClass());
 				Dungeon.level.plant( this, cell );
 				if (hero.subClass == HeroSubClass.WARDEN) {
 					for (int i : PathFinder.NEIGHBOURS8) {
@@ -305,7 +310,7 @@ public abstract class Plant implements Bundlable {
 		@Override
 		public String desc() {
 			String desc = Messages.get(plantClass, "desc");
-			if (hero.subClass == HeroSubClass.WARDEN){
+			if (Dungeon.hero != null && Dungeon.hero.subClass == HeroSubClass.WARDEN){
 				desc += "\n\n" + Messages.get(plantClass, "warden_desc");
 			}
 			return desc;
@@ -313,7 +318,7 @@ public abstract class Plant implements Bundlable {
 
 		@Override
 		public String info() {
-			return Messages.get( Seed.class, "info", desc() );
+			return Messages.get( Seed.class, "info", super.info() );
 		}
 		
 		public static class PlaceHolder extends Seed {

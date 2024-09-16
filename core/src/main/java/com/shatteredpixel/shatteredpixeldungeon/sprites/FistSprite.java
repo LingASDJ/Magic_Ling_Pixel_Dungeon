@@ -200,7 +200,7 @@ public abstract class FistSprite extends MobSprite {
 	public static class Rotting extends FistSprite {
 
 		{
-			boltType = MagicMissile.TOXIC_VENT;
+			boltType = MagicMissile.SPECK + Speck.TOXIC;
 		}
 
 		@Override

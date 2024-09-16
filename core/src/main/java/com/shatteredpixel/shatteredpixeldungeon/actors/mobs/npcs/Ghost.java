@@ -74,12 +74,16 @@ public class Ghost extends NPC {
 	}
 
 	@Override
+	public Notes.Landmark landmark() {
+		return Notes.Landmark.GHOST;
+	}
+
+	@Override
 	protected boolean act() {
-		if (Quest.processed()) {
-			target = hero.pos;
-		}
-		if (Dungeon.level.heroFOV[pos] && !Quest.completed()){
-			Notes.add( Notes.Landmark.GHOST );
+		if (Dungeon.hero.buff(AscensionChallenge.class) != null){
+			die(null);
+			Notes.remove( landmark() );
+			return true;
 		}
 		return super.act();
 	}
@@ -188,7 +192,6 @@ public class Ghost extends NPC {
 			if (questBoss.pos != -1) {
 				GameScene.add(questBoss);
 				Quest.given = true;
-				Notes.add( Notes.Landmark.GHOST );
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {
@@ -337,8 +340,8 @@ public class Ghost extends NPC {
 
 				Ghost ghost = new Ghost();
 				do {
-					ghost.pos = level.randomRespawnCell( ghost );
-				} while (ghost.pos == -1);
+					ghost.pos = level.pointToCell(room.random());
+				} while (ghost.pos == -1 || level.solid[ghost.pos] || ghost.pos == level.exit());
 				level.mobs.add( ghost );
 
 				spawned = true;

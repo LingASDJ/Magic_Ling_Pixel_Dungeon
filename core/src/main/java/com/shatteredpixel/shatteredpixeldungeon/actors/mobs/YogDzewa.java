@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -191,34 +192,6 @@ public class YogDzewa extends Boss {
 			}
 		}
 
-		if (phase == 4 && findFist() == null){
-			yell(Messages.get(this, "hope"));
-			summonCooldown = -15; //summon a burst of minions!
-			phase = 5;
-			BossHealthBar.bleed(true);
-			Game.runOnRenderThread(new Callback() {
-				@Override
-				public void call() {
-					Music.INSTANCE.fadeOut(0.5f, new Callback() {
-						@Override
-						public void call() {
-							if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
-									YogFist.FreezingFist freezingFist = new YogFist.FreezingFist();
-									freezingFist.pos = pos-3;
-									GameScene.add(freezingFist);
-									Camera.main.shake(1,3f);
-									GameScene.flash(0x808080,true);
-									YogFist.HaloFist haloFist = new YogFist.HaloFist();
-									haloFist.pos = pos+3;
-									GameScene.add(haloFist);
-							}
-							Music.INSTANCE.play(Assets.Music.HALLS_BOSS_FINALE, true);
-						}
-					});
-				}
-			});
-		}
-
 		if (phase == 0){
 			spend(TICK);
 			return true;
@@ -256,9 +229,9 @@ public class YogDzewa extends Boss {
 
 					if (hit( this, ch, true )) {
 						if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-							ch.damage(Char.combatRoll(30, 50), new Eye.DeathGaze());
+							ch.damage(Random.NormalIntRange(30, 50), new Eye.DeathGaze());
 						} else {
-							ch.damage(Char.combatRoll(20, 30), new Eye.DeathGaze());
+							ch.damage(Random.NormalIntRange(20, 30), new Eye.DeathGaze());
 						}
 						if (Dungeon.level.heroFOV[pos]) {
 							ch.sprite.flash();
@@ -384,6 +357,28 @@ public class YogDzewa extends Boss {
 		}
 
 		return true;
+	}
+
+	public void processFistDeath(){
+		//normally Yog has no logic when a fist dies specifically
+		//but the very last fist to die does trigger the final phase
+		if (phase == 4 && findFist() == null){
+			yell(Messages.get(this, "hope"));
+			summonCooldown = -15; //summon a burst of minions!
+			phase = 5;
+			BossHealthBar.bleed(true);
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					Music.INSTANCE.fadeOut(0.5f, new Callback() {
+						@Override
+						public void call() {
+							Music.INSTANCE.play(Assets.Music.HALLS_BOSS_FINALE, true);
+						}
+					});
+				}
+			});
+		}
 	}
 
 	@Override
@@ -528,13 +523,13 @@ public class YogDzewa extends Boss {
 	@Override
 	public void die( Object cause ) {
 
-
-
+		Bestiary.skipCountingEncounters = true;
 		for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
 			if (mob instanceof Larva || mob instanceof YogRipper || mob instanceof YogEye || mob instanceof YogScorpio) {
 				mob.die( cause );
 			}
 		}
+		Bestiary.skipCountingEncounters = false;
 
 		if(Dungeon.isChallenged(RLPT)){
 			Badges.GOODRLPT();
@@ -685,12 +680,12 @@ public class YogDzewa extends Boss {
 
 		@Override
 		public int damageRoll() {
-			return Char.combatRoll( 15, 25 );
+			return Random.NormalIntRange( 15, 25 );
 		}
 
 		@Override
 		public int drRoll() {
-			return super.drRoll() + Char.combatRoll(0, 4);
+			return super.drRoll() + Random.NormalIntRange(0, 4);
 		}
 
 	}

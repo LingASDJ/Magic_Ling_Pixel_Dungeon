@@ -30,37 +30,30 @@ import com.watabou.noosa.ui.Component;
 
 public class WndMessage extends Window {
 
-	private static final int WIDTH_P = 120;
-	private static final int WIDTH_L = 144;
+	private static final int WIDTH_MIN = 120;
+	private static final int WIDTH_MAX = 220;
 	private static final int MARGIN = 4;
-
-	public WndMessage(String text) {
-
+	
+	public WndMessage( String text ) {
+		
 		super();
 
-		RenderedTextBlock info = PixelScene.renderTextBlock(text, 6);
-		info.maxWidth((PixelScene.landscape() ? WIDTH_L : WIDTH_P) - MARGIN * 2);
+		int width = WIDTH_MIN;
+		
+		RenderedTextBlock info = PixelScene.renderTextBlock( text, 6 );
+		info.maxWidth(width - MARGIN * 2);
+		info.setPos(MARGIN, MARGIN);
+		add( info );
 
-		if ((int) info.height() + MARGIN * 2 < Camera.main.height * .9f) {
-			info.setPos(MARGIN, MARGIN);
-			add(info);
-			resize(
-					(int) info.width() + MARGIN * 2,
-					(int) info.height() + MARGIN * 2);
-		} else {
-			info.setPos(0, 0);
-			resize(
-					(int) info.width() + MARGIN * 2,
-					(int) (Camera.main.height * .9f));
-			Component component = new Component();
-			ScrollPane sp = new ScrollPane(component);
-			component.add(info);
-			add(sp);
-			info.setPos(0,0);
-			component.setSize(info.width()+MARGIN*2, info.height() + MARGIN*2);
-			sp.setRect(0, MARGIN, component.width(), (int) (Camera.main.height * .9f)-MARGIN*2);
-
+		while (PixelScene.landscape()
+				&& info.height() > 120
+				&& width < WIDTH_MAX){
+			width += 20;
+			info.maxWidth(width - MARGIN * 2);
 		}
 
+		resize(
+			(int)info.width() + MARGIN * 2,
+			(int)info.height() + MARGIN * 2 );
 	}
 }

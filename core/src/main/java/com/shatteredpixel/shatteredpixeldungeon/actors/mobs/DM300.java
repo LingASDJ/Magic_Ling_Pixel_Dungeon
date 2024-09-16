@@ -93,7 +93,7 @@ public class DM300 extends Boss {
 
 	@Override
 	public int damageRoll() {
-		return Char.combatRoll( 15, 25 );
+		return Random.NormalIntRange( 15, 25 );
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class DM300 extends Boss {
 
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Char.combatRoll(0, 10);
+		return super.drRoll() + Random.NormalIntRange(0, 10);
 	}
 
 	public int pylonsActivated = 0;
@@ -207,7 +207,7 @@ public class DM300 extends Boss {
 					if (turnsSinceLastAbility >= MIN_COOLDOWN){
 						//use a coneAOE to try and account for trickshotting angles
 						ConeAOE aim = new ConeAOE(new Ballistica(pos, enemy.pos, Ballistica.WONT_STOP), Float.POSITIVE_INFINITY, 30, Ballistica.STOP_SOLID);
-						if (aim.cells.contains(enemy.pos)) {
+						if (aim.cells.contains(enemy.pos) && !Char.hasProp(enemy, Property.INORGANIC)) {
 							lastAbility = GAS;
 							turnsSinceLastAbility = 0;
 
@@ -219,7 +219,7 @@ public class DM300 extends Boss {
 								Sample.INSTANCE.play(Assets.Sounds.GAS);
 								return true;
 							}
-						//if we can't gas, then drop rocks
+						//if we can't gas, or if target is inorganic then drop rocks
 						//unless enemy is already stunned, we don't want to stunlock them
 						} else if (enemy.paralysed <= 0) {
 							lastAbility = ROCKS;
@@ -248,6 +248,10 @@ public class DM300 extends Boss {
 						} else {
 							//more likely to use gas
 							lastAbility = Random.Int(4) != 0 ? GAS : ROCKS;
+						}
+
+						if (Char.hasProp(enemy, Property.INORGANIC)){
+							lastAbility = ROCKS;
 						}
 
 						//doesn't spend a turn if enemy is at a distance
@@ -321,14 +325,14 @@ public class DM300 extends Boss {
 
 		if (travelling) PixelScene.shake( supercharged ? 3 : 1, 0.25f );
 
-		if (Dungeon.level.map[step] == Terrain.INACTIVE_TRAP && state == HUNTING) {
+		if (Dungeon.level.map[pos] == Terrain.INACTIVE_TRAP && state == HUNTING) {
 
 			//don't gain energy from cells that are energized
 			if (CavesBossLevel.PylonEnergy.volumeAt(pos, CavesBossLevel.PylonEnergy.class) > 0){
 				return;
 			}
 
-			if (Dungeon.level.heroFOV[step]) {
+			if (Dungeon.level.heroFOV[pos]) {
 				if (buff(Barrier.class) == null) {
 					GLog.w(Messages.get(this, "shield"));
 				}

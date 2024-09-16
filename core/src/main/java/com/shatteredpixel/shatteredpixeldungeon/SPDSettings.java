@@ -141,6 +141,134 @@ public class SPDSettings extends GameSettings {
 
 	public static int  timeOutSeed() {
 		return getInt( KEY_TIMEOUT, 4 );
+	public static void screenShake( int value ){
+		put( KEY_SCREEN_SHAKE, value );
+	}
+
+	public static int screenShake() {
+		return getInt( KEY_SCREEN_SHAKE, 2, 0, 4 );
+	}
+	
+	//Interface
+
+	public static final String KEY_UI_SIZE 	    = "full_ui";
+	public static final String KEY_SCALE		= "scale";
+	public static final String KEY_QUICK_SWAP	= "quickslot_swapper";
+	public static final String KEY_FLIPTOOLBAR	= "flipped_ui";
+	public static final String KEY_FLIPTAGS 	= "flip_tags";
+	public static final String KEY_BARMODE		= "toolbar_mode";
+	public static final String KEY_SLOTWATERSKIN= "quickslot_waterskin";
+	public static final String KEY_SYSTEMFONT	= "system_font";
+	public static final String KEY_VIBRATION    = "vibration";
+
+	//0 = mobile, 1 = mixed (large without inventory in main UI), 2 = large
+	public static void interfaceSize( int value ){
+		put( KEY_UI_SIZE, value );
+	}
+
+	public static int interfaceSize(){
+		int size = getInt( KEY_UI_SIZE, DeviceCompat.isDesktop() ? 2 : 0 );
+		if (size > 0){
+			//force mobile UI if there is not enough space for full UI
+			float wMin = Game.width / PixelScene.MIN_WIDTH_FULL;
+			float hMin = Game.height / PixelScene.MIN_HEIGHT_FULL;
+			if (Math.min(wMin, hMin) < 2*Game.density){
+				size = 0;
+			}
+		}
+		return size;
+	}
+
+	public static void scale( int value ) {
+		put( KEY_SCALE, value );
+	}
+
+	public static int scale() {
+		return getInt( KEY_SCALE, 0 );
+	}
+	
+	public static void quickSwapper(boolean value ){ put( KEY_QUICK_SWAP, value ); }
+	
+	public static boolean quickSwapper(){ return getBoolean( KEY_QUICK_SWAP, true); }
+	
+	public static void flipToolbar( boolean value) {
+		put(KEY_FLIPTOOLBAR, value );
+	}
+	
+	public static boolean flipToolbar(){ return getBoolean(KEY_FLIPTOOLBAR, false); }
+	
+	public static void flipTags( boolean value) {
+		put(KEY_FLIPTAGS, value );
+	}
+	
+	public static boolean flipTags(){ return getBoolean(KEY_FLIPTAGS, false); }
+	
+	public static void toolbarMode( String value ) {
+		put( KEY_BARMODE, value );
+	}
+	
+	public static String toolbarMode() {
+		return getString(KEY_BARMODE, PixelScene.landscape() ? "GROUP" : "SPLIT");
+	}
+
+	public static void quickslotWaterskin( boolean value ){
+		put( KEY_SLOTWATERSKIN, value);
+	}
+
+	public static boolean quickslotWaterskin(){
+		return getBoolean( KEY_SLOTWATERSKIN, true );
+	}
+
+	public static void systemFont(boolean value){
+		put(KEY_SYSTEMFONT, value);
+	}
+
+	public static boolean systemFont(){
+		return getBoolean(KEY_SYSTEMFONT,
+				(language() == Languages.KOREAN || language() == Languages.CHINESE || language() == Languages.JAPANESE));
+	}
+
+	public static void vibration(boolean value){
+		put(KEY_VIBRATION, value);
+	}
+
+	public static boolean vibration(){
+		return getBoolean(KEY_VIBRATION, true);
+	}
+
+	//Game State
+	
+	public static final String KEY_LAST_CLASS	= "last_class";
+	public static final String KEY_CHALLENGES	= "challenges";
+	public static final String KEY_CUSTOM_SEED	= "custom_seed";
+	public static final String KEY_LAST_DAILY	= "last_daily";
+	public static final String KEY_INTRO		= "intro";
+
+	public static final String KEY_SUPPORT_NAGGED= "support_nagged";
+	public static final String KEY_VICTORY_NAGGED= "victory_nagged";
+	
+	public static void intro( boolean value ) {
+		put( KEY_INTRO, value );
+	}
+	
+	public static boolean intro() {
+		return getBoolean( KEY_INTRO, true );
+	}
+	
+	public static void lastClass( int value ) {
+		put( KEY_LAST_CLASS, value );
+	}
+	
+	public static int lastClass() {
+		return getInt( KEY_LAST_CLASS, 0, 0, 3 );
+	}
+	
+	public static void challenges( int value ) {
+		put( KEY_CHALLENGES, value );
+	}
+	
+	public static int challenges() {
+		return getInt( KEY_CHALLENGES, 0, 0, Challenges.MAX_VALUE );
 	}
 
 	public static void customSeed( String value ){
@@ -452,6 +580,15 @@ public class SPDSettings extends GameSettings {
 	}
 
 	//Audio
+	public static void victoryNagged( boolean value ) {
+		put( KEY_VICTORY_NAGGED, value );
+	}
+
+	public static boolean victoryNagged() {
+		return getBoolean(KEY_VICTORY_NAGGED, false);
+	}
+
+	//Input
 
 	public static final String KEY_MUSIC		= "music";
 	public static final String KEY_MUSIC_VOL    = "music_vol";
@@ -604,6 +741,7 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_WINDOW_WIDTH     = "window_width";
 	public static final String KEY_WINDOW_HEIGHT    = "window_height";
 	public static final String KEY_WINDOW_MAXIMIZED = "window_maximized";
+	public static final String KEY_FULLSCREEN_MONITOR = "fullscreen_monitor";
 
 	public static void windowResolution( Point p ){
 		put(KEY_WINDOW_WIDTH, p.x);
@@ -1083,4 +1221,11 @@ public class SPDSettings extends GameSettings {
 		return getBoolean( KEY_LOGMISC, false );
 	}
 
+	public static void fulLScreenMonitor( int value ){
+		put( KEY_FULLSCREEN_MONITOR, value);
+	}
+
+	public static int fulLScreenMonitor(){
+		return getInt( KEY_FULLSCREEN_MONITOR, 0 );
+	}
 }

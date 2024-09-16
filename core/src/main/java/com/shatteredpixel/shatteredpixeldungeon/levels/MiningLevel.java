@@ -337,6 +337,11 @@ public class MiningLevel extends CavesLevel {
 		return wallVisuals;
 	}
 
+	@Override
+	public boolean invalidHeroPos(int tile) {
+		return false; //solid tiles are fine for hero to be in here
+	}
+
 	public static class BorderTopDarken extends CustomTilemap {
 
 		{

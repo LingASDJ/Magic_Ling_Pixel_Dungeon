@@ -135,11 +135,21 @@ public class Pasty extends Food {
 	}
 
 	@Override
-	public String info() {
-		switch(RegularLevel.holiday){
+	public String desc() {
+		switch(Holiday.getCurrentHoliday()){
 			case NONE: default:
-				return Messages.get(this, "pasty_desc");
-			case HWEEN:
+				return super.desc();
+			case LUNAR_NEW_YEAR:
+				return Messages.get(this, "fish_desc");
+			case APRIL_FOOLS:
+				return Messages.get(this, "amulet_desc");
+			case EASTER:
+				return Messages.get(this, "egg_desc");
+			case PRIDE:
+				return Messages.get(this, "rainbow_desc");
+			case SHATTEREDPD_BIRTHDAY:
+				return Messages.get(this, "shattered_desc");
+			case HALLOWEEN:
 				return Messages.get(this, "pie_desc");
 			case XMAS:
 				return Messages.get(this, "cane_desc");

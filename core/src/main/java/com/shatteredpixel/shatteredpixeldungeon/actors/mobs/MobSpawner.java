@@ -21,41 +21,45 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CHAMPION_ENEMIES;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
-
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.AnomaloCaris;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.ThreeLeafBug;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.Turtle;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.dragon.PiraLand;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.dragon.RiceRat;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.ApprenticeWitch;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Butcher;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Crumb;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Frankenstein;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.PumkingBomber;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.DrTerror;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.GunHuntsman;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Bestiary {
+public class MobSpawner extends Actor {
+	{
+		actPriority = BUFF_PRIO; //as if it were a buff.
+	}
 
-	public static ArrayList<Class<? extends Mob>> getMobRotation( int depth ){
-		ArrayList<Class<? extends Mob>> mobs;
+	@Override
+	protected boolean act() {
 
-		if(!(Dungeon.isChallenged(RLPT)) || Dungeon.depth < 6 && Dungeon.isChallenged(RLPT)){
-			mobs = standardMobRotation( depth );
+		if (Dungeon.level.mobCount() < Dungeon.level.mobLimit()) {
+
+			if (Dungeon.level.spawnMob(12)){
+				spend(Dungeon.level.respawnCooldown());
+			} else {
+				//try again in 1 turn
+				spend(TICK);
+			}
+
 		} else {
-			mobs = rlptMobDied( depth );
+			spend(Dungeon.level.respawnCooldown());
 		}
+
+		return true;
+	}
+
+	public void resetCooldown(){
+		spend(-cooldown());
+		spend(Dungeon.level.respawnCooldown());
+	}
+
+	public static ArrayList<Class<? extends Mob>> getMobRotation(int depth ){
+		ArrayList<Class<? extends Mob>> mobs = standardMobRotation( depth );
 		addRareMobs(depth, mobs);
 		swapMobAlts(mobs);
 
