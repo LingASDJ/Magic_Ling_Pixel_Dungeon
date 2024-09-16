@@ -48,7 +48,7 @@ public class FireGhost extends Mob {
     }
 
     public int damageRoll() {
-        return Char.combatRoll(6, 19);
+        return Random.NormalIntRange(6, 19);
     }
 
     public int drRoll() {

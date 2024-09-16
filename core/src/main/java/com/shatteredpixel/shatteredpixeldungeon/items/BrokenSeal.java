@@ -183,19 +183,7 @@ public class BrokenSeal extends Item {
 			}
 		}
 	};
-	@Override
-	public String name() {
-		return glyph != null ? glyph.name( super.name() ) : super.name();
-	}
-	@Override
-	public String info() {
-		String info = desc();
-		if (glyph!=null ) {
-			info+="\n\n" +  Messages.capitalize(Messages.get(Armor.class, "inscribed", glyph.name()));
-			info += " " + glyph.desc();
-		}
-		return info;
-	}
+
 	private static final String GLYPH = "glyph";
 
 	@Override

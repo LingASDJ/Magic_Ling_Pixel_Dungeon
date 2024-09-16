@@ -54,7 +54,7 @@ public class PiraLand extends Mob {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll( 12, 18 );
+        return Random.NormalIntRange( 12, 18 );
     }
 
     @Override

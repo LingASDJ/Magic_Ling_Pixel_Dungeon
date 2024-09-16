@@ -49,7 +49,7 @@ public class Cake extends Food {
             hero.CakeUsed++;
             hero.sprite.showStatus(CharSprite.POSITIVE, "+1");
             GLog.p(Messages.get(this, "eat_good"));
-        } else if (hero.CakeUsed==2 && Random.Float()<0.09f) {
+        } else if (hero.CakeUsed == 2 && Random.Float()<0.09f) {
             Buff.affect(hero, Barrier.class).setShield(((hero.HT/4)));
             GLog.p(Messages.get(this, "eat_good2"));
         } else {

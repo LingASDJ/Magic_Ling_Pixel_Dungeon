@@ -57,9 +57,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Bzmdr;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Gudaszi;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonCat;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -327,7 +324,7 @@ public class CursedWand {
 		@Override
 		public void FX(Item origin, Char user, Ballistica bolt, Callback callback) {
 			MagicMissile.boltFromChar(user.sprite.parent,
-					MagicMissile.SPECK + Speck.BUBBLE,
+					MagicMissile.SPARK_CONE + Speck.BUBBLE,
 					user.sprite,
 					bolt.collisionPos,
 					callback);

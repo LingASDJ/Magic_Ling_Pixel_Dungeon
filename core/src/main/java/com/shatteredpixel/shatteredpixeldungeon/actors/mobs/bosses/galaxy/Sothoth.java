@@ -105,7 +105,7 @@ public class Sothoth extends Boss {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll( 12, 24 );
+        return Random.NormalIntRange( 12, 24 );
     }
 
     private void zap() {

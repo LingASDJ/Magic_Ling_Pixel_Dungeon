@@ -76,7 +76,7 @@ public class SuccubusQueen extends Succubus {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll( 30, 40 );
+        return Random.NormalIntRange( 30, 40 );
     }
 
 }

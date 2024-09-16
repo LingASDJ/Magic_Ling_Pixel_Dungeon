@@ -22,9 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GoScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.WelcomeScene;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
@@ -47,9 +47,6 @@ public class ShatteredPixelDungeon extends Game {
 	public static final int v2_0_2  = 700;
 	public static final int v2_1_4  = 737; //iOS was 737, other platforms were 736
 	public static final int v2_2_0  = 20231030;
-
-	public static final int v2_0_2 = 700;
-	public static final int v2_1_4 = 737; //iOS was 737, other platforms were 736
 	public static final int v2_2_1 = 755; //iOS was 755 (also called v2.2.2), other platforms were 754
 	public static final int v2_3_2 = 768;
 	public static final int v2_4_2 = 782;
@@ -64,7 +61,7 @@ public class ShatteredPixelDungeon extends Game {
 				"com.shatteredpixel.shatteredpixeldungeon.levels.Level$Respawner" );
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability.class,
-				"com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AnkhInvulnerability" );
+				"com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability" );
 
 		//pre-v2.4.0
 		com.watabou.utils.Bundle.addAlias(
@@ -84,10 +81,10 @@ public class ShatteredPixelDungeon extends Game {
 				"com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast" );
 
 		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.entrance.EntranceRoom.class,
+				com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom.class,
 				"com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom" );
 		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit.ExitRoom.class,
+				com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom.class,
 				"com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom" );
 
 		//pre-v2.3.0

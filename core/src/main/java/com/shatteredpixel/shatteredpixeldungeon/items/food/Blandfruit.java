@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticG
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfLightStromCloud;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;

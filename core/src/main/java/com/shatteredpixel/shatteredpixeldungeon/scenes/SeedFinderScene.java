@@ -29,7 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedFinder;
-import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.WndCatalog;
 import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.WndSeedfinderLog;
 import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.WndSeedfinderSeedinput;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
@@ -210,7 +209,7 @@ public class SeedFinderScene extends PixelScene {
 		StyledButton btnCatalog = new StyledButton(GREY_TR, Messages.get(this, "item_catalog")){
 			@Override
 			protected void onClick() {
-				ShatteredPixelDungeon.scene().addToFront(new WndCatalog());
+				//ShatteredPixelDungeon.scene().addToFront(new WndCatalog());
 			}
 		};
 		btnCatalog.icon(new ItemSprite(ItemSpriteSheet.POTION_AZURE));

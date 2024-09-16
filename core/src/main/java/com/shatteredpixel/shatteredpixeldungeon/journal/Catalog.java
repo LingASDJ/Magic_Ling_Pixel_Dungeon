@@ -53,6 +53,17 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.RegrowthBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ShockBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ShrapnelBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.WoollyBomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.BrokenBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.DeepBloodBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.GrassKingBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.IceCityBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.NoKingMobBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.BzmdrBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.DeYiZiBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.MoneyMoreBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.PinkRandomBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.ChargrilledMeat;
@@ -91,11 +102,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
-import com.shatteredpixel.shatteredpixeldungeon.items.remains.BowFragment;
-import com.shatteredpixel.shatteredpixeldungeon.items.remains.BrokenHilt;
-import com.shatteredpixel.shatteredpixeldungeon.items.remains.BrokenStaff;
-import com.shatteredpixel.shatteredpixeldungeon.items.remains.CloakScrap;
-import com.shatteredpixel.shatteredpixeldungeon.items.remains.SealShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
@@ -137,9 +143,8 @@ public enum Catalog {
 
 	//CONSUMABLES
 	POTIONS,
-	SCROLLS,
 	BOOKS,
-	PLAYBOOKS;
+	PLAYBOOKS,
 	SEEDS,
 	SCROLLS,
 	STONES,
@@ -259,8 +264,7 @@ public enum Catalog {
 				TrinketCatalyst.class, Stylus.class, Torch.class, Honeypot.class, Ankh.class,
 				CorpseDust.class, Embers.class, CeremonialCandle.class, DarkGold.class, DwarfToken.class,
 				GooBlob.class, TengusMask.class, MetalShard.class, KingsCrown.class,
-				LiquidMetal.class, ArcaneResin.class,
-				SealShard.class, BrokenStaff.class, CloakScrap.class, BowFragment.class, BrokenHilt.class);
+				LiquidMetal.class, ArcaneResin.class);
 
 		BOOKS.seen.put( IceCityBooks.class,           	false);
 		BOOKS.seen.put( DeepBloodBooks.class,           false);
@@ -334,7 +338,7 @@ public enum Catalog {
 				Journal.saveNeeded = true;
 			}
 		}
-		Badges.validateCatalogBadges();
+		//Badges.validateCatalogBadges();
 	}
 
 	public static int useCount(Class<?> cls){

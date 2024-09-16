@@ -21,8 +21,26 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CHAMPION_ENEMIES;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.RLPT;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.AnomaloCaris;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.ThreeLeafBug;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.Turtle;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.dragon.PiraLand;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.dragon.RiceRat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.ApprenticeWitch;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Butcher;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Crumb;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Frankenstein;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.PumkingBomber;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.DrTerror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.GunHuntsman;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
 import com.watabou.utils.Random;
 
@@ -363,15 +381,11 @@ public class MobSpawner extends Actor {
 								Golem.class));
 				}
 
-			case 21:
+			case 21: case 22:
 				//3x succubus, 3x evil eye
 				return new ArrayList<>(Arrays.asList(
 						Eye.class,ShieldHuntsman.class, DrTerror.class));
-			case 22:
-				//3x succubus, 3x evil eye
-				return new ArrayList<>(Arrays.asList(
-								Eye.class,ShieldHuntsman.class,DrTerror.class));
-			case 23:
+            case 23:
 				//1x: succubus, 2x evil eye, 3x scorpio
 				return new ArrayList<>(Arrays.asList(
 								Eye.class,ShieldHuntsman.class, DrTerror.class));

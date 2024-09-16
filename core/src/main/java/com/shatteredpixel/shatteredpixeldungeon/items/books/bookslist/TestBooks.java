@@ -1,7 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AnkhInvulnerability;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.InvisibilityRing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
@@ -35,14 +35,14 @@ public class TestBooks extends Item {
     public void execute(final Hero hero, String action) {
         super.execute(hero, action);
         if (action.equals( Read )) {
-            if ( Dungeon.hero.buff(AnkhInvulnerability.class) == null ) {
+            if ( Dungeon.hero.buff(Invulnerability.class) == null ) {
                 GLog.p(Messages.get(this,"godmode_on"));
-                Buff.prolong(hero, AnkhInvulnerability.class, AnkhInvulnerability.DURATION*1000000f);
+                Buff.prolong(hero, Invulnerability.class, Invulnerability.DURATION*1000000f);
                 Buff.affect(hero, InvisibilityRing.class, InvisibilityRing.DURATION*1000000f);
                 Buff.affect( hero, MindVision.class, MindVision.DURATION*1000000f );
             } else {
                 GLog.n(Messages.get(this,"godmode_off"));
-                Buff.detach( hero, AnkhInvulnerability.class );
+                Buff.detach( hero, Invulnerability.class );
                 Buff.detach( hero, InvisibilityRing.class );
                 Buff.detach( hero, MindVision.class );
             }

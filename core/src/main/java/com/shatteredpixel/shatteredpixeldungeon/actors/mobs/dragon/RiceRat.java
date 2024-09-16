@@ -32,7 +32,7 @@ public class RiceRat extends Mob implements Callback {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll( 12, 19 );
+        return Random.NormalIntRange( 12, 19 );
     }
 
     @Override

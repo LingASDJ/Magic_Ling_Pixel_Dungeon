@@ -30,8 +30,6 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.TextView;
 
-import com.badlogic.gdx.backends.android.AndroidApplication;
-
 public class AndroidMissingNativesHandler extends Activity {
 
 	public static Throwable error;

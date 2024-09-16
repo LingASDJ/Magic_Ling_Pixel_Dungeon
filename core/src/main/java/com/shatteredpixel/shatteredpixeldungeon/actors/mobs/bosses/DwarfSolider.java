@@ -45,7 +45,7 @@ public class DwarfSolider extends Mob {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll( 24, 36 );
+        return Random.NormalIntRange( 24, 36 );
     }
 
     @Override

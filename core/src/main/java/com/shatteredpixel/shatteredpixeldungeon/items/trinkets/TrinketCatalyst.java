@@ -149,7 +149,8 @@ public class TrinketCatalyst extends Item {
 	public static class RandomTrinket extends Item {
 
 		{
-			image = ItemSpriteSheet.TRINKET_HOLDER;
+			//TODO 9-16 (2 0 2 4)
+			image = ItemSpriteSheet.SCROLL_CATALYST;
 		}
 
 	}
@@ -161,7 +162,7 @@ public class TrinketCatalyst extends Item {
 		private static final int BTN_GAP	= 4;
 		private static final int GAP		= 2;
 
-		private static final int NUM_TRINKETS = 4; //last one is a random choice
+		public static final int NUM_TRINKETS = 4; //last one is a random choice
 
 		public WndTrinket( TrinketCatalyst cata ){
 

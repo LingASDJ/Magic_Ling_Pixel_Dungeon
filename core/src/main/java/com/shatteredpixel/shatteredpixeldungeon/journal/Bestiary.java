@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.journal;
 
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.SmokeBomb;
@@ -292,7 +291,7 @@ public enum Bestiary {
 				Journal.saveNeeded = true;
 			}
 		}
-		Badges.validateCatalogBadges();
+		//Badges.validateCatalogBadges();
 	}
 
 	public static int encounterCount(Class<?> cls) {

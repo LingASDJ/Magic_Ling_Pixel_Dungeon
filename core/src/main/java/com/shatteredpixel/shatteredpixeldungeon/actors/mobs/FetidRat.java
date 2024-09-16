@@ -37,7 +37,7 @@ public class FetidRat extends Rat {
 
 	{
 		spriteClass = FetidRatSprite.class;
-		discovered = Dungeon.discovered[1];
+
 		HP = HT = 20;
 		defenseSkill = 5;
 
@@ -82,7 +82,6 @@ public class FetidRat extends Rat {
 	@Override
 	public void die( Object cause ) {
 		super.die( cause );
-		Dungeon.discovered[1] = true;
 		discovered = true;
 		Ghost.Quest.process();
 	}

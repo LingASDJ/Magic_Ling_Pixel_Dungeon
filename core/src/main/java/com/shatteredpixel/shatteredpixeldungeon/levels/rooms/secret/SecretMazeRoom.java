@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;

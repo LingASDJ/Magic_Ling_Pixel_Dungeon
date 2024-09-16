@@ -50,7 +50,7 @@ public class WndVictoryCongrats extends Window {
 
 		height = (int)text.bottom() + 6;
 
-		Image chalImg = Icons.CHALLENGE_COLOR.get();
+		Image chalImg = Icons.CHANGES.get();
 		chalImg.y = height;
 		chalImg.x = (16-chalImg.width())/2f;
 		PixelScene.align(chalImg);

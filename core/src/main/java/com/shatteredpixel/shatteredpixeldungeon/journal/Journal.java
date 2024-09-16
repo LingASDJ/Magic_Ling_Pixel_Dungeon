@@ -47,7 +47,7 @@ public class Journal {
 		}
 		
 		Catalog.restore( bundle );
-		Bestiary.restore( bundle );
+		MobSpawner.restore( bundle );
 		Document.restore( bundle );
 		
 		loaded = true;
@@ -68,7 +68,7 @@ public class Journal {
 		Bundle bundle = new Bundle();
 		
 		Catalog.store(bundle);
-		Bestiary.store(bundle);
+		MobSpawner.store(bundle);
 		Document.store(bundle);
 		
 		try {

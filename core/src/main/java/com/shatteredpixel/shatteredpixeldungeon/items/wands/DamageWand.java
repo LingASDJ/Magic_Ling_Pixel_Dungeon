@@ -23,8 +23,16 @@ package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
@@ -67,7 +75,7 @@ public abstract class DamageWand extends Wand{
 				}
 		}
 
-		return Dungeon.hero.buff(AnkhInvulnerability.GodDied.class)!=null ? dmg*2 : dmg;
+		return Dungeon.hero.buff(Invulnerability.GodDied.class)!=null ? dmg*2 : dmg;
 	}
 
 	//TODO some naming issues here. Consider renaming this method and externalizing char awareness buff
@@ -88,12 +96,12 @@ public abstract class DamageWand extends Wand{
 	@Override
 	public String statsDesc() {
 		if (levelKnown)
-			return Messages.get(this, "stats_desc", Dungeon.hero.buff(AnkhInvulnerability.GodDied.class)!=null?
-					min()*2:min(),	Dungeon.hero.buff(AnkhInvulnerability.GodDied.class)!=null?
+			return Messages.get(this, "stats_desc", Dungeon.hero.buff(Invulnerability.GodDied.class)!=null?
+					min()*2:min(),	Dungeon.hero.buff(Invulnerability.GodDied.class)!=null?
 					max()*2:max());
 		else
-			return Messages.get(this, "stats_desc", Dungeon.hero.buff(AnkhInvulnerability.GodDied.class)!=null?
-					min(0)*2:min(0), Dungeon.hero.buff(AnkhInvulnerability.GodDied.class)!=null?
+			return Messages.get(this, "stats_desc", Dungeon.hero.buff(Invulnerability.GodDied.class)!=null?
+					min(0)*2:min(0), Dungeon.hero.buff(Invulnerability.GodDied.class)!=null?
 					max(0)*2:max(0));
 	}
 

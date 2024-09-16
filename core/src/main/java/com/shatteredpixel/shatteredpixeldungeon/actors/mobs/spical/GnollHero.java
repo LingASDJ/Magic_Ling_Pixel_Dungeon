@@ -30,7 +30,7 @@ public class GnollHero extends Mob {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll( 15, 21 );
+        return Random.NormalIntRange( 15, 21 );
     }
 
     @Override

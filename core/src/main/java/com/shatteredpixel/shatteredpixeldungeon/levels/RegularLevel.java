@@ -102,8 +102,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.LinkRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.LoveRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.MagicDimandRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.entrance.EntranceRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit.ExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BurningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ChillingTrap;

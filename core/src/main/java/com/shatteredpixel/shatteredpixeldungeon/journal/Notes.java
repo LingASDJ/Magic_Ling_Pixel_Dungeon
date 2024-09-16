@@ -134,9 +134,8 @@ public class Notes {
 		IMP,
 		SHOP2,
 		REDAGRON,
-		DEMON_SPAWNER,
 
-		SMALLB;
+		SMALLB,
 
 		DEMON_SPAWNER;
 	}
@@ -157,36 +156,36 @@ public class Notes {
 				default:
 					return Icons.STAIRS.get();
 
-				case CHASM_FLOOR:
-					return Icons.STAIRS_CHASM.get();
-				case WATER_FLOOR:
-					return Icons.STAIRS_WATER.get();
-				case GRASS_FLOOR:
-					return Icons.STAIRS_GRASS.get();
-				case DARK_FLOOR:
-					return Icons.STAIRS_DARK.get();
-				case LARGE_FLOOR:
-					return Icons.STAIRS_LARGE.get();
-				case TRAPS_FLOOR:
-					return Icons.STAIRS_TRAPS.get();
-				case SECRETS_FLOOR:
-					return Icons.STAIRS_SECRETS.get();
+//				case CHASM_FLOOR:
+//					return Icons.STAIRS_CHASM.get();
+//				case WATER_FLOOR:
+//					return Icons.STAIRS_WATER.get();
+//				case GRASS_FLOOR:
+//					return Icons.STAIRS_GRASS.get();
+//				case DARK_FLOOR:
+//					return Icons.STAIRS_DARK.get();
+//				case LARGE_FLOOR:
+//					return Icons.STAIRS_LARGE.get();
+//				case TRAPS_FLOOR:
+//					return Icons.STAIRS_TRAPS.get();
+//				case SECRETS_FLOOR:
+//					return Icons.STAIRS_SECRETS.get();
 
 				case SHOP:
 					if (depth == 20)    return new Image(new ImpSprite());
 					else                return new Image(new ShopkeeperSprite());
-				case ALCHEMY:
-					return Icons.get(Icons.ALCHEMY);
-				case GARDEN:
-					return Icons.get(Icons.GRASS);
-				case DISTANT_WELL:
-					return Icons.get(Icons.DISTANT_WELL);
-				case WELL_OF_HEALTH:
-					return Icons.get(Icons.WELL_HEALTH);
-				case WELL_OF_AWARENESS:
-					return Icons.get(Icons.WELL_AWARENESS);
-				case SACRIFICIAL_FIRE:
-					return Icons.get(Icons.SACRIFICE_ALTAR);
+//				case ALCHEMY:
+//					return Icons.get(Icons.ALCHEMY);
+//				case GARDEN:
+//					return Icons.get(Icons.GRASS);
+//				case DISTANT_WELL:
+//					return Icons.get(Icons.DISTANT_WELL);
+//				case WELL_OF_HEALTH:
+//					return Icons.get(Icons.WELL_HEALTH);
+//				case WELL_OF_AWARENESS:
+//					return Icons.get(Icons.WELL_AWARENESS);
+//				case SACRIFICIAL_FIRE:
+//					return Icons.get(Icons.SACRIFICE_ALTAR);
 				case STATUE:
 					return new Image(new StatueSprite());
 
@@ -420,8 +419,9 @@ public class Notes {
 		@Override
 		public Image icon() {
 			switch (type){
-				case TEXT: default:
-					return Icons.SCROLL_COLOR.get();
+//				case TEXT: default:
+//					return Icons.SCROLL_COLOR.get();
+				default:
 				case DEPTH:
 					return Icons.STAIRS.get();
 				case ITEM:

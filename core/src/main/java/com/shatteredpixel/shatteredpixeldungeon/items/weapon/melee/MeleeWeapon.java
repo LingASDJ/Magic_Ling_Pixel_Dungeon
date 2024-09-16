@@ -53,7 +53,6 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 

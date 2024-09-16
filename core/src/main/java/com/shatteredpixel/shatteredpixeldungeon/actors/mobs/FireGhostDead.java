@@ -105,7 +105,7 @@ public class FireGhostDead extends Mob implements Callback {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll( 5, 12 );
+        return Random.NormalIntRange( 5, 12 );
     }
 
     @Override

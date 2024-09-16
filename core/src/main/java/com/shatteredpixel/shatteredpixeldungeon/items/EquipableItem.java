@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -61,8 +62,6 @@ public abstract class EquipableItem extends Item {
 		}
 	}
 
-	public int customNoteID = -1;
-
 	{
 		bones = true;
 	}
@@ -78,6 +77,7 @@ public abstract class EquipableItem extends Item {
 	public boolean doPickUp(Hero hero, int pos) {
 		if (super.doPickUp(hero, pos)){
 			if (!isIdentified() && !Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_IDING)){
+				GLog.p(Messages.get(Guidebook.class, "hint"));
 				GameScene.flashForDocument(Document.ADVENTURERS_GUIDE, Document.GUIDE_IDING);
 			}
 			return true;
@@ -102,8 +102,8 @@ public abstract class EquipableItem extends Item {
 			if (slot != -1) {
 				Dungeon.quickslot.setSlot( slot, this );
 				updateQuickslot();
-			//if this item wasn't quickslotted, but the item it is replacing as equipped was
-			//then also have the item occupy the unequipped item's quickslot
+				//if this item wasn't quickslotted, but the item it is replacing as equipped was
+				//then also have the item occupy the unequipped item's quickslot
 			} else if (slotOfUnequipped != -1 && defaultAction() != null) {
 				Dungeon.quickslot.setSlot( slotOfUnequipped, this );
 				updateQuickslot();
@@ -179,18 +179,4 @@ public abstract class EquipableItem extends Item {
 	}
 
 	public void activate( Char ch ){}
-
-	private static final String CUSTOM_NOTE_ID = "custom_note_id";
-
-	@Override
-	public void storeInBundle(Bundle bundle) {
-		super.storeInBundle(bundle);
-		if (customNoteID != -1)     bundle.put(CUSTOM_NOTE_ID, customNoteID);
-	}
-
-	@Override
-	public void restoreFromBundle(Bundle bundle) {
-		super.restoreFromBundle(bundle);
-		if (bundle.contains(CUSTOM_NOTE_ID))    customNoteID = bundle.getInt(CUSTOM_NOTE_ID);
-	}
 }

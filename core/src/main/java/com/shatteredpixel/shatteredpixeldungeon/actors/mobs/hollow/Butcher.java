@@ -88,7 +88,7 @@ public class Butcher extends Mob {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll( 30, 50 );
+        return Random.NormalIntRange( 30, 50 );
     }
 
     @Override

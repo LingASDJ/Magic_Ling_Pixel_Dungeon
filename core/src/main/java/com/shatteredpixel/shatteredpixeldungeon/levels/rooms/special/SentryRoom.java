@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -57,7 +56,7 @@ import com.watabou.utils.Random;
 import com.watabou.utils.Rect;
 
 public class SentryRoom extends SpecialRoom {
-
+	private EmptyRoom room;
 	@Override
 	public int minWidth() { return 7; }
 	public int minHeight() { return 7; }

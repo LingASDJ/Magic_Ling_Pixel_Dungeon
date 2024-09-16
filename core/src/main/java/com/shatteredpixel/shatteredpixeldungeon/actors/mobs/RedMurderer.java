@@ -86,7 +86,7 @@ public class RedMurderer extends Mob {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll( 10, 20 );
+        return Random.NormalIntRange( 10, 20 );
     }
 
     @Override

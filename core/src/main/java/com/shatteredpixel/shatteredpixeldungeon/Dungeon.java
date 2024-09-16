@@ -88,9 +88,13 @@ import com.watabou.utils.Random;
 import com.watabou.utils.SparseArray;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class Dungeon {
 	public static boolean whiteDaymode;
@@ -103,6 +107,11 @@ public class Dungeon {
 		ARCANE_STYLI,
 		BBAT,
 		TRINKET_CATA,
+		ENCH_STONE,
+		INT_STONE,
+		LAB_ROOM, //actually a room, but logic is the same
+
+
 		//Health potion sources
 		//enemies
 		SWARM_HP,
@@ -187,7 +196,7 @@ public class Dungeon {
 	public static int mobsToChampion;
 	private static final String GENERATED_LEVELS = "generated_levels";
 	private static final String GOLD = "gold";
-
+	private static final String ENERGY		= "energy";
 	private static final String RUSHGOLD = "rushgold";
 
 	public static Level level;
@@ -244,62 +253,6 @@ public class Dungeon {
 			customSeedText = "";
 			seed = DungeonSeed.randomSeed();
 		}
-	}
-	
-	public static void init() {
-
-		initialVersion = version = Game.versionCode;
-		challenges = SPDSettings.challenges();
-		mobsToChampion = -1;
-
-		Actor.clear();
-		Actor.resetNextID();
-
-		//offset seed slightly to avoid output patterns
-		Random.pushGenerator( seed+1 );
-
-			Scroll.initLabels();
-			Potion.initColors();
-			Ring.initGems();
-
-			SpecialRoom.initForRun();
-			SecretRoom.initForRun();
-
-			Generator.fullReset();
-
-		Random.resetGenerators();
-		
-		Statistics.reset();
-		Notes.reset();
-
-		quickslot.reset();
-		QuickSlotButton.reset();
-		Toolbar.swappedQuickslots = false;
-		
-		depth = 1;
-		branch = 0;
-		generatedLevels.clear();
-
-		gold = 0;
-		energy = 0;
-
-		droppedItems = new SparseArray<>();
-
-		LimitedDrops.reset();
-		
-		chapters = new HashSet<>();
-		
-		Ghost.Quest.reset();
-		Wandmaker.Quest.reset();
-		Blacksmith.Quest.reset();
-		Imp.Quest.reset();
-
-		hero = new Hero();
-		hero.live();
-		
-		Badges.reset();
-		
-		GamesInProgress.selectedClass.initHero( hero );
 	}
 
 	public static boolean isChallenged( int mask ) {
@@ -653,11 +606,6 @@ public class Dungeon {
 		return depth < 5 && !LimitedDrops.INT_STONE.dropped() && Random.Int(4-depth) == 0;
 	}
 
-	public static boolean trinketCataNeeded(){
-		//one trinket catalyst on floors 1-3
-		return depth < 5 && !LimitedDrops.TRINKET_CATA.dropped() && Random.Int(4-depth) == 0;
-	}
-
 	public static boolean labRoomNeeded(){
 		//one laboratory each floor set, in floor 3 or 4, 1/2 chance each floor
 		int region = 1+depth/5;
@@ -745,8 +693,6 @@ public class Dungeon {
 		BloodBat.level = 1;
 
 		//TitleScene.NightDay = false;
-
-		Arrays.fill(discovered, false);
 
 		mobsToChampion = -1;
 		mobsToStateLing = -1;

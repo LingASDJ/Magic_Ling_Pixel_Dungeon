@@ -77,14 +77,13 @@ public class Shopkeeper extends NPC {
 	public ArrayList<Item> buybackItems = new ArrayList<>();
 
 	private int turnsSinceHarmed = -1;
-
-	@Override
-	public Notes.Landmark landmark() {
-		return Notes.Landmark.SHOP;
-	}
-
+	private boolean seenBefore = false;
 	@Override
 	protected boolean act() {
+
+		if (Dungeon.level.visited[pos]){
+			Notes.add(Notes.Landmark.SHOP);
+		}
 
 		if (turnsSinceHarmed >= 0){
 			turnsSinceHarmed ++;
@@ -156,26 +155,24 @@ public class Shopkeeper extends NPC {
 				}
 			}
 
-		//There is a 1 turn buffer before more damage/debuffs make the shopkeeper flee
-		//This is mainly to prevent stacked effects from causing an instant flee
+			//There is a 1 turn buffer before more damage/debuffs make the shopkeeper flee
+			//This is mainly to prevent stacked effects from causing an instant flee
 		} else if (turnsSinceHarmed >= 1) {
 			flee();
 		}
 	}
-	
+
 	public void flee() {
 		destroy();
 
-		Notes.remove( landmark() );
-		GLog.newLine();
-		GLog.n(Messages.get(this, "flee"));
+		Notes.remove(Notes.Landmark.SHOP);
 
 		if (sprite != null) {
 			sprite.killAndErase();
 			CellEmitter.get(pos).burst(ElmoParticle.FACTORY, 6);
 		}
 	}
-	
+
 	@Override
 	public void destroy() {
 		super.destroy();
@@ -188,7 +185,7 @@ public class Shopkeeper extends NPC {
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean reset() {
 		return true;
@@ -227,7 +224,7 @@ public class Shopkeeper extends NPC {
 	public static int sellRushPrice(Item item){
 		return item.RushValue();
 	}
-	
+
 	public static WndBag sell() {
 		return GameScene.selectItem( itemSelector );
 	}

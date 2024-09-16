@@ -67,7 +67,7 @@ public class RoomStone extends Mob {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll( 15, 20 );
+        return Random.NormalIntRange( 15, 20 );
     }
 
     @Override

@@ -21,8 +21,6 @@
 
 package com.watabou.noosa;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.layout;
-
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.glwrap.Quad;

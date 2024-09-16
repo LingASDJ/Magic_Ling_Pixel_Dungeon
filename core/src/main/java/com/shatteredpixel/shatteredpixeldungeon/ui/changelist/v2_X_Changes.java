@@ -98,7 +98,7 @@ public class v2_X_Changes {
 				"\n" +
 				"Dev commentary will be added here in the future"));
 
-		changes.addButton( new ChangeButton(Icons.JOURNAL.get(), "Journal Overhaul!",
+		changes.addButton( new ChangeButton(Icons.NEWS.get(), "Journal Overhaul!",
 				"_The game's Journal interface has been completely overhauled!_\n" +
 				"\n" +
 				"The Notes section has an entirely new grid-based UI with new icons, and _support for custom notes!_ Custom notes feature user-enterable text and can be tied to a floor, specific item, item type, or just be plain text.\n" +
@@ -109,7 +109,7 @@ public class v2_X_Changes {
 				"\n" +
 				"The guidebook tabs are unchanged, and the lore tab has been merged into the catalogs."));
 
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SALT_CUBE), "New Trinkets!",
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.CAKE), "New Trinkets!",
 				"_Four new trinkets have been added!_ Bringing the total to 15 trinkets.\n" +
 				"\n" +
 				"The _Salt Cube_ extends the duration that food keeps you full, but also reduces HP regeneration.\n" +
@@ -291,7 +291,7 @@ public class v2_X_Changes {
 				"_- Unencumbered Spirit_ energy gain changed to 50%/75%/100% from 40%/80%/120%\n" +
 				"_- Combined Energy_ is now more permissive and reduces charge use by 1, instead of 50%"));
 
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.UNSTABLE_SPELL), "Other Buffs",
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SPELL_HOLDER), "Other Buffs",
 				"_- Wand Preservation_ talent now always succeeds, no longer grants arcane resin on failure, and is limited to 1 use at +1, and 1 use per level at +2. \n" +
 				"_- Rogue's foresight_ talent trigger chance increased to 75% at +1 and 100% at +2, up from 60% and 90%.\n" +
 				"_- Hold Fast_ talent now grants 1-2 armor per level, up from 0-2.\n" +
@@ -766,7 +766,7 @@ public class v2_X_Changes {
 		changes.hardlight(CharSprite.WARNING);
 		changeInfos.add(changes);
 
-		changes.addButton( new ChangeButton(Icons.CHALLENGE_COLOR.get(), "Hostile Champions",
+		changes.addButton( new ChangeButton(Icons.CHANGES.get(), "Hostile Champions",
 				"I've decided to make some changes to the hostile champions challenge, to better balance the difficulty of each of the champion types, and address some common feedback about difficulty spikes:\n" +
 				"\n" +
 				"_- Projecting Champions_ now have +3 attack range, instead of infinite range\n" +

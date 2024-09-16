@@ -102,59 +102,46 @@ public class BuffIndicator extends Component {
 	public static final int ANKH        = 52;
 
 	public static final int NOINV       = 53;
-	public static final int TARGETED    = 54;
-	public static final int IMBUE       = 55;
-	public static final int ENDURE      = 56;
-	public static final int INVERT_MARK = 57;
-	public static final int NATURE_POWER= 58;
-	public static final int AMULET      = 59;
-	public static final int DUEL_CLEAVE = 60;
-	public static final int DUEL_GUARD  = 61;
-	public static final int DUEL_SPIN   = 62;
-	public static final int DUEL_EVASIVE= 63;
-	public static final int DUEL_DANCE  = 64;
-	public static final int DUEL_BRAWL  = 65;
-	public static final int DUEL_XBOW   = 66;
-	public static final int CHALLENGE   = 67;
-	public static final int MONK_ENERGY = 68;
-	public static final int DUEL_COMBO  = 69;
-	public static final int DAZE        = 70;
-	public static final int DISGUISE    = 71;
-	public static final int WAND        = 72;
+	public static final int RANDOM = 54;
+	public static final int FIREDIED = 55;
+	public static final int  ROSEBARRIER= 56;
+	public static final int HALOMETHANEBURNING    = 57;
 
 	public static final int LANTERFIRE_ONE    = 58;
 	public static final int LANTERFIRE_TWO    = 59;
 	public static final int LANTERFIRE_THREE    = 60;
 	public static final int LANTERFIRE_FOUR    = 61;
-    public static final int LANTERFIRE_FIVE = 62;
-    public static final int LANTERFIRE_SIX = 63;
+	public static final int LANTERFIRE_FIVE = 62;
+	public static final int LANTERFIRE_SIX = 63;
 
-    public static final int DEBUFF_DOWN = 64;
-    public static final int GOBUFF_UPRD = 65;
+	public static final int DEBUFF_DOWN = 64;
+	public static final int GOBUFF_UPRD = 65;
 
-    public static final int ICE_SWORDDOWN = 66;
+	public static final int ICE_SWORDDOWN = 66;
 
-    public static final int LIGHT_DIED = 67;
+	public static final int LIGHT_DIED = 67;
+
+
 
 
     //SPD 221
-	public static final int TARGETED    = 68;
-	public static final int IMBUE       = 69;
-	public static final int ENDURE      = 70;
-	public static final int INVERT_MARK = 71;
-	public static final int NATURE_POWER= 72;
-	public static final int AMULET      = 73;
-	public static final int DUEL_CLEAVE = 74;
-	public static final int DUEL_GUARD  = 75;
-	public static final int DUEL_SPIN   = 76;
-	public static final int DUEL_EVASIVE= 77;
-	public static final int DUEL_DANCE  = 78;
-	public static final int DUEL_BRAWL  = 79;
-	public static final int DUEL_XBOW   = 80;
-	public static final int CHALLENGE   = 81;
-	public static final int MONK_ENERGY = 82;
-	public static final int DUEL_COMBO  = 83;
-	public static final int DAZE        = 84;
+//	public static final int TARGETED    = 68;
+//	public static final int IMBUE       = 69;
+//	public static final int ENDURE      = 70;
+//	public static final int INVERT_MARK = 71;
+//	public static final int NATURE_POWER= 72;
+//	public static final int AMULET      = 73;
+//	public static final int DUEL_CLEAVE = 74;
+//	public static final int DUEL_GUARD  = 75;
+//	public static final int DUEL_SPIN   = 76;
+//	public static final int DUEL_EVASIVE= 77;
+//	public static final int DUEL_DANCE  = 78;
+//	public static final int DUEL_BRAWL  = 79;
+//	public static final int DUEL_XBOW   = 80;
+//	public static final int CHALLENGE   = 81;
+//	public static final int MONK_ENERGY = 82;
+//	public static final int DUEL_COMBO  = 83;
+//	public static final int DAZE        = 84;
 
 	public static final int IMELSAZE        = 85;
 

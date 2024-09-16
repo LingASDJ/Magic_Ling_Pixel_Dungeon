@@ -7,9 +7,9 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WATER;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -160,7 +160,7 @@ public class BigEyeRoom extends SpecialRoom {
         };
 
         for (int is : BTPOS) {
-            Mob mob = Reflection.newInstance(Bestiary.getMobRotation(Random.NormalIntRange(15, 29)).get(0));
+            Mob mob = Reflection.newInstance(MobSpawner.getMobRotation(Random.NormalIntRange(15, 29)).get(0));
             mob.pos = is;
             level.mobs.add(mob);
         }

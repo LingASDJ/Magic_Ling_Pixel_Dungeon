@@ -133,7 +133,7 @@ public class Crumb extends Mob {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll( 27, 32 );
+        return Random.NormalIntRange( 27, 32 );
     }
 
     @Override

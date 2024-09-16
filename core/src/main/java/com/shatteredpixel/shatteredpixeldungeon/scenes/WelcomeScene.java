@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCr
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.MoonDao;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.SaiPlus;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;

@@ -60,7 +60,7 @@ public class ColdMagicRat extends Mob implements Callback {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll( 10, 12 );
+        return Random.NormalIntRange( 10, 12 );
     }
 
     @Override
