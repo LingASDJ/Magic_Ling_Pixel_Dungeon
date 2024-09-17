@@ -25,7 +25,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBadge;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
@@ -111,7 +110,7 @@ public class BadgesGrid extends Component {
 			this.badge = badge;
 			this.unlocked = unlocked;
 
-			icon = BadgeBanner.image(1);
+			icon = BadgeBanner.image(badge.image);
 			if (!unlocked) {
 				icon.brightness(0.4f);
 			}
@@ -141,6 +140,11 @@ public class BadgesGrid extends Component {
 		protected void onClick() {
 			Sample.INSTANCE.play( Assets.Sounds.CLICK, 0.7f, 0.7f, 1.2f );
 			Game.scene().addToFront( new WndBadge( badge, unlocked ) );
+		}
+
+		@Override
+		protected String hoverText() {
+			return badge.title();
 		}
 	}
 

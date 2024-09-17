@@ -53,17 +53,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.RegrowthBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ShockBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ShrapnelBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.WoollyBomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.BrokenBooks;
-import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.DeepBloodBooks;
-import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.GrassKingBooks;
-import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.IceCityBooks;
-import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlBooks;
-import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.NoKingMobBooks;
-import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
-import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.BzmdrBooks;
-import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.DeYiZiBooks;
-import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.MoneyMoreBooks;
-import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.PinkRandomBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.ChargrilledMeat;
@@ -143,8 +132,6 @@ public enum Catalog {
 
 	//CONSUMABLES
 	POTIONS,
-	BOOKS,
-	PLAYBOOKS,
 	SEEDS,
 	SCROLLS,
 	STONES,
@@ -161,7 +148,7 @@ public enum Catalog {
 	private final LinkedHashMap<Class<?>, Boolean> seen = new LinkedHashMap<>();
 	//tracks upgrades spent for equipment, uses for consumables
 	private final LinkedHashMap<Class<?>, Integer> useCount = new LinkedHashMap<>();
-	
+
 	public Collection<Class<?>> items(){
 		return seen.keySet();
 	}
@@ -266,18 +253,6 @@ public enum Catalog {
 				GooBlob.class, TengusMask.class, MetalShard.class, KingsCrown.class,
 				LiquidMetal.class, ArcaneResin.class);
 
-		BOOKS.seen.put( IceCityBooks.class,           	false);
-		BOOKS.seen.put( DeepBloodBooks.class,           false);
-		BOOKS.seen.put( GrassKingBooks.class,           false);
-		BOOKS.seen.put( YellowSunBooks.class,           false);
-		BOOKS.seen.put( MagicGirlBooks.class,           false);
-		BOOKS.seen.put( NoKingMobBooks.class,           false);
-		BOOKS.seen.put( BrokenBooks.class,           false);
-
-		PLAYBOOKS.seen.put( MoneyMoreBooks.class,          	 true);
-		PLAYBOOKS.seen.put( PinkRandomBooks.class,           true);
-		PLAYBOOKS.seen.put( DeYiZiBooks.class,          	 true);
-		PLAYBOOKS.seen.put(	BzmdrBooks.class,          	 true);
 	}
 
 	//old badges for pre-2.5
@@ -321,7 +296,7 @@ public enum Catalog {
 		consumableCatalogs.add(SPELLS);
 		consumableCatalogs.add(MISC_CONSUMABLES);
 	}
-	
+
 	public static boolean isSeen(Class<?> cls){
 		for (Catalog cat : values()) {
 			if (cat.seen.containsKey(cls)) {
@@ -330,7 +305,7 @@ public enum Catalog {
 		}
 		return false;
 	}
-	
+
 	public static void setSeen(Class<?> cls){
 		for (Catalog cat : values()) {
 			if (cat.seen.containsKey(cls) && !cat.seen.get(cls)) {
@@ -338,7 +313,7 @@ public enum Catalog {
 				Journal.saveNeeded = true;
 			}
 		}
-		//Badges.validateCatalogBadges();
+		Badges.validateCatalogBadges();
 	}
 
 	public static int useCount(Class<?> cls){
@@ -369,13 +344,13 @@ public enum Catalog {
 	private static final String CATALOG_CLASSES = "catalog_classes";
 	private static final String CATALOG_SEEN    = "catalog_seen";
 	private static final String CATALOG_USES    = "catalog_uses";
-	
+
 	public static void store( Bundle bundle ){
 
 		ArrayList<Class<?>> classes = new ArrayList<>();
 		ArrayList<Boolean> seen = new ArrayList<>();
 		ArrayList<Integer> uses = new ArrayList<>();
-		
+
 		for (Catalog cat : values()) {
 			for (Class<?> item : cat.items()) {
 				if (cat.seen.get(item) || cat.useCount.get(item) > 0){
@@ -395,16 +370,16 @@ public enum Catalog {
 			storeSeen[i] = seen.get(i);
 			storeUses[i] = uses.get(i);
 		}
-		
+
 		bundle.put( CATALOG_CLASSES, storeCls );
 		bundle.put( CATALOG_SEEN, storeSeen );
 		bundle.put( CATALOG_USES, storeUses );
-		
+
 	}
 
 	//pre-v2.5
 	private static final String CATALOG_ITEMS = "catalog_items";
-	
+
 	public static void restore( Bundle bundle ){
 
 		//old logic for pre-v2.5 catalog-specific badges
@@ -444,5 +419,5 @@ public enum Catalog {
 		}
 
 	}
-	
+
 }

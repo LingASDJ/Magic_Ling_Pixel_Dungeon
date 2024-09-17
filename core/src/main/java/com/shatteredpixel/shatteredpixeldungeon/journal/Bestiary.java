@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.journal;
 
+import com.shatteredpixel.shatteredpixeldungeon.SpellCaster;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.SmokeBomb;
@@ -68,10 +69,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM720;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PhantomPiranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Pylon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PylonCS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RipperDemon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotHeart;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotLasher;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDICLRPRO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Senior;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman;
@@ -93,6 +96,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogReal;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruitsLasher;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DictFish;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
@@ -100,6 +104,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfMaster;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.FireMagicDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.RoomStone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.SakaFishBoss;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.TPDoor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush.Rival;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush.SkyGoo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruits;
@@ -234,14 +239,19 @@ public enum Bestiary {
 				SkyGoo.class,
 
 				//T2
-				Tengu.class, DiamondKnight.class,
+				Tengu.class, DiamondKnight.class, TPDoor.class, DCrystal.class,
 
 				//T3
 				Pylon.class, DM300.class,
-				NewDM720.class, MoloHR.class,
-				MagicGirlDead.class,
+				NewDM720.class, MoloHR.class, PylonCS.class,
 
-				//t4
+				SpellCaster.FrostCaster.class,
+				SpellCaster.BounceCaster.class,
+				SpellCaster.ExplosionCaster.class,
+				SpellCaster.LightCaster.class,
+				MagicGirlDead.class, SRPDICLRPRO.class,
+
+				//T4
 				DwarfKing.class, DwarfMaster.class, DwarfGeneral.class,
 
 				//T5

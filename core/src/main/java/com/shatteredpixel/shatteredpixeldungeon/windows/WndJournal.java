@@ -588,7 +588,7 @@ public class WndJournal extends WndTabbed {
 			itemButtons[EQUIP_IDX].icon(new ItemSprite(ItemSpriteSheet.WEAPON_HOLDER));
 			itemButtons[CONSUM_IDX].icon(new ItemSprite(ItemSpriteSheet.POTION_HOLDER));
 
-			//2024-9-17
+			//DX
 			itemButtons[BESTIARY_IDX].icon(new ItemSprite(ItemSpriteSheet.WEAPON_HOLDER));
 			itemButtons[LORE_IDX].icon(new ItemSprite(ItemSpriteSheet.POTION_HOLDER));
 
