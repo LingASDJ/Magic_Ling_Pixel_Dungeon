@@ -56,7 +56,7 @@ public class SliverLockSword extends MeleeWeapon implements Item.AnimationItem {
     public int proc(Char attacker, Char defender, int damage) {
 
         if(level()>8){
-            Buff.prolong( attacker, Slow.class, 2f );
+            Buff.prolong( defender, Slow.class, 2f );
         }
 
         damage= (new Unstable()).proc(this, attacker, defender, damage+level());
