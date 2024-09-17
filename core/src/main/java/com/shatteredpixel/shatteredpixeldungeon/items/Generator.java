@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SliverLockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
@@ -587,6 +588,7 @@ public class Generator {
 					Greatshield.class,
 					WashCrime.class,
 					BoomSword.class,
+
 					//传奇武器
 					DiedCrossBow.class,
 					WarScythe.class,
@@ -610,8 +612,9 @@ public class Generator {
 					BloodthirstyThorn.class,
 					EndingBlade.class,
 					FireFishSword.class,
+					SliverLockSword.class
 			};
-			WEP_T6.probs = new float[]{ 1,0,0,0,Statistics.RandMode ? 1 : 0 };
+			WEP_T6.probs = new float[]{ 1,0,0,0,Statistics.RandMode ? 1 : 0, 0 };
 
 			//see Generator.randomArmor
 			ARMOR.classes = new Class<?>[]{
