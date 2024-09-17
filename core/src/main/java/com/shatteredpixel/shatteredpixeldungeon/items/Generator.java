@@ -715,15 +715,15 @@ public class Generator {
 					SandalsOfNature.class,
 					TalismanOfForesight.class,
 					TimekeepersHourglass.class,
-					UnstableSpellbook.class,
 					AlchemistsToolkit.class,
 					DriedRose.class,
 					LloydsBeacon.class,
 					EtherealChains.class,
 					WraithAmulet.class,
 					CommRelay.class,
+					UnstableSpellbook.class,
 			};
-			ARTIFACT.defaultProbs = new float[]{ 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1,1, 0};
+			ARTIFACT.defaultProbs = new float[]{ 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0};
 			ARTIFACT.probs = ARTIFACT.defaultProbs.clone();
 
 			//Trinkets are unique like artifacts, but unlike them you can only have one at once

@@ -360,7 +360,7 @@ public class v1_X_Changes {
 				"Several talents that were previously exempt from being chosen by the scroll now have alternative effects that let them be used by any hero.\n\n" +
 				"These alternative effects only appear when getting these talents via metamorphosis."));
 
-		changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.TARGETED, true), "Buff and Spell Icons",
+		changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.MARK, true), "Buff and Spell Icons",
 				"Several buffs have been given icons when they didn't have any, or have had their icons adjusted to prevent icon duplication. This should improve buff clarity in a few cases, and ensure that two active buffs can never have the exact same icon (recolored icons are still present though).\n\n" +
 				"A few new overhead spell effects have been added as well."));
 

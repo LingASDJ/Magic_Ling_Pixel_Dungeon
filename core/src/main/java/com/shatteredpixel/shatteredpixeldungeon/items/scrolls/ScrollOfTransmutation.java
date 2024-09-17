@@ -311,7 +311,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return null;
 	}
 
-	private static Trinket changeTrinket( Trinket t ){
+	public static Trinket changeTrinket(Trinket t){
 		Trinket n;
 		do {
 			n = (Trinket)Generator.random(Generator.Category.TRINKET);
@@ -358,18 +358,18 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return n;
 	}
 
-	public static Trinket changeTrinket( Trinket t ){
-		Trinket n;
-		do {
-			n = (Trinket)Generator.random(Generator.Category.TRINKET);
-		} while ( Challenges.isItemBlocked(n) || n.getClass() == t.getClass());
-
-		n.level(t.trueLevel());
-		n.levelKnown = t.levelKnown;
-		n.cursed = t.cursed;
-
-		return n;
-	}
+//	public static Trinket changeTrinket( Trinket t ){
+//		Trinket n;
+//		do {
+//			n = (Trinket)Generator.random(Generator.Category.TRINKET);
+//		} while ( Challenges.isItemBlocked(n) || n.getClass() == t.getClass());
+//
+//		n.level(t.trueLevel());
+//		n.levelKnown = t.levelKnown;
+//		n.cursed = t.cursed;
+//
+//		return n;
+//	}
 	
 	public static Runestone changeStone( Runestone r ) {
 		Runestone n;

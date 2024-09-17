@@ -735,4 +735,8 @@ public class StatusPane extends Component {
 		busy.alpha(value);
 		counter.alpha(value);
 	}
+
+	public void updateAvatar(){
+		avatar.copy( HeroSprite.avatar( Dungeon.hero ) );
+	}
 }

@@ -400,16 +400,16 @@ public class MeleeWeapon extends Weapon {
 
 
 
-		if (Dungeon.hero.heroClass == HeroClass.DUELIST && !(this instanceof MagesStaff)){
-			//如果继承的类没有duelistAbility方法，则代表武技还未制作完成。返回文本告诉玩家
-			try {
-				this.getClass().getDeclaredMethod("duelistAbility", Hero.class, Integer.class);
-			} catch (NoSuchMethodException e) {
-				info += "\n\n" + Messages.get(MeleeWeapon.class, "ability_not_desc");
-				return info;
-			}
-			info += "\n\n" + abilityInfo();
-		}
+//		if (Dungeon.hero.heroClass == HeroClass.DUELIST && !(this instanceof MagesStaff)){
+//			//如果继承的类没有duelistAbility方法，则代表武技还未制作完成。返回文本告诉玩家
+//			try {
+//				this.getClass().getDeclaredMethod("duelistAbility", Hero.class, Integer.class);
+//			} catch (NoSuchMethodException e) {
+//				info += "\n\n" + Messages.get(MeleeWeapon.class, "ability_not_desc");
+//				return info;
+//			}
+//			info += "\n\n" + abilityInfo();
+//		}
 		
 		return info;
 	}

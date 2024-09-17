@@ -58,7 +58,7 @@ public class WaterOfTransmutation extends WellWater {
 	}
 	
 	@Override
-	protected Landmark record() {
+	public Landmark landmark() {
 		return Landmark.WELL_OF_TRANSMUTATION;
 	}
 	

@@ -79,6 +79,10 @@ public class Armor extends EquipableItem {
 
 	public AlowGlyph alowglyph;
 
+	public boolean readyToIdentify(){
+		return !isIdentified() && usesLeftToID <= 0;
+	}
+
 	public static abstract class AlowGlyph implements Bundlable {
 
 		public abstract int proc( Armor armor, Char attacker, Char defender, int damage );
@@ -703,14 +707,14 @@ public class Armor extends EquipableItem {
 		public static float genericProcChanceMultiplier( Char defender ){
 			return RingOfArcana.enchantPowerMultiplier(defender);
 		}
-		private static final Class<?>[] common = new Class<?>[]{
+		public static final Class<?>[] common = new Class<?>[]{
 				Obfuscation.class, Swiftness.class, Viscosity.class, Potential.class };
 
-		private static final Class<?>[] uncommon = new Class<?>[]{
+		public static final Class<?>[] uncommon = new Class<?>[]{
 				Brimstone.class, Stone.class, Entanglement.class,
 				Repulsion.class, Camouflage.class, Flow.class };
 
-		private static final Class<?>[] rare = new Class<?>[]{
+		public static final Class<?>[] rare = new Class<?>[]{
 				Affection.class, AntiMagic.class, Thorns.class };
 
 		private static final float[] typeChances = new float[]{
@@ -720,7 +724,7 @@ public class Armor extends EquipableItem {
 		};
 		public boolean onSeal=false;
 
-		private static final Class<?>[] curses = new Class<?>[]{
+		public static final Class<?>[] curses = new Class<?>[]{
 				AntiEntropy.class, Corrosion.class, Displacement.class, Metabolism.class,
 				Multiplicity.class, Stench.class, Overgrowth.class, Bulk.class
 		};

@@ -81,17 +81,18 @@ public class UnstableSpellbook extends Artifact {
 	public UnstableSpellbook() {
 		super();
 
-		Class<?>[] scrollClasses = Generator.Category.SCROLL.classes;
-		float[] probs = Generator.Category.SCROLL.defaultProbsTotal.clone(); //array of primitives, clone gives deep copy.
-		int i = Random.chances(probs);
-
-		while (i != -1){
-			scrolls.add(scrollClasses[i]);
-			probs[i] = 0;
-
-			i = Random.chances(probs);
-		}
-		scrolls.remove(ScrollOfTransmutation.class);
+//		Class<?>[] scrollClasses = Generator.Category.SCROLL.classes;
+//		float[] probs = Generator.Category.SCROLL.defaultProbsTotal.clone();
+//		//array of primitives, clone gives deep copy.
+//		int i = Random.chances(probs);
+//
+//		while (i != -1){
+//			scrolls.add(scrollClasses[i]);
+//			probs[i] = 0;
+//
+//			i = Random.chances(probs);
+//		}
+//		scrolls.remove(ScrollOfTransmutation.class);
 	}
 
 	@Override

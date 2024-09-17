@@ -203,6 +203,11 @@ public class GameScene extends PixelScene {
 			}
 		}
 	}
+
+	public static void updateAvatar(){
+		if (scene != null && scene.status != null) scene.status.updateAvatar();
+	}
+
 	private void tell(String text) {
 		Game.runOnRenderThread(new Callback() {
 								   @Override

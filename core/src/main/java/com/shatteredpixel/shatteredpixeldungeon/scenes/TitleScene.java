@@ -103,7 +103,6 @@ public class TitleScene extends PixelScene {
 		super.create();
 		Calendar calendar = Calendar.getInstance();
 		int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
-		Badges.loadGlobal();
 		Dungeon.whiteDaymode = currentHour > 7 && currentHour < 22;
 
 		Badges.loadGlobal();

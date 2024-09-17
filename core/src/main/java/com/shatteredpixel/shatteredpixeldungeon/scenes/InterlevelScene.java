@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.ShadowBox;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
@@ -182,7 +183,7 @@ public class InterlevelScene extends PixelScene {
 				loadingDepth = returnDepth;
 				break;
 			case EXBOSS:
-				scrollSpeed = -25;
+				//scrollSpeed = -25;
 				loadingDepth = returnDepth;
 				break;
 		}

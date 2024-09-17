@@ -41,7 +41,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
@@ -57,7 +56,6 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.TerrainFeaturesTilemap;
@@ -89,7 +87,7 @@ public class WndJournal extends WndTabbed {
 
 	public static final int WIDTH_P     = 126;
 	public static final int HEIGHT_P    = 180;
-	
+
 	public static final int WIDTH_L     = 216;
 	public static final int HEIGHT_L    = 130;
 
@@ -100,7 +98,7 @@ public class WndJournal extends WndTabbed {
 	private NotesTab notesTab;
 	private CatalogTab catalogTab;
 	private BadgesTab badgesTab;
-	
+
 	public static int last_index = 0;
 
 	public WndJournal(){
@@ -133,7 +131,7 @@ public class WndJournal extends WndTabbed {
 		add(badgesTab);
 		badgesTab.setRect(0, 0, width, height);
 		badgesTab.updateList();
-		
+
 		Tab[] tabs = {
 				new IconTab( Icons.JOURNAL.get() ) {
 					protected void select( boolean value ) {
@@ -221,93 +219,17 @@ public class WndJournal extends WndTabbed {
 		super.offset(xOffset, yOffset);
 		guideTab.layout();
 		alchemyTab.layout();
+		notesTab.layout();
 		catalogTab.layout();
-	}
-
-	private static class ListItem extends Component {
-
-		protected RenderedTextBlock label;
-		protected BitmapText depth;
-		protected ColorBlock line;
-		protected Image icon;
-
-		public ListItem( Image icon, String text ) {
-			this(icon, text, -1);
-		}
-
-		public ListItem( Image icon, String text, int d ) {
-			super();
-
-			this.icon.copy(icon);
-
-			label.text( text );
-
-			if (d >= 0) {
-				depth.text(Integer.toString(d));
-				depth.measure();
-
-				if (d == Dungeon.depth) {
-					label.hardlight(TITLE_COLOR);
-					depth.hardlight(TITLE_COLOR);
-				}
-			}
-		}
-
-		@Override
-		protected void createChildren() {
-			label = PixelScene.renderTextBlock( 7 );
-			add( label );
-
-			icon = new Image();
-			add( icon );
-
-			depth = new BitmapText( PixelScene.pixelFont);
-			add( depth );
-
-			line = new ColorBlock( 1, 1, 0xFF222222);
-			add(line);
-
-		}
-
-		@Override
-		protected void layout() {
-
-			icon.y = y + 1 + (height() - 1 - icon.height()) / 2f;
-			icon.x = x + (16 - icon.width())/2f;
-			PixelScene.align(icon);
-
-			depth.x = icon.x + (icon.width - depth.width()) / 2f;
-			depth.y = icon.y + (icon.height - depth.height()) / 2f + 1;
-			PixelScene.align(depth);
-
-			line.size(width, 1);
-			line.x = 0;
-			line.y = y;
-
-			label.maxWidth((int)(width - 16 - 1));
-			label.setPos(17, y + 1 + (height() - label.height()) / 2f);
-			PixelScene.align(label);
-		}
 	}
 
 	public static class GuideTab extends Component {
 
-		private ScrollPane list;
-		private ArrayList<GuideItem> pages = new ArrayList<>();
+		private ScrollingListPane list;
 
 		@Override
 		protected void createChildren() {
-			list = new ScrollPane( new Component() ){
-				@Override
-				public void onClick( float x, float y ) {
-					int size = pages.size();
-					for (int i=0; i < size; i++) {
-						if (pages.get( i ).onClick( x, y )) {
-							break;
-						}
-					}
-				}
-			};
+			list = new ScrollingListPane();
 			add( list );
 		}
 
@@ -316,7 +238,7 @@ public class WndJournal extends WndTabbed {
 			super.layout();
 			list.setRect( x, y, width, height);
 		}
-		
+
 		public void updateList(){
 			list.addTitle(Document.ADVENTURERS_GUIDE.title());
 
@@ -347,88 +269,7 @@ public class WndJournal extends WndTabbed {
 				list.addItem(item);
 			}
 
-			content.setSize( width(), pos );
-			list.setSize( list.width(), list.height() );
-		}
-
-		private static class GuideItem extends ListItem {
-
-			private boolean found = false;
-			private String page;
-
-			public GuideItem( String page ){
-				super( iconForPage(page), Messages.titleCase(Document.ADVENTURERS_GUIDE.pageTitle(page)));
-
-				this.page = page;
-				found = Document.ADVENTURERS_GUIDE.isPageFound(page);
-
-				if (!found) {
-					icon.hardlight( 0.5f, 0.5f, 0.5f);
-					label.text( Messages.titleCase(Messages.get( this, "missing" )));
-					label.hardlight( 0x999999 );
-				}
-
-			}
-
-			public boolean onClick( float x, float y ) {
-				if (inside( x, y ) && found) {
-					GameScene.show( new WndStory( iconForPage(page),
-							Document.ADVENTURERS_GUIDE.pageTitle(page),
-							Document.ADVENTURERS_GUIDE.pageBody(page) ));
-					Document.ADVENTURERS_GUIDE.readPage(page);
-					return true;
-				} else {
-					return false;
-				}
-			}
-
-		}
-
-		//TODO might just want this to be part of the Document class
-		public static Image iconForPage( String page ){
-			if (!Document.ADVENTURERS_GUIDE.isPageFound(page)){
-				return new ItemSprite( ItemSpriteSheet.GUIDE_PAGE );
-			}
-			switch (page){
-				case Document.GUIDE_INTRO: default:
-					return new ItemSprite(ItemSpriteSheet.MASTERY);
-				case "Examining":
-					return Icons.get(Icons.MAGNIFY);
-				case "Surprise_Attacks":
-					return new ItemSprite( ItemSpriteSheet.ASSASSINS_BLADE );
-				case "Identifying":
-					return new ItemSprite( new ScrollOfIdentify() );
-				case "Food":
-					return new ItemSprite( ItemSpriteSheet.PASTY );
-				case "Dieing":
-					return new ItemSprite( ItemSpriteSheet.TOMB );
-				case Document.GUIDE_SEARCHING:
-					return Icons.get(Icons.MAGNIFY);
-				case "Strength":
-					return new ItemSprite( ItemSpriteSheet.GREATAXE );
-				case "Upgrades":
-					return new ItemSprite( ItemSpriteSheet.RING_EMERALD );
-				case "Looting":
-					return new ItemSprite( ItemSpriteSheet.CRYSTAL_KEY );
-				case "Levelling":
-					return Icons.get(Icons.TALENT);
-				case "Positioning":
-					return new ItemSprite( ItemSpriteSheet.SPIRIT_BOW );
-				case "Magic":
-					return new ItemSprite( ItemSpriteSheet.WAND_FIREBOLT );
-				case "Killboss":
-					Image boss = new Image(new DM720Sprite());
-					boss.scale.set(PixelScene.align(0.75f));
-					return boss;
-				case "Waterbless":
-					return new ItemSprite(ItemSpriteSheet.WATERSOUL);
-				case "Lanterfire":
-					return new ItemSprite(ItemSpriteSheet.LANTERNB);
-				case "Readyherobook":
-					return new ItemSprite(ItemSpriteSheet.YELLOWBOOKS);
-				case "Alchemy":
-					return new ItemSprite(ItemSpriteSheet.EYE_OF_NEWT);
-			}
+			list.setRect(x, y, width, height);
 		}
 
 	}
@@ -436,11 +277,21 @@ public class WndJournal extends WndTabbed {
 	public static class AlchemyTab extends Component {
 
 		private RedButton[] pageButtons;
-		private static final int NUM_BUTTONS = 10;
+		private static final int NUM_BUTTONS = 9;
 
-		private static final int[] spriteIndexes = {10, 12, 7, 9, 11, 8, 3, 14, 15, 4};
+		private static final int[] sprites = {
+				ItemSpriteSheet.SEED_HOLDER,
+				ItemSpriteSheet.STONE_HOLDER,
+				ItemSpriteSheet.FOOD_HOLDER,
+				ItemSpriteSheet.POTION_HOLDER,
+				ItemSpriteSheet.SCROLL_HOLDER,
+				ItemSpriteSheet.BOMB_HOLDER,
+				ItemSpriteSheet.MISSILE_HOLDER,
+				ItemSpriteSheet.ELIXIR_HOLDER,
+				ItemSpriteSheet.SPELL_HOLDER
+		};
 
-		public static int currentPageIdx   = -1;
+		public static int currentPageIdx   = 0;
 
 		private IconTitle title;
 		private RenderedTextBlock body;
@@ -461,7 +312,7 @@ public class WndJournal extends WndTabbed {
 					}
 				};
 				if (Document.ALCHEMY_GUIDE.isPageFound(i)) {
-					pageButtons[i].icon(new ItemSprite(ItemSpriteSheet.SOMETHING + spriteIndexes[i], null));
+					pageButtons[i].icon(new ItemSprite(sprites[i], null));
 				} else {
 					pageButtons[i].icon(new ItemSprite(ItemSpriteSheet.SOMETHING, null));
 					pageButtons[i].enable(false);
@@ -482,7 +333,7 @@ public class WndJournal extends WndTabbed {
 		@Override
 		protected void layout() {
 			super.layout();
-			
+
 			if (width() >= 180){
 				float buttonWidth = width()/pageButtons.length;
 				for (int i = 0; i < NUM_BUTTONS; i++) {
@@ -490,29 +341,33 @@ public class WndJournal extends WndTabbed {
 					PixelScene.align(pageButtons[i]);
 				}
 			} else {
-				// 计算每行按钮的数量和每个按钮的宽度
-				int buttonsPerRow = 5;
-				float buttonWidth = width() / buttonsPerRow;
+				//for first row
+				float buttonWidth = width()/5;
 				float y = 0;
 				float x = 0;
 				for (int i = 0; i < NUM_BUTTONS; i++) {
 					pageButtons[i].setRect(this.x + x, this.y + y, buttonWidth, ITEM_HEIGHT);
 					PixelScene.align(pageButtons[i]);
 					x += buttonWidth;
-					if ((i + 1) % buttonsPerRow == 0) { // 当达到每行按钮的数量时换行
+					if (i == 4){
 						y += ITEM_HEIGHT;
 						x = 0;
+						buttonWidth = width()/4;
 					}
 				}
 			}
-			
+
 			list.setRect(x, pageButtons[NUM_BUTTONS-1].bottom() + 1, width,
 					height - pageButtons[NUM_BUTTONS-1].bottom() + y - 1);
-			
+
 			updateList();
 		}
 
-		private void updateList() {
+		public void updateList() {
+
+			if (currentPageIdx != -1 && !Document.ALCHEMY_GUIDE.isPageFound(currentPageIdx)){
+				currentPageIdx = -1;
+			}
 
 			for (int i = 0; i < NUM_BUTTONS; i++) {
 				if (i == currentPageIdx) {
@@ -607,10 +462,10 @@ public class WndJournal extends WndTabbed {
 	}
 
 	private static class NotesTab extends Component {
-		
+
 		private ScrollingGridPane grid;
 		private CustomNoteButton custom;
-		
+
 		@Override
 		protected void createChildren() {
 			grid = new ScrollingGridPane();
@@ -699,15 +554,15 @@ public class WndJournal extends WndTabbed {
 		}
 
 	}
-	
+
 	public static class CatalogTab extends Component{
-		
+
 		private RedButton[] itemButtons;
 		private static final int NUM_BUTTONS = 4;
 
 		public static int currentItemIdx   = 0;
 		private static float[] scrollPositions = new float[NUM_BUTTONS];
-		
+
 		//sprite locations
 		private static final int EQUIP_IDX = 0;
 		private static final int CONSUM_IDX = 1;
@@ -715,7 +570,7 @@ public class WndJournal extends WndTabbed {
 		private static final int LORE_IDX = 3;
 
 		private ScrollingGridPane grid;
-		
+
 		@Override
 		protected void createChildren() {
 			itemButtons = new RedButton[NUM_BUTTONS];
@@ -729,12 +584,13 @@ public class WndJournal extends WndTabbed {
 					}
 				};
 				add( itemButtons[i] );
-
 			}
 			itemButtons[EQUIP_IDX].icon(new ItemSprite(ItemSpriteSheet.WEAPON_HOLDER));
 			itemButtons[CONSUM_IDX].icon(new ItemSprite(ItemSpriteSheet.POTION_HOLDER));
-			itemButtons[BESTIARY_IDX].icon(new ItemSprite(ItemSpriteSheet.MOB_HOLDER));
-			itemButtons[LORE_IDX].icon(new ItemSprite(ItemSpriteSheet.DOCUMENT_HOLDER));
+
+			//2024-9-17
+			itemButtons[BESTIARY_IDX].icon(new ItemSprite(ItemSpriteSheet.WEAPON_HOLDER));
+			itemButtons[LORE_IDX].icon(new ItemSprite(ItemSpriteSheet.POTION_HOLDER));
 
 			grid = new ScrollingGridPane(){
 				@Override
@@ -759,17 +615,17 @@ public class WndJournal extends WndTabbed {
 						buttonWidth, ITEM_HEIGHT);
 				PixelScene.align(itemButtons[i]);
 			}
-			
+
 			grid.setRect(x,
 					itemButtons[NUM_BUTTONS-1].bottom() + 1,
 					width,
 					height - itemButtons[NUM_BUTTONS-1].height() - 1);
 		}
-		
+
 		public void updateList() {
-			
+
 			grid.clear();
-			
+
 			for (int i = 0; i < NUM_BUTTONS; i++){
 				if (i == currentItemIdx){
 					itemButtons[i].icon().color(TITLE_COLOR);
@@ -777,7 +633,7 @@ public class WndJournal extends WndTabbed {
 					itemButtons[i].icon().resetColor();
 				}
 			}
-			
+
 			grid.scrollTo( 0, 0 );
 
 			if (currentItemIdx == EQUIP_IDX) {
@@ -875,7 +731,7 @@ public class WndJournal extends WndTabbed {
 
 			grid.scrollTo(0, scrollPositions[currentItemIdx]);
 		}
-		
+
 	}
 
 	//also includes item-like things such as enchantments, glyphs, curses.

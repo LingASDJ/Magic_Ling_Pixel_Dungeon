@@ -69,7 +69,7 @@ public enum Document {
 		if (pagesStates.containsKey(page) && pagesStates.get(page) == NOT_FOUND){
 			pagesStates.put(page, FOUND);
 			Journal.saveNeeded = true;
-			Badges.validateCatalogBadges();
+			//Badges.validateCatalogBadges();
 			return true;
 		}
 		return false;
@@ -135,7 +135,7 @@ public enum Document {
 		if (pagesStates.containsKey(page)){
 			pagesStates.put(page, READ);
 			Journal.saveNeeded = true;
-			Badges.validateCatalogBadges();
+			//Badges.validateCatalogBadges();
 			return true;
 		}
 		return false;

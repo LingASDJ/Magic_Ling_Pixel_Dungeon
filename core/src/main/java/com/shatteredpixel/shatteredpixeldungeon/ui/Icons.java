@@ -150,7 +150,41 @@ public enum Icons {
 
 	COPY,
 
-	SKIP;
+	SKIP,
+
+	//slightly larger title screen icons, spacing for 17x16
+	JOURNAL,
+
+	//grey icons, mainly used for buttons, spacing for 16x16
+	KEYBOARD,
+
+	CHALLENGE_GREY,
+	SCROLL_GREY,
+
+	CHEVRON,
+
+	//misc larger icons, mainly used for buttons, tabs, and journal, spacing for 16x16
+
+	CHALLENGE_COLOR,
+	SCROLL_COLOR,
+
+	SNAKE,
+
+	CATALOG,
+	ALCHEMY,
+	GRASS,
+
+	STAIRS_CHASM,
+	STAIRS_WATER,
+	STAIRS_GRASS,
+	STAIRS_DARK,
+	STAIRS_LARGE,
+	STAIRS_TRAPS,
+	STAIRS_SECRETS,
+	WELL_HEALTH,
+	WELL_AWARENESS,
+	SACRIFICE_ALTAR,
+	DISTANT_WELL;
 
 	public Image get() {
 		return get( this );
@@ -159,7 +193,15 @@ public enum Icons {
 	public static Image get( Icons type ) {
 		Image icon = new Image(SPDSettings.ClassUI() ? Assets.Interfaces.ICONS : Assets.Interfaces.ICONS_NORMAL );
 		switch (type) {
-
+			case JOURNAL:
+				icon.frame( icon.texture.uvRectBySize( 136, 0, 17, 15 ) );
+				break;
+			case ALCHEMY:
+				icon.frame( icon.texture.uvRectBySize( 96, 48, 16, 16 ) );
+				break;
+			case CATALOG:
+				icon.frame( icon.texture.uvRectBySize( 80, 48, 13, 16 ) );
+				break;
 			case ENTER:
 				icon.frame( icon.texture.uvRectBySize( 0, 0, 16, 16 ) );
 				break;
@@ -509,4 +551,26 @@ public enum Icons {
 				return get(DEPTH_BLOOD);
 		}
 	}
+
+	public static Image getLarge(Level.Feeling feeling){
+		switch (feeling){
+			case NONE: default:
+				return get(STAIRS);
+			case CHASM:
+				return get(STAIRS_CHASM);
+			case WATER:
+				return get(STAIRS_WATER);
+			case GRASS:
+				return get(STAIRS_GRASS);
+			case DARK:
+				return get(STAIRS_DARK);
+			case LARGE:
+				return get(STAIRS_LARGE);
+			case TRAPS:
+				return get(STAIRS_TRAPS);
+			case SECRETS:
+				return get(STAIRS_SECRETS);
+		}
+	}
+
 }

@@ -59,9 +59,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MagicGirlDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MoloHR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM720;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PhantomPiranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Pylon;
@@ -87,6 +90,20 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogDzewa;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogReal;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruitsLasher;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DictFish;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfMaster;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.FireMagicDied;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.RoomStone;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.SakaFishBoss;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush.Rival;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush.SkyGoo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruits;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruitsLasher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
@@ -210,11 +227,32 @@ public enum Bestiary {
 				Ghoul.class, Elemental.FireElemental.class, Elemental.FrostElemental.class, Elemental.ShockElemental.class, Warlock.class, Monk.class, Golem.class,
 				RipperDemon.class, DemonSpawner.class, Succubus.class, Eye.class, Scorpio.class);
 
-		BOSSES.addEntities(Goo.class,
-				Tengu.class,
+		BOSSES.addEntities(
+				//T1
+				Goo.class, CrivusFruits.class, CrivusFruitsLasher.class,
+				CrivusStarFruits.class, CrivusStarFruitsLasher.class,
+				SkyGoo.class,
+
+				//T2
+				Tengu.class, DiamondKnight.class,
+
+				//T3
 				Pylon.class, DM300.class,
-				DwarfKing.class,
-				YogDzewa.Larva.class, YogFist.BurningFist.class, YogFist.SoiledFist.class, YogFist.RottingFist.class, YogFist.RustedFist.class,YogFist.BrightFist.class, YogFist.DarkFist.class, YogDzewa.class);
+				NewDM720.class, MoloHR.class,
+				MagicGirlDead.class,
+
+				//t4
+				DwarfKing.class, DwarfMaster.class, DwarfGeneral.class,
+
+				//T5
+				YogDzewa.Larva.class, YogFist.BurningFist.class, YogFist.SoiledFist.class,
+				YogFist.RottingFist.class, YogFist.RustedFist.class,
+				YogFist.BrightFist.class, YogFist.DarkFist.class, YogDzewa.class,
+				YogReal.class,
+
+				//EX,
+				FireMagicDied.class, SakaFishBoss.class, RoomStone.class, DictFish.class,
+				Rival.class);
 
 		UNIVERSAL.addEntities(Wraith.class, Piranha.class, Mimic.class, GoldenMimic.class, EbonyMimic.class, Statue.class, GuardianTrap.Guardian.class, SentryRoom.Sentry.class);
 

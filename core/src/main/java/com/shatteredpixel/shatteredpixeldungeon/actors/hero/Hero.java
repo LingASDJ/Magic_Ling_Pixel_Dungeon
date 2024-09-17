@@ -197,6 +197,10 @@ public class Hero extends Char {
 		return clazz == this.heroClass;
 	}
 
+	public ArrayList<Mob> visibleEnemiesList() {
+		return visibleEnemies;
+	}
+
 	public boolean isSubclass(HeroSubClass subClass) {
 		if (this.subClass == HeroSubClass.ASSASSIN || this.subClass == HeroSubClass.FREERUNNER) return true;
 		return subClass == this.subClass;

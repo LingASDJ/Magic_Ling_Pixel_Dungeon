@@ -1093,4 +1093,13 @@ public class SPDSettings extends GameSettings {
 		return getBoolean(KEY_VICTORY_NAGGED, false);
 	}
 
+	public static final String KEY_FULLSCREEN_MONITOR = "fullscreen_monitor";
+
+	public static void fulLScreenMonitor( int value ){
+		put( KEY_FULLSCREEN_MONITOR, value);
+	}
+
+	public static int fulLScreenMonitor(){
+		return getInt( KEY_FULLSCREEN_MONITOR, 0 );
+	}
 }

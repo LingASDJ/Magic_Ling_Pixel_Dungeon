@@ -118,6 +118,9 @@ public class Notes {
 		TRAPS_FLOOR,
 		SECRETS_FLOOR,
 
+		WELL_OF_TRANSMUTATION,
+		WELL_OF_OIL,
+
 		SHOP,
 		ALCHEMY,
 		GARDEN,
@@ -311,10 +314,7 @@ public class Notes {
 			}
 		}
 
-		@Override
-		public String title() {
-			return key.title();
-		}
+
 
 		@Override
 		public String desc() {
@@ -324,7 +324,10 @@ public class Notes {
 		public Class<? extends Key> type(){
 			return key.getClass();
 		}
-
+		@Override
+		public String title() {
+			return key.title();
+		}
 		@Override
 		protected int order() {
 			return 1000 + Generator.Category.order(key);
