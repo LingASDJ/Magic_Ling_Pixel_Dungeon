@@ -46,6 +46,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.LegendWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.RiceSword;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
@@ -766,7 +768,7 @@ public class WndJournal extends WndTabbed {
 				} else {
 					title = Messages.titleCase(item.trueName());
 					//some items don't include direct stats, generally when they're not applicable
-					if (item instanceof ClassArmor || item instanceof SpiritBow){
+					if (item instanceof ClassArmor || item instanceof SpiritBow || item instanceof LegendWeapon || item instanceof RiceSword){
 						desc += item.desc();
 					} else {
 						desc += item.info();
@@ -854,7 +856,7 @@ public class WndJournal extends WndTabbed {
 				gridItem.addSecondIcon(secondIcon);
 			}
 			if (!seen) {
-				gridItem.hardLightBG(2f, 1f, 2f);
+				gridItem.hardLightBG(1f, 1f, 2f);
 			}
 			grid.addItem(gridItem);
 		}
@@ -982,7 +984,7 @@ public class WndJournal extends WndTabbed {
 				}
 			};
 			if (!seen) {
-				gridItem.hardLightBG(2f, 1f, 2f);
+				gridItem.hardLightBG(0f, 1f, 2f);
 			}
 			grid.addItem(gridItem);
 		}

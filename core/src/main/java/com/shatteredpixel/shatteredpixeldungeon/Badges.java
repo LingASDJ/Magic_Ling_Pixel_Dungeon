@@ -61,13 +61,6 @@ import java.util.List;
 
 public class Badges {
 
-	public enum BadgeType {
-		HIDDEN, //internal badges used for data tracking
-		LOCAL,  //unlocked on a per-run basis and added to overall player profile
-		GLOBAL, //unlocked for the save profile only, usually over multiple runs
-		JOURNAL //profile-based and also tied to the journal, which means they even unlock in seeded runs
-	}
-
 	public static void validateDeathFromEnemyMagic() {
 		Badge badge = Badge.DEATH_FROM_ENEMY_MAGIC;
 		local.add( badge );
@@ -1025,6 +1018,13 @@ public class Badges {
 		displayBadge( badge );
 	}
 
+	public enum BadgeType {
+		HIDDEN, //internal badges used for data tracking
+		LOCAL,  //unlocked on a per-run basis and added to overall player profile
+		GLOBAL, //unlocked for the save profile only, usually over multiple runs
+		JOURNAL //profile-based and also tied to the journal, which means they even unlock in seeded runs
+	}
+
 
 	public enum Badge {
 		MASTERY_WARRIOR,
@@ -1094,8 +1094,8 @@ public class Badges {
 		BOSS_SLAIN_1_HUNTRESS,
 
 		BOSS_SLAIN_1_DUELIST,
-		BOSS_SLAIN_1_ALL_CLASSES    ( 53, true ),
-		GAMES_PLAYED_1              ( 54, true ),
+		BOSS_SLAIN_1_ALL_CLASSES    ( 53 ),
+		GAMES_PLAYED_1              ( 54 ),
 
 		HIGH_SCORE_2				( 55 ),
 
@@ -1133,7 +1133,7 @@ public class Badges {
 		ALL_RINGS_IDENTIFIED        ( 76 ),
 		ALL_ARTIFACTS_IDENTIFIED    ( 77 ),
 		VICTORY                     ( 78 ),
-		YASD                        ( 79, true ),
+		YASD                        ( 79),
 
 
 		CLEAR_WATER					( 83 ),
@@ -1151,31 +1151,31 @@ public class Badges {
 		BOSS_SLAIN_3_WARDEN,
 		BOSS_SLAIN_3_CHAMPION,
 		BOSS_SLAIN_3_MONK,
-		BOSS_SLAIN_3_ALL_SUBCLASSES ( 80, true ),
-		GAMES_PLAYED_2              ( 81, true ),
+		BOSS_SLAIN_3_ALL_SUBCLASSES ( 80 ),
+		GAMES_PLAYED_2              ( 81 ),
 
 		READ_BOOK_THREE				( 87 ),
 
 
-		HOLLOWCITY					(  ),
-		MASTER						( ),
-		RED_DRAMATICUL				( ),
-		GOD_PLEASE					( ),
-
-		NOW_ANTATTCK				(),
+		HOLLOWCITY					(  88),
+//		MASTER						( ),
+//		RED_DRAMATICUL				( ),
+//		GOD_PLEASE					( ),
+//
+//		NOW_ANTATTCK				(),
 		WOC_MONEY_GIRL				(93),
 
 
 		//platinum
 		HAPPY_END                   ( 96 ),
-		ALL_ITEMS_IDENTIFIED        ( 97, true ),
+		ALL_ITEMS_IDENTIFIED        ( 97 ),
 		VICTORY_WARRIOR,
 		VICTORY_MAGE,
 		VICTORY_ROGUE,
 		VICTORY_HUNTRESS,
 		VICTORY_DUELIST,
-		VICTORY_ALL_CLASSES         ( 98, true ),
-		GAMES_PLAYED_3              ( 99, true ),
+		VICTORY_ALL_CLASSES         ( 98 ),
+		GAMES_PLAYED_3              ( 99 ),
 		CHAMPION_1X                  ( 100 ),
 		KILL_APPLE(101),
 		KILL_DM720				(102),
@@ -1186,7 +1186,7 @@ public class Badges {
 		READ_BOOK_FOUR				( 105 ),
 
 		//diamond
-		GAMES_PLAYED_4              ( 112, true ),
+		GAMES_PLAYED_4              ( 112 ),
 		CHAMPION_2X                  ( 113 ),
 		CHAMPION_3X                  ( 114 ),
 		CHAMPION_4X                  ( 115 ),
@@ -1238,18 +1238,19 @@ public class Badges {
 			return Messages.get(this, name()+".desc");
 		}
 
+		Badge(){
+			this(-1, BadgeType.HIDDEN);
+		}
+
 		Badge( int image ) {
-			this( image, false );
+			this( image, BadgeType.LOCAL );
 		}
 
-		Badge( int image, boolean meta ) {
+		Badge( int image, BadgeType type ) {
 			this.image = image;
-			this.meta = meta;
+			this.type = type;
 		}
 
-		Badge() {
-			this( -1 );
-		}
 	}
 
 	private static void displayBadge( Badge badge ) {

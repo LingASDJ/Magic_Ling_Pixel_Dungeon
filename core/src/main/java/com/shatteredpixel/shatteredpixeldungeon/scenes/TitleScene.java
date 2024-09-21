@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Gregorian;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;

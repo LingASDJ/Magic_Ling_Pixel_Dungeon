@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
@@ -57,9 +58,12 @@ public class DiedMonkSprite extends MobSprite {
         die.frames( frames, 1, 7, 8, 8, 9, 10 );
 
         spray = centerEmitter();
-        spray.autoKill = false;
-        spray.pour( DiedParticle.FACTORY, 0.04f );
-        spray.on = false;
+        if (spray != null) {
+            spray.autoKill = false;
+            spray.pour( DiedParticle.FACTORY, 0.04f );
+            spray.on = false;
+        }
+
 
         play( idle );
     }

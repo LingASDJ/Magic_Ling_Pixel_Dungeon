@@ -144,7 +144,7 @@ public class Pasty extends Food {
 			case XMAS:
 				return Messages.get(this, "cane_desc");
 			case ZQJ:
-				return Messages.get(this, "moon_desc", Dungeon.hero.name());
+				return Messages.get(this, "moon_desc", Dungeon.hero == null ? "" :Dungeon.hero.name());
 			case CJ:
 				return Messages.get(this, "fish_desc");
 			case QMJ:

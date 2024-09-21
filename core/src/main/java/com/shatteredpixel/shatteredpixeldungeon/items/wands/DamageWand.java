@@ -96,12 +96,12 @@ public abstract class DamageWand extends Wand{
 	@Override
 	public String statsDesc() {
 		if (levelKnown)
-			return Messages.get(this, "stats_desc", Dungeon.hero.buff(Invulnerability.GodDied.class)!=null?
-					min()*2:min(),	Dungeon.hero.buff(Invulnerability.GodDied.class)!=null?
+			return Messages.get(this, "stats_desc",  Dungeon.hero == null ? 0 : Dungeon.hero.buff(Invulnerability.GodDied.class)!=null?
+					min()*2:min(),	 Dungeon.hero == null ? 0 : Dungeon.hero.buff(Invulnerability.GodDied.class)!=null?
 					max()*2:max());
 		else
-			return Messages.get(this, "stats_desc", Dungeon.hero.buff(Invulnerability.GodDied.class)!=null?
-					min(0)*2:min(0), Dungeon.hero.buff(Invulnerability.GodDied.class)!=null?
+			return Messages.get(this, "stats_desc", Dungeon.hero == null ? 0 : Dungeon.hero.buff(Invulnerability.GodDied.class)!=null?
+					min(0)*2:min(0),  Dungeon.hero == null ? 0 : Dungeon.hero.buff(Invulnerability.GodDied.class)!=null?
 					max(0)*2:max(0));
 	}
 
