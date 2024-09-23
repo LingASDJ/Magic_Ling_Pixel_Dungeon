@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlB
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.NoKingMobBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.TestBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.BzmdrBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.DeYiZiBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.MoneyMoreBooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.PinkRandomBooks;
@@ -202,7 +203,9 @@ public class SpawnMisc extends TestItem {
 
         if (dartList.isEmpty()) {
             for (int i = 0; i < Generator.Category.SEED.classes.length; i++) {
-                dartList.add(TippedDart.types.get(seedList.get(i)));
+                Class<? extends TippedDart> check = TippedDart.types.get(seedList.get(i));
+                if( check != null )
+                    dartList.add(check);
             }
         }
 
@@ -315,6 +318,7 @@ public class SpawnMisc extends TestItem {
             bookList.add(PinkRandomBooks.class);
             bookList.add(HellFireBooks.class);
             bookList.add(YellowSunBooks.class);
+            bookList.add(BzmdrBooks.class);
         }
 
         //Book

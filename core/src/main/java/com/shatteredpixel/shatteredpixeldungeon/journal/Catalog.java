@@ -53,6 +53,20 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.RegrowthBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ShockBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ShrapnelBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.WoollyBomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.BrokenBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.DeepBloodBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.GrassKingBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.HellFireBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.IceCityBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.MagicGirlBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.NoKingMobBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.YellowSunBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.BzmdrBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.DeYiZiBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.MoneyMoreBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.PinkRandomBooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.questbookslist.DimandBook;
+import com.shatteredpixel.shatteredpixeldungeon.items.books.questbookslist.HollowCityBook;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.ChargrilledMeat;
@@ -128,6 +142,7 @@ public enum Catalog {
 	RINGS,
 	ARTIFACTS,
 	TRINKETS,
+	BOOKS,
 	MISC_EQUIPMENT,
 
 	//CONSUMABLES
@@ -211,6 +226,11 @@ public enum Catalog {
 
 		TRINKETS.addItems(Generator.Category.TRINKET.classes);
 
+		BOOKS.addItems(MagicGirlBooks.class, BrokenBooks.class, GrassKingBooks.class, IceCityBooks.class,
+				NoKingMobBooks.class, HollowCityBook.class, DeepBloodBooks.class, DimandBook.class,
+				BzmdrBooks.class, DeYiZiBooks.class, MoneyMoreBooks.class, PinkRandomBooks.class,
+				HellFireBooks.class, YellowSunBooks.class);
+
 		MISC_EQUIPMENT.addItems(BrokenSeal.class, SpiritBow.class, Waterskin.class, VelvetPouch.class,
 				PotionBandolier.class, ScrollHolder.class, MagicalHolster.class, Amulet.class);
 
@@ -278,6 +298,7 @@ public enum Catalog {
 		equipmentCatalogs.add(RINGS);
 		equipmentCatalogs.add(ARTIFACTS);
 		equipmentCatalogs.add(TRINKETS);
+		equipmentCatalogs.add(BOOKS);
 		equipmentCatalogs.add(MISC_EQUIPMENT);
 	}
 
