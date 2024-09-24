@@ -16,6 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -210,7 +211,11 @@ public class WndNyzShop extends Window {
                         if(Statistics.bossRushMode){
                             Dungeon.rushgold -= 5;
                         } else {
-                            Dungeon.gold-=(720*Random.Int(2)+hero.lvl/5+100) * (Dungeon.hero.buff(AscensionChallenge.class) != null ? 0.7 : 1);
+                            if(hero.belongings.getItem(LuckyGlove.class)!=null) {
+                                Dungeon.gold -= (720 * Random.Int(2) + hero.lvl / 5 + 100) * (Dungeon.hero.buff(AscensionChallenge.class) != null ? 0.7 : 1);
+                            }else{
+                                Messages.get(LuckyGlove.class,"lucky");
+                            }
                             Statistics.naiyaziCollected += 1;
                             Badges.nyzvalidateGoldCollected();
                         }
@@ -263,7 +268,11 @@ public class WndNyzShop extends Window {
                         if(Statistics.bossRushMode){
                             Dungeon.rushgold -= 5;
                         } else {
-                            Dungeon.gold-=270*Random.Int(3)+50 * (Dungeon.hero.buff(AscensionChallenge.class) != null ? 0.7 : 1);
+                            if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()<0.9f) {
+                                Dungeon.gold -= 270 * Random.Int(3) + 50 * (Dungeon.hero.buff(AscensionChallenge.class) != null ? 0.7 : 1);
+                            }else{
+                                GLog.n(Messages.get(LuckyGlove.class,"lucky"));
+                            }
                             Badges.nyzvalidateGoldCollected();
                             Statistics.naiyaziCollected += 1;
                         }

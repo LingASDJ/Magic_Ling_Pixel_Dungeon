@@ -31,8 +31,8 @@ public class IceFishSword extends MeleeWeapon {
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;
         tier = 6;
-        ACC = 2.90f; //20% boost to accuracy
-        DLY = 1.5f; //2x speed
+        ACC = 1f; //20% boost to accuracy
+        DLY = 1f; //2x speed
         cursed = true;
         enchant(Enchantment.randomCurse());
     }
