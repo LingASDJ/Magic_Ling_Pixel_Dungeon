@@ -6,7 +6,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ArcaneBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Firebomb;
@@ -19,7 +18,7 @@ import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.utils.Random;
 
-public class BoomSword extends MeleeWeapon implements Item.AnimationItem {
+public class BoomSword extends MeleeWeapon {
 
     public BoomSword() {
         image = ItemSpriteSheet.BOMB_SWORD;

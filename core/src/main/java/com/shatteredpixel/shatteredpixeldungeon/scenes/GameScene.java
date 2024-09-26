@@ -555,12 +555,7 @@ public class GameScene extends PixelScene {
 
 		if (!Actor.processing() && Dungeon.hero.isAlive()) {
 			if (actorThread == null || !actorThread.isAlive()) {
-				actorThread = new Thread() {
-					@Override
-					public void run() {
-						Actor.process();
-					}
-				};
+				actorThread = new Thread(Actor::process);
 				
 				//if cpu cores are limited, game should prefer drawing the current frame
 				if (Runtime.getRuntime().availableProcessors() == 1) {

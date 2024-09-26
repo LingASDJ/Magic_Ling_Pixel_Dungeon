@@ -322,6 +322,9 @@ public class Assets {
         public static final String CITY_BOSS_FINALE = "music/city_boss_finale.ogg";
 
 		public static final String SAND = "music/Sand.ogg";
+
+		public static final String PRACH = "music/peach.mp3";
+
         public static final String HALLS_TENSE = "music/halls_tense.ogg";
 
 		public static final String ANCITY = "music/Level_Ancity.ogg";

@@ -177,8 +177,8 @@ public class TitleScene extends PixelScene {
 			playBGM(Assets.Music.CHRAMSS, true);
 		} else {
 			Music.INSTANCE.playTracks(
-					new String[]{Assets.Music.THEME, Assets.Music.THEME_2,Assets.Music.CAVES_TENSE, Assets.Music.PRISON_BOSS},
-					new float[]{1, 1, 1, 1},
+					new String[]{Assets.Music.PRACH, Assets.BOSSDOG},
+					new float[]{1, 1},
 					true);
 		}
 
@@ -395,10 +395,6 @@ public class TitleScene extends PixelScene {
 					textColor(ColorMath.interpolate( 0xFFFFFF, Window.CBLACK,
 							0.1f + (float)Math.sin(Game.timeTotal*5)/2f));
 					text(Messages.get(TitleScene.class, "dark"));
-					Music.INSTANCE.playTracks(
-							new String[]{Assets.Music.SAND, Assets.Music.NBPL,Assets.Music.HALLS_BOSS_FINALE, Assets.Music.CITY_BOSS_FINALE},
-							new float[]{1, 1, 1, 1},
-							false);
 					icon(BadgeBanner.image(Badges.Badge.STORM.image));
 				} else if (TitleScene.Reusable){
 					textColor(ColorMath.interpolate( 0xFFFFFF, Window.CYELLOW,

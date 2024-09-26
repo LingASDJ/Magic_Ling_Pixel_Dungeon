@@ -177,7 +177,7 @@ public class TrinketCatalyst extends Item {
 					}
 				};
 				btnReward.item(cata.rolledTrinkets.get(i));
-				btnReward.setRect( (i+1)*(WIDTH - BTN_GAP) / NUM_TRINKETS - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE, BTN_SIZE );
+				btnReward.setRect( (float) ((i + 1) * (WIDTH - BTN_GAP)) / NUM_TRINKETS - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE, BTN_SIZE );
 				add( btnReward );
 
 			}

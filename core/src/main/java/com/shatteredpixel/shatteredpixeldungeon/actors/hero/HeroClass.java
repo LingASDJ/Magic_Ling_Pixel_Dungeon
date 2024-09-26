@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.Smok
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SliverLockSword;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.LevelTeleporter;
@@ -70,7 +71,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.bookslist.TestBooks;
@@ -81,14 +81,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlam
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.DeliciousRecipe;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.KnightStabbingSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.NewStem;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.RapidEarthRoot;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.WenStudyingPaperOne;
-import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperTwo;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.BlessingNecklace;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
@@ -229,12 +221,12 @@ public enum HeroClass {
 		//插个眼
 
 		//if(Dungeon.isDLC(Conducts.Conduct.HARD)){
-			new PropBag().quantity(1).identify().collect();
-
-			//Prop.randomProp().collect();
-			new RapidEarthRoot().collect();
-			new WenStudyingPaperOne().collect();
-			new YanStudyingPaperTwo().collect();
+			//new PropBag().quantity(1).identify().collect();
+//
+			////Prop.randomProp().collect();
+			//new RapidEarthRoot().collect();
+			//new WenStudyingPaperOne().collect();
+			//new YanStudyingPaperTwo().collect();
 			//Prop.randomProp().collect();
 		//}
 		Dungeon.LimitedDrops.PROP_BAG.drop();
@@ -242,8 +234,7 @@ public enum HeroClass {
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
 
-		//new AbyssBook().quantity(1).identify().collect();
-		//new SliverLockSword().quantity(1).identify().collect();
+		new SliverLockSword().quantity(1).identify().collect();
 
 		new ScrollOfIdentify().identify();
 		//new KingGold().quantity(1).identify().collect();

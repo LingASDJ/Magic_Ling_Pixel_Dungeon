@@ -3,7 +3,6 @@ package com.shatteredpixel.shatteredpixeldungeon;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation.changeArtifact;
-import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation.changeRing;
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation.changeSeed;
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation.changeStaff;
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation.changeStone;
@@ -204,26 +203,27 @@ public class GameRules {
         if(Statistics.RandMode) {
             ArrayList<Item> is = Dungeon.hero.belongings.getAllItems(Item.class);
             Item result = is.get(0);
+
             if (Dungeon.hero.belongings.weapon instanceof Weapon) {
                 hero.belongings.weapon = changeWeapon((Weapon) hero.belongings.weapon);
                 hero.belongings.weapon.identify();
                 hero.belongings.weapon.upgrade();
             }
-//            if (Dungeon.hero.belongings.misc != null) {
-//                if (hero.belongings.misc instanceof Ring) {
-//                    hero.belongings.misc = changeRing(Dungeon.hero.belongings.ring);
-//                    hero.belongings.misc.upgrade();
-//                } else if(hero.belongings.misc instanceof Artifact) {
-//                    hero.belongings.misc = changeArtifact(Dungeon.hero.belongings.artifact);
+
+//            if (hero.belongings.ring != null) {
+//
+//
+//
+//                //if we turned an equipped artifact into a ring, ring goes into inventory
+//                hero.belongings.ring = changeRing(Dungeon.hero.belongings.ring);
+//                hero.belongings.ring.upgrade();
+//                //if we turned an equipped artifact into a ring, ring goes into inventory
+//                hero.belongings.ring.doUnequip(Dungeon.hero, false);
+//                if (!result.collect()) {
+//                    Dungeon.level.drop(hero.belongings.ring, hero.pos).sprite.drop();
 //                }
 //            }
-            if (hero.belongings.ring != null) {
-                hero.belongings.ring = changeRing(Dungeon.hero.belongings.ring);
-                hero.belongings.ring.upgrade();
-            }
-//            if (hero.belongings.artifact != null) {
-//                hero.belongings.artifact = changeArtifact(hero.belongings.artifact);
-//            }
+
             for (Item item : is.toArray(new Item[0])) {
                 if (item instanceof MagesStaff) {
                     result = changeStaff((MagesStaff) item);

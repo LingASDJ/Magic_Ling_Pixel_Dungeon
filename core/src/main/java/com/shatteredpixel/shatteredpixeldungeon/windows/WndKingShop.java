@@ -199,6 +199,7 @@ public class WndKingShop extends Window {
                                 }
                             }
                             Buff.prolong(hero, ReloadShopTwo.class, 1f);
+
                             if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()>0.9f){
                                 GLog.n(Messages.get(LuckyGlove.class,"lucky"));
                             }else{

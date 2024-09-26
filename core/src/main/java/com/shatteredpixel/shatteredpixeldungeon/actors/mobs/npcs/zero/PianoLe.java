@@ -174,6 +174,4 @@ public class PianoLe extends NTNPC {
         return true;
     }
 
-
-
 }

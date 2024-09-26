@@ -73,8 +73,6 @@ abstract public class MissileWeapon extends Weapon {
 	//used to reduce durability from the source weapon stack, rather than the one being thrown.
 	protected MissileWeapon parent;
 
-	public int distance;
-
 	public int tier;
 
 	@Override
@@ -195,11 +193,6 @@ abstract public class MissileWeapon extends Weapon {
 				}
 			}
 		}
-
-		final int cell = throwPos( user, dst );
-		int targetPos = cell;
-
-		distance = Dungeon.level.distance(user.pos, targetPos) - 1;
 
 		if (projecting
 				&& (Dungeon.level.passable[dst] || Dungeon.level.avoid[dst] || Actor.findChar(dst) != null)
@@ -409,10 +402,6 @@ abstract public class MissileWeapon extends Weapon {
 			if (owner.buff(Momentum.class) != null && owner.buff(Momentum.class).freerunning()) {
 				damage = Math.round(damage * (1f + 0.15f * ((Hero) owner).pointsInTalent(Talent.PROJECTILE_MOMENTUM)));
 			}
-		}
-
-		for( int dis = distance;dis>3;dis-=4){
-			damage += (int) (Math.random()*3);
 		}
 
 		return damage;
