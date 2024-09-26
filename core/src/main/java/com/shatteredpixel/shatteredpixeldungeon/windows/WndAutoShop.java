@@ -151,7 +151,7 @@ public class WndAutoShop extends Window {
                             }
                         }
                     } else if(Dungeon.gold >= 200 * (Dungeon.depth/5)) {
-                        if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()<0.9) {
+                        if(true) {
                             Dungeon.gold -= 200 * (Dungeon.depth / 5);
                         }else{
                             GLog.n(Messages.get(LuckyGlove.class,"lucky"));

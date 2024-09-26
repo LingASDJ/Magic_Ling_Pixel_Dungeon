@@ -268,7 +268,7 @@ public class WndNyzShop extends Window {
                         if(Statistics.bossRushMode){
                             Dungeon.rushgold -= 5;
                         } else {
-                            if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()<0.9f) {
+                            if(true) {
                                 Dungeon.gold -= 270 * Random.Int(3) + 50 * (Dungeon.hero.buff(AscensionChallenge.class) != null ? 0.7 : 1);
                             }else{
                                 GLog.n(Messages.get(LuckyGlove.class,"lucky"));

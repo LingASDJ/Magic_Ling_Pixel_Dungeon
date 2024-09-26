@@ -378,7 +378,7 @@ public abstract class RegularLevel extends Level {
 		}
 
 		//Normal Shop
-		if (Dungeon.shopOnLevel() && branch == 0 && !Statistics.RandMode) {
+		if (Dungeon.shopOnLevel() && branch == 0 && !Statistics.bossRushMode) {
 			initRooms.add(new ShopRoom());
 		}
 

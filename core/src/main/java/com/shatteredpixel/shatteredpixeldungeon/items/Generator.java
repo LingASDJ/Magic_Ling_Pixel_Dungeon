@@ -581,7 +581,7 @@ public class Generator {
 
 					RedBloodMoon.class,
 			};
-			WEP_T4.probs = new float[]{ 6, 5, 5, 4, 4, 4,2,3, 2, 4, SPDSettings.isItemUnlock(RedBloodMoon.class.getSimpleName() ) ? 1.2f : 0 };
+			WEP_T4.probs = new float[]{ 6, 5, 5, 4, 4, 4,2,3, 2, 6, SPDSettings.isItemUnlock(RedBloodMoon.class.getSimpleName() ) ? 1.2f : 0 };
 
 			WEP_T5.classes = new Class<?>[]{
 					LockSword.class,

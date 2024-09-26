@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
@@ -14,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ClearGuardSprite;
@@ -105,7 +107,8 @@ public class ClearElemtGuard extends Statue {
         //5s延迟后，恢复SANS状态
         yell(Messages.get(ClearElemtGuard.class,"kill"));
         Mob mob = new ClearElemtGuardNPC();
-        mob.pos = pos;
+        mob.pos = level.exit()-1;
+        ScrollOfTeleportation.appear( hero,level.exit()-1 );
         GameScene.add(mob);
     }
 
