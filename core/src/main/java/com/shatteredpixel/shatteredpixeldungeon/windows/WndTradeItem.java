@@ -287,10 +287,10 @@ public class WndTradeItem extends WndInfoItem {
 		if (item == null) return;
 		
 		int price = Shopkeeper.sellPrice( item );
-		if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()<0.9) {
-			Dungeon.gold -= price;
-		}else{
+		if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()>0.9) {
 			GLog.n(Messages.get(LuckyGlove.class,"lucky"));
+		}else{
+			Dungeon.gold -= price;
 		}
 		
 		if (!item.doPickUp( Dungeon.hero )) {

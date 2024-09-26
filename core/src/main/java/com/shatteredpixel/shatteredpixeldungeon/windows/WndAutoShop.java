@@ -151,10 +151,10 @@ public class WndAutoShop extends Window {
                             }
                         }
                     } else if(Dungeon.gold >= 200 * (Dungeon.depth/5)) {
-                        if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()<0.9) {
-                            Dungeon.gold -= 200 * (Dungeon.depth / 5);
-                        }else{
+                        if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()>0.9) {
                             GLog.n(Messages.get(LuckyGlove.class,"lucky"));
+                        }else{
+                            Dungeon.gold -= 200 * (Dungeon.depth / 5);
                         }
                         WndAutoShop.this.selectReward( item );
                         if(Dungeon.hero.buff(AutoRandomBuff.class) != null) {

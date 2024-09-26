@@ -211,10 +211,10 @@ public class WndNyzShop extends Window {
                         if(Statistics.bossRushMode){
                             Dungeon.rushgold -= 5;
                         } else {
-                            if(hero.belongings.getItem(LuckyGlove.class)!=null) {
-                                Dungeon.gold -= (720 * Random.Int(2) + hero.lvl / 5 + 100) * (Dungeon.hero.buff(AscensionChallenge.class) != null ? 0.7 : 1);
-                            }else{
+                            if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()>0.9f) {
                                 Messages.get(LuckyGlove.class,"lucky");
+                            }else{
+                                Dungeon.gold -= (720 * Random.Int(2) + hero.lvl / 5 + 100) * (Dungeon.hero.buff(AscensionChallenge.class) != null ? 0.7 : 1);
                             }
                             Statistics.naiyaziCollected += 1;
                             Badges.nyzvalidateGoldCollected();
@@ -268,10 +268,10 @@ public class WndNyzShop extends Window {
                         if(Statistics.bossRushMode){
                             Dungeon.rushgold -= 5;
                         } else {
-                            if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()<0.9f) {
-                                Dungeon.gold -= 270 * Random.Int(3) + 50 * (Dungeon.hero.buff(AscensionChallenge.class) != null ? 0.7 : 1);
-                            }else{
+                            if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()>0.9f) {
                                 GLog.n(Messages.get(LuckyGlove.class,"lucky"));
+                            }else{
+                                Dungeon.gold -= 270 * Random.Int(3) + 50 * (Dungeon.hero.buff(AscensionChallenge.class) != null ? 0.7 : 1);
                             }
                             Badges.nyzvalidateGoldCollected();
                             Statistics.naiyaziCollected += 1;
