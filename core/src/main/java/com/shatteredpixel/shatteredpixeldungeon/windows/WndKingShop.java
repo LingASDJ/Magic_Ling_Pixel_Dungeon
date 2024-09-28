@@ -199,10 +199,11 @@ public class WndKingShop extends Window {
                                 }
                             }
                             Buff.prolong(hero, ReloadShopTwo.class, 1f);
-                            if(true){
-                                Dungeon.gold -= 270;
-                            }else{
+
+                            if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()>0.9f){
                                 GLog.n(Messages.get(LuckyGlove.class,"lucky"));
+                            }else{
+                                Dungeon.gold -= 270;
                             }
                         } else {
                             GLog.n(Messages.get(WndKingShop.class, "x_gold"));
@@ -340,10 +341,10 @@ public class WndKingShop extends Window {
                         }
 
                     } else if(Dungeon.gold >=sellPrice) {
-                        if(true){
-                            Dungeon.gold-= RegularLevel.holiday == RegularLevel.Holiday.CJ ? (int) (sellPrice * 0.5f) : sellPrice;
-                        }else{
+                        if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()>0.9f){
                             GLog.n(Messages.get(LuckyGlove.class,"lucky"));
+                        }else{
+                            Dungeon.gold-= RegularLevel.holiday == RegularLevel.Holiday.CJ ? (int) (sellPrice * 0.5f) : sellPrice;
                         }
                         WndKingShop.this.selectReward( item );
                         WndKingShop.RewardWindow.this.hide();

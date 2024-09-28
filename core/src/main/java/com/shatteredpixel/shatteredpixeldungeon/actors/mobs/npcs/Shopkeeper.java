@@ -292,10 +292,10 @@ public class Shopkeeper extends NPC {
 						} else if (index > 1){
 							GLog.i(Messages.get(Shopkeeper.this, "buyback"));
 							Item returned = buybackItems.remove(index-2);
-							if(true) {
-								Dungeon.gold -= returned.value();
-							}else{
+							if(hero.belongings.getItem(LuckyGlove.class)!=null && Math.random()>0.9) {
 								GLog.n(Messages.get(LuckyGlove.class,"lucky"));
+							}else{
+								Dungeon.gold -= returned.value();
 							}
 							Statistics.goldCollected -= returned.value();
 							if (!returned.doPickUp(Dungeon.hero)){
