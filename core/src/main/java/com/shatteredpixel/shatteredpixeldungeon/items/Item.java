@@ -336,7 +336,7 @@ public class Item implements Bundlable {
 
 	}
 	
-	public final boolean collect() {
+	public boolean collect() {
 		return collect( Dungeon.hero.belongings.backpack );
 	}
 	
