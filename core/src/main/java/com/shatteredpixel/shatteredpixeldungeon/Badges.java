@@ -38,11 +38,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -1158,9 +1153,9 @@ public class Badges {
 
 
 		HOLLOWCITY					(  88),
-//		MASTER						( ),
-//		RED_DRAMATICUL				( ),
-//		GOD_PLEASE					( ),
+		MASTER						(89 ),
+		RED_DRAMATICUL				( 90),
+		GOD_PLEASE					( 91),
 //
 //		NOW_ANTATTCK				(),
 		WOC_MONEY_GIRL				(93),

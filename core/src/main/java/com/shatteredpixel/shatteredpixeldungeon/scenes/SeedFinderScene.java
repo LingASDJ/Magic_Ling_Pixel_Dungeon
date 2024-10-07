@@ -21,16 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Clipboard;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedFinder;
-import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.WndSeedfinderLog;
-import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.WndSeedfinderSeedinput;
+import com.shatteredpixel.shatteredpixeldungeon.custom.seedfinder.SeedFindLogScene;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -39,7 +34,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
-import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.BitmapText;
@@ -49,14 +43,11 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.DeviceCompat;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
-
 public class SeedFinderScene extends PixelScene {
-
+	@Override
+	protected void onBackPressed() {
+		ShatteredPixelDungeon.switchScene(TitleScene.class);
+	}
 	@Override
 	public void create() {
 
@@ -110,33 +101,7 @@ public class SeedFinderScene extends PixelScene {
 		StyledButton btnScout = new StyledButton(GREY_TR, Messages.get(SeedFinderScene.class, "scout_seed_button")) {
 			@Override
 			protected void onClick() {
-				ShatteredPixelDungeon.scene()
-						.addToFront(new WndSeedfinderSeedinput(Messages.get(SeedFinderScene.class, "scout_custom_seed_title"),
-								Messages.get(SeedFinderScene.class, "scout_info_text"),
-								SPDSettings.seedinputText(),
-								20,
-								false,
-								Messages.get(SeedFinderScene.class, "scout_button_yes"),
-								Messages.get(SeedFinderScene.class, "scout_button_no")) {
-							@Override
-							public void onSelect(boolean positive, String text) {
-								if (positive && text != null && !text.isEmpty()) {
-									SPDSettings.seedinputText(text);
-
-									text = DungeonSeed.formatText(text);
-									long seed = DungeonSeed.convertFromText(text);
-
-									String[] seedfinderOutputLog = new SeedFinder().logSeedItemsSeededRun(seed);
-
-									ShatteredPixelDungeon.scene().addToFront(
-											new WndSeedfinderLog(Icons.get(Icons.BACKPACK),
-													"Items for seed " + DungeonSeed.convertToCode(Dungeon.seed),
-													seedfinderOutputLog));
-								} else {
-									SPDSettings.seedinputText("");
-								}
-							}
-						});
+				ShatteredPixelDungeon.switchNoFade(SeedFindLogScene.class);
 			}
 		};
 		btnScout.icon(Icons.get(Icons.ENTER));
@@ -145,40 +110,7 @@ public class SeedFinderScene extends PixelScene {
 		StyledButton btnSeedfinder = new StyledButton(GREY_TR, Messages.get(this, "seedfinder_button")){
 			@Override
 			protected void onClick() {
-				ShatteredPixelDungeon.scene()
-						.addToFront(new WndSeedfinderSeedinput(Messages.get(SeedFinderScene.class, "seedfinder_title"),
-								Messages.get(SeedFinderScene.class, "seedfinder_info_text"),
-								SPDSettings.seeditemsText(),
-								100,
-								true,
-								Messages.get(SeedFinderScene.class, "seedfinder_button_yes"),
-								Messages.get(SeedFinderScene.class, "seedfinder_button_no")) {
-							@Override
-							public void onSelect(boolean positive, String seeditems_userInput) {
-								if (positive) {
-									SPDSettings.seeditemsText(seeditems_userInput);
-
-									//activate the seedfinder. this one takes a while
-									String foundSeed = new SeedFinder().find_seed(seeditems_userInput);
-
-									//copy seed to clipboard on success
-									Clipboard clipboard = Gdx.app.getClipboard();
-									clipboard.setContents(foundSeed);
-
-									long seed = DungeonSeed.convertFromText(foundSeed);
-
-									String[] seedfinderOutputLog = new SeedFinder().logSeedItemsSeededRun(seed);
-
-									ShatteredPixelDungeon.scene().addToFront(
-											new WndSeedfinderLog(Icons.get(Icons.BACKPACK),
-													"Found seed " + DungeonSeed.convertToCode(Dungeon.seed),
-													seedfinderOutputLog));
-
-								} else {
-									SPDSettings.seeditemsText("");
-								}
-							}
-						});
+				ShatteredPixelDungeon.switchNoFade(SeedFinderScene.class);
 			}
 		};
 		btnSeedfinder.icon(Icons.get(Icons.MAGNIFY));
@@ -187,19 +119,7 @@ public class SeedFinderScene extends PixelScene {
 		StyledButton btnScoutDaily = new StyledButton(GREY_TR, Messages.get(this, "scout_daily")) {
 			@Override
 			protected void onClick() {
-				String[] seedfinderOutputLog = new SeedFinder().logSeedItemsDailyRunRun(0);
 
-				long DAY = 1000 * 60 * 60 * 24;
-				long currentDay = (long) Math.floor((double) Game.realTime / DAY) + SeedFinder.Options.DailyOffset;
-				SPDSettings.lastDaily(DAY * currentDay);
-				DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
-				format.setTimeZone(TimeZone.getTimeZone("UTC"));
-				String date = format.format(new Date(SPDSettings.lastDaily()));
-
-				ShatteredPixelDungeon.scene().addToFront(
-						new WndSeedfinderLog(Icons.get(Icons.BACKPACK),
-								"日常挑战于(MLPD日常尚未实装 仅供预览)： " + date,
-								seedfinderOutputLog));
 			}
 		};
 		btnScoutDaily.icon(Icons.get(Icons.ENTER));
@@ -209,7 +129,7 @@ public class SeedFinderScene extends PixelScene {
 		StyledButton btnCatalog = new StyledButton(GREY_TR, Messages.get(this, "item_catalog")){
 			@Override
 			protected void onClick() {
-				//ShatteredPixelDungeon.scene().addToFront(new WndCatalog());
+				ShatteredPixelDungeon.scene().addToFront(new JournalScene());
 			}
 		};
 		btnCatalog.icon(new ItemSprite(ItemSpriteSheet.POTION_AZURE));
