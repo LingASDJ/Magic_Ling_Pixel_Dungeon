@@ -26,8 +26,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -234,9 +236,23 @@ public class CrystalPathRoom extends SpecialRoom {
 		while (true) {
 			Item reward = Generator.random(cat);
 
+			//we have to de-exotify for comparison here to weed out duplicates
+			Class rewardClass = reward.getClass();
+			if (reward instanceof ExoticPotion){
+				rewardClass = ExoticPotion.exoToReg.get(rewardClass);
+			} else if (reward instanceof ExoticScroll){
+				rewardClass = ExoticScroll.exoToReg.get(rewardClass);
+			}
+
 			boolean dupe = false;
 			for (Item i : items){
-				if (i.isSimilar(reward)){
+				Class iClass = i.getClass();
+				if (i instanceof ExoticPotion){
+					iClass = ExoticPotion.exoToReg.get(iClass);
+				} else if (i instanceof ExoticScroll){
+					iClass = ExoticScroll.exoToReg.get(iClass);
+				}
+				if (iClass == rewardClass){
 					dupes.add(reward);
 					dupe = true;
 					break;

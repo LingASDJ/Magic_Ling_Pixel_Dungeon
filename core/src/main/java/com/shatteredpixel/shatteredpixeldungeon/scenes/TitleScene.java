@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.Gregorian;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
@@ -31,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.update.MLChangesButton;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHardNotification;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndVictoryCongrats;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
@@ -102,7 +104,6 @@ public class TitleScene extends PixelScene {
 		super.create();
 		Calendar calendar = Calendar.getInstance();
 		int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
-		Badges.loadGlobal();
 		Dungeon.whiteDaymode = currentHour > 7 && currentHour < 22;
 
 		Badges.loadGlobal();
@@ -442,7 +443,7 @@ public class TitleScene extends PixelScene {
 		StyledButton btnBadges = new StyledButton(GREY_TR, Messages.get(this, "badges")) {
 			@Override
 			protected void onClick() {
-				ShatteredPixelDungeon.switchNoFade(BadgesScene.class);
+				ShatteredPixelDungeon.switchNoFade(JournalScene.class);
 			}
 			@Override
 			protected boolean onLongClick() {
@@ -527,6 +528,12 @@ public class TitleScene extends PixelScene {
 			EndButton btnExit = new EndButton();
 			btnExit.setPos( w - btnExit.width(), 0 );
 			add( btnExit );
+		}
+
+		Badges.loadGlobal();
+		if (Badges.isUnlocked(Badges.Badge.VICTORY) && !SPDSettings.victoryNagged()) {
+			SPDSettings.victoryNagged(true);
+			add(new WndVictoryCongrats());
 		}
 
 		fadeIn();

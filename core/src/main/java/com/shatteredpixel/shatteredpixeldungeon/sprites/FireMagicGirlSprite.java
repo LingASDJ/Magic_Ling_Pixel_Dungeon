@@ -52,9 +52,11 @@ public class FireMagicGirlSprite extends MobSprite {
         play(idle);
 
         spray = centerEmitter();
-        spray.autoKill = false;
-        spray.pour(Speck.factory(Speck.STAR),8);
-        spray.on = false;
+        if (spray != null) {
+            spray.autoKill = false;
+            spray.pour(Speck.factory(Speck.STAR),8);
+            spray.on = false;
+        }
     }
 
     @Override

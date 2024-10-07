@@ -260,24 +260,24 @@ public class SPDSettings extends GameSettings {
 
 	public static final String KEY_VIBRATION    = "vibration";
 
-    public static final String KEY_ONE_CONDUCT = "one_conduct";
-    public static final String KEY_TWO_CONDUCT = "two_conduct";
+	public static final String KEY_ONE_CONDUCT = "one_conduct";
+	public static final String KEY_TWO_CONDUCT = "two_conduct";
 
-    public static final String KEY_UI_SIZE = "full_ui";
-    public static final String KEY_QUICKSLOTS = "quickslots";
-    public static final String KEY_L3BOSS = "bossl3";
-    public static final String KEY_FLIPTOOLBAR = "flipped_ui";
-    public static final String KEY_FLIPTAGS = "flip_tags";
-    public static final String KEY_BARMODE = "toolbar_mode";
+	public static final String KEY_UI_SIZE = "full_ui";
+	public static final String KEY_QUICKSLOTS = "quickslots";
+	public static final String KEY_L3BOSS = "bossl3";
+	public static final String KEY_FLIPTOOLBAR = "flipped_ui";
+	public static final String KEY_FLIPTAGS = "flip_tags";
+	public static final String KEY_BARMODE = "toolbar_mode";
 
-    public static final String KEY_CAMERA_FOLLOW = "camera_follow";
-    public static final String KEY_SCREEN_SHAKE = "screen_shake";
+	public static final String KEY_CAMERA_FOLLOW = "camera_follow";
+	public static final String KEY_SCREEN_SHAKE = "screen_shake";
 
-    //0 = mobile, 1 = mixed (large without inventory in main UI), 2 = large
-    public static final String KEY_LAST_DAILY = "last_daily";
-    public static final String KEY_SUPPORT_NAGGED = "support_nagged";
-    public static final String KEY_CONTROLLER_SENS = "controller_sens";
-    public static final String KEY_MOVE_SENS = "move_sens";
+	//0 = mobile, 1 = mixed (large without inventory in main UI), 2 = large
+	public static final String KEY_LAST_DAILY = "last_daily";
+	public static final String KEY_SUPPORT_NAGGED = "support_nagged";
+	public static final String KEY_CONTROLLER_SENS = "controller_sens";
+	public static final String KEY_MOVE_SENS = "move_sens";
 
 	public static final String KEY_ICECOIN = "iceGoldMagic2";
 
@@ -296,13 +296,13 @@ public class SPDSettings extends GameSettings {
 		return getBoolean(KEY_VIBRATION, true);
 	}
 
-    public static void cameraFollow(int value) {
-        put(KEY_CAMERA_FOLLOW, value);
-    }
+	public static void cameraFollow(int value) {
+		put(KEY_CAMERA_FOLLOW, value);
+	}
 
-    public static int cameraFollow() {
-        return getInt(KEY_CAMERA_FOLLOW, 4, 1, 4);
-    }
+	public static int cameraFollow() {
+		return getInt(KEY_CAMERA_FOLLOW, 4, 1, 4);
+	}
 
 	public static void flipToolbar( boolean value) {
 		put(KEY_FLIPTOOLBAR, value );
@@ -336,23 +336,23 @@ public class SPDSettings extends GameSettings {
 
 	public static final String KEY_INTRO		= "intro";
 
-    public static void screenShake(int value) {
-        put(KEY_SCREEN_SHAKE, value);
-    }
+	public static void screenShake(int value) {
+		put(KEY_SCREEN_SHAKE, value);
+	}
 
-    public static int screenShake() {
-        return getInt(KEY_SCREEN_SHAKE, 2, 0, 4);
-    }
+	public static int screenShake() {
+		return getInt(KEY_SCREEN_SHAKE, 2, 0, 4);
+	}
 
-    public static void interfaceSize(int value) {
-        put(KEY_UI_SIZE, value);
-    }
+	public static void interfaceSize(int value) {
+		put(KEY_UI_SIZE, value);
+	}
 
-    public static int interfaceSize() {
-        int size = getInt(KEY_UI_SIZE, DeviceCompat.isDesktop() ? 1 : 0);
-        if (size > 0) {
-            //force mobile UI if there is not enough space for full UI
-            float wMin = Game.width / PixelScene.MIN_WIDTH_FULL;
+	public static int interfaceSize() {
+		int size = getInt(KEY_UI_SIZE, DeviceCompat.isDesktop() ? 1 : 0);
+		if (size > 0) {
+			//force mobile UI if there is not enough space for full UI
+			float wMin = Game.width / PixelScene.MIN_WIDTH_FULL;
 			float hMin = Game.height / PixelScene.MIN_HEIGHT_FULL;
 			if (Math.min(wMin, hMin) < 2*Game.density){
 				size = 0;
@@ -367,40 +367,40 @@ public class SPDSettings extends GameSettings {
 
 	public static void intro( boolean value ) {
 		put( KEY_INTRO, value );
-    }
+	}
 
-    public static boolean intro() {
-        return getBoolean(KEY_INTRO, true);
-    }
+	public static boolean intro() {
+		return getBoolean(KEY_INTRO, true);
+	}
 
-    public static void lastClass(int value) {
-        put(KEY_LAST_CLASS, value);
-    }
+	public static void lastClass(int value) {
+		put(KEY_LAST_CLASS, value);
+	}
 
-    public static int lastClass() {
-        return getInt(KEY_LAST_CLASS, 0, 0, 3);
-    }
+	public static int lastClass() {
+		return getInt(KEY_LAST_CLASS, 0, 0, 3);
+	}
 
-    public static void challenges(int value) {
-        put(KEY_CHALLENGES, value);
-    }
+	public static void challenges(int value) {
+		put(KEY_CHALLENGES, value);
+	}
 
-    public static int challenges() {
-        return getInt(KEY_CHALLENGES, 0, 0, Challenges.MAX_VALUE);
-    }
+	public static int challenges() {
+		return getInt(KEY_CHALLENGES, 0, 0, Challenges.MAX_VALUE);
+	}
 
-    public static void lastDaily(long value) {
-        put(KEY_LAST_DAILY, value);
-    }
+	public static void lastDaily(long value) {
+		put(KEY_LAST_DAILY, value);
+	}
 
-    public static long lastDaily() {
-        return getLong(KEY_LAST_DAILY, 0);
-    }
+	public static long lastDaily() {
+		return getLong(KEY_LAST_DAILY, 0);
+	}
 
-    //DLC SYSTEM
-    public static void dlc(Conducts.ConductStorage value) {
-        put(KEY_DLC, value);
-    }
+	//DLC SYSTEM
+	public static void dlc(Conducts.ConductStorage value) {
+		put(KEY_DLC, value);
+	}
 
 	public static void difficulty(Difficulty.HardStorage value ) {
 		cut( KEY_DIFFICULTY, value);
@@ -661,45 +661,45 @@ public class SPDSettings extends GameSettings {
 		return getBoolean(KEY_PAGE, false);
 	}
 
-    public static Conducts.ConductStorage dlc() {
-        return getBundlable(KEY_DLC, new Conducts.ConductStorage());
-    }
+	public static Conducts.ConductStorage dlc() {
+		return getBundlable(KEY_DLC, new Conducts.ConductStorage());
+	}
 
-    //HARD SYSTEM
+	//HARD SYSTEM
 	public static Difficulty.HardStorage difficulty() {
 		return getCundlable(KEY_DIFFICULTY, new Difficulty.HardStorage());
 	}
 
-    public static void ClassPage(boolean value) {
-        put(KEY_PAGE, value);
-    }
+	public static void ClassPage(boolean value) {
+		put(KEY_PAGE, value);
+	}
 
 
-    //Input
+	//Input
 
-    public static boolean quickSwapper() {
-        return getBoolean(V1TOOL, false);
-    }
+	public static boolean quickSwapper() {
+		return getBoolean(V1TOOL, false);
+	}
 
-    public static void quickSwapper(boolean value) {
-        put(V1TOOL, value);
-    }
+	public static void quickSwapper(boolean value) {
+		put(V1TOOL, value);
+	}
 
-    public static void controllerPointerSensitivity(int value) {
-        put(KEY_CONTROLLER_SENS, value);
-    }
+	public static void controllerPointerSensitivity(int value) {
+		put(KEY_CONTROLLER_SENS, value);
+	}
 
-    public static int controllerPointerSensitivity() {
-        return getInt(KEY_CONTROLLER_SENS, 5, 1, 10);
-    }
+	public static int controllerPointerSensitivity() {
+		return getInt(KEY_CONTROLLER_SENS, 5, 1, 10);
+	}
 
-    public static void movementHoldSensitivity(int value) {
-        put(KEY_MOVE_SENS, value);
-    }
+	public static void movementHoldSensitivity(int value) {
+		put(KEY_MOVE_SENS, value);
+	}
 
-    public static int movementHoldSensitivity() {
-        return getInt(KEY_MOVE_SENS, 3, 0, 4);
-    }
+	public static int movementHoldSensitivity() {
+		return getInt(KEY_MOVE_SENS, 3, 0, 4);
+	}
 
 	public static void Cheating(boolean value) {
 		put("cheatingfuck", value);
@@ -895,7 +895,7 @@ public class SPDSettings extends GameSettings {
 		int index;
 		for( String target : itemArray ) {
 			if ( ( index = items.indexOf( target ) ) != -1 ) {
-					items.delete( index, index + items.indexOf( ";", index ) + 1 );
+				items.delete( index, index + items.indexOf( ";", index ) + 1 );
 			}
 		}
 
@@ -1083,4 +1083,23 @@ public class SPDSettings extends GameSettings {
 		return getBoolean( KEY_LOGMISC, false );
 	}
 
+	public static final String KEY_VICTORY_NAGGED= "victory_nagged";
+
+	public static void victoryNagged( boolean value ) {
+		put( KEY_VICTORY_NAGGED, value );
+	}
+
+	public static boolean victoryNagged() {
+		return getBoolean(KEY_VICTORY_NAGGED, false);
+	}
+
+	public static final String KEY_FULLSCREEN_MONITOR = "fullscreen_monitor";
+
+	public static void fulLScreenMonitor( int value ){
+		put( KEY_FULLSCREEN_MONITOR, value);
+	}
+
+	public static int fulLScreenMonitor(){
+		return getInt( KEY_FULLSCREEN_MONITOR, 0 );
+	}
 }

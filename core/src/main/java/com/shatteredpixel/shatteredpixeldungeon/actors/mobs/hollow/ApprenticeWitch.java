@@ -166,7 +166,7 @@ public class ApprenticeWitch extends Elemental.FireElemental {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll( 20, 34 );
+        return Random.NormalIntRange( 20, 34 );
     }
 
     @Override

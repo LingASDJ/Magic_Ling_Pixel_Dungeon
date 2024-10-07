@@ -38,7 +38,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -72,6 +71,8 @@ public class Badges {
 		validateYASD();
 	}
 
+
+
 	public static void validateDeathFromSacrifice() {
 		Badge badge = Badge.DEATH_FROM_SACRIFICE;
 		local.add( badge );
@@ -82,7 +83,7 @@ public class Badges {
 
 	public static void KILLMG() {
 		displayBadge( Badge.KILL_MG );
-    }
+	}
 
 	public static void validateRatmogrify(){
 		addGlobal(Badge.FOUND_RATMOGRIFY);
@@ -493,29 +494,29 @@ public class Badges {
 		}
 	}
 
-	public static void validateItemsIdentified() {
-
-		for (Catalog cat : Catalog.values()){
-			if (cat.allSeen()){
-				Badge b = Catalog.catalogBadges.get(cat);
-				if (!global.contains(b)){
-					displayBadge(b);
-				}
-			}
-		}
-
-		if (!global.contains( Badge.ALL_ITEMS_IDENTIFIED ) &&
-				global.contains( Badge.ALL_WEAPONS_IDENTIFIED ) &&
-				global.contains( Badge.ALL_ARMOR_IDENTIFIED ) &&
-				global.contains( Badge.ALL_WANDS_IDENTIFIED ) &&
-				global.contains( Badge.ALL_RINGS_IDENTIFIED ) &&
-				global.contains( Badge.ALL_ARTIFACTS_IDENTIFIED ) &&
-				global.contains( Badge.ALL_POTIONS_IDENTIFIED ) &&
-				global.contains( Badge.ALL_SCROLLS_IDENTIFIED )) {
-
-			displayBadge( Badge.ALL_ITEMS_IDENTIFIED );
-		}
-	}
+//	public static void validateItemsIdentified() {
+//
+//		for (Catalog cat : Catalog.values()){
+//			if (cat.allSeen()){
+//				Badge b = Catalog.catalogBadges.get(cat);
+//				if (!global.contains(b)){
+//					displayBadge(b);
+//				}
+//			}
+//		}
+//
+//		if (!global.contains( Badge.ALL_ITEMS_IDENTIFIED ) &&
+//				global.contains( Badge.ALL_WEAPONS_IDENTIFIED ) &&
+//				global.contains( Badge.ALL_ARMOR_IDENTIFIED ) &&
+//				global.contains( Badge.ALL_WANDS_IDENTIFIED ) &&
+//				global.contains( Badge.ALL_RINGS_IDENTIFIED ) &&
+//				global.contains( Badge.ALL_ARTIFACTS_IDENTIFIED ) &&
+//				global.contains( Badge.ALL_POTIONS_IDENTIFIED ) &&
+//				global.contains( Badge.ALL_SCROLLS_IDENTIFIED )) {
+//
+//			displayBadge( Badge.ALL_ITEMS_IDENTIFIED );
+//		}
+//	}
 
 	public static void validateDeathFromFire() {
 		Badge badge = Badge.DEATH_FROM_FIRE;
@@ -806,9 +807,9 @@ public class Badges {
 		}
 	}
 
-    public static void KILL_DOG() {
+	public static void KILL_DOG() {
 		displayBadge( Badge.KILL_DOG );
-    }
+	}
 
 	public static void KILL_ST() {
 		displayBadge( Badge.KILL_CLSISTER );
@@ -948,52 +949,52 @@ public class Badges {
 		displayBadge( Badge.CLEAR_WATER );
 	}
 
-    public static void KILL_SMK() {
-        displayBadge(Badge.KILL_SM);
-    }
+	public static void KILL_SMK() {
+		displayBadge(Badge.KILL_SM);
+	}
 
-    public static void GOODRLPT() {
-        displayBadge(Badge.RLPT);
-    }
+	public static void GOODRLPT() {
+		displayBadge(Badge.RLPT);
+	}
 
 	public static void GOO() {
 		displayBadge(Badge.BOSS_CHALLENGE_1);
 	}
 
-    public static void validateBossChallengeCompleted() {
-        Badge badge = null;
-        switch (Dungeon.depth) {
-            case 10:
-                badge = Badge.BOSS_CHALLENGE_2;
-                break;
-            case 15:
-                badge = Badge.BOSS_CHALLENGE_3;
-                break;
-            case 20:
-                badge = Badge.BOSS_CHALLENGE_4;
-                break;
-            case 25:
-                badge = Badge.BOSS_CHALLENGE_5;
-                break;
-        }
+	public static void validateBossChallengeCompleted() {
+		Badge badge = null;
+		switch (Dungeon.depth) {
+			case 10:
+				badge = Badge.BOSS_CHALLENGE_2;
+				break;
+			case 15:
+				badge = Badge.BOSS_CHALLENGE_3;
+				break;
+			case 20:
+				badge = Badge.BOSS_CHALLENGE_4;
+				break;
+			case 25:
+				badge = Badge.BOSS_CHALLENGE_5;
+				break;
+		}
 
-        if (badge != null) {
-            local.add(badge);
-            displayBadge(badge);
-        }
-    }
+		if (badge != null) {
+			local.add(badge);
+			displayBadge(badge);
+		}
+	}
 
-    public static void validateChampion(int challenges) {
-        if (challenges == 0) return;
-        Badge badge = null;
+	public static void validateChampion(int challenges) {
+		if (challenges == 0) return;
+		Badge badge = null;
 
 		boolean isNoChampion = Statistics.bossRushMode || Statistics.RandMode;
 
-        if (challenges >= 1 && !(Dungeon.isDLC(Conducts.Conduct.DEV)) || !isNoChampion && challenges >= 1) {
-            badge = Badge.CHAMPION_1X;
-        }
-        if (challenges >= 3 && !(Dungeon.isDLC(Conducts.Conduct.DEV)) || !isNoChampion && challenges >= 3) {
-            addGlobal(badge);
+		if (challenges >= 1 && !(Dungeon.isDLC(Conducts.Conduct.DEV)) || !isNoChampion && challenges >= 1) {
+			badge = Badge.CHAMPION_1X;
+		}
+		if (challenges >= 3 && !(Dungeon.isDLC(Conducts.Conduct.DEV)) || !isNoChampion && challenges >= 3) {
+			addGlobal(badge);
 			badge = Badge.CHAMPION_2X;
 		}
 		if (challenges >= 6 && !(Dungeon.isDLC(Conducts.Conduct.DEV))|| !isNoChampion && challenges >= 6){
@@ -1012,6 +1013,13 @@ public class Badges {
 		displayBadge( badge );
 	}
 
+	public enum BadgeType {
+		HIDDEN, //internal badges used for data tracking
+		LOCAL,  //unlocked on a per-run basis and added to overall player profile
+		GLOBAL, //unlocked for the save profile only, usually over multiple runs
+		JOURNAL //profile-based and also tied to the journal, which means they even unlock in seeded runs
+	}
+
 
 	public enum Badge {
 		MASTERY_WARRIOR,
@@ -1025,6 +1033,7 @@ public class Badges {
 		UNLOCK_MAGE                 ( 1 ),
 		UNLOCK_ROGUE                ( 2 ),
 		UNLOCK_HUNTRESS             ( 3 ),
+
 		MONSTERS_SLAIN_1            ( 4 ),
 		MONSTERS_SLAIN_2            ( 5 ),
 		GOLD_COLLECTED_1            ( 6 ),
@@ -1080,8 +1089,8 @@ public class Badges {
 		BOSS_SLAIN_1_HUNTRESS,
 
 		BOSS_SLAIN_1_DUELIST,
-		BOSS_SLAIN_1_ALL_CLASSES    ( 53, true ),
-		GAMES_PLAYED_1              ( 54, true ),
+		BOSS_SLAIN_1_ALL_CLASSES    ( 53 ),
+		GAMES_PLAYED_1              ( 54 ),
 
 		HIGH_SCORE_2				( 55 ),
 
@@ -1119,7 +1128,7 @@ public class Badges {
 		ALL_RINGS_IDENTIFIED        ( 76 ),
 		ALL_ARTIFACTS_IDENTIFIED    ( 77 ),
 		VICTORY                     ( 78 ),
-		YASD                        ( 79, true ),
+		YASD                        ( 79),
 
 
 		CLEAR_WATER					( 83 ),
@@ -1137,31 +1146,31 @@ public class Badges {
 		BOSS_SLAIN_3_WARDEN,
 		BOSS_SLAIN_3_CHAMPION,
 		BOSS_SLAIN_3_MONK,
-		BOSS_SLAIN_3_ALL_SUBCLASSES ( 80, true ),
-		GAMES_PLAYED_2              ( 81, true ),
+		BOSS_SLAIN_3_ALL_SUBCLASSES ( 80 ),
+		GAMES_PLAYED_2              ( 81 ),
 
 		READ_BOOK_THREE				( 87 ),
 
 
-		HOLLOWCITY					(  ),
-		MASTER						( ),
-		RED_DRAMATICUL				( ),
-		GOD_PLEASE					( ),
-
-		NOW_ANTATTCK				(),
+		HOLLOWCITY					(  88),
+		MASTER						(89 ),
+		RED_DRAMATICUL				( 90),
+		GOD_PLEASE					( 91),
+//
+//		NOW_ANTATTCK				(),
 		WOC_MONEY_GIRL				(93),
 
 
 		//platinum
 		HAPPY_END                   ( 96 ),
-		ALL_ITEMS_IDENTIFIED        ( 97, true ),
+		ALL_ITEMS_IDENTIFIED        ( 97 ),
 		VICTORY_WARRIOR,
 		VICTORY_MAGE,
 		VICTORY_ROGUE,
 		VICTORY_HUNTRESS,
 		VICTORY_DUELIST,
-		VICTORY_ALL_CLASSES         ( 98, true ),
-		GAMES_PLAYED_3              ( 99, true ),
+		VICTORY_ALL_CLASSES         ( 98 ),
+		GAMES_PLAYED_3              ( 99 ),
 		CHAMPION_1X                  ( 100 ),
 		KILL_APPLE(101),
 		KILL_DM720				(102),
@@ -1172,22 +1181,22 @@ public class Badges {
 		READ_BOOK_FOUR				( 105 ),
 
 		//diamond
-		GAMES_PLAYED_4              ( 112, true ),
+		GAMES_PLAYED_4              ( 112 ),
 		CHAMPION_2X                  ( 113 ),
 		CHAMPION_3X                  ( 114 ),
 		CHAMPION_4X                  ( 115 ),
 		CHAMPION_5X                  ( 116 ),
 		NYZ_SHOP                    ( 117 ),
-        DAGETO						(118),
-        KILL_SM(119),
-        //rudy
+		DAGETO						(118),
+		KILL_SM(119),
+		//rudy
 
 
-        STORM(132),
+		STORM(132),
 
-        KILL_MG(133),
+		KILL_MG(133),
 
-        HIGH_SCORE_5(137),
+		HIGH_SCORE_5(137),
 
 		KILL_DOG(138),
 
@@ -1195,13 +1204,16 @@ public class Badges {
 
 		KILL_FIRE_DRAGON(141),
 
-        BOSS_CHALLENGE_1(152),
-        BOSS_CHALLENGE_2(153),
-        BOSS_CHALLENGE_3(154),
-        BOSS_CHALLENGE_4(155),
-        BOSS_CHALLENGE_5(156),
+		BOSS_CHALLENGE_1(152),
+		BOSS_CHALLENGE_2(153),
+		BOSS_CHALLENGE_3(154),
+		BOSS_CHALLENGE_4(155),
+		BOSS_CHALLENGE_5(156),
 
 		ANCITY_THREE	(157),
+
+		//决斗家
+		UNLOCK_DUELIST              ( 158),
 
 		BAG_BOUGHT_SEED_POUCH,
 		BAG_BOUGHT_SCROLL_HOLDER,
@@ -1209,30 +1221,31 @@ public class Badges {
 		BAG_BOUGHT_WAND_HOLSTER;
 
 
-        public boolean meta;
+		public boolean meta;
+		public BadgeType type;
+		public int image;
 
-        public int image;
+		public String title() {
+			return Messages.get(this, name() + ".title");
+		}
 
-        public String title() {
-            return Messages.get(this, name() + ".title");
-        }
-
-        public String desc(){
+		public String desc(){
 			return Messages.get(this, name()+".desc");
 		}
 
+		Badge(){
+			this(-1, BadgeType.HIDDEN);
+		}
+
 		Badge( int image ) {
-			this( image, false );
+			this( image, BadgeType.LOCAL );
 		}
 
-		Badge( int image, boolean meta ) {
+		Badge( int image, BadgeType type ) {
 			this.image = image;
-			this.meta = meta;
+			this.type = type;
 		}
 
-		Badge() {
-			this( -1 );
-		}
 	}
 
 	private static void displayBadge( Badge badge ) {
@@ -1379,6 +1392,13 @@ public class Badges {
 		Collections.sort( badges );
 
 		return badges;
+	}
+
+	//several badges all tie into catalog completion
+	public static void validateCatalogBadges(){
+		//overall unlock badges
+		Badge badge = null;
+		displayBadge( badge );
 	}
 
 	private static void leaveWorst( Collection<Badge> list, Badge...badges ) {

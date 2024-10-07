@@ -60,7 +60,7 @@ public class SothothLasher extends Mob implements Callback {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll( 12, 24 );
+        return Random.NormalIntRange( 12, 24 );
     }
 
     @Override

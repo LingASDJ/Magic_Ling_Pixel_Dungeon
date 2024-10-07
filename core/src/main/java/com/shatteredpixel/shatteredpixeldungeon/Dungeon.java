@@ -60,7 +60,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
@@ -89,9 +88,13 @@ import com.watabou.utils.Random;
 import com.watabou.utils.SparseArray;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class Dungeon {
 	public static boolean whiteDaymode;
@@ -104,6 +107,11 @@ public class Dungeon {
 		ARCANE_STYLI,
 		BBAT,
 		TRINKET_CATA,
+		ENCH_STONE,
+		INT_STONE,
+		LAB_ROOM, //actually a room, but logic is the same
+
+
 		//Health potion sources
 		//enemies
 		SWARM_HP,
@@ -188,7 +196,7 @@ public class Dungeon {
 	public static int mobsToChampion;
 	private static final String GENERATED_LEVELS = "generated_levels";
 	private static final String GOLD = "gold";
-
+	private static final String ENERGY		= "energy";
 	private static final String RUSHGOLD = "rushgold";
 
 	public static Level level;
@@ -229,9 +237,23 @@ public class Dungeon {
 	public static boolean dailyReplay;
 	public static String customSeedText = "";
 	public static long seed;
-	private static final String ENERGY = "energy";
 
-	public static boolean[] discovered = new boolean[30];
+	//we initialize the seed separately so that things like interlevelscene can access it early
+	public static void initSeed(){
+		if (daily) {
+			//Ensures that daily seeds are not in the range of user-enterable seeds
+			seed = SPDSettings.lastDaily() + DungeonSeed.TOTAL_SEEDS;
+			DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
+			format.setTimeZone(TimeZone.getTimeZone("UTC"));
+			customSeedText = format.format(new Date(SPDSettings.lastDaily()));
+		} else if (!SPDSettings.customSeed().isEmpty()){
+			customSeedText = SPDSettings.customSeed();
+			seed = DungeonSeed.convertFromText(customSeedText);
+		} else {
+			customSeedText = "";
+			seed = DungeonSeed.randomSeed();
+		}
+	}
 
 	public static boolean isChallenged( int mask ) {
 		return (challenges & mask) != 0;
@@ -431,10 +453,9 @@ public class Dungeon {
 			if (t != null) pos = t.cell();
 		}
 
-		//Place hero at the entrance if they are out of the map (often used for pox = -1)
-		// or if they are in solid terrain (except in the mining level, where that happens normally)
-		if (pos < 0 || pos >= level.length()
-				|| (!(level instanceof MiningLevel) && !level.passable[pos] && !level.avoid[pos])){
+		//Place hero at the entrance if they are out of the map (often used for pos = -1)
+		// or if they are in invalid terrain terrain (except in the mining level, where that happens normally)
+		if (pos < 0 || pos >= level.length() || level.invalidHeroPos(pos)){
 			pos = level.getTransition(null).cell();
 		}
 
@@ -567,8 +588,38 @@ public class Dungeon {
 		return Random.Int(5 - floorThisSet) < asLeftThisSet;
 	}
 
+	public static boolean enchStoneNeeded(){
+		//1 enchantment stone, spawns on chapter 2 or 3
+		if (!LimitedDrops.ENCH_STONE.dropped()){
+			int region = 1+depth/5;
+			if (region > 1){
+				int floorsVisited = depth - 5;
+				if (floorsVisited > 4) floorsVisited--; //skip floor 10
+				return Random.Int(9-floorsVisited) == 0; //1/8 chance each floor
+			}
+		}
+		return false;
+	}
+
+	public static boolean intStoneNeeded(){
+		//one stone on floors 1-3
+		return depth < 5 && !LimitedDrops.INT_STONE.dropped() && Random.Int(4-depth) == 0;
+	}
+
+	public static boolean labRoomNeeded(){
+		//one laboratory each floor set, in floor 3 or 4, 1/2 chance each floor
+		int region = 1+depth/5;
+		if (region > LimitedDrops.LAB_ROOM.count){
+			int floorThisRegion = depth%5;
+			if (floorThisRegion >= 4 || (floorThisRegion == 3 && Random.Int(2) == 0)){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private static final String INIT_VER	= "init_ver";
-	private static final String VERSION		= "version";
+	public  static final String VERSION		= "version";
 	private static final String SEED		= "seed";
 	private static final String CUSTOM_SEED	= "custom_seed";
 	private static final String DAILY	    = "daily";
@@ -642,8 +693,6 @@ public class Dungeon {
 		BloodBat.level = 1;
 
 		//TitleScene.NightDay = false;
-
-		Arrays.fill(discovered, false);
 
 		mobsToChampion = -1;
 		mobsToStateLing = -1;
@@ -827,10 +876,9 @@ public class Dungeon {
 
 		GameScene.updateFog(l, t, width, height);
 
-		boolean stealthyMimics = MimicTooth.stealthyMimics();
 		if (hero.buff(MindVision.class) != null){
 			for (Mob m : level.mobs.toArray(new Mob[0])){
-				if (stealthyMimics && m instanceof Mimic && m.alignment == Char.Alignment.NEUTRAL){
+				if (m instanceof Mimic && m.alignment == Char.Alignment.NEUTRAL && ((Mimic) m).stealthy()){
 					continue;
 				}
 

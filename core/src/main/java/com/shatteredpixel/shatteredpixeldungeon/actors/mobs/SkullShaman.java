@@ -88,7 +88,7 @@ public class SkullShaman extends Mob implements Callback {
     }
 
     public int damageRoll() {
-        return Char.combatRoll(8, 24);
+        return Random.NormalIntRange(8, 24);
     }
 
     protected boolean doAttack(Char var1) {

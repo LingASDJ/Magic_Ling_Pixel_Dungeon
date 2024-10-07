@@ -998,7 +998,7 @@ public class vM0_6_6_Changes {
                         "2.迭代优化了一些素材\n" +
                         "3.底层代码优化")));
 
-        changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.FIREDIED, true), ("水晶意志"),
+        changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.IMMUNITY, true), ("水晶意志"),
                 ("魔绫的返程之旅，准备好接受考验了吗？")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.CHANGES), ("重大更新"),

@@ -39,8 +39,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -174,7 +174,7 @@ public class SkyGoo extends Boss implements Callback {
 			for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
 				int p = pos + PathFinder.NEIGHBOURS8[i];
 				if (Actor.findChar( p ) == null && Dungeon.level.passable[p]) {
-					Mob testActor = Reflection.newInstance(Bestiary.getMobRotation(Random.NormalIntRange(3,9)).get(0));
+					Mob testActor = Reflection.newInstance(MobSpawner.getMobRotation(Random.NormalIntRange(3,9)).get(0));
 					Buff.affect(testActor, ChampionEnemy.Bomber.class);
 					testActor.state = testActor.HUNTING;
 					GameScene.add( testActor );

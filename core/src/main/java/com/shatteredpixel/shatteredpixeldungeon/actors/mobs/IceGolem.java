@@ -62,7 +62,7 @@ public class IceGolem extends Mob implements Callback {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll( 10, 18 );
+        return Random.NormalIntRange( 10, 18 );
     }
 
     @Override

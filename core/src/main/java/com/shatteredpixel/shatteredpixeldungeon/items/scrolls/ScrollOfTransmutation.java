@@ -174,15 +174,20 @@ public class ScrollOfTransmutation extends InventoryScroll {
 			return changeStone((Runestone) item);
 		} else if (item instanceof Artifact) {
 			Artifact a = changeArtifact( (Artifact)item );
-			if(item instanceof OilLantern){
-				return item;
-			} else if (a == null){
-				//if no artifacts are left, generate a random +0 ring with shared ID/curse state
+			if (a == null){
+				//if no artifacts are left, generate a random ring with shared ID/curse state
+				//artifact and ring levels are not exactly equivalent, give the ring up to +2
 				Item result = Generator.randomUsingDefaults(Generator.Category.RING);
 				result.levelKnown = item.levelKnown;
 				result.cursed = item.cursed;
 				result.cursedKnown = item.cursedKnown;
-				result.level(0);
+				if (item.visiblyUpgraded() == 10){
+					result.level(2);
+				} else if (item.visiblyUpgraded() >= 5){
+					result.level(1);
+				} else {
+					result.level(0);
+				}
 				return result;
 			} else {
 				return a;
@@ -307,6 +312,20 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		
 		return null;
 	}
+
+	public static Trinket changeTrinket(Trinket t){
+		Trinket n;
+		do {
+			n = (Trinket)Generator.random(Generator.Category.TRINKET);
+		} while ( Challenges.isItemBlocked(n) || n.getClass() == t.getClass());
+
+		n.level(t.trueLevel());
+		n.levelKnown = t.levelKnown;
+		n.cursedKnown = t.cursedKnown;
+		n.cursed = t.cursed;
+
+		return n;
+	}
 	
 	public static Wand changeWand( Wand w ) {
 		Wand n;
@@ -341,18 +360,18 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return n;
 	}
 
-	public static Trinket changeTrinket( Trinket t ){
-		Trinket n;
-		do {
-			n = (Trinket)Generator.random(Generator.Category.TRINKET);
-		} while ( Challenges.isItemBlocked(n) || n.getClass() == t.getClass());
-
-		n.level(t.trueLevel());
-		n.levelKnown = t.levelKnown;
-		n.cursed = t.cursed;
-
-		return n;
-	}
+//	public static Trinket changeTrinket( Trinket t ){
+//		Trinket n;
+//		do {
+//			n = (Trinket)Generator.random(Generator.Category.TRINKET);
+//		} while ( Challenges.isItemBlocked(n) || n.getClass() == t.getClass());
+//
+//		n.level(t.trueLevel());
+//		n.levelKnown = t.levelKnown;
+//		n.cursed = t.cursed;
+//
+//		return n;
+//	}
 	
 	public static Runestone changeStone( Runestone r ) {
 		Runestone n;

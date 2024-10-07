@@ -47,7 +47,7 @@ public class Pasty extends Food {
 
 		bones = true;
 	}
-	
+
 	@Override
 	public void reset() {
 		super.reset();
@@ -72,11 +72,11 @@ public class Pasty extends Food {
 				break;
 		}
 	}
-	
+
 	@Override
 	protected void satisfy(Hero hero) {
 		super.satisfy(hero);
-		
+
 		switch(RegularLevel.holiday){
 			case NONE:
 				break; //do nothing extra
@@ -144,7 +144,7 @@ public class Pasty extends Food {
 			case XMAS:
 				return Messages.get(this, "cane_desc");
 			case ZQJ:
-				return Messages.get(this, "moon_desc", Dungeon.hero.name());
+				return Messages.get(this, "moon_desc", Dungeon.hero == null ? "" :Dungeon.hero.name());
 			case CJ:
 				return Messages.get(this, "fish_desc");
 			case QMJ:
@@ -159,7 +159,7 @@ public class Pasty extends Food {
 			energy = Hunger.HUNGRY/2;
 		}
 
-    }
+	}
 
 	public static class QingKong extends Food {
 
@@ -175,8 +175,8 @@ public class Pasty extends Food {
 			Buff.affect(hero, MindVision.class, 5f);
 		}
 
-    }
-	
+	}
+
 	@Override
 	public int value() {
 		return 20 * quantity;

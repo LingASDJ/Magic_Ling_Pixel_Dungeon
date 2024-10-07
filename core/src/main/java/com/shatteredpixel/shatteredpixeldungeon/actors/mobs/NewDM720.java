@@ -99,7 +99,7 @@ public class NewDM720 extends MolotovHuntsman {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll( 15, 25 );
+        return Random.NormalIntRange( 15, 25 );
     }
 
     @Override

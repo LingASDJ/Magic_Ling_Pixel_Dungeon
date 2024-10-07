@@ -57,7 +57,7 @@ public class SRPDHBLR extends Mob {
     }
 
     public int damageRoll() {
-        return Char.combatRoll(11, 12);
+        return Random.NormalIntRange(11, 12);
     }
 
     public int attackProc(Char enemy, int damage) {

@@ -75,7 +75,7 @@ public class DrTerror extends Mob {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll(26, 34);
+        return Random.NormalIntRange(26, 34);
     }
 
     @Override

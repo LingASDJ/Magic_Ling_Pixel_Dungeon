@@ -127,7 +127,7 @@ public class WandOfAnmy extends DamageWand {
     }
 
     @Override
-    protected int initialCharges() {
+    public int initialCharges() {
         return 1;
     }
 

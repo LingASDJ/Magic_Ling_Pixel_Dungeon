@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FetidRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollTrickster;
@@ -50,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ItemLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
@@ -74,12 +76,16 @@ public class Ghost extends NPC {
 	}
 
 	@Override
+	public Notes.Landmark landmark() {
+		return Notes.Landmark.GHOST;
+	}
+
+	@Override
 	protected boolean act() {
-		if (Quest.processed()) {
-			target = hero.pos;
-		}
-		if (Dungeon.level.heroFOV[pos] && !Quest.completed()){
-			Notes.add( Notes.Landmark.GHOST );
+		if (Dungeon.hero.buff(AscensionChallenge.class) != null){
+			die(null);
+			Notes.remove( landmark() );
+			return true;
 		}
 		return super.act();
 	}
@@ -188,7 +194,6 @@ public class Ghost extends NPC {
 			if (questBoss.pos != -1) {
 				GameScene.add(questBoss);
 				Quest.given = true;
-				Notes.add( Notes.Landmark.GHOST );
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {
@@ -332,13 +337,13 @@ public class Ghost extends NPC {
 			armor.upgrade(itemLevel);
 		}
 
-		public static void spawn( SewerLevel level ) {
+		public static void spawn( SewerLevel level, Room room ) {
 			if (!spawned && Dungeon.depth > 1 && Random.Int( 5 - Dungeon.depth ) == 0) {
 
 				Ghost ghost = new Ghost();
 				do {
-					ghost.pos = level.randomRespawnCell( ghost );
-				} while (ghost.pos == -1);
+					ghost.pos = level.pointToCell(room.random());
+				} while (ghost.pos == -1 || level.solid[ghost.pos] || ghost.pos == level.exit());
 				level.mobs.add( ghost );
 
 				spawned = true;

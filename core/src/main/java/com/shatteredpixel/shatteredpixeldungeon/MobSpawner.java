@@ -28,6 +28,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.AnomaloCaris;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.ThreeLeafBug;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.Turtle;
@@ -46,16 +47,37 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Bestiary {
+public class MobSpawner extends Actor {
+	{
+		actPriority = BUFF_PRIO; //as if it were a buff.
+	}
 
-	public static ArrayList<Class<? extends Mob>> getMobRotation( int depth ){
-		ArrayList<Class<? extends Mob>> mobs;
+	@Override
+	protected boolean act() {
 
-		if(!(Dungeon.isChallenged(RLPT)) || Dungeon.depth < 6 && Dungeon.isChallenged(RLPT)){
-			mobs = standardMobRotation( depth );
+		if (Dungeon.level.mobCount() < Dungeon.level.mobLimit()) {
+
+			if (Dungeon.level.spawnMob(12)){
+				spend(Dungeon.level.respawnCooldown());
+			} else {
+				//try again in 1 turn
+				spend(TICK);
+			}
+
 		} else {
-			mobs = rlptMobDied( depth );
+			spend(Dungeon.level.respawnCooldown());
 		}
+
+		return true;
+	}
+
+	public void resetCooldown(){
+		spend(-cooldown());
+		spend(Dungeon.level.respawnCooldown());
+	}
+
+	public static ArrayList<Class<? extends Mob>> getMobRotation(int depth ){
+		ArrayList<Class<? extends Mob>> mobs = standardMobRotation( depth );
 		addRareMobs(depth, mobs);
 		swapMobAlts(mobs);
 
@@ -359,15 +381,11 @@ public class Bestiary {
 								Golem.class));
 				}
 
-			case 21:
+			case 21: case 22:
 				//3x succubus, 3x evil eye
 				return new ArrayList<>(Arrays.asList(
 						Eye.class,ShieldHuntsman.class, DrTerror.class));
-			case 22:
-				//3x succubus, 3x evil eye
-				return new ArrayList<>(Arrays.asList(
-								Eye.class,ShieldHuntsman.class,DrTerror.class));
-			case 23:
+            case 23:
 				//1x: succubus, 2x evil eye, 3x scorpio
 				return new ArrayList<>(Arrays.asList(
 								Eye.class,ShieldHuntsman.class, DrTerror.class));

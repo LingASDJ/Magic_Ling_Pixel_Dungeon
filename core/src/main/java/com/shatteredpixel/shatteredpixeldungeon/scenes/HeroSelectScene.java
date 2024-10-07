@@ -487,26 +487,26 @@ public class HeroSelectScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				if (Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_1)){
-						Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextInput(Messages.get(WndStartGame.class,"custom_name"),
-								Messages.get(WndStartGame.class, "custom_name_desc")+SPDSettings.heroName(),
-								SPDSettings.heroName(), 20,
-								false, Messages.get(WndStartGame.class,"custom_name_set"),
-								Messages.get(WndStartGame.class,"custom_name_clear")){
-							@Override
-							public void onSelect(boolean name, String str) {
-								if (name) {
-									SPDSettings.heroName(str);
-								} else {
-									SPDSettings.heroName("");
-								}
-								icon(Icons.get(SPDSettings.heroName().equals("") ? RENAME_OFF : Icons.RENAME_ON));
+					Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextInput(Messages.get(WndStartGame.class,"custom_name"),
+							Messages.get(WndStartGame.class, "custom_name_desc")+SPDSettings.heroName(),
+							SPDSettings.heroName(), 20,
+							false, Messages.get(WndStartGame.class,"custom_name_set"),
+							Messages.get(WndStartGame.class,"custom_name_clear")){
+						@Override
+						public void onSelect(boolean name, String str) {
+							if (name) {
+								SPDSettings.heroName(str);
+							} else {
+								SPDSettings.heroName("");
 							}
-						}));
-					} else {
-						ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(HeroSelectScene.class,"unlock_rename")));
-					}
-
+							icon(Icons.get(SPDSettings.heroName().equals("") ? RENAME_OFF : Icons.RENAME_ON));
+						}
+					}));
+				} else {
+					ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(HeroSelectScene.class,"unlock_rename")));
 				}
+
+			}
 		};
 		Rename.setSize( BUTTON_HEIGHT, BUTTON_HEIGHT );
 		Rename.setPos( frame.x + frame.width + FRAME_MARGIN_X, frame.y-41+ frame.height-41- BUTTON_HEIGHT);

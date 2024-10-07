@@ -56,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetributio
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.AlchemyScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -492,6 +493,7 @@ public class DriedRose extends Artifact {
 
 		@Override
 		public boolean doPickUp(Hero hero, int pos) {
+			Catalog.setSeen(getClass());
 			DriedRose rose = hero.belongings.getItem( DriedRose.class );
 
 			if (rose == null){
@@ -504,6 +506,7 @@ public class DriedRose extends Artifact {
 			} else {
 
 				rose.upgrade();
+				Catalog.countUse(rose.getClass());
 				if (rose.level() == rose.levelCap) {
 					GLog.p( Messages.get(this, "maxlevel") );
 				} else
@@ -634,7 +637,7 @@ public class DriedRose extends Artifact {
 			if (rose != null && rose.weapon != null){
 				dmg += rose.weapon.damageRoll(this);
 			} else {
-				dmg += Char.combatRoll(0, 5);
+				dmg += Random.NormalIntRange(0, 5);
 			}
 			
 			return dmg;
@@ -720,10 +723,10 @@ public class DriedRose extends Artifact {
 		public int drRoll() {
 			int dr = super.drRoll();
 			if (rose != null && rose.armor != null){
-				dr += Char.combatRoll( rose.armor.DRMin(), rose.armor.DRMax());
+				dr += Random.NormalIntRange( rose.armor.DRMin(), rose.armor.DRMax());
 			}
 			if (rose != null && rose.weapon != null){
-				dr += Char.combatRoll( 0, rose.weapon.defenseFactor( this ));
+				dr += Random.NormalIntRange( 0, rose.weapon.defenseFactor( this ));
 			}
 			return dr;
 		}

@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessNoMoney;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Banner;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
@@ -204,7 +205,7 @@ public class WndStory extends Window {
 	public void hide() {
 		super.hide();
 		Banner mapnameSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
-		if(!Statistics.bossRushMode){
+		if(!Statistics.bossRushMode && Game.scene() instanceof GameScene){
 			switch (Dungeon.depth) {
 				case 0:
 					if(!Dungeon.isChallenged(CS)){

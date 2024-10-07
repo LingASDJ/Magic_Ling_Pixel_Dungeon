@@ -153,50 +153,58 @@ public class Rival extends Boss implements Callback {
     public Rival() {
         super();
 
-        int lvl = hero.lvl;
+        int lvl = Dungeon.hero == null ? 30 : hero.lvl;
 
-        //melee
-        do {
-            weapon = (MeleeWeapon)Generator.random(Generator.Category.WEAPON);
-        } while (weapon.cursed);
-        weapon.enchant(Enchantment.random());
-        weapon.identify();
+        if(hero != null){
+            //melee
+            do {
+                weapon = (MeleeWeapon)Generator.random(Generator.Category.WEAPON);
+            } while (weapon.cursed);
+            weapon.enchant(Enchantment.random());
+            weapon.identify();
 
-        flying = true;
+            flying = true;
 
-        //armor
-        do {
-            armor = (Armor)Generator.random(Generator.Category.ARMOR);
-        } while (armor.cursed);
-        armor.inscribe(Glyph.random());
-        armor.identify();
+            //armor
+            do {
+                armor = (Armor)Generator.random(Generator.Category.ARMOR);
+            } while (armor.cursed);
+            armor.inscribe(Glyph.random());
+            armor.identify();
 
-        //misc1
-        do {
-            misc1 = (KindofMisc)Generator.random(Generator.Category.RING);
-        } while (misc1.cursed);
-        misc1.identify();
+            //misc1
+            do {
+                misc1 = (KindofMisc)Generator.random(Generator.Category.RING);
+            } while (misc1.cursed);
+            misc1.identify();
 
-        //misc2
-        do {
-            misc2 = (KindofMisc)Generator.random(Generator.Category.RING);
-        } while (misc2.cursed);
-        misc2.identify();
+            //misc2
+            do {
+                misc2 = (KindofMisc)Generator.random(Generator.Category.RING);
+            } while (misc2.cursed);
+            misc2.identify();
 
-        //wand
-        do {
-            wand = RandomWand();
-        } while (wand.cursed);
-        wand.updateLevel();
-        wand.curCharges = 20;
-        wand.identify();
+            //wand
+            do {
+                wand = RandomWand();
+            } while (wand.cursed);
+            wand.updateLevel();
+            wand.curCharges = 20;
+            wand.identify();
 
-        //missile
-        do {
-            missile = (MissileWeapon)Generator.random(Generator.Category.MISSILE);
-        } while (missile.cursed);
+            //missile
+            do {
+                missile = (MissileWeapon)Generator.random(Generator.Category.MISSILE);
+            } while (missile.cursed);
+
+            defenseSkill = (int)(armor.evasionFactor( this, 7 + lvl ));
+        } else {
+            defenseSkill = 7 + lvl;
+        }
+
+
         HP = HT = 50 + lvl * 5;
-        defenseSkill = (int)(armor.evasionFactor( this, 7 + lvl ));
+
 
         EXP = lvl * 17;
 

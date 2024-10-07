@@ -171,7 +171,7 @@ public class StatusPane extends Component {
 		};
 		add(heroInfo);
 
-		avatar = HeroSprite.avatar( hero.heroClass, lastTier );
+		avatar = HeroSprite.avatar( Dungeon.hero );
 		add( avatar );
 
 		talentBlink = 0;
@@ -734,5 +734,9 @@ public class StatusPane extends Component {
 		compass.alpha(value);
 		busy.alpha(value);
 		counter.alpha(value);
+	}
+
+	public void updateAvatar(){
+		avatar.copy( HeroSprite.avatar( Dungeon.hero ) );
 	}
 }

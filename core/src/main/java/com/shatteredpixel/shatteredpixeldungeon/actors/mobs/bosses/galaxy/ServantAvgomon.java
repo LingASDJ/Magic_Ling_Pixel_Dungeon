@@ -24,6 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ServantAvgomonSprite;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 public class ServantAvgomon extends Mob {
     //they can only use their chains once
@@ -56,7 +57,7 @@ public class ServantAvgomon extends Mob {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll(12, 24);
+        return Random.NormalIntRange(12, 24);
     }
 
     private boolean chain(int target){
@@ -129,7 +130,7 @@ public class ServantAvgomon extends Mob {
 
     @Override
     public int drRoll() {
-        return super.drRoll() + Char.combatRoll(6, 10);
+        return super.drRoll() + Random.NormalIntRange(6, 10);
     }
 
     private final String CHAINSUSED = "chainsused";

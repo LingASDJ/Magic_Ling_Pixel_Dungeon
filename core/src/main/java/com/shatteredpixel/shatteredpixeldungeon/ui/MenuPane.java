@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -45,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndGame;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndJournal;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.watabou.glwrap.Blending;
 import com.watabou.input.GameAction;
 import com.watabou.noosa.BitmapText;
@@ -136,7 +138,7 @@ public class MenuPane extends Component {
 			@Override
 			protected String hoverText() {
 				switch (Dungeon.level.feeling) {
-					case CHASM:     return Messages.get(GameScene.class, "chasm");
+					default: case CHASM:     return Messages.get(GameScene.class, "chasm");
 					case WATER:     return Messages.get(GameScene.class, "water");
 					case GRASS:     return Messages.get(GameScene.class, "grass");
 					case DARK:      return Messages.get(GameScene.class, "dark");
@@ -145,14 +147,19 @@ public class MenuPane extends Component {
 					case BIGTRAP:     return Messages.get(GameScene.class, "moretraps");
 					case SECRETS:   return Messages.get(GameScene.class, "secrets");
 				}
-				return null;
 			}
 
 			@Override
 			protected void onClick() {
 				super.onClick();
-				//just open journal for now, maybe have it open landmarks after expanding that page?
-				GameScene.show( new WndJournal() );
+
+				if (Dungeon.level.feeling == Level.Feeling.NONE){
+					GameScene.show(new WndJournal());
+				} else {
+					GameScene.show(new WndTitledMessage(Icons.getLarge(Dungeon.level.feeling),
+							Messages.titleCase(Dungeon.level.feeling.title()),
+							Dungeon.level.feeling.desc()));
+				}
 			}
 		};
 		add(depthButton);
@@ -327,7 +334,7 @@ public class MenuPane extends Component {
 			bg = new Image( Assets.Interfaces.MENU_BTN, 2, 2, 13, 11 );
 			add( bg );
 
-			journalIcon = new Image( Assets.Interfaces.MENU_BTN, 31, 0, 11, 7);
+			journalIcon = new Image( Assets.Interfaces.MENU_BTN, 31, 0, 11, 6);
 			add( journalIcon );
 
 			keyIcon = new KeyDisplay();
@@ -401,9 +408,15 @@ public class MenuPane extends Component {
 			keyIcon.am = journalIcon.am = 1;
 			if (flashingPage != null){
 				if (flashingDoc == Document.ALCHEMY_GUIDE){
-					WndJournal.last_index = 1;
+					WndJournal.last_index = 2;
 					GameScene.show( new WndJournal() );
 				} else if (flashingDoc.pageNames().contains(flashingPage)){
+					if (flashingDoc == Document.ADVENTURERS_GUIDE){
+						WndJournal.last_index = 1;
+					} else if (flashingDoc.isLoreDoc()){
+						WndJournal.last_index = 3;
+						WndJournal.CatalogTab.currentItemIdx = 3;
+					}
 					GameScene.show( new WndStory( flashingDoc.pageSprite(flashingPage),
 							flashingDoc.pageTitle(flashingPage),
 							flashingDoc.pageBody(flashingPage) ){

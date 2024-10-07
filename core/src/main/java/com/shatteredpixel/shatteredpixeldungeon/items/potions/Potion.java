@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.ItemStatusHandler;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
@@ -162,6 +163,10 @@ public class Potion extends Item {
 	public static void initColors() {
 		handler = new ItemStatusHandler<>( (Class<? extends Potion>[])Generator.Category.POTION.classes, colors );
 	}
+
+	public static void clearColors() {
+		handler = null;
+	}
 	
 	public static void save( Bundle bundle ) {
 		handler.save( bundle );
@@ -208,6 +213,9 @@ public class Potion extends Item {
 		if (handler != null && handler.contains(this)) {
 			image = handler.image(this);
 			color = handler.label(this);
+		} else {
+			image = ItemSpriteSheet.POTION_CRIMSON;
+			color = "crimson";
 		}
 	}
 
@@ -301,8 +309,11 @@ public class Potion extends Item {
 		
 		hero.sprite.operate( hero.pos );
 
-		if (!anonymous){
-			Talent.onPotionUsed(curUser, curUser.pos, talentFactor);
+		if (!anonymous) {
+			Catalog.countUse(getClass());
+			if (Random.Float() < talentChance) {
+				Talent.onPotionUsed(curUser, curUser.pos, talentFactor);
+			}
 		}
 	}
 	
@@ -314,11 +325,17 @@ public class Potion extends Item {
 			
 		} else  {
 
-			Dungeon.level.pressCell( cell );
+			//aqua brew and storm clouds specifically don't press cells, so they can disarm traps
+			if (!(this instanceof AquaBrew) && !(this instanceof PotionOfStormClouds)){
+				Dungeon.level.pressCell( cell );
+			}
 			shatter( cell );
 
-			if (!anonymous){
-				Talent.onPotionUsed(curUser, cell, talentFactor);
+			if (!anonymous) {
+				Catalog.countUse(getClass());
+				if (Random.Float() < talentChance) {
+					Talent.onPotionUsed(curUser, curUser.pos, talentFactor);
+				}
 			}
 			
 		}
@@ -372,10 +389,16 @@ public class Potion extends Item {
 	public String name() {
 		return isKnown() ? super.name() : Messages.get(this, color);
 	}
-	
+
 	@Override
 	public String info() {
-		return isKnown() ? desc() : Messages.get(this, "unknown_desc");
+		//skip custom notes if anonymized and un-Ided
+		return (anonymous && (handler == null || !handler.isKnown( this ))) ? desc() : super.info();
+	}
+
+	@Override
+	public String desc() {
+		return isKnown() ? super.desc() : Messages.get(this, "unknown_desc");
 	}
 	
 	@Override
@@ -397,7 +420,7 @@ public class Potion extends Item {
 	}
 	
 	public static boolean allKnown() {
-		return handler.known().size() == Generator.Category.POTION.classes.length;
+		return handler != null && handler.known().size() == Generator.Category.POTION.classes.length;
 	}
 	
 	protected int splashColor(){

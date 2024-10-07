@@ -92,7 +92,7 @@ public class SRPDICLR extends Mob {
     }
 
     public int damageRoll() {
-        return Char.combatRoll(5, 5);
+        return Random.NormalIntRange(5, 5);
     }
 
     public int attackProc(Char enemy, int damage) {

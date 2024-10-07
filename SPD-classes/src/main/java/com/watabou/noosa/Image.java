@@ -21,8 +21,6 @@
 
 package com.watabou.noosa;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.layout;
-
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.glwrap.Quad;
@@ -102,6 +100,9 @@ public class Image extends Visual {
 		
 		updateFrame();
 		updateVertices();
+
+		rm = other.rm; gm = other.gm; bm = other.bm; am = other.am;
+		ra = other.ra; ga = other.ga; ba = other.ba; aa = other.aa;
 	}
 	
 	protected void updateFrame() {

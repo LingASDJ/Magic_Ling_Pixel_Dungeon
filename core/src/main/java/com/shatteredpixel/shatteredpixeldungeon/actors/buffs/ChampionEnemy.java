@@ -39,8 +39,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
@@ -825,7 +825,7 @@ public abstract class ChampionEnemy extends Buff {
 					}
 					if (spawnPoints.size() > 0) {
 						Actor.fixTime();
-						m =  Reflection.newInstance(Bestiary.getMobRotation(depth).get(0));
+						m =  Reflection.newInstance(MobSpawner.getMobRotation(depth).get(0));
 						for (Buff s : target.buffs(WandOfAnmy.AllyToRestartOK.class)){
 						if(s!=null) Buff.affect(m,WandOfAnmy.AllyToRestartOK.class);
 					}

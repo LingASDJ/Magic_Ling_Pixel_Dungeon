@@ -237,7 +237,7 @@ public class ColdGurad extends Mob implements Callback {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll( 10+Dungeon.depth, 16+Dungeon.depth );
+        return Random.NormalIntRange( 10+Dungeon.depth, 16+Dungeon.depth );
     }
 
     @Override

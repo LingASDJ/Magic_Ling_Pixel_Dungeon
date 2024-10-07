@@ -39,8 +39,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM720;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PylonCS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
@@ -366,7 +366,7 @@ public class CaveTwoBossLevel extends Level {
                                 }
                                 for (int i = 0; i < 85; i++) {
                                     Mob m;
-                                    m =  Reflection.newInstance(Bestiary.getMobRotation(Random.IntRange(1,25)).get(0));
+                                    m =  Reflection.newInstance(MobSpawner.getMobRotation(Random.IntRange(1,25)).get(0));
                                     do {
                                         m.pos = pointToCell(Random.element(mainArena.getPoints()));
                                     } while (!openSpace[m.pos] || map[m.pos] == Terrain.EMPTY_SP || Actor.findChar(m.pos) != null);

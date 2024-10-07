@@ -1,5 +1,9 @@
 ![banner](https://socialify.git.ci/LingASDJ/Magic_Ling_Pixel_Dungeon/image?description=1&font=KoHo&forks=1&issues=1&language=1&name=1&owner=1&pattern=Brick%20Wall&pulls=1&stargazers=1&theme=Dark)
 
+# Suggestion
+
+If you want to develop, you have to contact me by sending me an email clingsd@gmail.com, or remove the Google service dependency package.  
+If you don't, you won't be able to compile the APK and Desktop won't be affected.  
 
 <div align="left"> 
 
