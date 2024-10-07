@@ -1154,6 +1154,40 @@ public class ItemSpriteSheet {
         assignItemRect(FLARE,       14, 15);
     }
 
+
+    private static final int PROP1  = xy(9,46);
+    private static final int PROP2  = xy(9,47);
+    private static final int PROP3  = xy(9,48);
+    private static final int PROP4  = xy(9,49);
+
+    public static final int STARSACHET = PROP1+0;
+    public static final int RAPIDEARTHROOT = PROP1+1;
+    public static final int PORTABLEWHETSTONE = PROP1+2;
+    public static final int NEWSTEM = PROP1+3;
+    public static final int LUCKYGLOVE = PROP1+4;
+    public static final int EMOTIONALAGGREGATION = PROP1+5;
+    public static final int MONOCULAR = PROP1+6;
+    public static final int DELICIOUSRECIPE = PROP1+7;
+    public static final int KINGHTSTABBINGSWORD = PROP2+0;
+    public static final int WENSTUDYINGPAPERONE = PROP2+1;
+    public static final int YANSTUDYINGPAPERTWO = PROP2+2;
+    public static final int ARMORSCALESOFBZMDR  = PROP2+3;
+    public static final int BROKENBONE = PROP2+4;
+    public static final int RUSTEDGOLDCOIN = PROP2+5;
+    public static final int CONfUSEDMIEMIETALISMAN = PROP2+6;
+    public static final int THEGRIEFOFSPEECHLESS = PROP2+7;
+    public static final int BOTTLEDSPIRITS = PROP3+0;
+    public static final int BLOCKINGDRUG = PROP3+1;
+    public static final int TERRORDOLL = PROP3+2;
+    public static final int TERRORDOLLB = PROP4+1;
+    public static final int CLOAKFRAGMENTSOFBZMDR = PROP3+3;
+    public static final int EMOTIONALAGGREGATIONB = PROP3+4;
+    public static final int HEARTOFCRASTALFRACTAL = PROP3+5;
+    public static final int WENSTUDYINGPAPERTWO = PROP3+6;
+    public static final int YANSTUDYINGPAPERONE = PROP3+7;
+    public static final int NOTEOFBZMDR = PROP4+0;
+
+
     //for smaller 8x8 icons that often accompany an item sprite
     public static class Icons {
 
@@ -1346,6 +1380,8 @@ public class ItemSpriteSheet {
         }
 
         //16 free slots
+
+
 
     }
 

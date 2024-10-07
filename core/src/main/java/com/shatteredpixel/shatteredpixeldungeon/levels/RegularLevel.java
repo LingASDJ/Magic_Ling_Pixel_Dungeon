@@ -370,17 +370,20 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(s);
 		}
 
-//		if (!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)) {
-			if (depth == 18 && !anCityQuestProgress && !Statistics.RandMode) {
-				initRooms.add(new DreamcatcherRoom());
-				DragonGirlBlue.Quest.spawned = true;
-				anCityQuestProgress = true;
-			}
-//		}
 
-		if (Dungeon.shopOnLevel() && branch == 0) {
+		if (depth == 18 && !anCityQuestProgress && !Statistics.RandMode) {
+			initRooms.add(new DreamcatcherRoom());
+			DragonGirlBlue.Quest.spawned = true;
+			anCityQuestProgress = true;
+		}
+
+		//Normal Shop
+		if (Dungeon.shopOnLevel() && branch == 0 && !Statistics.bossRushMode) {
 			initRooms.add(new ShopRoom());
-		} else if(Statistics.bossRushMode && branch == 8 && Dungeon.shopRushLevel()){
+		}
+
+		//Rush Shop
+		if(Statistics.bossRushMode && branch == 0 && Dungeon.shopRushLevel()){
 			initRooms.add(new ShopRoom());
 		}
 

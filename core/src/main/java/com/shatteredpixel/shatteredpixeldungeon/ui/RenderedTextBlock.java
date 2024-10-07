@@ -48,7 +48,7 @@ public class RenderedTextBlock extends Component {
 	private int hightlightColor = Window.TITLE_COLOR;
 	private int RedColor = Window.R_COLOR;
 	private int GreenColor = Window.G_COLOR;
-	private int BlueColor = Window.B_COLOR;
+	private int BlueColor = Window.ORAGNECOLOR;
 	private int PinkColor = Window.Pink_COLOR;
 	private int DeepColor = Window.DeepPK_COLOR;
 	private int BLACKColor = Window.CBLACK;
@@ -226,7 +226,7 @@ public class RenderedTextBlock extends Component {
 	}
 
 	public synchronized void RHightlighting(boolean enabled){
-		setHightlighting(enabled, Window.B_COLOR);
+		setHightlighting(enabled, Window.ORAGNECOLOR);
 	}
 
 	public synchronized void RHightlighting(boolean enabled, int color){

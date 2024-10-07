@@ -190,7 +190,7 @@ public class SeedFinder {
 		return heaps;
 	}
 
-	private boolean testSeed(String seed, int floors) {
+	private boolean testSeedALL(String seed, int floors) {
 		SPDSettings.customSeed(seed);
 		GamesInProgress.selectedClass = HeroClass.WARRIOR;
 		Dungeon.init();
@@ -264,7 +264,9 @@ public class SeedFinder {
 					}
 				}
 			}
-
+			if(areAllTrue(itemsFound)){
+				return true;
+			}
 			Dungeon.depth++;
 		}
 
@@ -449,6 +451,7 @@ public class SeedFinder {
 				addTextQuest("【 " + Messages.get(this, "sad_ghost_reward") + " 】", rewards, builder);
 			}
 
+			//红龙
 			if (RedDragon.Quest.armor != null) {
 				ArrayList<Item> rewards = new ArrayList<>();
 				rewards.add(RedDragon.Quest.weapon.identify());

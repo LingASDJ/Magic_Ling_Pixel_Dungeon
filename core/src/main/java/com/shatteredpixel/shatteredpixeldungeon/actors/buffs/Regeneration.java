@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.NewStem;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube;
@@ -55,6 +56,12 @@ public class Regeneration extends Buff {
 			}
 
 			if (target.HP < regencap() && !((Hero)target).isStarving()) {
+
+				if(((Hero) target).belongings.getItem(NewStem.class)!=null){
+					spend(15f);
+					target.HP += 1;
+				}
+
 				if (regenOn()) {
 					target.HP += 1;
 					if (target.HP == regencap()) {

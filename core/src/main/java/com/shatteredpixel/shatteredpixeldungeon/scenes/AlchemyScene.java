@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.DeliciousRecipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
@@ -674,6 +675,10 @@ public class AlchemyScene extends PixelScene {
 			}
 			Catalog.countUses(EnergyCrystal.class, cost);
 			Dungeon.energy -= cost;
+			if(cost!=0 && Dungeon.hero.belongings.getItem(DeliciousRecipe.class)!=null){
+				Dungeon.energy += 2;
+				GLog.n(Messages.get(DeliciousRecipe.class,"reduce"));
+			}
 
 			String energyText = Messages.get(AlchemyScene.class, "energy") + " " + Dungeon.energy;
 			if (toolkit != null){

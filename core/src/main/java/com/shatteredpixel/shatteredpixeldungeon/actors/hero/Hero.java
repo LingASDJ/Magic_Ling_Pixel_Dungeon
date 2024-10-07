@@ -125,6 +125,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.EmotionalAggregation;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Monocular;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.PortableWhetstone;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
+import com.shatteredpixel.shatteredpixeldungeon.items.props.StarSachet;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
@@ -637,13 +643,6 @@ public class Hero extends Char {
 			}
 			return INFINITE_EVASION;
 		}
-
-		if (buff(RoundShield.GuardTracker.class) != null){
-			return INFINITE_EVASION;
-		}
-
-		float evasion = defenseSkill;
-
 		evasion *= RingOfEvasion.evasionMultiplier( this );
 
 		if (buff(Talent.LiquidAgilEVATracker.class) != null){
@@ -1625,12 +1624,118 @@ public class Hero extends Char {
 			else if (pointsInTalent(Talent.IRON_STOMACH) == 2)  dmg = Math.round(dmg*0.00f);
 		}
 
+
+		if(hasTalent(Talent.PAIN_SCAR) && HP+ shielding() -dmg<=0){
+			int point = pointsInTalent(Talent.PAIN_SCAR);
+			float ber = 0;
+
+			if(buff(Berserk.class)!=null)
+				ber = buff(Berserk.class).getPower();
+
+			Ankh ankh = null;
+			for (Ankh i : belongings.getAllItems(Ankh.class)) {
+				if (ankh == null || i.isBlessed()) {
+					ankh = i;
+				}
+			}
+
+			boolean canResist = false;
+
+			switch (point){
+
+				case 1:
+					if(ber>=0.2f&&(originalHT-resistHealth)>20) {
+						canResist = true;
+					}
+					break;
+
+				case 2:
+
+					if(ber>=0.15f&&(originalHT-resistHealth)>15) {
+						canResist = true;
+					}
+					break;
+
+				case 3:
+
+					if(ber>=0.1f&&(originalHT-resistHealth)>10) {
+						canResist = true;
+					}
+					break;
+			}
+
+			int RH = resistHealth;
+
+			if(ankh != null && canResist){
+				GameScene.show(new WndOptions(new ItemSprite(ItemSpriteSheet.ANKH),
+						Messages.get(Talent.PAIN_SCAR,"title"),
+						Messages.get(Talent.PAIN_SCAR,"desc"),
+						Messages.get(Talent.PAIN_SCAR,"prompt"),
+						Messages.get(Talent.PAIN_SCAR,"cancel")){
+					@Override
+					protected void onSelect(int index){
+						super.onSelect(index);
+						if( index == 0 ){
+							switch(pointsInTalent(Talent.PAIN_SCAR)){
+								case 1:
+									HT -= 20;
+									buff(Berserk.class).reducePower(0.2f);
+									GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+									resistHealth +=20;
+									return;
+								case 2:
+									HT -= 15;
+									buff(Berserk.class).reducePower(0.15f);
+									GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+									resistHealth += 15;
+									return;
+								case 3:
+									HT -= 10;
+									buff(Berserk.class).reducePower(0.1f);
+									GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+									resistHealth += 10;
+									return;
+							}
+						}else if(index == 1 ){
+							die(src);
+						}
+					}
+				});
+				return;
+			} else if (canResist) {
+				switch(pointsInTalent(Talent.PAIN_SCAR)){
+					case 1:
+						HT -= 20;
+						buff(Berserk.class).reducePower(0.2f);
+						GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+						resistHealth +=20;
+						return;
+					case 2:
+						HT -= 15;
+						buff(Berserk.class).reducePower(0.15f);
+						GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+						resistHealth += 15;
+						return;
+					case 3:
+						HT -= 10;
+						buff(Berserk.class).reducePower(0.1f);
+						GLog.n(Messages.get(Talent.PAIN_SCAR,"resistDeath"));
+						resistHealth += 10;
+						return;
+				}
+			}
+			if(RH < resistHealth) return;
+
+		}
+
 		int preHP = HP + shielding();
 		if (src instanceof Hunger) preHP -= shielding();
 		super.damage( dmg, src );
 		int postHP = HP + shielding();
 		if (src instanceof Hunger) postHP -= shielding();
 		int effectiveDamage = preHP - postHP;
+
+		if(belongings.getItem(ArmorScalesOfBzmdr.class)!=null) effectiveDamage -= (int) getZone();
 
 		if (effectiveDamage <= 0) return;
 
@@ -2574,6 +2679,7 @@ public class Hero extends Char {
 			}
 		}
 
+		resistHealth *= 0.8f;
 		updateHT(false);
 	}
 

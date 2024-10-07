@@ -155,7 +155,7 @@ public class SPDSettings extends GameSettings {
 
 	private static final String KEY_ICE = "hice";
 
-	private static final String KEY_UP_ICE = "iceupdate_15";
+	private static final String KEY_UP_ICE = "iceupdate_21";
 
 	private static final String KEY_DARK	= "dark_ui";
 
@@ -981,7 +981,7 @@ public class SPDSettings extends GameSettings {
 	}
 
 	public static int seedfinderFloors() {
-		return getInt( KEY_FLOORS, 9, 1, 24 );
+		return getInt( KEY_FLOORS, 7, 1, 31 );
 	}
 
 	public static void seeditemsText(String value) {

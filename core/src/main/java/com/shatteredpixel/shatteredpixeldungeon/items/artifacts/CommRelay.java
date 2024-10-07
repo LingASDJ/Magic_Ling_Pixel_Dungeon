@@ -9,7 +9,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -27,7 +26,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class CommRelay extends Artifact implements Item.AnimationItem {
+public class CommRelay extends Artifact {
 
     {
         image = ItemSpriteSheet.DM100RELEY;

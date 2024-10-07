@@ -46,16 +46,16 @@ public class ThanksScene extends PixelScene {
         Component content = list.content();
         content.clear();
 
-        CreditsBlock rgjt = new CreditsBlock(true, Window.Pink_COLOR,
-                "MagicLing X Depersonalization",
-                new Image("thanks/cat.png", 0, 0, 16, 16),
-                "本次_索托斯副本_单向联动：\n\n" +
-                        "音乐和素材已经过 人格解体_喵法自然_官方授权！\n\n"
-                ,
-                "人格解体Steam页面-(30%折扣：截止到2024-8.23!)",
-                "https://store.steampowered.com/app/1477070");
-        rgjt.setRect((Camera.main.width - colWidth)/2f-10, 120, colWidth+20, 0);
-        content.add(rgjt);
+//        CreditsBlock rgjt = new CreditsBlock(true, Window.Pink_COLOR,
+//                "MagicLing X Depersonalization",
+//                new Image("thanks/cat.png", 0, 0, 16, 16),
+//                "本次_索托斯副本_单向联动：\n\n" +
+//                        "音乐和素材已经过 人格解体_喵法自然_官方授权！\n\n"
+//                ,
+//                "人格解体Steam页面-(30%折扣：截止到2024-8.23!)",
+//                "https://store.steampowered.com/app/1477070");
+//        rgjt.setRect((Camera.main.width - colWidth)/2f-10, 120, colWidth+20, 0);
+//        content.add(rgjt);
 
         CreditsBlock mispd = new CreditsBlock(true, Window.TITLE_COLOR,
                 "\n\nMagic Ling Pixel Dungeon",
@@ -64,7 +64,7 @@ public class ThanksScene extends PixelScene {
                 ,
                 null,
                 null);
-        mispd.setRect((Camera.main.width - colWidth)/2f-10, rgjt.bottom()+6, colWidth+20, 0);
+        mispd.setRect((Camera.main.width - colWidth)/2f-10, mispd.bottom()+6, colWidth+20, 0);
         content.add(mispd);
 
         //*** Musics Used ***
