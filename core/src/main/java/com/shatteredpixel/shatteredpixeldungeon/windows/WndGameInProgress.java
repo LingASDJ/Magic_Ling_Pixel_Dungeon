@@ -110,7 +110,7 @@ public class WndGameInProgress extends Window {
 			};
 			btnChallenges.icon(Icons.get(Icons.CHANGES));
 			float btnW = btnChallenges.reqWidth() + 2;
-			btnChallenges.setRect( (WIDTH - btnW)/2, pos, btnW , 18 );
+			btnChallenges.setRect( ((WIDTH - btnW)/2)+3.5f, pos, btnW , 18 );
 			add( btnChallenges );
 
 			btnGameInfo = new RedButton( Messages.get(this, "gameinfo") ) {
@@ -175,21 +175,20 @@ public class WndGameInProgress extends Window {
 		};
 		add(buttonSeed);
 		boolean multiLine=btnGameInfo.right()+buttonSeed.reqWidth()>WIDTH;
-		float btnX,btnY;
+		float btnX;
 		btnX = multiLine?2:btnGameInfo.right()+2;
-		btnY = multiLine?btnGameInfo.bottom()+2:pos;
-		buttonSeed.setRect(btnX, btnY, buttonSeed.reqWidth() + 1, 18);
+		buttonSeed.setRect(btnX, pos, buttonSeed.reqWidth() + 1, 18);
 
-		RedButton btDLC = new RedButton( Messages.get(this, "dlc") ) {
-			@Override
-			protected void onClick() {
-				//
-			}
-		};
-		btDLC.icon(new ItemSprite(ItemSpriteSheet.DIFFCULTBOOT));
-		btDLC.alpha(0.7f);
-		btDLC.setRect( 80, title.y, 40 , 18 );
-		//add( btDLC );
+//		RedButton btDLC = new RedButton( Messages.get(this, "dlc") ) {
+//			@Override
+//			protected void onClick() {
+//				//
+//			}
+//		};
+//		btDLC.icon(new ItemSprite(ItemSpriteSheet.DIFFCULTBOOT));
+//		btDLC.alpha(0.7f);
+//		btDLC.setRect( 80, title.y, 40 , 18 );
+//		//add( btDLC );
 
 		pos = buttonSeed.bottom() + GAP;
 		

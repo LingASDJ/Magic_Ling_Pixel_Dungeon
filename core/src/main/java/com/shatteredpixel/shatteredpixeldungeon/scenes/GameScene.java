@@ -90,6 +90,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundia
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -1206,6 +1207,67 @@ public class GameScene extends PixelScene {
 
 		customTiles = new Group();
 		terrain.add(customTiles);
+
+		//TODO Record Floor,Should May be Used Method
+		switch (Dungeon.level.feeling) {
+			case CHASM:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.CHASM_FLOOR);
+				break;
+			case WATER:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.WATER_FLOOR);
+				break;
+			case GRASS:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.GRASS_FLOOR);
+				break;
+			case DARK:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.DARK_FLOOR);
+				break;
+			case LARGE:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.LARGE_FLOOR);
+				break;
+			case TRAPS:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.TRAPS_FLOOR);
+				break;
+			case SECRETS:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.SECRETS_FLOOR);
+				break;
+
+			case BIGTRAP:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.BIGTRAP_FLOOR);
+				break;
+			case THREEWELL:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.THREEWELL_FLOOR);
+				break;
+			case LINKROOM:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.LINKROOM_FLOOR);
+				break;
+			case DIEDROOM:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.EXBOSS_FLOOR);
+				break;
+			case BIGROOMS:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.BIGROOM_FLOOR);
+				break;
+			case BLOOD:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.BLOOD_FLOOR);
+				break;
+			case SKYCITY:
+				GLog.w(Dungeon.level.feeling.desc());
+				Notes.add(Notes.Landmark.CLOUD_FLOOR);
+				break;
+		}
 
 		for( CustomTilemap visual : Dungeon.level.customTiles){
 			addCustomTile(visual);

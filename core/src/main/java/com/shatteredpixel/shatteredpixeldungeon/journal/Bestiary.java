@@ -32,8 +32,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ArmoredStatue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bandit;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BrownBat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CausticSlime;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ClearElemental;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdMagicRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalGuardian;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalMimic;
@@ -43,12 +47,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.EbonyMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FetidRat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FireGhost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlowerSlime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gnoll;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
@@ -60,31 +65,38 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Katydid;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MagicGirlDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MoloHR;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MolotovHuntsman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewBlackHost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDM720;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PhantomPiranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Pylon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PylonCS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedNecromancer;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedSwarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RipperDemon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotHeart;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotLasher;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDHBLR;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDICLRPRO;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Salamander;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Senior;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShieldHuntsman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime_Orange;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime_Red;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpectralNecromancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Succubus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
@@ -101,6 +113,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DictFish;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfMaster;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.FireDragon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.FireMagicDied;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.RoomStone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.SakaFishBoss;
@@ -109,6 +122,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush.Riva
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush.SkyGoo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruitsLasher;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.DiedClearElemet;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
@@ -118,6 +132,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RatKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.DM275;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GnollHero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GreenSlting;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
@@ -181,6 +198,15 @@ import java.util.LinkedHashMap;
 //contains all the game's various entities, mostly enemies, NPCS, and allies, but also traps and plants
 public enum Bestiary {
 
+	FOREST,
+	FOREST_BOSS,
+	ICEPRISON,
+	ICEPRISON_BOSS,
+	ICECAVE,
+	ICECAVE_BOSS,
+	CITY,
+	//HELL,
+
 	REGIONAL,
 	BOSSES,
 	UNIVERSAL,
@@ -226,11 +252,58 @@ public enum Bestiary {
 
 	static {
 
-		REGIONAL.addEntities(Rat.class, Snake.class, Gnoll.class, Swarm.class, Crab.class, Slime.class,
-				Skeleton.class, Thief.class, DM100.class, Guard.class, Necromancer.class,
-				Bat.class, Brute.class, Shaman.RedShaman.class, Shaman.BlueShaman.class, Shaman.PurpleShaman.class, Spinner.class, DM200.class,
-				Ghoul.class, Elemental.FireElemental.class, Elemental.FrostElemental.class, Elemental.ShockElemental.class, Warlock.class, Monk.class, Golem.class,
-				RipperDemon.class, DemonSpawner.class, Succubus.class, Eye.class, Scorpio.class);
+		FOREST.addEntities(
+				Rat.class, FlowerSlime.class, Katydid.class,
+				Gnoll.class, ClearElemental.class, Crab.class, Swarm.class,
+				Slime_Red.class, Slime_Orange.class, CausticSlime.class,
+				//EX
+				GreenSlting.class, Salamander.class, Albino.class);
+
+		FOREST_BOSS.addEntities(//Boss
+				CrivusFruits.class, CrivusFruitsLasher.class,
+
+				CrivusStarFruits.class, CrivusStarFruitsLasher.class,
+
+				FireDragon.class,
+				DiedClearElemet.ClearElemetalBlood.class,
+				DiedClearElemet.ClearElemetalGold.class,
+				DiedClearElemet.ClearElemetalGreen.class,
+				DiedClearElemet.ClearElemetalPure.class);
+
+		ICEPRISON.addEntities(
+				Skeleton.class, BrownBat.class, Thief.class,
+				DM100.class, Necromancer.class, Guard.class,
+				//EX
+				GnollHero.class, NewBlackHost.class, SpectralNecromancer.class,
+				Bandit.class, SRPDHBLR.class);
+
+		ICEPRISON_BOSS.addEntities(//Boss
+				Tengu.class, DiamondKnight.class, TPDoor.class, DCrystal.class);
+
+		ICECAVE.addEntities(Bat.class, ColdMagicRat.class,
+				FireGhost.class, DM200.class, RedSwarm.class,
+				Spinner.class, Brute.class,
+				//EX
+				MolotovHuntsman.class, ArmoredBrute.class,
+				DM201.class, RedNecromancer.class, DM275.class );
+
+		ICECAVE_BOSS.addEntities(//Boss
+				Pylon.class, DM300.class,
+				NewDM720.class, MoloHR.class, PylonCS.class,
+
+				SpellCaster.FrostCaster.class,
+				SpellCaster.BounceCaster.class,
+				SpellCaster.ExplosionCaster.class,
+				SpellCaster.LightCaster.class,
+				MagicGirlDead.class, SRPDICLRPRO.class);
+
+		CITY.addEntities(
+				Shaman.RedShaman.class, Shaman.BlueShaman.class, Shaman.PurpleShaman.class,
+				Monk.class, Elemental.FrostElemental.class, Elemental.ShockElemental.class,
+				Elemental.FireElemental.class,
+				BruteBot.class, Warlock.class, Golem.class, ShieldHuntsman.class
+				//EX
+				);
 
 		BOSSES.addEntities(
 				//T1

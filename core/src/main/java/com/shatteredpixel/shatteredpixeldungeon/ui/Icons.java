@@ -168,6 +168,7 @@ public enum Icons {
 	CHALLENGE_COLOR,
 	SCROLL_COLOR,
 
+	//2.5.0
 	SNAKE,
 
 	CATALOG,
@@ -181,6 +182,15 @@ public enum Icons {
 	STAIRS_LARGE,
 	STAIRS_TRAPS,
 	STAIRS_SECRETS,
+
+	STAIRS_BIGTRAP,
+	STAIRS_THREEWELL,
+	STAIRS_LINKROOM,
+	STAIRS_EXBOSS,
+	STAIRS_BIGROOM,
+	STAIRS_BLOOD,
+	STAIRS_CLOUD,
+
 	WELL_HEALTH,
 	WELL_AWARENESS,
 	SACRIFICE_ALTAR,
@@ -193,15 +203,17 @@ public enum Icons {
 	public static Image get( Icons type ) {
 		Image icon = new Image(SPDSettings.ClassUI() ? Assets.Interfaces.ICONS : Assets.Interfaces.ICONS_NORMAL );
 		switch (type) {
+			//2.5.0
 			case JOURNAL:
-				icon.frame( icon.texture.uvRectBySize( 136, 0, 17, 15 ) );
+				icon.frame( icon.texture.uvRectBySize( 97, 176, 17, 15 ) );
 				break;
 			case ALCHEMY:
-				icon.frame( icon.texture.uvRectBySize( 96, 48, 16, 16 ) );
+				icon.frame( icon.texture.uvRectBySize( 49, 176, 16, 16 ) );
 				break;
 			case CATALOG:
-				icon.frame( icon.texture.uvRectBySize( 80, 48, 13, 16 ) );
+				icon.frame( icon.texture.uvRectBySize( 33, 176, 13, 16 ) );
 				break;
+			//2.4.0
 			case ENTER:
 				icon.frame( icon.texture.uvRectBySize( 0, 0, 16, 16 ) );
 				break;
@@ -494,6 +506,64 @@ public enum Icons {
 			case CUBE_CODE:
 				icon.frame( icon.texture.uvRectBySize( 160, 96, 27, 30 ) );
 				icon.scale.set(PixelScene.align(0.49f));
+				break;
+
+
+			//250-LARGE TILED
+			case STAIRS_CHASM:
+				icon.frame( icon.texture.uvRectBySize( 16, 144, 15, 16 ) );
+				break;
+			case STAIRS_WATER:
+				icon.frame( icon.texture.uvRectBySize( 32, 144, 15, 16 ) );
+				break;
+			case STAIRS_GRASS:
+				icon.frame( icon.texture.uvRectBySize( 48, 144, 15, 16 ) );
+				break;
+			case STAIRS_DARK:
+				icon.frame( icon.texture.uvRectBySize( 64, 144, 15, 16 ) );
+				break;
+			case STAIRS_LARGE:
+				icon.frame( icon.texture.uvRectBySize( 80, 144, 15, 16 ) );
+				break;
+			case STAIRS_TRAPS:
+				icon.frame( icon.texture.uvRectBySize( 96, 144, 15, 16 ) );
+				break;
+			case STAIRS_SECRETS:
+				icon.frame( icon.texture.uvRectBySize( 112, 144, 15, 16 ) );
+				break;
+			case WELL_HEALTH:
+				icon.frame( icon.texture.uvRectBySize( 128, 144, 16, 16 ) );
+				break;
+			case WELL_AWARENESS:
+				icon.frame( icon.texture.uvRectBySize( 144, 144, 16, 16 ) );
+				break;
+			case SACRIFICE_ALTAR:
+				icon.frame( icon.texture.uvRectBySize( 160, 144, 16, 16 ) );
+				break;
+			case DISTANT_WELL:
+				icon.frame( icon.texture.uvRectBySize( 176, 144, 16, 16 ) );
+				break;
+
+			case STAIRS_BIGTRAP:
+				icon.frame( icon.texture.uvRectBySize( 0, 160, 15, 16 ) );
+				break;
+			case STAIRS_THREEWELL:
+				icon.frame( icon.texture.uvRectBySize( 16, 160, 15, 16 ) );
+				break;
+			case STAIRS_LINKROOM:
+				icon.frame( icon.texture.uvRectBySize( 32, 160, 15, 16 ) );
+				break;
+			case STAIRS_EXBOSS:
+				icon.frame( icon.texture.uvRectBySize( 48, 160, 15, 16 ) );
+				break;
+			case STAIRS_BIGROOM:
+				icon.frame( icon.texture.uvRectBySize( 64, 160, 15, 16 ) );
+				break;
+			case STAIRS_BLOOD:
+				icon.frame( icon.texture.uvRectBySize( 80, 160, 15, 16 ) );
+				break;
+			case STAIRS_CLOUD:
+				icon.frame( icon.texture.uvRectBySize( 96, 160, 15, 16 ) );
 				break;
 
 		}

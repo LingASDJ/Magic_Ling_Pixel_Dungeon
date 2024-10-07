@@ -151,8 +151,6 @@ public class LaveCavesBossLevel extends Level{
                 overrideWater != null ?
                         overrideWater :
                         (Class<? extends WellWater>) Random.element( WATERS );
-
-
         WellWater.seed(956, 1, waterClass, this);
 
         int enter = 845;

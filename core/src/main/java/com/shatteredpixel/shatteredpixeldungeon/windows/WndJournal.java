@@ -279,7 +279,7 @@ public class WndJournal extends WndTabbed {
 	public static class AlchemyTab extends Component {
 
 		private RedButton[] pageButtons;
-		private static final int NUM_BUTTONS = 9;
+		private static final int NUM_BUTTONS = 10;
 
 		private static final int[] sprites = {
 				ItemSpriteSheet.SEED_HOLDER,
@@ -290,7 +290,8 @@ public class WndJournal extends WndTabbed {
 				ItemSpriteSheet.BOMB_HOLDER,
 				ItemSpriteSheet.MISSILE_HOLDER,
 				ItemSpriteSheet.ELIXIR_HOLDER,
-				ItemSpriteSheet.SPELL_HOLDER
+				ItemSpriteSheet.SPELL_HOLDER,
+				ItemSpriteSheet.WAND_HOLDER,
 		};
 
 		public static int currentPageIdx   = 0;
@@ -560,7 +561,7 @@ public class WndJournal extends WndTabbed {
 	public static class CatalogTab extends Component{
 
 		private RedButton[] itemButtons;
-		private static final int NUM_BUTTONS = 4;
+		private static final int NUM_BUTTONS = 3;
 
 		public static int currentItemIdx   = 0;
 		private static float[] scrollPositions = new float[NUM_BUTTONS];
@@ -569,7 +570,6 @@ public class WndJournal extends WndTabbed {
 		private static final int EQUIP_IDX = 0;
 		private static final int CONSUM_IDX = 1;
 		private static final int BESTIARY_IDX = 2;
-		private static final int LORE_IDX = 3;
 
 		private ScrollingGridPane grid;
 
@@ -591,8 +591,7 @@ public class WndJournal extends WndTabbed {
 			itemButtons[CONSUM_IDX].icon(new ItemSprite(ItemSpriteSheet.POTION_HOLDER));
 
 			//DX
-			itemButtons[BESTIARY_IDX].icon(new ItemSprite(ItemSpriteSheet.WEAPON_HOLDER));
-			itemButtons[LORE_IDX].icon(new ItemSprite(ItemSpriteSheet.POTION_HOLDER));
+			itemButtons[BESTIARY_IDX].icon(new ItemSprite(ItemSpriteSheet.SCROLL_HOLDER));
 
 			grid = new ScrollingGridPane(){
 				@Override
@@ -680,52 +679,6 @@ public class WndJournal extends WndTabbed {
 					addGridEntities(grid, bestiary.entities());
 				}
 
-			} else {
-				int totalItems = 0;
-				int totalSeen = 0;
-				for (Document doc : Document.values()){
-					if (!doc.isLoreDoc()){
-						continue;
-					}
-					for (String page : doc.pageNames()){
-						totalItems++;
-						if (doc.isPageFound(page)){
-							totalSeen++;
-						}
-					}
-				}
-				grid.addHeader("_" + Messages.get(this, "title_lore") + "_ (" + totalSeen + "/" + totalItems + ")", 9, true);
-
-				for (Document doc : Document.values()){
-					if (!doc.isLoreDoc()){
-						continue;
-					}
-
-					for (String page : doc.pageNames()){
-						totalItems++;
-						if (doc.isPageFound(page)){
-							totalSeen++;
-						}
-					}
-				}
-				for (Document doc : Document.values()){
-					if (!doc.isLoreDoc()){
-						continue;
-					}
-					totalItems = totalSeen = 0;
-					for (String page : doc.pageNames()){
-						totalItems++;
-						if (doc.isPageFound(page)){
-							totalSeen++;
-						}
-					}
-					if (!doc.anyPagesFound()){
-						grid.addHeader("_???_ (" + totalSeen + "/" + totalItems + "):");
-					} else {
-						grid.addHeader("_" + Messages.titleCase(doc.title()) + "_ (" + totalSeen + "/" + totalItems + "):");
-					}
-					addGridDocuments(grid, doc);
-				}
 			}
 
 			grid.setRect(x, itemButtons[NUM_BUTTONS-1].bottom() + 1, width,

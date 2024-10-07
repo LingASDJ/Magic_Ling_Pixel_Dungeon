@@ -1105,10 +1105,10 @@ public class ItemSpriteSheet {
     public static final int EYE_OF_NEWT     = TRINKETS+10;
     public static final int TRINT_PLOCHR    = TRINKETS+15;
 
-    public static final int SALT_CUBE       = TRINKETS+16;
-    public static final int BLOOD_VIAL      = TRINKETS+17;
-    public static final int OBLIVION_SHARD  = TRINKETS+18;
-    public static final int CHAOTIC_CENSER  = TRINKETS+19;
+    public static final int SALT_CUBE       = TRINKETS+11;
+    public static final int BLOOD_VIAL      = TRINKETS+12;
+    public static final int OBLIVION_SHARD  = TRINKETS+13;
+    public static final int CHAOTIC_CENSER  = TRINKETS+14;
 
     static{
         assignItemRect(RAT_SKULL,       15, 11);

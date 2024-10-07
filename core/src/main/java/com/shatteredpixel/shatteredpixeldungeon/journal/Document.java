@@ -21,8 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.journal;
 
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM720Sprite;
@@ -188,10 +188,15 @@ public enum Document {
                 default:
                     return new ItemSprite(ItemSpriteSheet.MASTERY);
                 case "Examining":
+                case "Searching":
                     return Icons.get(Icons.MAGNIFY);
+				case "Surprise_Attacks":
+					return new ItemSprite(ItemSpriteSheet.ASSASSINS_BLADE);
                 case "Identifying":
                     return new ItemSprite(new ScrollOfIdentify());
-				case "Killboss":
+				case "Alchemy":
+					return new ItemSprite(new TrinketCatalyst());
+                case "Killboss":
 					Image boss = new Image(new DM720Sprite());
 					boss.scale.set(PixelScene.align(0.75f));
 					return boss;

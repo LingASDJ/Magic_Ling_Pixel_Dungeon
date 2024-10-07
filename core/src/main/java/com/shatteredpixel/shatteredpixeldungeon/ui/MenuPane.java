@@ -137,15 +137,10 @@ public class MenuPane extends Component {
 		depthButton = new Button(){
 			@Override
 			protected String hoverText() {
-				switch (Dungeon.level.feeling) {
-					default: case CHASM:     return Messages.get(GameScene.class, "chasm");
-					case WATER:     return Messages.get(GameScene.class, "water");
-					case GRASS:     return Messages.get(GameScene.class, "grass");
-					case DARK:      return Messages.get(GameScene.class, "dark");
-					case LARGE:     return Messages.get(GameScene.class, "large");
-					case TRAPS:     return Messages.get(GameScene.class, "traps");
-					case BIGTRAP:     return Messages.get(GameScene.class, "moretraps");
-					case SECRETS:   return Messages.get(GameScene.class, "secrets");
+				if (Dungeon.level.feeling != Level.Feeling.NONE){
+					return Dungeon.level.feeling.desc();
+				} else {
+					return null;
 				}
 			}
 

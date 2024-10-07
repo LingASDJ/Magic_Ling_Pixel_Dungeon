@@ -46,7 +46,7 @@ public class WndInfoArmorAbility extends WndTitledMessage {
 
 		TalentsPane.TalentTierPane talentPane = new TalentsPane.TalentTierPane(talents, 4, TalentButton.Mode.INFO);
 		talentPane.title.text( Messages.titleCase(Messages.get(WndHeroInfo.class, "talents")));
-		addToBottom(talentPane, 5, 0);
+		//addToBottom(talentPane, 5, 0);
 	}
 	public WndInfoArmorAbility(HeroClass cls,ArmorAbility ability) {
 		this(cls,ability, WndInfoArmorAbility::initializeTalents);

@@ -83,7 +83,7 @@ public class Notes {
 		public int quantity() { return 1; }
 
 		protected abstract int order();
-		
+
 		public abstract String title();
 
 		public abstract String desc();
@@ -118,8 +118,13 @@ public class Notes {
 		TRAPS_FLOOR,
 		SECRETS_FLOOR,
 
-		WELL_OF_TRANSMUTATION,
-		WELL_OF_OIL,
+		BIGTRAP_FLOOR,
+		THREEWELL_FLOOR,
+		LINKROOM_FLOOR,
+		EXBOSS_FLOOR,
+		BIGROOM_FLOOR,
+		BLOOD_FLOOR,
+		CLOUD_FLOOR,
 
 		SHOP,
 		ALCHEMY,
@@ -127,19 +132,24 @@ public class Notes {
 		DISTANT_WELL,
 		WELL_OF_HEALTH,
 		WELL_OF_AWARENESS,
+
+		WELL_OF_TRANSMUTATION,
+		WELL_OF_OIL,
+
 		SACRIFICIAL_FIRE,
 		STATUE,
-		
+
 		GHOST,
 		RAT_KING,
 		WANDMAKER,
 		TROLL,
 		IMP,
+
+
 		SHOP2,
 		REDAGRON,
 
 		SMALLB,
-
 		DEMON_SPAWNER;
 	}
 
@@ -159,36 +169,52 @@ public class Notes {
 				default:
 					return Icons.STAIRS.get();
 
-//				case CHASM_FLOOR:
-//					return Icons.STAIRS_CHASM.get();
-//				case WATER_FLOOR:
-//					return Icons.STAIRS_WATER.get();
-//				case GRASS_FLOOR:
-//					return Icons.STAIRS_GRASS.get();
-//				case DARK_FLOOR:
-//					return Icons.STAIRS_DARK.get();
-//				case LARGE_FLOOR:
-//					return Icons.STAIRS_LARGE.get();
-//				case TRAPS_FLOOR:
-//					return Icons.STAIRS_TRAPS.get();
-//				case SECRETS_FLOOR:
-//					return Icons.STAIRS_SECRETS.get();
+				case CHASM_FLOOR:
+					return Icons.STAIRS_CHASM.get();
+				case WATER_FLOOR:
+					return Icons.STAIRS_WATER.get();
+				case GRASS_FLOOR:
+					return Icons.STAIRS_GRASS.get();
+				case DARK_FLOOR:
+					return Icons.STAIRS_DARK.get();
+				case LARGE_FLOOR:
+					return Icons.STAIRS_LARGE.get();
+				case TRAPS_FLOOR:
+					return Icons.STAIRS_TRAPS.get();
+				case SECRETS_FLOOR:
+					return Icons.STAIRS_SECRETS.get();
+
+				//EXSG
+				case BIGTRAP_FLOOR:
+					return Icons.STAIRS_BIGTRAP.get();
+				case THREEWELL_FLOOR:
+					return Icons.STAIRS_THREEWELL.get();
+				case LINKROOM_FLOOR:
+					return Icons.STAIRS_LINKROOM.get();
+				case EXBOSS_FLOOR:
+					return Icons.STAIRS_EXBOSS.get();
+				case BIGROOM_FLOOR:
+					return Icons.STAIRS_BIGROOM.get();
+				case BLOOD_FLOOR:
+					return Icons.STAIRS_BLOOD.get();
+				case CLOUD_FLOOR:
+					return Icons.STAIRS_CLOUD.get();
 
 				case SHOP:
 					if (depth == 20)    return new Image(new ImpSprite());
 					else                return new Image(new ShopkeeperSprite());
-//				case ALCHEMY:
-//					return Icons.get(Icons.ALCHEMY);
-//				case GARDEN:
-//					return Icons.get(Icons.GRASS);
-//				case DISTANT_WELL:
-//					return Icons.get(Icons.DISTANT_WELL);
-//				case WELL_OF_HEALTH:
-//					return Icons.get(Icons.WELL_HEALTH);
-//				case WELL_OF_AWARENESS:
-//					return Icons.get(Icons.WELL_AWARENESS);
-//				case SACRIFICIAL_FIRE:
-//					return Icons.get(Icons.SACRIFICE_ALTAR);
+				case ALCHEMY:
+					return Icons.get(Icons.ALCHEMY);
+				case GARDEN:
+					return Icons.get(Icons.GRASS);
+				case DISTANT_WELL:
+					return Icons.get(Icons.DISTANT_WELL);
+				case WELL_OF_HEALTH:
+					return Icons.get(Icons.WELL_HEALTH);
+				case WELL_OF_AWARENESS:
+					return Icons.get(Icons.WELL_AWARENESS);
+				case SACRIFICIAL_FIRE:
+					return Icons.get(Icons.SACRIFICE_ALTAR);
 				case STATUE:
 					return new Image(new StatueSprite());
 
@@ -219,6 +245,14 @@ public class Notes {
 				case LARGE_FLOOR:   return Messages.get(Level.Feeling.class, "large_title");
 				case TRAPS_FLOOR:   return Messages.get(Level.Feeling.class, "traps_title");
 				case SECRETS_FLOOR: return Messages.get(Level.Feeling.class, "secrets_title");
+
+				case BIGTRAP_FLOOR:   	return Messages.get(Level.Feeling.class, "bigtraps_title");
+				case THREEWELL_FLOOR: return Messages.get(Level.Feeling.class, "threewell_title");
+				case LINKROOM_FLOOR: return Messages.get(Level.Feeling.class, "link_title");
+				case BIGROOM_FLOOR: return Messages.get(Level.Feeling.class, "bigroom_title");
+				case EXBOSS_FLOOR: return Messages.get(Level.Feeling.class, "exboss_title");
+				case BLOOD_FLOOR: return Messages.get(Level.Feeling.class, "bloods_title");
+				case CLOUD_FLOOR:return Messages.get(Level.Feeling.class, "cloud_title");
 			}
 		}
 
@@ -234,6 +268,14 @@ public class Notes {
 				case LARGE_FLOOR:   return Messages.get(Level.Feeling.class, "large_desc");
 				case TRAPS_FLOOR:   return Messages.get(Level.Feeling.class, "traps_desc");
 				case SECRETS_FLOOR: return Messages.get(Level.Feeling.class, "secrets_desc");
+
+				case BIGTRAP_FLOOR:   	return Messages.get(Level.Feeling.class, "bigtraps_desc");
+				case THREEWELL_FLOOR: return Messages.get(Level.Feeling.class, "threewell_desc");
+				case LINKROOM_FLOOR: return Messages.get(Level.Feeling.class, "link_desc");
+				case BIGROOM_FLOOR: return Messages.get(Level.Feeling.class, "bigroom_desc");
+				case EXBOSS_FLOOR: return Messages.get(Level.Feeling.class, "exboss_desc");
+				case BLOOD_FLOOR: return Messages.get(Level.Feeling.class, "bloods_desc");
+				case CLOUD_FLOOR:return Messages.get(Level.Feeling.class, "cloud_desc");
 
 				case SHOP:
 					if (depth == 20)    return Messages.get(ImpShopkeeper.class, "desc");
@@ -314,7 +356,10 @@ public class Notes {
 			}
 		}
 
-
+		@Override
+		public String title() {
+			return key.title();
+		}
 
 		@Override
 		public String desc() {
@@ -324,10 +369,7 @@ public class Notes {
 		public Class<? extends Key> type(){
 			return key.getClass();
 		}
-		@Override
-		public String title() {
-			return key.title();
-		}
+
 		@Override
 		protected int order() {
 			return 1000 + Generator.Category.order(key);
@@ -422,9 +464,8 @@ public class Notes {
 		@Override
 		public Image icon() {
 			switch (type){
-//				case TEXT: default:
-//					return Icons.SCROLL_COLOR.get();
-				default:
+				case TEXT: default:
+					return Icons.CATALOG.get();
 				case DEPTH:
 					return Icons.STAIRS.get();
 				case ITEM:
@@ -508,13 +549,13 @@ public class Notes {
 			body = bundle.getString(BODY);
 		}
 	}
-	
+
 	private static ArrayList<Record> records;
 
 	public static void reset() {
 		records = new ArrayList<>();
 	}
-	
+
 	private static final String RECORDS	        = "records";
 	private static final String NEXT_CUSTOM_ID	= "next_custom_id";
 
@@ -546,7 +587,7 @@ public class Notes {
 	public static boolean contains( Landmark landmark ){
 		return records.contains(new LandmarkRecord( landmark, Dungeon.depth));
 	}
-	
+
 	public static boolean remove( Landmark landmark ) {
 		return records.remove( new LandmarkRecord(landmark, Dungeon.depth) );
 	}
@@ -657,5 +698,5 @@ public class Notes {
 			return r1.order() - r2.order();
 		}
 	};
-	
+
 }

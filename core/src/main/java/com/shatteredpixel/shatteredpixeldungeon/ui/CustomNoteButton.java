@@ -66,7 +66,7 @@ public class CustomNoteButton extends IconButton {
 			return;
 		}
 
-		GameScene.show(new WndOptions(Icons.SCROLL_COLOR.get(),
+		GameScene.show(new WndOptions(Icons.JOURNAL.get(),
 				Messages.get(CustomNoteButton.class, "title"),
 				Messages.get(CustomNoteButton.class, "desc"),
 				Messages.get(CustomNoteButton.class, "new_text"),
@@ -185,7 +185,7 @@ public class CustomNoteButton extends IconButton {
 	private static class WndItemtypeSelect extends WndTitledMessage {
 
 		public WndItemtypeSelect() {
-			super(Icons.SCROLL_COLOR.get(),
+			super(Icons.CATALOG.get(),
 					Messages.get(CustomNoteButton.class, "new_type"),
 					Messages.get(CustomNoteButton.class, "new_type_prompt"));
 
