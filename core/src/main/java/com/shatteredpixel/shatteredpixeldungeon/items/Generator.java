@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SliverLockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
@@ -323,6 +324,8 @@ public class Generator {
 	}
 
 	public enum Category {
+
+		PROP (0 ,0, Prop.class),
 		TRINKET ( 0, 0, Trinket.class),
 
 		WEAPON	( 2, 2, MeleeWeapon.class),
@@ -585,7 +588,7 @@ public class Generator {
 
 					RedBloodMoon.class,
 			};
-			WEP_T4.probs = new float[]{ 6, 5, 5, 4, 4, 4,2,3, 2, 4, SPDSettings.isItemUnlock(RedBloodMoon.class.getSimpleName() ) ? 1.2f : 0 };
+			WEP_T4.probs = new float[]{ 6, 5, 5, 4, 4, 4,2,3, 2, 6, SPDSettings.isItemUnlock(RedBloodMoon.class.getSimpleName() ) ? 1.2f : 0 };
 
 			WEP_T5.classes = new Class<?>[]{
 					LockSword.class,
@@ -596,6 +599,7 @@ public class Generator {
 					Greatshield.class,
 					WashCrime.class,
 					BoomSword.class,
+
 					//传奇武器
 					DiedCrossBow.class,
 					WarScythe.class,
@@ -619,8 +623,9 @@ public class Generator {
 					BloodthirstyThorn.class,
 					EndingBlade.class,
 					FireFishSword.class,
+					SliverLockSword.class
 			};
-			WEP_T6.probs = new float[]{ 1,0,0,0,Statistics.RandMode ? 1 : 0 };
+			WEP_T6.probs = new float[]{ 1,0,0,0,Statistics.RandMode ? 1 : 0, 0 };
 
 			//see Generator.randomArmor
 			ARMOR.classes = new Class<?>[]{
@@ -747,6 +752,12 @@ public class Generator {
 			};
 			TRINKET.defaultProbs = new float[]{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 			TRINKET.probs = TRINKET.defaultProbs.clone();
+
+			PROP.classes = new Class<?>[]{
+					StarSachet.class
+			};
+			PROP.defaultProbs = new float[]{ 1 };
+			PROP.probs = PROP.defaultProbs.clone();
 
 			for (Category cat : Category.values()){
 				if (cat.defaultProbs2 != null){

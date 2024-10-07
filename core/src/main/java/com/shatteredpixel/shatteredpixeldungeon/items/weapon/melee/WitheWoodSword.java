@@ -41,7 +41,7 @@ public class WitheWoodSword extends MeleeWeapon {
 		hitSoundPitch = 1f;
 
 		tier = 5;
-		ACC = 2.10f; //90% boost to accuracy
+		ACC = 1f; //90% boost to accuracy
 		DLY = 1.50f; //1.5x speed
 	}
 

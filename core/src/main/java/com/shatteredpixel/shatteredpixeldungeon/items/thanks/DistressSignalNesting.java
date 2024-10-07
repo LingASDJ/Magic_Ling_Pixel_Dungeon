@@ -8,7 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
 
-public class DistressSignalNesting extends Item implements Item.AnimationItem {
+public class DistressSignalNesting extends Item {
 
     {
         image = ItemSpriteSheet.SOS_0;

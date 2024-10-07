@@ -192,6 +192,9 @@ public class Statistics {
 	public static boolean bossRushMode = false;
 	public static boolean RandMode = false;
 
+	//噩梦循环模式
+	public static boolean NightDreamLoop = false;
+
 	public static boolean TryUsedAnmy = false;
 	public static boolean winGame = false;
 	public static boolean DwarfMasterKing = false;
@@ -232,6 +235,7 @@ public class Statistics {
 	private static final String GOLD		= "score";
 	private static final String HAPPY		= "happy";
 	private static final String RAND		= "randmode";
+	private static final String NIGHTDR		= "nightdr";
 
 	private static final String DEEPEST		= "maxDepth";
 	private static final String SLAIN		= "enemiesSlain";
@@ -399,6 +403,9 @@ public class Statistics {
 		wcDialogLevel = 0;
         bossRushMode = false;
 		RandMode = false;
+
+		NightDreamLoop = false;
+
 		RandModeCount = 0;
 
 		killYogMobsAnargy = 0;
@@ -552,6 +559,7 @@ public class Statistics {
 
 		bundle.put( HAPPY, bossRushMode);
 		bundle.put( RAND, RandMode);
+		bundle.put( NIGHTDR, NightDreamLoop);
 
 		bundle.put( BOSS_SCORES, bossScores );
 		bundle.put( TOT_BOSS,    totalBossScore );
@@ -653,6 +661,8 @@ public class Statistics {
 
 		unLockedFireDargon = bundle.getBoolean("DCXFG");
 		RandModeCount = bundle.getInt(ICECLAN);
+
+		NightDreamLoop = bundle.getBoolean(NIGHTDR);
 
 		killYogMobsAnargy = bundle.getInt("KILL_YOG");
 

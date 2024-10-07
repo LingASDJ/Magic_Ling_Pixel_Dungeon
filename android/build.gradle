@@ -3,8 +3,8 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
-
-    compileSdkVersion appAndroidCompileSDK
+    namespace 'com.shatteredpixel.shatteredpixeldungeon.android'
+    compileSdk appAndroidCompileSDK
     compileOptions.sourceCompatibility = compileOptions.targetCompatibility = appJavaCompatibility
 
     sourceSets.main.assets.srcDirs = [new File(project(':core').projectDir, "/src/main/assets")]
@@ -101,7 +101,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.2'
 
     //崩溃报告
-    implementation 'cat.ereza:customactivityoncrash:2.3.0'
+    implementation 'cat.ereza:customactivityoncrash:2.4.0'
 
     //Base 64解析库
     implementation 'net.iharder:base64:2.3.9'
