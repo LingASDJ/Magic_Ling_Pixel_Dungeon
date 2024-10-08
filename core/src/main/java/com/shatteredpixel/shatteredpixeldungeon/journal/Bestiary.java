@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.EbonyMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
@@ -62,7 +63,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollSapper;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollTrickster;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GoldenMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Katydid;
@@ -78,8 +78,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PhantomPiranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Pylon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PylonCS;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RandomBlueFireDE;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedNecromancer;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedMurderer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedSwarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RipperDemon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotHeart;
@@ -97,6 +98,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime_Red;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpectralNecromancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Succubus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
@@ -106,20 +108,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogDzewa;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogReal;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.ArmyFlag;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.CrivusFruitsLasher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DictFish;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfFuze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfMaster;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfSolider;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.FireDragon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.FireMagicDied;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.RoomStone;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.SakaFishBoss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.TPDoor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush.Rival;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush.SkyGoo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruitsLasher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.DiedClearElemet;
@@ -127,11 +126,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Nyz;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RatKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.DM275;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GnollHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GreenSlting;
@@ -175,6 +176,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WeakeningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
 import com.shatteredpixel.shatteredpixeldungeon.plants.BlandfruitBush;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
@@ -183,6 +185,7 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Icecap;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Mageroyal;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Rotberry;
+import com.shatteredpixel.shatteredpixeldungeon.plants.SkyBlueFireBloom;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Sorrowmoss;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Starflower;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Stormvine;
@@ -205,10 +208,10 @@ public enum Bestiary {
 	ICECAVE,
 	ICECAVE_BOSS,
 	CITY,
-	//HELL,
+	CITY_BOSS,
+	HELL,
+	HELL_BOSS,
 
-	REGIONAL,
-	BOSSES,
 	UNIVERSAL,
 	RARE,
 	QUEST,
@@ -256,14 +259,14 @@ public enum Bestiary {
 				Rat.class, FlowerSlime.class, Katydid.class,
 				Gnoll.class, ClearElemental.class, Crab.class, Swarm.class,
 				Slime_Red.class, Slime_Orange.class, CausticSlime.class,
-				//EX
-				GreenSlting.class, Salamander.class, Albino.class);
+				GreenSlting.class);
 
-		FOREST_BOSS.addEntities(//Boss
+		FOREST_BOSS.addEntities(
+				//Boss T1
 				CrivusFruits.class, CrivusFruitsLasher.class,
-
+				//Boss T2
 				CrivusStarFruits.class, CrivusStarFruitsLasher.class,
-
+				//Boss T3
 				FireDragon.class,
 				DiedClearElemet.ClearElemetalBlood.class,
 				DiedClearElemet.ClearElemetalGold.class,
@@ -273,24 +276,29 @@ public enum Bestiary {
 		ICEPRISON.addEntities(
 				Skeleton.class, BrownBat.class, Thief.class,
 				DM100.class, Necromancer.class, Guard.class,
+				GnollHero.class);
 				//EX
-				GnollHero.class, NewBlackHost.class, SpectralNecromancer.class,
-				Bandit.class, SRPDHBLR.class);
+				//NewBlackHost.class, SpectralNecromancer.class,
+				//Bandit.class, SRPDHBLR.class
 
-		ICEPRISON_BOSS.addEntities(//Boss
-				Tengu.class, DiamondKnight.class, TPDoor.class, DCrystal.class);
+		ICEPRISON_BOSS.addEntities(
+				//Boss T1
+				Tengu.class,
+				//Boss T2
+				DiamondKnight.class,
+				TPDoor.class,
+				DCrystal.class);
 
 		ICECAVE.addEntities(Bat.class, ColdMagicRat.class,
 				FireGhost.class, DM200.class, RedSwarm.class,
-				Spinner.class, Brute.class,
-				//EX
-				MolotovHuntsman.class, ArmoredBrute.class,
-				DM201.class, RedNecromancer.class, DM275.class );
+				Spinner.class, Brute.class,DM275.class);
 
-		ICECAVE_BOSS.addEntities(//Boss
+		ICECAVE_BOSS.addEntities(
+				//Boss T1
 				Pylon.class, DM300.class,
+				//Boss T2
 				NewDM720.class, MoloHR.class, PylonCS.class,
-
+				//Boss T3
 				SpellCaster.FrostCaster.class,
 				SpellCaster.BounceCaster.class,
 				SpellCaster.ExplosionCaster.class,
@@ -301,56 +309,56 @@ public enum Bestiary {
 				Shaman.RedShaman.class, Shaman.BlueShaman.class, Shaman.PurpleShaman.class,
 				Monk.class, Elemental.FrostElemental.class, Elemental.ShockElemental.class,
 				Elemental.FireElemental.class,
-				BruteBot.class, Warlock.class, Golem.class, ShieldHuntsman.class
-				//EX
-				);
+				BruteBot.class, Warlock.class, Golem.class, ShieldHuntsman.class);
 
-		BOSSES.addEntities(
-				//T1
-				Goo.class, CrivusFruits.class, CrivusFruitsLasher.class,
-				CrivusStarFruits.class, CrivusStarFruitsLasher.class,
-				SkyGoo.class,
+		CITY_BOSS.addEntities(
+				//Boss T1
+				DwarfKing.class,
+				//Boss T2
+				DwarfMaster.class,
+				//Boss T3
+				DwarfGeneral.class,
+				DwarfFuze.class,
+				DwarfSolider.class,
+				ArmyFlag.class);
 
-				//T2
-				Tengu.class, DiamondKnight.class, TPDoor.class, DCrystal.class,
+		HELL.addEntities(
+				Scorpio.class, Eye.class, DemonSpawner.class,
+				RipperDemon.class, Succubus.class
+		);
 
-				//T3
-				Pylon.class, DM300.class,
-				NewDM720.class, MoloHR.class, PylonCS.class,
-
-				SpellCaster.FrostCaster.class,
-				SpellCaster.BounceCaster.class,
-				SpellCaster.ExplosionCaster.class,
-				SpellCaster.LightCaster.class,
-				MagicGirlDead.class, SRPDICLRPRO.class,
-
-				//T4
-				DwarfKing.class, DwarfMaster.class, DwarfGeneral.class,
-
-				//T5
+		HELL_BOSS.addEntities(
+				//Boss T1
+				YogDzewa.class,
 				YogDzewa.Larva.class, YogFist.BurningFist.class, YogFist.SoiledFist.class,
 				YogFist.RottingFist.class, YogFist.RustedFist.class,
-				YogFist.BrightFist.class, YogFist.DarkFist.class, YogDzewa.class,
-				YogReal.class,
+				YogFist.BrightFist.class, YogFist.DarkFist.class,
 
-				//EX,
-				FireMagicDied.class, SakaFishBoss.class, RoomStone.class, DictFish.class,
-				Rival.class);
+				//Boss T2
+				YogReal.class);
 
 		UNIVERSAL.addEntities(Wraith.class, Piranha.class, Mimic.class, GoldenMimic.class, EbonyMimic.class, Statue.class, GuardianTrap.Guardian.class, SentryRoom.Sentry.class);
 
-		RARE.addEntities(Albino.class, CausticSlime.class,
+		RARE.addEntities(
+				Albino.class, CausticSlime.class, Salamander.class,
+
 				Bandit.class, SpectralNecromancer.class,
-				ArmoredBrute.class, DM201.class,
+				SRPDHBLR.class, NewBlackHost.class,
+
+				ArmoredBrute.class, DM201.class, MolotovHuntsman.class,
 				Elemental.ChaosElemental.class, Senior.class,
 				Acidic.class,
-				TormentedSpirit.class, PhantomPiranha.class, CrystalMimic.class, ArmoredStatue.class);
+
+				RandomBlueFireDE.class, RedMurderer.class,
+
+				TormentedSpirit.class, PhantomPiranha.class,
+				CrystalMimic.class, ArmoredStatue.class);
 
 		QUEST.addEntities(FetidRat.class, GnollTrickster.class, GreatCrab.class,
 				Elemental.NewbornFireElemental.class, RotLasher.class, RotHeart.class,
 				CrystalWisp.class, CrystalGuardian.class, CrystalSpire.class, GnollGuard.class, GnollSapper.class, GnollGeomancer.class);
 
-		NEUTRAL.addEntities(Ghost.class, RatKing.class, Shopkeeper.class, Wandmaker.class, Blacksmith.class, Imp.class, Sheep.class, Bee.class);
+		NEUTRAL.addEntities(Ghost.class, RatKing.class, Shopkeeper.class, Wandmaker.class, Blacksmith.class, Imp.class, Sheep.class, Bee.class, Nyz.class, YetYog.class);
 
 		ALLY.addEntities(MirrorImage.class, PrismaticImage.class,
 				DriedRose.GhostHero.class,
@@ -368,7 +376,7 @@ public enum Bestiary {
 		PLANT.addEntities(Rotberry.class, Sungrass.class, Fadeleaf.class, Icecap.class,
 				Firebloom.class, Sorrowmoss.class, Swiftthistle.class, Blindweed.class,
 				Stormvine.class, Earthroot.class, Mageroyal.class, Starflower.class,
-				BlandfruitBush.class,
+				BlandfruitBush.class, AikeLaier.class, SkyBlueFireBloom.class,
 				WandOfRegrowth.Dewcatcher.class, WandOfRegrowth.Seedpod.class, WandOfRegrowth.Lotus.class);
 
 	}

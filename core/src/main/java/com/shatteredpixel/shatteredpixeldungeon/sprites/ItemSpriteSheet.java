@@ -1123,6 +1123,11 @@ public class ItemSpriteSheet {
         assignItemRect(WONDROUS_RESIN,  15, 14);
         assignItemRect(EYE_OF_NEWT,     14, 13);
         assignItemRect(TRINT_PLOCHR,     16, 11);
+
+        assignItemRect(SALT_CUBE,     15, 12);
+        assignItemRect(BLOOD_VIAL,     13, 11);
+        assignItemRect(OBLIVION_SHARD,     14, 14);
+        assignItemRect(CHAOTIC_CENSER,     16, 15);
     }
 
     private static final int MISC        =                               xy(1, 56);  //24 slots

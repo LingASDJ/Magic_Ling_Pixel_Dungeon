@@ -48,7 +48,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.Smok
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy.SliverLockSword;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.CustomWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.LevelTeleporter;
@@ -234,8 +233,6 @@ public enum HeroClass {
 
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
-
-		new SliverLockSword().quantity(1).identify().collect();
 
 		new ScrollOfIdentify().identify();
 		//new KingGold().quantity(1).identify().collect();

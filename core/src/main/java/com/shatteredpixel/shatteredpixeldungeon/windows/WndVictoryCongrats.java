@@ -50,7 +50,7 @@ public class WndVictoryCongrats extends Window {
 
 		height = (int)text.bottom() + 6;
 
-		Image chalImg = Icons.CHANGES.get();
+		Image chalImg = Icons.CHALLENGE_ON.get();
 		chalImg.y = height;
 		chalImg.x = (16-chalImg.width())/2f;
 		PixelScene.align(chalImg);
@@ -68,13 +68,13 @@ public class WndVictoryCongrats extends Window {
 
 		height += Math.max(chalImg.height(), chalTxt.height()) + 6;
 
-		Image seedImg = new ItemSprite(ItemSpriteSheet.SEED_SUNGRASS);
+		Image seedImg = new ItemSprite(ItemSpriteSheet.BOSSRUSH_GOLD);
 		seedImg.y = height;
 		seedImg.x = (16-seedImg.width())/2f;
 		PixelScene.align(seedImg);
 		add(seedImg);
 
-		RenderedTextBlock seedTxt = PixelScene.renderTextBlock(Messages.get(this, "custom_seeds"), 6);
+		RenderedTextBlock seedTxt = PixelScene.renderTextBlock(Messages.get(this, "custom_mode"), 6);
 		seedTxt.maxWidth(width - 16);
 		seedTxt.setPos(16, height);
 		add(seedTxt);
@@ -86,8 +86,7 @@ public class WndVictoryCongrats extends Window {
 
 		height += Math.max(seedImg.height(), seedTxt.height()) + 6;
 
-		Image dailyImg = Icons.CALENDAR.get();
-		dailyImg.hardlight(0.5f, 1f, 2f);
+		Image dailyImg = Icons.CATALOG.get();
 		dailyImg.y = height;
 		dailyImg.x = (16-dailyImg.width())/2f;
 		PixelScene.align(dailyImg);
@@ -104,6 +103,24 @@ public class WndVictoryCongrats extends Window {
 		}
 
 		height += Math.max(dailyImg.height(), dailyTxt.height()) + 6;
+
+		Image stoneImg = Icons.JOURNAL.get();
+		stoneImg.y = height;
+		stoneImg.x = (16-stoneImg.width())/2f;
+		PixelScene.align(stoneImg);
+		add(stoneImg);
+
+		RenderedTextBlock stoneTxt = PixelScene.renderTextBlock(Messages.get(this, "stone"), 6);
+		stoneTxt.maxWidth(width - 16);
+		stoneTxt.setPos(16, height);
+		add(stoneTxt);
+
+		if (stoneTxt.height() > stoneImg.height()){
+			dailyImg.y = dailyImg.y + (dailyTxt.height() - dailyImg.height())/2f;
+			PixelScene.align(dailyImg);
+		}
+
+		height += Math.max(stoneImg.height(), stoneImg.height()) + 6;
 
 		RenderedTextBlock finalTxt = PixelScene.renderTextBlock(Messages.get(this, "thank_you") + " "  + Messages.get(this, "support_prompt"), 6);
 		finalTxt.maxWidth(width);

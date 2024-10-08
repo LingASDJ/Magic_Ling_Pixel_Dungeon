@@ -194,7 +194,13 @@ public enum Icons {
 	WELL_HEALTH,
 	WELL_AWARENESS,
 	SACRIFICE_ALTAR,
-	DISTANT_WELL;
+	DISTANT_WELL,
+
+	PAGE,
+
+	TRA_WELL,
+	OIL_WELL,
+	MAGIC_DREAM;
 
 	public Image get() {
 		return get( this );
@@ -205,13 +211,13 @@ public enum Icons {
 		switch (type) {
 			//2.5.0
 			case JOURNAL:
-				icon.frame( icon.texture.uvRectBySize( 97, 176, 17, 15 ) );
+				icon.frame( icon.texture.uvRectBySize( 96, 176, 17, 15 ) );
 				break;
 			case ALCHEMY:
-				icon.frame( icon.texture.uvRectBySize( 49, 176, 16, 16 ) );
+				icon.frame( icon.texture.uvRectBySize( 48, 176, 16, 16 ) );
 				break;
 			case CATALOG:
-				icon.frame( icon.texture.uvRectBySize( 33, 176, 13, 16 ) );
+				icon.frame( icon.texture.uvRectBySize( 32, 176, 13, 16 ) );
 				break;
 			//2.4.0
 			case ENTER:
@@ -294,6 +300,11 @@ public enum Icons {
 			case DATA:
 				icon.frame( icon.texture.uvRectBySize( 48, 32, 16, 15 ) );
 				break;
+
+			case PAGE:
+				icon.frame( icon.texture.uvRectBySize( 240, 32, 13, 10 ) );
+				break;
+
 			case AUDIO:
 				icon.frame( icon.texture.uvRectBySize( 64, 32, 14, 14 ) );
 				break;
@@ -544,6 +555,8 @@ public enum Icons {
 				icon.frame( icon.texture.uvRectBySize( 176, 144, 16, 16 ) );
 				break;
 
+
+
 			case STAIRS_BIGTRAP:
 				icon.frame( icon.texture.uvRectBySize( 0, 160, 15, 16 ) );
 				break;
@@ -564,6 +577,16 @@ public enum Icons {
 				break;
 			case STAIRS_CLOUD:
 				icon.frame( icon.texture.uvRectBySize( 96, 160, 15, 16 ) );
+				break;
+
+			case OIL_WELL:
+				icon.frame( icon.texture.uvRectBySize( 112, 160, 16, 16 ) );
+				break;
+			case TRA_WELL:
+				icon.frame( icon.texture.uvRectBySize( 128, 160, 16, 16 ) );
+				break;
+			case MAGIC_DREAM:
+				icon.frame( icon.texture.uvRectBySize( 144, 160, 16, 16 ) );
 				break;
 
 		}

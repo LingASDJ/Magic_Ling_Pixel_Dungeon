@@ -254,10 +254,6 @@ public class InterlevelScene extends PixelScene {
 					break;
 			}
 		Random.popGenerator();
-		
-		if (DeviceCompat.isDebug()){
-			fadeTime = 0f;
-		}
 
 		background = new Image(loadingAsset);
 		background.scale.set(Camera.main.height/background.height);
@@ -323,7 +319,7 @@ public class InterlevelScene extends PixelScene {
 					add(storyBG);
 					add(storyMessage);
 
-					btnContinue = new StyledButton(Chrome.Type.TOAST_TR, "Continue", 9){
+					btnContinue = new StyledButton(Chrome.Type.TOAST_TR, Messages.get(InterlevelScene.class,"cnc"), 9){
 						@Override
 						protected void onClick() {
 							phase = Phase.FADE_OUT;
@@ -373,7 +369,7 @@ public class InterlevelScene extends PixelScene {
 					btnContinue.setPos((Camera.main.width - btnContinue.width())/2f, storyMessage.bottom()+10);
 					add(btnContinue);
 
-					btnHideStory = new IconButton(Icons.CATALOG.get()){
+					btnHideStory = new IconButton(Icons.PAGE.get()){
 						@Override
 						protected void onClick() {
 							if (btnContinue.alpha() != 0 && btnContinue.alpha() != 1){

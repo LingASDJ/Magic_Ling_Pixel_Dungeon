@@ -27,9 +27,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Foliage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfAwareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfHealth;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfOil;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.ImpShopkeeper;
@@ -200,6 +203,15 @@ public class Notes {
 				case CLOUD_FLOOR:
 					return Icons.STAIRS_CLOUD.get();
 
+				case WELL_OF_TRANSMUTATION:
+					return Icons.TRA_WELL.get();
+
+				case WELL_OF_OIL:
+					return Icons.OIL_WELL.get();
+
+				case SMALLB:
+					return Icons.MAGIC_DREAM.get();
+
 				case SHOP:
 					if (depth == 20)    return new Image(new ImpSprite());
 					else                return new Image(new ShopkeeperSprite());
@@ -285,6 +297,10 @@ public class Notes {
 				case DISTANT_WELL:      return Messages.get(WeakFloorRoom.HiddenWell.class, "desc");
 				case WELL_OF_HEALTH:    return Messages.get(WaterOfHealth.class, "desc");
 				case WELL_OF_AWARENESS: return Messages.get(WaterOfAwareness.class, "desc");
+				case WELL_OF_TRANSMUTATION: return Messages.get(WaterOfTransmutation.class, "desc");
+				case WELL_OF_OIL: return Messages.get(WaterOfOil.class, "desc");
+				case SMALLB: return Messages.get(DragonGirlBlue.class, "desc");
+
 				case SACRIFICIAL_FIRE:  return Messages.get(SacrificialFire.class, "desc");
 				case STATUE:            return Messages.get(Statue.class, "desc");
 

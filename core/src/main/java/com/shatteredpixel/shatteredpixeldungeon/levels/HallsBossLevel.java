@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -245,8 +246,8 @@ public class HallsBossLevel extends Level {
 			seal();
 		}
 
-		if(Statistics.amuletObtained &&
-				Badges.isUnlocked(Badges.Badge.CHAMPION_1X) && !SothothEye){
+		if(Statistics.amuletObtained && Badges.isUnlocked(Badges.Badge.CHAMPION_1X) && !SothothEye
+				|| Dungeon.isDLC(Conducts.Conduct.DEV) && !SothothEye) {
 
 			TrueYog npc = new TrueYog();
 			npc.pos = exit() + width*3;

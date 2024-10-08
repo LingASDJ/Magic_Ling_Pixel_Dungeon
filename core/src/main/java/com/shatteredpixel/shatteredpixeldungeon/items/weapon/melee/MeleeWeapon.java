@@ -68,7 +68,8 @@ public class MeleeWeapon extends Weapon {
 		}
 	}
 
-	@Override
+	@SuppressWarnings("CheckResult")
+    @Override
 	public String defaultAction() {
 		if (Dungeon.hero != null && (Dungeon.hero.heroClass == HeroClass.DUELIST
 			|| Dungeon.hero.hasTalent(Talent.SWIFT_EQUIP))){
@@ -94,10 +95,9 @@ public class MeleeWeapon extends Weapon {
 		return actions;
 	}
 
-	@Override
+	@SuppressWarnings("CheckResult")
+    @Override
 	public String actionName(String action, Hero hero) {
-
-
 		//Ling
 		if (action.equals(AC_ABILITY)){
 			try {
@@ -344,7 +344,8 @@ public class MeleeWeapon extends Weapon {
 		return damage;
 	}
 	
-	@Override
+	@SuppressWarnings("CheckResult")
+    @Override
 	public String info()  {
 
 		String info = super.info();
@@ -400,16 +401,16 @@ public class MeleeWeapon extends Weapon {
 
 
 
-//		if (Dungeon.hero.heroClass == HeroClass.DUELIST && !(this instanceof MagesStaff)){
-//			//如果继承的类没有duelistAbility方法，则代表武技还未制作完成。返回文本告诉玩家
-//			try {
-//				this.getClass().getDeclaredMethod("duelistAbility", Hero.class, Integer.class);
-//			} catch (NoSuchMethodException e) {
-//				info += "\n\n" + Messages.get(MeleeWeapon.class, "ability_not_desc");
-//				return info;
-//			}
-//			info += "\n\n" + abilityInfo();
-//		}
+		if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.DUELIST && !(this instanceof MagesStaff)){
+			//如果继承的类没有duelistAbility方法，则代表武技还未制作完成。返回文本告诉玩家
+			try {
+				this.getClass().getDeclaredMethod("duelistAbility", Hero.class, Integer.class);
+			} catch (NoSuchMethodException e) {
+				info += "\n\n" + Messages.get(MeleeWeapon.class, "ability_not_desc");
+				return info;
+			}
+			info += "\n\n" + abilityInfo();
+		}
 		
 		return info;
 	}
