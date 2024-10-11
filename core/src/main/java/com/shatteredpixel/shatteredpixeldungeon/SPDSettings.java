@@ -737,6 +737,7 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_ICECOIN, 0);
 	}
 
+	//TODO: 使用新接口替换皮肤解锁的旧方法
 	public static void setHeroSkin(int hero,int skinIndex) {
 		StringBuilder items = new StringBuilder( getSkin() );
 		int index= hero * 2;
@@ -754,6 +755,7 @@ public class SPDSettings extends GameSettings {
 	}
 
 
+	//TODO: 使用新接口替换物品解锁的旧方法
 	/*
 	 * @Breif 永久解锁物品，允许批量解锁，以","作为元素分隔符,";"作为物品分隔符
 	 * 输入格式为String itemName1,boolean allowMulti1,int itemLimit1;String itemName2,boolean allowMulti2,int itemLimit2;...
