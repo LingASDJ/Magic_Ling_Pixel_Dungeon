@@ -126,6 +126,20 @@ public class GameSettings {
 			return defValue;
 		}
 	}
+
+	public static String[] getStringArray( String key ) {
+		try {
+			String s = get().getString( key, "" );
+			if ( s != null && s.length() > Integer.MAX_VALUE ) {
+				return new String[0];
+			} else {
+				return s.split( ";" );
+			}
+		} catch (Exception e) {
+			Game.reportException(e);
+			return new String[0];
+		}
+	}
 	
 	public static void put( String key, int value ) {
 		get().putInteger(key, value);
@@ -146,5 +160,57 @@ public class GameSettings {
 		get().putString(key, value);
 		get().flush();
 	}
-	
+
+	public static void put( String key, String[] value ) {
+		int length = value.length;
+		String str = get().getString( key, "" );
+		StringBuilder stringArray = new StringBuilder( str );
+
+		for(int i = 0; i < length; i++) {
+			if( query(key, value[i].split(",")[0]) )
+				continue;
+
+			if (value[i].indexOf(";") != -1) {
+				stringArray.append(value[i]);
+			}else {
+				stringArray.append(value[i]).append(";");
+			}
+		}
+
+		get().putString(key, stringArray.toString());
+		get().flush();
+	}
+
+	public static void delete( String key, String value ) {
+		String[] itemArray = value.split( ";" );
+		String str = get().getString( key, "" );
+		StringBuilder stringArray = new StringBuilder( str );
+
+		int index;
+		for( String target : itemArray ) {
+			if ( ( index = stringArray.indexOf( target ) ) != -1 ) {
+				stringArray.delete( index, index + stringArray.indexOf( ";", index ) + 1 );
+			}
+		}
+
+		get().putString(key, stringArray.toString());
+		get().flush();
+	}
+
+	public static void modify( String key, String target, String value ) {
+		String str = get().getString( key, "" );
+		StringBuilder stringArray = new StringBuilder( str );
+		int index;
+
+		if( str != null && ( ( index = stringArray.indexOf( target ) ) != -1 ) ) {
+			stringArray.replace(index, index + stringArray.indexOf(";", index) + 1, value);
+
+			get().putString(key, stringArray.toString());
+			get().flush();
+		}
+	}
+
+	public static boolean query( String key, String target ) {
+		return get().getString( key, "" ).indexOf( target ) != -1;
+	}
 }
