@@ -91,6 +91,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.ApprenticeWit
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Butcher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Crumb;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Frankenstein;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Ghost_Halloween;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.HollowMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.PumkingBomber;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
@@ -587,6 +588,7 @@ public class MobPlacer extends TestItem{
         Brute(Butcher.class, 0),
         Pump(Crumb.class, 0),
         Pump2(PumkingBomber.class, 0),
+
         HOWW(HollowMimic.class, 0),
         BlackSoulx(BlackSoul.class, 0),
         ANO(AnomaloCaris.class, 0),
@@ -597,7 +599,7 @@ public class MobPlacer extends TestItem{
         Crystal(CrystalGuardian.class,0),
         CrystalS(CrystalWisp.class,0),
         CBoss(ClearElemtGuard.class,0),
-//        GnollBoss(GnollGeomancer.class,0),
+        GHSE(Ghost_Halloween.class, 0),
         GnollX(GnollGuard.class,0),
         GnollC(GnollSapper.class,0),
         FLX(CrystalGuardian.class,0),

@@ -83,4 +83,10 @@ public class HollowMimic extends Mimic {
         }
 
     }
+
+    @Override
+    public int attackSkill(Char target) {
+        return 25; // Fixed attack skill
+    }
+
 }

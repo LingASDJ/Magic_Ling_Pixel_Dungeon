@@ -541,6 +541,8 @@ public class Assets {
 
 		public static final String ZOMBIE = "sprites/hollow/frankenstein.png";
 
+		public static final String GHOST_HE = "sprites/hollow/ghost_halloween.png";
+
 		public static final String CRUMB = "sprites/hollow/crumb.png";
 
 		public static final String BOMB = "sprites/hollow/gingerbread.png";

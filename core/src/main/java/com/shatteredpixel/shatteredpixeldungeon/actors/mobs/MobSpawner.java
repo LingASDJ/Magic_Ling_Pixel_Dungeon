@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.ApprenticeWit
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Butcher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Crumb;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Frankenstein;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Ghost_Halloween;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.PumkingBomber;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.DrTerror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.GunHuntsman;
@@ -401,17 +402,18 @@ public class MobSpawner extends Actor {
 				return new ArrayList<>(Arrays.asList(
 						Frankenstein.class, Crumb.class));
 
+			//HOLLOW
 			case 27:
 				return new ArrayList<>(Arrays.asList(
-						Frankenstein.class, Crumb.class, Butcher.class,Butcher.class,Crumb.class));
+						Frankenstein.class, Crumb.class,Crumb.class));
 
 			case 28:
 				return new ArrayList<>(Arrays.asList(
-						ApprenticeWitch.class, Crumb.class, ApprenticeWitch.class,Butcher.class,Crumb.class));
+						ApprenticeWitch.class, Crumb.class, ApprenticeWitch.class));
 
 			case 29:
 				return new ArrayList<>(Arrays.asList(
-						ApprenticeWitch.class, Crumb.class, PumkingBomber.class, ApprenticeWitch.class));
+						ApprenticeWitch.class, Ghost_Halloween.class, PumkingBomber.class, ApprenticeWitch.class));
 
 			default:
 				return new ArrayList<>(Arrays.asList(FlowerSlime.class, FlowerSlime.class,
