@@ -213,11 +213,14 @@ public enum Icons {
 			case JOURNAL:
 				icon.frame( icon.texture.uvRectBySize( 96, 176, 17, 15 ) );
 				break;
+			case CATALOG:
+				icon.frame( icon.texture.uvRectBySize( 32, 176, 13, 16 ) );
+				break;
 			case ALCHEMY:
 				icon.frame( icon.texture.uvRectBySize( 48, 176, 16, 16 ) );
 				break;
-			case CATALOG:
-				icon.frame( icon.texture.uvRectBySize( 32, 176, 13, 16 ) );
+			case GRASS:
+				icon.frame( icon.texture.uvRectBySize( 65, 176, 16, 16 ) );
 				break;
 			//2.4.0
 			case ENTER:
