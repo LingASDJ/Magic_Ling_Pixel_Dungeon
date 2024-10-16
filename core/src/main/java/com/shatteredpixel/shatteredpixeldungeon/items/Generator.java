@@ -573,9 +573,9 @@ public class Generator {
 
 					LifeTreeSword.class,
 
-					MoonDao.class,
+					//MoonDao.class,
 			};
-			WEP_T3.probs = new float[]{ 1, 5, 4, 4, 4 ,3,5,3,6,0, 0,0, SPDSettings.isItemUnlock(MoonDao.class.getSimpleName() ) ? 1.5f : 0 };
+			WEP_T3.probs = new float[]{ 1, 5, 4, 4, 4 ,3,5,3,6,0, 0,0};
 
 			WEP_T4.classes = new Class<?>[]{
 					Longsword.class,
@@ -586,12 +586,13 @@ public class Generator {
 					Crossbow.class,
 					Katana.class,
 					GrilledHerring.class,
-					Gauntlet.class,
+
 					Seekingspear.class,
 
 					RedBloodMoon.class,
+					MoonDao.class,
 			};
-			WEP_T4.probs = new float[]{ 6, 5, 5, 4, 4, 4,2,3, 2, 6, SPDSettings.isItemUnlock(RedBloodMoon.class.getSimpleName() ) ? 1.2f : 0 };
+			WEP_T4.probs = new float[]{ 6, 5, 5, 4, 4, 4,2,3, 6, SPDSettings.isItemUnlock(RedBloodMoon.class.getSimpleName() ) ? 1.2f : 0, SPDSettings.isItemUnlock(MoonDao.class.getSimpleName() ) ? 1.5f : 0  };
 
 			WEP_T5.classes = new Class<?>[]{
 					LockSword.class,
@@ -610,15 +611,16 @@ public class Generator {
 					DragonShiled.class,
 					KingAxe.class,
 					RiceSword.class,
-
+					Gauntlet.class,
 					//超模武器
 					IceSan.class,
+
 			};
 
 			PaswordBadges.loadGlobal();
 			List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
-			WEP_T5.probs = new float[]{ 6, 3, 3, 3, 3, 3,3,4,SPDSettings.isItemUnlock(DiedCrossBow.class.getSimpleName() ) ? 1.5f : 0,2,SPDSettings.isItemUnlock(SaiPlus.class.getSimpleName() ) ? 1f : 0,0,SPDSettings.KillDwarf() ? 1.2f : 0,passwordbadges.contains(PaswordBadges.Badge.UNLOCK_RICESWORD)?1.4f : SPDSettings.isItemUnlock(RiceSword.class.getSimpleName() ) ? 1.4f : 0, Statistics.RandMode ? 5 : 0};
+			WEP_T5.probs = new float[]{ 6, 3, 3, 3, 3, 3,3,4,SPDSettings.isItemUnlock(DiedCrossBow.class.getSimpleName() ) ? 1.5f : 0,2,SPDSettings.isItemUnlock(SaiPlus.class.getSimpleName() ) ? 1f : 0,0,SPDSettings.KillDwarf() ? 1.2f : 0, 4, passwordbadges.contains(PaswordBadges.Badge.UNLOCK_RICESWORD)?1.4f : SPDSettings.isItemUnlock(RiceSword.class.getSimpleName() ) ? 1.4f : 0, Statistics.RandMode ? 5 : 0};
 
 			WEP_T6.classes = new Class<?>[]{
 					IceFishSword.class,
