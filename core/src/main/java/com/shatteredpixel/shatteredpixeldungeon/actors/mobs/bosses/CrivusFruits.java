@@ -407,7 +407,7 @@ public class CrivusFruits extends Boss {
 
         if (!Badges.isUnlocked(Badges.Badge.KILL_APPLE)){
             Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
-        } else if (Random.Float()<0.4f || SPDSettings.BossWeaponCount1() >= 3) {
+        } else if (Random.Float()<0.65f || SPDSettings.BossWeaponCount1() >= 3) {
             SPDSettings.BossWeaponCount1(SPDSettings.BossWeaponCount1() + 1);
             Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
             if(SPDSettings.BossWeaponCount1() >= 3){

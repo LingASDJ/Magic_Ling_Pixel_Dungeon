@@ -164,8 +164,8 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
         Statistics.bossScores[0] += 2000;
         Badges.KILL_ST();
 
-        //30%
-        if(Random.Float()>=0.7f) Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
+        //35%
+        if(Random.Float()>=0.65f) Dungeon.level.drop( new LifeTreeSword(), pos ).sprite.drop();
 
         if(!Statistics.bossRushMode) {
             Dungeon.level.drop(new IceCyanBlueSquareCoin(15),pos);

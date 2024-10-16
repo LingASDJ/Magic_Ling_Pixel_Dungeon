@@ -241,7 +241,7 @@ public class BloodthirstyThorn extends MeleeWeapon {
 
     @Override
     public int min(int lvl) {
-        if (lvl > 14) {
+        if (lvl > 10) {
             return 0;
         }
         return 2 + lvl * 2;
@@ -249,7 +249,7 @@ public class BloodthirstyThorn extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        if (lvl > 14) {
+        if (lvl > 10) {
             return 0;
         }
         return 6 + lvl * 4;
@@ -258,27 +258,16 @@ public class BloodthirstyThorn extends MeleeWeapon {
 
     @Override
     public int STRReq(int lvl) {
-        if (lvl > 14) {
+        if (lvl > 10) {
             return lvl * 5;
         }
         return 14;
     }
 
-    private void getHerodamageHp(Hero hero) {
-        int damage = 2;
-        hero.damage(damage,this);
-    }
-
     @Override
     public int proc(Char attacker, Char defender, int damage ) {
-        // 等级+3前每次攻击有概率扣除使用者2点生命值，并施加流血效果。
-        // 等级+5及以后时攻击距离增加一格，并移除其负面影响
-        if (level() < 4 && Random.Float() > 0.35f) {
-            getHerodamageHp(hero);
-            Buff.affect(attacker, Bleeding.class).set(7);
-        } else if (level() >= 10) {
-            //吸血为每次伤害/5 例如=50/5=10 Math.min()不超出。
 
+        if (level() >= 10) {
             int healAmt = Math.min( attacker.HT, damage/5);
             healAmt = Math.min( healAmt, attacker.HT - attacker.HP );
 
@@ -291,21 +280,18 @@ public class BloodthirstyThorn extends MeleeWeapon {
 
         //恐惧和流血
         if(level()>=0 && Random.Float()>0.45f){
-            Buff.affect(defender, Bleeding.class).set(15+level());
-            Buff.affect(defender, Terror.class, Terror.DURATION );
+            Buff.affect(defender, Bleeding.class).set(level());
+            Buff.affect(defender, Terror.class, level() );
         }
         return super.proc(attacker, defender, damage);
 
     }
 
-    //动态改变图标与范围
     @Override
     public int image() {
         super.image = ItemSpriteSheet.BloodDir;
         if (level() >= 5) {
             super.image = ItemSpriteSheet.BloodDied;
-            //在更新图标的同时更新攻击范围
-            RCH=2;
             ACC = 1.95f;
         } else {
             super.image = ItemSpriteSheet.BloodDir;
