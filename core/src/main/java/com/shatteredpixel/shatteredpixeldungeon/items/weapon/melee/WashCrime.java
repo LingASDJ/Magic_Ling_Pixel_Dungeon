@@ -24,14 +24,12 @@ public class WashCrime extends MeleeWeapon {
 
     @Override
     public int min(int lvl) {
-        return  tier +  //base
-                lvl+killmobs/5;    //level scaling
+        return  2 + (lvl) + Math.min(killmobs / 2, 26);//level scaling
     }
 
     @Override
     public int max(int lvl) {
-        return  5*(tier+1) +    //base
-                lvl*(tier+1)+killmobs/5;   //level scaling
+        return  25 + (lvl*6) + Math.min(killmobs / 2, 26);    //level scaling
     }
 
     {
@@ -41,7 +39,7 @@ public class WashCrime extends MeleeWeapon {
 
         tier = 5;
         RCH = 3;    //lots of extra reach
-        DLY = 2f;
+        DLY = 1.76f;
     }
 
     @Override
