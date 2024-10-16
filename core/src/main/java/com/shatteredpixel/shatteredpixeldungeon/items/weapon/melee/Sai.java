@@ -83,17 +83,14 @@ public class Sai extends MeleeWeapon {
 		}
 	}
 
-
 	@Override
-	public int max(int lvl) {
-		return  Math.round(1.2f*(tier+1)) +     //10 base, down from 20
-				lvl*Math.round(1.2f*(tier+1));  //+2 per level, down from +4
+	public int min(int lvl) {
+		return 3 + level * 2;
 	}
 
 	@Override
-	public int min(int lvl) {
-		return  Math.round(0.74f*(tier+1)) +     //10 base, down from 20
-				lvl*Math.round(0.65f*(tier+1));  //+2 per level, down from +4
+	public int max(int lvl) {
+		return 15 + level * 2;
 	}
 
 	//TODO 武技
