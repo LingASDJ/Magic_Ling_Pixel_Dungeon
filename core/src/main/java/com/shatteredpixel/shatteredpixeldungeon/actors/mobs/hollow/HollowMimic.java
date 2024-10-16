@@ -3,6 +3,10 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.Immunities.ScaryImmunitiesBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
@@ -24,7 +28,23 @@ public class HollowMimic extends Mimic {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 30, 50 );
+        return 0;
+    }
+
+    @Override
+    public int attackProc(Char enemy, int damage) {
+        if(enemy!=null && enemy == hero) {
+            for (Buff buff : hero.buffs()) {
+                if(buff instanceof ScaryImmunitiesBuff){
+                    ((ScaryImmunitiesBuff) buff).damgeScary();
+                } else if (buff instanceof ScaryBuff) {
+                    ((ScaryBuff) buff).damgeScary(20);
+                } else {
+                    Buff.affect(enemy, ScaryBuff.class).set((100), 5);
+                }
+            }
+        }
+        return damage; // Return adjusted damage
     }
 
     @Override
