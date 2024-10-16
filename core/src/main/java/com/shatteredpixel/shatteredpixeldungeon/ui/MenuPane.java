@@ -28,6 +28,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.ui.Window.RED_COLOR;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
@@ -41,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndGame;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndJournal;
@@ -79,7 +81,6 @@ public class MenuPane extends Component {
 	private DangerIndicator danger;
 
 	public static final int WIDTH = 32;
-
 
 	protected String displayText(){
 		InterlevelScene.curTransition = new LevelTransition();
@@ -228,6 +229,18 @@ public class MenuPane extends Component {
 		add( danger );
 
 		add( pickedUp = new Toolbar.PickedUpItem());
+
+		if(Dungeon.isDLC(Conducts.Conduct.DEV) && SPDSettings.UPos()){
+			StyledButton pos = new StyledButton(Chrome.Type.TOAST_TR, Messages.get(WndGame.class,"pos"),5){
+				@Override
+				protected void onClick() {
+					GLog.b("Hero_pos:"+Dungeon.hero.pos);
+				}
+			};
+			pos.icon(new Image(Icons.get(Icons.WARNING)));
+			pos.setRect(0,160,50,16);
+			add(pos);
+		}
 	}
 
 	@Override

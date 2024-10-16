@@ -159,6 +159,8 @@ public class SPDSettings extends GameSettings {
 
 	private static final String KEY_DARK	= "dark_ui";
 
+	private static final String KEY_HDPS	= "hd_ps";
+
 	private static final String KEY_SKIN	= "skin_ui";
 
 	private static final String KEY_PAGE	= "page_ui";
@@ -631,6 +633,14 @@ public class SPDSettings extends GameSettings {
 
 	public static boolean ClassUI() {
 		return getBoolean(KEY_DARK, false);
+	}
+
+	public static void UPos(boolean value) {
+		put( KEY_HDPS, value );
+	}
+
+	public static boolean UPos() {
+		return getBoolean(KEY_HDPS, false);
 	}
 
 	public static void HelpSettings(boolean value) {

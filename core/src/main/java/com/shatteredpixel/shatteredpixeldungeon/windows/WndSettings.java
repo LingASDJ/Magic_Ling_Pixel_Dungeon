@@ -976,6 +976,8 @@ public class WndSettings extends WndTabbed {
 
 		CheckBox VSBwitch;
 
+		CheckBox RTC_itch;
+
 		//OptionSlider timeOut;
 
 //		RedButton ResetButton;
@@ -1019,6 +1021,16 @@ public class WndSettings extends WndTabbed {
 			VSBwitch.checked(SPDSettings.visualBuddle());
 			add(VSBwitch);
 
+			RTC_itch = new CheckBox( Messages.get(this, "rtb_settings") ) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					SPDSettings.UPos(checked());
+				}
+			};
+			RTC_itch.checked(SPDSettings.UPos());
+			add(RTC_itch);
+
 //			timeOut = new OptionSlider(Messages.get(this, "time_out"),
 //					"4s",
 //					"30s",
@@ -1053,8 +1065,9 @@ public class WndSettings extends WndTabbed {
             }
             ATBSwitch.setRect(0, LockFing.bottom() + GAP, width, SLIDER_HEIGHT);
             VSBwitch.setRect(0, ATBSwitch.bottom() + GAP, width, SLIDER_HEIGHT);
+			RTC_itch.setRect(0, VSBwitch.bottom() + GAP, width, SLIDER_HEIGHT);
 
-            height = ATBSwitch.bottom();
+            height = RTC_itch.bottom();
 		}
 
 	}
