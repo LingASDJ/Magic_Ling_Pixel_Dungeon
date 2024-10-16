@@ -236,7 +236,7 @@ public abstract class Recipe {
 			//new SmallLightHeader.Recipe(),
 
 			new ScrollOfRoseShiled.Recipe(),
-			new IceFishSword.Recipe(),
+
 			new WaterSoul.Recipe(),
 	};
 	
@@ -254,6 +254,7 @@ public abstract class Recipe {
 			new JAmulet.Recipe(),
 			new FlareBullet.Recipe(),
 			new WandOfVenom.Recipe(),
+			new IceFishSword.Recipe(),
 	};
 	
 	public static ArrayList<Recipe> findRecipes(ArrayList<Item> ingredients){

@@ -12,9 +12,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfSnapFreeze;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.thanks.GrilledHerring;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -60,8 +61,8 @@ public class IceFishSword extends MeleeWeapon {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
         {
-            inputs =  new Class[]{FrozenCarpaccio.class, MagicalInfusion.class};
-            inQuantity = new int[]{1, 1};
+            inputs =  new Class[]{PotionOfSnapFreeze.class, GrilledHerring.class, MagicalInfusion.class};
+            inQuantity = new int[]{1, 1, 1};
 
             cost = 16+Dungeon.depth/2;
 
@@ -147,14 +148,12 @@ public class IceFishSword extends MeleeWeapon {
 
     @Override
     public int min(int lvl) {
-        return  (tier + 2)+ +     //10 base, down from 20
-                lvl*Math.round(1.0f*(tier+1));   //scaling unchanged
+        return 2 + lvl * 3;
     }
 
     @Override
     public int max(int lvl) {
-        return  2*(tier+3) +     //10 base, down from 20
-                lvl*Math.round(1.0f*(tier+1));   //scaling unchanged
+        return 6 + lvl * 7;
     }
 
 

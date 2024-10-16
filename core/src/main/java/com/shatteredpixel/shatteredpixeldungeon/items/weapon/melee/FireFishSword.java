@@ -42,19 +42,14 @@ public class FireFishSword extends MeleeWeapon{
         return result;
     }
 
-
-
-
     @Override
     public int min(int lvl) {
-        return  (tier + 1)+ +     //10 base, down from 20
-                lvl*Math.round(1.0f*(tier+1));   //scaling unchanged
+        return 2 + lvl * 3;
     }
 
     @Override
     public int max(int lvl) {
-        return  2*(tier+2) +     //10 base, down from 20
-                lvl*Math.round(1.0f*(tier+1));   //scaling unchanged
+        return 6 + lvl * 7;
     }
 
 
