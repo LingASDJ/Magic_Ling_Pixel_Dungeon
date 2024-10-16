@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.AQUAPHOBIA;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DARKNESS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.HelpSettings;
@@ -3506,7 +3507,7 @@ public class Hero extends Char {
 
 	//灯火前行逻辑
 	public void damageLantern(int value) {
-		lanterfire -= value;
+		lanterfire -= Dungeon.isChallenged(DARKNESS)? value*2 : value;
 		if (lanterfire < 0) {
 			lanterfire = 0;
 		}
