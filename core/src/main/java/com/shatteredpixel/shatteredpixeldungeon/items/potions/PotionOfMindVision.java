@@ -21,7 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.potions;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -29,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.utils.Random;
 
 public class PotionOfMindVision extends Potion {
 
@@ -38,16 +42,25 @@ public class PotionOfMindVision extends Potion {
 
 	@Override
 	public void apply( Hero hero ) {
-		identify();
-		Buff.affect( hero, MindVision.class, MindVision.DURATION );
-		SpellSprite.show(hero, SpellSprite.VISION, 1, 0.77f, 0.9f);
-		Dungeon.observe();
-		
-		if (Dungeon.level.mobs.size() > 0) {
-			GLog.i( Messages.get(this, "see_mobs") );
+
+		if(Dungeon.isChallenged(EXSG) && Random.Float()>=0.95f) {
+			identify();
+			Buff.affect(hero, Blindness.class, 5f);
+			GLog.n(Messages.get(this, "no_eye"));
 		} else {
-			GLog.i( Messages.get(this, "see_none") );
+			identify();
+			Buff.affect( hero, MindVision.class, MindVision.DURATION );
+			SpellSprite.show(hero, SpellSprite.VISION, 1, 0.77f, 0.9f);
+			Dungeon.observe();
+
+			if (Dungeon.level.mobs.size() > 0) {
+				GLog.i( Messages.get(this, "see_mobs") );
+			} else {
+				GLog.i( Messages.get(this, "see_none") );
+			}
 		}
+
+
 	}
 	
 	@Override

@@ -47,18 +47,17 @@ public class PotionOfInvisibility extends Potion {
 	@Override
 	public void apply( Hero hero ) {
 		identify();
-		if(Dungeon.isChallenged(EXSG)&& Random.Float()>0.4f){
+		if(Dungeon.isChallenged(EXSG)&& Random.Float()>0.95f){
+			Buff.affect( hero, Invisibility.class, Invisibility.DURATION );
+			GLog.i( Messages.get(this, "invisible") );
+			Sample.INSTANCE.play( Assets.Sounds.MELD );
+		} else {
 			for (Mob mob : Dungeon.level.mobs) {
 				mob.beckon( Dungeon.hero.pos );
 			}
 			GLog.i( Messages.get(this, "notinvisible") );
 			Sample.INSTANCE.play( Assets.Sounds.ALERT );
 			CellEmitter.center( Dungeon.hero.pos ).start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
-		}
-		else{
-			Buff.affect( hero, Invisibility.class, Invisibility.DURATION );
-			GLog.i( Messages.get(this, "invisible") );
-			Sample.INSTANCE.play( Assets.Sounds.MELD );
 		}
 
 

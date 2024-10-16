@@ -48,7 +48,7 @@ public class PotionOfStrength extends Potion {
 	@Override
 	public void apply( Hero hero ) {
 		identify();
-		if(Dungeon.isChallenged(EXSG) && Random.Float()>0.4f) {
+		if(Dungeon.isChallenged(EXSG) && Random.Float()>=0.95f) {
 			hero.STR--;
 			hero.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "esg_1"));
 			GLog.n(Messages.get(this, "esg_2"));
