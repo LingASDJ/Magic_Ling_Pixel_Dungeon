@@ -65,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfTo
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.WaterSoul;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCorrosiveGas;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfSnapFreeze;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
@@ -98,6 +99,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVeno
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BloodthirstyThorn;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.IceFishSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.thanks.GrilledHerring;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.AikeLaier;
@@ -471,7 +473,7 @@ public class QuickRecipe extends Component {
 								new LifeTreeSword.PlaceHolder())),
 						new BloodthirstyThorn()));
 				result.add(new QuickRecipe( new IceFishSword.Recipe(),
-						new ArrayList<Item>(Arrays.asList(new FrozenCarpaccio(), new MagicalInfusion())),
+						new ArrayList<Item>(Arrays.asList(new PotionOfSnapFreeze(), new GrilledHerring(), new MagicalInfusion())),
 						new IceFishSword()));
 				result.add(null);
 				result.add(null);
