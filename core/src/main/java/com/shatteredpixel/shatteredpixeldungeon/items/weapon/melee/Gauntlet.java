@@ -37,10 +37,9 @@ public class Gauntlet extends MeleeWeapon {
 		image = ItemSpriteSheet.GAUNTLETS;
 		hitSound = Assets.Sounds.HIT_CRUSH;
 		hitSoundPitch = 1.2f;
+		tier = 5;
 
-		//3阶换位4阶 加强 2023-10-4
-		tier = 4;
-		DLY = 0.35f; //2x speed
+		DLY = 0.4f;
 	}
 
 	@Override
