@@ -5,6 +5,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -94,15 +95,22 @@ public class Butcher extends Mob {
     @Override
     public int attackProc( Char enemy, int damage ) {
         damage = super.attackProc( enemy, damage );
-
-
         if(enemy!=null && enemy == hero) {
             for (Buff buff : hero.buffs()) {
                 if (buff instanceof ScaryBuff) {
-                    //5损伤
-                    ((ScaryBuff) buff).damgeScary( 5);
+                    if(Random.Float() >= 66.6f){
+                        ((ScaryBuff) buff).damgeScary( 10);
+                        Buff.affect(hero, Bleeding.class).set(3);
+                    } else if(Random.Float() >= 6.6f) {
+                        Buff.affect(hero, Bleeding.class).set(5);
+                        ((ScaryBuff) buff).damgeScary( 15);
+                    } else if(Random.Float() >= 0.666f) {
+                        Buff.affect(hero, Bleeding.class).set(9);
+                        ((ScaryBuff) buff).damgeScary( 25);
+                    } else {
+                        ((ScaryBuff) buff).damgeScary( 5);
+                    }
                 } else {
-                    //未寻找到元损立刻附加
                     Buff.affect( enemy, ScaryBuff.class ).set( (100), 1 );
                 }
             }
