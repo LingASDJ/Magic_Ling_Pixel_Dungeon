@@ -83,6 +83,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFire
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NxhyShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.NyzBombAndBooksRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.OilWellRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PeachGodBlessRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PumpkinRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.RandomRoom;
@@ -286,6 +287,10 @@ public abstract class RegularLevel extends Level {
 		//20%
 		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) <= 40 || depth == 28 && !Statistics.bossRushMode) {
 			initRooms.add(new NxhyShopRoom());
+		}
+
+		if(depth == 9){
+			initRooms.add(new PeachGodBlessRoom());
 		}
 
 		if(depth>27 && depth <30){
