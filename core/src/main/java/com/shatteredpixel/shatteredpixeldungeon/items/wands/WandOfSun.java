@@ -26,14 +26,12 @@ import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 public class WandOfSun extends Wand{
 
     public Char owner;
     int collisionPos;
     public static final String AC_DISMISS = "DISMISS";
-    public HashSet<WandOfSun.MiniSun> suns = new HashSet<>();
 
     {
         image = ItemSpriteSheet.HIGHTWAND_7;
@@ -105,7 +103,6 @@ public class WandOfSun extends Wand{
         if(Dungeon.level.passable[target] && curCharges >0) {
             this.owner = owner;
             MiniSun sun = new MiniSun(target);
-
             sun.sprite.place(target);
             sun.sprite.parent = Dungeon.level.addVisuals();
             GameScene.scene.add(sun);
@@ -120,23 +117,35 @@ public class WandOfSun extends Wand{
 
     public static class MiniSun extends Actor {
 
-        public static int[] circle25 = {
-                -2,+2,
-                -2-Dungeon.level.width(),2-Dungeon.level.width(),
-                -2+Dungeon.level.width(),2+Dungeon.level.width(),
-                -2-(Dungeon.level.width()*2),-1-(Dungeon.level.width()*2),-(Dungeon.level.width()*2),1-(Dungeon.level.width()*2),2-(Dungeon.level.width()*2),
-                -2+(Dungeon.level.width()*2),-1+(Dungeon.level.width()*2),(Dungeon.level.width()*2),1+(Dungeon.level.width()*2),2+(Dungeon.level.width()*2),
-        };
+        public static int[] circle25;
+        public static int[] circle49;
 
-        public static int[] circle49 = {
-                -3,+3,
-                -3-Dungeon.level.width(),3-Dungeon.level.width(),
-                -3+Dungeon.level.width(),3+Dungeon.level.width(),
-                -3-(Dungeon.level.width()*2),3-(Dungeon.level.width()*2),
-                -3+(Dungeon.level.width()*2),3+(Dungeon.level.width()*2),
-                -3-(Dungeon.level.width()*3),-2-(Dungeon.level.width()*3),-1-(Dungeon.level.width()*3),-(Dungeon.level.width()*3),1-(Dungeon.level.width()*3),2-(Dungeon.level.width()*3) ,3-(Dungeon.level.width()*3),
-                -3+(Dungeon.level.width()*3),-2+(Dungeon.level.width()*3),-1+(Dungeon.level.width()*3),(Dungeon.level.width()*3),1+(Dungeon.level.width()*3),2+(Dungeon.level.width()*3) ,3+(Dungeon.level.width()*3),
-        };
+        static {
+            circle25 = initializeCircle25();
+            circle49 = initializeCircle49();
+        }
+
+        private static int[] initializeCircle25() {
+            return new int[]{
+                    -2, +2,
+                    -2 - Dungeon.level.width(), 2 - Dungeon.level.width(),
+                    -2 + Dungeon.level.width(), 2 + Dungeon.level.width(),
+                    -2 - (Dungeon.level.width() * 2), -1 - (Dungeon.level.width() * 2), -(Dungeon.level.width() * 2), 1 - (Dungeon.level.width() * 2), 2 - (Dungeon.level.width() * 2),
+                    -2 + (Dungeon.level.width() * 2), -1 + (Dungeon.level.width() * 2), (Dungeon.level.width() * 2), 1 + (Dungeon.level.width() * 2), 2 + (Dungeon.level.width() * 2),
+            };
+        }
+
+        private static int[] initializeCircle49() {
+            return new int[]{
+                    -3,+3,
+                    -3-Dungeon.level.width(),3-Dungeon.level.width(),
+                    -3+Dungeon.level.width(),3+Dungeon.level.width(),
+                    -3-(Dungeon.level.width()*2),3-(Dungeon.level.width()*2),
+                    -3+(Dungeon.level.width()*2),3+(Dungeon.level.width()*2),
+                    -3-(Dungeon.level.width()*3),-2-(Dungeon.level.width()*3),-1-(Dungeon.level.width()*3),-(Dungeon.level.width()*3),1-(Dungeon.level.width()*3),2-(Dungeon.level.width()*3) ,3-(Dungeon.level.width()*3),
+                    -3+(Dungeon.level.width()*3),-2+(Dungeon.level.width()*3),-1+(Dungeon.level.width()*3),(Dungeon.level.width()*3),1+(Dungeon.level.width()*3),2+(Dungeon.level.width()*3) ,3+(Dungeon.level.width()*3),
+            };
+        }
 
         public int level = 1;
         public WandOfSun wand;
@@ -156,18 +165,22 @@ public class WandOfSun extends Wand{
         }
 
         private static final String MINISUNSTATUS = "minisun_status";
+        private static final String POS = "pos";
+
+        @Override
+        public void storeInBundle(Bundle bundle) {
+            super.storeInBundle(bundle);
+            bundle.put( MINISUNSTATUS, duration) ;
+            bundle.put( POS, pos );
+        }
 
         @Override
         public void restoreFromBundle(Bundle bundle) {
             super.restoreFromBundle(bundle);
             if( bundle.contains( MINISUNSTATUS ) )
                 duration = bundle.getInt( MINISUNSTATUS );
-        }
-
-        @Override
-        public void storeInBundle(Bundle bundle) {
-            super.storeInBundle(bundle);
-            bundle.put( MINISUNSTATUS, duration) ;
+            if( bundle.contains( POS ) )
+                pos = bundle.getInt( POS );
         }
 
         public void die(){
@@ -177,15 +190,18 @@ public class WandOfSun extends Wand{
             Actor.remove(this);
         }
 
+        public void SunStorm(Char s){
+            sprite.parent.add(new Beam.DeathRayS(sprite.center(), DungeonTilemap.raisedTileCenterToWorld(s.pos)));
+        }
+
         @Override
         public boolean act(){
-
             duration--;
 
             if(duration == 1 && wand.curCharges >0){
                 wand.curCharges--;
                 updateQuickslot();
-                duration +=3;
+                duration += 3;
             }
 
             spend( TICK );
@@ -211,21 +227,25 @@ public class WandOfSun extends Wand{
                     }else if(m.buff(SunFire.class).source != this){
                         m.damage((int) (damage * 1.25f),this);
                     }
+                    SunStorm(m);
                 }
+
             }
 
-            for (int i : circle25){
+            for (int i : Dungeon.level != null ? circle25 : new int[]{0}){
                 Mob m = Dungeon.level.findMob(pos+i);
-                if(m !=null && m.alignment == Char.Alignment.ENEMY){
-                    if(m.buff(SunFire.class) ==null){
-                        m.damage((int) (damage * 0.75f),this);
-                    }else if(m.buff(SunFire.class).source != this){
-                        m.damage((int) (damage * 1.25f * 0.75f),this);
+                if(m !=null && m.alignment == Char.Alignment.ENEMY) {
+                    if (m.buff(SunFire.class) == null) {
+                        m.damage((int) (damage * 0.75f), this);
+                    } else if (m.buff(SunFire.class).source != this) {
+                        m.damage((int) (damage * 1.25f * 0.75f), this);
                     }
+                    SunStorm(m);
                 }
+
             }
 
-            for (int i : circle49){
+            for (int i : Dungeon.level != null ? circle49 : new int[]{0}){
                 Mob m = Dungeon.level.findMob(pos+i);
                 if(m !=null && m.alignment == Char.Alignment.ENEMY){
                     if(m.buff(SunFire.class) ==null){
@@ -233,9 +253,12 @@ public class WandOfSun extends Wand{
                     }else if(m.buff(SunFire.class).source != this){
                         m.damage((int) (damage * 1.25f * 0.5f),this);
                     }
+                    SunStorm(m);
                 }
             }
             GameScene.updateFog(pos, viewDistance);
+
+
 
             if(duration<=0){
                 die();
@@ -245,9 +268,6 @@ public class WandOfSun extends Wand{
         }
 
     }
-
-    private static final String SUNS= "suns";
-    private static final String OWNER= "owner";
 
     protected CellSelector.Listener cellSelector = new CellSelector.Listener(){
 

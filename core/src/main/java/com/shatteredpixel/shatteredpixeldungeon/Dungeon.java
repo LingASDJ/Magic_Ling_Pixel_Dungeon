@@ -312,14 +312,6 @@ public class Dungeon {
 		return depth < 5 && depth != 0 && !LimitedDrops.TRINKET_CATA.dropped() && Random.Int(4-depth) == 0;
 	}
 
-	public static void resetLevel() {
-
-		Actor.clear();
-
-		level.reset();
-		switchLevel( level, level.entrance() );
-	}
-
 	public static long seedCurDepth(){
 		return seedForDepth(depth, branch);
 	}

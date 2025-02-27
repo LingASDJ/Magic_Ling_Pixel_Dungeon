@@ -12,17 +12,17 @@ public class SunSprite extends MobSprite {
 
         TextureFilm frames = new TextureFilm( texture, 24, 24 );
 
-        idle = new Animation( 14, true );
+        idle = new Animation( 12, true );
         idle.frames( frames, 0, 1, 2, 3,4,5,6,7,8,9 );
 
-        run = idle.clone();
-        run.frames( frames, 0, 1 );
+        run = new Animation( 12, true );
+        run.frames( frames, 0, 1, 2, 3,4,5,6,7,8,9 );
 
-        attack = idle.clone();
-        attack.frames( frames, 2, 3, 0, 1 );
+        attack = new Animation( 14, false );
+        attack.frames( frames, 0, 1, 2, 3,4,5,6,7,8,9 );
 
-        die = idle.clone();
-        die.frames( frames, 4, 5, 6 );
+        die = new Animation( 14, false );
+        die.frames( frames, 0, 1, 2, 3,4,5,6,7,8,9 );
 
         play( idle );
     }
