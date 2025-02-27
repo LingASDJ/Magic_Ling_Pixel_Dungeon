@@ -122,6 +122,8 @@ public class Assets {
 		public static final String OilWell  = "environment/custom_tiles/oil_well.png";
 		public static final String TILES_HOLLOW  = "environment/tiles_halloween.png";
 
+		public static final String ALTAR_SPRING  = "environment/custom_tiles/spring_altar.png";
+
 		public static final String TILES_HOLLOW_CS  = "environment/tiles_halloween-cs.png";
 
 		public static final String TILES_CAVES  = "environment/tiles_caves.png";
@@ -730,6 +732,9 @@ public class Assets {
 		public static final String BBAT	= "sprites/bloodbat.png";
 
 		public static final String RAT		= "sprites/rat.png";
+
+		public static final String PEACHGODSTATUE	= "sprites/peachgodstatue.png";
+
 		public static final String NONE		= "sprites/none.png";
 		public static final String FLOWER_SLIME		= "sprites/flowers_slime.png";
 
