@@ -3,6 +3,9 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.extra;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.items.Generator.randomUsingDefaults;
 
+import com.shatteredpixel.shatteredpixeldungeon.Conducts;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
@@ -11,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GoodLuck;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Killer;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.SmallLeafHardDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
@@ -45,13 +49,17 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PeachGodStateSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
+
+import java.util.LinkedHashMap;
 
 public class PeachGodState extends NTNPC {
     {
@@ -59,6 +67,7 @@ public class PeachGodState extends NTNPC {
         spriteClass = PeachGodStateSprite.class;
     }
 
+    public int anocount = 0;
     public int count = 0;
 
     @Override
@@ -82,10 +91,11 @@ public class PeachGodState extends NTNPC {
                             Game.runOnRenderThread(new Callback() {
                                 @Override
                                 public void call() {
-                                    if(count<9){
+                                    if(Dungeon.isDLC(Conducts.Conduct.DEV) || ( c instanceof Hero && SPDSettings.iceCoin() >50 )) {
                                         pray(0);
-                                    }else {
-                                        pray(0);
+                                    }else{
+                                        GLog.i(Messages.get(PeachGodState.class,"notenough"));
+                                        hide();
                                     }
                                 }
                             });
@@ -93,11 +103,13 @@ public class PeachGodState extends NTNPC {
                             Game.runOnRenderThread(new Callback() {
                                 @Override
                                 public void call() {
-                                    if(count<9){
+                                    if(Dungeon.isDLC(Conducts.Conduct.DEV) || ( c instanceof Hero && SPDSettings.iceCoin() >500 )) {
                                         pray(1);
-                                    }else {
-                                        pray(1);
+                                    }else{
+                                        GLog.i(Messages.get(PeachGodState.class,"notenough"));
+                                        hide();
                                     }
+
                                 }
                             });
                         } else if (index == 2){
@@ -107,24 +119,41 @@ public class PeachGodState extends NTNPC {
                 });
             }
         });
-
-        //TODO 完善抽卡逻辑
         return true;
     }
 
     public void pray(int mode){
+
+        String reward = Messages.get(PeachGodState.class,"you_now_have");
+
         if(mode == 0){
+
             //单抽
             int p = randomPray();
             count(p);
+            Item m = reward(p);
+            reward += m.name();
+
+            if(!m.doPickUp(hero,hero.pos)){
+                m.doDrop(hero);
+            }
+
 
         } else if (mode == 1) {
             //十连抽
             int[] p = {randomPray(),randomPray(),randomPray(),randomPray(),randomPray(),randomPray(),randomPray(),randomPray(),randomPray(),randomPray()};
             for(int i : p){
                 count(i);
+                Item m = reward(i);
+                reward += m.name() + "  ";
+
+                if(!m.doPickUp(hero,hero.pos)){
+                    m.doDrop(hero);
+                }
             }
         }
+
+        GLog.i(reward);
     }
 
     public int randomPray(){
@@ -171,16 +200,32 @@ public class PeachGodState extends NTNPC {
     }
 
     public void count(int rare){
+
+        anocount++;
+
+        if(Dungeon.isDLC(Conducts.Conduct.DEV)) SPDSettings.iceCoin(-50);
+
         if(rare<=1) {
             count ++;
         } else {
             count =0;
         }
 
-        if(rare<=2) {
+        if(rare<=2 && !Dungeon.isDLC(Conducts.Conduct.DEV)) {
             Statistics.prayCount++;
         } else {
             Statistics.prayCount = 0;
+        }
+
+        if(anocount>2){
+            PeachGodStateSprite s = (PeachGodStateSprite) sprite;
+            if(anocount >8){
+                s.idle4();
+            } else if (anocount>5) {
+                s.idle3();
+            }else{
+                s.idle2();
+            }
         }
 
     }
@@ -249,28 +294,17 @@ public class PeachGodState extends NTNPC {
             new IceCyanBlueSquareCoin().quantity(2500)
     };
 
-    public void reward(int rare){
+    public Item reward(int rare){
+
+        Item m = new Food();
+
         switch (rare){
-            case 0:
-                if(Random.Int(1,10)>8){
-                    if(Random.Int(1,2)>1){
-                        Buff.affect(hero, Haste.class,30);
-                    }else{
-                        Buff.affect(hero, Invisibility.class,30);
-                    }
-                }else{
-                    Item m = reward0[Random.Int(1,8)];
-                    if(m instanceof Armor || m instanceof Weapon){
-                        randomLevel(m,1,3);
-                    }
-                    m.collect();
-                }
-                break;
             case 1:
+
                 if(Random.Int(1,12)>11){
                     Buff.affect(hero, Adrenaline.class,30);
                 }else{
-                    Item m = reward1[Random.Int(1,11)];
+                    m = reward1[Random.Int(1,11)];
                     if(m instanceof Armor || m instanceof Weapon){
                         randomLevel(m,1,4);
                         if(Random.Int(1,100)<=35){
@@ -295,16 +329,13 @@ public class PeachGodState extends NTNPC {
                         }
                     }
 
-                    if (m != null) {
-                        m.collect();
-                    }
                 }
                 break;
             case 2:
                 if(Random.Int(1,15)>14){
                     Buff.affect(hero, GoodLuck.class);
                 }else{
-                    Item m = reward2[Random.Int(1,14)];
+                    m = reward2[Random.Int(1,14)];
                     if(m instanceof Armor || m instanceof Weapon){
                         randomLevel(m,2,4);
 
@@ -338,16 +369,13 @@ public class PeachGodState extends NTNPC {
                         }
                     }
 
-                    if (m != null) {
-                        m.collect();
-                    }
                 }
                 break;
             case 3:
                 if(Random.Int(1,13)>12){
                     Buff.affect(hero, Killer.class);
                 }else{
-                    Item m = reward3[Random.Int(1,12)];
+                    m = reward3[Random.Int(1,12)];
                     if(m instanceof Armor || m instanceof Weapon){
                         randomLevel(m,2,4);
                         if(m instanceof Armor){
@@ -366,12 +394,29 @@ public class PeachGodState extends NTNPC {
                         randomLevel(m,1,4);
                     }
 
-                    m.collect();
                 }
                 break;
             case 4:
-                reward4[Random.Int(1,4)].collect();
+                m  = reward4[Random.Int(1,4)];
+                break;
+            case 0:
+            default:
+
+                if(Random.Int(1,10)>8){
+                    if(Random.Int(1,2)>1){
+                        Buff.affect(hero, Haste.class,30);
+                    }else{
+                        Buff.affect(hero, Invisibility.class,30);
+                    }
+                }else{
+                    m = reward0[Random.Int(1,8)];
+                    if(m instanceof Armor || m instanceof Weapon){
+                        randomLevel(m,1,3);
+                    }
+                }
+                break;
         }
+        return m;
     }
 
     public void randomLevel(Item item ,int min,int max){
@@ -398,6 +443,46 @@ public class PeachGodState extends NTNPC {
                 }
                 break;
         }
+    }
+
+    private final String COUNT = "count";
+    private final String ANOCOUNT = "anocount";
+
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+
+        bundle.put(COUNT,count);
+        bundle.put(ANOCOUNT,anocount);
+
+        super.storeInBundle(bundle);
+    }
+
+    @Override
+    public void restoreFromBundle( Bundle bundle ) {
+
+        count = bundle.getInt(COUNT);
+        anocount = bundle.getInt(ANOCOUNT);
+
+        super.restoreFromBundle(bundle);
+    }
+
+    @Override
+    public CharSprite sprite() {
+
+        PeachGodStateSprite sprite = (PeachGodStateSprite) super.sprite();
+
+        if(anocount>2){
+            if(anocount >8){
+                sprite.idle4();
+            } else if (anocount>5) {
+                sprite.idle3();
+            }else{
+                sprite.idle2();
+            }
+        }
+
+        return sprite;
     }
 
 }
