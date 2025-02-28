@@ -16,8 +16,12 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class SmallLight extends Mob implements Callback {
-    private static final String[] TXT_RANDOM = {"Edro, edro!", "Yéni únótimë ve rámar aldaron!","A laita te, laita te! Andavë laituvalmet!","Ú-chebin Estel anim."};
-
+    private static final String[] TXT_RANDOM = {
+            "Edro, edro!",
+            "Yéni únótimë ve rámar aldaron!",
+            "A laita te, laita te! Andavë laituvalmet!",
+            "Ú-chebin Estel anim."
+    };
     {
         alignment = Alignment.ALLY;
         spriteClass = SmallLightSprites.class;
@@ -37,27 +41,24 @@ public class SmallLight extends Mob implements Callback {
         spend(TICK);
 
         int bestPos = Epos;
-        if(bestPos == 0 || Epos == pos){
+        if( bestPos == 0 || Epos == pos ){
             return;
         }
-        Char c = Actor.findChar(Epos);
-        if(c==null)
+
+        Char c = Actor.findChar( Epos );
+        if( c == null )
             return;
 
-        for (int i : PathFinder.NEIGHBOURS8){
-            if (Dungeon.level.passable[pos + i]
-                    && Actor.findChar(pos+i) == null
-                    && Dungeon.level.trueDistance(pos+i, Epos) > Dungeon.level.trueDistance(bestPos, Epos)){
-                bestPos = pos+i;
+        for ( int i : PathFinder.NEIGHBOURS8 ){
+            if ( Dungeon.level.passable[ pos + i ]
+                    && Actor.findChar( pos + i ) == null
+                    && Dungeon.level.trueDistance( pos + i, Epos ) > Dungeon.level.trueDistance( bestPos, Epos ) ){
+                bestPos = pos + i;
             }
         }
 
-        if (c.buff(MagicImmune.class) != null){
-            bestPos = Epos;
-        }
-
-        if (bestPos != Epos){
-            ScrollOfTeleportation.appear(c, bestPos);
+        if ( bestPos != Epos ){
+            ScrollOfTeleportation.appear( c, bestPos );
         }
     }
 
@@ -68,46 +69,39 @@ public class SmallLight extends Mob implements Callback {
     }
 
     private class Wandering extends Mob.Wandering {
-
         @Override
         public boolean act( boolean enemyInFOV, boolean justAlerted ) {
-
-            if(pos == level.exit()){
+            if( pos == level.exit() ){
                 die(null);
             }
 
             if ( enemyInFOV ) {
-
                 enemySeen = true;
 
                 notice();
                 alerted = true;
                 state = HUNTING;
                 target = enemy.pos;
-            }
-            else {
+            } else {
                 enemySeen = false;
                 target = level.exit();
             }
 
             flying = level.feeling == Level.Feeling.BIGTRAP || level.feeling == Level.Feeling.TRAPS;
 
-                int oldPos = pos;
-                //always move towards the hero when wandering
-                if (getCloser( target )) {
-                    spend( 1 / speed() );
-                    return moveSprite( oldPos, pos );
-                } else {
-                    spend( TICK );
-                }
+            int oldPos = pos;
+            if ( getCloser( target ) ) {
+                spend( 1 / speed() );
+                return moveSprite( oldPos, pos );
+            } else {
+                spend( TICK );
+            }
 
-            if(Random.Int(10)==1){
+            if( Random.Int( 10 ) == 1 ){
                 sprite.showStatus(0xFCE9CC, TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
             }
 
             return true;
         }
-
     }
-
 }
