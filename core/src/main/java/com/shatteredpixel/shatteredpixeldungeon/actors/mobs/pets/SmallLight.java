@@ -28,11 +28,6 @@ public class SmallLight extends Mob implements Callback {
         viewDistance = 5;
     }
 
-    public void onZapComplete() {
-        teleportEnemy(enemy.pos);
-        next();
-    }
-
     @Override
     public void call() {
         next();
