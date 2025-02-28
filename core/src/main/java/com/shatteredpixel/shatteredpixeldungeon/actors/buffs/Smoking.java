@@ -29,7 +29,11 @@ public class Smoking extends Buff {
             detach();
             return true;
         }
+
         GameScene.add(Blob.seed(Dungeon.hero.pos, 100, ElectricalSmokeBlob.class));
+        ElectricalSmokeBlob blob = (ElectricalSmokeBlob) Dungeon.level.blobs.get(ElectricalSmokeBlob.class);
+        blob.artifact = artifact;
+
         return true;
     }
 
