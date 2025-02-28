@@ -420,7 +420,7 @@ public abstract class Mob extends Char {
 
 		if(isAnimal && hero.withElectricalSmoke) {
 			this.alignment = Alignment.NEUTRAL;
-		}else if(! (this instanceof NPC)){
+		}else if(! (this instanceof NPC) && isAnimal){
 			this.alignment = Alignment.ENEMY;
 		}
 
