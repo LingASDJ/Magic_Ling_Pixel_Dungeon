@@ -56,7 +56,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Mint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoRuoS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.MoonLow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.PianoLe;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.Question;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.SmallLeaf;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WaloKe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.WhiteYan;
@@ -616,7 +615,7 @@ public class ZeroCityLevel extends Level {
                         Heap.Type.FOR_SALE;
             }
             for (int i : SALEPOS_THREE) {
-                drop((Generator.random(Generator.Category.WEAPON)), i).type =
+                drop((Generator.random(Generator.Category.WEP_T2)), i).type =
                         Heap.Type.FOR_SALE;
             }
             if (passwordbadges.contains(PaswordBadges.Badge.GODD_MAKE)) {
