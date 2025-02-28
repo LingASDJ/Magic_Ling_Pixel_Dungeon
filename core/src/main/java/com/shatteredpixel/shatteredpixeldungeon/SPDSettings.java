@@ -44,6 +44,8 @@ public class SPDSettings extends GameSettings {
 
 	public static final String KEY_VERSION      = "version";
 
+	public static int prayCount = 0;
+
 	public static void quickslots( int value ){
 		put( KEY_QUICKSLOTS, value );
 	}
