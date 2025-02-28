@@ -63,7 +63,6 @@ import java.util.LinkedHashMap;
 
 public class PeachGodState extends NTNPC {
     {
-        //TODO 完善祈愿阶段性变化 如果一次10连就直接渲染最终效果
         spriteClass = PeachGodStateSprite.class;
     }
 
