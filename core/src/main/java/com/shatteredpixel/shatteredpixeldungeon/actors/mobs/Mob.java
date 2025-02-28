@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GoodLuck;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -1137,6 +1138,16 @@ public abstract class Mob extends Char {
 			if (properties.contains(Property.BOSS)) rolls = 15;
 			else if (properties.contains(Property.MINIBOSS)) rolls = 5;
 			ArrayList<Item> bonus = RingOfWealth.tryForBonusDrop(hero, rolls);
+			if (bonus != null && !bonus.isEmpty()) {
+				for (Item b : bonus) Dungeon.level.drop(b, pos).sprite.drop();
+				RingOfWealth.showFlareForBonusDrop(sprite);
+			}
+		}
+
+		//GoodLuck Buff
+		if(hero.buff(GoodLuck.class)!=null){
+			int rolls = 1;
+			ArrayList<Item> bonus = RingOfWealth.tryForBonusDropLimit(hero, rolls);
 			if (bonus != null && !bonus.isEmpty()) {
 				for (Item b : bonus) Dungeon.level.drop(b, pos).sprite.drop();
 				RingOfWealth.showFlareForBonusDrop(sprite);

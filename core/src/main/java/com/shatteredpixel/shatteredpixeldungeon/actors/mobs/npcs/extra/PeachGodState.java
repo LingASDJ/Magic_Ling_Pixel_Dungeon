@@ -6,6 +6,12 @@ import static com.shatteredpixel.shatteredpixeldungeon.items.Generator.wepTiers;
 
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GoodLuck;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Killer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.SmallLeafHardDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
@@ -226,30 +232,34 @@ public class PeachGodState extends NTNPC {
         switch (rare){
             case 0:
                 if(Random.Int(1,10)>8){
-
+                    if(Random.Int(1,2)>1){
+                        Buff.affect(hero, Haste.class,30);
+                    }else{
+                        Buff.affect(hero, Invisibility.class,30);
+                    }
                 }else{
                     reward0[Random.Int(1,8)].collect();
                 }
                 break;
             case 1:
                 if(Random.Int(1,12)>11){
-
+                    Buff.affect(hero, Adrenaline.class,30);
                 }else{
                     reward1[Random.Int(1,11)].collect();
                 }
                 break;
             case 2:
                 if(Random.Int(1,15)>14){
-
+                    Buff.affect(hero, GoodLuck.class);
                 }else{
                     reward2[Random.Int(1,14)].collect();
                 }
                 break;
             case 3:
-                if(Random.Int(1,14)>13){
-
+                if(Random.Int(1,13)>12){
+                    Buff.affect(hero, Killer.class);
                 }else{
-                    reward3[Random.Int(1,13)].collect();
+                    reward3[Random.Int(1,12)].collect();
                 }
                 break;
             case 4:
