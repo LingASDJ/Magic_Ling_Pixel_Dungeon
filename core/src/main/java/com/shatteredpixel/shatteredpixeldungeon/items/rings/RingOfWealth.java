@@ -174,6 +174,75 @@ public class RingOfWealth extends Ring {
 		return drops;
 	}
 
+	//无金
+	public static ArrayList<Item> tryForBonusDropLimit(Char target, int tries ){
+		int bonus = getBuffedBonus(target, Wealth.class);
+
+		if (bonus <= 0) bonus = 1;
+
+		HashSet<Wealth> buffs = target.buffs(Wealth.class);
+		float triesToDrop = Float.MIN_VALUE;
+		int dropsToEquip = Integer.MIN_VALUE;
+
+		//find the largest count (if they aren't synced yet)
+		for (Wealth w : buffs){
+			if (w.triesToDrop() > triesToDrop){
+				triesToDrop = w.triesToDrop();
+				dropsToEquip = w.dropsToRare();
+			}
+		}
+
+		//reset (if needed), decrement, and store counts
+		if (triesToDrop == Float.MIN_VALUE) {
+			triesToDrop = Random.NormalIntRange(0, 20);
+			dropsToEquip = Random.NormalIntRange(5, 10);
+		}
+
+		//now handle reward logic
+		ArrayList<Item> drops = new ArrayList<>();
+
+		triesToDrop -= tries;
+		while ( triesToDrop <= 0 ){
+			if (dropsToEquip <= 0){
+				int equipBonus = 0;
+
+				//A second ring of wealth can be at most +1 when calculating wealth bonus for equips
+				//This is to prevent using an upgraded wealth to farm another upgraded wealth and
+				//using the two to get substantially more upgrade value than intended
+				for (Wealth w : target.buffs(Wealth.class)){
+					if (w.buffedLvl() > equipBonus){
+						equipBonus = w.buffedLvl() + Math.min(equipBonus, 2);
+					} else {
+						equipBonus += Math.min(w.buffedLvl(), 2);
+					}
+				}
+
+				Item i;
+				do {
+					i = genEquipmentDropLow(equipBonus - 1);
+				} while (Challenges.isItemBlocked(i));
+				drops.add(i);
+				dropsToEquip = Random.NormalIntRange(5, 10);
+			} else {
+				Item i;
+				do {
+					i = genConsumableDrop(bonus - 1);
+				} while (Challenges.isItemBlocked(i));
+				drops.add(i);
+				dropsToEquip--;
+			}
+			triesToDrop += Random.NormalIntRange(0, 20);
+		}
+
+		//store values back into rings
+		for (Wealth w : buffs){
+			w.triesToDrop(triesToDrop);
+			w.dropsToRare(dropsToEquip);
+		}
+
+		return drops;
+	}
+
 	//used for visuals
 	// 1/2/3 used for low/mid/high tier consumables
 	// 3 used for +0-1 equips, 4 used for +2 or higher equips
@@ -314,6 +383,46 @@ public class RingOfWealth extends Ring {
 			latestDropTier = 4;
 		} else {
 			latestDropTier = 3;
+		}
+		return result;
+	}
+
+	private static Item genEquipmentDropLow( int level ){
+		Item result;
+		//each upgrade increases depth used for calculating drops by 1
+		int floorset = (Dungeon.depth + level)/5;
+		switch (Random.Int(5)){
+			default: case 0: case 1:
+				Weapon w = Generator.randomWeapon(floorset, true);
+				if (!w.hasGoodEnchant() && Random.Int(10) < level)      w.enchant();
+				else if (w.hasCurseEnchant())                           w.enchant(null);
+				result = w;
+				break;
+			case 2:
+				Armor a = Generator.randomArmor(floorset);
+				if (!a.hasGoodGlyph() && Random.Int(10) < level)        a.inscribe();
+				else if (a.hasCurseGlyph())                             a.inscribe(null);
+				result = a;
+				break;
+			case 3:
+				result = Generator.randomUsingDefaults(Generator.Category.RING);
+				break;
+			case 4:
+				result = Generator.random(Generator.Category.ARTIFACT);
+				break;
+		}
+		//minimum level is 1/2/3/4/5/6 when ring level is 1/3/5/7/9/11
+		if (result.isUpgradable()){
+			int minLevel = (level+1)/2;
+			if (result.level() < minLevel){
+				result.level(minLevel);
+			}
+		}
+		result.cursed = false;
+		result.cursedKnown = true;
+		if (result.level() >= 2) {
+			latestDropTier = 3;
+			result.level(2);
 		}
 		return result;
 	}

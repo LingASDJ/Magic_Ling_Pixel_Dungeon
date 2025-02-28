@@ -152,6 +152,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfPrismaticLight;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfScale;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
@@ -499,6 +500,7 @@ public class Generator {
 					WandOfRegrowth.class,
 					WandOfScale.class,
 
+					WandOfSun.class,
 					WandOfBlueFuck.class,
 					WandOfHightHunderStorm.class,
 					WandOfGodIce.class,
@@ -508,7 +510,7 @@ public class Generator {
 			Badges.loadGlobal();
 			List<Badges.Badge> badges = Badges.filterReplacedBadges(true);
 
-			WAND.probs = new float[]{4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 2, 0, 0,
+			WAND.probs = new float[]{4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 0, 0,
 					badges.contains(Badges.Badge.KILL_MG) ? 2 : 0, 0};
 
 			//see generator.randomWeapon

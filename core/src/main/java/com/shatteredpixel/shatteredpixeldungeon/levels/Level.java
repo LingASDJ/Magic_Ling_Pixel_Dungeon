@@ -1658,20 +1658,29 @@ public abstract class Level implements Bundlable {
 
 			//allies and specific enemies can see through shrouding fog
 			if ((c.alignment != Char.Alignment.ALLY && !(c instanceof GnollGeomancer))
-					&& (Dungeon.level.blobs.containsKey(SmokeScreen.class) || Dungeon.level.blobs.containsKey(ElectricalSmokeBlob.class))
-					&& ((Dungeon.level.blobs.get(SmokeScreen.class).volume > 0) || Dungeon.level.blobs.get(ElectricalSmokeBlob.class).volume > 0)) {
+					&& Dungeon.level.blobs.containsKey(SmokeScreen.class)
+					&& (Dungeon.level.blobs.get(SmokeScreen.class).volume > 0)) {
 				if (blocking == null) {
 					System.arraycopy(Dungeon.level.losBlocking, 0, modifiableBlocking, 0, modifiableBlocking.length);
 					blocking = modifiableBlocking;
 				}
 				Blob s = Dungeon.level.blobs.get(SmokeScreen.class);
-				for (int i = 0; i < blocking.length; i++){
-					if (!blocking[i] && s.cur[i] > 0){
+				for (int i = 0; i < blocking.length; i++) {
+					if (!blocking[i] && s.cur[i] > 0) {
 						blocking[i] = true;
 					}
 				}
+			}
 
-				Blob e = Dungeon.level.blobs.get(SmokeScreen.class);
+			if ((c.alignment != Char.Alignment.ALLY && !(c instanceof GnollGeomancer))
+					&& Dungeon.level.blobs.containsKey(ElectricalSmokeBlob.class)
+					&& (Dungeon.level.blobs.get(ElectricalSmokeBlob.class).volume > 0)) {
+				if (blocking == null) {
+					System.arraycopy(Dungeon.level.losBlocking, 0, modifiableBlocking, 0, modifiableBlocking.length);
+					blocking = modifiableBlocking;
+				}
+
+				Blob e = Dungeon.level.blobs.get(ElectricalSmokeBlob.class);
 				for (int i = 0; i < blocking.length; i++){
 					if (!blocking[i] && e.cur[i] > 0){
 						blocking[i] = true;

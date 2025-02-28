@@ -426,6 +426,7 @@ public class Statistics {
 	public static ArrayList<Prop> propNegative0;
 	public static ArrayList<Prop> propNegative1;
 	public static ArrayList<Prop> propNegative2;
+    public static int prayCount = 0;
 
     public static void reset() {
 

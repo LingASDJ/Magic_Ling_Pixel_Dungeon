@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SunFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -19,6 +20,9 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SunSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Group;
+import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
@@ -100,29 +104,31 @@ public class WandOfSun extends Wand{
             }
         }
 
-        if(Dungeon.level.passable[target] && curCharges >0) {
+        if(!Dungeon.level.solid[target] && curCharges >0) {
             this.owner = owner;
             MiniSun sun = new MiniSun(target);
             sun.sprite.place(target);
             sun.sprite.parent = Dungeon.level.addVisuals();
             GameScene.scene.add(sun);
-            sun.duration = (int) ( 3 + buffedLvl()*0.3f);
+            sun.duration = (int) ( 4 + buffedLvl()*0.3f);
             sun.wand = this;
             collisionPos = target;
             return true;
+        } else if (Dungeon.level.solid[target]) {
+            GLog.i(Messages.get(Wand.class,"solid"));
         }
-        GLog.i(Messages.get(Wand.class,"fizzles"));
+        if(curCharges == 0) GLog.i(Messages.get(Wand.class,"fizzles"));
         return false;
     }
 
     public static class MiniSun extends Actor {
 
-        public static int[] circle25;
-        public static int[] circle49;
+        public  int[] rim25;
+        public  int[] rim49;
 
-        static {
-            circle25 = initializeCircle25();
-            circle49 = initializeCircle49();
+        {
+            rim25 = initializeCircle25();
+            rim49 = initializeCircle49();
         }
 
         private static int[] initializeCircle25() {
@@ -131,7 +137,7 @@ public class WandOfSun extends Wand{
                     -2 - Dungeon.level.width(), 2 - Dungeon.level.width(),
                     -2 + Dungeon.level.width(), 2 + Dungeon.level.width(),
                     -2 - (Dungeon.level.width() * 2), -1 - (Dungeon.level.width() * 2), -(Dungeon.level.width() * 2), 1 - (Dungeon.level.width() * 2), 2 - (Dungeon.level.width() * 2),
-                    -2 + (Dungeon.level.width() * 2), -1 + (Dungeon.level.width() * 2), (Dungeon.level.width() * 2), 1 + (Dungeon.level.width() * 2), 2 + (Dungeon.level.width() * 2),
+                    -2 + (Dungeon.level.width() * 2), -1 + (Dungeon.level.width() * 2), (Dungeon.level.width() * 2), 1 + (Dungeon.level.width() * 2), 2 + (Dungeon.level.width() * 2)
             };
         }
 
@@ -150,7 +156,7 @@ public class WandOfSun extends Wand{
         public int level = 1;
         public WandOfSun wand;
         public MagesStaff staff = null;
-        public int duration = 3;
+        public int duration;
         public int viewDistance = 9;
         public Class<? extends CharSprite> spriteClass = SunSprite.class;
         public int pos;
@@ -190,13 +196,11 @@ public class WandOfSun extends Wand{
             Actor.remove(this);
         }
 
-        public void SunStorm(Char s){
-            sprite.parent.add(new Beam.DeathRayS(sprite.center(), DungeonTilemap.raisedTileCenterToWorld(s.pos)));
-        }
-
         @Override
         public boolean act(){
             duration--;
+
+            boolean damaged = false;
 
             if(duration == 1 && wand.curCharges >0){
                 wand.curCharges--;
@@ -227,12 +231,12 @@ public class WandOfSun extends Wand{
                     }else if(m.buff(SunFire.class).source != this){
                         m.damage((int) (damage * 1.25f),this);
                     }
-                    SunStorm(m);
+                    damaged = true;
                 }
 
             }
 
-            for (int i : Dungeon.level != null ? circle25 : new int[]{0}){
+            for (int i : Dungeon.level != null ? rim25 : new int[]{0}){
                 Mob m = Dungeon.level.findMob(pos+i);
                 if(m !=null && m.alignment == Char.Alignment.ENEMY) {
                     if (m.buff(SunFire.class) == null) {
@@ -240,12 +244,12 @@ public class WandOfSun extends Wand{
                     } else if (m.buff(SunFire.class).source != this) {
                         m.damage((int) (damage * 1.25f * 0.75f), this);
                     }
-                    SunStorm(m);
+                    damaged = true;
                 }
 
             }
 
-            for (int i : Dungeon.level != null ? circle49 : new int[]{0}){
+            for (int i : Dungeon.level != null ? rim49 : new int[]{0}){
                 Mob m = Dungeon.level.findMob(pos+i);
                 if(m !=null && m.alignment == Char.Alignment.ENEMY){
                     if(m.buff(SunFire.class) ==null){
@@ -253,18 +257,66 @@ public class WandOfSun extends Wand{
                     }else if(m.buff(SunFire.class).source != this){
                         m.damage((int) (damage * 1.25f * 0.5f),this);
                     }
-                    SunStorm(m);
+                    damaged = true;
                 }
             }
             GameScene.updateFog(pos, viewDistance);
 
-
+            if(damaged) BlastWaveLarge.blast(pos,7);
 
             if(duration<=0){
                 die();
             }
 
             return true;
+        }
+
+    }
+
+    public static class BlastWaveLarge extends Image {
+
+        private static final float TIME_TO_FADE = 0.9f;
+
+        private float time;
+        private float size;
+
+        public BlastWaveLarge(){
+            super(Effects.get(Effects.Type.RIPPLE));
+            origin.set(width / 2, height / 2);
+        }
+
+        public void reset(int pos, float size) {
+            revive();
+
+            x = (pos % Dungeon.level.width()) * DungeonTilemap.SIZE + (DungeonTilemap.SIZE - width) / 2;
+            y = (pos / Dungeon.level.width()) * DungeonTilemap.SIZE + (DungeonTilemap.SIZE - height) / 2;
+
+            time = TIME_TO_FADE;
+            this.size = size;
+        }
+
+        @Override
+        public void update() {
+            super.update();
+
+            if ((time -= Game.elapsed) <= 0) {
+                kill();
+            } else {
+                float p = time / TIME_TO_FADE;
+                alpha(p);
+                scale.y = scale.x = (1-p)*size;
+            }
+        }
+
+        public static void blast(int pos) {
+            blast(pos, 3);
+        }
+
+        public static void blast(int pos, float radius) {
+            Group parent = Dungeon.hero.sprite.parent;
+            WandOfBlastWave.BlastWave b = (WandOfBlastWave.BlastWave) parent.recycle(WandOfBlastWave.BlastWave.class);
+            parent.bringToFront(b);
+            b.reset(pos, radius);
         }
 
     }

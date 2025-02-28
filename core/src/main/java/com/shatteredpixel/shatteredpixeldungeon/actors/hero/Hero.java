@@ -161,6 +161,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Brimstone;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
@@ -1111,6 +1112,14 @@ public class Hero extends Char {
 	@Override
 	public boolean act() {
 
+
+		if(buff(ElectricalSmoke.SmokingAlloy.class) != null && !buff(ElectricalSmoke.SmokingAlloy.class).isCursed() && !withElectricalSmoke){
+			withElectricalSmoke = true;
+		}else if(buff(ElectricalSmoke.SmokingAlloy.class) == null || buff(ElectricalSmoke.SmokingAlloy.class).isCursed()){
+			withElectricalSmoke = false;
+		}
+
+
 		for(Actor actor : Actor.all()){
 			if(actor instanceof WandOfSun.MiniSun){
 				WandOfSun.MiniSun s = (WandOfSun.MiniSun) actor;
@@ -1122,6 +1131,7 @@ public class Hero extends Char {
 				}
 			}
 		}
+
 
 		LanFireGo lanFireGo = hero.belongings.getItem(LanFireGo.class);
 		if (lanFireGo != null) {
