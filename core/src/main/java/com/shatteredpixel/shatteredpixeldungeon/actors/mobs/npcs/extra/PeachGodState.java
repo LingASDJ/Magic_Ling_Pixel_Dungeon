@@ -6,7 +6,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.items.Generator.randomUsi
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -17,6 +16,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Killer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.SmallLeafHardDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
@@ -51,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PeachGodStateSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
@@ -66,6 +68,19 @@ public class PeachGodState extends NTNPC {
 
     public int anocount = 0;
     public int count = 0;
+    private boolean seenBefore = false;
+    @Override
+    protected boolean act() {
+
+        if (!seenBefore && Dungeon.level.heroFOV[pos] && Dungeon.level.distance(pos, hero.pos) <= 3) {
+            seenBefore = true;
+            GLog.p(Messages.get(this,"hello"));
+        }  else if(seenBefore && !Dungeon.level.heroFOV[pos]) {
+            seenBefore = false;
+        }
+
+        return super.act();
+    }
 
     @Override
     public boolean interact(Char c) {
@@ -102,6 +117,7 @@ public class PeachGodState extends NTNPC {
                                 public void call() {
                                     if(Dungeon.isDLC(Conducts.Conduct.DEV) || ( c instanceof Hero && SPDSettings.iceCoin() >500 )) {
                                         pray(1);
+                                        GLog.n(String.valueOf(SPDSettings.prayCount()));
                                     }else{
                                         GLog.i(Messages.get(PeachGodState.class,"notenough"));
                                         hide();
@@ -159,9 +175,11 @@ public class PeachGodState extends NTNPC {
 
         int type = 0;
 
-        if(count == 10 ) type = 1;
+        if(count >= 10 ) type = 1;
 
-        if(SPDSettings.prayCount() == 41) type = 2;
+        if(SPDSettings.prayCount() >= 41){
+            type = 2;
+        }
 
         if(type == 0) {
             //普通
@@ -188,8 +206,12 @@ public class PeachGodState extends NTNPC {
         } else if (type == 2) {
             //大保底
             if (f <= 95 ){
+                sprite.showStatusWithIcon(0xFFFF00, Messages.get(this,"gold"), FloatingText.GOLD);
+                new Flare( 12, 70 ).color(0xFFFF00, true).show( sprite, 5f );
                 return 3;
             }else {
+                sprite.showStatusWithIcon(Window.Pink_COLOR, Messages.get(this,"lends"), FloatingText.GOLD);
+                new Flare( 16, 70 ).color(Window.Pink_COLOR, true).show( sprite, 5f );
                 return 4;
             }
         }

@@ -30,29 +30,11 @@ public class Gift implements Bundlable {
 
     public static final String KEY_ARRAY	= "TUxQRFpFUk8sSEVMTE9aRVJPRUlHSFQ=";
     private static final String[] Gift_DATA	= {
-            "TUxQRFpFUk8sMTczNTU3NTE0MixmYWxzZTs==",//正常兑换码
-            "U1A0LVJFQURZLDE3MzU2NjA3OTksZmFsc2U=",
-
-            //灯火
+            //【永久兑换码】
             "QmFkTGFudGVyRmlyZS1Hbyw0MDcwOTUxNzc1LGZhbHNl",
 
-            //小年夜
-            "TUxQRF9YaWFvbmlhblllaSwxNzM4MTU5MjAwLGZhbHNl",
-
-            //春节兑换码
-            "TUxQRC1TbmFrZVllYXJzT2xkLDE3MzkzNzI0MDAsZmFsc2U=",
-            "TUxQRC00WWVhcnNPbGQsMTczOTM3MjQwMCxmYWxzZQ==",
-
-            //龙泪
-            "TUxQRC1EcmFnb25XYXRlciwxNzM5MzcyNDAwLGZhbHNl",
-
-            //元宵节
-            "TUxQRC1ZWDRZZWFyc0JpcnRoZGF5LDE3NDAzMTM4MDAsZmFsc2U=",
-
-            //圣诞2024
-            "TUxQRF9DaHJpc3RtYXMtMjAyNCwxNzM1NTc1MTQyLGZhbHNl",
-            "SEVMTE9aRVJPRUlHSFQsMTczMzQxNTE0MixmYWxzZTs=",
-            "VEVTVCwxNzM1NTc1MTQyLHRydWU7"//已使用兑换码
+            //
+            "TWlkVGVzdC1Db2luR2V0WCw0MDcwOTUxNzc1LGZhbHNl"
     };
 
     private static final HashMap<String, LinkedHashMap<String, Integer>> GIFT_ITEM ;
@@ -60,81 +42,14 @@ public class Gift implements Bundlable {
         HashMap<String, LinkedHashMap<String, Integer>> tempMap = new HashMap<>();
 
         LinkedHashMap<String, Integer> code1 = new LinkedHashMap<>();
-        code1.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 500 );
+        code1.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 300 );
+        code1.put( "com.shatteredpixel.shatteredpixeldungeon.items.quest.LanFireGo", 1 );
 
         LinkedHashMap<String, Integer> code2 = new LinkedHashMap<>();
-        code2.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 600 );
-        code2.put( "com.shatteredpixel.shatteredpixeldungeon.items.food.Switch", 3 ) ;
-        code2.put( "com.shatteredpixel.shatteredpixeldungeon.items.food.Cake", 2 );
-        code2.put( "com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.GoldLongGun", 1 );
+        code2.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 2100 );
 
-        LinkedHashMap<String, Integer> code3 = new LinkedHashMap<>();
-        code3.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 400 );
-        code3.put( "com.shatteredpixel.shatteredpixeldungeon.items.Gold", 400 ) ;
-
-        LinkedHashMap<String, Integer> code4 = new LinkedHashMap<>();
-        code4.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 300 );
-        code4.put( "com.shatteredpixel.shatteredpixeldungeon.items.quest.LanFireGo", 1 );
-
-        LinkedHashMap<String, Integer> code5 = new LinkedHashMap<>();
-        code5.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin",2025);
-        code5.put( "com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie", 2);
-        code5.put( "com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfNukeCole", 1);
-        code5.put( "com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonKingBreath", 1);
-
-        //MLPD-4YearsOld
-        LinkedHashMap<String, Integer> code6 = new LinkedHashMap<>();
-        code6.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin",700);
-        code6.put( "com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.RedBlock", 3);
-        code6.put( "com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Seekingspear", 1);
-        code6.put( "com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation", 1);
-
-        //MLPD-4YearsOld
-        LinkedHashMap<String, Integer> code7 = new LinkedHashMap<>();
-        code7.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin",400);
-        code7.put( "com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie", 1);
-        code7.put( "com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow", 1);
-        code7.put( "com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience", 1);
-
-        //MLPD-DragonWater
-        LinkedHashMap<String, Integer> code8 = new LinkedHashMap<>();
-        code8.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin",500);
-        code8.put( "com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie", 1);
-        code8.put( "com.shatteredpixel.shatteredpixeldungeon.items.quest.DragonWater", 1);
-        code8.put( "com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience", 1);
-
-        //MLPD_Yuanxiao
-        LinkedHashMap<String, Integer> code9 = new LinkedHashMap<>();
-        code9.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 600);
-        //晓梦的火把
-        code9.put( "com.shatteredpixel.shatteredpixeldungeon.items.Torch", 5);
-        //猫猫的陷阱晶核
-        code9.put( "com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap", 1);
-        //Dove猫猫的假护身符
-        code9.put( "com.shatteredpixel.shatteredpixeldungeon.items.JAmulet", 1);
-        //急急国王的羊群符石
-        code9.put( "com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFlock", 1);
-        //Bzmdr的收藏品试玩版 乐
-        code9.put( "com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr", 1);
-        code9.put( "com.shatteredpixel.shatteredpixeldungeon.items.props.ArmorScalesOfBzmdr", 1);
-        code9.put( "com.shatteredpixel.shatteredpixeldungeon.items.props.CloakFragmentsOfBzmdr", 1);
-        code9.put( "com.shatteredpixel.shatteredpixeldungeon.items.bags.PropBag", 1);
-        //Ling的幸运手套
-        code9.put( "com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove", 1);
-        //太上老君的财富教学
-        code9.put( "com.shatteredpixel.shatteredpixeldungeon.items.books.playbookslist.MoneyMoreBooks", 1);
-        code9.put( "com.shatteredpixel.shatteredpixeldungeon.items.quest.DevItem.CrystalLing", 1);
-
-        tempMap.put( "TUxQRFpFUk8=", code1 );
-        tempMap.put( "TUxQRF9DaHJpc3RtYXMtMjAyNA==", code2 );
-        tempMap.put( "U1A0LVJFQURZ",code3);
-        tempMap.put( "QmFkTGFudGVyRmlyZS1Hbw==", code4);
-        tempMap.put( "TUxQRF9YaWFvbmlhblllaQ==",code5);
-        tempMap.put("TUxQRC00WWVhcnNPbGQ=",code6);
-        tempMap.put("TUxQRC1TbmFrZVllYXJzT2xk",code7);
-        tempMap.put("TUxQRC1EcmFnb25XYXRlcg==",code8);
-
-        tempMap.put("TUxQRC1ZWDRZZWFyc0JpcnRoZGF5",code9);
+        tempMap.put( "QmFkTGFudGVyRmlyZS1Hbw==", code1);
+        tempMap.put( "TWlkVGVzdC1Db2luR2V0WA==", code2);
 
 
         GIFT_ITEM = new HashMap<>( Collections.unmodifiableMap( tempMap ) );
