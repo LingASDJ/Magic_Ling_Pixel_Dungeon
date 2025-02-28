@@ -112,6 +112,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PitfallTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 
@@ -141,6 +142,9 @@ public abstract class RegularLevel extends Level {
 			case Calendar.JANUARY:
 				if (calendar.get(Calendar.WEEK_OF_MONTH) == 1)
 					holiday = Holiday.XMAS;
+				break;
+			case Calendar.MARCH:
+                holiday = Holiday.PQJ;
 				break;
 			case Calendar.APRIL:
 				int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
@@ -226,7 +230,8 @@ public abstract class RegularLevel extends Level {
         XMAS,
 		CJ,
 		YX,
-		QMJ
+		QMJ,
+		PQJ
     }
 	
 	protected ArrayList<Room> initRooms() {
@@ -289,7 +294,7 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new NxhyShopRoom());
 		}
 
-		if(depth == 9){
+		if(depth == 9 && (DeviceCompat.isMidTest() || holiday == Holiday.PQJ)){
 			initRooms.add(new PeachGodBlessRoom());
 		}
 

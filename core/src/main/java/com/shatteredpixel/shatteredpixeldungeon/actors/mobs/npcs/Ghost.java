@@ -418,29 +418,28 @@ public class Ghost extends NPC {
 				weapon.enchant(null);
 				weapon.cursed = false;
 
-				//50%:+0, 30%:+1, 15%:+2, 5%:+3
-				float itemLevelRoll = Random.Float();
+				float itemLevelRoll = Random.Float(); // 生成一个 0 到 1 之间的随机数
 				int itemLevel;
-				if (itemLevelRoll < 0.26f) {
-					itemLevel = 0;  // 物品等级为0
-				} else if (itemLevelRoll < 0.51f) {
-					itemLevel = 1;  // 物品等级为1
-				} else if (itemLevelRoll < 0.66f) {
-					itemLevel = 2;  // 物品等级为2
-				} else if (itemLevelRoll < 0.76f) {
-					itemLevel = 3;  // 物品等级为3
+				if (itemLevelRoll < 0.50f) { // 50% 概率
+					itemLevel = 0; // 物品等级为 0
+				} else if (itemLevelRoll < 0.70f) { // 20% 概率
+					itemLevel = 1; // 物品等级为 1
+				} else if (itemLevelRoll < 0.85f) { // 15% 概率
+					itemLevel = 2; // 物品等级为 2
+				} else if (itemLevelRoll < 0.97f) { // 12% 概率
+					itemLevel = 3; // 物品等级为 3
 					// 如果没有解锁特定徽章，则更新统计数据
 					if (!Badges.isUnlocked(Badges.Badge.GHOSTDAGE)) {
 						Statistics.dageCollected = 1;
 					}
-				} else {
-					// 物品等级为4
-					itemLevel = 4;
+				} else { // 3% 概率
+					itemLevel = 4; // 物品等级为 4
 					// 如果没有解锁另一个特定徽章，则更新统计数据
 					if (!Badges.isUnlocked(Badges.Badge.DAGETO)) {
 						Statistics.dageCollected = 2;
 					}
 				}
+
 				weapon.upgrade(itemLevel);
 				armor.upgrade(itemLevel);
 
