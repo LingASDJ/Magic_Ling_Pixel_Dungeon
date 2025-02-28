@@ -106,7 +106,6 @@ public class ElectricalSmoke extends Artifact {
         if (hero.buff(MagicImmune.class) != null) return;
 
         if (action.equals(AC_CHARGE)) {
-
             GameScene.selectItem(itemSelector);
 
         } else if (action.equals(AC_SMOKE) && !cursed) {
@@ -203,6 +202,7 @@ public class ElectricalSmoke extends Artifact {
 
         @Override
         public void onSelect(Item item) {
+
             Hero hero = Dungeon.hero;
             if (item != null && gasPotion.contains(item.getClass())) {
                 hero.sprite.operate( hero.pos );
@@ -224,8 +224,10 @@ public class ElectricalSmoke extends Artifact {
                 GLog.p(Messages.get(ElectricalSmoke.class, "levelup"));
                 item.detach(hero.belongings.backpack);
             }
-            hero.busy();
-            hero.spend(Actor.TICK);
+            if(item != null){
+                hero.busy();
+                hero.spend(Actor.TICK);
+            }
         }
     };
 
