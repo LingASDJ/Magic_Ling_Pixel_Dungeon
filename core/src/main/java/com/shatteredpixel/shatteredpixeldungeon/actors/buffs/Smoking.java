@@ -20,6 +20,8 @@ public class Smoking extends Buff {
     public boolean act(){
         spend(TICK);
 
+        artifact = Dungeon.hero.buff(ElectricalSmoke.SmokingAlloy.class).smoke;
+
         Buff.affect(Dungeon.hero, Stamina.class,1f);
 
         artifact.reduceCharge(100/(10+artifact.level()));
@@ -28,9 +30,6 @@ public class Smoking extends Buff {
             return true;
         }
         GameScene.add(Blob.seed(Dungeon.hero.pos, 100, ElectricalSmokeBlob.class));
-        if(((ElectricalSmokeBlob)Dungeon.level.blobs.get(ElectricalSmokeBlob.class)).artifact == null){
-            ((ElectricalSmokeBlob)Dungeon.level.blobs.get(ElectricalSmokeBlob.class)).artifact = artifact;
-        };
         return true;
     }
 
@@ -42,7 +41,7 @@ public class Smoking extends Buff {
 
     @Override
     public int icon() {
-        return BuffIndicator.BARKSKIN;
+        return BuffIndicator.SMOKING;
     }
 
     @Override

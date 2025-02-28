@@ -67,6 +67,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Killer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayKill;
@@ -374,6 +375,8 @@ public abstract class Char extends Actor {
 
 	public boolean attack( Char enemy, float dmgMulti, float dmgBonus, float accMulti ) {
 
+		boolean kill = false;
+
 		if (enemy == null) return false;
 
 		boolean visibleFight = Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[enemy.pos];
@@ -402,6 +405,10 @@ public abstract class Char extends Actor {
 
 				if (h.buff(MonkEnergy.MonkAbility.UnarmedAbilityTracker.class) != null){
 					dr = 0;
+				}
+
+				if(h.buff(Killer.class)!=null && h.belongings.attackingWeapon() instanceof MeleeWeapon && !(enemy instanceof Boss)){
+					kill = true;
 				}
 			}
 
@@ -488,6 +495,11 @@ public abstract class Char extends Actor {
 			}
 
 			enemy.damage( effectiveDamage, this );
+
+			if(kill){
+				enemy.HP = 0;
+				enemy.die(this);
+			}
 
 			if (buff(FireImbue.class) != null)  buff(FireImbue.class).proc(enemy);
 			if (buff(FrostImbue.class) != null) buff(FrostImbue.class).proc(enemy);

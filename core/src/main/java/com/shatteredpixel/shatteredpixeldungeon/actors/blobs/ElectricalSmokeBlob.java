@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
@@ -37,6 +38,10 @@ public class ElectricalSmokeBlob extends Blob{
     protected void evolve() {
         super.evolve();
         blobEffect();
+
+        if(hero.buff(ElectricalSmoke.SmokingAlloy.class)!=null){
+            artifact = ( hero.buff(ElectricalSmoke.SmokingAlloy.class)).smoke;
+        }
 
     }
 
@@ -127,13 +132,16 @@ public class ElectricalSmokeBlob extends Blob{
     }
 
     public void decrease(Class c){
-        if(artifact.potionCate.get(c)!=0){
-            artifact.potionCate.replace(c,artifact.potionCate.get(c)- artifact.decrease);
+        if(artifact.potionCate.get(c)>0){
+            int old = artifact.potionCate.get(c);
+            artifact.potionCate.remove(c);
+            artifact.potionCate.put(c,old-artifact.decrease);
+            GLog.i(""+artifact.potionCate.get(c));
         }
     }
 
     public boolean has(Class c){
-        return artifact.potionCate.get(c) != 0;
+        return artifact.potionCate.get(c) > 0;
     }
 
     @Override

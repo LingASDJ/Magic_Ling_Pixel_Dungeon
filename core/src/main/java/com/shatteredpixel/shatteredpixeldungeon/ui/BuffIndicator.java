@@ -160,6 +160,8 @@ public class BuffIndicator extends Component {
 	public static final int SCARY_RED        = 113;
 	public static final int SCARY_PINK        = 114;
 
+	public static final int SMOKING        = 115;
+
 	public static final int DK        = 116;
 
 	public static final int QUEST       = 117;
