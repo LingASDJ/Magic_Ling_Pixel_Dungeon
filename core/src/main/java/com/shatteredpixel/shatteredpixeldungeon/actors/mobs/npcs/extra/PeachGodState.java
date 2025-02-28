@@ -59,8 +59,6 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
-import java.util.LinkedHashMap;
-
 public class PeachGodState extends NTNPC {
     {
         spriteClass = PeachGodStateSprite.class;
@@ -163,7 +161,7 @@ public class PeachGodState extends NTNPC {
 
         if(count == 10 ) type = 1;
 
-        if(Statistics.prayCount == 41) type = 2;
+        if(SPDSettings.prayCount() == 41) type = 2;
 
         if(type == 0) {
             //普通
@@ -202,7 +200,7 @@ public class PeachGodState extends NTNPC {
 
         anocount++;
 
-        if(Dungeon.isDLC(Conducts.Conduct.DEV)) SPDSettings.iceCoin(-50);
+        if(!Dungeon.isDLC(Conducts.Conduct.DEV)) SPDSettings.iceCoin(-50);
 
         if(rare<=1) {
             count ++;
@@ -211,9 +209,9 @@ public class PeachGodState extends NTNPC {
         }
 
         if(rare<=2 && !Dungeon.isDLC(Conducts.Conduct.DEV)) {
-            Statistics.prayCount++;
+            SPDSettings.addPrayCount();
         } else {
-            Statistics.prayCount = 0;
+            SPDSettings.resetPrayCount();
         }
 
         if(anocount>2){
