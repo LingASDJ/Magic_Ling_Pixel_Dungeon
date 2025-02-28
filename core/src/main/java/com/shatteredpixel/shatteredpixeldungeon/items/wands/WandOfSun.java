@@ -93,31 +93,39 @@ public class WandOfSun extends Wand{
 
     @Override
     public boolean tryToZap(Hero owner, int target) {
+        if(curCharges == 0) {
+            GLog.i(Messages.get(Wand.class,"fizzles"));
+            return false;
+        }
 
-        for(Actor actor : Actor.all()){
-            if(actor instanceof MiniSun){
-                MiniSun s = (MiniSun) actor;
-                if(s.pos == target){
-                    GLog.i(Messages.get(WandOfSun.class,"hasSun"));
-                    return false;
+        if (!cursed) {
+            for (Actor actor : Actor.all()) {
+                if (actor instanceof MiniSun) {
+                    MiniSun s = (MiniSun) actor;
+                    if (s.pos == target) {
+                        GLog.i(Messages.get(WandOfSun.class, "hasSun"));
+                        return false;
+                    }
                 }
             }
+
+            if (!Dungeon.level.solid[target] && curCharges > 0) {
+                this.owner = owner;
+                MiniSun sun = new MiniSun(target);
+                sun.sprite.place(target);
+                sun.sprite.parent = Dungeon.level.addVisuals();
+                GameScene.scene.add(sun);
+                sun.duration = (int) (4 + buffedLvl() * 0.3f);
+                sun.wand = this;
+                collisionPos = target;
+                return true;
+            } else if (Dungeon.level.solid[target]) {
+                GLog.i(Messages.get(Wand.class, "solid"));
+            }
+        }else{
+            return super.tryToZap(owner,target);
         }
 
-        if(!Dungeon.level.solid[target] && curCharges >0) {
-            this.owner = owner;
-            MiniSun sun = new MiniSun(target);
-            sun.sprite.place(target);
-            sun.sprite.parent = Dungeon.level.addVisuals();
-            GameScene.scene.add(sun);
-            sun.duration = (int) ( 4 + buffedLvl()*0.3f);
-            sun.wand = this;
-            collisionPos = target;
-            return true;
-        } else if (Dungeon.level.solid[target]) {
-            GLog.i(Messages.get(Wand.class,"solid"));
-        }
-        if(curCharges == 0) GLog.i(Messages.get(Wand.class,"fizzles"));
         return false;
     }
 
