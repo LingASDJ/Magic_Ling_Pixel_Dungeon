@@ -216,7 +216,7 @@ public class ZeroLevel extends Level {
                     Heap.Type.FOR_SALE;
         }
         for (int i : SALEPOS_THREE) {
-            drop((Generator.random(Generator.Category.WEAPON)), i).type =
+            drop((Generator.random(Generator.Category.WEP_T2)), i).type =
                     Heap.Type.FOR_SALE;
         }
         for (int i : SALEPOS_FOUR) {

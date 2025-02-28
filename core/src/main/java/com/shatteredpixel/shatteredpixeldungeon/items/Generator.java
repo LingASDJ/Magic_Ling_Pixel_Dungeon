@@ -45,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CommRelay;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElectricalSmoke;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
@@ -723,8 +724,10 @@ public class Generator {
 					WraithAmulet.class,
 					CommRelay.class,
 					UnstableSpellbook.class,
+
+					ElectricalSmoke.class
 			};
-			ARTIFACT.defaultProbs = new float[]{0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1};
+			ARTIFACT.defaultProbs = new float[]{0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1};
 			ARTIFACT.probs = ARTIFACT.defaultProbs.clone();
 
 			//Trinkets are unique like artifacts, but unlike them you can only have one at once
