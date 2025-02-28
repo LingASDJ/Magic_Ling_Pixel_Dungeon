@@ -44,6 +44,18 @@ public class SPDSettings extends GameSettings {
 
 	public static final String KEY_VERSION      = "version";
 
+	public static void addPrayCount(){
+		put(KEY_PRAYCOUNT,prayCount()+1);
+	}
+
+	public static int prayCount(){
+		return getInt(KEY_PRAYCOUNT,0);
+	}
+
+	public static void resetPrayCount(){
+		put(KEY_PRAYCOUNT,0);
+	}
+
 	public static void quickslots( int value ){
 		put( KEY_QUICKSLOTS, value );
 	}
@@ -123,6 +135,7 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_BRIGHTNESS	= "brightness";
 	public static final String KEY_GRID 	    = "visual_grid";
 	public static final String KEY_SPLASH_SCREEN= "splash_screen";
+	public static final String KEY_PRAYCOUNT = "pray_count";
 
 	public static final String KEY_TIMEOUT= "timeout";
 
