@@ -527,6 +527,7 @@ public class Qliphoth extends Boss {
     private static final String STATE_BOSS     = "state_lasher_boss";
     private static final String TELEPORT_BOSS  = "teleport_boss";
     private static final String STATE_TWO_BOSS = "state_two_phase";
+    private static final String AMOUNT = "amount";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -534,6 +535,7 @@ public class Qliphoth extends Boss {
         bundle.put(STATE_TWO_BOSS, state_two_phase);
         bundle.put(STATE_BOSS, state_boss);
         bundle.put(TELEPORT_BOSS,boss_teleport);
+        bundle.put(AMOUNT,amount);
     }
 
 
@@ -550,6 +552,7 @@ public class Qliphoth extends Boss {
         } else {
             alignment = Alignment.NEUTRAL;
         }
+        amount = bundle.getInt(AMOUNT);
     }
 
     private void pullEnemy( Char enemy, int pullPos ){
