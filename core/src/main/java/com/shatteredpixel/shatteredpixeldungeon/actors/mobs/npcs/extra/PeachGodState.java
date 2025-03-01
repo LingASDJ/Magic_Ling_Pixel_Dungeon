@@ -100,30 +100,23 @@ public class PeachGodState extends NTNPC {
                     protected void onSelect(int index) {
                         super.onSelect(index);
                         if (index == 0) {
-                            Game.runOnRenderThread(new Callback() {
-                                @Override
-                                public void call() {
-                                    if(Dungeon.isDLC(Conducts.Conduct.DEV) || ( c instanceof Hero && SPDSettings.iceCoin() >50 )) {
-                                        pray(0);
-                                    }else{
-                                        GLog.i(Messages.get(PeachGodState.class,"notenough"));
-                                        hide();
-                                    }
+                            Game.runOnRenderThread(() -> {
+                                if(Dungeon.isDLC(Conducts.Conduct.DEV) || ( c instanceof Hero && SPDSettings.iceCoin() >50 )) {
+                                    pray(0);
+                                }else{
+                                    GLog.i(Messages.get(PeachGodState.class,"notenough"));
+                                    hide();
                                 }
                             });
                         } else if (index == 1) {
-                            Game.runOnRenderThread(new Callback() {
-                                @Override
-                                public void call() {
-                                    if(Dungeon.isDLC(Conducts.Conduct.DEV) || ( c instanceof Hero && SPDSettings.iceCoin() >500 )) {
-                                        pray(1);
-                                        GLog.n(String.valueOf(SPDSettings.prayCount()));
-                                    }else{
-                                        GLog.i(Messages.get(PeachGodState.class,"notenough"));
-                                        hide();
-                                    }
-
+                            Game.runOnRenderThread(() -> {
+                                if(Dungeon.isDLC(Conducts.Conduct.DEV) || ( c instanceof Hero && SPDSettings.iceCoin() >500 )) {
+                                    pray(1);
+                                }else{
+                                    GLog.i(Messages.get(PeachGodState.class,"notenough"));
+                                    hide();
                                 }
+
                             });
                         } else if (index == 2){
                             GLog.b(Messages.get(SmallLeafHardDungeon.class,"cancelselect"));
@@ -206,12 +199,8 @@ public class PeachGodState extends NTNPC {
         } else if (type == 2) {
             //大保底
             if (f <= 95 ){
-                sprite.showStatusWithIcon(0xFFFF00, Messages.get(this,"gold"), FloatingText.GOLD);
-                new Flare( 12, 70 ).color(0xFFFF00, true).show( sprite, 5f );
                 return 3;
             }else {
-                sprite.showStatusWithIcon(Window.Pink_COLOR, Messages.get(this,"lends"), FloatingText.GOLD);
-                new Flare( 16, 70 ).color(Window.Pink_COLOR, true).show( sprite, 5f );
                 return 4;
             }
         }
@@ -219,6 +208,17 @@ public class PeachGodState extends NTNPC {
     }
 
     public void count(int rare){
+
+        switch (rare){
+            case 3:
+                sprite.showStatusWithIcon(0xFFFF00, Messages.get(this,"gold"), FloatingText.GOLD);
+                new Flare( 12, 70 ).color(0xFFFF00, true).show( sprite, 5f );
+            break;
+            case 4:
+                sprite.showStatusWithIcon(Window.Pink_COLOR, Messages.get(this,"lends"), FloatingText.GOLD);
+                new Flare( 16, 70 ).color(Window.Pink_COLOR, true).show( sprite, 5f );
+            break;
+        }
 
         anocount++;
 
