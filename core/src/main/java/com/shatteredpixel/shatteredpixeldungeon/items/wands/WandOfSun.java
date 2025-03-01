@@ -35,7 +35,7 @@ public class WandOfSun extends Wand{
 
     public Char owner;
     int collisionPos;
-    public static final String AC_DISMISS = "DISMISS";
+    //public static final String AC_DISMISS = "DISMISS";
 
     {
         image = ItemSpriteSheet.HIGHTWAND_7;
@@ -48,7 +48,7 @@ public class WandOfSun extends Wand{
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = super.actions(hero);
 
-        actions.add(AC_DISMISS);
+        //actions.add(AC_DISMISS);
 
         return actions;
     }
@@ -57,10 +57,12 @@ public class WandOfSun extends Wand{
     public void execute(Hero hero, String action) {
         super.execute(hero, action);
 
-
+        /*
         if (action.equals(AC_DISMISS)) {
             GameScene.selectCell(cellSelector);
         }
+
+         */
     }
 
     @Override
@@ -103,6 +105,7 @@ public class WandOfSun extends Wand{
                 if (actor instanceof MiniSun) {
                     MiniSun s = (MiniSun) actor;
                     if (s.pos == target) {
+                        s.die();
                         GLog.i(Messages.get(WandOfSun.class, "hasSun"));
                         return false;
                     }
@@ -329,6 +332,7 @@ public class WandOfSun extends Wand{
 
     }
 
+    /*
     protected CellSelector.Listener cellSelector = new CellSelector.Listener(){
 
         @Override
@@ -352,4 +356,5 @@ public class WandOfSun extends Wand{
             return Messages.get(SandalsOfNature.class, "prompt_target");
         }
     };
+    */
 }
