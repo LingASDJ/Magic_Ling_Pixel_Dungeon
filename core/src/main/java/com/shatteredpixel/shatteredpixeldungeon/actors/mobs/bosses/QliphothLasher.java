@@ -70,6 +70,15 @@ public class QliphothLasher extends Mob implements Hero.Doom {
         if(state_lasher_boss >= 1){
             GameScene.add(Blob.seed(pos, 16, StormCloud.class));
         }
+
+        Mob[] mobsx = Dungeon.level.mobs.toArray(new Mob[0]);
+        for(Mob m : mobsx){
+            if(m != null && m instanceof Qliphoth){
+                Qliphoth q = (Qliphoth) m;
+                q.amount++;
+            }
+        }
+        /*
             // 获取当前Dungeon.level上的Mob数组
             Mob[] mobsx = Dungeon.level.mobs.toArray(new Mob[0]);
             ArrayList<Mob> enemys = new ArrayList<>();
@@ -100,7 +109,8 @@ public class QliphothLasher extends Mob implements Hero.Doom {
                         }
                     }
                 }
-        }
+           }
+         */
     }
 
 

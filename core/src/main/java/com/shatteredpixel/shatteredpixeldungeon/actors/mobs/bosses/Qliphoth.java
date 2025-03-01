@@ -65,6 +65,9 @@ public class Qliphoth extends Boss {
 
     public int boss_teleport;
 
+    //被击杀的藤蔓数量，在藤蔓死亡时++
+    public int amount = 0;
+
     {
         initProperty();
         initBaseStatus(8, 13, 33, 8, 150, 0, 3);
@@ -125,17 +128,8 @@ public class Qliphoth extends Boss {
         }
 
         boolean ST1 = false;
-        // 获取当前Dungeon.level上的Mob数组
-        Mob[] mobs = Dungeon.level.mobs.toArray(new Mob[0]);
-        // 检查Mob数量是否为1
-        if (mobs.length == 1) {
-            // 检查唯一的Mob是否是Boss
-            if (mobs[0] instanceof Qliphoth) {
-                if (state_boss == 0) {
-                    ST1 = true;
-                }
-
-            }
+        if(amount == 4){
+            ST1 = true;
         }
 
         if(state_boss >=2){
@@ -168,7 +162,7 @@ public class Qliphoth extends Boss {
                             }
                         });
             }
-        } else if(state_boss == 1 && (HP>=60 && HP<100)){
+        } else if(state_boss == 1 && amount>7){
             state_boss++;
             HP = 60;
 
@@ -533,6 +527,7 @@ public class Qliphoth extends Boss {
     private static final String STATE_BOSS     = "state_lasher_boss";
     private static final String TELEPORT_BOSS  = "teleport_boss";
     private static final String STATE_TWO_BOSS = "state_two_phase";
+    private static final String AMOUNT = "amount";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -540,6 +535,7 @@ public class Qliphoth extends Boss {
         bundle.put(STATE_TWO_BOSS, state_two_phase);
         bundle.put(STATE_BOSS, state_boss);
         bundle.put(TELEPORT_BOSS,boss_teleport);
+        bundle.put(AMOUNT,amount);
     }
 
 
@@ -556,6 +552,7 @@ public class Qliphoth extends Boss {
         } else {
             alignment = Alignment.NEUTRAL;
         }
+        amount = bundle.getInt(AMOUNT);
     }
 
     private void pullEnemy( Char enemy, int pullPos ){
