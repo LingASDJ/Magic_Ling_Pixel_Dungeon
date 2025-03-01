@@ -9,8 +9,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SmokeAlly;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Smoking;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElectricalSmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
@@ -325,6 +327,11 @@ public class ElectricalSmoke extends Artifact {
 
         @Override
         public boolean act() {
+
+            for(Mob m : Dungeon.level.mobs){
+                if(m.isAnimal) Buff.affect(m,SmokeAlly.class);
+            }
+
             if(isCursed()){
                 if(Random.Float()<0.1f){
                     GLog.n(Messages.get(ElectricalSmoke.class,"cursedEffect"));
