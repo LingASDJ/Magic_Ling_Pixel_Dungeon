@@ -55,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SmokeAlly;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -153,6 +154,14 @@ public abstract class Mob extends Char {
 	protected boolean alerted = false;
 
 	public boolean isAnimal = false;
+
+	public Char enemy(){
+		return enemy;
+	}
+
+	public void enemyReset(){
+		enemy = null;
+	}
 
 	//whether the hero should interact with the mob (true) or attack it (false)
 	public boolean heroShouldInteract(){
@@ -418,10 +427,8 @@ public abstract class Mob extends Char {
 
 		super.act();
 
-		if(isAnimal && hero.withElectricalSmoke) {
-			this.alignment = Alignment.NEUTRAL;
-		}else if(! (this instanceof NPC) && isAnimal){
-			this.alignment = Alignment.ENEMY;
+		if(hero.buff(ElectricalSmoke.SmokingAlloy.class) == null && buff(SmokeAlly.class) !=null ) {
+			buff(SmokeAlly.class).detach();
 		}
 
 		if(hero.buff(ElectricalSmoke.SmokingAlloy.class)!=null){
