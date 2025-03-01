@@ -65,6 +65,9 @@ public class Qliphoth extends Boss {
 
     public int boss_teleport;
 
+    //被击杀的藤蔓数量，在藤蔓死亡时++
+    public int amount = 0;
+
     {
         initProperty();
         initBaseStatus(8, 13, 33, 8, 150, 0, 3);
@@ -125,17 +128,8 @@ public class Qliphoth extends Boss {
         }
 
         boolean ST1 = false;
-        // 获取当前Dungeon.level上的Mob数组
-        Mob[] mobs = Dungeon.level.mobs.toArray(new Mob[0]);
-        // 检查Mob数量是否为1
-        if (mobs.length == 1) {
-            // 检查唯一的Mob是否是Boss
-            if (mobs[0] instanceof Qliphoth) {
-                if (state_boss == 0) {
-                    ST1 = true;
-                }
-
-            }
+        if(amount == 4){
+            ST1 = true;
         }
 
         if(state_boss >=2){
@@ -168,7 +162,7 @@ public class Qliphoth extends Boss {
                             }
                         });
             }
-        } else if(state_boss == 1 && (HP>=60 && HP<100)){
+        } else if(state_boss == 1 && amount>7){
             state_boss++;
             HP = 60;
 
