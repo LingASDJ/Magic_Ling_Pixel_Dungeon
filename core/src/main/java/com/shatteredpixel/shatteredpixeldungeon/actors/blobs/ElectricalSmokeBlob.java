@@ -25,7 +25,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
@@ -136,7 +135,6 @@ public class ElectricalSmokeBlob extends Blob{
             int old = artifact.potionCate.get(c);
             artifact.potionCate.remove(c);
             artifact.potionCate.put(c,old-artifact.decrease);
-            GLog.i(""+artifact.potionCate.get(c));
         }
     }
 

@@ -51,18 +51,7 @@ public class SmallLightHeader extends Item {
 
     public ArrayList<String> actions(Hero hero ) {
         ArrayList<String> actions = super.actions( hero );
-        boolean needToSpawn = true;
-        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-            if (mob instanceof SmallLight) {
-                needToSpawn = false;
-                break;
-            }
-        }
-
-        if (needToSpawn){
-            actions.add(AC_SUMMON);
-        }
-
+        actions.add(AC_SUMMON);
         return actions;
     }
 
@@ -70,9 +59,7 @@ public class SmallLightHeader extends Item {
     public void execute(Hero hero, String action ) {
         super.execute(hero, action);
         if (action.equals(AC_SUMMON)) {
-
-
-
+            detach( hero.belongings.backpack );
             hero.sprite.operate(hero.pos, new Callback() {
                 @Override
                 public void call() {
@@ -119,7 +106,7 @@ public class SmallLightHeader extends Item {
             inputs =  new Class[]{PotionOfMindVision.class, ScrollOfMagicMapping.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 12;
+            cost = 20;
 
             output = SmallLightHeader.class;
             outQuantity = 4;
