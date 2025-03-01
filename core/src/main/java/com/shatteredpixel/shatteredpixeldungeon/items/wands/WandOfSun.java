@@ -70,7 +70,7 @@ public class WandOfSun extends Wand{
         for(Actor actor : Actor.all()){
             if(actor instanceof MiniSun){
                 MiniSun s = (MiniSun) actor;
-                s.duration += 3;
+                s.duration += 1;
             }
         }
     }
@@ -86,11 +86,11 @@ public class WandOfSun extends Wand{
     }
 
     public int min(){
-        return 2 + 2*level;
+        return 2 + 1*level;
     }
 
     public int max(){
-        return 8 + 4*level;
+        return 8 + 3*level;
     }
 
     @Override
@@ -118,7 +118,7 @@ public class WandOfSun extends Wand{
                 sun.sprite.place(target);
                 sun.sprite.parent = Dungeon.level.addVisuals();
                 GameScene.scene.add(sun);
-                sun.duration = (int) (4 + buffedLvl() * 0.3f);
+                sun.duration = (int) (4 + buffedLvl() * 0.2f);
                 sun.wand = this;
                 collisionPos = target;
                 return true;
