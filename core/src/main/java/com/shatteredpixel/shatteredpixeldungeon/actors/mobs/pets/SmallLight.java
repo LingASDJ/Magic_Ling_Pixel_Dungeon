@@ -5,7 +5,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -26,11 +26,41 @@ public class SmallLight extends Mob implements Callback {
         alignment = Alignment.ALLY;
         spriteClass = SmallLightSprites.class;
         WANDERING = new Wandering();
-
+        HP = HT = 1;
         defenseSkill = 15;
-        invisible = 1;
         viewDistance = 5;
+        invisible = 1;
     }
+
+    @Override
+    protected boolean act() {
+        return super.act();
+    }
+
+    @Override
+    public int defenseSkill( Char enemy ) {
+        return 1000;
+    }
+
+    @Override
+    protected Char chooseEnemy() {
+        return null;
+    }
+
+    @Override
+    public void damage( int dmg, Object src ) {
+    }
+
+    @Override
+    public boolean add(Buff buff ) {
+        return false;
+    }
+
+    @Override
+    public boolean reset() {
+        return true;
+    }
+
 
     @Override
     public void call() {
@@ -75,17 +105,7 @@ public class SmallLight extends Mob implements Callback {
                 die(null);
             }
 
-            if ( enemyInFOV ) {
-                enemySeen = true;
-
-                notice();
-                alerted = true;
-                state = HUNTING;
-                target = enemy.pos;
-            } else {
-                enemySeen = false;
-                target = level.exit();
-            }
+            target = level.exit();
 
             flying = level.feeling == Level.Feeling.BIGTRAP || level.feeling == Level.Feeling.TRAPS;
 

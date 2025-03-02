@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LockSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -69,6 +70,10 @@ public class ScrollOfTransmutation extends InventoryScroll {
 	@Override
 	protected boolean usableOnItem(Item item) {
 		if(item instanceof MeleeWeapon) {
+
+			if(item instanceof LockSword)
+				return false;
+
 			Generator.Category c = Generator.wepTiers[((MeleeWeapon) item).tier - 1];
 			int canChangeWeapon = 0;
 			int lastWeaponIndex = 0;
@@ -78,11 +83,12 @@ public class ScrollOfTransmutation extends InventoryScroll {
 					lastWeaponIndex = i;
 				}
 			}
+
 			if( canChangeWeapon > 1 )
 				return true;
 			else if( canChangeWeapon == 1 ){//针对只有一把武器能生成的情况，避免后续代码死循环导致的卡死
 				return item.getClass().getSimpleName() != c.classes[lastWeaponIndex].getSimpleName();
-			}else {//针对无法正常生成的武器
+			} else {//针对无法正常生成的武器
 				return false;
 			}
 		}

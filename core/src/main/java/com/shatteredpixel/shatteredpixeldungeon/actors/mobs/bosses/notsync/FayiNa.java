@@ -91,7 +91,7 @@ public class FayiNa extends NTNPC {
         PaswordBadges.loadGlobal();
         List<PaswordBadges.Badge> passwordbadges = PaswordBadges.filtered(true);
 
-        if (passwordbadges.contains(PaswordBadges.Badge.SWORDDREAM) && Dungeon.depth !=0) {
+        if (passwordbadges.contains(PaswordBadges.Badge.SWORDDREAM) && Dungeon.depth ==0 ) {
             //we do a little raw position shuffling here so that the characters are never
             // on the same cell when logic such as occupyCell() is triggered
             int oldPos = pos;
