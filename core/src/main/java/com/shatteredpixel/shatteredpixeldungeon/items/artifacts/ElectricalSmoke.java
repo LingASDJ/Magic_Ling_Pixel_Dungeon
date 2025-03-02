@@ -50,6 +50,8 @@ public class ElectricalSmoke extends Artifact {
         charge = 0;
         chargeCap = 100;
 
+        defaultAction = AC_SMOKE;
+
     }
 
     public float process;
@@ -235,6 +237,13 @@ public class ElectricalSmoke extends Artifact {
     @Override
     public boolean doEquip( final Hero hero ) {
         if(!cursed) hero.withElectricalSmoke = true;
+
+        if (!cursed) {
+            GLog.i( Messages.get(this, "desc_normal"));
+        } else {
+            GLog.n( Messages.get(this, "desc_cursed"));
+        }
+
         return super.doEquip(hero);
     }
 
@@ -247,6 +256,8 @@ public class ElectricalSmoke extends Artifact {
     @Override
     public String desc() {
         String desc = Messages.get(this, "desc");
+
+        /*
         if ( isEquipped ( Dungeon.hero ) ) {
             desc += "\n\n";
 
@@ -257,7 +268,19 @@ public class ElectricalSmoke extends Artifact {
             }
 
         }
+        */
 
+        if (cursed && !isEquipped(Dungeon.hero) && isIdentified()){
+            GLog.n("\n\n" + Messages.get(this, "desc_noequip_cursed"));
+        }else if(!isEquipped(Dungeon.hero) && isIdentified()){
+            GLog.i( "\n\n" + Messages.get(this, "desc_noequip_normal"));
+        }
+
+        if( !isIdentified()){
+            GLog.i( "\n\n" + Messages.get(this, "desc_noidentify"));
+        }
+
+        /*
         if (cursed && !isEquipped(Dungeon.hero) && isIdentified()){
             desc += "\n\n" + Messages.get(this, "desc_noequip_cursed");
         }else if(!isEquipped(Dungeon.hero) && isIdentified()){
@@ -267,6 +290,8 @@ public class ElectricalSmoke extends Artifact {
         if( !isIdentified()){
             desc += "\n\n" + Messages.get(this, "desc_noidentify");
         }
+
+         */
 
         if(has(PotionOfFrost.class) || has(PotionOfLiquidFlame.class) ||has(PotionOfToxicGas.class) || has(PotionOfLevitation.class)
                 || has(PotionOfParalyticGas.class) || has(PotionOfLiquidFlameX.class) || has(PotionOfCorrosiveGas.class)
@@ -311,6 +336,13 @@ public class ElectricalSmoke extends Artifact {
             if (has(ShockingBrew.class)) {
                 desc += "\n\n" +new ShockingBrew().name();
             }
+
+            desc += "\n\n" + Messages.get(this,"withpotionb");
+
+            if (has(PotionOfCorrosiveGas.class)){
+                desc += "\n\n" + Messages.get(this,"withpotionc");
+            }
+
         }
 
         return desc;
