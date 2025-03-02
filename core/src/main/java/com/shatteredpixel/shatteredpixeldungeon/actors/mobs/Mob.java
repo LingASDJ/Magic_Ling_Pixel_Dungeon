@@ -65,7 +65,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Feint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.Pets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -404,12 +403,15 @@ public abstract class Mob extends Char {
 		}
 		Char c = Actor.findChar(cell);
 		if (c != null){
-			if(this instanceof SmallLight){
-				if(c instanceof Mob && !(c instanceof SmallLight) && ((SmallLight) this).canTele(c.pos)){
-					((SmallLight) this).teleportEnemy(c.pos);
-					Buff.affect(c, MagicalSleep.class);
-					c.sprite.centerEmitter().start( Speck.factory( Speck.NOTE ), 0.3f, 5 );
-					return true;
+			if (this instanceof SmallLight) {
+				if (c instanceof Mob && !(c instanceof SmallLight) && ((SmallLight) this).canTele(c.pos)) {
+					// 确保传送后位置满足 canTele，否则会死循环
+					if (((SmallLight) this).canTele(c.pos)) {
+						((SmallLight) this).teleportEnemy(c.pos);
+						Buff.affect(c, MagicalSleep.class);
+						c.sprite.centerEmitter().start(Speck.factory(Speck.NOTE), 0.3f, 5);
+						return true;
+					}
 				}
 			}
 			return false;

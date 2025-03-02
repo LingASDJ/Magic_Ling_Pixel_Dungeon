@@ -90,6 +90,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseB
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.DamageBuff.ScaryDamageBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbueEX;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HasteLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
@@ -161,7 +162,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Brimstone;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
@@ -2391,7 +2391,12 @@ public class Hero extends Char {
 
 		if (step != -1) {
 
+
 			float delay = 1 / speed();
+
+			if (buff(GreaterHaste.class) != null){
+				delay = 0;
+			}
 
 			if (Dungeon.level.pit[step] && !Dungeon.level.solid[step]
 					&& (!flying || buff(Levitation.class) != null && buff(Levitation.class).detachesWithinDelay(delay))){
@@ -2405,6 +2410,10 @@ public class Hero extends Char {
 				}
 				canSelfTrample = false;
 				return false;
+			}
+
+			if (buff(GreaterHaste.class) != null){
+				buff(GreaterHaste.class).spendMove();
 			}
 
 			if (subClass == HeroSubClass.FREERUNNER){
@@ -2579,6 +2588,12 @@ public class Hero extends Char {
 		boolean levelUp = false;
 		while (this.exp >= maxExp()) {
 			this.exp -= maxExp();
+
+			if (buff(Talent.WandPreservationCounter.class) != null
+					&& pointsInTalent(Talent.WAND_PRESERVATION) == 2){
+				buff(Talent.WandPreservationCounter.class).detach();
+			}
+
 			if (lvl < MAX_LEVEL) {
 				lvl++;
 				levelUp = true;

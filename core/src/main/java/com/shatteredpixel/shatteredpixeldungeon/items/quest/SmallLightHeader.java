@@ -6,7 +6,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.SmallLight;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -14,7 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.watabou.utils.Callback;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUseItem;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
@@ -24,29 +23,12 @@ import java.util.ArrayList;
 public class SmallLightHeader extends Item {
 
     public static final String AC_SUMMON = "SummonFish";
-
+    public static final String AC_CHOOSE = "CHOOSE";
 
     {
         image = ItemSpriteSheet.SMTITEM;
         stackable = true;
-        defaultAction = AC_SUMMON;
-    }
-
-    @Override
-    public String defaultAction() {
-        boolean needToSpawn = true;
-        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-            if (mob instanceof SmallLight) {
-                needToSpawn = false;
-                break;
-            }
-        }
-
-        if(!needToSpawn){
-            return AC_THROW;
-        } else {
-            return super.defaultAction();
-        }
+        defaultAction =  AC_CHOOSE;
     }
 
     public ArrayList<String> actions(Hero hero ) {
@@ -58,27 +40,26 @@ public class SmallLightHeader extends Item {
     @Override
     public void execute(Hero hero, String action ) {
         super.execute(hero, action);
-        if (action.equals(AC_SUMMON)) {
+        if (action.equals(AC_CHOOSE)){
+            GameScene.show(new WndUseItem(null, this) );
+        } else if (action.equals(AC_SUMMON)) {
             detach( hero.belongings.backpack );
-            hero.sprite.operate(hero.pos, new Callback() {
-                @Override
-                public void call() {
-                    Buff.affect( hero, SAwareness.class, SAwareness.DURATION );
-                    ArrayList<Integer> respawnPoints = new ArrayList<>();
-                    for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-                        int p = hero.pos + PathFinder.NEIGHBOURS8[i];
-                        if (Actor.findChar(p) == null && Dungeon.level.passable[p]) {
-                            respawnPoints.add(p);
-                        }
+            hero.sprite.operate(hero.pos, () -> {
+                Buff.affect( hero, SAwareness.class, SAwareness.DURATION );
+                ArrayList<Integer> respawnPoints = new ArrayList<>();
+                for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+                    int p = hero.pos + PathFinder.NEIGHBOURS8[i];
+                    if (Actor.findChar(p) == null && Dungeon.level.passable[p]) {
+                        respawnPoints.add(p);
                     }
-                    if (!respawnPoints.isEmpty()) {
-                        SmallLight smallLight = new SmallLight();
-                        smallLight.pos = respawnPoints.get(Random.index( respawnPoints ));
-                        GameScene.add(smallLight);
-                        smallLight.state = smallLight.WANDERING;
-                        smallLight.sprite.emitter().burst(Speck.factory(Speck.STAR), 10);
-                        hero.sprite.idle();
-                    }
+                }
+                if (!respawnPoints.isEmpty()) {
+                    SmallLight smallLight = new SmallLight();
+                    smallLight.pos = respawnPoints.get(Random.index( respawnPoints ));
+                    GameScene.add(smallLight);
+                    smallLight.state = smallLight.WANDERING;
+                    smallLight.sprite.emitter().burst(Speck.factory(Speck.STAR), 10);
+                    hero.sprite.idle();
                 }
             });
         }
