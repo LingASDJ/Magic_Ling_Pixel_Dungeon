@@ -1,18 +1,33 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
+import com.watabou.utils.Bundle;
 
-public class Killer extends FlavourBuff{
+public class Killer extends Buff{
     {
         type = buffType.POSITIVE;
     }
 
-    public static final float DURATION	= 30f;
+    public int duration = 30;
+
+    @Override
+    public boolean act() {
+
+        spend(TICK);
+        duration--;
+
+        if(duration<=0){
+            detach();
+        }
+        return true;
+    }
 
     @Override
     public int icon() {
-        return BuffIndicator.HASTE;
+        return BuffIndicator.KILLER;
     }
 
     @Override
@@ -21,7 +36,20 @@ public class Killer extends FlavourBuff{
     }
 
     @Override
-    public float iconFadePercent() {
-        return Math.max(0, (DURATION - visualcooldown()) / DURATION);
+    public String desc() {
+        return Messages.get(Killer.class,"desc",duration);
+    }
+
+    private static final String DURATION = "duration";
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        bundle.put(DURATION,duration);
+        super.storeInBundle(bundle);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        duration = bundle.getInt(DURATION);
+        super.restoreFromBundle(bundle);
     }
 }

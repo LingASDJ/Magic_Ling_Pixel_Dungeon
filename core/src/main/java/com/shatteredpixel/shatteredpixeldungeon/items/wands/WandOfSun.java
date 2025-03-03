@@ -31,7 +31,7 @@ import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 
-public class WandOfSun extends Wand{
+public class WandOfSun extends DamageWand{
 
     public Char owner;
     int collisionPos;
@@ -85,12 +85,14 @@ public class WandOfSun extends Wand{
         return Messages.get(this, "stats_desc",min(),max());
     }
 
-    public int min(){
-        return 2 + 1*level;
+    @Override
+    public int min(int lvl){
+        return 2 + 1 * lvl;
     }
 
-    public int max(){
-        return 8 + 3*level;
+    @Override
+    public int max(int lvl){
+        return 8 + 2* lvl;
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.MagicFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElectricalSmoke;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -239,6 +240,7 @@ public class OilLantern extends Artifact {
                 hero.spend(TIME_TO_USE);
                 hero.busy();
                 GLog.i(Messages.get(OilLantern.class, "lanteron"));
+                if(hero.buff(ElectricalSmoke.SmokingAlloy.class)!=null) GLog.i(Messages.get(ElectricalSmoke.class,"conversation_light"));
                 hero.sprite.operate(hero.pos);
                 this.active = true;
                 updateSprite();

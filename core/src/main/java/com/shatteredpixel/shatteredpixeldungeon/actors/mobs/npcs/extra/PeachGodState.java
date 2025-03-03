@@ -5,6 +5,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.items.Generator.randomUsi
 
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
@@ -164,7 +165,7 @@ public class PeachGodState extends NTNPC {
 
     public int randomPray(){
 
-        float f = Random.Int(1,100);
+        float f = Random.Int(1,101);
 
         int type = 0;
 
@@ -213,10 +214,13 @@ public class PeachGodState extends NTNPC {
             case 3:
                 sprite.showStatusWithIcon(0xFFFF00, Messages.get(this,"gold"), FloatingText.GOLD);
                 new Flare( 12, 70 ).color(0xFFFF00, true).show( sprite, 5f );
+                PaswordBadges.LEGEND();
             break;
             case 4:
                 sprite.showStatusWithIcon(Window.Pink_COLOR, Messages.get(this,"lends"), FloatingText.GOLD);
                 new Flare( 16, 70 ).color(Window.Pink_COLOR, true).show( sprite, 5f );
+                PaswordBadges.LEGEND();
+                PaswordBadges.MYTHOLOGY();
             break;
         }
 
@@ -320,7 +324,7 @@ public class PeachGodState extends NTNPC {
         switch (rare){
             case 1:
 
-                if(Random.Int(1,12)>11){
+                if(Random.Int(1,13)>11){
                     Buff.affect(hero, Adrenaline.class,30);
                 }else{
                     m = reward1[Random.Int(1,11)];
@@ -351,7 +355,7 @@ public class PeachGodState extends NTNPC {
                 }
                 break;
             case 2:
-                if(Random.Int(1,15)>14){
+                if(Random.Int(1,16)>14){
                     Buff.affect(hero, GoodLuck.class);
                 }else{
                     m = reward2[Random.Int(1,14)];
@@ -391,7 +395,7 @@ public class PeachGodState extends NTNPC {
                 }
                 break;
             case 3:
-                if(Random.Int(1,13)>12){
+                if(Random.Int(1,14)>12){
                     Buff.affect(hero, Killer.class);
                 }else{
                     m = reward3[Random.Int(1,12)];
@@ -421,7 +425,7 @@ public class PeachGodState extends NTNPC {
             case 0:
             default:
 
-                if(Random.Int(1,10)>8){
+                if(Random.Int(1,11)>8){
                     if(Random.Int(1,2)>1){
                         Buff.affect(hero, Haste.class,30);
                     }else{
