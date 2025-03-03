@@ -25,7 +25,7 @@ import java.util.Objects;
 
 public class SelectableWand extends TestItem {
     {
-        image = ItemSpriteSheet.RING_HOLDER;
+        image = ItemSpriteSheet.WAND_UNKNOWN;
         defaultAction = AC_SPAWN;
     }
 

@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SmokeAlly;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Smoking;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElectricalSmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -254,6 +255,23 @@ public class ElectricalSmoke extends Artifact {
     }
 
     @Override
+    public void charge(Hero target, float amount) {
+        if (cursed || target.buff(MagicImmune.class) != null) return;
+        if (charge < chargeCap) {
+            partialCharge += amount;
+            while (partialCharge >= 1f){
+                charge++;
+                partialCharge--;
+            }
+            if (charge >= chargeCap) {
+                charge = chargeCap;
+                partialCharge = 0;
+            }
+            updateQuickslot();
+        }
+    }
+
+    @Override
     public String desc() {
         String desc = Messages.get(this, "desc");
 
@@ -360,7 +378,18 @@ public class ElectricalSmoke extends Artifact {
         public boolean act() {
 
             for(Mob m : Dungeon.level.mobs){
-                if(m.isAnimal) Buff.affect(m,SmokeAlly.class);
+                if(m.isAnimal){
+                    if(! (m instanceof Bee)){
+                        Buff.affect(m,SmokeAlly.class);
+                    }else {
+                        Bee bee = (Bee) m;
+                        if(bee.angryTime <= 0 && bee.enemy() != Dungeon.hero){
+                            Buff.affect(m,SmokeAlly.class);
+                        }else if(bee.buff(SmokeAlly.class)!= null){
+                            bee.buff(SmokeAlly.class).detach();
+                        }
+                    }
+                }
             }
 
             if(isCursed()){
@@ -381,6 +410,23 @@ public class ElectricalSmoke extends Artifact {
 
             spend(TICK);
             return true;
+        }
+
+        @Override
+        public void charge(Hero target, float amount) {
+            if (cursed || target.buff(MagicImmune.class) != null) return;
+            if (charge < chargeCap) {
+                partialCharge += amount;
+                while (partialCharge >= 1f){
+                    charge++;
+                    partialCharge--;
+                }
+                if (charge >= chargeCap) {
+                    charge = chargeCap;
+                    partialCharge = 0;
+                }
+                updateQuickslot();
+            }
         }
 
         public HashMap<Class<? extends Potion>, Integer> getMap(){

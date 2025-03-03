@@ -47,15 +47,24 @@ public class PropBuff extends Buff{
 
             if(Dungeon.hero.belongings.getItem(RapidEarthRoot.class)!=null) {
                 timeA ++;
-                if(timeA >= 250) Buff.affect(hero, Barkskin.class).set((int) hero.getZone() * 2, 10);
+                if(timeA >= 250) {
+                    Buff.affect(hero, Barkskin.class).set((int) hero.getZone() * 2, 10);
+                    timeA = 0;
+                }
             }
             if(Dungeon.hero.belongings.getItem(WenStudyingPaperOne.class)!=null) {
                 timeB ++;
-                if(timeC >= 125) Buff.affect(hero, Swiftthistle.TimeBubble.class).setLeft(5f);
+                if(timeB >= 125){
+                    Buff.affect(hero, Swiftthistle.TimeBubble.class).setLeft(5f);
+                    timeB = 0;
+                }
             }
             if(Dungeon.hero.belongings.getItem(YanStudyingPaperTwo.class)!=null) {
                 timeC ++;
-                if(timeC >= 125) Buff.affect(hero, Haste.class,5f);
+                if(timeC >= 125) {
+                    Buff.affect(hero, Haste.class, 5f);
+                    timeC = 0;
+                }
             }
 
             if(Dungeon.hero.belongings.getItem(ConfusedMieMieTalisman.class)!=null) {
@@ -92,8 +101,11 @@ public class PropBuff extends Buff{
             }
 
             if(Dungeon.hero.belongings.getItem(WenStudyingPaperTwo.class)!=null) {
-                timeE ++;
-                if(timeE >= 30) Buff.affect(hero, Hex.class,25);
+                timeE++;
+                if (timeE >= 30) {
+                    Buff.affect(hero, Hex.class, 25);
+                    timeE = 0;
+                }
             }
         }
 

@@ -109,6 +109,14 @@ public class PaswordBadges {
         displayBadge( Badge.PINK_LING);
     }
 
+    public static void LEGEND() {
+        displayBadge(Badge.PRAY_LEGEND);
+    }
+
+    public static void MYTHOLOGY() {
+        displayBadge(Badge.PRAY_MYTHOLOGY);
+    }
+
 
     public enum Badge {
 
@@ -147,7 +155,11 @@ public class PaswordBadges {
 
         KILL_YOGSTS(28),
 
-        ONE_POUCH(29);
+        ONE_POUCH(29),
+
+        //祈愿
+        PRAY_LEGEND (30),
+        PRAY_MYTHOLOGY (31);
 
         public boolean meta;
 
