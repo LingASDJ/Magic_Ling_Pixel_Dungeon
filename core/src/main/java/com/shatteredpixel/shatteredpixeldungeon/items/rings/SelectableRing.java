@@ -27,7 +27,7 @@ import java.util.Objects;
 
 public class SelectableRing extends TestItem {
     {
-        image = ItemSpriteSheet.RING_HOLDER;
+        image = ItemSpriteSheet.RING_UNKNOWN;
         defaultAction = AC_SPAWN;
     }
 

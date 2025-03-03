@@ -448,14 +448,17 @@ public class ItemSpriteSheet {
     public static final int WAND_REGROWTH       = WANDS+11;
     public static final int WAND_TRANSFUSION    = WANDS+12;
 
+    private static final int RINGS          =                               xy(1, 15);  //16 slots
+    public static final int WAND_UNKNOWN   = RINGS+13;
+
     public static final int WAND_HTR    = WANDS+14;
     public static final int WAND_KCX    = WANDS+15;
     static {
         for (int i = WANDS; i < WANDS+15; i++)
             assignItemRect(i, 14, 14);
+        assignItemRect(WAND_UNKNOWN, 14, 14);
     }
 
-    private static final int RINGS          =                               xy(1, 15);  //16 slots
     public static final int RING_GARNET     = RINGS+0;
     public static final int RING_RUBY       = RINGS+1;
     public static final int RING_TOPAZ      = RINGS+2;
@@ -468,8 +471,9 @@ public class ItemSpriteSheet {
     public static final int RING_QUARTZ     = RINGS+9;
     public static final int RING_AGATE      = RINGS+10;
     public static final int RING_DIAMOND    = RINGS+11;
+    public static final int RING_UNKNOWN    = RINGS+12;
     static {
-        for (int i = RINGS; i < RINGS+16; i++)
+        for (int i = RINGS; i < RINGS+13; i++)
             assignItemRect(i, 8, 10);
     }
 

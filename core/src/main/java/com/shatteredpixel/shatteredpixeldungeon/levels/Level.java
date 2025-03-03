@@ -164,6 +164,13 @@ public abstract class Level implements Bundlable {
 		for (Blob blob: blobs.values()){
 			blob.fullyClear();
 		}
+
+		//清除迷你太阳
+		for (Actor a: Actor.all()){
+			if(a instanceof WandOfSun.MiniSun){
+				((WandOfSun.MiniSun) a).die();
+			}
+		}
 		//重置地图的视觉
 		addVisuals();
 
@@ -1839,13 +1846,20 @@ public abstract class Level implements Bundlable {
 					int[] neighbours7 = {
 							-3,-2,-1,0,1,2,3
 					};
-					for (int i : neighbours7) heroMindFov[sun.pos+i - width] = true;
-					for (int i : neighbours7) heroMindFov[sun.pos+i - (width)*2] = true;
-					for (int i : neighbours7) heroMindFov[sun.pos+i - (width)*3] = true;
-					for (int i : neighbours7) heroMindFov[sun.pos+i] = true;
-					for (int i : neighbours7) heroMindFov[sun.pos+i + width] = true;
-					for (int i : neighbours7) heroMindFov[sun.pos+i + (width)*2] = true;
-					for (int i : neighbours7) heroMindFov[sun.pos+i + (width)*3] = true;
+					for (int i : neighbours7)
+						if( 0 < sun.pos+i - width ) heroMindFov[sun.pos+i - width] = true;
+					for (int i : neighbours7)
+						if(0 < sun.pos+i - (width)*2) heroMindFov[sun.pos+i - (width)*2] = true;
+					for (int i : neighbours7)
+						if(0 < sun.pos+i - (width)*3) heroMindFov[sun.pos+i - (width)*3] = true;
+					for (int i : neighbours7)
+						if(sun.pos+i < width() * height()) heroMindFov[sun.pos+i] = true;
+					for (int i : neighbours7)
+						if(sun.pos+i + width < width() * height()) heroMindFov[sun.pos+i + width] = true;
+					for (int i : neighbours7)
+						if(sun.pos+i + (width)*2 < width() * height()) heroMindFov[sun.pos+i + (width)*2] = true;
+					for (int i : neighbours7)
+						if(sun.pos+i + (width)*3 < width() * height()) heroMindFov[sun.pos+i + (width)*3] = true;
 				}
 			}
 
