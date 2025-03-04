@@ -451,10 +451,6 @@ public class Wandmaker extends NPC {
 			return spawned ;
 		}
 
-		public static boolean completed(){
-			return wand1 == null && wand2 == null;
-		}
-
 		public static int type() {
 			return type;
 		}

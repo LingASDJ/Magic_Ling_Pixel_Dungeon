@@ -6,9 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RedDragon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Bundle;
@@ -59,11 +57,7 @@ public class QuestGold extends Buff {
             result  += "\n" + Messages.get(this, "dragon_yes");
         }
 
-        if (!Wandmaker.Quest.completed()){
-            result  += "\n" + Messages.get(this, "wand");
-        }  else {
-            result  += "\n" + Messages.get(this, "wand_yes");
-        }
+        result  += "\n" + Messages.get(this, "wand");
 
         if (!Blacksmith.Quest.completed()){
             result  += "\n" + Messages.get(this, "bm");
@@ -71,11 +65,7 @@ public class QuestGold extends Buff {
             result  += "\n" + Messages.get(this, "bm_yes");
         }
 
-        if (!Imp.Quest.completed){
-            result  += "\n" + Messages.get(this, "im");
-        }  else {
-            result  += "\n" + Messages.get(this, "im_yes");
-        }
+        result  += "\n" + Messages.get(this, "im");
 
         if ( Statistics.dimandchestmazeCollected>=3){
             result  += "\n" + Messages.get(this, "dk_yes");
