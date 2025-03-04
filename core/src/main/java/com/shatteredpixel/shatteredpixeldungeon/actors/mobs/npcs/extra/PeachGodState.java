@@ -93,7 +93,7 @@ public class PeachGodState extends NTNPC {
             public void call() {
                 GameScene.show(new WndOptions(new PeachGodStateSprite(),
                         Messages.get(PeachGodState.class, "title"),
-                        Messages.get(PeachGodState.class, "lucky_desc"),
+                        Messages.get(PeachGodState.class, "lucky_desc",anocount),
                         Messages.get(PeachGodState.class, "single"),
                         Messages.get(PeachGodState.class, "ten_shots"),
                         Messages.get(PeachGodState.class, "cancel")) {
@@ -102,6 +102,13 @@ public class PeachGodState extends NTNPC {
                         super.onSelect(index);
                         if (index == 0) {
                             Game.runOnRenderThread(() -> {
+
+                                if(!Dungeon.isDLC(Conducts.Conduct.DEV) && anocount>=50){
+                                    GLog.i(Messages.get(PeachGodState.class,"touchTop"));
+                                    hide();
+                                    return;
+                                }
+
                                 if(Dungeon.isDLC(Conducts.Conduct.DEV) || ( c instanceof Hero && SPDSettings.iceCoin() >50 )) {
                                     pray(0);
                                 }else{
@@ -111,6 +118,13 @@ public class PeachGodState extends NTNPC {
                             });
                         } else if (index == 1) {
                             Game.runOnRenderThread(() -> {
+
+                                if(!Dungeon.isDLC(Conducts.Conduct.DEV) && anocount>=50){
+                                    GLog.i(Messages.get(PeachGodState.class,"touchTop"));
+                                    hide();
+                                    return;
+                                }
+
                                 if(Dungeon.isDLC(Conducts.Conduct.DEV) || ( c instanceof Hero && SPDSettings.iceCoin() >500 )) {
                                     pray(1);
                                 }else{
@@ -150,7 +164,14 @@ public class PeachGodState extends NTNPC {
             //十连抽
             int[] p = {randomPray(),randomPray(),randomPray(),randomPray(),randomPray(),randomPray(),randomPray(),randomPray(),randomPray(),randomPray()};
             for(int i : p){
+
+                if(anocount>=50 && !Dungeon.isDLC(Conducts.Conduct.DEV)){
+                    GLog.i(Messages.get(PeachGodState.class,"surplus"));
+                    return;
+                }
+
                 count(i);
+
                 Item m = reward(i);
                 reward += m.name() + "  ";
 
