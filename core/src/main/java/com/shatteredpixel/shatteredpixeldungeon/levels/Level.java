@@ -1853,7 +1853,7 @@ public abstract class Level implements Bundlable {
 					for (int i : neighbours7)
 						if(0 < sun.pos+i - (width)*3) heroMindFov[sun.pos+i - (width)*3] = true;
 					for (int i : neighbours7)
-						if(sun.pos+i < width() * height()) heroMindFov[sun.pos+i] = true;
+						if(sun.pos+i < width() * height() && 0 < sun.pos+i) heroMindFov[sun.pos+i] = true;
 					for (int i : neighbours7)
 						if(sun.pos+i + width < width() * height()) heroMindFov[sun.pos+i + width] = true;
 					for (int i : neighbours7)
