@@ -82,7 +82,8 @@ public class WandOfSun extends DamageWand{
         callback.call();
     }
     public String statsDesc(){
-        return Messages.get(this, "stats_desc",min(),max());
+        if(isIdentified()) return Messages.get(this, "stats_desc",min(),max());
+        else return Messages.get(this, "stats_desc",min(0),max(0));
     }
 
     @Override
@@ -125,7 +126,7 @@ public class WandOfSun extends DamageWand{
                 collisionPos = target;
                 return true;
             } else if (Dungeon.level.solid[target]) {
-                GLog.i(Messages.get(Wand.class, "solid"));
+                GLog.i(Messages.get(WandOfSun.class, "solid"));
             }
         }else{
             return super.tryToZap(owner,target);
