@@ -93,7 +93,7 @@ public class PeachGodState extends NTNPC {
             public void call() {
                 GameScene.show(new WndOptions(new PeachGodStateSprite(),
                         Messages.get(PeachGodState.class, "title"),
-                        Messages.get(PeachGodState.class, "lucky_desc"),
+                        Messages.get(PeachGodState.class, "lucky_desc",anocount),
                         Messages.get(PeachGodState.class, "single"),
                         Messages.get(PeachGodState.class, "ten_shots"),
                         Messages.get(PeachGodState.class, "cancel")) {
@@ -112,19 +112,19 @@ public class PeachGodState extends NTNPC {
                                 if(Dungeon.isDLC(Conducts.Conduct.DEV) || ( c instanceof Hero && SPDSettings.iceCoin() >50 )) {
                                     pray(0);
                                 }else{
-
-                                    if(!Dungeon.isDLC(Conducts.Conduct.DEV) && anocount>=50){
-                                        GLog.i(Messages.get(PeachGodState.class,"touchTop"));
-                                        hide();
-                                        return;
-                                    }
-
                                     GLog.i(Messages.get(PeachGodState.class,"notenough"));
                                     hide();
                                 }
                             });
                         } else if (index == 1) {
                             Game.runOnRenderThread(() -> {
+
+                                if(!Dungeon.isDLC(Conducts.Conduct.DEV) && anocount>=50){
+                                    GLog.i(Messages.get(PeachGodState.class,"touchTop"));
+                                    hide();
+                                    return;
+                                }
+
                                 if(Dungeon.isDLC(Conducts.Conduct.DEV) || ( c instanceof Hero && SPDSettings.iceCoin() >500 )) {
                                     pray(1);
                                 }else{
