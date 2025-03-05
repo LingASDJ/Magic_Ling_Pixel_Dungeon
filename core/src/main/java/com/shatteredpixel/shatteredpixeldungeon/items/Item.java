@@ -63,6 +63,9 @@ import java.util.Comparator;
 public class Item implements Bundlable {
 
 	public interface AnimationItem{}
+
+	public interface ThanksItem{}
+
 	public String anonymousName() {
 		return "ITEM_NAME_ANONYMOUS";
 	}
