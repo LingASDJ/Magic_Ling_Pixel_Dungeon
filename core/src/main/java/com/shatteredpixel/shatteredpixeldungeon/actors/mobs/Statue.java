@@ -63,21 +63,6 @@ public class Statue extends Mob {
 		weapon.enchant( Enchantment.random() );
 	}
 
-	public void createWeapon( boolean useDecks ,Weapon customWeapon){
-		if(customWeapon != null){
-			weapon = customWeapon;
-		}else{
-			if (useDecks) {
-				weapon = (MeleeWeapon) Generator.random(Generator.Category.WEAPON);
-			} else {
-				weapon = (MeleeWeapon) Generator.randomUsingDefaults(Generator.Category.WEAPON);
-			}
-		}
-		levelGenStatue = useDecks;
-		weapon.cursed = false;
-		weapon.enchant( Enchantment.random() );
-	}
-
 	public Statue() {
 		super();
 
@@ -174,8 +159,7 @@ public class Statue extends Mob {
 		Dungeon.level.drop( weapon, pos ).sprite.drop();
 		super.die( cause );
 
-
-		if(Statistics.RandomQuest == 1){
+		if(Statistics.RandomQuest == 1 && getClass() == Statue.class){
 			Statistics.goldRefogreCount++;
 		}
 	}
