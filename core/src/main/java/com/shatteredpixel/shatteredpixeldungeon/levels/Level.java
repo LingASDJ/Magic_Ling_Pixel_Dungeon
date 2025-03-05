@@ -1718,11 +1718,7 @@ public abstract class Level implements Bundlable {
 			for (Buff b : c.buffs( MindVision.class )) {
 				sense = Math.max( ((MindVision)b).distance, sense );
 			}
-
-			//TODO 等待修正
-			for (Buff b : c.buffs( SmallLightHeader.SAwareness.class )) {
-				sense = Math.max( ((SmallLightHeader.SAwareness)b).distance, sense );
-			}
+			
 			if (c.buff(MagicalSight.class) != null){
 				sense = Math.max( MagicalSight.DISTANCE, sense );
 			}
