@@ -25,11 +25,13 @@ import static com.shatteredpixel.shatteredpixeldungeon.ui.Icons.RENAME_OFF;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.InventoryPane;
@@ -76,6 +78,14 @@ public class WndUseItem extends WndInfoItem {
 				if (action.equals(item.defaultAction)) {
 					btn.textColor( TITLE_COLOR );
 				}
+
+				Image Thanksbutton = Icons.get(Icons.SHPX);
+
+				if(item instanceof Item.ThanksItem){
+					IconButton Thanks = getThanks(Thanksbutton,item);
+					this.add(Thanks);
+				}
+
 				if (Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_1)) {
 					ling: {
 						boolean itemname = item instanceof EquipableItem;
@@ -136,6 +146,24 @@ public class WndUseItem extends WndInfoItem {
 		}
 
 		resize( width, (int)(y) );
+	}
+
+	private IconButton getThanks(Image Thanksbutton,Item item) {
+		IconButton Thanks = new IconButton(Thanksbutton) {
+			public String hoverText() {
+				return Messages.titleCase(Messages.get(WndGame.class, "thanks"));
+			}
+
+			public void onClick() {
+				ShatteredPixelDungeon.scene().add(
+						new WndTitledMessage(new ItemSprite(item.image()),
+								Messages.titleCase(Messages.get(item,"name")),
+								Messages.get(item,"thanks"))
+				);
+			}
+		};
+		Thanks.setRect((float)(super.width - 32), 0.0F, 16.0F, 16.0F);
+		return Thanks;
 	}
 
 	private static float layoutButtons(ArrayList<RedButton> buttons, float width, float y){
