@@ -2052,7 +2052,7 @@ public class GameScene extends PixelScene {
 			}
 			//Boss死亡后的处理Logo,不在Switch中就是默认的Logo。
 
-			if(lanterfireactive && Dungeon.branch == 0 || Dungeon.branch == 6 || Statistics.bossRushMode){
+			if(lanterfireactive && Dungeon.branch == 0 && Dungeon.bossLevel() || Dungeon.branch == 6 || Statistics.bossRushMode && Dungeon.sbbossLevel()){
 				cure( Dungeon.hero );
 			}
 

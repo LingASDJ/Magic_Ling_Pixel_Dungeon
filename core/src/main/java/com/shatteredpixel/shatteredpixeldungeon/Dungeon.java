@@ -404,10 +404,10 @@ public class Dungeon {
 	public static boolean aqiLevel() {
 		return depth == 4 || depth == 8 || depth == 13 || depth == 18;
 	}
-	public static boolean sbbossLevel() {
-		return depth == 4 || depth == 9 || depth == 14 || depth == 19 || depth == 24;
-	}
 
+	public static boolean sbbossLevel() {
+		return depth == 4 || depth == 9 || depth == 14 || depth == 19 || depth == 24 || depth == 29 || depth == 34 || depth == 39;
+	}
 
 	public static boolean bossLevel() {
 		return bossLevel( depth );

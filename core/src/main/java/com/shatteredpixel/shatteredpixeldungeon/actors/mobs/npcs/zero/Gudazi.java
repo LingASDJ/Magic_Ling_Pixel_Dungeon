@@ -17,6 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GudaziSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.tweeners.Delayer;
 import com.watabou.utils.Bundle;
@@ -139,40 +140,39 @@ public class Gudazi extends GodNPC {
                 }
             });
             first=false;
+        } else if(secnod) {
+            if(Dungeon.gold >= 300 && secnod){
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show(new WndOptions(new GudaziSprite(),
+                                Messages.titleCase(Messages.get(Gudazi.class, "name")),
+                                Messages.get(Gudazi.class, "quest_start_prompt"),
+                                Messages.get(Gudazi.class, "enter_yes"),
+                                Messages.get(Gudazi.class, "enter_no")) {
+                            @Override
+                            protected void onSelect(int index) {
+                                if (index == 0) {
+                                    Dungeon.gold -= 300;
+                                    Statistics.gdzHelpDungeon++;
+                                    secnod = false;
+                                    yell(Messages.get(Gudazi.class, "good"));
+                                } else {
+                                    yell(Messages.get(Gudazi.class, "not"));
+                                    secnod = false;
+                                }
+                            }
+                        });
+                    }
+
+                });
+            } else if(!Statistics.amuletObtained) {
+
+            } else {
+
+            }
+
         }
-//        else if(secnod) {
-//            if(Dungeon.gold >= 300 && secnod){
-//                Game.runOnRenderThread(new Callback() {
-//                    @Override
-//                    public void call() {
-//                        GameScene.show(new WndOptions(new GudaziSprite(),
-//                                Messages.titleCase(Messages.get(Gudazi.class, "name")),
-//                                Messages.get(Gudazi.class, "quest_start_prompt"),
-//                                Messages.get(Gudazi.class, "enter_yes"),
-//                                Messages.get(Gudazi.class, "enter_no")) {
-//                            @Override
-//                            protected void onSelect(int index) {
-//                                if (index == 0) {
-//                                    Dungeon.gold -= 300;
-//                                    Statistics.gdzHelpDungeon++;
-//                                    secnod = false;
-//                                    yell(Messages.get(Gudazi.class, "good"));
-//                                } else {
-//                                    yell(Messages.get(Gudazi.class, "not"));
-//                                    secnod = false;
-//                                }
-//                            }
-//                        });
-//                    }
-//
-//                });
-//            } else if(!Statistics.amuletObtained) {
-//
-//            } else {
-//
-//            }
-//
-//        }
         return true;
     }
 }

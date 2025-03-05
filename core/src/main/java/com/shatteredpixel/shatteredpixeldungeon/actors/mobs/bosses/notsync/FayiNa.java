@@ -104,12 +104,6 @@ public class FayiNa extends NTNPC {
                 yell(Messages.get(ClearElemtGuard.class, "no_road",hero.name()));
                 progress++;
             }
-            pos = newPos;
-            c.pos = oldPos;
-            ScrollOfTeleportation.appear(this, newPos);
-            ScrollOfTeleportation.appear(c, oldPos);
-            Dungeon.observe();
-            GameScene.updateFog();
             yell(TXT_RANDOM[Random.Int(TXT_RANDOM.length)]);
         } else {
             if (first) {
