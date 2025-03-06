@@ -6,6 +6,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -59,7 +60,12 @@ public class LockSword extends MeleeWeapon {
                 gold = 110+((lvl/100)*lvl<100 ? 0 : 100);
                 return gold;
             case 16:
-                gold = 142+((lvl/100)*lvl<100 ? 0 : 100);
+                if(Badges.isUnlocked(Badges.Badge.ANCITY_THREE)){
+                    gold = 71+((lvl/100)*lvl<100 ? 0 : 50);
+                } else {
+                    gold = 142+((lvl/100)*lvl<100 ? 0 : 100);
+                }
+
                 return gold;
             case 20:
                 gold = 234+((lvl/100)*lvl<100 ? 0 : 100);
@@ -119,7 +125,7 @@ public class LockSword extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        return  14 + lvl*6;
+        return 14 + lvl*5;
     }
 
     public String desc() {
@@ -145,20 +151,6 @@ public class LockSword extends MeleeWeapon {
     public int proc(Char attacker, Char defender, int damage ) {
 
         int dmg;
-//        if(lock == null) {
-//            if (lvl >= 1000) {
-//                lvl += 1;
-//            } else if (defender.properties().contains(Char.Property.BOSS) && defender.HP <= damage && lvl <= 1000) {
-//                //目标Boss血量小于实际伤害判定为死亡,+9
-//                lvl += 9;
-//            } else if (defender.properties().contains(Char.Property.MINIBOSS) && defender.HP <= damage && lvl <= 1000) {
-//                //目标迷你Boss血量小于实际伤害判定为死亡,+7
-//                lvl += 7;
-//            } else if (defender.HP <= damage && lvl <= 1000) {
-//                //目标血量小于实际伤害判定为死亡,+5
-//                lvl += 5;
-//            }
-//        }
 
         if (lvl>= 900) {
             switch (Random.NormalIntRange(1,4)){

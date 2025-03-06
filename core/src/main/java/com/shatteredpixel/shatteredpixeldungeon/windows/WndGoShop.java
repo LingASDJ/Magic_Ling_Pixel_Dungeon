@@ -54,13 +54,13 @@ public class WndGoShop extends Window {
                 if(Statistics.deadshoppingdied) {
                     GLog.n(Messages.get(WndGoShop.class, "bad", Dungeon.hero.name()));
                 }else if(Statistics.fireGirlnoshopping){
-                    //GLog.n(Messages.get(WndGoShop.class, "bad", Dungeon.hero.name()));
                     for (Mob mob : Dungeon.level.mobs) {
                         if (mob instanceof Shopkeeper) {
                             ((Shopkeeper) mob).flee();
+                            Statistics.endingbald = true;
                             break;
                         }
-                }
+                    }
                 } else {
                     TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
                     if (timeFreeze != null) timeFreeze.disarmPresses();

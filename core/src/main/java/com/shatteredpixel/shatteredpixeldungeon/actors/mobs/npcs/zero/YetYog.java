@@ -10,7 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.GodNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.YetYogPlot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfDivination;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YetYogSprite;
@@ -79,19 +79,14 @@ public class YetYog extends GodNPC {
         YetYogPlot plot = new YetYogPlot();
         YetYogPlot.EndPlot plot2= new YetYogPlot.EndPlot();
         if (first) {
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    GameScene.show(new WndDialog(plot, false));
-                }
-            });
+            Game.runOnRenderThread(() -> GameScene.show(new WndDialog(plot, false)));
             first = false;
         } else if (passwordbadges.contains(PaswordBadges.Badge.KILL_YOGSTS) && secnod ){
             yell(Messages.get(this,"scroll"));
             if(Statistics.zeroItemLevel >=4 && Dungeon.depth == 0) {
                 Dungeon.level.drop(new Gold(100), hero.pos);
             } else {
-                Item item = new ScrollOfChallenge();
+                Item item = new ScrollOfDivination();
                 item.identify();
                 Dungeon.level.drop( item , hero.pos );
             }
