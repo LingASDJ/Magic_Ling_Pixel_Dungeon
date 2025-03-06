@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
@@ -16,7 +15,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUseItem;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 
@@ -87,21 +85,10 @@ public class SmallLightHeader extends Item implements Item.ThanksItem {
             inputs =  new Class[]{PotionOfMindVision.class, ScrollOfMagicMapping.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 20;
+            cost = 14;
 
             output = SmallLightHeader.class;
             outQuantity = 4;
-        }
-
-        public final Item sampleOutput(ArrayList<Item> ingredients){
-            try {
-                Item result = Reflection.newInstance(output);
-                result.quantity(outQuantity).level(Random.NormalIntRange(2,4));
-                return result;
-            } catch (Exception e) {
-                ShatteredPixelDungeon.reportException( e );
-                return null;
-            }
         }
 
     }

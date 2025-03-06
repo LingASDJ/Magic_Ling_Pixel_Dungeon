@@ -11,7 +11,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
@@ -42,8 +41,8 @@ public class DiedCrossBow extends LegendWeapon {
         legend = 3;
         baseMin = 4;
         baseMax = 25;
-        min = min();
-        max = max();
+        min = Lmin();
+        max = Lmax();
         usesTargeting = cooldown == 0;
     }
 

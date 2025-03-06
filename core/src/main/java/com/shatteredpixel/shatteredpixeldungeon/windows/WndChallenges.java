@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -155,8 +156,6 @@ public class WndChallenges extends Window {
 		add( btnPrev );
 		pos = 120;
 
-
-
 		Image bg = new Image(ClassUI() ? "interfaces/challgesbar_mlpd.png" : "interfaces/challgesbar.png"){
 			@Override
 			public synchronized void update() {
@@ -172,18 +171,17 @@ public class WndChallenges extends Window {
 			public synchronized void update() {
 				super.update();
 
-				time += Game.elapsed / 1.5f;
+				time += Game.elapsed;
 
 				if (getSelectedButtonCount() > 5) {
-					float r = 1f;
-					float g = 0.03f + 0.57f * Math.max(0f, (float) Math.sin(time));
-					float b = 0.93f + 0.57f * Math.max(0f, (float) Math.sin(time));
-					float factor = Math.min(1f, (getSelectedButtonCount() - 5) / 5f);
-					g *= (1 - factor);
-					b *= (1 - factor);
+					float r = (getSelectedButtonCount()/9f) * Math.max(0.35f, (float) Math.sin(time));
+					float g = 0f;
+					float b = 0f;
 					hardlight(r, g, b);
+				} else if(getSelectedButtonCount() > 3) {
+					hardlight(Window.ORAGNECOLOR);
 				} else {
-					hardlight(Window.WATA_COLOR);
+					hardlight(Window.G_COLOR);
 				}
 
 				scale.x = (getSelectedButtonCount() / 4.42f);
@@ -259,8 +257,16 @@ public class WndChallenges extends Window {
 		add(btnGoReadyInfo);
 		pos += BTN_HEIGHT+20;
 
+		float challenges =(float) Math.pow(1.25, Challenges.activeChallenges());
+		float trueChallenges = Math.round(challenges * 20f) / 20f;
+
 		if (!editable) {
 			btnGoReady.enable(false);
+			if(Game.scene().getClass() == GameScene.class){
+				btnGoReady.text(Messages.get(WndChallenges.class, "totalcount",Challenges.activeChallenges(),trueChallenges));
+				btnGoReadyInfo.icon(Icons.get( Icons.CHALLENGE_ON ));
+				btnGoReady.active =false;
+			}
 		}
 
 		resize( WIDTH, (int)pos );
@@ -272,8 +278,6 @@ public class WndChallenges extends Window {
 	private void setOpenCheckedNoUpdate(int id) {
 		boxes.get(id).checked(true);
 	}
-
-
 
 	@Override
 	public void onBackPressed() {

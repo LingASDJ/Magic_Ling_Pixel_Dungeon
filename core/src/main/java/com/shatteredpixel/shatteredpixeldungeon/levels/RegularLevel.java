@@ -112,7 +112,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PitfallTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 
@@ -294,7 +293,7 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new NxhyShopRoom());
 		}
 
-		if(depth == 9 && (DeviceCompat.isMidTest() || holiday == Holiday.PQJ)){
+		if(depth == 9 && holiday == Holiday.PQJ && Challenges.activeChallenges()<=12 && Random.Float()>0.55f) {
 			initRooms.add(new PeachGodBlessRoom());
 		}
 

@@ -64,16 +64,18 @@ public class WndGameInProgress extends Window {
 
 	private String ChallengesDesc(GamesInProgress.Info info,int slot) {
 		StringBuilder allChallengesDesc = new StringBuilder();
-		allChallengesDesc.append("\n");
 		if (info.challenges != 0) {
+			allChallengesDesc.append("\n");
 			for (int i = 0; i < Challenges.MASKS.length; i++) {
 				int challengeFlag = Challenges.MASKS[i];
 				if ((info.challenges & challengeFlag) != 0) {
 					allChallengesDesc.append("\n_-_ ").append(Messages.get(Challenges.class, Challenges.NAME_IDS[i]));
 				}
 			}
+		} else {
+			allChallengesDesc.append(Messages.get(Challenges.class, "no_challenge"));
 		}
-		return allChallengesDesc.length() > 0 ? allChallengesDesc.toString() : "没有激活的挑战";
+		return allChallengesDesc.toString();
 	}
 	
 	public WndGameInProgress(final int slot){

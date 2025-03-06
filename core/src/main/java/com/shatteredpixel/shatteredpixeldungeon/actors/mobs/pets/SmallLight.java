@@ -16,12 +16,14 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class SmallLight extends Mob implements Callback {
+
     private static final String[] TXT_RANDOM = {
             "Edro, edro!",
             "Yéni únótimë ve rámar aldaron!",
             "A laita te, laita te! Andavë laituvalmet!",
             "Ú-chebin Estel anim."
     };
+
     {
         alignment = Alignment.ALLY;
         spriteClass = SmallLightSprites.class;

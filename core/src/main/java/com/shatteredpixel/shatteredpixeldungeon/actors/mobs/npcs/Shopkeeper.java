@@ -28,14 +28,11 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessNoMoney;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicGirlDebuff.MagicGirlSayMoneyMore;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -58,11 +55,9 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
-import com.watabou.utils.BArray;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
 
 import java.util.ArrayList;
 
@@ -81,7 +76,9 @@ public class Shopkeeper extends NPC {
 	private boolean seenBefore = false;
 	@Override
 	protected boolean act() {
-
+		if(Statistics.endingbald) {
+			flee();
+		}
 		if (Dungeon.level.visited[pos]){
 			Notes.add(Notes.Landmark.SHOP);
 		}
@@ -89,6 +86,7 @@ public class Shopkeeper extends NPC {
 		if (turnsSinceHarmed >= 0){
 			turnsSinceHarmed ++;
 		}
+
 		if (!seenBefore && Dungeon.level.heroFOV[pos]) {
 			if (Dungeon.hero.buff(AscensionChallenge.class) != null) {
 				yell(Messages.get(this, "talk_ascent", Messages.titleCase(Dungeon.hero.name())));
@@ -116,53 +114,6 @@ public class Shopkeeper extends NPC {
 		return false;
 	}
 
-	public void processHarm(){
-
-		//do nothing if the shopkeeper is out of the hero's FOV
-		if (!Dungeon.level.heroFOV[pos]){
-			return;
-		}
-
-		if (turnsSinceHarmed == -1){
-			turnsSinceHarmed = 0;
-			yell(Messages.get(this, "warn"));
-
-			//cleanses all harmful blobs in the shop
-			ArrayList<Blob> blobs = new ArrayList<>();
-			for (Class c : new BlobImmunity().immunities()){
-				Blob b = Dungeon.level.blobs.get(c);
-				if (b != null && b.volume > 0){
-					blobs.add(b);
-				}
-			}
-
-			PathFinder.buildDistanceMap( pos, BArray.not( Dungeon.level.solid, null ), 4 );
-
-			for (int i=0; i < Dungeon.level.length(); i++) {
-				if (PathFinder.distance[i] < Integer.MAX_VALUE) {
-
-					boolean affected = false;
-					for (Blob blob : blobs) {
-						if (blob.cur[i] > 0) {
-							blob.clear(i);
-							affected = true;
-						}
-					}
-
-					if (affected && Dungeon.level.heroFOV[i]) {
-						CellEmitter.get( i ).burst( Speck.factory( Speck.DISCOVER ), 2 );
-					}
-
-				}
-			}
-
-			//There is a 1 turn buffer before more damage/debuffs make the shopkeeper flee
-			//This is mainly to prevent stacked effects from causing an instant flee
-		} else if (turnsSinceHarmed >= 1) {
-			flee();
-		}
-	}
-
 	public void flee() {
 		destroy();
 
@@ -177,14 +128,33 @@ public class Shopkeeper extends NPC {
 	@Override
 	public void destroy() {
 		super.destroy();
-		for (Heap heap: Dungeon.level.heaps.valueList()) {
-			if (heap.type == Heap.Type.FOR_SALE) {
-				if (ShatteredPixelDungeon.scene() instanceof GameScene) {
-					CellEmitter.get(heap.pos).burst(ElmoParticle.FACTORY, 4);
+
+		if(Statistics.endingbald){
+			for (Heap heap: Dungeon.level.heaps.valueList()) {
+				if (heap.type == Heap.Type.FOR_SALE) {
+					if (ShatteredPixelDungeon.scene() instanceof GameScene) {
+						CellEmitter.get(heap.pos).burst(ElmoParticle.FACTORY, 4);
+					}
+					if (heap.size() == 1) {
+						heap.destroy();
+					} else {
+						heap.items.remove(heap.size()-1);
+						heap.type = Heap.Type.HEAP;
+					}
 				}
-				heap.type = Heap.Type.HEAP;
+			}
+		} else {
+			for (Heap heap: Dungeon.level.heaps.valueList()) {
+				if (heap.type == Heap.Type.FOR_SALE) {
+					if (ShatteredPixelDungeon.scene() instanceof GameScene) {
+						CellEmitter.get(heap.pos).burst(ElmoParticle.FACTORY, 4);
+					}
+					heap.type = Heap.Type.HEAP;
+				}
 			}
 		}
+
+
 	}
 
 	@Override
@@ -265,9 +235,6 @@ public class Shopkeeper extends NPC {
 
 	@Override
 	public boolean interact(Char c) {
-		if (c != Dungeon.hero) {
-			return true;
-		}
 		Game.runOnRenderThread(new Callback() {
 			@Override
 			public void call() {
