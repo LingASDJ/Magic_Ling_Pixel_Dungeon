@@ -155,7 +155,7 @@ public class WndUseItem extends WndInfoItem {
 			}
 
 			public void onClick() {
-				ShatteredPixelDungeon.scene().add(
+				ShatteredPixelDungeon.scene().addToFront(
 						new WndTitledMessage(new ItemSprite(item.image()),
 								Messages.titleCase(Messages.get(item,"name")),
 								Messages.get(item,"thanks"))

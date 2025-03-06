@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.bags;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
@@ -48,7 +46,7 @@ public class ScrollHolder extends Bag {
 	}
 
 	public int capacity(){
-		return  Dungeon.isChallenged(Challenges.MINIBAG) ? 21 : 36; // default container size
+		return 36;
 	}
 	
 	@Override
@@ -63,7 +61,7 @@ public class ScrollHolder extends Bag {
 	
 	@Override
 	public int value() {
-		return Dungeon.isChallenged(Challenges.MINIBAG) ? 60 : 40;
+		return 40;
 	}
 
 }

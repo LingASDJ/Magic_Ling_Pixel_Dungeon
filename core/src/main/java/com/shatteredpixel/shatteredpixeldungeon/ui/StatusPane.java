@@ -494,7 +494,6 @@ public class StatusPane extends Component {
 
 		if (ClassUI()) {
 			bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
-
 		} else {
 			bg.texture = TextureCache.get(Assets.Interfaces.STATUS_DARK);
 		}

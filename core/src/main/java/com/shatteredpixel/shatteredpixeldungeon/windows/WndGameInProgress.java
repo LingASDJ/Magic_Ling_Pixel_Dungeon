@@ -61,6 +61,20 @@ public class WndGameInProgress extends Window {
 	
 	private float pos;
 	Clipboard clipboard;
+
+	private String ChallengesDesc(GamesInProgress.Info info,int slot) {
+		StringBuilder allChallengesDesc = new StringBuilder();
+		allChallengesDesc.append("\n");
+		if (info.challenges != 0) {
+			for (int i = 0; i < Challenges.MASKS.length; i++) {
+				int challengeFlag = Challenges.MASKS[i];
+				if ((info.challenges & challengeFlag) != 0) {
+					allChallengesDesc.append("\n_-_ ").append(Messages.get(Challenges.class, Challenges.NAME_IDS[i]));
+				}
+			}
+		}
+		return allChallengesDesc.length() > 0 ? allChallengesDesc.toString() : "没有激活的挑战";
+	}
 	
 	public WndGameInProgress(final int slot){
 		clipboard = Gdx.app.getClipboard();
@@ -72,7 +86,7 @@ public class WndGameInProgress extends Window {
 		} else {
 			className = info.heroClass.title();
 		}
-		
+
 		IconTitle title = new IconTitle();
 		title.icon( HeroSprite.avatar(info.heroClass, info.armorTier) );
 
@@ -108,7 +122,7 @@ public class WndGameInProgress extends Window {
 					Game.scene().add( new WndChallenges( info.challenges, false,null ) );
 				}
 			};
-			btnChallenges.icon(Icons.get(Icons.CHANGES));
+			btnChallenges.icon(Icons.get(Icons.CHALLENGE_ON));
 			float btnW = btnChallenges.reqWidth() + 2;
 			btnChallenges.setRect( ((WIDTH - btnW)/2)+3.5f, pos, btnW , 18 );
 			add( btnChallenges );
@@ -168,9 +182,9 @@ public class WndGameInProgress extends Window {
 
 				boolean seedType = (info.challenges & Challenges.MOREROOM) != 0;
 
-				clipboard.setContents(M.L(WndGameInProgress.class, "seed_copy",info.customSeed.isEmpty() ? DungeonSeed.convertToCode(info.seed) : info.customSeed,(seedType ? "B" : "A"),info.version));
+				clipboard.setContents(M.L(WndGameInProgress.class, "seed_copy",info.customSeed.isEmpty() ? DungeonSeed.convertToCode(info.seed) : info.customSeed,(seedType ? "B" : "A"),ChallengesDesc(info,slot)));
 
-				Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndMessage(M.L(WndGameInProgress.class, "seed_copied",info.customSeed.isEmpty() ? DungeonSeed.convertToCode(info.seed) : info.customSeed,(seedType ? "B" : "A"),info.version))));
+				Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndMessage(M.L(WndGameInProgress.class, "seed_copied",info.customSeed.isEmpty() ? DungeonSeed.convertToCode(info.seed) : info.customSeed,(seedType ? "B" : "A"), ChallengesDesc(info,slot)))));
 			}
 		};
 		add(buttonSeed);
@@ -261,7 +275,9 @@ public class WndGameInProgress extends Window {
 		
 		resize(WIDTH, (int)cont.bottom()+1);
 	}
-	
+
+
+
 	private void statSlot( String label, String value ) {
 		
 		RenderedTextBlock txt = PixelScene.renderTextBlock( label, 8 );

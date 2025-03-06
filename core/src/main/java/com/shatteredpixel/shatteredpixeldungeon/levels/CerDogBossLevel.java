@@ -467,8 +467,6 @@ public class CerDogBossLevel extends Level{
         LevelTransition ent = new LevelTransition(this, enter, LevelTransition.Type.REGULAR_ENTRANCE);
         transitions.add(ent);
 
-
-
         CustomTilemap vis = new townBehind();
         vis.pos(0, 0);
         customTiles.add(vis);
@@ -785,7 +783,7 @@ public class CerDogBossLevel extends Level{
             InterlevelScene.curTransition.centerCell = -1;
             Game.switchScene(InterlevelScene.class);
             return false;
-        } else if(Statistics.bossRushMode) {
+        } else if(Statistics.bossRushMode || Statistics.RandMode) {
             return super.activateTransition(hero, transition);
         } else {
             return false;

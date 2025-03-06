@@ -21,12 +21,14 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.ClassUI;
+
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -78,6 +80,8 @@ public class WndChallenges extends Window {
 		}
 		return count;
 	}
+
+	private float time;
 	
 	private WndChallenges( int checked, int index, boolean editable, Callback callback ) {
 
@@ -151,7 +155,44 @@ public class WndChallenges extends Window {
 		add( btnPrev );
 		pos = 120;
 
-		btnPrev.setRect(0, pos, (WIDTH - GAP) * 0.5f, BTN_HEIGHT);
+
+
+		Image bg = new Image(ClassUI() ? "interfaces/challgesbar_mlpd.png" : "interfaces/challgesbar.png"){
+			@Override
+			public synchronized void update() {
+				super.update();
+			}
+		};
+		bg.setPos(btnPrev.left()+5, pos-6);
+		add(bg);
+		btnPrev.setRect(0, pos+3, (WIDTH - GAP) * 0.5f, BTN_HEIGHT);
+
+		Image download = new Image(ClassUI() ? Assets.Interfaces.STATUS : Assets.Interfaces.STATUS_DARK, 0, 54, 54, 5){
+			@Override
+			public synchronized void update() {
+				super.update();
+
+				time += Game.elapsed / 1.5f;
+
+				if (getSelectedButtonCount() > 5) {
+					float r = 1f;
+					float g = 0.03f + 0.57f * Math.max(0f, (float) Math.sin(time));
+					float b = 0.93f + 0.57f * Math.max(0f, (float) Math.sin(time));
+					float factor = Math.min(1f, (getSelectedButtonCount() - 5) / 5f);
+					g *= (1 - factor);
+					b *= (1 - factor);
+					hardlight(r, g, b);
+				} else {
+					hardlight(Window.WATA_COLOR);
+				}
+
+				scale.x = (getSelectedButtonCount() / 4.42f);
+
+			}
+		};
+		download.setPos(btnPrev.left()+6, pos-5);
+		add(download);
+
 		btnNext = new RedButton(Messages.get(WndChallenges.class,"prex")) {
 			@Override
 			protected void onClick() {
@@ -162,27 +203,9 @@ public class WndChallenges extends Window {
 			}
 		};
 		add( btnNext );
-		btnNext.setRect(btnPrev.right() + GAP, pos, (WIDTH - GAP) * 0.5f, BTN_HEIGHT);
+		btnNext.setRect(btnPrev.right() + GAP, pos+3, (WIDTH - GAP) * 0.5f, BTN_HEIGHT);
 
 		pos += BTN_HEIGHT;
-
-		RedButton btnEnableAll = new RedButton(Messages.get(WndChallenges.class,"enableAll"), 7) {
-			@Override
-			public void update() {
-				text(Messages.get(WndChallenges.class, "count") + " (" +
-						getSelectedButtonCount() + "/" + boxes.size() + ")");
-			}
-		};
-		btnEnableAll.setRect(btnPrev.left()+ GAP, pos, (WIDTH - GAP), BTN_HEIGHT);
-		add(btnEnableAll);
-
-		float challenges =(float) Math.pow(1.25, Challenges.activeChallenges());
-		float trueChallenges = Math.round(challenges * 20f) / 20f;
-
-		if (!editable && !(Game.scene() == null || Game.scene().getClass() != GameScene.class)) {
-			btnEnableAll.enable(false);
-			btnEnableAll.text(Messages.get(WndChallenges.class, "totalcount",Challenges.activeChallenges(),trueChallenges));
-		}
 
 		RedButton btnClear = new RedButton(Messages.get(WndChallenges.class,"clear"), 7) {
 			@Override
@@ -192,7 +215,7 @@ public class WndChallenges extends Window {
 				}
 			}
 		};
-		btnClear.setRect(btnEnableAll.left()+ GAP, pos+20, (WIDTH/2f - GAP), BTN_HEIGHT);
+		btnClear.setRect(btnPrev.left(), pos+2, WIDTH/2f, BTN_HEIGHT);
 		add(btnClear);
 		if (!editable) {
 			btnClear.enable(false);
@@ -206,13 +229,39 @@ public class WndChallenges extends Window {
 				}
 			}
 		};
-		btnEnabll.setRect(btnClear.right()+ GAP, pos+20, (WIDTH/2f - GAP), BTN_HEIGHT);
+		btnEnabll.setRect(btnClear.right(), pos+2, WIDTH/2f, BTN_HEIGHT);
 		add(btnEnabll);
 		if (!editable) {
 			btnEnabll.enable(false);
 		}
 
+		RedButton btnGoReady = new RedButton(Messages.get(WndChallenges.class,"middle"), 7) {
+			@Override
+			protected void onClick() {
+				SPDSettings.challenges( 0 );
+				WndChallenges.this.hide();
+			}
+		};
+		btnGoReady.setRect(btnPrev.left(), pos+20, WIDTH-24, BTN_HEIGHT);
+		add(btnGoReady);
+
+		IconButton btnGoReadyInfo = new IconButton( Icons.get( Icons.INFO ) ) {
+			@Override
+			protected void onClick() {
+				ShatteredPixelDungeon.scene().addToFront(
+						new WndTitledMessage(new Image(Icons.get( Icons.INFO )),
+								Messages.titleCase(Messages.get(this,"name")),
+								Messages.get(this,"middle_desc"))
+				);
+			}
+		};
+		btnGoReadyInfo.setRect(btnGoReady.right()+GAP, pos+20, 24, BTN_HEIGHT);
+		add(btnGoReadyInfo);
 		pos += BTN_HEIGHT+20;
+
+		if (!editable) {
+			btnGoReady.enable(false);
+		}
 
 		resize( WIDTH, (int)pos );
 	}
@@ -380,8 +429,6 @@ public class WndChallenges extends Window {
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_13, new ItemSprite.Glowing(0xff0000));
 			case "dhxd":
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_15, new ItemSprite.Glowing(0x384976));
-			case "mini_bag":
-				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14, new ItemSprite.Glowing(0x6c5c49));
 			case "morelevel":
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_16, new ItemSprite.Glowing(0x98bc76));
 			case "cs":
