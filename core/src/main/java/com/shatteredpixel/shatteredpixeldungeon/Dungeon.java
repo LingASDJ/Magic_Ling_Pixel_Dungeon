@@ -197,6 +197,97 @@ public class Dungeon {
 
 	}
 
+	public static enum Attribute {
+
+		MultiHP(Type.Negative,Aspect.BodyA),
+		FasterRunner(Type.Negative,Aspect.BodyA),
+		CrispyBody(Type.Negative,Aspect.BodyB),
+		MagicPowerLess(Type.Negative,Aspect.Magic),
+		AnotherChance(Type.Negative,Aspect.Special),
+		ExtendArmor(Type.Negative,Aspect.BodyA);
+
+		public boolean enabled = false;
+		public int severity = 0;
+
+		Type type;
+		Aspect aspect;
+
+		static enum Type{
+			Positive,
+			Negative;
+		}
+
+		static enum Aspect{
+			BodyA,
+			BodyB,
+			Magic,
+			Special;
+		}
+
+		Attribute(Type t,Aspect a){
+			type =  t;
+			aspect = a;
+		}
+
+		public static void randomAttribute(){
+
+			ArrayList<Attribute> att_BodyA = new ArrayList<>();
+			ArrayList<Attribute> att_BodyB = new ArrayList<>();
+			ArrayList<Attribute> att_Magic = new ArrayList<>();
+			ArrayList<Attribute> att_Special = new ArrayList<>();
+
+			for (Attribute att : values()){
+				if(att.aspect == Aspect.BodyA) {
+					att_BodyA.add(att);
+				} else if (att.aspect == Aspect.BodyB) {
+					att_BodyB.add(att);
+				} else if (att.aspect == Aspect.Magic) {
+					att_Magic.add(att);
+				} else if (att.aspect == Aspect.Special) {
+					att_Special.add(att);
+				}
+			}
+
+			att_BodyA.get(Random.Int(0,att_BodyA.size()+1)).enabled = true;
+			att_BodyB.get(Random.Int(0,att_BodyB.size()+1)).enabled = true;
+			att_Magic.get(Random.Int(0,att_Magic.size()+1)).enabled = true;
+			att_Special.get(Random.Int(0,att_Special.size()+1)).enabled = true;
+
+		}
+
+		public static void upgrade(Attribute att, int lvl){
+			att.severity += lvl;
+		}
+
+		public static void reset(){
+			for (Attribute att : values()){
+				att.enabled = false;
+				att.severity = 0;
+			}
+		}
+
+		public static void store( Bundle bundle ){
+			for (Attribute att : values()){
+				bundle.put(att.name(), att.enabled);
+				bundle.put(att.name(),att.severity);
+			}
+		}
+
+		public static void restore( Bundle bundle ){
+			for (Attribute att : values()){
+				if (bundle.contains(att.name())){
+					att.enabled = bundle.getBoolean(att.name());
+					att.severity = bundle.getInt(att.name());
+				} else {
+					att.enabled = false;
+					att.severity = 0;
+				}
+
+			}
+
+		}
+	}
+
 	public static int challenges;
 	public static int mobsToChampion;
 	private static final String GENERATED_LEVELS = "generated_levels";
