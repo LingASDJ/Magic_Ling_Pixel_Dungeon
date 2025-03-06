@@ -22,12 +22,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.bags;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class KingBag extends Bag {
@@ -41,7 +39,7 @@ public class KingBag extends Bag {
 
     @Override
     public boolean canHold( Item item ) {
-        if ((item instanceof MeleeWeapon  && !(item instanceof MagesStaff || item instanceof MissileWeapon) )||item instanceof Armor){
+        if (item instanceof MeleeWeapon && !(item instanceof MagesStaff) || item instanceof Armor){
             return super.canHold(item);
         } else {
             return false;
@@ -49,11 +47,12 @@ public class KingBag extends Bag {
     }
 
     public int capacity(){
-        return Dungeon.isChallenged(Challenges.MINIBAG) ? 12 : 21;
+        return 21;
     }
+
     @Override
     public int value() {
-        return  Dungeon.isChallenged(Challenges.MINIBAG) ? 30 : 20;
+        return 20;
     }
 
 }

@@ -49,8 +49,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
@@ -357,11 +355,6 @@ public class ShopRoom extends SpecialRoom {
 		Bag bag = ChooseBag(Dungeon.hero.belongings);
 		if (bag != null) {
 			itemsToSpawn.add(bag);
-		}
-
-		if(Dungeon.isChallenged(Challenges.MINIBAG) && Dungeon.depth ==6){
-			itemsToSpawn.add( new HerbBag().quantity(1) );
-			itemsToSpawn.add( new KingBag().quantity(1) );
 		}
 
 		itemsToSpawn.add( new PotionOfHealing() );
