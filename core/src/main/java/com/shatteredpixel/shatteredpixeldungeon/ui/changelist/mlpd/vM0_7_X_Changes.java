@@ -201,6 +201,13 @@ public class vM0_7_X_Changes {
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ICEGOLD), ("钴币掉落调整"),
+                (
+                        "_-_ 常规获取方法掉落调整：\n" +
+                        "_-_ （（玩家等级+当前楼层）/5）x（1+挑战数量/3））\n\n" +
+                        "_-_ 限时双倍掉落：\n" +
+                        "_-_ 2025.3.7-2025.3.31 钴币全局双倍掉落")));
+
         changes.addButton(new ChangeButton(new GhostSprite(),("悲伤幽灵调整"),
                 //50%:+0, 20%:+1, 15%:+2, 12%:+3 3% +4
                 ("悲伤幽灵武器品质概率调整：\n\n"+
@@ -253,7 +260,10 @@ public class vM0_7_X_Changes {
                         "_-_ 修复果子卡死问题\n" +
                         "_-_ 修复泡泡残留新年奖励逻辑\n"+
                         "_-_ 修复部分武器无法直接参与炼金\n" +
-                        "_-_ 调整0层武器固定生成为T2")));
+                        "_-_ 调整0层武器固定生成为T2\n" +
+                        "_-_ 优化部分金蝶文本\n" +
+                        "_-_ 修复金蝶重复饰品的问题\n" +
+                        "_-_ 指南书页异常位置修复")));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), "归溯钥剑",
                 "现在获得钥匙的经验相比之前翻倍，并且成长调整为1-5。\n\n" +
@@ -280,7 +290,7 @@ public class vM0_7_X_Changes {
                         "其他层的商店将会不再生成，且即便是_已经生成的商店也自动移除所有东西_。"));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14), ("轻装上阵挑战下线"),
-                ("下线此挑战，因为它设计不太合理，纯粹恶心玩家。")));
+                ("下线此挑战。")));
 
         changes = new ChangeInfo("v0.8.3.0中测验收通过，予以更新", true, null);
         changes.hardlight(Window.CYELLOW);
