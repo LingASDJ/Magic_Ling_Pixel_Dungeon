@@ -15,7 +15,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.SmallLeafHardDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingGold;
@@ -25,6 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.props.Prop;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
@@ -143,29 +143,14 @@ abstract public class Boss extends Mob {
             final Calendar calendar = Calendar.getInstance();
             boolean holiday = false;
 
-            if (calendar.get(Calendar.MONTH) == Calendar.MAY) {
-                int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-                if (dayOfMonth >= 2 && dayOfMonth <= 20)
+            if (RegularLevel.holiday == RegularLevel.Holiday.PQJ) {
                     holiday = true;
             }
 
             if(!Statistics.bossRushMode){
-                if(Challenges.activeChallenges()>9){
-
-                    if(holiday){
-                        Dungeon.level.drop(new IceCyanBlueSquareCoin(((5*(Dungeon.depth/5)) * (Challenges.activeChallenges() / 5)) * 2),pos);
-                    } else {
-                        Dungeon.level.drop(new IceCyanBlueSquareCoin(((5*(Dungeon.depth/5)) * (Challenges.activeChallenges() / 5))),pos);
-                    }
-
-                } else {
-
-                    if(holiday){
-                        Dungeon.level.drop(new IceCyanBlueSquareCoin(5*(Dungeon.depth/5) * 2),pos);
-                    } else {
-                        Dungeon.level.drop(new IceCyanBlueSquareCoin(5*(Dungeon.depth/5)),pos);
-                    }
-                }
+                int normal = ((hero.lvl + Dungeon.depth)/5) * (Challenges.activeChallenges() / 3);
+                int count = holiday ? 2 : 1;
+                Dungeon.level.drop(new IceCyanBlueSquareCoin(normal * count),pos);
             }
     }
 
