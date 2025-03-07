@@ -110,11 +110,12 @@ public class SakaFishBoss extends Boss {
             return;
         }
 
-        if(Random.Float()<0.4f){
+        AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
+
+        if(Random.Float()<0.4f && level != AncientMysteryCityBossLevel.State.END_BOSS){
             ScrollOfTeleportation.appear(this,337);
         }
 
-        AncientMysteryCityBossLevel.State level = ((AncientMysteryCityBossLevel)Dungeon.level).pro();
         if (level==AncientMysteryCityBossLevel.State.FALL_BOSS){
             dmg = 10 + (int)(Math.sqrt(2*(dmg - 4) + 1) - 1)/2;
         } else if (dmg >= 20){

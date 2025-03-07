@@ -27,6 +27,7 @@ public class SmallLight extends Mob implements Callback {
         spriteClass = SmallLightSprites.class;
         WANDERING = new Wandering();
         HP = HT = 1;
+        baseSpeed = 1.5f;
         defenseSkill = 15;
         viewDistance = 5;
         invisible = 1;

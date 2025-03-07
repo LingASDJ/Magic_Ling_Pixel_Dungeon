@@ -1,7 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.bags;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.books.Books;
@@ -30,12 +28,12 @@ public class BookBag extends Bag {
     }
 
     public int capacity(){
-        return Dungeon.isChallenged(Challenges.MINIBAG) ? 6 : 10;
+        return 10;
     }
 
     @Override
     public int value() {
-        return Dungeon.isChallenged(Challenges.MINIBAG) ? 45 : 30;
+        return 30;
     }
 
 }

@@ -93,7 +93,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMi
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BottleWraith;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.NoteOfBzmdr;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.YanStudyingPaperOne;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.SmallLightHeader;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
@@ -681,6 +680,11 @@ public abstract class Level implements Bundlable {
 		Mob m = Reflection.newInstance(mobsToSpawn.remove(0));
 		ChampionEnemy.rollForChampion(m);
 		ChampionEnemy.rollForStateLing(m);
+
+		if(Dungeon.isChallenged(CS)){
+			m.state = m.WANDERING;
+		}
+
 		if(Dungeon.isChallenged(CS) && depth>2 && depth<25 && Random.Float()<0.25f){
 			Buff.affect(m, ChampionEnemy.AloneCity.class);
 		}
@@ -1718,11 +1722,7 @@ public abstract class Level implements Bundlable {
 			for (Buff b : c.buffs( MindVision.class )) {
 				sense = Math.max( ((MindVision)b).distance, sense );
 			}
-
-			//TODO 等待修正
-			for (Buff b : c.buffs( SmallLightHeader.SAwareness.class )) {
-				sense = Math.max( ((SmallLightHeader.SAwareness)b).distance, sense );
-			}
+			
 			if (c.buff(MagicalSight.class) != null){
 				sense = Math.max( MagicalSight.DISTANCE, sense );
 			}

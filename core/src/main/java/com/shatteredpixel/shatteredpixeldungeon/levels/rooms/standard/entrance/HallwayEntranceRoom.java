@@ -35,7 +35,10 @@ public class HallwayEntranceRoom extends HallwayRoom {
 	public boolean isEntrance() {
 		return true;
 	}
-
+	@Override
+	public boolean canMerge(Level l, Room other, Point p, int mergeTerrain) {
+		return false;
+	}
 	@Override
 	public void paint(Level level) {
 		super.paint(level);

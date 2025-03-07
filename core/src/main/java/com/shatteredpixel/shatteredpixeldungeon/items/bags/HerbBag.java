@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.bags;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -43,12 +41,12 @@ public class HerbBag extends Bag {
     }
 
     public int capacity(){
-        return Dungeon.isChallenged(Challenges.MINIBAG) ? 24 : 40;
+        return 40;
     }
 
     @Override
     public int value() {
-        return  Dungeon.isChallenged(Challenges.MINIBAG) ? 45 : 30;
+        return 30;
     }
 
 }

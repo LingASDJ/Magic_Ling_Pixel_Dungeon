@@ -336,8 +336,6 @@ public class LevelTeleporter extends TestItem {
                 }
             };
             add(sp);
-            //sp.setRect(0, ttl.bottom() + GAP * 2, WIDTH, PANE_MAX_HEIGHT);
-            //GLog.i("%f", ttl.bottom() + GAP * 2);
             Component content = sp.content();
             float xpos = (WIDTH - 5*BTN_SIZE - GAP*8)/2f;
             float ypos = 0;
@@ -345,7 +343,7 @@ public class LevelTeleporter extends TestItem {
             for(int i=0; i< Constants.MAX_DEPTH; ++i){
                 int column = i % 5;
                 int row = i / 5;
-                final int j = i+1;
+                final int j = i;
                 DepthButton db = new DepthButton(j){
                     @Override
                     protected void onClick() {
@@ -353,7 +351,7 @@ public class LevelTeleporter extends TestItem {
                         setSelectedLevel(j);
                     }
                 };
-                db.enable(!(j > Statistics.deepestFloor));
+                db.enable(Statistics.bossRushMode || j <= 26);
                 db.setRect(xpos + column * each, ypos + row * each, BTN_SIZE, BTN_SIZE);
                 PixelScene.align(db);
                 content.add(db);
@@ -394,7 +392,7 @@ public class LevelTeleporter extends TestItem {
         private void setSelectedLevel(int lvl){
             this.selectedLevel = lvl;
             icb.text(M.L(LevelTeleporter.class, "interlevel_teleport_go", selectedLevel));
-            icb.enable(selectedLevel > 0 && selectedLevel <= Constants.MAX_DEPTH);
+            icb.enable(selectedLevel <= Constants.MAX_DEPTH);
         }
     }
 

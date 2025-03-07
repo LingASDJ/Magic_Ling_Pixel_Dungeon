@@ -20,7 +20,7 @@ import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 
-public class SmallLightHeader extends Item {
+public class SmallLightHeader extends Item implements Item.ThanksItem {
 
     public static final String AC_SUMMON = "SummonFish";
     public static final String AC_CHOOSE = "CHOOSE";

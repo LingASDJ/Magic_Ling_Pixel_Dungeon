@@ -45,9 +45,7 @@ public class Challenges {
 
 	public static final int CS   = 32768;
 
-	public static final int MINIBAG   = 65536;
-
-	public static final int MAX_VALUE = 131072;
+	public static final int MAX_VALUE = 65536;
 	public static final String[] NAME_IDS = {
 			"no_food",
 			"no_armor",
@@ -64,23 +62,16 @@ public class Challenges {
 			"stronger_bosses",
 			"dhxd",
 			"morelevel",
-			"cs",
-			"mini_bag"
+			"cs"
 	};
 
 	public static final int[] MASKS = {
 			NO_FOOD, NO_ARMOR, NO_HEALING, NO_HERBALISM, SWARM_INTELLIGENCE, DARKNESS, NO_SCROLLS
-			, AQUAPHOBIA, CHAMPION_ENEMIES,RLPT,SBSG,EXSG,STRONGER_BOSSES,DHXD,MOREROOM,CS,MINIBAG
+			, AQUAPHOBIA, CHAMPION_ENEMIES,RLPT,SBSG,EXSG,STRONGER_BOSSES,DHXD,MOREROOM,CS
 	};
 	public String name;
 
 	public static boolean isItemBlocked(Item item) {
-		//取消
-//		if (Dungeon.isChallenged(NO_FOOD)) {
-//			if (item instanceof Food && !(item instanceof SmallRation || item instanceof MeatPie)) {
-//				return true;
-//			}
-//		}
 
 		if(InterlevelScene.mode == InterlevelScene.Mode.RESET){
 			if (item instanceof Ankh) {
@@ -99,7 +90,8 @@ public class Challenges {
 	public static int activeChallenges(){
 		int chCount = 0;
 		for (int ch : Challenges.MASKS){
-			if ((Dungeon.challenges & ch) != 0) chCount++;
+			if ((Dungeon.challenges & ch) != 0)
+				chCount++;
 		}
 
 		return chCount;

@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ChasmRoom;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Point;
 
 public class ChasmEntranceRoom extends ChasmRoom {
 
@@ -50,7 +51,10 @@ public class ChasmEntranceRoom extends ChasmRoom {
 	public boolean isEntrance() {
 		return true;
 	}
-
+	@Override
+	public boolean canMerge(Level l, Room other, Point p, int mergeTerrain) {
+		return false;
+	}
 	@Override
 	public void paint(Level level) {
 		super.paint(level);
