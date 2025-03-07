@@ -271,6 +271,10 @@ public class StatusPane extends Component {
 			add(bossselect);
 		}
 
+		if(Dungeon.isDLC(Conducts.Conduct.HARD)){
+			//add(table);
+		}
+
 		lanter=new LanterFireCator();
 		add(lanter);
 	}

@@ -215,6 +215,14 @@ public abstract class Mob extends Char {
 	protected boolean firstAdded = true;
 	protected void onAdd(){
 		if (firstAdded) {
+
+			initAttribute();
+
+			HT = (int) (HT * HPMultiplier);
+			HP = (int) (HP * HPMultiplier);
+
+			baseSpeed *= speedMultiplier;
+
 			//modify health for ascension challenge if applicable, only on first add
 			float percent = HP / (float) HT;
 			HT = Math.round(HT * AscensionChallenge.statModifier(this));
