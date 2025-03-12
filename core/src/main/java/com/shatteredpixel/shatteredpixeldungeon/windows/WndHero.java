@@ -30,6 +30,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Clipboard;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -281,21 +282,22 @@ public class WndHero extends WndTabbed {
 
 
 
-//			IconButton scoreButton = new IconButton(Icons.get(Icons.BUFFS)){
-//				@Override
-//				protected void onClick() {
-//					super.onClick();
-//					ShatteredPixelDungeon.scene().addToFront(new WndScoreBreakdown());
-//				}
-//
-//				@Override
-//				protected String hoverText() {
-//					return Messages.titleCase(Messages.get(WndKeyBindings.class, "score_info"));
-//				}
-//
-//			};
-//			scoreButton.setRect(title.right()-16, 0, 16, 16);
-//			add(scoreButton);
+			IconButton scoreButton = new IconButton(Icons.get(Icons.BUFFS)){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					Rankings.INSTANCE.calculateScore();
+					ShatteredPixelDungeon.scene().addToFront(new WndScoreBreakdown());
+				}
+
+				@Override
+				protected String hoverText() {
+					return Messages.titleCase(Messages.get(WndKeyBindings.class, "score_info"));
+				}
+
+			};
+			scoreButton.setRect(title.right()-16, 0, 16, 16);
+			add(scoreButton);
 
 			pos = title.bottom() + GAP;
 

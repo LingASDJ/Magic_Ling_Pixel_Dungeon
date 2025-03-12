@@ -12,8 +12,10 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Group;
+import com.watabou.noosa.ui.Component;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -21,35 +23,49 @@ import java.util.Locale;
 public class WndScoreBreakdown extends Window {
 
     private static final int WIDTH			= 115;
+    private static final int HEIGHT = 144;
 
     private int GAP	= 4;
 
     public WndScoreBreakdown(){
+        resize(WIDTH, HEIGHT);
+        ScrollPane pane = new ScrollPane(new Component());
+        Component content = pane.content();
+        this.add(pane);
+        pane.setRect(0,0,WIDTH, HEIGHT);
 
         IconTitle title = new IconTitle( Icons.get(Icons.INFO), Messages.get(this, "title"));
         title.setRect(0, 0, WIDTH, 16);
-        add(title);
+        content.add(title);
 
         float pos = title.bottom()+2;
 
         NumberFormat num = NumberFormat.getInstance(Locale.US);
 
 
-        pos = statSlot(this, Messages.get(this, "progress_title"),
+        pos = statSlot(content, Messages.get(this, "progress_title"),
                     num.format(Statistics.progressScore), pos, Statistics.progressScore >= 50_000);
-        pos = addInfo(this, Messages.get(this, "progress_desc"), pos);
-        pos = statSlot(this, Messages.get(this, "treasure_title"),
+        pos = addInfo(content, Messages.get(this, "progress_desc", Statistics.deepestFloor, Dungeon.hero.lvl), pos);
+
+        pos = statSlot(content, Messages.get(this, "treasure_title"),
                     num.format(Statistics.treasureScore), pos, Statistics.treasureScore >= 20_000);
-        pos = addInfo(this, Messages.get(this, "treasure_desc"), pos);
-        pos = statSlot(this, Messages.get(this, "explore_title"),
+        pos = addInfo(content, Messages.get(this, "treasure_desc", Statistics.goldCollected, Statistics.heldItemValue), pos);
+
+        int floorsCount = 0;
+        for  (Boolean b : Statistics.floorsExplored.valueList() ) {
+            if (b) floorsCount += 1;
+        }
+        pos = statSlot(content, Messages.get(this, "explore_title"),
                     num.format(Statistics.exploreScore), pos, Statistics.exploreScore >= 20_000);
-        pos = addInfo(this, Messages.get(this, "explore_desc"), pos);
-        pos = statSlot(this, Messages.get(this, "bosses_title"),
+        pos = addInfo(content, Messages.get(this, "explore_desc", floorsCount ,Statistics.floorsExplored.size), pos);
+
+        pos = statSlot(content, Messages.get(this, "bosses_title"),
                     num.format(Statistics.totalBossScore), pos, Statistics.totalBossScore >= 18_000);
-        pos = addInfo(this, Messages.get(this, "bosses_desc"), pos);
-        pos = statSlot(this, Messages.get(this, "quests_title"),
+        pos = addInfo(content, Messages.get(this, "bosses_desc", Statistics.bossScores[0], Statistics.bossScores[1], Statistics.bossScores[2], Statistics.bossScores[3], Statistics.bossScores[4], Statistics.bossScores[5]), pos);
+
+        pos = statSlot(content, Messages.get(this, "quests_title"),
                     num.format(Statistics.totalQuestScore), pos, Statistics.totalQuestScore >= 14_000);
-        pos = addInfo(this, Messages.get(this, "quests_desc"), pos);
+        pos = addInfo(content, Messages.get(this, "quests_desc", Statistics.questScores[0], Statistics.questScores[1], Statistics.questScores[2], Statistics.questScores[3], Statistics.questScores[4]), pos);
 
 
 //        String chalString = "";
@@ -64,33 +80,34 @@ public class WndScoreBreakdown extends Window {
 
 
         if (Statistics.winMultiplier > 1) {
-            pos = statSlot(this, Messages.get(this, "win_multiplier"), Statistics.winMultiplier + "x", pos, false);
+            pos = statSlot(content, Messages.get(this, "win_multiplier"), Statistics.winMultiplier + "x", pos, false);
         }
 
         if(Statistics.seedCustom){
-            pos = statSlot(this, Messages.get(this, "seed_multiplier"), "0.5" + "x", pos, false);
+            pos = statSlot(content, Messages.get(this, "seed_multiplier"), "0.5" + "x", pos, false);
         }
 
         if(Dungeon.isDLC(Conducts.Conduct.EASY)){
-            pos = statSlot(this, Messages.get(this, "diff_multiplier"), "1" + "x", pos, false);
-            pos = addInfo(this, Messages.get(this, "hard_desc"), pos);
+            pos = statSlot(content, Messages.get(this, "diff_multiplier"), "1" + "x", pos, false);
+            pos = addInfo(content, Messages.get(this, "hard_desc"), pos);
         } else if(Dungeon.isDLC(Conducts.Conduct.NORMAL)){
-            pos = statSlot(this, Messages.get(this, "diff_multiplier"), "1" + "x", pos, false);
-            pos = addInfo(this, Messages.get(this, "hard_desc"), pos);
+            pos = statSlot(content, Messages.get(this, "diff_multiplier"), "1" + "x", pos, false);
+            pos = addInfo(content, Messages.get(this, "hard_desc"), pos);
         } else if(Dungeon.isDLC(Conducts.Conduct.HARD)){
-            pos = statSlot(this, Messages.get(this, "diff_multiplier"), "1" + "x", pos, false);
-            pos = addInfo(this, Messages.get(this, "hard_desc"), pos);
+            pos = statSlot(content, Messages.get(this, "diff_multiplier"), "1" + "x", pos, false);
+            pos = addInfo(content, Messages.get(this, "hard_desc"), pos);
         } else {
-            pos = statSlot(this, Messages.get(this, "diff_multiplier"), "1" + "x", pos, false);
-            pos = addInfo(this, Messages.get(this, "hard_desc"), pos);
+            pos = statSlot(content, Messages.get(this, "diff_multiplier"), "1" + "x", pos, false);
+            pos = addInfo(content, Messages.get(this, "hard_desc"), pos);
         }
 
         if (Statistics.chalMultiplier > 1) {
-            pos = statSlot(this, Messages.get(this, "challenge_multiplier"), Statistics.chalMultiplier + "x", pos, false);
+            pos = statSlot(content, Messages.get(this, "challenge_multiplier"), Statistics.chalMultiplier + "x", pos, false);
+            pos = addInfo(content, Messages.get(this, "challenge_multiplier_desc", Challenges.activeChallenges()), pos);
         }
 
-        pos = statSlot(this, Messages.get(this, "total"), num.format(Statistics.totalScore), pos, false);
-
+        pos = statSlot(content, Messages.get(this, "total"), num.format(Statistics.totalScore), pos, false);
+        pos = addInfo(content, Messages.get(this, "total_desc"), pos);
 
         int chCount = 0;
         for (int ch : Challenges.MASKS){
@@ -103,16 +120,17 @@ public class WndScoreBreakdown extends Window {
         LevelChecker result = new LevelChecker();
 
         if(chCount > 0){
-            pos = statSlot(this, Messages.get(this, "total_level"), ""+activeChallenges()+"x-"+result.checkLevel(), pos,
+            pos = statSlot(content, Messages.get(this, "total_level"), ""+activeChallenges()+"x-"+result.checkLevel(), pos,
                     false);
         } else {
-            pos = statSlot(this, Messages.get(this, "total_level"), result.checkLevel(), pos,
+            pos = statSlot(content, Messages.get(this, "total_level"), result.checkLevel(), pos,
                     false);
         }
+        pos = addInfo(content, Messages.get(this, "total_level_desc"), pos);
 
 
-        resize(WIDTH, (int)pos);
-
+        content.setSize(WIDTH, pos + 2);
+        pane.scrollTo(0, 0);
     }
 
     private float statSlot(Group parent, String label, String value, float pos, boolean highlight ) {

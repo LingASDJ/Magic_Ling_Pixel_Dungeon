@@ -6,106 +6,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Acidic;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Albino;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ArmoredBrute;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ArmoredStatue;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bandit;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bat;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BlackHost;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BrownBat;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CausticSlime;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ClearElemental;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdGurad;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ColdMagicRat;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalGuardian;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalWisp;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FetidRat;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Fire_Scorpio;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlameC01;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlowerSlime;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FungalSpinner;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gnoll;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGuard;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollSapper;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollShiled;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollTrickster;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.IceGolem;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ice_Scorpio;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.KagenoNusujin;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Katydid;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MolotovHuntsman;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewBlackHost;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDLLS;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDNQHZ;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDZSLS;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PhantomPiranha;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedMurderer;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedSwarm;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RipperDemon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotHeart;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotLasher;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDHBLR;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDICLR;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Salamander;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Senior;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShieldHuntsman;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SkullShaman;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpectralNecromancer;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Succubus;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.TormentedSpirit;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.XTG200;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.AnomaloCaris;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.ThreeLeafBug;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ancity.Turtle;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.ClearElemtGuard;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.ApprenticeWitch;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Butcher;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Crumb;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Frankenstein;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Ghost_Halloween;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.HollowMimic;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.PumkingBomber;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.lb.BlackSoul;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.DrTerror;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.rlpt.GunHuntsman;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.DM275;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GnollHero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.GreenSlting;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SlimeKingMob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.SuccubusQueen;
-import com.shatteredpixel.shatteredpixeldungeon.custom.dict.DictSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -114,17 +19,22 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.utils.WndTextNumberInput;
+import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
 
 public class MobPlacer extends TestItem{
     {
@@ -139,6 +49,7 @@ public class MobPlacer extends TestItem{
     private int mobIndex = 0;
     private int elite = 0;
 
+    private boolean shouldOverride = false;
     private int HT = 1;
     private int ST = 1;
     private int elite_op = 0;
@@ -183,13 +94,13 @@ public class MobPlacer extends TestItem{
                     if(cell != null){
                         if (canPlaceMob(cell)) {
                             try {
-                                Mob m = Reflection.newInstance(allData.get(dataThreshold(mobTier) + mobIndex).mobClass);
+                                Mob m = Reflection.newInstance(getMobClass());
                                 m.pos = cell;
                                 m.state = m.HUNTING;
                                 GameScene.add(m);
 
-                                if(HT>1){
-                                    m.HT = m.HP = (m.HT*HT);
+                                if( HT > 0 && shouldOverride ){
+                                    m.HT = m.HP = HT;
                                 }
 
                                 if(elite_op>0){
@@ -227,43 +138,17 @@ public class MobPlacer extends TestItem{
 
 
     protected int maxMobIndex(int tier){
-        switch (tier){
-            case 1: return DataPack.GREAT_CRAB.ordinal();
-            case 2: return DataPack.NEW_FIRE_ELE.ordinal() - DataPack.GREAT_CRAB.ordinal() - 1;
-            case 3: return DataPack.DM201.ordinal() - DataPack.NEW_FIRE_ELE.ordinal() - 1;
-            case 4: return DataPack.ELE_CHAOS.ordinal() - DataPack.DM201.ordinal() - 1;
-            case 5: return DataPack.ACIDIC.ordinal() - DataPack.ELE_CHAOS.ordinal() - 1;
-            case 6: return DataPack.PIRANHA.ordinal() - DataPack.ACIDIC.ordinal() - 1;
-            case 7: return DataPack.NQHZ.ordinal() - DataPack.PIRANHA.ordinal() - 1;
-            case 8: return DataPack.IAS.ordinal() - DataPack.NQHZ.ordinal() - 1;
-            case 9: return DataPack.DiedP.ordinal() - DataPack.DR.ordinal() - 1;
-            case 10: default: return DataPack.FLXX.ordinal() - DataPack.Crystal.ordinal() - 1;
-        }
+        return allData.get( tier - 1 ).size();
     }
-    private int dataThreshold(int tier){
-        switch (tier){
-            case 1: default:
-                return 0;
-            case 2:
-                return DataPack.GREAT_CRAB.ordinal()+1;
-            case 3:
-                return DataPack.NEW_FIRE_ELE.ordinal()+1;
-            case 4:
-                return DataPack.DM201.ordinal()+1;
-            case 5:
-                return DataPack.ELE_CHAOS.ordinal()+1;
-            case 6:
-                return DataPack.ACIDIC.ordinal()+1;
-            case 7:
-                return DataPack.PIRANHA.ordinal()+1;
-            case 8:
-                return DataPack.NQHZ.ordinal()+1;
-            case 9:
-                return DataPack.IAS.ordinal()+1;
-            case 10:
-                return DataPack.Crystal.ordinal()+1;
-        }
+
+    private Class<? extends Mob> getMobClass(){
+        return allData.get( mobTier - 1 ).get( mobIndex );
     }
+
+    private Class<? extends Mob> getMobClass( int index ){
+        return allData.get( mobTier - 1 ).get( index );
+    }
+
 
     @Override
     public void storeInBundle(Bundle b){
@@ -274,6 +159,7 @@ public class MobPlacer extends TestItem{
         b.put("htTags", HT);
         b.put("stTags", ST);
         b.put("elite_ops", elite_op);
+        b.put("mob_shouldOverride",shouldOverride);
     }
 
     @Override
@@ -285,6 +171,7 @@ public class MobPlacer extends TestItem{
         HT = b.getInt("htTags");
         ST = b.getInt("stTags");
         elite_op = b.getInt("elite_ops");
+        shouldOverride = b.getBoolean("mob_shouldOverride");
     }
 
 
@@ -299,6 +186,7 @@ public class MobPlacer extends TestItem{
         private ArrayList<IconButton> mobButtons = new ArrayList<>();
         private RenderedTextBlock selectedMob;
         private ArrayList<CheckBox> eliteOptions = new ArrayList<>(16);
+        private RedButton modifyHealth;
 
         public WndSetMob(){
             super();
@@ -312,7 +200,7 @@ public class MobPlacer extends TestItem{
                     if(mobTier < 1 || mobTier>10){
                         mobTier = 10;
                     }
-                    mobIndex = Math.min(mobIndex, maxMobIndex(mobTier));
+                    mobIndex = Math.min(mobIndex, maxMobIndex(mobTier) - 1 );
                     refreshImage();
                     updateSelectedMob();
                 }
@@ -327,7 +215,7 @@ public class MobPlacer extends TestItem{
                     if(mobTier < 1 || mobTier >10){
                         mobTier = 1;
                     }
-                    mobIndex = Math.min(mobIndex, maxMobIndex(mobTier));
+                    mobIndex = Math.min(mobIndex, maxMobIndex(mobTier) - 1 );
                     refreshImage();
                     updateSelectedMob();
                 }
@@ -364,23 +252,52 @@ public class MobPlacer extends TestItem{
                 }
 
                 if(i==15){
-                    cb.setRect(WIDTH/2f+GAP, 78, (WIDTH/2f - GAP), 16);
+                    cb.setRect((WIDTH/3f - GAP)/3f * 2+70, 78, (WIDTH/3f - GAP), 16);
                 }
 
-                OptionSlider op = new OptionSlider
-                        (Messages.get(MobPlacer.class,"modify_health"),"1x","6x",1,6) {
+                modifyHealth = new RedButton(Messages.get(MobPlacer.class, "modify_health"), 7) {
                     @Override
-                    public int getTitleTextSize(){
-                        return 6;
-                    }
-                    @Override
-                    protected void onChange() {
-                        HT = getSelectedValue();
+                    protected void onClick() {
+                        Game.runOnRenderThread(() ->GameScene.show(new WndTextNumberInput(
+                                Messages.get(MobPlacer.class, "custom_title"),
+                                Messages.get(MobPlacer.class, "health_desc"),
+                                Integer.toString(HT),
+                                6, false, Messages.get(MobPlacer.class, "confirm"),
+                                Messages.get(MobPlacer.class, "cancel"),false) {
+                            @Override
+                            public void onSelect(boolean check, String text) {
+                                if ( check && text.matches("\\d+") ) {
+                                    int value = Integer.parseInt( text );
+                                    if( value >= 0 ) {
+                                        HT = Math.min( value, 666666 );
+                                    }
+                                }
+                            }
+                        }));
                     }
                 };
-                op.setRect((WIDTH/3f)/6f-8, 78, (WIDTH/2f - GAP), 16);
-                op.setSelectedValue(HT);
-                add(op);
+                modifyHealth.setRect((WIDTH/3f)/6f-8, 78, (WIDTH/3f - GAP), 16);
+                modifyHealth.enable( shouldOverride );
+                modifyHealth.active = shouldOverride;
+                add(modifyHealth);
+
+                CheckBox overrideResultButton = new CheckBox(Messages.get(MobPlacer.class, "override")) {
+                    @Override
+                    public void checked(boolean value) {
+                        if (checked != value) {
+                            checked = value;
+                            icon.copy( Icons.get( checked ? Icons.CHECKED : Icons.UNCHECKED ) );
+                            shouldOverride = checked;
+                            modifyHealth.enable( shouldOverride );
+                            modifyHealth.active = shouldOverride;
+                        }
+                    }
+                };
+                overrideResultButton.setRect(modifyHealth.right() + GAP, 78, (WIDTH/3f - GAP), 16);
+                overrideResultButton.checked( shouldOverride );
+                add(overrideResultButton);
+
+
 
                 column++;
             }
@@ -412,7 +329,7 @@ public class MobPlacer extends TestItem{
         }
 
         private void updateMobText(){
-            selectedMob.text( M.L(allData.get(dataThreshold(mobTier) + mobIndex).mobClass, "name") );
+            selectedMob.text( M.L( getMobClass(), "name") );
         }
 
         private void layout(){
@@ -424,7 +341,7 @@ public class MobPlacer extends TestItem{
         }
 
         private void createMobImage() {
-            int maxNum = maxMobIndex(mobTier) + 1;
+            int maxNum = maxMobIndex( mobTier );
             //(N+1)/2
             int firstLine = (maxNum >> 1) + (maxNum & 1);
             float left1 = (WIDTH - (GAP + BTN_SIZE) * firstLine + GAP)/2f;
@@ -439,7 +356,7 @@ public class MobPlacer extends TestItem{
                         updateMobText();
                     }
                 };
-                btn.icon( Reflection.newInstance(allData.get(dataThreshold(mobTier)+i).getMobClass()).sprite());
+                btn.icon( Reflection.newInstance( getMobClass( i ) ).sprite());
                 float max = Math.max(btn.icon().width(), btn.icon().height());
                 btn.icon().scale = new PointF(BTN_SIZE/max, BTN_SIZE/max);
                 if(i<firstLine){
@@ -473,149 +390,26 @@ public class MobPlacer extends TestItem{
     }
 
 
-    //packed with a linkedHashmap to find class by ordinal at O(1);
-    private static LinkedHashMap<Integer, DataPack> allData = new LinkedHashMap<>();
+    private static LinkedHashMap<Integer, List<Class<? extends Mob>>> allData = new LinkedHashMap<>();
     static {
-        for(DataPack dp : DataPack.values()){
-            allData.put(dp.ordinal(), dp);
+        Set<Bestiary> excludedTypes = EnumSet.of(
+                //Bestiary.TRAP,
+                Bestiary.PLANT,
+                Bestiary.ALLY,
+                Bestiary.NEUTRAL
+        );
+
+        for(Bestiary bestiary : Bestiary.values()){
+            if( !excludedTypes.contains( bestiary ) ) {
+                List< Class< ? extends Mob > > mobClasses = new ArrayList<>();
+                for ( Class<?> cls : bestiary.entities() ) {
+                    if ( Mob.class.isAssignableFrom( cls ) ) {
+                        mobClasses.add( ( Class< ? extends Mob >) cls );
+                    }
+                }
+
+                allData.put( bestiary.ordinal(), new ArrayList<>( mobClasses ) );
+            }
         }
-    }
-
-    public enum DataPack{
-        RAT(Rat.class, DictSpriteSheet.RAT),
-        FLWW(FlowerSlime.class, DictSpriteSheet.FLOWER),
-        GNOLL(Gnoll.class, DictSpriteSheet.GNOLL),
-        SNAKE(Snake.class, DictSpriteSheet.SNAKE),
-        ALBINO(Albino.class, DictSpriteSheet.ALBINO),
-        CRAB(Crab.class, DictSpriteSheet.CRAB),
-        SWARM(Swarm.class, DictSpriteSheet.SWARM),
-        SLIME(Slime.class, DictSpriteSheet.SLIME),
-        C_SLIME(CausticSlime.class, DictSpriteSheet.CAUSTIC_SLIME),
-        F_RAT(FetidRat.class, DictSpriteSheet.F_RAT),
-        GNOLL_DARTER(GnollTrickster.class, DictSpriteSheet.GNOLL_DARTER),
-        GREAT_CRAB(GreatCrab.class, DictSpriteSheet.GREAT_CRAB),
-
-        SKELETON(Skeleton.class, DictSpriteSheet.SKELETON),
-        THIEF(Thief.class, DictSpriteSheet.THIEF),
-        BANDIT(Bandit.class, DictSpriteSheet.BANDIT),
-        DM100(DM100.class, DictSpriteSheet.DM100),
-        GUARD(Guard.class, DictSpriteSheet.GUARD),
-        NECRO(Necromancer.class, DictSpriteSheet.NECROMANCER),
-        ROT_LASHER(RotLasher.class, DictSpriteSheet.ROT_LASHER),
-        ROT_HEART(RotHeart.class, DictSpriteSheet.ROT_HEART),
-        NEW_FIRE_ELE(Elemental.NewbornFireElemental.class, DictSpriteSheet.NEW_FIRE_ELE),
-
-        BAT(Bat.class, DictSpriteSheet.BAT),
-        BRUTE(Brute.class, DictSpriteSheet.BRUTE),
-        NRXD(SpectralNecromancer.class, DictSpriteSheet.SLXJ),
-        ARMORED_BRUTE(ArmoredBrute.class, DictSpriteSheet.ARMORED_BRUTE),
-        SHAMAN(Shaman.random(), DictSpriteSheet.SHAMAN),
-        SPINNER(Spinner.class, DictSpriteSheet.SPINNER),
-        DM200(DM200.class, DictSpriteSheet.DM200),
-        DM201(DM201.class, DictSpriteSheet.DM201),
-
-        GHOUL(Ghoul.class, DictSpriteSheet.GHOUL),
-        WARLOCK(Warlock.class, DictSpriteSheet.WARLOCK),
-        MONK(Monk.class, DictSpriteSheet.MONK),
-        SENIOR(Senior.class, DictSpriteSheet.SENIOR),
-        GOLEM(Golem.class, DictSpriteSheet.GOLEM),
-        ELE_FIRE(Elemental.FireElemental.class, DictSpriteSheet.ELEMENTAL_FIRE),
-        ELE_FROST(Elemental.FrostElemental.class, DictSpriteSheet.ELEMENTAL_FROST),
-        ELE_LIGHTNING(Elemental.ShockElemental.class, DictSpriteSheet.ELEMENTAL_SHOCK),
-        ELE_CHAOS(Elemental.ChaosElemental.class, DictSpriteSheet.ELEMENTAL_CHAOS),
-
-        RIPPER(RipperDemon.class, DictSpriteSheet.RIPPER),
-//        SPAWNER(DemonSpawner.class, DictSpriteSheet.SPAWNER),
-        EYE(Eye.class, DictSpriteSheet.EYE),
-        SUCCUBUS(Succubus.class, DictSpriteSheet.SUCCUBUS),
-        SCORPIO(Scorpio.class, DictSpriteSheet.SCORPIO),
-        ACIDIC(Acidic.class, DictSpriteSheet.AICDIC),
-
-        STATUE(Statue.class, DictSpriteSheet.STATUE),
-        ARMORED_STATUE(ArmoredStatue.class, DictSpriteSheet.ARMORED_STATUE),
-        WRAITH(Wraith.class, DictSpriteSheet.WRAITH),
-        TORMENTED_SPIRIT(TormentedSpirit.class,DictSpriteSheet.TORMENTED_SPIRIT),
-        PHANTOM_PIRANHA(PhantomPiranha.class,DictSpriteSheet.PHANTOM_PIRANHA),
-        PIRANHA(Piranha.class, DictSpriteSheet.FISH),
-
-
-
-        ZSLS(OGPDZSLS.class, DictSpriteSheet.OGPDZSLS),
-        LLS(OGPDLLS.class, DictSpriteSheet.OGPDLLS),
-        COLD(ColdMagicRat.class, DictSpriteSheet.COLD),
-        RED(RedSwarm.class, DictSpriteSheet.RED),
-        SHOW(KagenoNusujin.class, DictSpriteSheet.SHOW),
-        BLACK(BlackHost.class, DictSpriteSheet.BLACK),
-
-        BLACK2(NewBlackHost.class, DictSpriteSheet.BLACK),
-
-        HBLR(SRPDHBLR.class, DictSpriteSheet.HBLR),
-        MOlO(MolotovHuntsman.class, DictSpriteSheet.MOLO),
-
-        GnollK(GnollShiled.class, DictSpriteSheet.GnollK),
-        GnollF(SkullShaman.class, DictSpriteSheet.GnollF),
-        FlameC(FlameC01.class, DictSpriteSheet.FLAMEC01),
-//        Good_VI50(GooMob.class, DictSpriteSheet.Goo),
-
-        Flame(SlimeKingMob.class, DictSpriteSheet.FLAME),
-        NQHZ(OGPDNQHZ.class, DictSpriteSheet.OGPDNQHZ),
-
-        CLEARS(ClearElemental.class, DictSpriteSheet.CLEARS),
-        SLXJ(SpectralNecromancer.class, DictSpriteSheet.SLXJ),
-        BMHR(ShieldHuntsman.class, DictSpriteSheet.BMHR),
-        KTX(Katydid.class,0),
-        STX(Salamander.class, DictSpriteSheet.STX),
-        XHDD(RedMurderer.class, DictSpriteSheet.XHDD),
-        IAX(Ice_Scorpio.class, DictSpriteSheet.IAX),
-        FAX(Fire_Scorpio.class, DictSpriteSheet.FAX),
-        CAX(SRPDICLR.class, DictSpriteSheet.CAX),
-        GOO(XTG200.class,DictSpriteSheet.GOO),
-        IKS(ColdGurad.class,DictSpriteSheet.GKS),
-        BRTX(BruteBot.class, DictSpriteSheet.BRTX),
-
-        BRBAT(BrownBat.class, 0),
-        IAS(IceGolem.class, DictSpriteSheet.IAS),
-
-
-        DR(DrTerror.class, 0),
-        CLIX(GunHuntsman.class, 0),
-        GQ(GreenSlting.class, 0),
-        GNOLLHERO(GnollHero.class, 0),
-        DM275RPG(DM275.class, 0),
-        SQ(SuccubusQueen.class, 0),
-        Appwitch(ApprenticeWitch.class, 0),
-        Zombie(Frankenstein.class, 0),
-        Brute(Butcher.class, 0),
-        Pump(Crumb.class, 0),
-        Pump2(PumkingBomber.class, 0),
-
-        HOWW(HollowMimic.class, 0),
-        BlackSoulx(BlackSoul.class, 0),
-        ANO(AnomaloCaris.class, 0),
-        TB(ThreeLeafBug.class, 0),
-        DiedXP(Turtle.class, 0),
-        DiedP(Turtle.class, 0),
-
-        Crystal(CrystalGuardian.class,0),
-        CrystalS(CrystalWisp.class,0),
-        CBoss(ClearElemtGuard.class,0),
-        GHSE(Ghost_Halloween.class, 0),
-        GnollX(GnollGuard.class,0),
-        GnollC(GnollSapper.class,0),
-        FLX(CrystalGuardian.class,0),
-        FLXX(FungalSpinner.class,0);
-
-
-
-        private Class<? extends Mob> mobClass;
-        private int imageId;
-
-        DataPack(Class<? extends Mob> cls, int image){
-            this.imageId = image;
-            this.mobClass = cls;
-        }
-
-        public int getImageId(){return imageId;}
-        public Class<? extends Mob> getMobClass(){return mobClass;}
     }
 }
