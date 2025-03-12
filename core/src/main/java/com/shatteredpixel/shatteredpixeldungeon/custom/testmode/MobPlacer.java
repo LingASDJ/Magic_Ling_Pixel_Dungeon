@@ -393,7 +393,7 @@ public class MobPlacer extends TestItem{
     private static LinkedHashMap<Integer, List<Class<? extends Mob>>> allData = new LinkedHashMap<>();
     static {
         Set<Bestiary> excludedTypes = EnumSet.of(
-                //Bestiary.TRAP,
+                Bestiary.TRAP,
                 Bestiary.PLANT,
                 Bestiary.ALLY,
                 Bestiary.NEUTRAL
