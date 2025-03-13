@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.CaveRoom;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Point;
 
 public class CaveEntranceRoom extends CaveRoom {
 
@@ -45,7 +46,10 @@ public class CaveEntranceRoom extends CaveRoom {
 	public float[] sizeCatProbs() {
 		return new float[]{2, 1, 0};
 	}
-
+	@Override
+	public boolean canMerge(Level l, Room other, Point p, int mergeTerrain) {
+		return false;
+	}
 	@Override
 	public boolean isEntrance() {
 		return true;

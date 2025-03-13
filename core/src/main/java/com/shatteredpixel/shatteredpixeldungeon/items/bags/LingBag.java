@@ -50,7 +50,7 @@ public class LingBag extends Bag {
 
     @Override
     public ArrayList<String> actions(Hero hero) {
-        return new ArrayList<>(); //yup, no dropping this one
+        return new ArrayList<>();
     }
 
 }

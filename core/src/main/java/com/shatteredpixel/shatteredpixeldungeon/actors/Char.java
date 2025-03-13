@@ -198,6 +198,21 @@ public abstract class Char extends Actor {
 
 	private LinkedHashSet<Buff> buffs = new LinkedHashSet<>();
 
+	protected float HPMultiplier = 1f;
+	protected float speedMultiplier = 1f;
+	protected float damageMultiplier = 1f;
+	protected boolean secondChance = false;
+
+	public void initAttribute(){
+		for (Dungeon.Attribute att : Dungeon.Attribute.values()){
+			if(att.enabled){
+				if(att == Dungeon.Attribute.MultiHP){
+					HPMultiplier = 1+ (0.25f * Dungeon.Attribute.MultiHP.severity);
+				}
+			}
+		}
+	}
+
 	@Override
 	protected boolean act() {
 		if (fieldOfView == null || fieldOfView.length != Dungeon.level.length()){

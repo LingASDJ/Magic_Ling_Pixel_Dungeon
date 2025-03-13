@@ -197,6 +197,97 @@ public class Dungeon {
 
 	}
 
+	public static enum Attribute {
+
+		MultiHP(Type.Negative,Aspect.Body),
+		FasterRunner(Type.Negative,Aspect.Body),
+		CrispyBody(Type.Negative,Aspect.Special),
+		MagicPowerLess(Type.Negative,Aspect.Magic),
+		AnotherChance(Type.Negative,Aspect.Special),
+		ExtendArmor(Type.Negative,Aspect.Body);
+
+		public boolean enabled = false;
+		public int severity = 1;
+
+		Type type;
+		Aspect aspect;
+
+		static enum Type{
+			Positive,
+			Negative;
+		}
+
+		static enum Aspect{
+			//怪物属性
+			Body,
+			//炼金以及魔法相关
+			Magic,
+			//其他
+			Special;
+		}
+
+		Attribute(Type t,Aspect a){
+			type =  t;
+			aspect = a;
+		}
+
+		public static void randomAttribute(){
+
+			//随机检索出三种负面词条并启用
+
+			ArrayList<Attribute> att_BodyA = new ArrayList<>();
+			ArrayList<Attribute> att_Magic = new ArrayList<>();
+			ArrayList<Attribute> att_Special = new ArrayList<>();
+
+			for (Attribute att : values()){
+				if(att.aspect == Aspect.Body) {
+					att_BodyA.add(att);
+				} else if (att.aspect == Aspect.Magic) {
+					att_Magic.add(att);
+				} else if (att.aspect == Aspect.Special) {
+					att_Special.add(att);
+				}
+			}
+
+			att_BodyA.get(Random.Int(0,att_BodyA.size()+1)).enabled = true;
+			att_Magic.get(Random.Int(0,att_Magic.size()+1)).enabled = true;
+			att_Special.get(Random.Int(0,att_Special.size()+1)).enabled = true;
+
+		}
+
+		public static void upgrade(Attribute att, int lvl){
+			att.severity += lvl;
+		}
+
+		public static void reset(){
+			for (Attribute att : values()){
+				att.enabled = false;
+				att.severity = 1;
+			}
+		}
+
+		public static void store( Bundle bundle ){
+			for (Attribute att : values()){
+				bundle.put(att.name(), att.enabled);
+				bundle.put(att.name(),att.severity);
+			}
+		}
+
+		public static void restore( Bundle bundle ){
+			for (Attribute att : values()){
+				if (bundle.contains(att.name())){
+					att.enabled = bundle.getBoolean(att.name());
+					att.severity = bundle.getInt(att.name());
+				} else {
+					att.enabled = false;
+					att.severity = 1;
+				}
+
+			}
+
+		}
+	}
+
 	public static int challenges;
 	public static int mobsToChampion;
 	private static final String GENERATED_LEVELS = "generated_levels";
@@ -404,10 +495,10 @@ public class Dungeon {
 	public static boolean aqiLevel() {
 		return depth == 4 || depth == 8 || depth == 13 || depth == 18;
 	}
-	public static boolean sbbossLevel() {
-		return depth == 4 || depth == 9 || depth == 14 || depth == 19 || depth == 24;
-	}
 
+	public static boolean sbbossLevel() {
+		return depth == 7 || depth == 17 || depth == 21 || depth == 29 || depth == 33 || depth == 37;
+	}
 
 	public static boolean bossLevel() {
 		return bossLevel( depth );

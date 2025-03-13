@@ -155,7 +155,6 @@ public class SewerLevel extends RegularLevel {
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                  NoSuchMethodException ignored) {
         }
-
 		return mob;
 	}
 

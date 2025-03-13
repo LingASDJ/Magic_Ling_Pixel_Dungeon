@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class ElectricalSmoke extends Artifact {
+public class ElectricalSmoke extends Artifact implements Item.ThanksItem {
     {
         image = ItemSpriteSheet.RUIKE;
 

@@ -5,7 +5,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialog;
 import com.watabou.noosa.Image;
@@ -38,7 +38,7 @@ public class YetYogPlot extends Plot {
             switch (process) {
                 default:
                 case 1:
-                    process_to_1();
+                    process_to_1();//Mostly process to 1 is made directly when creating,it might not be used,just in case
                     break;
                 case 2:
                     process_to_2();
@@ -103,7 +103,7 @@ public class YetYogPlot extends Plot {
 
     private void process_to_3() {
         diagulewindow.changeText(Messages.get(YetYog.class, "message3"));
-        Dungeon.level.drop( new ScrollOfRage(), hero.pos );
+        Dungeon.level.drop( new ScrollOfIdentify(), hero.pos );
     }
 
     public static class EndPlot extends Plot {
@@ -134,7 +134,7 @@ public class YetYogPlot extends Plot {
                 switch (process) {
                     default:
                     case 1:
-                        process_to_1();
+                        process_to_1();//Mostly process to 1 is made directly when creating,it might not be used,just in case
                         break;
 //                    case 2:
 //                        process_to_2();
@@ -196,4 +196,3 @@ public class YetYogPlot extends Plot {
 
 
 }
-

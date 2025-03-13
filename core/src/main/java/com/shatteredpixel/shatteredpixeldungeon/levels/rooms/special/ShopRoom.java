@@ -49,8 +49,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.HerbBag;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.KingBag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
@@ -293,7 +291,7 @@ public class ShopRoom extends SpecialRoom {
 				}else if(Random.Int(200)<15) {
 					//7.5%
 					w2 = new LockSword();
-					((LockSword) w2).lvl = Random.Int(100, 301);
+					w2.lvl = Random.Int(100, 301);
 					itemsToSpawn.add(w2.identify(false));
 				}
 
@@ -309,18 +307,12 @@ public class ShopRoom extends SpecialRoom {
 					itemsToSpawn.add( new ScaleArmor().identify(false) );
 				}
 
-				if(!Badges.isUnlocked(Badges.Badge.ANCITY_THREE)){
-					if(Random.Int(1)<1){
-						//50%
-						//合计期望为87.5%
-						w2.lvl = Random.Int(200, 501);
-						itemsToSpawn.add(w2.identify(false));
-					}
-				}else if(Random.Int(20)<1) {
-					//5%
-					//合计期望大概为21%
+				if(Badges.isUnlocked(Badges.Badge.ANCITY_THREE)){
+					w2.lvl = Random.Int(300, 501);
+					itemsToSpawn.add(w2.identify(false));
+				}else {
 					w2 = new LockSword();
-					((LockSword) w2).lvl = Random.Int(200, 501);
+					w2.lvl = Random.Int(200, 501);
 					itemsToSpawn.add( w2.identify(false) );
 				}
 				break;
@@ -357,11 +349,6 @@ public class ShopRoom extends SpecialRoom {
 		Bag bag = ChooseBag(Dungeon.hero.belongings);
 		if (bag != null) {
 			itemsToSpawn.add(bag);
-		}
-
-		if(Dungeon.isChallenged(Challenges.MINIBAG) && Dungeon.depth ==6){
-			itemsToSpawn.add( new HerbBag().quantity(1) );
-			itemsToSpawn.add( new KingBag().quantity(1) );
 		}
 
 		itemsToSpawn.add( new PotionOfHealing() );

@@ -54,9 +54,6 @@ import java.util.ArrayList;
 public class vM0_6_7_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
-//        add_v0_6_56_Changes(changeInfos);
-//        add_v0_6_55_Changes(changeInfos);
-//        add_v0_6_54_Changes(changeInfos);
         add_v0_6_53_Changes(changeInfos);
         add_v0_6_52_Changes(changeInfos);
         add_v0_6_51_Changes(changeInfos);

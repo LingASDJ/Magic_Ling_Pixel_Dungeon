@@ -271,6 +271,10 @@ public class StatusPane extends Component {
 			add(bossselect);
 		}
 
+		if(Dungeon.isDLC(Conducts.Conduct.HARD)){
+			//add(table);
+		}
+
 		lanter=new LanterFireCator();
 		add(lanter);
 	}
@@ -494,7 +498,6 @@ public class StatusPane extends Component {
 
 		if (ClassUI()) {
 			bg.texture = TextureCache.get(Assets.Interfaces.STATUS);
-
 		} else {
 			bg.texture = TextureCache.get(Assets.Interfaces.STATUS_DARK);
 		}

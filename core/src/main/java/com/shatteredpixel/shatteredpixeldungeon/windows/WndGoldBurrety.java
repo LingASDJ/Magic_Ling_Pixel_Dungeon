@@ -291,8 +291,6 @@ public class WndGoldBurrety extends Window {
                 Dungeon.level.drop( item, hero.pos ).sprite.drop();
             }
 
-            // 输出当前处理的物品类型
-            //GLog.w("之前的物品：" + item.name());
             if ((item instanceof MeleeWeapon || item instanceof MissileWeapon) && !(item instanceof MagesStaff || item instanceof TippedDart)) {
 
                 if(item == hero.belongings.weapon()){
@@ -327,7 +325,7 @@ public class WndGoldBurrety extends Window {
                     Statistics.magestaffUpgrade++;
                     result.noUpgrade = true;
                     result.upgrade();
-                    result = changeStaff((MagesStaff) item);
+                    changeStaff((MagesStaff) item);
                     ((MagesStaff) result).activate(hero);
                     item.detachAll(Dungeon.hero.belongings.backpack);
                 }
@@ -398,18 +396,7 @@ public class WndGoldBurrety extends Window {
                 }
             }
 
-            // 保存处理后的物品
             results[i] = result;
-
-//            //超格处理
-//            if(result != null){
-//                if (!result.doPickUp( hero )) {
-//                    Dungeon.level.drop( result, hero.pos ).sprite.drop();
-//                }
-//            }
-//            if (!item.doPickUp(hero)) {
-//                Dungeon.level.drop(item, hero.pos).sprite.drop();
-//            }
         }
 
         return results;  // 返回处理后的物品数组
@@ -480,14 +467,13 @@ public class WndGoldBurrety extends Window {
         return staff;
     }
 
-    // 用一个 Set 来记录已经生成过的饰品类型
-    private static Set<Class<? extends Trinket>> generatedTrinkets = new HashSet<>();
+    private static final Set<Class<? extends Trinket>> generatedTrinkets = new HashSet<>();
 
     public static Trinket changeTrinket(Trinket t) {
         Trinket n;
         do {
             n = (Trinket)Generator.random(Generator.Category.TRINKET);
-        } while (Challenges.isItemBlocked(n) || n.getClass() == t.getClass() || generatedTrinkets.contains(n.getClass()));
+        } while ((Challenges.isItemBlocked(n) || n.getClass() == t.getClass()) && generatedTrinkets.contains(n.getClass()));
 
         // 生成新的饰品后，将其类型加入 Set 中
         generatedTrinkets.add(n.getClass());
@@ -643,7 +629,7 @@ public class WndGoldBurrety extends Window {
                 if( canChangeWeapon > 1 )
                     return true;
                 else if( canChangeWeapon == 1 ){//针对只有一把武器能生成的情况，避免后续代码死循环导致的卡死
-                    return item.getClass().getSimpleName() != c.classes[lastWeaponIndex].getSimpleName();
+                    return !item.getClass().getSimpleName().equals(c.classes[lastWeaponIndex].getSimpleName());
                 }else {//针对无法正常生成的武器
                     return false;
                 }

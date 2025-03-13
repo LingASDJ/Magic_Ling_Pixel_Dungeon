@@ -21,7 +21,7 @@ import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
 
-public class GrilledHerring extends MeleeWeapon {
+public class GrilledHerring extends MeleeWeapon implements Item.ThanksItem {
 
     private int eatFish = 3;
     public static final String AC_EATFISH	= "eatFish";

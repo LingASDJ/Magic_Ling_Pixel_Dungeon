@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.ui.changelist.mlpd;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShopGuardDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.ArtilleristSprite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.GnollBlindSprite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.HermitCrabSprite;
@@ -37,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.LuoWhiteSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MintSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MoonLowSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NyzSprites;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.PeachGodStateSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PianoLeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PiraLandSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PumkingGhostSprite;
@@ -65,6 +67,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0830_Changes(changeInfos);
         add_V0822_Changes(changeInfos);
         add_V0820_Changes(changeInfos);
         add_V0810_Changes(changeInfos);
@@ -103,6 +106,199 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0830_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.8.3.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "thanks"), false, null);
+        changes.hardlight(Window.Pink_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RUIKE), ("锐刻五代"),
+                ("全新神器，锐克五代!\n\n" +
+                        "惊鸿杯神器赛道第一名，你也想抽一根电子烟吗？\n\n" +
+                        "物品介绍：被动效果：地牢里的动物朋友变为中立生物\n" +
+                        "\n" +
+                        "主动效果：神器开启后每回合消耗100%÷（10+神器等级）充能，自身每回合获得1回合体力充沛，每回合在自身位置释放100单位浓浓白烟，白烟初始能遮挡敌人视野，可加入气体类药剂使白烟带有该药剂的效果（白烟仅对敌人生效，每瓶药剂持续100%充能，可叠加）\n" +
+                        "\n" +
+                        "升级方式：每添加1个雷鸣魔药升2级，每添加1个充能卷轴升1级，上限10级\n" +
+                        "\n"),
+                        ("充能方式：自动充能，每回合回复0.1%+（0.01%×神器等级）充能，上限100%充能\n" +
+                        "\n" +
+                        "神器充能效果：每回合回复2%的充能\n" +
+                        "\n" +
+                        "神器诅咒效果：每回合都有10%概率使自身获得2回合失明并在自身位置释放30回合毒气；地牢里的动物朋友不再睡觉，自动追踪你的位置，所有卷轴名字变为未知，图标和底色变成相同\n" +
+                        "\n" +
+                        "其它细节：开启神器消耗1回合，关闭神器不耗回合" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SMTITEM), ("微光向导"),
+                ("全新炼金物品，微光向导!\n\n" +
+                        "惊鸿杯炼金赛道第二名，指引方向，指引前路\n\n" +
+                        "生命值1，无法被攻击，移动时不会惊醒睡着的怪物，移速1.5，视野5\n" +
+                        "微光向导和玩家共享视野，生成后会自动寻找并前往离出口最近的路径，\n" +
+                        "遇到怪物挡路会将怪物牵拉至身后并使它陷入沉睡，到达出口后死亡并点亮出口房间的视野。" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHTWAND_7), ("烈阳法杖"),
+                ("全新法杖，烈阳法杖!\n\n" +
+                        "惊鸿杯法杖赛道第一名，以阳光照亮黑暗，以智慧引导光明。\n\n" +
+                        "第一个尝试把太阳带入地下的人没有想到，死灵与恶魔其实也没有那么害怕虚假的太阳。\n" +
+                        "\n" +
+                        "在指定地点释放一个烈阳光球，你会同步光球周围7*7的圆形视野\n" +
+                        "光球每回合会对周围3*3范围内的所有敌人造成2-8（+2/+4）点伤害，每额外扩散一格则伤害减少25%，光球的伤害范围最高为7*7的圆\n" +
+                        "光球本身没有碰撞体积，进入光球内的敌人受到其他所有光球的伤害增加25%\n" +
+                        "光球会持续3+法杖等级*0.3回合（向下取整），若未主动驱散光球其持续回合即将耗尽而法杖仍有充能时，会自动消耗1充能为该光球追加3回合的持续时间\n" +
+                        "\n" +
+                        "战法效果为刷新所有光球的持续时间" )));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GRILLED_FISH), ("烤鲱鱼"),
+                ("全新武器，烤鲱鱼!\n\n" +
+                        "惊鸿杯武器赛道第一名，烤的是鲱鱼，吃的是武器。\n\n" +
+                        "4阶16力，4-25，成长1-5\n" +
+                        "焦香四溢，滋滋冒油，热气腾腾。你很确定这把武器不能当成普通的烤鲱鱼看待，但它看起来很香。\n" +
+                        "你可以食用这条烤鲱鱼3次，每次恢复50饱食度，食用次数耗尽后变为鱼骨。\n" +
+                        "你只能食用鉴定过的、无诅咒的烤鲱鱼。烤鲱鱼的每一级升级都会为其增加1次食用次数。\n" +
+                        "附属武器：鱼骨\n" +
+                        "3阶14力，3-15，成长1-3\n" +
+                        "攻击对敌人造成伤害值50%的流血。\n" +
+                        "你最终没能经受住饥饿的考验。好在它真的很香。" )));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        Image xs =new PeachGodStateSprite();
+        xs.scale.set(PixelScene.align(0.8f));
+        changes.addButton(new ChangeButton(xs, ("桃源祈愿"),
+                ("【限时活动--桃源祈愿·十连必得】-活动时间：3.1-3.31\n\n" +
+                        "地牢深处将随机生成 「桃源祈愿间」55%概率 \n" +
+                        "（13挑战以下触发【不包含13挑】）\n" +
+                        "祈愿规则：\n" +
+                        "单次投掷 50钴币\n" +
+                        "保底机制 ：\n\n" +
+                        "【小保底】\n" +
+                        "每10次祈愿雕像必出 1 次罕见奖励 \n" +
+                        "\n【大保底】--【可跨存档】" +
+                        "累计40抽且未出现传说及以上，\n下次必出传说以上奖励\n"),
+                        ("奖励类型概率公示【以单抽标准】：\n\n"+
+                        "常规【40%】 稀有【35%】 \n\n" +
+                        "罕见【20%】 传说【4%】 神话【1%】\n\n" +
+                        "10连概率规则：\n" +
+                        "小保底必出概率：\n" +
+                        "罕见70% 传说28% 神话2%\n" +
+                        "则9+1【必出罕见以上】\n" +
+                        "累计40抽还未出现传说的10抽：\n" +
+                        "大保底10连必出概率：\n\n" +
+                        "罕见70% 传说28% 神话2%\n" +
+                        "传说95% 神话5%")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BADGES),("加密徽章新增两个"),
+                ("新增更多加密徽章，欢迎前去探索")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ICEGOLD), ("钴币掉落调整"),
+                (
+                        "_-_ 常规获取方法掉落调整：\n" +
+                        "_-_ （（玩家等级+当前楼层）/5）x（1+挑战数量/3））\n\n" +
+                        "_-_ 限时双倍掉落：\n" +
+                        "_-_ 2025.3.7-2025.3.31 钴币全局双倍掉落")));
+
+        changes.addButton(new ChangeButton(new GhostSprite(),("悲伤幽灵调整"),
+                //50%:+0, 20%:+1, 15%:+2, 12%:+3 3% +4
+                ("悲伤幽灵武器品质概率调整：\n\n"+
+                        "_-_ +0 武器：50%-原50%\n" +
+                        "_-_ +1 武器：20%-原30%\n" +
+                        "_-_ +2 武器：15%-原12%\n" +
+                        "_-_ +3 武器：12%-原06%\n" +
+                        "_-_ +4 武器：03%-原02%")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), ("UI改动"),
+                (       "_-_ 挑战界面优化，挑战数量动态显示为一个进度条\n" +
+                        "_-_ 复制种子界面优化，可显示具体挑战\n" +
+                        "_-_ 超过9999钴币的显示为科学计数法")));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.8.3.0-Bug修复列表1:\n\n" +
+                        ("_-_ 修复卡戎可能会出售已获得的容器\n" +
+                                "_-_ 修复法师法杖回收天赋异常\n" +
+                                "_-_ 修复普果，异果转阶段判断方式错误导致无敌\n" +
+                                "_-_ 修复法师天赋失效问题\n" +
+                                "_-_ 修复决斗家天赋失效\n" +
+                                "_-_ 修复改动界面问题\n" +
+                                "_-_ 修复拟态王boss层地图错误\n" +
+                                "_-_ 修复肃杀文本错误\n" +
+                                "_-_ 修复普果异常无敌"),
+                ("0.8.3.0-Bug修复列表2:\n\n" +
+                        "_-_ 修复0层法伊娜对话异常\n" +
+                        "_-_ 修复金蝶任务文本异常\n" +
+                        "_-_ 修复甲鱼越阶段斩杀\n" +
+                        "_-_ 修复染血金币终端文本错误\n" +
+                        "_-_ 修复法师灌注数值显示错误\n" +
+                        "_-_ 修复微光导向卡死bug\n" +
+                        "_-_ 修复普果，血量显示不匹配\n" +
+                        "_-_ 修复问题描述：异果，血量不匹配\n" +
+                        "_-_ 修复BossRush,普果，无法转阶段"),
+                ("0.8.3.0-Bug修复列表3:\n\n" +
+                        "_-_ 修复火龙无限二阶段，修复火龙层跨存档地形异常\n" +
+                        "_-_ 修复甲鱼宠物导致的蜜蜂索敌异常\n" +
+                        "_-_ 修复烈阳法杖的越界异常\n" +
+                        "_-_ 修复神器充能对锐刻五代无效的效果\n" +
+                        "_-_ 修复英雄极端情况下透视问题\n" +
+                        "_-_ 修复孤城挑战下生成的怪物初始未全部苏醒的异常\n" +
+                        "_-_ 修复金蝶20层boss随机到小刻时上下楼梯无法使用"),
+                ("0.8.3.0-Bug修复列表4:\n\n" +
+                        "_-_ 修复部分金蝶文案异常\n" +
+                        "_-_ 部分缺失文本修复\n" +
+                        "_-_ 修复灯火异常清理逻辑\n" +
+                        "_-_ 修复饰品投影的计时器问题\n" +
+                        "_-_ 修复迷你太阳的视野越界问题\n" +
+                        "_-_ 修复果子卡死问题\n" +
+                        "_-_ 修复泡泡残留新年奖励逻辑\n"+
+                        "_-_ 修复部分武器无法直接参与炼金\n" +
+                        "_-_ 调整0层武器固定生成为T2\n" +
+                        "_-_ 优化部分金蝶文本\n" +
+                        "_-_ 修复金蝶重复饰品的问题\n" +
+                        "_-_ 指南书页异常位置修复")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG3), "归溯钥剑",
+                "现在获得钥匙的经验相比之前翻倍，并且成长调整为1-5。\n\n" +
+                        "并且在16层必定出现钥匙剑在商店,如果完成了_远古开拓者_成就，\n\n" +
+                        "则钥匙剑在16层必定出现保底+3,并单独打5折左右。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG12), ("开发者模式工具：升降器"),
+                ("现在升降器支持任意楼层传送，且可以传送到0层。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.STAIRS), ("全局房间优化"),
+                ("现在入口房间不会再被其他房间合并，独立成一个单独的房间。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DIEDCROSSBOW), ("重型弩炮"),
+                ("修复弩炮的子弹伤害错误的为武器自身的伤害。")));
+
+        Image issxsaxs =new ShopGuardDead.ShopGuardianRedSprite();
+        issxsaxs.scale.set(PixelScene.align(1f));
+        changes.addButton(new ChangeButton(issxsaxs, ("商店抢劫调整"),
+                "现在商店抢劫后，只能选择一个层的商店进行全部领取。\n\n" +
+                        "其他层的商店将会不再生成，且即便是_已经生成的商店也自动移除所有东西_。"));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14), ("轻装上阵挑战下线"),
+                ("下线此挑战。")));
+
+        changes = new ChangeInfo("v0.8.3.0中测验收通过，予以更新", true, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("2025 2-28-->3-07", true, null);
+        changes.hardlight(Window.CPINK);
+        changeInfos.add(changes);
     }
 
     public static void add_V0822_Changes(ArrayList<ChangeInfo> changeInfos ) {
