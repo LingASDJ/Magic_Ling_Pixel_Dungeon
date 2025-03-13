@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundlable;
@@ -206,15 +207,15 @@ public enum Rankings {
             }
             Statistics.progressScore = Math.min(Statistics.progressScore, 50_000);
 
-            if (Statistics.heldItemValue == 0) {
-                for (Item i : Dungeon.hero.belongings) {
-                    Statistics.heldItemValue += i.value();
-                    if (i instanceof CorpseDust && Statistics.deepestFloor >= 10) {
-                        // in case player kept the corpse dust, for a necromancer run
-                        Statistics.questScores[1] = 2000;
-                    }
+            Statistics.heldItemValue = 0;
+            for (Item i : Dungeon.hero.belongings) {
+                Statistics.heldItemValue += i.value();
+                if (i instanceof CorpseDust && Statistics.deepestFloor >= 10) {
+                    // in case player kept the corpse dust, for a necromancer run
+                    Statistics.questScores[1] = 2000;
                 }
             }
+
             Statistics.treasureScore = Statistics.goldCollected + Statistics.heldItemValue;
             Statistics.treasureScore = Math.min(Statistics.treasureScore, 20_000);
 
