@@ -42,7 +42,6 @@ public class MLUpdateServerice extends UpdateService {
 						update.versionName = UpdateChecker.config.get("MLPDGameVersion").asText();
 						update.desc = UpdateChecker.config.get("changeLog").asText();
 						update.URL1 = UpdateChecker.config.get("DownloadLink1").asText();
-						update.URL2 = UpdateChecker.config.get("DownloadLink2").asText();
 						update.URL3 = UpdateChecker.config.get("DownloadLink3").asText();
 						update.URL4 = UpdateChecker.config.get("Blog").asText();
 						callback.onUpdateAvailable(update);

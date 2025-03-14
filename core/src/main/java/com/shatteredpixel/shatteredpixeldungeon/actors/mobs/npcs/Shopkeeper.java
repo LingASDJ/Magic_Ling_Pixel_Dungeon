@@ -76,7 +76,7 @@ public class Shopkeeper extends NPC {
 	private boolean seenBefore = false;
 	@Override
 	protected boolean act() {
-		if(Statistics.endingbald) {
+		if(Statistics.endingbald &&  getClass() == Shopkeeper.class) {
 			flee();
 		}
 		if (Dungeon.level.visited[pos]){

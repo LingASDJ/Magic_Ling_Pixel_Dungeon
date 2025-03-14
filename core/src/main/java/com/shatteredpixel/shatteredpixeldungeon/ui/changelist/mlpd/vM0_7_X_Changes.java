@@ -67,6 +67,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0831_Changes(changeInfos);
         add_V0830_Changes(changeInfos);
         add_V0822_Changes(changeInfos);
         add_V0820_Changes(changeInfos);
@@ -107,6 +108,65 @@ public class vM0_7_X_Changes {
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
     }
+
+    public static void add_V0831_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.8.3.1", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RECLAIM_TRAP), ("开发者模式工具：陷阱放置器"),
+                ("新增陷阱放置器，可方便地在地图上放置陷阱。更多功能，前往游戏内探索。")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CANDLE), ("开发者模式工具：怪物放置器"),
+                ("完全进行重做，可在地图上放置80%的怪物。更多功能，前往游戏内探索。")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHANGES), ("开发者模式：评分系统实时评估"),
+                ("计分版进行优化，开发者模式中可进行实时评估，之前的排行榜也可以看见评分细则")));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.8.3.1版本:\n\n" +
+                        "1.修复了0挑钴币掉落异常\n" +
+                        "2.修复了抢劫商店后全部类型商人跑路的问题\n" +
+                        "3.部分文案修正"
+
+        ));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ICEGOLD), ("钴币掉落调整"),
+                (
+                        "_-_ 常规获取方法掉落调整：\n" +
+                                "_-_ 【英雄等级 + 地牢深度】 / 5 x 【最大挑战数, 5】\n" +
+                                "_-_ 如果最大挑战数不足5，则默认保底最小值为5\n\n" +
+                                "_-_ 限时双倍掉落：\n" +
+                                "_-_ 2025.3.7-2025.3.31 钴币全局双倍掉落")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG12), ("开发者模式工具：升降器"),
+                ("现在升降器支持任意楼层传送，且可以传送到0层。")));
+
+        Image issxsaxs =new ShopGuardDead.ShopGuardianRedSprite();
+        issxsaxs.scale.set(PixelScene.align(1f));
+        changes.addButton(new ChangeButton(issxsaxs, ("商店抢劫调整"),
+                "现在商店抢劫后，只能选择一个层的商店进行全部领取。\n\n" +
+                        "其他层的商店将会不再生成，且即便是_已经生成的商店也自动移除所有东西_。\n\n且仅普通商人会被移除"));
+
+        changes = new ChangeInfo("v0.8.3.1中测验收通过，予以更新", true, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("2025-3-14", true, null);
+        changes.hardlight(Window.CPINK);
+        changeInfos.add(changes);
+    }
+
 
     public static void add_V0830_Changes(ArrayList<ChangeInfo> changeInfos ) {
         ChangeInfo changes = new ChangeInfo("v0.8.3.0", true, "");

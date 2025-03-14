@@ -242,11 +242,6 @@ public class MLChangesButton extends StyledButton {
 			btn4.setRect(0, pos, width, BUTTON_HEIGHT);
 			add(btn4);
 
-			if(!DeviceCompat.isDesktop()){
-				add(btn3);
-				pos += BUTTON_HEIGHT + MARGIN;
-			}
-
 			pos += BUTTON_HEIGHT + MARGIN;
 
 			resize(width, (int) (pos - MARGIN));
