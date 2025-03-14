@@ -79,7 +79,7 @@ import com.watabou.utils.RectF;
 
 import java.util.ArrayList;
 
-public class NewDM720 extends MolotovHuntsman {
+public class NewDM720 extends MolotovHuntsman implements Mob.NoMobSpawn {
 
     public int totalPylonsToActivate(){
         return (Statistics.bossRushMode || Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) ? 4 : 2;

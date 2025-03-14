@@ -12,7 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.ColdChestBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DCrystalSprites;
 import com.watabou.utils.Random;
 
-public class DCrystal extends Mob {
+public class DCrystal extends Mob implements Mob.NoMobSpawn {
 
     {
         spriteClass = DCrystalSprites.class;

@@ -15,7 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
-public class CrystalDiedTower extends Mob {
+public class CrystalDiedTower extends Mob implements Mob.NoMobSpawn {
 
     {
         spriteClass = FireCrystalSprites.class;

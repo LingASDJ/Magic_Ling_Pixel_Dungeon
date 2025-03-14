@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.testmode;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -51,6 +52,7 @@ public class MobPlacer extends TestItem{
 
     private boolean shouldOverride = false;
     private int HT = 1;
+    private int maxPage = 15;
     private int ST = 1;
     private int elite_op = 0;
 
@@ -72,6 +74,7 @@ public class MobPlacer extends TestItem{
         eliteBuffs.add(ChampionEnemy.Big.class);
         eliteBuffs.add(ChampionEnemy.Sider.class);
         eliteBuffs.add(ChampionEnemy.LongSider.class);
+        eliteBuffs.add(ChampionEnemy.HealRight.class);
 
         eliteBuffs.add(WandOfAnmy.AllyToRestartOK.class);
     }
@@ -104,7 +107,7 @@ public class MobPlacer extends TestItem{
                                 }
 
                                 if(elite_op>0){
-                                    for(int i=0;i<16;++i){
+                                    for(int i=0;i<17;++i){
                                         if((elite_op & (1<<i))>0){
                                             Buff.affect(m, eliteBuffs.get(i));
                                         }
@@ -158,6 +161,7 @@ public class MobPlacer extends TestItem{
         b.put("eliteTags", elite);
         b.put("htTags", HT);
         b.put("stTags", ST);
+        b.put("maxPage",maxPage);
         b.put("elite_ops", elite_op);
         b.put("mob_shouldOverride",shouldOverride);
     }
@@ -165,6 +169,7 @@ public class MobPlacer extends TestItem{
     @Override
     public void restoreFromBundle(Bundle b){
         super.restoreFromBundle(b);
+        maxPage = b.getInt("maxPage");
         mobTier = b.getInt("mobTier");
         mobIndex = b.getInt("mobIndex");
         elite = b.getInt("eliteTags");
@@ -197,8 +202,8 @@ public class MobPlacer extends TestItem{
                 @Override
                 public void onClick(){
                     mobTier--;
-                    if(mobTier < 1 || mobTier>10){
-                        mobTier = 10;
+                    if(mobTier < 1 || mobTier>maxPage){
+                        mobTier = maxPage;
                     }
                     mobIndex = Math.min(mobIndex, maxMobIndex(mobTier) - 1 );
                     refreshImage();
@@ -212,7 +217,7 @@ public class MobPlacer extends TestItem{
                 @Override
                 public void onClick(){
                     mobTier++;
-                    if(mobTier < 1 || mobTier >10){
+                    if(mobTier < 1 || mobTier >maxPage){
                         mobTier = 1;
                     }
                     mobIndex = Math.min(mobIndex, maxMobIndex(mobTier) - 1 );
@@ -234,25 +239,29 @@ public class MobPlacer extends TestItem{
 
             float pos = 96;
             int column = 0;
-            for (int i = 0; i < 16 && column < 3; ++i) {
+            for (int i = 0; i < 17 && column < 4; ++i) {
                 CheckBox cb = new CheckBox(M.L(MobPlacer.class, "elite_name" + i));
                 cb.active = true;
                 cb.checked((elite_op & (1<<i))>0);
                 add(cb);
                 eliteOptions.add(cb);
 
+                float Radius = 3.8f;
+
                 if (column == 0) {
-                    cb.setRect((WIDTH/3f - GAP)/3f * column, pos, (WIDTH/3f - GAP), 16);
+                    cb.setRect((WIDTH/Radius - GAP)/Radius * column, pos, (WIDTH/Radius - GAP), 16);
                 } else if (column == 1) {
-                    cb.setRect((WIDTH/3f - GAP)/3f * column+35, pos, (WIDTH/3f - GAP), 16);
+                    cb.setRect((WIDTH/Radius - GAP)/Radius * column+28, pos, (WIDTH/Radius - GAP), 16);
+                } else if (column == 2) {
+                    cb.setRect((WIDTH/Radius - GAP)/Radius * column+55, pos, (WIDTH/Radius - GAP), 16);
                 } else {
-                    cb.setRect((WIDTH/3f - GAP)/3f * column+70, pos, (WIDTH/3f - GAP), 16);
+                    cb.setRect((WIDTH/Radius - GAP)/Radius * column+82, pos, (WIDTH/Radius - GAP), 16);
                     column = -1; // 重置column的值，使其在下一次循环时为0（即第一列）
                     pos += 16 + GAP; // 换行
                 }
 
-                if(i==15){
-                    cb.setRect((WIDTH/3f - GAP)/3f * 2+70, 78, (WIDTH/3f - GAP), 16);
+                if(i==16){
+                    cb.setRect((WIDTH/Radius - GAP)/Radius * 2+81, 78, (WIDTH/3f - GAP), 16);
                 }
 
                 modifyHealth = new RedButton(Messages.get(MobPlacer.class, "modify_health"), 7) {
@@ -319,8 +328,8 @@ public class MobPlacer extends TestItem{
         private void updateSelectedMob(){
             int selected = mobTier;
             StringBuilder sb = new StringBuilder();
-            for(int i=1;i<=10;++i){
-                sb.append((i==selected? "* ":"- "));
+            for(int i=1;i<=maxPage;++i){
+                sb.append((i==selected? "_ ":"- "));
             }
             selectedPage.text(sb.toString());
             selectedPage.maxWidth(WIDTH / 2);
@@ -341,11 +350,12 @@ public class MobPlacer extends TestItem{
         }
 
         private void createMobImage() {
-            int maxNum = maxMobIndex( mobTier );
-            //(N+1)/2
-            int firstLine = (maxNum >> 1) + (maxNum & 1);
-            float left1 = (WIDTH - (GAP + BTN_SIZE) * firstLine + GAP)/2f;
-            float left2 = (WIDTH - (GAP + BTN_SIZE) * (maxNum - firstLine) + GAP)/2f;
+            int maxNum = maxMobIndex(mobTier);
+            int columns = Math.min(maxNum, 7);
+
+            float left = (WIDTH - (GAP + BTN_SIZE) * columns + GAP) / 2f;
+            float top = 30f;
+
             for (int i = 0; i < maxNum; ++i) {
                 final int j = i;
                 IconButton btn = new IconButton() {
@@ -356,16 +366,17 @@ public class MobPlacer extends TestItem{
                         updateMobText();
                     }
                 };
-                btn.icon( Reflection.newInstance( getMobClass( i ) ).sprite());
+                btn.icon(Reflection.newInstance(getMobClass(i)).sprite());
                 float max = Math.max(btn.icon().width(), btn.icon().height());
-                btn.icon().scale = new PointF(BTN_SIZE/max, BTN_SIZE/max);
-                if(i<firstLine){
-                    btn.setRect(left1, 30f, BTN_SIZE, BTN_SIZE );
-                    left1 += GAP + BTN_SIZE;
-                }else{
-                    btn.setRect(left2, 56f, BTN_SIZE, BTN_SIZE);
-                    left2 += GAP + BTN_SIZE;
+                btn.icon().scale = new PointF(BTN_SIZE / max, BTN_SIZE / max);
+                btn.setRect(left, top, BTN_SIZE, BTN_SIZE);
+                left += GAP + BTN_SIZE;
+
+                if ((i + 1) % columns == 0) {
+                    left = (WIDTH - (GAP + BTN_SIZE) * columns + GAP) / 2f;
+                    top += GAP + BTN_SIZE;
                 }
+
                 add(btn);
                 mobButtons.add(btn);
             }
@@ -403,13 +414,13 @@ public class MobPlacer extends TestItem{
             if( !excludedTypes.contains( bestiary ) ) {
                 List< Class< ? extends Mob > > mobClasses = new ArrayList<>();
                 for ( Class<?> cls : bestiary.entities() ) {
-                    if ( Mob.class.isAssignableFrom( cls ) ) {
+                    if ( Mob.class.isAssignableFrom( cls ) && !Boss.class.isAssignableFrom( cls ) && !Mob.NoMobSpawn.class.isAssignableFrom( cls )) {
                         mobClasses.add( ( Class< ? extends Mob >) cls );
                     }
                 }
-
                 allData.put( bestiary.ordinal(), new ArrayList<>( mobClasses ) );
             }
         }
+
     }
 }

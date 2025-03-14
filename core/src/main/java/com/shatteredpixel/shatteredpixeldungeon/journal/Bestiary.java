@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.journal;
 
-import com.shatteredpixel.shatteredpixeldungeon.SpellCaster;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.SmokeBomb;
@@ -54,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FetidRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FireGhost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Fire_Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlameB01;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlameC02;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FlowerSlime;
@@ -69,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreenStingCV;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ice_Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Katydid;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MagicGirlDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
@@ -82,8 +83,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDLLS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.OGPDZSLS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PhantomPiranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Pylon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PylonCS;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedMurderer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RedSwarm;
@@ -91,7 +90,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RipperDemon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotHeart;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotLasher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDHBLR;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SRPDICLRPRO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Salamander;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Senior;
@@ -248,16 +246,18 @@ public enum Bestiary {
 	HELL,
 	HELL_BOSS,
 
-	BOSSRUSH,
+
 	GOLDMOB,
+	GOLDMOB_EX,
 	ANCITY,
 	SHOP,
 
 	UNIVERSAL,
 	RARE,
 	QUEST,
-	NEUTRAL,
 
+	NEUTRAL,
+	BOSSRUSH,
 	ALLY,
 	TRAP,
 	PLANT;
@@ -333,22 +333,16 @@ public enum Bestiary {
 
 		ICECAVE.addEntities(Bat.class, ColdMagicRat.class,
 				FireGhost.class, RedSwarm.class,
-				Spinner.class, Brute.class,DM275.class,
+				Spinner.class, Brute.class,
 
 				FlameB01.class, FlameC02.class,
 				GnollShiled.class, SkullShaman.class);
 
 		ICECAVE_BOSS.addEntities(
-				//Boss T1
-				Pylon.class, DM300.class,
-				//Boss T2
-				NewDM720.class, MoloHR.class, PylonCS.class,
-				//Boss T3
-				SpellCaster.FrostCaster.class,
-				SpellCaster.BounceCaster.class,
-				SpellCaster.ExplosionCaster.class,
-				SpellCaster.LightCaster.class,
-				MagicGirlDead.class, SRPDICLRPRO.class);
+				DM275.class,
+				DM300.class,
+				NewDM720.class, MoloHR.class,
+				MagicGirlDead.class);
 
 		CITY.addEntities(
 				Shaman.RedShaman.class, Shaman.BlueShaman.class, Shaman.PurpleShaman.class,
@@ -368,7 +362,9 @@ public enum Bestiary {
 				ArmyFlag.class);
 
 		HELL.addEntities(
-				Scorpio.class, Eye.class, DemonSpawner.class,
+				Scorpio.class, Ice_Scorpio.class,
+				Fire_Scorpio.class,
+				Eye.class, DemonSpawner.class,
 				RipperDemon.class, Succubus.class
 		);
 
@@ -382,21 +378,17 @@ public enum Bestiary {
 				//Boss T2
 				YogReal.class);
 
-		BOSSRUSH.addEntities(
-				SkyGoo.class,
-				SlimeKing.class,
-				GreenStingCV.class,
-				Rival.class,
-				DwarfMaster.class
-		);
-
 		GOLDMOB.addEntities(
 				GnollBlind.class, Mayfly.class, OGPDLLS.class, OGPDZSLS.class, Slime_Qs.class,
 				Slime_Sn.class, GiantWorm.class, HermitCrab.class, HermitCrabNoShell.class,
 
 				Prisoner.class, GnollThrower.class, BoomSkull.class,
 
-				Drake.class, TribemanOld.class, GnollTwilight.class,
+				Drake.class, TribemanOld.class
+		);
+
+		GOLDMOB_EX.addEntities(
+				GnollTwilight.class,
 				GoblinShaman.ShamanStrength.class,
 				GoblinShaman.ShamanFake.class,
 				GoblinShaman.ShamanRegen.class,
@@ -442,6 +434,14 @@ public enum Bestiary {
 		QUEST.addEntities(FetidRat.class, GnollTrickster.class, GreatCrab.class,
 				Elemental.NewbornFireElemental.class, RotLasher.class, RotHeart.class,
 				CrystalWisp.class, CrystalGuardian.class, CrystalSpire.class, GnollGuard.class, GnollSapper.class, GnollGeomancer.class);
+
+		BOSSRUSH.addEntities(
+				SkyGoo.class,
+				SlimeKing.class,
+				GreenStingCV.class,
+				Rival.class,
+				DwarfMaster.class
+		);
 
 		NEUTRAL.addEntities(Ghost.class, RatKing.class, Shopkeeper.class, Wandmaker.class, Blacksmith.class, Imp.class, Sheep.class, Bee.class, Nyz.class, YetYog.class);
 

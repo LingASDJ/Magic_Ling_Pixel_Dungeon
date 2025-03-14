@@ -55,7 +55,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class Mimic extends Mob {
+public class Mimic extends Mob implements Mob.NoMobSpawn {
 
 	private int level;
 
