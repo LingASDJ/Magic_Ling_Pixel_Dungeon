@@ -30,7 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
@@ -42,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.CrivusFruitsFlake;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LifeTreeSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -489,9 +489,12 @@ public class Qliphoth extends Boss {
             Dungeon.level.drop( new Food(), pos ).sprite.drop();
         }
 
+        boolean holiday = RegularLevel.holiday == RegularLevel.Holiday.PQJ;
+
         if(!Statistics.bossRushMode) {
-            Dungeon.level.drop(new IceCyanBlueSquareCoin(15),643);
-            Dungeon.level.drop(new Gold(200),pos);
+            int normal = ((hero.lvl + Dungeon.depth)/5) * (Math.max(Challenges.activeChallenges(), 5));
+            int count = holiday ? 2 : 1;
+            Dungeon.level.drop(new IceCyanBlueSquareCoin(normal * count),643);
         }
 
         Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.FOOD),pos);

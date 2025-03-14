@@ -45,7 +45,7 @@ public class ShatteredNews extends NewsService {
 		}
 
 		Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
-		httpGet.setUrl("https://download.spldream.com/GameUpdate/GAMEUPDATE/MLPD/MLPD-Servers/MLPDNews.xml");
+		httpGet.setUrl("https://gameupdate.insrv.mlpd.spldream.com/MLPD/news.xml");
 
 		Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {
 			@Override

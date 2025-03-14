@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.isDLC;
 
@@ -35,7 +36,6 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 
 abstract public class Boss extends Mob {
         {
@@ -140,15 +140,10 @@ abstract public class Boss extends Mob {
                 Dungeon.level.drop(new KingGold(Random.NormalIntRange(3+Dungeon.depth/5,5+Dungeon.depth/5)),pos);
             }
 
-            final Calendar calendar = Calendar.getInstance();
-            boolean holiday = false;
+            boolean holiday = RegularLevel.holiday == RegularLevel.Holiday.PQJ;
 
-            if (RegularLevel.holiday == RegularLevel.Holiday.PQJ) {
-                    holiday = true;
-            }
-
-            if(!Statistics.bossRushMode){
-                int normal = ((hero.lvl + Dungeon.depth)/5) * (Challenges.activeChallenges() / 3);
+            if(!Statistics.bossRushMode && depth != 5){
+                int normal = ((hero.lvl + Dungeon.depth)/5) * (Math.max(Challenges.activeChallenges(), 5));
                 int count = holiday ? 2 : 1;
                 Dungeon.level.drop(new IceCyanBlueSquareCoin(normal * count),pos);
             }

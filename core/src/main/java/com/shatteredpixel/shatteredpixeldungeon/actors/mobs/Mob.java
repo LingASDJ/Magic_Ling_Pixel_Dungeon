@@ -1262,6 +1262,8 @@ public abstract class Mob extends Char {
 		boolean act( boolean enemyInFOV, boolean justAlerted );
 	}
 
+	public interface NoMobSpawn {}
+
 	protected class Sleeping implements AiState {
 
 		public static final String TAG	= "SLEEPING";
