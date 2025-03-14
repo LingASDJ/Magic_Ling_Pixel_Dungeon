@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation.appear;
 
@@ -229,7 +230,7 @@ public class WndGame extends Window {
 		}
 
 
-		if(Dungeon.depth == 0) {
+		if(Dungeon.depth == 0 && Dungeon.branch == 0 && !Dungeon.isChallenged(CS) ) {
 			// Debug
 			addButton(curBtn = new RedButton(Messages.get(this, "restar")) {
 				@Override
