@@ -137,6 +137,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.SakaFishBoss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.TPDoor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush.Rival;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush.SkyGoo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.BleedCrystal;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDogCerberus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruits;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.CrivusStarFruitsLasher;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.notsync.DiedClearElemet;
@@ -156,7 +158,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.Mayfly;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.Prisoner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.RoyalGuard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold.TribemanOld;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.ApprenticeWitch;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Butcher;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Crumb;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Frankenstein;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Ghost_Halloween;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.HollowMimic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.PumkingBomber;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Pumking_Ghost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Vampire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DragonGirlBlue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
@@ -166,6 +178,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RatKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.DeathRong;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.zero.YetYog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.MiniSaka;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.spical.DM275;
@@ -252,6 +265,8 @@ public enum Bestiary {
 	GOLDMOB_EX,
 	ANCITY,
 	SHOP,
+	ANCIENT_CITY,
+	ANCIENT_CITY_BOSS,
 
 	UNIVERSAL,
 	RARE,
@@ -415,6 +430,16 @@ public enum Bestiary {
 				CrystalDiedTower.class
 		);
 
+		ANCIENT_CITY.addEntities(
+		Frankenstein.class, Butcher.class, Crumb.class, ApprenticeWitch.class,
+		Ghost_Halloween.class, HollowMimic.class, Pumking_Ghost.class,PumkingBomber.class,
+		Vampire.class);
+
+		ANCIENT_CITY_BOSS.addEntities(
+				//Boss T1
+				DeadDogCerberus.class, BleedCrystal.class);
+
+
 		UNIVERSAL.addEntities(Wraith.class, Piranha.class, Mimic.class, GoldenMimic.class, EbonyMimic.class, Statue.class, GuardianTrap.Guardian.class, SentryRoom.Sentry.class);
 
 		RARE.addEntities(
@@ -444,7 +469,11 @@ public enum Bestiary {
 				DwarfMaster.class
 		);
 
-		NEUTRAL.addEntities(Ghost.class, RatKing.class, Shopkeeper.class, Wandmaker.class, Blacksmith.class, Imp.class, Sheep.class, Bee.class, Nyz.class, YetYog.class);
+		NEUTRAL.addEntities(
+				Ghost.class, RatKing.class, Shopkeeper.class,
+				Wandmaker.class, Blacksmith.class, Imp.class,
+				Sheep.class, Bee.class, Nyz.class, YetYog.class,
+				DeathRong.class, DragonGirlBlue.class);
 
 		ALLY.addEntities(MirrorImage.class, PrismaticImage.class,
 				DriedRose.GhostHero.class,

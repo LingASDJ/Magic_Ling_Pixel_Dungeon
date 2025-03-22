@@ -79,8 +79,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 
-/* *
-LAST UPDATED: 2021-05-25
+/**
+LAST UPDATED: 2025-03-22
 老狗子寿终正寝，长眠于此，不再更新。
  */
 public class Cerberus extends Boss {

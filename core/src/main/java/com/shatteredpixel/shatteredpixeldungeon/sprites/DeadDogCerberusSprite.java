@@ -35,14 +35,16 @@ public class DeadDogCerberusSprite extends MobSprite {
         run = new Animation( 9, true );
         run.frames( frames, 17,18,19,20,21 );
 
-        for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
-            if(boss instanceof DeadDogCerberus) {
-                if(((DeadDogCerberus) boss).ComboAttackThis){
-                    attack = new Animation( 9, false );
-                    attack.frames( frames, 38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53);
-                } else {
-                    attack = new Animation( 10, false );
-                    attack.frames( frames, 22,23,24,25 );
+        if(Dungeon.hero != null){
+            for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
+                if(boss instanceof DeadDogCerberus) {
+                    if(((DeadDogCerberus) boss).ComboAttackThis){
+                        attack = new Animation( 9, false );
+                        attack.frames( frames, 38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53);
+                    } else {
+                        attack = new Animation( 10, false );
+                        attack.frames( frames, 22,23,24,25 );
+                    }
                 }
             }
         }
@@ -72,13 +74,6 @@ public class DeadDogCerberusSprite extends MobSprite {
     public void FlyAttack( int cell ){
         turnTo( ch.pos, cell );
         play( FlyAttack );
-    }
-
-    public void activateAttack(){
-        TextureFilm frames = new TextureFilm( texture, 36, 28);
-        attack = new Animation( 10, false );
-        attack.frames( frames, 22,23,24,25 );
-        attack.clone();
     }
 
     /**

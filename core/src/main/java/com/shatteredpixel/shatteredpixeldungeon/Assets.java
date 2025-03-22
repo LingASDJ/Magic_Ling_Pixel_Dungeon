@@ -625,6 +625,7 @@ public class Assets {
 		public static final String TYPHON = "sprites/hollow/typhon.png";
 		public static final String MPHON = "sprites/hollow/morpheus.png";
 
+		public static final String BLEED_SENTRY= "sprites/hollow/bleed_star.png";
 
 
 		public static final String ZOMBIE = "sprites/hollow/frankenstein.png";

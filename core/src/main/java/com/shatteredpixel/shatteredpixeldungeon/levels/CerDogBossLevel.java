@@ -707,6 +707,8 @@ public class CerDogBossLevel extends Level{
 
     }
 
+
+
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
     if(Statistics.bossRushMode && transition.type == LevelTransition.Type.REGULAR_ENTRANCE){
