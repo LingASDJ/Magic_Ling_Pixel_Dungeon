@@ -62,6 +62,9 @@ public abstract class PlatformSupport {
 	//splits on newlines, underscores, and chinese/japaneses characters
 	protected static Pattern regularsplitter = Pattern.compile(
 			"(?<=\n)|(?=\n)|(?<=_)|(?=_)|(?<=\\\\)|(?=\\\\)|" +
+					"(?<=<#[A-Fa-f0-9]{6}>)|(?=<#[A-Fa-f0-9]{6}>)|" +
+					"(?<=<#[A-Fa-f0-9]{3}>)|(?=<#[A-Fa-f0-9]{3}>)|" +
+					"(?<=<RGB>)|(?=<RGB>)|" +
 					"(?<=[^\\x00-\\xff])|(?=[^\\x00-\\xff])|" +
 					"(?<=\\p{InHiragana})|(?=\\p{InHiragana})|" +
 					"(?<=\\p{InKatakana})|(?=\\p{InKatakana})|" +
@@ -73,6 +76,9 @@ public abstract class PlatformSupport {
 	//additionally splits on words, so that each word can be arranged individually
 	protected static Pattern regularsplitterMultiline = Pattern.compile(
 			"(?<= )|(?= )|(?<=\n)|(?=\n)|(?<=_)|(?=_)|(?<=\\\\)|(?=\\\\)|" +
+					"(?<=<#[A-Fa-f0-9]{6}>)|(?=<#[A-Fa-f0-9]{6}>)|" +
+					"(?<=<#[A-Fa-f0-9]{3}>)|(?=<#[A-Fa-f0-9]{3}>)|" +
+                    "(?<=<RGB>)|(?=<RGB>)|" +
 					"(?<=[^\\x00-\\xff])|(?=[^\\x00-\\xff])|" +
 					"(?<=\\p{InHiragana})|(?=\\p{InHiragana})|" +
 					"(?<=\\p{InKatakana})|(?=\\p{InKatakana})|" +
