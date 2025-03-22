@@ -1155,6 +1155,13 @@ public class GameScene extends PixelScene {
 		}
 	}
 
+	public static void fadeToBlack(float duration,float delay) {
+		Banner bossSlain = new Banner( BannerSprites.get( BannerSprites.Type.NULL ) );
+		bossSlain.texture(Assets.Interfaces.BLACK_RECT);
+		bossSlain.show(Window.CBLACK, duration, delay);
+		scene.showBannerX(bossSlain);
+	}
+
 	@Override
 	public void create() {
 
@@ -2254,6 +2261,13 @@ public class GameScene extends PixelScene {
 		return names;
 	}
 
+	private void showBannerX( Banner banner ) {
+		banner.camera = uiCamera;
+		banner.x = 0;
+		banner.y = 0;
+		addToFront( banner );
+	}
+
 	private void showBanner( Banner banner ) {
 		banner.camera = uiCamera;
 
@@ -2389,4 +2403,7 @@ public class GameScene extends PixelScene {
 	public static float StatusHeight(){
 		return SPDSettings.quickSwapper() ? scene.toolbarv1.height() : scene.status.height();
 	}
+
+
+
 }

@@ -1,10 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.DamageBuff.ScaryDamageBuff;
@@ -78,21 +73,21 @@ public class ScaryBuff extends ElementalBuff {
 
         Char ch = target;
 
-        if(Scary>=100 &&ch instanceof Hero){
+        if(Scary>=100 && ch instanceof Hero){
             detach();
             Buff.affect(ch, ScaryDamageBuff.class).set((40),1);
-        } else if(Scary>60 &&ch instanceof Mob) {
+        } else if(Scary>60 && ch instanceof Mob) {
             detach();
             Buff.affect(ch, TimeReset.MobsWither.class).set((Random.NormalIntRange(6,15)),1);
-        } else if(Scary>0 &&ch instanceof Hero) {
+        } else if(Scary>0 && ch instanceof Hero) {
             Scary--;
-            spend(12f);
         } else if(Scary>0) {
             Scary--;
-            spend(8f);
         } else {
             detach();
         }
+
+        spend(1f);
 
         return true;
     }

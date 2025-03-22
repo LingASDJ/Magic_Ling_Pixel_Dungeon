@@ -46,7 +46,7 @@ public class Window extends Group implements Signal.Listener<KeyEvent> {
 	
 	protected PointerArea blocker;
 	protected ShadowBox shadow;
-	protected NinePatch chrome;
+	public NinePatch chrome;
 
 	public static final int WHITE = 0xFFFFFF;
 	public static final int R_COLOR = 0xFF0000;

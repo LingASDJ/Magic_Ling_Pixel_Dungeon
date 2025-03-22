@@ -26,7 +26,6 @@ import com.watabou.utils.Random;
 
 public class ApprenticeWitch extends Mob {
 
-    private boolean targeting = false;
     private boolean shot = true;
     public boolean isTargetingTeleport = true;
 
@@ -41,9 +40,9 @@ public class ApprenticeWitch extends Mob {
         spriteClass = ApprenticeWitchSprite.class;
 
         baseSpeed = 1.75f;
-        HP = HT = 140;
+        HP = HT = 150;
 
-        defenseSkill = 24;
+        defenseSkill = Random.NormalIntRange(25,35);
 
         loot = Generator.Category.SCROLL;
         lootChance = 1f;
@@ -61,12 +60,12 @@ public class ApprenticeWitch extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(40, 52);
+        return Random.NormalIntRange(35, 50);
     }
 
     @Override
     public int attackSkill( Char target ) {
-        return 40;
+        return Random.NormalIntRange(35,45);
     }
 
     @Override
@@ -88,11 +87,7 @@ public class ApprenticeWitch extends Mob {
             for (int i : PathFinder.NEIGHBOURS9) {
                 if (!Dungeon.level.solid[cell + i]) {
                     CellEmitter.get(cell + i).burst(ElmoParticle.FACTORY, 5);
-                    if (Dungeon.level.water[cell + i]) {
-                        GameScene.add(Blob.seed(cell + i, 2, HalomethaneFire.class));
-                    } else {
-                        GameScene.add(Blob.seed(cell + i, 2, HalomethaneFire.class));
-                    }
+                    GameScene.add(Blob.seed(cell + i, 2, HalomethaneFire.class));
                 }
             }
 
@@ -141,13 +136,11 @@ public class ApprenticeWitch extends Mob {
 
         if (Dungeon.level.adjacent( pos, enemy.pos )) {
             shot = true;
-            targeting = false;
 
             return super.doAttack( enemy );
 
         }else if (shot){
             shot = false;
-            targeting = true;
             sprite.parent.add(new TargetedCell(enemy.pos, 0xFF0000));
             for(int c: PathFinder.NEIGHBOURS9){
                 if(isTargetingTeleport){
@@ -161,7 +154,6 @@ public class ApprenticeWitch extends Mob {
             return true;
         } else {
             shot = true;
-            targeting = false;
             if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
                 sprite.zap( cellToFire );
                 return false;

@@ -27,9 +27,9 @@ public class Frankenstein extends Mob {
     {
         spriteClass = FrankensteinSprite.class;
         baseSpeed = 1.2f;
-        HP = HT = 120;
+        HP = HT = 130;
         EXP = 15;
-        defenseSkill = 14;
+        defenseSkill = Random.NormalIntRange(25,35);
         maxLvl = 34;
         properties.add(Char.Property.HOLLOW);
     }
@@ -62,16 +62,12 @@ public class Frankenstein extends Mob {
 
     @Override
     public boolean isAlive() {
-        if (super.isAlive()) {
-            return true; // If still alive according to the parent class
-        }
 
         if(MustDied || deathCount >=2){
             return true;
-        }
-
-        // Check resurrection chances
-        if (deathCount == 0 && RestCooldown == 0) {
+        } else if (super.isAlive()) {
+            return true;
+        } else if (deathCount == 0 && RestCooldown == 0) {
             if (Random.Int(100) <= FIRST_DEATH_REVIVE_CHANCE) {
                 RestCooldown = 5;
                 deathCount++;
@@ -114,7 +110,7 @@ public class Frankenstein extends Mob {
         if(enemy!=null && enemy == hero) {
             for (Buff buff : hero.buffs()) {
                 if (buff instanceof ScaryBuff) {
-                    ((ScaryBuff) buff).damgeScary(Random.Int(3,6));
+                    ((ScaryBuff) buff).damgeScary(Random.Int(5,8));
                 } else {
                     Buff.affect(enemy, ScaryBuff.class).set((100), 5);
                 }
@@ -125,7 +121,7 @@ public class Frankenstein extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(30, 45);
+        return Random.NormalIntRange(35, 45);
     }
 
     @Override

@@ -34,8 +34,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DeathRong;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Typhon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.DeathRong;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow.Typhon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
@@ -79,6 +79,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 
+/* *
+LAST UPDATED: 2021-05-25
+老狗子寿终正寝，长眠于此，不再更新。
+ */
 public class Cerberus extends Boss {
 
     {

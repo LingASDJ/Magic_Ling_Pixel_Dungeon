@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.utils.SkipIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.Plot;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.input.GameAction;
@@ -35,16 +36,19 @@ public class WndDialog extends Window {
     private static final int BUTTON_HEIGHT	= 18;
 
     private static final int MARGIN_X = 5;
-    private static final int MARGIN_Y = 5;
+    public static final int MARGIN_Y = 5;
 
     private Image mainAvatar;
     private Image secondAvatar;
-    private Image thirdAvatar;
+    public Image thirdAvatar;
 
     private RenderedTextBlock leftname;
-    private RenderedTextBlock rightname;
+    public RenderedTextBlock rightname;
 
     private RenderedTextBlock text;
+
+    public RedButton dialogButton;
+
     private String script;
 
     public static Plot settedPlot = null;
@@ -114,8 +118,8 @@ public class WndDialog extends Window {
         leftname = PixelScene.renderTextBlock(Script.Name(Script.Character.NOBODY), fontSize);
         rightname = PixelScene.renderTextBlock(Script.Name(Script.Character.NOBODY), fontSize);
 
-        leftname.setPos(mainAvatar.x + mainAvatar.width() , mainAvatar.y + mainAvatar.height() - leftname.height() - 2);
 
+        leftname.setPos(mainAvatar.x + mainAvatar.width() , mainAvatar.y + mainAvatar.height() - leftname.height() - 2);
         rightname.setPos(thirdAvatar.x - rightname.width(), thirdAvatar.y + thirdAvatar.height() - rightname.height() - 2);
 
         add(leftname);
@@ -131,6 +135,8 @@ public class WndDialog extends Window {
 
         skip = makeSkip();
         add(skip);
+
+
 
         float modifier = 0;
 
@@ -245,6 +251,13 @@ public class WndDialog extends Window {
         }
     }
 
+    public void setDialogButton(String n) {
+        if (dialogButton != null) {
+            dialogButton.text(n);
+            dialogButton.visible = true;
+        }
+    }
+
     public void setRightName(String n) {
         if (rightname != null) {
             rightname.text(n);
@@ -326,6 +339,11 @@ public class WndDialog extends Window {
 
     public void hideMainAvatar() {
         mainAvatar.visible = false;
+    }
+
+    public void hideSkip() {
+        skip.visible = false;
+        skip.active = false;
     }
 
     public void hideSecondAvatar() {

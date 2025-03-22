@@ -21,8 +21,9 @@ public class HollowMimic extends Mimic {
     {
         spriteClass = MimicSprite.HollowWall.class;
         properties.add( Property.HOLLOW );
-        HP = HT= Random.Int(35,60);
+        HP = HT= Random.Int(60,85);
         EXP = 30;
+        defenseSkill = 15;
         maxLvl = 40;
     }
 
@@ -38,7 +39,7 @@ public class HollowMimic extends Mimic {
                 if(buff instanceof ScaryImmunitiesBuff){
                     ((ScaryImmunitiesBuff) buff).damgeScary();
                 } else if (buff instanceof ScaryBuff) {
-                    ((ScaryBuff) buff).damgeScary(20);
+                    ((ScaryBuff) buff).damgeScary(15);
                 } else {
                     Buff.affect(enemy, ScaryBuff.class).set((100), 5);
                 }
@@ -86,7 +87,7 @@ public class HollowMimic extends Mimic {
 
     @Override
     public int attackSkill(Char target) {
-        return 45; // Fixed attack skill
+        return 50; // Fixed attack skill
     }
 
 }
