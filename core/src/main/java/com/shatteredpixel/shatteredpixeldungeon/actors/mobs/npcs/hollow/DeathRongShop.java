@@ -1,7 +1,8 @@
-package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
+package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeathRongSprite;
 

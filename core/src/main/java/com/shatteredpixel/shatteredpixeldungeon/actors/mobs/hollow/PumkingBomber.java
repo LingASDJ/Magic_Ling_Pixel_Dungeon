@@ -27,11 +27,12 @@ public class PumkingBomber extends Mob {
         spriteClass = PumkingBomberSprite.class;
 
         HP = HT = 140;
-        defenseSkill = 22;
         viewDistance = Light.DISTANCE;
 
         loot = Pasty.class;
         lootChance = 0.15f;
+
+        defenseSkill = Random.NormalIntRange(25,35);
 
         EXP = 19;
 
@@ -52,7 +53,7 @@ public class PumkingBomber extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 25, 40 );
+        return Random.NormalIntRange( 25, 45 );
     }
 
     @Override

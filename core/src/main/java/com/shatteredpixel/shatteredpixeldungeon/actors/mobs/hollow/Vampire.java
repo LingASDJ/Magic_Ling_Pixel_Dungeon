@@ -1,27 +1,18 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow;
 
-import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SlimeKing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
-import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.SakaFishBossSprites;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VampireSprite;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
@@ -33,11 +24,8 @@ public class Vampire extends Mob {
         spriteClass = VampireSprite.class;
 
         HP = HT = 120;
-
-        defenseSkill = 15;
-
         baseSpeed = 2f;
-
+        defenseSkill = Random.NormalIntRange(25,30);
         EXP = 15;
         maxLvl = 35;
 
@@ -92,7 +80,7 @@ public class Vampire extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(36, 52);
+        return Random.NormalIntRange(40, 50);
     }
 
     @Override
@@ -127,7 +115,7 @@ public class Vampire extends Mob {
         if(enemy!=null && enemy == hero) {
             for (Buff buff : hero.buffs()) {
                 if (buff instanceof ScaryBuff) {
-                    ((ScaryBuff) buff).damgeScary( Random.NormalIntRange(6,15));
+                    ((ScaryBuff) buff).damgeScary( Random.NormalIntRange(8,12));
                 } else {
                     Buff.affect( enemy, ScaryBuff.class ).set( (100), 1 );
                 }

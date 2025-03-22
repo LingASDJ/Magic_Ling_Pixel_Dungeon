@@ -44,8 +44,8 @@ public class Butcher extends Mob {
     {
         spriteClass = ButcherSprite.class;
 
-        HP = HT = 80;
-        defenseSkill = 18;
+        HP = HT = 120;
+        defenseSkill = Random.NormalIntRange(25,35);
 
         maxLvl = 35;
 
@@ -89,7 +89,7 @@ public class Butcher extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 30, 50 );
+        return Random.NormalIntRange( 35, 45 );
     }
 
     @Override
@@ -99,14 +99,14 @@ public class Butcher extends Mob {
             for (Buff buff : hero.buffs()) {
                 if (buff instanceof ScaryBuff) {
                     if(Random.Float() >= 66.6f){
-                        ((ScaryBuff) buff).damgeScary( 10);
                         Buff.affect(hero, Bleeding.class).set(3);
+                        ((ScaryBuff) buff).damgeScary( 15);
                     } else if(Random.Float() >= 6.6f) {
                         Buff.affect(hero, Bleeding.class).set(5);
-                        ((ScaryBuff) buff).damgeScary( 6);
+                        ((ScaryBuff) buff).damgeScary( 10);
                     } else if(Random.Float() >= 0.666f) {
                         Buff.affect(hero, Bleeding.class).set(9);
-                        ((ScaryBuff) buff).damgeScary( 9);
+                        ((ScaryBuff) buff).damgeScary( 5);
                     } else {
                         ((ScaryBuff) buff).damgeScary( Random.Int(2,5));
                     }
@@ -120,7 +120,7 @@ public class Butcher extends Mob {
 
     @Override
     public int attackSkill( Char target ) {
-        return 60;
+        return Random.NormalIntRange(40,50);
     }
 
     private static final String BLINK_CD = "blink_cd";

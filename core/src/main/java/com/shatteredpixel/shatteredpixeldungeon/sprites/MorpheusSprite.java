@@ -11,10 +11,10 @@ public class MorpheusSprite extends MobSprite {
 
         texture( Assets.Sprites.MPHON );
 
-        TextureFilm frames = new TextureFilm( texture, 32, 32 );
+        TextureFilm frames = new TextureFilm( texture, 26, 32 );
 
-        idle = new MovieClip.Animation( 6, true );
-        idle.frames( frames, 0, 1, 2, 3 );
+        idle = new MovieClip.Animation( 9, true );
+        idle.frames( frames, 0,0,0,1,1,1,2,3,4,5 );
 
         run = new MovieClip.Animation( 12, true );
         run.frames( frames, 14,15,16,17 );

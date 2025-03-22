@@ -1,4 +1,4 @@
-package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
+package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping.discover;
@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TrueInvisibiity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BloodBat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.pets.Pets;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -31,7 +32,7 @@ public class ZeroBoat extends NTNPC {
 
     private boolean first = false;
     private boolean secnod = false;
-    protected boolean rd = false;
+    public boolean rd = false;
 
     private static final String FIRST = "first";
     private static final String SECNOD = "secnod";
@@ -111,8 +112,6 @@ public class ZeroBoat extends NTNPC {
             }
 
             int cell = 922;
-
-
 
             final int dest = 921;
 

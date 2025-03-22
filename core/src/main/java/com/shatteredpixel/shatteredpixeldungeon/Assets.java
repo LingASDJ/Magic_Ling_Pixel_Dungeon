@@ -122,6 +122,8 @@ public class Assets {
 		public static final String OilWell  = "environment/custom_tiles/oil_well.png";
 		public static final String TILES_HOLLOW  = "environment/tiles_halloween.png";
 
+		public static final String TILES_THEATRE  = "environment/custom_tiles/theatre.png";
+
 		public static final String ALTAR_SPRING  = "environment/custom_tiles/spring_altar.png";
 
 		public static final String TILES_HOLLOW_CS  = "environment/tiles_halloween-cs.png";
@@ -176,6 +178,8 @@ public class Assets {
 	}
 
 	public static class Interfaces {
+
+		public static final String BLACK_RECT  = "interfaces/black_rect.png";
 
 		//Boss 贴图
 		public static final String QliPhothEX_Title  = "interfaces/bosslogo/qliphoth-title-ex.png";
@@ -457,7 +461,7 @@ public class Assets {
 
 		public static final String MOSRDX = "splashes/morpheus_portraits.png";
 
-		public static final String TYPHON = "splashes/typhon_portraits.png";
+
 
 		public static final String SMLF = "splashes/smallleaf_portraits.png";
 		public static final String SMLS = "splashes/card_smallleaf_portraits.png";
@@ -519,12 +523,33 @@ public class Assets {
 
 		public static final String GHOSTJ = "splashes/apprentice_portraits.png";
 
-		public static final String KARONG = "splashes/death_portraits.png";
-		public static final String SEWERS   = "splashes/sewers.jpg";
-		public static final String PRISON   = "splashes/prison.jpg";
-		public static final String CAVES    = "splashes/caves.jpg";
-		public static final String CITY     = "splashes/city.jpg";
-		public static final String HALLS    = "splashes/halls.jpg";
+		//HOLLOW PORTRAITS
+		public static final String KARONG_0 = "splashes/hollow/DeathRong/death_portraits(0).png";
+		public static final String KARONG_1 = "splashes/hollow/DeathRong/death_portraits(1).png";
+		public static final String KARONG_2 = "splashes/hollow/DeathRong/death_portraits(2).png";
+		public static final String KARONG_3 = "splashes/hollow/DeathRong/death_portraits(3).png";
+		public static final String KARONG_4 = "splashes/hollow/DeathRong/death_portraits(4).png";
+		public static final String KARONG_5 = "splashes/hollow/DeathRong/death_portraits(5).png";
+		public static final String KARONG_6 = "splashes/hollow/DeathRong/death_portraits(6).png";
+
+		public static final String Morphs_0 = "splashes/hollow/Morphs/morpheus_portraits(0).png";
+		public static final String Morphs_1 = "splashes/hollow/Morphs/morpheus_portraits(1).png";
+		public static final String Morphs_2 = "splashes/hollow/Morphs/morpheus_portraits(2).png";
+		public static final String Morphs_3 = "splashes/hollow/Morphs/morpheus_portraits(3).png";
+		public static final String Morphs_4 = "splashes/hollow/Morphs/morpheus_portraits(4).png";
+		public static final String Morphs_5 = "splashes/hollow/Morphs/morpheus_portraits(5).png";
+		public static final String Morphs_6 = "splashes/hollow/Morphs/morpheus_portraits(6).png";
+		public static final String Morphs_7 = "splashes/hollow/Morphs/morpheus_portraits(7).png";
+		public static final String Morphs_8 = "splashes/hollow/Morphs/morpheus_portraits(8).png";
+
+		public static final String Silence_0 = "splashes/hollow/Silence/silence_portraits(0).png";
+		public static final String Silence_1 = "splashes/hollow/Silence/silence_portraits(1).png";
+		public static final String Silence_2 = "splashes/hollow/Silence/silence_portraits(2).png";
+		public static final String Silence_3 = "splashes/hollow/Silence/silence_portraits(3).png";
+		public static final String Silence_4 = "splashes/hollow/Silence/silence_portraits(4).png";
+
+		public static final String TYPHON = "splashes/hollow/Typhon/typhon_portraits.png";
+
 	}
 
 	public static class Sprites {
@@ -688,15 +713,15 @@ public class Assets {
 
 		public static final String HEALRIGH	= "sprites/healfire.png";
 
-		public static final String REDSWARM	= "sprites/RedSearm.png";
-		public static final String REN		= "Npcs/ren.png";
+		public static final String REDSWARM				= "sprites/RedSearm.png";
+		public static final String REN					= "Npcs/ren.png";
 		public static final String DragonBlueGirl		= "Npcs/smallblue.png";
-		public static final String DKGirl		= "Npcs/DKGirl.png";
+		public static final String DKGirl				= "Npcs/DKGirl.png";
 
-		public static final String LanFire		= "sprites/npc/lanfire.png";
-		public static final String LanFire_CJ		= "sprites/npc/lanfire_cj.png";
+		public static final String LanFire				= "sprites/npc/lanfire.png";
+		public static final String LanFire_CJ			= "sprites/npc/lanfire_cj.png";
 
-		public static final String CJBL		= "sprites/npc/blue_cj.png";
+		public static final String CJBL					= "sprites/npc/blue_cj.png";
 
 		public static final String SAESD		= "sprites/bluedragon.png";
 

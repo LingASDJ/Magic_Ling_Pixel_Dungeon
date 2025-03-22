@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.TheatreLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonCaveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonFestivalMiniLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.HotelLevel;
@@ -253,6 +254,9 @@ public class LevelRules {
                     case 27: case 28: case 29: case 30:
                         return Statistics.Hollow_Holiday ? new HollowLevel() : new DeadEndLevel();
 
+                    case 31:
+                        return new CerDogBossLevel();
+
                     default:
                         Statistics.deepestFloor--;
                         return new DeadEndLevel();
@@ -279,6 +283,8 @@ public class LevelRules {
                         return new AncientMysteryCityLevel();
                     case 20:
                         return new DwarfGeneralBossLevel();
+                    case 28:
+                        return new TheatreLevel();
                     default:
                         return new DeadEndLevel();
                 }

@@ -9,7 +9,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostHalloweenSprite;
-import com.watabou.utils.Random;
 
 public class Ghost_Halloween extends Mob {
 
@@ -19,9 +18,9 @@ public class Ghost_Halloween extends Mob {
     {
         spriteClass = GhostHalloweenSprite.class;
         baseSpeed = 1f;
-        HP = HT = 70;
+        HP = HT = 60;
         EXP = 19;
-        defenseSkill = 36;
+        defenseSkill = 45;
         maxLvl = 35;
         properties.add(Char.Property.HOLLOW);
     }
@@ -53,7 +52,7 @@ public class Ghost_Halloween extends Mob {
             for (Buff buff : hero.buffs()) {
                 if (buff instanceof ScaryBuff && invisible<6) {
                     sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this,"hello"));
-                    ((ScaryBuff) buff).damgeScary(10);
+                    ((ScaryBuff) buff).damgeScary(8);
                 }  else {
                     Buff.affect(enemy, ScaryBuff.class).set((100), 5);
                 }
@@ -70,7 +69,7 @@ public class Ghost_Halloween extends Mob {
 
     @Override
     public int attackSkill(Char target) {
-        return 25;
+        return 35;
     }
 
 }

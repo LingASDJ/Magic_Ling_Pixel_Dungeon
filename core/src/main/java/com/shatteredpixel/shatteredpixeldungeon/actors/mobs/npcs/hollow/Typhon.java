@@ -1,4 +1,4 @@
-package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
+package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.hollow;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.BruteBot;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.Cerberus;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NTNPC;
 import com.shatteredpixel.shatteredpixeldungeon.custom.utils.plot.TyphonPlot;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;

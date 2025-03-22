@@ -9,13 +9,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.IconFloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrumbSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
@@ -27,9 +25,9 @@ public class Crumb extends Mob {
         spriteClass = CrumbSprite.class;
 
         baseSpeed = 1.5f;
-        HP = HT = 80;
+        HP = HT = 100;
 
-        defenseSkill = 14;
+        defenseSkill = Random.NormalIntRange(25,35);
 
         //loot = Candy.class;
 
@@ -80,9 +78,9 @@ public class Crumb extends Mob {
         if(enemy!=null && enemy == hero) {
             for (Buff buff : hero.buffs()) {
                 if (buff instanceof Hunger) {
-                    //额外饥饿 至少2点 至多5点 30%概率
-                    if(Random.Float()<=0.3f){
-                        ((Hunger) buff).damgeExtraHungry(Random.NormalIntRange(2,5));
+                    //额外饥饿 至少20点 至多50点 50%概率
+                    if(Random.Float()<=0.5f){
+                        ((Hunger) buff).damgeExtraHungry(Random.NormalIntRange(20,50));
                     }
                 }
             }
@@ -133,26 +131,12 @@ public class Crumb extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 27, 32 );
-    }
-
-    @Override
-    public void rollToDropLoot() {
-        if (food != null) {
-            Dungeon.level.drop( food, pos ).sprite.drop();
-            //updates position
-            if (food instanceof Honeypot.ShatteredPot) ((Honeypot.ShatteredPot)food).dropPot( this, pos );
-            food = null;
-        }
-        int value = Random.NormalIntRange(-30,20);
-        Buff.affect(hero, Hunger.class).satisfy(value);
-        hero.sprite.showStatusWithIcon(CharSprite.NEGATIVE, String.valueOf(value), IconFloatingText.HUNGRY_EXTRA_HEAL);
-        super.rollToDropLoot();
+        return Random.NormalIntRange( 35, 45 );
     }
 
     @Override
     public int attackSkill( Char target ) {
-        return 12;
+        return Random.NormalIntRange(20,35);
     }
 
 
@@ -196,12 +180,14 @@ public class Crumb extends Mob {
 
                 }
 
-                if (food != null) GLog.n( Messages.get(Crumb.class, "escapes", food.name()));
-                food = null;
-                state = WANDERING;
+                if (food != null){
+                    GLog.n( Messages.get(Crumb.class, "escapes", food.name()));
+                    food = null;
+                    state = WANDERING;
+                    destroy();
+                    sprite.killAndErase();
+                }
 
-                destroy();
-                sprite.killAndErase();
 
             } else {
                 state = WANDERING;
