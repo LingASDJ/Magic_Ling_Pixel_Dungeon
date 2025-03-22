@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -7,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
@@ -17,9 +20,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
@@ -32,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.DeadDogCerberusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
@@ -39,14 +44,17 @@ import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
+import java.util.ArrayList;
+
 public class DeadDogCerberus extends Boss {
 
     /**
      * 恶狗扑食技能参数
      */
-    private int lastEnemyPos = -1;
-    private int leapPos = -1;
+    private int   lastEnemyPos = -1;
     private float leapCooldown = 0;
+    private int        leapPos = -1;
+
 
     /**
      * 狩猎准备技能参数
@@ -60,9 +68,12 @@ public class DeadDogCerberus extends Boss {
     public int ComboAttackCooldown;
     public boolean ComboAttackThis = true;
 
+    //阶段推进
+    private int phase = 0;
+
     {
         initProperty();
-        initBaseStatus(20, 60, 20, 18, 1000, 0, 0);
+        initBaseStatus(20, 60, 20, 26, 1000, 0, 0);
         initStatus(100);
 
         spriteClass = DeadDogCerberusSprite.class;
@@ -93,25 +104,79 @@ public class DeadDogCerberus extends Boss {
         }
     }
 
-    public void activate(){
-        ((DeadDogCerberusSprite) sprite).activateAttack();
+
+    private int attackSkills = attackSkill(this);
+
+    /**
+     * Phase小于2时，Boss不可能死亡
+     */
+    @Override
+    public boolean isAlive() {
+        return phase < 2 || HP > 0;
+    }
+
+    @Override
+    public void damage(int dmg, Object src) {
+        super.damage(dmg, src);
+
+        //Boss阶段推进
+        if (phase == 0 && HP < 700) {
+            phase++;
+        } else if (phase == 1 && HP < 390) {
+            phase++;
+        }
+    }
+
+    @Override
+    public int damageRoll() {
+        return Random.NormalIntRange( 25, 60 );
     }
 
     @Override
     public int attackProc( Char enemy, int damage ) {
         damage = super.attackProc( enemy, damage );
 
-        if (damage > 0 && ComboAttackThis) {
+        //凝血结晶只在无冷却Buff + 敌人是英雄状态下触发 此为固定技能
+        if (buff(DeadDogCerberus.BleedingSummonCoolown.class) == null){
+            ArrayList<Integer> candidates = new ArrayList<>();
+
+            int[] neighbours = {pos + 2, pos - 2, pos + Dungeon.level.width(), pos - Dungeon.level.width()};
+            for (int n : neighbours) {
+                if (!Dungeon.level.solid[n]
+                        && Actor.findChar( n ) == null
+                        && (Dungeon.level.passable[n] || Dungeon.level.avoid[n])
+                        && (!properties().contains(Property.LARGE) || Dungeon.level.openSpace[n])) {
+                    candidates.add( n );
+                }
+            }
+
+            if (!candidates.isEmpty()){
+                if(enemy == hero){
+                    Buff.affect(this, BleedingSummonCoolown.class,BleedingSummonCoolown.DURATION);
+                    BleedCrystal bleedCrystal = new BleedCrystal();
+                    bleedCrystal.pos = Random.element( candidates );
+                    GameScene.add(bleedCrystal);
+                    Dungeon.level.occupyCell(bleedCrystal);
+                    CellEmitter.get(bleedCrystal.pos).burst(Speck.factory(Speck.EVOKE), 4);
+                }
+            }
+
+        }
+
+        //连环撕咬 四连寄
+        if (ComboAttackThis) {
+            yell(Messages.get(this, "combo_attack_hit"));
             int dmg = damageRoll();
             dmg = Math.round(dmg * AscensionChallenge.statModifier(DeadDogCerberus.this));
             dmg = defenseProc(enemy,dmg);
-            dmg -= enemy.drRoll();
+            //处理命中率
             for (int i = 0; i < 4; i++) {
                 enemy.damage(dmg, new Stone());
+                Buff.affect( enemy, Bleeding.class ).set( i+2 );
             }
             ComboAttackThis = false;
-            activate();
         }
+
 
         return damage;
     }
@@ -131,10 +196,12 @@ public class DeadDogCerberus extends Boss {
                 HunterReady = 15;
                 Hunter = false;
                 Buff.affect(this, CerberusBless.class, CerberusBless.DURATION);
-            } else if(HunterReady == 5){
+            } else if(HunterReady == 1){
                 Hunter = true;
                 HunterReady--;
+                ((DeadDogCerberusSprite) sprite).setTooteh(pos);
                 GLog.n(Messages.get(this,"dog_skills_one"));
+                next();
             } else {
                 HunterReady--;
             }
@@ -142,11 +209,11 @@ public class DeadDogCerberus extends Boss {
 
 
         //连环撕咬
-        if(ComboAttackCooldown == 0){
+        if(ComboAttackCooldown <= 0){
             ComboAttackCooldown = 15;
+            ComboAttackThis = true;
         } else {
             ComboAttackCooldown--;
-            ComboAttackThis = false;
         }
 
         //if state changed from wandering to hunting, we haven't acted yet, don't update.
@@ -154,22 +221,11 @@ public class DeadDogCerberus extends Boss {
             if (enemy != null) {
                 lastEnemyPos = enemy.pos;
             } else {
-                lastEnemyPos = Dungeon.hero.pos;
+                lastEnemyPos = hero.pos;
             }
         }
 
         return result;
-    }
-
-    @Override
-    protected boolean doAttack( Char enemy ) {
-        if (Hunter) {
-            //TODO 未知问题，暂时动画不生效
-            ((DeadDogCerberusSprite) sprite).setTooteh(enemy.pos);
-            return true;
-        } else {
-            return super.doAttack(enemy);
-        }
     }
 
     private static final String LAST_ENEMY_POS = "last_enemy_pos";
@@ -178,6 +234,11 @@ public class DeadDogCerberus extends Boss {
 
     private static final String HUNTER_COOLDOWN  = "hunter_cooldown";
     private static final String HUNTER_BOOLEAN   = "hunter_boolean";
+
+    private static final String COMBO_ATTACK_COOLDOWN = "combo_attack_cooldown";
+    private static final String COMBO_ATTACK_BOOLEAN  = "combo_attack_boolean";
+
+    private static final String PHASE = "phase";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -188,6 +249,11 @@ public class DeadDogCerberus extends Boss {
 
         bundle.put(HUNTER_COOLDOWN,HunterReady);
         bundle.put(HUNTER_BOOLEAN, Hunter);
+
+        bundle.put(COMBO_ATTACK_COOLDOWN, ComboAttackCooldown);
+        bundle.put(COMBO_ATTACK_BOOLEAN, ComboAttackThis);
+
+        bundle.put(PHASE, phase);
     }
 
     @Override
@@ -199,6 +265,11 @@ public class DeadDogCerberus extends Boss {
 
         HunterReady = bundle.getInt(HUNTER_COOLDOWN);
         Hunter = bundle.getBoolean(HUNTER_BOOLEAN);
+
+        ComboAttackCooldown = bundle.getInt(COMBO_ATTACK_COOLDOWN);
+        ComboAttackThis = bundle.getBoolean(COMBO_ATTACK_BOOLEAN);
+
+        phase = bundle.getInt(PHASE);
 
         if (state != SLEEPING) BossHealthBar.assignBoss(this);
     }
@@ -358,7 +429,7 @@ public class DeadDogCerberus extends Boss {
                             GLog.w(Messages.get( DeadDogCerberus.this, "leap"));
                             sprite.parent.addToBack(new TargetedCell(leapPos, 0xFF0000));
                             ((DeadDogCerberusSprite)sprite).FlyAttack( leapPos );
-                            Dungeon.hero.interrupt();
+                            hero.interrupt();
                         }
                         return true;
                     }
@@ -452,7 +523,7 @@ public class DeadDogCerberus extends Boss {
 
         public static void burn( int pos ) {
             Char ch = Actor.findChar( pos );
-            if (ch != null && !ch.isImmune(com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire.class)) {
+            if (ch != null && !ch.isImmune(Fire.class)) {
 
                 if(ch instanceof DeadDogCerberus){
                     Buff.affect( ch, FireSuperDr.class).set((2), 1);
@@ -476,7 +547,7 @@ public class DeadDogCerberus extends Boss {
         @Override
         public void use( BlobEmitter emitter ) {
             super.use( emitter );
-            emitter.pour( FlameParticle.FACTORY, 0.03f );
+            emitter.pour(HalomethaneFlameParticle.FACTORY, 0.05f );
         }
 
         @Override
@@ -486,7 +557,7 @@ public class DeadDogCerberus extends Boss {
     }
 
     /**
-     * 近战攻击获得50%穿甲与50%精准
+     * 近战攻击获得50%穿甲【TODO】与50%精准
      */
     public static class CerberusBless extends FlavourBuff {
 
@@ -499,7 +570,12 @@ public class DeadDogCerberus extends Boss {
 
         @Override
         public int icon() {
-            return BuffIndicator.BLESS;
+            return BuffIndicator.INVERT_MARK;
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(0xFF8C00);
         }
 
         @Override
@@ -507,6 +583,41 @@ public class DeadDogCerberus extends Boss {
             return Math.max(0, (DURATION - visualcooldown()) / DURATION);
         }
 
+    }
+
+    public static class BleedingSummonCoolown extends FlavourBuff {
+
+        public static final float DURATION	= 10f;
+
+        {
+            type = buffType.POSITIVE;
+            announced = true;
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(0xF08080);
+        }
+
+        @Override
+        public int icon() {
+            return BuffIndicator.TIME;
+        }
+
+        @Override
+        public float iconFadePercent() {
+            return Math.max(0, (DURATION - visualcooldown()) / DURATION);
+        }
+
+    }
+
+    /** 狗子基准命中率 */
+    @Override
+    public int attackSkill( Char target ) {
+        if(ComboAttackThis){
+            return 20;
+        }
+        return 48;
     }
 
 }

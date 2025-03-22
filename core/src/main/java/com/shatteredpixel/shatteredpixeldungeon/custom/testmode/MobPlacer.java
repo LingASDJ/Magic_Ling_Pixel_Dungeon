@@ -319,7 +319,7 @@ public class MobPlacer extends TestItem{
 
         private void updateEliteSettings(){
             int el = 0;
-            for(int i=0;i<16;++i){
+            for(int i=0;i<17;++i){
                 el += eliteOptions.get(i).checked() ? (1<<i) : 0;
             }
             elite_op = el;
