@@ -351,7 +351,7 @@ public class LevelTeleporter extends TestItem {
                         setSelectedLevel(j);
                     }
                 };
-                db.enable(Statistics.bossRushMode || j <= 26);
+                db.enable(Statistics.bossRushMode || j <= 41);
                 db.setRect(xpos + column * each, ypos + row * each, BTN_SIZE, BTN_SIZE);
                 PixelScene.align(db);
                 content.add(db);
@@ -423,14 +423,6 @@ public class LevelTeleporter extends TestItem {
         }
 
     }
-
-
-
-
-
-
-
-
 
     public void empoweredRead() {
 

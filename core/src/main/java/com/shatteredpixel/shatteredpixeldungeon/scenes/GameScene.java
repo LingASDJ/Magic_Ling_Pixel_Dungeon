@@ -1924,17 +1924,15 @@ public class GameScene extends PixelScene {
 							scene.showBanner(bossSlain);
 						}
 						break;
-					case 30:
 					case 26:
-						if (Dungeon.branch == 10) {
-							bossSlain.texture(Assets.Interfaces.Tawi_Title);
-							bossSlain.show(0x800080, 0.3f, 5f);
-							scene.showBanner(bossSlain);
-						} else {
-							bossSlain.texture(Assets.Interfaces.Cerdog_Title);
-							bossSlain.show(Window.CYELLOW, 0.3f, 5f);
-							scene.showBanner(bossSlain);
-						}
+						bossSlain.texture(Assets.Interfaces.Tawi_Title);
+						bossSlain.show(0x800080, 0.3f, 5f);
+						scene.showBanner(bossSlain);
+						break;
+					case 31:
+						bossSlain.texture(Assets.Interfaces.Cerdog_Title);
+						bossSlain.show(Window.CYELLOW, 0.3f, 5f);
+						scene.showBanner(bossSlain);
 						break;
 				}
 

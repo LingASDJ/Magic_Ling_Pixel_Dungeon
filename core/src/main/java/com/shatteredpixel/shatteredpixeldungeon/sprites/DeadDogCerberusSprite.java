@@ -1,9 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDogCerberus;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
@@ -35,19 +33,8 @@ public class DeadDogCerberusSprite extends MobSprite {
         run = new Animation( 9, true );
         run.frames( frames, 17,18,19,20,21 );
 
-        if(Dungeon.hero != null){
-            for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
-                if(boss instanceof DeadDogCerberus) {
-                    if(((DeadDogCerberus) boss).ComboAttackThis){
-                        attack = new Animation( 9, false );
-                        attack.frames( frames, 38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53);
-                    } else {
-                        attack = new Animation( 10, false );
-                        attack.frames( frames, 22,23,24,25 );
-                    }
-                }
-            }
-        }
+        attack = new Animation( 10, false );
+        attack.frames( frames, 22,23,24,25 );
 
         die = new Animation( 10, false );
         die.frames( frames, 0 );
@@ -63,6 +50,9 @@ public class DeadDogCerberusSprite extends MobSprite {
 
         FlyAttack = new Animation(9 , true);
         FlyAttack.frames( frames, 26 );
+
+        ComboAttack = new Animation( 9, false );
+        ComboAttack.frames( frames, 38,39,40,41,42,43,44,45, 46,47,48,49,50,51,52,53);
 
         play( idle );
     }
@@ -82,6 +72,11 @@ public class DeadDogCerberusSprite extends MobSprite {
     public void setTooteh(int cell){
         turnTo( ch.pos, cell );
         play( tooteh );
+    }
+
+    public void setComboAttack(int cell){
+        turnTo( ch.pos, cell );
+        play( ComboAttack );
     }
 
     @Override

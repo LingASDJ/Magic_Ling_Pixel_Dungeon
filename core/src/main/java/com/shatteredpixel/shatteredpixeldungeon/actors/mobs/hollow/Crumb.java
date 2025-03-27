@@ -13,7 +13,9 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrumbSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
@@ -35,7 +37,7 @@ public class Crumb extends Mob {
 
         EXP = 20;
 
-        maxLvl = 36;
+        maxLvl = -36;
         properties.add(Char.Property.HOLLOW);
         properties.add(Property.IMMOVABLE);
 
@@ -100,6 +102,11 @@ public class Crumb extends Mob {
 
         if (toSteal != null && !toSteal.unique && Random.Float()<=0.45f) {
 
+            PumkingBomber clone = new PumkingBomber();
+            clone.pos = pos;
+            clone.state = clone.HUNTING;
+            GameScene.add( clone, 2f );
+            ScrollOfTeleportation.teleportToLocation(this, 0);
             GLog.w( Messages.get(Crumb.class, "stole_food", toSteal.name()) );
             if (!toSteal.stackable) {
                 Dungeon.quickslot.convertToPlaceholder(toSteal);
@@ -111,11 +118,18 @@ public class Crumb extends Mob {
             } else if (food instanceof Honeypot.ShatteredPot) {
                 ((Honeypot.ShatteredPot)food).pickupPot(this);
             }
-            //Buff.affect(this, Haste.class,20f);
+
+            die(null);
             return true;
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void die( Object cause ) {
+        super.die(cause);
+        food = null;
     }
 
     @Override

@@ -4,29 +4,53 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Boss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.HalomethaneFire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ElementalBuff.BaseBuff.ScaryBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HalomethaneBurning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.DeadFireFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HalomethaneFlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
@@ -35,9 +59,11 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DeadDogCerberusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.GameMath;
@@ -52,9 +78,8 @@ public class DeadDogCerberus extends Boss {
      * 恶狗扑食技能参数
      */
     private int   lastEnemyPos = -1;
-    private float leapCooldown = 0;
-    private int        leapPos = -1;
-
+    private float leapCooldown =  0;
+    private int   leapPos      = -1;
 
     /**
      * 狩猎准备技能参数
@@ -71,6 +96,8 @@ public class DeadDogCerberus extends Boss {
     //阶段推进
     private int phase = 0;
 
+    private int AltPhase = 0;
+
     {
         initProperty();
         initBaseStatus(20, 60, 20, 26, 1000, 0, 0);
@@ -85,6 +112,13 @@ public class DeadDogCerberus extends Boss {
         properties.add(Property.BOSS);
         properties.add(Property.DEMONIC);
         properties.add(Property.ACIDIC);
+
+
+        immunities.add(SoulDead.class);
+        immunities.add(Burning.class);
+        immunities.add(ToxicGas.class);
+        immunities.add(CorrosiveGas.class);
+        immunities.add(Vertigo.class);
     }
 
     @Override
@@ -104,9 +138,6 @@ public class DeadDogCerberus extends Boss {
         }
     }
 
-
-    private int attackSkills = attackSkill(this);
-
     /**
      * Phase小于2时，Boss不可能死亡
      */
@@ -115,16 +146,67 @@ public class DeadDogCerberus extends Boss {
         return phase < 2 || HP > 0;
     }
 
+    /** 鏖战准备：没有目标时，每回合回复3生命，无上限。*/
+    @Override
+    public void move( int step ) {
+        if(state == WANDERING){
+            HP += Math.min(3, HT - HP);
+            if(HP != HT){
+                sprite.showStatusWithIcon(CharSprite.POSITIVE, "3", FloatingText.HEALING);
+            }
+        }
+        super.move( step );
+    }
+
     @Override
     public void damage(int dmg, Object src) {
-        super.damage(dmg, src);
 
         //Boss阶段推进
         if (phase == 0 && HP < 700) {
             phase++;
+            HP = 700;
+            Buff.affect(this,  RoseShiled.class, 15f);
+            immunities.add(Freezing.class);
+            immunities.add(Terror.class);
+            immunities.add(HalomethaneBurning.class);
+            Buff.detach( this, Frost.class );
+            Buff.detach( this, HalomethaneBurning.class );
+            Buff.detach( this, Terror.class );
         } else if (phase == 1 && HP < 390) {
             phase++;
+            HP = 390;
+            Buff.affect(this,  RoseShiled.class, 35f);
+            immunities.add(FrostBurning.class);
+            immunities.add(MagicalSleep.class);
+            immunities.add(Paralysis.class);
+            Buff.affect(this, SuperAttack.class,SuperAttack.DURATION);
         }
+
+        if (AltPhase == 0 && HP<500){
+            AltPhase++;
+            HP = 500;
+            Buff.affect(this, SuperAttack.class,SuperAttack.DURATION);
+        }
+
+        LockedFloor lock = hero.buff(LockedFloor.class);
+        if (lock != null) {
+            int multiple = 3;
+            lock.addTime(dmg*multiple);
+        }
+
+        //TODO 减伤实现
+        /*
+         * 固定被动·战场适应·坚韧不倒：受到伤害时，获得（伤害值）%同类型伤害减免，最多增加至50%；
+         * 受到其他类型伤害后减少原减伤类型（伤害数值）%，最低减少至0%。
+         * 受到大于自身生命值最大值20%的伤害时，将伤害降低至该数值。
+         */
+        if(phase == 0){
+            dmg = Math.min(dmg, 150);
+        } else {
+            dmg = Math.min(dmg, 150/phase);
+        }
+
+        super.damage(dmg, src);
     }
 
     @Override
@@ -132,9 +214,110 @@ public class DeadDogCerberus extends Boss {
         return Random.NormalIntRange( 25, 60 );
     }
 
+    /** 二阶段：磨牙吮血 */
+    public void ReFlashTootehBlood() {
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            if (mob instanceof BleedCrystal && Dungeon.level.distance(pos, mob.pos) <= 7) {
+                sprite.parent.add(new Chains(sprite.center(),
+                mob.sprite.destinationCenter(),
+                Effects.Type.RED_CHAIN,
+                () -> {
+                    Actor.add(new Pushing(mob, mob.pos, pos,
+                            () -> pullEnemy(mob, pos)));
+                    next();
+                }));
+            }
+        }
+    }
+
+    /** 常驻： */
+    public void GetCryStal() {
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+            if (mob instanceof BleedCrystal && Dungeon.level.distance(pos, mob.pos) <= 8) {
+                sprite.parent.add(new Chains(sprite.center(),
+                        mob.sprite.destinationCenter(),
+                        Effects.Type.RED_CHAIN,
+                        () -> {
+                            Actor.add(new Pushing(mob, mob.pos, pos,
+                                    () -> pullEnemy(mob, pos)));
+                            next();
+                        }));
+            }
+        }
+    }
+
+    private void pullEnemy( Char enemy, int pullPos ){
+        enemy.pos = pullPos;
+        enemy.sprite.place(pullPos);
+        enemy.die(null);
+        Buff.affect(this, NoArmorDamage_BleedingNomalAttack.class, 8f);
+
+        Buff.affect(this, Barrier.class).setShield(4);
+        if(phase>=2){
+            Buff.affect(this, Adrenaline.class, 3f);
+        }
+        Buff.affect(this, Barrier.class).setShield(4);
+    }
+
+    @Override
+    public float attackDelay() {
+        float delay = super.attackDelay();
+        //提升100%攻速
+        if(buff(SuperAttack.class) != null){
+            delay /= 2;
+        }
+        return delay;
+    }
+
     @Override
     public int attackProc( Char enemy, int damage ) {
         damage = super.attackProc( enemy, damage );
+
+        //提升200%攻击力
+        if(buff(SuperAttack.class) != null){
+            damage *= 4;
+        }
+
+        if(buff(SoulDead.class) != null){
+            damage *= 4;
+            if(enemy !=null && enemy == hero) {
+                for (Buff buff : hero.buffs()) {
+                    if (buff instanceof ScaryBuff) {
+                        ((ScaryBuff) buff).damgeScary(5);
+                    }  else {
+                        Buff.affect(enemy, ScaryBuff.class).set((100), 5);
+                    }
+                }
+            }
+        }
+
+        //【二阶段】被动技能：非人狩猎
+        if(phase == 1 && enemy != hero){
+            damage *= 2;
+            if(enemy.HP<damage){
+                BleedCrystal bleedCrystal = new BleedCrystal();
+                bleedCrystal.pos = enemy.pos;
+                GameScene.add(bleedCrystal);
+                Buff.affect(bleedCrystal, HaloDeadBite.class,100f);
+                Dungeon.level.occupyCell(bleedCrystal);
+                CellEmitter.get(bleedCrystal.pos).burst(Speck.factory(Speck.EVOKE), 4);
+            }
+        }
+
+        //连环撕咬 四连寄
+        if (ComboAttackCooldown <= 0) {
+            ((DeadDogCerberusSprite) sprite).setComboAttack(enemy.pos);
+            hero.sprite.looping();
+            hero.busy();
+            hero.spend(phase>1 ? 4f :3f);
+
+            if(phase>1){
+                Buff.affect( enemy, Bleeding.class ).set( 6f + phase*6 );
+            }
+
+            ComboAttackThis = false;
+            ComboAttackCooldown = 15;
+        }
 
         //凝血结晶只在无冷却Buff + 敌人是英雄状态下触发 此为固定技能
         if (buff(DeadDogCerberus.BleedingSummonCoolown.class) == null){
@@ -163,21 +346,15 @@ public class DeadDogCerberus extends Boss {
 
         }
 
-        //连环撕咬 四连寄
-        if (ComboAttackThis) {
-            yell(Messages.get(this, "combo_attack_hit"));
-            int dmg = damageRoll();
-            dmg = Math.round(dmg * AscensionChallenge.statModifier(DeadDogCerberus.this));
-            dmg = defenseProc(enemy,dmg);
-            //处理命中率
-            for (int i = 0; i < 4; i++) {
-                enemy.damage(dmg, new Stone());
-                Buff.affect( enemy, Bleeding.class ).set( i+2 );
-            }
-            ComboAttackThis = false;
+        if (buff(CerberusBless.class) != null  || buff(NoArmorDamage_BleedingNomalAttack.class) != null){
+            damage -= enemy.drRoll()/2;
         }
 
-
+        //普攻流血 1/10
+        if (buff(NoArmorDamage_BleedingNomalAttack.class) != null){
+            Buff.affect( enemy, Bleeding.class ).set( damage/4f );
+        }
+        ScrollOfTeleportation.teleportToLocation(this,0);
         return damage;
     }
 
@@ -188,6 +365,42 @@ public class DeadDogCerberus extends Boss {
             leapPos = -1;
         }
 
+        //三阶段
+        if(phase == 2){
+            Buff.affect(hero, SoulDead.class,SoulDead.DURATION);
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                Buff.affect(mob, SoulDead.class,SoulDead.DURATION);
+            }
+            //听声辩位
+            if (enemy == null &&lastEnemyPos != hero.pos && state == WANDERING){
+                Buff.affect(this, Haste.class, 6f);
+                spend(1f);
+                yell(Messages.get(this, "dog_see_you",hero.name()));
+                if(hero.buff(Invisibility.class)!= null){
+                    hero.buff(Invisibility.class).detach();
+                }
+            }
+        }
+
+        //全局阶段
+        if(Random.Int(100) < 10 * phase){
+            for (int i : PathFinder.NEIGHBOURS8) {
+                if (!Dungeon.level.solid[pos + i]) {
+                    CellEmitter.get(pos + i).burst(ElmoParticle.FACTORY, 5);
+                    GameScene.add(Blob.seed(pos + i, 12, DeadHaloFire.class));
+                }
+            }
+        }
+
+        //连击手动冷却
+        if(!ComboAttackThis){
+            ComboAttackCooldown--;
+            if(ComboAttackCooldown <= 0){
+                ComboAttackThis = true;
+            }
+        }
+
+        //一阶段：磨牙
         AiState lastState = state;
         boolean result = super.act();
         if (paralysed <= 0) {
@@ -206,23 +419,51 @@ public class DeadDogCerberus extends Boss {
                 HunterReady--;
             }
         }
-
-
-        //连环撕咬
-        if(ComboAttackCooldown <= 0){
-            ComboAttackCooldown = 15;
-            ComboAttackThis = true;
-        } else {
-            ComboAttackCooldown--;
-        }
-
-        //if state changed from wandering to hunting, we haven't acted yet, don't update.
+        //恶狗扑食
         if (!(lastState == WANDERING && state == HUNTING)) {
             if (enemy != null) {
                 lastEnemyPos = enemy.pos;
             } else {
                 lastEnemyPos = hero.pos;
             }
+        }
+
+        //二阶段：磨牙吮血
+        if(phase >= 1 && buff(BloodTeethCooldown.class) == null){
+            ReFlashTootehBlood();
+            Buff.affect(this, BloodTeethCooldown.class,BloodTeethCooldown.DURATION);
+        } else if(buff(BloodTeethCooldown.class) == null) {
+            Buff.affect(this, BloodTeethCooldown.class,BloodTeethCooldown.DURATION);
+            GetCryStal();
+        }
+
+        //二阶段：云开雾散
+        if(phase>=1 && buff(ClearBlobs.class) == null){
+            PathFinder.buildDistanceMap( lastEnemyPos, BArray.not( Dungeon.level.solid, null ), 9 );
+            ArrayList<Class> affectedBlobs;
+            affectedBlobs = new ArrayList<>(new BlobImmunity().immunities());
+            ArrayList<Blob> blobs = new ArrayList<>();
+            for (Class c : affectedBlobs){
+                Blob b = Dungeon.level.blobs.get(c);
+                if (b != null && b.volume > 0){
+                    blobs.add(b);
+                }
+            }
+
+            for (int i=0; i < Dungeon.level.length(); i++) {
+                if (PathFinder.distance[i] < Integer.MAX_VALUE) {
+
+                    for (Blob blob : blobs) {
+                        blob.clear(i);
+                    }
+
+                    if (Dungeon.level.heroFOV[i]) {
+                        CellEmitter.get( i ).burst( Speck.factory( Speck.DISCOVER ), 2 );
+                    }
+
+                }
+            }
+            Buff.affect(this, ClearBlobs.class,ClearBlobs.DURATION);
         }
 
         return result;
@@ -239,6 +480,7 @@ public class DeadDogCerberus extends Boss {
     private static final String COMBO_ATTACK_BOOLEAN  = "combo_attack_boolean";
 
     private static final String PHASE = "phase";
+    private static final String ALT_PHASE = "alt_phase";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -254,6 +496,7 @@ public class DeadDogCerberus extends Boss {
         bundle.put(COMBO_ATTACK_BOOLEAN, ComboAttackThis);
 
         bundle.put(PHASE, phase);
+        bundle.put(ALT_PHASE, AltPhase);
     }
 
     @Override
@@ -270,6 +513,21 @@ public class DeadDogCerberus extends Boss {
         ComboAttackThis = bundle.getBoolean(COMBO_ATTACK_BOOLEAN);
 
         phase = bundle.getInt(PHASE);
+
+        AltPhase = bundle.getInt(ALT_PHASE);
+
+        if(phase == 1){
+            immunities.add(Freezing.class);
+            immunities.add(Terror.class);
+            immunities.add(HalomethaneBurning.class);
+        } else if(phase == 2){
+            immunities.add(Freezing.class);
+            immunities.add(Terror.class);
+            immunities.add(HalomethaneBurning.class);
+            immunities.add(FrostBurning.class);
+            immunities.add(MagicalSleep.class);
+            immunities.add(Paralysis.class);
+        }
 
         if (state != SLEEPING) BossHealthBar.assignBoss(this);
     }
@@ -358,15 +616,34 @@ public class DeadDogCerberus extends Boss {
                                 Sample.INSTANCE.play(Assets.Sounds.HIT);
 
                                 int targetingPos = enemy.pos;
-                                for (int i : PathFinder.NEIGHBOURS8) {
-                                    if (!Dungeon.level.solid[targetingPos + i]) {
-                                        CellEmitter.get(targetingPos + i).burst(ElmoParticle.FACTORY, 5);
-                                        GameScene.add(Blob.seed(targetingPos + i, 12, DeadHaloFire.class));
+
+                                if(phase ==  2){
+                                    for (int i : PathFinder.CIRCLE8) {
+                                        if (!Dungeon.level.solid[targetingPos + i]) {
+                                            CellEmitter.get(targetingPos + i).burst(ElmoParticle.FACTORY, 5);
+                                            GameScene.add(Blob.seed(targetingPos + i, 12, DeadHaloFire.class));
+                                        }
+                                    }
+                                } else {
+                                    for (int i : PathFinder.NEIGHBOURS8) {
+                                        if (!Dungeon.level.solid[targetingPos + i]) {
+                                            CellEmitter.get(targetingPos + i).burst(ElmoParticle.FACTORY, 5);
+                                            GameScene.add(Blob.seed(targetingPos + i, 12, DeadHaloFire.class));
+                                        }
                                     }
                                 }
                             } else {
                                 leapVictim.sprite.showStatus( CharSprite.NEUTRAL, leapVictim.defenseVerb() );
                                 Sample.INSTANCE.play(Assets.Sounds.MISS);
+                                int targetingPos = enemy.pos;
+                                if(phase ==  2){
+                                    for (int i : PathFinder.CIRCLE8) {
+                                        if (!Dungeon.level.solid[targetingPos + i]) {
+                                            CellEmitter.get(targetingPos + i).burst(ElmoParticle.FACTORY, 5);
+                                            GameScene.add(Blob.seed(targetingPos + i, 12, DeadHaloFire.class));
+                                        }
+                                    }
+                                }
                             }
                         }
 
@@ -469,6 +746,8 @@ public class DeadDogCerberus extends Boss {
 
             Freezing freeze = (Freezing)Dungeon.level.blobs.get( Freezing.class );
 
+            HalomethaneFire haloclear = (HalomethaneFire)Dungeon.level.blobs.get( HalomethaneFire.class );
+
             boolean observe = false;
 
             for (int i = area.left-1; i <= area.right; i++) {
@@ -478,6 +757,10 @@ public class DeadDogCerberus extends Boss {
 
                         if (freeze != null && freeze.volume > 0 && freeze.cur[cell] > 0){
                             freeze.clear(cell);
+                            off[cell] = cur[cell] = 0;
+                            continue;
+                        } else if (haloclear != null && haloclear.volume > 0 && haloclear.cur[cell] > 0){
+                            haloclear.clear(cell);
                             off[cell] = cur[cell] = 0;
                             continue;
                         }
@@ -494,7 +777,8 @@ public class DeadDogCerberus extends Boss {
 
                         }
 
-                    } else if (freeze == null || freeze.volume <= 0 || freeze.cur[cell] <= 0) {
+                    } else if (freeze == null || freeze.volume <= 0 || freeze.cur[cell] <= 0 ||
+                            haloclear == null || haloclear.volume <= 0 || haloclear.cur[cell] <= 0) {
 
                         if (flamable[cell]
                                 && (cur[cell-1] > 0
@@ -521,16 +805,20 @@ public class DeadDogCerberus extends Boss {
             }
         }
 
+
+
         public static void burn( int pos ) {
             Char ch = Actor.findChar( pos );
             if (ch != null && !ch.isImmune(Fire.class)) {
-
                 if(ch instanceof DeadDogCerberus){
                     Buff.affect( ch, FireSuperDr.class).set((2), 1);
+                    ch.HP += Math.min(2 * ((DeadDogCerberus) ch).phase, ch.HT - ch.HP);
+                    if(ch.HP != ch.HT){
+                        ch.sprite.showStatusWithIcon(CharSprite.POSITIVE, "5", FloatingText.HEALING);
+                    }
                 } else {
-                    Buff.affect( ch, Burning.class ).reignite( ch );
+                    ch.damage( 5,new DeadDogCerberus() );
                 }
-
             }
 
             Heap heap = Dungeon.level.heaps.get( pos );
@@ -547,7 +835,7 @@ public class DeadDogCerberus extends Boss {
         @Override
         public void use( BlobEmitter emitter ) {
             super.use( emitter );
-            emitter.pour(HalomethaneFlameParticle.FACTORY, 0.05f );
+            emitter.pour(DeadFireFlameParticle.FACTORY, 0.05f );
         }
 
         @Override
@@ -611,13 +899,135 @@ public class DeadDogCerberus extends Boss {
 
     }
 
+    public static class HaloDeadBite extends FlavourBuff {
+
+        public static final float DURATION	= 10f;
+
+        {
+            type = buffType.POSITIVE;
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(Window.ORAGNECOLOR);
+        }
+
+        @Override
+        public int icon() {
+            return BuffIndicator.CORRUPT;
+        }
+
+        @Override
+        public float iconFadePercent() {
+            return Math.max(0, (DURATION - visualcooldown()) / DURATION);
+        }
+
+    }
+
+    public static class BloodTeethCooldown extends FlavourBuff {
+        public static final float DURATION	= 15f;
+        {
+            type = buffType.POSITIVE;
+        }
+    }
+
+    public static class ClearBlobs extends FlavourBuff {
+        public static final float DURATION	= 15f;
+        {
+            type = buffType.POSITIVE;
+        }
+    }
+
+    public static class SuperAttack extends FlavourBuff {
+        public static final float DURATION	= 20f;
+        {
+            type = buffType.POSITIVE;
+        }
+
+        @Override
+        public int icon() {
+            return BuffIndicator.CHALLENGE;
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(Window.R_COLOR);
+        }
+
+        @Override
+        public float iconFadePercent() {
+            return Math.max(0, (DURATION - visualcooldown()) / DURATION);
+        }
+    }
+
+
+
+
+    public static class SoulDead extends FlavourBuff {
+        public static final float DURATION	= 100f;
+        {
+            type = buffType.POSITIVE;
+        }
+        @Override
+        public int icon() {
+            return BuffIndicator.CORRUPT;
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(Window.CBLACK);
+        }
+
+        @Override
+        public float iconFadePercent() {
+            return Math.max(0, (DURATION - visualcooldown()) / DURATION);
+        }
+    }
+
+
+
+
+    public static class NoArmorDamage_BleedingNomalAttack extends FlavourBuff {
+        public static final float DURATION	= 8f;
+        {
+            type = buffType.POSITIVE;
+        }
+
+        @Override
+        public int icon() {
+            return BuffIndicator.INVERT_MARK;
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(Window.WATA_COLOR);
+        }
+
+        @Override
+        public float iconFadePercent() {
+            return Math.max(0, (DURATION - visualcooldown()) / DURATION);
+        }
+    }
+
     /** 狗子基准命中率 */
     @Override
     public int attackSkill( Char target ) {
-        if(ComboAttackThis){
+        if(ComboAttackThis && phase<2){
             return 20;
         }
         return 48;
     }
 
+
+    @Override
+    public void die( Object cause ) {
+        super.die( cause );
+        Dungeon.level.unseal();
+        if(Statistics.bossRushMode){
+            GetBossLoot();
+        }
+        Badges.KILL_DOG();
+        GameScene.bossSlain();
+        yell( Messages.get(this, "defeated",hero.name()) );
+    }
 }
