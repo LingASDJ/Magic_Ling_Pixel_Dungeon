@@ -153,7 +153,7 @@ public class BGMPlayer {
                     playBGM(Assets.BGM_5, true);
                 } else if (d == 26 && Statistics.Hollow_Holiday) {
                     playBGM(Assets.HOLLOW_CITY, true);
-                } else if (d >= 29 && d < 31) {
+                } else if (d >= 29 && d < 33) {
                     playBGM(Assets.HOLLOW_CITY_HARD, true);
                 } else if (d > 26 && d < 29) {
                     playBGM(Assets.HOLLOW_CITY, true);
@@ -278,7 +278,7 @@ public class BGMPlayer {
             } else if (Dungeon.bossLevel() && t == 25){
                 if(Statistics.RandMode)playBGM( Assets.BGM_BOSSE4, true );
                 level.playLevelMusic();
-            } else if (Dungeon.bossLevel() && t == 30) {
+            } else if (Dungeon.bossLevel() && t == 31) {
                 playBGM(Assets.BOSSDOG, true);
             } else if (Dungeon.bossLevel() && t == -15) {
                 playBGM(Assets.BGM_FRBOSS, true);

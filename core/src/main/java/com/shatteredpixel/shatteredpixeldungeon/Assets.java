@@ -232,7 +232,7 @@ public class Assets {
 		public static final String BANNERS     = "interfaces/Banners/banners.png";
 		public static final String BANNERS_SD  = "interfaces/Banners/banners_sd.png";
 
-		public static final String BANNERS_SR  = "interfaces/Banners/banners_spr.png";
+		public static final String BANNERS_SR  = "interfaces/Banners/banners_hlwn.png";
 		public static final String BANNERS_SM  = "interfaces/Banners/banners_sum.png";
 		public static final String BANNERS_AT  = "interfaces/Banners/banners_at.png";
 		public static final String BANNERS_WT  = "interfaces/Banners/banners_win.png";

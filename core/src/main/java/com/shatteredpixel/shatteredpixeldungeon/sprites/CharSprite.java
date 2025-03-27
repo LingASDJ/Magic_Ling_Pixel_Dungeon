@@ -104,7 +104,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	protected Animation idle;
 	protected Animation run;
-	protected Animation attack;
+	public Animation attack;
 	protected Animation operate;
 	protected Animation toss;
 	protected Animation zap;
