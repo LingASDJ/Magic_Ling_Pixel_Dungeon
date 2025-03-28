@@ -16,13 +16,13 @@ import com.watabou.utils.Random;
 
 public class BoomSkull extends GoldMob {
     {
-        HP = HT = 1;
+        HP = HT = 15;
 
         spriteClass = SkullSprite.class;
 
         defenseSkill = 0;
 
-        viewDistance = 4;
+        viewDistance = 30;
 
         flying = true;
 

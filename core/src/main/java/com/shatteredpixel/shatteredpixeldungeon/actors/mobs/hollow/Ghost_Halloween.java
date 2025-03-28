@@ -20,6 +20,7 @@ public class Ghost_Halloween extends Mob {
         baseSpeed = 1f;
         HP = HT = 60;
         EXP = 19;
+        flying = true;
         defenseSkill = 45;
         maxLvl = 35;
         properties.add(Char.Property.HOLLOW);

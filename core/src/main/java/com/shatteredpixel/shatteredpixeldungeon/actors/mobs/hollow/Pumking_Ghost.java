@@ -22,6 +22,7 @@ public class Pumking_Ghost extends Mob {
         HP = HT = 80;
         EXP = 19;
         defenseSkill = 45;
+        flying = true;
         maxLvl = 35;
         properties.add(Char.Property.HOLLOW);
     }

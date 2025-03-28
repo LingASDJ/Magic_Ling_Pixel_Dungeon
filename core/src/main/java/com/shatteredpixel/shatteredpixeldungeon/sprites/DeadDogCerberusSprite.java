@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDogCerberus;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.LanFireGo;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.utils.Callback;
@@ -28,7 +29,7 @@ public class DeadDogCerberusSprite extends MobSprite {
         TextureFilm frames = new TextureFilm( texture, 36, 28);
 
         idle = new Animation( 7, true );
-        idle.frames( frames, 0,1,2,3,4,5,6,7,8 );
+        idle.frames( frames, 9,10,11,12,13,14,15,16 );
 
         run = new Animation( 9, true );
         run.frames( frames, 17,18,19,20,21 );
@@ -40,7 +41,7 @@ public class DeadDogCerberusSprite extends MobSprite {
         die.frames( frames, 0 );
 
         Altidle = new MovieClip.Animation( 9, true );
-        Altidle.frames( frames, 9,10,11,12,13,14,15,16 );
+        Altidle.frames( frames,  0,1,2,3,4,5,6,7,8);
 
         SuperAttack = new MovieClip.Animation( 9, false );
         SuperAttack.frames( frames, 33,34,35,36,37 );
@@ -66,6 +67,11 @@ public class DeadDogCerberusSprite extends MobSprite {
         play( FlyAttack );
     }
 
+    public void Altidle( int cell ){
+        turnTo( ch.pos, cell );
+        play( Altidle );
+    }
+
     /**
      * 磨牙动画
      */
@@ -74,9 +80,20 @@ public class DeadDogCerberusSprite extends MobSprite {
         play( tooteh );
     }
 
-    public void setComboAttack(int cell){
-        turnTo( ch.pos, cell );
-        play( ComboAttack );
+    @Override
+    public void attack( int cell ) {
+        if (((DeadDogCerberus)ch).ComboAttackThis) {
+
+            ((MissileSprite)parent.recycle( MissileSprite.class )).
+                    reset( this, cell, new LanFireGo(), () -> ch.onAttackComplete());
+            play( ComboAttack );
+            turnTo( ch.pos , cell );
+
+        } else {
+
+            super.attack( cell );
+
+        }
     }
 
     @Override
