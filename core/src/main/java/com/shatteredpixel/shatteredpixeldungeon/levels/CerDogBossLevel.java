@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SentryRoom;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DeadDogCerberusSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
@@ -200,10 +201,12 @@ public class CerDogBossLevel extends Level{
                                 Camera.main.shake(2f, 10f);
                                 DeadDogCerberus ncx = new DeadDogCerberus();
                                 ncx.pos = 356;
+
                                 ncx.notice();
                                 Buff.detach( hero, MindVision.class );
                                 ncx.state = ncx.WANDERING;
                                 GameScene.add(ncx);
+                                ((DeadDogCerberusSprite)ncx.sprite).Altidle(356);
                             }
                         }));
 

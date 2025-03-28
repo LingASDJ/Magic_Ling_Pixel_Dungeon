@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Ghost_Halloween;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.Pumking_Ghost;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
@@ -13,7 +12,7 @@ public class PumkingGhostSprite extends MobSprite {
         if (ch instanceof Pumking_Ghost && ((Pumking_Ghost) ch).activeLook){
             alpha(1f);
         } else {
-            alpha(0.1f);
+            alpha(0.15f);
         }
         hideSleep();
     }

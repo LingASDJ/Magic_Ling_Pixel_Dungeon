@@ -8,6 +8,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DwarfGeneral;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.hollow.DeadDogCerberus;
 import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAnmy;
@@ -32,6 +34,7 @@ import com.watabou.utils.PointF;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -52,7 +55,7 @@ public class MobPlacer extends TestItem{
 
     private boolean shouldOverride = false;
     private int HT = 1;
-    private int maxPage = 15;
+    private int maxPage = 19;
     private int ST = 1;
     private int elite_op = 0;
 
@@ -237,7 +240,7 @@ public class MobPlacer extends TestItem{
             PixelScene.align(selectedMob);
             add(selectedMob);
 
-            float pos = 96;
+            float pos = 110;
             int column = 0;
             for (int i = 0; i < 17 && column < 4; ++i) {
                 CheckBox cb = new CheckBox(M.L(MobPlacer.class, "elite_name" + i));
@@ -261,7 +264,7 @@ public class MobPlacer extends TestItem{
                 }
 
                 if(i==16){
-                    cb.setRect((WIDTH/Radius - GAP)/Radius * 2+81, 78, (WIDTH/3f - GAP), 16);
+                    cb.setRect((WIDTH/Radius - GAP)/Radius * 2+81, 90, (WIDTH/3f - GAP), 16);
                 }
 
                 modifyHealth = new RedButton(Messages.get(MobPlacer.class, "modify_health"), 7) {
@@ -285,7 +288,7 @@ public class MobPlacer extends TestItem{
                         }));
                     }
                 };
-                modifyHealth.setRect((WIDTH/3f)/6f-8, 78, (WIDTH/3f - GAP), 16);
+                modifyHealth.setRect((WIDTH/3f)/6f-8, 90, (WIDTH/3f - GAP), 16);
                 modifyHealth.enable( shouldOverride );
                 modifyHealth.active = shouldOverride;
                 add(modifyHealth);
@@ -302,7 +305,7 @@ public class MobPlacer extends TestItem{
                         }
                     }
                 };
-                overrideResultButton.setRect(modifyHealth.right() + GAP, 78, (WIDTH/3f - GAP), 16);
+                overrideResultButton.setRect(modifyHealth.right() + GAP, 90, (WIDTH/3f - GAP), 16);
                 overrideResultButton.checked( shouldOverride );
                 add(overrideResultButton);
 
@@ -409,18 +412,22 @@ public class MobPlacer extends TestItem{
                 Bestiary.ALLY,
                 Bestiary.NEUTRAL
         );
-
+        List<Class<?>> includedBosses = Arrays.asList(DeadDogCerberus.class, DwarfGeneral.class);
         for(Bestiary bestiary : Bestiary.values()){
             if( !excludedTypes.contains( bestiary ) ) {
                 List< Class< ? extends Mob > > mobClasses = new ArrayList<>();
                 for ( Class<?> cls : bestiary.entities() ) {
-                    if ( Mob.class.isAssignableFrom( cls ) && !Boss.class.isAssignableFrom( cls ) && !Mob.NoMobSpawn.class.isAssignableFrom( cls )) {
+                    if ( Mob.class.isAssignableFrom( cls ) &&
+                            (!Boss.class.isAssignableFrom( cls ) || includedBosses.contains( cls )) &&
+                            !Mob.NoMobSpawn.class.isAssignableFrom( cls )) {
                         mobClasses.add( ( Class< ? extends Mob >) cls );
                     }
                 }
                 allData.put( bestiary.ordinal(), new ArrayList<>( mobClasses ) );
             }
+
         }
+
 
     }
 }

@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM100;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DimandMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.EbonyMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
@@ -271,9 +272,9 @@ public enum Bestiary {
 	UNIVERSAL,
 	RARE,
 	QUEST,
-
-	NEUTRAL,
 	BOSSRUSH,
+	NEUTRAL,
+
 	ALLY,
 	TRAP,
 	PLANT;
@@ -345,7 +346,8 @@ public enum Bestiary {
 				//Boss T2
 				DiamondKnight.class,
 				TPDoor.class,
-				DCrystal.class);
+				DCrystal.class,
+				DimandMimic.class);
 
 		ICECAVE.addEntities(Bat.class, ColdMagicRat.class,
 				FireGhost.class, RedSwarm.class,
@@ -390,6 +392,7 @@ public enum Bestiary {
 				YogDzewa.Larva.class, YogFist.BurningFist.class, YogFist.SoiledFist.class,
 				YogFist.RottingFist.class, YogFist.RustedFist.class,
 				YogFist.BrightFist.class, YogFist.DarkFist.class,
+				YogFist.HaloFist.class, YogFist.FreezingFist.class,
 
 				//Boss T2
 				YogReal.class);
