@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroAction;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -50,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -71,6 +73,7 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class DeadDogCerberus extends Boss {
 
@@ -97,6 +100,19 @@ public class DeadDogCerberus extends Boss {
     private int phase = 0;
 
     private int AltPhase = 0;
+
+    /**
+     *  免伤用参数
+     */
+
+    public int magicDefence = 100;
+    public int physicDefence = 100;
+
+    /**
+     *  听声辨位
+     */
+    public boolean attackHero = false;
+    public int skillTime = 15;
 
     {
         initProperty();
@@ -200,6 +216,27 @@ public class DeadDogCerberus extends Boss {
          * 受到其他类型伤害后减少原减伤类型（伤害数值）%，最低减少至0%。
          * 受到大于自身生命值最大值20%的伤害时，将伤害降低至该数值。
          */
+
+        Class<?> srcClass = src.getClass();
+        HashSet<Class> resists = new HashSet<>(RingOfElements.RESISTS);
+        boolean flag = false;
+        for (Class c : resists){
+            if (c.isAssignableFrom(srcClass)){
+                flag=true;
+                break;
+            }
+        }
+
+        if (flag) {
+            float rate = ((float) magicDefence / 100);
+            dmg *= rate;
+        } else if (!(src instanceof Buff)){
+            float rate = ((float) physicDefence / 100);
+            dmg *= rate;
+        }
+
+        dmg = Math.min(dmg,200);
+
         if(phase == 0){
             dmg = Math.min(dmg, 150);
         } else {
@@ -207,6 +244,26 @@ public class DeadDogCerberus extends Boss {
         }
 
         super.damage(dmg, src);
+
+        if (flag) {
+            magicDefence -= dmg;
+            physicDefence += dmg;
+        } else if (!(src instanceof Buff))
+            /* Buff伤害暂时定义为真伤吧，另外没写到元素戒指里的伤害并且伤害来源不是buff的伤害都按照物理处理了
+               哦对，我把烈阳加到元素里去了，虽然讲道理现在代码的写法，敌方烈阳不会索到玩家
+         */ {
+            magicDefence += dmg;
+            physicDefence -= dmg;
+        }
+
+        calibrate();
+    }
+
+    public void calibrate(){
+        if(magicDefence > 100) magicDefence = 100;
+        if(magicDefence < 50 ) magicDefence = 50;
+        if(physicDefence > 100) physicDefence = 100;
+        if(physicDefence < 50 ) physicDefence = 50;
     }
 
     @Override
@@ -365,6 +422,14 @@ public class DeadDogCerberus extends Boss {
             leapPos = -1;
         }
 
+        if(enemy == hero){
+            attackHero = true;
+        }else if(enemy == null){
+            attackHero = false;
+        }
+
+        if(skillTime >0) skillTime --;
+
         //三阶段
         if(phase == 2){
             Buff.affect(hero, SoulDead.class,SoulDead.DURATION);
@@ -372,12 +437,22 @@ public class DeadDogCerberus extends Boss {
                 Buff.affect(mob, SoulDead.class,SoulDead.DURATION);
             }
             //听声辩位
-            if (enemy == null &&lastEnemyPos != hero.pos && state == WANDERING){
-                Buff.affect(this, Haste.class, 6f);
-                spend(1f);
-                yell(Messages.get(this, "dog_see_you",hero.name()));
-                if(hero.buff(Invisibility.class)!= null){
-                    hero.buff(Invisibility.class).detach();
+            if (!attackHero){
+                if((hero.curAction instanceof HeroAction.Move ) && skillTime == 0) {
+
+                    skillTime = 15;
+
+                    enemy = hero;
+                    target = hero.pos;
+                    enemySeen = true;
+                    notice();
+
+                    Buff.affect(this, Haste.class, 6f);
+                    spend(1f);
+                    yell(Messages.get(this, "dog_see_you", hero.name()));
+                    if (hero.buff(Invisibility.class) != null) {
+                        hero.buff(Invisibility.class).detach();
+                    }
                 }
             }
         }
@@ -481,6 +556,10 @@ public class DeadDogCerberus extends Boss {
 
     private static final String PHASE = "phase";
     private static final String ALT_PHASE = "alt_phase";
+    private static final String SKILLTIME = "skilltime";
+    private static final String ATTACKHERO = "attackhero";
+    private static final String MAGICDEFENSE = "magicdefense";
+    private static final String PHYSICDEFENSE = "physicdefense";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -497,11 +576,22 @@ public class DeadDogCerberus extends Boss {
 
         bundle.put(PHASE, phase);
         bundle.put(ALT_PHASE, AltPhase);
+
+        bundle.put(SKILLTIME,skillTime);
+        bundle.put(ATTACKHERO,attackHero);
+        bundle.put(MAGICDEFENSE,magicDefence);
+        bundle.put(PHYSICDEFENSE,physicDefence);
     }
 
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
+
+        skillTime = bundle.getInt(SKILLTIME);
+        attackHero = bundle.getBoolean(ATTACKHERO);
+        magicDefence = bundle.getInt(MAGICDEFENSE);
+        physicDefence = bundle.getInt(PHYSICDEFENSE);
+
         lastEnemyPos = bundle.getInt(LAST_ENEMY_POS);
         leapPos = bundle.getInt(LEAP_POS);
         leapCooldown = bundle.getFloat(LEAP_CD);
