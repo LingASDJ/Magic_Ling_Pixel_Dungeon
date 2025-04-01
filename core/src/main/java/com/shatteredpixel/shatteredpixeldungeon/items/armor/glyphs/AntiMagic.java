@@ -65,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.legend.DiedCrossBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.HolyDart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisintegrationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrimTrap;
@@ -140,6 +141,9 @@ public class AntiMagic extends Armor.Glyph {
 		RESISTS.add(IceGolem.DarkBolt.class);
 		RESISTS.add(YogFist.HaloFist.DarkBolt.class);
 		RESISTS.add(YogFist.FreezingFist.LightBeam.class);
+
+
+		RESISTS.add(DiedCrossBow.BombArrow.class);
 	}
 	
 	@Override

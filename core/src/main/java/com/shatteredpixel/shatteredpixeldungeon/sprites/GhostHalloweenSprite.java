@@ -12,7 +12,7 @@ public class GhostHalloweenSprite extends MobSprite {
         if (ch instanceof Ghost_Halloween && ((Ghost_Halloween) ch).activeLook){
           alpha(1f);
         } else {
-           alpha(0.1f);
+           alpha(0.25f);
         }
         hideSleep();
     }
