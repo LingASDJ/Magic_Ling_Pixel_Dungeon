@@ -168,7 +168,7 @@ public class WandOfSun extends DamageWand implements Item.ThanksItem{
         }
 
         public int level = 1;
-        public WandOfSun wand;
+        public DamageWand wand;
         public MagesStaff staff = null;
         public int duration;
         public int viewDistance = 9;

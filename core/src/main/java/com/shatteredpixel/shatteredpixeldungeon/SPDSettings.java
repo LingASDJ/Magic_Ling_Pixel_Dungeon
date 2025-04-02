@@ -174,6 +174,10 @@ public class SPDSettings extends GameSettings {
 
 	private static final String KEY_DARK	= "dark_ui";
 
+	private static final String KEY_CUSTOM_BANNER	= "custom_banner";
+
+	private static final String KEY_BSC_TEXT	= "custom_bsc_text";
+
 	private static final String KEY_HDPS	= "hd_ps";
 
 	private static final String KEY_SKIN	= "skin_ui";
@@ -648,6 +652,22 @@ public class SPDSettings extends GameSettings {
 
 	public static boolean ClassUI() {
 		return getBoolean(KEY_DARK, false);
+	}
+
+	public static void isCustomBanner(boolean value) {
+		put( KEY_CUSTOM_BANNER, value );
+	}
+
+	public static boolean isCustomBanner() {
+		return getBoolean(KEY_CUSTOM_BANNER, false);
+	}
+
+	public static void CustomBanner_Text(String value) {
+		put(KEY_BSC_TEXT, value);
+	}
+
+	public static String CustomBanner_Text() {
+		return getString(KEY_BSC_TEXT, Messages.get(GameRules.class,"initial_value"));
 	}
 
 	public static void UPos(boolean value) {

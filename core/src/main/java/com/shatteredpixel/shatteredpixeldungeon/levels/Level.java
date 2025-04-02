@@ -1274,10 +1274,11 @@ public abstract class Level implements Bundlable {
 			}
 		}
 	}
-	
+
 	public Heap drop( Item item, int cell ) {
 
 		if (item == null || Challenges.isItemBlocked(item)){
+
 			//create a dummy heap, give it a dummy sprite, don't add it to the game, and return it.
 			//effectively nullifies whatever the logic calling this wants to do, including dropping items.
 			Heap heap = new Heap();
@@ -1289,42 +1290,35 @@ public abstract class Level implements Bundlable {
 
 		Heap heap = heaps.get( cell );
 		if (heap == null) {
-			
+
 			heap = new Heap();
 			heap.seen = Dungeon.level == this && heroFOV[cell];
 			heap.pos = cell;
 			heap.drop(item);
 			if (map[cell] == Terrain.CHASM || (Dungeon.level != null && pit[cell])) {
-				if(Dungeon.branch != 0){
-					item.doPickUp(hero, hero.pos);
-					heap.destroy();
-				} else {
-					Dungeon.dropToChasm( item );
-					GameScene.discard( heap );
-				}
+				Dungeon.dropToChasm( item );
+				GameScene.discard( heap );
 			} else {
 				heaps.put( cell, heap );
 				GameScene.add( heap );
 			}
-			
+
 		} else if (heap.type == Heap.Type.LOCKED_CHEST || heap.type == Heap.Type.CRYSTAL_CHEST) {
-			
+
 			int n;
 			do {
 				n = cell + PathFinder.NEIGHBOURS8[Random.Int( 8 )];
 			} while (!passable[n] && !avoid[n]);
 			return drop( item, n );
-			
+
 		} else {
-
-
 			heap.drop(item);
 		}
-		
+
 		if (Dungeon.level != null && ShatteredPixelDungeon.scene() instanceof GameScene) {
 			pressCell( cell );
 		}
-		
+
 		return heap;
 	}
 
@@ -1348,13 +1342,8 @@ public abstract class Level implements Bundlable {
 			heap.pos = cell;
 			heap.drop(item);
 			if (map[cell] == Terrain.CHASM || (Dungeon.level != null && pit[cell])) {
-				if(Dungeon.branch != 0){
-					item.doPickUp(hero, hero.pos);
-					heap.destroy();
-				} else {
-					Dungeon.dropToChasm( item );
-					GameScene.discard( heap );
-				}
+				Dungeon.dropToChasm( item );
+				GameScene.discard( heap );
 			} else {
 				heaps.put( cell, heap );
 				GameScene.add( heap );

@@ -20,7 +20,6 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
 import java.util.Calendar;
 import java.util.List;
@@ -165,21 +164,60 @@ public class GameRules {
     public static String BannersRules() {
         final Calendar calendar = Calendar.getInstance();
         String banners;
+        int month = calendar.get(Calendar.MONTH);
+        banners = Assets.Interfaces.BANNERS;
 
-        // 判断是否为节假日
-
-            // 获取当前月份
-            int month = calendar.get(Calendar.MONTH); // 注意，月份是从0开始的，0表示1月，11表示12月
-        if(RegularLevel.holiday == RegularLevel.Holiday.YX) {
-            boolean year = Random.Float() <= 0.5f;
-            if (!SPDSettings.ClassUI()) {
-                banners = Assets.Interfaces.BANNERS_YX;
-            } else {
-                banners = Assets.Interfaces.BANNERS_BD;
+        if(SPDSettings.isCustomBanner()){
+            switch (SPDSettings.CustomBanner_Text()) {
+                case "复活":
+                    banners = Assets.Interfaces.BANNERS_EA;
+                    break;
+                case "圣诞":
+                    banners = Assets.Interfaces.BANNERS_SD;
+                    break;
+                case "元宵":
+                    banners = Assets.Interfaces.BANNERS_YX;
+                    break;
+                case "生日":
+                    banners = Assets.Interfaces.BANNERS_BD;
+                    break;
+                case "清明":
+                    banners = Assets.Interfaces.BANNERS_QM;
+                    break;
+                case "万圣":
+                    banners = Assets.Interfaces.BANNERS_HL;
+                    break;
+                case "春节":
+                    banners = Assets.Interfaces.BANNERS_CJ;
+                    break;
+                case "夏季":
+                    banners = Assets.Interfaces.BANNERS_SM;
+                    break;
+                case "冬季":
+                    banners = Assets.Interfaces.BANNERS_WT;
+                    break;
+                case "秋季":
+                    banners = Assets.Interfaces.BANNERS_AT;
+                    break;
+                case "春季":
+                    banners = Assets.Interfaces.BANNERS_SR;
+                    break;
+                default:
+                    banners = Assets.Interfaces.BANNERS;
+                    break;
             }
-        }else if(RegularLevel.holiday == RegularLevel.Holiday.CJ) {
-            banners = Assets.Interfaces.BANNERS_CJ;
-        } else if (month == 2 || month == 3 || month == 4) { // 春季：3, 4, 5月
+        } else {
+            if (RegularLevel.holiday == RegularLevel.Holiday.YX) {
+                if (!SPDSettings.ClassUI()) {
+                    banners = Assets.Interfaces.BANNERS_YX;
+                } else {
+                    banners = Assets.Interfaces.BANNERS_BD;
+                }
+            } else if (RegularLevel.holiday == RegularLevel.Holiday.CJ) {
+                banners = Assets.Interfaces.BANNERS_CJ;
+            } else if (RegularLevel.holiday == RegularLevel.Holiday.QMJ) {
+                banners = Assets.Interfaces.BANNERS_QM;
+            } else if (month == 2 || month == 3 || month == 4) { // 春季：3, 4, 5月
                 banners = Assets.Interfaces.BANNERS_SR;
             } else if (month == 5 || month == 6 || month == 7) { // 夏季：6, 7, 8月
                 banners = Assets.Interfaces.BANNERS_SM;
@@ -188,6 +226,7 @@ public class GameRules {
             } else { // 冬季：12, 1, 2月
                 banners = Assets.Interfaces.BANNERS_WT;
             }
+        }
 
 
         return banners;

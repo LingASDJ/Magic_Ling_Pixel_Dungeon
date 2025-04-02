@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.MorpheusBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.hollow.TheatreLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonCaveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.minilevels.DragonFestivalMiniLevel;
@@ -256,6 +257,9 @@ public class LevelRules {
 
                     case 31:
                         return new CerDogBossLevel();
+
+                    case 32:
+                        return new MorpheusBossLevel();
 
                     default:
                         Statistics.deepestFloor--;

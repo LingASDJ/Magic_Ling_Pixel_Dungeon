@@ -650,7 +650,12 @@ public class Dungeon {
 	}
 
 	public static void dropToChasm( Item item ) {
-		int depth = Dungeon.depth + 1;
+		int depth;
+		if(Dungeon.branch != 0){
+			 depth = Dungeon.depth;
+		} else {
+			 depth = Dungeon.depth + 1;
+		}
 		ArrayList<Item> dropped = Dungeon.droppedItems.get( depth );
 		if (dropped == null) {
 			Dungeon.droppedItems.put( depth, dropped = new ArrayList<>() );
@@ -1128,7 +1133,6 @@ public class Dungeon {
 				b = Math.min( y + dist, level.height() - 1 );
 
 				width = r - l + 1;
-				height = b - t + 1;
 
 				pos = l + t * level.width();
 
