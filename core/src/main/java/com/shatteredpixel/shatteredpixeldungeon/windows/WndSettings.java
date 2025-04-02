@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.custom.utils.NetIcons;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -47,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ToobarV;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
@@ -174,7 +176,7 @@ public class WndSettings extends WndTabbed {
 
 		extabs = new ExtendTab();
 		extabs.setSize(width, 0);
-		height = Math.max(height, audio.height());
+		height = Math.max(height, extabs.height());
 		add( extabs );
 
 		add( new IconTab(Icons.get(Icons.CHANGES)){
@@ -188,7 +190,7 @@ public class WndSettings extends WndTabbed {
 
 		helps = new HelpTab();
 		helps.setSize(width, 0);
-		height = Math.max(height, audio.height());
+		height = Math.max(height, helps.height());
 		add( helps );
 
 		add( new IconTab(new CrossDiedSprites()){
@@ -202,7 +204,7 @@ public class WndSettings extends WndTabbed {
 
 		seeds = new SeedfinderTab();
 		seeds.setSize(width, 0);
-		height = Math.max(height, audio.height());
+		height = Math.max(height, seeds.height());
 		add( seeds );
 
 		add( new IconTab(NetIcons.get(NetIcons.GLOBE)){
@@ -774,8 +776,10 @@ public class WndSettings extends WndTabbed {
 		OptionSlider optSplashScreen;
 
 		CheckBox optFPSLimit;
-
 		CheckBox optIcon;
+
+		CheckBox customBanner;
+		RedButton CustomBannerSettings;
 
 		@Override
 		protected void createChildren() {
@@ -829,6 +833,53 @@ public class WndSettings extends WndTabbed {
 			};
 			optIcon.checked(SPDSettings.V2IconDamage());
 			add(optIcon);
+
+			customBanner = new CheckBox( Messages.get(this, "custom_banner") ) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					SPDSettings.isCustomBanner(checked());
+					if(SPDSettings.isCustomBanner()){
+						CustomBannerSettings.active = true;
+						CustomBannerSettings.alpha(1f);
+					} else {
+						CustomBannerSettings.active = false;
+						CustomBannerSettings.alpha(0.5f);
+					}
+				}
+			};
+			customBanner.checked(SPDSettings.isCustomBanner());
+			add(customBanner);
+
+			CustomBannerSettings = new RedButton(Messages.get(this, "custom_banner_settings")){
+				@Override
+				protected void onClick() {
+					String existingtext = SPDSettings.CustomBanner_Text();
+					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(this, "custom_banner_title"),
+							Messages.get(HeroSelectScene.class, "custom_banner_desc"),
+							existingtext,
+							20,
+							false,
+							Messages.get(HeroSelectScene.class, "custom_banner_set"),
+							Messages.get(HeroSelectScene.class, "custom_banner_clear")){
+						@Override
+						public void onSelect(boolean positive, String text) {
+							text = DungeonSeed.formatText(text);
+							long seed = DungeonSeed.convertFromText(text);
+							if (positive && seed != -1){
+								SPDSettings.CustomBanner_Text(text);
+							} else {
+								SPDSettings.CustomBanner_Text("");
+							}
+						}
+					});
+				}
+			};
+			if(!SPDSettings.isCustomBanner()){
+				CustomBannerSettings.active = false;
+				CustomBannerSettings.alpha(0.5f);
+			}
+			add(CustomBannerSettings);
 		}
 
 		@Override
@@ -847,14 +898,18 @@ public class WndSettings extends WndTabbed {
 				optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
 				optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width/2, SLIDER_HEIGHT);
 				optIcon.setRect(optFPSLimit.right(), optSplashScreen.bottom() + GAP, width/2, SLIDER_HEIGHT);
+				customBanner.setRect(0, optIcon.bottom() + GAP, width/2, 16);
+				CustomBannerSettings.setRect(customBanner.right(), customBanner.top(), width/2, 16);
 			} else {
-					ClassUI.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
-					optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
-					optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
-					optIcon.setRect(0, optFPSLimit.bottom() + GAP, width, SLIDER_HEIGHT);
+				ClassUI.setRect(0, bottom + GAP, width, SLIDER_HEIGHT);
+				optSplashScreen.setRect(0, ClassUI.bottom() + GAP, width, SLIDER_HEIGHT);
+				optFPSLimit.setRect(0, optSplashScreen.bottom() + GAP, width, SLIDER_HEIGHT);
+				optIcon.setRect(0, optFPSLimit.bottom() + GAP, width, SLIDER_HEIGHT);
+				customBanner.setRect(0, optIcon.bottom() + GAP, width, 16);
+				CustomBannerSettings.setRect(0, customBanner.bottom() + GAP, customBanner.width(), 16);
 			}
 
-			height = optIcon.bottom();
+			height = CustomBannerSettings.bottom();
 		}
 
 	}

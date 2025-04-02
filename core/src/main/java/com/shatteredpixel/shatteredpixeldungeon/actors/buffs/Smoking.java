@@ -20,7 +20,9 @@ public class Smoking extends Buff {
     public boolean act(){
         spend(TICK);
 
-        artifact = Dungeon.hero.buff(ElectricalSmoke.SmokingAlloy.class).smoke;
+        if(Dungeon.hero.buff(ElectricalSmoke.SmokingAlloy.class).smoke != null) {
+            artifact = Dungeon.hero.buff(ElectricalSmoke.SmokingAlloy.class).smoke;
+        }
 
         Buff.affect(Dungeon.hero, Stamina.class,1f);
 

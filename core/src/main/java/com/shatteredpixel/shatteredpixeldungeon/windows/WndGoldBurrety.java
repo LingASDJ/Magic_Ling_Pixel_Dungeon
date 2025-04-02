@@ -287,10 +287,6 @@ public class WndGoldBurrety extends Window {
             Item item = items[i];
             Item result = item;
 
-            if (!result.doPickUp( Dungeon.hero )) {
-                Dungeon.level.drop( item, hero.pos ).sprite.drop();
-            }
-
             if ((item instanceof MeleeWeapon || item instanceof MissileWeapon) && !(item instanceof MagesStaff || item instanceof TippedDart)) {
 
                 if(item == hero.belongings.weapon()){
@@ -377,7 +373,9 @@ public class WndGoldBurrety extends Window {
                 }
             } else if (item instanceof Ring) {
                if (item == hero.belongings.ring()) {
-                    hero.belongings.ring.buff.detach();
+                    if(hero.belongings.ring.buff != null){
+                        hero.belongings.ring.buff.detach();
+                    }
                     hero.belongings.ring = changeRing(hero.belongings.ring);
                     hero.belongings.ring.detach(Dungeon.hero.belongings.backpack);
                     if(Statistics.upgradeGold<=18){

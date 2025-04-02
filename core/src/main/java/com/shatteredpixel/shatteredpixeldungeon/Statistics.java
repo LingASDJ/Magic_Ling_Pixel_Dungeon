@@ -249,6 +249,7 @@ public class Statistics {
 
 	//特殊模式
 	public static boolean bossRushMode = false;
+
 	public static boolean RandMode = false;
 	//噩梦循环模式
 	public static boolean NightDreamLoop = false;

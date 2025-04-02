@@ -159,12 +159,11 @@ public class LaveCavesBossLevel extends Level{
 
     };
 
-    private static final int HOME = 845;
     @Override
     public void seal() {
         super.seal();
-        set( HOME, Terrain.EMPTY );
-        GameScene.updateMap( HOME );
+        set( 845, Terrain.EMPTY );
+        GameScene.updateMap( 845 );
 
         set(334, Terrain.PEDESTAL );
         GameScene.updateMap( 334);
@@ -181,8 +180,8 @@ public class LaveCavesBossLevel extends Level{
     @Override
     public void unseal() {
         super.unseal();
-        set( HOME, Terrain.ENTRANCE );
-        GameScene.updateMap( HOME );
+        set( 845, Terrain.ENTRANCE );
+        GameScene.updateMap( 845 );
 
         set(334, Terrain.EXIT );
         GameScene.updateMap( 334);

@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisintegrationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ExplosiveTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FlashingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FlockTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GatewayTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrippingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PoisonDartTrap;
@@ -62,14 +61,11 @@ public class TrapsRoom extends SpecialRoom {
 		Painter.fill( level, this, Terrain.WALL );
 
 		Class<? extends Trap> trapClass;
-		switch (Random.Int(4)){
-			case 0:
-				trapClass = null;
-				break;
-			default:
-				trapClass = Random.oneOf(levelTraps[Dungeon.depth/5]);
-				break;
-		}
+        if (Random.Int(4) == 0 || Dungeon.depth > 26) {
+            trapClass = null;
+        } else {
+            trapClass = Random.oneOf(levelTraps[Dungeon.depth / 5]);
+        }
 
 		if (trapClass == null){
 			Painter.fill(level, this, 1, Terrain.CHASM);
@@ -168,9 +164,6 @@ public class TrapsRoom extends SpecialRoom {
 			//city
 			{WarpingTrap.class, FlashingTrap.class, DisintegrationTrap.class},
 			//halls, muahahahaha
-			{GrimTrap.class},
-			//Holiday
-			{GrimTrap.class, DisintegrationTrap.class, GatewayTrap.class},
-			{FlashingTrap.class, DisintegrationTrap.class, GrimTrap.class},
+			{GrimTrap.class}
 	};
 }

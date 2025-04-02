@@ -216,7 +216,7 @@ public class WandOfWarding extends Wand {
 	public static class Ward extends NPC {
 
 		public int tier = 1;
-		private int wandLevel = 1;
+		public int wandLevel = 1;
 
 		public int totalZaps = 0;
 

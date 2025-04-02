@@ -134,7 +134,10 @@ public class Assets {
 		public static final String TILES_CITY_CS   = "environment/tiles_city-cs.png";
 		public static final String TILES_ANCIENT  = "environment/tiles_ancient.png";
 		public static final String TILES_HALLS  = "environment/tiles_halls.png";
-		public static final String TILES_CAVES_CRYSTAL  = "environment/tiles_caves_crystal.png";
+
+		public static final String TILES_MORGALAXY  = "environment/tiles_morpheus.png";
+		public static final String WATER_GALAXY  = "environment/yog/starry.png";
+
 		public static final String TILES_CAVES_GNOLL    = "environment/tiles_cold_gnoll.png";
 
 		public static final String WATER_SEWERS = "environment/water0.png";
@@ -230,17 +233,19 @@ public class Assets {
 		public static final String LANTERLING_N  = "interfaces/LanterLing_N.png";
 
 		public static final String BANNERS     = "interfaces/Banners/banners.png";
-		public static final String BANNERS_SD  = "interfaces/Banners/banners_sd.png";
-
-		public static final String BANNERS_SR  = "interfaces/Banners/banners_hlwn.png";
-		public static final String BANNERS_SM  = "interfaces/Banners/banners_sum.png";
 		public static final String BANNERS_AT  = "interfaces/Banners/banners_at.png";
+		public static final String BANNERS_CJ  = "interfaces/Banners/banners_cj.png";
+		public static final String BANNERS_EA  = "interfaces/Banners/banners_easter.png";
+		public static final String BANNERS_HL  = "interfaces/Banners/banners_hlwn.png";
+		public static final String BANNERS_BD  = "interfaces/Banners/banners_MLBD.png";
+		public static final String BANNERS_SD  = "interfaces/Banners/banners_sd.png";
+		public static final String BANNERS_QM  = "interfaces/Banners/banners_qm.png";
+		public static final String BANNERS_SR  = "interfaces/Banners/banners_spr.png";
+		public static final String BANNERS_SM  = "interfaces/Banners/banners_sum.png";
 		public static final String BANNERS_WT  = "interfaces/Banners/banners_win.png";
 
-		public static final String BANNERS_CJ  = "interfaces/Banners/banners_cj.png";
-
 		public static final String BANNERS_YX  = "interfaces/Banners/banners_yx.png";
-		public static final String BANNERS_BD  = "interfaces/Banners/banners_MLBD.png";
+
 
 		public static final String MENUTITLE  = "interfaces/menutitle.png";
 

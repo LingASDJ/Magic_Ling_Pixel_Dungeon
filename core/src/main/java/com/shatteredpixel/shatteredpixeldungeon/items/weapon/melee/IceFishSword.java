@@ -35,7 +35,7 @@ public class IceFishSword extends MeleeWeapon {
         ACC = 1f; //20% boost to accuracy
         DLY = 1f; //2x speed
         cursed = true;
-        enchant(Enchantment.randomCurse());
+        enchant(Enchantment.random());
     }
 
     public static Weapon cook(FireFishSword ingredient ) {
