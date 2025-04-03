@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.BloodLoss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.props.BlockingDrug;
@@ -42,7 +43,8 @@ public class Regeneration extends Buff {
 	
 	@Override
 	public boolean act() {
-		if (target.isAlive()) {
+		boolean result = target.buff(BloodLoss.class) == null;
+		if (target.isAlive() && result) {
 
 			//if other trinkets ever get buffs like this should probably make the buff attaching
 			// behaviour more like wands/rings/artifacts

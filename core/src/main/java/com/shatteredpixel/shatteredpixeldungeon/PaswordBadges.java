@@ -117,6 +117,11 @@ public class PaswordBadges {
         displayBadge(Badge.PRAY_MYTHOLOGY);
     }
 
+    public static void BLOOD_KING() {
+        displayBadge(Badge.BLOOD_KING);
+    }
+
+
 
     public enum Badge {
 
@@ -130,6 +135,7 @@ public class PaswordBadges {
         BRCLER(7),
         ALLCHSX(8,false,true),
 
+        BLOOD_KING(11),
         GODD_MAKE(12),
 
         BIG_X(13),

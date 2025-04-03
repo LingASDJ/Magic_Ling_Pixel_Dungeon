@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -33,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.N
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.AltVampiric;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
@@ -99,7 +101,11 @@ public class SpiritBow extends Weapon {
 
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
-
+		int dmg;
+		if (Dungeon.isChallenged(Challenges.BLOOD_DIED) && attacker instanceof Hero) {
+			dmg = (new AltVampiric()).proc(this, attacker, defender, damage);
+			damage = dmg;
+		}
 		if (attacker.buff(NaturesPower.naturesPowerTracker.class) != null && !sniperSpecial){
 
 			Actor.add(new Actor() {

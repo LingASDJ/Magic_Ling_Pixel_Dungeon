@@ -437,6 +437,8 @@ public class WndChallenges extends Window {
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_16, new ItemSprite.Glowing(0x98bc76));
 			case "cs":
 				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_17, new ItemSprite.Glowing(0x08bed5));
+			case "blood_died":
+				return new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14, new ItemSprite.Glowing(Window.GDX_COLOR));
 			default:
 				return Icons.get(Icons.PREFS);
 		}

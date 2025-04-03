@@ -122,13 +122,17 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
+import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -136,6 +140,7 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
+import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 import com.watabou.utils.SparseArray;
@@ -372,7 +377,15 @@ public abstract class Level implements Bundlable {
 								feeling = Feeling.CHASM;
 								break;
 							case 1:
-								feeling = Feeling.WATER;
+								if(Dungeon.isChallenged(Challenges.AQUAPHOBIA)){
+									if(Random.Int(100) <= 20){
+										feeling = Feeling.GRASS;
+									} else {
+										feeling = Feeling.WATER;
+									}
+								} else {
+									feeling = Feeling.WATER;
+								}
 								break;
 							case 2:
 								feeling = Feeling.GRASS;
@@ -392,7 +405,6 @@ public abstract class Level implements Bundlable {
 							case 6:
 								feeling = Feeling.SECRETS;
 								break;
-							//MOREROOM
 							case 7:
 								feeling = moreRoomActivated ? Feeling.BIGTRAP : Feeling.NONE;
 								break;
@@ -947,6 +959,11 @@ public abstract class Level implements Bundlable {
 				}
 			}
 
+			if(map[i] == Terrain.SALT_WATER){
+				addSaltWaterVisuals(this, visuals);
+			}
+
+
 			if(SPDSettings.visualBuddle()){
 				if(!Statistics.bossRushMode || !Dungeon.isChallenged(CS)){
 					if(depth == 0 && Dungeon.branch == 0 || depth >=1 && depth <= 5 && Dungeon.branch == 0){
@@ -959,6 +976,75 @@ public abstract class Level implements Bundlable {
 
 		}
 		return visuals;
+	}
+
+	public static void addSaltWaterVisuals( Level level, Group group ) {
+		for (int i=0; i < level.length(); i++) {
+			if (level.map[i] == Terrain.SALT_WATER) {
+				group.add( new Smoke( i ) );
+			}
+		}
+	}
+
+	public static class Smoke extends Emitter {
+
+		private int pos;
+
+		public static final Emitter.Factory factory = new Factory() {
+
+			@Override
+			public void emit( Emitter emitter, int index, float x, float y ) {
+				SmokeParticle p = (SmokeParticle)emitter.recycle( SmokeParticle.class );
+				p.reset( x, y );
+
+			}
+		};
+
+		public Smoke( int pos ) {
+			super();
+
+			this.pos = pos;
+
+			PointF p = DungeonTilemap.tileCenterToWorld( pos );
+			pos( p.x - 6, p.y - 4, 12, 12 );
+
+			pour( factory, 0.2f );
+		}
+
+		@Override
+		public void update() {
+			if (visible == (pos < Dungeon.level.heroFOV.length && Dungeon.level.heroFOV[pos])) {
+				super.update();
+			}
+		}
+	}
+
+	public static final class SmokeParticle extends PixelParticle {
+
+		public SmokeParticle() {
+			super();
+			alpha( 0.7f );
+			lightness(0.5f);
+			color(Window.WATA_COLOR );
+			speed.set( Random.Float( -2, 4 ), -Random.Float( 3, 6 ) );
+		}
+
+		public void reset( float x, float y ) {
+			revive();
+
+			this.x = x;
+			this.y = y;
+
+			left = lifespan = 2f;
+		}
+
+		@Override
+		public void update() {
+			super.update();
+			float p = left / lifespan;
+			am = p > 0.8f ? 1 - p : p * 0.25f;
+			size( 6 - p * 3 );
+		}
 	}
 
 	//for visual effects that should render above wall overhang tiles
@@ -1980,6 +2066,8 @@ public abstract class Level implements Bundlable {
 				return Messages.get(Level.class, "bookshelf_name");
 			case Terrain.ALCHEMY:
 				return Messages.get(Level.class, "alchemy_name");
+			case Terrain.SALT_WATER:
+				return Messages.get(Level.class, "salt_water_name");
 			default:
 				return Messages.get(Level.class, "default_name");
 		}
@@ -2017,6 +2105,8 @@ public abstract class Level implements Bundlable {
 				return Messages.get(Level.class, "statue_desc");
 			case Terrain.ALCHEMY:
 				return Messages.get(Level.class, "alchemy_desc");
+			case Terrain.SALT_WATER:
+				return Messages.get(Level.class, "salt_water_desc");
 			case Terrain.EMPTY_WELL:
 				return Messages.get(Level.class, "empty_well_desc");
 			default:
