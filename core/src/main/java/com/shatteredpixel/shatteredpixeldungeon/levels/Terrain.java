@@ -69,6 +69,7 @@ public class Terrain {
 	public static final int MINE_BOULDER    = 36;
 
 	public static final int WATER		    = 29;
+	public static final int SALT_WATER		= 39;
 
 	public static final int GALAXY		    = 820;
 	
@@ -88,6 +89,7 @@ public class Terrain {
 		flags[GRASS]		= PASSABLE | FLAMABLE;
 		flags[EMPTY_WELL]	= PASSABLE;
 		flags[WATER]		= PASSABLE | LIQUID;
+		flags[SALT_WATER]		= PASSABLE | LIQUID;
 		flags[GALAXY]		= PASSABLE | LIQUID;
 		flags[LAVA]			= PASSABLE | FLAMABLE | LIQUID;
 		flags[WALL]			= LOS_BLOCKING | SOLID;

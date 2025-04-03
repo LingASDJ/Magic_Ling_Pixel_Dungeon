@@ -1013,7 +1013,7 @@ public abstract class Mob extends Char {
 			alerted = true;
 		}
 
-		if(this.buff(ChampionEnemy.DelayMob.class) != null && dmg> 0){
+		if(this.buff(ChampionEnemy.DelayMob.class) != null && dmg> 0 && HP<HT/2){
 			Viscosity.DeferedDamage deferred = Buff.affect( this, Viscosity.DeferedDamage.class );
 			deferred.prolong( dmg/6 );
 		}

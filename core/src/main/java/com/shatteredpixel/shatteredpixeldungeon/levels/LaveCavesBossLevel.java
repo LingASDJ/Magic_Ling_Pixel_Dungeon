@@ -367,7 +367,7 @@ public class LaveCavesBossLevel extends Level{
         }
     }
 
-    private static class Stream extends Group {
+    static class Stream extends Group {
 
         private int pos;
 

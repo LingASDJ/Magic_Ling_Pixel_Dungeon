@@ -116,6 +116,7 @@ public class DungeonTileSheet {
 
 		//water
 		chasmStitcheable.put( Terrain.WATER,        CHASM_WATER );
+		chasmStitcheable.put( Terrain.SALT_WATER,        CHASM_WATER );
 	}
 
 	public static int stitchChasmTile(int above){
@@ -152,7 +153,7 @@ public class DungeonTileSheet {
 	}
 
 	public static boolean floorTile(int tile){
-		return tile == Terrain.WATER || directVisuals.get(tile, CHASM) < CHASM;
+		return tile == Terrain.SALT_WATER ||tile == Terrain.WATER || directVisuals.get(tile, CHASM) < CHASM;
 	}
 
 

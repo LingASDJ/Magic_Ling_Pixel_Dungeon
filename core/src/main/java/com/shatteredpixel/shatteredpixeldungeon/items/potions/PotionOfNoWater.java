@@ -67,11 +67,12 @@ public class PotionOfNoWater extends Item {
         }
 
         for (int offset : PathFinder.NEIGHBOURS9) {
-            if (Dungeon.level.water[cell + offset]) {
+            if (Dungeon.level.water[cell + offset] || Dungeon.level.map[cell + offset] == Terrain.SALT_WATER) {
                 Level.set(cell + offset, Terrain.EMPTY);
                 DEM(cell + offset);
                 //GameScene.add(Blob.seed(cell + offset, 1, Fire.class));
                 GameScene.updateMap(cell + offset);
+                Dungeon.level.addVisuals();
             }
         }
     }
