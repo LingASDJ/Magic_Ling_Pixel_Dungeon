@@ -315,13 +315,13 @@ public class DiedCrossBow extends LegendWeapon {
 
     @Override
     public int min(int lvl) {
-        return 4 + lvl * (tier + 1);   //scaling unchanged
+        return 4 + lvl *  1;   //scaling unchanged
     }
 
 
     @Override
     public int max(int lvl) {
-        return 25 + lvl * (tier + 5);   //scaling unchanged
+        return 25 + lvl * 6;   //scaling unchanged
     }
 
 }
