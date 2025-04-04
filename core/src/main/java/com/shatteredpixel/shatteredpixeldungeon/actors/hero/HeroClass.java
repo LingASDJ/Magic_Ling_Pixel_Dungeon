@@ -223,9 +223,6 @@ public enum HeroClass {
 		Statistics.Hollow_Holiday = true;
 
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
-
-			PaswordBadges.BLOOD_KING();
-
 			new PropBag().quantity(1).identify().collect();
 			new WandOfSun().collect();
 			new ElectricalSmoke().collect();

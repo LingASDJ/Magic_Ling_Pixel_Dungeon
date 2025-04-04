@@ -165,7 +165,6 @@ public class GameRules {
         final Calendar calendar = Calendar.getInstance();
         String banners;
         int month = calendar.get(Calendar.MONTH);
-        banners = Assets.Interfaces.BANNERS;
 
         if(SPDSettings.isCustomBanner()){
             switch (SPDSettings.CustomBanner_Text()) {

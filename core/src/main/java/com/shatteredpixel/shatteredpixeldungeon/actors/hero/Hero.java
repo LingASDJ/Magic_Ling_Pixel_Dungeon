@@ -225,6 +225,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.AltVampiric;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicTorch;
@@ -1984,11 +1985,22 @@ public class Hero extends Char {
 
 		damage = super.attackProc( enemy, damage );
 
+
 		KindOfWeapon wep;
 		if (RingOfForce.fightingUnarmed(this) && !RingOfForce.unarmedGetsWeaponEnchantment(this)){
 			wep = null;
 		} else {
 			wep = belongings.attackingWeapon();
+		}
+
+		int dmg;
+		if (Dungeon.isChallenged(Challenges.BLOOD_DIED)) {
+			dmg = (new AltVampiric()).proc(null, this, enemy, damage);
+
+			if(Random.Float() < 0.1f){
+				dmg *= 2;
+			}
+			damage = dmg;
 		}
 
 		if (wep != null) damage = wep.proc( this, enemy, damage );
@@ -2882,26 +2894,27 @@ public class Hero extends Char {
 		ScrollOfTeleportation.appear(hero, step);
 	}
 
+	@SuppressWarnings("unchecked")
 	private boolean actMove( HeroAction.Move action ) {
-
 
 		//水中祝福 但在BR不生效
 		if((Dungeon.branch == 0 || Dungeon.branch == 10) && !bossRushMode){
-			MoveWater();
+			if(Dungeon.level.map[pos] == Terrain.WATER){
+				MoveWater();
+			}
 		}
 
-		if (Dungeon.isChallenged(AQUAPHOBIA)){
-			if(Dungeon.level.map[pos] == Terrain.SALT_WATER && !flying){
+		if (Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.depth>0 && !Dungeon.bossLevel()){
+			if(Dungeon.level.map[pos] == Terrain.SALT_WATER && !flying && Dungeon.hero.buff(WaterSoulX.class) == null){
 				Buff.affect(this, Ooze.class).set(2f);
 				for (Buff buff : hero.buffs()) {
 					if(buff.type == Buff.buffType.NEGATIVE && buff instanceof FlavourBuff) {
-						Buff.prolong(this, (Class<? extends FlavourBuff>) buff.getClass(), 8f);
+						Buff.prolong(this, (Class<? extends FlavourBuff>) buff.getClass(), 5f);
 					}
 				}
-			} else if(Dungeon.level.water[pos] && !flying){
+			} else if(Dungeon.level.water[pos] && !flying && Dungeon.level.map[pos] == Terrain.WATER){
 				Level.set(pos, Terrain.SALT_WATER);
 				GameScene.updateMap(pos);
-				Dungeon.level.addVisuals();
 			}
 		}
 

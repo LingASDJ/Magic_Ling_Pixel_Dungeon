@@ -14,20 +14,20 @@ public class BloodLoss extends Buff {
 
     @Override
     public boolean act() {
-        if (Dungeon.depth > 2)
+        if (Dungeon.depth > 2 && !Dungeon.bossLevel())
             target.damage(target.HT / 20, this);
         if (!target.isAlive()) {
             GLog.n(Messages.get(this, "death"));
             Dungeon.fail(BloodLoss.class);
         }
 
-        int initialTurns = 12;
+        int initialTurns = 16;
         int turnsSpent = initialTurns - 2 * (Dungeon.depth / 5);
 
         if (turnsSpent > 0) {
             spend(turnsSpent);
         } else {
-            spend(1f);
+            spend(4f);
         }
 
         return true;

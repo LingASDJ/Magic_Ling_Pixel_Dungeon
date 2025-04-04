@@ -67,6 +67,7 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_V0840_Changes(changeInfos);
         add_V0831_Changes(changeInfos);
         add_V0830_Changes(changeInfos);
         add_V0822_Changes(changeInfos);
@@ -107,6 +108,65 @@ public class vM0_7_X_Changes {
         add_V074_Changes(changeInfos);
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
+    }
+
+    public static void add_V0840_Changes(ArrayList<ChangeInfo> changeInfos ) {
+        ChangeInfo changes = new ChangeInfo("v0.8.4.0", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("限时挑战：血族契约"),
+                ("限时挑战，将在后续版本收纳为特殊模式")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：Tomb-Sweeping-FestivaDay"),
+                ("进入游戏通过落白商店 或者 游戏菜单 获取奖励，祝各位清明安康！")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("挑战重做：污泥浊水"),
+                ("地牢的水也被污染了，你需要小心谨慎\n\n_-_ 你踩踏过的水会变为仅对你有效的污水区域，进入污水区域会为你附加腐蚀淤泥，并且身上所有FlavourBuff的持续时间不会低于5回合。\n_-_踩踏水的祝福不再生效，但水灵药剂的效果不变。\n_-_ 全水地形感觉在获得后还会再有概率80%变成普通地形\n_-_ 每大层会额外产生食人鱼房间")));
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("新全局系统：自定义横幅"),
+                ("在额外设置中，可以定义游戏内带的横幅主题")));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+                "0.8.4.0版本:\n\n" +
+                        "1.修复金蝶嬗变戒指较易出现崩溃的异常\n" +
+                        "2.修复烈阳法杖在元素风暴的异常，并且效果为可视怪物产生磷火+火焰\n" +
+                        "3.优化在26层后，陷阱房将完全替换为深渊浮空房\n" +
+                        "4.修复先前的子层掉落规则导致的异常闪退，现在调整为在子层掉落深渊的物品，将在本体楼层出现\n" +
+                        "5.修复拟态怪类型的掉落规则异常，同时也同步新子层深渊物品掉落规则\n" +
+                        "6.修复重型弩炮伤害异常\n" +
+                        "7.修复部分UI界面优先级异常\n" +
+                        "8.修复金蝶可以刷物品的异常\n" +
+                        "9.狗子的免伤&听声辨位修正 烈阳法杖+术士灵魂标记"
+
+        ));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(Window.R_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DIEDCROSSBOW), ("重型弩炮"),
+                ("修复弩炮的子弹伤害错误的为武器自身的伤害。")));
+
+        changes = new ChangeInfo("v0.8.4.0中测验收通过，予以更新", true, null);
+        changes.hardlight(Window.CYELLOW);
+        changeInfos.add(changes);
+
+
+
+        changes = new ChangeInfo("2025-4-04", true, null);
+        changes.hardlight(Window.CPINK);
+        changeInfos.add(changes);
     }
 
     public static void add_V0831_Changes(ArrayList<ChangeInfo> changeInfos ) {

@@ -108,8 +108,7 @@ public class LevelRules {
                     case 35:
                         return new DwarfMasterBossLevel();
 
-                    case 37:
-                        return new CerDogBossLevel();
+
 
                     case 39:
                         return new HallsBossLevel();
@@ -125,7 +124,7 @@ public class LevelRules {
                     //补给层 T3
                     case 22: case 24:case 26: case 28: case 30:
                     //补给层 T4
-                    case 32: case 34: case 36: case 38:
+                    case 32: case 34: case 36: case 37:case 38:
                     //普通结局
                     case 40: case 41:
                       return new BossRushItemLevel();
@@ -228,7 +227,6 @@ public class LevelRules {
                             switch (Random.Int(3)){
                                 case 1: return new DwarfMasterBossLevel();
                                 default:
-                                case 2: return new CerDogBossLevel();
                                 case 3: return new ShopBossLevel();
                             }
                         } else {
@@ -403,9 +401,6 @@ public class LevelRules {
                     case 24:
                         return new NewCityBossLevel();
 
-                    case 26:
-                        return new CerDogBossLevel();
-
                     case 27:
                         return new DwarfMasterBossLevel();
 
@@ -427,7 +422,7 @@ public class LevelRules {
                     case 20:
                         //补给层 T3
                     case 22:
-                    case 25:
+                    case 25:case 26:
                     case 28:
                     case 30:
                         return new BossRushItemLevel();
