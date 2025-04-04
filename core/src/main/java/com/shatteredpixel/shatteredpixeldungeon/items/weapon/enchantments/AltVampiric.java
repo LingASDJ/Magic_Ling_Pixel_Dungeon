@@ -16,7 +16,7 @@ public class AltVampiric extends Weapon.Enchantment {
     public int proc(Weapon weapon, Char attacker, Char defender, int damage ) {
 
         // Directly calculate heal amount as a fixed range from 10% to 25% of damage dealt
-        float healPercentage = Random.Float(0.1f, 0.25f);
+        float healPercentage = Random.Float(0.2f, 0.45f);
         int healAmt = Math.round(damage * healPercentage);
         healAmt = Math.min( healAmt, attacker.HT - attacker.HP );
         if (healAmt < 1) {

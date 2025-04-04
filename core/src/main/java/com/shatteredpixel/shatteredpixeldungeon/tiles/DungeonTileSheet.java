@@ -54,6 +54,8 @@ public class DungeonTileSheet {
 	public static final int EMBERS          = GROUND +3;
 	public static final int FLOOR_SP        = GROUND +4;
 
+	public static final int SALT_WATER_TILES= GROUND +5;
+
 	public static final int FLOOR_ALT_1     = GROUND +6;
 	public static final int FLOOR_DECO_ALT  = GROUND +7;
 	public static final int GRASS_ALT       = GROUND +8;
@@ -139,7 +141,7 @@ public class DungeonTileSheet {
 			Terrain.TRAP, Terrain.INACTIVE_TRAP, Terrain.EMPTY_DECO,
 			Terrain.CUSTOM_DECO, Terrain.WELL, Terrain.STATUE, Terrain.ALCHEMY,
 			Terrain.CUSTOM_DECO_EMPTY, Terrain.MINE_CRYSTAL, Terrain.MINE_BOULDER,
-			Terrain.DOOR, Terrain.OPEN_DOOR, Terrain.LOCKED_DOOR, Terrain.CRYSTAL_DOOR
+			Terrain.DOOR, Terrain.OPEN_DOOR, Terrain.LOCKED_DOOR, Terrain.CRYSTAL_DOOR,Terrain.SALT_WATER
 	));
 
 	//+1 for ground above, +2 for ground right, +4 for ground below, +8 for ground left.
@@ -153,7 +155,7 @@ public class DungeonTileSheet {
 	}
 
 	public static boolean floorTile(int tile){
-		return tile == Terrain.SALT_WATER ||tile == Terrain.WATER || directVisuals.get(tile, CHASM) < CHASM;
+		return tile == Terrain.SALT_WATER || tile == Terrain.WATER || directVisuals.get(tile, CHASM) < CHASM;
 	}
 
 
@@ -397,6 +399,7 @@ public class DungeonTileSheet {
 		directVisuals.put(Terrain.EMBERS,           EMBERS);
 		directVisuals.put(Terrain.PEDESTAL,         PEDESTAL);
 		directVisuals.put(Terrain.EMPTY_SP,         FLOOR_SP);
+		directVisuals.put(Terrain.SALT_WATER,       SALT_WATER_TILES);
 		directVisuals.put(Terrain.ENTRANCE_SP,      ENTRANCE_SP);
 
 		directVisuals.put(Terrain.SECRET_TRAP,      directVisuals.get(Terrain.EMPTY));

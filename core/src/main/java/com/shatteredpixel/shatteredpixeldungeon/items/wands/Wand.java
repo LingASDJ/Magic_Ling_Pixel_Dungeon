@@ -125,6 +125,8 @@ public abstract class Wand extends Item {
 	public void rivalOnZap( Ballistica attack, Char attacker ) {
 		attacker.dispel();
 		onZap(attack);
+
+
 		curCharges -= cursed ? 1 : chargesPerCast();
 	}
 	
@@ -164,7 +166,6 @@ public abstract class Wand extends Item {
 	}
 
 	public boolean tryToZap( Hero owner, int target ){
-
 
 		ScaryBuff scaryBuff = Dungeon.hero.buff(ScaryBuff.class);
 		if(scaryBuff != null){
