@@ -120,14 +120,14 @@ public class vM0_7_X_Changes {
         changes.hardlight(Window.GREEN_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("限时挑战：血族契约"),
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_14), ("限时挑战：血族契约"),
                 ("限时挑战，将在后续版本收纳为特殊模式")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.NEWS), ("新兑换码：Tomb-Sweeping-FestivaDay"),
                 ("进入游戏通过落白商店 或者 游戏菜单 获取奖励，祝各位清明安康！")));
 
-        changes.addButton(new ChangeButton(Icons.get(Icons.CHALLENGE_ON), ("挑战重做：污泥浊水"),
-                ("地牢的水也被污染了，你需要小心谨慎\n\n_-_ 你踩踏过的水会变为仅对你有效的污水区域，进入污水区域会为你附加腐蚀淤泥，并且身上所有FlavourBuff的持续时间不会低于5回合。\n_-_踩踏水的祝福不再生效，但水灵药剂的效果不变。\n_-_ 全水地形感觉在获得后还会再有概率80%变成普通地形\n_-_ 每大层会额外产生食人鱼房间")));
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHALLANEESICON_8), ("挑战重做：污泥浊水"),
+                ("地牢的水也被污染了，你需要小心谨慎\n\n因为地牢上方的生活污染，水已经被污染了，你需要小心谨慎\n\n_-_ 你踩踏过的水会变为仅对你有效的污泥地块，进入污泥地块会为你附加腐蚀淤泥，并且身上大部分的负面效果的剩余回合时间不会低于5回合。\n_-_踩踏水的祝福不再生效，但水灵药剂的效果不变。\n_-_ 全水地形感觉在获得后还会再有概率80%变成普通地形\n_-_ 每大层会额外产生食人鱼房间\n_-_ 常规商店额外追加“生石灰固体理想合剂")));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), ("新全局系统：自定义横幅"),
                 ("在额外设置中，可以定义游戏内带的横幅主题")));
@@ -138,16 +138,31 @@ public class vM0_7_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
-                "0.8.4.0版本:\n\n" +
-                        "1.修复金蝶嬗变戒指较易出现崩溃的异常\n" +
-                        "2.修复烈阳法杖在元素风暴的异常，并且效果为可视怪物产生磷火+火焰\n" +
-                        "3.优化在26层后，陷阱房将完全替换为深渊浮空房\n" +
-                        "4.修复先前的子层掉落规则导致的异常闪退，现在调整为在子层掉落深渊的物品，将在本体楼层出现\n" +
-                        "5.修复拟态怪类型的掉落规则异常，同时也同步新子层深渊物品掉落规则\n" +
-                        "6.修复重型弩炮伤害异常\n" +
-                        "7.修复部分UI界面优先级异常\n" +
-                        "8.修复金蝶可以刷物品的异常\n" +
-                        "9.狗子的免伤&听声辨位修正 烈阳法杖+术士灵魂标记"
+                "Bug修复-1\n\n" +
+                       ("_-_ 修复金蝶嬗变戒指较易出现崩溃的异常\n" +
+                        "_-_ 修复烈阳法杖在元素风暴的异常，并且效果为可视怪物产生磷火+火焰\n" +
+                        "_-_ 优化在26层后，陷阱房将完全替换为深渊浮空房\n" +
+                        "_-_ 修复先前的子层掉落规则导致的异常闪退，现在调整为在子层掉落深渊的物品，将在本体楼层出现\n" +
+                        "_-_ 修复拟态怪类型的掉落规则异常，同时也同步新子层深渊物品掉落规则\n" +
+                        "_-_ 修复重型弩炮伤害异常\n" +
+                        "_-_ 修复部分UI界面优先级异常\n" +
+                        "_-_ 修复金蝶可以刷物品的异常\n" +
+                        "_-_ 狗子的免伤&听声辨位修正 烈阳法杖+术士灵魂标记"),
+                "Bug修复-2:\n\n" +
+                        ("_-_ 修复拟态之王因多段伤害导致跨阶段异常\n" +
+                                "_-_ 在宝藏迷宫添加更多宝箱怪以避免无法超过5个击杀数导致游戏卡死\n" +
+                                "_-_ 生石灰固态理想试剂范围加强，在污泥挑战中商店中可被购买\n" +
+                                "_-_ 现在水爆魔药，暴风迷雾可以将污泥地块直接蒸发，变成普通地块\n" +
+                                "_-_ 修复召唤守卫描述异常\n" +
+                                "_-_ 修复火龙地形跨存档的严重异常\n" +
+                                "_-_ 修复26层下楼古堡后未在初始房间\n" +
+                                "_-_ 修复不动如山的削弱后描述未更新的小异常\n" +
+                                "_-_ 修复抢劫层选择逃跑获取的回溯之书无法正常回到楼层(使用后会传送至X-？层)\n" +
+                                "_-_ 优化商店抢劫：抢劫前往峡谷前，十字架会被留在原地，莲娜的烈焰结晶不会再被自带索敌，优化部分攻击特效\n" +
+                                "_-_ 开发者模式杂项生成器追加水爆，羽落，紊乱魔药和无序结晶的生成\n" +
+                                "_-_ 修复药水鉴定徽章和卷轴鉴定徽章在迁移之后的版本后无法正常解锁\n" +
+                                "_-_ 部分缺失文案修正，部分文案优化\n" +
+                                "_-_ 修复子层的一些罕见崩溃问题")
 
         ));
 
@@ -157,6 +172,16 @@ public class vM0_7_X_Changes {
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DIEDCROSSBOW), ("重型弩炮"),
                 ("修复弩炮的子弹伤害错误的为武器自身的伤害。")));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(Window.GREEN_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DG18), ("生石灰固体理想合剂"),
+                ("现在的蒸发范围为8向2x2的范围")));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ELIXIR_AQUA), ("水爆魔药"),
+                ("如果目标为污泥地块，则会将其直接蒸发，变成普通地块。\n\n同时附近3x3范围内的污泥地块也会被蒸发。")));
 
         changes = new ChangeInfo("v0.8.4.0中测验收通过，予以更新", true, null);
         changes.hardlight(Window.CYELLOW);

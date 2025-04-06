@@ -16,6 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RoseShiled;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.DiamondKnight;
@@ -361,8 +362,8 @@ public class ColdChestBossLevel extends Level {
                 for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于360 1阶段
-                        if (pro == START && boss.HP <= 360) {
-
+                        if (pro == START && boss.HP <= 360 && ((DiamondKnight) boss).phase == 0 && !Statistics.TPDoorDieds) {
+                            Buff.affect(boss, RoseShiled.class, 10f);
                             Buff.detach(hero, Levitation.class);
                             //宝箱王移动到看戏位
                             ScrollOfTeleportation.appear(boss, MDX);
@@ -383,7 +384,7 @@ public class ColdChestBossLevel extends Level {
                 for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于300 2阶段
-                        if (pro == MAZE_START && boss.HP <= 360 || Statistics.TPDoorDieds) {
+                        if (pro == MAZE_START && boss.HP <= 360 && ((DiamondKnight) boss).phase == 1 && Statistics.TPDoorDieds) {
                             //动态修改整个房间 宝藏迷宫
                             changeMap(EndMap);
                             //在切换房间的时候立刻切换全新坐标
@@ -447,7 +448,7 @@ public class ColdChestBossLevel extends Level {
                 for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于240 3阶段
-                        if (pro == VSBOSS_START && boss.HP <= 240) {
+                        if (pro == VSBOSS_START && boss.HP <= 240 && ((DiamondKnight) boss).phase == 2) {
                             boss.HP = 240;
                             pro = VSLINK_START;
                         }
@@ -458,7 +459,7 @@ public class ColdChestBossLevel extends Level {
                 for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于200 4阶段
-                        if (pro == VSLINK_START && boss.HP <= 200) {
+                        if (pro == VSLINK_START && boss.HP <= 200 && ((DiamondKnight) boss).phase == 3) {
                             //Buff.detach(boss, ChampionEnemy.Halo.class);
                             boss.baseSpeed *= 2;
                             pro = VSYOU_START;
@@ -471,7 +472,7 @@ public class ColdChestBossLevel extends Level {
                 for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于100 判定WIN
-                        if (pro == VSYOU_START && boss.HP <= 100) {
+                        if (pro == VSYOU_START && boss.HP <= 100 && ((DiamondKnight) boss).phase == 4) {
                             pro = WIN;
                         }
                     }

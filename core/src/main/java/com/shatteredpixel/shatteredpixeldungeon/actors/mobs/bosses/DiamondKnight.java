@@ -26,7 +26,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Level.set;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -107,6 +106,8 @@ public class DiamondKnight extends Boss implements Hero.Doom {
 
     public int phase;
     private int healInc = 1;
+
+
 
     @Override
     public int damageRoll() {
@@ -235,24 +236,13 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         return damage;
     }
 
-
-//    @Override
-//    protected boolean getCloser(int target) {
-//        combo = 0;
-//        if (state == HUNTING) {
-//            if(Dungeon.level.distance(pos,target)>1)
-//                return super.getCloser( target );
-//            return enemySeen && getFurther( target );
-//        } else {
-//            return super.getCloser(target);
-//        }
-//        //return false;
-//    }
-
     /**
      * @param dmg 伤害
      * @param src 伤害来源
      */
+
+    boolean onlyDiglog = false;
+
     @Override
     public void damage(int dmg, Object src) {
         if (!BossHealthBar.isAssigned()){
@@ -280,10 +270,14 @@ public class DiamondKnight extends Boss implements Hero.Doom {
 
                 @Override
                 protected boolean act() {
+
                     Actor.remove(this);
                     ((ColdChestBossLevel)Dungeon.level).progress();
                     phase++;
-                    yell(Messages.get(DiamondKnight.class,"now_go"));
+                    if(!onlyDiglog){
+                        onlyDiglog = true;
+                        yell(Messages.get(DiamondKnight.class,"now_go"));
+                    }
                     GameScene.flash(0x808080);
                     return true;
                 }
@@ -452,13 +446,6 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         bundle.put( PUMPEDUP , pumpedUp );
         bundle.put( HEALINC, healInc );
         bundle.put(COMBO, combo);
-
-//        if(phase == 5) {
-//            spriteClass=DimandKingSprite.PrismaticSprite.class;
-//        } else {
-//            spriteClass=DimandKingSprite.class;
-//        }
-
     }
 
     @Override
@@ -509,6 +496,11 @@ public class DiamondKnight extends Boss implements Hero.Doom {
             GLog.n( Messages.capitalize(Messages.get(Char.class, "kill", name())) );
         }
 
+    }
+
+    @Override
+    public boolean isAlive() {
+        return phase < 5 || HP > 0;
     }
 
     public void onZapComplete() {

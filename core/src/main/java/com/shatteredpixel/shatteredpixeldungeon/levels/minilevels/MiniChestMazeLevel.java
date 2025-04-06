@@ -181,7 +181,7 @@ public class MiniChestMazeLevel extends RegularLevel {
 
     public static class Torch extends Emitter {
 
-        private int pos;
+        private final int pos;
 
         public Torch( int pos ) {
             super();
@@ -204,7 +204,7 @@ public class MiniChestMazeLevel extends RegularLevel {
         }
     }
 
-    private ArrayList<Generator.Category> prizeClasses = new ArrayList<>(
+    private final ArrayList<Generator.Category> prizeClasses = new ArrayList<>(
             Arrays.asList(
                     Generator.Category.ARTIFACT,
                     Generator.Category.RING
@@ -230,10 +230,10 @@ public class MiniChestMazeLevel extends RegularLevel {
     protected void createMobs() {
 
         Mimic Mimic = new Mimic();
-        mobs.add(Mimic.spawnAt(randomRespawnCell(Mimic), Mimic.class));
+        mobs.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic.spawnAt(randomRespawnCell(Mimic), Mimic.class));
 
         Mimic Mimic2 = new Mimic();
-        mobs.add(Mimic.spawnAt(randomRespawnCell(Mimic2), Mimic.class));
+        mobs.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic.spawnAt(randomRespawnCell(Mimic2), Mimic.class));
 
         GoldenMimic Mimic3 = new GoldenMimic();
         mobs.add(GoldenMimic.spawnAt(randomRespawnCell(Mimic3), GoldenMimic.class,( Generator.randomUsingDefaults( Generator.Category.POTION ) )));
@@ -241,7 +241,11 @@ public class MiniChestMazeLevel extends RegularLevel {
         GoldenMimic Mimic4 = new GoldenMimic();
         mobs.add(GoldenMimic.spawnAt(randomRespawnCell(Mimic4), GoldenMimic.class,( Generator.randomUsingDefaults( Generator.Category.ARMOR ) )));
 
+        Mimic MimicX = new Mimic();
+        mobs.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic.spawnAt(randomRespawnCell(MimicX), Mimic.class));
 
+        Mimic MimicY = new Mimic();
+        mobs.add(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic.spawnAt(randomRespawnCell(MimicY), Mimic.class));
 
         if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
             EbonyMimic ebonyMimic = new EbonyMimic();

@@ -29,7 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ClearBleesdGoodBuff.BlessLing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RandomBuff;
@@ -218,9 +217,6 @@ public enum HeroClass {
 		new HerbBag().quantity(1).identify().collect();
 		new KingBag().quantity(1).identify().collect();
 		new ScrollOfIdentify().identify();
-		//new Amulet().quantity(1).identify().collect();
-
-		Statistics.Hollow_Holiday = true;
 
 		if (Dungeon.isDLC(Conducts.Conduct.DEV)){
 			new PropBag().quantity(1).identify().collect();

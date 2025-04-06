@@ -294,22 +294,10 @@ public class ElectricalSmoke extends Artifact implements Item.ThanksItem {
             GLog.i( "\n\n" + Messages.get(this, "desc_noequip_normal"));
         }
 
-        if( !isIdentified()){
-            GLog.i( "\n\n" + Messages.get(this, "desc_noidentify"));
+        if( !isIdentified() && Dungeon.hero != null ){
+            if(Dungeon.hero.belongings.backpack.contains(this) ) GLog.i( "\n\n" + Messages.get(this, "desc_noidentify"));
         }
 
-        /*
-        if (cursed && !isEquipped(Dungeon.hero) && isIdentified()){
-            desc += "\n\n" + Messages.get(this, "desc_noequip_cursed");
-        }else if(!isEquipped(Dungeon.hero) && isIdentified()){
-            desc += "\n\n" + Messages.get(this, "desc_noequip_normal");
-        }
-
-        if( !isIdentified()){
-            desc += "\n\n" + Messages.get(this, "desc_noidentify");
-        }
-
-         */
 
         if(has(PotionOfFrost.class) || has(PotionOfLiquidFlame.class) ||has(PotionOfToxicGas.class) || has(PotionOfLevitation.class)
                 || has(PotionOfParalyticGas.class) || has(PotionOfLiquidFlameX.class) || has(PotionOfCorrosiveGas.class)

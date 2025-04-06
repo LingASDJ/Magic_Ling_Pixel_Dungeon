@@ -25,6 +25,8 @@ public class CrystalDiedTower extends Mob implements Mob.NoMobSpawn {
         invisible = 1;
         state = PASSIVE;
 
+        alignment = Alignment.NEUTRAL;
+
         properties.add(Property.MINIBOSS);
         properties.add(Property.INORGANIC);
         properties.add(Property.ELECTRIC);
@@ -141,7 +143,7 @@ public class CrystalDiedTower extends Mob implements Mob.NoMobSpawn {
     protected int lastTargeting=-1;
     @Override
     protected boolean act(){
-        if(alignment == Alignment.NEUTRAL) return true;
+
         State s = countDown();
         if(s == State.SHOOTING) {
             zapProc();
