@@ -1464,7 +1464,7 @@ public abstract class Level implements Bundlable {
 		if (terr == Terrain.EMPTY || terr == Terrain.GRASS ||
 				terr == Terrain.EMBERS || terr == Terrain.EMPTY_SP ||
 				terr == Terrain.HIGH_GRASS || terr == Terrain.FURROWED_GRASS
-				|| terr == Terrain.EMPTY_DECO){
+				|| terr == Terrain.EMPTY_DECO || terr == Terrain.SALT_WATER){
 			set(cell, Terrain.WATER);
 			GameScene.updateMap(cell);
 			return true;

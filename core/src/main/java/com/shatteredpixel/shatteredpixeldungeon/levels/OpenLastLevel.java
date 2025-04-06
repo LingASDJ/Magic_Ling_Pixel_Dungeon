@@ -11,14 +11,10 @@ import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL_DECO;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Conducts;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FrostFlameParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
-import com.shatteredpixel.shatteredpixeldungeon.items.JAmulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -31,7 +27,6 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Halo;
 import com.watabou.noosa.Tilemap;
-import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
@@ -101,9 +96,9 @@ public class OpenLastLevel extends Level {
                     InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
                     InterlevelScene.curTransition = new LevelTransition();
                     InterlevelScene.curTransition.destDepth = depth + 1;
-                    InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_EXIT;
+                    InterlevelScene.curTransition.destType = LevelTransition.Type.REGULAR_ENTRANCE;
                     InterlevelScene.curTransition.destBranch = 0;
-                    InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_EXIT;
+                    InterlevelScene.curTransition.type = LevelTransition.Type.REGULAR_ENTRANCE;
                     InterlevelScene.curTransition.centerCell  = -1;
                     Game.switchScene( InterlevelScene.class );
                 }

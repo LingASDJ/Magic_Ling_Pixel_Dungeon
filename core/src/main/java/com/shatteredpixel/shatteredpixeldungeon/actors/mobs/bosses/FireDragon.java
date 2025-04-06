@@ -651,7 +651,7 @@ public class FireDragon extends Boss implements Callback {
             yell( Messages.get(this, "defeated") );
             GLog.w(Messages.get(this, "clear"));
 
-            if(Statistics.bossRushMode){
+            if(Statistics.bossRushMode || Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
                 Dungeon.level.drop(new CrystalKey(Dungeon.depth), pos).sprite.drop();
             }
         }

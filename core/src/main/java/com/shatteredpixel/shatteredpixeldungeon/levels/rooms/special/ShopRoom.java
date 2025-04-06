@@ -57,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.lightblack.OilPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfNoWater;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
@@ -343,6 +344,11 @@ public class ShopRoom extends SpecialRoom {
 
 		if(!Statistics.bossRushMode){
 			itemsToSpawn.add( new Alchemize().quantity(Random.IntRange(2, 3)));
+		}
+
+		if(Dungeon.isChallenged(Challenges.AQUAPHOBIA)){
+			itemsToSpawn.add(new PotionOfNoWater());
+			itemsToSpawn.add(new PotionOfNoWater());
 		}
 
 

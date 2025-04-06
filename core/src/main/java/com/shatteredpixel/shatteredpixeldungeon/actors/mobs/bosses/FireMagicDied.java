@@ -965,7 +965,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             target.sprite.parent.add(new BeamCustom(
                     new PointF(startX, startY).offset(0.5f, 0.5f).scale(DungeonTilemap.SIZE),
                     new PointF(endX, endY).offset(0.5f, 0.5f).scale(DungeonTilemap.SIZE),
-                    Effects.Type.RED_CHAIN)
+                    Effects.Type.LIGHT_RAY)
                     .setLifespan(0.7f).setColor(0xff0000)
             );
         }
@@ -993,7 +993,7 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
             }
 
             ScanningBeam.setCollide(this);
-            target.sprite.parent.add(new ScanningBeam(Effects.Type.RED_CHAIN, BallisticaReal.STOP_TARGET,
+            target.sprite.parent.add(new ScanningBeam(Effects.Type.LIGHT_RAY, BallisticaReal.STOP_TARGET,
                             new ScanningBeam.BeamData()
                                     .setPosition(startX+0.8f, startY + 0.8f, ang, r)
                                     .setSpeed(xsp, ysp, 0f)

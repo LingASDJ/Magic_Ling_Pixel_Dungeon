@@ -66,11 +66,11 @@ public class PotionOfNoWater extends Item {
             Sample.INSTANCE.play(Assets.Sounds.SHATTER);
         }
 
-        for (int offset : PathFinder.NEIGHBOURS9) {
+        for (int offset : PathFinder.NEIGHBOURS13_4) {
             if (Dungeon.level.water[cell + offset] || Dungeon.level.map[cell + offset] == Terrain.SALT_WATER) {
-                Level.set(cell + offset, Terrain.EMPTY);
+                Level.set(cell + offset, Terrain.EMPTY_SP);
                 DEM(cell + offset);
-                //GameScene.add(Blob.seed(cell + offset, 1, Fire.class));
+                GameScene.updateMap(cell);
                 GameScene.updateMap(cell + offset);
                 Dungeon.level.addVisuals();
             }
@@ -126,7 +126,7 @@ public class PotionOfNoWater extends Item {
         return true;
     }
 
-    public int price() {
-        return 100 * quantity;
+    public int value() {
+        return 40 * quantity;
     }
 }
