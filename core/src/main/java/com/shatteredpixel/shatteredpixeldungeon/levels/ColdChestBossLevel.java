@@ -270,7 +270,7 @@ public class ColdChestBossLevel extends Level {
         ColdChestBossLevel.State level = ((ColdChestBossLevel)Dungeon.level).pro();
         for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
             if (boss instanceof DiamondKnight) {
-                if (level == ColdChestBossLevel.State.MAZE_START && ((DiamondKnight) boss).phase == 1 && Statistics.KillMazeMimic >= 5) {
+                if (level == ColdChestBossLevel.State.MAZE_START && Statistics.KillMazeMimic >= 5) {
                     boss.HP = 240;
                     ScrollOfTeleportation.teleportToLocation(boss,647);
                     ((ColdChestBossLevel) Dungeon.level).progress();
@@ -362,7 +362,7 @@ public class ColdChestBossLevel extends Level {
                 for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于360 1阶段
-                        if (pro == START && boss.HP <= 360 && ((DiamondKnight) boss).phase == 0 && !Statistics.TPDoorDieds) {
+                        if (pro == START && boss.HP <= 360 && !Statistics.TPDoorDieds) {
                             Buff.affect(boss, RoseShiled.class, 10f);
                             Buff.detach(hero, Levitation.class);
                             //宝箱王移动到看戏位
@@ -384,7 +384,7 @@ public class ColdChestBossLevel extends Level {
                 for (Mob boss : Dungeon.level.mobs.toArray(new Mob[0])) {
                     if(boss instanceof DiamondKnight) {
                         //如果楼层为开始且boss血量小于300 2阶段
-                        if (pro == MAZE_START && boss.HP <= 360 && ((DiamondKnight) boss).phase == 1 && Statistics.TPDoorDieds) {
+                        if (pro == MAZE_START && boss.HP <= 360 && Statistics.TPDoorDieds) {
                             //动态修改整个房间 宝藏迷宫
                             changeMap(EndMap);
                             //在切换房间的时候立刻切换全新坐标
