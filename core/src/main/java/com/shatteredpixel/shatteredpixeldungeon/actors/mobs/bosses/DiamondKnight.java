@@ -456,6 +456,11 @@ public class DiamondKnight extends Boss implements Hero.Doom {
         if (state != SLEEPING) BossHealthBar.assignBoss(this);
         if ((HP*2 <= HT)) BossHealthBar.bleed(true);
 
+        if(HP == 0) {
+            phase=6;
+            HP=50;
+        }
+
         //if check is for pre-0.9.3 saves
         healInc = bundle.getInt(HEALINC);
 

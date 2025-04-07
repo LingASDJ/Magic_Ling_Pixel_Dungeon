@@ -139,7 +139,8 @@ public class vM0_7_X_Changes {
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
                 "Bug修复-1\n\n" +
-                       ("_-_ 修复金蝶嬗变戒指较易出现崩溃的异常\n" +
+                        ( "_-_ 修复拟态之王0血不死亡的严重异常，优化污泥浊水判定\n" +
+                        "_-_ 修复金蝶嬗变戒指较易出现崩溃的异常\n" +
                         "_-_ 修复烈阳法杖在元素风暴的异常，并且效果为可视怪物产生磷火+火焰\n" +
                         "_-_ 优化在26层后，陷阱房将完全替换为深渊浮空房\n" +
                         "_-_ 修复先前的子层掉落规则导致的异常闪退，现在调整为在子层掉落深渊的物品，将在本体楼层出现\n" +

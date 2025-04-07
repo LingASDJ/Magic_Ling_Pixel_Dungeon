@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.KillMazeMimic;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.TPDoorDieds;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel3;
@@ -178,7 +179,7 @@ public class WndResurrect extends Window {
 				if(TPDoorDieds){
 					TPDoorDieds = false;
 				}
-
+				KillMazeMimic = 0;
 				DragonGirlBlue.Quest.four_used_points = 0;
 
 				Statistics.sakaBackStage = 0;
