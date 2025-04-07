@@ -32,7 +32,12 @@ public class OozeStatueDead extends Buff {
                detach();
            } else {
               if(interval>=7- Dungeon.depth/5){
-                  Buff.affect(target, Ooze.class).set(3+Dungeon.depth/5f);
+                  if(Dungeon.depth<3){
+                      Buff.affect(target, Ooze.class).set(Dungeon.depth/5f);
+                  } else {
+                      Buff.affect(target, Ooze.class).set(3+Dungeon.depth/5f);
+                  }
+
                   detach();
               }
            }
