@@ -270,7 +270,6 @@ public class Statistics {
 	//Holiday Boolean
 	public static boolean Hollow_Holiday = false;
 
-
 	private static final String ICECLAN ="iceCyanBlueSquareCoin";
 
 	private static final String GAMETIME = "gameTime";

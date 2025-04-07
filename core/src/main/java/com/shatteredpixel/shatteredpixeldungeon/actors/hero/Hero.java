@@ -111,7 +111,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Nyctophobia;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
@@ -124,6 +123,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WaterSoulX;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.BloodLoss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.NightorDay;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.OozeStatueDead;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.status.QuestGold;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
@@ -2906,13 +2906,13 @@ public class Hero extends Char {
 
 		if (Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.depth>0 && !Dungeon.bossLevel()){
 			if(Dungeon.level.map[pos] == Terrain.SALT_WATER && !flying && Dungeon.hero.buff(WaterSoulX.class) == null){
-				Buff.affect(this, Ooze.class).set(2f);
 				for (Buff buff : hero.buffs()) {
 					if(buff.type == Buff.buffType.NEGATIVE && buff instanceof FlavourBuff) {
 						Buff.prolong(this, (Class<? extends FlavourBuff>) buff.getClass(), 5f);
 					}
+					Buff.affect(this, OozeStatueDead.class);
 				}
-			} else if(Dungeon.level.water[pos] && !flying && Dungeon.level.map[pos] == Terrain.WATER){
+			} else if(Dungeon.level.water[pos] && !flying && Dungeon.level.map[pos] == Terrain.WATER && Dungeon.hero.buff(WaterSoulX.class) == null){
 				Level.set(pos, Terrain.SALT_WATER);
 				GameScene.updateMap(pos);
 			}

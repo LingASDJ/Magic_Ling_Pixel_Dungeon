@@ -244,7 +244,7 @@ public class LevelRules {
                             return new HallsBossLevel();
                         }
                     case 26:
-                        return new OpenLastLevel();
+                        return !Statistics.Hollow_Holiday ? new LastLevel() : new OpenLastLevel();
 
                     case 27: case 28: case 29: case 30:
                         return Statistics.Hollow_Holiday ? new HollowLevel() : new DeadEndLevel();
