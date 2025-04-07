@@ -1115,6 +1115,27 @@ public class Hero extends Char {
 			Buff.affect(this, BloodLoss.class);
 		}
 
+		//水中祝福 但在BR不生效
+		if((Dungeon.branch == 0 || Dungeon.branch == 10) && !bossRushMode){
+			if(Dungeon.level.map[pos] == Terrain.WATER){
+				MoveWater();
+			}
+		}
+
+		if (Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.depth>0 && !Dungeon.bossLevel()){
+			if(Dungeon.level.map[pos] == Terrain.SALT_WATER && !flying && Dungeon.hero.buff(WaterSoulX.class) == null){
+				for (Buff buff : hero.buffs()) {
+					if(buff.type == Buff.buffType.NEGATIVE && buff instanceof FlavourBuff) {
+						Buff.prolong(this, (Class<? extends FlavourBuff>) buff.getClass(), 5f);
+					}
+					Buff.affect(this, OozeStatueDead.class);
+				}
+			} else if(Dungeon.level.water[pos] && !flying && Dungeon.level.map[pos] == Terrain.WATER && Dungeon.hero.buff(WaterSoulX.class) == null){
+				Level.set(pos, Terrain.SALT_WATER);
+				GameScene.updateMap(pos);
+			}
+		}
+
 		if(buff(ElectricalSmoke.SmokingAlloy.class) != null && !buff(ElectricalSmoke.SmokingAlloy.class).isCursed() && !withElectricalSmoke){
 			withElectricalSmoke = true;
 		}else if(buff(ElectricalSmoke.SmokingAlloy.class) == null || buff(ElectricalSmoke.SmokingAlloy.class).isCursed()){
@@ -2896,27 +2917,6 @@ public class Hero extends Char {
 
 	@SuppressWarnings("unchecked")
 	private boolean actMove( HeroAction.Move action ) {
-
-		//水中祝福 但在BR不生效
-		if((Dungeon.branch == 0 || Dungeon.branch == 10) && !bossRushMode){
-			if(Dungeon.level.map[pos] == Terrain.WATER){
-				MoveWater();
-			}
-		}
-
-		if (Dungeon.isChallenged(AQUAPHOBIA) && Dungeon.depth>0 && !Dungeon.bossLevel()){
-			if(Dungeon.level.map[pos] == Terrain.SALT_WATER && !flying && Dungeon.hero.buff(WaterSoulX.class) == null){
-				for (Buff buff : hero.buffs()) {
-					if(buff.type == Buff.buffType.NEGATIVE && buff instanceof FlavourBuff) {
-						Buff.prolong(this, (Class<? extends FlavourBuff>) buff.getClass(), 5f);
-					}
-					Buff.affect(this, OozeStatueDead.class);
-				}
-			} else if(Dungeon.level.water[pos] && !flying && Dungeon.level.map[pos] == Terrain.WATER && Dungeon.hero.buff(WaterSoulX.class) == null){
-				Level.set(pos, Terrain.SALT_WATER);
-				GameScene.updateMap(pos);
-			}
-		}
 
 		CapeOfThorns.HeroThorns thornsTalent = buff( CapeOfThorns.HeroThorns.class );
 		if(thornsTalent != null){
