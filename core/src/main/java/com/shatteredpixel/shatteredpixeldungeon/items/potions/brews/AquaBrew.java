@@ -74,7 +74,7 @@ public class AquaBrew extends Brew {
 	public void shatter(int cell) {
 
 		if (Dungeon.level.map[cell] == Terrain.SALT_WATER) {
-			for (int offset : PathFinder.NEIGHBOURS8) {
+			for (int offset : PathFinder.NEIGHBOURS9) {
 				if (Dungeon.level.map[cell + offset] == Terrain.SALT_WATER) {
 					Level.set(cell + offset, Terrain.EMPTY_SP);
 					DEM(cell + offset);
