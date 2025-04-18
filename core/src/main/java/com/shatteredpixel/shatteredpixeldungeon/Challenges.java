@@ -24,8 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 
 public class Challenges {
@@ -47,9 +45,7 @@ public class Challenges {
 
 	public static final int CS   = 32768;
 
-	public static final int BLOOD_DIED   = 65536;
-
-	public static final int MAX_VALUE = 65536*2;
+	public static final int MAX_VALUE = 65536;
 	public static final String[] NAME_IDS = {
 			"no_food",
 			"no_armor",
@@ -67,12 +63,11 @@ public class Challenges {
 			"dhxd",
 			"morelevel",
 			"cs",
-			"blood_died"
 	};
 
 	public static final int[] MASKS = {
 			NO_FOOD, NO_ARMOR, NO_HEALING, NO_HERBALISM, SWARM_INTELLIGENCE, DARKNESS, NO_SCROLLS
-			, AQUAPHOBIA, CHAMPION_ENEMIES,RLPT,SBSG,EXSG,STRONGER_BOSSES,DHXD,MOREROOM,CS,BLOOD_DIED
+			, AQUAPHOBIA, CHAMPION_ENEMIES,RLPT,SBSG,EXSG,STRONGER_BOSSES,DHXD,MOREROOM,CS
 	};
 	public String name;
 
@@ -88,9 +83,9 @@ public class Challenges {
 			return item instanceof Dewdrop ;
 		}
 
-		if (Dungeon.isChallenged(BLOOD_DIED)) {
-			return item instanceof ChaliceOfBlood || item instanceof Sungrass.Seed;
-		}
+//		if (Dungeon.isChallenged(BLOOD_DIED)) {
+//			return item instanceof ChaliceOfBlood || item instanceof Sungrass.Seed;
+//		}
 
 		return false;
 

@@ -295,7 +295,7 @@ public class ShopBossLevel extends Level {
 
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
-        if(Statistics.bossRushMode){
+        if(Statistics.bossRushMode || Statistics.RandMode){
             return super.activateTransition(hero, transition);
         }
         return false;

@@ -636,9 +636,9 @@ public class Hero extends Char {
 			Buff.affect(this, QuestGold.class).set((100), 1);
 		}
 
-		if (Dungeon.isChallenged(Challenges.BLOOD_DIED) && Dungeon.depth>2){
-			Buff.affect(this, BloodLoss.class);
-		}
+//		if (Dungeon.isChallenged(Challenges.BLOOD_DIED) && Dungeon.depth>2){
+//			Buff.affect(this, BloodLoss.class);
+//		}
 
 		if(HelpSettings()) {
 			Buff.affect(this, GameTracker.class);
@@ -1111,9 +1111,9 @@ public class Hero extends Char {
 
 	@Override
 	public boolean act() {
-		if (Dungeon.isChallenged(Challenges.BLOOD_DIED) && Dungeon.depth>2){
-			Buff.affect(this, BloodLoss.class);
-		}
+//		if (Dungeon.isChallenged(Challenges.BLOOD_DIED) && Dungeon.depth>2){
+//			Buff.affect(this, BloodLoss.class);
+//		}
 
 		//水中祝福 但在BR不生效
 		if((Dungeon.branch == 0 || Dungeon.branch == 10) && !bossRushMode){
@@ -2015,14 +2015,14 @@ public class Hero extends Char {
 		}
 
 		int dmg;
-		if (Dungeon.isChallenged(Challenges.BLOOD_DIED)) {
-			dmg = (new AltVampiric()).proc(null, this, enemy, damage);
-
-			if(Random.Float() < 0.1f){
-				dmg *= 2;
-			}
-			damage = dmg;
-		}
+//		if (Dungeon.isChallenged(Challenges.BLOOD_DIED)) {
+//			dmg = (new AltVampiric()).proc(null, this, enemy, damage);
+//
+//			if(Random.Float() < 0.1f){
+//				dmg *= 2;
+//			}
+//			damage = dmg;
+//		}
 
 		if (wep != null) damage = wep.proc( this, enemy, damage );
 
