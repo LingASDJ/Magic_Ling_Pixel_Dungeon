@@ -6,16 +6,13 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
-import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Random;
 
 public class BGMPlayer {
 
-
-    //解决电脑端高质量ogg的线程安全闪退问题
     public static void playBGM(String name, boolean loop) {
-        Game.runOnRenderThread(() -> Music.INSTANCE.play(name, loop));
+        Music.INSTANCE.play(name, loop);
     }
 
     public static void endBGM(){
@@ -215,7 +212,6 @@ public class BGMPlayer {
                     playBGM(MUISC_RANDOM[Random.Int(MUISC_RANDOM.length)],true);
                     Statistics.NightDreamLoop = true;
                 }
-
             }
         } else {
             if(s == 10) {
