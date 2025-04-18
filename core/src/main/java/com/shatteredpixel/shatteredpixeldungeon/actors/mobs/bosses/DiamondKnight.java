@@ -505,7 +505,7 @@ public class DiamondKnight extends Boss implements Hero.Doom {
 
     @Override
     public boolean isAlive() {
-        return phase < 5 || HP > 0;
+        return phase < 3|| HP > 0;
     }
 
     public void onZapComplete() {
