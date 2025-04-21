@@ -4,7 +4,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -569,7 +568,7 @@ public class Rival extends Boss implements Callback {
         super.notice();
         level.seal();
 
-        BGMPlayer.playBGM(Assets.BGM_YOU, true);
+        //BGMPlayer.playBGM(Assets.BGM_YOU, true);
 
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);

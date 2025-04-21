@@ -7,7 +7,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.SBSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Conducts;
@@ -746,7 +745,7 @@ public class YogReal extends Boss {
                 }
             }
             GameScene.bossReady();
-            BGMPlayer.playBoss();
+            //BGMPlayer.playBoss();
             if (phase == 0) {
                 phase = 1;
             }

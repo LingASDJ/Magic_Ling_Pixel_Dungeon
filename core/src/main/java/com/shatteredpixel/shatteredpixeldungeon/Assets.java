@@ -23,42 +23,9 @@ package com.shatteredpixel.shatteredpixeldungeon;
 
 public class Assets {
 
-	public static final String BGM_1A = "music/forestflower.ogg";
-	public static final String BGM_1 = "music/Level1.ogg";
-	public static final String BGM_2 = "music/Level2.ogg";
-	public static final String BGM_3 = "music/Level3.ogg";
-	public static final String BGM_4 = "music/Level4.ogg";
-	public static final String BGM_5 = "music/Level5.ogg";
-	public static final String BGM_0 = "music/Level0.ogg";
-	public static final String SNOWCYON	= "music/SnowCyon.ogg";
 
-	public static final String NIGHT	= "music/DwarfGeneral.ogg";
 
-	public static final String YOGALXY	= "music/rgjt/galaxy.ogg";
-	public static final String YOGGOD	= "music/rgjt/god.ogg";
-	public static final String STARLXY	= "music/rgjt/star.ogg";
 
-	public static final String SKBJY		= "music/Boss-Saka.ogg";
-
-	public static final String TOWN 		= "music/town.ogg";
-	public static final String BGM_BOSSA 	= "music/Boss1.ogg";
-	public static final String BGM_BOSSA3 	= "music/Boss1.ogg";
-	public static final String BGM_YOU 		= "music/boss/you.ogg";
-	public static final String BGM_BOSSB 	= "music/Boss2.ogg";
-	public static final String BGM_BOSSB2 	= "music/Tengu.ogg";
-	public static final String BGM_BOSSC 	= "music/Boss3.ogg";
-	public static final String BGM_BOSSD 	= "music/Boss4.ogg";
-	public static final String BGM_BOSSD2 	= "music/DwarfGeneral.ogg";
-	public static final String BGM_BOSSE3 	= "music/Yogdead.ogg";
-
-	public static final String BGM_SHOP 	= "music/Shop.ogg";
-	public static final String BGM_BOSSE4 	= "music/YogTime.ogg";
-	public static final String BGM_FRBOSS 	= "music/SnowLing.ogg";
-	public static final String HOLLOW_CITY 	= "music/hollow/Mischief_Managed-Easy.ogg";
-	public static final String HOLLOW_CITY_HARD 	= "music/hollow/Mischief_Managed.ogg";
-
-	public static final String FL_CITY 		= "music/forestflower.ogg";
-	public static final String BOSSDOG 		= "music/boss/dogboss.ogg";
 
 	public static class Effects {
 		public static final String EFFECTS      = "effects/effects.png";
@@ -325,11 +292,26 @@ public class Assets {
 	}
 
 	public static class Music {
+
+
+
 		public static final String THEME      = "music/theme.ogg";
 		public static final String GO      = "music/Open.ogg";
 		public static final String SHOP      = "music/shop.ogg";
 		public static final String THEME_1      = "music/theme.ogg";
 		public static final String THEME_2      = "music/theme_sky.ogg";
+
+		//关卡音乐
+		public static final String CLOUND_CITY = "music/Level0.ogg";
+		public static final String JUNGLE_FOREST = "music/Level1.ogg";
+
+		public static final String BGM_1A = "music/forestflower.ogg";
+
+		public static final String BGM_2 = "music/Level2.ogg";
+		public static final String BGM_3 = "music/Level3.ogg";
+		public static final String BGM_4 = "music/Level4.ogg";
+		public static final String BGM_5 = "music/Level5.ogg";
+
 
 		public static final String CHRAMSS     = "music/chrimas.ogg";
 		public static final String SEWERS_BOSS  = "music/Boss1.ogg";
@@ -363,7 +345,39 @@ public class Assets {
 		public static final String DIAMAND_KING_INTRO = "music/boss/DiamndKing_Boss_Intro.ogg";
 		public static final String DIAMAND_KING_LOOP  = "music/boss/DiamndKing_Boss_Loop.ogg";
 		public static final String DRAGON_LING  = "music/boss/Dragon.ogg";
-    }
+
+
+		public static final String SNOWCYON	= "music/SnowCyon.ogg";
+
+		public static final String NIGHT	= "music/DwarfGeneral.ogg";
+
+		public static final String YOGALXY	= "music/rgjt/galaxy.ogg";
+		public static final String YOGGOD	= "music/rgjt/god.ogg";
+		public static final String STARLXY	= "music/rgjt/star.ogg";
+
+		public static final String SKBJY		= "music/Boss-Saka.ogg";
+
+		public static final String TOWN 		= "music/town.ogg";
+		public static final String BGM_BOSSA 	= "music/Boss1.ogg";
+		public static final String BGM_BOSSA3 	= "music/Boss1.ogg";
+		public static final String BGM_YOU 		= "music/boss/you.ogg";
+		public static final String BGM_BOSSB 	= "music/Boss2.ogg";
+		public static final String BGM_BOSSB2 	= "music/Tengu.ogg";
+		public static final String BGM_BOSSC 	= "music/Boss3.ogg";
+		public static final String BGM_BOSSD 	= "music/Boss4.ogg";
+		public static final String BGM_BOSSD2 	= "music/DwarfGeneral.ogg";
+		public static final String BGM_BOSSE3 	= "music/Yogdead.ogg";
+
+		public static final String BGM_SHOP 	= "music/Shop.ogg";
+		public static final String BGM_BOSSE4 	= "music/YogTime.ogg";
+		public static final String BGM_FRBOSS 	= "music/SnowLing.ogg";
+		public static final String HOLLOW_CITY 	= "music/hollow/Mischief_Managed-Easy.ogg";
+		public static final String HOLLOW_CITY_HARD 	= "music/hollow/Mischief_Managed.ogg";
+
+		public static final String FL_CITY 		= "music/forestflower.ogg";
+		public static final String BOSSDOG 		= "music/boss/dogboss.ogg";
+
+	}
 
 	public static class Sounds {
 		public static final String CLICK    = "sounds/click.mp3";

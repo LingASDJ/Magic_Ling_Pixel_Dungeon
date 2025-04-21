@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -394,7 +393,7 @@ public class GreenStingCV extends Boss {
     public void notice() {
         super.notice();
         if (!BossHealthBar.isAssigned()) {
-            BGMPlayer.playBoss();
+            //BGMPlayer.playBoss();
             GameScene.bossReady();
             BossHealthBar.assignBoss(this);
             yell(Messages.get(this, "notice"));

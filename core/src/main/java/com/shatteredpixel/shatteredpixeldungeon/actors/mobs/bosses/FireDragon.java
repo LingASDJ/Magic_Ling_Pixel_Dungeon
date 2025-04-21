@@ -663,7 +663,7 @@ public class FireDragon extends Boss implements Callback {
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
             GameScene.bossReady();
-            //BGMPlayer.playBoss();
+            ////BGMPlayer.playBoss();
 
             Mob testActor = Clearly();
             testActor.state = testActor.HUNTING;

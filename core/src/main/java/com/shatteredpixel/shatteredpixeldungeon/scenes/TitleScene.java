@@ -1,6 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
-import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.Holiday.XMAS;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.holiday;
 import static com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane.asset;
@@ -37,7 +37,6 @@ import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Music;
 import com.watabou.utils.ColorMath;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.GameMath;
@@ -170,18 +169,6 @@ public class TitleScene extends PixelScene {
 			}
 			NTP_LINK = true;
 			executor.shutdown();
-		}
-
-
-		if(SPDSettings.music()){
-			if(holiday == XMAS){
-				playBGM(Assets.Music.CHRAMSS, true);
-			} else {
-				Music.INSTANCE.playTracks(
-						new String[]{Assets.Music.THEME, Assets.HOLLOW_CITY},
-						new float[]{1, 1},
-						true);
-			}
 		}
 
 		uiCamera.visible = false;

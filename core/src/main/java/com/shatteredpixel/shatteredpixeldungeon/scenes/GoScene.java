@@ -1,6 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
-import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -55,18 +55,11 @@ public class GoScene extends PixelScene {
     public void create() {
         super.create();
         isClassExistInSourceCode();
+
         if (SPDSettings.splashScreen() < 1 || done) {
             ShatteredPixelDungeon.switchScene(WelcomeScene.class);
             return;
-        } else if(SPDSettings.music()) {
-            playBGM(Assets.Sounds.ANSDOSHIP, false);
         }
-
-//        TitleScene.NTP_ERROR = false;
-//        TitleScene.NTP_NOINTER = false;
-//        TitleScene.NTP_LINK = false;
-//        TitleScene.NTP_ERROR_VEFY = false;
-//        TitleScene.NTP_NOINTER_VEFY = false;
 
         PixelScene.uiCamera.visible = false;
 

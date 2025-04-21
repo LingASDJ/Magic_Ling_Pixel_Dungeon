@@ -3,7 +3,6 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.HollowMimic;
@@ -71,7 +70,7 @@ public class HollowLevel extends RegularLevel {
 
     @Override
     public void playLevelMusic(){
-        BGMPlayer.playBGM(Assets.HOLLOW_CITY, true);
+        //BGMPlayer.playBGM(Assets.HOLLOW_CITY, true);
     }
 
     @Override

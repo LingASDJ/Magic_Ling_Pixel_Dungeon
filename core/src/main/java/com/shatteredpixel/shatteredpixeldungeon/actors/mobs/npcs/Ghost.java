@@ -230,6 +230,10 @@ public class Ghost extends NPC {
 		public static Weapon.Enchantment enchant;
 		public static Armor.Glyph glyph;
 
+		public static boolean active(){
+			return spawned && given && !processed && depth == Dungeon.depth;
+		}
+
 		public static void reset() {
 			spawned = false;
 			food = null;
@@ -468,17 +472,6 @@ public class Ghost extends NPC {
 				Sample.INSTANCE.play( Assets.Sounds.GHOST );
 				processed = true;
 				Statistics.questScores[0] = 1000;
-				Game.runOnRenderThread(new Callback() {
-					@Override
-					public void call() {
-						Music.INSTANCE.fadeOut(5f, new Callback() {
-							@Override
-							public void call() {
-								Music.INSTANCE.play(Assets.BGM_1, true);
-							}
-						});
-					}
-				});
 			}
 		}
 

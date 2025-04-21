@@ -29,7 +29,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMag
 
 import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
@@ -1170,10 +1169,8 @@ public class GameScene extends PixelScene {
 			return;
 		}
 
-		BGMPlayer.playBGMWithDepth();
-
-		//TODO
-		//Dungeon.level.playLevelMusic();
+		//全新音乐系统
+		Dungeon.level.playLevelMusic();
 
 		SPDSettings.lastClass(Dungeon.hero.heroClass.ordinal());
 
@@ -1939,7 +1936,7 @@ public class GameScene extends PixelScene {
 			}
 
 			if (Dungeon.hero.buff(LockedFloor.class) == null) {
-				BGMPlayer.playBGMWithDepth();
+				//BGMPlayer.playBGMWithDepth();
 			}
 
 			Sample.INSTANCE.play( Assets.Sounds.ALERT );
@@ -2059,10 +2056,6 @@ public class GameScene extends PixelScene {
 
 			if(lanterfireactive && Dungeon.branch == 0 && Dungeon.bossLevel() || Dungeon.branch == 6 || Statistics.bossRushMode && Dungeon.sbbossLevel()){
 				cure( Dungeon.hero );
-			}
-
-			if (Dungeon.hero.buff(LockedFloor.class) == null) {
-				BGMPlayer.playBGMWithDepth();
 			}
 
 			Sample.INSTANCE.play( Assets.Sounds.BOSS );

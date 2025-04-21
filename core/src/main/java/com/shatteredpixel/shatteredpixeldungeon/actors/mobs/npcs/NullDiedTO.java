@@ -1,8 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -72,7 +70,7 @@ public class NullDiedTO extends NTNPC {
     public void flee() {
         destroy();
         Dungeon.level.seal();
-       playBGM(Assets.BGM_FRBOSS, true);
+
         GameScene.flash(0x8000FFFF);
         sprite.killAndErase();
         CellEmitter.get( pos ).burst(SnowParticle.FACTORY, 6 );

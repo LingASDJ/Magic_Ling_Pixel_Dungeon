@@ -27,7 +27,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -500,7 +499,7 @@ public class InterlevelScene extends PixelScene {
 		}
 		if(Statistics.bossRushMode){
 			if(!Dungeon.noLEvelsLeft()){
-				BGMPlayer.playBGM(MUISC_RANDOM[Random.Int(MUISC_RANDOM.length)],true);
+				//BGMPlayer.playBGM(MUISC_RANDOM[Random.Int(MUISC_RANDOM.length)],true);
 			}
 		}
 
