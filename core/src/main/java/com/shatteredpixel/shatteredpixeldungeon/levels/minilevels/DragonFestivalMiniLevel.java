@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
@@ -170,6 +171,18 @@ public class DragonFestivalMiniLevel extends CavesLevel {
                 .setWater(0.4f, 0)
                 .setGrass(0.6f, 1);
     }
+
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.TOWN,true);
+    }
+
+    @Override
+    public void playBossMusic(){
+        Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
+                () -> Music.playModeBGM(Assets.Music.DRAGON_LING,true)));
+    }
+
     @Override
     public String tilesTex() {
         return Assets.Environment.TILES_COLD_MINE;

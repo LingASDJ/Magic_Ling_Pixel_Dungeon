@@ -660,10 +660,11 @@ public class FireDragon extends Boss implements Callback {
     @Override
     public void notice() {
         super.notice();
+        Dungeon.level.seal();
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
             GameScene.bossReady();
-            //BGMPlayer.playBoss();
+            ////BGMPlayer.playBoss();
 
             Mob testActor = Clearly();
             testActor.state = testActor.HUNTING;
@@ -680,7 +681,7 @@ public class FireDragon extends Boss implements Callback {
             GameScene.flash(Window.ANSDO_COLOR);
             Camera.main.shake(1f,3f);
             this.sprite.showStatus(CharSprite.NEGATIVE, "!!!");
-            Dungeon.level.seal();
+
             GLog.n(Messages.get(this, "notice"));
             for (Char ch : Actor.chars()){
                 if (ch instanceof DriedRose.GhostHero){

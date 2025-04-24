@@ -86,6 +86,17 @@ public class PrisonBossLevel extends Level {
 		WON
 	}
 
+	@Override
+	public void playLevelMusic() {
+		Music.playModeBGM(Assets.Music.BGM_2, true);
+	}
+
+	@Override
+	public void playBossMusic() {
+		Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
+				() -> Music.playModeBGM(Assets.Music.PRISON_BOSS,true)));
+	}
+
 	private State state;
 	private Tengu tengu;
 

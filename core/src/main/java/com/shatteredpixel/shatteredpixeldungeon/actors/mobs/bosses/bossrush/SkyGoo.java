@@ -21,11 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.bossrush;
 
-import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -367,7 +364,7 @@ public class SkyGoo extends Boss implements Callback {
 			} while (!Dungeon.level.passable[pos + ofs]);
 			Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
 		}
-		playBGM(Assets.BGM_1, true);
+
 		GameScene.bossSlain();
 		Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
 		Dungeon.level.drop( new CrystalKey( Dungeon.depth ), pos ).sprite.drop();
@@ -377,7 +374,7 @@ public class SkyGoo extends Boss implements Callback {
 	@Override
 	public void notice() {
 		super.notice();
-		BGMPlayer.playBoss();
+		//BGMPlayer.playBoss();
 		if (!BossHealthBar.isAssigned()) {
 			BossHealthBar.assignBoss(this);
 			yell(Messages.get(this, "notice"));

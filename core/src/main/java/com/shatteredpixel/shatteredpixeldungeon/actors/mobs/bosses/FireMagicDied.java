@@ -1,6 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 
-import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.ShopBossLevel.CryStalPosition;
@@ -887,12 +887,9 @@ public class FireMagicDied extends Boss implements Callback, Hero.Doom {
 
     @Override
     public void notice() {
-
+        Dungeon.level.playBossMusic();
         BossHealthBar.assignBoss(this);
-
-       playBGM(Assets.BGM_SHOP, true);
         yell( Messages.get(this, "notice") );
-        //summon();
     }
 
     @Override

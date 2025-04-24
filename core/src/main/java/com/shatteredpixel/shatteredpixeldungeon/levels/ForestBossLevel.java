@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -47,11 +46,6 @@ public class ForestBossLevel extends Level {
      */
     @Override
     public void playLevelMusic() {
-        if (locked){
-            BGMPlayer.playBGM(Assets.Music.SEWERS_BOSS,true);
-        } else {
-            BGMPlayer.endBGM();
-        }
     }
 
     //二选一

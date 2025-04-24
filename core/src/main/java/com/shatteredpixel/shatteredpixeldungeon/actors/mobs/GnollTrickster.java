@@ -165,6 +165,7 @@ public class GnollTrickster extends Gnoll {
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
 		combo = bundle.getInt( COMBO );
+		if (state != SLEEPING) BossHealthBar.assignBoss(this);
 	}
 
 }

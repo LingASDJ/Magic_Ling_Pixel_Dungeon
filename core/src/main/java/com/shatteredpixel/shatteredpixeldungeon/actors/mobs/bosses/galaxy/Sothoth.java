@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses.galaxy;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -257,7 +256,7 @@ public class Sothoth extends Boss {
                 Music.INSTANCE.fadeOut(5f, new Callback() {
                     @Override
                     public void call() {
-                        Music.INSTANCE.play(Assets.YOGGOD, true);
+                        //Music.INSTANCE.play(Assets.YOGGOD, true);
                     }
                 });
             }

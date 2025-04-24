@@ -58,6 +58,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Tilemap;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -68,6 +69,17 @@ public class DwarfGeneralBossLevel extends Level {
         color1 = 0x801500;
         color2 = 0xa68521;
     }
+
+    @Override
+    public void playBossMusic(){
+        Music.playModeBGM(Assets.Music.BGM_BOSSD2,true);
+    }
+
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.BGM_4,true);
+    }
+
     CustomTilemap visx = new townBehindX();
     private static final int WIDTH = 21;
     private static final int HEIGHT = 31;

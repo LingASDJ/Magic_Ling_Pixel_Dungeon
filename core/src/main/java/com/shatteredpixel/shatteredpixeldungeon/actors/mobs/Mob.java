@@ -29,7 +29,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.lanterfireactive;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -1366,11 +1365,9 @@ public abstract class Mob extends Char {
 		sprite.showAlert();
 		if (!BossHealthBar.isAssigned()) {
 			if (Dungeon.level.locked) {
-                if (Dungeon.depth == 25) {
-                    level.playLevelMusic();
-                } else {
-                    BGMPlayer.playBoss();
-                }
+				level.playBossMusic();
+			} else {
+				level.playLevelMusic();
 			}
 		}
 	}

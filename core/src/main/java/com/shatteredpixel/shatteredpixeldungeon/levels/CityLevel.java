@@ -55,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.PointF;
@@ -72,6 +73,11 @@ public class CityLevel extends RegularLevel {
 		if (forceMax) return 8;
 		//6 to 8, average 7
 		return 6+Random.chances(new float[]{1, 3, 1});
+	}
+
+	@Override
+	public void playLevelMusic(){
+		Music.playModeBGM(Assets.Music.BGM_4,true);
 	}
 	
 	@Override

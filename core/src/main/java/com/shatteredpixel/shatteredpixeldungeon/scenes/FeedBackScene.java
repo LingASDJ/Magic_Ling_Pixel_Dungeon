@@ -1,8 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
-import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndFeedback;
@@ -16,7 +14,6 @@ public class FeedBackScene extends PixelScene {
     @Override
     public void create() {
         super.create();
-       playBGM( Assets.Music.CITY_BOSS_FINALE, true );
         wndFeedback = new WndFeedback(false) {
             @Override
             public void onBackPressed() {

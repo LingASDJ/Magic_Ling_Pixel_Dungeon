@@ -59,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
@@ -85,6 +86,15 @@ public class CavesLevel extends RegularLevel {
 		return Blacksmith.Quest.spawn(super.initRooms());
 	}
 
+
+	@Override
+	public void playLevelMusic() {
+		if(RedDragon.Quest.active()){
+			Music.playModeBGM(Assets.Music.CAVES_TENSE, true);
+		} else {
+			Music.playModeBGM(Assets.Music.BGM_3, true);
+		}
+	}
 
 	@Override
 	protected void createMobs() {

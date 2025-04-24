@@ -77,6 +77,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfBlueFuck;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfHightHunderStorm;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.hightwand.WandOfVenom;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -117,7 +118,7 @@ public class ElementalBlast extends ArmorAbility {
 		effectTypes.put(WandOfBlueFuck.class,       MagicMissile.HALOFIRE);
 		effectTypes.put(WandOfScale.class,       MagicMissile.SHAMAN_BLUE);
 
-
+		effectTypes.put(WandOfVenom.class,       			  MagicMissile.SHAMAN_RED);
 		effectTypes.put(WandOfGodIce.class,        					   Speck.BLIZZARD);
 		effectTypes.put(WandOfHightHunderStorm.class,       MagicMissile.FOLIAGE_CONE);
 		effectTypes.put(WandOfSun.class,       						MagicMissile.WARD);
@@ -143,8 +144,9 @@ public class ElementalBlast extends ArmorAbility {
 		damageFactors.put(WandOfGodIce.class,         1f);
 		damageFactors.put(WandOfBlueFuck.class,         1f);
 		damageFactors.put(WandOfHightHunderStorm.class,         1f);
+		damageFactors.put(WandOfVenom.class,         1.3f);
 
-		damageFactors.put(WandOfSun.class,         1.5f);
+		damageFactors.put(WandOfSun.class,         1.2f);
 	}
 
 	{

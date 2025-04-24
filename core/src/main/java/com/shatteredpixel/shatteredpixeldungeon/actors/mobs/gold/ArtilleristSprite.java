@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.gold;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;

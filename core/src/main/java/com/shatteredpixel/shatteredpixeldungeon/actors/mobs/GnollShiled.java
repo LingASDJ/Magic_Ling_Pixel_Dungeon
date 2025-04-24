@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BombGnollTricksterSprites;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
@@ -133,5 +134,6 @@ public class GnollShiled extends Gnoll {
     public void restoreFromBundle(Bundle bundle) {
         GnollShiled.super.restoreFromBundle(bundle);
         this.combo = bundle.getInt("combo");
+        if (state != SLEEPING) BossHealthBar.assignBoss(this);
     }
 }

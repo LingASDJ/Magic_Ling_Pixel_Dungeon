@@ -64,6 +64,17 @@ public class ForestHardBossLevel extends Level {
         return Assets.Environment.WATER_SEWERS;
     }
 
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.JUNGLE_FOREST,true);
+    }
+
+    @Override
+    public void playBossMusic(){
+        Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
+                () -> Music.playModeBGM(Assets.Music.BGM_BOSSA,true)));
+    }
+
     {
         color1 = 0x801500;
         color2 = 0xa68521;
@@ -293,43 +304,11 @@ public class ForestHardBossLevel extends Level {
                 Music.INSTANCE.fadeOut(5f, new Callback() {
                     @Override
                     public void call() {
-                        Music.INSTANCE.play(Assets.BGM_1, true);
+                        // TODO Music.INSTANCE.play(Assets.BGM_1, true);
                     }
                 });
             }
         });
-
-//        for (int i : UpdateRead) {
-//            set( i, Terrain.EMPTY_SP );
-//            GameScene.updateMap( i );
-//        }
-//
-//        switch(Random.NormalIntRange(1,6)){
-//            case 1:case 2:case 3:
-
-
-//
-//                drop( new CrystalKey(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? 2 : 5 ), WIDTH*7+29 );
-//
-//                Heap droppedA = Dungeon.level.drop( Generator.randomUsingDefaults( Generator.Category.ARMOR),
-//                        WIDTH*7+28 );
-//                droppedA.type = Heap.Type.CRYSTAL_CHEST;
-//                droppedA.sprite.view( droppedA );
-//                break;
-//            case 4: case 5: case 6:
-//                for (int i : RatKingRoomBSpawn) {
-//                    Heap droppedGold = Dungeon.level.drop( new Gold( Random.IntRange( 10, 25 )),i);
-//                    droppedGold.type = Heap.Type.CHEST;
-//                    droppedGold.sprite.view( droppedGold );
-//                }
-//                RatKing king2 = new RatKing();
-//                king2.pos = WIDTH*7+28;
-//                GameScene.add(king2);
-//
-//                drop( new CrystalKey(Dungeon.isDLC(Conducts.Conduct.BOSSRUSH) ? 2 : 5 ), WIDTH*7+4 );
-//
-
-//        }
 
         Dungeon.observe();
 

@@ -21,8 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -358,7 +359,7 @@ public class NewDM720 extends MolotovHuntsman implements Mob.NoMobSpawn {
             BossHealthBar.assignBoss(this);
             turnsSinceLastAbility = 0;
             yell(Messages.get(this, "notice"));
-            BGMPlayer.playBoss();
+            level.playBossMusic();
             for (Char ch : Actor.chars()){
                 if (ch instanceof DriedRose.GhostHero){
                     ((DriedRose.GhostHero) ch).sayBoss();

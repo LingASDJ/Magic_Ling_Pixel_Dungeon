@@ -24,7 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -134,12 +133,14 @@ public class PrisonLevel extends RegularLevel {
 	@Override
 	public void playLevelMusic() {
 		if (Wandmaker.Quest.active() || Statistics.amuletObtained){
-			BGMPlayer.playBGM(Assets.Music.PRISON_TENSE, true);
+			Music.playModeBGM(Assets.Music.PRISON_TENSE, true);
 		} else {
-			BGMPlayer.playBGM(Assets.BGM_2, true);
+			Music.playModeBGM(Assets.Music.BGM_2, true);
 		}
 		wandmakerQuestWasActive = Wandmaker.Quest.active();
 	}
+
+
 
 
 	@Override

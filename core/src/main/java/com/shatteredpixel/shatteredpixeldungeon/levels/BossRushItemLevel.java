@@ -49,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsi
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CavesPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Random;
 
 public class BossRushItemLevel extends RegularLevel {
@@ -70,6 +71,11 @@ public class BossRushItemLevel extends RegularLevel {
         if (forceMax) return 1;
         //1 to 3, average 2.2
         return Dungeon.depth< 25 ? 1+ Dungeon.depth/5+ Random.chances(new float[]{1,1,1}) : 0;
+    }
+
+    @Override
+    public void playLevelMusic() {
+        Music.playModeBGM(Assets.Music.BGM_5, true);
     }
 
     @Override

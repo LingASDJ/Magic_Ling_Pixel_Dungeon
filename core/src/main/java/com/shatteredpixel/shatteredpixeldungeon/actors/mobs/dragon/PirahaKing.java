@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.dragon;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -404,7 +403,7 @@ public class PirahaKing extends Boss {
         if (state != SLEEPING) BossHealthBar.assignBoss(this);
         if ((HP*2 <= HT)) BossHealthBar.bleed(true);
         lastEnemyPos = bundle.getInt(LAST_ENEMY_POS);
-        BGMPlayer.playBGM(Assets.Music.CAVES_BOSS_FINALE,true);
+        //BGMPlayer.playBGM(Assets.Music.CAVES_BOSS_FINALE,true);
         leapPos = bundle.getInt(LEAP_POS);
         leapCooldown = bundle.getFloat(LEAP_CD);
     }
@@ -415,8 +414,9 @@ public class PirahaKing extends Boss {
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
             Dungeon.level.seal();
+            Dungeon.level.playBossMusic();
             yell(Messages.get(this, "notice"));
-            BGMPlayer.playBGM(Assets.Music.CAVES_BOSS_FINALE,true);
+            //BGMPlayer.playBGM(Assets.Music.CAVES_BOSS_FINALE,true);
             Camera.main.shake(1f,3f);
         }
     }

@@ -3,7 +3,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.bosses;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.PaswordBadges;
@@ -691,7 +690,7 @@ public class DwarfGeneral extends Boss {
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
             yell(Messages.get(this, "notice"));
-            BGMPlayer.playBoss();
+            //BGMPlayer.playBoss();
             Camera.main.shake(1f,3f);
             GameScene.bossReady();
             for (Char ch : Actor.chars()){

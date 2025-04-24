@@ -49,8 +49,8 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PylonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.Tilemap;
@@ -58,7 +58,6 @@ import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
@@ -73,6 +72,22 @@ public class CavesBossLevel extends Level {
 	{
 		color1 = 0x534f3e;
 		color2 = 0xb9d661;
+	}
+
+	@Override
+	public void playBossMusic(){
+		if(BossHealthBar.isBleeding()){
+			Music.playModeBGM(Assets.Music.CITY_BOSS_FINALE,true);
+		} else {
+			Music.playModeBGM(Assets.Music.BGM_BOSSC,true);
+		}
+
+	}
+
+
+	@Override
+	public void playLevelMusic(){
+		Music.playModeBGM(Assets.Music.BGM_3,true);
 	}
 
 	@Override

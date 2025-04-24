@@ -5,7 +5,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.crivusfruitslevel2;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -458,7 +457,7 @@ public class CrivusStarFruits extends Boss implements Hero.Doom {
         GameScene.flash(0x8000cc00);
         Camera.main.shake(1f,3f);
         GameScene.bossReady();
-        BGMPlayer.playBoss();
+        //BGMPlayer.playBoss();
         for (Char ch : Actor.chars()){
             if (ch instanceof DriedRose.GhostHero){
                 ((DriedRose.GhostHero) ch).sayBoss();

@@ -3,7 +3,6 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.hollow.HollowMimic;
@@ -57,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Halo;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
@@ -71,7 +71,11 @@ public class HollowLevel extends RegularLevel {
 
     @Override
     public void playLevelMusic(){
-        BGMPlayer.playBGM(Assets.HOLLOW_CITY, true);
+        if(depth>=29){
+            Music.playModeBGM(Assets.Music.HOLLOW_CITY_HARD, true);
+        } else {
+            Music.playModeBGM(Assets.Music.HOLLOW_CITY, true);
+        }
     }
 
     @Override

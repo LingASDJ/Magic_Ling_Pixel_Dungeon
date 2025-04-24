@@ -27,6 +27,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.MIME;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -40,6 +42,16 @@ public class ColdChestBossLevel extends Level {
 
     public State pro(){
         return pro;
+    }
+
+    @Override
+    public void playLevelMusic() {
+        Music.playModeBGM(Assets.Music.BGM_2, true);
+    }
+
+    @Override
+    public void playBossMusic() {
+        Game.runOnRenderThread(() -> Music.playModeBGM(Assets.Music.DIAMAND_KING_INTRO, true));
     }
 
     private static final String PRO	= "pro";

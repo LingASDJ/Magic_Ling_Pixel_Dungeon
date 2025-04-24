@@ -21,7 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -215,7 +215,7 @@ public class GnollGeomancer extends Mob {
 					} if (hits == 3){
 						GLog.n( Messages.get(GnollGeomancer.this, "alert"));
 						GameScene.flash(Window.GDX_COLOR);
-						playBGM(Assets.Music.PRISON_TENSE, true);
+
 						wasSleeping = false;
 						spend(TICK);
 						sprite.idle();
@@ -872,7 +872,6 @@ public class GnollGeomancer extends Mob {
 
 		if (hits >= 3){
 			BossHealthBar.assignBoss(this);
-			playBGM(Assets.Music.PRISON_TENSE, true);
 		}
 	}
 }

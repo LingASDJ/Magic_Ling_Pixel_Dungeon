@@ -1,6 +1,6 @@
 //package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 //
-//import static com.shatteredpixel.shatteredpixeldungeon.BGMPlayer.playBGM;
+//
 //
 //import com.shatteredpixel.shatteredpixeldungeon.Assets;
 //import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
@@ -38,7 +38,7 @@
 //            seenBefore = true;
 //        }
 //        if (!Dungeon.level.heroFOV[pos]) {
-//            BGMPlayer.playBGMWithDepth();
+//            //BGMPlayer.playBGMWithDepth();
 //        } else {
 //           playBGM(Assets.Music.RENSHOP, true);
 //        }

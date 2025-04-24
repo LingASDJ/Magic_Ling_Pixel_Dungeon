@@ -26,6 +26,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -161,6 +163,17 @@ public class ForestPoisonBossLevel extends Level {
             E,E,E,E,E,J,J,S,S,S,S,S,S,J,W,W,R,W,W,J,S,S,S,S,S,S,J,J,E,E,E,E,E,
             E,E,E,E,E,E,E,E,S,S,S,S,S,S,S,W,W,W,S,S,S,S,S,S,S,E,E,E,E,E,E,E,E,
     };
+
+    @Override
+    public void playLevelMusic(){
+        Music.playModeBGM(Assets.Music.JUNGLE_FOREST,true);
+    }
+
+    @Override
+    public void playBossMusic(){
+        Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
+        () -> Music.playModeBGM(Assets.Music.BGM_BOSSA,true)));
+    }
 
     private int[] rk_chest= new int[]{
         707,708,709,710,711,

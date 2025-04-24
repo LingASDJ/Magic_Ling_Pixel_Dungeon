@@ -4,7 +4,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.CerDogBossLevel.FireWallDied;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BGMPlayer;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -674,7 +673,7 @@ public class Cerberus extends Boss {
             BossHealthBar.assignBoss(this);
             yell(Messages.get(this, "notice"));
             GameScene.flash(0x33ff0000);
-            BGMPlayer.playBoss();
+            //BGMPlayer.playBoss();
             GameScene.bossReady();
             for (Char ch : Actor.chars()){
                 if (ch instanceof DriedRose.GhostHero){
